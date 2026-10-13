@@ -27,7 +27,10 @@ const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
-const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Overheating fades)
+const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
+const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
+const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
+const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -233,7 +236,15 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
-	if f.has(Face.Keyword.DEVOUR):
+	if f.fills_hopper > 0:
+		score += hopper_fill_score(sk, ms, f, target)
+	if f.braces > 0:
+		score += brace_score(sk, ms, f.braces)
+	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
+		# A stack to spend buys another roll of the die, so the machine acts again: about the
+		# die's own average blow, read plainly so the scorer never asks itself.
+		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if f.devours:
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
 		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * DEVOUR_ROUNDS
@@ -249,11 +260,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			var link := damage_outcomes(ms, f, n)
 			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n) * HULL_WEIGHT))
 			p *= _kill_odds(link, n.hp)
-	# The heat this entry adds, on top of what the round's end already brings: whatever ends
-	# over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of
-	# the entry itself, not the one showing, so a reroll can weigh every entry the same way.
+	# The heat this entry adds, on top of what the gauge already holds: whatever ends the
+	# turn over the cap burns hull, and a machine burnt out is the worst trade there is. Asked
+	# of the entry itself, not the one showing, so a reroll can weigh every entry the same way.
 	var fc := sk.forecast(ms, false)
-	var over := maxi(0, int(fc["heat_after"]) + int(fc["overheat"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
+	var over := maxi(0, int(fc["heat_end"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
 	score -= float(over - int(fc["overheat"])) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
 		score -= DEATH_WEIGHT
@@ -269,14 +280,87 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	if bite <= 0:
 		return 0.0
 	var cost := float(bite) * uses * HULL_WEIGHT
+	if not banked_on_hull(ms).is_empty():
+		# The bite is hull damage, so it banks a stack the machine's own entries spend to roll
+		# again (the Nemesis's rage): a share of the roll it will buy.
+		cost -= RAGE_BANK_WEIGHT * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms) * uses
 	var fc := sk.forecast(ms, false)
 	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
 		cost += DEATH_WEIGHT
 	return cost
 
 
+## The status this machine banks on every hull hit that one of its own entries spends to
+## roll again (the Nemesis's rage, 12 October), or "" when it has no such pair.
+static func banked_on_hull(ms: Skirmish.MechState) -> String:
+	for m in Effects.live(ms.unit):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "on_hull_damage" or str(eff.get("effect", "")) != "stack_status":
+				continue
+			var st := str(eff.get("value", ""))
+			for f in ms.die.faces:
+				if f.rolls_again_on == st:
+					return st
+	return ""
+
+
 ## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a
 ## multiplier as its share of the blow. Read from the status, never hardcoded.
+## What bracing its owner is worth (the Breaching Plow, 12 October): the hull the Braced
+## stacks keep from the blows coming at its bare hull this round. The armour a stack gives is
+## read from the status, never hardcoded.
+func brace_score(sk: Skirmish, ms: Skirmish.MechState, stacks: int) -> float:
+	var per := 0
+	for eff in Effects.STATUS.get("braced", {}).get("effects", []):
+		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
+			per += int(eff.get("value", 0))
+	return _armour_saved(sk, ms, per * stacks) * HULL_WEIGHT
+
+
+## Hull that `extra` armour keeps this round: every strike of every foe aimed at this
+## machine that reaches its bare hull (no standing shield, or a breach) loses that much more,
+## down to nothing.
+func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
+	if extra <= 0:
+		return 0.0
+	var saved := 0
+	var arm := Effects.stat(who.unit, "armour")
+	for a in sk.attackers_of(who):
+		if who.unit.shield > 0 and not a.breaches():
+			continue
+		var through := maxi(0, Effects.damage_taken(who.unit, a.damage()) - arm)
+		saved += mini(extra, through) * a.strikes()
+	return float(saved)
+
+
+## What filling the hopper is worth (the Chainsaw Claw, 11 October): each load what this
+## machine's best hopper-firing entry adds a load, at the odds a later shot fires it, while
+## the hopper holds less than two of that entry's shots (more would sit unfired).
+func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var per_load := 0
+	var per_shot := 0
+	for e in ms.die.faces:
+		var ef := Effects.effective_face(ms.unit, e)
+		if ef.fires_hopper > 0 and ef.power_per_load > per_load:
+			per_load = ef.power_per_load
+			per_shot = ef.fires_hopper
+	if per_load <= 0:
+		return 0.0
+	var reached := 1
+	if f.has(Face.Keyword.CLEAVE):
+		for c in [target.column - 1, target.column + 1]:
+			if c >= 0 and c < sk.columns:
+				var n := sk.foe_at(target.rank, c)
+				if n != null and n != target and n.alive():
+					reached += 1
+	if f.has(Face.Keyword.PENETRATE):
+		var other := sk.foe_at(1 - target.rank, target.column)
+		if other != null and other != target and other.alive():
+			reached += 1
+	var room := maxi(0, per_shot * 2 - Effects.stacks_of(ms.unit, "hopper"))
+	return float(mini(f.fills_hopper * reached, room) * per_load) * HOPPER_WEIGHT
+
+
 static func _stack_damage_gain(status_id: String, mean: float) -> float:
 	var gain := 0.0
 	for eff in Effects.STATUS.get(status_id, {}).get("effects", []):
@@ -325,6 +409,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			rolls.append(f.power + int(roundf(span * q)))
 	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
 	fired += f.missing_bonus(target)   # and what the target's lost hull adds
+	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	for v in rolls:
@@ -382,17 +467,23 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	return score - volatile_cost(sk, ms, f)
 
 
-## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat this
-## round's tick adds past the cap as hull, the rest as room), the bites its Corrupted entries
-## would take over the rounds to come, and the entries a foe switched off, at the die's own
-## mean for each. A Scrambled reroll is small change.
+## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of
+## the turn (what it would put over the cap as hull, the rest as room), the heat Scorched would
+## add to its weapons this turn (about one; it goes at the turn's end), the bites its
+## Corrupted entries would take over the rounds to come, and the entries a foe switched off,
+## at the die's own mean for each. A Scrambled reroll is small change.
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
-	var tick := int(Effects.tick_preview(who.unit)["heat"])
+	var tick := int(Effects.tick_preview(who.unit, true)["heat"])
 	if tick > 0:
 		var fc := sk.forecast(who, false)
-		var over := mini(tick, int(fc["overheat"]))
+		var over := mini(int(fc["overheat"]), tick)
 		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
+	var scorch := Effects.stacks_of(who.unit, "scorched")
+	if scorch > 0:
+		for eff in Effects.STATUS["scorched"]["effects"]:
+			if str(eff.get("effect", "")) == "add_heat":
+				score += float(int(eff.get("value", 0)) * scorch) * BANK_WEIGHT
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):
@@ -494,6 +585,10 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
 			"multiply_damage_taken":
 				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
+			"add_stat":
+				# Braced and its like: the armour stands behind this round's incoming blows.
+				if str(eff.get("stat", "")) == "armour":
+					score += _armour_saved(sk, who, int(v) * n) * HULL_WEIGHT * float(f.buff_rounds)
 			"add_burn":
 				var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)

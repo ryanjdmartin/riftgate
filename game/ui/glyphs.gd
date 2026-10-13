@@ -58,6 +58,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(s * 0.3, -s), c + Vector2(-s * 0.5, s * 0.1), c + Vector2(s * 0.1, s * 0.1), c + Vector2(-s * 0.3, s),
 			]), color, width)
+		"hopper":
+			# A funnel and its spout: what the claw digs out, waiting to be fired.
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s, -s * 0.8), c + Vector2(s, -s * 0.8), c + Vector2(s * 0.22, s * 0.15),
+				c + Vector2(s * 0.22, s), c + Vector2(-s * 0.22, s), c + Vector2(-s * 0.22, s * 0.15), c + Vector2(-s, -s * 0.8),
+			]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.55, -s * 0.35), c + Vector2(s * 0.55, -s * 0.35), color, width * 0.7)
 		"chain":
 			ci.draw_arc(c + Vector2(-s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
 			ci.draw_arc(c + Vector2(s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
@@ -144,6 +151,28 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"heat":
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.3), color, width)
 			ci.draw_circle(c + Vector2(0, s * 0.55), s * 0.45, color)
+		"burning":
+			# Burning on a machine (Ryan, 13 October: a glyph of its own): Burn's flame filled solid,
+			# the heat glyph's thermometer cut out of it, since on metal the fire is heat. The hollow
+			# flame stays Burn's, a foe's Burning's and Primed's, the bare thermometer the overheat's.
+			var flame := PackedVector2Array([
+				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
+				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1),
+			])
+			ci.draw_colored_polygon(flame, color)
+			flame.append(flame[0])
+			ci.draw_polyline(flame, color, width)
+			var cut := Color(Palette.ACCENT_INK, color.a)
+			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
+			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
+		"scorch":
+			# Heat rising off a barrel: Scorched, every weapon running hotter (13 October).
+			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
+			for i in range(3):
+				var x := -s * 0.55 + i * s * 0.55
+				ci.draw_polyline(PackedVector2Array([
+					c + Vector2(x, s * 0.4), c + Vector2(x + s * 0.2, s * 0.05), c + Vector2(x - s * 0.12, -s * 0.3), c + Vector2(x + s * 0.14, -s * 0.65), c + Vector2(x, -s),
+				]), color, width * 0.9)
 		"star":
 			var pts := PackedVector2Array()
 			for i in range(11):
@@ -242,7 +271,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "devour", "shocked", "shock":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY

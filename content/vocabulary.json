@@ -44,7 +44,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.",
+   "codex": "Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons run hotter.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -134,7 +134,7 @@
    "id": "damage_range",
    "category": "component_property",
    "name": "Damage range",
-   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. The player's damage comes in fives.",
+   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls.",
    "status": "implemented",
    "design": {
     "holes": "Ranges are content-authored per component; no upgrade path raises min or max yet."
@@ -194,10 +194,10 @@
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
-   "codex": "Player keyword. Each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour.",
+   "codex": "Keyword. On the player's weapons: each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. On a foe's attack: each blow that lands leaves a stack of Burning on the machine it hit.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "On foes since 13 October (Ryan: Burn and Scorch, the player's keyword reused and acting differently on a machine)."
    }
   },
   {
@@ -282,12 +282,12 @@
   },
   {
    "id": "devour",
-   "category": "keyword",
+   "category": "component_property",
    "name": "Devour",
-   "codex": "Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons'). Every foe it kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
    "status": "implemented",
    "design": {
-    "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned."
+    "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap keeps the stacks for the battle. A keyword until 11 October, when Ryan folded it into a rule on its one carrier."
    }
   },
   {
@@ -364,7 +364,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted, Overheating and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
     "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
@@ -394,10 +394,10 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. A Shocked foe that strikes bare hull again takes 10. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
+   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
    "status": "implemented",
    "design": {
-    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders."
+    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders."
    }
   },
   {
@@ -414,10 +414,10 @@
    "id": "braced",
    "category": "status",
    "name": "Braced",
-   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.",
+   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. It lasts until the round's end, every stack at once, whatever granted it: buff equipment, a bracing component, a passive.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack."
+    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack. One turn from every source since 12 October (Ryan: a lingering defensive buff would stack into a wall); a passive's stacks had faded one a round before."
    }
   },
   {
@@ -464,10 +464,10 @@
    "id": "burning",
    "category": "status",
    "name": "Burning",
-   "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack for every 10 damage dealt, rounded up.",
+   "codex": "Status. On a foe: loses 5 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 5 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "One word, two effects by body (Ryan, 13 October): the machine side replaced Overheating, whose name the real overheat already had. Engine ids burning (a foe's) and burning_mech (a machine's)."
    }
   },
   {
@@ -564,7 +564,7 @@
    "id": "withdraw",
    "category": "formation",
    "name": "Withdraw",
-   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
+   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: your turn ends (heat over the maximum burns), the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1014,7 +1014,7 @@
    "id": "armour",
    "category": "resource",
    "name": "Armour",
-   "codex": "A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage, a breach's overflow included. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
    "status": "implemented",
    "design": {
     "holes": "Numbers are placeholders. Armour from components is content, not yet written."
@@ -1044,7 +1044,7 @@
    "id": "breach",
    "category": "foe",
    "name": "Breach",
-   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
+   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, armour coming off it as off any blow on hull, and if what gets through is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
    "status": "implemented",
    "design": {
     "holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."
@@ -1087,7 +1087,37 @@
    "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder."
+    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder."
+   }
+  },
+  {
+   "id": "hopper_property",
+   "category": "component_property",
+   "name": "The hopper",
+   "codex": "Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat."
+   }
+  },
+  {
+   "id": "brace_property",
+   "category": "component_property",
+   "name": "Braces",
+   "codex": "A rule printed on a component (the Breaching Plow's). Spending it Braces its owner, the stacks it says, until the round's end: the armour stands behind the blow through the enemy's turn.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 12 October in place of the Glacis, a flat armour +5 on the plow that was meant for front-rank blows only and measured no different that way (Ryan: \"Give the plow braced. It fits.\"). Two stacks are a placeholder. A rule on one carrier, not a keyword, until another piece wants it."
+   }
+  },
+  {
+   "id": "roll_again_property",
+   "category": "component_property",
+   "name": "Rolls again",
+   "codex": "A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 12 October for the Nemesis's rage (Ryan: \"it's not a choice, you just get rapid\", without the switch-off). A rule on one carrier, not a keyword, until another piece wants it."
    }
   },
   {
@@ -1121,33 +1151,43 @@
    }
   },
   {
-   "id": "crucible",
+   "id": "rage",
    "category": "status",
-   "name": "Crucible",
-   "codex": "Machine buff, the Nemesis's: a stack for each time it takes hull damage (a blow, a bite of its own or an overheat), and its melee blows deal 5 more a stack. Lasts the skirmish.",
+   "name": "Rage",
+   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October from Ryan's wording of the passive; +5 a stack is a placeholder."
+    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
    }
   },
   {
-   "id": "overheating",
+   "id": "hopper",
    "category": "status",
-   "name": "Overheating",
-   "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.",
+   "name": "Hopper",
+   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour."
+    "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
+   }
+  },
+  {
+   "id": "scorched",
+   "category": "status",
+   "name": "Scorched",
+   "codex": "Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers."
    }
   },
   {
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit.",
+   "codex": "Foe attack keyword. Each blow that lands leaves a stack of Scorched on the machine it hit: its weapons run hotter.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably)."
+    "holes": "Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine."
    }
   }
  ]

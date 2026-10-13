@@ -33,15 +33,21 @@ skirmish.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set,
   not yet assigned to components) are build flavour shown in the codex only (not built).
   A tag carries no rule of its own; a module or passive may read one. Components still carry
-  the old internal filing tags; only `melee` is read today (the Nemesis's passive, and which
-  blows lunge on screen).
+  the old internal filing tags; only `melee` is read today (which blows lunge on screen).
+  Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness only (not in the run yet). Catalogue: `content/modules.json`.
-- **Tiers and blueprints**: a component stocked by a chassis takes the lowest tier of the
-  chassis that stock it; an unstocked one carries its own; a fixed one has none. Tier one is
-  what a run starts with; the Arsenal (the capital's maker) has no tier one.
+- **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
+  starts with every basic's blueprint. Every other component carries its tier, one to three,
+  and a chassis stocks only components below its own tier, so a tier-one chassis stocks
+  basics beside its fixed pieces and a tier-three component is only ever found. Blueprints
+  of tiers one to three are found; a bought chassis brings one copy of each component it
+  stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
+  maker) makes no basics and has no tier one. (Not built: today a stocked component takes the
+  lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
+  with every tier-one blueprint, and the stocks wait on the stock pass.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
 
 ## The skirmish
@@ -59,10 +65,13 @@ skirmish.
 2. Every foe picks its move, then its target; both show, exact, before the player acts.
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point.
-4. END TURN: the enemy's turn (below). Round-timed effects end.
-5. Machines' statuses tick. Heat over a machine's maximum burns hull one for one and the gauge
-   settles at the maximum. Shield past the maximum (overshield) fades.
-6. Reinforcements step into empty slots. Next round.
+4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
+   then heat over a machine's maximum burns hull one for one and the gauge settles at the
+   maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
+   acts.
+5. The enemy's turn (below). Round-timed effects end.
+6. Machines' statuses tick. Shield past the maximum (overshield) fades.
+7. Reinforcements step into empty slots. Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands or waits,
 defeat when every machine is wrecked. There is no round limit.
@@ -96,8 +105,12 @@ defeat when every machine is wrecked. There is no round limit.
   nothing.
 - **The die shows the number** one blow will deal after every modifier. Dragged over a foe
   it may strike, it shows that foe's number: its missing hull, conditions on it, its armour
-  off. A Shocked foe's doubling is not folded in (it shows on the foe's chip).
-- Player damage comes in fives; hull, shield, heat and foe numbers in tens.
+  off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
+  the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
+- Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
+  tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
+  blow of 12), and the numbers between the round ones are the room for balancing and upgrades.
+  Move alone keeps steps of 5, since a hex costs 5 or 10.
 
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
@@ -109,7 +122,6 @@ defeat when every machine is wrecked. There is no round limit.
   again, until a link fails to kill.
 - **Spillover**: damage past the kill of a front-rank foe carries into the foe behind it as
   plain damage.
-- **Devour**: each kill gives the owner a stack of Overcharged.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
@@ -117,25 +129,43 @@ defeat when every machine is wrecked. There is no round limit.
   another entry, and the machine acts again.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
-- **Cleanse** (shields and vents): the machine it lands on loses Overheating, Scrambled, a
-  foe's Disabled and Corrupted (never a Rapid switch-off).
+- **Cleanse** (shields and vents): the machine it lands on loses Burning, Scorched,
+  Scrambled, a foe's Disabled and Corrupted (never a Rapid switch-off).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
-Component properties: **Vents all** fires the whole heat gauge into the shot, adding its
-bonus per 10 heat fired, then its own heat lands. **Missing hull** adds its bonus for every
-20 hull the target is missing.
+Component properties, printed on the entry rather than learned as keywords (the die marks
+them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
+bonus per 10 heat fired, then its own heat lands. **Devour** (the Soulcutter Talons): each
+kill gives the owner a stack of Overcharged. **Missing hull** adds its bonus for every
+20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
+machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
+up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
+Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
+spending it Braces its owner, the stacks it says, until the round's end (the Wild Boar's
+Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+with a stack of its status spends one, and the die rolls again, a plain roll as the round
+opens, so the machine acts again and the same entry may show again; nothing switches off,
+the stacks being the limit, and the fight's last blow rolls nothing.
 
 ### Buffs, debuffs and resistance
 On a machine:
 - **Overcharged** (buff): +5 damage a stack. From Devour it lasts the skirmish, losing a
   stack each round's end (the Ammit keeps it for the battle).
-- **Braced** (buff): armour +5 a stack.
+- **Braced** (buff): armour +5 a stack, until the round's end, every stack at once,
+  whatever granted it.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Crucible** (buff, the Nemesis's): its melee blows deal +5 a stack, a stack each time it
-  takes hull damage; lasts the skirmish.
-- **Overheating** (debuff, from a foe's scorch): +5 heat a stack at the round's end, then a
-  stack fades. Cleansable.
+- **Rage** (a store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
+  of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
+  decays, and nothing cleanses it.
+- **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
+  the skirmish, never decays, and nothing cleanses it.
+- **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
+  other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
+  stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
+- **Scorched** (debuff, from a foe's scorch): every weapon the machine fires runs 5 hotter a
+  stack, until the end of the player's turn, when every stack goes, so it never piles up.
+  Cleansable.
 - **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
@@ -147,7 +177,7 @@ On a foe:
 - **Suppressed** (debuff): it skips its action this round; landed on a foe that has already
   acted, or by a Paradox on a foe already suppressed, it costs the next action instead.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
-  shock; it never stacks. While Shocked, each blow it lands on bare hull costs it 10.
+  shock; it never stacks.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox
@@ -166,24 +196,29 @@ Burning, Suppressed, Shocked or Paradox.
 
 ### Shields, armour, hull
 - A standing shield blocks a whole blow, however small, and loses the blow's damage. A
-  **breach** blow's overflow reaches the hull, past armour.
-- A machine's armour comes off every blow on bare hull, flat; shields are never armoured. A
-  foe's armour comes off every blow on it, never off Burning. Damage-taken effects apply
-  before armour.
+  **breach** blow's overflow past the shield reaches the hull.
+- A machine's armour comes off every blow that reaches its hull, flat, a breach's overflow
+  included; shields are never armoured. A foe's armour comes off every blow on it, never off
+  Burning. Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
   never heals in a battle.
 
 ### Heat
-- A weapon adds its heat when spent, once a spend. Heat may pass the maximum during the
-  round harmlessly; at the round's end the excess burns hull one for one (an overheat) and
-  the gauge settles at the maximum. Machines cool at the start of the round. Heat starts each
-  fight at zero.
+- A weapon adds its heat when spent, once a spend, through the attacker's modifiers in the
+  blow's order: adds, then multiplies (so a machine whose heat is doubled doubles Scorched's
+  extra too). Heat may pass the maximum during the player's turn harmlessly; at the end of
+  the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
+  gauge settles at the maximum. With volatile, it is the way a machine dies on its own
+  turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
-- Foes heat machines by scorch (Overheating), and by moves that add heat to one machine or
-  to all. (The direction, not built: foes heat machines only through debuffs; one adds its
-  heat at the end of the player's turn, before the overheat, so it can be vented or cleansed
-  first; a softer one raises the heat every weapon generates, per stack; the names are open.)
+- Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
+  its heat at the end of the player's turn before the overheat, so a vent makes room for it
+  or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
+  in the turn that follows, so equipment or a cool weapon plays round it. A foe's burn leaves Burning and its scorch
+  leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
+  the Magma Golem's Eruption, the Black Mage's Fira and the Summoner's Hellfire scorch every
+  machine.
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
@@ -207,10 +242,11 @@ Burning, Suppressed, Shocked or Paradox.
   own aim. The pick is a commitment; Lure and Disrupt move it.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders: breach, scorch (a stack of
-  Overheating), disable (the entry the machine shows), corrupt (a Corrupted stack on it),
-  self-destruct (the striker dies after, for good).
+  Scorched), burn (a stack of Burning), disable (the entry the machine shows), corrupt (a
+  Corrupted stack on it), self-destruct (the striker dies after, for good).
 - **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
-  rally, drain rerolls, add heat (one machine or every machine), disable.
+  rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  Scorched on every machine), disable.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included); a suppressed foe does nothing.
@@ -219,8 +255,9 @@ Burning, Suppressed, Shocked or Paradox.
   splits into two Half-Gels in the reinforcements (one deep).
 
 ### Withdrawal
-Open at any point of the player's turn. The enemy takes its full turn, then the skirmish
-ends; the round's end does not run. Kills stay counted, machines keep their damage and
+Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
+burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
+not run. Kills stay counted, machines keep their damage and
 shields do not refill; a pack keeps its survivors, who return whole.
 
 ### Passives: triggers and conditions
@@ -296,7 +333,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
-  every tier-one component.
+  every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass.
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
   10 salvage a kill; 100 Favour less 1 per gate point the city lost, never below 0; a research

@@ -12,9 +12,10 @@ extends RefCounted
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       a rolled face rolls its damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
-##   end_round()         burn ticks, foes act, the dead are cleared, mech statuses tick
-##                       (overheating), heat over the cap burns hull, the reinforcements
-##                       refill, outcome is checked
+##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
+##                       stack, Scorched goes, then heat over the cap burns hull; then
+##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
+##                       reinforcements refill, outcome is checked
 ##   can_withdraw()      at any point of the player's turn
 ##
 ## The player's damage is in fives, everything else in tens. Enemy damage is static; only
@@ -30,7 +31,6 @@ const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 O
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
-const SHOCK_DISCHARGE := 10         # what a Shocked foe pays for striking bare hull again (placeholder; the small thorns left in, Ryan, 28 September)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -118,7 +118,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "heat_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -243,6 +243,20 @@ func heat_bonus(ms: MechState, f: Face) -> int:
 	return f.power_per_heat * int(ms.heat / 10)
 
 
+## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
+## 11 October): as many as the machine's hopper holds, up to the shot's most, so a full
+## hopper feeds several shots rather than one. Read as the die is spent.
+static func hopper_loads(u, f: Face) -> int:
+	if f == null or f.fires_hopper <= 0:
+		return 0
+	return mini(Effects.stacks_of(u, "hopper"), f.fires_hopper)
+
+
+## What the hopper adds to every blow of that shot.
+static func hopper_bonus(u, f: Face) -> int:
+	return hopper_loads(u, f) * f.power_per_load if f != null else 0
+
+
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
 ## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
@@ -253,7 +267,7 @@ func heat_bonus(ms: MechState, f: Face) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
 		return [0, 0]
-	var add := heat_bonus(ms, f) + f.missing_bonus(target)
+	var add := heat_bonus(ms, f) + f.missing_bonus(target) + hopper_bonus(ms.unit, f)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
 		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
@@ -300,24 +314,6 @@ func acting_on(ms: MechState) -> Array[Foe]:
 			continue
 		out.append(f)
 	return out
-
-
-## Heat the round's end will add from the foes acting on this mech: a stack of Overheating
-## per scorching blow, ticking at once, and a stoking debuff's heat outright.
-func scorch_incoming(ms: MechState) -> int:
-	var per_stack := int(Effects.STATUS["overheating"]["effects"][0]["value"])
-	var stacks := 0
-	var heat := 0
-	for f in acting_on(ms):
-		if f.attacks() and f.has_keyword(f.action, "scorch"):
-			stacks += f.strikes()
-		elif str(f.action.get("effect", "")) == "add_heat":
-			heat += int(f.action.get("value", 0))
-	# A move that heats every machine counts whoever it is aimed at.
-	for f in field_foes():
-		if f.alive() and not f.is_suppressed() and str(f.action.get("effect", "")) == "heat_all" and f.hp - int(Effects.tick_preview(f)["hp"]) > 0:
-			heat += int(f.action.get("value", 0))
-	return stacks * per_stack + heat
 
 
 func incoming_for(ms: MechState) -> int:
@@ -389,19 +385,22 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 			hull -= r["through"]
 			if r["injures"]:
 				component_risk = true
-	# Heat: what the gauge holds (past the cap, if the round ran hot), the face's own if
-	# asked, then the end of the round's Overheating tick: the stacks it carries plus one
-	# per scorching blow coming. Whatever ends over the cap burns hull at the round's end.
-	var heat_after := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
-	var over := maxi(0, heat_after - ms.heat_max)
+	# Heat: what the gauge holds (past the cap, if the turn ran hot), the face's own if asked
+	# and Burning's tick burn at the end of the player's turn, before the enemy acts (11 and
+	# 13 October). Foes add no heat outright: their fire leaves Burning and Scorched, which
+	# land on later turns.
+	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"])
+	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"])
 	return {
 		"incoming": incoming,
 		"bite": bite,
 		"volatile": volatile,
 		"shield_after": shield,
 		"hull_after": hull,
-		"heat_after": mini(heat_after, ms.heat_max),
+		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
+		"heat_after": heat_after,   # the gauge after the round: settled at the cap, then the foes' heat
 		"overheat": over,
 		"breaks_shield": ms.unit.shield > 0 and incoming >= ms.unit.shield,
 		"component_risk": component_risk,
@@ -456,9 +455,20 @@ func reach_of(ms: MechState, f: Face) -> int:
 
 
 ## The component as the player should see it and as the resolver spends it: a copy carrying
-## the effective reach and any keyword a passive grants. The die keeps the real one.
+## the effective reach and any keyword a passive grants. The die keeps the real one. An
+## attack also shows the heat a spend adds through every live source (a Scorched machine's
+## weapons run hotter, 13 October; the Sparrowhawk's double): the game does the arithmetic.
 func shown_face(ms: MechState, f: Face) -> Face:
-	return Effects.effective_face(ms.unit, f)
+	var sf := Effects.effective_face(ms.unit, f)
+	if sf == null or not sf.is_attack():
+		return sf
+	var heat := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
+	if heat == sf.heat:
+		return sf
+	if sf == f:
+		sf = f.duplicate_face()
+	sf.heat = heat
+	return sf
 
 
 # ---------------------------------------------------------------- round flow
@@ -761,6 +771,13 @@ func assign(mech_index: int, target = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
+	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
+	# entry Braces its owner until the round's end, so the plate stands behind the charge
+	# through the enemy's turn and is gone when the next round opens.
+	if f.braces > 0 and ms.alive():
+		var bm := Effects.grant_buff(ms.unit, "braced", f.braces, "brace:" + f.component, round)
+		if bm != null:
+			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
 	# free (never the same entry), and the mech may act again. The disable is only there to
@@ -770,6 +787,17 @@ func assign(mech_index: int, target = null) -> bool:
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
 		ms.assigned = false
 		log.append("%s: rapid, rolls again" % ms.unit.display_name)
+	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
+	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
+	# round opens. Not Rapid's reroll: that never lands on an identical entry, and the
+	# Nemesis's two fists are identical, so it could never chain them. Nothing switches off:
+	# the stacks are the limit, and a fist that shows again punches again. A fight already won
+	# rolls nothing.
+	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
+			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
+		ms.face_index = ms.die.roll(rng)
+		ms.assigned = false
+		log.append("%s: %s, rolls again (%d left)" % [ms.unit.display_name, str(Effects.STATUS.get(f.rolls_again_on, {}).get("name", f.rolls_again_on)).to_lower(), Effects.stacks_of(ms.unit, f.rolls_again_on)])
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
@@ -779,9 +807,11 @@ func assign(mech_index: int, target = null) -> bool:
 
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
+	_end_player_turn()
+	if outcome != Outcome.NONE:
+		return outcome   # the burn wrecked the last machine: the enemy never acts
 	_enemy_turn()
 	_tick_mechs()
-	_settle_heat()
 	_trim_overshield()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_refresh_allies()
@@ -791,13 +821,25 @@ func end_round() -> int:
 	return outcome
 
 
+## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
+## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
+## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
+## decides ends here. A foe's Burning adds its heat just before it (13 October), so a vent
+## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
+func _end_player_turn() -> void:
+	overheats.clear()
+	_burn_mechs()
+	_settle_heat()
+	_refresh_allies()
+	_check_outcome()
+
+
 ## The enemy's turn: every foe on the field acts in order, statuses tick, timed effects run
 ## out. Shared by the end of a round and by a withdrawal.
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
 	_seq = 0
-	overheats.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
@@ -829,21 +871,20 @@ func _enemy_turn() -> void:
 		for s in range(f.strikes()):
 			if not t.alive():
 				break
-			var was_shocked := Effects.has(f, "shocked")
 			_damage_mech(t, f.damage(), f)
 			var blocked: bool = turn_events[turn_events.size() - 1]["blocked"]
 			# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
-			# hull shocks the foe that struck; a shutters' blocked blow shocks too. A foe already
-			# Shocked that reaches hull again pays the discharge, and may die of it.
-			if was_shocked and not blocked:
-				f.hp -= SHOCK_DISCHARGE
-				log.append("%s discharges into %s: %d" % [t.unit.display_name, f.display_name, SHOCK_DISCHARGE])
-				if not f.alive():
-					break
+			# hull shocks the foe that struck; a shutters' blocked blow shocks too. Shocked is a
+			# setup and nothing else (Ryan, 11 October): the discharge a Shocked striker paid was
+			# thorns, scaling with the blows a horde lands, and it went.
 			if Effects.shocks_striker(t.unit, blocked):
 				_shock(f, t)
 			if f.has_keyword(f.action, "scorch") and t.alive():
-				Effects.stack(t.unit, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:" + f.content_id)
+				_fire_on(t, "scorched", 1, f)
+				log.append("%s scorches %s" % [f.display_name, t.unit.display_name])
+			if f.has_keyword(f.action, "burn") and t.alive():
+				_fire_on(t, "burning_mech", 1, f)
+				log.append("%s sets %s burning" % [f.display_name, t.unit.display_name])
 			if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
 				# The entry the die shows is switched off through the mech's next turn.
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
@@ -865,15 +906,32 @@ func _enemy_turn() -> void:
 		Effects.end_round(f, round)
 
 
-## The round ends with the machines' statuses ticking, after the enemy has struck: an
-## Overheating stack lands on the round's peak heat, before the next turn's cooling can
-## relieve it (Ryan, 22 September), so a scorch bites the round it was dealt.
+## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
+## Scorched are not among them: they tick at the end of the player's turn (_burn_mechs).
 func _tick_mechs() -> void:
 	for ms in live_mechs():
 		var t := Effects.tick(ms.unit)
 		if int(t["heat"]) > 0:
-			log.append("%s: %d heat from overheating" % [ms.unit.display_name, int(t["heat"])])
+			log.append("%s: %d heat from its statuses" % [ms.unit.display_name, int(t["heat"])])
 			_add_heat(ms, int(t["heat"]))
+
+
+## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
+## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
+## stack and Scorched goes.
+func _burn_mechs() -> void:
+	for ms in live_mechs():
+		var t := Effects.turn_tick(ms.unit)
+		if int(t["heat"]) > 0:
+			log.append("%s burns: +%d heat" % [ms.unit.display_name, int(t["heat"])])
+			_add_heat(ms, int(t["heat"]))
+
+
+## A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; foes heat machines only
+## through them): stacks of Burning or Scorched for the skirmish, decaying as each says at the
+## end of the player's turn (Burning a stack, Scorched every stack).
+func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
+	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
 
 func withdraw() -> bool:
@@ -882,6 +940,11 @@ func withdraw() -> bool:
 	if state == State.ROUND_START:
 		start_round()
 	log.append("Withdrawing: the enemy strikes as the team pulls out")
+	# Leaving ends the player's turn, so the heat burns first (Ryan, 11 October): running hot
+	# and then withdrawing is no way round an overheat.
+	_end_player_turn()
+	if outcome != Outcome.NONE:
+		return true   # burnt out on the way: the fight is lost, and the enemy never strikes
 	_screen_cover()
 	_enemy_turn()
 	_screened.clear()
@@ -913,6 +976,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
 	var missing := f.missing_bonus(target)   # what the target's lost hull adds, read once as the die is spent
+	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
+	var from_hopper := loads * f.power_per_load
+	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
@@ -920,7 +986,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var rolled := f.power
 		if f.is_ranged():
 			rolled = rng.randi_range(f.power, f.power_max)
-		rolled += fired + missing
+		rolled += fired + missing + from_hopper
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
@@ -947,6 +1013,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
+			if not reached.has(foe):
+				reached.append(foe)
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
 			# small blows bounce off a hardened foe the way they do off a heavy machine.
@@ -962,7 +1030,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
 			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
+			if was_alive and not foe.alive() and f.devours:
 				_devour(ms, foe)
 			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
 			# foe behind it in the column, as plain damage that still spends a shock and
@@ -975,7 +1043,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
 					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
+					if not behind.alive() and f.devours:
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
@@ -989,6 +1057,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_note_status(gained, target, "burning")
+	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
+	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
+	# never feeds the shot it is part of.
+	if loads > 0:
+		Effects.spend_stacks(ms.unit, "hopper", loads)
+		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
+	if f.fills_hopper > 0 and not reached.is_empty():
+		var n := f.fills_hopper * reached.size()
+		Effects.stack(ms.unit, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", n, Effects.DECAY_NONE)
+		log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):
@@ -1087,9 +1165,9 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
-		"add_heat":
-			_add_heat(t, value)
-			log.append("%s: %s, %s +%d heat" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, value])
+		"burn":
+			_fire_on(t, "burning_mech", maxi(1, value), f)
+			log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
 		"scramble":
 			Effects.grant_for_rounds(t.unit, Effects.STATUS["scrambled"], "foe:" + f.content_id, round + 1)
 			log.append("%s: %s, %s's next reroll is scrambled" % [f.display_name, str(a.get("name", "scrambles")), t.unit.display_name])
@@ -1102,12 +1180,12 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			if t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
-		"heat_all":
+		"scorch_all":
 			var names: Array[String] = []
 			for ms in live_mechs():
-				_add_heat(ms, value)
+				_fire_on(ms, "scorched", maxi(1, value), f)
 				names.append(ms.unit.display_name)
-			log.append("%s: %s, +%d heat to %s" % [f.display_name, str(a.get("name", "erupts")), value, ", ".join(names)])
+			log.append("%s: %s, %s scorched ×%d" % [f.display_name, str(a.get("name", "erupts")), ", ".join(names), maxi(1, value)])
 		"corrupt_all":
 			var hit_names: Array[String] = []
 			for ms in live_mechs():
@@ -1189,7 +1267,7 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
 ## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
 ## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
-## round's end, the way Overheating does, so the ramp fades unless a passive keeps it.
+## round's end, so the ramp fades unless a passive keeps it.
 func _devour(ms: MechState, foe: Foe) -> void:
 	var m: Effects.Modifier
 	var stacks := _stacks_from(ms, "overcharged", 1)
@@ -1326,7 +1404,7 @@ func _disrupt(foes: Array) -> void:
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
-## cleansable status (a foe's disable, Corrupted, Overheating), and the log says which.
+## cleansable status (a foe's disable, Corrupted, Scrambled, Burning, Scorched), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
 	if not f.has(Face.Keyword.CLEANSE):
 		return
@@ -1415,7 +1493,7 @@ func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	return parts
 
 
-## The end of the round: heat above the maximum burns hull one for one and the gauge
+## The end of the player's turn: heat above the maximum burns hull one for one and the gauge
 ## settles at its cap.
 func _settle_heat() -> void:
 	for ms in live_mechs():
@@ -1432,8 +1510,8 @@ func _settle_heat() -> void:
 
 ## One blow. Decided 18 September: a standing shield blocks the whole blow, however small the
 ## shield and however big the blow; nothing bleeds through (unless the foe breaches, then the
-## excess reaches the hull). A blow on bare hull loses the chassis's armour first, so small
-## hits bounce off a heavy machine. Only a bare-hull blow can injure a component, and only
+## excess reaches the hull). A blow that reaches the hull loses the chassis's armour first, a
+## breach's overflow included, so small hits bounce off a heavy machine. Only a bare-hull blow can injure a component, and only
 ## when what gets through is at least a quarter of max hull. Shield before a telegraphed
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
@@ -1482,8 +1560,10 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	else:
 		absorbed = mini(shield, amount)
 		blocked = true
+	# Armour comes off every blow that reaches the hull, a breach's overflow too (Ryan, 11
+	# October): a breach beats the shield, never the plate under it.
 	var armoured := 0
-	if through > 0 and bare:
+	if through > 0:
 		armoured = mini(armour, through)
 		through -= armoured
 	# Injury is about hull lost in one blow, wherever it came from: a breach that overflows a

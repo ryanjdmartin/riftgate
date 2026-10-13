@@ -1,5 +1,5 @@
 {
- "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Numbers are in tens. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger): a component stocked by any chassis takes the lowest tier of the chassis that stock it, derived and never stored; one that no chassis stocks carries its own tier; a fixed-only component has none. Tier one is the blueprints a run starts with, and the capital's maker has no tier-one component. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Damage sits at the scale of fives, the rest at the scale of tens: magnitudes, not steps (any whole number; docs/rules.md). A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger): a component stocked by any chassis takes the lowest tier of the chassis that stock it, derived and never stored; one that no chassis stocks carries its own tier; a fixed-only component has none. Tier one is the blueprints a run starts with, and the capital's maker has no tier-one component. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -12,7 +12,7 @@
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
     "niche": "",
-    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): the hopper, the Badger's two locked weapons working together: each foe the claw's blows reach puts a load in the Badger's hopper, so its spread turns a crowd into ammunition for the Bullion Fragmenter."
    },
    "face": {
     "kind": "attack",
@@ -22,7 +22,8 @@
     "keywords": [
      "cleave"
     ],
-    "heat": 0
+    "heat": 0,
+    "fills_hopper": 1
    },
    "passive": null,
    "tags": [
@@ -69,15 +70,16 @@
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
     "niche": "",
-    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): flat 20, and it fires the hopper the Chainsaw Claw fills, +5 a load and at most three a shot, so a full hopper feeds several big shots rather than one burst (Ryan's cap); numbers placeholders."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
-    "power_max": 30,
+    "power": 20,
     "keywords": [],
-    "heat": 10
+    "heat": 10,
+    "fires_hopper": 3,
+    "power_per_load": 5
    },
    "passive": null,
    "tags": [
@@ -350,8 +352,8 @@
    ]
   },
   {
-   "id": "headhunter_rifle",
-   "name": "Headhunter Rifle",
+   "id": "pinion_driver",
+   "name": "Pinion Driver",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
@@ -360,7 +362,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser)."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it."
    },
    "face": {
     "kind": "attack",
@@ -417,11 +419,14 @@
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
     "niche": "",
-    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register)."
+    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act."
    },
    "face": {
     "kind": "shield",
-    "power": 30
+    "power": 20,
+    "keywords": [
+     "rapid"
+    ]
    },
    "passive": null,
    "tags": [
@@ -616,8 +621,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked melee: one big cleaving hit, and the front armour rides on it.",
-    "notes": "Claude's fill, 28 September. Its passive is flat armour now; once the engine can tell which rank struck, it becomes armour against front-rank blows only. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "niche": "The Boar's locked melee: one big cleaving hit that braces the Boar behind its blade.",
+    "notes": "Claude's fill, 28 September. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 12 October (Ryan: \"Give the plow braced. It fits.\"): spending it Braces the Boar until the round's end (two stacks, a placeholder), in place of the Glacis, a flat armour +5 that was meant for front-rank blows only and measured no different that way (11 October), so it was hidden base armour."
    },
    "face": {
     "kind": "attack",
@@ -627,21 +632,10 @@
     "keywords": [
      "cleave"
     ],
-    "heat": 0
+    "heat": 0,
+    "braces": 2
    },
-   "passive": {
-    "id": "glacis",
-    "name": "Glacis",
-    "description": "Armour +5.",
-    "effects": [
-     {
-      "trigger": "static",
-      "effect": "add_stat",
-      "stat": "armour",
-      "value": 5
-     }
-    ]
-   },
+   "passive": null,
    "tags": [
     "kinetic",
     "melee",
@@ -737,9 +731,41 @@
    ]
   },
   {
+   "id": "knuckle_of_fury",
+   "name": "Knuckle of Fury",
+   "maker": "arsenal",
+   "shape": "blade",
+   "sound": [
+    "blunt",
+    "plasma"
+   ],
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Fists, and a temper: every hit the Nemesis takes, its own included, is another swing it gets to throw.",
+    "niche": "The Nemesis's locked melee and its rage's outlet: spent with rage banked, it spends one and the die rolls again, and nothing switches off, so a long rage chains the fists.",
+    "notes": "12 October (Ryan): the Nemesis gets new fists that spend rage to roll the die again (\"you just get rapid\", without the switch-off, since rage is the limit), and the Gravity Knuckles go to tier three. The name is Ryan's working name, a Bruce Lee reference (Fist of Fury), open. The Gravity Knuckles' numbers are carried over (15 flat, 10 heat). 13 October (Ryan): the name stays, and no Burn: \"it has no place\"."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 15,
+    "keywords": [],
+    "heat": 10,
+    "rolls_again_on": "rage"
+   },
+   "passive": null,
+   "tags": [
+    "energy",
+    "melee"
+   ]
+  },
+  {
    "id": "gravity_knuckles",
    "name": "Gravity Knuckles",
    "maker": "arsenal",
+   "tier": 3,
    "shape": "blade",
    "sound": [
     "blunt",
@@ -751,7 +777,7 @@
     "stage": "draft",
     "fantasy": "Fists that weigh what the Arsenal says they weigh. Each blow burns, and each blow costs the machine a little of itself.",
     "niche": "The Nemesis's locked melee: energy, static, burning, and volatile so every punch feeds the Crucible.",
-    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 10 October (Ryan): volatile off; with the Nemesis's passive reading hull damage, a self-biting fist was a ramp and a payoff in one, so no other entry was ever worth spending. Something more like gravity is open (half damage to the foes beside it, or pulling a back-rank foe forward)."
+    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 10 October (Ryan): volatile off; with the Nemesis's passive reading hull damage, a self-biting fist was a ramp and a payoff in one, so no other entry was ever worth spending. Something more like gravity is open (half damage to the foes beside it, or pulling a back-rank foe forward). 12 October (Ryan): off the Nemesis, which gets new fists that spend rage (the Knuckle of Fury); the Gravity Knuckles become a tier-three blueprint with the effect measured on 11 October (volatile back and an area keyword in place of Burn), the tier three keeping the word gravity and the Nemesis the word knuckles, so its second word is open. Its entry is unchanged until the name and the area keywords land. 13 October (Ryan): the gravity idea is shelved, with lots of potential; it comes back later."
    },
    "face": {
     "kind": "attack",
@@ -780,16 +806,15 @@
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
     "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): devour folded into a rule printed on the talons, its one carrier, so it is no longer a keyword to learn."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 10,
-    "keywords": [
-     "devour"
-    ],
-    "heat": 5
+    "keywords": [],
+    "heat": 5,
+    "devours": true
    },
    "passive": null,
    "tags": [
@@ -1085,12 +1110,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "Heat condensed and thrown away. Nobody outside the Arsenal knows where.",
-    "niche": "The Arsenal's starter vent, and the Nemesis's relief valve.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "niche": "The Arsenal's vent: the biggest number, paid in hull, and on the Nemesis every vent is a Crucible stack.",
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 12 October (Ryan): the twist, so the Arsenal's equipment is its biggest number paid in hull like the Oblation Ward: 40 with volatile (a plain 30 before)."
    },
    "face": {
     "kind": "vent",
-    "power": 30
+    "power": 40,
+    "keywords": [
+     "volatile"
+    ]
    },
    "passive": null,
    "tags": [

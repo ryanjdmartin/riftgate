@@ -60,6 +60,11 @@ const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (
 const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
 ## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
 static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
+## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
+## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
+static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
+var _rage_debug_at := -10.0
 
 var sk: Skirmish
 var locked: Array[bool] = []
@@ -109,6 +114,9 @@ func _process(delta: float) -> void:
 	if _bg == null:
 		return
 	_fight_t += delta
+	if RAGE_DEBUG and _fight_t - _rage_debug_at > 1.6:
+		_rage_debug_at = _fight_t
+		_rage_debug()
 	if PLAQUE_DEBUG and _plaque != null and not _plaque.is_showing() and _fight_t - _plaque_debug_at > PLAQUE_HOLD + 1.2:
 		_plaque_debug_at = _fight_t
 		var names: Array = []
@@ -931,13 +939,41 @@ func _foe_rows(foe: Foe) -> Array:
 		var at := sk.paradox_count()
 		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox: %d%s; at the count its past self knocks it out (Suppressed), and the Paradox clears" % [paradox, " of %d" % at if at > 0 else ""], Palette.SHIELD])
 	if Effects.has(foe, "shocked"):
-		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double; striking bare hull again costs it %d" % Skirmish.SHOCK_DISCHARGE, Palette.HEAT])
+		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double", Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], Palette.SHIELD, "resist"])
 	if foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
+
+
+## The glyph a machine's status wears on its chip.
+static func status_glyph(id: String) -> String:
+	if id.begins_with("corrupted"):
+		return "corrupt"
+	if id.begins_with("disabled"):
+		return "blank"
+	match id:
+		"burning_mech":
+			return "burning"
+		"scorched":
+			return "scorch"
+		"overcharged":
+			return "overcharge"
+		"rage":
+			return "rapid"
+		"braced":
+			return "shield"
+		"primed":
+			return "burn"
+		"retaliate":
+			return "shocked"
+		"scrambled":
+			return "reroll"
+		"hopper":
+			return "hopper"
+	return "star"
 
 
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour]. Warnings come
@@ -970,15 +1006,15 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" or id == "crucible" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else ("reroll" if id == "scrambled" else "star")))))))
-		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed", "crucible"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
+		var glyph := status_glyph(id)
+		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms, _drag_from == i)
 		if int(fc["overheat"]) > 0:
-			# Overheating burns at the end of the round, so there is still time to vent.
-			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the round unless vented" % int(fc["overheat"]), Palette.HEAT])
+			# The heat burns as the turn ends, so there is still time to vent.
+			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT])
 		if int(fc.get("volatile", 0)) > 0:
 			rows.append(["volatile", "-%d" % int(fc["volatile"]), "Volatile: spending this component costs hull -%d, past shield and armour" % int(fc["volatile"]), Palette.ENEMY])
 		if bool(fc["destroyed"]):
@@ -1347,12 +1383,16 @@ func _use_die(i: int, target) -> bool:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
 	var spent: Face = sk.mechs[i].face()
 	var heat_before := _heat_marks()
+	var fuel := spent.rolls_again_on if spent != null else ""
+	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
+	if ok and not fuel.is_empty() and not sk.mechs[i].assigned and Effects.stacks_of(sk.mechs[i].unit, fuel) < fuel_before:
+		_roll_again(i, fuel)
 	# The fight decided by this die: nothing queued during it is said after (the win clears
 	# Jenny's queue, so the last kill never gets a heat warning behind it).
 	var won := ok and sk.outcome == Skirmish.Outcome.VICTORY
@@ -1527,7 +1567,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
-	_set_phase("ENEMY PHASE")
+	# The burn is the end of the player's own turn (11 October): it lands before the phase
+	# turns over to the enemy.
+	_set_phase("ASSIGN" if not sk.overheats.is_empty() else "ENEMY PHASE")
 	_replay_shade.visible = true
 	_replay_shade.move_to_front()
 	if _menu != null:
@@ -1546,17 +1588,21 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	# dies at the end of the turn, one after another, with nothing over it (Ryan, 9 October).
 	var deaths: Array = []
 	_dying.clear()
-	for h in hits:
-		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
-			_dying[h[1]] = true
-			deaths.append([h[1], h[10]])
 	for ov in sk.overheats:
 		var oi: int = ov["mech"]
 		if oi >= 0 and oi < _mech_views.size() and int(ov["hull"]) <= 0 and not _mech_views[oi].dead and not _dying.has(_mech_views[oi]):
 			_dying[_mech_views[oi]] = true
 			deaths.append([_mech_views[oi], _maker_of(sk.mechs[oi])])
+	for h in hits:
+		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
+			_dying[h[1]] = true
+			deaths.append([h[1], h[10]])
 	var beat := _enemy_beat()
 	var tw := create_tween()
+	if not sk.overheats.is_empty():
+		tw.tween_callback(_land_overheats)
+		tw.tween_interval(beat)
+		tw.tween_callback(_set_phase.bind("ENEMY PHASE"))
 	for st in steps:
 		if not str(st["announce"]).is_empty():
 			tw.tween_callback(_announce.bind(str(st["announce"])))
@@ -1564,9 +1610,6 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
 			tw.tween_interval(beat)
-	if not sk.overheats.is_empty():
-		tw.tween_callback(_land_overheats)
-		tw.tween_interval(beat)
 	for d in deaths:
 		tw.tween_callback(_land_death.bind(d[0], d[1]))
 		tw.tween_interval(Sound.death_span(d[1]))
@@ -1680,9 +1723,9 @@ func _land_death(mv: UnitView, maker: String) -> void:
 	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
 
 
-## The round's overheats land together after the enemy's blows (the sim burns them at the
-## round's end, all at once): the machines that ran hot flinch and their hull steps down.
-## Heard once, however many burn.
+## The turn's overheats land together before the enemy's blows (the sim burns them as the
+## player's turn ends, all at once): the machines that ran hot flinch and their hull steps
+## down. Heard once, however many burn.
 func _land_overheats() -> void:
 	Sound.play("overheat")
 	for ov in sk.overheats:
@@ -1772,6 +1815,39 @@ func _on_reroll() -> void:
 			d.scale = Vector2(0.15, 1.0)
 			var tw := create_tween()
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## A die rolled again by a stack it spent (the Nemesis's rage, Ryan, 13 October): the stack's
+## chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
+## die waits folded until then, so its new face is never seen before the roll.
+func _roll_again(i: int, status: String) -> void:
+	_mech_views[i].spend_chip(status_glyph(status))
+	var d := _dice[i]
+	if not is_inside_tree():
+		return
+	d.pivot_offset = d.size * 0.5
+	d.scale = Vector2(0.06, 1.0)
+	var tw := create_tween()
+	tw.tween_interval(ROLL_AGAIN_AT)
+	tw.tween_callback(func() -> void: Sound.play("die_roll"))
+	tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## RIFTGATE_RAGE_DEBUG: the roll again's look and sound on the machine that spends rage (the
+## first machine when none does), a stack kept on it so its chip is there to burst. Nothing
+## is spent and the die keeps its face.
+func _rage_debug() -> void:
+	var at := 0
+	for k in range(sk.mechs.size()):
+		for f in sk.mechs[k].die.faces:
+			if f.rolls_again_on == "rage":
+				at = k
+	if sk.mechs.is_empty() or not sk.mechs[at].alive():
+		return
+	if Effects.stacks_of(sk.mechs[at].unit, "rage") < 3:
+		Effects.stack(sk.mechs[at].unit, Effects.STATUS["rage"], Effects.SKIRMISH, "debug", 3, Effects.DECAY_NONE)
+		_refresh()
+	_roll_again(at, "rage")
 
 
 ## Live dice that still hold a usable face.
