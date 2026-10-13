@@ -414,24 +414,24 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
 
 
-func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
+## No weapon classes since 10 October (bible section 5): a weapon is rolled or flat by its
+## niche, whatever its filing tags say, so the content holds sane numbers and both shapes.
+func test_content_dice_are_sane_and_both_shapes_are_present() -> void:
 	var db := _db()
-	var kinetic := 0
-	var energy := 0
+	var rolled := 0
+	var flat := 0
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
 		for fd in [c.get("face", {})]:
 			assert_true(int(fd.get("power", 0)) >= 0, "%s power is not negative" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue
-			var tags: Array = c.get("tags", [])
-			if tags.has("kinetic"):
-				kinetic += 1
-				assert_true(int(fd.get("power_max", 0)) > int(fd["power"]), "%s kinetic face has a range" % id)
-			if tags.has("energy"):
-				energy += 1
-				assert_false(fd.has("power_max"), "%s energy face is static" % id)
-	assert_true(kinetic >= 5 and energy >= 3, "both weapon classes present")
+			if fd.has("power_max"):
+				rolled += 1
+				assert_true(int(fd["power_max"]) > int(fd["power"]), "%s: a rolled face has a real range" % id)
+			else:
+				flat += 1
+	assert_true(rolled >= 5 and flat >= 3, "both shapes present (%d rolled, %d flat)" % [rolled, flat])
 
 
 func test_unsupported_passive_effect_is_rejected() -> void:
@@ -739,6 +739,57 @@ func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	assert_true(bad_gun, "power_per_heat without vents_all is refused")
 
 
+func test_a_brace_is_a_positive_number_of_stacks() -> void:
+	# The brace (12 October): the stacks of Braced a spend gives its owner. Any kind of entry
+	# may brace; nothing braces for zero.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(int(db.components["breaching_plow"]["face"].get("braces", 0)) > 0, "the plow braces")
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	plate["face"]["braces"] = 0
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
+	db.components["limp_plate"] = plate
+	var refused := false
+	for e in db.validate():
+		if e.begins_with("component limp_plate") and e.contains("braces is a positive number"):
+			refused = true
+	assert_true(refused, "a brace of nothing is refused")
+	# Braced lasts one turn from every source, so no buff grants it for longer.
+	var jack: Dictionary = db.components["shoring_jack"].duplicate(true)
+	jack["face"]["rounds"] = 2
+	jack["tier"] = 1
+	db.components["long_jack"] = jack
+	var long_refused := false
+	for e in db.validate():
+		if e.begins_with("component long_jack") and e.contains("lasts until the round's end"):
+			long_refused = true
+	assert_true(long_refused, "a buff granting Braced for two rounds is refused")
+
+
+func test_rolling_again_names_a_status_and_never_rides_on_rapid() -> void:
+	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status must be
+	# one of the engine's, and a rapid entry already rolls again on its own.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var gun: Dictionary = db.components["incendiary_shells"].duplicate(true)
+	gun["face"] = {"kind": "attack", "reach": "direct", "power": 10, "rolls_again_on": "fury"}
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
+	db.components["odd_gun"] = gun
+	var plate: Dictionary = db.components["incendiary_shells"].duplicate(true)
+	plate["face"] = {"kind": "shield", "power": 10, "keywords": ["rapid"], "rolls_again_on": "rage"}
+	plate["tier"] = 1
+	db.components["odd_plate"] = plate
+	var no_status := false
+	var on_rapid := false
+	for e in db.validate():
+		if e.begins_with("component odd_gun") and e.contains("rolls_again_on names a status"):
+			no_status = true
+		if e.begins_with("component odd_plate") and e.contains("a rapid entry already rolls again"):
+			on_rapid = true
+	assert_true(no_status, "a status the engine lacks is refused")
+	assert_true(on_rapid, "rolling again on a rapid entry is refused")
+
+
 func test_the_new_passive_fields_are_checked() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -777,7 +828,7 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
 		{"id": "odd", "name": "Odd", "kind": "buff", "effect": "nonsense", "text": "", "status": "implemented"},
 		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "nobody", "text": "", "status": "implemented"},
-		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "add_heat", "factor": 2.0, "text": "", "status": "implemented"}]
+		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "burn", "factor": 2.0, "text": "", "status": "implemented"}]
 	db.foes["odd_ghoul"] = g
 	var hits := 0
 	for e in db.validate():

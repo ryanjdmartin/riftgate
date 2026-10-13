@@ -188,26 +188,30 @@ func strikes() -> int:
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
-##           add_heat: its target gains `value` heat (Stoke)
+##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
+##           turn (Stoke; direct heat retired 13 October)
 ##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
 ##           crack: its target's showing entry cracks, no hull hit needed (Unmake)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
-##           heat_all: every machine gains `value` heat (Eruption; nobody in particular)
+##           scorch_all: every machine gains `value` stacks of Scorched, its weapons running
+##           hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
 	"defend": ["harden", "regrow"],
 	"buff": ["revive_once", "summon", "rally"],
-	"debuff": ["drain_rerolls", "add_heat", "scramble", "crack", "disable", "heat_all", "corrupt_all"],
+	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
 }
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
-## breach: overflows shield into hull. scorch: stacks Overheating on the mech it hits (a
-## placeholder name; the mech-side heat DOT Ryan asked for). disable: switches off the entry
-## the target's die shows, through its next turn. corrupt: a stack of Corrupted on that
-## entry, for the skirmish: it bites its owner every time it is spent. self_destruct: the
-## blow spends the striker: it dies after it, whole, and never gets back up (the Bomb).
-const ATTACK_KEYWORDS := ["breach", "scorch", "disable", "corrupt", "self_destruct"]
+## breach: overflows shield into hull. scorch: a stack of Scorched on the machine it hits, its
+## weapons running hotter for the turn; burn: a stack of Burning, heat at the end of the
+## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
+## disable: switches off the entry the target's die shows, through its next turn. corrupt:
+## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
+## spent. self_destruct: the blow spends the striker: it dies after it, whole, and never gets
+## back up (the Bomb).
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

@@ -13,34 +13,33 @@ command are in `README.md`.
   one batch, and nothing is built before it. Where each proposal lives is under Proposals below.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 428 tests, 19,544 checks, green (10 October, on `ccr-abac8c0f-yig0e2`). A cloud
-  session fetches Godot 4.7's Linux build from the GitHub release asset
+- Tests: 442 tests, 19,636 checks, green (13 October, on main).
+  A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1`. A fresh import there rewrites the Prairie Dog's extracted tiles
-  (`art/models/prairie_dog_*.png` and their `.import`): restore them, never commit them.
+  `bpy==5.0.1`. Its first `--import` rewrites four Prairie Dog textures; restore them
+  (`git checkout -- art/models/prairie_dog_*`) rather than commit them.
 
 ## Branches
 
-- `main` has everything since 10 October: the content revision, the modules, the 10 October
-  weapon rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed
-  the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
-  foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
-  and has nothing main lacks; new work starts from main.
-- Since 12 October `main` also carries the Arsenal's proposals (`docs/arsenal_proposal.md`,
-  fast-forwarded from `ccr-baf790be-gootfd`) and the bible as published (v0.126), which runs
-  ahead of main's code. It records work built on `claude/focused-ritchie-omn8i5` and not yet
-  merged: the overheat at the end of the player's turn, armour off a breach's overflow, the
+- `main` has everything to 13 October: the content revision, the modules, the weapon rules of
+  10 October (no crits, two reaches, the die showing the number, the Paradox meter, Numbed the
+  only resistance, the mirrored Booster and Databank), the first foe art at 72x96, the
+  rewritten docs, and since 13 October all of `claude/focused-ritchie-omn8i5` (merged that
+  day): the overheat at the end of the player's turn, armour off a breach's overflow, the
   Badger's hopper, the Stingray at tier one, the shock's discharge gone, the Pinion Driver
   named, Devour a printed rule, the modules priced, Braced for one turn, the plow's brace, the
   Deflector's Rapid and the Condenser's Volatile, the Nemesis's rage and the Knuckle of Fury,
-  the keyword line-up and the runner's `--rows` and `--module`. Main's `docs/rules.md`, content
-  and code predate all of it. `ccr-550650c0-g0kcbg` shares that branch's history to 12 October
-  and adds Aphelion's calls, which are in the bible already. Merging either brings its code;
-  its bible resolves to the live page, which holds every session's rows.
+  Burn and Scorch with the die's heat showing every modifier, the keyword line-up and the
+  runner's `--rows`, `--module`, `--bump`, `--nopassive` and `--set`; and the Arsenal's
+  proposals (`docs/arsenal_proposal.md`, from `ccr-baf790be-gootfd`). `ccr-abac8c0f-yig0e2`
+  has nothing main lacks. New work starts from main.
+- Not merged: `ccr-550650c0-g0kcbg` (Aphelion's calls of 12 October: two bible commits past
+  what main has, their rows already in the bible) and the proposal branches below. Merging
+  any of them: its bible resolves to the live page, which holds every session's rows.
 - `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
   proposal (below), the bible as published (v0.132), two lines in CLAUDE.md (every rule is
-  open to debate; a maker's profile is an identity, never an exclusion) and a proposal's look
+  open to debate; a maker's profile is an identity, never an exclusion), a proposal's look
   tests (`tools/lowforge/looks/`, the README's line). Merge it so other sessions get them.
 
 ## Proposals
@@ -60,9 +59,9 @@ For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is
   11 October).
 - Aphelion: in chat only, per the bible's row "Aphelion's next chassis"; to be written down
   before the evaluation.
-- The keyword line-up (`docs/keyword_lineup.md` on `claude/focused-ritchie-omn8i5`), which
-  several of the chassis lean on. Its section 5, keywords by maker, reads as leanings and
-  never ownership, its list of exceptions to fix gone (Ryan, 13 October; the bible's row).
+- The keyword line-up (`docs/keyword_lineup.md`, on main), which several of the chassis lean
+  on. Its section 5, keywords by maker, reads as leanings and never ownership, its list of
+  exceptions to fix gone (Ryan, 13 October; the bible's row).
 
 ## Pages
 
@@ -72,8 +71,10 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.132; main's file is v0.126 until this
-  branch merges).
+  `docs/design-bible.html` after every change. Live: v0.132 (13 October), this branch's file:
+  main's v0.131 with Wainwright & Sutler's sixth round; it also holds rows from branches not
+  yet merged (Aphelion's calls). Before republishing, read the live page; if another session
+  moved it, publish a three-way merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
@@ -95,13 +96,49 @@ goes into this file in the same commit as its first publish.
 
 ## Where things stand
 
-- The docs were rebuilt on 10 October: `docs/rules.md` is new and states the rules; the bible
-  is decisions and why, 538 KB down to 133 KB; shown text in the vocabulary and two modules
-  now matches the rules. Ryan reads `docs/rules.md` once, then a fresh session starts here.
-- Built, waiting on Ryan's play: the 10 October weapon rules, the modules (harness only), the
+- 11 to 13 October (on main since 13 October): Ryan's answers to the 10 October session's questions, in
+  four rounds of chat. Built: the overheat at the end of the player's turn (a withdrawal too),
+  armour off a breach's overflow, the Badger's hopper, the Stingray at tier one, the discharge
+  gone, the Pinion Driver, Devour a rule; 12 October: the Breaching Plow braces the Boar (the
+  Glacis gone), Braced one turn from every source, the Laminar Deflector rapid 20 and the
+  Entropy Condenser volatile 40, the runner's `--bump`, `--nopassive` and `--set`. Decided,
+  not built: danger close retires once the area keywords land; tiers (a chassis's
+  complexity, a component's power, modules flat); no hard guard against a build. Measured,
+  in the bible: prices for every stat, passive and twelve modules; shields stopping a whole
+  blow is not why fights are easy (one point), three machines against one pack is; injuries
+  in one state at half the hull keep today's losses. Proposed, waiting on Ryan (the chat of
+  12 October, `docs/keyword_lineup.md`, the bible's section 12): the three area shapes with
+  one half rule, the Boar's spill dropped, the Badger's identity, the Nemesis's rage and
+  release, a blueprint bolts on, injuries in one state, modules as priced bundles, roster
+  turnover, the Rangefinder's and the Ram Frame's rules. Later on 12 October (Ryan): the Boar
+  keeps its spill, written out; a component is balanced against its tier, a chassis alone is a
+  diagnostic; keywords against written-out effects wait on the content lock; injuries shelved
+  for an economy session; modules as bundles open. Tested: the area set (Splash folds into
+  Spread and Penetrate, the firer's price no lever; the plus swings the formations), lower
+  armour (teams barely move). Last on 12 October (Ryan): hands tabled and Melee kept; the
+  Boar's spill no keyword (the star proposed); the basics are tier zero, 7 October's call
+  that the 11 October rewrite of the bible had dropped, restored; a chassis stocks only below
+  its own tier, a bought one bringing its stock and never the blueprints, tier three the
+  unique effects and raw power, tier two the synergy pieces; direct heat from foes retired
+  for the two debuffs. Built: the Nemesis's rage (all hull damage banks it; new locked fists,
+  the Knuckle of Fury, spend one and the die rolls again, a plain roll with no switch-off).
+  13 October (Ryan): the fists keep their name and lose Burn (the Nemesis alone 44/67, the
+  fists at 25 restore 52/81); rage by damage taken measured and not worth it; the gravity
+  piece shelved; the rage's roll again shown (the chip bursts, the die flips with the
+  reroll's sound; `RIFTGATE_RAGE_DEBUG=1`); Burn and Scorch decided and built, foes heating
+  machines only through Burning (at the end of the player's turn, before the overheat) and
+  Scorched (every weapon hotter for the turn, every stack going at its end, since a stack a
+  turn piled up under several scorchers); teams unmoved, machines overheating far less, the
+  Goshawk (heat into shield) the one that loses; the die's heat shows every modifier (the
+  Sparrowhawk's double takes Scorched's extra too, adds before multiplies); Burning on a
+  machine has its own glyph, a solid flame with the thermometer cut out.
+- The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
+  decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
+- Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
   content revision's components, the domains and the plaque.
-- Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
-  weapon rules; rerun after the stock pass, with module rows.
+- Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
+  rerun after the stock pass, with module rows. Scratch reads at 50 seeds (11 October) are in
+  the bible's rows.
 - The Arsenal (12 October, bible v0.126): the occult is the Council's; its machines are twisted
   by it, never merged (mechanical, CARE-piloted, no mind of their own); grimdark is playing it
   straight; demonic in look, liturgical in word; a passive may break a rule as a one-off;
@@ -112,10 +149,12 @@ goes into this file in the same commit as its first publish.
   doubles a foe's Burning, the Votive Ward shields 10 for each Burning foe), Minos (every foe it
   hits changes rank) and the Onryō (a Grudge on whoever wounds the team, never cashed in,
   outliving it; the Pall its guard). Ryan's last note: a cleanse that moves the team's debuffs
-  onto a foe, which waits on the words the two sides share (none today). Nothing is built.
-- Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
-  foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
-  section 12 lists the questions only Ryan can settle.
+  onto a foe, which waits on the words the two sides share (Burning since 13 October).
+  Nothing is built.
+- Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
+  components, the basics at tier zero and stock below a chassis's tier, the Pinion Driver
+  locked on the Sparrowhawk, danger close retired with the area keywords. The bible's section
+  12 lists the questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
   enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV

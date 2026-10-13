@@ -84,6 +84,11 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			assert_true(s._use_die(i, null), "blank discarded")
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
+		if f.has(Face.Keyword.RAPID):
+			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October): the
+			# die rolls again and the machine acts again.
+			assert_false(ms.assigned, "a rapid face gives mech %d its turn back" % i)
+			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")
 		assert_false(s._dice[i].can_tap, "spent die no longer locks")
@@ -345,6 +350,34 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	assert_true(s._overlay.visible, "the outcome shows at once (headless: no delay)")
 	assert_eq(s._overlay_title.text, "VICTORY", "title")
 	assert_true(s._end_btn.disabled, "nothing left to end")
+	s.free()
+
+
+## The Nemesis's rage (Ryan, 13 October): a die rolled again by a spent stack bursts the
+## stack's chip, then flips back with the reroll's sound; headless, the burst is set going and
+## the die is the player's to spend again.
+func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	var fist := Face.attack(10)
+	fist.rolls_again_on = "rage"
+	m.die = Die.single(fist)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
+	assert_false(sk.mechs[0].assigned, "the rage rolled it again")
+	assert_true(s._mech_views[0]._spend >= 0.0, "the rage chip bursts")
+	assert_eq(s._mech_views[0]._spend_glyph, SkirmishScreen.status_glyph("rage"), "on the rage chip")
+	assert_false(s._dice[0].spent, "the die is the player's again")
+	assert_true(s._use_die(0, sk.front[0]), "and it punches again")
+	assert_true(sk.mechs[0].assigned, "no rage left: spent")
+	s._rage_debug()   # the debug switch's call: a stack kept on the machine, the burst again
+	assert_true(Effects.stacks_of(m, "rage") >= 1, "the debug keeps a stack to burst")
 	s.free()
 
 

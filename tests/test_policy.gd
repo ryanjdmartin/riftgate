@@ -207,10 +207,39 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_eq(s2.mechs[0].unit.hull, 90, "paid for")
 
 
+## The Nemesis's rage (12 October): a stack to spend is another roll of the die, worth about
+## the die's own average blow, and a bite of its own costs less when the hull it takes banks
+## a stack the die can spend.
+func test_greedy_values_rage_as_another_roll() -> void:
+	var fist := Face.attack(10, L)
+	fist.rolls_again_on = "rage"
+	var gun := Face.attack(20, L, K.VOLATILE)
+	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}
+	var sk := Skirmish.new(3)
+	var m := _mech("A", Die.of([fist, gun]), 0, 200)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var g: Foe = sk.front[0]
+	var bare := pol.attack_score(sk, ms, fist, g)
+	var plain_bite := Policy.volatile_cost(sk, ms, gun)
+	m.grant_passive(core)
+	assert_eq(Policy.banked_on_hull(ms), "rage", "its hull banks the rage its fist spends")
+	assert_true(Policy.volatile_cost(sk, ms, gun) < plain_bite, "so the bite costs less")
+	assert_eq(pol.attack_score(sk, ms, fist, g), bare, "no rage yet: nothing more")
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_eq(snappedf(pol.attack_score(sk, ms, fist, g) - bare, 0.01), snappedf(Policy.ROLL_AGAIN_WEIGHT * 15.0, 0.01),
+		"a rage to spend: another roll, the die's average blow (10 and 20 over two entries)")
+
+
 func test_greedy_values_the_kill_that_feeds_it() -> void:
 	var sk := Skirmish.new(3)
 	var plain := Face.attack(30, L)
-	var talon := Face.attack(30, L, K.DEVOUR)
+	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true})
 	sk.add_mech(_mech("A", Die.of([plain, talon]), 40, 100))
 	sk.add_foes([_ghoul(30, 10)])
 	sk.begin()

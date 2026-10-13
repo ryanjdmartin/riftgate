@@ -654,6 +654,27 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat cannot be negative" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
+	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
+	# loads a shot for a bonus each.
+	if fd.has("devours") and kind != "attack":
+		errs.append("%s: devours belongs to an attack" % where)
+	if Array(fd.get("keywords", [])).has("devour"):
+		errs.append("%s: devour is a unique rule since 11 October: write devours: true" % where)
+	for key in ["fills_hopper", "fires_hopper"]:
+		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
+			errs.append("%s: %s is a positive number on an attack" % [where, key])
+	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
+		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
+	# The brace (12 October): spending the entry Braces its owner until the round's end.
+	if fd.has("braces") and int(fd["braces"]) <= 0:
+		errs.append("%s: braces is a positive number of Braced stacks" % where)
+	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status it
+	# spends must be one of the engine's, and Rapid already rolls again on its own.
+	if fd.has("rolls_again_on"):
+		if not Effects.STATUS.has(str(fd["rolls_again_on"])):
+			errs.append("%s: rolls_again_on names a status, one of %s" % [where, ", ".join(Effects.STATUS.keys())])
+		if Array(fd.get("keywords", [])).has("rapid"):
+			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))
@@ -663,6 +684,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])
 		if int(fd.get("stacks", 1)) < 1 or int(fd.get("rounds", 1)) < 1:
 			errs.append("%s: a buff's stacks and rounds are at least 1" % where)
+		# Braced lasts one turn from every source (Ryan, 12 October): a status that decays
+		# whole at the round's end is never granted for longer.
+		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
+			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
@@ -676,7 +701,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
-		# (taunt, volatile, devour): Face.from_dict builds it without that keyword until it is coded.
+		# (taunt, corrode): Face.from_dict builds it without that keyword until it is coded.
 		if planned and vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented":
 			continue
 		var kw := Face.keyword_from_name(str(k))

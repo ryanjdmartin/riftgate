@@ -36,7 +36,9 @@ extends RefCounted
 ## again adds stacks instead of a second copy; an add is worth its value per stack, a
 ## multiply is applied once per stack. A status with tick decay ticks at its owner's turn:
 ## its tick effects apply per stack (tick_hp, tick_heat), then it loses one stack and is
-## gone at zero. Burning on a foe and heat stacks on a mech are the same object.
+## gone at zero. A machine's Burning and Scorched tick at the end of its turn instead (turn
+## decay, 13 October): Burning's heat lands before the overheat and a stack goes; Scorched
+## goes whole.
 
 const LOADOUT := 0
 const BATTLE := 1
@@ -61,6 +63,9 @@ const SUPPORTED_EFFECTS := {
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
+const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
+const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Burning, 13 October)
+const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
@@ -71,12 +76,22 @@ const CLEANSABLE := "cleansable"
 const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
-	# The Nemesis's Crucible (10 October): taking hull damage adds a stack, melee blows deal 5
-	# more a stack, and it lasts the skirmish (`decay` none overrides a passive's tick).
-	"crucible": {"id": "crucible", "name": "Crucible", "description": "Melee blows deal +5 per stack, for the skirmish.", "decay": "none",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "tag_melee"}]},
-	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the end of the round, then loses a stack.",
+	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
+	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
+	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
+	# A store like the hopper: it does nothing by itself.
+	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish; an entry that rolls again on rage spends one to roll the die again.", "decay": "none",
+		"tags": ["store"], "effects": []},
+	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
+	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
+	# heat at the end of the player's turn, before the overheat, where a vent made room for it
+	# or a cleanse took it off, then loses a stack. Scorched is the softer: every weapon fired
+	# runs hotter until the turn's end, when every stack goes, so it never piles up under several
+	# scorchers, and spending equipment or a cool weapon plays round it.
+	"burning_mech": {"id": "burning_mech", "name": "Burning", "description": "Gains 5 heat per stack at the end of the player's turn, before the overheat, then loses a stack.", "decay": "turn",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
+	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
@@ -94,7 +109,9 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
 	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
 	# chassis stat, never a percentage.
-	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack.",
+	# Braced lasts one turn from any source (Ryan, 12 October: a defensive buff that lingered,
+	# a stack fading a round, would stack into a wall; armour is the dearest stat there is).
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack, until the round's end.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
@@ -103,7 +120,7 @@ const STATUS := {
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
 	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
@@ -114,6 +131,12 @@ const STATUS := {
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.",
 		"tags": ["revive"], "effects": []},
+	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
+	# hits, which the Bullion Fragmenter fires a few a shot. A store on the machine with no
+	# effect of its own (the weapon that fires it reads it); it lasts the skirmish, never
+	# decays, and nothing cleanses it.
+	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
+		"tags": ["store"], "effects": []},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
@@ -223,6 +246,25 @@ static func has(u, id: String) -> bool:
 	return stacks_of(u, id) > 0
 
 
+## Spend up to `n` stacks of a status, shortest-lived scope first (the hopper's loads, fired a
+## few a shot); a copy spent to nothing goes. Returns how many were spent.
+static func spend_stacks(u, id: String, n: int) -> int:
+	var spent := 0
+	var order: Array = []
+	for m in u.modifiers:
+		if m.id == id:
+			order.append(m)
+	order.sort_custom(func(a, b) -> bool: return a.scope > b.scope)
+	for m in order:
+		if spent >= n:
+			break
+		var take := mini(m.stacks, n - spent)
+		m.stacks -= take
+		spent += take
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.id != id or m.stacks > 0)
+	return spent
+
+
 ## Drop every copy of a status, whatever its scope: a spent one-shot (Shocked, once the blow
 ## it doubled has landed). Returns whether anything went.
 static func remove(u, id: String) -> bool:
@@ -250,11 +292,15 @@ static func shocks_striker(u, blocked: bool) -> bool:
 
 ## What a status effect amounts to right now across live statuses: {hp, heat, skip,
 ## resist}. hp and heat are per stack sums; skip is any skip_action; resist is percent.
-static func tick_preview(u) -> Dictionary:
+## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
+## machine's Burning and Scorched), and only those; otherwise every other.
+static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 	var out := {"hp": 0, "heat": 0, "skip": false, "resist": 0}
 	for pair in _taking_part(u, "status", null):
 		var eff: Dictionary = pair[0]
 		var m: Modifier = pair[1]
+		if ends_with_turn(m) != at_turn_end:
+			continue
 		var v := int(eff.get("value", 0)) * m.stacks
 		match str(eff.get("effect", "")):
 			"tick_hp":
@@ -268,12 +314,43 @@ static func tick_preview(u) -> Dictionary:
 	return out
 
 
+## Does this modifier end with its owner's turn rather than the round (turn decay, either kind)?
+static func ends_with_turn(m) -> bool:
+	return m.decay == DECAY_TURN or m.decay == DECAY_TURN_ALL
+
+
+## The decay a status names in its definition ("none", "round", "turn", "turn_all"), a
+## stack a tick when it names none.
+static func status_decay(def: Dictionary) -> int:
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL}.get(str(def.get("decay", "")), DECAY_TICK)
+
+
+## The end of a machine's turn (the player's, 13 October): its turn statuses tick, Burning's
+## heat for the caller to add before the overheat, then Burning loses a stack, Scorched goes
+## whole and the empty ones go. The round's tick leaves them alone.
+static func turn_tick(u) -> Dictionary:
+	var out := tick_preview(u, true)
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_TURN_ALL:
+			continue
+		if m.decay == DECAY_TURN:
+			m.stacks -= 1
+			if m.stacks <= 0:
+				continue
+		keep.append(m)
+	u.modifiers = keep
+	return out
+
+
 ## The owner's turn comes: apply this tick (the caller subtracts hp and adds heat), then
 ## every tick-decaying status loses a stack and the empty ones go.
 static func tick(u) -> Dictionary:
 	var out := tick_preview(u)
 	var keep: Array = []
 	for m in u.modifiers:
+		if m.decay == DECAY_ROUND:
+			continue
 		if m.decay == DECAY_TICK:
 			m.stacks -= 1
 			if m.stacks <= 0:
@@ -463,8 +540,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
 		var n: int = pair[1].stacks
-		# `per_stack` scales an effect by the machine's stacks of a status (the Nemesis's
-		# Crucible: its melee weapons' damage per Overheating stack); none of the status, no effect.
+		# `per_stack` scales an effect by the machine's stacks of a status (no content uses it since
+		# the Nemesis's Crucible became rage, 12 October); none of the status, no effect.
 		if eff.has("per_stack"):
 			n *= stacks_of(u, str(eff["per_stack"]))
 		match str(eff.get("effect", "")):
@@ -723,7 +800,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
-					var decay := DECAY_NONE if str(STATUS[id].get("decay", "")) == "none" else DECAY_TICK
+					var decay := status_decay(STATUS[id])
 					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), decay)
 					if m != null and not (out["statuses"] as Array).has(m.name):
 						(out["statuses"] as Array).append(m.name)

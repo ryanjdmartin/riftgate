@@ -12,6 +12,15 @@ extends SceneTree
 ## and compared in their own section, since a single machine cannot see targeting),
 ## --damage F (every machine's blows scaled by F through a loadout modifier, to read a
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
+## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
+## team"), --module id (that module fitted to every machine in every row, to read what it is
+## worth beside a run without it; 11 October, the Booster against the Databank),
+## --bump stat:N, repeatable (N more of a stat on every machine: hull, shield, armour, heat
+## for the maximum, cooling, or damage for N more on every blow; the price of a stat, read
+## against a run without it), --nopassive (every chassis without its passive, for what the
+## passives are worth), --set path=json, repeatable (one content value replaced for this
+## run only, e.g. components/enfilade_beam/face/keywords=[]; never validated, for a knock-out
+## or a what-if, never a way to change content),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
 ## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3").
 ##
@@ -30,6 +39,11 @@ var withdraw_below := 0
 var trace := ""
 var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
+var only_rows: Array = []   # --rows: the row ids to run, all when empty
+var fit_module := ""        # --module: a module fitted to every machine of every row
+var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
+var no_passive := false     # --nopassive: every chassis stripped of its passive
+var edits: Array = []       # --set: "path=json" content replacements for this run only
 
 var db: ContentDB
 var rows: Array = []      # {id, name, chassis: [ids]}
@@ -45,7 +59,22 @@ func _init() -> void:
 		push_error("content did not load: " + "\n".join(db.load_errors))
 		quit(1)
 		return
+	for e in edits:
+		var err := _apply_edit(str(e))
+		if not err.is_empty():
+			push_error("--set %s: %s" % [e, err])
+			quit(1)
+			return
+	if no_passive:
+		for id in db.chassis.keys():
+			db.chassis[id]["passive"] = null
 	_build_matrix()
+	if not fit_module.is_empty() and not db.modules.has(fit_module):
+		push_error("no module '%s' (modules: %s)" % [fit_module, ", ".join(db.modules.keys())])
+		quit(1)
+		return
+	if not only_rows.is_empty():
+		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
 	if not trace.is_empty():
 		quit(_trace_one())
 		return
@@ -115,6 +144,22 @@ func _parse_args() -> void:
 				i += 1
 			"--withdraw":
 				withdraw_below = int(v)
+				i += 1
+			"--rows":
+				only_rows = Array(v.split(","))
+				i += 1
+			"--module":
+				fit_module = v
+				i += 1
+			"--bump":
+				var bp := v.split(":")
+				if bp.size() == 2:
+					bumps.append([bp[0], int(bp[1])])
+				i += 1
+			"--nopassive":
+				no_passive = true
+			"--set":
+				edits.append(v)
 				i += 1
 			"--trace":
 				trace = v
@@ -194,12 +239,20 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	var uid := 0
 	for cid in r["chassis"]:
 		uid += 1
-		var u := db.make_mech(cid, uid)
+		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, [] if fit_module.is_empty() else [fit_module])
 		if not is_equal_approx(damage_scale, 1.0):
 			# The scale rides on every blow as a loadout modifier, the way a number is asked
 			# here, so the bot's outcomes and the resolver read the same thing.
 			u.grant_passive({"id": "runner_damage_scale", "name": "Damage scale", "description": "The runner's damage scale.",
 				"effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": damage_scale}]}, "runner")
+		for b in bumps:
+			# A bump is a question asked of the matrix, like the damage scale: a static stat
+			# line, or damage on every blow, granted by the runner and never written to content.
+			var eff := {"trigger": "on_attack", "effect": "add_damage", "value": b[1]} if b[0] == "damage" \
+				else {"trigger": "static", "effect": "add_stat", "stat": b[0], "value": b[1]}
+			u.grant_passive({"id": "runner_bump_" + str(b[0]), "name": "Bump", "description": "The runner's bump.", "effects": [eff]}, "runner")
+			u.hull = u.hull_max
+			u.shield = u.shield_max
 		hull_max += u.hull_max
 		sk.add_mech(u)
 	var foes: Array = []
@@ -313,6 +366,40 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 	return agg
 
 
+## One --set: a content value replaced in memory for this run, by a path through the
+## loaded content ("components/<id>/face/keywords", "chassis/<id>/loadout/0") and a JSON value.
+## An empty string is success; anything else says what was wrong.
+func _apply_edit(e: String) -> String:
+	var eq := e.find("=")
+	if eq < 0:
+		return "no '='"
+	var path := e.substr(0, eq).split("/")
+	var parsed := JSON.new()
+	if parsed.parse(e.substr(eq + 1)) != OK:
+		return "the value is not JSON"
+	var roots := {"components": db.components, "chassis": db.chassis, "modules": db.modules}
+	if path.size() < 3 or not roots.has(path[0]):
+		return "a path starts components/, chassis/ or modules/ and names a field"
+	var node = roots[path[0]]
+	for k in range(1, path.size() - 1):
+		if node is Array and path[k].is_valid_int() and int(path[k]) < node.size():
+			node = node[int(path[k])]
+		elif node is Dictionary and node.has(path[k]):
+			node = node[path[k]]
+		else:
+			return "no '%s'" % path[k]
+	var last := path[path.size() - 1]
+	if node is Array:
+		if not last.is_valid_int() or int(last) >= node.size():
+			return "no index %s" % last
+		node[int(last)] = parsed.data
+	elif node is Dictionary:
+		node[last] = parsed.data
+	else:
+		return "'%s' is not a list or a record" % path[path.size() - 2]
+	return ""
+
+
 # ---------------------------------------------------------------- the report
 
 func _report(fights: int, secs: float) -> String:
@@ -322,7 +409,11 @@ func _report(fights: int, secs: float) -> String:
 	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
 		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_policy_names()),
 		"" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below,
-		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale])
+		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
+		+ ("" if fit_module.is_empty() else " Every machine wears the %s." % str(db.modules[fit_module].get("name", fit_module)))
+		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
+		+ ("" if not no_passive else " No chassis has its passive.")
+		+ ("" if edits.is_empty() else " Content changed for this run: %s." % ", ".join(edits)))
 	L.append("")
 	L.append("Read the bands, not the numbers. A pack random play beats is too easy; a pack greedy play cannot beat is a wall; a cell where both rungs land together holds no decision. Numbers in content are placeholders, so this is the shape of the game, not its balance.")
 	L.append("")

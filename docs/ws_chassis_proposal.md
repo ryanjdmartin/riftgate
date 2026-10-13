@@ -238,10 +238,10 @@ tandem is set aside.
   here, since any weapon of the tag counts and nothing feeds itself. Its fight decisions are the
   usual ones; the new decision is all in the hangar, which must show what each weapon fitted
   adds. A weapon counts for the battle once fitted, destroyed or not, as every bonus does.
-- **Growing in the fight instead** (the other shape, set aside). The same table, each number
-  rising the first time it fires that tag. The map's numbers (move, field recharge) cannot
-  grow inside a fight, and more maximum hull or shield needs a rule for the current, so the
-  hangar shape is the cleaner.
+- **Growing in the fight instead** (Ryan's other shape, also never offence). The same table,
+  each number rising the first time it fires that tag. The map's numbers (move, field
+  recharge) cannot grow inside a fight, and more maximum hull or shield needs a rule for the
+  current, so Claude leans to the hangar shape.
 - **Numbers.** Medium, flyer, move 30 (the slow flyer, before its Missiles); hull 100, shield
   40, armour 0, heat 60, cooling 5, field recharge 20: low on purpose, the weapons building the
   rest. Nothing locked. Six hardpoints (d6). Stock: weapons of several tags once tags exist
