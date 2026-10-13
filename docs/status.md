@@ -61,7 +61,12 @@ document's job and every command are in `README.md`.
   battle (section 4); five to ten meaningful skirmishes then the boss, never twenty two-round
   fights (section 4's pacing row); neither rolled nor flat owns heat (section 5); stuns are
   budgeted and a depth-and-breadth session measures the roster against itself (section 5); the
-  roster is widened so compositions can be read (section 11).
+  roster is widened so compositions can be read (section 11). Later the same day: four machines
+  moving as one, a detachment a decision priced by time (section 4); the Rupture meter and
+  Anathema fill by the threat-weighted tally, the Favour dock the gate's price (section 3);
+  offers one of each kind, a chassis on the shelf, host-maker offers shaping the roster
+  (section 10); twelve to sixteen battles recommended; the battle withdrawal reopened (section
+  4, Claude's walk-out proposal); `docs/mechanic_budgets.md` the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
   row may be, what a Lean is and what a "never" must carry; the measurements live in
   `docs/measurements.md`; section 12 holds only the questions; this file holds the order of
@@ -109,24 +114,34 @@ document's job and every command are in `README.md`.
 
 ## Next, in order
 
-1. Ryan reads the bible's first row and answers section 12's questions as they come up, the
-   stock rule's hole, the foe roster after his picks and the mechanic budgets first; and plays
-   the 10 to 13 October builds (the to-do's Ryan list).
-2. The campaign's fall read against the two reports with a bot that withdraws and bunches (the
-   lone-machine fights first, since the team rows did not move), under the intent recorded on
-   13 October: the whole roster to one front, five to ten meaningful skirmishes a battle; then
-   the runner's module rows.
-3. The foes' fresh start, a session of its own: compositions with a front and a back spawned by
-   the rift, upstream of the area keywords, the reach premium and any chassis that reads a rank.
-4. The batch evaluation of the proposed chassis in a fresh session, Aphelion's written down
-   first, and the depth-and-breadth session beside it.
-5. The content questions settled, then the stock pass, then modules as soft-synergy pairs.
-6. The rest in the roadmap's standing order: Ryan's text (codex and flavour, the Sponsorship
-   notices, the mitigation discussion); the domains' engine (the planned moves, the party dealt
-   from the benches, three bosses a domain); the pacing session; battery; audio; the screens (a
-   prototype hangar, the mission map, the draft: section 12 asks whether they come before item
-   4); art; the commander layer after a balance baseline; the economy pass, then the hangar's
-   verbs, procurement and loot; onboarding before a phone leaves the desk.
+Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
+to-do's Ryan list).
+
+1. **The batch evaluation with the depth-and-breadth session, one session.** Reads the bible's
+   first row, section 5's stun row, `docs/mechanic_budgets.md` (the brief) and the four
+   proposals on main (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
+   `docs/aphelion_chassis_proposal.md`, `docs/canvas/kestrel-airframes.html`). Measures every
+   chassis's solo value beside its team value (`tools/balance.gd --team`) and compositions at a
+   fixed four; folds in the Honey Badger's identity, the Armadillo's Faraday Hull and the cars'
+   missing solo niche; re-reads each proposal's set-aside lists under the first row. Ends with
+   the go and the build order, and the rules it settled as rows.
+2. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
+   pacing and four-machines rows, section 9, section 12's foe questions and
+   `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift, small
+   packs for detachments and formations for the body, the boss sealed by the threat-weighted
+   meter and fought with its formation, the withdrawing persona on the campaign bot; then reruns
+   both reports and measures the fights a team fights together.
+3. **The stock pass**, once Ryan answers section 12's content questions (the stock rule's hole
+   first): tags, the basic kit, heat re-priced by niche, the area keywords on the explosives.
+4. **The screens**: a prototype hangar, the mission map and the draft, so a run can be played;
+   section 12 asks whether they come before item 1.
+5. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
+   and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
+   gate's price, twelve to sixteen battles.
+6. The rest in the roadmap's standing order: Ryan's text; the domains' engine (the planned
+   moves, the party dealt from the benches, three bosses a domain); the pacing session's
+   remaining pieces; battery; audio; art; the commander layer after a balance baseline;
+   onboarding before a phone leaves the desk.
 
 ## Pages
 
@@ -136,7 +151,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.145 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.146 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

@@ -24,12 +24,10 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 ## Design sessions
 
-- [ ] The campaign's fall read with a bot that withdraws below a hull threshold (the persona in `sim/policy.gd`) and bunches by design, before the module rows and the economy pass read the team rows as the game: the lone-machine fights first, the wreck's sit-out, the rings and the range, the hunters' catch; `docs/measurements.md` gets the run
-- [ ] The foes' fresh start, after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, roles, a hunter foe, a commander foe, the heroes' extra moves; proposed in chat first
-- [ ] Aphelion's next chassis written down as a proposal for the batch evaluation (`docs/aphelion_proposal.md`, from the chat of 12 October: the Gundam homage on the Beam tag, the jellyfish that goes wide on statuses with the dispel, the Carrier), with its bench of ideas set aside
-- [ ] The depth-and-breadth session (Ryan, 13 October): the roster measured against itself by mechanic, with the budgets heuristic once he settles it (section 12)
-- [ ] The batch evaluation of every maker's proposed chassis, in a fresh session with fresh context (Ryan, 13 October), nothing built first; each proposal's "out of bounds" list re-read under the bible's first row
-- [ ] The stock pass's content questions settled in chat (section 12), then the pass below
+- [ ] The batch evaluation of every maker's proposed chassis with the depth-and-breadth session, one fresh session (Ryan, 13 October): `docs/mechanic_budgets.md` is its brief; the four proposals on main; solo value beside team value for every chassis and compositions at a fixed four (`tools/balance.gd --team`); the Honey Badger's identity, the Armadillo's Faraday Hull and the cars' solo niche folded in; each proposal's set-aside list re-read under the bible's first row; ends with the go and the build order
+- [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured
+- [ ] The stock pass's content questions settled in chat (section 12, the stock rule's hole first), then the pass below
+- [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles
 
 ## Engine
 
@@ -44,7 +42,6 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 - [ ] Three bosses a domain before its hero: `boss` a list, each battle drawing one its domain has not ended on this run; the second and third written once Ryan moves the proposals
 - [ ] Anathema as the weighted bar, and the pacing pieces, after Ryan's pacing session
 - [ ] The Sponsorship tallies in the run (Kestrel hexes moved, Minerva damage taken on shield and armour, Wainwright & Sutler dice spent on entries that deal damage, Aphelion on entries that deal none)
-- [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield
 - [ ] Prices and tier ladders (Ryan, 11 and 12 October: a component is balanced against its tier's others, never by a chassis's solo win rate): each stocked component by knock-out with `--set`, then each tier's components swapped through the same hardpoint of the same machines, read on the team rows and whole runs; the Phase Conjugator on a team row
 - [ ] The hangar's economy verbs on the run (the host maker's offer, a token unpacked, building from a blueprint, fitting a module), procurement (each standing maker's stock for Favour, refreshed each turn; the Arsenal's trickle at the capital by the Convergence's tier) and loot on the map (seeded with the map, claimed by ending a move on one, a tap telling its kind and likely contents), after the economy pass
 - [ ] Weld each machine at load (bible section 11): meshes merged by material within each moving group, skipping the acts' glow parts; count draw calls before and after
