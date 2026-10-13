@@ -1,10 +1,19 @@
 # Wainwright & Sutler: new chassis
 
-A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Eleventh round, 13 October 2026. Nothing
-here is in content. The passives come first; names, designations and numbers follow once the
-passives hold, so the machines go by silhouette. Numbers are placeholders at the content's
-scale.
+Ryan's six candidate silhouettes for Wainwright & Sutler (two true spider tanks, a chicken
+walker, a medium gunship, a large multi-rotor, a fan-boat hovercraft), worked through eleven
+rounds of his notes from 11 to 13 October 2026 and left here for the batch evaluation: a fresh
+session weighs every maker's proposals together before anything is built (Ryan, 12 and 13
+October). Nothing here is in content. The machines go by silhouette, with working names in the
+headings; designations, final names and lore are Ryan's. Numbers are placeholders at the
+content's scale.
+
+**How to read it.** A line marked "Ryan" with its date is his call and stands unless the
+evaluation argues it down in the open; everything else is Claude's proposal, there to be
+weighed. Each machine's section gives its fantasy, passive, how it plays, its engine work, its
+numbers, locked kit and stock (today's pieces as stand-ins) and its model. The questions for
+the evaluation are gathered after the table; the retired ideas at the end are there so they are
+not proposed again.
 
 ## Where it stands
 
@@ -14,10 +23,45 @@ scale.
 | Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; the helicarrier deck is its look; the word "die" waits on another session |
 | Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Liked (Ryan's revolver bot); Rapid stays small, so the chain is funny, not strong |
 | Four-legged spider (funnel-web) | 2 | A foe it would Suppress takes a web bomb instead: at the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it. | A Suppress lands when it hits | Ryan's web bomb, the plan as below ("a good plan") |
-| Medium gunship | 2 | Its Ballistic weapons raise its armour and cooling, its Beams its shield and recharge, its Missiles its move and hull; its Arc weapons raise the others' highest rolls. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: built in the hangar, nothing locked, numbers only, five hardpoints, REX's four tags, five of a tag the best at its number, two-tag pieces the chase; the measured table waits on his read |
+| Medium gunship | 2 | Its Ballistic weapons raise its armour and cooling, its Beams its shield and recharge, its Missiles its move and hull; its Arc weapons raise the others' highest rolls. | A chassis's numbers are its own (the tags row lets its count pass) | Ryan's: built in the hangar, nothing locked, numbers only, five hardpoints, REX's four tags, five of a tag the best at its number, two-tag pieces the chase; the table measured, armour 3 or 4 a weapon open |
 | Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | Ryan's deck gun, the shells ("see where it takes us") |
 
-The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
+## For the evaluation
+
+- **What each waits on.** The gunship needs the stock pass's tags on components (Ballistic,
+  Beam, Missile and Arc among the working set) and a hangar that shows what each fitted weapon
+  adds. The fan-boat's shells read best once the area keywords and the stock pass land. The
+  multi-rotor's shown text waits on what shown text calls the die, a session of its own (Ryan,
+  13 October). The others need only their own engine work.
+- **The engine work, in brief** (each section has it in full). The boiler bends two floors
+  (negative cooling, stats floored at zero) and gives its vents a rider; the multi-rotor lets a
+  machine spend another's die; the revolver's die steps instead of rolling; the funnel-web's
+  Suppress becomes a delayed debuff; the gunship counts its fitted weapons' tags into its
+  stats; the fan-boat rewrites its other weapons' shots.
+- **The questions, by machine.**
+  - The boiler: is cooling -10 the right pressure (the gain must stay under a vent's number);
+    the blast at the full heat vented, or half; when, if ever, an ally's vent should blast.
+  - The multi-rotor: is lending its whole die the right size for a tier three; does the gesture
+    (its die dropped on an ally's) read on a phone.
+  - The revolver: is the Rapid chain funny rather than strong, as Ryan expects (if not, Rapid
+    once a round on it); should every fight open on the first chamber.
+  - The funnel-web: the next foe to act, or both neighbours (Ryan's alternative, the lever if
+    it is weak); the web bomb dealing nothing; the fangs' 20% of current hull.
+  - The gunship: armour 3 a weapon (five tie the Armadillo, every build measured under it) or 4
+    (strictly the most, the extreme die past the Armadillo, where a falling armour ladder would
+    earn its caveat); is a middle at the Clydesdale's level right for a machine whose passive is
+    its only power; what five Beams are worth over a battle, since shield returns between fights
+    (the campaign runner's to read); whether two-tag pieces stay rare enough to chase once the
+    stock pass tags the components.
+  - The fan-boat: the deck gun's number (15) against Rapid shells, its strongest build; a
+    shell's own heat not counting; whether the magazine makes a better tier two.
+- **The tier spread.** Wainwright & Sutler fields the Prairie Dog and the Dingo at tier one and
+  the Clydesdale at two; these six add a tier one (the fan-boat), four tier twos and a tier
+  three (the multi-rotor).
+
+## The tests, the tags and the stock
+
+The tests these answer: a chassis's identity (passive, numbers, locked components) opens build
 space; a map action that buys a fight buff is no condition; a chassis exists to bend a rule,
 and whether the bend is healthy is the debate; Wainwright & Sutler is simple and
 straightforward. A maker's profile is an identity, never an exclusion (Ryan, 13 October): a
@@ -32,16 +76,17 @@ and the fan-boat (a gunship is about its weapons).
 
 The gunship counts its weapons by tag, each tag raising numbers of its own, so it waits on the
 stock pass that puts tags on components, and never dictates the roster of components (Ryan,
-13 October). No chassis passive reads a tag today (the Nemesis's
-melee bonus was the model until its rage replaced it), and the bible's bar applies: a chassis
-passive reads a tag only if it opens build space. The fan-boat's deck gun keeps a shell's tags,
+13 October). No chassis passive reads a tag today (the Nemesis's melee bonus was the model until
+its rage replaced it), and the bible's bar applies: a chassis passive reads a tag only if it
+opens build space. The fan-boat's deck gun keeps a shell's tags,
 so a tag reader still sees a Flame shell as Flame.
 
 The stock lists name today's pieces as stand-ins. Under the stock rule (Ryan, 12 October) a
 tier one stocks basics beside its locked piece and every chassis stocks only below its own
-tier, each component carrying its tier, so the stock pass rewrites them. Three pieces change
-in that pass (decided 12 October, not built): the Coolant Dump retires, the Laminar Deflector
-becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Volatile.
+tier, each component carrying its tier, so the stock pass rewrites them; in it the Coolant Dump
+retires (decided 12 October, not built). Two pieces these stocks lean on are built as they
+will stay (12 October): the Laminar Deflector, a shield of 20 with Rapid, and the Entropy
+Condenser, a vent of 40 with Volatile (10 hull a spend).
 
 ## Eight-legged spider: the boiler
 
@@ -102,6 +147,10 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
 - **The gesture.** Its die dropped on an ally's die hands it over for the round, and that
   machine spends it as usual; dropped anywhere else it is spent by itself. The bot chooses
   the spender by its forecast.
+- **Engine.** A spend by another machine: the die handed over for the round and spent as the
+  spender's own (its passives and buffs on the blow, its heat and any bite paid), the hand-over
+  undone at the round's end; the forecast and the bot read the spender's numbers; the hangar and
+  the codex say whose die it is while it is lent.
 - **Numbers.** Assault, flyer, move 20; hull 170, shield 50, armour 5, heat 80, cooling 5,
   field recharge 15. Nothing locked: its kit is the team's. Six hardpoints (d6). Stock:
   Howitzer, Enfilade Beam, Maxigun, Incendiary Shells, Laminar Deflector, Coolant Jacket.
@@ -147,7 +196,7 @@ tandem is set aside.
   in six chambers fire every third round), a blank as a known rest. Rapid becomes a sequence:
   its reroll is a roll, so it fires the next chamber at once, and a Rapid piece set before the
   big gun is a known double. Routes: Rapid pieces of any maker (the Flakshot Repeater, the
-  Pulse Vacillator, the Wake Diffuser, the Laminar Deflector once it turns Rapid).
+  Pulse Vacillator, the Wake Diffuser, the Laminar Deflector).
 - **The first chamber.** Each fight opens on its first entry, so the plan is the same every
   fight and the hangar shows it. (The cylinder could keep its place between fights instead; a
   hidden state for the player to carry, so not that.)
@@ -158,6 +207,9 @@ tandem is set aside.
   the order. A foe's Scramble jams it: the next roll lands anywhere, and the sequence runs on
   from there.
 - **The cost.** No luck either way: a destroyed component is a known dead chamber every turn.
+- **Engine.** A die whose roll is a step: the next entry in the die's order (its fixed entry,
+  then the hardpoints), a reroll a step, a lock a hold, Scramble a true roll; each fight opens
+  on the first entry; the die's next-entry chip, and the ring on the hold.
 - **The Rapid chain.** Five Rapid pieces and a gun fire all six chambers every round, against
   three and a half on a rolled die. Ryan, 13 October: a player who slots that and neither
   overheats nor gets blown up has earned the broken game; and Rapid is a high-budget keyword,
@@ -200,6 +252,9 @@ tandem is set aside.
   fangs: the Baboon's meter, the Dingo's harpoon, the Arsenal pitch's Misharu if it is built.
   A web bomb is a debuff, so it feeds the Baboon's Paradox as it lands, and the burst's two
   Suppresses feed it again.
+- **Engine.** A Suppress this machine lands becomes a web-bomb debuff on the foe (a chip of its
+  own) that bursts at the end of that foe's turn, Suppressing it and the next foe to act beside
+  it; the fangs' bonus reads Suppressed and the foe's current hull, through `sim/effects.gd`.
 - **Edge cases.** Numbed is checked at the burst, each foe for itself; a webbed foe killed
   before its turn takes its web with it; a webbed foe already Suppressed by the team skips its
   action and its web still bursts at its turn's end.
@@ -255,7 +310,9 @@ tandem is set aside.
   greedy, 100 seeds a cell, the mean win %. The stand-in is the Goshawk's frame stripped of its
   passive and locked piece and set to this machine's numbers and a five-weapon kit by `--set`,
   each bonus a `--bump` or the Booster module; a lone machine is a diagnostic, and teams and
-  whole runs decide at the evaluation. The roster, whole: the Armadillo 92, the Wild Boar 83,
+  whole runs decide at the evaluation. At 100 seeds a row mean over twenty packs carries a band
+  of about 3 points (the bible's balance row), so these are directions: a gap under about 5
+  points is noise, and the bot values these stats through its forecast. The roster, whole: the Armadillo 92, the Wild Boar 83,
   the Nemesis 72, the Badger 70, the Sparrowhawk 68, the Clydesdale 48, the Goshawk 36, the
   Ammit 34, the Prairie Dog 30, the Stingray 26, the Baboon 25, the Dingo 11, the Puffin 11.
   The stand-in without its passive: 23 to 28, whatever its kit. Prices on it, in hull at its
@@ -307,6 +364,10 @@ tandem is set aside.
   - Missile: +5 move and +12 hull (five: move 55, the fastest; hull 160, the Badger's).
   - Arc: the others' highest roll 5 higher (the Booster's own number).
   - Flame, Plasma, Blade and Melee: nothing.
+- **Engine.** Tags on components (the stock pass); a passive that counts the fitted weapons' tags
+  and grants static stat modifiers through `sim/effects.gd` (armour, cooling, shield, field
+  recharge, move, hull), and Arc's higher top roll as an on-attack ceiling scoped to the weapons
+  without Arc; the codex and the hangar show the totals and each weapon's share.
 - **Candidates not taken.** Armour 4 a weapon (bold: strictly the most armour, and the
   three-tag die past the Armadillo); the falling ladder (a caveat, in reserve); the roster's
   range as a cap (Ryan: five of a tag may be the best); a free reroll and a straight damage buff
@@ -316,9 +377,9 @@ tandem is set aside.
   guns are pinned while the engagement range may change); salvage a kill (the economy is
   unbuilt); never hunted (a yes or no, which no count can scale).
 - **The holes.** Three lines of rule text, its amounts in the codex, the most the budget holds.
-  It bends the tags row's "no scaling with a tag's count", whose reason (a lynchpin, one
-  blueprint farmed) does not hold here, since any weapon of the tag counts and nothing feeds
-  itself. The hangar must show what each weapon fitted adds. A weapon counts for the battle
+  The bible's tags row lets its count pass (13 October: a count every piece of the tag feeds,
+  where nothing a tag grants feeds that tag, is no lynchpin), the reason of "no scaling with a
+  tag's count" (one blueprint farmed) not holding here. The hangar must show what each weapon fitted adds. A weapon counts for the battle
   once fitted, destroyed or not, as every bonus does. Five Beams is the weakest single tag in a
   fight, its worth for the campaign runner to read. The measures are a stand-in alone, its kits
   today's pieces until tags exist: teams and whole runs can move them.
@@ -348,6 +409,9 @@ tandem is set aside.
   are the modules that move a rolled range: the punt gun is flat.
 - **The holes.** Rapid shells at 15 that fire again are its strongest build (the lever is the
   deck gun's number), and a shell's own heat no longer counts.
+- **Engine.** A passive that rewrites the face of every other weapon it spends: the deck gun's
+  number, reach and heat in place of the weapon's own, one blow (strikes fold into it), the
+  weapon's keywords, unique rule and tags kept; the die shows the shot as it will fire.
 - **Considered.** The magazine (the deck gun fires with the last three keywords its other
   weapons fired), the deepest shape and the most assimilating, kept as an idea for a tier two
   or another machine; the echo (the deck gun fires again whatever it fired last); the sponge,
@@ -405,3 +469,36 @@ tandem is set aside.
   be the best at it); cooling in the base (a row on the cold tag, Ballistic, Ryan's soft
   offensive stat) and Ballistic's hull (Missile's now); the amounts (measured instead: armour
   3, shield 12, hull 12, the top roll 5).
+
+## Reproducing the gunship's measurements
+
+The runner as it stands, no code added. The stand-in is the Goshawk's row (a medium flyer with
+five hardpoints) stripped and reset; one cell set, 100 seeds, greedy, about a minute a run on
+one core. Point `--out` and `--json` away from `docs/balance.md`.
+
+```sh
+STAND="--rows goshawk --nopassive --set chassis/goshawk/fixed=[] --set chassis/goshawk/hull=100
+  --set chassis/goshawk/shield=20 --set chassis/goshawk/armour=0 --set chassis/goshawk/heat_max=60
+  --set chassis/goshawk/cooling=5"
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 100 \
+  --policies greedy $STAND --set 'chassis/goshawk/loadout=["maxigun","twin_autoguns","slugthrower","rivet_gun","flakshot_repeater"]' \
+  --bump armour:15 --bump cooling:20 --out /tmp/gun.md --json /tmp/gun.json
+```
+
+- The kits: five Ballistic (Maxigun, Twin Autoguns, Slugthrower, Rivet Gun, Flakshot Repeater);
+  five Beam (Laser Carbine, Enfilade Beam, Zenith Emitter, Umbra Inducer, Photosphere Lance);
+  five Missile (Howitzer, Ankle Mortar, Shotfire Rack, Suppression Battery, Incendiary Shells);
+  the hottest (Overclocked Railgun, Photosphere Lance, Meteor Artillery, Arc Fault Cannon,
+  Enfilade Beam); the first mix (Maxigun, Howitzer, Enfilade Beam, Arc Fault Cannon,
+  Slugthrower); two Ballistic beside three hot energy guns (Maxigun, Slugthrower, Photosphere
+  Lance, Enfilade Beam, Arc Fault Cannon). The tags stand in by each piece's fantasy until the
+  stock pass assigns them.
+- A full die's bonus is the row times the count of its tag, given as `--bump stat:N` (armour,
+  cooling, shield, hull); a two-tag piece adds both rows. Arc's row is the Booster fitted with
+  its value set: `--module muzzle_velocity_booster --set
+  modules/muzzle_velocity_booster/text/effects/0/value=N` (it reaches every rolled weapon, and no
+  Arc weapon rolls in these kits). Move and field recharge are map numbers a fight cannot read.
+- Prices convert a win-rate change to hull by the kit's own runs at +20 and +40 hull. The
+  roster's numbers are each machine's row as it stands; a machine's passive and locked pieces
+  together are its row against `--nopassive --set chassis/<id>/fixed=[]`.
+

@@ -21,24 +21,19 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
 ## Branches
 
 - `main` holds everything decided and built to 13 October, including all of
-  `claude/focused-ritchie-omn8i5` and `ccr-baf790be-gootfd` (merged 13 October). New work
-  starts from main.
-- Not merged, by Ryan's word (13 October: work in progress, leave them): the chassis
-  proposals for the batch evaluation, on `claude/ws-chassis-designs-wssq2u` (Wainwright &
-  Sutler, `docs/ws_chassis_proposal.md`), `claude/minerva-chassis-candidates-po893q`
-  (`docs/minerva_chassis_proposal.md`) and `ccr-1a6d0a75-y2oqy8` (Kestrel,
-  `docs/canvas/kestrel-airframes.html`); the Arsenal's is `docs/arsenal_proposal.md` on main;
-  Aphelion's exist in chat only. `ccr-550650c0-g0kcbg` has two bible-only commits whose rows
-  are already in the bible. The batch evaluation is Ryan's to start; the Honey Badger's
-  identity and the Armadillo's Faraday Hull fold into it (Ryan, 13 October).
-- One rule decided on the Wainwright & Sutler branch is on main: the fives and tens are
-  magnitudes, not steps (Ryan, 13 October; its commit 630c651's text in the rules, the
-  content notes, the README, the vocabulary and the to-do). The rest of that branch is the
-  proposal, two lines in `CLAUDE.md` that main lacks (every rule open to debate, both ways; a
-  maker's profile an identity, never an exclusion) and a proposal's look tests
-  (`tools/lowforge/looks/`, the README's line). Its eleventh round (13 October) measured the
-  gunship on a stand-in with the balance runner; the method and every number are in the
-  proposal, and the gunship's table waits on Ryan's read.
+  `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`
+  (merged 13 October, the last at Ryan's word once its proposal was complete). New work starts
+  from main.
+- The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
+  (`docs/ws_chassis_proposal.md`: six machines, written to stand alone, the questions for the
+  evaluation gathered, the gunship's table measured on a stand-in with the method to rerun it;
+  the multi-rotor's look tests in `tools/lowforge/looks/` and `docs/looks/`), the Arsenal's on
+  main (`docs/arsenal_proposal.md`); not merged, by Ryan's word (work in progress, leave them),
+  `claude/minerva-chassis-candidates-po893q` (`docs/minerva_chassis_proposal.md`) and
+  `ccr-1a6d0a75-y2oqy8` (Kestrel, `docs/canvas/kestrel-airframes.html`); Aphelion's exist in
+  chat only. Ryan starts the evaluation in a fresh session with fresh context and an advanced
+  model (13 October); the Honey Badger's identity and the Armadillo's Faraday Hull fold into
+  it. `ccr-550650c0-g0kcbg` has two bible-only commits whose rows are already in the bible.
 
 ## The game as left (13 October)
 
@@ -114,10 +109,12 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.138 (13 October), this branch's file:
-  main's v0.137 with the Wainwright & Sutler row's eleventh round; it also holds rows from
-  branches not yet merged (Aphelion's calls). Before republishing, read the live page; if
-  another session moved it, publish a three-way merge onto it.
+  `docs/design-bible.html` after every change. Live: v0.140 (13 October), the committed file
+  as it stands on main. It also holds rows from work not yet on main: Aphelion's calls
+  (`ccr-550650c0-g0kcbg`) and another session's review of 13 October, whose branch is not on
+  the remote (the Lean tag and "How to read a row", rows citing a `docs/measurements.md` main
+  lacks, Rally listed as built while main's code still has it as next). Before republishing,
+  read the live page; if another session moved it, publish a three-way merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map (run it, then publish the page with that map).
   Republished 13 October from main's content. Its database (Ryan's saved edits, collection
