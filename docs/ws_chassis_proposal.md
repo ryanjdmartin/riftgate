@@ -238,7 +238,7 @@ tandem is set aside.
 - **A second table, with pairs** (Ryan's idea, pairing to make room; placeholders):
   - Beam: +20 shield and +10 field recharge, the shield's two numbers.
   - Ballistic: +5 armour for every second Ballistic weapon (or +5 each, capped at 10).
-  - Missile: +10 move and +5 cooling; rockets run cold, so the cooling feeds nothing of theirs.
+  - Missile: +10 move and +5 cooling; the cooling feeds no rocket while Missile weapons run cold.
   - Flame: +20 hull.
   - Plasma: its weapons of other tags deal 5 more.
   - Arc: one free reroll of its own die a fight, fire control (the Clydesdale's verb, small).
@@ -255,6 +255,9 @@ tandem is set aside.
   itself. The hangar must show what each weapon fitted adds. A weapon counts for the battle
   once fitted, destroyed or not, as every bonus does. Plasma's row is the strongest per weapon
   (damage is the dearest number after armour), so it is the second row to watch.
+  Nothing a tag grants may feed that tag, and no component carries these tags yet, so the stock
+  pass that assigns them keeps a promise per row: Missile weapons run cold, no Beam weapon reads
+  its shield, no Ballistic weapon is fed by armour, no Flame weapon by hull.
 - **Numbers.** Medium, flyer, move 30 (the slow flyer, before its Missiles); hull 100, shield
   40, armour 0, heat 60, cooling 5, field recharge 20: low on purpose, the weapons building the
   rest. Nothing locked. Six hardpoints (d6). Stock: weapons of several tags once tags exist
