@@ -67,7 +67,8 @@ document's job and every command are in `README.md`.
   offers one of each kind, a chassis on the shelf, host-maker offers shaping the roster
   (section 10); twelve to sixteen battles recommended; the battle withdrawal reopened (section
   4, Claude's walk-out proposal, which Ryan finds thematic and decides later); heat bites where
-  it is carried and a cold build pays elsewhere (section 5); cooldowns in a skirmish reopened, a
+  it is carried, a cold build pays elsewhere, and a cool weapon is soft cooling, so three heat
+  builds must be healthy and the runner reads cool-over-hot spends beside vents (section 5); cooldowns in a skirmish reopened, a
   decision made for Ryan by a session (section 8); the Arsenal's tier-one components exist
   (section 10); the map stays nine wide; the screens third in the order; `docs/mechanic_budgets.md` the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
@@ -158,7 +159,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.148 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.149 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

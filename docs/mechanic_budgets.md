@@ -34,6 +34,15 @@ The one-to-four and solo measurements it leans on are in `docs/measurements.md`,
 4. **Every passive needs two routes in and two payoffs** from other makers' pieces, so it
    composes with the roster and not only with its own locked kit.
 
+## Three heat builds to field
+
+A cool weapon is also soft cooling (Ryan, 13 October): spending it instead of a hotter one is a
+cooldown turn. So the roster must hold three healthy builds, hot weapons with vents, cool
+weapons throughout, and a mix that pays for each hot turn with a cool one and trusts its passive
+cooling; the session fields the same chassis three ways and reads them side by side, with the
+heat row's signals (bible section 5). Today the hot side is thin: the Sparrowhawk is the one
+machine that feels heat, so "a build that wants to run hot" is a class to add on purpose.
+
 ## One question the session weighs
 
 Cooldowns in a skirmish (bible section 8, reopened 13 October): a printed rule on a specific
