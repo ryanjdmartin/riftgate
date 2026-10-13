@@ -65,8 +65,9 @@ skirmish.
 2. Every foe picks its move, then its target; both show, exact, before the player acts.
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point.
-4. END TURN: heat over a machine's maximum burns hull one for one and the gauge settles at
-   the maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
+4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
+   then heat over a machine's maximum burns hull one for one and the gauge settles at the
+   maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
    acts.
 5. The enemy's turn (below). Round-timed effects end.
 6. Machines' statuses tick. Shield past the maximum (overshield) fades.
@@ -104,7 +105,8 @@ defeat when every machine is wrecked. There is no round limit.
   nothing.
 - **The die shows the number** one blow will deal after every modifier. Dragged over a foe
   it may strike, it shows that foe's number: its missing hull, conditions on it, its armour
-  off. A Shocked foe's doubling is not folded in (it shows on the foe's chip).
+  off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
+  the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - Player damage comes in fives; hull, shield, heat and foe numbers in tens.
 
 ### Player keywords
@@ -124,8 +126,8 @@ defeat when every machine is wrecked. There is no round limit.
   another entry, and the machine acts again.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
-- **Cleanse** (shields and vents): the machine it lands on loses Overheating, Scrambled, a
-  foe's Disabled and Corrupted (never a Rapid switch-off).
+- **Cleanse** (shields and vents): the machine it lands on loses Burning, Scorched,
+  Scrambled, a foe's Disabled and Corrupted (never a Rapid switch-off).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -155,8 +157,12 @@ On a machine:
   decays, and nothing cleanses it.
 - **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
-- **Overheating** (debuff, from a foe's scorch): +5 heat a stack at the round's end, then a
-  stack fades; the heat burns at the end of the next turn unless vented. Cleansable.
+- **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
+  other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
+  stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
+- **Scorched** (debuff, from a foe's scorch): every weapon the machine fires runs 5 hotter a
+  stack, until the end of the player's turn, when every stack goes, so it never piles up.
+  Cleansable.
 - **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
@@ -202,13 +208,13 @@ Burning, Suppressed, Shocked or Paradox.
   the way a machine dies on its own turn. Machines cool at the start of the round. Heat
   starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
-- Foes heat machines by scorch (Overheating), and by moves that add heat to one machine or
-  to all. That heat lands after the burn, so it waits on the gauge for the next turn, where a
-  vent or a cleanse answers it. (Decided, not built: foes heat machines only through
-  debuffs, every move that adds heat today putting on one or the other by how threatening it
-  must be. One adds its heat at the end of the player's turn, before the overheat, so it can
-  be vented or cleansed first; a softer one raises the heat every weapon generates, per
-  stack. Scorch puts on one of them; the names are open.)
+- Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
+  its heat at the end of the player's turn before the overheat, so a vent makes room for it
+  or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
+  in the turn that follows, so equipment or a cool weapon plays round it. A foe's burn leaves Burning and its scorch
+  leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
+  the Magma Golem's Eruption, the Black Mage's Fira and the Summoner's Hellfire scorch every
+  machine.
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
@@ -232,10 +238,11 @@ Burning, Suppressed, Shocked or Paradox.
   own aim. The pick is a commitment; Lure and Disrupt move it.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders: breach, scorch (a stack of
-  Overheating), disable (the entry the machine shows), corrupt (a Corrupted stack on it),
-  self-destruct (the striker dies after, for good).
+  Scorched), burn (a stack of Burning), disable (the entry the machine shows), corrupt (a
+  Corrupted stack on it), self-destruct (the striker dies after, for good).
 - **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
-  rally, drain rerolls, add heat (one machine or every machine), disable.
+  rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  Scorched on every machine), disable.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included); a suppressed foe does nothing.

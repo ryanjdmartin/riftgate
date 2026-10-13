@@ -5,7 +5,7 @@ extends SceneTree
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
 ## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
-## roll again mid-burst).
+## roll again mid-burst), heat (Burning and Scorched on the first machine).
 
 var _frames := 0
 var _vp: SubViewport
@@ -114,6 +114,12 @@ func _apply_pose() -> void:
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
 			s._rage_debug()
+		"heat":
+			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row.
+			var u: Unit = s.sk.mechs[0].unit
+			Effects.stack(u, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
+			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
+			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
 			for ms in s.sk.mechs:

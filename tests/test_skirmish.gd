@@ -1328,26 +1328,59 @@ func test_shorter_lived_sources_override_longer_ones() -> void:
 
 
 func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
+	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch). A scorching blow leaves a
+	# stack of Scorched: no heat now, the next weapon fired runs five hotter, and every stack
+	# goes at the end of the player's turn. A burning blow leaves a stack of Burning: five heat
+	# at the end of the next player's turn, before the overheat, then the stack goes.
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 0, 200)
+	var m := _mech("A", Die.single(Face.attack(10, L, [], 10)), 0, 200)
+	m.heat_max = 100
+	m.cooling = 0
 	sk.add_mech(m)
-	var scorcher := Foe.make("hellhound", 90, 10)
+	var scorcher := Foe.make("hellhound", 900, 10)
 	scorcher.actions[0]["keywords"] = ["scorch"]
 	sk.add_foes([scorcher])
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
-	assert_eq(sk.mechs[0].heat, 5, "a scorching blow leaves one heat stack, and it ticks at the round's end: five heat")
-	assert_eq(Effects.stacks_of(m, "overheating"), 0, "and the stack is spent")
+	assert_eq(sk.mechs[0].heat, 0, "a scorch adds no heat by itself")
+	assert_eq(Effects.stacks_of(m, "scorched"), 1, "it leaves a stack of Scorched")
 	sk.start_round()
+	assert_eq(sk.pending_heat(sk.mechs[0]), 15, "the weapon runs five hotter")
+	assert_eq(sk.shown_face(sk.mechs[0], sk.mechs[0].face()).heat, 15, "and the die says so")
+	assert_eq(sk.mechs[0].face().heat, 10, "while the component keeps its own")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.mechs[0].heat, 15, "and lands that hot")
 	sk.end_round()
-	assert_eq(sk.mechs[0].heat, 10, "the next scorch ticks again")
-	sk.start_round()
-	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 3)
-	assert_eq(Effects.stacks_of(m, "overheating"), 3, "stacks add up")
-	assert_eq(int(Effects.tick_preview(m)["heat"]), 15, "five per stack")
-	sk.withdraw()
-	assert_eq(Effects.stacks_of(m, "overheating"), 0, "skirmish-scoped statuses end with the skirmish")
+	assert_eq(Effects.stacks_of(m, "scorched"), 1, "the turn's end took the stack; the next blow left another")
+	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN_ALL)
+	assert_eq(Effects.stacks_of(m, "scorched"), 3, "three blows' worth")
+	Effects.turn_tick(m)
+	assert_eq(Effects.stacks_of(m, "scorched"), 0, "every stack goes at the turn's end, so Scorched never piles up")
+	var s2 := Skirmish.new(2)
+	var n := _mech("B", Die.single(Face.shield(10)), 0, 200)
+	n.heat_max = 100
+	n.cooling = 0
+	s2.add_mech(n)
+	var burner := Foe.make("hellhound", 900, 10)
+	burner.actions[0]["keywords"] = ["burn"]
+	s2.add_foes([burner])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	assert_eq(s2.mechs[0].heat, 0, "a burn adds no heat at once")
+	assert_eq(Effects.stacks_of(n, "burning_mech"), 1, "a stack of Burning")
+	s2.start_round()
+	assert_eq(s2.forecast(s2.mechs[0], false)["heat_end"], 5, "the forecast counts the tick at the turn's end")
+	s2.end_round()
+	assert_eq(s2.mechs[0].heat, 5, "five heat at the end of the turn")
+	assert_eq(Effects.stacks_of(n, "burning_mech"), 1, "that stack went; the next blow left another")
+	Effects.stack(n, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN)
+	assert_eq(Effects.stacks_of(n, "burning_mech"), 3, "stacks add up")
+	assert_eq(int(Effects.tick_preview(n, true)["heat"]), 15, "five per stack, at the turn's end")
+	assert_eq(int(Effects.tick_preview(n)["heat"]), 0, "and never at the round's")
+	s2.withdraw()
+	assert_eq(Effects.stacks_of(n, "burning_mech"), 0, "skirmish-scoped statuses end with the skirmish")
 
 
 func test_suppress_skips_the_action_and_numbs() -> void:
@@ -1478,8 +1511,8 @@ func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
 
 func test_cooling_at_the_start_of_the_round_and_overheating_at_the_end_of_the_turn() -> void:
 	# Ryan, 22 September: cool at the start of the round. Ryan, 11 October: the overheat burns
-	# at the end of the player's turn, before the enemy acts; heat the foes and the
-	# Overheating tick add lands after it, on the gauge for the next turn.
+	# at the end of the player's turn, before the enemy acts. Ryan, 13 October: a machine's
+	# Burning adds its heat there too, before the overheat, so it burns in the same turn.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100)
 	m.heat_max = 60
@@ -1506,35 +1539,36 @@ func test_cooling_at_the_start_of_the_round_and_overheating_at_the_end_of_the_tu
 	assert_eq(ms.heat, 80, "80 on the gauge, past the cap")
 	assert_eq(m.hull, 100, "nothing burnt yet")
 	assert_eq(sk.forecast(ms)["overheat"], 20, "the forecast warns of the twenty to come")
-	# Overheating ticks at the end of the round, after the burn: its heat waits for the next turn.
-	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
-	assert_eq(sk.forecast(ms)["overheat"], 20, "the tick is not in this turn's burn")
-	assert_eq(sk.forecast(ms)["heat_after"], 70, "the gauge settles at its cap, then the tick's ten lands on it")
+	# Burning ticks at the end of the player's turn, before the overheat: its heat burns with it.
+	Effects.stack(m, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN)
+	assert_eq(sk.forecast(ms)["overheat"], 30, "the tick's ten burns with the twenty already over")
+	assert_eq(sk.forecast(ms)["heat_after"], 60, "and the gauge settles at its cap")
 	sk.end_round()
-	assert_eq(m.hull, 80, "twenty burns as the turn ends")
-	assert_eq(ms.heat, 70, "settled at the cap, then ten from the tick, over the cap again")
-	assert_eq(Effects.stacks_of(m, "overheating"), 1, "one stack ticked away")
+	assert_eq(m.hull, 70, "thirty burns as the turn ends")
+	assert_eq(ms.heat, 60, "settled at the cap")
+	assert_eq(Effects.stacks_of(m, "burning_mech"), 1, "one stack ticked away")
 	sk.start_round()
-	assert_eq(ms.heat, 60, "then cooled by 10, back at the cap")
-	assert_eq(m.hull, 80, "nothing burns at the round's start")
+	assert_eq(ms.heat, 50, "then cooled by 10")
+	assert_eq(m.hull, 70, "nothing burns at the round's start")
 	# Cooling is a stat like any other: a passive can raise it, and it never goes below zero.
 	m.grant_passive({"id": "fins", "name": "Fins", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}, "fins")
 	assert_eq(m.cooling, 25, "base plus the passive")
 	ms.heat = 5
 	sk.end_round()   # the last stack ticks: five more
-	assert_eq(ms.heat, 10, "the remaining stack ticked at the round's end")
+	assert_eq(ms.heat, 10, "the remaining stack ticked at the end of the turn")
 	sk.start_round()
 	assert_eq(ms.heat, 0, "never below zero")
 	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "logged as what was actually shed: %s" % sk.log[sk.log.size() - 1])
 
 
-func test_forecast_counts_the_scorch_about_to_land() -> void:
+func test_forecast_counts_burning_in_the_turn_it_lands() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 0, 100)
 	m.heat_max = 60
+	m.cooling = 0
 	var ms := sk.add_mech(m)
 	var demon := _ghoul(30, 10)
-	demon.actions[0]["keywords"] = ["scorch"]
+	demon.actions[0]["keywords"] = ["burn"]
 	demon.actions[0]["strikes"] = 2
 	demon.action = demon.actions[0]
 	sk.add_foes([demon])
@@ -1542,13 +1576,14 @@ func test_forecast_counts_the_scorch_about_to_land() -> void:
 	sk.start_round()
 	ms.heat = 55
 	var fc := sk.forecast(ms)
-	assert_eq(fc["heat_after"], 65, "two scorching blows: two stacks tick ten at the round's end")
-	assert_eq(fc["overheat"], 0, "after the burn, so none of it burns this turn")
+	assert_eq(fc["heat_after"], 55, "the foes' fire adds no heat this round")
+	assert_eq(fc["overheat"], 0, "and nothing burns this turn")
 	sk.end_round()
-	assert_eq(ms.heat, 65, "as forecast: five over the cap, waiting")
-	assert_eq(m.hull, 100 - 20, "two blows of ten on bare hull, and nothing burnt")
+	assert_eq(ms.heat, 55, "as forecast")
+	assert_eq(Effects.stacks_of(m, "burning_mech"), 2, "two burning blows, two stacks")
+	assert_eq(m.hull, 100 - 20, "two blows of ten on bare hull")
 	sk.start_round()
-	assert_eq(sk.forecast(ms, false)["overheat"], 5, "the next turn burns it unless it is vented")
+	assert_eq(sk.forecast(ms, false)["overheat"], 5, "the turn's end: ten from the tick, five over the cap, unless vented or cleansed")
 
 
 func test_no_cooling_means_no_line_and_no_change() -> void:
@@ -1734,13 +1769,15 @@ func test_cleanse_clears_what_foes_did_and_not_the_rapid_switch_off() -> void:
 	sk.start_round()
 	Effects.corrupt_entry(b, 0, "foe:x", 2)
 	Effects.disable_entry(b, 0, "foe:x", sk.round + 1)
-	Effects.stack(b, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:x", 3)
+	Effects.stack(b, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "foe:x", 3, Effects.DECAY_TURN)
+	Effects.stack(b, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TURN_ALL)
 	assert_eq(scrubber.describe(), "shield 10 cleanse", "the keyword reads on the entry")
 	assert_true(sk.assign(0, sk.mechs[1]), "the shield is spent on B")
 	assert_eq(b.shield, 10, "shielded")
 	assert_eq(Effects.corrupt_stacks(b, 0), 0, "corruption gone")
 	assert_false(Effects.is_entry_disabled(b, 0), "the foe's disable gone")
-	assert_eq(Effects.stacks_of(b, "overheating"), 0, "overheating gone")
+	assert_eq(Effects.stacks_of(b, "burning_mech"), 0, "burning gone")
+	assert_eq(Effects.stacks_of(b, "scorched"), 0, "scorched gone")
 	assert_true("\n".join(sk.log).contains("cleanses B: "), "the log says what went")
 	Effects.disable_entry(a, 0, "rapid", sk.round)
 	var gone := Effects.cleanse(a)
@@ -2315,7 +2352,7 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	sk.add_mech(cold)
 	sk.add_mech(hot)
 	var h := _ghoul(500, 20)
-	h.actions = [Foe.basic_action(), _special("debuff", "add_heat", {"value": 10, "aim": "heat"})]
+	h.actions = [Foe.basic_action(), _special("debuff", "burn", {"value": 2, "aim": "heat"})]
 	h.actions[0]["weight"] = 1000
 	h.action = h.actions[0]
 	sk.add_foes([h])
@@ -2326,12 +2363,12 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	h.target = sk.mechs[0]
 	assert_true(sk.assign(0, h), "disrupted")
 	assert_false(h.attacks(), "it does its other move instead")
-	assert_eq(str(h.action.get("effect", "")), "add_heat", "the stoke")
+	assert_eq(str(h.action.get("effect", "")), "burn", "the stoke")
 	assert_eq(h.target, sk.mechs[1], "which aims for itself: at heat")
-	assert_eq(h.last_special, "add_heat", "and counts as the special announced")
-	assert_true("\n".join(sk.log).contains("is disrupted: Add Heat instead of Attack"), "the log names both: %s" % sk.log[sk.log.size() - 1])
+	assert_eq(h.last_special, "burn", "and counts as the special announced")
+	assert_true("\n".join(sk.log).contains("is disrupted: Burn instead of Attack"), "the log names both: %s" % sk.log[sk.log.size() - 1])
 	sk.end_round()
-	assert_eq(sk.mechs[1].heat, 40, "the stoke landed")
+	assert_eq(Effects.stacks_of(sk.mechs[1].unit, "burning_mech"), 2, "the stoke landed: two stacks of Burning")
 	assert_eq(cold.shield, 40, "and no blow did")
 	# Nothing else open: a foe with one move, or whose other move's condition fails, is not moved.
 	var s2 := Skirmish.new(1, 1)
@@ -2860,21 +2897,23 @@ func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "then it is over")
-	# Stoke: heat on the target, and the forecast counts it.
+	# Stoke: Burning on the target, its heat at the end of the next player's turn.
 	var s2 := Skirmish.new(9, 1)
 	var m2 := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
+	m2.cooling = 0
 	s2.add_mech(m2)
 	var h := _archer(500, 10)
-	h.actions = [_special("debuff", "add_heat", {"value": 10})]
+	h.actions = [_special("debuff", "burn", {"value": 2})]
 	h.action = h.actions[0]
 	s2.add_foes([h])
 	s2.begin()
 	s2.start_round()
-	assert_eq(s2.scorch_incoming(s2.mechs[0]), 10, "the heat is coming")
-	assert_eq(s2.forecast(s2.mechs[0], false)["heat_after"], 10, "and the forecast shows it")
 	s2.end_round()
-	assert_eq(s2.mechs[0].heat, 10, "landed")
+	assert_eq(Effects.stacks_of(m2, "burning_mech"), 2, "two stacks of Burning")
+	assert_eq(s2.mechs[0].heat, 0, "no heat yet")
 	assert_eq(m2.shield, 40, "no blow with it")
+	s2.start_round()
+	assert_eq(s2.forecast(s2.mechs[0], false)["heat_end"], 10, "the forecast counts the tick to come")
 	# Scramble: the next reroll of that die lands anywhere, then the scramble is spent.
 	var s3 := Skirmish.new(10, 1)
 	var m3 := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
@@ -3126,23 +3165,22 @@ func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	sk.start_round()
 	assert_eq(sk.mechs[0].face().kind, Face.Kind.BLANK, "the entry shows blank the next turn")
 	assert_true("\n".join(sk.log).contains("is switched off"), "the log says so")
-	# Eruption: heat to every machine, whoever it was aimed at, and the forecast says so for all.
+	# Eruption: every machine Scorched, whoever it was aimed at.
 	var s2 := Skirmish.new(1, 1)
 	var a := _mech("A", Die.single(Face.shield(10)), 40, 100)
 	var b := _mech("B", Die.single(Face.shield(10)), 40, 100)
 	s2.add_mech(a)
 	s2.add_mech(b)
 	var lord := _ghoul(500, 10)
-	lord.actions = [_special("debuff", "heat_all", {"value": 10})]
+	lord.actions = [_special("debuff", "scorch_all", {"value": 2})]
 	lord.action = lord.actions[0]
 	s2.add_foes([lord])
 	s2.begin()
 	s2.start_round()
-	assert_eq(s2.scorch_incoming(s2.mechs[0]), 10, "the forecast heats the first")
-	assert_eq(s2.scorch_incoming(s2.mechs[1]), 10, "and the second, whoever the arrow points at")
 	s2.end_round()
-	assert_eq(s2.mechs[0].heat, 10, "both machines")
-	assert_eq(s2.mechs[1].heat, 10, "took the heat")
+	assert_eq(Effects.stacks_of(a, "scorched"), 2, "both machines")
+	assert_eq(Effects.stacks_of(b, "scorched"), 2, "are scorched")
+	assert_eq(s2.mechs[0].heat, 0, "and no heat lands by itself")
 	# Unravel: every machine's showing component is corrupted.
 	var s3 := Skirmish.new(1, 1)
 	var c := _mech("C", Die.single(Face.attack(10, L)), 40, 100)

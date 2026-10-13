@@ -12,9 +12,10 @@ extends RefCounted
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       a rolled face rolls its damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
-##   end_round()         the player's turn ends: heat over the cap burns hull; then burn
-##                       ticks, foes act, the dead are cleared, mech statuses tick
-##                       (overheating), the reinforcements refill, outcome is checked
+##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
+##                       stack, Scorched goes, then heat over the cap burns hull; then
+##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
+##                       reinforcements refill, outcome is checked
 ##   can_withdraw()      at any point of the player's turn
 ##
 ## The player's damage is in fives, everything else in tens. Enemy damage is static; only
@@ -117,7 +118,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "heat_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -315,25 +316,6 @@ func acting_on(ms: MechState) -> Array[Foe]:
 	return out
 
 
-## Heat the foes will add to this mech after the player's turn has burnt its own: a stack
-## of Overheating per scorching blow, ticking at the round's end, and a stoking debuff's heat
-## outright. It waits on the gauge for the next turn.
-func scorch_incoming(ms: MechState) -> int:
-	var per_stack := int(Effects.STATUS["overheating"]["effects"][0]["value"])
-	var stacks := 0
-	var heat := 0
-	for f in acting_on(ms):
-		if f.attacks() and f.has_keyword(f.action, "scorch"):
-			stacks += f.strikes()
-		elif str(f.action.get("effect", "")) == "add_heat":
-			heat += int(f.action.get("value", 0))
-	# A move that heats every machine counts whoever it is aimed at.
-	for f in field_foes():
-		if f.alive() and not f.is_suppressed() and str(f.action.get("effect", "")) == "heat_all" and f.hp - int(Effects.tick_preview(f)["hp"]) > 0:
-			heat += int(f.action.get("value", 0))
-	return stacks * per_stack + heat
-
-
 func incoming_for(ms: MechState) -> int:
 	var total := 0
 	for f in attackers_of(ms):
@@ -403,14 +385,14 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 			hull -= r["through"]
 			if r["injures"]:
 				component_risk = true
-	# Heat: what the gauge holds (past the cap, if the turn ran hot) and the face's own if
-	# asked burns at the end of the player's turn, before the enemy acts (11 October). The
-	# heat the foes and the Overheating tick add comes after the burn, onto the gauge for the
-	# next turn, where a vent can still take it off.
-	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0)
+	# Heat: what the gauge holds (past the cap, if the turn ran hot), the face's own if asked
+	# and Burning's tick burn at the end of the player's turn, before the enemy acts (11 and
+	# 13 October). Foes add no heat outright: their fire leaves Burning and Scorched, which
+	# land on later turns.
+	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"])
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
-	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"])
 	return {
 		"incoming": incoming,
 		"bite": bite,
@@ -473,9 +455,20 @@ func reach_of(ms: MechState, f: Face) -> int:
 
 
 ## The component as the player should see it and as the resolver spends it: a copy carrying
-## the effective reach and any keyword a passive grants. The die keeps the real one.
+## the effective reach and any keyword a passive grants. The die keeps the real one. An
+## attack also shows the heat a spend adds through every live source (a Scorched machine's
+## weapons run hotter, 13 October; the Sparrowhawk's double): the game does the arithmetic.
 func shown_face(ms: MechState, f: Face) -> Face:
-	return Effects.effective_face(ms.unit, f)
+	var sf := Effects.effective_face(ms.unit, f)
+	if sf == null or not sf.is_attack():
+		return sf
+	var heat := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
+	if heat == sf.heat:
+		return sf
+	if sf == f:
+		sf = f.duplicate_face()
+	sf.heat = heat
+	return sf
 
 
 # ---------------------------------------------------------------- round flow
@@ -831,10 +824,11 @@ func end_round() -> int:
 ## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
 ## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
 ## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
-## decides ends here. Heat a foe adds lands after it, so it waits on the gauge for the
-## next turn, where a vent or a cleanse can answer it. Shared by END TURN and a withdrawal.
+## decides ends here. A foe's Burning adds its heat just before it (13 October), so a vent
+## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
 func _end_player_turn() -> void:
 	overheats.clear()
+	_burn_mechs()
 	_settle_heat()
 	_refresh_allies()
 	_check_outcome()
@@ -886,7 +880,11 @@ func _enemy_turn() -> void:
 			if Effects.shocks_striker(t.unit, blocked):
 				_shock(f, t)
 			if f.has_keyword(f.action, "scorch") and t.alive():
-				Effects.stack(t.unit, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:" + f.content_id)
+				_fire_on(t, "scorched", 1, f)
+				log.append("%s scorches %s" % [f.display_name, t.unit.display_name])
+			if f.has_keyword(f.action, "burn") and t.alive():
+				_fire_on(t, "burning_mech", 1, f)
+				log.append("%s sets %s burning" % [f.display_name, t.unit.display_name])
 			if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
 				# The entry the die shows is switched off through the mech's next turn.
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
@@ -908,15 +906,32 @@ func _enemy_turn() -> void:
 		Effects.end_round(f, round)
 
 
-## The round ends with the machines' statuses ticking, after the enemy has struck: an
-## Overheating stack adds its heat to the gauge now, and that heat burns only at the end of
-## the next player's turn (11 October), after the cooling, so a vent or a cleanse answers it.
+## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
+## Scorched are not among them: they tick at the end of the player's turn (_burn_mechs).
 func _tick_mechs() -> void:
 	for ms in live_mechs():
 		var t := Effects.tick(ms.unit)
 		if int(t["heat"]) > 0:
-			log.append("%s: %d heat from overheating" % [ms.unit.display_name, int(t["heat"])])
+			log.append("%s: %d heat from its statuses" % [ms.unit.display_name, int(t["heat"])])
 			_add_heat(ms, int(t["heat"]))
+
+
+## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
+## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
+## stack and Scorched goes.
+func _burn_mechs() -> void:
+	for ms in live_mechs():
+		var t := Effects.turn_tick(ms.unit)
+		if int(t["heat"]) > 0:
+			log.append("%s burns: +%d heat" % [ms.unit.display_name, int(t["heat"])])
+			_add_heat(ms, int(t["heat"]))
+
+
+## A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; foes heat machines only
+## through them): stacks of Burning or Scorched for the skirmish, decaying as each says at the
+## end of the player's turn (Burning a stack, Scorched every stack).
+func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
+	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
 
 func withdraw() -> bool:
@@ -1150,9 +1165,9 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
-		"add_heat":
-			_add_heat(t, value)
-			log.append("%s: %s, %s +%d heat" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, value])
+		"burn":
+			_fire_on(t, "burning_mech", maxi(1, value), f)
+			log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
 		"scramble":
 			Effects.grant_for_rounds(t.unit, Effects.STATUS["scrambled"], "foe:" + f.content_id, round + 1)
 			log.append("%s: %s, %s's next reroll is scrambled" % [f.display_name, str(a.get("name", "scrambles")), t.unit.display_name])
@@ -1165,12 +1180,12 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			if t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
-		"heat_all":
+		"scorch_all":
 			var names: Array[String] = []
 			for ms in live_mechs():
-				_add_heat(ms, value)
+				_fire_on(ms, "scorched", maxi(1, value), f)
 				names.append(ms.unit.display_name)
-			log.append("%s: %s, +%d heat to %s" % [f.display_name, str(a.get("name", "erupts")), value, ", ".join(names)])
+			log.append("%s: %s, %s scorched ×%d" % [f.display_name, str(a.get("name", "erupts")), ", ".join(names), maxi(1, value)])
 		"corrupt_all":
 			var hit_names: Array[String] = []
 			for ms in live_mechs():
@@ -1252,7 +1267,7 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
 ## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
 ## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
-## round's end, the way Overheating does, so the ramp fades unless a passive keeps it.
+## round's end, so the ramp fades unless a passive keeps it.
 func _devour(ms: MechState, foe: Foe) -> void:
 	var m: Effects.Modifier
 	var stacks := _stacks_from(ms, "overcharged", 1)
@@ -1389,7 +1404,7 @@ func _disrupt(foes: Array) -> void:
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
-## cleansable status (a foe's disable, Corrupted, Overheating), and the log says which.
+## cleansable status (a foe's disable, Corrupted, Scrambled, Burning, Scorched), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
 	if not f.has(Face.Keyword.CLEANSE):
 		return

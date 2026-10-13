@@ -17,7 +17,7 @@ what keywords are owned by what maker".
 |---|---|---|---|
 | Spread | Also hits the target's neighbours in its rank, at full | Chainsaw Claw (Minerva, locked), Breaching Plow (Minerva, locked), Proximity Klaxon (Minerva, stock) | The row keyword: the neighbours, at half (section 7) |
 | Penetrate | Also hits the other rank of the target's column | Enfilade Beam (W&S, stock) | The column keyword (section 7); needs carriers |
-| Burn | Each foe hit gains a Burning stack per 10 of the blow | Incendiary Shells (W&S), Solar Flare Array (Aphelion, locked), Photosphere Lance (Aphelion, locked), Blazethrower, Meteor Artillery, Gravity Knuckles (the Arsenal, the knuckles locked) | Keep: a core verb |
+| Burn | Each foe hit gains a Burning stack per 10 of the blow | Incendiary Shells (W&S), Solar Flare Array (Aphelion, locked), Photosphere Lance (Aphelion, locked), Blazethrower, Meteor Artillery (the Arsenal), the shelved Gravity Knuckles; the Knuckle of Fury carries none (Ryan, 13 October) | Keep: a core verb. On the foes' side too since 13 October: a foe's burn sets a machine Burning, heat at the end of the player's turn |
 | Suppress | Each foe hit skips its action (Numbed may resist) | Suppression Battery, Megataser Harpoon (W&S, the harpoon locked), Umbra Inducer (Aphelion) | Keep: a core verb |
 | Shock | Each foe reached and left standing takes the team's next blow double | Polarity Projector (Aphelion), Tesla Gauntlets (Minerva, unstocked) | Keep: a core verb |
 | Lure | Each foe reached turns on the spender for the round | Proximity Klaxon (Minerva) | Keep: redirection is a core verb; needs carriers |
@@ -64,8 +64,9 @@ should also take a unique rule, or its number, is the bible's question in sectio
   Primed (blows leave Burning), Retaliate (strikers are Shocked), Rage (the Nemesis's store,
   a stack a hull hit, spent by its fists to roll again; the Crucible's +5 melee until 12
   October), Hopper (the Badger's loads).
-- **On a machine, from a foe:** Overheating (heat a stack at the round's end; its name goes, and
-  direct heat becomes it or a softer debuff, decided 12 October), Scrambled (the
+- **On a machine, from a foe:** Burning (heat a stack at the end of the player's turn, before
+  the overheat) and Scorched (every weapon fired runs hotter, for the turn), from a foe's
+  burn and scorch (built 13 October; direct heat and Overheating retired), Scrambled (the
   next reroll lands anywhere), Disabled (an entry blank through the next turn), Corrupted
   (spending an entry costs hull, shield first, for the skirmish; cleansable).
 - **On a foe, from the team:** Burning, Suppressed, Shocked, Paradox.
@@ -83,7 +84,7 @@ Where a machine and a foe fill the same niche with different words.
 | Temporary armour | Braced: +5 a stack, for rounds | Folded: +value until its next action | Proposed: **one word, Braced**, one shape: a foe that hardens is Braced until its next action |
 | Hits harder | Overcharged: +5 a stack | Kindled: +10 this round (fixed to its shown value in the to-do) | Proposed: one rule, +5 a stack; **Ryan's call** whether one neutral word or a word for each register (machines and myth) |
 | A spend that costs hull | Volatile: 10 hull, past shield, innate to the component | Corrupted: 10 a stack, shield first, put on by a foe | **Kept apart** (Ryan, 11 October): Corrupted can be cleansed and ends with the skirmish; Volatile is the component's own |
-| Damage over time | Burn, Burning: hull, 5 a stack | Scorch, Overheating: heat, 5 a stack | Keep the pair: hull and heat are different resources. Ryan, 12 October: direct heat goes; scorch puts on one of two heat debuffs, the other named anew or Burn reused on a machine. Claude's lean: Burn and Scorch, Burning on a machine the tick of heat, Scorched the softer (every weapon it fires hotter): fire takes a foe's hull and heats a machine (the bible's heat-debuff row) |
+| Damage over time | Burn, Burning: hull, 5 a stack | Burn, Burning: heat, 5 a stack at the end of the player's turn; Scorch, Scorched: every weapon fired 5 hotter a stack, for the turn | **One word on both sides** (Ryan, 13 October: Burn and Scorch; built): fire takes a foe's hull and heats a machine, and Scorched is the machine side's softer second debuff. Direct heat is gone (the bible's heat-debuff row) |
 | Denial | Suppress: a foe skips its action | Disable: a machine's showing entry is blank through its next turn | Keep both: a foe has one action, a machine a die |
 | Redirection | Lure: foes turn on the spender | Cover (planned, the Warrior): a foe takes blows meant for its allies | Keep both: mirror verbs |
 | Retaliation | Retaliate: a striker is Shocked | Counter, Ember Hide (planned): a striker is punished | Proposed: **one word, Retaliate**; the foe's version needs its effect on the machine designed |
@@ -92,31 +93,21 @@ Where a machine and a foe fill the same niche with different words.
 | Coming back | none | Regrow, Reraise, Summon | Foe only |
 | Swarming | none (no scaling with a tag's count, decided) | Swarm: more for every other foe of its type | Foe only |
 
-## 5. Who owns which keyword (a heuristic)
+## 5. Which keywords a maker leans toward (leanings, never exclusions)
 
-A maker's own pieces carry its keywords; another maker's keyword appears on a locked piece,
-or with a twist of its own. It streamlines what each maker means on the die, the way the
-naming vocabularies do for names. A guideline, never checked by the validator.
+Ryan, 13 October (recorded in the bible's section 7 by another session): a maker's profile is
+an identity, never an exclusion. A keyword or a mechanic fits wherever it fits the piece's
+fantasy, whoever makes it (a Wainwright & Sutler spider paralyses because spiders do), so this
+table reads as the keywords each maker's pieces most often carry, and the list of exceptions
+to fix that stood here is gone. A guideline, never checked by the validator.
 
-| Maker | Owns | Why |
+| Maker | Leans toward | Why |
 |---|---|---|
 | Minerva Heavy Works | Spread, Lure, Braced | Heavy industry holding a line: sweep, draw, brace |
 | Kestrel Dynamics | Rapid, Overcharged, Overshield (and the chain rule) | Speed: tempo, burst, escort |
 | Wainwright & Sutler | Suppress, Penetrate, strikes | Indirect fire, volume, pinning |
 | Aphelion | Disrupt, Shock, Cleanse, Primed (and the Paradox) | The status house |
-| The Arsenal | Volatile, Burn, Retaliate (and the devour rule) | Pain, fire, retribution |
-
-Today's exceptions, and what each could do:
-
-- Rapid on the Flakshot Repeater (W&S): locked, so it stands.
-- Rapid on the Pulse Vacillator (Aphelion, unstocked): give it an Aphelion verb.
-- Suppress on the Umbra Inducer (Aphelion, stock): Suppress shared by W&S and Aphelion, or
-  the inducer takes Disrupt.
-- Shock on the Tesla Gauntlets (Minerva, unstocked): the gauntlets move to Aphelion, or
-  Minerva shares Shock (the Armadillo's live hull is Minerva's too).
-- Burn on the Incendiary Shells (W&S, stock) and on Aphelion's locked Solar Flare Array and
-  Photosphere Lance: the locked two stand; the shells are the question. Burn shared by the
-  Arsenal and W&S, or the shells take a W&S verb.
+| The Arsenal | Volatile, Burn, Retaliate (and the devour and rage rules) | Pain, fire, retribution |
 
 **The twists** (proposed 11 October; agreed and built 12 October, Ryan: identities, out of
 the basic pool). The basic-kit rule says every piece that is not a basic carries something of

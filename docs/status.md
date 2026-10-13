@@ -11,7 +11,7 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 440 tests, 19,610 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
+- Tests: 441 tests, 19,633 checks, green (13 October, on `claude/focused-ritchie-omn8i5`).
   A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
@@ -95,10 +95,16 @@ goes into this file in the same commit as its first publish.
   its own tier, a bought one bringing its stock and never the blueprints, tier three the
   unique effects and raw power, tier two the synergy pieces; direct heat from foes retired
   for the two debuffs. Built: the Nemesis's rage (all hull damage banks it; new locked fists,
-  the Knuckle of Fury, Ryan's working name, spend one and the die rolls again, a plain roll
-  with no switch-off), the Gravity Knuckles unstocked at tier three; measured alone 79%
-  greedy against the Crucible's 84, teams unmoved. Open: the names, the heat debuffs' names
-  (Burn and Scorch proposed).
+  the Knuckle of Fury, spend one and the die rolls again, a plain roll with no switch-off).
+  13 October (Ryan): the fists keep their name and lose Burn (the Nemesis alone 44/67, the
+  fists at 25 restore 52/81); rage by damage taken measured and not worth it; the gravity
+  piece shelved; the rage's roll again shown (the chip bursts, the die flips with the
+  reroll's sound; `RIFTGATE_RAGE_DEBUG=1`); Burn and Scorch decided and built, foes heating
+  machines only through Burning (at the end of the player's turn, before the overheat) and
+  Scorched (every weapon hotter for the turn, every stack going at its end, since a stack a
+  turn piled up under several scorchers); teams unmoved, machines overheating far less, the
+  Goshawk (heat into shield) the one that loses; the die's heat shows every modifier. Open:
+  Burning's glyph on a machine.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
@@ -106,10 +112,9 @@ goes into this file in the same commit as its first publish.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
   rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
 - Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
-  components, the basics at tier zero and stock below a chassis's tier, heat from foes only
-  through debuffs, the Pinion Driver locked on the Sparrowhawk, danger close retired with the
-  area keywords. The bible's
-  section 12 lists the questions only Ryan can settle.
+  components, the basics at tier zero and stock below a chassis's tier, the Pinion Driver
+  locked on the Sparrowhawk, danger close retired with the area keywords. The bible's section
+  12 lists the questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
   enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV

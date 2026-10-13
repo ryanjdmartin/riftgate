@@ -828,7 +828,7 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
 		{"id": "odd", "name": "Odd", "kind": "buff", "effect": "nonsense", "text": "", "status": "implemented"},
 		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "nobody", "text": "", "status": "implemented"},
-		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "add_heat", "factor": 2.0, "text": "", "status": "implemented"}]
+		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "burn", "factor": 2.0, "text": "", "status": "implemented"}]
 	db.foes["odd_ghoul"] = g
 	var hits := 0
 	for e in db.validate():

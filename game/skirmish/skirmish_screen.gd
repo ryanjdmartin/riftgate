@@ -955,8 +955,10 @@ static func status_glyph(id: String) -> String:
 	if id.begins_with("disabled"):
 		return "blank"
 	match id:
-		"overheating":
+		"burning_mech":
 			return "heat"
+		"scorched":
+			return "scorch"
 		"overcharged":
 			return "overcharge"
 		"rage":
@@ -1005,7 +1007,7 @@ func _mech_rows(i: int) -> Array:
 			continue
 		var id := str(d[5])
 		var glyph := status_glyph(id)
-		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
+		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:

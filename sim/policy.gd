@@ -27,7 +27,7 @@ const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
-const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Overheating fades)
+const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
@@ -467,17 +467,23 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	return score - volatile_cost(sk, ms, f)
 
 
-## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat the
-## round's tick would put over the cap for the next turn as hull, the rest as room), the bites
-## its Corrupted entries would take over the rounds to come, and the entries a foe switched
-## off, at the die's own mean for each. A Scrambled reroll is small change.
+## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of
+## the turn (what it would put over the cap as hull, the rest as room), the heat Scorched would
+## add to its weapons this turn (about one; it goes at the turn's end), the bites its
+## Corrupted entries would take over the rounds to come, and the entries a foe switched off,
+## at the die's own mean for each. A Scrambled reroll is small change.
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
-	var tick := int(Effects.tick_preview(who.unit)["heat"])
+	var tick := int(Effects.tick_preview(who.unit, true)["heat"])
 	if tick > 0:
 		var fc := sk.forecast(who, false)
-		var over := clampi(int(fc["heat_after"]) - who.heat_max, 0, tick)
+		var over := mini(int(fc["overheat"]), tick)
 		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
+	var scorch := Effects.stacks_of(who.unit, "scorched")
+	if scorch > 0:
+		for eff in Effects.STATUS["scorched"]["effects"]:
+			if str(eff.get("effect", "")) == "add_heat":
+				score += float(int(eff.get("value", 0)) * scorch) * BANK_WEIGHT
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):

@@ -44,7 +44,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Heat the foes add, and the Overheating tick at the end of the round, lands after the burn and waits on the gauge for your next turn.",
+   "codex": "Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons run hotter.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -194,10 +194,10 @@
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
-   "codex": "Player keyword. Each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour.",
+   "codex": "Keyword. On the player's weapons: each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. On a foe's attack: each blow that lands leaves a stack of Burning on the machine it hit.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "On foes since 13 October (Ryan: Burn and Scorch, the player's keyword reused and acting differently on a machine)."
    }
   },
   {
@@ -364,7 +364,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted, Overheating and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
     "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
@@ -464,10 +464,10 @@
    "id": "burning",
    "category": "status",
    "name": "Burning",
-   "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack for every 10 damage dealt, rounded up.",
+   "codex": "Status. On a foe: loses 5 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 5 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "One word, two effects by body (Ryan, 13 October): the machine side replaced Overheating, whose name the real overheat already had. Engine ids burning (a foe's) and burning_mech (a machine's)."
    }
   },
   {
@@ -1171,23 +1171,23 @@
    }
   },
   {
-   "id": "overheating",
+   "id": "scorched",
    "category": "status",
-   "name": "Overheating",
-   "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack; the heat burns at the end of the next turn unless it is vented. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.",
+   "name": "Scorched",
+   "codex": "Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour."
+    "holes": "Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers."
    }
   },
   {
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit.",
+   "codex": "Foe attack keyword. Each blow that lands leaves a stack of Scorched on the machine it hit: its weapons run hotter.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably)."
+    "holes": "Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine."
    }
   }
  ]
