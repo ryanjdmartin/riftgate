@@ -67,7 +67,7 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   every wildlife foe now has four battle-pose takes on the picker (`takesE`; the Goblin and the
   Revenant beside their 9 October takes, the Cockatrice with its 9 October takes alone), the
   heroes keep their chibi and boss sets. Next: Ryan picks from the takes, a session cuts each.
-- Known gaps: Rally (below); Jenny's foe-down lines are keyed by the retired families.
+- Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Decided, not built
 
@@ -86,12 +86,8 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
 
 ## Next, in order
 
-1. Rally to its shown intent (engine, no decision pending). Today a foe's `rally` move (the
-   Magma Golem's Stoke the Forge, value 10; the Wolf's Howl, value 5) grants every other foe
-   Kindled at once (`Effects.STATUS["kindled"]`, a fixed +10 attack, through the next round),
-   so foes striking after the rallier in the same enemy turn hit 10 above the intent they show,
-   and the Howl gives 10, not 5. The fix in the to-do: Kindled carries its move's value and goes
-   live from the next round, when intents are drawn with it.
+1. Done, 13 October: Rally to its shown intent (Kindled carries its move's value and goes live
+   from the next round, when intents are drawn with it).
 2. The stock pass (above), once Ryan settles the content questions it needs: the basic kit's
    names, makers and numbers, and the Prairie Dog's basic shield (the bible's section 12).
 3. The balance runner's module rows (a fitted cell beside the stock one), then

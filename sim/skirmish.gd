@@ -93,6 +93,9 @@ var turn_events: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
+## This turn's rallies, [foe, value, source], granted as Kindled once the turn is over (13
+## October): live from the next round, so a foe striking after the rallier hits what it showed.
+var _rallies: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
@@ -839,6 +842,7 @@ func _end_player_turn() -> void:
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
+	_rallies.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
@@ -900,6 +904,13 @@ func _enemy_turn() -> void:
 			log.append("%s bursts, and is gone" % f.display_name)
 	_acted.clear()
 	_clear_dead()
+	# The rallies land now, on the foes still standing: Kindled at each rally's own value,
+	# live from the next round (its intents drawn with it) and gone after it.
+	for r in _rallies:
+		var other: Foe = r[0]
+		if other.alive() and field_foes().has(other):
+			Effects.grant_for_rounds(other, Effects.kindled(int(r[1])), str(r[2]), round + 1)
+	_rallies.clear()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
@@ -1156,10 +1167,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
 		"rally":
+			# Kindled goes live from the next round, when intents are drawn with it (13
+			# October): the grant waits until the enemy's turn is over (_enemy_turn), so a foe
+			# striking after the rallier this turn hits the number it showed, and it carries
+			# the move's own value (the Howl's 5, Stoke the Forge's 10), never a fixed 10.
 			var rallied := 0
 			for other in field_foes():
 				if other != f and other.alive():
-					Effects.grant_for_rounds(other, Effects.STATUS["kindled"], "foe:" + f.content_id, round + 1)
+					_rallies.append([other, maxi(0, value), "foe:" + f.content_id])
 					rallied += 1
 			log.append("%s: %s, %d hit %d harder next round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":

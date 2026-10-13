@@ -2896,6 +2896,36 @@ func test_a_rally_makes_the_others_hit_harder_next_round_only() -> void:
 	assert_eq(g.damage(), 10, "plain again")
 
 
+func test_a_rally_lands_next_round_at_its_own_value_whoever_acts_after_it() -> void:
+	# The rallier is the heaviest hitter, so it stands left and acts first (13 October): the
+	# foe striking after it this turn hits the number it showed, and next round every intent
+	# is drawn with Kindled at the move's own value (the Howl's 5), never a fixed 10.
+	var sk := Skirmish.new(11, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 300)
+	sk.add_mech(m)
+	var lord := _ghoul(500, 50)
+	var howl := _special("buff", "rally", {"value": 5})
+	lord.actions = [Foe.basic_action(), howl]
+	var g := _ghoul(500, 10)
+	sk.add_foes([lord, g])
+	sk.begin()
+	assert_true(sk.front[0] == lord, "the heavier hitter stands left and acts first")
+	sk.start_round()
+	lord.action = howl
+	assert_eq(g.damage(), 10, "the intent shown")
+	sk.end_round()
+	assert_eq(m.hull, 290, "the blow landed is the intent shown, rallied or not")
+	assert_true(Effects.has(g, "kindled"), "kindled for next round")
+	assert_false(Effects.has(lord, "kindled"), "not the rallier itself")
+	assert_eq(Effects.foe_attack_bonus(g), 5, "by the Howl's own 5")
+	sk.start_round()
+	lord.action = lord.actions[0]
+	assert_eq(g.damage(), 15, "its intent reads 15")
+	sk.end_round()
+	assert_eq(m.hull, 290 - 50 - 15, "the lord's 50 and the kindled 15")
+	assert_false(Effects.has(g, "kindled"), "gone with the round")
+
+
 func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)

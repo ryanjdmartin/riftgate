@@ -55,7 +55,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ## Engine
 
-- [ ] Rally: Kindled reads its move's value and goes live from the next round, so every foe's shown intent stays exact (today a fixed +10 at once; the Wolf's Howl says 5)
+- [x] Rally, built 13 October: Kindled carries its move's value and goes live from the next round, so every foe's shown intent stays exact
 - [ ] Jenny's foe-down lines keyed by domain, once Ryan says whether a domain borrows an old family's pool or gets its own
 - [ ] The stock pass, after the content questions: the new tags in place of the internal filing tags (kinetic, energy, single, support), the basic kit, the old close weapons brought to Direct's band, the Pinion Driver fixed on the Sparrowhawk (the die still a d4, so three hardpoints; the Goshawk's hardpoint a basic; the model with the driver built in), the Zenith Emitter folded into the Laser Carbine, the Rivet Gun a basic on the Armadillo, the Blast Door and the Ram-air Scoop renamed, the Coolant Dump and the Blowout Stack retired, the Prairie Dog on the basic shield, the Baboon free to stock a shield, every tier-one chassis on basics beside its locked piece (the Sparrowhawk's Railgun, Arc Fault Cannon and Deflector out; the Stingray and the Baboon too, the Stingray moved 11 October), each component's tier in its entry with the basics at zero, the run starting with their blueprints and every chassis stocking below its own tier, the Boar's Spillover chips shown as the star; rebuild the Stingray's and the Baboon's models with their stock
 - [x] The heat debuffs, built 13 October: Burning ticking at the end of the player's turn before the overheat, Scorched heating the weapons fired for the turn (every stack going at its end), Stoke, Eruption, Fira and Hellfire converted, the forecast, the die's heat and the bot's cleanse reading them
@@ -105,7 +105,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 ## Pages (standing)
 
 - Republish the bible from the committed file to its one URL (in status) after every bible change
-- Republish the hangar page with `tools/hangar_data.py`'s map after every content, model or render change (add `content/modules.json` to the map first)
+- Republish the hangar page with `tools/hangar_data.py`'s map after every content, model or render change
 - After Ryan edits on the hangar's Content tab: pull `edits` with ArtifactData, apply by hand, test, commit, republish, clear the documents
 - Re-seed the Melody Desk's `parts` after a track's voices change (`desk_parts.py`)
 

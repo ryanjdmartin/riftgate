@@ -183,7 +183,9 @@ On a foe:
   (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox
   causes adds none; a weapon's Suppressed does.
 - **Folded** (buff, Harden): armour +value until its next action.
-- **Kindled** (buff, Rally): hits harder until the end of the next round.
+- **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
+  live when that round's intents are drawn, so a foe striking after the rallier this turn
+  hits the number it showed.
 - **Getting Back Up** (buff, Reraise): after it falls it returns to the reinforcements once,
   whole, unless it self-destructed.
 - **Numbed** (a resistance, neither buff nor debuff, drawn in brackets): each stack is a 10%
@@ -373,7 +375,4 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 
 ## Known gaps between these rules and the code
 
-- Rally grants a fixed +10 at once, not its move's value next round, so foes acting after
-  the rallier that turn hit above their shown intent.
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.
-- `tools/hangar_data.py` leaves `content/modules.json` out of the hangar page's files.

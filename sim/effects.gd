@@ -127,6 +127,10 @@ const STATUS := {
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
 	"folded": {"id": "folded", "name": "Folded", "description": "Armour +5 until its next action.",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
+	# Kindled carries its rally's own value (13 October: the Wolf's Howl says 5, Stoke the
+	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
+	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
+	# enemy's turn is over. The 10 here is only the default a bare grant would carry.
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.",
@@ -142,6 +146,15 @@ const STATUS := {
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
+
+
+## Kindled at a rally's own value: the status above with the move's value in place of the
+## default, so the Howl's 5 is 5 and the chip says so.
+static func kindled(value: int) -> Dictionary:
+	var d: Dictionary = STATUS["kindled"].duplicate(true)
+	d["description"] = "Hits %d harder this round." % value
+	d["effects"][0]["value"] = value
+	return d
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
 ## own buffs (Folded, Kindled, Getting Back Up).
