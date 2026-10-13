@@ -559,6 +559,8 @@ func tick_pressure(ticks: int) -> bool:
 
 
 ## Apply a finished skirmish back to the map: survivors keep marching, wrecks are removed.
+## Rift Pressure does not tick here (Ryan, 13 October: a tick per round fought punished care
+## invisibly and taxed the epic fight like a stall); it ticks on the map's enemy turns only.
 func apply_skirmish_result(sk: Skirmish) -> void:
 	for ms in sk.mechs:
 		if ms.unit.hull <= 0:
@@ -571,4 +573,3 @@ func apply_skirmish_result(sk: Skirmish) -> void:
 			units.erase(sq)
 		else:
 			sq.strength = left
-	tick_pressure(sk.round)

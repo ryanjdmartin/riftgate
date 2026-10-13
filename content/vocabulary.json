@@ -64,7 +64,7 @@
    "id": "rift_pressure",
    "category": "resource",
    "name": "Rift Pressure",
-   "codex": "Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh pack emerges at the rift.",
+   "codex": "Ticks once per battlefield phase, never inside a fight. When full it resets and a fresh pack emerges at the rift.",
    "status": "implemented",
    "design": {
     "holes": "Spawns a fixed pack. Should draw from the battle's faction(s) and escalate."

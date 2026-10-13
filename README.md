@@ -328,8 +328,8 @@ skirmish screen. A machine that fought is spent until the next turn. A hunter th
 walk beside its prey has caught it: the next turn opens with a CAUGHT band, and that fight is
 the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
 that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
-result: wrecks leave the map, packs shrink to their survivors, and Rift Pressure ticks once
-per round fought. The battle ends when the gate falls, every mech is wrecked, or the boss
+result: wrecks leave the map, packs shrink to their survivors; Rift Pressure ticks on the map's enemy turns only, never
+inside a fight. The battle ends when the gate falls, every mech is wrecked, or the boss
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan

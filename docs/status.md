@@ -71,7 +71,8 @@ document's job and every command are in `README.md`.
   spectrum between passive cooling and venting, and the runner reads heat spikes, forced choices
   and the damage forgone to heat rather than counting vents (section 5); cooldowns in a skirmish reopened, a
   decision made for Ryan by a session (section 8); the Arsenal's tier-one components exist
-  (section 10); the map stays nine wide; the screens third in the order; `docs/mechanic_budgets.md` the brief for the roster session.
+  (section 10); the map stays nine wide; the screens third in the order; Rift Pressure no longer
+  ticks per round fought, only on the map (section 4, built); `docs/mechanic_budgets.md` the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
   row may be, what a Lean is and what a "never" must carry; the measurements live in
   `docs/measurements.md`; section 12 holds only the questions; this file holds the order of
@@ -160,7 +161,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.151 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.152 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

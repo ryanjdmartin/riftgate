@@ -1928,7 +1928,7 @@ func _show_outcome(outcome: int) -> void:
 			Sound.voice_clear()
 			Sound.play("victory")
 			_overlay_title.text = "VICTORY"
-			_overlay_text.text = "The pack is gone. Rift pressure rose by %d." % sk.round
+			_overlay_text.text = "The pack is gone."
 		Skirmish.Outcome.DEFEAT:
 			Sound.play("defeat")
 			_overlay_title.text = "WRECKED"

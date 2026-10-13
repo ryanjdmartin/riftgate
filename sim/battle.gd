@@ -544,9 +544,10 @@ func _build_skirmish(group: Array) -> Skirmish:
 	return sk
 
 
-## Apply the finished skirmish: wrecks leave the map, packs shrink or vanish, and Rift
-## Pressure ticks once per round fought. Every machine in it is spent, however the fight
-## ended (bible section 4); a forced fight comes off the list. Shields do not refill here.
+## Apply the finished skirmish: wrecks leave the map, packs shrink or vanish. Rift Pressure
+## ticks on the map's enemy turns only, never per round fought (Ryan, 13 October). Every
+## machine in it is spent, however the fight ended (bible section 4); a forced fight comes off
+## the list. Shields do not refill here.
 func finish_skirmish() -> void:
 	if current == null:
 		return

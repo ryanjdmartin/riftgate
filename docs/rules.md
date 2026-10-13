@@ -311,7 +311,7 @@ and a ticking status loses a stack at its owner's turn. Nothing writes to a stat
 - **A fight** is at the target's hex. Every other pack whose ring covers that hex joins (no
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
   it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
-  Pressure rises one per round fought.
+  Pressure does not tick: it ticks on the map alone.
 - **Packs**: one foe type times a strength. They treat every land hex as normal and water and
   crags as walls; moves 20 (fast 30, massive 10); rings 1 (front rank), 3 (back rank), 2
   (massive). They walk round machines and other packs; the walk shown is the walk played. The
@@ -324,7 +324,7 @@ and a ticking status loses a stack at its owner's turn. Nothing writes to a stat
   move first, others in range may join.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. A withdrawal leaves it standing.
-- **Rift Pressure** fills at 12 (+1 each enemy turn, +1 each round fought) and spawns the next
+- **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies.
 - Not built: city defences, the Rupture meter and its Fractures, the sealed boss, rift tiles.
