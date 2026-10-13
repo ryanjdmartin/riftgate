@@ -46,9 +46,8 @@ skirmish.
   basics beside its fixed pieces and a tier-three component is only ever found. Blueprints
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
-  maker) makes no basics and has no tier one. (Open: under those two rules a tier-two Arsenal
-  chassis can stock nothing the Arsenal makes; the bible's section 10 holds the ways out.)
-  (Not built: today a stocked component takes the
+  maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
+  and its tier-two chassis stock them. (Not built: today a stocked component takes the
   lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
   with every tier-one blueprint, and the stocks wait on the stock pass.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.

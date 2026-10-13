@@ -47,4 +47,5 @@ The one-to-four and solo measurements it leans on are in `docs/measurements.md`,
 Most novel: Minos, the boiler, the revolver, the multi-rotor, the gunship and the fan-boat, each
 changing what pieces do or what the player controls. Most redundant: the funnel-web and Misharu,
 two more stuns, and one of Mastema and the Onryō, two more damage-over-time machines. Aphelion's
-proposal is unread against these rules and carries no bench of ideas set aside.
+proposal is read as a list of ideas in a vacuum (Ryan, 13 October: that session went off the
+rails), not as a design to defend, and it carries no bench of ideas set aside.

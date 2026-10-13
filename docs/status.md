@@ -66,7 +66,9 @@ document's job and every command are in `README.md`.
   Anathema fill by the threat-weighted tally, the Favour dock the gate's price (section 3);
   offers one of each kind, a chassis on the shelf, host-maker offers shaping the roster
   (section 10); twelve to sixteen battles recommended; the battle withdrawal reopened (section
-  4, Claude's walk-out proposal); `docs/mechanic_budgets.md` the brief for the roster session.
+  4, Claude's walk-out proposal, which Ryan finds thematic and decides later); heat bites or it
+  is not in the game (section 5); the Arsenal's tier-one components exist (section 10); the map
+  stays nine wide; `docs/mechanic_budgets.md` the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
   row may be, what a Lean is and what a "never" must carry; the measurements live in
   `docs/measurements.md`; section 12 holds only the questions; this file holds the order of
@@ -106,8 +108,9 @@ document's job and every command are in `README.md`.
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
   on the Sparrowhawk, the Baboon free to stock a shield, every tier-one chassis on basics beside
   its locked piece, each component's tier in its entry and every chassis stocking only below
-  its own tier (the Arsenal's tier twos excepted until Ryan closes the hole), a bought chassis
-  bringing copies of its stock and never the blueprints, heat re-priced by niche.
+  its own tier (the Arsenal's tier-one components exist for its tier twos to stock), a bought
+  chassis bringing copies of its stock and never the blueprints, heat re-priced by niche so
+  that it bites (section 5's heat row: a machine firing every round overheats by its third).
 - Danger close retires and area belongs to keywords on any reach: Splash folds into Spread and
   Penetrate, an explosive carries both (the Artillery Rangefinder needs a new rule).
 - A dispel keyword for the foes' buffs (its name, carriers and numbers open).
@@ -119,7 +122,8 @@ to-do's Ryan list).
 
 1. **The batch evaluation with the depth-and-breadth session, one session.** Reads the bible's
    first row, section 5's stun row, `docs/mechanic_budgets.md` (the brief) and the four
-   proposals on main (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
+   proposals on main, Aphelion's read as a list of ideas in a vacuum (Ryan: that session went
+   off the rails) (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
    `docs/aphelion_chassis_proposal.md`, `docs/canvas/kestrel-airframes.html`). Measures every
    chassis's solo value beside its team value (`tools/balance.gd --team`) and compositions at a
    fixed four; folds in the Honey Badger's identity, the Armadillo's Faraday Hull and the cars'
@@ -131,8 +135,8 @@ to-do's Ryan list).
    packs for detachments and formations for the body, the boss sealed by the threat-weighted
    meter and fought with its formation, the withdrawing persona on the campaign bot; then reruns
    both reports and measures the fights a team fights together.
-3. **The stock pass**, once Ryan answers section 12's content questions (the stock rule's hole
-   first): tags, the basic kit, heat re-priced by niche, the area keywords on the explosives.
+3. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
+   heat re-priced by niche so that it bites, the area keywords on the explosives.
 4. **The screens**: a prototype hangar, the mission map and the draft, so a run can be played;
    section 12 asks whether they come before item 1.
 5. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
@@ -151,7 +155,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.146 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.147 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

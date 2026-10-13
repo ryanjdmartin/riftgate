@@ -26,7 +26,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 - [ ] The batch evaluation of every maker's proposed chassis with the depth-and-breadth session, one fresh session (Ryan, 13 October): `docs/mechanic_budgets.md` is its brief; the four proposals on main; solo value beside team value for every chassis and compositions at a fixed four (`tools/balance.gd --team`); the Honey Badger's identity, the Armadillo's Faraday Hull and the cars' solo niche folded in; each proposal's set-aside list re-read under the bible's first row; ends with the go and the build order
 - [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured
-- [ ] The stock pass's content questions settled in chat (section 12, the stock rule's hole first), then the pass below
+- [ ] The stock pass's content questions settled in chat (section 12), then the pass below, with heat re-priced so that it bites (the bible's heat row)
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles
 
 ## Engine
