@@ -33,9 +33,7 @@ document's job and every command are in `README.md`.
   `docs/aphelion_chassis_proposal.md` and the bible's Aphelion row. Its documents predate the
   13 October refactor (it still carries the retired keyword line-up and roster proposal, and
   lacks `docs/measurements.md`), so it merges main before it lands and keeps main's versions of
-  the status, the to-do, CLAUDE.md, the README and the rules. A local sprite session is in
-  flight in this folder (uncommitted `art/foes/`, `content/foes.json`, `tools/foeforge` and
-  document hunks): leave them unstaged.
+  the status, the to-do, CLAUDE.md, the README and the rules.
 - The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
   (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
   `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Kestrel's five airframes as
@@ -73,9 +71,10 @@ document's job and every command are in `README.md`.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
   On 13 October every wildlife foe but the Needler was re-picked from its battle-pose takes and
   cut, with the Lancer's and the Summoner's chibis; his note on each pick is in
-  `tools/foeforge/picks/picks.json` and the touch-ups wait on who makes them. The cutter gained
-  `--holes N` (a size floor) and `--glow` (a coloured glow cut solid). The old sheet still
-  makes the 16x16 map tokens.
+  `tools/foeforge/picks/picks.json`. The same day the edit model tried a fix for each note
+  (`forge.py fix`), the Treant and the Needler got new takes, and the heroes a diversity pass:
+  all on the picker for Ryan. The cutter gained `--holes N` (a size floor), `--holes-tol` and
+  `--glow`. The old sheet still makes the 16x16 map tokens.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October

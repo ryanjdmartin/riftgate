@@ -129,14 +129,15 @@ CHIBI_SIZE = (36, 48)   # exactly twice the wildlife's pixel beside it: a delibe
 DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the swamp and graveyard", "peak": "the volcano"}
 
 
-def prompt_for(foe):
+def prompt_for(foe, brief=None):
     look = FACTION_LOOK.get(foe.get("faction", ""), "")
     where = DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
     # A foe's sprite brief (design.sprite) leads: the model weighs the start of a prompt most,
     # and a brief says the shape (a blob, a ball of fire) the style text would otherwise turn
     # into a muscled body (9 October: every Bomb and Gel came out humanoid without one). With
     # a brief, the codex's rule text stays out; without one, it fills in as before.
-    brief = foe.get("design", {}).get("sprite", "")
+    # A design take (design.variants) stands in for the brief when one is given.
+    brief = foe.get("design", {}).get("sprite", "") if brief is None else brief
     fantasy = _without_sources(foe.get("design", {}).get("fantasy", ""))
     body = " ".join(s for s in [fantasy] + ([] if brief else [foe.get("codex", "")]) if s)
     lead = f"{brief[0].upper() + brief[1:]}. " if brief else ""
@@ -288,11 +289,13 @@ def phone(args):
                 found.append((suffix, note, cands))
         # The original sets predate the style rules (Ryan, 10 October: once a foe has takes,
         # the originals can go); a hero's chibi is its own register and stays.
+        if args.only:
+            found = [f for f in found if f[0] not in ("", "_chibi")]
         if args.drop_originals and any(s not in ("", "_chibi") for s, _, _ in found):
             found = [f for f in found if f[0] != ""]
         for suffix, note, cands in found:
             key = fid + suffix
-            if suffix == "_chibi":
+            if suffix.startswith("_chibi"):
                 frame, scale = CHIBI_SIZE, 2
             elif foe.get("hero") or int(foe.get("size") or 1) > 1:
                 frame, scale = COMBAT_SIZE[2], 1
@@ -312,7 +315,7 @@ def phone(args):
                 entry.append({"n": n, "img": rel, "cut": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(),
                               "cw": frame[0], "ch": frame[1]})
             kind = " ".join(x for x in [foe.get("faction", ""), note] if x)
-            sets.append({"key": key, "foe": fid, "name": foe["name"] + (" (chibi)" if suffix == "_chibi" else ""),
+            sets.append({"key": key, "foe": fid, "name": foe["name"] + (" (chibi)" if suffix.startswith("_chibi") else ""),
                          "note": kind, "scale": scale, "current": picks.get(key), "cands": entry})
     page = (ROOT / "tools" / "foeforge" / "phone_picker.html").read_text()
     (dest / "index.html").write_text(page.replace("/*__SETS__*/[]", json.dumps(sets)))
@@ -337,8 +340,8 @@ def prompts(args):
     print(f"wrote {dest.relative_to(ROOT)}: {len(foes)} prompts")
 
 
-def chibi_prompt_for(foe):
-    brief = foe.get("design", {}).get("sprite", foe["name"])
+def chibi_prompt_for(foe, brief=None):
+    brief = foe.get("design", {}).get("sprite", foe["name"]) if brief is None else brief
     return f"{CHIBI_STYLE} The hero: {brief}."
 
 
@@ -370,9 +373,10 @@ def generate(args):
             # the four differ in body plan and pose rather than in seed noise (Ryan, 9 October:
             # more creative entropy within the style). Candidate n draws take n, so a foe's
             # added takes render on their own with --seed (the Goblin's fifth on: --seed 5).
+            # The take is built into the register's own prompt (a chibi's names its hero after
+            # the style, so a swap by text never found it and every chibi take drew the brief).
             take = takes[(seed - 1) % len(takes)]
-            brief = foe.get("design", {}).get("sprite", "")
-            p = prompt.replace(brief[0].upper() + brief[1:], take[0].upper() + take[1:], 1) if brief else f"{take}. {prompt}"
+            p = f"{take}. {args.prompt}" if args.prompt else (chibi_prompt_for(foe, take) if chibi else prompt_for(foe, take))
         if args.ref:
             # A style reference through the edit model: the reference is drawn from for its
             # finish only, never its creature.
@@ -390,6 +394,42 @@ def generate(args):
         subprocess.run(cmd, check=True)
         made.append(path)
     (out / "prompt.txt").write_text("\n\n".join(prompts_used) + "\n")
+    contact(made, out / "contact.png")
+    print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
+
+
+FIX_EDIT = (
+    "Edit this 16-bit SNES JRPG battle sprite. Keep everything else exactly as it is: the same "
+    "figure, pose, proportions, colours, one-pixel dark outline, shading and painterly pixel art "
+    "style, on the same solid flat pure white background. "
+    "Change only this: {fix}"
+)
+
+
+def fix(args):
+    """Candidates for one fix to a pick's source through the edit model (Ryan, 13 October: the
+    touch-ups his notes ask for, tried by the model before a hand): the source is the picture
+    being edited, so the design survives and only the named part changes. Into out/<foe>_<tag>,
+    which the pickers show beside the foe's other sets."""
+    foes = load_foes()
+    if args.foe not in foes:
+        sys.exit(f"no foe {args.foe}")
+    src = Path(args.image)
+    out = OUT / f"{args.foe}_{args.tag}"
+    out.mkdir(parents=True, exist_ok=True)
+    prompt = FIX_EDIT.format(fix=args.fix)
+    (out / "prompt.txt").write_text(f"source: {src}\n\n{prompt}\n")
+    print(prompt)
+    made = []
+    for seed in range(args.seed, args.seed + args.n):
+        path = out / f"{args.foe}_{seed}.png"
+        if path.exists():
+            path.unlink()
+        cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+               "--image-paths", str(src), "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        print("rendering", path.name)
+        subprocess.run(cmd, check=True)
+        made.append(path)
     contact(made, out / "contact.png")
     print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
 
@@ -647,7 +687,7 @@ def cut(args):
     if args.glow:
         src = key_glow(image, src)
     if args.holes:
-        src = key_holes(src, min_area=args.holes)
+        src = key_holes(src, tol=args.holes_tol, min_area=args.holes)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
@@ -1009,6 +1049,7 @@ def main():
     ph = sub.add_parser("phone", help="the picker as a phone page in out/phone/, for publishing as an artifact")
     ph.add_argument("--tags", nargs="*", default=[], help="also include experiments' sets (out/<id>_<tag>)")
     ph.add_argument("--drop-originals", action="store_true", help="leave out a foe's original set once it has one of the tagged sets")
+    ph.add_argument("--only", action="store_true", help="show only the tagged sets (a round of fixes and new takes, the earlier sets already picked)")
     ph.set_defaults(func=phone)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
     p.add_argument("--out", default="")
@@ -1023,6 +1064,14 @@ def main():
     g.add_argument("--ref", default="", help="a style reference image, through the edit model (its finish, never its creature)")
     g.add_argument("--variants", action="store_true", help="each candidate from its own take in design.variants")
     g.set_defaults(func=generate)
+    fx = sub.add_parser("fix", help="candidates for one fix to a pick's source through the edit model, into out/<foe>_<tag>")
+    fx.add_argument("image", help="the source to fix (a pick in tools/foeforge/picks, or a candidate in out/)")
+    fx.add_argument("foe")
+    fx.add_argument("fix", help="what to change, in words; everything else is kept")
+    fx.add_argument("--n", type=int, default=4)
+    fx.add_argument("--seed", type=int, default=1)
+    fx.add_argument("--tag", default="fix")
+    fx.set_defaults(func=fix)
     c = sub.add_parser("cut")
     c.add_argument("image")
     c.add_argument("foe")
@@ -1030,6 +1079,7 @@ def main():
     c.add_argument("--sharpen", type=int, default=60, help="the gentle sharpen's unsharp amount, percent (default 60; raise it for a crisper cut, -1 for the old plain median cut)")
     c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
     c.add_argument("--holes", type=int, nargs="?", const=400, default=0, metavar="MIN_AREA", help="also key enclosed pockets of background (sky between branches) of at least MIN_AREA render pixels (400 when not given; raise it to spare a pale highlight, as the Wolf's haunch at 1000); off by default, since a white robe is the same colour")
+    c.add_argument("--holes-tol", type=int, default=24, help="how near white a pocket must be to key (default 24); lower it, to 8 or so, when the figure wears an off-white robe (the White Mage)")
     c.add_argument("--glow", action="store_true", help="coloured light over the white (a flame, a glow) cut as solid colour instead of a pale blob; off by default, since it is only for glows")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)

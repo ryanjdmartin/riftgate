@@ -127,7 +127,7 @@ const STATUS := {
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
 	"folded": {"id": "folded", "name": "Folded", "description": "Armour +5 until its next action.",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
-	# Kindled carries its rally's own value (13 October: the Wolf's Howl says 5, Stoke the
+	# Kindled carries its rally's own value (13 October: the Dire Wolf's Howl says 5, Stoke the
 	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
 	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
 	# enemy's turn is over. The 10 here is only the default a bare grant would carry.
