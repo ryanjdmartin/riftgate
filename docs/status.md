@@ -9,6 +9,8 @@ command are in `README.md`.
 
 - Read `CLAUDE.md`, `docs/rules.md`, this file and `docs/todo.md`. If a chat and a file
   disagree, the chat is newer.
+- Ryan's next step (12 October): a fresh session evaluates every maker's proposed chassis as
+  one batch, and nothing is built before it. Where each proposal lives is under Proposals below.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
 - Tests: 428 tests, 19,544 checks, green (10 October, on `ccr-abac8c0f-yig0e2`). A cloud
@@ -24,16 +26,39 @@ command are in `README.md`.
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
   and has nothing main lacks; new work starts from main.
-- `claude/ws-chassis-designs-wssq2u` (12 October): `docs/ws_chassis_proposal.md`, the third
-  round of six Wainwright & Sutler passives for Ryan's silhouettes (two spiders, a chicken
-  walker, two helicopters, a fan-boat). Ryan liked the boiler (now cooling -10), the
-  multi-rotor (its look brief is written) and the stun punish at full; the cylinder takes his
-  wording; the gunship and the fan-boat now read tags, waiting on his read; retired ideas at
-  its foot. Bible v0.113 on this branch: Ryan's design notes of 12 October (a chassis identity
-  opens build space; a map action buying a fight buff is no condition; every rule is open to
-  debate; the decoy stays out) and the W&S row as simple and straightforward, suppression
-  being Aphelion's; one line on debate in CLAUDE.md. Merge it so other sessions get the notes;
-  nothing is in content.
+- Since 12 October `main` also carries the Arsenal's proposals (`docs/arsenal_proposal.md`,
+  fast-forwarded from `ccr-baf790be-gootfd`) and the bible as published (v0.126), which runs
+  ahead of main's code. It records work built on `claude/focused-ritchie-omn8i5` and not yet
+  merged: the overheat at the end of the player's turn, armour off a breach's overflow, the
+  Badger's hopper, the Stingray at tier one, the shock's discharge gone, the Pinion Driver
+  named, Devour a printed rule, the modules priced, Braced for one turn, the plow's brace, the
+  Deflector's Rapid and the Condenser's Volatile, the Nemesis's rage and the Knuckle of Fury,
+  the keyword line-up and the runner's `--rows` and `--module`. Main's `docs/rules.md`, content
+  and code predate all of it. `ccr-550650c0-g0kcbg` shares that branch's history to 12 October
+  and adds Aphelion's calls, which are in the bible already. Merging either brings its code;
+  its bible resolves to the live page, which holds every session's rows.
+- `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
+  proposal (below), the bible as published (v0.127), and two lines in CLAUDE.md (every rule is
+  open to debate; a maker's profile is an identity, never an exclusion). Merge it so other
+  sessions get them.
+
+## Proposals
+
+For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is in content.
+
+- The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
+  cleanse that moves debuffs onto a foe).
+- Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
+  (six silhouettes, the third round of 12 October with Ryan's correction of 13 October).
+- Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
+  (four candidates, 11 October).
+- Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
+  11 October).
+- Aphelion: in chat only, per the bible's row "Aphelion's next chassis"; to be written down
+  before the evaluation.
+- The keyword line-up (`docs/keyword_lineup.md` on `claude/focused-ritchie-omn8i5`), which
+  several of the chassis lean on. Its section 5, keywords by maker, reads as leanings and
+  never ownership, its list of exceptions to fix gone (Ryan, 13 October; the bible's row).
 
 ## Pages
 
@@ -43,9 +68,8 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.125 (12 October), the parallel
-  branches' v0.124 plus this branch's W&S row; no single file holds it yet (main v0.112, this
-  branch v0.113), so the next publish starts from the live page.
+  `docs/design-bible.html` after every change (v0.127; main's file is v0.126 until this
+  branch merges).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
@@ -74,6 +98,17 @@ goes into this file in the same commit as its first publish.
   content revision's components, the domains and the plaque.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
   weapon rules; rerun after the stock pass, with module rows.
+- The Arsenal (12 October, bible v0.126): the occult is the Council's; its machines are twisted
+  by it, never merged (mechanical, CARE-piloted, no mind of their own); grimdark is playing it
+  straight; demonic in look, liturgical in word; a passive may break a rule as a one-off;
+  retribution is the Arsenal's, thorns allowed with a drawback and never on a megatank; the
+  rule-text budget counts the chassis's description, never its components. Four chassis are
+  proposed in full in `docs/arsenal_proposal.md`, written for the batch evaluation: Misharu (a
+  shield's breaker is Suppressed), Mastema (Burning passes from the dead; the Chrism Ewer
+  doubles a foe's Burning, the Votive Ward shields 10 for each Burning foe), Minos (every foe it
+  hits changes rank) and the Onryō (a Grudge on whoever wounds the team, never cashed in,
+  outliving it; the Pall its guard). Ryan's last note: a cleanse that moves the team's debuffs
+  onto a foe, which waits on the words the two sides share (none today). Nothing is built.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.

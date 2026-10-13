@@ -1,7 +1,7 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Third round, 12 October 2026. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Third round, 12 October 2026, corrected 13 October. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
 passives hold, so the machines go by silhouette. Numbers are placeholders in the content's
 tens.
@@ -13,18 +13,18 @@ tens.
 | Eight-legged spider | 2 | Its vents may be spent on a foe in reach: they deal, as one blow, the heat they take off it. Cooling -10. | Equipment is spent on a machine; cooling never below zero | Liked; numbers and the nerf to settle |
 | Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; wording and look below |
 | Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Ryan's wording; the order shown, and Rapid as a sequence, below |
-| Four-legged spider | 2 | A blow it lands on a Suppressed foe also strikes every other Suppressed foe. | Area belongs to a keyword, and comes by shape | Stun punish, at full; the venom version beside it |
+| Four-legged spider | 2 | A blow it lands on a Suppressed foe also strikes every other Suppressed foe. | Area belongs to a keyword, and comes by shape | Stun punish, at full; now spins its own web; the venom version beside it |
 | Medium gunship | 2 | Its Ballistic weapons reach any foe a Missile weapon struck this round. | Direct reaches the back rank only through a hole | New: tags, not debuffs |
 | Fan-boat hovercraft | 1 | Its Ballistic weapons also hit the foes beside the target, for half. | Area belongs to a keyword | New: tags; the batch's one tier one |
 
 The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
 space; a map action that buys a fight buff is no condition; a chassis exists to bend a rule,
 and whether the bend is healthy is the debate; Wainwright & Sutler is simple and
-straightforward, and debuffs, suppression among them, are Aphelion's. Out of bounds: a kill
-making a spend Rapid, every weapon Indirect, a decoy every hunter picks, a W&S identity built
-on debuffs (round two's gunship and fan-boat). The four-legged spider reads one debuff, a
-stun, as a punish, which Ryan took; its Fangs carry Suppress as a locked piece may carry
-another maker's keyword.
+straightforward. A maker's profile is an identity, never an exclusion (Ryan, 13 October): a
+piece fits wherever its fantasy fits, so the four-legged spider paralyses because spiders do,
+and statuses are Aphelion's strength without being its alone. Out of bounds: a kill making a
+spend Rapid, every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the
+gunship and the fan-boat (a gunship is about its weapons).
 
 Two of the six read tags (Ballistic, Missile), so they wait on the stock pass that puts tags on
 components. Both pay out on Ballistic weapons, which reads as the maker: plain guns, done well.
@@ -37,8 +37,7 @@ The stock lists name today's pieces as stand-ins. Under the stock rule (Ryan, 12
 tier one stocks basics beside its locked piece and every chassis stocks only below its own
 tier, each component carrying its tier, so the stock pass rewrites them. Three pieces change
 in that pass (decided 12 October, not built): the Coolant Dump retires, the Laminar Deflector
-becomes a shield of 20 with Rapid (Kestrel's tempo) and the Entropy Condenser a vent of 40 with
-Volatile (the Arsenal's).
+becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Volatile.
 
 ## Eight-legged spider: the boiler
 
@@ -64,7 +63,7 @@ Volatile (the Arsenal's).
 - **Numbers and locked kit.** Heavy, walker, move 20; hull 150, shield 30, armour 10, heat 100,
   cooling -10, field recharge 15. Locked: the Steam Cannon, Direct, flat 30, heat 30. Four
   hardpoints (d5). Stock: two vents and two guns (stand-ins: the Coolant Jacket, a basic vent,
-  the Howitzer, the Maxigun; the Suppression Battery left out, its keyword Aphelion's).
+  the Suppression Battery, whose heat of 20 feeds the vents, and the Maxigun).
 - **Model.** A riveted cab with eight lamps for eyes, eight legs arched high over a body slung
   low (the Wild Wild West homage), the abdomen a boiler with its stack, the Steam Cannon
   between the fangs, vent grilles along the abdomen glowing brighter as the heat climbs.
@@ -156,15 +155,19 @@ Volatile (the Arsenal's).
 
 - **Passive.** "A blow it lands on a Suppressed foe also strikes every other Suppressed foe."
   At full, no halving (Ryan, 12 October), with stuns rare.
-- **What it opens.** Every stun on the team becomes part of one web: the Baboon's meter, the
-  Umbra Inducer, the Dingo's harpoon, the Suppression Battery, and the Arsenal pitch's
-  Misharu if it is built (a foe that breaks its shield is Suppressed). Payoff: any heavy single
-  blow of any maker lands on all of them. A W&S machine that cashes Aphelion's stuns, so the
-  synergy runs across makers.
-- **Is the payoff worth it.** Only when stuns come in pairs. Alone the spider makes one stun a
-  round with its fangs, and one stunned foe is no web, so this is a team machine at tier two.
-  Stuns are rare today (the Suppression Battery, the harpoon, the Umbra Inducer, a Paradox
-  trip), and Numbed keeps them so: each stun lands harder to repeat on the same foe.
+- **What it opens.** It spins its own web: the Spinneret holds the target and the foe behind
+  it and rolls again, so the heavy blow that follows strikes both. Every other stun joins the
+  web, whoever makes it: the Suppression Battery, the Umbra Inducer, the Baboon's meter, the
+  Dingo's harpoon, and the Arsenal pitch's Misharu if it is built (a foe that breaks its
+  shield is Suppressed). Payoff: any heavy single blow of any maker lands on all of them.
+- **Is the payoff worth it.** Alone, yes: the Spinneret makes the pair a web needs, and a heavy
+  gun cashes it in the same turn when the reroll finds one. Suppressed lasts the round, so a
+  web is spun and cashed in one turn, by the spider's die or the team's. Stuns stay rare
+  (a landed one adds two Numbed stacks), so the web moves from foe to foe rather than locking
+  one down.
+- **The hole.** Two foes held whenever the Spinneret comes up is strong control before any
+  blow lands; Numbed tempers repeats. If it proves too much, the Spinneret loses Rapid (the
+  team cashes the web) or holds only the foe behind.
 - **The venom version** (Ryan's other idea, the small deadly spider): "A weapon it spends on a
   Suppressed foe deals 10% of that foe's current hull more." Shallower, and it works alone
   (bite to stun, strike to poison), so it can be a light tier one. The holes: a percentage is
@@ -173,13 +176,14 @@ Volatile (the Arsenal's).
   one, which leaves the kill to the team; once a spend, never once a strike, or the Maxigun
   triples it; rounded up to fives, as player damage is.
 - **Numbers and locked kit.** Medium, walker, move 30; hull 110, shield 40, armour 5, heat 60,
-  cooling 5, field recharge 20 (the venom version: light, move 40, hull 70, and as a tier one,
-  basics beside the Fangs). Locked: the Fangs,
-  Direct, flat 5, Suppress, Rapid, heat 5: a paralysing bite, and the die rolls again. Four
-  hardpoints (d5). Stock: Slugthrower, Howitzer, Umbra Inducer, Laminar Deflector.
+  cooling 5, field recharge 20. Locked: the Spinneret, Direct, flat 5, Suppress, Penetrate,
+  Rapid (three keywords, the cap), heat 5: a web shot down the column, and the die rolls
+  again. Four hardpoints (d5). Stock: Slugthrower, Howitzer, Suppression Battery, Laminar
+  Deflector. The venom version: light, move 40, hull 70; locked, the Fangs (Direct, flat 5,
+  Suppress, Rapid, heat 5), a paralysing bite; as a tier one, basics beside them.
 - **Model.** Ghost in the Shell's four-legged spider tank on howitzer trail spades: a low
-  casemate slung between four long legs whose knees rise above the deck, the fangs under its
-  prow.
+  casemate slung between four long legs whose knees rise above the deck, the spinneret's
+  nozzle under its prow between the fangs.
 
 ## Medium gunship: rockets find it, guns finish it
 
@@ -227,4 +231,5 @@ Volatile (the Arsenal's).
 - Round two (12 October): shield as the four-legged spider's ammunition (set aside while the
   Arsenal pitch's Misaru turned shield into damage; Misharu now suppresses the foe that breaks
   its shield, so the idea is free again); debuffs as the gunship's sights and the fan-boat's
-  drift (debuffs are Aphelion's); the web at half (Ryan: at full, stuns being rare).
+  drift (Ryan: statuses are Aphelion's strength, and a gunship is about its weapons); the web
+  at half (Ryan: at full, stuns being rare).

@@ -25,6 +25,8 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
+- [ ] Every maker's proposed chassis evaluated together by a fresh session, nothing built first (Ryan, 12 October): the Arsenal's in `docs/arsenal_proposal.md` (four chassis and a cleanse that moves debuffs onto a foe), the others where `docs/status.md` lists them, Aphelion's written down first; then the go and the build order
+- [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine)
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set), the basic kit's names, makers and numbers, the equipment basics' names, the twists for the Laminar Deflector and the Entropy Condenser
 - [ ] The module catalogue again as soft-synergy pairs once tags are assigned, simple text; a new rule for the Ram Frame
 - [ ] Heat from foes only through debuffs: names (the Overheating name goes), the ticking one at the end of the player's turn before the overheat, the softer one raising every weapon's heat per stack, maybe both, and a glyph of its own
@@ -39,6 +41,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ## Engine
 
+- [ ] On merging `claude/focused-ritchie-omn8i5`: `docs/keyword_lineup.md` section 5 recast as leanings, never ownership, its list of exceptions to fix struck (Ryan, 13 October: a maker's profile is an identity, never an exclusion; the bible's row)
 - [ ] Rally: Kindled reads its move's value and goes live from the next round, so every foe's shown intent stays exact (today a fixed +10 at once; the Wolf's Howl says 5)
 - [ ] Jenny's foe-down lines keyed by domain, once Ryan says whether a domain borrows an old family's pool or gets its own
 - [ ] The stock pass, after the content questions: the new tags in place of the internal filing tags (kinetic, energy, single, support), the basic kit, the old close weapons brought to Direct's band, the Headhunter's successor fixed on the Sparrowhawk (the die still a d4, so three hardpoints; the Goshawk's hardpoint a basic; the model with the rifle built in), the Zenith Emitter folded into the Laser Carbine, the Rivet Gun a basic on the Armadillo, the Blast Door and the Ram-air Scoop renamed, the Coolant Dump and the Blowout Stack retired, the Prairie Dog on the basic shield, the Baboon free to stock a shield; rebuild the Stingray's and the Baboon's models with their stock
@@ -93,4 +96,4 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ## Pinned, not now
 
-- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights
+- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights; Hellfire as an Arsenal component prefix (Ryan, 12 October)
