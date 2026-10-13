@@ -58,6 +58,10 @@ const SCRAMBLE_PART := 0.55       # the first part of the acquire, while the num
 var _glitch: float = -1.0         # seconds since this unit's picture tore; negative when idle
 var _glitch_kind := "tear"        # "tear": slices jump sideways; "drop": the signal goes, static and a tag
 var _glitch_for := 0.5            # how long this tear lasts
+var _spend: float = -1.0          # seconds since a store's stack went from a chip (the Nemesis's rage); negative when idle
+var _spend_glyph := ""           # the chip it went from
+const SPEND_SECONDS := 0.55
+var _chip_rects := {}             # glyph -> [rect, colour] as last drawn, so a chip's last stack bursts where the chip was
 
 var _pressed := false
 var _press_at := 0.0
@@ -205,10 +209,15 @@ func _process(delta: float) -> void:
 		if _glitch > _glitch_for:
 			_glitch = -1.0
 		queue_redraw()
+	if _spend >= 0.0:
+		_spend += delta
+		if _spend > SPEND_SECONDS:
+			_spend = -1.0
+		queue_redraw()
 	if (_has_pending() or breathe) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0:
+	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0:
 		set_process(false)
 
 
@@ -244,6 +253,16 @@ func glitch(kind: String = "tear", seconds: float = 0.5) -> void:
 	_glitch = 0.0
 	_glitch_kind = kind
 	_glitch_for = seconds
+	set_process(true)
+	queue_redraw()
+
+
+## A stack spent from one of this unit's chips (the Nemesis's rage rolling its die again,
+## Ryan, 13 October): the chip flashes hot, a ring and sparks burst off it and a "-1" rises.
+## Called by the skirmish screen as the stack goes, before the die rolls.
+func spend_chip(glyph: String) -> void:
+	_spend = 0.0
+	_spend_glyph = glyph
 	set_process(true)
 	queue_redraw()
 
@@ -307,6 +326,32 @@ func _draw_shatter(vis: Rect2) -> void:
 		var a := c + dir * r0 * (0.6 + t * 1.6)
 		var b := a + dir * (10.0 + 14.0 * (1.0 - t))
 		draw_line(a, b, Color(Palette.SHIELD, (1.0 - t) * 0.8), 2.0)
+
+
+## The stack going (spend_chip): hot and loud, since every effect judged on the phone has come
+## back hotter. Drawn over the chip, or where the chip was when that was its last stack.
+func _draw_spend(mono: Font) -> void:
+	if _spend < 0.0 or not _chip_rects.has(_spend_glyph):
+		return
+	var t := clampf(_spend / SPEND_SECONDS, 0.0, 1.0)
+	var rect: Rect2 = _chip_rects[_spend_glyph][0]
+	var col: Color = _chip_rects[_spend_glyph][1]
+	var c := rect.get_center()
+	# The flash: the chip floods with its colour, white at the core for the first moment.
+	Hud.fill_poly(self, Hud.cut(rect.grow(3.0 * (1.0 - t)), 4.0), Color(col, 0.9 * (1.0 - t)))
+	if t < 0.35:
+		Hud.fill_poly(self, Hud.cut(rect.grow(-5.0), 3.0), Color(Color.WHITE, (0.35 - t) * 2.6))
+	# The ring, bursting off the chip, and the sparks flying ahead of it.
+	Hud.stroke_poly(self, Hud.cut(rect.grow(4.0 + 34.0 * t), 6.0), Color(col, 1.0 - t), 3.5 * (1.0 - t * 0.5))
+	for k in range(10):
+		var ang := TAU * float(k) / 10.0 + 0.2
+		var dir := Vector2(cos(ang), sin(ang) * 0.7)
+		var a := c + dir * (rect.size.x * 0.5 + 40.0 * t)
+		draw_line(a, a + dir * (9.0 + 13.0 * (1.0 - t)), Color(col, (1.0 - t) * 0.95), 2.5)
+	# The count going: a -1 rising off the chip, on a dark edge so it holds over any ground.
+	var y := rect.position.y - 8.0 - 30.0 * t
+	draw_string_outline(mono, Vector2(rect.position.x, y), "-1", HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 22, 4, Color(Palette.BG, (1.0 - t * t) * 0.9))
+	draw_string(mono, Vector2(rect.position.x, y), "-1", HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 22, Color(col, 1.0 - t * t))
 
 
 func _draw() -> void:
@@ -385,6 +430,7 @@ func _draw() -> void:
 	for s in statuses:
 		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status"])
 	if chips.is_empty():
+		_draw_spend(mono)
 		return
 	var widths: Array[float] = []
 	var total := 0.0
@@ -402,6 +448,7 @@ func _draw() -> void:
 		var ch: Array = chips[i]
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
+		_chip_rects[ch[0]] = [rect, col]
 		if ch.size() >= 4 and ch[3] == "resist":
 			# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
 			# never the box a status wears, so the difference is the frame, not a hue.
@@ -420,6 +467,7 @@ func _draw() -> void:
 			# The lock: bracket corners collapsing onto the chip, fading as they land.
 			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
 		x += widths[i] + 6.0
+	_draw_spend(mono)
 
 
 ## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on

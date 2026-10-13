@@ -353,6 +353,34 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	s.free()
 
 
+## The Nemesis's rage (Ryan, 13 October): a die rolled again by a spent stack bursts the
+## stack's chip, then flips back with the reroll's sound; headless, the burst is set going and
+## the die is the player's to spend again.
+func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	var fist := Face.attack(10)
+	fist.rolls_again_on = "rage"
+	m.die = Die.single(fist)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
+	assert_false(sk.mechs[0].assigned, "the rage rolled it again")
+	assert_true(s._mech_views[0]._spend >= 0.0, "the rage chip bursts")
+	assert_eq(s._mech_views[0]._spend_glyph, SkirmishScreen.status_glyph("rage"), "on the rage chip")
+	assert_false(s._dice[0].spent, "the die is the player's again")
+	assert_true(s._use_die(0, sk.front[0]), "and it punches again")
+	assert_true(sk.mechs[0].assigned, "no rage left: spent")
+	s._rage_debug()   # the debug switch's call: a stack kept on the machine, the burst again
+	assert_true(Effects.stacks_of(m, "rage") >= 1, "the debug keeps a stack to burst")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()
