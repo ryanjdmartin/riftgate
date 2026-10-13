@@ -2,37 +2,22 @@
 
 Godot 4.7 / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
 rules as they are now: read it first. `docs/design-bible.html` records every decision and why
-(section 12 is the roadmap); `README.md` explains the layout and every command.
+(its first row says how to read a row; section 12 holds the questions only Ryan can settle);
+`docs/status.md` says how things stand and the order of work; `docs/todo.md` holds the tasks;
+`README.md` explains the layout, every document's job and every command.
 
 ## Commands
 
 ```sh
-godot --headless --path . --import                 # first run, and after adding PNGs
+godot --headless --path . --import                 # first run, and after adding PNGs or a class_name
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
-godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
-perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md (about 90 minutes with four domains); --trace "row|pack|policy|seed" for one fight's log
-perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200   # map generator report to docs/map_survey.md (shares, water, the horde's crossing, phases and reach by way of moving, every map type compared); --type KIND, --show SEED prints a map
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs played headless into docs/campaign_run.md (the campaign's placeholders against a plain player); --trace SEED prints one run
-tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
-tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects       # the console and the effects into art/audio (`build` alone adds the loops); voice_lines.py ship for Jenny's lines; then --import
-perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook driven with a window, muted: a SCRIPT ERROR is a broken hook
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), with their rig sidecars (joints, acts), then --import
-BPY_PYTHON=<python with the bpy wheel> tools/spriter/.venv/bin/python tools/lowforge/forge.py build <id>   # the same with no Blender installed (a cloud session: python3.11 venv, pip install bpy==5.0.1); tools/lowforge/glbcmp.py old.glb new.glb proves the geometry unchanged
-RIFTGATE_ACTS_DEBUG=1 godot --path .               # every idle act back to back, in the skirmish and on the map (=<act name> loops one); RIFTGATE_MOVE_DEBUG=1 drives every machine constantly; tools/act_shot.gd freezes one frame of one act (or a stride) to a PNG; tools/gait_clip.gd saves every frame of a walk at its map pace (a gait option too) for ffmpeg
-tools/spriter/.venv/bin/python tools/lowforge/forge.py export <chassis id>     # a hand-edited tools/lowforge/models/<id>.blend back to art/models, then --import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                # the five silhouette classes in every maker's metal (art/models/shapes), then --import
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)
-RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- <scene> phone.png   # the phone's layout, safe bands and density on the Mac (add --rendering-method gl_compatibility for its renderer)
-tools/android.sh                                   # debug APK to the phone over USB (`log` tails it); a crash: ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash
+godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (about 45 minutes); --trace "row|pack|policy|seed" for one fight's log
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (two minutes)
 ```
 
-Ally art (decided 21 September): the mid-nineties 3D register, built by `tools/lowforge`
-from a written brief. A unit is a few hundred flat-shaded facets wearing small generated
-tiles in its maker's metal; no hand modelling, no unwrapping. `tools/spriter/.venv` is only
-the Python the tools run with.
+Every other command (models, foes, sound, screenshots, the phone, the pages) is in `README.md`.
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.
 
@@ -75,18 +60,15 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   Pick share is the component signal. Ryan's play tests decide feel and micro balance;
   the runner decides macro. Never chase a simulated win rate to a decimal.
 - The bible's register (decided 13 October): a Decided row is a design test (what the player
-  feels), a rule the engine runs, or a content call for a named piece. A maker's or a side's
-  theme, word or keyword is a Lean, never a Decided rule and never an exclusion. A "never"
-  carries its reason and the condition that reopens it; one without either is the current state,
-  not a law. A row that retires a mechanism names the form that failed and the test it failed,
-  so a new form is free to be proposed. Never write Ryan's preference for a maker as a universal
-  rule, and never refuse an idea because a row reads as if it owns a theme.
-- A proposal surfaces the ideas a rule killed (a bench, one line each with the rule) so Ryan can
-  overrule the rule and not only the idea; an "out of bounds" or "must not cross" list in a
-  proposal is Ryan's to write, never pre-applied by a session.
-- A cell delta is read at 200 seeds or as a band; a 30-seed run is a direction and is called
-  one. Every run a decision cites goes in `docs/measurements.md`, dated with its seeds; a bible
-  row keeps the reason and the exit condition, never the run.
+  feels), a rule the engine runs, or a content call for a named piece; a maker's or a side's
+  theme, word or keyword is a Lean, never a rule and never an exclusion. A "never" carries its
+  reason and the condition that reopens it, or it is the current state, not a law; a row that
+  retires a mechanism names the form that failed and the test it failed, so a new form is free
+  to be proposed. Write Ryan's preference at the strength he gave it. A proposal shows the ideas
+  a rule killed (a bench, one line each with the rule) so he can overrule the rule; an "out of
+  bounds" list in a proposal is his to write, never pre-applied. A cell delta is read at 200
+  seeds or as a band; a 30-seed run is a direction and is called one; every run a decision
+  cites goes in `docs/measurements.md`, and a row keeps the reason and the exit, never the run.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
@@ -145,4 +127,10 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - Before proposing a change, read what `docs/rules.md`, the bible and the code already say about
   it. A proposal that re-opens a settled point, or states one wrongly, costs Ryan a correction;
   when the records cannot settle it, ask.
+- One home for each thing, so nothing drifts: the order of work is `docs/status.md`'s "Next,
+  in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
+  a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
+  `docs/<maker>_proposal.md` until its evaluation, retired (git keeps it) once its decisions are
+  rows and content. Never the same item in two files, and no row carries a conversation: a long
+  Open row is a paragraph and a pointer to its proposal.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.

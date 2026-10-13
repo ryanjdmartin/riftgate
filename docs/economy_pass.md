@@ -1,5 +1,9 @@
 # The economy pass: notes for its session
 
+The numbers quoted below are the 7 October run, before the domains; `docs/campaign_run.md` of 13
+October (3 of 40 runs won, most fights one machine alone) and `docs/measurements.md` are the
+current reads, and the campaign's fall is understood before any price is set.
+
 Ryan, 7 October: the first estimate of every price, worked out from what the run pays in,
 gets a session of its own. These notes are its starting brief. The ledger is in bible
 section 10 (the ledger row, the loop row, the numbers row). Every constant named here is in

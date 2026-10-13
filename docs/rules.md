@@ -29,7 +29,8 @@ skirmish.
   into its chassis, uses no hardpoint, is never a blueprint and has no tier.
 - **Rolled or flat**: a rolled weapon shows a range and rolls in it when spent; a flat weapon
   is one number with no roll, however many things feed it (heat fired, missing hull, buffs,
-  armour). There are no crits and no weapon classes.
+  armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
+  its reach. There are no crits and no weapon classes.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set,
   not yet assigned to components) are build flavour shown in the codex only (not built).
   A tag carries no rule of its own; a module or passive may read one. Components still carry
@@ -339,7 +340,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
   every basic (not built: today every tier-one component's).
-- **A turn** is one battle at a front, with one to four ready machines, or a pass.
+- **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
+  roster goes to the one front; the open fronts left alone bleed (below). A battle is played
+  to its end: there is no withdrawal from a battle, and a team wipe is the graded loss.
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
   10 salvage a kill; 100 Favour less 1 per gate point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (unpacking and offers
@@ -368,13 +371,11 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 
 ## Content conventions
 
-- `content/*.json` is data, validated by `sim/content_db.gd` in the tests; bad content fails
-  the build.
-- Shown to the player: `codex`, `flavour`, a passive's `name` and `description`, a module's
-  `text.description`, a foe action's `text`. Internal text lives under `design` and is never
-  shown. Shown text never says "face".
-- A draft the engine cannot run carries `"status": "planned"`: kept, never shown or run.
-- Runtime code takes defaults from content, never from a hardcoded id.
+- Each content file's `_about` is the authority on its fields; `sim/content_db.gd` validates
+  them in the tests, so bad content fails the build. Shown to the player: `codex`, `flavour`, a
+  passive's `name` and `description`, a module's `text.description`, a foe action's `text`;
+  everything under `design` is internal; shown text never says "face"; a draft the engine cannot
+  run carries `"status": "planned"` and is kept, never shown or run.
 
 ## Known gaps between these rules and the code
 

@@ -57,7 +57,7 @@ machine (the game without danger close) against the same run without it. No row'
 moves by more than three points, most not at all. Indirect's share of attack spends rises from
 23% to 25%; the share aimed at the back rank falls from 25% to 19% over every pack and from 63%
 to 51% against packs with a back rank. Indirect lands about 12 hull a spend for 8 heat against
-Direct's 18 for 9. `docs/keyword_lineup.md` section 6; bible section 5.
+Direct's 18 for 9. the keyword line-up of 11 and 12 October (retired 13 October; git has it); bible section 5.
 
 **Area by shape.** 40 seeds a cell, random/greedy averaged over twenty packs. Spread at half:
 the Badger 45/69 to 42/66, the Wild Boar 62/85 to 60/82, the teams unmoved. Penetrate off the
@@ -66,7 +66,7 @@ Wainwright & Sutler team 78 to 70 greedy against the Meadow formation, the Clyde
 either way. Chain off the Arc Fault Cannon: the Sparrowhawk 46/68 to 38/55, every swarm it beat
 collapsing (Goblins and Revenants 20/88 to 0/0, Bombs 52/100 to 0/8, Needlers 72/100 to 18/100),
 the Goshawk and the Kestrel team three points greedy. Spillover, with every passive removed
-(30 seeds, greedy): the Wild Boar loses about one point. `docs/keyword_lineup.md` section 7;
+(30 seeds, greedy): the Wild Boar loses about one point. the keyword line-up of 11 and 12 October (retired 13 October; git has it);
 bible section 5.
 
 **Chassis tiers track nothing.** Alone, greedy, 30 seeds a cell, means over twenty packs: the
@@ -80,7 +80,7 @@ best build only because the Crucible fed on their bite. Bible section 7.
 measured no different from flat armour, so it was hidden base armour. The injury threshold at a
 quarter of maximum hull sorts the machines as meant: no heavy machine is ever injured, the
 light ones 1.4 to 1.9 times a fight; a crack costs 0.4 keywords on average, most cracked
-entries losing nothing. `docs/keyword_lineup.md` section 2; bible section 5.
+entries losing nothing. the keyword line-up of 11 and 12 October (retired 13 October; git has it); bible section 5.
 
 ## 12 October
 
@@ -131,7 +131,7 @@ Meadow, Marsh and Peak formations: the half rule with danger close gone 63, 10 a
 and 23%; danger close kept as the firer's price 100, 100 and 97% for 18, 17 and 26%. The
 explosives' share of its spends 35% to 46%. Alone, the half rule costs the Badger and the Wild
 Boar 3 to 5 points; the shells add a few points to whoever carries them (the Clydesdale 48 to
-61). `docs/keyword_lineup.md` section 7; bible section 5.
+61). the keyword line-up of 11 and 12 October (retired 13 October; git has it); bible section 5.
 
 **Injuries, one state.** Greedy, 30 seeds a cell. An injury that destroys outright moves no
 machine's win rate or hull. Components destroyed a fight, averaged over the machines alone: 0.09
