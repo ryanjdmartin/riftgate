@@ -107,7 +107,10 @@ defeat when every machine is wrecked. There is no round limit.
   it may strike, it shows that foe's number: its missing hull, conditions on it, its armour
   off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
-- Player damage comes in fives; hull, shield, heat and foe numbers in tens.
+- Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
+  tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
+  blow of 12), and the numbers between the round ones are the room for balancing and upgrades.
+  Move alone keeps steps of 5, since a hex costs 5 or 10.
 
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.

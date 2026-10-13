@@ -134,7 +134,7 @@
    "id": "damage_range",
    "category": "component_property",
    "name": "Damage range",
-   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. The player's damage comes in fives.",
+   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls.",
    "status": "implemented",
    "design": {
     "holes": "Ranges are content-authored per component; no upgrade path raises min or max yet."

@@ -268,7 +268,7 @@ land and the number flashes over the target; energy faces are static. Reroll up 
 times per round, before or after attacking; a reroll always lands on a different face,
 never the one showing nor an equivalent one. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
-and then the next round's dice show. Numbers are in tens. Hold a foe or a mech for its
+and then the next round's dice show. Hold a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
 shows every arrow; double-tap any unit for its codex entry. Withdraw is offered at any point
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
