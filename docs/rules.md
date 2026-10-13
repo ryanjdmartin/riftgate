@@ -45,7 +45,9 @@ skirmish.
   basics beside its fixed pieces and a tier-three component is only ever found. Blueprints
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
-  maker) makes no basics and has no tier one. (Not built: today a stocked component takes the
+  maker) makes no basics and has no tier one. (Open: under those two rules a tier-two Arsenal
+  chassis can stock nothing the Arsenal makes; the bible's section 10 holds the ways out.)
+  (Not built: today a stocked component takes the
   lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
   with every tier-one blueprint, and the stocks wait on the stock pass.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
@@ -120,8 +122,6 @@ defeat when every machine is wrecked. There is no round limit.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
-- **Spillover**: damage past the kill of a front-rank foe carries into the foe behind it as
-  plain damage.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
@@ -129,7 +129,7 @@ defeat when every machine is wrecked. There is no round limit.
   another entry, and the machine acts again.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
-- **Cleanse** (shields and vents): the machine it lands on loses Burning, Scorched,
+- **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
   Scrambled, a foe's Disabled and Corrupted (never a Rapid switch-off).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
@@ -145,7 +145,10 @@ spending it Braces its owner, the stacks it says, until the round's end (the Wil
 Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing.
+the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
+Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
+carries into the foe behind it as plain damage; the engine runs it as a keyword the passive
+grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
 On a machine:

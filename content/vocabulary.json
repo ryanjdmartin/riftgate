@@ -184,7 +184,7 @@
    "id": "spillover",
    "category": "keyword",
    "name": "Spillover",
-   "codex": "Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe.",
+   "codex": "The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
    "status": "implemented",
    "design": {
     "holes": "Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword)."

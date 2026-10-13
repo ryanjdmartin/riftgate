@@ -204,10 +204,9 @@ other machine is the bait.
   topped up past the blow is a plain block, so the bait is small on purpose. That is a new
   decision about shields (how much, on whom), and a strong one.
 - Suppress is common (the Suppression Battery, the Umbra Inducer, the Megataser Harpoon, the
-  Baboon's Paradox); Misharu's is the only one the enemy sets off itself. Suppression is
-  Aphelion's keyword now (Ryan, 12 October, bible v0.125); the makers' heuristic lets another
-  maker's keyword appear on a locked piece or with a twist, and a passive set off by the enemy is
-  the twist, which the evaluation should confirm.
+  Baboon's Paradox); Misharu's is the only one the enemy sets off itself. Suppress is a keyword
+  Aphelion leans toward, never its own (Ryan, 13 October: a profile is an identity, never an
+  exclusion), so Misharu's needs no twist to justify it; the evaluation reads it on its merits.
 - The player must see why a foe is suppressed: a mark on the convicted foe and a log line.
 
 **Engine and tests.** Small. In `_enemy_turn` (`sim/skirmish.gd`), after each `_damage_mech`,
@@ -515,7 +514,8 @@ are even shared between ally and enemy. The working name is the **Scapegoat Bran
 Azazel on reflection). The first pitch's sin-eater, which took its allies' heat onto itself, is
 its cousin on the bench.
 
-**What the two sides share today: nothing.**
+**What the two sides shared on 12 October: nothing; since 13 October, Burning** (the heat
+debuffs took the names Burn and Scorch that day; the table stands as written on the 12th).
 
 | A machine's debuff | On a machine | Who lays it today | What it could mean on a foe |
 |---|---|---|---|

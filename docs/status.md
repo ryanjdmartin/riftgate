@@ -7,11 +7,11 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
 
 ## Start here
 
-- Read `CLAUDE.md`, `docs/rules.md`, this file and `docs/todo.md`. If a chat and a file
-  disagree, the chat is newer.
+- Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (how to read a row), this file and
+  `docs/todo.md`. If a chat and a file disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 442 tests, 19,636 checks, green on main (13 October). A cloud session fetches Godot
+- Tests: 443 tests, 19,645 checks, green on main (13 October, evening). A cloud session fetches Godot
   4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -36,7 +36,7 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   content notes, the README, the vocabulary and the to-do). The rest of that branch is the
   proposal.
 
-## The game as left (13 October)
+## The game as left (13 October, evening)
 
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five
   map types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
@@ -52,16 +52,39 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   the machine fires runs 5 hotter a stack until the end of the player's turn, when every stack
   goes); the Drake's Stoke sets the hottest machine burning ×2, Eruption, Fira and Hellfire
   scorch every machine ×2, the four scorching blows leave Scorched; a foe attack keyword
-  `burn` exists, unused; the die's heat shows what a spend adds through every modifier (heat
-  reads adds before multiplies, so the Sparrowhawk's double doubles Scorched's extra).
+  `burn` exists, unused; the die's heat shows what a spend adds through every modifier; Rally
+  (13 October, evening): Kindled carries its move's value and goes live from the next round,
+  so every intent shown is exact.
 - Content: five makers, 13 chassis, 54 components (12 locked, 4 unstocked, among them the
   shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and
   bosses and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole
   number may be used (the scales are magnitudes), move alone in steps of 5.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
-- Measurements: every number quoted in a decision is in its bible row. `docs/balance.md` and
-  `docs/campaign_run.md` predate the 10 October weapon rules.
+- The records, after Ryan's review of 13 October (the bible had grown by half in three days
+  and gained forty "never"s, many of them leans, single measurements or the content of the day
+  written as law, and proposals were filtering ideas against them before he saw them): the
+  bible is v0.139 with a Lean status and a first row saying what a Decided row may be and what
+  a "never" must carry (its reason and the condition that reopens it); the ownership lines
+  (myth, "Frame", tracks, rotors, retribution, the eldritch) are leans or carry their reason;
+  the retired weapon rules name the tests they failed; the pattern rows (tags, the foes'
+  mitigation, locked plating, escalation by stats, the skirmish's timers, the taunt) say what
+  they protect, so content that passes the test passes the row; eleven contradictions between
+  the rules, the bible, the vocabulary and the proposals are fixed (Spillover, Retaliate, the
+  tier rows, the eldritch, the suppression line, chances and enemy rolls, one source of
+  randomness, Cleanse, move-then-fight); `docs/measurements.md` holds every run a decision
+  cited, dated with its seeds, and the rows keep the reason and the exit; `CLAUDE.md` carries
+  the register rules for every session. One question it opened is Ryan's: the stock rule's
+  hole (the bible's section 10 and section 12).
+- Measurements: `docs/campaign_run.md` rerun on 13 October on the four domains and today's
+  rules. The plain player wins 3 of 40 runs (29 of 40 on 9 October, before the domains), 6%
+  of battles, 93% of them wiped, every city but the capital falling by turn 4 to 9. The same
+  report on the commit before the Rally fix gave 0 of 40 and 4%, so the fall is the domains
+  and the 10 to 13 October rules, not Rally. Read the bands: the campaign is a wall for a
+  plain player while the skirmish team rows beat every single pack, because the battle's
+  fights are mostly solo (1,157 of 1,747 fights one machine alone, wrecks sitting out) and a
+  lone machine loses to a pack a third of the time and to two packs two thirds. `docs/balance.md`
+  at 200 seeds is rerunning on today's rules (about ninety minutes).
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
   On 10 October Ryan retired the original candidate sets (rendered before the style rules):
   every wildlife foe now has four battle-pose takes on the picker (`takesE`; the Goblin and the
@@ -76,8 +99,8 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver
   locked on the Sparrowhawk, the Baboon free to stock a shield, every tier-one chassis on
   basics beside its locked piece, each component's tier in its entry and every chassis
-  stocking only below its own tier, a bought chassis bringing copies of its stock and never
-  the blueprints.
+  stocking only below its own tier (the Arsenal's tier twos excepted until Ryan closes the
+  hole), a bought chassis bringing copies of its stock and never the blueprints.
 - Danger close retires and area belongs to keywords on any reach (the Artillery Rangefinder
   needs a new rule). Which keywords is the open bible row "Area by shape": Ryan's condition
   for folding Splash into Spread and Penetrate (no price on the firer) measured true on 12
@@ -86,17 +109,19 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
 
 ## Next, in order
 
-1. Done, 13 October: Rally to its shown intent (Kindled carries its move's value and goes live
-   from the next round, when intents are drawn with it).
-2. The stock pass (above), once Ryan settles the content questions it needs: the basic kit's
+1. Ryan reads the bible's first row and the questions in its section 12, the stock rule's hole
+   among them, and the campaign's fall above; the batch evaluation of the proposed chassis
+   starts after, with the proposals' "out of bounds" lists re-read under the Lean rule.
+2. The 200-seed balance report, once it lands, read against the campaign's fall: which of the
+   domains and the 10 to 13 October rules moved the plain player from 29 to 3 of 40 runs (the
+   lone-machine cells and the formations first), and a measurement of the fights a team fights
+   together under a bot that bunches by design; then the runner's module rows.
+3. The stock pass (above), once Ryan settles the content questions it needs: the basic kit's
    names, makers and numbers, and the Prairie Dog's basic shield (the bible's section 12).
-3. The balance runner's module rows (a fitted cell beside the stock one), then
-   `tools/balance.gd` at 200 seeds and `tools/campaign_run.gd` on the four domains, refreshing
-   both reports.
 4. Ryan's play and phone reads of the 10 to 13 October builds (the to-do's Ryan list).
 5. The rest of the bible's section 12 order: Ryan's text, the domains' engine, the
    discuss-first questions, battery, audio, screens, art, the commander layer, the economy,
-   onboarding. Section 12 holds 23 open questions for Ryan.
+   onboarding.
 
 ## Pages
 
@@ -106,7 +131,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.137 (13 October), the committed file
+  `docs/design-bible.html` after every change. Live: v0.139 (13 October, evening), the committed file
   as it stands on main; it also holds rows from branches not yet merged (Aphelion's
   calls, Wainwright & Sutler's next chassis, what shown text calls the die). Before
   republishing, read the live page; if another session moved it, publish a three-way merge

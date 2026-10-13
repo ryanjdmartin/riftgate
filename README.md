@@ -93,7 +93,7 @@ records every decision, recommendation and open question, and why; section 12 is
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
-- `docs/` — the rules (`rules.md`), the design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
+- `docs/` — the rules (`rules.md`), the design bible, the measurements log (`measurements.md`: every run a decision cites), generated vocabulary, the hangar page's renders and pins under `hangar/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, `status.md`, the handoff note updated at the end of every working session,
   and `todo.md`, the task list: one line a task, grouped by who moves it, ticked in the

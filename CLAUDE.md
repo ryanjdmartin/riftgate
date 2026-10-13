@@ -63,14 +63,27 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   is read through `sim/effects.gd` (base plus every live source, in one fixed order). A new
   buff, reward or passive is a Modifier with a scope and a source; never write to a stat or a
   component to apply one.
-- Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
-  decision. Slice and Dice is the touchstone.
+- Keep the fun in mind: randomness is one source the player can see and shift (the die, a rolled range,
+  a rider's chance on a chip), and push back on systems that add no decision. Slice and Dice is the touchstone.
 - Balance is measured, not guessed (decided 25 September): `sim/policy.gd` plays the skirmish
   headless on a ladder of skill (random, greedy; personas on top) and `tools/balance.gd`
   runs the matrix into `docs/balance.md`. Read bands, not numbers: random beating a pack
   means too easy, greedy losing means a wall, both landing together means no decision.
   Pick share is the component signal. Ryan's play tests decide feel and micro balance;
   the runner decides macro. Never chase a simulated win rate to a decimal.
+- The bible's register (decided 13 October): a Decided row is a design test (what the player
+  feels), a rule the engine runs, or a content call for a named piece. A maker's or a side's
+  theme, word or keyword is a Lean, never a Decided rule and never an exclusion. A "never"
+  carries its reason and the condition that reopens it; one without either is the current state,
+  not a law. A row that retires a mechanism names the form that failed and the test it failed,
+  so a new form is free to be proposed. Never write Ryan's preference for a maker as a universal
+  rule, and never refuse an idea because a row reads as if it owns a theme.
+- A proposal surfaces the ideas a rule killed (a bench, one line each with the rule) so Ryan can
+  overrule the rule and not only the idea; an "out of bounds" or "must not cross" list in a
+  proposal is Ryan's to write, never pre-applied by a session.
+- A cell delta is read at 200 seeds or as a band; a 30-seed run is a direction and is called
+  one. Every run a decision cites goes in `docs/measurements.md`, dated with its seeds; a bible
+  row keeps the reason and the exit condition, never the run.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said.

@@ -65,7 +65,7 @@ Status: 109 implemented, 8 planned, 0 idea.
 |---|---|---|
 | **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank. | implemented |
 | **Penetrate** | Player keyword. Hits first the front, then the back rank of a single column. | implemented |
-| **Spillover** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
+| **Spillover** | The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it. | implemented |
 | **Burn** | Keyword. On the player's weapons: each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. On a foe's attack: each blow that lands leaves a stack of Burning on the machine it hit. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. | planned |
 | **Lure** | Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
