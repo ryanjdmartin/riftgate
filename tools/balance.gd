@@ -13,7 +13,8 @@ extends SceneTree
 ## --damage F (every machine's blows scaled by F through a loadout modifier, to read a
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
-## team"), --module id (that module fitted to every machine in every row, to read what it is
+## team", "team:badger+sparrowhawk"), --team id,id (repeatable: a row of exactly those machines,
+## any number of them, so pairs and fours can be read beside the trios), --module id (that module fitted to every machine in every row, to read what it is
 ## worth beside a run without it; 11 October, the Booster against the Databank),
 ## --bump stat:N, repeatable (N more of a stat on every machine: hull, shield, armour, heat
 ## for the maximum, cooling, or damage for N more on every blow; the price of a stat, read
@@ -40,6 +41,7 @@ var trace := ""
 var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
+var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
 var no_passive := false     # --nopassive: every chassis stripped of its passive
@@ -148,6 +150,9 @@ func _parse_args() -> void:
 			"--rows":
 				only_rows = Array(v.split(","))
 				i += 1
+			"--team":
+				custom_teams.append(Array(v.split(",")))
+				i += 1
 			"--module":
 				fit_module = v
 				i += 1
@@ -186,6 +191,19 @@ func _build_matrix() -> void:
 			continue
 		var trio: Array = own.slice(0, 3)
 		rows.append({"id": "%s team" % mk, "name": "%s team (%s)" % [str(db.makers[mk].get("name", mk)), ", ".join(_names(trio))], "chassis": trio})
+	# --team rows (13 October): any machines together, to read pairs and fours beside the trios.
+	for ids in custom_teams:
+		var team_ids: Array = []
+		for id in ids:
+			var cid := str(id).strip_edges()
+			if not db.chassis.has(cid):
+				push_error("--team: no chassis '%s' (chassis: %s)" % [cid, ", ".join(db.chassis.keys())])
+				quit(1)
+				return
+			team_ids.append(cid)
+		if team_ids.is_empty():
+			continue
+		rows.append({"id": "team:" + "+".join(team_ids), "name": "Team (%s)" % ", ".join(_names(team_ids)), "chassis": team_ids})
 	for fac in db.factions.keys():
 		for entry in db.spawn_table(fac):
 			var pid := "%s x%d" % [entry[0], entry[1]]

@@ -133,7 +133,8 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # cell, written to docs/balance.md (about half an hour); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
-# --rows badger,team runs only those rows; --module tactical_databank fits that module to every
+# --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
+# any number, so pairs and fours read beside the trios; --module tactical_databank fits that module to every
 # machine (--out elsewhere, then compare against a run without it); for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set

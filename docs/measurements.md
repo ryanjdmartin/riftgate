@@ -193,3 +193,28 @@ wiped, 3.9 cities fallen a run, the first city falling on turn 4 on average. The
 the commit before the Rally fix gave 0 of 40 and 4%, so the fall is the domains and the 10 to 13
 October rules, not Rally. Fights: 1,157 of 1,747 with one machine alone; one machine wins 64%
 against one pack and 37% against two; two machines together win 92%.
+
+**One, two, three and four machines together** (`tools/balance.gd --team`, 100 seeds a cell,
+random/greedy; the formations are the four domains' whole spawn lists in one fight). Win rates
+and the hull lost per fight as a share of the row's total hull, greedy, averaged over the sixteen
+single packs, the four bosses and the four formations:
+
+| Row | Packs | Bosses | Formations | Hull lost: packs, bosses, formations |
+|---|---|---|---|---|
+| Honey Badger alone | 59/79 | 1/24 | 18/48 | 38%, 96%, 76% |
+| Sparrowhawk alone | 62/85 | 64/90 | 0/0 | 36%, 50%, 100% |
+| Honey Badger and Sparrowhawk | 100/100 | 100/100 | 48/89 | 6%, 10%, 54% |
+| Armadillo and Baboon | 99/100 | 98/100 | 49/86 | 7%, 10%, 58% |
+| Clydesdale and Prairie Dog | 82/99 | 77/100 | 0/26 | 9%, 8%, 91% |
+| Nemesis and Puffin | 73/98 | 42/96 | 5/50 | 20%, 36%, 84% |
+| The starting trio | 100/100 | 100/100 | 86/100 | 2%, 4%, 20% |
+| Badger, Clydesdale, Sparrowhawk, Armadillo | 100/100 | 100/100 | 100/100 | 1%, 2%, 8% |
+| Armadillo, Baboon, Nemesis, Puffin | 100/100 | 100/100 | 92/100 | 0%, 0%, 9% |
+
+Read: a formation costs a pair about 1.1 machines' worth of hull, a trio 0.6, a four 0.3, and
+a pair loses a formation outright one fight in four to one in two (the Peak's against the
+Armadillo and the Baboon 43%, the Marsh's against the Badger and the Sparrowhawk 75%). Two
+pairs fighting two formations spend about three times the hull of one four fighting both in
+turn, and risk half the team each. A boss alone is two rounds and 2% of a four's hull: no exam.
+Count dominates composition: a four of tank, controller, bruiser and support reads the same as
+a four of hitters. Bible sections 4 and 7.
