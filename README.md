@@ -203,11 +203,16 @@ godot --headless --path . --import
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
 # a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
-# Cut each pick with `forge.py cut` and the options picks.json records, and carry the notes into the touch-up task. Rebuild the page
-# with `forge.py phone --tags takesD takesE --drop-originals` and republish out/phone/index.html to that URL with `root` set, its new
-# renders/ in `files` and a dropped set's renders as null; a republish keeps the picks. Every candidate's source render lives only in
-# tools/foeforge/out on Ryan's Mac (git-ignored, about 150 MB; never delete it), so cutting, rebuilding and rendering takes need the Mac.
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --tags takesD                           # the picker as a phone page in out/phone, published as an artifact (status has the link)
+# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --holes N background pockets of N render
+# pixels or more, --holes-tol 8 beside an off-white robe, --glow a coloured glow), record it in picks.json with Ryan's note. A flaw his
+# note names is tried first with `forge.py fix` (the edit model on the picked source, four candidates into out/<foe>_fix). Rebuild the
+# page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
+# set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
+# the picks. Every candidate's source render lives only in tools/foeforge/out on Ryan's Mac (git-ignored; never delete it), so
+# cutting, rebuilding and rendering need the Mac.
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --tags fix fix2 chibi_takesF takesF --only   # the 13 October round as a phone page in out/phone (status has the link)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant

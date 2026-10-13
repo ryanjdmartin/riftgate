@@ -315,6 +315,10 @@ def phone(args):
                 entry.append({"n": n, "img": rel, "cut": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(),
                               "cw": frame[0], "ch": frame[1]})
             kind = " ".join(x for x in [foe.get("faction", ""), note] if x)
+            if suffix.startswith("_fix"):
+                # A fix set says what it asked for, so the pick is judged against the note.
+                asked = (OUT / key / "prompt.txt").read_text().split("Change only this: ", 1)[-1].strip()
+                kind = f"{foe.get('faction', '')} fix: {asked}"
             sets.append({"key": key, "foe": fid, "name": foe["name"] + (" (chibi)" if suffix.startswith("_chibi") else ""),
                          "note": kind, "scale": scale, "current": picks.get(key), "cands": entry})
     page = (ROOT / "tools" / "foeforge" / "phone_picker.html").read_text()
