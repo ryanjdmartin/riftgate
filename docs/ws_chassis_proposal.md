@@ -1,10 +1,10 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Seventh round, 13 October 2026. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Eighth round, 13 October 2026. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
-passives hold, so the machines go by silhouette. Numbers are placeholders in the content's
-tens.
+passives hold, so the machines go by silhouette. Numbers are placeholders at the content's
+scale.
 
 ## Where it stands
 
@@ -223,29 +223,32 @@ tandem is set aside.
   wearing two tags raises both.
 - **The hangar it is** (Ryan, 13 October), over growing in the fight, and Missile's map speed
   stands. His test for no clear winner: nothing a tag grants feeds that tag.
-- **Why armour comes in fives.** Nothing in the code enforces it: it is the number grid, from
-  the bible's "when the team-to-foe ratio must move, the player's numbers move" (player damage
-  in fives, since small digits read faster, and 5 the smallest step, so armour matters; hull,
-  shield and heat in tens; `docs/rules.md` states it). Foe blows run 5 to 40, so armour in
-  fives keeps every hull hit round: a 2 or a 3 would run in the engine and put a 7 or a 13 on
-  the hull. Against small blows the step is a big one (5 halves a 10), which is why 5 armour
-  measured about 53 hull, and Ryan has said our armour may already be too high (12 October).
+- **The fives and tens are magnitudes** (Ryan, 13 October): the rule meant the scale, not the
+  step. Were every number a multiple of five they might as well be ones and twos; the room
+  between is for balancing and upgrades, this table above all. So each row is priced on its
+  own, near 20 hull a weapon by the bible's measured bumps (each given to every machine and
+  read in hull: shield 20 about 17, armour 5 about 53, 5 more on every blow about 60, cooling
+  almost nothing), read as bands. Move alone keeps its steps of 5, a hex costing 5 or 10.
 - **Offence, on the other tags.** An offensive bonus feeds itself whenever it lands on the
   weapons that count it, so offence on this machine lands on the other tags: a Plasma weapon
-  makes the rest hit harder, never itself, and the pull is toward a mix. Damage sits on the same
-  grid as armour, so +5 is the smallest offensive step, and a big one (5 more on every blow
-  measured about 60 hull).
+  makes the rest hit harder, never itself, and the pull is toward a mix. Its worth falls as
+  Plasma stacks, every Plasma weapon being one fewer weapon to take the bonus: at 2 a weapon, a
+  lone Plasma among five others is worth about 20 hull, two about 16 each, three 12.
 - **A second table, with pairs** (Ryan's idea, pairing to make room; placeholders):
-  - Beam: +20 shield and +10 field recharge, the shield's two numbers.
-  - Ballistic: +5 armour for every second Ballistic weapon (or +5 each, capped at 10).
-  - Missile: +10 move and +5 cooling; the cooling feeds no rocket while Missile weapons run cold.
+  - Beam: +20 shield (about 17 hull) and +10 field recharge, the shield's two numbers.
+  - Ballistic: +2 armour (about 21 hull); six reach 12, between the heavy machines' 10 and the
+    Armadillo's 15.
+  - Missile: +5 move (a fast hex; four make it as quick as the Prairie Dog, six the quickest
+    machine at 60) and +5 cooling, which costs almost nothing in a fight and feeds no rocket
+    while Missile weapons run cold.
   - Flame: +20 hull.
-  - Plasma: its weapons of other tags deal 5 more.
+  - Plasma: its weapons of other tags deal 2 more.
   - Arc: one free reroll of its own die a fight, fire control (the Clydesdale's verb, small).
   - Blade and Melee: nothing, a gunship keeping its distance.
 - **Candidates not taken.** A raised floor on rolled weapons of other tags (the Tactical
   Databank's effect: a smaller offensive step, about 14 hull on average and 40 to 70 on a
-  rolled die); a share off damage taken, finer than armour at the price of round hull numbers;
+  rolled die); a share off damage taken (a second defence beside armour, and a multiplier where
+  every other row adds);
   attack range on the map (long guns are pinned while the engagement range may change); salvage
   a kill (the economy is unbuilt); never hunted (a yes or no, which no count can scale);
   maximum heat (filler by the measurements, except on the hottest machine).
@@ -253,8 +256,8 @@ tandem is set aside.
   holds. It bends the tags row's "no scaling with a tag's count", whose reason (a lynchpin, one
   blueprint farmed) does not hold here, since any weapon of the tag counts and nothing feeds
   itself. The hangar must show what each weapon fitted adds. A weapon counts for the battle
-  once fitted, destroyed or not, as every bonus does. Plasma's row is the strongest per weapon
-  (damage is the dearest number after armour), so it is the second row to watch.
+  once fitted, destroyed or not, as every bonus does. Plasma's row is priced on a die of six
+  weapons, so equipment in the mix or a Rapid entry moves it: it is the row to watch.
   Nothing a tag grants may feed that tag, and no component carries these tags yet, so the stock
   pass that assigns them keeps a promise per row: Missile weapons run cold, no Beam weapon reads
   its shield, no Ballistic weapon is fed by armour, no Flame weapon by hull.
@@ -323,3 +326,6 @@ tandem is set aside.
   machine) and the tandem; the fan-boat's other shapes (the magazine kept as an idea).
 - Round six (13 October): the gunship growing in the fight (Ryan: the hangar), and its first
   table's single stats (paired to make room for one offensive row and a reroll).
+- Round seven (13 October): Ballistic's armour at every second weapon or capped at 10 (Ryan:
+  the fives and tens are magnitudes, not steps, so it takes 2 a weapon); Plasma's 5 and
+  Missile's 10 of move (priced at 2 and 5).
