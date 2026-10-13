@@ -1,5 +1,5 @@
 {
-  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --holes N for background pockets of at least N render pixels, --glow for a coloured glow). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note.",
+  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --holes N for background pockets of at least N render pixels, --glow for a coloured glow). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note.",
   "picks": {
     "goblin": {
       "foe": "goblin",
@@ -219,131 +219,137 @@
     "warrior_chibi": {
       "foe": "warrior",
       "role": "chibi",
-      "candidate": 1,
-      "source": "out/warrior_chibi/warrior_1.png",
+      "candidate": 3,
+      "source": "out/warrior_chibi_takesF/warrior_3.png",
       "kept": "picks/warrior_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a heroic knight in ornate gold-trimmed armour and a flowing cape, holding an enormous greatsword."
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a lean wiry old man with pale weathered skin and a white moustache, in battered gold-trimmed plate and a faded green cape, the flat of a straight greatsword resting on his shoulder.",
+      "note": "sword blade shouldn't be exposed above the shoulder, only hilt and maybe sheath."
     },
     "warrior": {
       "foe": "warrior",
       "role": "promoted",
-      "candidate": 4,
-      "source": "out/warrior/warrior_4.png",
+      "candidate": 3,
+      "source": "out/warrior_takesF/warrior_3.png",
       "kept": "picks/warrior_promoted.png",
-      "prompt": "A heroic knight in ornate gold-trimmed armour and a flowing cape, holding an enormous greatsword. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Warrior, a hero of the party who comes out of the grasslands. The classic party's front: the plain fighter, over-levelled, a sword the size of the tank. Every JRPG's first hero. Light: the bright, saturated light of a sunny overworld field.",
-      "note": "Sword shape needs refining, could try not dynamic pose?"
+      "prompt": "A lean wiry old man with pale weathered skin and a white moustache, in battered gold-trimmed plate and a faded green cape, the flat of a straight greatsword resting on his shoulder. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Warrior, a hero of the party who comes out of the grasslands. The classic party's front: the plain fighter, over-levelled, a sword the size of the tank. Every JRPG's first hero. Light: the bright, saturated light of a sunny overworld field.",
+      "note": "chibi and large sprite both should have the sword sheathed on the same shoulder. The large sprite's sword handle kind of looks like a sword blade, and its really thick. The front loincloth area merges with the bottom of the cape."
     },
     "martial_artist_chibi": {
       "foe": "martial_artist",
       "role": "chibi",
-      "candidate": 2,
-      "source": "out/martial_artist_chibi/martial_artist_2.png",
+      "candidate": 4,
+      "source": "out/martial_artist_chibi_takesF/martial_artist_4.png",
       "kept": "picks/martial_artist_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a bare-handed martial artist in a flowing gi with a sash and wrapped fists, in a fighting stance."
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall lanky woman with pale freckled skin and red hair in a topknot, in a green gi with a brown sash and wrapped fists, bare-handed, mid-kick with one leg raised high."
     },
     "martial_artist": {
       "foe": "martial_artist",
       "role": "promoted",
-      "candidate": 1,
-      "source": "out/martial_artist/martial_artist_1.png",
+      "candidate": 4,
+      "source": "out/martial_artist_takesF/martial_artist_4.png",
       "kept": "picks/martial_artist_promoted.png",
-      "prompt": "A bare-handed martial artist in a flowing gi with a sash and wrapped fists, in a fighting stance. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Martial Artist, a hero of the party who comes out of the grasslands. The bare-handed one: Hits twice and hits back. Light: the bright, saturated light of a sunny overworld field.",
-      "note": "Remove weapon from back"
+      "prompt": "A tall lanky woman with pale freckled skin and red hair in a topknot, in a green gi with a brown sash and wrapped fists, bare-handed, mid-kick with one leg raised high. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Martial Artist, a hero of the party who comes out of the grasslands. The bare-handed one: Hits twice and hits back. Light: the bright, saturated light of a sunny overworld field.",
+      "note": "good except that the outer robe is coming down the inner thigh, the garment just doesn't make sense. Probably doesn't need the elaborate robe anyway, the plain gi with the pauldrons is probably enough. Her lower hand only has 3 fingers. Her upper hand needs to move down a bit so she's not punching herself in the chin. (Left unpicked; the note fits take 4, which matches the chibi.)"
     },
     "thief_chibi": {
       "foe": "thief",
       "role": "chibi",
-      "candidate": 3,
-      "source": "out/thief_chibi/thief_3.png",
+      "candidate": 1,
+      "source": "out/thief_chibi_takesF/thief_1.png",
       "kept": "picks/thief_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a lithe thief in a hooded dark tunic and scarf, twin daggers drawn, crouched to spring."
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring.",
+      "note": "Her weapons don't make sense. Multibladed daggers coming out of her hands in random directions, instead of holding knives."
     },
     "thief": {
       "foe": "thief",
       "role": "promoted",
-      "candidate": 3,
-      "source": "out/thief/thief_3.png",
+      "candidate": 1,
+      "source": "out/thief_takesF/thief_1.png",
       "kept": "picks/thief_promoted.png",
-      "prompt": "A lithe thief in a hooded dark tunic and scarf, twin daggers drawn, crouched to spring. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Thief, a hero of the party who comes out of the desert. The party's quick one: Steals, mugs, and gets away. Light: sun-bleached and dusty, hard desert light.",
-      "note": "Remove staff thing"
+      "prompt": "A wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Thief, a hero of the party who comes out of the desert. The party's quick one: Steals, mugs, and gets away. Light: sun-bleached and dusty, hard desert light.",
+      "note": "her weapons are not visible, they're either blended or coming out of the wrong place, i can't tell. But they aren't in her hands."
     },
     "lancer_chibi": {
       "foe": "lancer",
       "role": "chibi",
-      "candidate": 3,
-      "source": "out/lancer_chibi/lancer_3.png",
+      "candidate": 1,
+      "source": "out/lancer_chibi_takesF/lancer_1.png",
       "kept": "picks/lancer_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a dragoon knight in sharp dragon-themed armour with a horned helm, holding a long spear.",
-      "note": "Shift eyes to look left, adjust cutting, put spear butt behind foot"
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced horned helm, gripping a long ornate spear in both hands, its straight shaft angled forward and its butt behind her back foot.",
+      "note": "cool, but she's riding her spear. Carry the butt over her right-side foot so it doesn't disappear between her legs. there's a strip of something coming out from behind her, maybe a tail, remove that."
     },
     "lancer": {
       "foe": "lancer",
       "role": "promoted",
-      "candidate": 3,
-      "source": "out/lancer/lancer_3.png",
+      "candidate": 1,
+      "source": "out/lancer_takesF/lancer_1.png",
       "kept": "picks/lancer_promoted.png",
-      "prompt": "A dragoon knight in sharp dragon-themed armour with a horned helm, holding a long spear. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.",
-      "note": "Adjust spear to more ornate and make sure it's straight with the shaft. Colours need to match small sprite better. Fix cutting. Would like to try a two handed grip as a test"
+      "prompt": "A tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced horned helm, gripping a long ornate spear in both hands, its straight shaft angled forward and its butt behind her back foot. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.",
+      "note": "Remove elf ears from the helmet, her spear halves don't meet, her upper hand isn't actually gripping it, and both hands only have 3 fingers."
     },
     "white_mage_chibi": {
       "foe": "white_mage",
       "role": "chibi",
-      "candidate": 1,
-      "source": "out/white_mage_chibi/white_mage_1.png",
+      "candidate": 2,
+      "source": "out/white_mage_chibi_takesF/white_mage_2.png",
       "kept": "picks/white_mage_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a healer in layered white robes with gold embroidery and a high collar, a pale stern face, holding a tall staff topped with a glowing crystal.",
-      "note": "Cutting"
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands.",
+      "cut": {
+        "holes": 500,
+        "holes_tol": 8
+      },
+      "note": "Different haircut, and his left hand not holding his staff is a fingerless stump."
     },
     "white_mage": {
       "foe": "white_mage",
       "role": "promoted",
       "candidate": 2,
-      "source": "out/white_mage/white_mage_2.png",
+      "source": "out/white_mage_takesF/white_mage_2.png",
       "kept": "picks/white_mage_promoted.png",
-      "prompt": "A healer in layered white robes with gold embroidery and a high collar, a pale stern face, holding a tall staff topped with a glowing crystal. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The White Mage, a hero of the party who comes out of the swamp and graveyard. The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first. Light: dim and damp, rust and old bone, lantern light in fog.",
-      "note": "Cutting"
+      "prompt": "A plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The White Mage, a hero of the party who comes out of the swamp and graveyard. The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first. Light: dim and damp, rust and old bone, lantern light in fog.",
+      "note": "Hand holding his staff has only 3 fingers. Needs a new haircut along with the chibi version."
     },
     "necromancer_chibi": {
       "foe": "necromancer",
       "role": "chibi",
       "candidate": 1,
-      "source": "out/necromancer_chibi/necromancer_1.png",
+      "source": "out/necromancer_chibi_takesF/necromancer_1.png",
       "kept": "picks/necromancer_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a gaunt dark mage in a black-and-purple robe, a skull staff, ghostly green light in its hands.",
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a gaunt old woman with pale ashen skin and long white hair, in a tattered black-and-purple robe, a skull-topped staff in one hand and bright ghostly green fire in the other.",
       "cut": {
+        "holes": 500,
+        "holes_tol": 8,
         "glow": true
-      },
-      "note": "Cutting, flame doesn't read at small scale"
+      }
     },
     "necromancer": {
       "foe": "necromancer",
       "role": "promoted",
       "candidate": 1,
-      "source": "out/necromancer/necromancer_1.png",
+      "source": "out/necromancer_takesF/necromancer_1.png",
       "kept": "picks/necromancer_promoted.png",
-      "prompt": "A gaunt dark mage in a black-and-purple robe, a skull staff, ghostly green light in its hands. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Necromancer, a hero of the party who comes out of the swamp and graveyard. The raiser: The Marsh's other apex, the one that makes the dead rather than mends them. Light: dim and damp, rust and old bone, lantern light in fog.",
-      "note": "Cutting"
+      "prompt": "A gaunt old woman with pale ashen skin and long white hair, in a tattered black-and-purple robe, a skull-topped staff in one hand and bright ghostly green fire in the other. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Necromancer, a hero of the party who comes out of the swamp and graveyard. The raiser: The Marsh's other apex, the one that makes the dead rather than mends them. Light: dim and damp, rust and old bone, lantern light in fog."
     },
     "black_mage_chibi": {
       "foe": "black_mage",
       "role": "chibi",
       "candidate": 4,
-      "source": "out/black_mage_chibi/black_mage_4.png",
+      "source": "out/black_mage_chibi_takesF/black_mage_4.png",
       "kept": "picks/black_mage_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a sorcerer in a tall crooked hat and a dark robe embroidered with flame sigils, a gaunt stern face, holding a staff wreathed in fire.",
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand.",
       "cut": {
-        "holes": 400
-      },
-      "note": "Cutting"
+        "holes": 500,
+        "holes_tol": 8
+      }
     },
     "black_mage": {
       "foe": "black_mage",
       "role": "promoted",
       "candidate": 4,
-      "source": "out/black_mage/black_mage_4.png",
+      "source": "out/black_mage_takesF/black_mage_4.png",
       "kept": "picks/black_mage_promoted.png",
-      "prompt": "A sorcerer in a tall crooked hat and a dark robe embroidered with flame sigils, a gaunt stern face, holding a staff wreathed in fire. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Black Mage, a hero of the party who comes out of the volcano. The one in the hat who throws fire for a living. Every party's damage, and the genre's most recognisable silhouette, redrawn as ours. Light: lit from inside by heat, black rock and embers.",
-      "note": "Try left handed grip to match chibi"
+      "prompt": "A wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Black Mage, a hero of the party who comes out of the volcano. The one in the hat who throws fire for a living. Every party's damage, and the genre's most recognisable silhouette, redrawn as ours. Light: lit from inside by heat, black rock and embers.",
+      "note": "only 3 fingers on staff hand"
     },
     "summoner_chibi": {
       "foe": "summoner",
