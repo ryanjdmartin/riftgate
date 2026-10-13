@@ -24,18 +24,23 @@ document's job and every command are in `README.md`.
 ## Branches
 
 - `main` holds everything decided and built to 13 October, including all of
-  `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`.
-  Local main carries the evening's commits (the review's records pass, the measurements log,
-  the reports, Rally, the foe picks cut, the documents' refactor) merged with `origin/main`;
-  push when Ryan says. New work starts from main.
+  `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`
+  (merged and safe to delete), the Kestrel canvas from `ccr-1a6d0a75-y2oqy8` (its file brought
+  over; safe to delete) and the Minerva branch's one decision (its four designs abandoned, Ryan,
+  13 October; the branch carries nothing else and is safe to delete). Pushed to `origin/main`
+  on 13 October, evening. New work starts from main.
+- Active, not merged: `ccr-550650c0-g0kcbg`, the Aphelion session, with
+  `docs/aphelion_chassis_proposal.md` and the bible's Aphelion row. Its documents predate the
+  13 October refactor (it still carries the retired keyword line-up and roster proposal, and
+  lacks `docs/measurements.md`), so it merges main before it lands and keeps main's versions of
+  the status, the to-do, CLAUDE.md, the README and the rules. A local sprite session is in
+  flight in this folder (uncommitted `art/foes/`, `content/foes.json`, `tools/foeforge` and
+  document hunks): leave them unstaged.
 - The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
-  (`docs/ws_chassis_proposal.md`, written to stand alone, its look tests in
-  `tools/lowforge/looks/` and `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`);
-  not merged, by Ryan's word (work in progress, leave them),
-  `claude/minerva-chassis-candidates-po893q` (`docs/minerva_chassis_proposal.md`) and
-  `ccr-1a6d0a75-y2oqy8` (Kestrel, `docs/canvas/kestrel-airframes.html`); Aphelion's exist in
-  chat only. `ccr-550650c0-g0kcbg` has two bible-only commits whose rows are already in the
-  bible.
+  (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
+  `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Kestrel's five airframes as
+  a canvas on main (`docs/canvas/kestrel-airframes.html`, for Ryan's pick), Aphelion's on its
+  branch (above), Minerva's abandoned.
 
 ## The game as left (13 October, evening)
 
@@ -131,8 +136,8 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.142 (13 October, evening), the
-  committed file as it stands on main; it also holds Aphelion's calls from `ccr-550650c0-g0kcbg`.
+  `docs/design-bible.html` after every change. Live: v0.144 (13 October, evening), the
+  committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
@@ -146,3 +151,5 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
+- The Kestrel airframe proposals, work account, private: https://claude.ai/artifact/1Snudf4fmTUw4hkr1ckMfy
+  (`docs/canvas/kestrel-airframes.html`; its SVG sketches are inline, so edit the file in place).
