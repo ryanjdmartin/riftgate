@@ -1,7 +1,7 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Tenth round, 13 October 2026. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Eleventh round, 13 October 2026. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
 passives hold, so the machines go by silhouette. Numbers are placeholders at the content's
 scale.
@@ -14,7 +14,7 @@ scale.
 | Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; the helicarrier deck is its look; the word "die" waits on another session |
 | Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Liked (Ryan's revolver bot); Rapid stays small, so the chain is funny, not strong |
 | Four-legged spider (funnel-web) | 2 | A foe it would Suppress takes a web bomb instead: at the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it. | A Suppress lands when it hits | Ryan's web bomb, the plan as below ("a good plan") |
-| Medium gunship | 2 | Its Ballistic weapons raise its armour and hull, its Beams its shield and recharge, its Missiles its move; its Arc weapons make the others roll higher. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: built in the hangar, nothing locked, numbers only, five hardpoints, four tags with two-tag pieces the chase; the rows wait on his read |
+| Medium gunship | 2 | Its Ballistic weapons raise its armour and cooling, its Beams its shield and recharge, its Missiles its move and hull; its Arc weapons raise the others' highest rolls. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: built in the hangar, nothing locked, numbers only, five hardpoints, REX's four tags, five of a tag the best at its number, two-tag pieces the chase; the measured table waits on his read |
 | Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | Ryan's deck gun, the shells ("see where it takes us") |
 
 The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
@@ -214,78 +214,119 @@ tandem is set aside.
 
 - **The fantasy** (Ryan, 13 October). The Hind-D and Metal Gear's running joke, "a weapon to
   surpass Metal Gear": the overbuilt gunship that becomes whatever its guns make it. It lives
-  in the Clydesdale's utility space, and like the Clydesdale it locks nothing. Metal Gear REX's
-  own kit (Vulcan cannons, missiles, a laser, a railgun) names the four tags it reads. The lore
-  is Ryan's to write.
-- **Passive** (Ryan's shape, 13 October). "Its Ballistic weapons raise its armour and hull, its
-  Beams its shield and recharge, its Missiles its move; its Arc weapons make the others roll
-  higher." The first machine whose numbers the player builds: Ballistic weapons plate it, Beams
-  make a shield wall, Missiles a fast skirmisher, Arc beside rolled guns a striker, a mix
-  whatever the run needs. Its other tags (Flame, Plasma, Blade, Melee) raise nothing. A weapon
-  wearing two of its four tags raises both, and those pieces are its chase (Ryan, 13 October).
-- **The hangar it is** (Ryan, 13 October), over growing in the fight, and Missile's map speed
-  stands. His test for no clear winner: nothing a tag grants feeds that tag.
-- **Numbers, never mechanics** (Ryan, 13 October): the passive works best changing stats, or
-  what reads like them on the die, so no rerolls and no new rules on any row.
+  in the Clydesdale's utility space, and like the Clydesdale it locks nothing. The lore is
+  Ryan's to write.
+- **Passive** (Ryan's shape, 13 October). "Its Ballistic weapons raise its armour and cooling,
+  its Beams its shield and recharge, its Missiles its move and hull; its Arc weapons raise the
+  others' highest rolls." The first machine whose numbers the player builds. Five of one tag
+  make it the best at that number (Ryan: what makes it interesting, not shades of generalist):
+  Ballistic a brick, Beam a shield wall, Missile the fastest machine; Arc makes a striker of
+  the rolled guns beside it. Its other tags (Flame, Plasma, Blade, Melee) raise nothing. A
+  weapon wearing two of its four tags raises both, and those pieces are its chase.
+- **Four tags** (Ryan, 13 October: the most Wainwright & Sutler ones). Metal Gear REX's own kit:
+  Vulcan cannons, missiles, a laser, a railgun. Six of the twenty-eight pairs of tags raise two
+  of its rows, so a two-tag piece is rare enough to chase; by their own fantasy a railgun or a
+  taser harpoon wears Ballistic and Arc, a rocket-assisted shell Ballistic and Missile, a
+  laser-guided missile Beam and Missile.
+- **Its only power** (Ryan, 13 October): it locks nothing, so the passive carries what other
+  machines' passives and locked pieces carry. Measured against the whole roster below, not one
+  machine (the Baboon and the Stingray are support machines, weak alone by design).
+- **The hangar it is** (Ryan, 13 October), over growing in the fight. His test for no clear
+  winner: nothing a tag grants feeds that tag.
+- **Numbers, never mechanics** (Ryan, 13 October): stats, or what reads like them on the die;
+  no rerolls, no new rules on any row.
 - **The fives and tens are magnitudes** (Ryan, 13 October): the rule meant the scale, not the
-  step. Were every number a multiple of five they might as well be ones and twos; the room
-  between is for balancing and upgrades, this table above all, so its rows can be sized
-  finely. Move alone keeps its steps of 5, a hex costing 5 or 10.
+  step, so the rows can be sized finely. Move alone keeps steps of 5, a hex costing 5 or 10.
 - **Offence as a raised roll** (Ryan, 13 October): a higher top or bottom roll, never a
-  straight damage buff, from tags whose weapons seldom roll. In the stock every rolled weapon
-  is kinetic and every energy weapon flat (the one flat kinetic is the Bullion Fragmenter), so
-  Arc, flat by its pieces, raises the highest roll of the others, the Muzzle Velocity Booster's
-  effect and a railgun's own. The row says "the others", so an Arc weapon that rolls takes
-  nothing from it. Its worth rides on the kit's rolled share (the Booster as a module: about 14
-  hull on average, 40 to 70 on a rolled kit, nothing on a flat one), so the pull is toward a mix.
-- **One machine never dictates the roster** (Ryan, 13 October: not balanced around the stock
-  pass as such, only that one warping machine never dictates the whole roster of components).
-  Missiles make heat, an armour cannon stays possible, and so on. So each row is sized for a full
-  die of one tag to land that number inside the roster's range: a piece that reads the number
-  is then no stronger on the gunship than on a machine that already has as much, and nothing
-  has to be built around it.
-- **Four tags, and two-tag pieces the chase** (Ryan, 13 October: it need not read every tag,
-  and pieces wearing several tags should be its chase). Reading all eight, nearly every two-tag
-  piece counted twice, so nothing was rare. Reading four, six of the twenty-eight pairs of tags
-  raise two rows, sixteen one and six none; by their own fantasy, a railgun or a taser harpoon
-  wears Ballistic and Arc, a rocket-assisted shell Ballistic and Missile, a laser-guided missile
-  Beam and Missile. A die of them about doubles the passive: the run's payoff, and the ceiling
-  to watch. Each number stays inside the roster's range even so, so the chase strengthens the
-  machine and never a piece.
-- **Five hardpoints** (Ryan, 13 October: does it help?). A little. A full die is five weapons,
-  so each row's step can be a fifth bigger under the same top (these rows at six would put
-  shield at 68 and recharge at 33, past the Sparrowhawk's 60 and the light machines' 30), and
-  the passive's whole shrinks by a sixth. The bigger help is the pairing (Ryan: lower a stat
-  that is a problem and tuck it with another): armour at 1 a weapon beside 5 hull is about 16
-  hull a weapon by the measured prices, where 2 armour alone was about 21.
-- **The rows** (placeholders; a full die of five, then the roster's range):
-  - Ballistic: +1 armour and +5 hull (5 and 125; armour 0 to 15, hull 50 to 160).
-  - Beam: +8 shield and +3 field recharge (60 and 30; shield 20 to 60, recharge 15 to 30).
-  - Missile: +5 move, a fast hex (45; move 20 to 50).
-  - Arc: the other tags' weapons reach 2 higher.
+  straight damage buff, from a tag whose weapons seldom roll. In the stock every rolled weapon
+  is kinetic and every energy weapon flat, so Arc, flat by its pieces, raises the highest roll
+  of the others (the Muzzle Velocity Booster's effect, and a railgun's muzzle velocity). The
+  row says "the others", so an Arc weapon that rolls takes nothing from it.
+- **Cooling, a soft offensive stat** (Ryan, 13 October). It sits on the cold tag, Ballistic,
+  since Missile, Beam and Arc pieces run hot (missiles make heat), so it feeds the hot guns
+  beside the Ballistic ones and never its own. Measured: worth nothing on a die that never
+  overheats (the Beam, the mixed and the Ballistic kits at 60 heat and 5 cooling), up to about
+  100 hull on a die of the hottest pieces (the Overclocked Railgun, the Photosphere Lance, the
+  Meteor Artillery), and little more once it pays a round's heat. Not a problem: a rider that
+  pays only for hot pieces.
+- **One machine never dictates the roster** (Ryan, 13 October). Missiles make heat, an armour
+  cannon stays possible, and so on; the gunship takes the components as they come.
+- **Measured** (13 October). `tools/balance.gd`, every machine alone against the twenty packs,
+  greedy, 100 seeds a cell, the mean win %. The stand-in is the Goshawk's frame stripped of its
+  passive and locked piece and set to this machine's numbers and a five-weapon kit by `--set`,
+  each bonus a `--bump` or the Booster module; a lone machine is a diagnostic, and teams and
+  whole runs decide at the evaluation. The roster, whole: the Armadillo 92, the Wild Boar 83,
+  the Nemesis 72, the Badger 70, the Sparrowhawk 68, the Clydesdale 48, the Goshawk 36, the
+  Ammit 34, the Prairie Dog 30, the Stingray 26, the Baboon 25, the Dingo 11, the Puffin 11.
+  The stand-in without its passive: 23 to 28, whatever its kit. Prices on it, in hull at its
+  kit's own: armour 5 about 78, 10 about 106, 15 about 222, 20 about 349 (on five Ballistic
+  guns, steeper as more blows bounce whole); shield about 1 a point; a top roll 5 higher 20 to
+  29 on a rolled kit, 10 about 60, 15 about 100; 5 more on every blow 58 to 68.
+- **The tables tried** (a weapon's amounts: Ballistic armour and cooling, Beam shield, Missile
+  hull, Arc the others' top roll; move and recharge are map numbers a fight cannot read):
+
+  | Build | None | Low 2, 2, 8, 8, 2 | Mid 3, 2, 12, 12, 3 | Bold 4, 3, 16, 16, 3 | Mid, riders up 3, 4, 12, 12, 5 |
+  |---|---|---|---|---|---|
+  | Five Ballistic | 28 | 46 | 66 | 84 | 66 |
+  | Five Beam | 23 | 27 | 29 | 32 | 29 |
+  | Five Missile | 27 | 34 | 39 | 44 | 39 |
+  | Two Ballistic, a Missile, a Beam, an Arc | 27 | 42 | 45 | 54 | 50 |
+  | Two Ballistic beside three hot energy guns | 28 | 41 | 43 | 47 | 48 |
+  | The first mix, its two Ballistic guns Missile too | 27 | 43 | 53 | 65 | 61 |
+  | Five Missile and Beam pieces | 27 | 41 | 52 | 59 | 52 |
+  | Five Ballistic and Arc pieces | 28 | 46 | 66 | 84 | 66 |
+  | Five Ballistic and Beam pieces | 28 | 48 | 74 | 88 | 74 |
+  | Five Ballistic and Missile pieces | 28 | 55 | 83 | 92 | 83 |
+  | Five Ballistic, Missile and Beam pieces | 28 | 61 | 86 | 95 | 86 |
+
+  The riders-up column was run on the three mixes; the rest equal mid by construction (cooling
+  buys nothing on a die that does not overheat, measured, and an Arc's roll reaches no Arc
+  weapon). A falling ladder on armour (5, 4, 3, 2, 1 a Ballistic weapon, five still 15) was run
+  on the mixes too: 57, 52 and 66.
+- **Reading.**
+  - The middle, single-tag weapons in a mix, wins 48 to 50 with the riders up: the Clydesdale's
+    48, above the medium machines (the Goshawk 36, the Ammit 34), as a machine whose passive is
+    its only power should.
+  - Five of one tag is the best at its number: Ballistic in the heavy band (66 at armour 15),
+    Missile 39 with the fastest move, Beam 29 alone with the biggest shield. The shield wall's
+    worth is the battle (shield returns between fights and hull never heals), which one fight
+    cannot see and the campaign runner can.
+  - The warp is armour, not the doubles. Every steep build is five Ballistic tags, a second tag
+    adding its own row on top (hull 60 about 17 points, shield 60 about 8); five Missile and
+    Beam pieces, with no armour, win 52.
+  - The likely late die, two two-tag pieces in a mix, wins 61, about 11 over its plain mix.
+    Five pieces sharing two tags win 52 to 83, five sharing three 86, all under the Armadillo's
+    92. Bold's armour 20 puts five Ballistic at 84 and the three-tag die at 95, past it.
+  - So diminishing returns are not needed at these amounts. If the middle should sit closer to
+    the top, the riders only a mix can use lift it with no caveat (+5 here), and the falling
+    ladder on armour lifts the mixes 9 to 12 points with five Ballistic unchanged, at the cost of
+    a caveat; it is kept in reserve.
+- **The rows** (recommended: mid with the riders up; placeholders):
+  - Ballistic: +3 armour and +4 cooling (five: armour 15, the Armadillo's; cooling 25).
+  - Beam: +12 shield and +3 field recharge (five: shield 80, the most; recharge 30).
+  - Missile: +5 move and +12 hull (five: move 55, the fastest; hull 160, the Badger's).
+  - Arc: the others' highest roll 5 higher (the Booster's own number).
   - Flame, Plasma, Blade and Melee: nothing.
-- **Candidates not taken.** A free reroll and a straight damage buff (Ryan: a mechanic, and a
-  raised roll instead); the Tactical Databank's lowest roll as a fifth row (one roll row is
-  enough at four tags; it is the alternative to Arc's if a steady floor suits it better);
-  cooling as a row (the base carries 10, the rotor's wash, since every tag it reads but
-  Ballistic runs hot, and any row of it would pass the roster's 5 at once); maximum heat (filler
-  by the measurements, and the hot tags feed on it); a share off damage taken (a multiplier
-  among additions); attack range on the map (long guns are pinned while the engagement range
-  may change); salvage a kill (the economy is unbuilt); never hunted (a yes or no, which no
-  count can scale).
+- **Candidates not taken.** Armour 4 a weapon (bold: strictly the most armour, and the
+  three-tag die past the Armadillo); the falling ladder (a caveat, in reserve); the roster's
+  range as a cap (Ryan: five of a tag may be the best); a free reroll and a straight damage buff
+  (Ryan: a mechanic, and a raised roll instead); the Tactical Databank's lowest roll (the
+  alternative to Arc's); maximum heat (filler by the measurements, and the hot tags feed on
+  it); a share off damage taken (a multiplier among additions); attack range on the map (long
+  guns are pinned while the engagement range may change); salvage a kill (the economy is
+  unbuilt); never hunted (a yes or no, which no count can scale).
 - **The holes.** Three lines of rule text, its amounts in the codex, the most the budget holds.
   It bends the tags row's "no scaling with a tag's count", whose reason (a lynchpin, one
   blueprint farmed) does not hold here, since any weapon of the tag counts and nothing feeds
   itself. The hangar must show what each weapon fitted adds. A weapon counts for the battle
-  once fitted, destroyed or not, as every bonus does. The rows' worth is uneven where it is
-  measured (Ballistic about 16 hull a weapon, Beam about 7 beside its recharge, Arc about 10 to
-  20 beside rolled guns), and move and recharge are map numbers the fight's measures miss: the
-  runner and play read them. The chase's ceiling is the price to watch.
-- **Numbers.** Medium, flyer, move 20 (the slowest flyer, before its Missiles); hull 100, shield
-  20, armour 0, heat 60, cooling 10 (the rotor's wash), field recharge 15: low on purpose, the
-  weapons building the rest. Nothing locked. Five hardpoints (d5). Stock: weapons of its four
-  tags once tags exist (stand-ins: the Maxigun, the Howitzer, the Enfilade Beam, the Arc Fault
-  Cannon, the Laminar Deflector).
+  once fitted, destroyed or not, as every bonus does. Five Beams is the weakest single tag in a
+  fight, its worth for the campaign runner to read. The measures are a stand-in alone, its kits
+  today's pieces until tags exist: teams and whole runs can move them.
+- **Numbers.** Medium, flyer, move 30 (five Missiles make 55); hull 100, shield 20, armour 0,
+  heat 60, cooling 5, field recharge 15: low on purpose, the weapons building the rest. Nothing
+  locked. Five hardpoints (d5). Stock: weapons of its four tags once tags exist (stand-ins, the
+  first mix measured: the Maxigun, the Slugthrower, the Howitzer, the Enfilade Beam, the Arc
+  Fault Cannon).
 - **Model.** The Mi-24 Hind in W&S iron: a narrow armoured fuselage, two stepped bubble
   canopies, stub wings crowded with mounts of every kind (all five of its hardpoints), a chin
   mount, a five-blade rotor and a tail rotor.
@@ -360,3 +401,7 @@ tandem is set aside.
   every tag read (four, so a piece wearing two of them is the chase); Ballistic's 2 armour alone
   (1, tucked with 5 hull); Flame's hull row and Plasma's highest roll (Arc takes the roll, and
   Flame and Plasma raise nothing); Arc's lowest roll (the alternative now); cooling 5 (10).
+- Round ten (13 October): each number kept inside the roster's range (Ryan: five of a tag may
+  be the best at it); cooling in the base (a row on the cold tag, Ballistic, Ryan's soft
+  offensive stat) and Ballistic's hull (Missile's now); the amounts (measured instead: armour
+  3, shield 12, hull 12, the top roll 5).
