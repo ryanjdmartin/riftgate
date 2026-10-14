@@ -74,16 +74,16 @@
     "treant": {
       "foe": "treant",
       "role": "sprite",
-      "candidate": 13,
-      "source": "out/treant_img65/treant_13.png",
+      "candidate": 14,
+      "source": "out/treant_img70/treant_14.png",
       "kept": "picks/treant.png",
-      "prompt": "The same huge pale tree with peeling white bark, dark knot holes on its trunk each lit by a small bright prick of yellow light, striding on its mass of long writhing roots, moss and grey fungus hanging from it, with its two lowest boughs now bent down and forward as long reaching arms of the same pale bark, each ending in a splayed claw of twigs. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Treant, a monster of the grasslands. The tree that walks, every forest's boss. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
-      "image": "out/treant_c2/treant_1.png",
+      "prompt": "The same huge pale tree with peeling white bark, lit knot holes, its lowest boughs reaching forward as arms, striding on its roots, with thick green moss and dark green lichen hanging from its branches and trunk. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Treant, a monster of the grasslands. The tree that walks, every forest's boss. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
+      "image": "out/treant_img65/treant_13.png",
       "cut": {
         "tol": 90,
         "holes": 1000
       },
-      "note": "only complaint here is some of what i assume are supposed to be moss hanging off, are still coloured pale, so it looks like the tree is melting a bit."
+      "note": "The branches from before are now just actual human hands, it's weird"
     },
     "needler": {
       "foe": "needler",
@@ -138,18 +138,14 @@
     "revenant": {
       "foe": "revenant",
       "role": "sprite",
-      "candidate": 1,
-      "source": "out/revenant_hand/revenant_1.png",
+      "candidate": 16,
+      "source": "out/revenant_img70/revenant_16.png",
       "kept": "picks/revenant.png",
-      "prompt": "A drowned skeleton knight in corroded green-black plate dripping mud, lunging forward with a rusted trident thrust ahead in both hands, long bony limbs and a small skull set low between hunched armoured shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Revenant, a monster of the swamp and graveyard. The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.  Light: dim and damp, rust and old bone, lantern light in fog.",
-      "fix": {
-        "from": "out/revenant_hand/revenant_1.png",
-        "asked": "by hand (PIL): the trident's shaft straightened along the line through both hands, the head re-seated on it."
-      },
+      "prompt": "A towering corpse-knight in heavy pale grey plate with rags of a banner hanging from its pauldrons, mid-stride with a greatsword swung back over its shoulder, a small helmed head. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Revenant, a monster of the swamp and graveyard. The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.  Light: dim and damp, rust and old bone, lantern light in fog.",
+      "image": "out/revenant_hand/revenant_1.png",
       "cut": {
         "holes": 400
-      },
-      "note": "Picked, with: the hand and arm have a square chunk taken off them. at phone size it looks like hes holding a shovel and not a weapon (healed by image to image next)"
+      }
     },
     "ghost": {
       "foe": "ghost",
@@ -218,15 +214,11 @@
     "drake": {
       "foe": "drake",
       "role": "sprite",
-      "candidate": 1,
-      "source": "out/drake_hand/drake_1.png",
+      "candidate": 11,
+      "source": "out/drake_img60/drake_11.png",
       "kept": "picks/drake.png",
-      "prompt": "A small winged red dragon in flight seen from the side, both leathery bat wings spread wide and matching, each with four long finger bones ending in a sharp point and a hooked claw at the top joint, its hind legs dangling loosely beneath it with the toes drooping down, a straight gout of fire pouring forward from its jaws. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Drake, a monster of the volcano. A small dragon that breathes over the front rank. Artillery with wings.  Light: lit from inside by heat, black rock and embers.",
-      "fix": {
-        "from": "out/drake_hand/drake_1.png",
-        "asked": "by hand (PIL): the small extra claw on the far wing erased, the flame stretched to over twice its length."
-      },
-      "note": "big chunk taken out of the chest and foreclaw, and the vestigial hand is still visible. The fire looks weird and spliced together (the PIL route dropped; image to image from takes J 5)"
+      "prompt": "A small winged red dragon with a crest of swept-back horns, crouched low on all fours with its wings half spread, smoke and embers curling from its open jaws. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Drake, a monster of the volcano. A small dragon that breathes over the front rank. Artillery with wings.  Light: lit from inside by heat, black rock and embers.",
+      "image": "out/drake_hand/drake_1.png"
     },
     "magma_golem": {
       "foe": "magma_golem",
@@ -293,15 +285,12 @@
     "thief_chibi": {
       "foe": "thief",
       "role": "chibi",
-      "candidate": 1,
-      "source": "out/thief_chibi_hand/thief_1.png",
+      "candidate": 6,
+      "source": "out/thief_chibi_img60b/thief_6.png",
       "kept": "picks/thief_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring.",
-      "fix": {
-        "from": "out/thief_chibi_hand/thief_1.png",
-        "asked": "by hand (PIL): her short dagger mirrored into her other fist."
-      },
-      "note": "this just looks sloppy and not good (the PIL route dropped; image to image from c3 3)"
+      "image": "out/thief_chibi_hand/thief_1.png",
+      "note": "Still too long, everything else good"
     },
     "thief": {
       "foe": "thief",
