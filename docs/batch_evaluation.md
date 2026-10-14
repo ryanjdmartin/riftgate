@@ -1,37 +1,45 @@
-# The batch evaluation: what has a place in the ecosystem, and what goes back to the board
+# The batch evaluation: the roster rated, the proposals fitted, the tiers read
 
 The depth-and-breadth session and the batch evaluation, held as one session on 14 October
-2026 (Ryan, 13 October: a fresh session evaluates every proposed design together before any
-is built, and measures the roster against itself for mechanic depth and breadth). The
-question it answers is fit, not viability (Ryan, 14 October): the proposals are theory, and
-each is read for whether it has a place in the game as it stands (the rules in force, the
-verb classes the roster already carries, the machines it would stand beside) or goes back
-to the drawing board, and with what. No design was run; the runner only has a say about the
-roster as it stands, which sections 2 to 4 use to draw the ecosystem the designs are fitted
-against. Its brief is `docs/mechanic_budgets.md`; its inputs are the bible's first row,
-section 5's stun row, `docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md` and
+2026. Ryan's brief, 14 October: a holistic pass on the current roster, each design rated on
+quality, niche, build diversity and how well it supports the composition ecosystem; the
+proposed designs rated the same way, for what has a place in the ecosystem and what goes
+back to the drawing board; Minerva and Kestrel need new designs, so their gaps are named;
+and the tiers read as the game deals them: a tier-one set the tender draws from, with not
+every tier one on offer at a run's start, and tier twos and threes scarce, reached through
+procurement and battle rewards rather than free choice, so not every tier two or three
+needs a niche of its own. The proposals are theory: nothing was built or run; the runner's
+only say is about the roster as it stands (sections 3 to 5), which is the ecosystem the
+designs are fitted against.
+
+Inputs: `docs/mechanic_budgets.md` (the brief), the bible's first row and section 5's stun
+row, `docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
 `docs/aphelion_chassis_proposal.md`. Minerva's and Kestrel's proposals are struck (Ryan, 13
 and 14 October): each starts fresh from the latest rules, in a session of its own, with
-nothing of the struck designs kept in the records. Every run this page cites is in
-`docs/measurements.md` under 14 October; the rows it settled are in the bible and the
-questions it could not are in section 12.
+nothing of the struck designs kept in the records; section 7 names what each should fill.
+Every run this page cites is in `docs/measurements.md` under 14 October; the rows it
+settled are in the bible and the questions it could not are in section 12.
 
 **How to read it.** Everything here is Claude's reading for Ryan to move. A line marked
 "Ryan" with its date is his call and stands unless argued down in the open, which this page
-does where it has a reason. A design lands in one of three places: **has a place** (it
-fills a gap the ecosystem has, respects the rules in force, and is worth building in the
-order section 8 gives), **back to the board** (it duplicates what the ecosystem has or
-crosses a rule, with what it needs to come back with), or **unfinished** (its proposal left
-open questions a verdict would have to guess at; they are listed and the idea is read only
-for whether it fits if finished). Every number is a direction at 30 to 50 seeds unless it
-says 200; the bands are in `docs/measurements.md`.
+does where it has a reason. The four axes: **quality** (the design holds together: passive,
+numbers, locked pieces and stock pull one way, and the round holds a decision);
+**niche** (what it does that nothing else does, in the fight or on the map);
+**build diversity** (how many directions its hardpoints and passive reward, with generic
+kit); **composition** (what it gives a team and what it needs from one, with the measured
+team value of section 3 where there is one). Each axis is strong, fair or thin. A proposal
+lands in one of three places: **has a place** (fills a gap, respects the rules in force,
+worth building in section 10's order), **back to the board** (duplicates what the ecosystem
+has or crosses a rule; what it needs to come back with), or **unfinished** (open questions
+a verdict would guess at; listed, and the idea read only for fit if finished). Numbers are
+directions at 30 to 50 seeds unless they say 200; the bands are in `docs/measurements.md`.
 
 ## 1. The ecosystem by verb
 
 Counted by verb, never by keyword (the brief): what each class does to a fight, who carries it
 in the 54 components and 13 chassis today, how the bot spends it (the 200-seed report of 13
-October, `docs/balance.md`), and what each proposal would add to it. This is the table every
-verdict in section 5 is read against.
+October, `docs/balance.md`), and what each proposal would add. Every rating below is read
+against this table.
 
 | Verb class | Carriers today (54 components; * locked, ? unstocked) | Pick share where it is read | Proposed in the batch |
 |---|---|---|---|
@@ -53,21 +61,20 @@ verdict in section 5 is read against.
   sit under the brief's one source per eight. What Ryan saw on 13 October (prevalent, needs
   dialling back) is pick share: a stun on a small die is the die (58% and 64% on a d7 and a
   d4), while the same keyword on the Clydesdale's d9 at 20 heat is a quarter of its spends. So
-  the budget is two rules, not one: the count stays where it is, and a stun is priced like the
-  Suppression Battery (heat, a rolled number, a reach), which is the stock pass's heat
-  re-pricing (bible section 5) and not a new rule. Four of the batch's ideas are hard control
-  by another door, two of them amplifiers of the class (the funnel-web's two for one, the
-  jellyfish's three for one): the ecosystem has room for one new source of the kind the
-  player cannot spend, and the amplifiers go back to the board with the lever named
-  (section 5).
+  the budget is two rules: the count stays, and a stun is priced like the Suppression Battery
+  (heat, a rolled number, a reach), which is the stock pass's heat re-pricing (bible section
+  5), not a new rule. Four of the batch's ideas are hard control by another door, two of them
+  amplifiers of the class (the funnel-web's two for one, the jellyfish's three for one): the
+  ecosystem has room for one new source of the kind the player cannot spend, and the
+  amplifiers go back to the board with the lever named (section 6).
 - **Soft control and positioning are the thinnest classes**, two pieces the bot barely spends.
   Minos is the one proposal that changes the enemy's problem rather than removing its turn
   (the brief's third rule), and the Arsenal bench holds a second (Haunted). Both are foe-rank
   verbs, so both wait on the foes' fresh start putting back ranks in more fights.
-- **Sustain is the fullest class** at sixteen of 54, and it is where the roster's "plain
-  entries differing only by number" live: the stock pass's basic kit answers that, not this
-  batch. The batch adds sustain only as locked tools (a pavise that baits, a ward that counts
-  fires, a pall that moves a wound), which pass "a locked shield that does something".
+- **Sustain is the fullest class** at sixteen of 54, where the roster's "plain entries
+  differing only by number" live: the stock pass's basic kit answers that, not this batch.
+  The batch adds sustain only as locked tools (a pavise that baits, a ward that counts fires,
+  a pall that moves a wound), which pass "a locked shield that does something".
 - **"Changes what pieces do" is empty today** and the batch fills it six times over. It is the
   class that opens build space by definition (the brief's second rule), so it is where most
   of what has a place comes from; the limit is how many rules the player can hold, one
@@ -81,14 +88,127 @@ control stays at its count and is priced per piece (above); a new chassis earns 
 reading a state nobody reads, producing one nobody produces, or changing what a kind of piece
 does for everyone, and another source of an existing state needs a reason beyond its maker's
 flavour; prefer verbs that change the enemy's problem over verbs that remove its turn; every
-passive needs two routes in and two payoffs from other makers' pieces. Every design below
-is read against the four; the one that fails a rule says which.
+passive needs two routes in and two payoffs from other makers' pieces. Under the tier
+reading (section 2) the second rule binds tier threes hard, tier twos loosely and tier ones
+not at all: a tier one is plain on purpose.
 
-## 2. The ecosystem measured: solo value beside team value
+## 2. The roster today, rated
 
-{{SOLO_TEAM}}
+Thirteen machines on the four axes, with the measured solo row (200 seeds, `docs/balance.md`:
+packs, bosses, formations won at random/greedy, and the hull lost at greedy) and the
+measured team value (section 3: formations won and hull lost when it joins each baseline
+pair, greedy, 30 seeds; the roster's rank on it in brackets).
 
-## 3. The ecosystem measured: compositions at a fixed four
+| Machine | Maker, tier | Quality | Niche | Build diversity | Composition | Solo (200 seeds) | Team value (two baselines) |
+|---|---|---|---|---|---|---|---|
+| Honey Badger | Minerva, 1 | **fair.** The hopper (claw fills, fragmenter fires) is the roster's best locked pair: two entries, a decision every round. The passive ("never destroyed") has no job in a fight and the identity is open (section 8) | **strong.** The bruiser that fights alone: any small pack outside the Peak for under a tenth of its hull | **thin.** Three hardpoints behind two locked melee pieces that take 78% of its spends: the hardpoints are filler, and a build is which filler | **strong as a carry, nothing for allies.** Second and first in team value; brings a body and damage, reads no ally, feeds no ally | 79/98, 1/28, 16/48 (19%, 95%, 76%) | 100 (16%); 100 (19%) [2nd, 1st] |
+| Armadillo | Minerva, 1 | **strong numbers, a passive for others.** Armour 15, hull 150, the shutters' blocked-blow shock; the Faraday Hull sets up allies' big hits, which its own guns never need | **strong, and too big for a tier one.** The tank; also the best machine alone in the game (96/100 on packs, 60/98 on bosses): a tier one that carries a run (the campaign report: 55% of runs it starts won, against 11 to 38% for the others) | **fair.** Five untyped hardpoints and a passive that reads none of them: any kit works, no kit is its own | **strong.** Third and second in team value; the one tank; its Shocked is the roster's cleanest composition hook (the Sparrowhawk's Railgun doubled). Its problem is section 4's: four heavies with it are a wall | 96/100, 60/98, 46/75 (8%, 44%, 45%) | 100 (20%); 100 (20%) [3rd, 2nd] |
+| Wild Boar | Minerva, 2 | **strong.** Dive and brace pull one way; the plow's Braced is a decision; Spillover written out in full | **thin today.** The diver into crowds overlaps the Badger (two heavy Minerva tracked bruisers at the front) until back ranks exist; the spill measures about a point | **fair.** Five hardpoints; the spill rewards big single hits, one real direction | **strong, nothing for allies.** First and third in team value; another carry | 81/99, 12/65, 21/63 (12%, 72%, 63%) | 100 (14%); 100 (20%) [1st, 3rd] |
+| Sparrowhawk | Kestrel, 1 | **strong.** The clearest identity in the roster: double damage, double heat, a d4 | **strong.** The assassin: 65/92 on bosses alone, the one light machine that finishes a boss | **fair.** Three hardpoints beside the Pinion Driver after the stock pass; heat is the axis (a cool piece doubled is free, a hot one burns), which is a build | **fair.** Ninth in team value: a solo carry that a team makes cheap and a glass that wants an escort, which is right; the tender's Kestrel slot is always it, and the campaign runner's worst starter (28 runs started, 14% won) | 60/82, 65/92, 0/0 (32%, 50%, 100%) | 90 (42%); 95 (47%) [9th, 9th] |
+| Goshawk | Kestrel, 2 | **fair.** Sustain from heat and one blow that fires it all pull one way; the heat debuffs cost it its shield (the heat row's exit) | **fair.** The hot flyer that sustains, against the Sparrowhawk that bursts: a real pair of Kestrels, but the weaker half alone (33/60) | **strong.** Five hardpoints, and the passive pays for any hot piece of any maker: the roster's clearest build axis after the Clydesdale's | **fair.** Seventh and sixth: self-contained, asks nothing, gives nothing | 33/60, 0/2, 0/0 (57%, 100%, 100%) | 92 (32%); 89 (41%) [7th, 6th] |
+| Puffin | Kestrel, 2 | **thin as measured, strong as drawn.** The escort that overshields allies and vents whoever it shields is the one machine built for composition; the runner reads it as the worst third machine in the roster (last on both baselines) | **strong.** The shield escort, nobody else's job | **thin.** Four hardpoints on 50 hull; the fixed allies-only shield is the identity | **designed for it, measures against it.** Last on both baselines: either the greedy bot undervalues a shield it hands away (`shield_score` counts hull saved this round, not the blow turned next round) or the escort is too thin at hull 50 and a 30 shield. The one must-check before any support design is judged by the runner | 2/18, 0/0, 0/0 (89%, 100%, 100%) | 62 (53%); 64 (64%) [13th, 13th] |
+| Clydesdale | W&S, 2 | **fair.** A vanilla big die with a free reroll, by design (Ryan's own worry: lame); the reroll is die-local and thin as a passive | **fair.** Capacity: the only d9, the three-module machine, the utility space (the gunship sits in it) | **strong, the roster's best.** Nine hardpoints and three modules: the hangar's showcase, the one machine where a build is a whole plan | **strong.** Fifth and fifth; the one that carries the explosives and the Suppression Battery for the team | 58/72, 0/22, 0/0 (48%, 94%, 100%) | 93 (28%); 98 (34%) [5th, 5th] |
+| Prairie Dog | W&S, 1 | **fair.** A map passive (never hunted) on a generic fight kit; the rapid locked gun suits it | **fair.** The scout that is never caught; alone it takes only the back-rank pairs | **thin.** Three hardpoints, a d4 | **fair, better than it looks.** Sixth and eighth, above the Sparrowhawk beside a line: the rapid gun and the deflector work in a trio. Its map niche is invisible to the skirmish runner | 32/47, 1/15, 0/0 (63%, 91%, 100%) | 88 (30%); 82 (46%) [6th, 8th] |
+| Dingo | W&S, 1 | **thin in the fight.** Two actions a turn is a map passive; in the fight it is a d4 whose locked harpoon takes 64% of its spends | **strong on the map, none in the fight.** The pack animal that fights twice a turn, which only the campaign runner can read | **thin.** Three hardpoints | **thin as measured.** Twelfth on both baselines; its stun is the pick-share case in miniature. Its worth is the second fight, outside the skirmish runner's sight | 7/19, 0/0, 0/0 (86%, 100%, 100%) | 72 (50%); 68 (61%) [12th, 12th] |
+| Baboon | Aphelion, 1 | **strong idea, thin numbers.** The Paradox meter is the roster's best composition hook on paper: every status from any maker feeds it. Alone it loses to most things and the Umbra Inducer is 58% of its die | **strong.** The control meter; nobody else's | **strong in principle.** Six hardpoints and a passive that reads any status: the widest routes in of any machine | **the hook the runner cannot see.** Eleventh and tenth: the bot plays it as a weak gun platform; its meter wants allies' statuses, which the baseline pairs do not lay. Reads as tier two (Ryan, 11 October) | 21/44, 0/0, 0/0 (69%, 100%, 100%) | 80 (45%); 83 (50%) [11th, 10th] |
+| Stingray | Aphelion, 1 | **fair.** A hot amplifier the bot plays cold (the sail 3%, the lattice 3%); cooling 0 is a clean idea whose stock does not pull it | **fair.** The deepener of stacks, unique; overlaps the Goshawk in "run hot" (stacks against sustain) | **strong axis.** Five hardpoints; anything that lays stacks, on foes or allies, is its build | **fair.** Tenth and eleventh; a natural feeder of the Baboon's meter and of any burn reader, measured as a liability beside hitters. Reads as tier two (Ryan) | 23/42, 0/7, 0/0 (66%, 98%, 100%) | 81 (42%); 79 (55%) [10th, 11th] |
+| Nemesis | Arsenal, 2 | **strong.** Rage from any hull damage spent by the fists to roll again: overheating on purpose, luring, biting are all builds (Ryan's rework) | **fair.** The berserker; the third heavy bruiser in thirteen (the Badger, the Boar) | **fair.** Four hardpoints; hull-biting kit (the Tithe Coupling, the Oblation Ward) is one direction, lure another | **strong hitter, an identity a team starves.** Fourth and fourth; in a team its foes seldom reach its hull (0.3 rolls again a fight), so its passive is a solo passive | 74/91, 16/66, 2/43 (25%, 77%, 89%) | 99 (23%); 100 (30%) [4th, 4th] |
+| Ammit | Arsenal, 3 | **fair.** A d8 half locked to talons (47% of spends); Overcharged kept for the battle is the only cross-fight growth | **strong.** The battle-long ramp, nobody else's | **thin.** Four hardpoints behind four identical locked entries | **fair.** Eighth and seventh; it wants the last hit, a team decision. Its tier is a problem: tier is complexity, never power, and it reads simpler than the Nemesis | 36/56, 0/0, 0/0 (65%, 100%, 100%) | 91 (41%); 92 (44%) [8th, 7th] |
+
+**What the roster says as a whole.**
+
+- **Team value tracks solo value.** The ranking is the same beside both pairs and the same as
+  the solo rows: the heavies (the Boar, the Badger, the Armadillo, the Nemesis), then the
+  Clydesdale, then the mid machines, then the supports. There is no machine today that is
+  weak alone and strong together; the two built for it (the Puffin, the Baboon) measure
+  weakest at it. That is half the roster row's ask ("machines that are only good together")
+  unmet, and half a question about the bot (the Puffin's row).
+- **Minerva is three bruisers**, each strong, each a carry, none a line-holder for others;
+  Minerva's leanings (Spread, Lure, Braced: holding a line) are on its components, not its
+  chassis.
+- **Kestrel is one identity and two answers to it**: the Sparrowhawk, the Goshawk that
+  sustains instead, the Puffin that escorts it. Its tier one is a glass cannon, so the tender
+  hands every run one.
+- **Wainwright & Sutler is one big die and two map rules.** The cars are detachment tools on
+  dice that cannot detach (the cars row); the Clydesdale is the roster's build space.
+- **Aphelion is two support machines at tier one** that read as tier two and lose alone,
+  the roster's only control and the only amplifier of statuses, with nobody to carry them in
+  a tender that may deal both.
+- **The Arsenal is a berserker and a ramp**, both self-contained.
+- **Build diversity lives in three machines** (the Clydesdale, the Goshawk, the Stingray) and
+  in principle in the Baboon; the heavies and the lights have three or four hardpoints
+  behind locked pieces that take most of the die. The stock pass widens every die with
+  basics, but the hardpoint counts are the ceiling.
+
+**The tier-one set, as the game deals it.** The tender offers one tier one from each city
+maker by seed and the player takes three; not every tier one is on offer at a start, and
+the rest come through procurement and rewards. Today's set: Minerva the Badger or the
+Armadillo; Kestrel the Sparrowhawk; Wainwright & Sutler the Prairie Dog or the Dingo;
+Aphelion the Baboon or the Stingray. Read as a draw: a run that is dealt the Armadillo wins
+(55% in the campaign runner, the plain player), one dealt the Sparrowhawk, the Prairie Dog
+and the Stingray does not (14 to 33%), because Minerva's tier ones are the roster's two best
+solo machines, Kestrel's one is its worst starter, Wainwright & Sutler's two are map tools
+and Aphelion's two are tier-two support in tier-one slots. So the draw decides the run more
+than the pick. What a tier-one set should be, under "a chassis's tier is complexity, never
+power" and the stock pass's basics: five to seven plain, self-sufficient machines, each able
+to take a small pack alone (the detachment bar: under 15% of its hull) and each with one
+hook, so that any three of them are a team and any one is a start; the sharp identities
+belong at tier two, the rule-benders at three. By that bar the Badger and the Sparrowhawk
+are tier ones as meant; the Armadillo is a tier one by complexity and a tier two by what it
+does to a draw (its armour is section 12's question); the Baboon and the Stingray are tier
+twos in tier-one slots (Ryan has said so); the cars are tier ones that cannot take a pack.
+Two makers have no tier one that fights alone (Aphelion, Wainwright & Sutler), and that is
+the first thing a proposal can fix: the fan-boat is Wainwright & Sutler's.
+
+**Tier two and three, as the game deals them.** Offers one every two or three battles, a
+chassis on the shelf, procurement by Favour: a run sees a handful of tier twos and threes
+and chooses among what it is dealt. So a tier two may share a niche with another (two heavy
+bruisers is fine; the draw decides which one a run meets), and what a tier two or three
+must do instead is be a usable third or fourth beside any pair the tender could have dealt:
+section 3's third-machine read is that test, and every machine today passes it on win rate
+and fails it only in cost. A tier three must earn its complexity, not its power: today the
+one tier three (the Ammit) is simpler than two tier twos. The proposals' tiers are read on
+that: a tier three that bends a rule for everyone (the multi-rotor, Minos, Mastema) is
+placed right; a tier two is allowed to overlap.
+
+## 3. The ecosystem measured: solo value beside team value
+
+Every chassis's solo row stands in `docs/balance.md` at 200 seeds (section 2's seventh
+column). Its team value: each chassis as the third machine beside two baseline pairs,
+against the twenty packs, greedy, 30 seeds a cell (`docs/measurements.md`, 14 October). The
+first pair, the Clydesdale and the Prairie Dog, wins formations 29% for 90% of its hull; the
+second, the Nemesis and the Puffin, 52% for 83%. The read is the formations column: every
+third machine wins every single pack and boss, so the win rate saturates there and the
+formations' win rate and hull lost are what part the machines. The win rate is a direction
+at 30 seeds; the ranking holds across both pairs.
+
+| Third machine | Beside Clydesdale and Prairie Dog: formations won, hull lost | Beside Nemesis and Puffin: formations won, hull lost | Rank |
+|---|---|---|---|
+| Wild Boar | 100, 14% | 100, 20% | 1, 3 |
+| Honey Badger | 100, 16% | 100, 19% | 2, 1 |
+| Armadillo | 100, 20% | 100, 20% | 3, 2 |
+| Nemesis | 99, 23% | 100, 30% | 4, 4 |
+| Clydesdale | 93, 28% | 98, 34% | 5, 5 |
+| Prairie Dog | 88, 30% | 82, 46% | 6, 8 |
+| Goshawk | 92, 32% | 89, 41% | 7, 6 |
+| Ammit | 91, 41% | 92, 44% | 8, 7 |
+| Sparrowhawk | 90, 42% | 95, 47% | 9, 9 |
+| Stingray | 81, 42% | 79, 55% | 10, 11 |
+| Baboon | 80, 45% | 83, 50% | 11, 10 |
+| Dingo | 72, 50% | 68, 61% | 12, 12 |
+| Puffin | 62, 53% | 64, 64% | 13, 13 |
+
+**The reading.** The brief's bar for a detachment-class machine (beats a small pack for
+under 15% of its hull, loses a formation) and a line machine (the reverse) sorts the roster
+badly: the machines that can detach are the slow heavies and the Sparrowhawk, and the fast
+light machines cannot (the cars take only the back-rank pairs; the Puffin nothing). Team
+value is the same order as solo value, so the roster has no machine that trades solo
+strength for team strength. The two readings a design can act on: a fast machine that can
+take a small pack alone is a gap (the four-machines row asks for it), and a machine that
+is weak alone and strong together is a gap, with the Puffin's row the test of whether the
+runner can even see one.
+
+## 4. The ecosystem measured: compositions at a fixed four
 
 Eight fours against the twenty packs, greedy, 30 seeds a cell (`docs/measurements.md`, 14
 October): the win rate saturates at four (every four beats every single pack and boss), so
@@ -127,15 +247,15 @@ two formations in one fight.
   The fresh start should take its shape as the model for a formation that costs a four its
   tenth: numbers that come back, not numbers that hit harder.
 - **A four of supports is not a team**, and that is right: machines that are only good
-  together (the roster row's ask) must be good with someone to carry. The batch's machines
-  that are only good together (the multi-rotor, Misharu, Mastema) each need a hitter beside
-  them, which section 8's order keeps in mind.
+  together must be good with someone to carry. The proposals that are only good together
+  (the multi-rotor, Misharu, Mastema) each need a hitter beside them, which section 10's
+  order keeps in mind.
 - **Rounds spread from four to twelve a formation fight**, the hitters' fours at four or five
   and the status and support fours at nine to twelve: the pacing row's five to eight is
   bracketed, and a composition chooses where in it a team sits, which is a decision the
   campaign can price with the map's clock.
 
-## 4. The ecosystem measured: a heat baseline, one chassis three ways
+## 5. The ecosystem measured: a heat baseline, one chassis three ways
 
 Not a judgement on heat: the heat row says heat is judged once the roster has hot builds,
 never from a lack of content (Ryan, 13 October), and the roster has none. This is the
@@ -156,60 +276,63 @@ and a mixed kit (half and half, one vent).
 What the baseline records: on today's placeholders the hot kit crosses the maximum by its
 third round of firing, burns about 19 hull a fight for it, deals a quarter more damage,
 opens the bosses and loses no more hull than the cold kit; the bot vents under a tenth of
-the time. The boiler (section 5) is the first machine hot by identity, and the one the heat
+the time. The boiler (section 6) is the first machine hot by identity, and the one the heat
 row's test will be read on.
 
-## 5. The proposals: a place, or the board
+## 6. The proposals, rated and fitted
 
-Each design read against sections 1 to 4: the gap it fills or the class it crowds, the
-rules in force it must respect, and the machines it would stand beside. Each machine's full
-design, Ryan's calls and its engine work stay in its proposal; this page carries only the
-fit, the hole it turns on and what it needs. Nothing here was run: the runner has no way to
-read a design that is not in the engine, and a stand-in would measure the stand-in.
+Each design on the same four axes as the roster, then its fit: the gap it fills or the
+class it crowds, the rules in force it must respect, the machines it would stand beside,
+and its tier under section 2's reading. Each machine's full design, Ryan's calls and its
+engine work stay in its proposal; this page carries the rating, the fit, the hole it turns
+on and what it needs. Nothing here was run: the runner has no way to read a design that is
+not in the engine, and a stand-in would measure the stand-in.
 
 ### Wainwright & Sutler (`docs/ws_chassis_proposal.md`)
 
-| Machine | Tier | Fit | Its place in the ecosystem | The hole, and what it needs |
-|---|---|---|---|---|
-| The boiler (eight-legged spider) | 2 | **has a place** | the empty class (a vent becomes a gun) and the heat spectrum's missing end: the one machine hot by identity, which the heat row wants fielded before heat is judged (section 4). Routes in from any maker's hot weapons and the Peak's debuffs; payoff through any maker's vent | the rider on an action taken anyway has its limit in the random target (Ryan). Cooling -10 against vents of 20 to 40 keeps the blast under a weapon's number; the Entropy Condenser is its biggest shot. Its levers if it proves strong: the gain, then the blast at half |
-| The revolver (chicken walker) | 2 | **has a place** | the empty class (a roll becomes a step): the one machine on which "the build is visible every round" is literal, and the legible form of a cooldown (section 6). Routes in from any maker's Rapid piece | the Rapid chain: four Rapid pieces exist, three of them small, and a six-chamber die of them fires every round and overheats by its third, which is the heat row's own test. Ryan's lever stands: Rapid once a round on it if the chain reads strong rather than funny |
-| The funnel-web (four-legged spider) | 2 | **back to the board** | it crowds the scarcest class: a second stun chassis in one batch, and the one that makes every stun two (a web on the foe left of the threat costs two enemy actions a spend, so a Suppression Battery in its hardpoint is the die). The fangs reading Suppressed is the part the ecosystem lacks | Ryan called the plan good (13 October); argued here in the open under the stun row. It comes back once the stock pass has priced the stun pieces and the fresh start has formations in which the trick (which neighbour acts next) is worth its rule; and it comes back one for one if he wants it sooner: the burst Suppresses the neighbour alone, since the webbed foe has already acted |
-| The gunship (Hind) | 2 | **has a place**, after the stock pass | the empty class (a fitted weapon becomes a stat line, by tag): the first machine whose numbers the player builds, in the Clydesdale's utility space and locking nothing (Ryan). The tags row lets its count pass | nothing until components carry tags and the hangar shows each weapon's share; its holes were closed in the proposal (nothing a tag grants feeds that tag). The proposal's own stand-in table says where its rows sit; it is the proposal's note, not this page's measurement |
-| The fan-boat (punt gun) | 1 | **has a place**, after the stock pass | the empty class (every weapon becomes a shell) and the gap section 2 names: a fast machine that can detach, since its damage is one number whatever shows. Routes in from any maker's keyword piece | the hole the proposal names, a shell's own heat not counting, is a stun-budget hole: a Suppression Battery becomes a 15-damage Suppress for 5 heat and a Rapid shell a free 15 again. It needs the shell's own heat kept (the shot takes the deck gun's number and reach, the shell's heat), so a hot keyword stays priced; then its stock is the basic kit, so it lands with the stock pass |
-| The multi-rotor (the sutler's deck) | 3 | **has a place**, after the die's word | the empty class (any die is yours) and the roster row's ask for a machine that is only good together: its kit is built for its allies' passives | it needs what shown text calls the die (section 12, a session of its own) and the phone gesture judged; its risk is being the Sparrowhawk's second die, which is also its point |
+| Machine | Tier | Quality | Niche | Build diversity | Composition | Fit, and what it needs |
+|---|---|---|---|---|---|---|
+| The boiler (eight-legged spider) | 2 | **strong.** Cooling below zero, vents that blast, a random target as the limit (Ryan): pressure is the play, every piece pulls one way | **strong.** Heat as ammunition; the heat spectrum's missing end, the one machine hot by identity | **strong.** Four hardpoints that want any maker's hot weapons and vents; the Peak's debuffs feed it | **fair.** A self-contained hitter that asks nothing; gives the team a reason to carry hot kit | **has a place.** The empty class (a vent becomes a gun) and the heat row's missing build. Its hole is the rider on an action taken anyway, limited by the random target; levers if strong: the gain, then the blast at half |
+| The revolver (chicken walker) | 2 | **strong.** A die that steps; the loadout is a fire plan; a destroyed component a known dead chamber | **strong.** The only machine with no roll: the legible form of a cooldown (section 8) | **strong.** Five hardpoints whose order is the build, and Rapid pieces of any maker make sequences | **fair.** Self-contained; its plan can be built round allies' beats (a stun lined up for the boss's round) | **has a place.** The empty class (a roll becomes a step) and "the build is visible every round" made literal. Its hole is the Rapid chain (four Rapid pieces exist, three small; six chambers of them fire every round and overheat by the third, the heat row's own test); Ryan's lever stands, Rapid once a round on it |
+| The funnel-web (four-legged spider) | 2 | **strong as a trick** (web the foe left of the threat; the burst holds the threat now and the webbed foe next round), **thin as a budget**: every stun it lands is two | **fair.** A stun that is timed rather than spent, and fangs that read Suppressed (nobody reads it) | **thin.** Four hardpoints that want a Suppress piece, so the Suppression Battery is the die | **fair.** Every stun on the team feeds its fangs; it feeds the Baboon twice a web | **back to the board.** It crowds the scarcest class: a second stun chassis in one batch and the one that doubles the class's yield. Ryan called the plan good (13 October); argued here under the stun row. It comes back once the stock pass has priced the stun pieces and the fresh start has formations where "which neighbour acts next" is worth a rule, as written; or sooner, one for one: the burst Suppresses the neighbour alone, since the webbed foe has already acted |
+| The gunship (Hind) | 2 | **strong by Ryan's shape.** Numbers only, built in the hangar, nothing locked; the holes closed in the proposal (nothing a tag grants feeds that tag) | **fair.** The machine whose numbers the player builds, in the Clydesdale's utility space: an overlap a tier two is allowed | **strong.** Five hardpoints and four tags, each a row; two-tag pieces the chase | **fair.** Whatever its build makes it; Beam makes a shield wall for a battle | **has a place**, after the stock pass's tags and a hangar that shows each weapon's share. The proposal's own stand-in table (13 October) says where its rows sit; it is the proposal's note |
+| The fan-boat (punt gun) | 1 | **strong.** One rule (every weapon fires the deck gun's shot with its own keywords), simple at the start, a rack of shells by a run's end | **strong.** The fast machine that can take a small pack alone, since its damage is one number whatever shows: the gap section 3 names, and Wainwright & Sutler's first tier one that fights | **strong.** Three hardpoints, but every keyword piece of any maker is a shell: the build is which keywords | **fair.** A detachment; brings nothing to allies and needs nothing | **has a place**, after the stock pass's basics (its stock). Its hole is the one the proposal names, a shell's own heat not counting, which is a stun-budget hole (a Suppression Battery becomes a 15-damage Suppress for 5 heat, a Rapid shell a free 15 again); it needs the shell's own heat kept (the shot takes the deck gun's number and reach, the shell's heat) |
+| The multi-rotor (the sutler's deck) | 3 | **strong.** One sentence (any machine may spend its die as its own), its kit the team's; the gesture the risk | **strong.** Nobody lends a die | **strong.** Six hardpoints chosen for allies' passives: flat guns for the Sparrowhawk, biting kit for the Nemesis, stack appliers for the Stingray | **the strongest in the batch.** The roster row's machine that is only good together, by construction | **has a place**, after the die's word (section 12, a session of its own) and the phone gesture; a tier three placed right (it bends a rule for everyone) |
 
 ### The Arsenal (`docs/arsenal_proposal.md`)
 
-| Machine | Tier | Fit | Its place in the ecosystem | The hole, and what it needs |
-|---|---|---|---|---|
-| Misharu (justice) | 2 | **has a place** | the one stun the player cannot spend (the enemy's own blow sets it off), reading a state nobody reads (a shield breaking) and adding a decision the ecosystem lacks (a small shield as bait, on whom). Routes in from three makers' shields | control density on a team that shields whoever each hitter picked; Numbed is the brake and the boss cells will say whether it holds, once it exists. Its fallbacks are Ryan's: the sentence in damage, or several breaks to a suppress. The bot must learn the sentence or the runner under-reads it |
-| Mastema (everything burns) | 3 | **has a place**, after Misharu | reads two states nobody reads (a burning foe's death; how many foes burn), on a class with seven carriers to feed it from three makers; its locked pieces are tools, not a gun (Ryan), which is the shape the ecosystem's locked pieces want | a team with no burn wastes a third of its die, which is its cost and fine; the Ewer's doubling is uncapped and compounds through the Bellows, so it needs a cap, per foe not per stack (as written) |
-| Minos (the ranks turned) | 3 | **has a place**, after the foes' fresh start | the batch's one soft-control machine, the thinnest class: it changes the enemy's problem rather than removing its turn, not optional (Ryan), the whole team playing around it | its place exists only where fights have back ranks; outside the four formations none does today, so it waits for the formations the rift will spawn, and the screen and the bot must show and weigh the turn |
-| The Onryō (retribution) | 2 | **back to the board** | it crowds twice: the fourth reader of a foe's blow on hull (Retaliate, the Faraday Hull, the Nemesis's rage) and the second build around taking hits beside the Nemesis, and the second damage-over-time machine in the batch. What the ecosystem lacks in it is real: a curse the enemy earns that outlives its machine, and the Pall, the one interpose a locked piece is allowed | Ryan: it needs refinement. It comes back on a trigger nobody reads, keeping Grudge as its word and the Pall; the bench's Haunted (a striker spends its next blow on the foe beside it) is soft control and the better retribution to build it round. Grudge piling on a boss (six wounds, 30 a round for the fight) needs a cap or a decay either way |
-| The Scapegoat Brand (the cleanse that moves debuffs) | a rare | **has a place**, after the buffs-and-debuffs pass | a component, not a chassis: the ecosystem's first mover of a debuff across the sides, which only Burning allows today | shape A first (Burning alone), D the target; it waits on the pass that gives every debuff one meaning on either body |
+| Machine | Tier | Quality | Niche | Build diversity | Composition | Fit, and what it needs |
+|---|---|---|---|---|---|---|
+| Misharu (justice) | 2 | **strong.** A foe's blow that breaks a shield convicts it; the pavise baits, the halberd reaches through a column; one new decision (a small shield, on whom) | **strong.** The one stun the player cannot spend: the enemy sets it off. Reads a state nobody reads | **fair.** Three hardpoints; any shield of any maker is bait, a lure the other half | **strong.** Built for shielders (the Puffin, the Halo Shield, Mastema's Ward); asks for a team that shields on purpose | **has a place**: the one new hard-control source the budget has room for, since it is the kind the player cannot spend. Its hole is density on a team that shields whoever each hitter picked; Numbed is the brake. Ryan's fallbacks stand (the sentence in damage, or several breaks to a suppress); the bot must learn the sentence |
+| Mastema (everything burns) | 3 | **strong.** Fire passing from the dead; two tools that work the fire rather than light it (Ryan): the Ewer deepens, the Ward counts, and per foe they pull apart | **strong.** Reads two states nobody reads (a burning foe's death; how many foes burn) | **strong.** Four hardpoints that want burners of three makers; deep or wide is the build | **strong.** Needs burn on the team and pays any burner back; a team with none wastes a third of its die, its cost | **has a place**, after Misharu; a tier three placed right. Its hole is the Ewer's uncapped doubling compounding through the Bellows: it needs a cap, per foe not per stack (as written) |
+| Minos (the ranks turned) | 3 | **strong.** Every foe its weapons reach changes rank, not optional (Ryan); the team plays round it | **strong.** The batch's one soft-control machine, the thinnest class: it changes the enemy's problem instead of removing its turn | **fair.** Four hardpoints; Spread turns three columns, Penetrate one, so the area pieces are its build | **strong.** Its turn is the round's hinge for every Direct gun on the team | **has a place**, after the foes' fresh start: its place exists only where fights have back ranks, and outside the four formations none does today. The screen must draw the turn and the bot weigh the state after it |
+| The Onryō (retribution) | 2 | **fair.** Grudge (a permanent curse on whoever wounds the team) and the Pall (an interpose on a locked piece) are each sound; together they are the Nemesis's build around taking hits, slower | **thin.** The fourth reader of a foe's blow on hull (Retaliate, the Faraday Hull, the rage) and the second damage over time beside Mastema; what is its alone is a curse the enemy earns that outlives its machine | **fair.** Four hardpoints; plating and the Spall Liner buy more curses, a lure moves the wounds | **fair.** Reads the team's wounds, so a team built to bleed curses more; the Pall shelters a fragile ally | **back to the board.** Ryan: it needs refinement. It comes back on a trigger nobody reads, keeping Grudge as its word and the Pall; the bench's Haunted (a striker spends its next blow on the foe beside it) is soft control and the better retribution to build it round; Grudge piling on a boss (six wounds, 30 a round for the fight) needs a cap or a decay either way |
+| The Scapegoat Brand (the cleanse that moves debuffs) | a rare | **fair.** Four shapes, A to D, each a vocabulary decision | **strong.** The first mover of a debuff across the sides, which only Burning allows today | a component | retribution the team spends | **has a place**, after the buffs-and-debuffs pass; shape A first (Burning alone), D the target |
 
 ### Aphelion (`docs/aphelion_chassis_proposal.md`)
 
 Aphelion's proposals are **unfinished** (Ryan, 14 October: that session ended before its
 open questions were closed, so none of the four is a design a verdict can be given on). The
-table lists what each left open, as the proposal records it, and reads the idea only for
-whether it fits the ecosystem if finished. Aphelion fields two chassis and needs more (Ryan,
-11 October), so the finishing is worth doing; the jellyfish is the one worth finishing
-first.
+table lists what each left open, as the proposal records it, rates what can be rated, and
+reads the idea only for whether it fits the ecosystem if finished. Aphelion fields two
+support machines at tier one that read as tier two (section 2) and needs more (Ryan, 11
+October); the jellyfish is the one worth finishing first, and Aphelion's next tier one
+should be a machine that can fight alone, so a tender's Aphelion draw is not a support
+without a carry.
 
-| Idea | Tier | Left open by the proposal | Fit, if finished |
-|---|---|---|---|
-| The jellyfish (the Science Vessel) | 2 | the spread rule as written (effects only, foes only); the dispel's name (Dispel, Strip or Purge) and exact reach; Shock on the EMP; its stock; its designation; the engine's rider spread (new) | **fits**: the empty class (every rider spreads, never the damage), the only source of the dispel, wide where the Stingray is deep (Ryan). One hole for the finishing: a spread Suppress is three foes held a spend, the batch's biggest stun amplifier, so the spread needs a stun exception ("its damage and its stuns do not") for the stun row to hold |
-| The line frame (the Gundam homage) | 1 | plain +5 on beam blows or +5 on a foe already hit this round; the locked shield-and-saber pair; the tier; the designation; tags on components first | **back to the board**: both passive forms are a damage rider with a tag tax (five more is the Booster's price and it dictates a beam die; the lead form has no limit of its own). The pair (spending the shield lets the saber reach any foe that round) is the part the ecosystem lacks, a locked piece changing another's reach within the round, and a frame built round it would fit |
-| The Carrier (the Protoss homage) | 3 | its verb (the screen, strikes, a second die); its passive; whether it draws bigger than the assault class; its designation; the Minervan battlecruiser it is a foil to | no fit can be read: there is no design yet. One design round with Minerva's battlecruiser, once Minerva's fresh start has one |
-| The fast walker (the Zoids homage) | 2 | its maker (Aphelion or the Arsenal); its name and passive with the maker; the tier; the designation; an on-kill trigger (new) | **fits** as the Arsenal's: a kill making the spend Rapid is a new trigger on a class with six carriers, and the mauling reads as a punisher's (Ryan: maybe a sign). As Aphelion's it would be the fourth tempo machine beside the Stingray's and the Baboon's control. The maker is Ryan's call |
-| The large hovercraft | 2 | parked (Ryan) | not read |
+| Idea | Tier | Left open by the proposal | Quality, niche, build, composition as far as they go | Fit, if finished |
+|---|---|---|---|---|
+| The jellyfish (the Science Vessel) | 2 | the spread rule as written (effects only, foes only); the dispel's name (Dispel, Strip or Purge) and exact reach; Shock on the EMP; its stock; its designation; the engine's rider spread (new) | quality strong as a sentence (every effect its weapons put on a foe also lands on the foes beside it; its damage does not); niche strong (the only dispel; wide where the Stingray is deep); build strong (five hardpoints, any status piece of any maker goes wide); composition strong (fills the Baboon's meter across a rank) | **fits**: the empty class (every rider spreads) and the only source of the dispel. One hole for the finishing: a spread Suppress is three foes held a spend, the batch's biggest stun amplifier, so the spread needs a stun exception ("its damage and its stuns do not") for the stun row to hold |
+| The line frame (the Gundam homage) | 1 | plain +5 on beam blows or +5 on a foe already hit this round; the locked shield-and-saber pair; the tier; the designation; tags on components first | quality thin in either passive (a damage rider with a tag tax: five more is the Booster's price and it dictates a beam die; the lead form has no limit of its own); niche thin (a plain beam hitter); build thin (a beam die); composition fair (a tier-one hitter Aphelion lacks) | **back to the board.** The pair (spending the shield lets the saber reach any foe that round) is the part the ecosystem lacks, a locked piece changing another's reach within the round; a tier-one frame built round the pair, plain otherwise, would be the Aphelion tier one that fights alone, which section 2 asks for |
+| The Carrier (the Protoss homage) | 3 | its verb (the screen, strikes, a second die); its passive; whether it draws bigger than the assault class; its designation; the Minervan battlecruiser it is a foil to | nothing to rate: no design yet | no fit can be read. One design round with Minerva's battlecruiser, once Minerva's fresh start has one |
+| The fast walker (the Zoids homage) | 2 | its maker (Aphelion or the Arsenal); its name and passive with the maker; the tier; the designation; an on-kill trigger (new) | quality fair (a kill makes the spend Rapid: kill order as tempo, strong into swarms, plain against a boss); niche fair (a new trigger on a class with six carriers); build fair; composition fair (a hunter that wants the last hit, like the Ammit) | **fits** as the Arsenal's: the mauling reads as a punisher's (Ryan: maybe a sign) and the Arsenal's roster is two self-contained hitters that a beast would stand beside; as Aphelion's it would be a fourth tempo machine beside two supports. The maker is Ryan's call |
+| The large hovercraft | 2 | parked (Ryan) | not read | not read |
 
-### Kestrel
+### Kestrel and Minerva
 
-Struck from the batch (Ryan, 14 October): Kestrel's next chassis start fresh from the latest
-rules and this evaluation, in a session of their own, and nothing of the struck designs is
-kept in the records.
+Struck (Ryan, 13 and 14 October): each maker's next chassis start fresh from the latest
+rules and this evaluation, in a session of its own, and nothing of the struck designs is
+kept in the records. Section 7 says what each should fill.
 
 ### What the runner cannot say
 
@@ -218,46 +341,77 @@ the stand-in (bible section 11: the greedy bot values only what it knows). Befor
 runner can read any that is built, `sim/policy.gd` needs its valuation: the sentence
 (Misharu), the doubling and the count (Mastema), the blast (the boiler), the step (the
 revolver), the turn of the ranks (Minos), the spread rider (the jellyfish), the shell (the
-fan-boat). That is the to-do's existing line.
+fan-boat). That is the to-do's existing line. And before any support design is judged by the
+runner, the Puffin's row (section 2) says the bot's shield valuation must be checked.
 
-## 6. The questions folded in
+## 7. What Minerva and Kestrel need
+
+Not designs (Ryan: fresh sessions), but the gaps their next designs should fill, read from
+sections 2 to 6.
+
+**Minerva** (the Badger 1, the Armadillo 1, the Boar 2: three heavy carries, the roster's
+first, second and third in team value).
+- A Minerva that holds a line for others rather than hitting: the maker's leanings (Spread,
+  Lure, Braced) are on its components and on no chassis; a tank whose passive is for its
+  allies' hull and not its own would be the first Minerva that is better together than alone,
+  and a tier two or three that does not add a fourth bruiser.
+- A tier three: Minerva has none, and the makers table's flying brick is unclaimed.
+- The battlecruiser the Carrier is a foil to (Aphelion's section), if the Carrier is ever
+  finished: one design round for both.
+- A tier one that is not the best machine in the game: the Armadillo's armour is section
+  12's question; if it comes down, Minerva's tier ones are the Badger and a plain tank, which
+  is right.
+
+**Kestrel** (the Sparrowhawk 1, the Goshawk 2, the Puffin 2: one identity, two answers to it).
+- A second tier one, so the tender's Kestrel slot is not always the Sparrowhawk: a plain,
+  self-sufficient light airframe that can take a small pack alone (the detachment bar) with
+  one Kestrel hook, which is also the fast detachment the four-machines row asks for.
+- A Kestrel that is strong together: today the Puffin is drawn for it and measures last;
+  whether that is the bot or the escort is the first thing a Kestrel session should settle
+  (the shield valuation, then hull 50 and the 30 shield).
+- A tier three: Kestrel has none. The tempo class (Rapid, Overcharged, the chain rule) is
+  Kestrel's lean and has six carriers; a Kestrel tier three that bends a rule for everyone in
+  that class is the shape, with the heat row's hot-by-identity build the second candidate once
+  the stock pass has priced heat.
+
+## 8. The questions folded in
 
 **The Honey Badger's identity** (bible section 7, open; discuss first, Ryan). Measured, it is
-the strongest solo tier one after the Armadillo (section 2): it takes any small pack outside
-the Peak for under a tenth of its hull and loses every boss, a detachment that cannot finish
-a battle alone. Of the three forms in its row, the in-fight stand (once a battle, a blow that
-would wreck it leaves it at 1 hull) is the binary the Arsenal bench retired as the guardian's
-stay, and the threshold already spares a heavy machine's components. The campaign form
-(never sits out after a wreck, never loses a component: today's "never destroyed" grown up)
-is the one that reads where the four-machines row needs it: a detachment is a decision the
-map prices with time, and the Badger becomes the one machine whose wreck costs the run
-nothing but the fight, the roster's expendable detachment. Claude's lean: the campaign form,
-with the hopper staying its kit. The salvage form is an economy lever and waits on the
-economy pass either way.
+the strongest solo tier one after the Armadillo and the first or second machine in team
+value (section 3): it takes any small pack outside the Peak for under a tenth of its hull
+and loses every boss, a carry that cannot finish a battle alone. Of the three forms in its
+row, the in-fight stand (once a battle, a blow that would wreck it leaves it at 1 hull) is
+the binary the Arsenal bench retired as the guardian's stay, and the threshold already
+spares a heavy machine's components. The campaign form (never sits out after a wreck, never
+loses a component: today's "never destroyed" grown up) is the one that reads where the
+four-machines row needs it: a detachment is a decision the map prices with time, and the
+Badger becomes the one machine whose wreck costs the run nothing but the fight, the roster's
+expendable detachment. Claude's lean: the campaign form, with the hopper staying its kit.
+The salvage form is an economy lever and waits on the economy pass either way.
 
 **The Armadillo's Faraday Hull** (bible section 7, open). Two things answer a foe's blow on
 bare hull today, the Faraday Hull and the Retribution Thurible, both with Shocked; the
-Nemesis's rage reads the same blow for another payoff. With the Onryō waiting, nothing in
-this batch crowds it, so nothing must go now. Its measured worth without the discharge is
-modest (64 and 85 against 85 and 92 with it, a 50-seed row mean; `docs/measurements.md`, 11
-October), and Minerva's team wins everything either way. The exit stays as Ryan set it: when
-an Arsenal retaliation lands (Grudge, or whatever returns in its place), the Faraday Hull is
-the first to go, and the Armadillo keeps the Lockdown Shutters' shock on a blocked blow as
-its taunt. Until then it stands.
+Nemesis's rage reads the same blow for another payoff. With the Onryō back on the board,
+nothing in this batch crowds it, so nothing must go now. Its measured worth without the
+discharge is modest (64 and 85 against 85 and 92 with it, a 50-seed row mean;
+`docs/measurements.md`, 11 October), and Minerva's team wins everything either way. The
+exit stays as Ryan set it: when an Arsenal retaliation lands (Grudge, or whatever returns in
+its place), the Faraday Hull is the first to go, and the Armadillo keeps the Lockdown
+Shutters' shock on a blocked blow as its taunt. Until then it stands; its armour, not its
+passive, is what section 4 argues with.
 
-**The cars' missing solo niche** (bible section 7, the cars row). Section 2 reads it: the
+**The cars' missing solo niche** (bible section 7, the cars row). Section 3 reads it: the
 Prairie Dog takes the back-rank pairs (the Mandragoras, the Cockatrices) and the Ghosts for
 under a fifth of its hull and nothing else; the Dingo takes the two back-rank pairs and
 nothing else; neither is a detachment by the brief's bar, and the machines that are (the
 Badger, the Armadillo, the Boar, the Sparrowhawk, the Nemesis) are the slow ones bar the
 Sparrowhawk. The cars' map rules stay their identity (a scout never hunted, a pack animal
 that fights twice), and their worth is the second fight a turn and the fight they are never
-caught in, which a team row reads and a solo row cannot. The stock pass gives them basics;
-the detachment-class fast machine the four-machines row asks for is a new machine's job,
-and the batch has one candidate: the fan-boat (tier one, light, move 50, a deck gun that
-fires the same 15 whatever shows, so its damage is a number the player can plan a detachment
-on). The Dingo's harpoon at 64% of its spends is the
-stun pick-share case in miniature; its price is the stock pass's.
+caught in, which a team row reads and a solo row cannot; the Prairie Dog measures sixth in
+team value beside a line, above the Sparrowhawk. The stock pass gives them basics; the fast
+detachment the four-machines row asks for is a new machine's job, and the batch has one
+candidate, the fan-boat (section 6). The Dingo's harpoon at 64% of its spends is the stun
+pick-share case in miniature; its price is the stock pass's.
 
 **Cooldowns in a skirmish** (bible section 8, open; the one question the brief asks the
 session to weigh). The revolver makes the case for them legible: a known dead chamber is a
@@ -270,7 +424,7 @@ row: a printed rule on a few rare pieces, never on a basic and never as a genera
 entry shown blank for a round or two after it fires, with the chip carrying the count. Heat
 stays the one cost on the whole die; a cooldown is a second cost on the chase pieces alone.
 
-## 7. The set-aside lists, re-read under the first row
+## 9. The set-aside lists, re-read under the first row
 
 The bible's first row: a Lean is never an exclusion, a "never" carries its reason and the
 condition that reopens it, and a proposal's bench shows what a rule killed so Ryan can
@@ -313,15 +467,16 @@ cauldron, the Aspergillum and every-blow-burns gone; no popping the Grudge; the 
 guideline; the name families; Aphelion on thrusters; the Carrier as the Protoss foil; the
 large hovercraft and long guns parked; transforming chassis pinned.
 
-## 8. What has a place, in the order worth building it
+## 10. What has a place, in the order worth building it
 
 Three waves of what has a place, each gated by the thing its machines wait on, balanced
 across the makers (today Minerva, Kestrel and Wainwright & Sutler field three each, Aphelion
-and the Arsenal two). The go on each is Ryan's; this is the order if they go. Every one lands
-as the proposals say: the entry in content with its locked pieces (a passive the engine
-cannot run yet marked planned), the engine pieces tested with synthetic passives, the bot's
-valuation, a lowforge model judged running, the bible's chassis table and the rules' count,
-the hangar page, a runner row. Codex and flavour are Ryan's.
+and the Arsenal two; Minerva's and Kestrel's fresh sessions add theirs beside these). The
+go on each is Ryan's; this is the order if they go. Every one lands as the proposals say:
+the entry in content with its locked pieces (a passive the engine cannot run yet marked
+planned), the engine pieces tested with synthetic passives, the bot's valuation, a lowforge
+model judged running, the bible's chassis table and the rules' count, the hangar page, a
+runner row. Codex and flavour are Ryan's.
 
 **Wave one, now: nothing waited on.**
 
@@ -336,9 +491,10 @@ the hangar page, a runner row. Codex and flavour are Ryan's.
 
 **Wave two, with the stock pass and Ryan's two words (the dispel's name, the fan-boat's heat).**
 
-4. **Mastema** (the Arsenal, tier 3), with the cap on the doubling.
-5. **The fan-boat** (Wainwright & Sutler, tier 1): its stock is the basic kit.
-6. **The jellyfish** (Aphelion, tier 2), once finished (section 5) and with the stun exception.
+4. **The fan-boat** (Wainwright & Sutler, tier 1): its stock is the basic kit; the tier-one
+   set's first fast machine that fights alone.
+5. **Mastema** (the Arsenal, tier 3), with the cap on the doubling.
+6. **The jellyfish** (Aphelion, tier 2), once finished (section 6) and with the stun exception.
 7. **The gunship** (Wainwright & Sutler, tier 2), once components carry tags.
 
 **Wave three, with the foes' fresh start and the die's word.**
@@ -349,31 +505,39 @@ the hangar page, a runner row. Codex and flavour are Ryan's.
 **Back to the board, with what each comes back with:** the funnel-web (the stock pass's
 prices on stun pieces and the fresh start's formations, as written or one for one); the
 Onryō (a trigger nobody reads, Grudge and the Pall kept, Haunted the lead); the line frame
-(designed round its locked pair); the Zoids walker (the Arsenal's next round, maker Ryan's).
-**Unfinished:** the Carrier (one round with Minerva's battlecruiser); the large hovercraft
-(parked). **Struck:** Minerva's and Kestrel's, fresh sessions.
+(a tier one built round its locked pair, plain otherwise); the Zoids walker (the Arsenal's
+next round, maker Ryan's). **Unfinished:** the Carrier (one round with Minerva's
+battlecruiser); the large hovercraft (parked). **Struck:** Minerva's and Kestrel's, fresh
+sessions, with section 7's gaps as their brief.
 
-**The roster after wave three:** Minerva 3, Kestrel 3, Wainwright & Sutler 8, Aphelion 3,
-the Arsenal 5, twenty-two in all, with a tier one added (the fan-boat), five tier twos and
-three tier threes. Wainwright & Sutler's weight is the proposal's own (Ryan's six); if it
-reads as too many, the multi-rotor and the gunship are the two that wait longest anyway.
+**The roster after wave three, before Minerva's and Kestrel's fresh rounds:** Minerva 3,
+Kestrel 3, Wainwright & Sutler 8, Aphelion 3, the Arsenal 5, twenty-two in all, with a tier
+one added (the fan-boat), five tier twos and three tier threes. Wainwright & Sutler's weight
+is the proposal's own (Ryan's six); under the tier reading that is fine (a run meets a few
+of them), and if it reads as too many, the multi-rotor and the gunship are the two that wait
+longest anyway. The tier-one set after wave two is eight: the Badger, the Armadillo, the
+Sparrowhawk, the Prairie Dog, the Dingo, the fan-boat, the Baboon, the Stingray; three of
+the eight cannot take a small pack alone, and the line frame rebuilt round its pair would be
+the ninth and Aphelion's first that can.
 
 **What the runner reads after each wave:** every new machine alone (a diagnostic), in the
-third-machine read of section 2 (its team value against the same baseline pairs), and in a
+third-machine read of section 3 (its team value against the same baseline pairs), and in a
 four with the three it was built to feed; the stun pick shares on Misharu's and the
 jellyfish's teams; the heat signals on the boiler once the heat report exists (the to-do).
 
-## 9. What this page settled, and what is Ryan's
+## 11. What this page settled, and what is Ryan's
 
 **Rows (bible v0.156).** The mechanic budgets as a Recommended row in section 5 (the four
-rules, with hard control's count kept and its price the lever); solo value beside team value
-and the fixed four as the measurement behind section 7's cars row and section 11's roster
-row; the three makers' "next chassis" rows carry the fit and point here; the Honey Badger's
-identity and the Armadillo's retaliation carry the evaluation's lean; the cooldown question
-carries its lean.
+rules, with hard control's count kept and its price the lever, and the tiers as the lens);
+solo value beside team value and the fixed four as the measurement behind section 7's cars
+row and section 11's roster row; the three makers' "next chassis" rows carry the fit and
+point here; the Honey Badger's identity and the Armadillo's retaliation carry the
+evaluation's lean; the cooldown question carries its lean; the tier-one set's reading as a
+Recommended row in section 10.
 
 **Ryan's.** The go on each machine that has a place, and the order; the funnel-web (the
 one-for-one lever, or as written, and when); the jellyfish's finishing (its open questions
 above) and its stun exception; the fan-boat's heat rule; the Onryō's return trigger; the
 Zoids walker's maker; the Honey Badger's identity (the campaign form is Claude's lean);
-cooldowns. Each is a section 12 question where it was not already one.
+cooldowns; the Puffin (the bot or the escort); the Armadillo's armour. Each is a section 12
+question where it was not already one.
