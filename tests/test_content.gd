@@ -166,10 +166,10 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its massive foe")
-	assert_eq(only[0].display_name, "Bone Dragon", "undead boss")
+	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
 	assert_true(only[0].is_massive(), "and it is massive")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
-	assert_eq(pit[0].display_name, "Magma Golem", "demonic boss")
+	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
 
 
 func test_spawn_table_lists_the_factions_formation() -> void:
