@@ -391,6 +391,14 @@ def generate(args):
                  "the reference's creature. " + p)
             cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
                    "--image-paths", args.ref, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        elif args.image:
+            # Image to image from a picked render: the composition stays (its trunk, roots and
+            # knots), the take says what to add (Ryan, 14 October: a new Treant from the good
+            # parts of the one it has). Lower strength strays further.
+            cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
+                   "--image-path", args.image, "--image-strength", str(args.strength),
+                   "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
+                   "--seed", str(seed), "--output", str(path)]
         else:
             cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
                    "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
@@ -1070,6 +1078,8 @@ def main():
     g.add_argument("--tag", default="", help="an experiment's own folder: out/<foe>_<tag>")
     g.add_argument("--ref", default="", help="a style reference image, through the edit model (its finish, never its creature)")
     g.add_argument("--variants", action="store_true", help="each candidate from its own take in design.variants")
+    g.add_argument("--image", default="", help="image to image from this render: its composition kept, the take added (the Treant, 14 October)")
+    g.add_argument("--strength", type=float, default=0.6, help="--image only: how close to the source to stay (lower strays further)")
     g.set_defaults(func=generate)
     fx = sub.add_parser("fix", help="candidates for one fix to a pick's source through the edit model, into out/<foe>_<tag>")
     fx.add_argument("image", help="the source to fix (a pick in tools/foeforge/picks, or a candidate in out/)")

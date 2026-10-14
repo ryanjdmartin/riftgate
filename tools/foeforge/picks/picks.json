@@ -1,5 +1,5 @@
 {
-  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --holes N for background pockets of at least N render pixels, --glow for a coloured glow). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note.",
+  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --holes N for background pockets of at least N render pixels, --glow for a coloured glow). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note. fix.from is the render a fix edited; a source under out/<foe>_hand is a PIL edit by a session, its prompt.txt saying what was done.",
   "picks": {
     "goblin": {
       "foe": "goblin",
@@ -91,19 +91,19 @@
     "needler": {
       "foe": "needler",
       "role": "sprite",
-      "candidate": 4,
-      "source": "out/needler_c1/needler_4.png",
+      "candidate": 1,
+      "source": "out/needler_c5/needler_1.png",
       "kept": "picks/needler.png",
       "prompt": "16-bit SNES JRPG battle sprite in the tradition of Final Fantasy VI, Chrono Trigger, Dragon Quest and Breath of Fire enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Full body, in three-quarter view turned toward the viewer's left (its right shoulder nearest the viewer), centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Needler, a monster of the desert. The Cactuar, made sinister: a figure in a running pose that has never been seen to move. A cactus the height of a man, in the pose of someone running, and nobody has ever seen one move. Its needles are exactly ten, every time, and a shield does nothing about them.  Light: sun-bleached and dusty, hard desert light.",
       "fix": {
-        "from": "out/needler_fix5/needler_2.png",
-        "asked": "its face is three solid black circles of the same size, two eyes and a mouth, each a little larger than before."
+        "from": "out/needler_c1/needler_4.png",
+        "asked": "it is covered in many more thin dark needles, each a little longer than now, fine like a cactus's, never thick spikes."
       },
       "cut": {
         "tol": 90,
         "holes": 1000
       },
-      "note": "Nope, this looks like Sonic the hedgehog now (c3; the game keeps c1 4)"
+      "note": "Only issue here that I didn't think of is that cutting this guy is going to be impossible (it cut: the needles dither into texture at 72x96)"
     },
     "antlion": {
       "foe": "antlion",
@@ -146,13 +146,13 @@
       "kept": "picks/revenant.png",
       "prompt": "A drowned skeleton knight in corroded green-black plate dripping mud, lunging forward with a rusted trident thrust ahead in both hands, long bony limbs and a small skull set low between hunched armoured shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Revenant, a monster of the swamp and graveyard. The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.  Light: dim and damp, rust and old bone, lantern light in fog.",
       "fix": {
-        "from": "out/revenant_takesJ/revenant_11.png",
+        "from": "out/revenant_hand/revenant_1.png",
         "asked": "by hand (PIL): the trident's shaft straightened along the line through both hands, the head re-seated on it."
       },
-      "note": "Ryan's note made literal by hand (PIL), 13 October; on the picker for a yes",
       "cut": {
         "holes": 400
-      }
+      },
+      "note": "If we shortened the top end of the spear haft we'd be able to make him a bit bigger (done: the haft above the hand 105 px, from 170)"
     },
     "ghost": {
       "foe": "ghost",
@@ -184,7 +184,7 @@
         "tol": 90,
         "holes": 1000
       },
-      "note": "3 is closest, and it's not terrible like that. I wonder if it could be tilted more horizontal by a few degrees, and made even longer."
+      "note": "Ryan picked c5 2 (sword behind, but it turned into a katana) and says the earlier huge sword in front (c3 3, in the game) was the better take, needing the sword more horizontal and longer: tried as image to image from c3 3"
     },
     "bone_dragon": {
       "foe": "bone_dragon",
@@ -230,27 +230,27 @@
       "kept": "picks/drake.png",
       "prompt": "A small winged red dragon in flight seen from the side, both leathery bat wings spread wide and matching, each with four long finger bones ending in a sharp point and a hooked claw at the top joint, its hind legs dangling loosely beneath it with the toes drooping down, a straight gout of fire pouring forward from its jaws. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Drake, a monster of the volcano. A small dragon that breathes over the front rank. Artillery with wings.  Light: lit from inside by heat, black rock and embers.",
       "fix": {
-        "from": "out/drake_takesJ/drake_5.png",
+        "from": "out/drake_hand/drake_1.png",
         "asked": "by hand (PIL): the small extra claw on the far wing erased, the flame stretched to over twice its length."
       },
-      "note": "Ryan's note made literal by hand (PIL), 13 October; on the picker for a yes"
+      "note": "Flame good, still has the extra hand, and there's an artifact on the tip of the snout probably from PIL since it looks sliced (redone: the tiny extra forelimb erased, the flame keyed by colour so the snout stays)"
     },
     "magma_golem": {
       "foe": "magma_golem",
       "role": "sprite",
-      "candidate": 3,
-      "source": "out/magma_golem_c3/magma_golem_3.png",
+      "candidate": 1,
+      "source": "out/magma_golem_c5/magma_golem_1.png",
       "kept": "picks/magma_golem.png",
       "prompt": "A hulking golem of black volcanic rock with molten lava glowing through every crack and broken iron shackles on its wrists, hunched forward like a gorilla, its long thick arms reaching forward in front of its legs, each ending in a huge open stone hand with thick blunt fingers, no face, only two blazing yellow eyes in a small head sunk low between massive shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Magma Golem, a monster of the volcano. The furnace with a body: rock on the outside, lava in the seams. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.",
       "fix": {
-        "from": "out/magma_golem_takesI/magma_golem_8.png",
-        "asked": "its head has no nose, mouth or ears, only two glowing yellow eyes, which are larger; the cracked rock texture of its head and body stays exactly as it is."
+        "from": "out/magma_golem_c3/magma_golem_3.png",
+        "asked": "its two glowing yellow eyes are larger still, with ragged rough-edged rims like cracks in the rock around them."
       },
       "cut": {
         "tol": 90,
         "holes": 1000
       },
-      "note": "3 is very good. Can the eyes be even bigger, and maybe even rough around the edges?"
+      "note": "Good, I can't really tell but it looks like the eyes and magma colour are the same as the background after the cut? (The picker's preview green is not the game's ground.)"
     },
     "warrior_chibi": {
       "foe": "warrior",
@@ -305,10 +305,10 @@
       "kept": "picks/thief_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring.",
       "fix": {
-        "from": "out/thief_chibi_c1/thief_2.png",
+        "from": "out/thief_chibi_hand/thief_1.png",
         "asked": "by hand (PIL): her short dagger mirrored into her other fist."
       },
-      "note": "Ryan's note made literal by hand (PIL), 13 October; on the picker for a yes"
+      "note": "She's got a janky square where she was cut by PIL I think, missing a chunk of arm and hand (redone: the blade masked by a polygon, nothing of the arm carried)"
     },
     "thief": {
       "foe": "thief",
@@ -334,20 +334,16 @@
         "from": "out/lancer_chibi_takesJ/lancer_6.png",
         "asked": "by hand (PIL): the scabbard gone, the spear's butt end drawn in front of her greave, a ferrule at its end."
       },
-      "note": "Ryan's note made literal by hand (PIL), 13 October; on the picker for a yes"
+      "note": "The hand fix was janky; Ryan: if the large sprite went upright, do so here too (takes L, an upright spear)"
     },
     "lancer": {
       "foe": "lancer",
       "role": "promoted",
-      "candidate": 1,
-      "source": "out/lancer_c1/lancer_1.png",
+      "candidate": 6,
+      "source": "out/lancer_takesK/lancer_6.png",
       "kept": "picks/lancer_promoted.png",
-      "prompt": "A tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced horned helm, gripping a long ornate spear in both hands, its straight shaft angled forward and its butt behind her back foot. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.",
-      "fix": {
-        "from": "out/lancer_fix2/lancer_2.png",
-        "asked": "two curved horns rise from the sides of her helmet, one each side, like a dragoon's horned helm."
-      },
-      "note": "Needs a redo. The horns were good just slightly too big. Spear shaft still doesn't meet and that's a deal breaker. (c4; a hand job on c1 1)"
+      "prompt": "A tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long ornate spear upright beside her in one gauntleted hand, its shaft one straight vertical pole from the blade at the top to the butt planted on the ground by her boot, her other hand a fist at her side. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.",
+      "note": "Upright spear and small horns, Ryan's pick of 14 October"
     },
     "white_mage_chibi": {
       "foe": "white_mage",
