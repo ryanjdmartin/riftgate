@@ -43,8 +43,10 @@ document's job and every command are in `README.md`.
   maker's next chassis start fresh from the latest rules, in a session of their own, with
   nothing of the struck designs in the records. A first pass at the analysis on 14 October
   drifted into measuring stand-ins and rating on performance and was retired to git (the
-  branch's history); the brief in `docs/mechanic_budgets.md` is what a fresh session starts
-  from.
+  branch's history). The analysis itself is `docs/roster_analysis.md` on the branch
+  `ccr-777fd46a-32dw2m` (14 October, from the brief in `docs/mechanic_budgets.md`; published,
+  the link under Pages), waiting on Ryan's go. That branch carries `ccr-3d9861dc-mp0v3w` (the
+  brief and the bible v0.158) beneath it, so main takes the two together.
 
 ## The game as left (13 October, evening)
 
@@ -130,13 +132,12 @@ document's job and every command are in `README.md`.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-1. **The roster analysis, one session, from the brief** (`docs/mechanic_budgets.md`, Ryan,
-   14 October): the current roster rated on quality, niche, build diversity and composition,
-   the proposed designs rated the same way for fit in the ecosystem (what has a place, what
-   goes back to the board, Aphelion's unfinished), the tiers read as the tender and
-   procurement deal them, the gaps Minerva's and Kestrel's fresh sessions fill. Theory, not
-   tests: nothing run on a design, no performance in a rating. Reads the brief, the bible's
-   first row and balance rows, and the three proposals on main. Then Ryan's go.
+1. **Ryan's go on the roster analysis** (`docs/roster_analysis.md`, 14 October, published:
+   the link under Pages): the roster and the proposals rated for fit on quality, niche, build
+   diversity and composition, the tiers as dealt, the brief's budgets argued, cooldowns
+   weighed, Minerva's and Kestrel's gaps, and the ten decisions its section 9 puts to him.
+   Each decision he makes becomes a bible row, the stock pass takes what its section 10 lists,
+   the fresh sessions take their gaps, and the page retires to git.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -169,10 +170,14 @@ listening page are shared to his work account as Editor, so either account repub
 URL (read first). Databases are reachable only from the personal account. A page's link goes
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
+- The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
+  `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py` and published 14 October
+  from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
+  the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.158 (14 October: the struck designs
-  out, section 12's roster-analysis question, the live v0.155's three edits merged), from the
-  branch `ccr-3d9861dc-mp0v3w`, which main must take before the next republish.
+  `docs/design-bible.html` after every change. Live: v0.159 (14 October: section 12's
+  roster-analysis question points at the analysis page), from the branch
+  `ccr-777fd46a-32dw2m`, which main must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

@@ -8,6 +8,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 ## Ryan
 
 - [ ] Read `docs/rules.md` once and the bible's first row; answer section 12's questions as they come up, the foe roster after the picks and the mechanic budgets first
+- [ ] Read the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages) and give the go: the ten decisions in its section 9, the budgets in its section 6 and cooldowns in its section 7 among them
 - [ ] Text: codex and flavour for the nine new machines, the Baboon's flavour, the components without a codex; each maker's Sponsorship notice in its voice; the mitigation discussion for the bible
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
 - [ ] Play the 11 October builds: the Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5), the overheat at the end of the turn, armour off a breach's overflow
@@ -24,7 +25,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 ## Design sessions
 
-- [ ] The roster analysis, one fresh session from the brief in `docs/mechanic_budgets.md` (Ryan, 14 October): the roster and the proposals rated on quality, niche, build diversity and composition, fit not viability, nothing run; the tiers as dealt; Minerva's and Kestrel's gaps; then Ryan's go
+- [x] The roster analysis, one fresh session from the brief in `docs/mechanic_budgets.md` (Ryan, 14 October): the roster and the proposals rated on quality, niche, build diversity and composition, fit not viability, nothing run; the tiers as dealt; Minerva's and Kestrel's gaps (`docs/roster_analysis.md`, 14 October, published); then Ryan's go
 - [ ] Minerva's fresh chassis session and Kestrel's, each from the latest rules and the roster analysis's gaps, proposed in chat first
 - [ ] Aphelion's proposals finished (the open questions `docs/aphelion_chassis_proposal.md` section 5 lists), after the roster analysis
 - [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured
