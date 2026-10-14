@@ -7,7 +7,6 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 ## Ryan
 
-- [ ] Read `docs/batch_evaluation.md` and give the go: which machines with a place go and in what order, the funnel-web's lever, the jellyfish's finishing, the fan-boat's heat, the Onryō's return, the Zoids walker's maker, the Puffin, the Armadillo's armour (section 12's first content question)
 - [ ] Read `docs/rules.md` once and the bible's first row; answer section 12's questions as they come up, the foe roster after the picks and the mechanic budgets first
 - [ ] Text: codex and flavour for the nine new machines, the Baboon's flavour, the components without a codex; each maker's Sponsorship notice in its voice; the mitigation discussion for the bible
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
@@ -25,9 +24,9 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 ## Design sessions
 
-- [x] The batch evaluation of every maker's proposed chassis with the depth-and-breadth session (14 October: `docs/batch_evaluation.md`, the roster and the proposals rated on quality, niche, build diversity and composition, the tiers read as dealt, Minerva's and Kestrel's gaps named)
-- [ ] Minerva's fresh chassis session and Kestrel's, each from the latest rules and `docs/batch_evaluation.md` section 7 (a Minerva that holds a line for others, a Minerva tier three; a second Kestrel tier one that fights alone, a Kestrel that is strong together, a Kestrel tier three), proposed in chat first
-- [ ] Aphelion's proposals finished (the open questions `docs/batch_evaluation.md` section 6 lists: the jellyfish first), then the line frame rebuilt round its locked pair
+- [ ] The roster analysis, one fresh session from the brief in `docs/mechanic_budgets.md` (Ryan, 14 October): the roster and the proposals rated on quality, niche, build diversity and composition, fit not viability, nothing run; the tiers as dealt; Minerva's and Kestrel's gaps; then Ryan's go
+- [ ] Minerva's fresh chassis session and Kestrel's, each from the latest rules and the roster analysis's gaps, proposed in chat first
+- [ ] Aphelion's proposals finished (the open questions `docs/aphelion_chassis_proposal.md` section 5 lists), after the roster analysis
 - [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured
 - [ ] The stock pass's content questions settled in chat (section 12), then the pass below, with heat re-priced so that it bites (the bible's heat row)
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles
@@ -39,7 +38,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 - [ ] The Ram Frame's new rule and the Artillery Rangefinder's (once Ryan picks them: section 7's catalogue row), then the module catalogue as soft-synergy pairs once tags are assigned
 - [ ] The balance runner's heat report (Ryan, 13 October: spikes, not actions): per row, peak heat as a share of the maximum and the rounds above four fifths of it, overheats and the hull burned, forced choices (rounds where the best-damage entry showing would have crossed the maximum and a vent, a cooler weapon or nothing was spent instead), the damage forgone to heat over those rounds, and the slack left at the fight's end against its length; a `--heat` recipe that fields one chassis three ways, tuned to its cooling, hot with vents, mixed, from `--set` loadouts; the bot's heat weight stays a tool knob, so a cautious and a reckless persona (cooling early, cooling at the maximum) run side by side and Ryan's play checks where a human would sit between them
 - [ ] The balance runner's module rows: `--module` and `--rows` built 11 October; a fitted cell beside the stock one in the report is next, read for a reach premium (the Booster and the Databank measured even, 11 October)
-- [ ] The greedy bot's shield valuation (`shield_score` counts the hull saved this round, not the blow turned next round) checked against the Puffin measuring last in team value (14 October), before any support design is judged by the runner
+- [ ] The greedy bot's valuation of support (`shield_score` counts the hull saved this round, not the blow turned next round; a status laid for an ally and a second action on the map count for nothing), before the runner is asked about any support frame
 - [ ] The bot's valuations for the mechanics the built proposals need before the runner reads them (a sentence, a doubling, a turn of the ranks, a wound, the boiler's blast), or the rollout rung; until then the runner's verdict on them is a verdict on the bot and the evaluation says so
 - [ ] The domains' engine gaps: a flee (the Needler's Scatter, the Thief's Flee), a cure and a harden on allies (the White Mage), a foe-side interpose (the Warrior's Cover) and retaliate (the Martial Artist's Counter, the Salamander's Ember Hide), the delayed blow (the Lancer's Jump), a blow at every machine, a self-damage rider (the Necromancer), a rare pack that flees on the map (the Gold Bug), the Mimic as loot, placement and the bleed by domain
 - [ ] The party in `sim/campaign.gd`: the deal from each domain's `bench`, the party card, a domain's final against its dealt hero with its wildlife, the promoted form at the finale, the runner's party cell; a final counts only when the hero dies

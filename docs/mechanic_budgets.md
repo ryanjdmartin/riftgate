@@ -51,18 +51,40 @@ piece, shown on the die as an entry blank for a round or two after it fires, pai
 reliability; a second axis beside heat for pricing a big hit. Ryan is willing to be convinced
 either way.
 
-## Two measures the session adds
+## The brief for the roster analysis (Ryan, 14 October)
 
-- **Solo value beside team value** (`tools/balance.gd --team`): a detachment-class machine beats
-  a small pack for under 15% of its hull and loses a formation; a line machine the reverse. Today
-  the cars cannot fight alone and the Honey Badger can.
-- **Compositions at a fixed four** against formation-sized fights, since count dominates
-  composition: a four of tank, controller, bruiser and support reads the same as a four of hitters.
+The analysis is one session, from this file and the records alone, and its frame is fit,
+not viability:
 
-## A first read of the proposals by these rules
+- **The roster first.** A holistic pass on the current roster, each design rated on four
+  axes: quality (the design holds together), niche (what it does that nothing else does),
+  build diversity (how many directions its hardpoints and passive reward with generic kit)
+  and how well it supports the composition ecosystem (what it gives a team and needs from
+  one). Then the proposed designs rated the same way, for what has a place in the ecosystem
+  and what goes back to the drawing board, with what it needs to come back with.
+- **Theory, not tests.** The proposals are theory and none is in the engine, so nothing is
+  built or run on a design, and no stand-in is measured: a stand-in measures the stand-in.
+  The runner has a say only about the roster as it stands, and even that is a diagnostic.
+- **No performance in a rating.** Every number in content is a placeholder, nothing is
+  balanced yet, and the bible's balance rows hold: a support machine is never weighed
+  against a damage machine as like against like, a solo row is a diagnostic, and the unit
+  of balance is the composition. A support or specialist frame is expected to lose most
+  fights alone; a stock Baboon that won them would be the problem. The greedy bot cannot
+  value what a support does (a shield handed away, a status laid for an ally, a second
+  action on the map), so its rows say nothing against a support frame.
+- **Aphelion's proposals are unfinished** (their session ended before its open questions
+  were closed): the analysis lists what each left open and does not guess at a verdict.
+- **Minerva and Kestrel need new designs.** Their earlier proposals are struck from the
+  records so each starts fresh from the latest rules (Ryan, 13 and 14 October); the struck
+  designs are not a list to avoid, and nothing of them is in the records. The analysis
+  names the gaps their next designs should fill.
+- **The tiers as the game deals them.** The tender draws from a tier-one set and the player
+  takes three, not every tier one is on offer at a run's start, and tiers two and three are
+  scarce, reached through procurement and battle rewards rather than free choice, so not
+  every tier two or three needs a niche of its own; what a tier-one set should look like is
+  part of the analysis.
+- **Then, in order:** Ryan's go on the analysis, the stock pass, and only then balancing the
+  units for real.
 
-Most novel: Minos, the boiler, the revolver, the multi-rotor, the gunship and the fan-boat, each
-changing what pieces do or what the player controls. Most redundant: the funnel-web and Misharu,
-two more stuns, and one of Mastema and the Onryō, two more damage-over-time machines. Aphelion's
-proposal is read as a list of ideas in a vacuum (Ryan, 13 October: that session went off the
-rails), not as a design to defend, and it carries no bench of ideas set aside.
+The budgets above are Claude's proposal of 13 October for the heuristic the analysis
+applies; Ryan has not confirmed them, and the analysis may argue them in the open.

@@ -41,7 +41,10 @@ document's job and every command are in `README.md`.
   (`docs/aphelion_chassis_proposal.md`, two rounds of proposals and their holes, no bench of
   ideas set aside yet). Minerva's and Kestrel's are struck (Ryan, 13 and 14 October): each
   maker's next chassis start fresh from the latest rules, in a session of their own, with
-  nothing of the struck designs in the records.
+  nothing of the struck designs in the records. A first pass at the analysis on 14 October
+  drifted into measuring stand-ins and rating on performance and was retired to git (the
+  branch's history); the brief in `docs/mechanic_budgets.md` is what a fresh session starts
+  from.
 
 ## The game as left (13 October, evening)
 
@@ -91,18 +94,6 @@ document's job and every command are in `README.md`.
   `--glow`. The old sheet still makes the 16x16 map tokens.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
-## Measured, 14 October
-
-- The batch evaluation's roster reads (`docs/measurements.md`, 14 October; `docs/batch_evaluation.md`
-  sections 3 to 5): every chassis as the third machine beside two baseline pairs ranks the
-  same as alone (the carries first, the four support and specialist frames last), which reads
-  the greedy bot and the placeholders, not the designs (a support is expected to lose alone;
-  the runner cannot value support yet); eight fixed fours all win every formation but the four supports, and
-  composition reads on the hull a formation costs (the four heavies 1%, the four supports
-  46%); the Clydesdale three ways on heat is a baseline before the stock pass (the hot kit a
-  quarter more damage and the bosses opened for 19 hull of overheat a fight). No proposed
-  design was run.
-
 ## Measured, 13 October
 
 - `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 12 of 40
@@ -139,14 +130,13 @@ document's job and every command are in `README.md`.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-1. **Ryan's go on the batch evaluation** (`docs/batch_evaluation.md`, 14 October: the roster
-   rated on quality, niche, build diversity and composition; the proposals rated the same way
-   and fitted; the tiers read as the tender and procurement deal them; the gaps Minerva's and
-   Kestrel's fresh sessions fill). His calls are section 12's first content question: the go
-   and the order (Misharu, the revolver and the boiler first), the funnel-web's lever, the
-   jellyfish's finishing, the fan-boat's heat, the Onryō's return, the Zoids walker's maker,
-   the Puffin, the Armadillo's armour. Then the builds, each as the proposals say, and
-   Minerva's and Kestrel's fresh chassis sessions from the latest rules.
+1. **The roster analysis, one session, from the brief** (`docs/mechanic_budgets.md`, Ryan,
+   14 October): the current roster rated on quality, niche, build diversity and composition,
+   the proposed designs rated the same way for fit in the ecosystem (what has a place, what
+   goes back to the board, Aphelion's unfinished), the tiers read as the tender and
+   procurement deal them, the gaps Minerva's and Kestrel's fresh sessions fill. Theory, not
+   tests: nothing run on a design, no performance in a rating. Reads the brief, the bible's
+   first row and balance rows, and the three proposals on main. Then Ryan's go.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -180,15 +170,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.157 (14 October: the batch
-  evaluation's rows with the runner's rows read as a diagnostic of the bot, the struck designs
-  out, the live v0.155's three edits merged), from the
+  `docs/design-bible.html` after every change. Live: v0.158 (14 October: the struck designs
+  out, section 12's roster-analysis question, the live v0.155's three edits merged), from the
   branch `ccr-3d9861dc-mp0v3w`, which main must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
-- The batch evaluation: https://claude.ai/artifact/5bVGdVHN1wJ6Jsb6PXAuLL (private; rendered from
-  `docs/batch_evaluation.md` by `tools/pages/batch_evaluation_page.py`, republished by URL
-  after the page changes; retired with the page once its decisions are rows and content).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content.
   Its database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens
