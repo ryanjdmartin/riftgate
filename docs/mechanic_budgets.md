@@ -83,6 +83,17 @@ not viability:
   scarce, reached through procurement and battle rewards rather than free choice, so not
   every tier two or three needs a niche of its own; what a tier-one set should look like is
   part of the analysis.
+- **Minerva's and Kestrel's gaps, without fine detail.** The analysis proposes the gaps a
+  new chassis could fill and what its execution could look like (the mechanic, the verb class
+  it adds to, the tier it would sit at), and stops there: Ryan has silhouettes in hand and
+  matches mechanics to themes in another session, so no names, numbers or looks are spent
+  here.
+- **No heat report.** Heat is the stock pass's question, where it is objective and iterative;
+  the analysis reads heat only where it bears on a design's fit, and runs nothing for it.
+- **The result** goes where the convention puts it, a `docs/` page in the proposal's register
+  (`docs/roster_analysis.md`, retired to git once its decisions are rows and content), and is
+  published as an artifact for Ryan's review, its link in the status beside the other pages
+  in the same commit as its first publish.
 - **Then, in order:** Ryan's go on the analysis, the stock pass, and only then balancing the
   units for real.
 
