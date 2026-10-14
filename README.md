@@ -204,8 +204,8 @@ godot --headless --path . --import
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
 # a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
-# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --holes N background pockets of N render
-# pixels or more, --holes-tol 8 beside an off-white robe, --glow a coloured glow), record it in picks.json with Ryan's note. A flaw his
+# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 46 on
+# every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them), record it in picks.json. A flaw his
 # note names is tried first with `forge.py fix` (the edit model on the picked source, four candidates into out/<foe>_fix). Rebuild the
 # page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps

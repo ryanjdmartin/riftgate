@@ -62,7 +62,9 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 ## Art
 
 - [x] Ryan's picks of the edit model's fixes cut (13 October): both Gels' maws, the Ghost's painted flame, the Salamander's flame frill, the Dire Wolf's mane, the Goblin's grip (still not right, his note), the Magma Golem eyes only, the Mandragora brighter and leafier (its white holes keyed, `--holes 100`), the Sandworm without eyes
-- [ ] Ryan's batch of cutting notes on the lineup of every sprite (he is collecting them; 14 October): group them by cause (ground puddles, pale fringes short of the outline, colour folding at sixteen colours, fine detail dithering, chibi edge pockets), change the cutter where a cause repeats, recut every sprite by the same rules from the kept sources, publish the lineup again
+- [x] Ryan's cutting batch on the lineup (14 October): every mark was a pocket of white between parts, so the cutter keys pockets of pure white by default (40 render pixels and up; an eye white is off-white and survives) and every sprite was recut under that one rule; the chibis cut at one shared scale (`--height 46`), since filling the frame had the crouched Thief as tall as the standing Lancer
+- [ ] The chibis' head sizes differ by render (the Martial Artist's head half her width, the Black Mage's most of it): a re-render of the outliers if Ryan wants them level, since the cutter cannot change a drawing
+- [ ] The Thief's boss register: her right dagger is hooked on her thumb, not gripped (Ryan, 14 October); one edit tried, `thief_gripfix`, for his look when the boss forms matter
 - [x] The pockets Ryan named recut (13 October): under the Goblin's sword arm, between the Lancer's spear and leg, between the White Mage's staff and leg (`--holes-tol 8` spares an off-white robe)
 - [x] Ryan picked from the Treant's and the Needler's new takes (13 October): Treant 8 and Needler 7, each with a further round
 - [ ] New foe types from the candidates Ryan marked, once he decides them (section 12)

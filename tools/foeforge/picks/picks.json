@@ -1,5 +1,5 @@
 {
-  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --holes N for background pockets of at least N render pixels, --glow for a coloured glow). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note. fix.from is the render a fix edited; a source under out/<foe>_hand is a PIL edit by a session, its prompt.txt saying what was done.",
+  "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --glow for a coloured glow, --height 46 on every chibi so the party stands at one scale; pockets of pure white key by default since 14 October). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note. fix.from is the render a fix edited; a source under out/<foe>_hand is a PIL edit by a session, its prompt.txt saying what was done.",
   "picks": {
     "goblin": {
       "foe": "goblin",
@@ -11,9 +11,6 @@
       "fix": {
         "from": "out/goblin_takesD/goblin_2.png",
         "asked": "its hand on the sword grip is a correct hand: four fingers wrapped around the grip and the thumb over them."
-      },
-      "cut": {
-        "holes": 400
       },
       "note": "None of these really fix it, its just better on 4 since it looks like 3 fingers and the busted 4th one behind the handle is basically nonexistent."
     },
@@ -27,9 +24,6 @@
       "fix": {
         "from": "out/wolf_takesE/wolf_4.png",
         "asked": "a ragged black mane runs down the back of its neck and along its spine, dark against its grey fur."
-      },
-      "cut": {
-        "holes": 1000
       }
     },
     "gel": {
@@ -66,9 +60,6 @@
       "fix": {
         "from": "out/mandragora_takesE/mandragora_2.png",
         "asked": "much brighter and livelier colours, warm lit bark, and lush green leaves and vines sprouting thickly from its head and shoulders."
-      },
-      "cut": {
-        "holes": 100
       }
     },
     "treant": {
@@ -80,8 +71,7 @@
       "prompt": "The same huge pale tree with peeling white bark, lit knot holes, its lowest boughs reaching forward as arms, striding on its roots, with thick green moss and dark green lichen hanging from its branches and trunk. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Treant, a monster of the grasslands. The tree that walks, every forest's boss. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
       "image": "out/treant_c2/treant_1.png",
       "cut": {
-        "tol": 90,
-        "holes": 1000
+        "tol": 90
       },
       "note": "Ryan's round-eight Treant with its drips greened by the edit model (14 October): both of his notes met",
       "fix": {
@@ -101,8 +91,7 @@
         "asked": "it is covered in many more thin dark needles, each a little longer than now, fine like a cactus's, never thick spikes."
       },
       "cut": {
-        "tol": 90,
-        "holes": 1000
+        "tol": 90
       },
       "note": "Only issue here that I didn't think of is that cutting this guy is going to be impossible (it cut: the needles dither into texture at 72x96)"
     },
@@ -146,10 +135,7 @@
       "source": "out/revenant_img70/revenant_16.png",
       "kept": "picks/revenant.png",
       "prompt": "A towering corpse-knight in heavy pale grey plate with rags of a banner hanging from its pauldrons, mid-stride with a greatsword swung back over its shoulder, a small helmed head. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Revenant, a monster of the swamp and graveyard. The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.  Light: dim and damp, rust and old bone, lantern light in fog.",
-      "image": "out/revenant_hand/revenant_1.png",
-      "cut": {
-        "holes": 400
-      }
+      "image": "out/revenant_hand/revenant_1.png"
     },
     "ghost": {
       "foe": "ghost",
@@ -161,9 +147,6 @@
       "fix": {
         "from": "out/ghost_takesE/ghost_1.png",
         "asked": "the flame in its lantern is a crisp pixel art flame, a bright pale green core inside a saturated green flame with darker green edges, sharp edged with no soft glow around it."
-      },
-      "cut": {
-        "holes": 1000
       }
     },
     "zombie_knight": {
@@ -175,8 +158,7 @@
       "prompt": "The same huge rotting knight in dented black plate and a horned helm, leaning forward mid-stride, its torn cape, gripping in one fist an even longer and thicker claymore held low across the front of its legs, the massive blade angled only a little below horizontal with its point reaching far out to the side. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Zombie Knight, a monster of the swamp and graveyard. The genre's death knight: a cape, rusted plate, a sword as long as it is tall.  Light: dim and damp, rust and old bone, lantern light in fog.",
       "image": "out/zombie_knight_c3/zombie_knight_3.png",
       "cut": {
-        "tol": 90,
-        "holes": 1000
+        "tol": 90
       }
     },
     "bone_dragon": {
@@ -189,9 +171,6 @@
       "fix": {
         "from": "out/bone_dragon_takesJ/bone_dragon_8.png",
         "asked": "its long bone tail hangs down and back behind it in a loose curve, not wrapped round its body."
-      },
-      "cut": {
-        "holes": 500
       }
     },
     "bomb": {
@@ -236,8 +215,7 @@
         "asked": "its two glowing yellow eyes are larger still, with ragged rough-edged rims like cracks in the rock around them."
       },
       "cut": {
-        "tol": 90,
-        "holes": 1000
+        "tol": 90
       },
       "note": "Good, I can't really tell but it looks like the eyes and magma colour are the same as the background after the cut? (The picker's preview green is not the game's ground.)"
     },
@@ -251,6 +229,9 @@
       "fix": {
         "from": "out/warrior_chibi_takesF/warrior_3.png",
         "asked": "the sword on his back is sheathed in a scabbard, and only its hilt rises above his left shoulder, on the right of the picture; no blade shows."
+      },
+      "cut": {
+        "height": 46
       }
     },
     "warrior": {
@@ -271,7 +252,10 @@
       "candidate": 4,
       "source": "out/martial_artist_chibi_takesF/martial_artist_4.png",
       "kept": "picks/martial_artist_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall lanky woman with pale freckled skin and red hair in a topknot, in a green gi with a brown sash and wrapped fists, bare-handed, mid-kick with one leg raised high."
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall lanky woman with pale freckled skin and red hair in a topknot, in a green gi with a brown sash and wrapped fists, bare-handed, mid-kick with one leg raised high.",
+      "cut": {
+        "height": 46
+      }
     },
     "martial_artist": {
       "foe": "martial_artist",
@@ -293,7 +277,10 @@
       "source": "out/thief_chibi_takesM/thief_6.png",
       "kept": "picks/thief_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: the same wiry young woman with light brown skin and a messy black bob under a dark hood, a red scarf, crouched low, a stubby knife in each fist with a blade shorter than her hand.",
-      "note": "Rendered fresh from the stubby-knife take, Ryan's pick of 14 October"
+      "note": "Rendered fresh from the stubby-knife take, Ryan's pick of 14 October",
+      "cut": {
+        "height": 46
+      }
     },
     "thief": {
       "foe": "thief",
@@ -314,7 +301,10 @@
       "candidate": 7,
       "source": "out/lancer_chibi_takesL/lancer_7.png",
       "kept": "picks/lancer_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long spear upright beside her in one hand, its shaft one straight vertical pole from the blade high above her head to the butt on the ground by her boot, her other hand a fist at her side."
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long spear upright beside her in one hand, its shaft one straight vertical pole from the blade high above her head to the butt on the ground by her boot, her other hand a fist at her side.",
+      "cut": {
+        "height": 46
+      }
     },
     "lancer": {
       "foe": "lancer",
@@ -337,8 +327,7 @@
         "asked": "his free hand is small, the same size as his other hand."
       },
       "cut": {
-        "holes": 500,
-        "holes_tol": 8
+        "height": 46
       }
     },
     "white_mage": {
@@ -362,9 +351,8 @@
       "kept": "picks/necromancer_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a gaunt old woman with pale ashen skin and long white hair, in a tattered black-and-purple robe, a skull-topped staff in one hand and bright ghostly green fire in the other.",
       "cut": {
-        "holes": 500,
-        "holes_tol": 8,
-        "glow": true
+        "glow": true,
+        "height": 46
       }
     },
     "necromancer": {
@@ -383,8 +371,7 @@
       "kept": "picks/black_mage_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand.",
       "cut": {
-        "holes": 500,
-        "holes_tol": 8
+        "height": 46
       }
     },
     "black_mage": {
@@ -412,7 +399,8 @@
         "asked": "his belt shows the whole way across his waist, over the robe on both sides."
       },
       "cut": {
-        "glow": true
+        "glow": true,
+        "height": 46
       }
     },
     "summoner": {
