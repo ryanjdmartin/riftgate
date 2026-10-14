@@ -25,10 +25,9 @@ document's job and every command are in `README.md`.
 
 - `main` holds everything decided and built to 13 October, including all of
   `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`
-  (merged and safe to delete), the Kestrel canvas from `ccr-1a6d0a75-y2oqy8` (its file brought
-  over; safe to delete) and the Minerva branch's one decision (its four designs abandoned, Ryan,
-  13 October; the branch carries nothing else and is safe to delete). Pushed to `origin/main`
-  on 13 October, evening. New work starts from main.
+  (merged and safe to delete); `ccr-1a6d0a75-y2oqy8` (Kestrel) and the Minerva branch are
+  struck and safe to delete. Pushed to `origin/main` on 13 October, evening. New work starts
+  from main.
 - `ccr-550650c0-g0kcbg`, the Aphelion session, stopped on Ryan's word (13 October, evening):
   its proposal `docs/aphelion_chassis_proposal.md` is on main and its bible rows were carried
   in; its other document changes described a pre-refactor state and were not taken. Safe to
@@ -37,10 +36,11 @@ document's job and every command are in `README.md`.
   or `tools/foeforge` is its, left unstaged.
 - The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
   (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
-  `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Kestrel's five airframes as
-  a canvas on main (`docs/canvas/kestrel-airframes.html`, for Ryan's pick), Aphelion's on main
+  `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Aphelion's on main
   (`docs/aphelion_chassis_proposal.md`, two rounds of proposals and their holes, no bench of
-  ideas set aside yet), Minerva's abandoned.
+  ideas set aside yet). Minerva's and Kestrel's are struck (Ryan, 13 and 14 October): each
+  maker's next chassis start fresh from the latest rules, in a session of their own, with
+  nothing of the struck designs in the records.
 
 ## The game as left (13 October, evening)
 
@@ -130,7 +130,7 @@ to-do's Ryan list).
    first row, section 5's stun row, `docs/mechanic_budgets.md` (the brief) and the four
    proposals on main, Aphelion's read as a list of ideas in a vacuum (Ryan: that session went
    off the rails) (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
-   `docs/aphelion_chassis_proposal.md`, `docs/canvas/kestrel-airframes.html`). Measures every
+   `docs/aphelion_chassis_proposal.md`). Measures every
    chassis's solo value beside its team value (`tools/balance.gd --team`) and compositions at a
    fixed four; folds in the Honey Badger's identity, the Armadillo's Faraday Hull and the cars'
    missing solo niche; re-reads each proposal's set-aside lists under the first row. Ends with
@@ -179,5 +179,3 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
-- The Kestrel airframe proposals, work account, private: https://claude.ai/artifact/1Snudf4fmTUw4hkr1ckMfy
-  (`docs/canvas/kestrel-airframes.html`; its SVG sketches are inline, so edit the file in place).

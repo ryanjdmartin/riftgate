@@ -5,8 +5,9 @@ The depth-and-breadth session and the batch evaluation, held as one session on 1
 is built, and measures the roster against itself for mechanic depth and breadth). Its brief
 is `docs/mechanic_budgets.md`; its inputs are the bible's first row, section 5's stun row,
 `docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md` and `docs/aphelion_chassis_proposal.md`
-(read as a list of ideas in a vacuum, Ryan's word). Minerva's four are abandoned (Ryan, 13
-October) and Kestrel's five struck so that Kestrel starts fresh (Ryan, 14 October).
+(read as a list of ideas in a vacuum, Ryan's word). Minerva's and Kestrel's proposals are
+struck (Ryan, 13 and 14 October): each starts fresh from the latest rules, in a session of
+its own, with nothing of the struck designs kept in the records.
 Every run it made is in `docs/measurements.md` under 14 October; the rows it settled are in
 the bible (v0.155) and the questions it could not are in section 12.
 
@@ -154,14 +155,9 @@ its proposal; this page carries only the judgement, the hole it turns on and the
 
 ### Kestrel
 
-Kestrel's five airframes (the canvas of 11 October) are struck from the batch (Ryan, 14
-October): not benched and not a list to avoid, but set aside so that Kestrel's next chassis
-start fresh from the latest rules and this evaluation, in a session of their own. The
-records had carried the canvas into the batch for his pick, and four of the five had been
-measured as stand-ins before his word reached the session; those runs are cited by no
-decision and stay out of the log, bar one reading the pacing row can use: a front-loaded
-burst opener (three Overcharged at a fight's start) read as the strongest stand-in of the
-batch because today's fights are two or three rounds, the shape the pacing row refuses.
+Struck from the batch (Ryan, 14 October): Kestrel's next chassis start fresh from the latest
+rules and this evaluation, in a session of their own, and nothing of the struck designs is
+kept in the records.
 
 ### The bot's blind spots
 
@@ -317,12 +313,13 @@ lever); the Onryō (back on a trigger nobody reads, with the Pall and a curse th
 its machine; Haunted the lead for the Arsenal's next retribution); the line frame (back
 designed round its locked pair); the Carrier (designed with Minerva's battlecruiser); the
 Zoids walker (the Arsenal's next round, maker Ryan's); the Scapegoat Brand (after the
-buffs-and-debuffs pass); the large hovercraft (parked). Kestrel's five are struck for a
-fresh start, not waiting; Minerva's four are abandoned.
+buffs-and-debuffs pass); the large hovercraft (parked). Minerva's and Kestrel's are struck,
+not waiting: fresh sessions.
 
 **The roster after wave three:** Minerva 3, Kestrel 3, Wainwright & Sutler 8, Aphelion 3,
 the Arsenal 5, twenty-two in all, with a tier one added (the fan-boat), five tier twos and
-three tier threes. Kestrel's next round is a fresh session from the latest rules. Wainwright & Sutler's weight is the proposal's own (Ryan's six); if it
+three tier threes. Minerva's and Kestrel's next rounds are fresh sessions from the latest
+rules. Wainwright & Sutler's weight is the proposal's own (Ryan's six); if it
 reads as too many, the multi-rotor and the gunship are the two that wait longest anyway.
 
 **What the runner reads after each wave:** every new machine alone (a diagnostic), in the
