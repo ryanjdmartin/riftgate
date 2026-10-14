@@ -262,6 +262,15 @@ for 3%, 7%, 31%, 9.2, 0.82; the four supports (Baboon, Stingray, Puffin, Dingo) 
 the win rate; composition reads on the cost (1% to 46% of the hull a formation); the Marsh's
 is the one formation any four loses. Bible sections 4 and 11.
 
+**The fixed fours under a stress lens.** The same eight with the player's blows halved
+(`--damage 0.5`), a what-if for formations twice as tough. Formations won, hull lost on
+formations, rounds and machines wrecked a formation fight: the four heavies 100, 6%, 8.6,
+none; four hitters 100, 13%, 8.8, 0.10; the starting trio and the Armadillo 100, 13%, 9.9,
+0.11; tank, controller, bruiser, support 100, 28%, 16.5, 0.66; a tender's four 94, 32%, 13.0,
+0.72; the status four 97, 44%, 19.1, 1.39; the four lights 57, 56%, 13.6, 1.81 (the Marsh and
+the Peak lost 26 times in 30); the four supports 41, 69%, 15.5, 2.52. The order holds and the
+spread widens; the heavies pay 6% to a formation twice as tough. Bible sections 4 and 11.
+
 **A heat baseline, one chassis three ways.** The Clydesdale with three kits of today's
 pieces by `--set`, 50 seeds a cell: cold (Twin Autoguns, Ankle Mortar, Howitzer, Incendiary
 Shells, Rivet Gun, Maxigun, Slugthrower, Shotfire Rack, Blast Door), mixed (Slugthrower,

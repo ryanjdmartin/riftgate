@@ -228,7 +228,27 @@ two formations in one fight.
 | The four lights: Sparrowhawk, Prairie Dog, Dingo, Puffin | 98 | 3%, 7%, 31% | 9.2, 0.82 | 30 (30%); 30 (8%); 27 (55%); 30 (31%) |
 | The four supports: Baboon, Stingray, Puffin, Dingo | 68 | 1%, 1%, 46% | 11.9, 1.54 | 28 (24%); 30 (6%); 1 (100%); 23 (54%) |
 
-{{FOURS_HALF}}
+**The stress lens** (the same eight, the player's blows halved; formations won, hull lost on
+packs, bosses and formations, rounds and machines wrecked a formation fight):
+
+| Four | Formations won | Hull lost: packs, bosses, formations | Rounds, wrecked | Each formation: Meadow, Waste, Marsh, Peak |
+|---|---|---|---|---|
+| The four heavies | 100 | 0%, 2%, 6% | 8.6, 0.00 | 30 (3%); 30 (2%); 30 (9%); 30 (10%) |
+| Four hitters | 100 | 3%, 4%, 13% | 8.8, 0.10 | 30 (7%); 30 (5%); 30 (18%); 30 (21%) |
+| The starting trio and the Armadillo | 100 | 2%, 3%, 13% | 9.9, 0.11 | 30 (7%); 30 (5%); 30 (19%); 30 (20%) |
+| Tank, controller, bruiser, support | 100 | 1%, 3%, 28% | 16.5, 0.66 | 30 (16%); 30 (6%); 30 (49%); 30 (39%) |
+| A tender's four | 94 | 3%, 3%, 32% | 13.0, 0.72 | 30 (9%); 30 (6%); 24 (72%); 29 (40%) |
+| The status four | 97 | 1%, 7%, 44% | 19.1, 1.39 | 30 (33%); 30 (14%); 29 (74%); 27 (57%) |
+| The four lights | 57 | 7%, 8%, 56% | 13.6, 1.81 | 30 (22%); 30 (16%); 4 (93%); 4 (92%) |
+| The four supports | 41 | 2%, 8%, 69% | 15.5, 2.52 | 12 (72%); 30 (12%); 0 (100%); 7 (91%) |
+
+Under the lens the order holds and the spread widens: the heavies still pay 6% to a
+formation twice as tough and wreck nothing, the hitters' fours a seventh, and the lights
+and the supports lose the Marsh and the Peak outright. The fights lengthen to nine rounds
+for the hitters and sixteen to nineteen for the status and support fours, past the pacing
+row's five to eight: a formation twice as tough is an exam for the middle compositions and
+still none for four heavies, so the fresh start's formations and the armour question, not
+the foes' numbers alone, are what make the heavies pay.
 
 **The reading.**
 
