@@ -186,6 +186,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   branch `ccr-3d9861dc-mp0v3w`, which main must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
+- The batch evaluation: https://claude.ai/artifact/5bVGdVHN1wJ6Jsb6PXAuLL (private; rendered from
+  `docs/batch_evaluation.md` by `tools/pages/batch_evaluation_page.py`, republished by URL
+  after the page changes; retired with the page once its decisions are rows and content).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content.
   Its database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens
