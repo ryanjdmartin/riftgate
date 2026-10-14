@@ -73,8 +73,8 @@ verdict in section 5 is read against.
   of what has a place comes from; the limit is how many rules the player can hold, one
   machine at a time.
 - **The heat spectrum has one hot machine** (the Sparrowhawk) and no build that wants to run
-  hot. The boiler is the one proposal that is hot by identity, which the heat row asks for
-  on purpose.
+  hot, so heat is not judged here (the heat row's caveat). The boiler is the one proposal
+  that is hot by identity, which the heat row asks for on purpose.
 
 **The four rules, as applied here** (the brief's, with what this session changed): hard
 control stays at its count and is priced per piece (above); a new chassis earns its place by
@@ -135,16 +135,17 @@ two formations in one fight.
   bracketed, and a composition chooses where in it a team sits, which is a decision the
   campaign can price with the map's clock.
 
-## 4. The ecosystem measured: the heat spectrum, one chassis three ways
+## 4. The ecosystem measured: a heat baseline, one chassis three ways
 
-The brief asks for one chassis fielded three ways across the heat row's spectrum. The
-Clydesdale (d9, heat 60, cooling 5, no passive that touches heat) carried three kits of
-today's pieces by `--set`, greedy, 50 seeds a cell (`docs/measurements.md`, 14 October): a
-cold kit tuned to its cooling (the rolled kinetics and a shield, no vent), a hot kit with
-vents (the Railgun, the Lance, the Meteor Artillery, the Suppression Battery, the Enfilade
-Beam, the Zenith Emitter, two vents and the Condenser) and a mixed kit (half and half, one
-vent). The heat report the to-do asks for does not exist yet, so the signals are the
-runner's tallies: overheat hull, the vents' pick share, damage and heat a fight.
+Not a judgement on heat: the heat row says heat is judged once the roster has hot builds,
+never from a lack of content (Ryan, 13 October), and the roster has none. This is the
+before, kept so that the stock pass's re-pricing and the heat report (the to-do) have a
+baseline to measure against. The Clydesdale (d9, heat 60, cooling 5, no passive that
+touches heat) carried three kits of today's pieces by `--set`, greedy, 50 seeds a cell
+(`docs/measurements.md`, 14 October): a cold kit tuned to its cooling (the rolled kinetics
+and a shield, no vent), a hot kit with vents (the Railgun, the Lance, the Meteor Artillery,
+the Suppression Battery, the Enfilade Beam, the Zenith Emitter, two vents and the Condenser)
+and a mixed kit (half and half, one vent).
 
 | Kit | Packs, bosses, formations won (greedy) | Hull lost | Damage a fight | Heat a fight (a round) | Overheat hull a fight | Vents' share of spends |
 |---|---|---|---|---|---|---|
@@ -152,20 +153,11 @@ runner's tallies: overheat hull, the vents' pick share, damage and heat a fight.
 | Mixed | 72, 20, 0 | 47%, 96%, 100% | 81 | 60 (9.4) | 5.3 | 1% |
 | Hot, with vents | 79, 60, 0 | 44%, 82%, 100% | 99 | 114 (19.6) | 19.3 | 9% |
 
-**The reading.** Demand passes budget as the heat row's test wants: the hot kit crosses the
-maximum by its third round of firing (about 20 heat a round against 60 and cooling 5) and
-burns 19 hull a fight for it. But at today's prices that is a good trade and the bot takes
-it: the hot kit deals a quarter more damage a fight, opens the bosses (60 against 0 and 20)
-and loses no more hull than the cold kit even with the burn counted, and it vents under a
-tenth of the time rather than spend a turn on cooling. The cold kit pays in reliability and
-collects nothing back, which is the half of the row ("a cold build pays elsewhere and
-collects in the long ones") the content does not yet honour: with no round limit and the
-fights two to seven rounds long, there is no long fight for endurance to collect in. So heat
-bites, and it bites too cheaply: the levers are the overheat's rate (hull one for one is the
-price the bot shrugs), the vents' numbers against a weapon's heat, and the fights' length,
-which is the fresh start's. The heat report's forced-choice and slack signals are what the
-stock pass tunes against; this read says the direction, and the boiler (hot by identity,
-venting every turn by design) is the machine that will feel whichever price lands.
+What the baseline records: on today's placeholders the hot kit crosses the maximum by its
+third round of firing, burns about 19 hull a fight for it, deals a quarter more damage,
+opens the bosses and loses no more hull than the cold kit; the bot vents under a tenth of
+the time. The boiler (section 5) is the first machine hot by identity, and the one the heat
+row's test will be read on.
 
 ## 5. The proposals: a place, or the board
 
