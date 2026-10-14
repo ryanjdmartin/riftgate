@@ -81,13 +81,16 @@ document's job and every command are in `README.md`.
   retired (git has them), their open items in section 12 and their seeds in the bible's rows.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
-- Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
-  On 13 October every wildlife foe but the Needler was re-picked from its battle-pose takes and
-  cut, with the Lancer's and the Summoner's chibis; his note on each pick is in
-  `tools/foeforge/picks/picks.json`. The same day the edit model tried a fix for each note
-  (`forge.py fix`), the Treant and the Needler got new takes, and the heroes a diversity pass:
-  all on the picker for Ryan. The cutter gained `--holes N` (a size floor), `--holes-tol` and
-  `--glow`. The old sheet still makes the 16x16 map tokens.
+- Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48);
+  eleven rounds on the phone picker, 13 and 14 October, closed every note he wrote on the
+  wildlife and the chibis; each pick's source, cut options and his notes are in
+  `tools/foeforge/picks/picks.json`. What worked: a flaw tried through the edit model once
+  or twice, then image to image from the pick he liked (`forge.py generate --image`), never
+  from the last pass (it drifts) and never a PIL hand edit on a figure (three failed his bar);
+  one set per sprite per round. The heroes' boss register is picked and recorded, not in the
+  game (the promoted forms are not entries); staff fingers on the White and Black Mage and
+  the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
+  Pyroclasm. Next: Ryan's batch of cutting notes on the lineup, then one recut of every sprite.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
