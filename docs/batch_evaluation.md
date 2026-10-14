@@ -125,7 +125,32 @@ its proposal; this page carries only the judgement, the hole it turns on and the
 
 ### Kestrel (`docs/canvas/kestrel-airframes.html`)
 
-{{KESTREL}}
+Four of the five run on today's engine, so each was measured as a stand-in (the Goshawk's
+row reset to the airframe's numbers and a kit of today's Kestrel pieces by `--set`, 30
+seeds a cell, random/greedy; `docs/measurements.md`, 14 October). Alone is a diagnostic; the
+Kestrel trio with the stand-in in the Goshawk's place is the read. A control is the same
+frame and kit with no passive, so the passive's share shows. Row means over the twelve
+single packs, the four bosses and the four formations, with the hull lost at greedy play.
+
+| Stand-in | Alone: packs, bosses, formations (hull lost) | Its control alone | Kestrel trio with it: formations (hull lost) | Trio control |
+|---|---|---|---|---|
+| The Goshawk itself (200 seeds) | 33/60, 0/2, 0/0 (57%, 100%, 100%) | | 14/54 (68%) | |
+| Lammergeier (every weapon Indirect; assault, hull 130, shield 70) | 61/81, 40/91, 0/0 (38%, 53%, 100%) | the Kite's control, a smaller frame: 53/77, 29/88 | 25/73 (52%) | 24/70 (55%) |
+| Hummingbird (every spend Rapid; light, hull 50) | 41/58, 18/37 (55%, 78%, 100%) | none (no frame to compare) | 20/68 (57%) | |
+| Kite (every blow Shocks; heavy, hull 110) | 59/82, 83/98, 0/0 (36%, 18%, 100%) | 53/77, 29/88 (38%, 54%) | 35/81 (49%) | 24/70 (55%) |
+| Cormorant (three Overcharged at the start; assault, hull 140, a three-strike rack fixed) | 79/92, 68/99, 0/8 (14%, 24%, 97%) | 59/78, 27/92 (37%, 51%) | 42/94 (24%) | 26/78 (50%) |
+
+| Airframe | Tier | Verdict | Rule it passes | The hole, and the lever |
+|---|---|---|---|---|
+| Lammergeier (strategic bomber) | 3 | **wait** | changes what every weapon is (Indirect) | its reach buys nothing the runner can see: with the passive the frame reads like its control, alone and in the trio, because few packs field a back rank and every front-rank shot costs it splash; once danger close retires (bible section 5, decided) the splash goes and the passive is free reach, the reason Wainwright & Sutler's bench retired the same idea. Back with a price of its own, and with the fresh start's back ranks, which are what a bomber is for |
+| Hummingbird (pylon racer) | 2 | **go later** (the stock pass's heat) | changes what every spend is (Rapid); the most different thing to play (the canvas) | on today's cool Kestrel pieces it overheats never (0.01 hull a fight alone), so its brake is the quarter of its spends that land on switched-off entries, not heat; a 50-hull d4 that beats bosses 37% greedy is the tempo class's whole budget on one passive. The heat re-pricing is what makes "until the heat stops it" true; read it again then, and the lever is its cooling (10) and maximum (80) |
+| Kite (interdictor) | 2 | **wait** | | Shock on everything is a boss-killer alone (bosses 83/98 for 18% of its hull against its control's 29/88 for 54%): its own second blow always doubles, so it carries a boss fight by itself, which section 11's roster row refuses (a solo carry makes a four trivial), and it makes the amplify class's four pieces and the Faraday Hull redundant on any team that fields it. Back as a decision: a Shock its own blows cannot spend (the setup belongs to allies, the canvas's own fantasy), measured again |
+| Cormorant (wing-in-ground strike ship) | 2 | **wait** | | the strongest stand-in in the batch (alone 79/92 for 14% hull, the trio 42/94 on formations for a quarter of the hull it loses without the passive), and all of it front-loaded burst: three rounds of +15 on every strike with a three-strike rack fixed. Another Overcharge ramp, in reverse, and the shape the pacing row refuses (every build burst, fights of two rounds). Back once fights are five to eight rounds and a burst opener has a price it pays in the rounds after |
+| Magpie (executive runabout) | 1 | **bench** | | a map action buying a fight buff (the design test), however the distance is counted. The need it answered stands: a second Kestrel tier one, so the tender's Kestrel slot is not the Sparrowhawk every run; the Hummingbird at tier one is one answer, a plain light airframe with a Kestrel locked piece another |
+
+The Lean the canvas asked about ("nothing big" in Kestrel's makers row) excludes nothing by
+the first row; it is Ryan's look call whether a Kestrel assault airframe reads as Kestrel.
+Nothing in this batch needs the answer, since both big ones wait.
 
 ### The bot's blind spots
 
