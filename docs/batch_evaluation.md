@@ -83,7 +83,50 @@ checked against the four; the one that fails a rule says which.
 
 ## 3. Compositions at a fixed four
 
-{{FOURS}}
+Eight fours against the twenty packs, greedy, 30 seeds a cell (`docs/measurements.md`, 14
+October): the win rate saturates at four (every four beats every single pack and boss), so
+the read is the hull a formation costs, the rounds it takes and the machines it wrecks, which
+do not saturate. The stress lens is the same eight with the player's blows halved
+(`--damage 0.5`), a what-if for formations twice as tough, since the runner cannot field
+two formations in one fight.
+
+| Four | Formations won (greedy) | Hull lost: packs, bosses, formations | Formation fight: rounds, machines wrecked | Each formation: Meadow, Waste, Marsh, Peak (won of 30; hull lost) |
+|---|---|---|---|---|
+| The four heavies: Armadillo, Clydesdale, Badger, Boar | 100 | 0%, 0%, 1% | 5.1, 0.00 | 30 (0%); 30 (1%); 30 (1%); 30 (3%) |
+| Tank, controller, bruiser, support: Armadillo, Baboon, Nemesis, Puffin | 100 | 0%, 0%, 8% | 8.8, 0.17 | 30 (4%); 30 (2%); 30 (16%); 30 (12%) |
+| The starting trio and the Armadillo | 100 | 1%, 3%, 8% | 4.8, 0.39 | 30 (8%); 30 (3%); 30 (12%); 30 (10%) |
+| Four hitters: Badger, Boar, Sparrowhawk, Nemesis | 100 | 1%, 3%, 9% | 4.3, 0.44 | 30 (8%); 30 (3%); 30 (13%); 30 (11%) |
+| A tender's four: Badger, Sparrowhawk, Prairie Dog, Baboon | 100 | 2%, 4%, 14% | 5.6, 0.64 | 30 (16%); 30 (3%); 30 (21%); 30 (16%) |
+| The status four: Baboon, Stingray, Dingo, Armadillo | 100 | 0%, 0%, 19% | 9.6, 0.44 | 30 (10%); 30 (5%); 30 (41%); 30 (21%) |
+| The four lights: Sparrowhawk, Prairie Dog, Dingo, Puffin | 98 | 3%, 7%, 31% | 9.2, 0.82 | 30 (30%); 30 (8%); 27 (55%); 30 (31%) |
+| The four supports: Baboon, Stingray, Puffin, Dingo | 68 | 1%, 1%, 46% | 11.9, 1.54 | 28 (24%); 30 (6%); 1 (100%); 23 (54%) |
+
+{{FOURS_HALF}}
+
+**The reading.**
+
+- **Count dominates composition on the win rate, and composition reads on the cost.** Seven
+  fours of eight win every formation; what parts them is the hull a formation costs, 1% to
+  46%, and the machines it wrecks, none to one and a half a fight. The pacing row's target
+  (a meaningful fight costs a four about a tenth of its hull) is met by the middle four
+  compositions and missed both ways: four heavies pay nothing (no exam), four supports pay
+  half the team.
+- **The four heavies are a wall the enemy cannot climb**, 1% of their hull to a formation
+  and no machine ever wrecked. Section 11's roster row says the fix for a team that is
+  unkillable and hard-hitting is the numbers, and the armour question (section 12: ours
+  first, 2 or 3 lower) is where it lands; the fresh start's formations are the other half.
+- **The Marsh's formation is the one exam today**: the only cell any four loses, and the
+  dearest for every four but the heavies (two Revenant sixes and the Ghosts that raise them).
+  The fresh start should take its shape as the model for a formation that costs a four its
+  tenth: numbers that come back, not numbers that hit harder.
+- **A four of supports is not a team**, and that is right: machines that are only good
+  together (the roster row's ask) must be good with someone to carry. The batch's machines
+  that are only good together (the multi-rotor, Misharu, Mastema) each need a hitter beside
+  them; the go list keeps hitters in every wave (the boiler, the revolver, the fan-boat).
+- **Rounds spread from four to twelve a formation fight**, the hitters' fours at four or five
+  and the status and support fours at nine to twelve: the pacing row's five to eight is
+  bracketed, and a composition chooses where in it a team sits, which is a decision the
+  campaign can price with the map's clock.
 
 ## 4. The heat spectrum, one chassis three ways
 
