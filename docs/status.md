@@ -147,22 +147,27 @@ to-do's Ryan list).
    jellyfish's finishing, the fan-boat's heat, the Onryō's return, the Zoids walker's maker,
    the Puffin, the Armadillo's armour. Then the builds, each as the proposals say, and
    Minerva's and Kestrel's fresh chassis sessions from the latest rules.
-2. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
+2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
+   heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
+   area keywords on the explosives.
+3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
+   pass is in can the units be balanced for real). The runner's rows on the roster as the
+   stock pass leaves it, the third-machine read and the fours again, prices and tier ladders
+   (the to-do's engine line), the heat report, and Ryan's play deciding feel.
+4. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions and
    `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift, small
    packs for detachments and formations for the body, the boss sealed by the threat-weighted
    meter and fought with its formation, the withdrawing persona on the campaign bot; then reruns
    both reports and measures the fights a team fights together.
-3. **The screens** (Ryan, 13 October: third, so the first thing built after the battle has its
-   shape is a run he can play): a prototype hangar, the mission map and the draft; every build
+5. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has
+   its shape is a run he can play; the go, the stock pass and the balancing come first, Ryan,
+   14 October): a prototype hangar, the mission map and the draft; every build
    order the roster session hands down lands in a game being played.
-4. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
-   heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
-   area keywords on the explosives.
-5. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
+6. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
-6. The rest in the roadmap's standing order: Ryan's text; the domains' engine (the planned
+7. The rest in the roadmap's standing order: Ryan's text; the domains' engine (the planned
    moves, the party dealt from the benches, three bosses a domain); the pacing session's
    remaining pieces; battery; audio; art; the commander layer after a balance baseline;
    onboarding before a phone leaves the desk.
