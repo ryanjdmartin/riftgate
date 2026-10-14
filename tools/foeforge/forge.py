@@ -684,10 +684,16 @@ def fit(img, frame, height_px=0):
     inner = (fw - 2, fh - 2)
     scale = min(inner[0] / fig_img.width, inner[1] / fig_img.height)
     if height_px:
-        # A shared scale across a register (the chibis, 14 October): the figure's own height
-        # maps to height_px of the frame's height, so a crouched or wide figure is not blown
-        # up to fill the frame and the party stands at one scale. Never past the frame.
-        scale = min(scale, height_px / fig_img.height * (inner[1] / fh))
+        # A shared scale across a register (the chibis, 14 October): the body's height maps
+        # to height_px, so the party stands at one scale whatever each one holds. The body
+        # starts at the first row at least 35% as wide as the widest, which skips a spear
+        # held overhead or a raised foot (the Lancer came out tiny when her spear set the
+        # scale) but not a head. Never past the frame: a figure taller than the body allows
+        # shrinks to fit instead, which is the one case the register must tolerate.
+        rows = opaque.sum(1)
+        body_top = next(y for y in range(len(rows)) if rows[y] >= 0.35 * rows.max())
+        body = fig_img.height - body_top
+        scale = min(scale, height_px / body)
     size = (max(1, round(fig_img.width * scale)), max(1, round(fig_img.height * scale)))
     small = np.array(fig_img.resize(size, Image.LANCZOS))
     small[..., 3] = np.where(small[..., 3] >= 128, 255, 0)
@@ -1106,7 +1112,7 @@ def main():
     c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
     c.add_argument("--holes", type=int, default=40, metavar="MIN_AREA", help="key enclosed pockets of background of at least MIN_AREA render pixels (default 40, the gap between two fingers; 0 keeps every pocket)")
     c.add_argument("--holes-tol", type=int, default=8, help="how near pure white a pocket must be to key (default 8: an eye white or a robe is off-white and survives; 24 catches a grey pocket)")
-    c.add_argument("--height", type=int, default=0, help="scale the figure to this height in frame pixels instead of filling the frame (the chibis at 46, so the party stands at one scale)")
+    c.add_argument("--height", type=int, default=0, help="scale the figure so its body (the rows at least 35% as wide as its widest, which skips a weapon held overhead) stands this many frame pixels tall, instead of filling the frame (the chibis at 42, so the party stands at one scale)")
     c.add_argument("--glow", action="store_true", help="coloured light over the white (a flame, a glow) cut as solid colour instead of a pale blob; off by default, since it is only for glows")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)

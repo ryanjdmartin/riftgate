@@ -231,7 +231,7 @@
         "asked": "the sword on his back is sheathed in a scabbard, and only its hilt rises above his left shoulder, on the right of the picture; no blade shows."
       },
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "warrior": {
@@ -254,7 +254,7 @@
       "kept": "picks/martial_artist_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall lanky woman with pale freckled skin and red hair in a topknot, in a green gi with a brown sash and wrapped fists, bare-handed, mid-kick with one leg raised high.",
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "martial_artist": {
@@ -279,7 +279,7 @@
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: the same wiry young woman with light brown skin and a messy black bob under a dark hood, a red scarf, crouched low, a stubby knife in each fist with a blade shorter than her hand.",
       "note": "Rendered fresh from the stubby-knife take, Ryan's pick of 14 October",
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "thief": {
@@ -303,7 +303,7 @@
       "kept": "picks/lancer_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long spear upright beside her in one hand, its shaft one straight vertical pole from the blade high above her head to the butt on the ground by her boot, her other hand a fist at her side.",
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "lancer": {
@@ -327,7 +327,7 @@
         "asked": "his free hand is small, the same size as his other hand."
       },
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "white_mage": {
@@ -352,7 +352,7 @@
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a gaunt old woman with pale ashen skin and long white hair, in a tattered black-and-purple robe, a skull-topped staff in one hand and bright ghostly green fire in the other.",
       "cut": {
         "glow": true,
-        "height": 46
+        "height": 42
       }
     },
     "necromancer": {
@@ -371,7 +371,7 @@
       "kept": "picks/black_mage_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand.",
       "cut": {
-        "height": 46
+        "height": 42
       }
     },
     "black_mage": {
@@ -400,7 +400,7 @@
       },
       "cut": {
         "glow": true,
-        "height": 46
+        "height": 42
       }
     },
     "summoner": {
