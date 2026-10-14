@@ -32,8 +32,9 @@ document's job and every command are in `README.md`.
 - `ccr-550650c0-g0kcbg`, the Aphelion session, stopped on Ryan's word (13 October, evening):
   its proposal `docs/aphelion_chassis_proposal.md` is on main and its bible rows were carried
   in; its other document changes described a pre-refactor state and were not taken. Safe to
-  delete. A local sprite session is in flight in this folder (uncommitted `art/foes/`,
-  `content/foes.json`, `tools/foeforge` and document hunks): leave them unstaged.
+  delete. The local sprite session committed its round five on main (`53a1f26`) and may still
+  be in flight in this folder: anything new and uncommitted under `art/foes/`, `content/foes.json`
+  or `tools/foeforge` is its, left unstaged.
 - The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
   (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
   `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Kestrel's five airframes as
