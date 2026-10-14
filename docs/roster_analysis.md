@@ -1180,3 +1180,73 @@ the rule and not only the idea.
 - **Rating Aphelion's four**: refused by the brief; their open questions are in section 4.
 - **Reading the retired first pass or the struck designs**: refused by the brief; nothing of
   either is here.
+
+## 12. The go, as it stands (14 October, evening)
+
+Ryan's go began in chat the day the page was published. What is decided is a bible row and,
+where it is a rule, a line in `docs/rules.md` (not built unless said); what is a direction
+stays here until its session takes it. Lines above that rest on the whole-block shield rule
+(Misharu's bait, the Votive Ward's count buying blows turned, the Carrier's screen as the
+first every-ally equipment) read as written that morning; the rule changed that afternoon.
+
+**Decided (Ryan, 14 October):**
+
+- **The shield rule.** A shield absorbs its number and the excess passes to the hull; a
+  breach ignores the shield outright. The reason: under the whole-block rule a tiny shield was
+  secretly "negate one blow", and every new shield design was heading for that margin.
+- **Barrier and Ward**, two buffs. A Barrier prevents the next blow's damage on one machine
+  until the round's end, riders landing, and is never granted to every ally at once; a Ward
+  lasts the round and stops every rider, breach included, while the damage lands. Both up is
+  the old whole block at twice its price. Ward is the buff's word, so the Oblation Ward and
+  the Votive Ward take new names.
+- **Cooldowns**, a printed property on specific pieces, shown on the entry as dark with the
+  rounds left. Rapid reads as "act again" with a cooldown of one on nearly every carrier; the
+  Nemesis's fists are Rapid with none, limited by rage.
+- **The Dingo's Megataser Harpoon** carries Shock in place of Suppress (with the stock pass).
+- **Misharu's payoff is Penance**, a weaken on the shield's breaker, in place of Suppress; its
+  shape (a halving of that foe's blows for its next action, once a round) is Claude's lean.
+- **Kestrel's gaps**: the strafer at tier one (every weapon it fires strikes twice at half,
+  each strike losing the foe's armour: trash falls, a Golem shrugs, the map can read it) in
+  place of section 8's raider, withdrawn because a glass machine that burns its own shield
+  loops alone; and the bomber (its weapons spent on an empty slot wait there for whoever
+  steps in, with their keywords, so the piece fitted is the bomb: napalm, a cluster, a shock,
+  a stun) in place of section 8's interceptor, since the slot is already on screen and the
+  wait list is not.
+
+**Directions, not yet decisions:**
+
+- **The Onryō**: a flat on-hit per Grudge stack, the team's vengeance, rather than a damage
+  over time or a multiplier; the wound stays the trigger until every domain lays a debuff on
+  machines; a cap on stacks.
+- **The Armadillo as the hypertank at tier two**, with the conditional draw on its locked
+  shutters (blows at an ally's bare hull turn on it while they stand), so every round is open
+  or sealed and its hardpoints choose how often and what for: more ways to seal, guns for the
+  open rounds, a Retaliate buff to shock the strikers, Braced on top, a lure to draw without
+  sealing. The Faraday Hull moves to a lighter Minerva tier two struck by its own choice.
+- **The Baboon at tier two**, since its meter needs statuses and basics carry none; the rest
+  of the reshuffle as put to Ryan in chat (the Boar, the Clydesdale, the boiler and the
+  revolver down to one, the fan-boat up to two, the Dingo undecided), sorted by one test: tier
+  one is itself with basics and stands in a start, tier three bends a learned rule.
+- **The Gundam**: a combo counter per weapon spent, broken by a turn that ends without an
+  attack, paying cooling and shield regen, small per stack or at thresholds; its locked
+  shield a parry, a self-Barrier whose riders land, that keeps the combo; the saber scaling
+  with the count as a dial.
+- **The jellyfish as the soft-control specialist**: its spread carries Lure, Disrupt and the
+  dispel to the foes beside the target and nothing else; its EMP carries the dispel and
+  Disrupt.
+- **Mastema's fire through the team**: a lighter that burns allies (a heat tick the hot
+  builds cash), the Ward's count reading burning bodies on either side, the Ewer as the mover
+  that carries Burning and Scorched off the allies onto a chosen foe, so no entry is blank in
+  any domain.
+- **The funnel-web**: ambush (its blows on a foe that will not strike it this round lay
+  Venom, a share of current hull at the foe's action, the tank-buster by construction) and a
+  locked web bomb, a delayed Suppress with a cooldown, the target and the next foe to act
+  beside it. A suppressed foe's intent line clears.
+- **Early offers**: tier ones at the shelf and in the host maker's offer at Convergence tier
+  zero, tier twos from one, tier threes from two; how much of the roster a run sees turns on
+  whether offers may repeat and on the chassis offer rate, one every two or three battles
+  (the bible's Recommended row) against a chassis in every win's offer.
+- **Tier counts**: two or three tier ones a city maker, two or three tier twos, one tier
+  three; the Arsenal none, three and three.
+- **Enemy Shock on machines**: none today; if any, on a hero or an elite, telegraphed, never
+  on the rank and file.

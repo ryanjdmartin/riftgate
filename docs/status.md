@@ -132,12 +132,14 @@ document's job and every command are in `README.md`.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-1. **Ryan's go on the roster analysis** (`docs/roster_analysis.md`, 14 October, published:
-   the link under Pages): the roster and the proposals rated for fit on quality, niche, build
-   diversity and composition, the tiers as dealt, the brief's budgets argued, cooldowns
-   weighed, Minerva's and Kestrel's gaps, and the ten decisions its section 9 puts to him.
-   Each decision he makes becomes a bible row, the stock pass takes what its section 10 lists,
-   the fresh sessions take their gaps, and the page retires to git.
+1. **Ryan's go on the roster analysis, in progress** (`docs/roster_analysis.md`, 14 October,
+   published: the link under Pages). Decided in chat the same day and recorded: the shield rule
+   (a shield absorbs its number, a breach ignores it), Barrier and Ward, cooldowns as a printed
+   property, the Dingo's Shock, Misharu's Penance, Kestrel's strafer and bomber. The directions
+   still open are the page's section 12 (the Onryō, the Armadillo as the hypertank, the Baboon
+   at tier two, the Gundam, the jellyfish, Mastema, the funnel-web, early offers, tier counts).
+   Each further decision becomes a row, the stock pass takes what sections 10 and 12 list, the
+   fresh sessions take their gaps, and the page retires to git.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -175,9 +177,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.159 (14 October: section 12's
-  roster-analysis question points at the analysis page), from the branch
-  `ccr-777fd46a-32dw2m`, which main must take before the next republish.
+  `docs/design-bible.html` after every change. Live: v0.160 (14 October: the shield rule,
+  Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's strafer and bomber, Minerva's
+  open row), from the branch `ccr-777fd46a-32dw2m`, which main must take before the next
+  republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

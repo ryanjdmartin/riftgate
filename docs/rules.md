@@ -125,8 +125,11 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
-- **Rapid** (any component): the entry switches off for the round, the die rerolls free onto
-  another entry, and the machine acts again.
+- **Rapid** (any component): the die rerolls free onto another entry and the machine acts
+  again. Every Rapid component today also carries a cooldown of one: the entry switches off
+  for the round.
+- **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
+  is dark for so many rounds, shown on the entry with the rounds left.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -158,6 +161,11 @@ On a machine:
   whatever granted it.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
+- **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
+  so it never injures; its riders land. Until the round's end. Never granted to every ally
+  at once.
+- **Ward** (buff, not built): every blow a foe lands on this machine leaves no rider
+  (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.
 - **Rage** (a store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
@@ -200,8 +208,10 @@ On a foe:
 Burning, Suppressed, Shocked or Paradox.
 
 ### Shields, armour, hull
-- A standing shield blocks a whole blow, however small, and loses the blow's damage. A
-  **breach** blow's overflow past the shield reaches the hull.
+- A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
+  the hull. A **breach** blow ignores the shield: the shield stands and the whole blow
+  reaches the hull. (Not built: today a standing shield blocks a whole blow, however small,
+  and only a breach's overflow passes it.)
 - A machine's armour comes off every blow that reaches its hull, flat, a breach's overflow
   included; shields are never armoured. A foe's armour comes off every blow on it, never off
   Burning. Damage-taken effects apply before armour.
@@ -227,9 +237,10 @@ Burning, Suppressed, Shocked or Paradox.
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
-  its hull (a breach's overflow included) rolls the machine's die: an intact entry cracks, a
-  cracked one is destroyed, a blank shrugs it off. A standing shield prevents it (breach
-  excepted). Bites, splash and overheats never injure.
+  its hull (a breach's whole blow included) rolls the machine's die: an intact entry cracks, a
+  cracked one is destroyed, a blank shrugs it off. A shield absorbs its share first and what
+  reaches the hull counts; a Barrier's blow never does (not built: today a standing shield
+  prevents it, breach excepted). Bites, splash and overheats never injure.
 - **Cracked**: keeps its number, heat, action and passive; loses its keywords.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
   Badger's components are never destroyed.
@@ -246,7 +257,8 @@ Burning, Suppressed, Shocked or Paradox.
   machine showing an intact weapon), focus (its rank shares one pick). A move may carry its
   own aim. The pick is a commitment; Lure and Disrupt move it.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
-  foe of its type; strikes are separate blows. Riders: breach, scorch (a stack of
+  foe of its type; strikes are separate blows. Riders: breach (the blow ignores the shield;
+  not built: today only its overflow passes), scorch (a stack of
   Scorched), burn (a stack of Burning), disable (the entry the machine shows), corrupt (a
   Corrupted stack on it), self-destruct (the striker dies after, for good).
 - **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
