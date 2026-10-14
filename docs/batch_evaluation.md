@@ -4,8 +4,9 @@ The depth-and-breadth session and the batch evaluation, held as one session on 1
 2026 (Ryan, 13 October: a fresh session evaluates every proposed design together before any
 is built, and measures the roster against itself for mechanic depth and breadth). Its brief
 is `docs/mechanic_budgets.md`; its inputs are the bible's first row, section 5's stun row,
-`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`, `docs/aphelion_chassis_proposal.md`
-(read as a list of ideas in a vacuum, Ryan's word) and `docs/canvas/kestrel-airframes.html`.
+`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md` and `docs/aphelion_chassis_proposal.md`
+(read as a list of ideas in a vacuum, Ryan's word); Kestrel's canvas and Minerva's four are
+abandoned (Ryan, 13 and 14 October).
 Every run it made is in `docs/measurements.md` under 14 October; the rows it settled are in
 the bible (v0.155) and the questions it could not are in section 12.
 
@@ -17,8 +18,8 @@ reason given, with the condition that brings it back) and **bench** (an idea set
 so it is not pitched again by accident). Every number is a direction at 100 seeds unless it
 says 200; the bands are in `docs/measurements.md`. The greedy bot values only what it knows
 (bible section 11): the Arsenal's four, five of Wainwright & Sutler's six and the Aphelion
-jellyfish's rider spread are not in the engine, so the runner was not asked about them, and a
-reading of a stand-in says so.
+jellyfish's rider spread are not in the engine, so the runner was not asked about them, and
+a reading of a stand-in says so.
 
 ## 1. The roster against itself
 
@@ -31,13 +32,13 @@ October, `docs/balance.md`), and what the batch proposes to add.
 | Hard control (a foe loses its action) | 3: Suppression Battery, Umbra Inducer, Megataser Harpoon*; the Baboon's Paradox | the Umbra Inducer 58% of the Baboon's spends, the Harpoon 64% of the Dingo's, the Battery 27% of the Clydesdale's d9 | Misharu's sentence; the funnel-web's web bomb (two for one); the jellyfish spreading a Suppress to three foes; the fan-boat firing any Suppress shell at 15 for 5 heat |
 | Soft control (a foe changes what it does or where it stands) | 2: Proximity Klaxon, Differentiation Probe | the Klaxon 2% of the Badger's, the Probe 7% of the Baboon's | Minos's turn of the ranks; the Arsenal bench's Haunted |
 | Damage over time | 7: Incendiary Shells, Solar Flare Array*, Blazethrower, Meteor Artillery, Photosphere Lance*, Aurora Lattice, Gravity Knuckles?; the Stingray deepens it | 6 to 27% on the machines that stock one | Mastema's Bellows, Ewer and Ward; the Onryō's Grudge |
-| Amplify (the next blow lands harder) | 4: Polarity Projector, Overcharge Coil, Retribution Thurible, Tesla Gauntlets?; the Faraday Hull | the Coil 16% of the Puffin's, the Projector 4% of the Baboon's | the Kite (Shock on everything); the Cormorant (Overcharged at the start); the gunship's Arc row |
-| Tempo (act again) | 6: Arc Fault Cannon, Laminar Deflector, Flakshot Repeater*, Knuckle of Fury*, Wake Diffuser, Pulse Vacillator?; the Dingo's two actions, the Clydesdale's reroll | the Deflector 18 to 31% on the Kestrels, the fists 56% of the Nemesis's | the revolver's chain; the Hummingbird (every spend Rapid); the Zoids walker's kill-to-Rapid |
+| Amplify (the next blow lands harder) | 4: Polarity Projector, Overcharge Coil, Retribution Thurible, Tesla Gauntlets?; the Faraday Hull | the Coil 16% of the Puffin's, the Projector 4% of the Baboon's | the gunship's Arc row |
+| Tempo (act again) | 6: Arc Fault Cannon, Laminar Deflector, Flakshot Repeater*, Knuckle of Fury*, Wake Diffuser, Pulse Vacillator?; the Dingo's two actions, the Clydesdale's reroll | the Deflector 18 to 31% on the Kestrels, the fists 56% of the Nemesis's | the revolver's chain; the Zoids walker's kill-to-Rapid |
 | Area | 4: Chainsaw Claw*, Breaching Plow*, Enfilade Beam, Proximity Klaxon; the Boar's spill | the Claw 39% of the Badger's, the Plow 36% of the Boar's | the explosives in the stock pass; the jellyfish (riders, never damage) |
-| Sustain (shield, vent, armour for a time) | 16: eleven shields and vents, the Shoring Jack, the Corona Shield?, the Backwash Ionizer*, the Lockdown Shutters* | shields 7 to 31%; vents 0 to 12% | Misharu's Pavise; Mastema's Ward; the Onryō's Pall; the Lammergeier's shield 70 |
+| Sustain (shield, vent, armour for a time) | 16: eleven shields and vents, the Shoring Jack, the Corona Shield?, the Backwash Ionizer*, the Lockdown Shutters* | shields 7 to 31%; vents 0 to 12% | Misharu's Pavise; Mastema's Ward; the Onryō's Pall |
 | Self-cost | 2: Entropy Condenser, Oblation Ward; the Tithe Coupling; the rage's hull | the Condenser 0 to 1%, the Ward 7 to 20% | the boiler's cooling below zero |
-| Ramp | 5: the Badger's claw and fragmenter*, the Afterburner Cannon*, the Soulcutter Talons*, the Pinion Driver; the Stingray's heat, the Ammit's Overcharged | the fragmenter 39%, the talons 47% | the Cormorant in reverse |
-| Changes what pieces do for everyone | none | | the boiler (a vent is a gun), the multi-rotor (any die is yours), the revolver (a roll is a step), the fan-boat (a weapon is a shell), the gunship (a weapon is a stat), the Lammergeier (every weapon Indirect), the Hummingbird (every spend Rapid), the Kite (every blow Shocks), the jellyfish (every rider spreads), Minos (every blow turns a rank) |
+| Ramp | 5: the Badger's claw and fragmenter*, the Afterburner Cannon*, the Soulcutter Talons*, the Pinion Driver; the Stingray's heat, the Ammit's Overcharged | the fragmenter 39%, the talons 47% | none |
+| Changes what pieces do for everyone | none | | the boiler (a vent is a gun), the multi-rotor (any die is yours), the revolver (a roll is a step), the fan-boat (a weapon is a shell), the gunship (a weapon is a stat), the jellyfish (every rider spreads), Minos (every blow turns a rank) |
 | Plain attacks (a number, a reach, a heat) | 11 | | |
 
 **The reading.**
@@ -60,12 +61,12 @@ October, `docs/balance.md`), and what the batch proposes to add.
   entries differing only by number" live: the stock pass's basic kit answers that, not this
   batch. The batch adds sustain only as locked tools (a pavise that baits, a ward that counts
   fires, a pall that moves a wound), which pass "a locked shield that does something".
-- **"Changes what pieces do" is empty today** and the batch fills it ten times over. It is the
+- **"Changes what pieces do" is empty today** and the batch fills it six times over. It is the
   class that opens build space by definition (the brief's second rule), so it is where the go
   list comes from; the limit is how many rules the player can hold, one machine at a time.
 - **The heat spectrum has one hot machine** (the Sparrowhawk) and no build that wants to run
-  hot. The boiler and the Hummingbird are the two proposals that are hot by identity, which
-  the heat row asks for on purpose.
+  hot. The boiler is the one proposal that is hot by identity, which the heat row asks for
+  on purpose.
 
 **The four rules, as applied here** (the brief's, with what this session changed): hard
 control stays at its count and is priced per piece (above); a new chassis earns its place by
@@ -85,7 +86,35 @@ checked against the four; the one that fails a rule says which.
 
 ## 4. The heat spectrum, one chassis three ways
 
-{{HEAT}}
+The brief asks for one chassis fielded three ways across the heat row's spectrum. The
+Clydesdale (d9, heat 60, cooling 5, no passive that touches heat) carried three kits of
+today's pieces by `--set`, greedy, 50 seeds a cell (`docs/measurements.md`, 14 October): a
+cold kit tuned to its cooling (the rolled kinetics and a shield, no vent), a hot kit with
+vents (the Railgun, the Lance, the Meteor Artillery, the Suppression Battery, the Enfilade
+Beam, the Zenith Emitter, two vents and the Condenser) and a mixed kit (half and half, one
+vent). The heat report the to-do asks for does not exist yet, so the signals are the
+runner's tallies: overheat hull, the vents' pick share, damage and heat a fight.
+
+| Kit | Packs, bosses, formations won (greedy) | Hull lost | Damage a fight | Heat a fight (a round) | Overheat hull a fight | Vents' share of spends |
+|---|---|---|---|---|---|---|
+| Cold | 72, 0, 0 | 49%, 100%, 100% | 80 | 45 (6.8) | 4.9 | none carried |
+| Mixed | 72, 20, 0 | 47%, 96%, 100% | 81 | 60 (9.4) | 5.3 | 1% |
+| Hot, with vents | 79, 60, 0 | 44%, 82%, 100% | 99 | 114 (19.6) | 19.3 | 9% |
+
+**The reading.** Demand passes budget as the heat row's test wants: the hot kit crosses the
+maximum by its third round of firing (about 20 heat a round against 60 and cooling 5) and
+burns 19 hull a fight for it. But at today's prices that is a good trade and the bot takes
+it: the hot kit deals a quarter more damage a fight, opens the bosses (60 against 0 and 20)
+and loses no more hull than the cold kit even with the burn counted, and it vents under a
+tenth of the time rather than spend a turn on cooling. The cold kit pays in reliability and
+collects nothing back, which is the half of the row ("a cold build pays elsewhere and
+collects in the long ones") the content does not yet honour: with no round limit and the
+fights two to seven rounds long, there is no long fight for endurance to collect in. So heat
+bites, and it bites too cheaply: the levers are the overheat's rate (hull one for one is the
+price the bot shrugs), the vents' numbers against a weapon's heat, and the fights' length,
+which is the fresh start's. The heat report's forced-choice and slack signals are what the
+stock pass tunes against; this read says the direction, and the boiler (hot by identity,
+venting every turn by design) is the machine that will feel whichever price lands.
 
 ## 5. The proposals, each under the rules
 
@@ -123,34 +152,15 @@ its proposal; this page carries only the judgement, the hole it turns on and the
 | The fast walker (the Zoids homage) | 2 | **wait**, the Arsenal's | a new trigger (a kill makes the spend Rapid) | tempo has six carriers; Ryan: the mauling feels very Arsenal, maybe a sign. The evaluation agrees: a sinister beast named for a punisher (Sekhmet, Haetae), in the Arsenal's next round once this batch's three are played. The maker is his call |
 | The large hovercraft | 2 | **bench** (parked, Ryan) | | |
 
-### Kestrel (`docs/canvas/kestrel-airframes.html`)
+### Kestrel
 
-Four of the five run on today's engine, so each was measured as a stand-in (the Goshawk's
-row reset to the airframe's numbers and a kit of today's Kestrel pieces by `--set`, 30
-seeds a cell, random/greedy; `docs/measurements.md`, 14 October). Alone is a diagnostic; the
-Kestrel trio with the stand-in in the Goshawk's place is the read. A control is the same
-frame and kit with no passive, so the passive's share shows. Row means over the twelve
-single packs, the four bosses and the four formations, with the hull lost at greedy play.
-
-| Stand-in | Alone: packs, bosses, formations (hull lost) | Its control alone | Kestrel trio with it: formations (hull lost) | Trio control |
-|---|---|---|---|---|
-| The Goshawk itself (200 seeds) | 33/60, 0/2, 0/0 (57%, 100%, 100%) | | 14/54 (68%) | |
-| Lammergeier (every weapon Indirect; assault, hull 130, shield 70) | 61/81, 40/91, 0/0 (38%, 53%, 100%) | the Kite's control, a smaller frame: 53/77, 29/88 | 25/73 (52%) | 24/70 (55%) |
-| Hummingbird (every spend Rapid; light, hull 50) | 41/58, 18/37 (55%, 78%, 100%) | none (no frame to compare) | 20/68 (57%) | |
-| Kite (every blow Shocks; heavy, hull 110) | 59/82, 83/98, 0/0 (36%, 18%, 100%) | 53/77, 29/88 (38%, 54%) | 35/81 (49%) | 24/70 (55%) |
-| Cormorant (three Overcharged at the start; assault, hull 140, a three-strike rack fixed) | 79/92, 68/99, 0/8 (14%, 24%, 97%) | 59/78, 27/92 (37%, 51%) | 42/94 (24%) | 26/78 (50%) |
-
-| Airframe | Tier | Verdict | Rule it passes | The hole, and the lever |
-|---|---|---|---|---|
-| Lammergeier (strategic bomber) | 3 | **wait** | changes what every weapon is (Indirect) | its reach buys nothing the runner can see: with the passive the frame reads like its control, alone and in the trio, because few packs field a back rank and every front-rank shot costs it splash; once danger close retires (bible section 5, decided) the splash goes and the passive is free reach, the reason Wainwright & Sutler's bench retired the same idea. Back with a price of its own, and with the fresh start's back ranks, which are what a bomber is for |
-| Hummingbird (pylon racer) | 2 | **go later** (the stock pass's heat) | changes what every spend is (Rapid); the most different thing to play (the canvas) | on today's cool Kestrel pieces it overheats never (0.01 hull a fight alone), so its brake is the quarter of its spends that land on switched-off entries, not heat; a 50-hull d4 that beats bosses 37% greedy is the tempo class's whole budget on one passive. The heat re-pricing is what makes "until the heat stops it" true; read it again then, and the lever is its cooling (10) and maximum (80) |
-| Kite (interdictor) | 2 | **wait** | | Shock on everything is a boss-killer alone (bosses 83/98 for 18% of its hull against its control's 29/88 for 54%): its own second blow always doubles, so it carries a boss fight by itself, which section 11's roster row refuses (a solo carry makes a four trivial), and it makes the amplify class's four pieces and the Faraday Hull redundant on any team that fields it. Back as a decision: a Shock its own blows cannot spend (the setup belongs to allies, the canvas's own fantasy), measured again |
-| Cormorant (wing-in-ground strike ship) | 2 | **wait** | | the strongest stand-in in the batch (alone 79/92 for 14% hull, the trio 42/94 on formations for a quarter of the hull it loses without the passive), and all of it front-loaded burst: three rounds of +15 on every strike with a three-strike rack fixed. Another Overcharge ramp, in reverse, and the shape the pacing row refuses (every build burst, fights of two rounds). Back once fights are five to eight rounds and a burst opener has a price it pays in the rounds after |
-| Magpie (executive runabout) | 1 | **bench** | | a map action buying a fight buff (the design test), however the distance is counted. The need it answered stands: a second Kestrel tier one, so the tender's Kestrel slot is not the Sparrowhawk every run; the Hummingbird at tier one is one answer, a plain light airframe with a Kestrel locked piece another |
-
-The Lean the canvas asked about ("nothing big" in Kestrel's makers row) excludes nothing by
-the first row; it is Ryan's look call whether a Kestrel assault airframe reads as Kestrel.
-Nothing in this batch needs the answer, since both big ones wait.
+Kestrel's five airframes (the canvas of 11 October) are abandoned (Ryan, 14 October), as
+Minerva's four are; the records had carried them into the batch for his pick. Four of them
+had been measured as stand-ins before his word reached the session; the runs are not cited
+by any decision and stay out of the log, bar one reading the pacing row can use: a
+front-loaded burst opener (three Overcharged at a fight's start) read as the strongest
+stand-in of the batch because today's fights are two or three rounds, the shape the pacing
+row refuses. Kestrel's next chassis start fresh, from the updated rules, when Ryan asks.
 
 ### The bot's blind spots
 
@@ -161,8 +171,7 @@ count (Mastema: the Ewer's payout over the foe's expected life, the Ward's numbe
 (the boiler: a vent's expected damage on a random foe), the step (the revolver: the next entry
 is known, so the forecast is exact), the turn of the ranks (Minos: the state after the turn),
 the spread rider (the jellyfish), the shell (the fan-boat: the shot as rewritten). The
-Kestrel stand-ins and the jellyfish's round-one form were readable today because the bot
-already values Rapid, Shock, Overcharged, Indirect and Spread.
+jellyfish's round-one form was readable today because the bot already values Spread.
 
 ## 6. The questions folded in
 
@@ -198,9 +207,9 @@ Sparrowhawk. The cars' map rules stay their identity (a scout never hunted, a pa
 that fights twice), and their worth is the second fight a turn and the fight they are never
 caught in, which a team row reads and a solo row cannot. The stock pass gives them basics;
 the detachment-class fast machine the four-machines row asks for is a new machine's job,
-and the batch has two candidates: the fan-boat (tier one, light, move 50, a deck gun that
+and the batch has one candidate: the fan-boat (tier one, light, move 50, a deck gun that
 fires the same 15 whatever shows, so its damage is a number the player can plan a detachment
-on) and the Hummingbird (section 5, Kestrel). The Dingo's harpoon at 64% of its spends is the
+on). The Dingo's harpoon at 64% of its spends is the
 stun pick-share case in miniature; its price is the stock pass's.
 
 **Cooldowns in a skirmish** (bible section 8, open; the one question the brief asks the
@@ -228,8 +237,7 @@ weapons hitting the neighbours for half (pure upside, no interest); the Spinnere
 broken); the first Misharu and the first Onryō (another Overcharge ramp; a third copy of
 Shocked); the Requiem Pipes (Ryan: burst); the guardian's stay and Hubris (binary); the
 fate-edited die (degenerates to one entry); interceptors that build up through a fight (the
-old locked-pieces row, since revised: free again, below); the Magpie's bow wave (a map action
-buying a fight buff).
+old locked-pieces row, since revised: free again, below).
 
 **Killed by a Lean, so free again.** A kill making a spend Rapid went from Wainwright &
 Sutler's bench as "an Arsenal machine's" (a Lean; it now sits on the Zoids walker, one
@@ -237,8 +245,8 @@ carrier, and nothing stops a second); debuffs as the gunship's sights and the fa
 drift went as "statuses are Aphelion's strength" (a Lean) and "a gunship is about its
 weapons" (Ryan's fantasy call, which stands); the rotor looks on Aphelion's machines went by
 the propulsion Lean, which is Ryan's look call and stands as his; "nothing big" for Kestrel
-and "Indirect fire is Wainwright & Sutler's line" are Leans and exclude nothing, so the
-Lammergeier and the Cormorant are judged on their rules, not their maker.
+and "Indirect fire is Wainwright & Sutler's line" are Leans and exclude nothing, so a
+Kestrel idea that returns is judged on its rules, not its maker.
 
 **Killed by no named test (free to re-propose, each with what it needs).** Indirect weapons
 striking twice ("dangerous as written": needs a price); shield as the spider's ammunition
@@ -299,33 +307,27 @@ count, the hangar page, a runner row. Codex and flavour are Ryan's.
 
 8. **Minos** (the Arsenal, tier 3). Once the rift spawns formations with fronts and backs in
    most fights; the turn's forecast and drawing, and the bot weighing the state after it.
-9. **The Hummingbird** (Kestrel, tier 2), if its stand-in's reading (section 5) survives the
-   stock pass's heat re-pricing: the second hot-by-identity machine, Kestrel's fourth.
-10. **The multi-rotor** (Wainwright & Sutler, tier 3). Once shown text has a word for the die
-    and the gesture is judged on a phone.
+9. **The multi-rotor** (Wainwright & Sutler, tier 3). Once shown text has a word for the die
+   and the gesture is judged on a phone.
 
 **Waiting, with the condition that brings each back:** the funnel-web (one stun source a
 batch; back with the stock pass's heat on stun pieces, as written or with the one-for-one
 lever); the Onryō (back on a trigger nobody reads, with the Pall and a curse that outlives
 its machine; Haunted the lead for the Arsenal's next retribution); the line frame (back
 designed round its locked pair); the Carrier (designed with Minerva's battlecruiser); the
-Zoids walker (the Arsenal's next round, maker Ryan's); the Lammergeier (back with a price
-on its reach once danger close retires); the Cormorant (another Overcharge ramp unless it
-is the only Kestrel that stops a formation, which the stand-in says); the Kite (Shock on
-everything; back if the stand-in reads as a decision, below); the Magpie (back if a bow wave
-has a cost the map-action test accepts); the Scapegoat Brand (after the buffs-and-debuffs
-pass); the large hovercraft (parked).
+Zoids walker (the Arsenal's next round, maker Ryan's); the Scapegoat Brand (after the
+buffs-and-debuffs pass); the large hovercraft (parked). Kestrel's five and Minerva's four
+are abandoned, not waiting.
 
-**The roster after wave three:** Minerva 3, Kestrel 4, Wainwright & Sutler 8, Aphelion 3,
-the Arsenal 5, twenty-three in all, with a tier one added (the fan-boat), six tier twos and
-three tier threes. Wainwright & Sutler's weight is the proposal's own (Ryan's six); if it
+**The roster after wave three:** Minerva 3, Kestrel 3, Wainwright & Sutler 8, Aphelion 3,
+the Arsenal 5, twenty-two in all, with a tier one added (the fan-boat), five tier twos and
+three tier threes. Kestrel and Minerva get their next round from a fresh start. Wainwright & Sutler's weight is the proposal's own (Ryan's six); if it
 reads as too many, the multi-rotor and the gunship are the two that wait longest anyway.
 
 **What the runner reads after each wave:** every new machine alone (a diagnostic), in the
 third-machine read of section 2 (its team value against the same baseline pairs), and in a
 four with the three it was built to feed; the stun pick shares on Misharu's and the
-jellyfish's teams; the heat signals on the boiler and the Hummingbird once the heat report
-exists (the to-do).
+jellyfish's teams; the heat signals on the boiler once the heat report exists (the to-do).
 
 ## 9. What this page settled, and what is Ryan's
 
@@ -338,7 +340,6 @@ question carries its lean.
 
 **Ryan's.** The go list itself (keep, change or drop each, as the proposals ask); the
 funnel-web (the lever, or as written); the jellyfish's stun exception and the dispel's name;
-the fan-boat's heat rule; the Onryō's return trigger; the Zoids walker's maker; the
-Hummingbird's place as Kestrel's tier two; the Honey Badger's identity (the campaign form is
-Claude's lean); cooldowns; the Kestrel Lean ("nothing big") if the Lammergeier returns with a
-price. Each is a section 12 question where it was not already one.
+the fan-boat's heat rule; the Onryō's return trigger; the Zoids walker's maker; the Honey
+Badger's identity (the campaign form is Claude's lean); cooldowns. Each is a section 12
+question where it was not already one.
