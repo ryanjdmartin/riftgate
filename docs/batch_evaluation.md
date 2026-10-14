@@ -27,7 +27,9 @@ numbers, locked pieces and stock pull one way, and the round holds a decision);
 **niche** (what it does that nothing else does, in the fight or on the map);
 **build diversity** (how many directions its hardpoints and passive reward, with generic
 kit); **composition** (what it gives a team and what it needs from one, with the measured
-team value of section 3 where there is one). Each axis is strong, fair or thin. A proposal
+team value of section 3 as a diagnostic only). Each axis is strong, fair or thin, and none
+is performance: the numbers are placeholders, and a support or specialist frame is expected
+to lose most fights alone, which is the design working, not a mark against it. A proposal
 lands in one of three places: **has a place** (fills a gap, respects the rules in force,
 worth building in section 10's order), **back to the board** (duplicates what the ecosystem
 has or crosses a rule; what it needs to come back with), or **unfinished** (open questions
@@ -94,82 +96,88 @@ not at all: a tier one is plain on purpose.
 
 ## 2. The roster today, rated
 
-Thirteen machines on the four axes, with the measured solo row (200 seeds, `docs/balance.md`:
-packs, bosses, formations won at random/greedy, and the hull lost at greedy) and the
-measured team value (section 3: formations won and hull lost when it joins each baseline
-pair, greedy, 30 seeds; the roster's rank on it in brackets).
+Thirteen machines on the four axes. The ratings are design reads, not performance: every
+number in content is a placeholder, and the bible's balance rows say a support machine is
+never weighed against a damage machine as like against like, a solo row is a diagnostic and
+the unit of balance is the composition. So a support or specialist frame is expected to lose
+most fights alone; a stock Baboon that wins them would be the problem. The last column
+carries the runner's diagnostic for reference only (the 200-seed solo row and the
+third-machine read of section 3), with that caveat on it: where it disagrees with the
+design read, that is the greedy bot (which values a stun, a shield handed away or a status
+laid for an ally far below what they do) and the placeholders, not the design.
 
-| Machine | Maker, tier | Quality | Niche | Build diversity | Composition | Solo (200 seeds) | Team value (two baselines) |
-|---|---|---|---|---|---|---|---|
-| Honey Badger | Minerva, 1 | **fair.** The hopper (claw fills, fragmenter fires) is the roster's best locked pair: two entries, a decision every round. The passive ("never destroyed") has no job in a fight and the identity is open (section 8) | **strong.** The bruiser that fights alone: any small pack outside the Peak for under a tenth of its hull | **thin.** Three hardpoints behind two locked melee pieces that take 78% of its spends: the hardpoints are filler, and a build is which filler | **strong as a carry, nothing for allies.** Second and first in team value; brings a body and damage, reads no ally, feeds no ally | 79/98, 1/28, 16/48 (19%, 95%, 76%) | 100 (16%); 100 (19%) [2nd, 1st] |
-| Armadillo | Minerva, 1 | **strong numbers, a passive for others.** Armour 15, hull 150, the shutters' blocked-blow shock; the Faraday Hull sets up allies' big hits, which its own guns never need | **strong, and too big for a tier one.** The tank; also the best machine alone in the game (96/100 on packs, 60/98 on bosses): a tier one that carries a run (the campaign report: 55% of runs it starts won, against 11 to 38% for the others) | **fair.** Five untyped hardpoints and a passive that reads none of them: any kit works, no kit is its own | **strong.** Third and second in team value; the one tank; its Shocked is the roster's cleanest composition hook (the Sparrowhawk's Railgun doubled). Its problem is section 4's: four heavies with it are a wall | 96/100, 60/98, 46/75 (8%, 44%, 45%) | 100 (20%); 100 (20%) [3rd, 2nd] |
-| Wild Boar | Minerva, 2 | **strong.** Dive and brace pull one way; the plow's Braced is a decision; Spillover written out in full | **thin today.** The diver into crowds overlaps the Badger (two heavy Minerva tracked bruisers at the front) until back ranks exist; the spill measures about a point | **fair.** Five hardpoints; the spill rewards big single hits, one real direction | **strong, nothing for allies.** First and third in team value; another carry | 81/99, 12/65, 21/63 (12%, 72%, 63%) | 100 (14%); 100 (20%) [1st, 3rd] |
-| Sparrowhawk | Kestrel, 1 | **strong.** The clearest identity in the roster: double damage, double heat, a d4 | **strong.** The assassin: 65/92 on bosses alone, the one light machine that finishes a boss | **fair.** Three hardpoints beside the Pinion Driver after the stock pass; heat is the axis (a cool piece doubled is free, a hot one burns), which is a build | **fair.** Ninth in team value: a solo carry that a team makes cheap and a glass that wants an escort, which is right; the tender's Kestrel slot is always it, and the campaign runner's worst starter (28 runs started, 14% won) | 60/82, 65/92, 0/0 (32%, 50%, 100%) | 90 (42%); 95 (47%) [9th, 9th] |
-| Goshawk | Kestrel, 2 | **fair.** Sustain from heat and one blow that fires it all pull one way; the heat debuffs cost it its shield (the heat row's exit) | **fair.** The hot flyer that sustains, against the Sparrowhawk that bursts: a real pair of Kestrels, but the weaker half alone (33/60) | **strong.** Five hardpoints, and the passive pays for any hot piece of any maker: the roster's clearest build axis after the Clydesdale's | **fair.** Seventh and sixth: self-contained, asks nothing, gives nothing | 33/60, 0/2, 0/0 (57%, 100%, 100%) | 92 (32%); 89 (41%) [7th, 6th] |
-| Puffin | Kestrel, 2 | **thin as measured, strong as drawn.** The escort that overshields allies and vents whoever it shields is the one machine built for composition; the runner reads it as the worst third machine in the roster (last on both baselines) | **strong.** The shield escort, nobody else's job | **thin.** Four hardpoints on 50 hull; the fixed allies-only shield is the identity | **designed for it, measures against it.** Last on both baselines: either the greedy bot undervalues a shield it hands away (`shield_score` counts hull saved this round, not the blow turned next round) or the escort is too thin at hull 50 and a 30 shield. The one must-check before any support design is judged by the runner | 2/18, 0/0, 0/0 (89%, 100%, 100%) | 62 (53%); 64 (64%) [13th, 13th] |
-| Clydesdale | W&S, 2 | **fair.** A vanilla big die with a free reroll, by design (Ryan's own worry: lame); the reroll is die-local and thin as a passive | **fair.** Capacity: the only d9, the three-module machine, the utility space (the gunship sits in it) | **strong, the roster's best.** Nine hardpoints and three modules: the hangar's showcase, the one machine where a build is a whole plan | **strong.** Fifth and fifth; the one that carries the explosives and the Suppression Battery for the team | 58/72, 0/22, 0/0 (48%, 94%, 100%) | 93 (28%); 98 (34%) [5th, 5th] |
-| Prairie Dog | W&S, 1 | **fair.** A map passive (never hunted) on a generic fight kit; the rapid locked gun suits it | **fair.** The scout that is never caught; alone it takes only the back-rank pairs | **thin.** Three hardpoints, a d4 | **fair, better than it looks.** Sixth and eighth, above the Sparrowhawk beside a line: the rapid gun and the deflector work in a trio. Its map niche is invisible to the skirmish runner | 32/47, 1/15, 0/0 (63%, 91%, 100%) | 88 (30%); 82 (46%) [6th, 8th] |
-| Dingo | W&S, 1 | **thin in the fight.** Two actions a turn is a map passive; in the fight it is a d4 whose locked harpoon takes 64% of its spends | **strong on the map, none in the fight.** The pack animal that fights twice a turn, which only the campaign runner can read | **thin.** Three hardpoints | **thin as measured.** Twelfth on both baselines; its stun is the pick-share case in miniature. Its worth is the second fight, outside the skirmish runner's sight | 7/19, 0/0, 0/0 (86%, 100%, 100%) | 72 (50%); 68 (61%) [12th, 12th] |
-| Baboon | Aphelion, 1 | **strong idea, thin numbers.** The Paradox meter is the roster's best composition hook on paper: every status from any maker feeds it. Alone it loses to most things and the Umbra Inducer is 58% of its die | **strong.** The control meter; nobody else's | **strong in principle.** Six hardpoints and a passive that reads any status: the widest routes in of any machine | **the hook the runner cannot see.** Eleventh and tenth: the bot plays it as a weak gun platform; its meter wants allies' statuses, which the baseline pairs do not lay. Reads as tier two (Ryan, 11 October) | 21/44, 0/0, 0/0 (69%, 100%, 100%) | 80 (45%); 83 (50%) [11th, 10th] |
-| Stingray | Aphelion, 1 | **fair.** A hot amplifier the bot plays cold (the sail 3%, the lattice 3%); cooling 0 is a clean idea whose stock does not pull it | **fair.** The deepener of stacks, unique; overlaps the Goshawk in "run hot" (stacks against sustain) | **strong axis.** Five hardpoints; anything that lays stacks, on foes or allies, is its build | **fair.** Tenth and eleventh; a natural feeder of the Baboon's meter and of any burn reader, measured as a liability beside hitters. Reads as tier two (Ryan) | 23/42, 0/7, 0/0 (66%, 98%, 100%) | 81 (42%); 79 (55%) [10th, 11th] |
-| Nemesis | Arsenal, 2 | **strong.** Rage from any hull damage spent by the fists to roll again: overheating on purpose, luring, biting are all builds (Ryan's rework) | **fair.** The berserker; the third heavy bruiser in thirteen (the Badger, the Boar) | **fair.** Four hardpoints; hull-biting kit (the Tithe Coupling, the Oblation Ward) is one direction, lure another | **strong hitter, an identity a team starves.** Fourth and fourth; in a team its foes seldom reach its hull (0.3 rolls again a fight), so its passive is a solo passive | 74/91, 16/66, 2/43 (25%, 77%, 89%) | 99 (23%); 100 (30%) [4th, 4th] |
-| Ammit | Arsenal, 3 | **fair.** A d8 half locked to talons (47% of spends); Overcharged kept for the battle is the only cross-fight growth | **strong.** The battle-long ramp, nobody else's | **thin.** Four hardpoints behind four identical locked entries | **fair.** Eighth and seventh; it wants the last hit, a team decision. Its tier is a problem: tier is complexity, never power, and it reads simpler than the Nemesis | 36/56, 0/0, 0/0 (65%, 100%, 100%) | 91 (41%); 92 (44%) [8th, 7th] |
+| Machine | Maker, tier | Quality | Niche | Build diversity | Composition | Diagnostic only: solo at 200 seeds (packs, bosses, formations; hull lost), third-machine rank of 13 |
+|---|---|---|---|---|---|---|
+| Honey Badger | Minerva, 1 | **fair.** The hopper (claw fills, fragmenter fires) is the roster's best locked pair: two entries, a decision every round. The passive ("never destroyed") has no job in a fight, and the identity is open (section 8) | **strong.** The bruiser that fights alone, by design self-sufficient | **thin.** Three hardpoints behind two locked melee pieces that are the die: the hardpoints are filler, and a build is which filler | **a carry, nothing for allies.** Brings a body and damage, reads no ally, feeds no ally; what a support frame stands behind | 79/98, 1/28, 16/48 (19%, 95%, 76%); 2nd, 1st |
+| Armadillo | Minerva, 1 | **strong.** Armour, hull, the shutters' blocked-blow shock; the Faraday Hull sets up allies' big hits, which its own guns never need, so the design points outward | **strong.** The tank | **fair.** Five untyped hardpoints and a passive that reads none of them: any kit works, no kit is its own | **strong.** Its Shocked is the roster's cleanest composition hook (the Sparrowhawk's Railgun doubled); the tank every support stands behind | 96/100, 60/98, 46/75 (8%, 44%, 45%); 3rd, 2nd. Its placeholder armour makes it the best machine alone and a run-deciding draw today; a numbers question (section 12), not a design one |
+| Wild Boar | Minerva, 2 | **strong.** Dive and brace pull one way; the plow's Braced is a decision; Spillover written out in full | **thin today.** The diver into crowds overlaps the Badger (two heavy Minerva tracked bruisers at the front) until back ranks exist | **fair.** Five hardpoints; the spill rewards big single hits, one real direction | **a carry, nothing for allies** | 81/99, 12/65, 21/63 (12%, 72%, 63%); 1st, 3rd |
+| Sparrowhawk | Kestrel, 1 | **strong.** The clearest identity in the roster: double damage, double heat, a d4 | **strong.** The assassin: the one light machine built to finish a boss and leave | **fair.** Three hardpoints beside the Pinion Driver after the stock pass; heat is the axis (a cool piece doubled is free, a hot one burns), which is a build | **fair.** A striker that wants an escort and a tank to stand behind: the right shape for a glass cannon, and the one Kestrel tier one, so the tender hands every run one | 60/82, 65/92, 0/0 (32%, 50%, 100%); 9th, 9th |
+| Goshawk | Kestrel, 2 | **fair.** Sustain from heat and one blow that fires it all pull one way; the heat debuffs cost it its shield (the heat row's exit) | **fair.** The hot flyer that sustains, against the Sparrowhawk that bursts: a real pair of Kestrels | **strong.** Five hardpoints, and the passive pays for any hot piece of any maker: the roster's clearest build axis after the Clydesdale's | **fair.** Self-contained: asks nothing, gives nothing | 33/60, 0/2, 0/0 (57%, 100%, 100%); 7th, 6th |
+| Puffin | Kestrel, 2 | **strong.** The escort that overshields allies and vents whoever it shields: one idea, a cost on its own die, a decision each round about whom to cover | **strong.** The shield escort, nobody else's job | **thin.** Four hardpoints on 50 hull; the fixed allies-only shield is the identity | **strong by design**: the roster's one machine built to be only good together. Expected to lose alone, and should | 2/18, 0/0, 0/0 (89%, 100%, 100%); 13th, 13th. The third-machine rank is the bot's: it counts the hull a shield saves this round and not the blow it turns next round, so the escort reads last. The check on the bot is the to-do's; the design is not in question |
+| Clydesdale | W&S, 2 | **fair.** A vanilla big die with a free reroll, by design (Ryan's own worry: lame); the reroll is die-local and thin as a passive | **fair.** Capacity: the only d9, the three-module machine, the utility space (the gunship sits in it) | **strong, the roster's best.** Nine hardpoints and three modules: the hangar's showcase, the one machine where a build is a whole plan | **strong.** The one that carries the explosives and the stuns for the team | 58/72, 0/22, 0/0 (48%, 94%, 100%); 5th, 5th |
+| Prairie Dog | W&S, 1 | **fair.** A map passive (never hunted) on a generic fight kit; the rapid locked gun suits it | **fair.** The scout that is never caught; a specialist whose fight is the one it chooses | **thin.** Three hardpoints, a d4 | **fair.** The scout behind the horde; its map niche is invisible to the skirmish runner and its fight kit is a line's helper | 32/47, 1/15, 0/0 (63%, 91%, 100%); 6th, 8th |
+| Dingo | W&S, 1 | **fair.** Two actions a turn is a map passive; in the fight it is a d4 with a locked pin and basics, which is thin by design rather than by numbers | **strong on the map, a pin in the fight.** The pack animal that fights twice a turn, which only the campaign runner can read | **thin.** Three hardpoints | **strong by design.** It exists for an ally's fight: the second action joins a fight already open and the harpoon pins the foe the ally is about to eat. Expected to lose alone | 7/19, 0/0, 0/0 (86%, 100%, 100%); 12th, 12th |
+| Baboon | Aphelion, 1 | **strong.** The Paradox meter: every status from any maker feeds it, and tripping it takes several pieces or one hit carrying several, which is a decision about order | **strong.** The control meter; nobody else's | **strong.** Six hardpoints and a passive that reads any status: the widest routes in of any machine | **strong by design.** The battlefield controller that fills its meter off allies' statuses; expected to lose alone, and should. Reads as tier two in a tier-one slot (Ryan, 11 October) | 21/44, 0/0, 0/0 (69%, 100%, 100%); 11th, 10th |
+| Stingray | Aphelion, 1 | **fair.** A hot amplifier whose stock does not pull it: cooling 0 is a clean idea, and its die carries two stack-layers beside three plain pieces | **fair.** The deepener of stacks, unique; overlaps the Goshawk in "run hot" (stacks against sustain) | **strong.** Five hardpoints; anything that lays stacks, on foes or allies, is its build | **strong by design.** A feeder of the Baboon's meter and of any burn reader; a specialist that wants a carry. Reads as tier two in a tier-one slot (Ryan) | 23/42, 0/7, 0/0 (66%, 98%, 100%); 10th, 11th |
+| Nemesis | Arsenal, 2 | **strong.** Rage from any hull damage spent by the fists to roll again: overheating on purpose, luring, biting are all builds (Ryan's rework) | **fair.** The berserker; the third heavy bruiser in thirteen (the Badger, the Boar) | **fair.** Four hardpoints; hull-biting kit (the Tithe Coupling, the Oblation Ward) is one direction, lure another | **a carry with an identity a team starves.** In a team its foes seldom reach its hull, so its passive is a solo passive by design; a lure build is the composition answer | 74/91, 16/66, 2/43 (25%, 77%, 89%); 4th, 4th |
+| Ammit | Arsenal, 3 | **fair.** A d8 half locked to four identical talons; Overcharged kept for the battle is the only cross-fight growth | **strong.** The battle-long ramp, nobody else's | **thin.** Four hardpoints behind four identical locked entries | **fair.** It wants the last hit, a team decision. Its tier is the problem: tier is complexity, never power, and it reads simpler than the Nemesis | 36/56, 0/0, 0/0 (65%, 100%, 100%); 8th, 7th |
 
 **What the roster says as a whole.**
 
-- **Team value tracks solo value.** The ranking is the same beside both pairs and the same as
-  the solo rows: the heavies (the Boar, the Badger, the Armadillo, the Nemesis), then the
-  Clydesdale, then the mid machines, then the supports. There is no machine today that is
-  weak alone and strong together; the two built for it (the Puffin, the Baboon) measure
-  weakest at it. That is half the roster row's ask ("machines that are only good together")
-  unmet, and half a question about the bot (the Puffin's row).
+- **Four of thirteen are built to be only good together** (the Puffin, the Baboon, the
+  Stingray, the Dingo), and the design reads them right: each is a support or a specialist
+  that is expected to lose alone. What the runner says about them (last on both baselines)
+  is about the bot, which cannot value a shield handed away, a status laid for an ally or a
+  second action on the map, and about placeholders; until the bot values support and the
+  numbers are balanced, the runner has no verdict on a support frame, and this page gives it
+  none.
 - **Minerva is three bruisers**, each strong, each a carry, none a line-holder for others;
   Minerva's leanings (Spread, Lure, Braced: holding a line) are on its components, not its
   chassis.
 - **Kestrel is one identity and two answers to it**: the Sparrowhawk, the Goshawk that
   sustains instead, the Puffin that escorts it. Its tier one is a glass cannon, so the tender
   hands every run one.
-- **Wainwright & Sutler is one big die and two map rules.** The cars are detachment tools on
-  dice that cannot detach (the cars row); the Clydesdale is the roster's build space.
-- **Aphelion is two support machines at tier one** that read as tier two and lose alone,
-  the roster's only control and the only amplifier of statuses, with nobody to carry them in
-  a tender that may deal both.
+- **Wainwright & Sutler is one big die and two map rules.** The cars' niches are the map's
+  (the cars row); the Clydesdale is the roster's build space.
+- **Aphelion is two support machines at tier one** that read as tier two, the roster's only
+  control and its only amplifier of statuses, with nobody to carry them in a tender that may
+  deal both: the tier-slot question below, not a design fault.
 - **The Arsenal is a berserker and a ramp**, both self-contained.
 - **Build diversity lives in three machines** (the Clydesdale, the Goshawk, the Stingray) and
-  in principle in the Baboon; the heavies and the lights have three or four hardpoints
-  behind locked pieces that take most of the die. The stock pass widens every die with
-  basics, but the hardpoint counts are the ceiling.
+  in the Baboon; the heavies and the lights have three or four hardpoints behind locked
+  pieces that are most of the die. The stock pass widens every die with basics, but the
+  hardpoint counts are the ceiling.
 
 **The tier-one set, as the game deals it.** The tender offers one tier one from each city
 maker by seed and the player takes three; not every tier one is on offer at a start, and
 the rest come through procurement and rewards. Today's set: Minerva the Badger or the
 Armadillo; Kestrel the Sparrowhawk; Wainwright & Sutler the Prairie Dog or the Dingo;
-Aphelion the Baboon or the Stingray. Read as a draw: a run that is dealt the Armadillo wins
-(55% in the campaign runner, the plain player), one dealt the Sparrowhawk, the Prairie Dog
-and the Stingray does not (14 to 33%), because Minerva's tier ones are the roster's two best
-solo machines, Kestrel's one is its worst starter, Wainwright & Sutler's two are map tools
-and Aphelion's two are tier-two support in tier-one slots. So the draw decides the run more
-than the pick. What a tier-one set should be, under "a chassis's tier is complexity, never
-power" and the stock pass's basics: five to seven plain, self-sufficient machines, each able
-to take a small pack alone (the detachment bar: under 15% of its hull) and each with one
-hook, so that any three of them are a team and any one is a start; the sharp identities
-belong at tier two, the rule-benders at three. By that bar the Badger and the Sparrowhawk
-are tier ones as meant; the Armadillo is a tier one by complexity and a tier two by what it
-does to a draw (its armour is section 12's question); the Baboon and the Stingray are tier
-twos in tier-one slots (Ryan has said so); the cars are tier ones that cannot take a pack.
-Two makers have no tier one that fights alone (Aphelion, Wainwright & Sutler), and that is
-the first thing a proposal can fix: the fan-boat is Wainwright & Sutler's.
+Aphelion the Baboon or the Stingray. Read by role rather than by number: Minerva's two are
+self-sufficient carries, Kestrel's one a striker that wants cover, Wainwright & Sutler's two
+map specialists and Aphelion's two supports, so a draw can deal three machines none of which
+is built to carry (the Sparrowhawk, the Dingo, the Baboon), and no machine in the set is a
+support's natural partner but Minerva's. That is a shape problem before it is a numbers one,
+though the placeholders sharpen it today (the campaign runner's plain player wins 55% of the
+runs it starts with the Armadillo and 14 to 33% of the rest; a direction on placeholders).
+What a tier-one set should be, under "a chassis's tier is complexity, never power" and the
+stock pass's basics: enough plain, self-sufficient machines that any draw holds a carry, each
+with one hook, beside the specialists, so that any three are a team and any one is a start;
+the sharp identities belong at tier two, the rule-benders at three. By that bar the Badger
+and the Sparrowhawk are tier ones as meant; the Armadillo is a tier one by complexity and a
+run-deciding draw by its placeholder armour (section 12); the Baboon and the Stingray are
+tier twos in tier-one slots (Ryan has said so); the cars are specialists whose carry must come
+from another maker. Two makers have no tier one that carries (Aphelion, Wainwright & Sutler),
+and that is the first thing a proposal can fix: the fan-boat is Wainwright & Sutler's.
 
 **Tier two and three, as the game deals them.** Offers one every two or three battles, a
 chassis on the shelf, procurement by Favour: a run sees a handful of tier twos and threes
 and chooses among what it is dealt. So a tier two may share a niche with another (two heavy
 bruisers is fine; the draw decides which one a run meets), and what a tier two or three
-must do instead is be a usable third or fourth beside any pair the tender could have dealt:
-section 3's third-machine read is that test, and every machine today passes it on win rate
-and fails it only in cost. A tier three must earn its complexity, not its power: today the
-one tier three (the Ammit) is simpler than two tier twos. The proposals' tiers are read on
-that: a tier three that bends a rule for everyone (the multi-rotor, Minos, Mastema) is
-placed right; a tier two is allowed to overlap.
+must do instead is be a usable third or fourth beside any pair the tender could have dealt,
+a support beside two carries or a carry beside two supports. A tier three must earn its
+complexity, not its power: today the one tier three (the Ammit) is simpler than two tier
+twos. The proposals' tiers are read on that: a tier three that bends a rule for everyone
+(the multi-rotor, Minos, Mastema) is placed right; a tier two is allowed to overlap.
 
 ## 3. The ecosystem measured: solo value beside team value
 
@@ -198,15 +206,17 @@ at 30 seeds; the ranking holds across both pairs.
 | Dingo | 72, 50% | 68, 61% | 12, 12 |
 | Puffin | 62, 53% | 64, 64% | 13, 13 |
 
-**The reading.** The brief's bar for a detachment-class machine (beats a small pack for
-under 15% of its hull, loses a formation) and a line machine (the reverse) sorts the roster
-badly: the machines that can detach are the slow heavies and the Sparrowhawk, and the fast
-light machines cannot (the cars take only the back-rank pairs; the Puffin nothing). Team
-value is the same order as solo value, so the roster has no machine that trades solo
-strength for team strength. The two readings a design can act on: a fast machine that can
-take a small pack alone is a gap (the four-machines row asks for it), and a machine that
-is weak alone and strong together is a gap, with the Puffin's row the test of whether the
-runner can even see one.
+**The reading, with its caveat.** This is the greedy bot on placeholder numbers, and the
+bot cannot value what a support does (a shield handed away, a status laid for an ally's
+blow, a second action on the map), so a support frame's low row here is expected and says
+nothing against it; the measurement is a diagnostic of the carries and of the bot. What it
+can say: the brief's bar for a detachment-class machine (beats a small pack for under 15%
+of its hull) is met by the slow heavies and the Sparrowhawk and by no fast machine, so a
+fast machine that can take a small pack alone is a gap the four-machines row asks for; and
+team value as the bot sees it is the same order as solo value, which means the bot plays a
+support as a weak hitter. Before the runner can read a support frame at all, it needs the
+valuations the to-do lists (the shield turned next round first), and before any of it is
+balance, the stock pass's numbers.
 
 ## 4. The ecosystem measured: compositions at a fixed four
 
@@ -386,9 +396,9 @@ first, second and third in team value).
 - A second tier one, so the tender's Kestrel slot is not always the Sparrowhawk: a plain,
   self-sufficient light airframe that can take a small pack alone (the detachment bar) with
   one Kestrel hook, which is also the fast detachment the four-machines row asks for.
-- A Kestrel that is strong together: today the Puffin is drawn for it and measures last;
-  whether that is the bot or the escort is the first thing a Kestrel session should settle
-  (the shield valuation, then hull 50 and the 30 shield).
+- Whether the Puffin, drawn to be strong together, is: the runner cannot say (it reads the
+  escort last because it cannot value a shield handed away), so a Kestrel session judges it
+  by design and by play, and the bot's shield valuation is fixed before the runner is asked.
 - A tier three: Kestrel has none. The tempo class (Rapid, Overcharged, the chain rule) is
   Kestrel's lean and has six carriers; a Kestrel tier three that bends a rule for everyone in
   that class is the shape, with the heat row's hot-by-identity build the second candidate once
@@ -396,10 +406,9 @@ first, second and third in team value).
 
 ## 8. The questions folded in
 
-**The Honey Badger's identity** (bible section 7, open; discuss first, Ryan). Measured, it is
-the strongest solo tier one after the Armadillo and the first or second machine in team
-value (section 3): it takes any small pack outside the Peak for under a tenth of its hull
-and loses every boss, a carry that cannot finish a battle alone. Of the three forms in its
+**The Honey Badger's identity** (bible section 7, open; discuss first, Ryan). By design it is
+a self-sufficient carry (the diagnostic agrees: it takes any small pack outside the Peak for
+under a tenth of its hull and loses every boss), a bruiser that cannot finish a battle alone. Of the three forms in its
 row, the in-fight stand (once a battle, a blow that would wreck it leaves it at 1 hull) is
 the binary the Arsenal bench retired as the guardian's stay, and the threshold already
 spares a heavy machine's components. The campaign form (never sits out after a wreck, never
@@ -427,8 +436,7 @@ nothing else; neither is a detachment by the brief's bar, and the machines that 
 Badger, the Armadillo, the Boar, the Sparrowhawk, the Nemesis) are the slow ones bar the
 Sparrowhawk. The cars' map rules stay their identity (a scout never hunted, a pack animal
 that fights twice), and their worth is the second fight a turn and the fight they are never
-caught in, which a team row reads and a solo row cannot; the Prairie Dog measures sixth in
-team value beside a line, above the Sparrowhawk. The stock pass gives them basics; the fast
+caught in, which only the campaign runner can read. The stock pass gives them basics; the fast
 detachment the four-machines row asks for is a new machine's job, and the batch has one
 candidate, the fan-boat (section 6). The Dingo's harpoon at 64% of its spends is the stun
 pick-share case in miniature; its price is the stock pass's.
