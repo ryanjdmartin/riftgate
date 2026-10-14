@@ -227,3 +227,49 @@ battles won (6%), 75% wiped (93%), 3.5 cities fallen a run (3.9), the capital's 
 bot's long solo fights, so about a third of the campaign's fall was the clock; the rest is the
 domains and the solo fights, which the fresh-start session owns. One battle ran 55 phases: a
 stall the runner now shows instead of punishing. Bible section 4.
+
+## 14 October, the batch evaluation
+
+The depth-and-breadth session's reads of the roster as it stands (`docs/batch_evaluation.md`
+reads them); no proposed design was run. Every run `tools/balance.gd --team` or `--set`, the
+twenty packs, greedy, 30 seeds a cell unless stated: row means over the twelve single packs,
+the four bosses and the four formations are readable, a single formation cell is a direction.
+
+**Solo value beside team value: the third machine.** Each chassis as the third machine beside
+two baseline pairs. The Clydesdale and the Prairie Dog alone win formations 29% for 90% of
+their hull; the Nemesis and the Puffin 52% for 83%. Every third machine wins every single
+pack and boss, so the formations' win rate and hull lost are the read. Beside the first pair,
+then the second (formations won, hull lost): the Wild Boar 100, 14% and 100, 20%; the Honey
+Badger 100, 16% and 100, 19%; the Armadillo 100, 20% and 100, 20%; the Nemesis 99, 23% and
+100, 30%; the Clydesdale 93, 28% and 98, 34%; the Prairie Dog 88, 30% and 82, 46%; the
+Goshawk 92, 32% and 89, 41%; the Ammit 91, 41% and 92, 44%; the Sparrowhawk 90, 42% and 95,
+47%; the Stingray 81, 42% and 79, 55%; the Baboon 80, 45% and 83, 50%; the Dingo 72, 50% and
+68, 61%; the Puffin 62, 53% and 64, 64%. The ranking holds across both pairs and is the solo
+rows' ranking: team value tracks solo value, no machine is weak alone and strong together,
+and the two drawn for it (the Puffin, the Baboon) measure last. Bible sections 7 and 11.
+
+**Compositions at a fixed four.** Eight fours against the twenty packs. Every four beats
+every single pack and boss; formations won, then hull lost on packs, bosses and formations,
+then rounds and machines wrecked a formation fight: the four heavies (Armadillo, Clydesdale,
+Badger, Boar) 100 for 0%, 0%, 1%, 5.1 rounds, none wrecked; tank, controller, bruiser,
+support (Armadillo, Baboon, Nemesis, Puffin) 100 for 0%, 0%, 8%, 8.8, 0.17; the starting trio
+and the Armadillo 100 for 1%, 3%, 8%, 4.8, 0.39; four hitters (Badger, Boar, Sparrowhawk,
+Nemesis) 100 for 1%, 3%, 9%, 4.3, 0.44; a tender's four (Badger, Sparrowhawk, Prairie Dog,
+Baboon) 100 for 2%, 4%, 14%, 5.6, 0.64; the status four (Baboon, Stingray, Dingo, Armadillo)
+100 for 0%, 0%, 19%, 9.6, 0.44; the four lights (Sparrowhawk, Prairie Dog, Dingo, Puffin) 98
+for 3%, 7%, 31%, 9.2, 0.82; the four supports (Baboon, Stingray, Puffin, Dingo) 68 for 1%, 1%,
+46%, 11.9, 1.54, losing the Marsh's formation 29 times in 30. Count dominates composition on
+the win rate; composition reads on the cost (1% to 46% of the hull a formation); the Marsh's
+is the one formation any four loses. Bible sections 4 and 11.
+
+**A heat baseline, one chassis three ways.** The Clydesdale with three kits of today's
+pieces by `--set`, 50 seeds a cell: cold (Twin Autoguns, Ankle Mortar, Howitzer, Incendiary
+Shells, Rivet Gun, Maxigun, Slugthrower, Shotfire Rack, Blast Door), mixed (Slugthrower,
+Howitzer, Enfilade Beam, Meteor Artillery, Zenith Emitter, Maxigun, Incendiary Shells,
+Coolant Jacket, Blast Door) and hot with vents (Overclocked Railgun, Photosphere Lance,
+Meteor Artillery, Suppression Battery, Enfilade Beam, Zenith Emitter, Coolant Jacket,
+Entropy Condenser, Blowout Stack). Packs, bosses and formations won, hull lost, damage a
+fight, heat a fight, overheat hull a fight, the vents' share of spends: cold 72, 0, 0; 49%;
+80; 45; 4.9; none carried. Mixed 72, 20, 0; 47%; 81; 60; 5.3; 1%. Hot 79, 60, 0; 44%; 99;
+114; 19.3; 9%. A baseline before the stock pass re-prices heat, not a judgement (the heat
+row's caveat: heat is judged once the roster has hot builds). Bible section 5.

@@ -14,7 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 443 tests, 19,645 checks, green on main (13 October, evening). A cloud session fetches
+- Tests: 443 tests, 19,645 checks, green on main (13 October, evening; no code or content
+  changed since). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -90,6 +91,18 @@ document's job and every command are in `README.md`.
   `--glow`. The old sheet still makes the 16x16 map tokens.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
+## Measured, 14 October
+
+- The batch evaluation's roster reads (`docs/measurements.md`, 14 October; `docs/batch_evaluation.md`
+  sections 3 to 5): every chassis as the third machine beside two baseline pairs ranks the
+  same as alone (the Boar, the Badger, the Armadillo, the Nemesis, the Clydesdale, then the
+  rest, the Puffin last on both), so team value tracks solo value and no machine is weak alone
+  and strong together; eight fixed fours all win every formation but the four supports, and
+  composition reads on the hull a formation costs (the four heavies 1%, the four supports
+  46%); the Clydesdale three ways on heat is a baseline before the stock pass (the hot kit a
+  quarter more damage and the bosses opened for 19 hull of overheat a fight). No proposed
+  design was run.
+
 ## Measured, 13 October
 
 - `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 12 of 40
@@ -126,15 +139,14 @@ document's job and every command are in `README.md`.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-1. **The batch evaluation with the depth-and-breadth session, one session.** Reads the bible's
-   first row, section 5's stun row, `docs/mechanic_budgets.md` (the brief) and the four
-   proposals on main, Aphelion's read as a list of ideas in a vacuum (Ryan: that session went
-   off the rails) (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
-   `docs/aphelion_chassis_proposal.md`). Measures every
-   chassis's solo value beside its team value (`tools/balance.gd --team`) and compositions at a
-   fixed four; folds in the Honey Badger's identity, the Armadillo's Faraday Hull and the cars'
-   missing solo niche; re-reads each proposal's set-aside lists under the first row. Ends with
-   the go and the build order, and the rules it settled as rows.
+1. **Ryan's go on the batch evaluation** (`docs/batch_evaluation.md`, 14 October: the roster
+   rated on quality, niche, build diversity and composition; the proposals rated the same way
+   and fitted; the tiers read as the tender and procurement deal them; the gaps Minerva's and
+   Kestrel's fresh sessions fill). His calls are section 12's first content question: the go
+   and the order (Misharu, the revolver and the boiler first), the funnel-web's lever, the
+   jellyfish's finishing, the fan-boat's heat, the Onryō's return, the Zoids walker's maker,
+   the Puffin, the Armadillo's armour. Then the builds, each as the proposals say, and
+   Minerva's and Kestrel's fresh chassis sessions from the latest rules.
 2. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions and
    `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift, small
@@ -163,8 +175,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.154 (13 October, evening), the
-  committed file as it stands on main, the Aphelion session's rows carried in.
+  `docs/design-bible.html` after every change. Live: v0.154 (13 October, evening); v0.156 on
+  the branch `ccr-3d9861dc-mp0v3w` (14 October: the batch evaluation's rows, the struck
+  designs out) awaits its republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
