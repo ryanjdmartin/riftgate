@@ -175,9 +175,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.154 (13 October, evening); v0.156 on
-  the branch `ccr-3d9861dc-mp0v3w` (14 October: the batch evaluation's rows, the struck
-  designs out) awaits its republish.
+  `docs/design-bible.html` after every change. Live: v0.156 (14 October: the batch
+  evaluation's rows, the struck designs out, the live v0.155's three edits merged), from the
+  branch `ccr-3d9861dc-mp0v3w`, which main must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
