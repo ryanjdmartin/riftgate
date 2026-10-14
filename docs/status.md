@@ -95,9 +95,9 @@ document's job and every command are in `README.md`.
 
 - The batch evaluation's roster reads (`docs/measurements.md`, 14 October; `docs/batch_evaluation.md`
   sections 3 to 5): every chassis as the third machine beside two baseline pairs ranks the
-  same as alone (the Boar, the Badger, the Armadillo, the Nemesis, the Clydesdale, then the
-  rest, the Puffin last on both), so team value tracks solo value and no machine is weak alone
-  and strong together; eight fixed fours all win every formation but the four supports, and
+  same as alone (the carries first, the four support and specialist frames last), which reads
+  the greedy bot and the placeholders, not the designs (a support is expected to lose alone;
+  the runner cannot value support yet); eight fixed fours all win every formation but the four supports, and
   composition reads on the hull a formation costs (the four heavies 1%, the four supports
   46%); the Clydesdale three ways on heat is a baseline before the stock pass (the hot kit a
   quarter more damage and the bosses opened for 19 hull of overheat a fight). No proposed
@@ -180,8 +180,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.156 (14 October: the batch
-  evaluation's rows, the struck designs out, the live v0.155's three edits merged), from the
+  `docs/design-bible.html` after every change. Live: v0.157 (14 October: the batch
+  evaluation's rows with the runner's rows read as a diagnostic of the bot, the struck designs
+  out, the live v0.155's three edits merged), from the
   branch `ccr-3d9861dc-mp0v3w`, which main must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

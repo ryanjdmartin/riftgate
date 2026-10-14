@@ -245,8 +245,10 @@ Badger 100, 16% and 100, 19%; the Armadillo 100, 20% and 100, 20%; the Nemesis 9
 Goshawk 92, 32% and 89, 41%; the Ammit 91, 41% and 92, 44%; the Sparrowhawk 90, 42% and 95,
 47%; the Stingray 81, 42% and 79, 55%; the Baboon 80, 45% and 83, 50%; the Dingo 72, 50% and
 68, 61%; the Puffin 62, 53% and 64, 64%. The ranking holds across both pairs and is the solo
-rows' ranking: team value tracks solo value, no machine is weak alone and strong together,
-and the two drawn for it (the Puffin, the Baboon) measure last. Bible sections 7 and 11.
+rows' ranking. Read with its caveat: placeholder numbers and a greedy bot that cannot value
+a shield handed away, a status laid for an ally or a second action on the map, so the four
+frames built to be only good together landing last is a reading of the bot, not of the
+designs; a support or specialist frame is expected to lose alone. Bible sections 7 and 11.
 
 **Compositions at a fixed four.** Eight fours against the twenty packs. Every four beats
 every single pack and boss; formations won, then hull lost on packs, bosses and formations,
