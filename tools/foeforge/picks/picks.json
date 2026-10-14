@@ -74,16 +74,16 @@
     "treant": {
       "foe": "treant",
       "role": "sprite",
-      "candidate": 14,
-      "source": "out/treant_img70/treant_14.png",
+      "candidate": 13,
+      "source": "out/treant_img65/treant_13.png",
       "kept": "picks/treant.png",
       "prompt": "The same huge pale tree with peeling white bark, lit knot holes, its lowest boughs reaching forward as arms, striding on its roots, with thick green moss and dark green lichen hanging from its branches and trunk. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Treant, a monster of the grasslands. The tree that walks, every forest's boss. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
-      "image": "out/treant_img65/treant_13.png",
+      "image": "out/treant_c2/treant_1.png",
       "cut": {
         "tol": 90,
         "holes": 1000
       },
-      "note": "The branches from before are now just actual human hands, it's weird"
+      "note": "Ryan's round-eight pick, back in the game (14 October: the one with perfect hands; two image-to-image passes after it turned the twig claws human). Its one flaw, the pale hanging moss reading as melting, goes through the edit model."
     },
     "needler": {
       "foe": "needler",
