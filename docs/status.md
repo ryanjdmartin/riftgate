@@ -217,8 +217,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.175 (15 October), main's file: the
-  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Live: v0.177 (15 October), published from the
+  Kestrel session's branch: v0.176 as another session left it live (the Summoner's names and
+  the White Mage's moves, not yet on GitHub's main) with the Kestrel session's two rows (the
+  Boar's spill taking every later strike, section 12's Chain rework) merged onto it. Before
+  that, v0.175, main's file: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
