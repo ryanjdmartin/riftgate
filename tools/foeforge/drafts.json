@@ -40,9 +40,9 @@
     "sprite": "a colossal plant bud as big as a house on a thick writhing stalk, its swollen petals parting around a ring of thorny teeth, root tendrils for legs",
     "variants": [
      "a colossal plant bud as big as a house with its petals peeled wide open around a gaping maw ringed with thorny teeth, lunging forward to swallow, its root tendrils clawing the meadow",
-     "a colossal plant bud as big as a house closed tight and fat, veins pulsing under its green skin, leaning forward on root tendrils, a sickly pollen mist seeping from its tip",
+     "a colossal plant bud as big as a house with its petals clamped shut and bulging around something it has swallowed whole, veins pulsing under its green skin, leaning forward on root tendrils",
      "a colossal plant bud as big as a house on a stalk coiled back to strike like a snake, its petals half open around thorny teeth, vines whipping from its base",
-     "a colossal plant bud as big as a house spitting a cloud of yellow-green miasma from its open petals, thorny teeth glistening, its root tendrils planted wide"
+     "a colossal plant bud as big as a house lashing a flurry of thorned vines from its base in every direction, its petals half open around a ring of thorny teeth, its root tendrils planted wide"
     ]
    }
   },
@@ -109,36 +109,36 @@
    }
   },
   {
-   "id": "yuki_onna",
-   "name": "Yuki-onna",
+   "id": "skadi",
+   "name": "Skaði",
    "faction": "",
    "size": 2,
    "design": {
     "where": "the Summoner's rune circle",
-    "look": "cold blue moonlight on snow",
-    "sprite": "a tall pale woman of snow in a flowing white kimono, long black hair streaming, her breath a cloud of frost, ice crystals glittering around her",
+    "look": "a winter mountain under a hard cold sky",
+    "sprite": "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, a great hunting bow of black yew in one hand",
     "variants": [
-     "a tall pale woman of snow in a flowing white kimono rising out of a deep violet rune circle with her arms spread, a storm of glittering ice crystals swirling out from her, long black hair streaming",
-     "a tall pale woman of snow in a flowing white kimono leaning forward to breathe a long plume of frost, her long black hair and white sleeves streaming in the cold wind",
-     "a tall pale woman of snow in a flowing white kimono floating with her hands raised and a crown of ice spikes forming above her, snow whirling around her",
-     "a tall pale woman of snow in a flowing white kimono turning with one sleeve sweeping out in a fan of frost, her face pale and calm, ice crystals glittering in the air"
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, drawing a great bow of black yew with an arrow of ice nocked, her long pale braids rimed with frost and snow streaming off her shoulders",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, striding out of a deep violet rune circle on long skis of bone, a great bow of black yew slung across her back and a blizzard at her heels",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, raising one hand into a storm of glittering ice crystals, a great bow of black yew held low in the other, her long pale braids rimed with frost",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, loosing a volley of ice arrows that burst into frost, her long pale braids and white fur cloak streaming in the cold wind"
     ]
    }
   },
   {
-   "id": "dragon_king",
-   "name": "The Dragon King",
+   "id": "fafnir",
+   "name": "Fáfnir",
    "faction": "",
    "size": 2,
    "design": {
     "where": "the Summoner's rune circle",
-    "look": "a dark sky split by golden light",
-    "sprite": "a vast dragon of black scales edged in gold with great wings spread wide and a crown of horns, a burning star gathering in its open jaws",
+    "look": "a dark cavern lit by cursed gold",
+    "sprite": "a vast wingless serpent of the old sagas with no hind legs, two short clawed forelegs and a horned head, its long scaled body heaped in loops over a hoard of cursed gold, venom dripping from its jaws",
     "variants": [
-     "a vast dragon of black scales edged in gold rearing with its great wings spread wide and a burning star gathering in its open jaws, a crown of horns on its head",
-     "a vast dragon of black scales edged in gold rising out of a deep violet rune circle with its wings folded back, its crown of horns glowing",
-     "a vast dragon of black scales edged in gold coiled with its long neck arched back and fire building in its throat, its great wings half open",
-     "a vast dragon of black scales edged in gold roaring with its head raised to the sky and its wings spread, golden light breaking through the gaps in its scales"
+     "a vast wingless wyrm of the old sagas coiled over a hoard of cursed gold, its long scaled body heaped in loops, its horned head reared back and venom dripping from its jaws",
+     "a vast wingless serpent of the old sagas with no hind legs, its long scaled body rising in coils out of a deep violet rune circle, two short clawed forelegs gripping the rim, a horned head with venom smoking on its fangs",
+     "a vast wingless serpent of the old sagas with no hind legs, coiled tight on a hoard of gold coins and a cursed ring, spewing a stream of black venom that smokes like acid from its horned head",
+     "a vast wingless serpent of the old sagas with no hind legs, slithering forward low to the ground like a snake, its long scaled body trailing behind in loops, two short clawed forelegs, its eyes burning gold and venom dripping from its jaws"
     ]
    }
   }
