@@ -1181,97 +1181,164 @@ the rule and not only the idea.
 - **Reading the retired first pass or the struck designs**: refused by the brief; nothing of
   either is here.
 
-## 12. The go, as it stands (14 October, evening)
+## 12. The go, as it stands (15 October)
 
-Ryan's go began in chat the day the page was published. What is decided is a bible row and,
-where it is a rule, a line in `docs/rules.md` (not built unless said); what is a direction
-stays here until its session takes it. Lines above that rest on the whole-block shield rule
-(Misharu's bait, the Votive Ward's count buying blows turned, the Carrier's screen as the
-first every-ally equipment) read as written that morning; the rule changed that afternoon.
+Ryan's go began in chat the day the page was published and ran through the next. What is
+decided is a bible row and, where it is a rule, a line in `docs/rules.md` (not built unless
+said); what is a direction stays here until its session takes it. Lines above that rest on
+the whole-block shield rule (Misharu's bait, the Votive Ward's count buying blows turned, the
+Carrier's screen as the first every-ally equipment) read as written on the morning of the 14th;
+the rule changed that afternoon.
 
-**Decided (Ryan, 14 October):**
+### Decided and recorded
 
 - **The shield rule.** A shield absorbs its number and the excess passes to the hull; a
-  breach ignores the shield outright. The reason: under the whole-block rule a tiny shield was
-  secretly "negate one blow", and every new shield design was heading for that margin.
+  breach ignores the shield outright; an injury counts what reaches the hull. The reason:
+  under the whole-block rule a tiny shield was secretly "negate one blow", and every new
+  shield design was heading for that margin.
 - **Barrier and Ward**, two buffs. A Barrier prevents the next blow's damage on one machine
   until the round's end, riders landing, and is never granted to every ally at once; a Ward
   lasts the round and stops every rider, breach included, while the damage lands. Both up is
-  the old whole block at twice its price. Ward is the buff's word, so the Oblation Ward and
-  the Votive Ward take new names: the Oblation Mantle and the Votive Screen (15 October).
+  the old whole block at twice its price. Ward is the buff's word: the Oblation Ward becomes
+  the Oblation Mantle and the Votive Ward the Votive Screen.
 - **Cooldowns**, a printed property on specific pieces, shown on the entry as dark with the
   rounds left. Rapid reads as "act again" with a cooldown of one on nearly every carrier; the
-  Nemesis's fists are Rapid with none, limited by rage.
+  Nemesis's fists are Rapid with none, limited by rage and rolling a plain roll.
 - **The Dingo's Megataser Harpoon** carries Shock in place of Suppress (with the stock pass).
 - **Misharu's payoff is Penance**, a weaken on the shield's breaker, in place of Suppress; its
   shape (a halving of that foe's blows for its next action, once a round) is Claude's lean.
 - **Kestrel's gaps**: the strafer at tier one (every weapon it fires strikes twice at half,
-  each strike losing the foe's armour: trash falls, a Golem shrugs, the map can read it) in
-  place of section 8's raider, withdrawn because a glass machine that burns its own shield
-  loops alone; and the bomber (its weapons spent on an empty slot wait there for whoever
-  steps in, with their keywords, so the piece fitted is the bomb: napalm, a cluster, a shock,
-  a stun) in place of section 8's interceptor, since the slot is already on screen and the
-  wait list is not. Its shape, 15 October: the passive lets a weapon be spent on an empty
-  slot under the reach rules, the shot waiting there with its number (rolled when laid, shown
-  on the slot) and keywords, landing as the foe steps in and before it acts, one shot a slot
-  and a new shot replacing the old; the locked bay's own kills leave its shot in the slot they
-  empty, so the free mine lives on one piece and the chosen mine costs a spend.
+  each strike losing the foe's armour) in place of section 8's raider, withdrawn because a
+  glass machine that burns its own shield loops alone; and the bomber (its weapons may be
+  spent on an empty slot under the reach rules, the shot waiting with its number, rolled when
+  laid and shown on the slot, and its keywords, landing as the foe steps in and before it
+  acts; one shot a slot, a new one replacing the old; the locked bay's own kills leave its shot
+  in the slot they empty) in place of section 8's interceptor.
 
-**Directions, not yet decisions:**
+### The tiers, as they stand
+
+The sort is one test: tier one is itself with basics and stands in a start; tier three bends
+a rule the player has learned; the rest is tier two; the Arsenal fields no tier one. Targets:
+two or three tier ones a city maker, two or three tier twos, one tier three; the Arsenal none,
+three and three. Nothing below is decided; Ryan reads the Baboon as tier two and is unsure of
+the Dingo.
+
+| Maker | Tier one | Tier two | Tier three |
+|---|---|---|---|
+| Minerva | Honey Badger, Armadillo (as the form changer below), Wild Boar (down) | the hedgehog (the Faraday Hull and a lure, struck by its own choice) | the siege battery (on the cooldown) |
+| Kestrel | Sparrowhawk, the strafer | Goshawk, Puffin | the bomber (or tier two by its engine piece) |
+| Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler (down), the revolver (down); the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat (up) | the multi-rotor |
+| Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's | Baboon (up), the jellyfish | the Carrier |
+| The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
+
+### Proposals with a place, as they stand
+
+- **Minos**, as proposed; waits on the foes' fresh start for back ranks.
+- **The boiler**, as proposed; waits on the stock pass's heat prices; a tier one by the test.
+- **The multi-rotor**, as proposed. The ally spends two dice and the rotor none, so the
+  rotor's spend is what is consumed; the ally pays the lent entry's heat; a lent Rapid entry
+  gives the ally a further lent spend.
+- **The revolver**, as proposed; a team reroll steps it, so the player locks it first. A tier
+  one by the test.
+- **The gunship**, as proposed, conditioned on tags; its overlap with the Clydesdale resolves
+  by tier if the Clydesdale moves down.
+- **Misharu**, with Penance.
+
+### Directions, not yet decisions
 
 - **The Onryō**: a flat on-hit per Grudge stack, the team's vengeance, rather than a damage
-  over time or a multiplier; the wound stays the trigger until every domain lays a debuff on
-  machines; a cap on stacks.
-- **The Armadillo as a form-changing tank at tier one** (Ryan, 15 October): the form follows
-  the die, so no locked piece is needed and the shutters' slot is freed. Spending a shield
-  seals it: blows at allies' bare hull turn on it, its plate rises, its heat climbs every turn
-  and its vents are dark, so it cannot turtle; spending a weapon opens it, and it cools and
-  fires. No reward for being struck: a Shock on every striker under a draw is the discharge
-  again, so the Faraday Hull stays with the lighter Minerva tier two, where being struck costs
-  hull. The draw is on a clock, not standing, which is the line the Guard row drew. The hooks:
-  every maker's shield is a way to seal and its number the plate; Braced persists while
-  sealed, the longer Braced the bible allows once it carries a drawback, here the clock;
-  vents and cooling are for the open rounds; big guns for the volley; a lure to draw while
-  open. Minerva's tier one is then three bodies (the Badger, the Armadillo, the Boar), its
-  tier two the lighter machine with the Hull and a lure, its tier three the siege battery.
-- **The Baboon at tier two**, since its meter needs statuses and basics carry none; the rest
-  of the reshuffle as put to Ryan in chat (the Boar, the Clydesdale, the boiler and the
-  revolver down to one, the fan-boat up to two, the Dingo undecided), sorted by one test: tier
-  one is itself with basics and stands in a start, tier three bends a learned rule.
-- **The Gundam**: a combo counter per weapon spent, broken by a turn that ends without an
-  attack, paying cooling and shield regen, small per stack or at thresholds; its locked
-  shield a parry, a self-Barrier whose riders land, that keeps the combo; the saber scaling
-  with the count as a dial.
+  over time or a multiplier (Shock stays the multiplier); the wound stays the trigger until
+  every domain lays a debuff on machines; a cap on stacks; the Pall kept. The argument on a
+  second damage over time: the engine lets it differ only in decay, spread and source, so the
+  second DoT in the roster should be the one that reads something else, the spider's venom.
+- **Mastema's fire through the team**: a lighter that burns allies (a heat tick the hot builds
+  cash), the Votive Screen counting burning bodies on either side, the Ewer as the mover that
+  carries Burning and Scorched off the allies onto a chosen foe; no entry blank in any domain,
+  the double-burn on a boss back but paid in the team's heat a round at a time. The doubling
+  with a cap is the fallback if the fresh start cannot give every domain a rider.
 - **The jellyfish as the soft-control specialist**: its spread carries Lure, Disrupt and the
   dispel to the foes beside the target and nothing else; its EMP carries the dispel and
-  Disrupt.
-- **Mastema's fire through the team**: a lighter that burns allies (a heat tick the hot
-  builds cash), the Ward's count reading burning bodies on either side, the Ewer as the mover
-  that carries Burning and Scorched off the allies onto a chosen foe, so no entry is blank in
-  any domain.
-- **The funnel-web**: ambush (its blows on a foe that will not strike it this round lay
-  Venom, a share of current hull at the foe's action, the tank-buster by construction) and a
-  locked web bomb, a delayed Suppress with a cooldown, the target and the next foe to act
-  beside it. A suppressed foe's intent line clears.
-- **Early offers**: tier ones at the shelf and in the host maker's offer at Convergence tier
-  zero, tier twos from one, tier threes from two; how much of the roster a run sees turns on
-  whether offers may repeat and on the chassis offer rate, one every two or three battles
-  (the bible's Recommended row) against a chassis in every win's offer.
-- **Tier counts**: two or three tier ones a city maker, two or three tier twos, one tier
-  three; the Arsenal none, three and three.
+  Disrupt. Ryan: good direction, needs refinement (the EMP's two verbs, a spread Lure on a
+  light flyer, Disrupt's worth on one-move foes).
+- **The funnel-web**: ambush (its blows on a foe that will not strike it this round, aimed
+  elsewhere, suppressed or making a move that strikes nobody, lay Venom, a share of current
+  hull at the foe's action, the tank-buster by construction) and a locked web bomb, a delayed
+  Suppress with a cooldown, the target and the next foe to act beside it (Spread the lever if
+  weak). A suppressed foe's intent line clears. No Lure: the spider waits.
+- **The Gundam**: a combo counter per weapon spent, broken by a turn that ends without an
+  attack, paying cooling and shield regen, small per stack or at thresholds (Claude's lean:
+  thresholds, the first low, a cap); its locked shield keeps the combo (Rapid with a cooldown
+  of two if it needs tempo) and is a self-Barrier parry whose riders land; the saber scaling
+  with the count as a dial; Beam tags for later modules; a kill carrying the chain is the
+  Zoids walker's verb, so one changes if the Zoid is Aphelion's.
+- **The Armadillo as a form changer at tier one** (Ryan's latest shape, thinking on it): a
+  shield spent seals it, a weapon spent opens it, anything else keeps the form. Sealed: Braced
+  (base armour comes down), heat rising every turn, its shields spent on a foe as lures with
+  the number landing on itself, every blow charging a capacitor by its unmitigated damage.
+  Open: the charge cashed once. Claude's lean for the cash-in: rerolls for the team this round,
+  the one currency that is neither hull nor damage, saturating rather than multiplying;
+  alternatives Disrupt on every foe that struck it, or a round of Indirect reach on its guns.
+  Refused along the way: the Faraday Hull on it in any form (a Shock per striker under a draw
+  is the discharge again), a blanket draw (with armour 15 a swarm's blows bounce entirely and
+  the Meadow is deleted), team Braced or shield on opening (an unkillable team by another
+  name). The Hull lives on the hedgehog, where being struck costs hull.
+- **The fan-boat**: back to the board with its tier (two).
+- **The Scapegoat Brand**: a rare after the vocabulary pass, half of it now Mastema's mover.
+- **Cantrips**: a few small tier-two or tier-three pieces with Rapid and no cooldown, whose
+  worth is that a later reroll may bring them back; the reroll rule is their brake.
 - **Enemy Shock on machines**: none today; if any, on a hero or an elite, telegraphed, never
-  on the rank and file.
-- **Cantrips** (Ryan, 15 October): a few small tier-two or tier-three pieces with Rapid and no
-  cooldown, whose worth is that a later reroll may bring them back in the same round; fuel for
-  the Gundam's chain and for anything that reads rerolls. The reroll rule (never onto an
-  identical entry) is their brake, as rage is the fists'.
-- **The offer and the shelf** (Ryan, 15 October): the host maker's offer after a win is a
-  module, a component and a chassis from its own catalogue, the guaranteed chassis the rebound
-  after a bad battle; the shelf should hold more than one machine, one slot a standing maker.
-  The bible's row says a blueprint where Ryan says a higher-tier component, to settle; the
-  Recommended chassis offer rate (one every two or three battles) retires if the chassis is
-  guaranteed, and the roster becomes a catalogue a run mostly sees, its variety across runs in
-  the fronts fought, the Favour spent and the kit found. Blueprints are not loot alone: the
-  boss's research token already guarantees one a won battle, themed on its domain, so the
-  offer's piece reads better as a copy from the maker's catalogue, and the shelf may sell a
-  blueprint rarely at a premium.
+  on the rank and file; it is the Barrier's best moment.
+- **The Honey Badger's identity** (section 2) and **the Prairie Dog's alone-rule** (section 2):
+  not yet discussed.
+
+### The economy, for its pass
+
+- The host maker's offer after a win: a module, a component copy one tier above the shelf's
+  and a chassis, all from its catalogue, the guaranteed chassis the rebound after a bad
+  battle (Ryan's latest; the bible's row says a blueprint, to settle; Claude's lean is the
+  copy, since the boss's token already yields a blueprint a win).
+- The boss's research token unpacks into a choice of three blueprints of the domain's theme
+  at the Convergence's tier, so tier-three blueprints come only from late bosses.
+- Procurement: a slot a standing maker, the Arsenal's at the capital by the Convergence, tier
+  gated by the Convergence (tier ones early), a blueprint rarely at a premium; repeats allowed.
+- Salvage builds copies of owned blueprints and replaces destroyed pieces, and repairs the
+  gate; Favour buys the shelf, rushes and rare blueprints: rates, not a redesign.
+- The roster is a catalogue a run mostly sees; the Recommended chassis offer rate (one every
+  two or three battles) retires if the chassis is guaranteed.
+
+### Flags carried
+
+- The hard-control count after the changes is the Paradox, the web and two blueprints, inside
+  the proposed count; the Baboon, the spider and a tank together are the stunlock team the
+  boss cells must read.
+- Pieces that read riders (the Ward, Mastema's mover) are blank in the Meadow and the Marsh
+  until the foes' fresh start lays debuffs on machines there; Scrambled is built and unused.
+- The Gundam would be the second in-fight shield regen; the Goshawk's was kept safe on one
+  chassis, and with the Puffin beside both a team can out-sustain a pack.
+- The budgets of section 6 are acting as working rules and are not formally confirmed.
+- Multi-strike kit: one piece today, and the strafer at chassis level; the stock pass adds
+  pieces.
+- The engine work queued (the to-do): the shield rule, Barrier and Ward, the cooldown
+  property, the Dingo's Shock, the renames.
+
+### Roster holes, as they stand now
+
+Soft control: Minos, the jellyfish, the hedgehog's lure, the Armadillo's lure-shields, filling.
+Amplify for others: the Dingo's Shock, the Onryō's on-hit, filling. Area on a hardpoint: the
+stock pass's explosives, the strafer's volume, the bomber's clusters. New prices: the cooldown,
+negative cooling. Reads nobody used: the foes' intents (the spider), the slots (the bomber),
+the die's own state (the revolver, the Gundam), the team's rerolls (the Armadillo's cash-in).
+The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
+with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
+Every maker fields every tier it may once the gaps land. The foe-debuff vocabulary grows from
+four words by kinds, never by copies: Penance (weaken), Grudge (flat on-hit), Venom (percent
+over time), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward on our side.
+
+### Sessions this hands on
+
+Minerva's (the Armadillo's form, the hedgehog, the battery) and Kestrel's (the strafer, the
+bomber); Aphelion's finishing (the frame's combo, the jellyfish's refinement, the Carrier, the
+Zoid's maker); the stock pass (the shield rule and the buffs, the cooldown property, the
+Dingo, the renames, heat, tags, the basics); the economy pass (the offer, the shelf, the
+token); the foes' fresh start (riders in every domain, reinforcements worth trapping,
+multi-move foes for Disrupt).
