@@ -93,14 +93,30 @@ the detachment as the Badger's role beyond "bruiser"); 1 armour a load, ten at m
 and 15 full; the claw strikes twice, the most efficient filler and not the most effective
 weapon; the fragmenter fires five loads, half the hopper.
 
+**Claude's second round**, in chat: the claw read as two strikes each loading one a foe (two a
+hit would fill the hopper from empty in one swing against a row); its number a strike down so
+it fills best without hitting best; a load counted for each blow, so multi-strike pieces fill;
+the fragmenter at +5 a load (45 full) or +3 (35, today's top); against swarms one swing refills
+what a shot spends, so the hold-or-fire decision lives in boss fights; full plate makes it
+immune to the Meadow's rank and file, the reason base armour stays at 5.
+
+**Ryan, second round**, in his words: "Badger - that was my note intention, per foe damaged, I
+think I said that. I didn't realize the claw had spread, I would remove spread from it, and
+keep it as the chase spend for bosses, tuning as necessary. Never destroyed - module, yes. Tier
+2 or 3, not sure. Can have positive stats since that's not that impactful an effect."
+
+What it settles: a load for each foe a spend damages, never for each strike; the claw loses
+Spread and becomes the single-target spend to chase against a boss (two strikes, two loads a
+hit, tuned as needed); "never destroyed" becomes a module at tier two or three, with positive
+stats.
+
 ## Open for the session
 
-1. The claw's fill: one load a foe for each strike, or two ("maybe at 2 per hit"), and its
-   number a strike.
-2. Whether a load counts for each blow (so a multi-strike piece fills by its strikes) or once a
-   spend.
+1. The claw's number a strike, since two strikes pay a boss's armour twice.
+2. The swarm fill at tier one, now that the claw has no Spread and a tier one's stock is plain
+   basics.
 3. The fragmenter's bonus a load, now that a shot fires five.
-4. Where "never destroyed" goes (a module, or gone).
+4. The module's tier and stat line.
 
 ## What the session hands back
 

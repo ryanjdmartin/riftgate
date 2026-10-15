@@ -129,13 +129,34 @@ opening; nothing aimed at an ally, and no buff, touches the form; a build with n
 allowed; the Lockdown Shutters as a component and Sealed Live retire (the shutters live on as
 the look of the seal: the pinned "Lockdown Shutters made real").
 
+**Claude's second round**, in chat: one lure with the Klaxon's reach on a five-entry die, the
+pair the lever (a pair never chains two lures in one roll, since the free reroll skips
+identical entries; "no cooldown" matters only when the team's rerolls fish for it); the seal's
+Braced a fixed two stacks, base armour 5; heat +20 at the end of each sealed turn, Burning's
+timing, so from cold the fourth sealed turn overheats; allies' vents can hold it shut, and a
+Rapid vent of its own can open, cool and reseal in one turn; the free lure works open too, so it
+is best spent sealed; the mark held back, its candidate a weaken laid on opening (attackers
+breaking their teeth on the shell) sharing Penance's word.
+
+**Ryan, second round**, in his words: "armadillo - no, the braced should not stack. the granted
+braced is tied to the sealing, the "defensive mode." Was your point about the lure to make it a
+spread lure, but NOT rapid? The mark - my lean would be to make that foe a take damage per stack
+the next time it attacks the armadillo, encouraging the player to focus luring the same foe.
+The other idea I had was to consume the mark for cooling if the armadillo attacks a marked foe,
+which would help it cool down to re-seal again. I like that, actually. If we did that, then
+there's a very good play pattern of seal, generate marks, unseal, consume marks to cool,
+repeat. The trick is how do we generate marks, just on hit, on the locked lure, or both?"
+
+What it settles: the seal's Braced is fixed, tied to the defensive mode, and never stacks; the
+mark is in, as cooling: an attack on a marked foe spends its marks to cool the Armadillo, so
+the loop is seal, mark, open, cool, seal.
+
 ## Open for the session
 
-1. One lure or a pair, and its reach (the foe alone, or its neighbours too, as the Klaxon).
-2. How many Braced stacks sealing gives, and base armour.
-3. The heat clock: how much a round, and when it lands.
-4. The optional mark and its debuff, only if the tanking reads thin.
-5. Tier one confirmed, and the rule text.
+1. How marks are made (a blow on the sealed shell, the lure, or both) and what may spend them.
+2. One lure or a pair, and its reach; Rapid as in the framework.
+3. The seal's Braced stacks, base armour, and the heat a round.
+4. Tier one confirmed, and the rule text with the marks in it.
 
 ## Refused along the way
 

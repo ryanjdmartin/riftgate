@@ -43,7 +43,7 @@ machine's bare hull is Shocked) gives any machine the Faraday Hull's effect, sto
 Nemesis. With the Hull on the hedgehog, the Thurible duplicates the hedgehog's passive.
 Claude's lean: it should differ on purpose or become a rare tier-three piece, and the Nemesis
 stock something of its own. The session decides this with the chassis. Ryan, 15 October (below):
-both, a rare tier three that differs.
+both, a rare tier three that differs, and in his second round a tier-three module.
 
 ## The Minerva session (15 October)
 
@@ -73,14 +73,40 @@ already hit; the tank also fights; the damaging lure does both in one shot, at t
 being the entry the die collapses onto; the Thurible leaves the Nemesis's stock as a tier-three
 rare whose Retaliate deals chip damage (10 to each attacker) in place of Shocked.
 
+**Claude's second round**, in chat: count only a blow that deals it damage (shield or hull), so
+Braced or a Barrier on it cannot make free Shocks; fold the draw into the passive, Lure granted
+to every weapon it fires (the Boar's shape), so every gun is the damaging lure and none eats the
+die, or a locked damaging lure with Rapid (the Armadillo's shape again); no locked piece needed;
+medium, hull 110, shield 30, armour 5; the Faraday Hull and Sealed Live retiring, Shocked on a
+strike leaving the game except through the needle; on the Thurible, chip damage is thorns, so
+keep Retaliate's condition (a blow on bare hull) and let the wound be its drawback.
+
+**Ryan, second round**, in his words: "Echidna - I thought mitigation would be ok, since 1) it
+has to hit something to mark it, and 2) it should have a more aggressive stats package compared
+to the armadillo. I'm actually thinking of a wheeled crawler for this one, so it could be
+relatively fast for a Minerva, more offensive, play up the "knuckles the echidna" soft
+reference. Isn't giving it both the needle and the lure a little self-serving? I don't disagree,
+but it seems like we can either play up the spikes, or the luring tank, not both. If we keep the
+damaging lure, I would absolutely not give it rapid, for the same reason, but not sure."
+
+On the Thurible: "Thurible, sounds good. If it damages hull, it retaliates, thats fine as a tier
+3 (rare) module, maybe with a -shield -shield regen +hull stat profile to both nerf shield and
+help it achieve its goals."
+
+What it settles: a mitigated strike still counts for the needle (it must hit a foe first, and
+its stats are aggressive); a wheeled crawler, fast for a Minerva and offensive, a soft nod to
+Knuckles the Echidna; the needle and a built-in lure together read as self-serving, so it is
+the spikes or the luring tank, not both; a damaging lure, if kept, is never Rapid; the Thurible
+becomes a tier-three module whose rule pays back a blow that damages its hull, with shield and
+field recharge down and hull up.
+
 ## Open for the session
 
-1. What "strikes" means for the needle: any blow, or one that deals it damage (shield or hull).
-2. How needled foes come to it without one entry eating the die.
-3. Its numbers, and whether it carries a locked piece.
-4. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
-5. The Thurible's chip damage: what keeps thorns off a megatank (the bible's thorns row).
-6. Its size and way of moving, and its name (Ryan's).
+1. The spikes or the luring tank.
+2. Its numbers, and a locked piece if the silhouette has a signature.
+3. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
+4. The Thurible module's numbers, and its condition read as hull damage past armour.
+5. Its name (Ryan's).
 
 ## Holes already raised
 
