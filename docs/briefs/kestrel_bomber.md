@@ -50,7 +50,7 @@ formation.
 
 A mine is a shot delayed, so against a present foe it is always the worse spend; what makes it
 worth laying is that the arrival pays before it acts. A stun mine removes the arrival's first
-action (counting against the hard-control budget through the blueprint, not the chassis); a
+action (hard control carried by the blueprint, not the chassis); a
 burn mine ticks on its first action; a shock mine doubles the team's first blow on it; a mine
 on an empty column catches the massive reinforcement that takes columns first. With
 reinforcements in the fight it is an engine; without them it is a plain machine, the right

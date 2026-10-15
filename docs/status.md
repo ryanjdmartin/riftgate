@@ -139,7 +139,10 @@ document's job and every command are in `README.md`.
   counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
   pieces (Rapid as a cooldown of one); the Dingo's harpoon carrying Shock; Misharu's payoff
   Penance; the Oblation Mantle and the Votive Screen; Kestrel's strafer and bomber; a suppressed
-  foe's intent line clears. The engine work is on the to-do.
+  foe's intent line clears. The engine work is on the to-do. The budgets (15 October): adding
+  hard control always carefully considered with other options explored first, no caps; a new
+  chassis earns its place by a new read, product or price; a passive aims to be fed by and to
+  feed other makers' pieces; a tier one shows its identity with basics alone.
 
 ## Next, in order
 
@@ -151,7 +154,7 @@ to-do's Ryan list).
    rework it left open (the Onryō, the Armadillo as a form changer at tier one, the Baboon at
    tier two, the Gundam, the jellyfish, Mastema, the funnel-web and the rest) is a brief, the
    design's one home, with what Ryan said and what is open, and the README gives the shared
-   context, the tiers as proposed, the working budgets, the roster holes and an order. Each
+   context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
    lands.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
@@ -192,12 +195,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.169 (15 October: the maker rows and
-  section 12 point at the briefs, the proposal files folded into them and retired; the
-  Armadillo's retaliation row carries Ryan's 14 October move of the Faraday Hull; the cooldown
-  cap and its display note struck and the Aphelion lore question dropped, Ryan's calls), from
-  the branch `ccr-777fd46a-32dw2m`, whose file is main's v0.165 (main's every-machine rows on
-  this branch's v0.164) with this pass; main must take the branch before its next republish.
+  `docs/design-bible.html` after every change. Live: v0.171 (15 October): main's v0.170
+  (its elite, boss and tier rows, published onto this branch's v0.169) with this branch's
+  budget decision on top. This branch's rows of 15 October point the maker rows at the briefs,
+  retire the proposal files, carry the Faraday Hull's move, strike the cooldown cap and drop
+  the Aphelion lore question. The branch's file is the live page; main must take the branch
+  before its next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

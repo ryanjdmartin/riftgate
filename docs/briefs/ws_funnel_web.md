@@ -99,9 +99,9 @@ it, below):
   delayed (the foe lands one action before it is held), venom is a share of current hull (each
   tick smaller, never a finish), each web adds Numbed (the third web on a boss fails about half
   the time), and a cooldown of two on a d5 is a real price. Alone against a pack every foe aims
-  at the spider, nothing is ambushable, and it loses, which is right for a tier two. It is also
-  the placement the stun budget prefers: the hard control on a locked piece rather than a
-  passive.
+  at the spider, nothing is ambushable, and it loses, which is right for a tier two. Its hard
+  control sits on a locked piece rather than the passive, and is weighed under the stun row's
+  rule (Ryan, 15 October: always carefully considered, other options explored first).
 - The web's targets (14 October): start at the target and the next foe to act beside it, with
   the cooldown; that keeps Ryan's trick (web the foe left of the threat). Spread is the lever
   if it proves weak. Claude had first suggested dropping the neighbour, then answered Ryan's

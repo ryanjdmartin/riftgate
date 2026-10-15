@@ -11,10 +11,11 @@ stock-pass rows (section 7) and tier rows (section 10); `content/chassis.json` (
 
 Its Paradox meter needs statuses, and basics carry none, so at tier one it is not itself with
 basics; it is a support frame, which the sort puts at tier two. At tier two it stocks tier-one
-status pieces (the Differentiation Probe, the Polarity Projector, a shield), and if the stun
-budget holds (no hard-control piece below tier two), it can never stock the Umbra Inducer, so
-the double-Inducer problem the analysis found (a stun gun filling the meter for a second stun)
-vanishes by construction.
+status pieces (the Differentiation Probe, the Polarity Projector, a shield). The cap that would
+have kept the Umbra Inducer off it for good (no hard-control piece below tier two) was struck
+(Ryan, 15 October), so the double-Inducer problem the analysis found (a stun gun filling the
+meter for a second stun) is the session's to weigh, with the Inducer's tier, under the stun
+row's rule: hard control always carefully considered, other options explored first.
 
 ## Holes already raised
 

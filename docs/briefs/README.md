@@ -64,6 +64,8 @@ Rows in the bible and lines in `docs/rules.md`; none of it built yet.
 - **Kestrel's gaps**: the strafer at tier one and the bomber above it.
 - Agreed in chat, for the HUD: a suppressed foe's intent line clears (Ryan's point, 14
   October).
+- **The budgets** (15 October): hard control weighed and never capped, and three tests kept
+  (below).
 
 ## Ryan's taste, as the go established it
 
@@ -116,14 +118,20 @@ tier three, the Arsenal none, three and three):
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
-## Budgets (Claude's working rules, not confirmed)
+## Budgets (Ryan, 15 October)
 
-The working rules every brief is read against, and their one home; the bible's section 12 asks
-Ryan to confirm or move them. From the roster analysis's section 6: no hard-control piece below
-tier two, at most one locked on a die, at most one hard-control passive a maker (the Paradox is
-Aphelion's); a new chassis earns its place by a new read, a new product, a new price, or by
-changing what a kind of piece does; every passive has two routes in and two payoffs from other
-makers' pieces; a tier one shows its identity with basics alone.
+Decided on the roster analysis's budgets; the bible's rows hold them.
+
+- **Hard control**: adding it (a foe losing its action) is always carefully considered, and
+  other options explored, before it is suggested or committed to. The analysis's caps (no
+  hard-control piece below tier two, at most one locked on a die, one hard-control passive a
+  maker) are struck as artificially limiting. The bible's stun row (section 5).
+- **A new chassis earns its place** by a new read, a new product, a new price, or by changing
+  what a kind of piece does; niches can and should overlap, so the test reads the mechanics
+  (section 7).
+- **A passive aims** to be fed by, and to feed, other makers' pieces, ideally two routes in and
+  two payoffs: an aspiration, never a pass or fail (section 7).
+- **A tier one shows its identity** with basics alone (section 10).
 
 ## Roster holes, as the go left them
 
