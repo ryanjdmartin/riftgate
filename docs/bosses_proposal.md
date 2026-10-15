@@ -17,7 +17,7 @@ Generic tropes, a pack of one or a pack in which every foe is unique, any size.
 | The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not big | Ryan, 15 October: a decent elite |
 | The Waste | Sandworm | Big | Built, standing in as the boss |
 | The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
-| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Proposed: a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador |
+| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Proposed |
 | The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
 | Any | A pair of gate gargoyles (a pair trope) | Not big | Proposed |
@@ -39,10 +39,10 @@ stands or shielding it until one falls.
 | The Meadow | Bourgeon | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos; spits miasma. The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | Exor | Super Mario RPG | The parts boss: a colossal sword fallen into the badlands, its two eyes shielding it and its mouth casting, the hilt that drives them untouchable until a part falls | The parts (above) |
+| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, perhaps not a sword at all (the weapon is proposed in chat) | The parts (above) |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
-| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. The legacy pick (Ryan); the Reaper goes to the elites | Runs today |
+| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites | Runs today |
 | The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A blow on death (small, beside the Gel's split) |
 | The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Runs today |
 | The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | A countdown (the delayed blow); armour while an ally stands |
@@ -90,9 +90,8 @@ look is ours, never the series' design.
 
 ## Questions for Ryan
 
-- Marks on the twelve.
-- Exor for the Waste's third, as the parts boss.
-- The Matador as the Marsh's boss with the Reaper an elite.
+- Marks on the rest of the twelve.
+- The Exor homage's weapon.
 - The Coven and the gargoyle pair as elites.
 - The Summoner's summons as moves; Omega as the superboss; the Mime.
 - The heroes' homages beyond Final Fantasy (the Thief as Persona 5's Joker, perhaps).
