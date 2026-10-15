@@ -134,8 +134,9 @@ document's job and every command are in `README.md`.
   copies of one Rapid component chain. Skipping copies too was abusable: a die of one key entry
   and copies of one filler sent every reroll from a filler onto the key. The machines with
   copies on their dice (the Baboon's Inducers, the Boar's Slugthrowers, the Nemesis's fists,
-  the Ammit's talons) reroll onto a copy now and then; the balance report was not rerun. Open
-  with it: a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that
+  the Ammit's talons) reroll onto a copy now and then: an A/B on those four, greedy, 100 seeds,
+  moved no row mean a point (`docs/measurements.md`, 15 October), since their copies are the
+  entries the bot keeps; the Ammit's Talons rose from 46% of its spends to 51%. Open with it: a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that
   keeps its chain finite (the Armadillo's brief).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
