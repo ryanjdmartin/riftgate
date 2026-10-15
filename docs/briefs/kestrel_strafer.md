@@ -38,7 +38,7 @@ strafer in its place (14 October). The raider returns as its own direction
   Maxigun's three to six). The die shows "8 ×2" with the Maxigun's mark, and dragged over a
   foe the number a strike deals with its armour off. With basics alone the passive gains
   nothing: the basics carry no keyword or strikes, almost no foe carries armour (the four
-  bosses and the Zombie Knight, at 5), and every strike of a spend lands on the one target
+  big foes, the Zombie Knight and the bosses, at 5), and every strike of a spend lands on the one target
   today, so a strike after a kill is lost on the dead foe. Claude's lock for it: a Rapid
   self-buff of Overcharged.
 - Ryan, 15 October: "halve base damage only, yes": what is printed on the entry halves,
@@ -73,14 +73,29 @@ strafer in its place (14 October). The raider returns as its own direction
   Claude's lean: those strikes spill too, a fix on the Boar alone that reads its passive as
   written and adds no rule. Ryan's call.
 
+- Ryan, 15 October, the second round: the Boar is fixed as described, "All its damage or
+  subsequent strikes spill over"; retarget-on-kill "can then be ignored entirely, and just be
+  a Boar thing". A locked weapon makes sense, in place of a carry on a kill: "Ranged damage,
+  x2 (so 4 with the passive), each shot chooses a new, random target. So it will either spray
+  over the frontline, or if well-planned, it can punch through the frontline and hit the back
+  3 more times." The passive shows its multiplier on the entries, "that should be
+  self-evident".
+- Claude, 15 October, reading the lock: rolled ("ranged" in the code's sense) and Direct, since
+  punching through needs a reach that opens as the front falls; the first strike lands where
+  it is dragged, so the punch is planned (a weapon is spent on a foe), and each strike after it
+  draws at random among the foes in reach at that moment, the same foe allowed again (so a lone
+  foe left behind a hole takes all three); reach is read again between strikes, a kill clearing
+  its slot at once (the engine clears the dead only after a spend today); a printed property
+  with the star, the general rule unchanged. The random pick passes section 2's test as the
+  boiler's random blast did: the drag lights every foe in reach, and the player shifts the odds
+  by what falls first. Engine work: reach per strike, the random pick, and the bot's value of a
+  spray (its mean over the foes in reach).
+
 ## Open for the session
 
-1. Where retarget-on-kill lives (Claude: the locked piece, above), and the locked piece's
-   numbers.
+1. The lock's reading (above) and its numbers.
 2. Its numbers, size and way of moving (Kestrel builds small and mid flyers and hovercraft on
    big boosters), matched to Ryan's silhouette.
-3. The die's "×2" (proposed above, not yet answered).
-4. The Boar's flag (above).
 
 ## Holes already raised
 

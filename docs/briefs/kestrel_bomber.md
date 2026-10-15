@@ -91,9 +91,23 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   landing at once, in the player's turn. Indirect's splash is retired (11 October), so a laid
   shot needs no splash rule.
 
+- Ryan, 15 October, the second round: the buff lends only the mine, "not the targeting
+  portion"; it lasts "till end of round or till next weapon spend, whatever comes first".
+  "Donating it to a unit with a rapid gun or the Nemesis and letting it lay mines on the entire
+  rank is a bad idea, probably. But donating it to Spread or Penetrate is allowed, since those
+  are still Targets, correct? what is our rules wording there?"
+- Claude, 15 October: in the rules a target is the foe the die is spent on; Spread "also hits
+  the target's neighbours in its rank", Penetrate "also hits the other rank of the target's
+  column", and the rules say "every foe the spend reaches" where they mean all of them (Shock,
+  Lure, Disrupt). So "if it kills the target" mines the target's slot alone; mining every slot
+  a spend empties would read "every foe the spend kills". The hole: an explosive carries
+  Spread and Penetrate (the area row), so one spend could mine four slots, three of the front
+  rank's four, the whole rank in one spend. Claude's lean: the target's slot alone, since a
+  Spread weapon's mine carries Spread and hits the arrival's neighbours as it lands.
+
 ## Open for the session
 
-1. The buff's holes (above), on Ryan's read.
+1. Spread's and Penetrate's kills: the target's slot alone, or every foe the spend kills.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on

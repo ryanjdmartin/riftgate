@@ -66,10 +66,27 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   sized by the blow (the Sparrowhawk's bargain at another price); a locked shield dump (the
   Goshawk's vents-all in shield, and the build would be the dump and shields).
 
+- Ryan, 15 October, the second round: "the multi-hit part doesn't make sense with that
+  description. Instead, 'While it has shield, consumes its own shield instead of generating
+  heat. After firing a weapon, zap the target for the amount of shield consumed.' The zap would
+  be wasted on a kill, but the shield still consumed, and that is correct." No gun as the lock
+  ("then its just gun on gun"); instead: "Buff, self or ally, give target +X shield regen for Y
+  turns (numbers tbd). Itself is probably the best target, but if it has a friend shielding it,
+  then it can lend the buff to the friend instead. And its a really good reason to stop
+  shooting for a turn."
+- Claude, 15 October, reading it: a weapon hotter than the shield left pays what the shield
+  holds and the rest as heat, the zap being what the shield paid; the zap is a blow of its own
+  after the weapon's strikes, plain (no keyword, no buff added), so it loses the target's
+  armour; since a kill wastes it, a hot gun wants a foe it will not finish, which makes the
+  target a choice. The regen: at each round's start, as the Goshawk's, up to the maximum;
+  whether a second cast stacks, as every status does, or only renews the count; and it takes
+  in-fight regen past the Goshawk, whose content note calls its regen the game's first, kept
+  safe on one chassis (one target at a time, so never shield in bulk).
+
 ## Open for the session
 
-1. The hook (Claude: heat paid from the shield, above), then the locked piece.
-2. How the die shows the burn and the extra damage (proposed above).
+1. The readings above, and the regen's numbers.
+2. How the die shows the burn and the zap.
 3. Its numbers, size and way of moving, matched to Ryan's silhouette.
 
 ## Holes already raised
