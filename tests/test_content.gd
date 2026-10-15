@@ -165,9 +165,9 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var db := _db()
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
-	assert_eq(only.size(), 1, "a boss unpacks to just its massive foe")
+	assert_eq(only.size(), 1, "a boss unpacks to just its boss")
 	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
-	assert_true(only[0].is_massive(), "and it is massive")
+	assert_true(only[0].boss, "and the content marks it the boss")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
 	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
 
@@ -230,6 +230,33 @@ func test_passive_effect_cap_is_enforced() -> void:
 		if e.begins_with("chassis bloated") and e.contains("effects, cap"):
 			hit = true
 	assert_true(hit, "four effects in one passive is reported")
+
+
+func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
+	# The bible's tiers row (15 October): big is an attribute apart from boss and elite, so a
+	# human-sized boss validates and is the boss; a hero is a final, dealt from the bench.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var fid := str(db.factions.keys()[0])
+	var small: Dictionary = db.foes[str(db.factions[fid]["boss"])].duplicate(true)
+	small["size"] = 1
+	db.foes["small_boss"] = small
+	db.factions[fid]["boss"] = "small_boss"
+	assert_true(db.validate().is_empty(), "a human-sized boss validates: %s" % str(db.validate()))
+	var b := db.make_foe("small_boss")
+	assert_true(b.boss and not b.is_massive(), "the content makes it the boss, and it stands one slot high")
+	assert_false(db.make_foe(str(db.spawn_table(fid)[0][0])).boss, "its rank and file are no boss")
+	var hero_id := ""
+	for id in db.foes.keys():
+		if bool(db.foes[id].get("hero", false)):
+			hero_id = str(id)
+			break
+	db.factions[fid]["boss"] = hero_id
+	var refused := false
+	for e in db.validate():
+		if e.begins_with("faction %s" % fid) and e.contains("is a hero"):
+			refused = true
+	assert_true(refused, "a hero named the boss is refused")
 
 
 func test_internal_text_cannot_sit_at_the_top_level() -> void:
@@ -877,7 +904,7 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	for id in db.foes.keys():
 		var f := db.make_foe(id)
 		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
-		if f.is_massive():
+		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
 			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
 		elif f.hero:

@@ -74,15 +74,15 @@ var footprint: Array[Vector2i] = [Vector2i.ZERO]
 ## Presentation: index into Hex.DIRECTIONS of the last step taken.
 var facing: int = 0
 
-# Enemy packs only. A pack is one foe type times a strength; a boss is a pack with `elite`
-# set, which unpacks into the faction's massive boss.
+# Enemy packs only. A pack is one foe type times a strength; a boss is a pack with `is_boss`
+# set, which unpacks into the faction's boss (whatever its size: big is apart from boss).
 var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of
 var strength: int = 6        # how many foes the pack holds
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
-var elite: bool = false      # this unit is the faction's boss
+var is_boss: bool = false    # this unit is the faction's boss (`elite` until 15 October, the word now the elites')
 var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
 var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
 
@@ -130,13 +130,13 @@ static func pack(uid: int, name: String, at: Vector2i, fac: String = "marsh", sp
 	return u
 
 
-## A single huge enemy that covers three hexes and unpacks into its faction's massive elite.
+## A single enemy that covers three hexes and unpacks into its faction's boss.
 ## A boss stands on one hex for now (Ryan, 22 September: a wider footprint cannot path
 ## through a field of hexes, and the boss guards the rift rather than marching). The
 ## multi-hex footprint (`TRIANGLE`) stays in the engine for later.
 static func boss(uid: int, name: String, at: Vector2i, fac: String = "marsh", speed: int = BOSS_MOVE) -> Unit:
 	var u := pack(uid, name, at, fac, speed, 0)
-	u.elite = true
+	u.is_boss = true
 	u.hull = 1
 	return u
 

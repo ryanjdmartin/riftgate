@@ -27,7 +27,7 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 			break
 	sq.pos = spot
 	sq.movespeed = 0
-	if not sq.elite:
+	if not sq.is_boss:
 		sq.behaviour = "push"
 
 
@@ -71,7 +71,7 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 	assert_true(b.boss == null, "no boss")
 	var placed: Array = []
 	for sq in b.field.packs():
-		assert_false(sq.elite, "%s is no boss" % sq.display_name)
+		assert_false(sq.is_boss, "%s is no boss" % sq.display_name)
 		placed.append([sq.foe_id, sq.strength, sq.faction])
 	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
 	assert_eq(b.field.spawn_table, placed, "and the rift sends them in turn")
@@ -281,10 +281,10 @@ func test_boss_death_seals_the_rift() -> void:
 	_engage(b, b.boss, m)
 	var sk := b.attack(b.boss, [m])
 	assert_true(b.boss_fight, "the boss's fight")
-	var massive := false
+	var boss := false
 	for f in sk.reinforcements:
-		massive = massive or f.is_massive()
-	assert_true(massive, "boss unpacked into the massive elite")
+		boss = boss or f.boss
+	assert_true(boss, "the boss pack unpacked into the faction's boss")
 	_win(sk)
 	b.finish_skirmish()
 	assert_false(b.boss_fight, "the flag drops with the fight")

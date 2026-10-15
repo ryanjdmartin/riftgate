@@ -1561,7 +1561,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
-		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive(),
+		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
 	_seq += 1
 	if r["blocked"]:

@@ -37,7 +37,7 @@ var H := BASE_H
 var BACK_Y := 72.0    # the foes' ground starts 14 above: 16 px of black under the header (Ryan, 23 September)
 var FRONT_Y := 266.0
 const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + a 72x96 foe at two device pixels a pixel on the 1080 phone (96x128 design) + chip row 38
-const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 elites across both ranks, the same way
+const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 massive foes across both ranks, the same way
 var EYE_Y := 510.0   # 12 px into the black under the foes' ground, the same as its margin from the right edge
 const EYE := 60.0
 var LOG_Y := 508.0
@@ -237,7 +237,7 @@ func _ready() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
 ## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team;
-## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
+## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
 	var s := Skirmish.new(7, int(OS.get_environment("RIFTGATE_COLUMNS")) if not OS.get_environment("RIFTGATE_COLUMNS").is_empty() else Skirmish.DEFAULT_COLUMNS)
@@ -284,7 +284,7 @@ static func _default_skirmish() -> Skirmish:
 		var sq := Unit.pack(uid, "%s pack" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
 		s.add_foes(db.foes_for(sq), sq)
 		uid += 1
-	if OS.get_environment("RIFTGATE_ELITE") == "1":
+	if OS.get_environment("RIFTGATE_BOSS") == "1":
 		var boss := db.make_boss(uid, fac)
 		s.add_foes(db.foes_for(boss), boss)
 	return s
@@ -1172,7 +1172,9 @@ func _on_foe_held(v: UnitView) -> void:
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
 	if not foe.alive():
 		text += "\ndestroyed: cleared at the end of the round"
-	else:
+	elif not foe.is_suppressed():
+		# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed row
+		# below says what it does this round, as the chip does under its sprite.
 		if not foe.action.is_empty():
 			if foe.attacks():
 				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]

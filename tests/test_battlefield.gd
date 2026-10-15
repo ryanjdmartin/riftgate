@@ -436,7 +436,7 @@ func test_the_boss_takes_its_move_from_content() -> void:
 	f.foe_profiles = {"colossus": {"zone": 2, "behaviour": "push", "hunts": "nearest", "movespeed": 10}}
 	var b := f.add_unit(f.dress_pack(Unit.boss(1, "colossus", _o(3, 2), "marsh"), "colossus"))
 	assert_eq(b.movespeed, 10, "a boss's move is dressed from its foe type too")
-	assert_true(b.elite, "and it stays the boss")
+	assert_true(b.is_boss, "and it stays the boss")
 
 
 func test_a_pack_held_off_its_nearest_gate_hex_by_its_own_side_turns_for_another() -> void:

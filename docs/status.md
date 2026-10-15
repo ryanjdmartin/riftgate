@@ -14,8 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 447 tests, 19,679 checks, green on main (15 October, run again on the roster
-  analysis's branch before it merged). A cloud session fetches
+- Tests: 451 tests, 19,697 checks, green on `claude/pensive-albattani-q73ibs` (15 October,
+  the small-work pass). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -24,6 +24,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/pensive-albattani-q73ibs` (15 October, the small-work pass, built from main): the
+  Oblation Mantle, the harpoon's Shock, a suppressed foe's hold readout, boss apart from size,
+  the foe's save trip (below); pushed, not yet merged into main.
 - `ccr-777fd46a-32dw2m` (the roster analysis, Ryan's go on it, the design-session briefs and
   the records' cleanup) merged into main on 15 October, with `ccr-3d9861dc-mp0v3w` (the
   analysis's brief) beneath it: both safe to delete.
@@ -105,6 +108,15 @@ document's job and every command are in `README.md`.
   live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
   each). No foe carries it; the foe kit refresh places it. The bosses' slate and Ryan's marks so
   far are `docs/bosses_proposal.md`.
+- Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
+  (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
+  place of Suppress; a suppressed foe's hold readout names no blow and no target (its glyph,
+  arrow and forecast already cleared, the Suppressed chip leading its row); a boss is the
+  content's word whatever its size (`Foe.boss` from a faction's `boss`, the plaque reading it,
+  the validator no longer asking a boss to be massive but refusing a hero as one), the boss
+  pack `Unit.is_boss` (a save that says `elite` still loads), `RIFTGATE_BOSS=1` in place of
+  `RIFTGATE_ELITE=1`; and a fight resumed from a save keeps a foe's boss, a Gel's split and a
+  foe gone whole (all three were lost on the trip).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -140,9 +152,9 @@ document's job and every command are in `README.md`.
 - The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): a shield
   absorbs its number and the excess passes to the hull, a breach ignores the shield, an injury
   counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
-  pieces (Rapid as a cooldown of one); the Dingo's harpoon carrying Shock; Misharu's payoff
-  Penance; the Oblation Mantle and the Votive Screen; Kestrel's strafer and bomber; a suppressed
-  foe's intent line clears. The engine work is on the to-do. The budgets (15 October): adding
+  pieces (Rapid as a cooldown of one); Misharu's payoff Penance; the Votive Screen's name;
+  Kestrel's strafer and bomber (the harpoon's Shock, the Oblation Mantle and the cleared
+  intent built 15 October). The engine work is on the to-do. The budgets (15 October): adding
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.

@@ -39,6 +39,7 @@ var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would
 var last_special: String = ""    # the special it announced last round, so none fires twice running
 var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
 var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
+var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
 
 ## The aims a foe type or a move may name, and how the codex says each.

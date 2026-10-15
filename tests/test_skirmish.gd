@@ -3349,16 +3349,31 @@ func test_a_status_granted_on_shielding_lands_on_the_ally() -> void:
 	assert_true("\n".join(sk.log).contains("Taker: Giver's escort, Braced"), "the log names it")
 
 
+func test_a_massive_foe_that_is_no_boss_lands_a_plain_blow() -> void:
+	# Big is an attribute of any tier (the bible's tiers row, 15 October): the plaque's mark
+	# follows the content's boss, so a big elite's plain blow announces nothing.
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var big := _ghoul(100, 10)
+	big.size = 2
+	sk.add_foes([big])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
+	assert_false(bool(sk.turn_events[0]["boss"]), "a massive foe is no boss by its size")
+
+
 func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	# The plaque (decided 9 October): a special is recorded beside the blows with a shared
-	# order, and every blow carries its move's name and whether a massive foe struck.
+	# order, and every blow carries its move's name and whether a boss struck.
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var folder := _ghoul(100, 10)
 	folder.actions = [_special("defend", "harden", {"value": 10})]
 	folder.action = folder.actions[0]
 	var striker := _ghoul(100, 10)
-	striker.size = 2
+	striker.boss = true   # human-sized: a boss is the content's word, never its size (15 October)
 	sk.add_foes([folder, striker])
 	sk.begin()
 	sk.start_round()
@@ -3368,7 +3383,7 @@ func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	assert_eq(str(sk.turn_specials[0]["kind"]), "defend", "and its kind")
 	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
 	assert_eq(str(sk.turn_events[0]["name"]), "Attack", "the blow carries its move's name")
-	assert_true(bool(sk.turn_events[0]["boss"]), "and that a massive foe struck")
+	assert_true(bool(sk.turn_events[0]["boss"]), "and that a boss struck, human-sized")
 	var spec_seq := int(sk.turn_specials[0]["seq"])
 	var blow_seq := int(sk.turn_events[0]["seq"])
 	assert_true(spec_seq != blow_seq, "one order for both lists")

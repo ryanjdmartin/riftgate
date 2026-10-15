@@ -67,7 +67,7 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	sq.zone = int(p.get("zone", sq.zone))
 	if p.has("movespeed"):
 		sq.movespeed = int(p["movespeed"])   # the boss's too: its patrol step is content
-	if not sq.elite:
+	if not sq.is_boss:
 		sq.behaviour = str(p.get("behaviour", sq.behaviour))
 		sq.hunts = str(p.get("hunts", sq.hunts))
 	return sq
@@ -365,7 +365,7 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
 	w.end = sq.pos
-	if sq.elite and sq.strength == 0:
+	if sq.is_boss and sq.strength == 0:
 		var step := _patrol_step(sq, blocked)
 		if step != sq.pos:
 			w.path.append(step)
@@ -479,7 +479,7 @@ func forced_fights() -> Array:
 	var order: Array = []
 	var by_prey: Dictionary = {}
 	for sq in packs():
-		if sq.behaviour != "hunt" or (sq.elite and sq.strength == 0):
+		if sq.behaviour != "hunt" or (sq.is_boss and sq.strength == 0):
 			continue
 		var prey := pick_prey(sq)
 		if prey == null or not in_ring(sq, prey):

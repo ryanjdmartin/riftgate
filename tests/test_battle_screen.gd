@@ -24,7 +24,7 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 			sq.pos = n
 			break
 	sq.movespeed = 0
-	if not sq.elite:
+	if not sq.is_boss:
 		sq.behaviour = "push"
 
 

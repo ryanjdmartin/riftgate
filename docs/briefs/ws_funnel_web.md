@@ -127,5 +127,5 @@ it, below):
 
 ## What the session hands back
 
-A proposal in chat; on Ryan's go, the bible's row, content planned (Venom is a new status), the
-HUD's cleared intent line, and this brief retired.
+A proposal in chat; on Ryan's go, the bible's row, content planned (Venom is a new status), and
+this brief retired (the HUD's cleared intent line landed 15 October).

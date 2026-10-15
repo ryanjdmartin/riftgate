@@ -231,6 +231,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.hero = bool(d.get("hero", false))
+	f.boss = is_boss(foe_id)
 	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
 		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
 	var acts: Array = []
@@ -419,12 +420,12 @@ func pack_profiles() -> Dictionary:
 
 
 ## Unpack a battlefield pack into skirmish foes: its foe type times its strength. A boss
-## (elite) unpacks into the faction's massive boss first. A pack with no foe type falls back
+## pack (`is_boss`) unpacks into the faction's boss first. A pack with no foe type falls back
 ## to the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
-	if sq.elite and fac.has("boss") and foes.has(fac["boss"]):
+	if sq.is_boss and fac.has("boss") and foes.has(fac["boss"]):
 		var b := make_foe(str(fac["boss"]))
 		b.pack_id = sq.id
 		out.append(b)
@@ -528,7 +529,16 @@ func spawn_foes(faction_id: String) -> Array:
 	return out
 
 
-## A boss pack for a faction, named after its massive elite.
+## Whether a foe type is a domain's boss: the content says so in a faction's `boss`, never
+## its size (the bible's tiers row, 15 October: big is an attribute, apart from boss and elite).
+func is_boss(foe_id: String) -> bool:
+	for fid in factions.keys():
+		if str(factions[fid].get("boss", "")) == foe_id:
+			return true
+	return false
+
+
+## A boss pack for a faction, named after its boss.
 func make_boss(uid: int, faction_id: String) -> Unit:
 	var boss_id := str(factions.get(faction_id, {}).get("boss", ""))
 	var boss_name := str(foes.get(boss_id, {}).get("name", "boss")).to_lower()
@@ -1207,8 +1217,8 @@ func _validate_factions(errs: Array[String]) -> void:
 		if f.has("boss"):
 			if not foes.has(f["boss"]):
 				errs.append("%s: boss names unknown foe %s" % [where, f["boss"]])
-			elif int(foes[f["boss"]].get("size", 1)) != 2:
-				errs.append("%s: boss %s should be massive (size 2)" % [where, f["boss"]])
+			elif bool(foes[f["boss"]].get("hero", false)):
+				errs.append("%s: boss %s is a hero; a hero is a domain's final, dealt from the bench" % [where, f["boss"]])
 		# The bench (decided 9 October): the heroes the campaign's start may deal to this domain.
 		var bench: Array = f.get("bench", [])
 		if not (f.get("bench", []) is Array):
