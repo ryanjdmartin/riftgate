@@ -4,23 +4,48 @@ The session decides whose machine the fast four-legged walker is, then its name,
 tier with that answer.
 
 **Status**: proposal, maker open (unfinished). **Maker**: Aphelion or the Arsenal. **Proposed
-tier**: two. **Read first**: `docs/briefs/README.md`; `docs/aphelion_chassis_proposal.md`
-section 4.4 and Ryan's calls in section 3; `docs/arsenal_proposal.md` section 2 (the Arsenal's
-frame); the bible's makers and names rows (section 7).
+tier**: two. **Read first**: `docs/briefs/README.md`; the bible's rows on the Arsenal's
+frame, "The Arsenal is twisted by the occult, never merged with it" and "The occult is the
+Council's, and the Arsenal says it in liturgy" (section 1); in section 7, the makers table and
+the rows under Makers and names, the motion rows, and the rows on Aphelion's and the Arsenal's
+next chassis.
 
 ## What stands
 
+From the Aphelion chat (11 to 13 October), written up on 13 October for the batch evaluation.
+The bible's Aphelion row records Ryan's call of 13 October: that session went off the rails,
+and its proposal is "a list of ideas, not a design to defend". Everything here is Claude's
+unless marked Ryan's, and the numbers are the proposal's placeholders.
+
+- Ryan, 11 October, in his brief for Aphelion: "I think breaking the no-quads rule is worth it
+  for a possible Zoids/lion force/power rangers homage." The no-quads line was the makers
+  table's, and Ryan, 12 October: "I'm treating the makers row as a guideline, not a rule", so
+  four legs are open to either maker.
 - The homage: Zoids first, a single beast machine; Lion Force Voltron and the Power Rangers'
-  zords as individual machines, never a combination (Ryan, 12 October).
-- Ryan: "There's only two places a fast walker could fit - Aphelion and Arsenal, but both would
-  be very different machines. However it's possible a sinister Zoid reference works as a homage
-  in Arsenal." And: "The kill-turning-rapid as a feline/canine hunter mauling feels very
-  Arsenal. Maybe that's a sign."
+  zords as individual machines, never a combination (Ryan, 12 October: "I meant the individual
+  machines in voltron and power rangers and not any sort of combining"). Touchstones named in
+  the chat: the Shield Liger, whose mane projects its shield; the Liger Zero, which is white;
+  the White Tigerzord.
+- Ryan, 12 October: "There's only two places a fast walker could fit - Aphelion and Arsenal,
+  but both would be very different machines. However it's possible a sinister Zoid reference
+  works as a homage in Arsenal." And: "The kill-turning-rapid as a feline/canine hunter
+  mauling feels very Arsenal. Maybe that's a sign."
+- The frame: tier two, medium, a walker on four legs, move 40 for Ryan's fast walker (round
+  one). Locked: claws (Direct, melee).
 - Its round-one passive: a kill makes the spend Rapid (the die rerolls free and it acts again,
   aimed by the player); strong into swarms, plain against a boss. Under the cooldown property
-  (14 October), Rapid is "act again" with a cooldown of one.
-- Names: if Aphelion's, cats and wolves are out (Ryan); Lionfish and Sea Lion were offered. If
-  the Arsenal's, a punisher's name; Sekhmet and Haetae were offered.
+  (14 October), Rapid is "act again" with a cooldown of one. Unlike Chain, which repeats the
+  same attack on the next target, the player picks the next entry and target. Engine: Rapid
+  exists; a kill as its trigger is new, since no passive trigger fires on a kill
+  (`docs/rules.md`, passives).
+- Look and motion (round one, by the bible's motion rows): a light, fast predator, never a box
+  on legs; a pilot's acts (a scan through the head, the claws flexed, the mane charged), never
+  grooming or a tail's swish; a heavy bound, not a cat's slink. Lowforge already builds
+  four-legged walks and a gallop that can be reused.
+- Names: if Aphelion's, cats and wolves are out (Ryan, 12 October: "A cat or wolf is out of
+  Aphelion's naming register and those I kind of want to stick to, for sanity's sake if
+  nothing else"); Lionfish and Sea Lion were offered. If the Arsenal's, a punisher's name;
+  Sekhmet and Haetae were offered.
 
 ## From the analysis (14 October)
 
@@ -32,6 +57,7 @@ first fast walker, the Rubble Field's machine.
 1. The maker.
 2. Its passive and name with the answer.
 3. Its tier.
+4. Its designation in its maker's shape.
 
 ## What the session hands back
 

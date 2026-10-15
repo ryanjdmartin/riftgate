@@ -5,16 +5,20 @@ game: a duelist whose combo builds a rhythm until something breaks it. "The line
 working label; the name and the look are Ryan's.
 
 **Status**: direction (14 and 15 October); the proposal was unfinished. **Maker**: Aphelion.
-**Proposed tier**: one. **Read first**: `docs/briefs/README.md`;
-`docs/aphelion_chassis_proposal.md` section 4.1 and Ryan's calls in section 3;
-`docs/roster_analysis.md` section 12; the bible's rows on Aphelion's next chassis and on tags
-(section 7).
+**Proposed tier**: one. **Read first**: `docs/briefs/README.md`; the bible's rows on
+Aphelion's next chassis, on tags and on motion ("Heavy and mechanical, with inertia"), all in
+section 7.
 
-## Ryan's calls before the go (12 October)
+## Ryan's calls before the go (11 and 12 October)
 
-"Can't be too on point... as long as it has a shield, a handheld rifle, and a beam sword - it's
-a Gundam. That said, I think if any chassis wants to go all in on a tag-based passive, it would
-be this one with something 'beam' based." Aphelion flies on thrusters, not rotors.
+- 11 October, his brief for Aphelion: "a Gundam-homage walker".
+- 12 October: "Can't be too on point. I'm fine trying it as described since I doubt we'll get
+  full RX78 in our renderer, but as long as it has a shield, a handheld rifle, and a beam
+  sword - it's a Gundam. That said, I think if any chassis wants to go all in on a tag-based
+  passive, it would be this one with something 'beam' based." "As described" was the
+  round-one proposal below: its look, the locked saber, and a passive since benched.
+- 12 October, for every Aphelion machine: "Aphelion doesn't use rotors as a general rule. They
+  use thrusters, sci-fi space-age rockets."
 
 ## What Ryan said in the go
 
@@ -67,6 +71,38 @@ be this one with something 'beam' based." Aphelion flies on thrusters, not rotor
   only when a later reroll brings it back in the same round; that is a cantrip's value and its
   brake. Small pieces at tier two or three, the combo's fuel.
 
+## The design as proposed (11 to 13 October)
+
+From the Aphelion chat, written up on 13 October for the batch evaluation. The bible's
+Aphelion row records Ryan's call of 13 October: that session went off the rails, and its
+proposal is "a list of ideas, not a design to defend". Everything here is Claude's unless
+marked Ryan's, and the numbers are the proposal's placeholders.
+
+- **The frame**: tier one, medium, a walker (Ryan's), move 30. Locked: the beam saber (round
+  one) and a kite shield on the forearm (round two). Hardpoints: the rifle stocked in a hand
+  mount, the hand showing whatever is fitted to it; the rest basic kit after the stock pass.
+- **The look** (round one, part of what Ryan was "fine trying"): a V-crest on a small head,
+  chest intakes, the kite shield on the forearm, saber hilts on the backpack; pearl and red are
+  already half the RX-78's colours. The homage lives in the silhouette only, and it moves as
+  every machine does (the bible: "MechWarrior or Star Wars, not Gundam or Evangelion").
+- **Engine**: components still carry the old internal filing tags and only `melee` is read,
+  though a `tag_<tag>` condition already works (`docs/rules.md`, tags); the stock pass assigns
+  the new tags, Beam among them.
+
+The bench, the forms set aside:
+
+- Gaining shield gives a stack of Overcharged (+5 damage a stack, fading a stack at the
+  round's end), so any shield source becomes damage (round one): set aside by Ryan's Beam call
+  (12 October).
+- Its beam blows deal +5 (round two, the plain form; the hole raised with it was that a passive
+  reading one tag asks for every piece carrying it): set aside in the go, when Ryan turned Beam
+  into a later synergy and the passive toward a combo (14 October).
+- Its beam blows deal +5 to a foe it has already hit this round, the rifle then the saber,
+  nothing carried past the round (round two, Claude's lead): set aside by the same call.
+- Spending the shield lets the saber reach any foe that round, a locked pair (round two): set
+  aside in the go, where Ryan's shield keeps the combo or is Rapid, and may parry as a
+  self-Barrier (14 October).
+
 ## Open for the session
 
 1. Per-stack payoffs or thresholds, and what the thresholds pay (cooling, shield regen,
@@ -87,6 +123,10 @@ be this one with something 'beam' based." Aphelion flies on thrusters, not rotor
 - The count must show on the machine, and the die's heat must show the cooling it has earned.
 - At tier one it is Aphelion's third tier one, which varies its tender deal, and the first
   Aphelion machine with a locked shield.
+- The rifle as stock (raised 15 October, folding the proposal in): a tier one stocks only
+  basics beside its locked pieces (`docs/rules.md`, tiers), so a stocked rifle is a basic the
+  player may replace, while Ryan counts three Beam pieces at the start ("it starts with 3 of
+  them", 14 October). How does the rifle start, and does the count hold?
 
 ## What the session hands back
 
