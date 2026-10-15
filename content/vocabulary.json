@@ -1071,6 +1071,16 @@
    }
   },
   {
+   "id": "last_act",
+   "category": "foe",
+   "name": "Last Act",
+   "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 15 October for the Behemoth's Meteor (Ryan: the Behemoth for sure a boss). Content: `on_death.blow`, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The screen names it on the plaque after the death and strikes the machines it hit. The greedy bot does not yet weigh the blow a kill sets off. No foe carries it yet."
+   }
+  },
+  {
    "id": "parts",
    "category": "foe",
    "name": "Parts",

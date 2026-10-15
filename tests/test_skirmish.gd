@@ -3738,6 +3738,47 @@ func test_a_core_that_falls_takes_its_parts_with_it() -> void:
 	assert_eq(trip.regrow_parts, 2, "and its regrowth, a whole number")
 
 
+func _meteor_beast(hp: int = 30) -> Foe:
+	var f := Foe.make("behemoth", hp, 20)
+	f.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	return f
+
+
+func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
+	# The Behemoth's Meteor (15 October): shield up, then kill it.
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, I)), 10, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var beast := _meteor_beast()
+	sk.add_foes([beast, _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, beast), "the beast falls")
+	assert_eq(a.hull, 80, "its Meteor lands on the machine that killed it at once")
+	assert_eq(b.shield, 0, "a shield takes it on the other")
+	assert_eq(b.hull, 100, "whole, as a standing shield blocks a blow today")
+	assert_eq(sk.last_acts.size(), 1, "the screen is told")
+	assert_eq(sk.last_acts[0]["mechs"], [0, 1], "which machines it struck")
+	assert_true("\n".join(sk.log).contains("its last act lands: Meteor"), "the log says so")
+
+
+func test_the_last_foes_last_act_lands_even_as_the_fight_is_won() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(40, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_foes([_meteor_beast()])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.front[0]), "the last foe falls")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "the fight is won")
+	assert_eq(a.hull, 80, "and the Meteor still landed: damage sticks for the battle")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_meteor_beast(), sk))), sk)
+	assert_eq(str(trip.last_act().get("name", "")), "Meteor", "a save keeps its last act")
+	assert_eq(int(trip.last_act().get("strikes", 0)), 1, "a whole number of strikes")
+
+
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
 	# halves never split again, and without the battle's factory nothing steps in.

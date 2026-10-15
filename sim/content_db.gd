@@ -236,8 +236,16 @@ func make_foe(foe_id: String) -> Foe:
 	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
 	f.guard = str(d.get("guard", ""))
 	f.regrow_parts = maxi(0, int(d.get("regrow_parts", 0)))
-	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
-		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
+	var od = d.get("on_death", {})
+	if od is Dictionary:
+		# A split (the Gel) and a last act (15 October, the Behemoth's Meteor), either or both.
+		var made := {}
+		if od.has("summon"):
+			made["summon"] = str(od["summon"])
+			made["count"] = maxi(1, int(od.get("count", 1)))
+		if od.get("blow", null) is Dictionary:
+			made["blow"] = Foe.death_blow_from(od["blow"])
+		f.on_death = made
 	var acts: Array = []
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) != "implemented":
@@ -1222,7 +1230,18 @@ func _validate_foes(errs: Array[String]) -> void:
 		if f.has("on_death"):
 			# A split (the Gel): destroyed, it summons; what it summons never splits again.
 			var od = f["on_death"]
-			if not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
+			if od is Dictionary and od.has("blow"):
+				# A last act (15 October): an attack's shape, landed the moment the foe falls.
+				var b = od["blow"]
+				if not (b is Dictionary) or str(b.get("name", "")).is_empty() or float(b.get("factor", 1.0)) <= 0.0 or int(b.get("strikes", 1)) < 1:
+					errs.append("%s: on_death blow is an attack: a name, a positive factor, strikes at least 1" % where)
+				elif b is Dictionary:
+					for k in b.get("keywords", []):
+						if not Foe.ATTACK_KEYWORDS.has(str(k)):
+							errs.append("%s: on_death blow: unknown attack keyword '%s'" % [where, k])
+			if od is Dictionary and od.has("blow") and not od.has("summon"):
+				pass
+			elif not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
 				errs.append("%s: on_death must name a known foe to summon" % where)
 			elif int(od.get("count", 1)) < 1:
 				errs.append("%s: on_death count is at least 1" % where)

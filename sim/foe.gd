@@ -185,6 +185,19 @@ static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
 
 
+## A last act as an attack action (content `on_death.blow`, 15 October: the Behemoth's Meteor),
+## shaped like any move so the blow reads through the same rules.
+static func death_blow_from(b: Dictionary) -> Dictionary:
+	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
+		"strikes": maxi(1, int(b.get("strikes", 1))), "weight": 1, "keywords": Array(b.get("keywords", [])), "text": str(b.get("text", ""))}
+
+
+## Its last act, if it has one: the blow it lands the moment it falls.
+func last_act() -> Dictionary:
+	var b = on_death.get("blow", null)
+	return b if b is Dictionary else {}
+
+
 ## Is it a core with parts (the boss in parts, 15 October)?
 func has_parts() -> bool:
 	return not part_ids.is_empty()

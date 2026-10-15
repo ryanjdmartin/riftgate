@@ -438,6 +438,8 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	var od = d.get("on_death", {})
 	if od is Dictionary and od.has("summon"):
 		f.on_death = {"summon": str(od["summon"]), "count": maxi(1, int(od.get("count", 1)))}
+	if od is Dictionary and od.get("blow", null) is Dictionary:
+		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October)
 	f.stays_down = bool(d.get("stays_down", false))
 	f.actions = []
 	for a in d.get("actions", []):

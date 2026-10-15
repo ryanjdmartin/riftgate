@@ -273,6 +273,9 @@ Burning, Suppressed, Shocked or Paradox.
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.
+- **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
+  riders, every machine included), before anything else and even when it was the last foe,
+  since damage sticks for the battle.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded); a part
   that falls may grow back after so many rounds while the core stands; a core that falls takes

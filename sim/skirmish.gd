@@ -91,6 +91,9 @@ var _chaining := false
 ## name, `boss` whether a massive foe struck and `all` whether the blow struck every machine,
 ## for the plaque (decided 9 October; `all` 15 October).
 var turn_events: Array = []
+## The last acts of foes that fell during the latest spend (15 October), for the screen to name
+## and land: {foe, name, mechs (indices struck)}.
+var last_acts: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
@@ -730,6 +733,7 @@ func can_assign(mech_index: int, target) -> bool:
 func assign(mech_index: int, target = null) -> bool:
 	if state != State.ASSIGN:
 		return false
+	last_acts.clear()
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned:
 		return false
@@ -1893,6 +1897,32 @@ func _regrow_parts() -> void:
 		core.regrow_due = keep
 
 
+## A foe's last act (15 October, the Behemoth's Meteor): its death blow lands the moment it
+## falls, before anything else, so the player shields first and kills after, and even the last
+## foe's lands, since damage sticks for the battle.
+func _last_act(f: Foe) -> void:
+	var blow := f.last_act()
+	if blow.is_empty():
+		return
+	f.action = blow
+	f.pending = {}
+	f.charge = 0
+	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(blow.get("name", ""))])
+	var struck: Array[int] = []
+	if f.hits_all():
+		for m in live_mechs():
+			struck.append(mechs.find(m))
+			_strike(f, m)
+	else:
+		var t := f.target as MechState
+		if t == null or not t.alive():
+			t = _pick_mech_target(f)
+		if t != null:
+			struck.append(mechs.find(t))
+			_strike(f, t)
+	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck})
+
+
 ## A core that falls for good takes its parts with it, on the field and waiting alike.
 func _fall_with_cores() -> void:
 	for core in field_foes():
@@ -1932,6 +1962,7 @@ func _clear_dead_slots() -> void:
 						log.append("%s falls, and gets back up into the pool" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
+						_last_act(f)
 						_split(f)
 				f.rank = -1
 				rank[col] = null

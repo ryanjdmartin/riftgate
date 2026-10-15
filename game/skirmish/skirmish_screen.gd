@@ -930,6 +930,10 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if not foe.last_act().is_empty():
+		# A last act (15 October): the skull and what it lands the moment the foe falls.
+		var la := foe.last_act()
+		rows.append(["skull", str(foe.damage_of(la)), "Its last act: %s, %d %s, the moment it falls" % [str(la.get("name", "")), foe.damage_of(la), "at every machine" if Array(la.get("keywords", [])).has("all") else "at its pick"], Palette.ENEMY])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
@@ -1459,6 +1463,16 @@ func _use_die(i: int, target) -> bool:
 			var w: Array = was[dead[k]]
 			_animate_death(w[0], w[1], w[2], w[3], landed)
 			Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
+		# A last act (15 October): it lands as its foe falls, so the plaque names it after the
+		# death and the machines it struck take it.
+		if is_inside_tree():
+			for act in sk.last_acts:
+				var tw2 := create_tween()
+				tw2.tween_interval(landed + 0.35)
+				tw2.tween_callback(_announce.bind(str(act["name"])))
+				for mi in act["mechs"]:
+					if int(mi) >= 0 and int(mi) < _mech_views.size():
+						tw2.tween_callback(_animate_hit.bind(_mech_views[int(mi)], 0.1))
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow
