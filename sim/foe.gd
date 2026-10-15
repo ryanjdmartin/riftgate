@@ -210,8 +210,10 @@ const ACTION_EFFECTS := {
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
 ## spent. self_destruct: the blow spends the striker: it dies after it, whole, and never gets
-## back up (the Bomb).
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct"]
+## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
+## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
+## machine, the storms' three blows included; the content follows in a foe kit refresh).
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:
@@ -220,6 +222,11 @@ func has_keyword(a: Dictionary, k: String) -> bool:
 
 func breaches() -> bool:
 	return has_keyword(action, "breach")
+
+
+## Is this round's move a blow at every machine (`all`)?
+func hits_all() -> bool:
+	return attacks() and has_keyword(action, "all")
 
 
 ## The action's text with {damage} and {value} filled in, so "Jaw Rend for {damage}" and

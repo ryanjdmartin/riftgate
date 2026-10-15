@@ -14,7 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 443 tests, 19,645 checks, green on main (13 October, evening). A cloud session fetches
+- Tests: 447 tests, 19,679 checks, green on main (15 October). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -92,6 +92,10 @@ document's job and every command are in `README.md`.
   game (the promoted forms are not entries); staff fingers on the White and Black Mage and
   the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
   Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
+- Built 15 October: a foe's blow at every machine (`all` on an attack move: each strike on each
+  live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
+  each). No foe carries it; the foe kit refresh places it. The Magma Golem is the Summoner's,
+  so the Peak's three bosses are all new (the to-do's bosses line).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -167,8 +171,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.154 (13 October, evening), the
-  committed file as it stands on main, the Aphelion session's rows carried in.
+  `docs/design-bible.html` after every change. Live: v0.164 (15 October): main's file plus the
+  rows of the cloud branches `ccr-3d9861dc` and `ccr-777fd46a`, which describe rules and code
+  not yet on main (their 0.156 to 0.162 were published from those branches).
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

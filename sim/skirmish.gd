@@ -87,8 +87,9 @@ var taken_by_rank: Dictionary = {}
 var _chaining := false
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
-## seq, name, boss}. `seq` orders it among the turn's specials; `name` is the move's shown
-## name and `boss` whether a massive foe struck, for the plaque (decided 9 October).
+## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
+## name, `boss` whether a massive foe struck and `all` whether the blow struck every machine,
+## for the plaque (decided 9 October; `all` 15 October).
 var turn_events: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
@@ -307,11 +308,13 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 
 
 ## Every foe that will act on this mech when the round ends, whatever its action: alive, not
-## suppressed, aimed at it, not about to die to burn first.
+## suppressed, aimed at it (or striking every machine), not about to die to burn first.
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for f in field_foes():
-		if not f.alive() or f.is_suppressed() or f.target != ms:
+		if not f.alive() or f.is_suppressed() or f.target == null:
+			continue
+		if f.target != ms and not f.hits_all():
 			continue
 		if f.hp - int(Effects.tick_preview(f)["hp"]) <= 0:   # burns to death before it strikes
 			continue
@@ -866,37 +869,23 @@ func _enemy_turn() -> void:
 		if t == null:
 			break
 		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
-		if _screened.has(t):
-			log.append("%s's blow is lost in the static" % f.display_name)
-			continue
-		if not f.attacks():
-			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
-			continue
-		for s in range(f.strikes()):
-			if not t.alive():
-				break
-			_damage_mech(t, f.damage(), f)
-			var blocked: bool = turn_events[turn_events.size() - 1]["blocked"]
-			# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
-			# hull shocks the foe that struck; a shutters' blocked blow shocks too. Shocked is a
-			# setup and nothing else (Ryan, 11 October): the discharge a Shocked striker paid was
-			# thorns, scaling with the blows a horde lands, and it went.
-			if Effects.shocks_striker(t.unit, blocked):
-				_shock(f, t)
-			if f.has_keyword(f.action, "scorch") and t.alive():
-				_fire_on(t, "scorched", 1, f)
-				log.append("%s scorches %s" % [f.display_name, t.unit.display_name])
-			if f.has_keyword(f.action, "burn") and t.alive():
-				_fire_on(t, "burning_mech", 1, f)
-				log.append("%s sets %s burning" % [f.display_name, t.unit.display_name])
-			if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
-				# The entry the die shows is switched off through the mech's next turn.
-				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
-				log.append("%s disables %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
-			if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
-				# The entry the die shows is corrupted for the fight: it bites when spent.
-				Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
-				log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.hits_all():
+			# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
+			# machine in turn, left to right, so no aim or lure moves it; a screened machine is
+			# out of it.
+			for m in live_mechs():
+				if _screened.has(m):
+					log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
+					continue
+				_strike(f, m)
+		else:
+			if _screened.has(t):
+				log.append("%s's blow is lost in the static" % f.display_name)
+				continue
+			if not f.attacks():
+				_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
+				continue
+			_strike(f, t)
 		if f.has_keyword(f.action, "self_destruct") and f.alive():
 			# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 			f.hp = 0
@@ -915,6 +904,36 @@ func _enemy_turn() -> void:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
 		Effects.end_round(f, round)
+
+
+## A foe's blows on one machine: each strike lands on its own, so a shield stops the first and
+## the second reaches the hull, and each carries the move's riders.
+func _strike(f: Foe, t: MechState) -> void:
+	for s in range(f.strikes()):
+		if not t.alive():
+			break
+		_damage_mech(t, f.damage(), f)
+		var blocked: bool = turn_events[turn_events.size() - 1]["blocked"]
+		# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
+		# hull shocks the foe that struck; a shutters' blocked blow shocks too. Shocked is a
+		# setup and nothing else (Ryan, 11 October): the discharge a Shocked striker paid was
+		# thorns, scaling with the blows a horde lands, and it went.
+		if Effects.shocks_striker(t.unit, blocked):
+			_shock(f, t)
+		if f.has_keyword(f.action, "scorch") and t.alive():
+			_fire_on(t, "scorched", 1, f)
+			log.append("%s scorches %s" % [f.display_name, t.unit.display_name])
+		if f.has_keyword(f.action, "burn") and t.alive():
+			_fire_on(t, "burning_mech", 1, f)
+			log.append("%s sets %s burning" % [f.display_name, t.unit.display_name])
+		if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
+			# The entry the die shows is switched off through the mech's next turn.
+			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+			log.append("%s disables %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
+		if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
+			# The entry the die shows is corrupted for the fight: it bites when spent.
+			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
+			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
@@ -1369,14 +1388,15 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 
 ## Lure (decided 2 October, in place of taunt and beacon): every foe this entry reached turns
 ## on the spender for the round, intents and all. No status and no chip: the arrow changing
-## is the record. A lured foe whose move has no target keeps doing it, and the log says so.
+## is the record. A lured foe whose move has no target (a blow at every machine included)
+## keeps doing it, and the log says so.
 func _lure(ms: MechState, foes: Array) -> void:
 	var turned: Array[String] = []
 	var idle: Array[String] = []
 	for foe in foes:
 		if not foe.alive():
 			continue
-		if not foe.attacks() and str(foe.action.get("effect", "")) in UNTARGETED_EFFECTS:
+		if foe.hits_all() or (not foe.attacks() and str(foe.action.get("effect", "")) in UNTARGETED_EFFECTS):
 			idle.append(foe.display_name)
 		if foe.target != ms:
 			foe.target = ms
@@ -1541,7 +1561,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
-		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive()})
+		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive(),
+		"all": source != null and source.hits_all()})
 	_seq += 1
 	if r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
