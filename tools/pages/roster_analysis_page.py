@@ -63,7 +63,7 @@ page = f"""<title>{title}</title>
 </style>
 <div class="page">
 {body}
-<footer>Rendered from <code>docs/roster_analysis.md</code> on the branch <code>ccr-777fd46a-32dw2m</code>, 14 October 2026. The design record is the bible and the briefs in <code>docs/briefs/</code>; this page is the analysis they point to, background since the go of 14 and 15 October, and retires to git once the last brief that cites it lands.</footer>
+<footer>Rendered from <code>docs/roster_analysis.md</code>, 14 October 2026. The design record is the bible and the briefs in <code>docs/briefs/</code>; this page is the analysis they point to, background since the go of 14 and 15 October, and retires to git once the last brief that cites it lands.</footer>
 </div>
 """
 # a stamp line under the title

@@ -23,6 +23,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `ccr-777fd46a-32dw2m` (the roster analysis, Ryan's go on it, the design-session briefs and
+  the records' cleanup) merged into main on 15 October, with `ccr-3d9861dc-mp0v3w` (the
+  analysis's brief) beneath it: both safe to delete.
 - `main` holds everything decided and built to 13 October, including all of
   `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`
   (merged and safe to delete); `ccr-1a6d0a75-y2oqy8` (Kestrel) and the Minerva branch are
@@ -42,11 +45,10 @@ document's job and every command are in `README.md`.
   October): each maker's next chassis start fresh from the latest rules, with nothing of the
   struck designs in the records. A first pass at the analysis on 14 October drifted into
   measuring stand-ins and rating on performance and was retired to git (the branch's history).
-  The analysis itself is `docs/roster_analysis.md` on the branch `ccr-777fd46a-32dw2m` (14
-  October, from Ryan's brief of that day in `docs/mechanic_budgets.md`, retired with the
-  proposals; published, the link under Pages), background since the go, which is recorded in
-  the bible, the briefs, the to-do and `docs/economy_pass.md`. That branch carries `ccr-3d9861dc-mp0v3w` (the
-  brief and the bible v0.158) beneath it, so main takes the two together.
+  The analysis itself is `docs/roster_analysis.md` (14 October, from Ryan's brief of that day
+  in `docs/mechanic_budgets.md`, retired with the proposals; published, the link under Pages),
+  background since the go, which is recorded in the bible, the briefs, the to-do and
+  `docs/economy_pass.md`.
 
 ## The game as left (13 October, evening)
 
@@ -190,17 +192,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
-  `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py` and published 14 October
-  from the branch `ccr-777fd46a-32dw2m`, republished 15 October with its section 12 cut to a
-  pointer; republish after the page changes, and retire it with the page once the last brief
+  `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py` and published 14 October,
+  republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.171 (15 October): main's v0.170
-  (its elite, boss and tier rows, published onto this branch's v0.169) with this branch's
-  budget decision on top. This branch's rows of 15 October point the maker rows at the briefs,
-  retire the proposal files, carry the Faraday Hull's move, strike the cooldown cap and drop
-  the Aphelion lore question. The branch's file is the live page; main must take the branch
-  before its next republish.
+  `docs/design-bible.html` after every change. Live: v0.171 (15 October), main's file since
+  the roster analysis's branch merged that day: the budgets decided, the maker rows pointing at
+  the briefs, the proposal files retired, the Faraday Hull's move, the cooldown cap struck.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

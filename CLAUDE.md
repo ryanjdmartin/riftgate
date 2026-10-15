@@ -133,7 +133,8 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - One home for each thing, so nothing drifts: the order of work is `docs/status.md`'s "Next,
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
-  `docs/<maker>_proposal.md` until its evaluation, retired (git keeps it) once its decisions are
+  `docs/<maker>_proposal.md` until its evaluation, then a design in progress is its brief in
+  `docs/briefs/` until its session lands; each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
-  Open row is a paragraph and a pointer to its proposal.
+  Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
