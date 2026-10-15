@@ -87,13 +87,17 @@ document's job and every command are in `README.md`.
   retired (git has them), their open items in section 12 and their seeds in the bible's rows.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
-- Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
-  On 13 October every wildlife foe but the Needler was re-picked from its battle-pose takes and
-  cut, with the Lancer's and the Summoner's chibis; his note on each pick is in
-  `tools/foeforge/picks/picks.json`. The same day the edit model tried a fix for each note
-  (`forge.py fix`), the Treant and the Needler got new takes, and the heroes a diversity pass:
-  all on the picker for Ryan. The cutter gained `--holes N` (a size floor), `--holes-tol` and
-  `--glow`. The old sheet still makes the 16x16 map tokens.
+- Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48);
+  fourteen rounds on the phone picker, 13 to 15 October, closed every note he wrote on the
+  wildlife and the chibis, and his cutting batch (pockets of pure white now key by default,
+  the chibis cut at one body scale with every weapon inside the frame); each pick's source, cut options and his notes are in
+  `tools/foeforge/picks/picks.json`. What worked: a flaw tried through the edit model once
+  or twice, then image to image from the pick he liked (`forge.py generate --image`), never
+  from the last pass (it drifts) and never a PIL hand edit on a figure (three failed his bar);
+  one set per sprite per round. The heroes' boss register is picked and recorded, not in the
+  game (the promoted forms are not entries); staff fingers on the White and Black Mage and
+  the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
+  Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -179,10 +183,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.162 (15 October: the shield-spender a direction
-  with its brief; the Oblation Mantle and the Votive Screen named; 14 October: the shield rule, Barrier and Ward, cooldowns, the Dingo's
-  Shock, Kestrel's strafer and bomber, Minerva's open row), from the branch `ccr-777fd46a-32dw2m`, which main must take before the next
-  republish.
+  `docs/design-bible.html` after every change. Live: v0.163 (15 October: main numbered past the
+  0.156 to 0.162 the cloud branches published and put its Bomb line on this branch's v0.162,
+  whose rows are the shield rule, Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's
+  strafer, bomber and shield-spender, and Minerva's open row; this branch merged main the same
+  day, so its file is the live page), from the branch `ccr-777fd46a-32dw2m`, which main must
+  take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

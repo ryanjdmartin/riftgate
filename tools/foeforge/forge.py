@@ -391,6 +391,14 @@ def generate(args):
                  "the reference's creature. " + p)
             cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
                    "--image-paths", args.ref, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        elif args.image:
+            # Image to image from a picked render: the composition stays (its trunk, roots and
+            # knots), the take says what to add (Ryan, 14 October: a new Treant from the good
+            # parts of the one it has). Lower strength strays further.
+            cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
+                   "--image-path", args.image, "--image-strength", str(args.strength),
+                   "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
+                   "--seed", str(seed), "--output", str(path)]
         else:
             cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
                    "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
@@ -631,11 +639,11 @@ def sharpen_quantize(small, keyed, colours=16, amount=60):
     return Image.fromarray(res, "RGBA")
 
 
-def cut_sprite(keyed, frame, colours=16, sharpen=60, palette=None):
+def cut_sprite(keyed, frame, colours=16, sharpen=60, palette=None, height_px=0):
     """One sprite as the game draws it: fitted to its frame, flattened to `colours` (the
     gentle sharpen with the render's own palette unless a faction palette is asked for or
     `sharpen` is negative, which is the old median cut), and outlined."""
-    small = fit(keyed, frame)
+    small = fit(keyed, frame, height_px)
     if palette or sharpen < 0:
         return outline(quantize(small, palette, colours))
     return outline(sharpen_quantize(small, keyed, colours, sharpen))
@@ -659,7 +667,7 @@ def outline(img, colour=(20, 22, 28, 255)):
     return out
 
 
-def fit(img, frame):
+def fit(img, frame, height_px=0):
     """Scale the cropped figure into the frame, keeping aspect, feet on the floor, with a
     one-pixel margin for the outline. Transparent pixels are painted the figure's mean
     colour before scaling so edge pixels blend with the figure rather than with black, and
@@ -675,6 +683,17 @@ def fit(img, frame):
     fig_img = Image.fromarray(fig.astype(np.uint8), "RGBA")
     inner = (fw - 2, fh - 2)
     scale = min(inner[0] / fig_img.width, inner[1] / fig_img.height)
+    if height_px:
+        # A shared scale across a register (the chibis, 14 October): the body's height maps
+        # to height_px, so the party stands at one scale whatever each one holds. The body
+        # starts at the first row at least 35% as wide as the widest, which skips a spear
+        # held overhead or a raised foot (the Lancer came out tiny when her spear set the
+        # scale) but not a head. Never past the frame: a figure taller than the body allows
+        # shrinks to fit instead, which is the one case the register must tolerate.
+        rows = opaque.sum(1)
+        body_top = next(y for y in range(len(rows)) if rows[y] >= 0.35 * rows.max())
+        body = fig_img.height - body_top
+        scale = min(scale, height_px / body)
     size = (max(1, round(fig_img.width * scale)), max(1, round(fig_img.height * scale)))
     small = np.array(fig_img.resize(size, Image.LANCZOS))
     small[..., 3] = np.where(small[..., 3] >= 128, 255, 0)
@@ -693,11 +712,15 @@ def cut(args):
     if args.glow:
         src = key_glow(image, src)
     if args.holes:
+        # Every pocket of pure white (tol 8) of 40 render pixels or more keys by default
+        # (Ryan's cutting batch, 14 October: the white between the Treant's fingers, under the
+        # Antlion's leg, between the Drake's wings, round the Needler's hand). An eye white is
+        # off-white and survives; --holes 0 keeps every pocket, for a white robe that is not.
         src = key_holes(src, tol=args.holes_tol, min_area=args.holes)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
-    combat = cut_sprite(src, frame, args.colours, args.sharpen, pal)
+    combat = cut_sprite(src, frame, args.colours, args.sharpen, pal, args.height)
     combat.save(ART / f"{args.foe}_combat.png")
     map_frame = BIG_MAP.get(args.foe, MAP_SIZE[size])
     token = outline(quantize(fit(src, map_frame), pal, min(args.colours, 8)))
@@ -1070,6 +1093,8 @@ def main():
     g.add_argument("--tag", default="", help="an experiment's own folder: out/<foe>_<tag>")
     g.add_argument("--ref", default="", help="a style reference image, through the edit model (its finish, never its creature)")
     g.add_argument("--variants", action="store_true", help="each candidate from its own take in design.variants")
+    g.add_argument("--image", default="", help="image to image from this render: its composition kept, the take added (the Treant, 14 October)")
+    g.add_argument("--strength", type=float, default=0.6, help="--image only: how close to the source to stay (lower strays further)")
     g.set_defaults(func=generate)
     fx = sub.add_parser("fix", help="candidates for one fix to a pick's source through the edit model, into out/<foe>_<tag>")
     fx.add_argument("image", help="the source to fix (a pick in tools/foeforge/picks, or a candidate in out/)")
@@ -1085,8 +1110,9 @@ def main():
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
     c.add_argument("--sharpen", type=int, default=60, help="the gentle sharpen's unsharp amount, percent (default 60; raise it for a crisper cut, -1 for the old plain median cut)")
     c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
-    c.add_argument("--holes", type=int, nargs="?", const=400, default=0, metavar="MIN_AREA", help="also key enclosed pockets of background (sky between branches) of at least MIN_AREA render pixels (400 when not given; raise it to spare a pale highlight, as the Wolf's haunch at 1000); off by default, since a white robe is the same colour")
-    c.add_argument("--holes-tol", type=int, default=24, help="how near white a pocket must be to key (default 24); lower it, to 8 or so, when the figure wears an off-white robe (the White Mage)")
+    c.add_argument("--holes", type=int, default=40, metavar="MIN_AREA", help="key enclosed pockets of background of at least MIN_AREA render pixels (default 40, the gap between two fingers; 0 keeps every pocket)")
+    c.add_argument("--holes-tol", type=int, default=8, help="how near pure white a pocket must be to key (default 8: an eye white or a robe is off-white and survives; 24 catches a grey pocket)")
+    c.add_argument("--height", type=int, default=0, help="scale the figure so its body (the rows at least 35% as wide as its widest, which skips a weapon held overhead) stands this many frame pixels tall, instead of filling the frame (the chibis at 42, so the party stands at one scale)")
     c.add_argument("--glow", action="store_true", help="coloured light over the white (a flame, a glow) cut as solid colour instead of a pale blob; off by default, since it is only for glows")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
