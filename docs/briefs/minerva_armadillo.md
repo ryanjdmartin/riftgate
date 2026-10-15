@@ -188,17 +188,80 @@ module."
 
 What it proposes: heat is the limit on a Rapid piece with no cooldown, paid every spend; the
 locked lure is Rapid with no cooldown, one foe, 5 heat; a mark spent cools a significant
-chunk. Claude's reply (in chat) weighs it.
+chunk.
+
+**Claude's fourth round**, in chat: heat holds as the limit (past the maximum each lure costs
+5 hull at the turn's end, and it holds only while nothing in the chain cools), so Claude's
+spent-entry rule is withdrawn; a pair, since the sealed shell protects nobody without a lure
+(one lure on a five-entry die shows 20% of rounds, 40% after a reroll; a pair 33% and 60%),
+and Rapid makes the second copy cost no tempo (each hardpoint still comes up a quarter of the
+rounds); the mark on the lure, since one foe and a price answer the third round's two
+objections, the passive keeping the form alone and the mark's own codex the cooling; a mark
+cooling 15. Scorched runs the lure hotter, a weapon of no damage being a weapon.
+
+**Ryan, fourth round**, in his words: "Yes, the component is lure at any reach: an indirect,
+damageless weapon with lure and rapid as keywords, costing 5 heat. Things we already support.
+Let's try two of them, with the effects you said. Are you sure 15 is enough, with the passive
+heat gain as well as the 5 from luring? Take max heat and passive cooling into account as well
+(obviously the passive cooling is disabled while sealed, easier math that way and that's how a
+player would expect it to work without needing to be told). Those numbers are not fixed,
+either, so play around with some math and see if there's a better setup." Then: "Regarding the
+debuff, should it be exclusive for the dillo to pop, or should any ally be able to benefit?
+And just so we're clear, the mechanic is: hit foe with a damaging weapon, consume all stacks
+to cool X heat per stack?" Then: "I think the only rule that we have to enforce is: Rapid
+always has a limiter, via cooldown, heat, or volatile, which encompasses our existing rapid
+pieces as well. Even then, a rapid vent of any kind seems like a free way out of the heat
+system, so I would be very wary about it." And: "I'll take suggestions on what the lure and
+the debuff should be called. Probably not the klaxon, just because that's sound-based, and
+sound doesn't seem like something that would give you heat back. make sure to check our
+component naming conventions before suggesting anything."
+
+What it settles: the locked piece is a pair, each an Indirect weapon of no damage with Lure
+and Rapid (no cooldown) at 5 heat, marking the foe it lures; no passive cooling while sealed;
+the mark's mechanic, a damaging weapon's hit on a marked foe spending every stack to cool so
+much a stack; and a rule for every piece (the bible's Rapid row): Rapid always carries a
+limiter, a cooldown, heat or Volatile, with a Rapid vent of any kind a free way out of the
+heat system that Ryan is very wary of.
+
+## A heat model (15 October)
+
+A toy model of the Armadillo alone, not the game's runner (the seal is not built). The die:
+the two lures and four hardpoints (two shields, two guns). The round as the rules run it, with
+no cooling while sealed, the seal's heat at the end of each sealed turn and the excess over
+the maximum burnt as hull. The player spends every lure; holds the seal until its next turn
+would pass the maximum, then opens with a gun that cashes the marks (or a vent); spends one of
+the team's rerolls a round fishing for a lure; and loses the marks when an ally kills the
+marked foe, one round in seven. 4,000 fights a row, of 8 rounds (a meaningful fight) and of 16
+(a boss). The share of rounds it ends sealed, with the marks and (in brackets) without, and
+the average sealed stint in rounds:
+
+| Seal a round | Heat max | A mark | Sealed, 8 rounds | Stint | Sealed, 16 rounds |
+|---|---|---|---|---|---|
+| 20 | 60 | 15 | 56% (36%) | 1.9 | 51% (22%) |
+| 20 | 60 | 30 | 61% (36%) | 2.1 | 58% (22%) |
+| 15 | 60 | 15 | 66% (46%) | 2.5 | 60% (29%) |
+| 15 | 60 | 20 | 68% (46%) | 2.7 | 63% (29%) |
+| 15 | 80 | 20 | 74% (58%) | 3.3 | 69% (35%) |
+| 10 | 60 | 15 | 76% (63%) | 3.5 | 71% (41%) |
+
+Read: heat starts every fight at zero, so the heat maximum is the first stint and the marks
+are what let it seal again. A cash of two or three marks empties most of the gauge whether a
+mark is worth 15 or 30 (the rest is lost below zero), so the mark's number barely moves an
+8-round fight and matters in a long one. The seal's heat is the lever: 20 a round with no
+cooling gives stints under two rounds; 10 lets it sit sealed most of a fight with no marks at
+all. Overheat stays under 10 hull a fight in every row; a build of one shield and a vent seals
+about 13 points less and almost never overheats; a gun running 10 hot costs 4 to 6 points;
+without the reroll it lures less and overheats more. The script was a throwaway; this
+paragraph is its whole description.
 
 ## Open for the session
 
-1. Where marks come from, the passive (a blow on the sealed shell) or the lure (Ryan, third
-   round: not sure), and what may spend them (Claude: only a weapon that deals damage).
-2. One lure or a pair (Ryan: by the odds), one foe at any reach.
-3. Heat as the limit on a Rapid piece with no cooldown (Ryan's proposal), and whether it is
-   the rule for every such piece, the line frame's cantrips included.
-4. How much a spent mark cools; the seal's Braced, base armour and heat a round.
-5. Tier one confirmed, and the rule text with the marks in it.
+1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above),
+   the seal's Braced and base armour.
+2. Who may spend a mark: the Armadillo alone, or any ally.
+3. The names of the lure and the mark (Ryan's; Claude's candidates in chat).
+4. Tier one confirmed, and the rule text: the passive (the form), the lure (the mark), the
+   mark's codex (the cooling).
 
 ## Refused along the way
 

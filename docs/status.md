@@ -139,7 +139,8 @@ document's job and every command are in `README.md`.
   moved no row mean a point (`docs/measurements.md`, 15 October), since their copies are the
   entries the bot keeps; the Ammit's Talons rose from 46% of its spends to 51%. Open with it:
   a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
-  chain finite (the Armadillo's brief: Ryan proposes heat paid every spend).
+  chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
+  Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
 - Built 15 October, on the Minerva branch (Ryan: "Roman numerals in the corner? ... grey on
   the black background"): every die entry shows its place on the die, from I, as a grey Roman
   numeral in the quotes' condensed italic, top left on the die and down the hold and the codex
@@ -239,10 +240,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.180 (15 October), published from
+  `docs/design-bible.html` after every change. Live: v0.181 (15 October), published from
   `claude/adoring-planck-q8t63w` over the live v0.178: the reroll rows (section 6's rerolls
-  row, the Nemesis row's reason for its plain roll) and the die entry's place (section 6's
-  die-entry row), which reach main's file when that branch merges. Main's file is v0.178: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  row, the Nemesis row's reason for its plain roll), the die entry's place (section 6's
+  die-entry row) and Rapid's limiter (section 7's Rapid row, the Wake Diffuser in section
+  12), which reach main's file when that branch merges. Main's file is v0.178: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss

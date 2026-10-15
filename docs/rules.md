@@ -130,8 +130,8 @@ defeat when every machine is wrecked. There is no round limit.
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
-  Every Rapid component today also carries a cooldown of one: the entry switches off for the
-  round.
+  A Rapid component always carries a limiter, a cooldown, heat or Volatile; every Rapid
+  component today carries a cooldown of one: the entry switches off for the round.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
