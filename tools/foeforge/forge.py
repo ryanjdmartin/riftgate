@@ -97,8 +97,17 @@ MAP_SIZE = {1: (16, 16), 2: (16, 16)}
 BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
 
 
+DRAFTS = ROOT / "tools" / "foeforge" / "drafts.json"
+
+
 def load_foes():
-    return {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
+    """Every foe in content, then the art subjects ahead of content (drafts.json: the bosses,
+    elites and summons marked in chat, 15 October), content winning on an id both hold."""
+    foes = {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
+    if DRAFTS.exists():
+        for e in json.loads(DRAFTS.read_text())["entries"]:
+            foes.setdefault(e["id"], e)
+    return foes
 
 
 # Ryan's rules of 9 October, after the first full pass, said as what to draw, since a diffusion
@@ -130,8 +139,9 @@ DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the 
 
 
 def prompt_for(foe, brief=None):
-    look = FACTION_LOOK.get(foe.get("faction", ""), "")
-    where = DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
+    # A subject of no domain (a summon) names its own place and light (design.where, .look).
+    look = foe.get("design", {}).get("look") or FACTION_LOOK.get(foe.get("faction", ""), "")
+    where = foe.get("design", {}).get("where") or DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
     # A foe's sprite brief (design.sprite) leads: the model weighs the start of a prompt most,
     # and a brief says the shape (a blob, a ball of fire) the style text would otherwise turn
     # into a muscled body (9 October: every Bomb and Gel came out humanoid without one). With

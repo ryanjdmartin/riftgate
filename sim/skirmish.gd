@@ -91,6 +91,9 @@ var _chaining := false
 ## name, `boss` whether a massive foe struck and `all` whether the blow struck every machine,
 ## for the plaque (decided 9 October; `all` 15 October).
 var turn_events: Array = []
+## The last acts of foes that fell during the latest spend (15 October), for the screen to name
+## and land: {foe, name, mechs (indices struck)}.
+var last_acts: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
@@ -122,7 +125,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["harden", "regrow", "regrow_ally", "harden_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -167,6 +170,7 @@ func begin() -> void:
 	for r in ranked:
 		reinforcements.append(r[2])
 	_reinforce(false)
+	_refresh_guards()
 	_refresh_allies()
 	state = State.ROUND_START
 	# Passives that fire once as the fight begins.
@@ -514,7 +518,11 @@ func start_round() -> void:
 	_focus.clear()
 	_refresh_kin()
 	for f in field_foes():
+		# A move gathered last round holds, and so does its pick while the machine stands.
+		var carried := not f.pending.is_empty()
 		_choose_foe_action(f)
+		if carried and f.target != null and (f.target as MechState).alive():
+			continue
 		f.target = _pick_mech_target(f)
 	state = State.ASSIGN
 
@@ -542,8 +550,20 @@ func legal_actions(f: Foe) -> Array:
 
 
 func _choose_foe_action(f: Foe) -> void:
+	if not f.pending.is_empty():
+		f.action = f.pending   # a countdown move holds until it lands
+		return
 	f.choose_from(legal_actions(f), rng)
 	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+	_begin_countdown(f)
+
+
+## A move with a countdown starts gathering as it is announced (15 October).
+func _begin_countdown(f: Foe) -> void:
+	var n := Foe.countdown_of(f.action)
+	if n > 0:
+		f.pending = f.action
+		f.charge = n
 
 
 ## Does a move's condition hold right now? One word or a list meaning any (Foe.WHENS).
@@ -585,6 +605,11 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 				return false
 			var behind: Foe = back[f.column]
 			return behind != null and behind != f and behind.alive()
+		"ally_hurt":
+			for o in field_foes():
+				if o.alive() and o.hp < o.hp_max:
+					return true
+			return false
 		"others_on_field":
 			for o in field_foes():
 				if o != f and o.alive():
@@ -708,6 +733,7 @@ func can_assign(mech_index: int, target) -> bool:
 func assign(mech_index: int, target = null) -> bool:
 	if state != State.ASSIGN:
 		return false
+	last_acts.clear()
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned:
 		return false
@@ -819,7 +845,9 @@ func end_round() -> int:
 	_enemy_turn()
 	_tick_mechs()
 	_trim_overshield()
+	_regrow_parts()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	_refresh_guards()
 	_refresh_allies()
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -869,6 +897,18 @@ func _enemy_turn() -> void:
 		if t == null:
 			break
 		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
+		if not f.pending.is_empty():
+			if f.charge > 0:
+				# A countdown move gathers this turn and lands when its count runs out; the
+				# plaque names it as it begins, so the warning has a voice (15 October).
+				if f.charge == Foe.countdown_of(f.pending):
+					turn_specials.append({"foe": f, "name": str(f.pending.get("name", "")), "kind": "charge", "seq": _seq})
+					_seq += 1
+				f.charge -= 1
+				var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
+				log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
+				continue
+			f.pending = {}   # it lands now
 		if f.hits_all():
 			# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
 			# machine in turn, left to right, so no aim or lure moves it; a screened machine is
@@ -1170,6 +1210,32 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
 			log.append("%s: %s, regrows %d" % [f.display_name, str(a.get("name", "regrows")), f.hp - before])
+		"regrow_ally":
+			# Foes helping foes (15 October): the most hurt of its own by hull missing, itself
+			# included, the first in the order they stand on a tie.
+			var hurt: Foe = null
+			for other in field_foes():
+				if other.alive() and other.hp < other.hp_max and (hurt == null or other.hp_max - other.hp > hurt.hp_max - hurt.hp):
+					hurt = other
+			if hurt == null:
+				log.append("%s: %s, and none of its own is hurt" % [f.display_name, str(a.get("name", "cures"))])
+			else:
+				var before := hurt.hp
+				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
+				log.append("%s: %s, %s regrows %d" % [f.display_name, str(a.get("name", "cures")), hurt.display_name, hurt.hp - before])
+		"harden_all":
+			# Armour on every foe in the fight through the next round, so it stands through the
+			# player's turn and is gone when the enemy acts again: its next action, as the
+			# player sees it, which a per-foe fade would cut short for foes acting after it.
+			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
+			guard["effects"][0]["value"] = maxi(0, value)
+			guard["description"] = "Armour +%d through the next round." % maxi(0, value)
+			var guarded := 0
+			for other in field_foes():
+				if other.alive():
+					Effects.grant_for_rounds(other, guard, "foe:" + f.content_id, round + 1)
+					guarded += 1
+			log.append("%s: %s, armour +%d on %d of its own" % [f.display_name, str(a.get("name", "protects")), maxi(0, value), guarded])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
@@ -1432,8 +1498,11 @@ func _disrupt(foes: Array) -> void:
 				next = cand
 				break
 		var was := str(foe.action.get("name", ""))
+		foe.pending = {}   # a gathered move is broken off
+		foe.charge = 0
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
+		_begin_countdown(foe)
 		foe.target = _pick_mech_target(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
@@ -1561,7 +1630,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
-		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive(),
+		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
 	_seq += 1
 	if r["blocked"]:
@@ -1748,8 +1817,130 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 # ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
+	_fall_with_cores()
 	_clear_dead_slots()
 	_refresh_kin()
+	_refresh_guards()
+
+
+# ---------------------------------------------------------------- a boss in parts
+
+## The boss in parts (Ryan, 15 October: parts that regrow, or stand for a while, until the core
+## is killed, so the player chooses what to focus): a core's parts are the foes of its pack
+## whose type it names, on the field. Found by pack and type, so a save needs no references.
+func parts_of(core: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if not core.has_parts():
+		return out
+	for f in field_foes():
+		if f != core and f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			out.append(f)
+	return out
+
+
+## Every core's guard as its parts stand now: Guarded while all its parts stand ("all"), or
+## while any does ("any"), lifted the moment that stops being true, so a part killed by one
+## die opens the core to the next.
+func _refresh_guards() -> void:
+	for core in field_foes():
+		if not core.alive() or not core.has_parts():
+			continue
+		_schedule_regrowth(core)
+		if core.guard.is_empty():
+			continue
+		var standing := parts_of(core).size()
+		var guarded := standing > 0 and (core.guard == "any" or standing >= core.part_ids.size())
+		if guarded and not Effects.has(core, "guarded"):
+			Effects.stack(core, Effects.STATUS["guarded"], Effects.SKIRMISH, "parts", 1, Effects.DECAY_NONE)
+		elif not guarded and Effects.has(core, "guarded"):
+			Effects.remove(core, "guarded")
+			log.append("%s is open: its guard has fallen" % core.display_name)
+
+
+## A part down, while the core stands, is on its way back when the core regrows its parts.
+func _schedule_regrowth(core: Foe) -> void:
+	if core.regrow_parts <= 0:
+		return
+	var present: Dictionary = {}
+	for f in parts_of(core):
+		present[f.content_id] = int(present.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			present[f.content_id] = int(present.get(f.content_id, 0)) + 1
+	for d in core.regrow_due:
+		present[str(d[0])] = int(present.get(str(d[0]), 0)) + 1
+	for pid in core.part_ids:
+		if int(present.get(pid, 0)) > 0:
+			present[pid] = int(present[pid]) - 1
+		else:
+			core.regrow_due.append([pid, round + core.regrow_parts])
+
+
+## At the round's end, the parts due back step into the pool, to fill a slot as any waiting
+## foe does.
+func _regrow_parts() -> void:
+	if not foe_factory.is_valid():
+		return
+	for core in field_foes():
+		if not core.alive() or core.regrow_due.is_empty():
+			continue
+		var keep: Array = []
+		for d in core.regrow_due:
+			if int(d[1]) > round:
+				keep.append(d)
+				continue
+			var n = foe_factory.call(str(d[0]))
+			if n is Foe:
+				n.pack_id = core.pack_id
+				reinforcements.append(n)
+				log.append("%s grows back its %s" % [core.display_name, n.display_name])
+		core.regrow_due = keep
+
+
+## A foe's last act (15 October, the Behemoth's Meteor): its death blow lands the moment it
+## falls, before anything else, so the player shields first and kills after, and even the last
+## foe's lands, since damage sticks for the battle.
+func _last_act(f: Foe) -> void:
+	var blow := f.last_act()
+	if blow.is_empty():
+		return
+	f.action = blow
+	f.pending = {}
+	f.charge = 0
+	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(blow.get("name", ""))])
+	var struck: Array[int] = []
+	if f.hits_all():
+		for m in live_mechs():
+			struck.append(mechs.find(m))
+			_strike(f, m)
+	else:
+		var t := f.target as MechState
+		if t == null or not t.alive():
+			t = _pick_mech_target(f)
+		if t != null:
+			struck.append(mechs.find(t))
+			_strike(f, t)
+	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck})
+
+
+## A core that falls for good takes its parts with it, on the field and waiting alike.
+func _fall_with_cores() -> void:
+	for core in field_foes():
+		if core.alive() or not core.has_parts() or (Effects.has(core, "risen") and not core.stays_down):
+			continue
+		var parts := parts_of(core)
+		for f in parts:
+			f.hp = 0
+			f.stays_down = true
+		var waiting: Array[Foe] = []
+		for f in reinforcements:
+			if f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+				waiting.append(f)
+		for f in waiting:
+			reinforcements.erase(f)
+		core.regrow_due = []
+		if not parts.is_empty() or not waiting.is_empty():
+			log.append("%s falls, and its parts with it" % core.display_name)
 
 
 func _clear_dead_slots() -> void:
@@ -1771,6 +1962,7 @@ func _clear_dead_slots() -> void:
 						log.append("%s falls, and gets back up into the pool" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
+						_last_act(f)
 						_split(f)
 				f.rank = -1
 				rank[col] = null

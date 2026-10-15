@@ -43,7 +43,7 @@ chat first.
 
 ## Decided on 14 and 15 October
 
-Rows in the bible and lines in `docs/rules.md`; none of it built yet.
+Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 
 - **The shield rule.** A shield absorbs its number and the excess passes to the hull; a breach
   ignores the shield outright (the shield stands); an injury counts what reaches the hull.
@@ -54,16 +54,17 @@ Rows in the bible and lines in `docs/rules.md`; none of it built yet.
   every ally at once. A Ward: every blow a foe lands on the machine that round leaves no rider,
   breach included, while the damage lands (Ryan: it lasts the round because it is more
   situational). Both up is the old whole block at twice its price. Ward is the buff's word, so
-  the Oblation Ward becomes the Oblation Mantle and the Votive Ward the Votive Screen.
+  the Oblation Ward becomes the Oblation Mantle (in content, 15 October) and the Votive Ward the
+  Votive Screen.
 - **Cooldowns**: a printed property on specific pieces, shown on the entry as dark with the
   rounds left. Ryan: nearly every Rapid component reads "Rapid, cooldown 1", and the Nemesis's
   fists are simply Rapid. No cap on where a cooldown goes or how many a die carries (Ryan, 15
   October: a cap is artificially limiting).
-- **The Dingo's Megataser Harpoon** carries Shock in place of Suppress.
+- **The Dingo's Megataser Harpoon** carries Shock in place of Suppress (in content, 15 October).
 - **Misharu's payoff is Penance**, a weaken, in place of Suppress.
 - **Kestrel's gaps**: the strafer at tier one and the bomber above it.
 - Agreed in chat, for the HUD: a suppressed foe's intent line clears (Ryan's point, 14
-  October).
+  October; built 15 October, the hold readout the last place it showed).
 - **The budgets** (15 October): hard control weighed and never capped, and three tests kept
   (below).
 

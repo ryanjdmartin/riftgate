@@ -328,9 +328,9 @@ func _tag_at(local: Vector2) -> Unit:
 	return null
 
 
-## Map sprite id for an enemy: its foe type, or the faction's boss for an elite.
+## Map sprite id for an enemy: its foe type, or the faction's boss for a boss pack.
 static func foe_sprite_id(u: Unit) -> String:
-	if u.elite:
+	if u.is_boss:
 		return str(ContentDB.load_default().factions.get(u.faction, {}).get("boss", ""))
 	return u.foe_id
 
@@ -813,8 +813,8 @@ func _draw_tags() -> void:
 		var above: bool = t[2]
 		var border := Palette.ENEMY
 		Hud.box(self, rect, 6.0, Color(Palette.BG, 0.94), Color(border, 0.9), 1.5)
-		if sq.elite:
-			Hud.box(self, rect.grow(-4.0), 4.0, Color(0, 0, 0, 0), Color(border, 0.9), 1.5)   # a double border says elite
+		if sq.is_boss:
+			Hud.box(self, rect.grow(-4.0), 4.0, Color(0, 0, 0, 0), Color(border, 0.9), 1.5)   # a double border says boss
 		var c := rect.position + Vector2(rect.size.x * 0.5, 24.0)
 		var tex := Sprites.map_foe(foe_sprite_id(sq))
 		if tex != null:
@@ -1464,7 +1464,7 @@ func _draw_unit(u: Unit) -> void:
 	# No gauge over a mech: shield and hull read in the docked readout when it is tapped
 	# (Ryan, 21 September), where the contrast is under control.
 	if u.is_enemy() and u.strength > 0:
-		_plaque(c + Vector2(28.0, -30.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.elite else 1.5)   # up and right, clear of the picture
+		_plaque(c + Vector2(28.0, -30.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.is_boss else 1.5)   # up and right, clear of the picture
 
 
 # ---------------------------------------------------------------- gestures

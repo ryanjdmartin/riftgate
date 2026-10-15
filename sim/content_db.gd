@@ -231,8 +231,21 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.hero = bool(d.get("hero", false))
-	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
-		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
+	f.boss = is_boss(foe_id)
+	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
+	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
+	f.guard = str(d.get("guard", ""))
+	f.regrow_parts = maxi(0, int(d.get("regrow_parts", 0)))
+	var od = d.get("on_death", {})
+	if od is Dictionary:
+		# A split (the Gel) and a last act (15 October, the Behemoth's Meteor), either or both.
+		var made := {}
+		if od.has("summon"):
+			made["summon"] = str(od["summon"])
+			made["count"] = maxi(1, int(od.get("count", 1)))
+		if od.get("blow", null) is Dictionary:
+			made["blow"] = Foe.death_blow_from(od["blow"])
+		f.on_death = made
 	var acts: Array = []
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) != "implemented":
@@ -244,6 +257,8 @@ func make_foe(foe_id: String) -> Foe:
 				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))}
 			if a.has("swarm"):
 				act["swarm"] = int(a["swarm"])
+			if a.has("countdown"):
+				act["countdown"] = int(a["countdown"])
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
 			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
@@ -294,7 +309,10 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			if int(a.get("swarm", 0)) > 0:
 				head += " // +%d A KIN" % int(a["swarm"])
 			for k in a.get("keywords", []):
-				head += " // %s" % str(k).to_upper()
+				head += " // %s" % str(vocabulary.get(str(k), {}).get("name", str(k))).to_upper()
+			var n := int(a.get("countdown", 0))
+			if n > 0:
+				head += " // LANDS NEXT ROUND" if n == 1 else " // LANDS IN %d ROUNDS" % n
 		# A move's own sense, where it differs from the foe's, and its condition.
 		if a.has("aim") and str(a["aim"]) != f.aim:
 			head += " // %s" % str(Foe.AIM_TEXT.get(str(a["aim"]), str(a["aim"]))).to_upper()
@@ -419,15 +437,16 @@ func pack_profiles() -> Dictionary:
 
 
 ## Unpack a battlefield pack into skirmish foes: its foe type times its strength. A boss
-## (elite) unpacks into the faction's massive boss first. A pack with no foe type falls back
+## pack (`is_boss`) unpacks into the faction's boss first. A pack with no foe type falls back
 ## to the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
-	if sq.elite and fac.has("boss") and foes.has(fac["boss"]):
+	if sq.is_boss and fac.has("boss") and foes.has(fac["boss"]):
 		var b := make_foe(str(fac["boss"]))
 		b.pack_id = sq.id
 		out.append(b)
+		out.append_array(parts_for(b))
 	var fid := sq.foe_id
 	if fid.is_empty():
 		var spawn: Array = fac.get("spawn", [])
@@ -438,6 +457,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			var f := make_foe(fid)
 			f.pack_id = sq.id
 			out.append(f)
+			out.append_array(parts_for(f))
 	return out
 
 
@@ -528,7 +548,27 @@ func spawn_foes(faction_id: String) -> Array:
 	return out
 
 
-## A boss pack for a faction, named after its massive elite.
+## A core's parts, made to stand with it in its pack (the boss in parts, 15 October).
+func parts_for(core: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for pid in core.part_ids:
+		if foes.has(pid):
+			var p := make_foe(str(pid))
+			p.pack_id = core.pack_id
+			out.append(p)
+	return out
+
+
+## Whether a foe type is a domain's boss: the content says so in a faction's `boss`, never
+## its size (the bible's tiers row, 15 October: big is an attribute, apart from boss and elite).
+func is_boss(foe_id: String) -> bool:
+	for fid in factions.keys():
+		if str(factions[fid].get("boss", "")) == foe_id:
+			return true
+	return false
+
+
+## A boss pack for a faction, named after its boss.
 func make_boss(uid: int, faction_id: String) -> Unit:
 	var boss_id := str(factions.get(faction_id, {}).get("boss", ""))
 	var boss_name := str(foes.get(boss_id, {}).get("name", "boss")).to_lower()
@@ -1102,7 +1142,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
-				for key in ["factor", "strikes", "keywords"]:
+				for key in ["factor", "strikes", "keywords", "countdown"]:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
@@ -1119,6 +1159,8 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: weight must be at least 1" % aw)
 				if a.has("breach"):
 					errs.append("%s: breach is a tag, put it in keywords" % aw)
+				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
+					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
 				for k in a.get("keywords", []):
 					if not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
@@ -1169,10 +1211,37 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 		if f.has("hero") and bool(f["hero"]) and sz != 1:
 			errs.append("%s: a hero is human-sized (size 1); the massive thing it commands is its own foe" % where)
+		if f.has("parts"):
+			# A boss in parts (15 October): known foes, one deep, with a guard the engine runs.
+			if not (f["parts"] is Array) or Array(f["parts"]).is_empty():
+				errs.append("%s: parts is a list of foe ids" % where)
+			else:
+				for pid in f["parts"]:
+					if not foes.has(str(pid)):
+						errs.append("%s: part names unknown foe %s" % [where, str(pid)])
+					elif foes[str(pid)].has("parts"):
+						errs.append("%s: part %s has parts of its own; parts are one deep" % [where, str(pid)])
+		if f.has("guard") and not ["all", "any"].has(str(f["guard"])):
+			errs.append("%s: guard is all (no damage while every part stands) or any (while one does)" % where)
+		if (f.has("guard") or f.has("regrow_parts")) and not f.has("parts"):
+			errs.append("%s: guard and regrow_parts belong to a foe with parts" % where)
+		if f.has("regrow_parts") and (int(f["regrow_parts"]) < 1 or int(f["regrow_parts"]) > 5):
+			errs.append("%s: regrow_parts is the rounds a fallen part takes to grow back, 1 to 5" % where)
 		if f.has("on_death"):
 			# A split (the Gel): destroyed, it summons; what it summons never splits again.
 			var od = f["on_death"]
-			if not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
+			if od is Dictionary and od.has("blow"):
+				# A last act (15 October): an attack's shape, landed the moment the foe falls.
+				var b = od["blow"]
+				if not (b is Dictionary) or str(b.get("name", "")).is_empty() or float(b.get("factor", 1.0)) <= 0.0 or int(b.get("strikes", 1)) < 1:
+					errs.append("%s: on_death blow is an attack: a name, a positive factor, strikes at least 1" % where)
+				elif b is Dictionary:
+					for k in b.get("keywords", []):
+						if not Foe.ATTACK_KEYWORDS.has(str(k)):
+							errs.append("%s: on_death blow: unknown attack keyword '%s'" % [where, k])
+			if od is Dictionary and od.has("blow") and not od.has("summon"):
+				pass
+			elif not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
 				errs.append("%s: on_death must name a known foe to summon" % where)
 			elif int(od.get("count", 1)) < 1:
 				errs.append("%s: on_death count is at least 1" % where)
@@ -1207,8 +1276,8 @@ func _validate_factions(errs: Array[String]) -> void:
 		if f.has("boss"):
 			if not foes.has(f["boss"]):
 				errs.append("%s: boss names unknown foe %s" % [where, f["boss"]])
-			elif int(foes[f["boss"]].get("size", 1)) != 2:
-				errs.append("%s: boss %s should be massive (size 2)" % [where, f["boss"]])
+			elif bool(foes[f["boss"]].get("hero", false)):
+				errs.append("%s: boss %s is a hero; a hero is a domain's final, dealt from the bench" % [where, f["boss"]])
 		# The bench (decided 9 October): the heroes the campaign's start may deal to this domain.
 		var bench: Array = f.get("bench", [])
 		if not (f.get("bench", []) is Array):

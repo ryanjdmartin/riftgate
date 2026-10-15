@@ -109,7 +109,7 @@ func test_a_battle_takes_the_packs_the_boss_and_the_guest() -> void:
 	assert_eq(b.guest, s.guest, "with the guest")
 	var packs := 0
 	for sq in b.field.packs():
-		if not sq.elite:
+		if not sq.is_boss:
 			packs += 1
 			assert_eq([sq.foe_id, sq.strength, sq.faction], [a, 2, str(facs[0])], "the composed pack, its own faction's")
 	assert_eq(packs, 1, "and only it")

@@ -39,7 +39,14 @@ var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would
 var last_special: String = ""    # the special it announced last round, so none fires twice running
 var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
 var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
+var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
+var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
+var charge: int = 0              # rounds before the pending move lands; at 0 it lands this round
+var part_ids: Array = []         # a core's parts (content `parts`): the foes of its pack that stand beside it
+var guard: String = ""          # a core takes no damage while "all" its parts stand, or while "any" does
+var regrow_parts: int = 0        # rounds after a part falls before it grows back, while the core stands (0: never)
+var regrow_due: Array = []       # [part id, round it returns] for each part on its way back
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -50,12 +57,12 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field"]
+const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt"]
 const WHEN_TEXT := {
 	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
 	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
 	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
-	"others_on_field": "when another stands with it",
+	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 }
 
 
@@ -165,9 +172,40 @@ static func is_attack_action(a: Dictionary) -> bool:
 	return kind_of(a) == "attack"
 
 
-## Is this round's chosen action a blow at a machine?
+## Is this round's chosen action a blow at a machine? A move still gathering lands no blow
+## this round (its countdown).
 func attacks() -> bool:
-	return is_attack_action(action)
+	return is_attack_action(action) and not gathering()
+
+
+## The rounds a move gathers before it lands (`countdown`, 15 October): announced as the round
+## opens, it lands that many rounds later, the warning shown the whole time (the Lancer's
+## Jump, one round; a Tonberry's walk or a Tyrano's five to zero, longer).
+static func countdown_of(a: Dictionary) -> int:
+	return maxi(0, int(a.get("countdown", 0)))
+
+
+## A last act as an attack action (content `on_death.blow`, 15 October: the Behemoth's Meteor),
+## shaped like any move so the blow reads through the same rules.
+static func death_blow_from(b: Dictionary) -> Dictionary:
+	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
+		"strikes": maxi(1, int(b.get("strikes", 1))), "weight": 1, "keywords": Array(b.get("keywords", [])), "text": str(b.get("text", ""))}
+
+
+## Its last act, if it has one: the blow it lands the moment it falls.
+func last_act() -> Dictionary:
+	var b = on_death.get("blow", null)
+	return b if b is Dictionary else {}
+
+
+## Is it a core with parts (the boss in parts, 15 October)?
+func has_parts() -> bool:
+	return not part_ids.is_empty()
+
+
+## Is it gathering a move that lands in a later round?
+func gathering() -> bool:
+	return not pending.is_empty() and charge > 0
 
 
 func damage() -> int:
@@ -183,6 +221,9 @@ func strikes() -> int:
 ##   defend  harden: armour +`value` until its next action (Fold; flat since 2 October, one word
 ##           and one icon for both sides, the half it was is gone)
 ##           regrow: regains `value` hit points (Knit)
+##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
+##           harden_all: armour +`value` on every foe in the fight through the next round
+##           (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
@@ -197,7 +238,7 @@ func strikes() -> int:
 ##           hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
-	"defend": ["harden", "regrow"],
+	"defend": ["harden", "regrow", "regrow_ally", "harden_all"],
 	"buff": ["revive_once", "summon", "rally"],
 	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
 }
@@ -227,6 +268,12 @@ func breaches() -> bool:
 ## Is this round's move a blow at every machine (`all`)?
 func hits_all() -> bool:
 	return attacks() and has_keyword(action, "all")
+
+
+## Does its move reach every machine, landing this round or still gathering? The screen's read
+## for the arrows and the hold, where the engine's own is hits_all.
+func reaches_every_machine() -> bool:
+	return is_attack_action(action) and has_keyword(action, "all")
 
 
 ## The action's text with {damage} and {value} filled in, so "Jaw Rend for {damage}" and

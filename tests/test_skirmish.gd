@@ -3349,16 +3349,31 @@ func test_a_status_granted_on_shielding_lands_on_the_ally() -> void:
 	assert_true("\n".join(sk.log).contains("Taker: Giver's escort, Braced"), "the log names it")
 
 
+func test_a_massive_foe_that_is_no_boss_lands_a_plain_blow() -> void:
+	# Big is an attribute of any tier (the bible's tiers row, 15 October): the plaque's mark
+	# follows the content's boss, so a big elite's plain blow announces nothing.
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var big := _ghoul(100, 10)
+	big.size = 2
+	sk.add_foes([big])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
+	assert_false(bool(sk.turn_events[0]["boss"]), "a massive foe is no boss by its size")
+
+
 func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	# The plaque (decided 9 October): a special is recorded beside the blows with a shared
-	# order, and every blow carries its move's name and whether a massive foe struck.
+	# order, and every blow carries its move's name and whether a boss struck.
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var folder := _ghoul(100, 10)
 	folder.actions = [_special("defend", "harden", {"value": 10})]
 	folder.action = folder.actions[0]
 	var striker := _ghoul(100, 10)
-	striker.size = 2
+	striker.boss = true   # human-sized: a boss is the content's word, never its size (15 October)
 	sk.add_foes([folder, striker])
 	sk.begin()
 	sk.start_round()
@@ -3368,7 +3383,7 @@ func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	assert_eq(str(sk.turn_specials[0]["kind"]), "defend", "and its kind")
 	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
 	assert_eq(str(sk.turn_events[0]["name"]), "Attack", "the blow carries its move's name")
-	assert_true(bool(sk.turn_events[0]["boss"]), "and that a massive foe struck")
+	assert_true(bool(sk.turn_events[0]["boss"]), "and that a boss struck, human-sized")
 	var spec_seq := int(sk.turn_specials[0]["seq"])
 	var blow_seq := int(sk.turn_events[0]["seq"])
 	assert_true(spec_seq != blow_seq, "one order for both lists")
@@ -3487,6 +3502,281 @@ func test_a_bursting_blow_at_every_machine_lands_on_each_and_spends_the_striker_
 	assert_eq(b.hull, 80, "and the second")
 	assert_false(bomb.alive(), "the striker is spent")
 	assert_eq("\n".join(sk.log).count("bursts, and is gone"), 1, "once, after every machine took it")
+
+
+func _gatherer(atk: int, countdown: int) -> Foe:
+	var f := Foe.make("lancer", 500, atk)
+	f.actions = [{"id": "jump", "name": "Jump", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "countdown": countdown, "text": ""}]
+	f.action = f.actions[0]
+	return f
+
+
+func test_a_countdown_move_gathers_a_round_then_lands() -> void:
+	# The Lancer's Jump (15 October): announced as the round opens, it lands the next.
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	var lancer := _gatherer(30, 1)
+	sk.add_foes([lancer])
+	sk.begin()
+	sk.start_round()
+	assert_true(lancer.gathering(), "announced, it gathers")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 0, "nothing lands this round")
+	sk.end_round()
+	assert_eq(a.hull, 100, "and nothing did")
+	assert_true(sk.turn_specials.any(func(s): return str(s["kind"]) == "charge" and str(s["name"]) == "Jump"), "the plaque names it as it begins")
+	sk.start_round()
+	assert_false(lancer.gathering(), "the next round it lands")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "and the forecast says so")
+	sk.end_round()
+	assert_eq(a.hull, 70, "it landed")
+	assert_true(lancer.pending.is_empty(), "spent")
+
+
+func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var walker := _gatherer(20, 2)
+	sk.add_foes([walker])
+	sk.begin()
+	sk.start_round()
+	var picked = walker.target
+	assert_eq(walker.charge, 2, "two rounds to go")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(walker.target, picked, "the pick holds while it gathers")
+	assert_eq(walker.charge, 1, "one to go")
+	sk.end_round()
+	sk.start_round()
+	assert_false(walker.gathering(), "it lands this round")
+	assert_true(sk.assign(0, walker), "unless a suppress lands first")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 200, "suppressed, it held its blow")
+	assert_false(walker.pending.is_empty(), "and holds it still")
+	sk.start_round()
+	assert_eq(walker.action.get("id", ""), "jump", "the held move, not a new pick")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 180, "the next round it lands")
+
+
+func test_a_disrupt_breaks_off_a_gathering_move() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.DISRUPT)), 0, 100)
+	sk.add_mech(a)
+	var lancer := _gatherer(30, 1)
+	lancer.actions.append({"id": "thrust", "name": "Thrust", "kind": "attack", "factor": 0.5, "strikes": 1, "weight": 1, "keywords": [], "text": ""})
+	sk.add_foes([lancer])
+	sk.begin()
+	sk.start_round()
+	lancer.action = lancer.actions[0]
+	lancer.pending = lancer.action
+	lancer.charge = 1
+	assert_true(sk.assign(0, lancer), "disrupted while it gathers")
+	assert_true(lancer.pending.is_empty(), "the jump is broken off")
+	assert_eq(lancer.action.get("id", ""), "thrust", "its other move instead")
+	sk.end_round()
+	assert_eq(a.hull, 85, "the thrust lands this round")
+	# A fight saved mid-gather resumes with the count.
+	var held := _gatherer(30, 2)
+	held.pending = held.actions[0]
+	held.charge = 2
+	var back := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(held, sk))), sk)
+	assert_true(back.gathering(), "the save keeps the move gathering")
+	assert_eq(back.charge, 2, "and its count")
+	assert_eq(Foe.countdown_of(back.pending), 2, "a whole number")
+
+
+func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
+	# The White Mage's Cure (15 October): foes helping foes.
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var healer := Foe.make("mage", 60, 10, true)
+	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}]
+	healer.action = healer.actions[0]
+	var hurt := _ghoul(100, 10)
+	var scratched := _ghoul(100, 10)
+	sk.add_foes([hurt, scratched, healer])
+	sk.begin()
+	hurt.hp = 50
+	scratched.hp = 90
+	sk.start_round()
+	assert_eq(str(healer.action.get("id", "")), "cure", "one of its own is hurt, so it may cure")
+	sk.end_round()
+	assert_eq(hurt.hp, 70, "the most hurt regrew twenty")
+	assert_eq(scratched.hp, 90, "and nobody else")
+	var whole := Skirmish.new(1, 3)
+	whole.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	var idle := Foe.make("mage", 60, 10, true)
+	idle.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}, Foe.basic_action()]
+	whole.add_foes([_ghoul(100, 10), idle])
+	whole.begin()
+	assert_false(whole.legal_actions(idle).has(idle.actions[0]), "with none of its own hurt it has no cure to cast")
+
+
+func test_protect_armours_every_foe_through_the_next_round() -> void:
+	# The White Mage's Protect (15 October): armour on every foe, gone when the enemy acts again.
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
+	var priest := Foe.make("priest", 60, 10, true)
+	priest.actions = [{"id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 5, "weight": 1, "when": ["others_on_field"], "text": ""}, Foe.basic_action()]
+	priest.action = priest.actions[0]
+	var g := _ghoul(100, 10)
+	sk.add_foes([g, priest])
+	sk.begin()
+	sk.start_round()
+	priest.action = priest.actions[0]
+	priest.last_special = "protect"   # as announcing it would have, so it does not cast it twice running
+	sk.end_round()
+	assert_eq(g.armour_total(), 5, "every foe in the fight is armoured")
+	assert_eq(priest.armour_total(), 5, "the caster too")
+	sk.start_round()
+	assert_true(sk.assign(0, g), "through the player's turn")
+	assert_eq(g.hp, 75, "a blow of thirty takes twenty-five")
+	sk.end_round()
+	assert_eq(g.armour_total(), 0, "and gone when the enemy has acted again")
+
+
+func _core(guard: String, regrow: int = 0) -> Foe:
+	var core := Foe.make("hilt", 200, 10)
+	core.content_id = "hilt"
+	core.part_ids = ["eye", "eye"]
+	core.guard = guard
+	core.regrow_parts = regrow
+	return core
+
+
+func _eye(id: String = "eye") -> Foe:
+	var p := Foe.make(id, 20, 5)
+	p.content_id = id
+	return p
+
+
+func _two_guns(sk: Skirmish) -> void:
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, I)), 40, 400))
+	sk.add_mech(_mech("B", Die.single(Face.attack(30, I)), 40, 400))
+
+
+func test_a_core_takes_nothing_while_all_its_parts_stand_and_opens_as_one_falls() -> void:
+	# The boss in parts (Ryan, 15 October): Exor's hilt, untouchable until a part falls.
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("all")
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(Effects.has(core, "guarded"), "its parts stand, so it is guarded")
+	assert_true(sk.assign(0, core), "a blow on it")
+	assert_eq(core.hp, 200, "does nothing")
+	assert_true(sk.assign(1, left), "a part falls")
+	assert_false(Effects.has(core, "guarded"), "and the core is open at once: the guard needed every part")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(0, core), "so the next blow")
+	assert_eq(core.hp, 170, "lands")
+
+
+func test_an_any_guard_holds_until_the_last_part_falls() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("any")
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, left), "one part falls")
+	assert_true(Effects.has(core, "guarded"), "one still stands, so the guard holds")
+	assert_true(sk.assign(1, right), "the other falls")
+	assert_false(Effects.has(core, "guarded"), "and the core is open")
+
+
+func _eye_factory(id: String) -> Foe:
+	return _eye(id)
+
+
+func test_a_fallen_part_grows_back_while_the_core_stands() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	sk.foe_factory = Callable(self, "_eye_factory")
+	var core := _core("all", 1)
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, left), "a part falls")
+	sk.end_round()
+	assert_eq(sk.parts_of(core).size(), 1, "still down at the round's end")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.parts_of(core).size(), 2, "a round later it has grown back into its slot")
+	assert_true(Effects.has(core, "guarded"), "and the guard is up again")
+
+
+func test_a_core_that_falls_takes_its_parts_with_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("")
+	core.hp = 20
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, core), "the core falls")
+	assert_false(left.alive() or right.alive(), "and its parts with it")
+	assert_true(sk.field_foes().is_empty(), "the field is clear")
+	assert_true("\n".join(sk.log).contains("its parts with it"), "the log says so")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_core("any", 2), sk))), sk)
+	assert_eq(trip.part_ids, ["eye", "eye"], "a save keeps its parts")
+	assert_eq(trip.guard, "any", "its guard")
+	assert_eq(trip.regrow_parts, 2, "and its regrowth, a whole number")
+
+
+func _meteor_beast(hp: int = 30) -> Foe:
+	var f := Foe.make("behemoth", hp, 20)
+	f.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	return f
+
+
+func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
+	# The Behemoth's Meteor (15 October): shield up, then kill it.
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, I)), 10, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var beast := _meteor_beast()
+	sk.add_foes([beast, _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, beast), "the beast falls")
+	assert_eq(a.hull, 80, "its Meteor lands on the machine that killed it at once")
+	assert_eq(b.shield, 0, "a shield takes it on the other")
+	assert_eq(b.hull, 100, "whole, as a standing shield blocks a blow today")
+	assert_eq(sk.last_acts.size(), 1, "the screen is told")
+	assert_eq(sk.last_acts[0]["mechs"], [0, 1], "which machines it struck")
+	assert_true("\n".join(sk.log).contains("its last act lands: Meteor"), "the log says so")
+
+
+func test_the_last_foes_last_act_lands_even_as_the_fight_is_won() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(40, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_foes([_meteor_beast()])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.front[0]), "the last foe falls")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "the fight is won")
+	assert_eq(a.hull, 80, "and the Meteor still landed: damage sticks for the battle")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_meteor_beast(), sk))), sk)
+	assert_eq(str(trip.last_act().get("name", "")), "Meteor", "a save keeps its last act")
+	assert_eq(int(trip.last_act().get("strikes", 0)), 1, "a whole number of strikes")
 
 
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:

@@ -1,0 +1,146 @@
+{
+ "_about": "Art subjects ahead of content (15 October): the bosses, elites and summons Ryan marked in chat (docs/bosses_proposal.md), rendered for his picks before their kits land. Each moves into content/foes.json with its kit once he has marked it, and content wins on an id both hold. The forge reads the same fields it reads from content (id, name, faction, size, design.sprite, design.variants), and design.where and design.look stand in for the domain's when a subject belongs to none (the summons). Names are working names.",
+ "entries": [
+  {
+   "id": "behemoth",
+   "name": "Behemoth",
+   "faction": "peak",
+   "size": 2,
+   "design": {
+    "sprite": "a colossal four-legged horned beast of the mountain, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
+    "variants": [
+     "a colossal horned beast of the mountain crouched low and about to charge, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, bellowing with its head raised, a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, roaring with a meteor of fire gathering above its horns, a mane of stone-grey quills, cracks of molten light in its dark hide",
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, pawing the ground with one huge clawed foreleg and a long spiked tail lashing, a mane of stone-grey quills, cracks of molten light in its dark hide"
+    ]
+   }
+  },
+  {
+   "id": "cinder_tortoise",
+   "name": "Cinder Tortoise",
+   "faction": "peak",
+   "size": 2,
+   "design": {
+    "sprite": "a colossal ancient tortoise whose shell is a smoking volcanic cone of black rock with glowing lava seams, its armoured beaked head held low",
+    "variants": [
+     "a colossal ancient tortoise plodding forward with one massive foot raised and its armoured beaked head thrust out, its shell a smoking volcanic cone of black rock with glowing lava seams",
+     "a colossal ancient tortoise withdrawn into its shell, only two glowing eyes showing in the dark opening, lava welling from the volcanic cone of black rock on its back",
+     "a colossal ancient tortoise rearing up on its hind legs to stamp down, the volcanic cone of its shell erupting with fire and ash, its armoured beaked head roaring",
+     "a colossal ancient tortoise snapping its huge beaked jaws with its thick scaled neck stretched out, its shell a smoking volcanic cone of black rock with glowing lava seams"
+    ]
+   }
+  },
+  {
+   "id": "bourgeon",
+   "name": "Bourgeon",
+   "faction": "meadow",
+   "size": 2,
+   "design": {
+    "sprite": "a colossal plant bud as big as a house on a thick writhing stalk, its swollen petals parting around a ring of thorny teeth, root tendrils for legs",
+    "variants": [
+     "a colossal plant bud as big as a house with its petals peeled wide open around a gaping maw ringed with thorny teeth, lunging forward to swallow, its root tendrils clawing the meadow",
+     "a colossal plant bud as big as a house with its petals clamped shut and bulging around something it has swallowed whole, veins pulsing under its green skin, leaning forward on root tendrils",
+     "a colossal plant bud as big as a house on a stalk coiled back to strike like a snake, its petals half open around thorny teeth, vines whipping from its base",
+     "a colossal plant bud as big as a house lashing a flurry of thorned vines from its base in every direction, its petals half open around a ring of thorny teeth, its root tendrils planted wide"
+    ]
+   }
+  },
+  {
+   "id": "matador",
+   "name": "The Matador",
+   "faction": "marsh",
+   "size": 1,
+   "design": {
+    "sprite": "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, a red cape in one bony hand and a slim sword in the other",
+    "variants": [
+     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, sweeping a red cape in a graceful pass with a slim sword held high behind it, its skull tilted with mocking poise",
+     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, poised on its toes with a slim sword aimed straight forward for the killing thrust, a red cape trailing low",
+     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, bowing low with a red cape held out to one side and a slim sword at its hip, its eye sockets glowing",
+     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, spinning mid-flourish so a red cape flares in a wide arc and a slim sword flashes"
+    ]
+   }
+  },
+  {
+   "id": "fallen_weapon",
+   "name": "The Fallen Weapon",
+   "faction": "waste",
+   "size": 2,
+   "design": {
+    "sprite": "a colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end",
+    "variants": [
+     "a colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end, cracked earth heaved up around its buried haft",
+     "a colossal war hammer alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a blunt face and a curved pick on its iron head, a glaring eye set into each end, dust swirling around it",
+     "a colossal double-bitted battle axe standing haft-down in the badlands like a monument, its two crescent blades spread like wings, a glaring eye set into each blade, cracked earth heaved up around its buried haft",
+     "a colossal double-bitted battle axe alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it"
+    ]
+   }
+  },
+  {
+   "id": "reaper",
+   "name": "The Reaper",
+   "faction": "marsh",
+   "size": 1,
+   "design": {
+    "sprite": "a gaunt reaper in a tattered black shroud wrapped in rattling chains, a bone-white mask for a face, a great scythe",
+    "variants": [
+     "a gaunt reaper in a tattered black shroud gliding forward with a great scythe swept back for a killing stroke, chains trailing behind it, a bone-white mask for a face",
+     "a gaunt reaper in a tattered black shroud looming tall with a great scythe held upright beside it, chains hanging from its arms, cold light in the eyeholes of its bone-white mask",
+     "a gaunt reaper in a tattered black shroud lunging low with the blade of a great scythe hooked forward, chains whipping out from its sleeves, a bone-white mask for a face",
+     "a gaunt reaper in a tattered black shroud raising one skeletal hand that trails a length of chain, a great scythe resting on its shoulder, a bone-white mask for a face"
+    ]
+   }
+  },
+  {
+   "id": "surtr",
+   "name": "Surtr",
+   "faction": "",
+   "size": 2,
+   "design": {
+    "where": "the Summoner's rune circle",
+    "look": "lit from inside by heat, black rock and embers",
+    "sprite": "a towering giant of black stone and living flame with a crown of fire, a burning sword held low, its eyes like furnace mouths",
+    "variants": [
+     "a towering giant of black stone and living flame with a crown of fire, raising a burning sword overhead to bring it down, flames pouring off its stone shoulders",
+     "a towering giant of black stone and living flame with a crown of fire, striding forward out of a deep violet rune circle on the ground, a burning sword trailing fire behind it",
+     "a towering giant of black stone and living flame with a crown of fire, sweeping a burning sword in a wide arc that throws a wall of fire",
+     "a towering giant of black stone and living flame with a crown of fire, kneeling to plant a burning sword in the ground, fire racing out from the blade in every direction"
+    ]
+   }
+  },
+  {
+   "id": "skadi",
+   "name": "Skaði",
+   "faction": "",
+   "size": 2,
+   "design": {
+    "where": "the Summoner's rune circle",
+    "look": "a winter mountain under a hard cold sky",
+    "sprite": "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, a great hunting bow of black yew in one hand",
+    "variants": [
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, drawing a great bow of black yew with an arrow of ice nocked, her long pale braids rimed with frost and snow streaming off her shoulders",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, striding out of a deep violet rune circle on long skis of bone, a great bow of black yew slung across her back and a blizzard at her heels",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, raising one hand into a storm of glittering ice crystals, a great bow of black yew held low in the other, her long pale braids rimed with frost",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, loosing a volley of ice arrows that burst into frost, her long pale braids and white fur cloak streaming in the cold wind"
+    ]
+   }
+  },
+  {
+   "id": "fafnir",
+   "name": "Fáfnir",
+   "faction": "",
+   "size": 2,
+   "design": {
+    "where": "the Summoner's rune circle",
+    "look": "a dark cavern lit by cursed gold",
+    "sprite": "a vast wingless serpent of the old sagas with no hind legs, two short clawed forelegs and a horned head, its long scaled body heaped in loops over a hoard of cursed gold, venom dripping from its jaws",
+    "variants": [
+     "a vast wingless wyrm of the old sagas coiled over a hoard of cursed gold, its long scaled body heaped in loops, its horned head reared back and venom dripping from its jaws",
+     "a vast wingless serpent of the old sagas with no hind legs, its long scaled body rising in coils out of a deep violet rune circle, two short clawed forelegs gripping the rim, a horned head with venom smoking on its fangs",
+     "a vast wingless serpent of the old sagas with no hind legs, coiled tight on a hoard of gold coins and a cursed ring, spewing a stream of black venom that smokes like acid from its horned head",
+     "a vast wingless serpent of the old sagas with no hind legs, slithering forward low to the ground like a snake, its long scaled body trailing behind in loops, two short clawed forelegs, its eyes burning gold and venom dripping from its jaws"
+    ]
+   }
+  }
+ ]
+}

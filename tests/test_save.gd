@@ -169,6 +169,28 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	assert_eq(back.actions_left(back.field.unit_by_id(m.id)), b.actions_left(m), "and the machine spent alike")
 
 
+func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
+	# A fight resumed mid-way plays on alike: the plaque's boss (the content's word since 15
+	# October), a splitter's summon and a foe gone whole all ride in the save.
+	var sk := Skirmish.new(1)
+	var boss := Foe.make("warden", 100, 20)
+	boss.boss = true
+	var splitter := Foe.make("blob", 40, 10)
+	splitter.on_death = {"summon": "blob_half", "count": 2}
+	var gone := Foe.make("cinder", 30, 10)
+	gone.stays_down = true
+	var trip := func(f: Foe) -> Foe: return SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(f, sk))), sk)
+	assert_true((trip.call(boss) as Foe).boss, "the boss stays the boss, human-sized")
+	var split: Foe = trip.call(splitter)
+	assert_eq(str(split.on_death.get("summon", "")), "blob_half", "the splitter still splits")
+	assert_eq(split.on_death.get("count", 0), 2, "into as many, a whole number")
+	assert_true((trip.call(gone) as Foe).stays_down, "a foe gone whole stays down")
+	var old := SaveGame._foe_dict(Foe.make("old", 100, 20), sk)
+	old.erase("boss")
+	old["size"] = 2
+	assert_true(SaveGame._foe_from(old, sk).boss, "a save from before 15 October marks its massive foe the boss, as it played")
+
+
 func test_damage_and_statuses_survive_the_trip() -> void:
 	var b := _battle(4)
 	var m: Unit = b.mechs()[0]

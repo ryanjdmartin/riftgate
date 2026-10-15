@@ -37,7 +37,7 @@ var H := BASE_H
 var BACK_Y := 72.0    # the foes' ground starts 14 above: 16 px of black under the header (Ryan, 23 September)
 var FRONT_Y := 266.0
 const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + a 72x96 foe at two device pixels a pixel on the 1080 phone (96x128 design) + chip row 38
-const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 elites across both ranks, the same way
+const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 massive foes across both ranks, the same way
 var EYE_Y := 510.0   # 12 px into the black under the foes' ground, the same as its margin from the right edge
 const EYE := 60.0
 var LOG_Y := 508.0
@@ -237,7 +237,7 @@ func _ready() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
 ## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team;
-## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
+## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
 	var s := Skirmish.new(7, int(OS.get_environment("RIFTGATE_COLUMNS")) if not OS.get_environment("RIFTGATE_COLUMNS").is_empty() else Skirmish.DEFAULT_COLUMNS)
@@ -284,7 +284,7 @@ static func _default_skirmish() -> Skirmish:
 		var sq := Unit.pack(uid, "%s pack" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
 		s.add_foes(db.foes_for(sq), sq)
 		uid += 1
-	if OS.get_environment("RIFTGATE_ELITE") == "1":
+	if OS.get_environment("RIFTGATE_BOSS") == "1":
 		var boss := db.make_boss(uid, fac)
 		s.add_foes(db.foes_for(boss), boss)
 	return s
@@ -912,8 +912,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# strike or a breach; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
-	v.intent_value = foe.damage() if foe.attacks() else int(foe.action.get("value", 0))
-	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if foe.attacks() else ""
+	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
+	var blow := foe.attacks() or foe.gathering()
+	v.intent_value = foe.damage() if blow else int(foe.action.get("value", 0))
+	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if blow else ""
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
@@ -928,6 +930,18 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if not foe.last_act().is_empty():
+		# A last act (15 October): the skull and what it lands the moment the foe falls.
+		var la := foe.last_act()
+		rows.append(["skull", str(foe.damage_of(la)), "Its last act: %s, %d %s, the moment it falls" % [str(la.get("name", "")), foe.damage_of(la), "at every machine" if Array(la.get("keywords", [])).has("all") else "at its pick"], Palette.ENEMY])
+	if Effects.has(foe, "guarded"):
+		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
+		# shows has a reason on the foe itself.
+		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), Palette.HUD])
+	if foe.gathering():
+		# A countdown (15 October): the warning glyph and the rounds before it lands.
+		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
+		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
 	if Effects.has(foe, "folded"):
 		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
@@ -1041,7 +1055,7 @@ func _refresh_arrows() -> void:
 			continue
 		# A blow at every machine (`all`) draws an arrow to each live machine.
 		var targets: Array[int] = []
-		if foe.hits_all():
+		if foe.reaches_every_machine():
 			for i in range(sk.mechs.size()):
 				if sk.mechs[i].alive():
 					targets.append(i)
@@ -1172,13 +1186,17 @@ func _on_foe_held(v: UnitView) -> void:
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
 	if not foe.alive():
 		text += "\ndestroyed: cleared at the end of the round"
-	else:
+	elif not foe.is_suppressed():
+		# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed row
+		# below says what it does this round, as the chip does under its sprite.
 		if not foe.action.is_empty():
-			if foe.attacks():
+			if foe.gathering():
+				text += "\n%s %d%s, lands %s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note, "next round" if foe.charge == 1 else "in %d rounds" % foe.charge]
+			elif foe.attacks():
 				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
 			else:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
-		if foe.target != null and foe.hits_all():
+		if foe.target != null and foe.reaches_every_machine():
 			text += "\n→ every machine"
 		elif foe.target != null:
 			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]
@@ -1445,6 +1463,16 @@ func _use_die(i: int, target) -> bool:
 			var w: Array = was[dead[k]]
 			_animate_death(w[0], w[1], w[2], w[3], landed)
 			Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
+		# A last act (15 October): it lands as its foe falls, so the plaque names it after the
+		# death and the machines it struck take it.
+		if is_inside_tree():
+			for act in sk.last_acts:
+				var tw2 := create_tween()
+				tw2.tween_interval(landed + 0.35)
+				tw2.tween_callback(_announce.bind(str(act["name"])))
+				for mi in act["mechs"]:
+					if int(mi) >= 0 and int(mi) < _mech_views.size():
+						tw2.tween_callback(_animate_hit.bind(_mech_views[int(mi)], 0.1))
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow

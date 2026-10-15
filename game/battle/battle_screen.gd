@@ -597,8 +597,11 @@ func _on_unit_held(u: Unit) -> void:
 	else:
 		var db := ContentDB.load_default()
 		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
-		if u.elite:
-			text = "%s\nmassive · ring %d · %s" % [u.display_name, u.zone, _behaviour_text(u)]
+		if u.is_boss:
+			# The boss's size is its own (content), apart from its being the boss (15 October).
+			var boss_id := str(db.factions.get(u.faction, {}).get("boss", ""))
+			var massive := int(db.foes.get(boss_id, {}).get("size", 1)) >= 2
+			text = "%s\nboss%s · ring %d · %s" % [u.display_name, " · massive" if massive else "", u.zone, _behaviour_text(u)]
 		else:
 			text = "%s\n%s ×%d · move %d · ring %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, _behaviour_text(u)]
 	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
@@ -606,7 +609,7 @@ func _on_unit_held(u: Unit) -> void:
 
 ## What a pack is doing, in the hold's words: the two behaviours (bible section 5).
 func _behaviour_text(u: Unit) -> String:
-	if u.elite and u.strength == 0:
+	if u.is_boss and u.strength == 0:
 		return "holds the rift"
 	match u.behaviour:
 		"hunt":
@@ -716,7 +719,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.elite else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
 	return entry
 
 

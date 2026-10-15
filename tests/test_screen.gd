@@ -4,7 +4,7 @@ extends TestCase
 ## script error in the UI layer fails the suite instead of waiting for someone to tap it.
 
 
-func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
+func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(seed_value)
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
@@ -13,9 +13,8 @@ func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	sk.add_foes(db.foes_for(ghouls), ghouls)
 	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 20, 2, "ghost")
 	sk.add_foes(db.foes_for(necros), necros)
-	if elite:
-		var boss := Unit.boss(3, "colossus", Vector2i.ZERO, "marsh")
-		sk.add_foes(db.foes_for(boss), boss)
+	if massive != null:
+		sk.add_foes([massive])
 	var screen := SkirmishScreen.new()
 	screen.setup(sk)
 	return screen
@@ -266,15 +265,18 @@ func test_exposed_marker_appears_when_front_dies() -> void:
 	s.free()
 
 
-func test_massive_elite_uses_the_tall_view() -> void:
-	var s := _screen(3, true)
+func test_a_massive_foe_uses_the_tall_view() -> void:
+	# Size, never the role: big is an attribute of any tier (15 October), so a synthetic one.
+	var big := Foe.make("colossus", 140, 30)
+	big.size = 2
+	var s := _screen(3, big)
 	var massive_cols := 0
 	for col in range(3):
 		if s._massive_views[col].visible:
 			massive_cols += 1
 			assert_false(s._slot_views[0][col].visible, "slot views hidden under a massive foe")
 			assert_false(s._slot_views[1][col].visible, "both of them")
-	assert_eq(massive_cols, 1, "one column shows the massive elite")
+	assert_eq(massive_cols, 1, "one column shows the massive foe")
 	s.free()
 
 
@@ -333,6 +335,32 @@ func test_a_killed_foe_shows_no_intent_and_no_arrow() -> void:
 	assert_eq(sk.front[0], null, "the kill cleared its slot at once")
 	assert_eq(s._foe_view_for(first), null, "no view holds it any more")
 	assert_eq(s._arrows.arrows.size(), 1, "its arrow is gone")
+	s.free()
+
+
+func test_a_suppressed_foe_shows_its_chip_in_place_of_its_intent() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(5, Face.Reach.DIRECT, Face.Keyword.SUPPRESS))
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	s._toggle_all_arrows(true)
+	var first: Foe = sk.front[0]
+	var v := s._foe_view_for(first)
+	assert_eq(v.intent_kind, "attack", "it shows its blow before the spend")
+	s._use_die(0, first)
+	assert_true(first.alive() and first.is_suppressed(), "struck and suppressed, still standing")
+	assert_eq(v.intent_kind, "", "its intent clears")
+	assert_eq(str(v.statuses[0][0]), "suppress", "the Suppressed chip leads the row in its place")
+	assert_eq(s._arrows.arrows.size(), 1, "only the other foe's arrow stays")
+	s._on_foe_held(v)
+	var text := s._details_label.text
+	assert_false(text.contains("→"), "the hold names no target")
+	assert_false(text.contains("%s %d" % [str(first.action.get("name", "")), first.damage()]), "nor the blow it will not land")
+	s._on_hold_released()
 	s.free()
 
 

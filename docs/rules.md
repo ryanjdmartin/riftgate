@@ -251,7 +251,11 @@ Burning, Suppressed, Shocked or Paradox.
 - **Its move**: from the moves whose conditions hold, weighted (attacks 2, specials 1), never
   the same special twice running while anything else is open. Conditions: below half, hurt,
   fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
-  machine showing an intact weapon, a foe behind it, another foe on the field.
+  machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
+  hurt. A move may
+  carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
+  hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
+  breaks it off, and the foe stays on the field.
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
   machine showing an intact weapon), focus (its rank shares one pick). A move may carry its
@@ -263,9 +267,19 @@ Burning, Suppressed, Shocked or Paradox.
   Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
-- **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
+- **A special** replaces the blow: harden, regrow (heals its value), cure (the most hurt of its
+  own, itself included, heals its value), protect (armour on every foe in the fight through the
+  next round), revive once, summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
-  Scorched on every machine), disable.
+  Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
+  disable.
+- **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
+  riders, every machine included), before anything else and even when it was the last foe,
+  since damage sticks for the battle.
+- **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
+  core from taking any damage while all its parts stand, or while any does (Guarded); a part
+  that falls may grow back after so many rounds while the core stands; a core that falls takes
+  its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included); a suppressed foe does nothing.

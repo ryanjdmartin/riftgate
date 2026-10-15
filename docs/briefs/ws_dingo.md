@@ -3,10 +3,10 @@
 The session settles the Dingo after its harpoon's change: its tier, and its die as a team
 piece.
 
-**Status**: rework; the harpoon's Shock decided (Ryan, 14 October), the tier open. **Maker**:
-Wainwright & Sutler. **Proposed tier**: one or two. **Read first**: `docs/briefs/README.md`;
-`docs/roster_analysis.md` section 2 (the Dingo's rating); the bible's rows on
-the cars (section 7); `content/chassis.json` (dingo) and `content/components.json`
+**Status**: rework; the harpoon's Shock in content (Ryan, 14 October; built 15 October), the
+tier open. **Maker**: Wainwright & Sutler. **Proposed tier**: one or two. **Read first**:
+`docs/briefs/README.md`; `docs/roster_analysis.md` section 2 (the Dingo's rating); the bible's
+rows on the cars (section 7); `content/chassis.json` (dingo) and `content/components.json`
 (megataser_harpoon).
 
 ## What is decided
@@ -15,7 +15,7 @@ The Megataser Harpoon carries Shock in place of Suppress (Ryan, 14 October: "Din
 change it, and im not sure about the tier decision"). The pack animal tases the foe its ally is
 about to eat, and the ally's blow lands double: the first locked piece that amplifies for
 others, and the Baboon's meter still counts it. It takes the only hard-control piece off a
-tier-one chassis without a rule. With the stock pass.
+tier-one chassis without a rule. In content since 15 October, ahead of the stock pass.
 
 ## Its tier
 

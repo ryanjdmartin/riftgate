@@ -681,9 +681,9 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A barbed dart on a cable and a capacitor the size of the car. Whatever it pins stops.",
-    "niche": "The Dingo's locked support: a cheap pin for the foe an ally is about to eat.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "fantasy": "A barbed dart on a cable and a capacitor the size of the car. Whatever it pins takes the next blow double.",
+    "niche": "The Dingo's locked support: a cheap Shock on the foe an ally is about to eat, so the ally's blow lands double.",
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 14 October (Ryan, the go on the roster analysis): Shock in place of Suppress, the first locked piece that amplifies for others, and the only hard control on a tier-one chassis gone (docs/briefs/ws_dingo.md)."
    },
    "face": {
     "kind": "attack",
@@ -691,7 +691,7 @@
     "power": 5,
     "power_max": 10,
     "keywords": [
-     "suppress"
+     "shock"
     ],
     "heat": 10
    },
@@ -1111,7 +1111,7 @@
     "stage": "draft",
     "fantasy": "Heat condensed and thrown away. Nobody outside the Arsenal knows where.",
     "niche": "The Arsenal's vent: the biggest number, paid in hull, and on the Nemesis every vent is a Crucible stack.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 12 October (Ryan): the twist, so the Arsenal's equipment is its biggest number paid in hull like the Oblation Ward: 40 with volatile (a plain 30 before)."
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 12 October (Ryan): the twist, so the Arsenal's equipment is its biggest number paid in hull like the Oblation Mantle: 40 with volatile (a plain 30 before)."
    },
    "face": {
     "kind": "vent",
@@ -1366,7 +1366,7 @@
   },
   {
    "id": "oblation_ward",
-   "name": "Oblation Ward",
+   "name": "Oblation Mantle",
    "maker": "arsenal",
    "shape": "dish",
    "codex": "",
@@ -1375,7 +1375,7 @@
     "stage": "draft",
     "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
     "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
-    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. A projector since 9 October (Ryan: plating belongs in modules, a hardpoint carries something mounted), its shape a dish and its fantasy no longer plating. On the Nemesis in place of its Ward Plate as well."
+    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. A projector since 9 October (Ryan: plating belongs in modules, a hardpoint carries something mounted), its shape a dish and its fantasy no longer plating. On the Nemesis in place of its Ward Plate as well. 15 October (Ryan): renamed the Oblation Mantle from the Oblation Ward, Ward being the buff's word (the bible's Barrier and Ward row); the id stays, as the Bone Wyvern's did."
    },
    "face": {
     "kind": "shield",

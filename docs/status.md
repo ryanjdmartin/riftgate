@@ -14,8 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 447 tests, 19,679 checks, green on main (15 October, run again on the roster
-  analysis's branch before it merged). A cloud session fetches
+- Tests: 462 tests, 19,765 checks, green on main (15 October, the boss mechanics).
+  A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -24,6 +24,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
+  harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
+  below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
 - `ccr-777fd46a-32dw2m` (the roster analysis, Ryan's go on it, the design-session briefs and
   the records' cleanup) merged into main on 15 October, with `ccr-3d9861dc-mp0v3w` (the
   analysis's brief) beneath it: both safe to delete.
@@ -101,10 +104,26 @@ document's job and every command are in `README.md`.
   game (the promoted forms are not entries); staff fingers on the White and Black Mage and
   the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
   Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
-- Built 15 October: a foe's blow at every machine (`all` on an attack move: each strike on each
-  live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
-  each). No foe carries it; the foe kit refresh places it. The bosses' slate and Ryan's marks so
-  far are `docs/bosses_proposal.md`.
+- Built 15 October: a foe's blow at every machine (`all`: each strike on each live machine,
+  arrows to every machine, the plaque naming it once, the bot counting it on each), carried by
+  the four storms since the foe kit refresh (Root Storm, Quake, Bone Storm, Cleave); and the
+  boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
+  in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
+  the moment a foe falls), foes helping foes (a cure and a protect; the White Mage carries
+  Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
+  full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
+  boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
+  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Bourgeon. The bosses' slate and Ryan's marks
+  are `docs/bosses_proposal.md`.
+- Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
+  (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
+  place of Suppress; a suppressed foe's hold readout names no blow and no target (its glyph,
+  arrow and forecast already cleared, the Suppressed chip leading its row); a boss is the
+  content's word whatever its size (`Foe.boss` from a faction's `boss`, the plaque reading it,
+  the validator no longer asking a boss to be massive but refusing a hero as one), the boss
+  pack `Unit.is_boss` (a save that says `elite` still loads), `RIFTGATE_BOSS=1` in place of
+  `RIFTGATE_ELITE=1`; and a fight resumed from a save keeps a foe's boss, a Gel's split and a
+  foe gone whole (all three were lost on the trip).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -140,9 +159,9 @@ document's job and every command are in `README.md`.
 - The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): a shield
   absorbs its number and the excess passes to the hull, a breach ignores the shield, an injury
   counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
-  pieces (Rapid as a cooldown of one); the Dingo's harpoon carrying Shock; Misharu's payoff
-  Penance; the Oblation Mantle and the Votive Screen; Kestrel's strafer and bomber; a suppressed
-  foe's intent line clears. The engine work is on the to-do. The budgets (15 October): adding
+  pieces (Rapid as a cooldown of one); Misharu's payoff Penance; the Votive Screen's name;
+  Kestrel's strafer and bomber (the harpoon's Shock, the Oblation Mantle and the cleared
+  intent built 15 October). The engine work is on the to-do. The budgets (15 October): adding
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
@@ -197,18 +216,33 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.171 (15 October), main's file since
-  the roster analysis's branch merged that day: the budgets decided, the maker rows pointing at
-  the briefs, the proposal files retired, the Faraday Hull's move, the cooldown cap struck.
+  `docs/design-bible.html` after every change. Live: v0.178 (15 October), main's file: the
+  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
+  rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
+  Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
+  in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
+  summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
+  heroes' tropes from beyond Final Fantasy. The live page also carries two changes from the
+  branch `claude/zealous-cori-8xoly7` (its v0.177: the Boar's later strikes spilling, Chain's
+  rework in section 12), which reach main's file when that branch merges.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content.
-  Its database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens
-  only from the personal account and was not read on 13 October.
+  files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
+  only the four content files that had moved since 13 October (chassis, components, foes,
+  vocabulary), the page, the models and the renders checked unchanged and kept; again that
+  evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
+  and Skaði. Its database
+  (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
+  personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the 13 October round: the fixes, the Treant's and the Needler's takes, the heroes.
+  It holds the boss art round (15 October): the first round's six sets that stand (the
+  Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
+  Reaper, Surtr) and the third (Skaði, Fáfnir, Bourgeon with its swallow and vines), built by
+  `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
+  misses sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

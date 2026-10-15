@@ -217,7 +217,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "elite": u.elite, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged,
 	}
@@ -252,7 +252,7 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.prey = int(d.get("prey", 0))
 	u.zone = int(d.get("zone", 1))
 	u.attack_range = int(d.get("attack_range", 2))
-	u.elite = bool(d.get("elite", false))
+	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
 	var faces = d.get("die", null)
 	if faces is Array:
 		var list: Array = []
@@ -414,6 +414,9 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
+		"boss": f.boss, "on_death": f.on_death, "stays_down": f.stays_down,
+		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
+		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 	}
 
 
@@ -431,10 +434,17 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.last_special = str(d.get("last_special", ""))
 	f.kin = int(d.get("kin", 0))
+	f.boss = bool(d.get("boss", f.size >= 2))   # a save from before 15 October read a massive foe as the boss
+	var od = d.get("on_death", {})
+	if od is Dictionary and od.has("summon"):
+		f.on_death = {"summon": str(od["summon"]), "count": maxi(1, int(od.get("count", 1)))}
+	if od is Dictionary and od.get("blow", null) is Dictionary:
+		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October)
+	f.stays_down = bool(d.get("stays_down", false))
 	f.actions = []
 	for a in d.get("actions", []):
 		var act: Dictionary = a.duplicate()
-		for key in ["strikes", "weight", "swarm", "value", "count"]:
+		for key in ["strikes", "weight", "swarm", "value", "count", "countdown"]:
 			if act.has(key):
 				act[key] = int(act[key])
 		f.actions.append(act)
@@ -446,6 +456,14 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.target = sk.mechs[ti] if ti >= 0 and ti < sk.mechs.size() else null
 	var ai := int(d.get("action", -1))
 	f.action = f.actions[ai] if ai >= 0 and ai < f.actions.size() else f.actions[0]
+	f.part_ids = Array(d.get("part_ids", [])).map(func(x): return str(x))   # a boss in parts (15 October)
+	f.guard = str(d.get("guard", ""))
+	f.regrow_parts = int(d.get("regrow_parts", 0))
+	f.regrow_due = Array(d.get("regrow_due", [])).map(func(x): return [str(x[0]), int(x[1])])
+	var pi := int(d.get("pending", -1))   # a countdown move it was gathering (15 October)
+	if pi >= 0 and pi < f.actions.size():
+		f.pending = f.actions[pi]
+		f.charge = int(d.get("charge", 0))
 	for md in d.get("modifiers", []):
 		f.modifiers.append(_modifier_from(md))
 	return f
