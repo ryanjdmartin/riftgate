@@ -66,7 +66,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The balance runner's module rows: `--module` and `--rows` built 11 October; a fitted cell beside the stock one in the report is next, read for a reach premium (the Booster and the Databank measured even, 11 October)
 - [ ] A delayed stun's timer on the foe's chip, once the funnel-web lands (a suppressed foe's intent clears everywhere since 15 October, its Suppressed chip in its place)
 - [ ] The greedy bot's valuation of support (`shield_score` counts the hull saved this round, not the blow turned next round; a status laid for an ally and a second action on the map count for nothing), before the runner is asked about any support frame
-- [ ] The bot's valuations for the mechanics the built proposals need before the runner reads them (a weaken, a doubling, a turn of the ranks, a wound and its curse, the boiler's blast, an ambush and its venom, a delayed stun, a mine, a lure and rerolls for others, a lent die, a combo), or the rollout rung; until then the runner's verdict on them is a verdict on the bot and the evaluation says so
+- [ ] The bot's valuations for the mechanics the built proposals need before the runner reads them (a weaken, a doubling, a turn of the ranks, a wound and its curse, the boiler's blast, an ambush and its venom, a delayed stun, a mine, a lure and rerolls for others, a lent die, a combo), or the rollout rung; until then the runner's verdict on them is a verdict on the bot and the evaluation says so; and the boss mechanics of 15 October (a countdown it could break off, a core to open first, a last act a kill sets off)
 - [ ] The domains' engine gaps: a flee (the Needler's Scatter, the Thief's Flee), a foe-side interpose (the Warrior's Cover) and retaliate (the Martial Artist's Counter, the Salamander's Ember Hide), a self-damage rider (the Necromancer), a rare pack that flees on the map (the Gold Bug), the Mimic as loot, placement and the bleed by domain
 - [x] The foe kit refresh's storms (Ryan, 15 October): Root Storm, Quake, Bone Storm and Cleave each one blow on every machine at the factor its three shared; more where a foe's fantasy calls for one, proposed in chat first
 - [ ] The party in `sim/campaign.gd`: the deal from each domain's `bench`, the party card, a domain's final against its dealt hero with its wildlife, the promoted form at the finale, the runner's party cell; a final counts only when the hero dies
@@ -93,6 +93,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 
 ## Art
 
+- [ ] The boss art round (15 October, on the picker): Ryan's picks of the nine draft sets cut, the hammer or the axe settled; each boss's kit proposed in chat before it moves from `tools/foeforge/drafts.json` into content; a summon's moment on the skirmish screen, its sprite rising from the circle for its move
 - [ ] Aphelion's thrusters as a model brief, how they look (the bible's makers table, section 7: it flies on thrusters and space-age rockets rather than rotors, "as a general rule", Ryan, 12 October; the Stingray's flush fans are its own silhouette)
 - [ ] New foe types from the candidates Ryan marked, once he decides them (section 12)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen

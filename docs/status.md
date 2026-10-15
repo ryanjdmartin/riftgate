@@ -14,7 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 451 tests, 19,697 checks, green on main (15 October, the small-work pass merged).
+- Tests: 462 tests, 19,765 checks, green on main (15 October, the boss mechanics).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -104,10 +104,17 @@ document's job and every command are in `README.md`.
   game (the promoted forms are not entries); staff fingers on the White and Black Mage and
   the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
   Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
-- Built 15 October: a foe's blow at every machine (`all` on an attack move: each strike on each
-  live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
-  each). No foe carries it; the foe kit refresh places it. The bosses' slate and Ryan's marks so
-  far are `docs/bosses_proposal.md`.
+- Built 15 October: a foe's blow at every machine (`all`: each strike on each live machine,
+  arrows to every machine, the plaque naming it once, the bot counting it on each), carried by
+  the four storms since the foe kit refresh (Root Storm, Quake, Bone Storm, Cleave); and the
+  boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
+  in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
+  the moment a foe falls), foes helping foes (a cure and a protect; the White Mage's stay
+  planned until Ryan picks its three moves, section 12). The Summoner's summons are its moves
+  (Yuki-onna's frostbite, Surtr's Pyroclasm; working names; the Golem no longer called). The
+  boss art round is on the picker: nine sets from `tools/foeforge/drafts.json` (art ahead of
+  content), the Fallen Weapon drawn as hammer and as axe. The bosses' slate and Ryan's marks
+  are `docs/bosses_proposal.md`.
 - Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
   (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
   place of Suppress; a suppressed foe's hold readout names no blow and no target (its glyph,
