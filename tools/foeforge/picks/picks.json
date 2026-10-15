@@ -285,27 +285,27 @@
     "thief": {
       "foe": "thief",
       "role": "promoted",
-      "candidate": 2,
-      "source": "out/thief_fix/thief_2.png",
+      "candidate": 11,
+      "source": "out/thief_takesO/thief_11.png",
       "kept": "picks/thief_promoted.png",
       "prompt": "A wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Thief, a hero of the party who comes out of the desert. The party's quick one: Steals, mugs, and gets away. Light: sun-bleached and dusty, hard desert light.",
-      "fix": {
-        "from": "out/thief_takesF/thief_1.png",
-        "asked": "she holds one straight dagger in each hand, gripped firmly in her fists, both blades clearly visible against her body."
-      },
-      "note": "2 is the closest, but the leftmost dagger looks like a tiny sword with a way too long hilt instead of a dagger, and the right needs to be rotated so it faces point to the right and down, reverse grip in her fist."
+      "note": "Both fists wrapped round the daggers, rendered fresh; Ryan's pick of 15 October"
     },
     "lancer_chibi": {
       "foe": "lancer",
       "role": "chibi",
-      "candidate": 10,
-      "source": "out/lancer_chibi_takesN/lancer_10.png",
+      "candidate": 1,
+      "source": "out/lancer_chibi_tailfix/lancer_1.png",
       "kept": "picks/lancer_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, standing straight, holding a short spear upright beside her, the spear no taller than she is, its head level with the top of her helmet.",
       "cut": {
         "height": 42
       },
-      "note": "Her tail is back, needs to go (the edit model next)"
+      "note": "Short spear, no tail; Ryan's pick of 15 October",
+      "fix": {
+        "from": "out/lancer_chibi_takesN/lancer_10.png",
+        "asked": "the tail hanging behind her is gone; nothing trails behind her back or legs."
+      }
     },
     "lancer": {
       "foe": "lancer",
@@ -374,7 +374,7 @@
       "cut": {
         "height": 42
       },
-      "note": "Now it's a tiny little rod, it just needed a little shorter fire at the top. Like very little shorter (takes N; takes O next, the staff at hat-brim height)"
+      "note": "He's just got a tiny flame now (takes O); the original pick's flame edited a little shorter instead"
     },
     "black_mage": {
       "foe": "black_mage",
