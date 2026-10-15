@@ -6,6 +6,45 @@ never reached the records, so this file holds the slate until Ryan has marked al
 its picks become content and bible rows, and the file retires (git keeps it). Names are
 working names, and everything here is Ryan's to move.
 
+## Ryan's direction (15 October, under discussion)
+
+- The rank and file are the genre's tropes (goblins, skeletons, ghosts, drakes, slimes,
+  wolves): what exists, tweaked.
+- Size is not boss-ness: a large foe can be an elite, a pack of one. This is a lost line: the
+  bible said "A massive elite may occupy both rank slots of a column" until its 10 October
+  rewrite, and the 9 October domains made each boss "the massive wildlife". The Treant and the
+  Sandworm read as elites, tropes rather than bosses.
+- The finals (the heroes) are homages to the genre's heroes, spread beyond Final Fantasy (the
+  Thief as Persona 5's Joker with a gun, perhaps); the benched ideas in the same vein.
+- The sub-bosses, three a domain, are a who's who of the genre's iconic bosses, without their
+  mechanics for now (the Reaper chasing the party), and never a story's final boss (no
+  Sephiroth, no Paintress, no Lavos).
+
+Claude's holes, in chat the same day:
+
+1. By the test, the Bone Wyvern and the Magma Golem are tropes too: all four built bosses
+   become elites, their art carried over, and all twelve sub-bosses are new. The Golem is then
+   the lava field's elite, which settles the Summoner.
+2. The genre's signature monsters (the Behemoth, the Malboro, the Tonberry, the Adamantoise)
+   are field monsters in their own games, neither tropes nor bosses: elites if big, wildlife if
+   small (as the Bomb and the Needler are). The sub-bosses are named bosses: the Phantom Train,
+   Giga Gaia, Ultros, Gilgamesh, the Matador.
+3. A boss is recognised by its signature move as much as its look: it brings the move when our
+   vocabulary has it (Meteor a blow at every machine, Bad Breath every rider at once), and
+   anything needing a system of its own waits (the chase, a countdown, a merge, a reflect).
+4. The no-final rule also cuts Giygas; Omega (optional) and Gilgamesh (a mid-game rival) pass.
+   Clair Obscur's homage is then the Mime or a mid-game boss (the Axons, Sirène and Visages, or
+   Évêque, whose Spring Meadows is the Meadow).
+5. Size decouples both ways: a sub-boss may be human-sized (Gilgamesh, the Matador). The engine
+   assumes otherwise in three places: the validator refuses a boss that is not massive
+   (`sim/content_db.gd`), the plaque takes any massive foe's blow for a boss's
+   (`Skirmish._damage_mech`), and the engine's `elite` means the boss pack (`Unit.elite`), a
+   rename before real elites exist.
+6. Joker: a gun overlaps the Gunslinger on the same bench, his signature is the calling card (a
+   warning a turn ahead, as every intent already is), and the Thief's art was just finished.
+
+The slate below predates this direction; it is re-cut by tier once Ryan answers.
+
 ## Standing
 
 | Domain | Boss | State |
