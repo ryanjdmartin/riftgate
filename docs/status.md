@@ -171,9 +171,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.165 (15 October): main's file plus the
+  `docs/design-bible.html` after every change. Live: v0.170 (15 October): main's file plus the
   rows of the cloud branches `ccr-3d9861dc` and `ccr-777fd46a`, which describe rules and code
-  not yet on main (their 0.156 to 0.162 and 0.164 were published from those branches).
+  not yet on main (their 0.156 to 0.162, 0.164 and 0.166 to 0.169 were published from those
+  branches, so main's numbers skip them).
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
