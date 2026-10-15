@@ -1,4 +1,4 @@
-"""Look tests for the Wainwright & Sutler multi-rotor (13 October, docs/ws_chassis_proposal.md):
+"""Look tests for the Wainwright & Sutler multi-rotor (13 October, docs/briefs/ws_multirotor.md):
 three silhouettes in the lowforge register, for Ryan to see before any is chosen
 (docs/looks/ws_multirotor.png). Not content and not in models_low.py: a proposal's look,
 built only by build_look.py. x right, y forward, z up, as in models_low.py."""

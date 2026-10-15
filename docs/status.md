@@ -192,10 +192,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.166 (15 October: the maker rows and
-  section 12 point at the briefs, the proposal files folded into them and retired), from the
+  `docs/design-bible.html` after every change. Live: v0.167 (15 October: the maker rows and
+  section 12 point at the briefs, the proposal files folded into them and retired; the
+  Armadillo's retaliation row carries Ryan's 14 October move of the Faraday Hull), from the
   branch `ccr-777fd46a-32dw2m`, whose file is main's v0.165 (main's every-machine rows on this
-  branch's v0.164) with this change; main must take the branch before its next republish.
+  branch's v0.164) with this pass; main must take the branch before its next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

@@ -227,3 +227,94 @@ battles won (6%), 75% wiped (93%), 3.5 cities fallen a run (3.9), the capital's 
 bot's long solo fights, so about a third of the campaign's fall was the clock; the rest is the
 domains and the solo fights, which the fresh-start session owns. One battle ran 55 phases: a
 stall the runner now shows instead of punishing. Bible section 4.
+
+## 13 October, the gunship's stand-in
+
+**The gunship's tag rows on a stand-in.** Wainwright & Sutler's proposed medium gunship, whose
+fitted weapons raise its numbers by their tags (`docs/briefs/ws_gunship.md`). Measured under the
+whole-block shield rule (a standing shield blocked a whole blow), which changed on 14 October; a
+rerun before the honest shield rule is built still measures the old rule. Every machine alone
+against the twenty packs, greedy, 100 seeds a cell, the mean win %: a row mean over twenty packs
+carries a band of about 3 points, so these are directions, a gap under about 5 points is noise,
+and the bot values these stats through its forecast. The stand-in is the Goshawk's frame (a
+medium flyer with five hardpoints) stripped of its passive and locked piece and set to the
+gunship's placeholder numbers (hull 100, shield 20, armour 0, heat 60, cooling 5) with a
+five-weapon kit; each tag's bonus is a `--bump`, or for Arc's higher top roll the Muzzle
+Velocity Booster with its value set. A lone machine is a diagnostic: teams and whole runs
+decide.
+
+The roster that day, for scale: the Armadillo 92, the Wild Boar 83, the Nemesis 72, the Badger
+70, the Sparrowhawk 68, the Clydesdale 48, the Goshawk 36, the Ammit 34, the Prairie Dog 30, the
+Stingray 26, the Baboon 25, the Dingo 11, the Puffin 11. The stand-in with no bonus: 23 to 28,
+whatever its kit. Prices on it, in hull at its kit's own: armour 5 about 78, 10 about 106, 15
+about 222, 20 about 349 (on five Ballistic guns, steeper as more blows bounce whole); shield
+about 1 a point; a top roll 5 higher 20 to 29 on a rolled kit, 10 about 60, 15 about 100; 5 more
+on every blow 58 to 68. Cooling is worth nothing on a die that never overheats (the Beam, the
+mixed and the Ballistic kits at 60 heat and 5 cooling), up to about 100 hull on a die of the
+hottest pieces (the Overclocked Railgun, the Photosphere Lance, the Meteor Artillery), and
+little more once it pays a round's heat.
+
+The tables tried (a weapon's amounts: Ballistic armour and cooling, Beam shield, Missile hull,
+Arc the others' top roll; move and field recharge are map numbers a fight cannot read):
+
+| Build | None | Low 2, 2, 8, 8, 2 | Mid 3, 2, 12, 12, 3 | Bold 4, 3, 16, 16, 3 | Mid, riders up 3, 4, 12, 12, 5 |
+|---|---|---|---|---|---|
+| Five Ballistic | 28 | 46 | 66 | 84 | 66 |
+| Five Beam | 23 | 27 | 29 | 32 | 29 |
+| Five Missile | 27 | 34 | 39 | 44 | 39 |
+| Two Ballistic, a Missile, a Beam, an Arc | 27 | 42 | 45 | 54 | 50 |
+| Two Ballistic beside three hot energy guns | 28 | 41 | 43 | 47 | 48 |
+| The first mix, its two Ballistic guns Missile too | 27 | 43 | 53 | 65 | 61 |
+| Five Missile and Beam pieces | 27 | 41 | 52 | 59 | 52 |
+| Five Ballistic and Arc pieces | 28 | 46 | 66 | 84 | 66 |
+| Five Ballistic and Beam pieces | 28 | 48 | 74 | 88 | 74 |
+| Five Ballistic and Missile pieces | 28 | 55 | 83 | 92 | 83 |
+| Five Ballistic, Missile and Beam pieces | 28 | 61 | 86 | 95 | 86 |
+
+The riders-up column was run on the three mixes; the rest equal mid by construction (cooling
+buys nothing on a die that does not overheat, and an Arc's roll reaches no Arc weapon). A
+falling ladder on armour (5, 4, 3, 2, 1 a Ballistic weapon, five still 15) was run on the mixes
+too: 57, 52 and 66.
+
+Read: the middle, single-tag weapons in a mix, wins 48 to 50 with the riders up, the
+Clydesdale's 48 and above the medium machines (the Goshawk 36, the Ammit 34). Five of one tag is
+the best at its number: Ballistic in the heavy band (66 at armour 15), Missile 39 with the
+fastest move, Beam 29 alone with the biggest shield, whose worth is the battle (shield returns
+between fights and hull never heals), which one fight cannot see. The warp is armour, not the
+doubles: every steep build is five Ballistic tags, a second tag adding its own row on top (hull
+60 about 17 points, shield 60 about 8), and five Missile and Beam pieces, with no armour,
+win 52. Two two-tag pieces in a mix win 61, about 11 over the plain mix; five pieces sharing two
+tags win 52 to 83, sharing three 86, all under the Armadillo's 92, and Bold's armour 20 puts
+five Ballistic at 84 and the three-tag die at 95, past it. So diminishing returns were not
+needed at these amounts: the riders only a mix uses lift the middle with no caveat (+5 here),
+and the falling ladder lifts the mixes 9 to 12 points with five Ballistic unchanged, at a
+caveat's cost. Read under the honest shield rule, the shield prices and the Beam rows are the
+first to want a rerun.
+
+To reproduce, with the runner as it stands (no code added; about a minute a run on one core;
+point `--out` and `--json` away from `docs/balance.md`):
+
+```sh
+STAND="--rows goshawk --nopassive --set chassis/goshawk/fixed=[] --set chassis/goshawk/hull=100
+  --set chassis/goshawk/shield=20 --set chassis/goshawk/armour=0 --set chassis/goshawk/heat_max=60
+  --set chassis/goshawk/cooling=5"
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 100 \
+  --policies greedy $STAND --set 'chassis/goshawk/loadout=["maxigun","twin_autoguns","slugthrower","rivet_gun","flakshot_repeater"]' \
+  --bump armour:15 --bump cooling:20 --out /tmp/gun.md --json /tmp/gun.json
+```
+
+The kits: five Ballistic (Maxigun, Twin Autoguns, Slugthrower, Rivet Gun, Flakshot Repeater);
+five Beam (Laser Carbine, Enfilade Beam, Zenith Emitter, Umbra Inducer, Photosphere Lance); five
+Missile (Howitzer, Ankle Mortar, Shotfire Rack, Suppression Battery, Incendiary Shells); the
+hottest (Overclocked Railgun, Photosphere Lance, Meteor Artillery, Arc Fault Cannon, Enfilade
+Beam); the first mix (Maxigun, Howitzer, Enfilade Beam, Arc Fault Cannon, Slugthrower); two
+Ballistic beside three hot energy guns (Maxigun, Slugthrower, Photosphere Lance, Enfilade Beam,
+Arc Fault Cannon). The tags stand in by each piece's fantasy until the stock pass assigns them.
+A full die's bonus is the row times the count of its tag, given as `--bump stat:N` (armour,
+cooling, shield, hull); a two-tag piece adds both rows. Arc's row is the Booster fitted with its
+value set, `--module muzzle_velocity_booster --set
+modules/muzzle_velocity_booster/text/effects/0/value=N` (it reaches every rolled weapon, and no
+Arc weapon rolls in these kits). Prices convert a win-rate change to hull by the kit's own runs
+at +20 and +40 hull. The roster's numbers are each machine's row as it stood; a machine's
+passive and locked pieces together are its row against `--nopassive --set
+chassis/<id>/fixed=[]`. Bible section 7 (Wainwright & Sutler's next chassis).

@@ -33,6 +33,11 @@ chat first.
   reopen it), `docs/rules.md` where a rule changes, content with `"status": "planned"` where
   the engine cannot run it yet, the to-do ticked, `docs/status.md` updated, the bible
   republished. Nothing is built before the go.
+- Landing a chassis also takes: its locked pieces in `content/components.json`; a new keyword
+  in `content/vocabulary.json` before its code; engine pieces tested with synthetic passives;
+  a lowforge model with its rig, acts and gait, judged running (a new model kind where the
+  frame needs one); the bible's chassis table and the chassis count in `docs/rules.md`; the
+  hangar page republished; a balance-runner row, read alone as a diagnostic.
 - Sessions run in parallel on this repository: diff a shared file before staging it, and read
   the bible's live page before republishing it (the status says how).
 
@@ -114,12 +119,12 @@ tier three, the Arsenal none, three and three):
 
 ## Budgets (Claude's working rules, not confirmed)
 
-The working rules every brief is read against, and their one home; the bible's section 12
-asks Ryan to confirm or move them. From the roster analysis's section 6: no hard-control piece below tier two, at most one locked
-on a die, at most one hard-control passive a maker (the Paradox is Aphelion's); a new chassis
-earns its place by a new read, a new product, a new price, or by changing what a kind of piece
-does; every passive has two routes in and two payoffs from other makers' pieces; a tier one
-shows its identity with basics alone.
+The working rules every brief is read against, and their one home; the bible's section 12 asks
+Ryan to confirm or move them. From the roster analysis's section 6: no hard-control piece below
+tier two, at most one locked on a die, at most one hard-control passive a maker (the Paradox is
+Aphelion's); a new chassis earns its place by a new read, a new product, a new price, or by
+changing what a kind of piece does; every passive has two routes in and two payoffs from other
+makers' pieces; a tier one shows its identity with basics alone.
 
 ## Roster holes, as the go left them
 
@@ -164,13 +169,75 @@ on our side.
 | `arsenal_mastema.md` | direction | the Arsenal | 3 | the foes' fresh start (riders on machines) |
 | `arsenal_minos.md` | proposal | the Arsenal | 3 | the foes' fresh start (back ranks) |
 
-Not briefed here: the large Aphelion hovercraft (parked by Ryan); the empty slots toward each
-maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
-cooldown, a component for the stock pass, noted in the line frame's brief); the Scapegoat
-Brand (a rare after the vocabulary pass, half of it now Mastema's mover: in Mastema's brief);
-enemy Shock on machines (none today; Claude's lean, if any: on a hero or an elite,
-telegraphed, never the rank and file; the foes' fresh start); the economy items
-(`docs/economy_pass.md`); the engine work (the to-do).
+Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
+each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
+cooldown, a component for the stock pass, noted in the line frame's brief); the Scapegoat Brand
+(a rare after the vocabulary pass, half of it now Mastema's mover: in Mastema's brief); enemy
+Shock on machines (none today; Claude's lean, if any: on a hero or an elite, telegraphed, never
+the rank and file; the foes' fresh start); the economy items (`docs/economy_pass.md`); the
+engine work (the to-do).
+
+## Benches and parked ideas from the retired proposals
+
+Ideas the makers' proposals set aside that belong to no single brief, one line each with what
+set it aside, so Ryan can overrule the reason and not only the idea. A chassis's own bench is
+in its brief; the full rounds are in git (above).
+
+**Aphelion**
+
+- The large hovercraft, parked by Ryan (12 October: "Me trying to fill out the hovercraft
+  roster, but we can park it for now"): proposed at tier two, heavy, hover. Its holes:
+  Aphelion's "high-tech suites over light hulls" against a hover tank, and the Stingray already
+  hovering; it would need a map verb the Carrier does not take (the deck suits a barge).
+- The long guns, parked by Ryan (12 October: "I do like the long-guns ship idea, but
+  considering that it's possible engagement range could change, it would be tough to balance
+  it now"): a machine joining fights three hexes away; attack range is already a number on
+  each unit (`Unit.attack_range`, 2 today).
+
+**The Arsenal** (Claude's, 11 and 12 October)
+
+- Haunted: a striker spends its next blow on the foe beside it; a novel verb (foes turning on
+  each other) that does nothing against a lone boss.
+- The guardian's stay: a blow that would wreck an ally leaves it at 10 hull; rare, binary, and
+  close to the Honey Badger's open identity.
+- The bell tower (medieval): an assault walker with a bell caged on its back, its toll a big
+  indirect blow with Spread, Penetrate and Shock; set aside for the four on 11 October, no
+  other reason recorded.
+- Hubris: strongest whole, weaker as it is hurt; hard to keep from binary.
+- The fate-edited die (eldritch): its blanks reroll free; a stripped die degenerates to one
+  entry.
+- A veil (eldritch): out of the world for a round, waiting on Phased's design line.
+- The Misericorde: the first Onryō's mercy dagger (Direct, flat 10, heat 5, Rapid), free for
+  another Arsenal machine.
+- The four as a set: one for each of Ryan's words (medieval, demonic, eldritch, sinister) and
+  four reads (a shield breaking, a blow reaching hull, a burning death, its own reach); with the
+  Nemesis and the Ammit, three at each of tiers two and three. Pairs to watch: the Votive
+  Screen feeds Misharu (each Screen spent is a fresh shield that may break); Minos lines burning
+  foes up for the Bellows. A team row once the four exist: Misharu baits, Mastema burns, Minos
+  arranges, the Onryō punishes.
+- Retired with the shield rule: the proposal's "only a breach sets off Misharu and the Onryō
+  with one blow"; a breach now breaks no shield, and any blow above the shield breaks it and
+  wounds.
+
+**Wainwright & Sutler** (11 to 13 October; the reasons Claude's unless marked, Ryan's to
+overrule)
+
+- Fighting without having moved gives Spread: set aside, since a map action that buys a fight
+  buff is free.
+- Crags as slow ground: set aside, since a map rule alone is weak.
+- A kill makes a spend Rapid: set aside as an Arsenal machine's shape (the Zoids walker's brief
+  carries it).
+- Every weapon Indirect: set aside as free reach once danger close goes (decided 11 October,
+  not built).
+- Indirect weapons strike twice: set aside as dangerous as written.
+- Shield as a spider's ammunition: set aside while Misharu turned shield into damage; Misharu's
+  payoff is now Penance (Ryan, 14 October), so the idea is free again.
+- Debuffs as the gunship's sights and the fan-boat's drift: set aside (Ryan, 12 October:
+  statuses are Aphelion's strength, and a gunship is about its weapons; 13 October: statuses are
+  never Aphelion's alone).
+- Two tests from those rounds (Claude's, 13 October): a passive that is pure upside with no
+  interest fails (the fan-boat's Ballistic splash); so does a payoff not worth its setup (the
+  gunship's missile-marked reach).
 
 ## A suggested order
 

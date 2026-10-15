@@ -4,15 +4,62 @@ The session settles the four-legged spider as the roster's tank-buster: an oppor
 waits on the sidelines, binds its foes and strikes with venom.
 
 **Status**: direction (14 October). **Maker**: Wainwright & Sutler. **Proposed tier**: two.
-**Read first**: `docs/briefs/README.md`; `docs/ws_chassis_proposal.md` (the funnel-web's
-section, the web bomb as proposed); `docs/roster_analysis.md` section 4 and section 12; the
-bible's stun budget and Numbed rows (section 5).
+**Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 4; the bible's stun
+budget and Numbed rows (section 5) and its cooldown row (section 8).
 
 ## The proposal as it stood
 
 A foe it would Suppress takes a web bomb instead, bursting at the end of that foe's turn,
 Suppressing the foe and the next foe beside it (Ryan's plan, 13 October). The locked fangs:
 Direct, flat, and a share of a Suppressed target's current hull more.
+
+In full, as the go found it (12 and 13 October; Claude's unless marked Ryan's; the go reworks
+it, below):
+
+- **The shown text** (Ryan, 13 October): "A foe it would Suppress takes a web bomb instead: at
+  the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it." The
+  web bomb is his working name, and he called the plan "a good plan". The rule it bent: a
+  Suppress lands when it hits. The name: Ryan leans to the funnel-web spider (13 October),
+  clear in the reserved names.
+- **How it played**: the webbed foe still acts this round (the stun is no interrupt). The burst
+  holds it for the next round and catches the foe beside it that acts next (foes act left to
+  right), which loses its action now, before it strikes. So the trick is to web the foe
+  standing just left of the threat: the burst stops the threat this round and the webbed foe
+  the next, one stun taking two actions. With no foe to its right, the burst catches the one to
+  its left, which loses its next action.
+- **Which neighbour**: random would be noise (the burst comes in the enemy's turn, so the
+  player cannot time it), a pick by the player costs a gesture, and the next to act uses the
+  order the player already watches. Both neighbours, Ryan's alternative (13 October), was the
+  lever if it proved weak. The plainer timing, the bomb bursting at the end of the enemy's turn
+  and both foes losing the next round's action, reads easier and loses the trick.
+- **The web bomb dealt nothing** (Claude's lean): the web holds and the fangs kill, one job
+  each.
+- **The fangs** (locked; Ryan, 13 October): "Direct, flat 10, and 20% of a Suppressed target's
+  current hull more." Current hull, never maximum, so they open on a boss and never finish one;
+  once a bite. They read any Suppressed foe, so the team's stuns fed them as well as its webs.
+- **What it opened**: its webs came from its hardpoints, a Suppress piece of any maker laying
+  them (the stock's Suppression Battery reaching the back rank, the Umbra Inducer); the payoff
+  was the fangs and every blow on a foe that cannot answer. Of the team's other stuns it named,
+  the Baboon's meter still stuns; the Dingo's harpoon now carries Shock and Misharu's payoff is
+  Penance (both Ryan, 14 October). A web bomb is a debuff, so it fed the Baboon's Paradox as it
+  landed, and the burst's two Suppresses fed it again.
+- **Engine**: a Suppress this machine lands becomes a web-bomb debuff on the foe (a chip of its
+  own) that bursts at the end of that foe's turn, Suppressing it and the next foe to act beside
+  it; the fangs' bonus reads Suppressed and the foe's current hull, through `sim/effects.gd`.
+- **Edge cases**: Numbed is checked at the burst, each foe for itself; a webbed foe killed
+  before its turn takes its web with it; a webbed foe already Suppressed by the team skips its
+  action and its web still bursts at its turn's end.
+- **Numbers and kit** (the proposal's placeholders, set under the whole-block shield rule):
+  medium, walker, move 30; hull 110, shield 40, armour 5, heat 60, cooling 5, field
+  recharge 20. Locked: the Fangs (a working name), Direct, flat 10, the bonus above, heat 5.
+  Four hardpoints (a d5). Its stock, today's pieces as stand-ins: Suppression Battery,
+  Slugthrower, Howitzer, Laminar Deflector.
+- **Set aside along the way**: the stun punish, a blow on a Suppressed foe also striking every
+  other Suppressed foe (proposed at half; Ryan, 12 October: at full, stuns being rare, though
+  on 13 October he called Suppress prevalent, the bible's stun budget row), retired with the
+  Spinneret it served, two stuns and Rapid on one locked piece (Ryan, 13 October: broken). A
+  venom version was set aside on 13 October as a separate machine, its share of hull moved onto
+  the fangs; the go brings venom back as this machine's direction (below).
 
 ## What Ryan said in the go
 
@@ -66,7 +113,8 @@ Direct, flat, and a share of a Suppressed target's current hull more.
    machine.
 2. The ambush read as worded, and whether the original fangs' read of a Suppressed foe survives
    beside it.
-3. The web: targets, delay, cooldown length.
+3. The web: targets, delay, cooldown length; and whether the web bomb's edge cases and its zero
+   damage, as proposed (above), carry to a locked piece.
 4. Two themes or three: whether web, venom and ambush are one machine.
 
 ## Holes already raised

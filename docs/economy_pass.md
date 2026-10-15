@@ -112,8 +112,8 @@ Raised in Ryan's go on the roster analysis and left for this pass; none is decid
   above the shelf's and a chassis, all from its catalogue, the guaranteed chassis being the
   rebound after a bad battle. The bible's offer row says a blueprint where this says a
   component copy, to settle here; Claude's lean is the copy, since the boss's token already
-  yields a blueprint a win. If the chassis is guaranteed, the Recommended chassis offer rate (one
-  every two or three battles, bible section 3) retires.
+  yields a blueprint a win. If the chassis is guaranteed, the Recommended chassis offer rate
+  (one every two or three battles, bible section 3) retires.
 - **The boss's research token** unpacks into a choice of three blueprints of the domain's
   theme at the Convergence's tier, so tier-three blueprints come only from late bosses (Claude's
   proposal).
