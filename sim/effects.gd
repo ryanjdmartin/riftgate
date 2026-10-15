@@ -120,6 +120,10 @@ const STATUS := {
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
+	# A core whose parts stand takes nothing (the boss in parts, 15 October): the skirmish grants
+	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
+	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the

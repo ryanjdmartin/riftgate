@@ -930,6 +930,10 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if Effects.has(foe, "guarded"):
+		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
+		# shows has a reason on the foe itself.
+		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), Palette.HUD])
 	if foe.gathering():
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge

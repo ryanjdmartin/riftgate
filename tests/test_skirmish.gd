@@ -3639,6 +3639,105 @@ func test_protect_armours_every_foe_through_the_next_round() -> void:
 	assert_eq(g.armour_total(), 0, "and gone when the enemy has acted again")
 
 
+func _core(guard: String, regrow: int = 0) -> Foe:
+	var core := Foe.make("hilt", 200, 10)
+	core.content_id = "hilt"
+	core.part_ids = ["eye", "eye"]
+	core.guard = guard
+	core.regrow_parts = regrow
+	return core
+
+
+func _eye(id: String = "eye") -> Foe:
+	var p := Foe.make(id, 20, 5)
+	p.content_id = id
+	return p
+
+
+func _two_guns(sk: Skirmish) -> void:
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, I)), 40, 400))
+	sk.add_mech(_mech("B", Die.single(Face.attack(30, I)), 40, 400))
+
+
+func test_a_core_takes_nothing_while_all_its_parts_stand_and_opens_as_one_falls() -> void:
+	# The boss in parts (Ryan, 15 October): Exor's hilt, untouchable until a part falls.
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("all")
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(Effects.has(core, "guarded"), "its parts stand, so it is guarded")
+	assert_true(sk.assign(0, core), "a blow on it")
+	assert_eq(core.hp, 200, "does nothing")
+	assert_true(sk.assign(1, left), "a part falls")
+	assert_false(Effects.has(core, "guarded"), "and the core is open at once: the guard needed every part")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(0, core), "so the next blow")
+	assert_eq(core.hp, 170, "lands")
+
+
+func test_an_any_guard_holds_until_the_last_part_falls() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("any")
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, left), "one part falls")
+	assert_true(Effects.has(core, "guarded"), "one still stands, so the guard holds")
+	assert_true(sk.assign(1, right), "the other falls")
+	assert_false(Effects.has(core, "guarded"), "and the core is open")
+
+
+func _eye_factory(id: String) -> Foe:
+	return _eye(id)
+
+
+func test_a_fallen_part_grows_back_while_the_core_stands() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	sk.foe_factory = Callable(self, "_eye_factory")
+	var core := _core("all", 1)
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, left), "a part falls")
+	sk.end_round()
+	assert_eq(sk.parts_of(core).size(), 1, "still down at the round's end")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.parts_of(core).size(), 2, "a round later it has grown back into its slot")
+	assert_true(Effects.has(core, "guarded"), "and the guard is up again")
+
+
+func test_a_core_that_falls_takes_its_parts_with_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	_two_guns(sk)
+	var core := _core("")
+	core.hp = 20
+	var left := _eye()
+	var right := _eye()
+	sk.add_foes([core, left, right])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, core), "the core falls")
+	assert_false(left.alive() or right.alive(), "and its parts with it")
+	assert_true(sk.field_foes().is_empty(), "the field is clear")
+	assert_true("\n".join(sk.log).contains("its parts with it"), "the log says so")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_core("any", 2), sk))), sk)
+	assert_eq(trip.part_ids, ["eye", "eye"], "a save keeps its parts")
+	assert_eq(trip.guard, "any", "its guard")
+	assert_eq(trip.regrow_parts, 2, "and its regrowth, a whole number")
+
+
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
 	# halves never split again, and without the battle's factory nothing steps in.

@@ -273,6 +273,10 @@ Burning, Suppressed, Shocked or Paradox.
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.
+- **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
+  core from taking any damage while all its parts stand, or while any does (Guarded); a part
+  that falls may grow back after so many rounds while the core stands; a core that falls takes
+  its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included); a suppressed foe does nothing.

@@ -232,6 +232,10 @@ func make_foe(foe_id: String) -> Foe:
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.hero = bool(d.get("hero", false))
 	f.boss = is_boss(foe_id)
+	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
+	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
+	f.guard = str(d.get("guard", ""))
+	f.regrow_parts = maxi(0, int(d.get("regrow_parts", 0)))
 	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
 		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
 	var acts: Array = []
@@ -434,6 +438,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 		var b := make_foe(str(fac["boss"]))
 		b.pack_id = sq.id
 		out.append(b)
+		out.append_array(parts_for(b))
 	var fid := sq.foe_id
 	if fid.is_empty():
 		var spawn: Array = fac.get("spawn", [])
@@ -444,6 +449,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			var f := make_foe(fid)
 			f.pack_id = sq.id
 			out.append(f)
+			out.append_array(parts_for(f))
 	return out
 
 
@@ -531,6 +537,17 @@ func spawn_foes(faction_id: String) -> Array:
 	for entry in spawn_table(faction_id):
 		if not out.has(entry[0]):
 			out.append(entry[0])
+	return out
+
+
+## A core's parts, made to stand with it in its pack (the boss in parts, 15 October).
+func parts_for(core: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for pid in core.part_ids:
+		if foes.has(pid):
+			var p := make_foe(str(pid))
+			p.pack_id = core.pack_id
+			out.append(p)
 	return out
 
 
@@ -1186,6 +1203,22 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 		if f.has("hero") and bool(f["hero"]) and sz != 1:
 			errs.append("%s: a hero is human-sized (size 1); the massive thing it commands is its own foe" % where)
+		if f.has("parts"):
+			# A boss in parts (15 October): known foes, one deep, with a guard the engine runs.
+			if not (f["parts"] is Array) or Array(f["parts"]).is_empty():
+				errs.append("%s: parts is a list of foe ids" % where)
+			else:
+				for pid in f["parts"]:
+					if not foes.has(str(pid)):
+						errs.append("%s: part names unknown foe %s" % [where, str(pid)])
+					elif foes[str(pid)].has("parts"):
+						errs.append("%s: part %s has parts of its own; parts are one deep" % [where, str(pid)])
+		if f.has("guard") and not ["all", "any"].has(str(f["guard"])):
+			errs.append("%s: guard is all (no damage while every part stands) or any (while one does)" % where)
+		if (f.has("guard") or f.has("regrow_parts")) and not f.has("parts"):
+			errs.append("%s: guard and regrow_parts belong to a foe with parts" % where)
+		if f.has("regrow_parts") and (int(f["regrow_parts"]) < 1 or int(f["regrow_parts"]) > 5):
+			errs.append("%s: regrow_parts is the rounds a fallen part takes to grow back, 1 to 5" % where)
 		if f.has("on_death"):
 			# A split (the Gel): destroyed, it summons; what it summons never splits again.
 			var od = f["on_death"]

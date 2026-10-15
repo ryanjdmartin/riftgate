@@ -1071,6 +1071,16 @@
    }
   },
   {
+   "id": "parts",
+   "category": "foe",
+   "name": "Parts",
+   "codex": "A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 15 October (Ryan: parts that regrow, or stand for a while, until the core is killed; two fists and a head, Retinite's core, Exor's hilt). Content: `parts` (foe ids), `guard` (all or any), `regrow_parts` (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed; their own art is the cut's job. No foe carries it yet: the Exor homage first."
+   }
+  },
+  {
    "id": "countdown",
    "category": "foe",
    "name": "Countdown",

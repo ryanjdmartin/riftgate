@@ -167,6 +167,7 @@ func begin() -> void:
 	for r in ranked:
 		reinforcements.append(r[2])
 	_reinforce(false)
+	_refresh_guards()
 	_refresh_allies()
 	state = State.ROUND_START
 	# Passives that fire once as the fight begins.
@@ -840,7 +841,9 @@ func end_round() -> int:
 	_enemy_turn()
 	_tick_mechs()
 	_trim_overshield()
+	_regrow_parts()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	_refresh_guards()
 	_refresh_allies()
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -1810,8 +1813,104 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 # ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
+	_fall_with_cores()
 	_clear_dead_slots()
 	_refresh_kin()
+	_refresh_guards()
+
+
+# ---------------------------------------------------------------- a boss in parts
+
+## The boss in parts (Ryan, 15 October: parts that regrow, or stand for a while, until the core
+## is killed, so the player chooses what to focus): a core's parts are the foes of its pack
+## whose type it names, on the field. Found by pack and type, so a save needs no references.
+func parts_of(core: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if not core.has_parts():
+		return out
+	for f in field_foes():
+		if f != core and f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			out.append(f)
+	return out
+
+
+## Every core's guard as its parts stand now: Guarded while all its parts stand ("all"), or
+## while any does ("any"), lifted the moment that stops being true, so a part killed by one
+## die opens the core to the next.
+func _refresh_guards() -> void:
+	for core in field_foes():
+		if not core.alive() or not core.has_parts():
+			continue
+		_schedule_regrowth(core)
+		if core.guard.is_empty():
+			continue
+		var standing := parts_of(core).size()
+		var guarded := standing > 0 and (core.guard == "any" or standing >= core.part_ids.size())
+		if guarded and not Effects.has(core, "guarded"):
+			Effects.stack(core, Effects.STATUS["guarded"], Effects.SKIRMISH, "parts", 1, Effects.DECAY_NONE)
+		elif not guarded and Effects.has(core, "guarded"):
+			Effects.remove(core, "guarded")
+			log.append("%s is open: its guard has fallen" % core.display_name)
+
+
+## A part down, while the core stands, is on its way back when the core regrows its parts.
+func _schedule_regrowth(core: Foe) -> void:
+	if core.regrow_parts <= 0:
+		return
+	var present: Dictionary = {}
+	for f in parts_of(core):
+		present[f.content_id] = int(present.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			present[f.content_id] = int(present.get(f.content_id, 0)) + 1
+	for d in core.regrow_due:
+		present[str(d[0])] = int(present.get(str(d[0]), 0)) + 1
+	for pid in core.part_ids:
+		if int(present.get(pid, 0)) > 0:
+			present[pid] = int(present[pid]) - 1
+		else:
+			core.regrow_due.append([pid, round + core.regrow_parts])
+
+
+## At the round's end, the parts due back step into the pool, to fill a slot as any waiting
+## foe does.
+func _regrow_parts() -> void:
+	if not foe_factory.is_valid():
+		return
+	for core in field_foes():
+		if not core.alive() or core.regrow_due.is_empty():
+			continue
+		var keep: Array = []
+		for d in core.regrow_due:
+			if int(d[1]) > round:
+				keep.append(d)
+				continue
+			var n = foe_factory.call(str(d[0]))
+			if n is Foe:
+				n.pack_id = core.pack_id
+				reinforcements.append(n)
+				log.append("%s grows back its %s" % [core.display_name, n.display_name])
+		core.regrow_due = keep
+
+
+## A core that falls for good takes its parts with it, on the field and waiting alike.
+func _fall_with_cores() -> void:
+	for core in field_foes():
+		if core.alive() or not core.has_parts() or (Effects.has(core, "risen") and not core.stays_down):
+			continue
+		var parts := parts_of(core)
+		for f in parts:
+			f.hp = 0
+			f.stays_down = true
+		var waiting: Array[Foe] = []
+		for f in reinforcements:
+			if f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+				waiting.append(f)
+		for f in waiting:
+			reinforcements.erase(f)
+		core.regrow_due = []
+		if not parts.is_empty() or not waiting.is_empty():
+			log.append("%s falls, and its parts with it" % core.display_name)
 
 
 func _clear_dead_slots() -> void:

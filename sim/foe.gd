@@ -43,6 +43,10 @@ var boss: bool = false           # a domain's boss (content: a faction's `boss`)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
 var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
 var charge: int = 0              # rounds before the pending move lands; at 0 it lands this round
+var part_ids: Array = []         # a core's parts (content `parts`): the foes of its pack that stand beside it
+var guard: String = ""          # a core takes no damage while "all" its parts stand, or while "any" does
+var regrow_parts: int = 0        # rounds after a part falls before it grows back, while the core stands (0: never)
+var regrow_due: Array = []       # [part id, round it returns] for each part on its way back
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -179,6 +183,11 @@ func attacks() -> bool:
 ## Jump, one round; a Tonberry's walk or a Tyrano's five to zero, longer).
 static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
+
+
+## Is it a core with parts (the boss in parts, 15 October)?
+func has_parts() -> bool:
+	return not part_ids.is_empty()
 
 
 ## Is it gathering a move that lands in a later round?
