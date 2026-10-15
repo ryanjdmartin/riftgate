@@ -91,7 +91,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 
 ## Art
 
-- [ ] Aphelion's thrusters as a model brief, how they look (`docs/aphelion_chassis_proposal.md` section 5: it flies on thrusters and space-age rockets, never rotors)
+- [ ] Aphelion's thrusters as a model brief, how they look (the bible's makers table, section 7: it flies on thrusters and space-age rockets rather than rotors, "as a general rule", Ryan, 12 October; the Stingray's flush fans are its own silhouette)
 - [x] Ryan's picks of the edit model's fixes cut (13 October): both Gels' maws, the Ghost's painted flame, the Salamander's flame frill, the Dire Wolf's mane, the Goblin's grip (still not right, his note), the Magma Golem eyes only, the Mandragora brighter and leafier (its white holes keyed, `--holes 100`), the Sandworm without eyes
 - [x] Ryan's cutting batch on the lineup (14 October): every mark was a pocket of white between parts, so the cutter keys pockets of pure white by default (40 render pixels and up; an eye white is off-white and survives) and every sprite was recut under that one rule; the chibis cut at one shared scale (`--height 46`), since filling the frame had the crouched Thief as tall as the standing Lancer
 - [x] Fourteen picker rounds closed every note Ryan wrote on the wildlife and the chibis (13 to 15 October); the party stands at one body scale with every weapon inside the frame
