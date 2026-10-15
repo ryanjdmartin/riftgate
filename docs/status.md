@@ -14,8 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 451 tests, 19,697 checks, green on `claude/pensive-albattani-q73ibs` (15 October,
-  the small-work pass). A cloud session fetches
+- Tests: 451 tests, 19,697 checks, green on main (15 October, the small-work pass merged).
+  A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -24,9 +24,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-- `claude/pensive-albattani-q73ibs` (15 October, the small-work pass, built from main): the
-  Oblation Mantle, the harpoon's Shock, a suppressed foe's hold readout, boss apart from size,
-  the foe's save trip (below); pushed, not yet merged into main.
+- `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
+  harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
+  below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
 - `ccr-777fd46a-32dw2m` (the roster analysis, Ryan's go on it, the design-session briefs and
   the records' cleanup) merged into main on 15 October, with `ccr-3d9861dc-mp0v3w` (the
   analysis's brief) beneath it: both safe to delete.
@@ -209,19 +209,19 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.173 (15 October), from
-  `claude/pensive-albattani-q73ibs`: main's v0.172 (the budgets decided, the maker rows pointing
-  at the briefs, the proposal files retired, the Faraday Hull's move, the cooldown cap struck,
-  homage by archetype in the invasion's row) with the small-work pass's three rows (the Oblation
-  Mantle, the harpoon's Shock, a boss apart from its size).
+  `docs/design-bible.html` after every change. Live: v0.174 (15 October), main's file: the
+  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
+  rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size) and section 12's
+  Numbed question.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content;
-  behind since (the 15 October content, the Oblation Mantle's name and the harpoon's Shock
-  among it): republish once `claude/pensive-albattani-q73ibs` merges into main (127 files).
-  Its database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens
-  only from the personal account and was not read on 13 October.
+  files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
+  only the four content files that had moved since 13 October (chassis, components, foes,
+  vocabulary), the page, the models and the renders checked unchanged and kept. Its database
+  (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
+  personal account; `edits` was empty on 15 October.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the 13 October round: the fixes, the Treant's and the Needler's takes, the heroes.
