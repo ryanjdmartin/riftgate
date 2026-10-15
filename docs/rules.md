@@ -151,7 +151,8 @@ with a stack of its status spends one, and the die rolls again, a plain roll as 
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
-carries into the foe behind it as plain damage; the engine runs it as a keyword the passive
+carries into the foe behind it as plain damage, the killing strike's excess and every later
+strike of the spend whole; the engine runs it as a keyword the passive
 grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance

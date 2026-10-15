@@ -1085,6 +1085,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
+			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
+			var spills := f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive()
+			if spills and not was_alive:
+				# A later strike on a foe an earlier strike of this spend killed (Ryan, 15 October:
+				# "All its damage or subsequent strikes spill over"): the fallen foe takes nothing
+				# more, its armour included, and the strike's whole number goes on behind it; with
+				# nothing standing there, it is lost. The blow's record counts it whole, as it
+				# counts the killing strike's excess.
+				_spill(ms, f, foe, dmg, hit)
+				if foe == target:
+					landed = dmg
+				continue
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
 			# small blows bounce off a hardened foe the way they do off a heavy machine.
@@ -1102,19 +1115,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.devours:
 				_devour(ms, foe)
-			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
-			# foe behind it in the column, as plain damage that still spends a shock and
-			# feeds a devour. A massive foe fills its column, so nothing stands behind it.
-			if was_alive and not foe.alive() and f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive():
-				var spill := taken - hp_before
-				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
-					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
-					behind.hp -= behind_taken
-					Effects.remove(behind, "shocked")
-					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-					if not behind.alive() and f.devours:
-						_devour(ms, behind)
+			# The killing strike: what it had past the kill carries on.
+			if spills and was_alive and not foe.alive():
+				_spill(ms, f, foe, taken - hp_before, hit)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
 				_note_status(gained, foe, "burning")
@@ -1362,6 +1365,23 @@ func _shock(foe: Foe, by: MechState) -> void:
 	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	log.append("%s shocks %s" % [by.unit.display_name, foe.display_name])
 	_foe_gained_status(foe, "shocked")
+
+
+## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
+## behind it in the column as plain damage, through that foe's own damage taken and its armour;
+## it spends a shock and feeds a devour, and carries no other keyword of the blow. A foe behind
+## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
+## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
+func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> void:
+	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
+	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
+		return
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount) - behind.armour_total())
+	behind.hp -= behind_taken
+	Effects.remove(behind, "shocked")
+	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
+	if not behind.alive() and f.devours:
+		_devour(ms, behind)
 
 
 ## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component

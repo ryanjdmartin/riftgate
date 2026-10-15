@@ -2446,6 +2446,158 @@ func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 		assert_eq(other_back.hp, other_before, "and nothing spilled")
 
 
+## Ryan, 15 October: "All its damage or subsequent strikes spill over." A strike that falls on
+## a front-rank foe an earlier strike of the spend killed goes on whole into the foe behind it,
+## through everything the killing strike's excess goes through.
+func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
+	# Three strikes of 10, 15 each with the machine's own +5, on a 9-hp ghoul in armour 3 with
+	# an archer in armour 2 behind it.
+	var sk := Skirmish.new(1, 1)
+	var burst := Face.attack(10, L, K.SPILLOVER)
+	burst.strikes = 3
+	var m := _mech("A", Die.single(burst), 40, 100)
+	m.grant_passive({"id": "edge", "name": "Edge", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]})
+	sk.add_mech(m)
+	var weak := _ghoul(9, 10)
+	weak.armour = 3
+	var archer := _archer(100, 10)
+	archer.armour = 2
+	sk.add_foes([weak, archer])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.back[0], archer, "the archer stands behind the ghoul")
+	assert_true(sk.assign(0, weak), "the burst at the ghoul")
+	# The first strike lands 12 past the ghoul's armour, 3 past its kill: 1 past the archer's
+	# armour. The next two go on whole, 15 each, the fallen ghoul's armour never seeing them.
+	assert_eq(archer.hp, 100 - (15 - 3 - 9 - 2) - 2 * (15 - 2), "the excess past the kill and both later strikes, each less the archer's armour")
+	assert_eq(weak.hp, 9 - (15 - 3), "the fallen ghoul takes nothing past its kill")
+	var text := "\n".join(sk.log)
+	assert_eq(text.count("A spills over: "), 3, "a spill for every strike past the kill")
+	assert_true(text.contains("A spills over: 1 into archer"), "the killing strike's excess")
+	assert_eq(text.count("A spills over: 13 into archer"), 2, "and each later strike, less the archer's armour")
+	assert_eq(sk.last_roll["final"], (15 - 3) + 2 * 15, "the blow's record counts the later strikes whole, as it counts the excess")
+	# The foe behind reads its own statuses: a shock doubles the first strike that reaches it
+	# and is spent. An exact kill has nothing past it, so the shock waits for the next strike.
+	var s2 := Skirmish.new(1, 1)
+	var b2 := Face.attack(10, L, K.SPILLOVER)
+	b2.strikes = 3
+	s2.add_mech(_mech("A", Die.single(b2), 40, 100))
+	var exact := _ghoul(10, 10)
+	var wired := _archer(100, 10)
+	s2.add_foes([exact, wired])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(wired, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_true(s2.assign(0, exact), "the burst at a ghoul its first strike kills exactly")
+	assert_eq(wired.hp, 100 - 2 * 10 - 10, "nothing past the exact kill; the second strike lands double, the third plain")
+	assert_false(Effects.has(wired, "shocked"), "the shock is spent")
+	# Per foe: a spread neighbour an earlier strike killed spills its later strikes behind it,
+	# while the target that stands spills nothing.
+	var s3 := Skirmish.new(1, 2)
+	var sweep := Face.attack(10, L, [K.CLEAVE, K.SPILLOVER])
+	sweep.strikes = 3
+	s3.add_mech(_mech("A", Die.single(sweep), 40, 100))
+	s3.add_foes([_ghoul(500, 30), _ghoul(5, 10), _archer(100, 20), _archer(100, 10)])
+	s3.begin()
+	s3.start_round()
+	var n_col := 0 if s3.front[0].hp == 5 else 1
+	var big: Foe = s3.front[1 - n_col]
+	var past: Foe = s3.back[n_col]
+	var safe: Foe = s3.back[1 - n_col]
+	assert_true(s3.assign(0, big), "the sweep at the big ghoul, its weak neighbour in reach")
+	assert_eq(big.hp, 500 - 3 * 10, "the big one takes all three")
+	assert_eq(past.hp, 100 - 5 - 2 * 10, "behind the neighbour: the 5 past its kill and the two strikes after")
+	assert_eq(safe.hp, 100, "behind the big one, which stands: nothing")
+
+
+## The foe behind falls partway through the spend: the strikes left are lost, since nothing
+## stands behind the back rank, and nothing else is hit.
+func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
+	var sk := Skirmish.new(1, 2)
+	var burst := Face.attack(10, L, K.SPILLOVER)
+	burst.strikes = 4
+	sk.add_mech(_mech("A", Die.single(burst), 40, 100))
+	sk.add_foes([_ghoul(5, 20), _ghoul(100, 10), _archer(12, 20), _archer(100, 10)])
+	sk.begin()
+	sk.start_round()
+	var col := 0 if sk.front[0].hp == 5 else 1
+	var weak: Foe = sk.front[col]
+	var behind: Foe = sk.back[col]
+	assert_eq(behind.hp, 12, "the 12-hp archer stands behind the 5-hp ghoul")
+	assert_true(sk.assign(0, weak), "four strikes of 10 at the ghoul")
+	# The first kills the ghoul and spills 5; the second spills 10 and kills the archer.
+	assert_eq(behind.hp, 12 - 5 - 10, "the third and fourth strikes are lost, not landed on the fallen archer")
+	assert_eq(weak.hp, 5 - 10, "nor on the fallen ghoul")
+	assert_eq("\n".join(sk.log).count("A spills over: "), 2, "two spills, then nothing")
+	assert_eq(sk.field_foes().size(), 2, "the other column stands")
+	for f in sk.field_foes():
+		assert_eq(f.hp, 100, "untouched: %s" % f.display_name)
+	# A devour feeds on the foe the spill kills, as it does on the foe the blow kills.
+	var s2 := Skirmish.new(1, 2)
+	var talons := Face.attack(10, L, K.SPILLOVER)
+	talons.strikes = 4
+	talons.devours = true
+	var m := _mech("A", Die.single(talons), 40, 100)
+	s2.add_mech(m)
+	s2.add_foes([_ghoul(5, 20), _ghoul(100, 10), _archer(12, 20), _archer(100, 10)])
+	s2.begin()
+	s2.start_round()
+	var c2 := 0 if s2.front[0].hp == 5 else 1
+	var fed: Foe = s2.back[c2]
+	assert_true(s2.assign(0, s2.front[c2]), "the talons at the ghoul")
+	assert_false(fed.alive(), "the archer falls to the spill")
+	assert_true("\n".join(s2.log).contains("A devours archer"), "and feeds the talons")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack for each foe killed, the ghoul and the archer")
+	assert_eq("\n".join(s2.log).count("A spills over: "), 2, "and nothing spills past the fallen archer")
+
+
+## What the later strikes' spill leaves as it was: one strike spills only its excess, a burst
+## that already reaches the foe behind (Penetrate) lands there once a strike with no spill on
+## top, and a burst without Spillover loses its later strikes on the fallen foe.
+func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() -> void:
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.SPILLOVER)), 40, 100))
+	var g := _ghoul(10, 10)
+	g.armour = 2
+	var a := _archer(100, 10)
+	a.armour = 5
+	sk.add_foes([g, a])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, g), "one strike of 30")
+	assert_eq(a.hp, 100 - (30 - 2 - 10 - 5), "the 18 past the ghoul's armour and kill, less the archer's 5")
+	assert_eq("\n".join(sk.log).count("A spills over: "), 1, "one spill")
+	# A penetrating burst already reaches the archer: it takes each strike there, once.
+	var s2 := Skirmish.new(1, 1)
+	var lance := Face.attack(10, L, [K.PENETRATE, K.SPILLOVER])
+	lance.strikes = 3
+	s2.add_mech(_mech("A", Die.single(lance), 40, 100))
+	var g2 := _ghoul(5, 10)
+	var a2 := _archer(100, 10)
+	a2.armour = 2
+	s2.add_foes([g2, a2])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, g2), "three penetrating strikes of 10")
+	assert_false(g2.alive(), "the ghoul falls to the first")
+	assert_eq(a2.hp, 100 - 3 * (10 - 2), "the archer takes every strike directly, less its armour, and no spill on top")
+	assert_false("\n".join(s2.log).contains("spills over"), "nothing spills into a foe the blow already reaches")
+	# A burst without Spillover: the strikes after the kill land on the fallen ghoul and are lost.
+	var s3 := Skirmish.new(1, 1)
+	var plain := Face.attack(10, L)
+	plain.strikes = 3
+	s3.add_mech(_mech("A", Die.single(plain), 40, 100))
+	var g3 := _ghoul(5, 10)
+	var a3 := _archer(100, 10)
+	s3.add_foes([g3, a3])
+	s3.begin()
+	s3.start_round()
+	assert_true(s3.assign(0, g3), "three plain strikes of 10")
+	assert_eq(a3.hp, 100, "nothing reaches the archer")
+	assert_eq(g3.hp, 5 - 3 * 10, "every strike lands on the ghoul, the two after its kill too")
+	assert_eq(s3.last_roll["final"], 3 * 10, "and the blow's record counts them")
+
+
 func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	var drive := {"id": "drive", "name": "Juggernaut Drive", "description": "", "effects": [
 		{"trigger": "static", "effect": "grant_keyword", "value": "spillover"}]}
