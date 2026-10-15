@@ -1222,17 +1222,18 @@ first every-ally equipment) read as written that morning; the rule changed that 
 - **The Onryō**: a flat on-hit per Grudge stack, the team's vengeance, rather than a damage
   over time or a multiplier; the wound stays the trigger until every domain lays a debuff on
   machines; a cap on stacks.
-- **The Armadillo as the hypertank at tier two**, a form shaper (Ryan, 15 October): sealed,
-  the shutters draw blows at allies' bare hull onto it, its defences rise and its heat climbs
-  every turn, so it cannot turtle forever; open, it is the heavy weapons carrier and cools.
-  No reward for being struck (Ryan, 15 October): a Shock on every striker under a draw is the
-  discharge again, scaling with the enemy's blows, so the Faraday Hull stays with the lighter
-  Minerva tier two, which has no draw. The sealed form's payoff is the protection and the
-  plate; the clock makes opening mandatory; the open form's payoff is its guns. The build hook
-  is the seal's length against the open rounds' volley: vents and cooling to hold the line
-  longer, big guns and Braced for the rounds it opens, a lure to draw without sealing. If an
-  offensive payoff is ever wanted it scales with rounds sealed and never with strikers (the
-  pressure released on opening), bounded by the heat clock.
+- **The Armadillo as a form-changing tank at tier one** (Ryan, 15 October): the form follows
+  the die, so no locked piece is needed and the shutters' slot is freed. Spending a shield
+  seals it: blows at allies' bare hull turn on it, its plate rises, its heat climbs every turn
+  and its vents are dark, so it cannot turtle; spending a weapon opens it, and it cools and
+  fires. No reward for being struck: a Shock on every striker under a draw is the discharge
+  again, so the Faraday Hull stays with the lighter Minerva tier two, where being struck costs
+  hull. The draw is on a clock, not standing, which is the line the Guard row drew. The hooks:
+  every maker's shield is a way to seal and its number the plate; Braced persists while
+  sealed, the longer Braced the bible allows once it carries a drawback, here the clock;
+  vents and cooling are for the open rounds; big guns for the volley; a lure to draw while
+  open. Minerva's tier one is then three bodies (the Badger, the Armadillo, the Boar), its
+  tier two the lighter machine with the Hull and a lure, its tier three the siege battery.
 - **The Baboon at tier two**, since its meter needs statuses and basics carry none; the rest
   of the reshuffle as put to Ryan in chat (the Boar, the Clydesdale, the boiler and the
   revolver down to one, the fan-boat up to two, the Dingo undecided), sorted by one test: tier
