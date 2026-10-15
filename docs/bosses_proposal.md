@@ -36,7 +36,7 @@ stands or shielding it until one falls.
 |---|---|---|---|---|
 | The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Bourgeon | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos; spits miasma. The game places one in its Meadows | A swallow (new) |
+| The Meadow | Bourgeon, which needs a name of ours (Ryan, 15 October): Nepenthes, the pitcher plant that drowns what falls in and the Odyssey's drug of forgetting (Claude's lean; it pulls the look from a bud toward a pitcher), Calyx, the leaves that close round a bud (keeps the drawn bud), or the Craw | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (two of its four takes on the picker show the miasma); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
 | The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough. Claude's lean: a war hammer planted haft-down, its two ends the parts and an eye in each, the face's blow one no shield answers and the pick prising loose the component a machine shows (the Waste's two halves), the haft the core; the axe's two bits would be a mirrored pair doing one job | The parts (above) |
@@ -50,7 +50,7 @@ stands or shielding it until one falls.
 Six of the twelve are Final Fantasy's and six come from six other series.
 
 Names: the series' coinages take names of ours (the Malboro, the Tonberry, the Adamantoise,
-Exor, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
+Bourgeon, Exor, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
 (Gilgamesh, the Behemoth, the Matador, the Phantom Train; King Slime is the King Gel). Every
 look is ours, never the series' design.
 
@@ -80,13 +80,23 @@ look is ours, never the series' design.
   finale) the first home to weigh; the one machine the genre brings, painted flat like every
   foe, beside Ryan's pinned Arsenal superweapon.
 - **The Summoner's summons** (Ryan, 15 October: yes, with names that are not the series' own):
-  in content since that day, each a move. Yuki-onna (the ice maiden of Japanese folklore, in
-  Shiva's place): Diamond Dust, a frostbite on the component every machine shows (corrupt all),
-  soft rather than a freeze that switches components off, since freezing every machine at once
-  would be the hardest control in the game. Surtr (the Norse fire giant, in Ifrit's place):
-  Pyroclasm, every machine scorched, below half. The Dragon King (in Bahamut's place): the
-  promoted form's one move more, waiting on the promoted forms. Working names; art in the
-  forge's drafts, and the screen's moment for each summon to appear is still to come.
+  in content since that day, each a move. Surtr (the Norse fire giant, in Ifrit's place; Ryan,
+  15 October: a perfect replacement; content spells it the Old Norse way, Surtur being Marvel's):
+  Pyroclasm, every machine scorched, below half. In Shiva's place Yuki-onna (the ice maiden of
+  Japanese folklore) is a working name, and her look, a beautiful woman of ice, is the nearest
+  of any to Shiva's. The candidates (Ryan asked, 15 October): Skadi, the Norse winter giantess,
+  a huntress in white furs, a goddess of the element as Surtr is and from his myth (Claude's
+  lean); the Cailleach, the Gaelic Queen of Winter, a blue-faced crone whose staff freezes the
+  ground it strikes, the grimmest and the furthest from Shiva's look; Morana, the Slavic goddess
+  of winter and death, drowned in effigy each spring; Boreas, the Greek north wind, a winged old
+  god, if the place need not be a woman's. Its move stays Diamond Dust (Ryan: fine), a frostbite
+  on the component every machine shows (corrupt all), soft rather than a freeze that switches
+  components off, since freezing every machine at once would be the hardest control in the game.
+  The Dragon King (in Bahamut's place): the promoted form's one move more, waiting on the
+  promoted forms; the plain title, since the series has used most of the famous myth dragons
+  itself (Tiamat, Nidhogg, Midgardsormr), with Ryūjin, the Japanese sea-dragon god, if a myth's
+  name is wanted. Art in the forge's drafts, and the screen's moment for each summon to appear
+  is still to come.
 - **Clair Obscur's Mime**, if wanted beside Bourgeon: a rare pack that throws the last blow it
   took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
   prize.
@@ -95,7 +105,7 @@ look is ours, never the series' design.
 
 - Marks on the rest of the twelve.
 - The Exor homage's weapon.
-- The summons' names (working: Yuki-onna, Surtr, the Dragon King); where Omega lives; the Mime.
+- Shiva's place (Yuki-onna or a candidate above) and Surtr's spelling; Bourgeon's name; where Omega lives; the Mime.
 - The heroes' homages beyond Final Fantasy (the Thief as Persona 5's Joker, perhaps).
 
 ## Bench
