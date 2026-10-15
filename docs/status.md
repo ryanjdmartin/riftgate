@@ -217,7 +217,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content.
+  files from `tools/hangar_data.py`'s printed map. Republished 13 October from main's content;
+  behind since (the 15 October content, the Oblation Mantle's name and the harpoon's Shock
+  among it): republish once `claude/pensive-albattani-q73ibs` merges into main (127 files).
   Its database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens
   only from the personal account and was not read on 13 October.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
