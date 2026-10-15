@@ -29,8 +29,9 @@ reads its own die's dark entries, which nothing reads.
 
 ## Since then
 
-- Cooldowns decided (Ryan, 14 October), with Claude's recommended limits: never on a basic, at
-  most one cooldown entry below tier three. A tier three may carry them as its identity.
+- Cooldowns decided (Ryan, 14 October), with no cap on where they go or how many a die
+  carries (Ryan, 15 October: a cap is artificially limiting); the battery may carry them as its
+  identity.
 - The strafer was decided as Kestrel's tier one with "every weapon it fires strikes twice at
   half", so the battery's "strikes twice" now overlaps a Kestrel tier one. The session decides
   whether the battery keeps its strikes or takes another upside.

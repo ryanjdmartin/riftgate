@@ -22,9 +22,8 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
 - The frame: tier three, assault, a flyer, move 20 (round one).
 - The proposal's round one, the flying fortress: a deep-space hull (the makers table's
   "deep-space programme"), the helicarrier and the capital ship at once, its lift fans gone
-  with Ryan's propulsion call ("Aphelion doesn't use rotors as a general rule", 12 October). It
-  could answer the bible's open lore question (section 12): did Aphelion come back when the
-  rifts opened, or before? Three verbs, all new code: the deck (allies that end their turn
+  with Ryan's propulsion call ("Aphelion doesn't use rotors as a general rule", 12 October). Three
+  verbs, all new code: the deck (allies that end their turn
   beside it regain shield as if they had not fought); the long guns, joining fights from
   farther off (Ryan liked them and parked them while the engagement range may change); a second
   die for its air wing, the purest carrier and the dearest (two dice on one machine, on a phone

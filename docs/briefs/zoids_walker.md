@@ -42,10 +42,6 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
   on legs; a pilot's acts (a scan through the head, the claws flexed, the mane charged), never
   grooming or a tail's swish; a heavy bound, not a cat's slink. Lowforge already builds
   four-legged walks and a gallop that can be reused.
-- Names: if Aphelion's, cats and wolves are out (Ryan, 12 October: "A cat or wolf is out of
-  Aphelion's naming register and those I kind of want to stick to, for sanity's sake if
-  nothing else"); Lionfish and Sea Lion were offered. If the Arsenal's, a punisher's name;
-  Sekhmet and Haetae were offered.
 
 ## From the analysis (14 October)
 

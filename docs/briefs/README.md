@@ -57,9 +57,9 @@ Rows in the bible and lines in `docs/rules.md`; none of it built yet.
   the Oblation Ward becomes the Oblation Mantle and the Votive Ward the Votive Screen.
 - **Cooldowns**: a printed property on specific pieces, shown on the entry as dark with the
   rounds left. Ryan: nearly every Rapid component reads "Rapid, cooldown 1", and the Nemesis's
-  fists are simply Rapid. Claude's limits, recommended: never on a basic, at most one cooldown
-  entry on a die below tier three, and a dark entry with structure of its own beside Rapid's
-  switch-off and a foe's Disabled.
+  fists are simply Rapid. No cap on where a cooldown goes or how many a die carries (Ryan, 15
+  October: a cap is artificially limiting); a dark entry needs structure of its own beside
+  Rapid's switch-off and a foe's Disabled.
 - **The Dingo's Megataser Harpoon** carries Shock in place of Suppress.
 - **Misharu's payoff is Penance**, a weaken, in place of Suppress.
 - **Kestrel's gaps**: the strafer at tier one and the bomber above it.

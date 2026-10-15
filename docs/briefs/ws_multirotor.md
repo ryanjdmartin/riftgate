@@ -59,10 +59,9 @@ look as built, its joints and acts proposed (Claude's, from his choice):
   (`glass.glass`), a roof, a mast with an amber lamp and a stack.
 - **The mounts**: six round the deck's edge and at the bow, bolted on and squared off, all
   reading from above.
-- **The crane**: at the stern, a mast and a jib swung aft, a hook on a line hanging below the
-  hull: the tell for the passive. Not settled, for Ryan: the look test's docstring puts the
-  crane "on the port quarter", while these notes put it at the stern and the code builds it
-  aft, a little to starboard of the centre line.
+- **The crane**: at the stern, a little to starboard of the centre line, a mast and a jib
+  swung aft, a hook on a line hanging below the hull: the tell for the passive (Ryan, 15
+  October: as the look builds it).
 - **Size and float**: assault, so it overflows its hex, drawn south over north. Nothing touches
   the ground; only the hook hangs low.
 - **Joints and acts**: the four rotors spinning (`b.spin`), faster under way; the crane's yaw

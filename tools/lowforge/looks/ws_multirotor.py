@@ -141,7 +141,7 @@ wslook_tandem.maker = WS
 def wslook_deck(b):
     """The helicarrier played straight: a flat iron deck held up by four rotors in rings at
     its corners, an island on the starboard edge, a landing square aft, mounts round the
-    deck's edge, the crane on the port quarter."""
+    deck's edge, the crane at the stern with its jib swung aft."""
     b.loft([(-46.0, rect(0.0, 40.0, 12.0, 22.0)), (36.0, rect(0.0, 40.0, 12.0, 22.0)),
             (52.0, rect(0.0, 20.0, 15.0, 22.0))], "steel.panel", "hull")
     b.loft([(-52.0, rect(0.0, 54.0, 22.0, 27.0)), (40.0, rect(0.0, 54.0, 22.0, 27.0)),

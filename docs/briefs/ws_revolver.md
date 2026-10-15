@@ -73,9 +73,6 @@ of three from the start.
 3. What the fire plan sets against the big blow: the proposal's "a shield before the big blow"
    read the whole-block shield rule; under the honest rule a shield answers a blow by its size
    (the bible's shield row: a shield sized to it, or a Barrier).
-4. Whether the recommended cooldown limit (at most one cooldown entry on a die below tier
-   three, the bible's cooldown row) counts Rapid's cooldown of one; if it does, the five-Rapid
-   chain cannot be fitted at tier one or two.
 
 ## What the session hands back
 
