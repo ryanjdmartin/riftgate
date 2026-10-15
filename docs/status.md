@@ -82,15 +82,16 @@ document's job and every command are in `README.md`.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48);
-  eleven rounds on the phone picker, 13 and 14 October, closed every note he wrote on the
-  wildlife and the chibis; each pick's source, cut options and his notes are in
+  fourteen rounds on the phone picker, 13 to 15 October, closed every note he wrote on the
+  wildlife and the chibis, and his cutting batch (pockets of pure white now key by default,
+  the chibis cut at one body scale with every weapon inside the frame); each pick's source, cut options and his notes are in
   `tools/foeforge/picks/picks.json`. What worked: a flaw tried through the edit model once
   or twice, then image to image from the pick he liked (`forge.py generate --image`), never
   from the last pass (it drifts) and never a PIL hand edit on a figure (three failed his bar);
   one set per sprite per round. The heroes' boss register is picked and recorded, not in the
   game (the promoted forms are not entries); staff fingers on the White and Black Mage and
   the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
-  Pyroclasm. Next: Ryan's batch of cutting notes on the lineup, then one recut of every sprite.
+  Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October

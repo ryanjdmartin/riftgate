@@ -63,7 +63,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 - [x] Ryan's picks of the edit model's fixes cut (13 October): both Gels' maws, the Ghost's painted flame, the Salamander's flame frill, the Dire Wolf's mane, the Goblin's grip (still not right, his note), the Magma Golem eyes only, the Mandragora brighter and leafier (its white holes keyed, `--holes 100`), the Sandworm without eyes
 - [x] Ryan's cutting batch on the lineup (14 October): every mark was a pocket of white between parts, so the cutter keys pockets of pure white by default (40 render pixels and up; an eye white is off-white and survives) and every sprite was recut under that one rule; the chibis cut at one shared scale (`--height 46`), since filling the frame had the crouched Thief as tall as the standing Lancer
-- [ ] Ryan picks round fourteen on the foe picker (15 October): the Black Mage chibi's flame edited to two thirds on his original pick (`black_mage_chibi_flamefix`; 2 keeps it on the staff, 4 floats it off), since a fresh take made it a tiny rod and then a tiny flame
+- [x] Fourteen picker rounds closed every note Ryan wrote on the wildlife and the chibis (13 to 15 October); the party stands at one body scale with every weapon inside the frame
 - [x] The pockets Ryan named recut (13 October): under the Goblin's sword arm, between the Lancer's spear and leg, between the White Mage's staff and leg (`--holes-tol 8` spares an off-white robe)
 - [x] Ryan picked from the Treant's and the Needler's new takes (13 October): Treant 8 and Needler 7, each with a further round
 - [ ] New foe types from the candidates Ryan marked, once he decides them (section 12)

@@ -367,14 +367,18 @@
     "black_mage_chibi": {
       "foe": "black_mage",
       "role": "chibi",
-      "candidate": 4,
-      "source": "out/black_mage_chibi_takesF/black_mage_4.png",
+      "candidate": 2,
+      "source": "out/black_mage_chibi_flamefix/black_mage_2.png",
       "kept": "picks/black_mage_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand.",
       "cut": {
         "height": 42
       },
-      "note": "He's just got a tiny flame now (takes O); the original pick's flame edited a little shorter instead"
+      "note": "The flame two thirds, on his original pick; Ryan, 15 October: could probably go between 1 and 2",
+      "fix": {
+        "from": "out/black_mage_chibi_takesF/black_mage_4.png",
+        "asked": "the flame on top of his staff is about two thirds its present height, still a full flame rising above the staff's tip, only shorter."
+      }
     },
     "black_mage": {
       "foe": "black_mage",
