@@ -1213,7 +1213,8 @@ the rule changed that afternoon.
   spent on an empty slot under the reach rules, the shot waiting with its number, rolled when
   laid and shown on the slot, and its keywords, landing as the foe steps in and before it
   acts; one shot a slot, a new one replacing the old; the locked bay's own kills leave its shot
-  in the slot they empty) in place of section 8's interceptor.
+  in the slot they empty) in place of section 8's interceptor. The raider returns below as a
+  direction, in another niche.
 
 ### The tiers, as they stand
 
@@ -1246,6 +1247,13 @@ the Dingo.
 
 ### Directions, not yet decisions
 
+- **The shield-spender** (Ryan, 15 October: "The Kestrel shield-spender was a good design, just
+  not for that niche. A sustained dps with a real gameplay decision. Not a terrible tier 1
+  either."): section 8's raider, whose hits spend its own shield for more damage a blow (Ryan's
+  sketch of 14 October: 5 shield for 5 more on every hit, pushing Rapid and multi-strike
+  weapons), withdrawn as the detachment because a glass machine burning its shield loops alone,
+  returns as a sustained-damage Kestrel tier one. Under the honest shield rule its shield is its
+  hit points, so every spend is a real trade; it shines beside a shielder.
 - **The Onryō**: a flat on-hit per Grudge stack, the team's vengeance, rather than a damage
   over time or a multiplier (Shock stays the multiplier); the wound stays the trigger until
   every domain lays a debuff on machines; a cap on stacks; the Pall kept. The argument on a
@@ -1269,8 +1277,8 @@ the Dingo.
   attack, paying cooling and shield regen, small per stack or at thresholds (Claude's lean:
   thresholds, the first low, a cap); its locked shield keeps the combo (Rapid with a cooldown
   of two if it needs tempo) and is a self-Barrier parry whose riders land; the saber scaling
-  with the count as a dial; Beam tags for later modules; a kill carrying the chain is the
-  Zoids walker's verb, so one changes if the Zoid is Aphelion's.
+  with the count as a dial; Beam tags for later modules. The earlier shape that carried a mark
+  through kills is superseded, so the frame no longer shares the Zoids walker's kill verb.
 - **The Armadillo as a form changer at tier one** (Ryan's latest shape, thinking on it): a
   shield spent seals it, a weapon spent opens it, anything else keeps the form. Sealed: Braced
   (base armour comes down), heat rising every turn, its shields spent on a foe as lures with
@@ -1336,9 +1344,8 @@ over time), the web (a timed stun), the mine (a trapped slot); and Barrier and W
 
 ### Sessions this hands on
 
-Minerva's (the Armadillo's form, the hedgehog, the battery) and Kestrel's (the strafer, the
-bomber); Aphelion's finishing (the frame's combo, the jellyfish's refinement, the Carrier, the
-Zoid's maker); the stock pass (the shield rule and the buffs, the cooldown property, the
-Dingo, the renames, heat, tags, the basics); the economy pass (the offer, the shelf, the
-token); the foes' fresh start (riders in every domain, reinforcements worth trapping,
-multi-move foes for Disrupt).
+Each chassis proposal, direction and rework has a brief of its own in `docs/briefs/` (its
+README lists them, the shared context and an order), one design session each. Beside them:
+the stock pass (the shield rule and the buffs, the cooldown property, the Dingo, the renames,
+heat, tags, the basics); the economy pass (the offer, the shelf, the token); the foes' fresh
+start (riders in every domain, reinforcements worth trapping, multi-move foes for Disrupt).

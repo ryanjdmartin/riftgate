@@ -139,7 +139,9 @@ to-do's Ryan list).
    still open are the page's section 12 (the Onryō, the Armadillo as the hypertank, the Baboon
    at tier two, the Gundam, the jellyfish, Mastema, the funnel-web, early offers, tier counts).
    Each further decision becomes a row, the stock pass takes what sections 10 and 12 list, the
-   fresh sessions take their gaps, and the page retires to git.
+   fresh sessions take their gaps, and the page retires to git. The design sessions run from the
+   briefs in `docs/briefs/` (15 October: one per chassis proposal, direction and rework, each
+   with what Ryan said and what is open; the README gives the shared context and an order).
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -177,8 +179,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.161 (15 October: the Oblation Mantle and the
-  Votive Screen named; 14 October: the shield rule, Barrier and Ward, cooldowns, the Dingo's
+  `docs/design-bible.html` after every change. Live: v0.162 (15 October: the shield-spender a direction
+  with its brief; the Oblation Mantle and the Votive Screen named; 14 October: the shield rule, Barrier and Ward, cooldowns, the Dingo's
   Shock, Kestrel's strafer and bomber, Minerva's open row), from the branch `ccr-777fd46a-32dw2m`, which main must take before the next
   republish.
   Before republishing, read the live page; if another session moved it, publish a three-way

@@ -8,7 +8,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 ## Ryan
 
 - [ ] Read `docs/rules.md` once and the bible's first row; answer section 12's questions as they come up, the foe roster after the picks and the mechanic budgets first
-- [ ] Read the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages) and give the go: the ten decisions in its section 9, the budgets in its section 6 and cooldowns in its section 7 among them
+- [ ] Read the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages) and give the go: the ten decisions in its section 9 and the budgets in its section 6 still open (cooldowns decided 14 October), and the tiers the briefs propose (`docs/briefs/README.md`: the reshuffle, the ten-a-maker counts, the tier row that gives every tier one a locked piece)
 - [ ] Text: codex and flavour for the nine new machines, the Baboon's flavour, the components without a codex; each maker's Sponsorship notice in its voice; the mitigation discussion for the bible
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
 - [ ] Play the 11 October builds: the Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5), the overheat at the end of the turn, armour off a breach's overflow
@@ -26,11 +26,35 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 ## Design sessions
 
 - [x] The roster analysis, one fresh session from the brief in `docs/mechanic_budgets.md` (Ryan, 14 October): the roster and the proposals rated on quality, niche, build diversity and composition, fit not viability, nothing run; the tiers as dealt; Minerva's and Kestrel's gaps (`docs/roster_analysis.md`, 14 October, published); then Ryan's go
-- [ ] Minerva's fresh chassis session and Kestrel's, each from the latest rules and the roster analysis's gaps (Kestrel's from the strafer and the bomber, decided 14 October; Minerva's from the hypertank, the hedgehog and the siege battery, the page's section 12), proposed in chat first
-- [ ] Aphelion's proposals finished (the open questions `docs/aphelion_chassis_proposal.md` section 5 lists), after the roster analysis
-- [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured
-- [ ] The stock pass's content questions settled in chat (section 12), then the pass below, with heat re-priced so that it bites (the bible's heat row)
-- [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles
+The design sessions below run from the briefs in `docs/briefs/`, one session each, proposed in chat first; the briefs' README gives the shared context and an order.
+
+- [ ] The Armadillo as a form-changing tank, and its cash-in (`minerva_armadillo.md`)
+- [ ] The Honey Badger's identity (`minerva_honey_badger.md`)
+- [ ] The hedgehog, the Faraday Hull's new home, with the Retribution Thurible's change (`minerva_hedgehog.md`), after the Armadillo's
+- [ ] The siege battery, with the Carrier's session (`minerva_siege_battery.md`)
+- [ ] The strafer (`kestrel_strafer.md`)
+- [ ] The shield-spender (`kestrel_shield_spender.md`)
+- [ ] The bomber (`kestrel_bomber.md`), best after the foes' fresh start
+- [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
+- [ ] The revolver (`ws_revolver.md`)
+- [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
+- [ ] The funnel-web (`ws_funnel_web.md`)
+- [ ] The gunship (`ws_gunship.md`), with the stock pass's tags
+- [ ] The fan-boat back from the board (`ws_fan_boat.md`), with the stock pass's keywords
+- [ ] The Prairie Dog's fight half (`ws_prairie_dog.md`)
+- [ ] The Dingo's tier and die (`ws_dingo.md`), with the stock pass
+- [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
+- [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
+- [ ] The Carrier, with the siege battery's session (`aphelion_carrier.md`)
+- [ ] The Baboon to tier two (`aphelion_baboon.md`), with the stock pass
+- [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
+- [ ] Misharu with Penance (`arsenal_misharu.md`)
+- [ ] The Onryō's Grudge (`arsenal_onryo.md`)
+- [ ] Mastema, fire through the team, with the Scapegoat Brand's fate (`arsenal_mastema.md`), best after the foes' fresh start
+- [ ] Minos (`arsenal_minos.md`), after the foes' fresh start
+- [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured; and what the briefs wait on: riders on machines in every domain (the Ward and Mastema's mover are blank without them; Scrambled is built and unused), reinforcements worth trapping (the bomber), back ranks in more fights (Minos), foes with more than one move (the jellyfish's Disrupt), and enemy Shock on a hero or an elite, telegraphed, if any (the roster analysis's section 12)
+- [ ] The stock pass's content questions settled in chat (section 12), then the pass below, with heat re-priced so that it bites (the bible's heat row); it also takes the go's stock items: the Barrier's and the Ward's carriers and numbers (the Blast Door's fantasy is a Barrier), shield numbers re-read under the honest shield rule (the Goshawk's regen and the Puffin's overshield become hit points), cantrips if Ryan takes them (15 October: small Rapid pieces with no cooldown), multi-strike pieces (the Maxigun is the only one; Ryan, 14 October: badly needed), the hard-control placement once Ryan confirms the budgets (no stun piece below tier two), and the stock changes the briefs hand it (the Baboon's, the Dingo's, the Retribution Thurible's)
+- [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles; and the roster analysis's section 12 economy items (the host maker's offer as a module, a component and a chassis from its catalogue, the bible's blueprint-or-component row to settle; the Recommended chassis offer rate retiring if a chassis is guaranteed; the boss's token unpacking into a choice; a shelf slot for each standing maker, tier ones early; where blueprints come from and what Salvage and Favour buy, re-evaluated since blueprints were meant to be Salvage's main sink)
 
 ## Engine
 
@@ -40,8 +64,9 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 - [ ] The Ram Frame's new rule and the Artillery Rangefinder's (once Ryan picks them: section 7's catalogue row), then the module catalogue as soft-synergy pairs once tags are assigned
 - [ ] The balance runner's heat report (Ryan, 13 October: spikes, not actions): per row, peak heat as a share of the maximum and the rounds above four fifths of it, overheats and the hull burned, forced choices (rounds where the best-damage entry showing would have crossed the maximum and a vent, a cooler weapon or nothing was spent instead), the damage forgone to heat over those rounds, and the slack left at the fight's end against its length; a `--heat` recipe that fields one chassis three ways, tuned to its cooling, hot with vents, mixed, from `--set` loadouts; the bot's heat weight stays a tool knob, so a cautious and a reckless persona (cooling early, cooling at the maximum) run side by side and Ryan's play checks where a human would sit between them
 - [ ] The balance runner's module rows: `--module` and `--rows` built 11 October; a fitted cell beside the stock one in the report is next, read for a reach premium (the Booster and the Databank measured even, 11 October)
+- [ ] A suppressed foe's intent line clears, its Suppressed chip in its place (agreed in chat, 14 October); a delayed stun's timer on the foe's chip once the funnel-web lands
 - [ ] The greedy bot's valuation of support (`shield_score` counts the hull saved this round, not the blow turned next round; a status laid for an ally and a second action on the map count for nothing), before the runner is asked about any support frame
-- [ ] The bot's valuations for the mechanics the built proposals need before the runner reads them (a sentence, a doubling, a turn of the ranks, a wound, the boiler's blast), or the rollout rung; until then the runner's verdict on them is a verdict on the bot and the evaluation says so
+- [ ] The bot's valuations for the mechanics the built proposals need before the runner reads them (a weaken, a doubling, a turn of the ranks, a wound and its curse, the boiler's blast, an ambush and its venom, a delayed stun, a mine, a lure and rerolls for others, a lent die, a combo), or the rollout rung; until then the runner's verdict on them is a verdict on the bot and the evaluation says so
 - [ ] The domains' engine gaps: a flee (the Needler's Scatter, the Thief's Flee), a cure and a harden on allies (the White Mage), a foe-side interpose (the Warrior's Cover) and retaliate (the Martial Artist's Counter, the Salamander's Ember Hide), the delayed blow (the Lancer's Jump), a blow at every machine, a self-damage rider (the Necromancer), a rare pack that flees on the map (the Gold Bug), the Mimic as loot, placement and the bleed by domain
 - [ ] The party in `sim/campaign.gd`: the deal from each domain's `bench`, the party card, a domain's final against its dealt hero with its wildlife, the promoted form at the finale, the runner's party cell; a final counts only when the hero dies
 - [ ] The promoted forms as entries (size 2, armour 5, one move more; names proposed in chat first) and the finale: the four in line, a beaten hero's column to boss-tier wildlife of the standing domains, elites and bosses behind
@@ -66,6 +91,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 ## Art
 
+- [ ] Aphelion's thrusters as a model brief, how they look (`docs/aphelion_chassis_proposal.md` section 5: it flies on thrusters and space-age rockets, never rotors)
 - [x] Ryan's picks of the edit model's fixes cut (13 October): both Gels' maws, the Ghost's painted flame, the Salamander's flame frill, the Dire Wolf's mane, the Goblin's grip (still not right, his note), the Magma Golem eyes only, the Mandragora brighter and leafier (its white holes keyed, `--holes 100`), the Sandworm without eyes
 - [ ] Ryan picks the fifth round on the foe picker (13 October): the Summoner without fire (takes 5 to 8, lava-seamed rock held or floating, chibi and boss); the heroes' fixes (the Warrior's sheathed hilt, his tabard apart from the cape; the Martial Artist's plain gi; both Thieves' daggers in hand; the Lancer's spear whole, her helmet fins, the chibi's tail gone and her spear held; the White Mage's close crop and hands; the Black Mage's staff hand); the Drake's redrawn far wing and hanging toes; the Bone Dragon's far wing redrawn by the model from the composite; the Cockatrice's smaller claws; the Revenant two-handed; the Zombie Knight dragging its sword; the Treant's branches curved into arms, and its knot eyes; the Needler 7 with hole eyes and dense needles; the Magma Golem's fresh takes with separate arms (an eyes-only fix after the pick). Still missed: the Cockatrice's second wing, the Martial Artist's fist at her chin, the Sandworm's last eye socket
 - [x] The pockets Ryan named recut (13 October): under the Goblin's sword arm, between the Lancer's spear and leg, between the White Mage's staff and leg (`--holes-tol 8` spares an off-white robe)
