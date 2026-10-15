@@ -58,7 +58,28 @@ name of ours. The Summoner's circles stay deep violet: the fire and the ice are 
 If the Summoner calls Ifrit, the Golem is no longer its identity, so the reason to replace it
 as the Peak's boss goes. If it stays, it and the Tortoise are both slow lava heavies that erupt
 below half: one of them changes its job (the Tortoise's could be its shell alone, the eruption
-left to the Golem).
+left to the Golem, or the Golem's kit could become Chrono Trigger's, below).
+
+## Homages from the rest of the genre (pitched 15 October)
+
+Ryan asked what other classic JRPGs could give, and for a Clair Obscur: Expedition 33 homage
+somewhere, retrograded to the sixteen-bit register (it is modern, but held as the genre's
+pinnacle). Each fills a slot the records already hold open.
+
+| Homage | From | Slot | What it asks of the player | Engine |
+|---|---|---|---|---|
+| A boss in parts | Chrono Trigger (Giga Gaia's hands on Mt. Woe, Mother Brain's screens) | The Golem's kit, if it stays: its fists stand in the next columns, one healing the body, one guarding it | Kill order across the parts, on our two ranks of four | The White Mage's cure and harden on allies (the to-do); new art for the hands |
+| The Reaper | Persona (it comes for a party that lingers on a floor) | The forced boss the bible leaves open as turtling's backstop (section 4) | A battle that drags brings it out of the rift, far stronger than anything, heard coming a few turns ahead: the clock is a creature | A pack and its trigger; the warning is the rule (never helpless) |
+| The King Slime merge | Dragon Quest (eight slimes become the king) | The Meadow, if a slime boss stays | The swarm becomes the boss unless it is thinned first | A merge: so many of a kind on the field become one |
+| The ungraspable attack | EarthBound (Giygas) | The Lovecraftian dial at the Convergence's last tier (section 9) | The plaque reads "You cannot grasp the true form of its attack!" while the intent still shows the exact number | None beyond the foe; the name is the game's coinage, so ours |
+| Gilgamesh | Final Fantasy V (banished into the rift between worlds, he turns up across the series) | A rival of no domain, the premise made a character | Appears in any domain's battle, fights, flees and returns stronger; once with a fake sword (Excalipoor) | The flee (the to-do), and a rule for a foe of no domain; the name is the epic's, free |
+| The Paintress | Clair Obscur (she paints a number, and everyone of that age is erased, the Gommage) | A second superboss beside Omega (the fifth game had two), or her monolith as the face of the Convergence's count | Each round she paints a number; at the round's end every machine's showing entry with that number cracks, and the number drops: the reroll is the answer | A move that reads the dice (foes' interrupts attack the die, section 9) |
+| The Mime | Clair Obscur (silent duellists hidden in every area, dropping cosmetics) | A rare pack on the map, beside the Gold Bug and the Mimic (the to-do) | It mimes the last blow it took back at whoever dealt it (the deterministic reflect pinned in section 5); its plaque stays blank, since a mime has no lines; beating it unlocks a livery | A mirror blow |
+
+Retrograding Clair Obscur suits the register: the foes are painted already, and a painter whose
+world is a painting is the invasion's own medium. Several benches already read as homages to
+other series: the Psychic (EarthBound), the Dragon Heir (Breath of Fire), the Gunslinger (Wild
+ARMs), the Tamer (Dragon Quest V).
 
 ## The slate
 
@@ -92,6 +113,12 @@ The ideas set aside, each with what set it aside.
   if the Rotbloom and the Pilgrim land.
 - Bomb King: waits on the Bomb's verdict in play.
 - Red Dragon: another dragon.
+- Fire Emblem's weapon triangle: the bible refuses a damage-type triangle (section 9).
+- Shin Megami Tensei's demons (Jack Frost, Pyro Jack): demons are the Arsenal's register
+  (section 1), though Jack Frost's name is folklore's if an imp is ever wanted.
+- Clair Obscur's parry and dodge: real-time timing, against an exact preview and a phone's
+  thumbs.
+- SaGa's glimmer (a technique learned mid-fight): components are never modified (section 10).
 
 ## Questions for Ryan
 
@@ -100,3 +127,5 @@ The ideas set aside, each with what set it aside.
 - Shiva's name, or one of ours?
 - The Peak's third: the Golem kept (the Tortoise then its shell alone) or the Fire Naga?
 - The Rotbloom for the Mother Gel and the Pilgrim for the Great Needler?
+- Which of the genre's homages earn their engine piece, and the Clair Obscur one: the Paintress,
+  the Mime, or both?
