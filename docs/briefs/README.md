@@ -15,6 +15,10 @@ chat first.
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat
   and a file disagree, the chat is newer.
+- The proposal files (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
+  `docs/aphelion_chassis_proposal.md`) and the roster analysis's sections 1 to 11 predate the
+  go: they were written under the whole-block shield rule, before Penance, the renames and the
+  directions. Where a brief and a source it cites differ, the brief is newer.
 - Propose in chat first. Ryan tweaks ideas against his own notes; a suggestion of his opens a
   discussion, so look for holes and raise them before building. If he reaffirms after hearing
   them, build it as he said.

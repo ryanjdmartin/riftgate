@@ -45,7 +45,8 @@ document's job and every command are in `README.md`.
   drifted into measuring stand-ins and rating on performance and was retired to git (the
   branch's history). The analysis itself is `docs/roster_analysis.md` on the branch
   `ccr-777fd46a-32dw2m` (14 October, from the brief in `docs/mechanic_budgets.md`; published,
-  the link under Pages), waiting on Ryan's go. That branch carries `ccr-3d9861dc-mp0v3w` (the
+  the link under Pages); Ryan's go is in progress, and the design sessions it hands on run
+  from the briefs in `docs/briefs/`. That branch carries `ccr-3d9861dc-mp0v3w` (the
   brief and the bible v0.158) beneath it, so main takes the two together.
 
 ## The game as left (13 October, evening)
@@ -140,12 +141,12 @@ to-do's Ryan list).
    published: the link under Pages). Decided in chat the same day and recorded: the shield rule
    (a shield absorbs its number, a breach ignores it), Barrier and Ward, cooldowns as a printed
    property, the Dingo's Shock, Misharu's Penance, Kestrel's strafer and bomber. The directions
-   still open are the page's section 12 (the Onryō, the Armadillo as the hypertank, the Baboon
-   at tier two, the Gundam, the jellyfish, Mastema, the funnel-web, early offers, tier counts).
-   Each further decision becomes a row, the stock pass takes what sections 10 and 12 list, the
-   fresh sessions take their gaps, and the page retires to git. The design sessions run from the
-   briefs in `docs/briefs/` (15 October: one per chassis proposal, direction and rework, each
-   with what Ryan said and what is open; the README gives the shared context and an order).
+   still open (the Onryō, the Armadillo as a form changer at tier one, the Baboon at tier two,
+   the Gundam, the jellyfish, Mastema, the funnel-web) each have a brief in `docs/briefs/` (15
+   October: one per chassis proposal, direction and rework, each with what Ryan said and what is
+   open; the README gives the shared context, the tiers as proposed and an order), and the
+   design sessions run from them. Each further decision becomes a row, the stock pass takes what
+   the page's sections 10 and 12 list, and the page retires to git.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -183,12 +184,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.163 (15 October: main numbered past the
-  0.156 to 0.162 the cloud branches published and put its Bomb line on this branch's v0.162,
-  whose rows are the shield rule, Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's
-  strafer, bomber and shield-spender, and Minerva's open row; this branch merged main the same
-  day, so its file is the live page), from the branch `ccr-777fd46a-32dw2m`, which main must
-  take before the next republish.
+  `docs/design-bible.html` after every change. Live: v0.164 (15 October: the lines that still called
+  cooldowns open retired, the Minerva row brought to the Armadillo as a form changer at tier
+  one, the rows' pointers moved from the page's section 12 to the briefs; v0.163 was main's
+  number for this branch's v0.162 with main's Bomb line, so the branch's rows are the shield
+  rule, Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's strafer, bomber and
+  shield-spender, and Minerva's open row), from the branch `ccr-777fd46a-32dw2m`, which main
+  must take before the next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
