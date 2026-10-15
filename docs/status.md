@@ -94,8 +94,8 @@ document's job and every command are in `README.md`.
   Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
 - Built 15 October: a foe's blow at every machine (`all` on an attack move: each strike on each
   live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
-  each). No foe carries it; the foe kit refresh places it. The Magma Golem is the Summoner's,
-  so the Peak's three bosses are all new (the to-do's bosses line).
+  each). No foe carries it; the foe kit refresh places it. The bosses' slate and Ryan's marks so
+  far are `docs/bosses_proposal.md`.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
