@@ -251,7 +251,8 @@ Burning, Suppressed, Shocked or Paradox.
 - **Its move**: from the moves whose conditions hold, weighted (attacks 2, specials 1), never
   the same special twice running while anything else is open. Conditions: below half, hurt,
   fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
-  machine showing an intact weapon, a foe behind it, another foe on the field. A move may
+  machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
+  hurt. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field.
@@ -266,7 +267,9 @@ Burning, Suppressed, Shocked or Paradox.
   Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
-- **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
+- **A special** replaces the blow: harden, regrow (heals its value), cure (the most hurt of its
+  own, itself included, heals its value), protect (armour on every foe in the fight through the
+  next round), revive once, summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.

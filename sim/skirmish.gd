@@ -122,7 +122,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["harden", "regrow", "regrow_ally", "harden_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -601,6 +601,11 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 				return false
 			var behind: Foe = back[f.column]
 			return behind != null and behind != f and behind.alive()
+		"ally_hurt":
+			for o in field_foes():
+				if o.alive() and o.hp < o.hp_max:
+					return true
+			return false
 		"others_on_field":
 			for o in field_foes():
 				if o != f and o.alive():
@@ -1198,6 +1203,32 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
 			log.append("%s: %s, regrows %d" % [f.display_name, str(a.get("name", "regrows")), f.hp - before])
+		"regrow_ally":
+			# Foes helping foes (15 October): the most hurt of its own by hull missing, itself
+			# included, the first in the order they stand on a tie.
+			var hurt: Foe = null
+			for other in field_foes():
+				if other.alive() and other.hp < other.hp_max and (hurt == null or other.hp_max - other.hp > hurt.hp_max - hurt.hp):
+					hurt = other
+			if hurt == null:
+				log.append("%s: %s, and none of its own is hurt" % [f.display_name, str(a.get("name", "cures"))])
+			else:
+				var before := hurt.hp
+				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
+				log.append("%s: %s, %s regrows %d" % [f.display_name, str(a.get("name", "cures")), hurt.display_name, hurt.hp - before])
+		"harden_all":
+			# Armour on every foe in the fight through the next round, so it stands through the
+			# player's turn and is gone when the enemy acts again: its next action, as the
+			# player sees it, which a per-foe fade would cut short for foes acting after it.
+			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
+			guard["effects"][0]["value"] = maxi(0, value)
+			guard["description"] = "Armour +%d through the next round." % maxi(0, value)
+			var guarded := 0
+			for other in field_foes():
+				if other.alive():
+					Effects.grant_for_rounds(other, guard, "foe:" + f.content_id, round + 1)
+					guarded += 1
+			log.append("%s: %s, armour +%d on %d of its own" % [f.display_name, str(a.get("name", "protects")), maxi(0, value), guarded])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])

@@ -53,12 +53,12 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field"]
+const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt"]
 const WHEN_TEXT := {
 	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
 	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
 	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
-	"others_on_field": "when another stands with it",
+	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 }
 
 
@@ -199,6 +199,9 @@ func strikes() -> int:
 ##   defend  harden: armour +`value` until its next action (Fold; flat since 2 October, one word
 ##           and one icon for both sides, the half it was is gone)
 ##           regrow: regains `value` hit points (Knit)
+##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
+##           harden_all: armour +`value` on every foe in the fight through the next round
+##           (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
@@ -213,7 +216,7 @@ func strikes() -> int:
 ##           hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
-	"defend": ["harden", "regrow"],
+	"defend": ["harden", "regrow", "regrow_ally", "harden_all"],
 	"buff": ["revive_once", "summon", "rally"],
 	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
 }

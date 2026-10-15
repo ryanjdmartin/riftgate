@@ -7,12 +7,12 @@
    "faction": "peak",
    "size": 2,
    "design": {
-    "sprite": "a colossal horned beast of the mountain, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
+    "sprite": "a colossal four-legged horned beast of the mountain, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
     "variants": [
      "a colossal horned beast of the mountain crouched low and about to charge, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
-     "a colossal horned beast of the mountain rearing up on its hind legs with its forelegs clawing the air, a mane of stone-grey quills bristling, two great horns sweeping forward, cracks of molten light in its dark hide",
-     "a colossal horned beast of the mountain roaring with its head thrown back and a meteor of fire gathering above its horns, a mane of stone-grey quills, cracks of molten light in its dark hide",
-     "a colossal horned beast of the mountain pawing the ground with one huge clawed foreleg, head lowered behind two great horns and a long spiked tail lashing, a mane of stone-grey quills, cracks of molten light in its dark hide"
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, bellowing with its head raised, a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide",
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, roaring with a meteor of fire gathering above its horns, a mane of stone-grey quills, cracks of molten light in its dark hide",
+     "a colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, pawing the ground with one huge clawed foreleg and a long spiked tail lashing, a mane of stone-grey quills, cracks of molten light in its dark hide"
     ]
    }
   },
@@ -70,9 +70,9 @@
     "sprite": "a colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end",
     "variants": [
      "a colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end, cracked earth heaved up around its buried haft",
-     "a colossal war hammer tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a blunt face and a curved pick on its iron head, a glaring eye set into each end, dust swirling around it",
+     "a colossal war hammer alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a blunt face and a curved pick on its iron head, a glaring eye set into each end, dust swirling around it",
      "a colossal double-bitted battle axe standing haft-down in the badlands like a monument, its two crescent blades spread like wings, a glaring eye set into each blade, cracked earth heaved up around its buried haft",
-     "a colossal double-bitted battle axe tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it"
+     "a colossal double-bitted battle axe alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it"
     ]
    }
   },

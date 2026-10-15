@@ -3589,6 +3589,56 @@ func test_a_disrupt_breaks_off_a_gathering_move() -> void:
 	assert_eq(Foe.countdown_of(back.pending), 2, "a whole number")
 
 
+func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
+	# The White Mage's Cure (15 October): foes helping foes.
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var healer := Foe.make("mage", 60, 10, true)
+	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}]
+	healer.action = healer.actions[0]
+	var hurt := _ghoul(100, 10)
+	var scratched := _ghoul(100, 10)
+	sk.add_foes([hurt, scratched, healer])
+	sk.begin()
+	hurt.hp = 50
+	scratched.hp = 90
+	sk.start_round()
+	assert_eq(str(healer.action.get("id", "")), "cure", "one of its own is hurt, so it may cure")
+	sk.end_round()
+	assert_eq(hurt.hp, 70, "the most hurt regrew twenty")
+	assert_eq(scratched.hp, 90, "and nobody else")
+	var whole := Skirmish.new(1, 3)
+	whole.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	var idle := Foe.make("mage", 60, 10, true)
+	idle.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}, Foe.basic_action()]
+	whole.add_foes([_ghoul(100, 10), idle])
+	whole.begin()
+	assert_false(whole.legal_actions(idle).has(idle.actions[0]), "with none of its own hurt it has no cure to cast")
+
+
+func test_protect_armours_every_foe_through_the_next_round() -> void:
+	# The White Mage's Protect (15 October): armour on every foe, gone when the enemy acts again.
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
+	var priest := Foe.make("priest", 60, 10, true)
+	priest.actions = [{"id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 5, "weight": 1, "when": ["others_on_field"], "text": ""}, Foe.basic_action()]
+	priest.action = priest.actions[0]
+	var g := _ghoul(100, 10)
+	sk.add_foes([g, priest])
+	sk.begin()
+	sk.start_round()
+	priest.action = priest.actions[0]
+	priest.last_special = "protect"   # as announcing it would have, so it does not cast it twice running
+	sk.end_round()
+	assert_eq(g.armour_total(), 5, "every foe in the fight is armoured")
+	assert_eq(priest.armour_total(), 5, "the caster too")
+	sk.start_round()
+	assert_true(sk.assign(0, g), "through the player's turn")
+	assert_eq(g.hp, 75, "a blow of thirty takes twenty-five")
+	sk.end_round()
+	assert_eq(g.armour_total(), 0, "and gone when the enemy has acted again")
+
+
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
 	# halves never split again, and without the battle's factory nothing steps in.
