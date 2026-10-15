@@ -278,9 +278,9 @@
       "kept": "picks/thief_chibi.png",
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring.",
       "cut": {
-        "height": 42
+        "height": 34
       },
-      "note": "Standing, rendered fresh; Ryan's pick of 14 October"
+      "note": "A braced crouch, so cut at 34 where a standing chibi is 42 (Ryan, 15 October: shrink her, she is crouching; 34 from the 38, 36, 34 comparison)"
     },
     "thief": {
       "foe": "thief",
