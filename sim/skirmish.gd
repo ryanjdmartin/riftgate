@@ -514,7 +514,11 @@ func start_round() -> void:
 	_focus.clear()
 	_refresh_kin()
 	for f in field_foes():
+		# A move gathered last round holds, and so does its pick while the machine stands.
+		var carried := not f.pending.is_empty()
 		_choose_foe_action(f)
+		if carried and f.target != null and (f.target as MechState).alive():
+			continue
 		f.target = _pick_mech_target(f)
 	state = State.ASSIGN
 
@@ -542,8 +546,20 @@ func legal_actions(f: Foe) -> Array:
 
 
 func _choose_foe_action(f: Foe) -> void:
+	if not f.pending.is_empty():
+		f.action = f.pending   # a countdown move holds until it lands
+		return
 	f.choose_from(legal_actions(f), rng)
 	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+	_begin_countdown(f)
+
+
+## A move with a countdown starts gathering as it is announced (15 October).
+func _begin_countdown(f: Foe) -> void:
+	var n := Foe.countdown_of(f.action)
+	if n > 0:
+		f.pending = f.action
+		f.charge = n
 
 
 ## Does a move's condition hold right now? One word or a list meaning any (Foe.WHENS).
@@ -869,6 +885,18 @@ func _enemy_turn() -> void:
 		if t == null:
 			break
 		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
+		if not f.pending.is_empty():
+			if f.charge > 0:
+				# A countdown move gathers this turn and lands when its count runs out; the
+				# plaque names it as it begins, so the warning has a voice (15 October).
+				if f.charge == Foe.countdown_of(f.pending):
+					turn_specials.append({"foe": f, "name": str(f.pending.get("name", "")), "kind": "charge", "seq": _seq})
+					_seq += 1
+				f.charge -= 1
+				var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
+				log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
+				continue
+			f.pending = {}   # it lands now
 		if f.hits_all():
 			# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
 			# machine in turn, left to right, so no aim or lure moves it; a screened machine is
@@ -1432,8 +1460,11 @@ func _disrupt(foes: Array) -> void:
 				next = cand
 				break
 		var was := str(foe.action.get("name", ""))
+		foe.pending = {}   # a gathered move is broken off
+		foe.charge = 0
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
+		_begin_countdown(foe)
 		foe.target = _pick_mech_target(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 

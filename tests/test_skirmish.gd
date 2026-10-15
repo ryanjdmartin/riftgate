@@ -3504,6 +3504,91 @@ func test_a_bursting_blow_at_every_machine_lands_on_each_and_spends_the_striker_
 	assert_eq("\n".join(sk.log).count("bursts, and is gone"), 1, "once, after every machine took it")
 
 
+func _gatherer(atk: int, countdown: int) -> Foe:
+	var f := Foe.make("lancer", 500, atk)
+	f.actions = [{"id": "jump", "name": "Jump", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "countdown": countdown, "text": ""}]
+	f.action = f.actions[0]
+	return f
+
+
+func test_a_countdown_move_gathers_a_round_then_lands() -> void:
+	# The Lancer's Jump (15 October): announced as the round opens, it lands the next.
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	var lancer := _gatherer(30, 1)
+	sk.add_foes([lancer])
+	sk.begin()
+	sk.start_round()
+	assert_true(lancer.gathering(), "announced, it gathers")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 0, "nothing lands this round")
+	sk.end_round()
+	assert_eq(a.hull, 100, "and nothing did")
+	assert_true(sk.turn_specials.any(func(s): return str(s["kind"]) == "charge" and str(s["name"]) == "Jump"), "the plaque names it as it begins")
+	sk.start_round()
+	assert_false(lancer.gathering(), "the next round it lands")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "and the forecast says so")
+	sk.end_round()
+	assert_eq(a.hull, 70, "it landed")
+	assert_true(lancer.pending.is_empty(), "spent")
+
+
+func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var walker := _gatherer(20, 2)
+	sk.add_foes([walker])
+	sk.begin()
+	sk.start_round()
+	var picked = walker.target
+	assert_eq(walker.charge, 2, "two rounds to go")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(walker.target, picked, "the pick holds while it gathers")
+	assert_eq(walker.charge, 1, "one to go")
+	sk.end_round()
+	sk.start_round()
+	assert_false(walker.gathering(), "it lands this round")
+	assert_true(sk.assign(0, walker), "unless a suppress lands first")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 200, "suppressed, it held its blow")
+	assert_false(walker.pending.is_empty(), "and holds it still")
+	sk.start_round()
+	assert_eq(walker.action.get("id", ""), "jump", "the held move, not a new pick")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 180, "the next round it lands")
+
+
+func test_a_disrupt_breaks_off_a_gathering_move() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.DISRUPT)), 0, 100)
+	sk.add_mech(a)
+	var lancer := _gatherer(30, 1)
+	lancer.actions.append({"id": "thrust", "name": "Thrust", "kind": "attack", "factor": 0.5, "strikes": 1, "weight": 1, "keywords": [], "text": ""})
+	sk.add_foes([lancer])
+	sk.begin()
+	sk.start_round()
+	lancer.action = lancer.actions[0]
+	lancer.pending = lancer.action
+	lancer.charge = 1
+	assert_true(sk.assign(0, lancer), "disrupted while it gathers")
+	assert_true(lancer.pending.is_empty(), "the jump is broken off")
+	assert_eq(lancer.action.get("id", ""), "thrust", "its other move instead")
+	sk.end_round()
+	assert_eq(a.hull, 85, "the thrust lands this round")
+	# A fight saved mid-gather resumes with the count.
+	var held := _gatherer(30, 2)
+	held.pending = held.actions[0]
+	held.charge = 2
+	var back := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(held, sk))), sk)
+	assert_true(back.gathering(), "the save keeps the move gathering")
+	assert_eq(back.charge, 2, "and its count")
+	assert_eq(Foe.countdown_of(back.pending), 2, "a whole number")
+
+
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
 	# halves never split again, and without the battle's factory nothing steps in.

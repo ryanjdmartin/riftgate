@@ -912,8 +912,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# strike or a breach; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
-	v.intent_value = foe.damage() if foe.attacks() else int(foe.action.get("value", 0))
-	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if foe.attacks() else ""
+	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
+	var blow := foe.attacks() or foe.gathering()
+	v.intent_value = foe.damage() if blow else int(foe.action.get("value", 0))
+	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if blow else ""
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
@@ -928,6 +930,10 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if foe.gathering():
+		# A countdown (15 October): the warning glyph and the rounds before it lands.
+		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
+		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
 	if Effects.has(foe, "folded"):
 		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
@@ -1041,7 +1047,7 @@ func _refresh_arrows() -> void:
 			continue
 		# A blow at every machine (`all`) draws an arrow to each live machine.
 		var targets: Array[int] = []
-		if foe.hits_all():
+		if foe.reaches_every_machine():
 			for i in range(sk.mechs.size()):
 				if sk.mechs[i].alive():
 					targets.append(i)
@@ -1176,11 +1182,13 @@ func _on_foe_held(v: UnitView) -> void:
 		# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed row
 		# below says what it does this round, as the chip does under its sprite.
 		if not foe.action.is_empty():
-			if foe.attacks():
+			if foe.gathering():
+				text += "\n%s %d%s, lands %s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note, "next round" if foe.charge == 1 else "in %d rounds" % foe.charge]
+			elif foe.attacks():
 				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
 			else:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
-		if foe.target != null and foe.hits_all():
+		if foe.target != null and foe.reaches_every_machine():
 			text += "\n→ every machine"
 		elif foe.target != null:
 			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]

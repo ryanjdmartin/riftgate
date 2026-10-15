@@ -245,6 +245,8 @@ func make_foe(foe_id: String) -> Foe:
 				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))}
 			if a.has("swarm"):
 				act["swarm"] = int(a["swarm"])
+			if a.has("countdown"):
+				act["countdown"] = int(a["countdown"])
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
 			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
@@ -295,7 +297,10 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			if int(a.get("swarm", 0)) > 0:
 				head += " // +%d A KIN" % int(a["swarm"])
 			for k in a.get("keywords", []):
-				head += " // %s" % str(k).to_upper()
+				head += " // %s" % str(vocabulary.get(str(k), {}).get("name", str(k))).to_upper()
+			var n := int(a.get("countdown", 0))
+			if n > 0:
+				head += " // LANDS NEXT ROUND" if n == 1 else " // LANDS IN %d ROUNDS" % n
 		# A move's own sense, where it differs from the foe's, and its condition.
 		if a.has("aim") and str(a["aim"]) != f.aim:
 			head += " // %s" % str(Foe.AIM_TEXT.get(str(a["aim"]), str(a["aim"]))).to_upper()
@@ -1112,7 +1117,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
-				for key in ["factor", "strikes", "keywords"]:
+				for key in ["factor", "strikes", "keywords", "countdown"]:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
@@ -1129,6 +1134,8 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: weight must be at least 1" % aw)
 				if a.has("breach"):
 					errs.append("%s: breach is a tag, put it in keywords" % aw)
+				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
+					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
 				for k in a.get("keywords", []):
 					if not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])

@@ -18,9 +18,9 @@ Generic tropes, a pack of one or a pack in which every foe is unique, any size.
 | The Waste | Sandworm | Big | Built, standing in as the boss |
 | The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
 | The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador |
-| The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Proposed |
+| The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Noted for later (Ryan, 15 October: not yet) |
 | The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
-| Any | A pair of gate gargoyles (a pair trope) | Not big | Proposed |
+| Any | A pair of gate gargoyles (a pair trope) | Not big | Noted for later (Ryan, 15 October: not yet) |
 
 ## Bosses: the slate (third cut, 15 October)
 
@@ -75,15 +75,18 @@ look is ours, never the series' design.
 
 ## Beyond the twelve
 
-- **Omega**, the genre's superboss, in the bible's pinned slot (an optional fight past the
-  Rupture, never the finale): the one machine the genre brings, painted flat like every foe.
-  It sits beside Ryan's pinned Arsenal superweapon, a superweapon a side.
-- **The Summoner's summons**: Ifrit and Shiva in its final, each a move at every machine with
-  its own rider (Ifrit's Pyroclasm scorches, Shiva's Diamond Dust freezes the entry each machine
-  shows); Bahamut's Mega Flare as its promoted form's one move more at the finale. Moves rather
-  than companions, since three massive companions could not stand in two ranks of four. Shiva is
-  a living god's name, which the series has carried for decades without real trouble: a
-  judgment call, not a blocker.
+- **Omega** (Ryan, 15 October: pretty sold on it, but where it lives is open; noted, not now):
+  the genre's superboss, the bible's pinned slot (an optional fight past the Rupture, never the
+  finale) the first home to weigh; the one machine the genre brings, painted flat like every
+  foe, beside Ryan's pinned Arsenal superweapon.
+- **The Summoner's summons** (Ryan, 15 October: yes, with names that are not the series' own):
+  in content since that day, each a move. Yuki-onna (the ice maiden of Japanese folklore, in
+  Shiva's place): Diamond Dust, a frostbite on the component every machine shows (corrupt all),
+  soft rather than a freeze that switches components off, since freezing every machine at once
+  would be the hardest control in the game. Surtr (the Norse fire giant, in Ifrit's place):
+  Pyroclasm, every machine scorched, below half. The Dragon King (in Bahamut's place): the
+  promoted form's one move more, waiting on the promoted forms. Working names; art in the
+  forge's drafts, and the screen's moment for each summon to appear is still to come.
 - **Clair Obscur's Mime**, if wanted beside Bourgeon: a rare pack that throws the last blow it
   took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
   prize.
@@ -92,8 +95,7 @@ look is ours, never the series' design.
 
 - Marks on the rest of the twelve.
 - The Exor homage's weapon.
-- The Coven and the gargoyle pair as elites.
-- The Summoner's summons as moves; Omega as the superboss; the Mime.
+- The summons' names (working: Yuki-onna, Surtr, the Dragon King); where Omega lives; the Mime.
 - The heroes' homages beyond Final Fantasy (the Thief as Persona 5's Joker, perhaps).
 
 ## Bench

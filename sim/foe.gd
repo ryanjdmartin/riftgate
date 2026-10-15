@@ -41,6 +41,8 @@ var kin: int = 0                 # other live foes of its type on the field, for
 var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
+var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
+var charge: int = 0              # rounds before the pending move lands; at 0 it lands this round
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -166,9 +168,22 @@ static func is_attack_action(a: Dictionary) -> bool:
 	return kind_of(a) == "attack"
 
 
-## Is this round's chosen action a blow at a machine?
+## Is this round's chosen action a blow at a machine? A move still gathering lands no blow
+## this round (its countdown).
 func attacks() -> bool:
-	return is_attack_action(action)
+	return is_attack_action(action) and not gathering()
+
+
+## The rounds a move gathers before it lands (`countdown`, 15 October): announced as the round
+## opens, it lands that many rounds later, the warning shown the whole time (the Lancer's
+## Jump, one round; a Tonberry's walk or a Tyrano's five to zero, longer).
+static func countdown_of(a: Dictionary) -> int:
+	return maxi(0, int(a.get("countdown", 0)))
+
+
+## Is it gathering a move that lands in a later round?
+func gathering() -> bool:
+	return not pending.is_empty() and charge > 0
 
 
 func damage() -> int:
@@ -228,6 +243,12 @@ func breaches() -> bool:
 ## Is this round's move a blow at every machine (`all`)?
 func hits_all() -> bool:
 	return attacks() and has_keyword(action, "all")
+
+
+## Does its move reach every machine, landing this round or still gathering? The screen's read
+## for the arrows and the hold, where the engine's own is hits_all.
+func reaches_every_machine() -> bool:
+	return is_attack_action(action) and has_keyword(action, "all")
 
 
 ## The action's text with {damage} and {value} filled in, so "Jaw Rend for {damage}" and

@@ -415,6 +415,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
 		"boss": f.boss, "on_death": f.on_death, "stays_down": f.stays_down,
+		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 	}
 
 
@@ -440,7 +441,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.actions = []
 	for a in d.get("actions", []):
 		var act: Dictionary = a.duplicate()
-		for key in ["strikes", "weight", "swarm", "value", "count"]:
+		for key in ["strikes", "weight", "swarm", "value", "count", "countdown"]:
 			if act.has(key):
 				act[key] = int(act[key])
 		f.actions.append(act)
@@ -452,6 +453,10 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.target = sk.mechs[ti] if ti >= 0 and ti < sk.mechs.size() else null
 	var ai := int(d.get("action", -1))
 	f.action = f.actions[ai] if ai >= 0 and ai < f.actions.size() else f.actions[0]
+	var pi := int(d.get("pending", -1))   # a countdown move it was gathering (15 October)
+	if pi >= 0 and pi < f.actions.size():
+		f.pending = f.actions[pi]
+		f.charge = int(d.get("charge", 0))
 	for md in d.get("modifiers", []):
 		f.modifiers.append(_modifier_from(md))
 	return f
