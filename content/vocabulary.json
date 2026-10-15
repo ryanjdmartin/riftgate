@@ -54,7 +54,7 @@
    "id": "reroll",
    "category": "resource",
    "name": "Reroll",
-   "codex": "Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.",
+   "codex": "Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -334,7 +334,7 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. Any component may carry it, a vent or a shield as well as a weapon. The switch-off only stops an infinite turn.",
+   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free onto any other component (a second copy of this one included, so copies chain), and the mech may act again. Any component may carry it, a vent or a shield as well as a weapon. The switch-off only stops an infinite turn.",
    "status": "implemented",
    "design": {
     "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll."

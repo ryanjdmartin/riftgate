@@ -151,12 +151,24 @@ What it settles: the seal's Braced is fixed, tied to the defensive mode, and nev
 mark is in, as cooling: an attack on a marked foe spends its marks to cool the Armadillo, so
 the loop is seal, mark, open, cool, seal.
 
+**Ryan on rerolls** (15 October, in the session): "Rapid should reroll to any other face, not
+any other non-identical face, that's incorrect if that's how it works. Stacking a bunch of the
+same rapid component is a valid, if silly, build." And of the team's rerolls: "That's not how
+the team rerolls should work either, that's so incredibly abusable." Built the same day (the
+bible's rerolls row): every reroll skips only the entry showing, a copy included. So a pair of
+lures does chain (lure A, then B, one in five on a six-entry die), which corrects Claude's
+second round. Raised in chat and open: with no cooldown, two copies can bounce back and forth
+(A onto B, B onto A), and a die of nothing but no-cooldown Rapid pieces never ends its turn;
+Claude's proposed limit is that Rapid's free reroll never lands on an entry already spent
+this round, which changes nothing for today's pieces (each switches itself off).
+
 ## Open for the session
 
 1. How marks are made (a blow on the sealed shell, the lure, or both) and what may spend them.
 2. One lure or a pair, and its reach; Rapid as in the framework.
-3. The seal's Braced stacks, base armour, and the heat a round.
-4. Tier one confirmed, and the rule text with the marks in it.
+3. The limit that keeps a no-cooldown Rapid lure's chain finite.
+4. The seal's Braced stacks, base armour, and the heat a round.
+5. Tier one confirmed, and the rule text with the marks in it.
 
 ## Refused along the way
 

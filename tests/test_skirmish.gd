@@ -963,7 +963,10 @@ func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
 	assert_eq(sk.forecast(ms)["incoming"], 0, "two stacks of five kill a ten-hp foe before it strikes")
 
 
-func test_reroll_always_lands_on_a_different_face() -> void:
+## A reroll skips only the entry showing; a copy of it may come up, at the odds its copies
+## give it (Ryan, 15 October). Skipping copies too was abusable: a die of one key entry and
+## copies of one filler sent every reroll from a filler onto the key.
+func test_reroll_lands_on_any_other_face_a_copy_included() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 11
 	var die := Die.of([
@@ -972,18 +975,26 @@ func test_reroll_always_lands_on_a_different_face() -> void:
 		Face.attack(30),
 		Face.shield(20),
 	])
-	for trial in range(60):
-		var cur := die.roll(rng)
-		var next := die.reroll(rng, cur)
-		assert_ne(next, cur, "index changes")
-		assert_true(die.faces[next].to_dict() != die.faces[cur].to_dict(), "and the face is not an equivalent one")
+	var landed := {}
+	for trial in range(200):
+		var next := die.reroll(rng, 0)
+		assert_ne(next, 0, "never the entry showing")
+		landed[next] = true
+	assert_true(landed.has(1), "its copy comes up")
+	assert_true(landed.has(2) and landed.has(3), "and so does every other entry")
+	var rigged := Die.of([Face.attack(50), Face.attack(5), Face.attack(5), Face.attack(5)])
+	var keys := 0
+	for trial in range(300):
+		if rigged.reroll(rng, 1) == 0:
+			keys += 1
+	assert_true(keys > 60 and keys < 140, "from a filler the key comes up a third of the time, never every time (%d of 300)" % keys)
 	var same := Die.of([Face.attack(10), Face.attack(10)])
-	assert_eq(same.reroll(rng, 0), 0, "a die of identical faces keeps its face")
+	assert_eq(same.reroll(rng, 0), 1, "a die of copies moves to the other copy")
 	var one := Die.single(Face.attack(10))
 	assert_eq(one.reroll(rng, 0), 0, "a one-faced die keeps its face")
 
 
-func test_skirmish_reroll_changes_every_unlocked_face() -> void:
+func test_skirmish_reroll_moves_every_unlocked_die() -> void:
 	var db := ContentDB.load_default()
 	for seed_value in range(1, 25):
 		var sk := Skirmish.new(seed_value)
@@ -994,10 +1005,10 @@ func test_skirmish_reroll_changes_every_unlocked_face() -> void:
 		sk.start_round()
 		var before: Array = []
 		for ms in sk.mechs:
-			before.append(ms.face().to_dict())
+			before.append(ms.face_index)
 		sk.reroll([0, 1, 2])
 		for i in range(3):
-			assert_true(sk.mechs[i].face().to_dict() != before[i], "seed %d mech %d shows a different face" % [seed_value, i])
+			assert_ne(sk.mechs[i].face_index, before[i], "seed %d mech %d lands on another entry" % [seed_value, i])
 
 
 func test_four_columns_fill_and_reach() -> void:
@@ -1438,6 +1449,27 @@ func test_stacked_adds_scale_with_stacks() -> void:
 	Effects.stack(u, plating, Effects.SKIRMISH, "component", 2, Effects.DECAY_NONE)
 	assert_eq(u.modifiers.size(), 1, "the same status stacks instead of doubling")
 	assert_eq(u.armour, 15, "five per stack, three stacks")
+
+
+## Rapid's free reroll lands on any other entry, a copy included (Ryan, 15 October), so the
+## same Rapid component stacked is a build: each copy fires and switches itself off.
+func test_rapid_may_roll_onto_a_copy_of_itself() -> void:
+	var chained := 0
+	for seed_value in range(1, 40):
+		var sk := Skirmish.new(seed_value)
+		var d := Die.of([Face.attack(10, L, K.RAPID), Face.attack(10, L, K.RAPID), Face.attack(30, L)])
+		sk.add_mech(_mech("A", d))
+		sk.add_foes([_ghoul(500)])
+		sk.begin()
+		sk.start_round()
+		sk.mechs[0].face_index = 0
+		assert_true(sk.assign(0, sk.front[0]), "seed %d: fire the first copy" % seed_value)
+		assert_ne(sk.mechs[0].face_index, 0, "seed %d: never the entry just spent" % seed_value)
+		if sk.mechs[0].face_index == 1:
+			chained += 1
+			assert_true(sk.assign(0, sk.front[0]), "seed %d: the copy fires too" % seed_value)
+			assert_eq(sk.front[0].hp, 480, "seed %d: ten and ten" % seed_value)
+	assert_true(chained > 0, "over the seeds the free reroll lands on the copy (%d of 39)" % chained)
 
 
 func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> void:

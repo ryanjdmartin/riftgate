@@ -14,7 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 462 tests, 19,765 checks, green on main (15 October, the boss mechanics).
+- Tests: 463 tests, 19,973 checks, green on `claude/adoring-planck-q8t63w` (15 October, main
+  merged in and the reroll fix); main's last run was 462 tests, 19,765 checks.
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -24,6 +25,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/adoring-planck-q8t63w` (15 October, the Minerva design session from the briefs: the
+  Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser, Ryan's calls
+  recorded round by round in their briefs, nothing of the designs built; and the reroll fix,
+  built, below): not merged; main merged into it on 15 October.
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -124,6 +129,14 @@ document's job and every command are in `README.md`.
   pack `Unit.is_boss` (a save that says `elite` still loads), `RIFTGATE_BOSS=1` in place of
   `RIFTGATE_ELITE=1`; and a fight resumed from a save keeps a foe's boss, a Gel's split and a
   foe gone whole (all three were lost on the trip).
+- Built 15 October, on the Minerva branch (Ryan's call in that session): every reroll, the
+  team's and Rapid's free one, skips only the entry showing, so a copy of it may come up and
+  copies of one Rapid component chain. Skipping copies too was abusable: a die of one key entry
+  and copies of one filler sent every reroll from a filler onto the key. The machines with
+  copies on their dice (the Baboon's Inducers, the Boar's Slugthrowers, the Nemesis's fists,
+  the Ammit's talons) reroll onto a copy now and then; the balance report was not rerun. Open
+  with it: a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that
+  keeps its chain finite (the Armadillo's brief).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -216,8 +229,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.178 (15 October), main's file: the
-  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Live: v0.179 (15 October), published from
+  `claude/adoring-planck-q8t63w` over the live v0.178: the reroll rows (section 6's rerolls
+  row, the Nemesis row's reason for its plain roll), which reach main's file when that branch
+  merges. Main's file is v0.178: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss

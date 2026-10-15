@@ -29,20 +29,17 @@ func roll(rng: RandomNumberGenerator) -> int:
 	return rng.randi_range(0, faces.size() - 1)
 
 
-## A reroll always lands on a different face: never the one showing, never one equivalent
-## to it. These are not really dice, and a reroll that changes nothing reads as a bug. A die
-## whose faces are all alike keeps the face it has.
+## A reroll lands on any other face, never the one showing: a copy of it may come up, at the
+## odds its copies give it (Ryan, 15 October; the team's rerolls and Rapid's alike). Skipping
+## copies too was abusable: a die of one key entry and copies of one filler sent every reroll
+## from a filler onto the key. A one-faced die keeps its face.
 func reroll(rng: RandomNumberGenerator, current: int) -> int:
 	if current < 0 or current >= faces.size():
 		return roll(rng)
-	var showing := faces[current].to_dict()
-	var options: Array[int] = []
-	for i in range(faces.size()):
-		if i != current and faces[i].to_dict() != showing:
-			options.append(i)
-	if options.is_empty():
+	if faces.size() == 1:
 		return current
-	return options[rng.randi_range(0, options.size() - 1)]
+	var pick := rng.randi_range(0, faces.size() - 2)
+	return pick if pick < current else pick + 1
 
 
 ## Chance of any given face, for the builder's odds display.

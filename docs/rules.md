@@ -80,8 +80,9 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
 - **Rerolls**: three a round for the team, never banked. A reroll rerolls every unlocked,
-  unspent die, before or after attacking, and never lands on the entry showing or an
-  identical one. Tap a die to lock it; spending unlocks it; locks clear each round.
+  unspent die, before or after attacking, and lands on any other entry, never the one
+  showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
+  spending unlocks it; locks clear each round.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -125,9 +126,10 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
-- **Rapid** (any component): the die rerolls free onto another entry and the machine acts
-  again. Every Rapid component today also carries a cooldown of one: the entry switches off
-  for the round.
+- **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
+  component included, and the machine acts again, so copies of one Rapid component chain.
+  Every Rapid component today also carries a cooldown of one: the entry switches off for the
+  round.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
