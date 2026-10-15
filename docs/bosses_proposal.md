@@ -39,7 +39,7 @@ stands or shielding it until one falls.
 | The Meadow | Bourgeon | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos; spits miasma. The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, perhaps not a sword at all (the weapon is proposed in chat) | The parts (above) |
+| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough. Claude's lean: a war hammer planted haft-down, its two ends the parts and an eye in each, the face's blow one no shield answers and the pick prising loose the component a machine shows (the Waste's two halves), the haft the core; the axe's two bits would be a mirrored pair doing one job | The parts (above) |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
 | The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites | Runs today |
@@ -113,6 +113,8 @@ The ideas set aside, each with what set it aside.
 - Giga Gaia: a golem beside the Magma Golem elite; its parts live on in the parts pattern.
 - Retinite: a sidequest boss rather than a who's-who name; its pattern stays (the parts, Ryan,
   15 October), carried by Exor.
+- A colossal flail for the Exor homage, its chain up into the rift (Claude's pitch, for an outline
+  unlike a weapon standing in the ground): Ryan, 15 October, a hammer or an axe is distinct enough.
 - Darkest Dungeon: not the genre (above).
 - Bomb King: waits on the Bomb's verdict in play.
 - Fire Emblem's weapon triangle: the bible refuses a damage-type triangle (section 9).
