@@ -3400,6 +3400,95 @@ func test_a_self_destructing_blow_lands_and_spends_the_striker() -> void:
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "the fight is won by its own blow")
 
 
+func _storm(atk: int, strikes: int, keywords: Array) -> Foe:
+	var f := Foe.make("storm", 500, atk)
+	f.actions = [{"id": "storm", "name": "Needle Storm", "kind": "attack", "factor": 1.0, "strikes": strikes, "weight": 1, "keywords": keywords, "text": ""}]
+	f.action = f.actions[0]
+	return f
+
+
+func test_a_blow_at_every_machine_lands_on_each_with_its_riders() -> void:
+	# Ryan, 15 October: no foe struck more than one machine; `all` lands the blow on every one.
+	var sk := Skirmish.new(1, 1)
+	var bare := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var shielded := _mech("B", Die.single(Face.attack(10, L)), 10, 100)
+	var third := _mech("C", Die.single(Face.attack(10, L)), 0, 100)
+	for m in [bare, shielded, third]:
+		sk.add_mech(m)
+	var storm := _storm(20, 2, ["all", "scorch"])
+	sk.add_foes([storm])
+	sk.begin()
+	sk.start_round()
+	for i in range(3):
+		assert_true(sk.attackers_of(sk.mechs[i]).has(storm), "machine %d is struck, whichever the pick named" % i)
+		assert_eq(sk.incoming_for(sk.mechs[i]), 40, "and each takes both blows")
+	assert_eq(sk.forecast(sk.mechs[1], false)["hull_after"], 80, "a shield stops the first blow on its own machine and no other")
+	sk.end_round()
+	assert_eq(bare.hull, 60, "both blows on the bare machine")
+	assert_eq(shielded.shield, 0, "the shield took the first")
+	assert_eq(shielded.hull, 80, "the second reached the hull")
+	assert_eq(third.hull, 60, "both on the third")
+	for m in [bare, shielded, third]:
+		assert_eq(Effects.stacks_of(m, "scorched"), 2, "each strike's rider lands on each machine")
+	var order: Array = sk.turn_events.map(func(ev): return int(ev["mech"]))
+	assert_eq(order, [0, 0, 1, 1, 2, 2], "machine by machine, left to right")
+	assert_true(sk.turn_events.all(func(ev): return bool(ev["all"])), "each blow says it struck every machine, for the plaque")
+	# A wreck is out of it: the blow lands on the live machines only.
+	third.hull = 0
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.turn_events.size(), 4, "two blows on each of the two left")
+
+
+func test_no_lure_turns_a_blow_at_every_machine_and_a_suppress_stops_it_whole() -> void:
+	var sk := Skirmish.new(1, 1)
+	var tank := _mech("Tank", Die.single(Face.attack(0, L, K.LURE)), 0, 100)
+	var glass := _mech("Glass", Die.single(Face.attack(0, L)), 0, 100)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	var storm := _storm(20, 1, ["all"])
+	sk.add_foes([storm])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, storm), "the tank sounds its klaxon at it")
+	assert_true("\n".join(sk.log).contains("lured, but storm has nothing to turn"), "the log says the lure moved nothing")
+	assert_eq(sk.incoming_for(sk.mechs[1]), 20, "the glass still takes the blow")
+	sk.end_round()
+	assert_eq(tank.hull, 80, "the tank took it")
+	assert_eq(glass.hull, 80, "and so did the glass")
+	var s2 := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	s2.add_mech(a)
+	s2.add_mech(b)
+	var numbed := _storm(20, 1, ["all"])
+	s2.add_foes([numbed])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, numbed), "suppressed")
+	assert_true(s2.acting_on(s2.mechs[1]).is_empty(), "a suppressed storm acts on nobody")
+	s2.end_round()
+	assert_eq(a.hull, 100, "the suppressing machine is untouched")
+	assert_eq(b.hull, 100, "and so is the other")
+
+
+func test_a_bursting_blow_at_every_machine_lands_on_each_and_spends_the_striker_once() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var bomb := _storm(20, 1, ["all", "self_destruct"])
+	sk.add_foes([bomb])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(a.hull, 80, "the burst reached the first")
+	assert_eq(b.hull, 80, "and the second")
+	assert_false(bomb.alive(), "the striker is spent")
+	assert_eq("\n".join(sk.log).count("bursts, and is gone"), 1, "once, after every machine took it")
+
+
 func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
 	# halves never split again, and without the battle's factory nothing steps in.

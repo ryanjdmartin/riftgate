@@ -1039,18 +1039,27 @@ func _refresh_arrows() -> void:
 	for foe in sk.field_foes():
 		if foe.target == null or foe.is_suppressed() or not foe.alive():
 			continue
-		var target_index := sk.mechs.find(foe.target)
-		if target_index < 0:
-			continue
-		var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech
-		if not wanted:
-			continue
+		# A blow at every machine (`all`) draws an arrow to each live machine.
+		var targets: Array[int] = []
+		if foe.hits_all():
+			for i in range(sk.mechs.size()):
+				if sk.mechs[i].alive():
+					targets.append(i)
+		else:
+			var target_index := sk.mechs.find(foe.target)
+			if target_index < 0:
+				continue
+			targets.append(target_index)
 		var fv := _foe_view_for(foe)
 		if fv == null:
 			continue
-		var from: Vector2 = inv * fv.anchor_global()
-		var to: Vector2 = inv * _mech_views[target_index].anchor_global()
-		list.append([from, to, Palette.ENEMY])
+		for target_index in targets:
+			var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech
+			if not wanted:
+				continue
+			var from: Vector2 = inv * fv.anchor_global()
+			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
+			list.append([from, to, Palette.ENEMY])
 	_arrows.set_arrows(list)
 
 
@@ -1169,7 +1178,9 @@ func _on_foe_held(v: UnitView) -> void:
 				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
 			else:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
-		if foe.target != null:
+		if foe.target != null and foe.hits_all():
+			text += "\n→ every machine"
+		elif foe.target != null:
 			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
@@ -1622,8 +1633,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 ## The enemy's turn as the replay plays it, in the order it happened: every blow (with the
 ## struck mech's gauges after it) and every special, merged by the sim's sequence numbers.
 ## Each step is {seq, announce, blow}: `announce` is the name the plaque shows first (a
-## special's always; a boss's blow's once per move, so a three-strike storm says it once; a
-## plain blow's never), and `blow` is the blow to land after it, or empty for a special.
+## special's always; a boss's blow's and a blow at every machine's once per move, so a
+## three-strike storm says it once; a plain blow's never), and `blow` is the blow to land after it, or empty for a special.
 func _replay_steps(before: Dictionary) -> Array:
 	var steps: Array = []
 	for ev in sk.turn_events:
@@ -1631,7 +1642,7 @@ func _replay_steps(before: Dictionary) -> Array:
 		if mi < 0 or mi >= _mech_views.size():
 			continue
 		steps.append({"seq": int(ev.get("seq", steps.size())), "foe": ev["foe"], "name": str(ev.get("name", "")),
-			"named": bool(ev.get("boss", false)), "announce": "",
+			"named": bool(ev.get("boss", false)) or bool(ev.get("all", false)), "announce": "",
 			"blow": [before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
 				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
 				int(ev.get("absorbed", 0)) + int(ev.get("through", 0)),

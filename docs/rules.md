@@ -260,7 +260,9 @@ Burning, Suppressed, Shocked or Paradox.
   foe of its type; strikes are separate blows. Riders: breach (the blow ignores the shield;
   not built: today only its overflow passes), scorch (a stack of
   Scorched), burn (a stack of Burning), disable (the entry the machine shows), corrupt (a
-  Corrupted stack on it), self-destruct (the striker dies after, for good).
+  Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
+  (each strike lands on every live machine in turn, its number what each takes; no aim or
+  Lure moves it).
 - **A special** replaces the blow: harden, regrow (heals its value), revive once, summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), disable.

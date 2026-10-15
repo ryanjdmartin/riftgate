@@ -14,8 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 443 tests, 19,645 checks, green on main (13 October, evening; no code or content
-  changed since). A cloud session fetches
+- Tests: 447 tests, 19,679 checks, green on main (15 October). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -99,6 +98,10 @@ document's job and every command are in `README.md`.
   game (the promoted forms are not entries); staff fingers on the White and Black Mage and
   the Martial Artist's fist are hand jobs. The Summoner carries deep violet rune circles and
   Pyroclasm. Next for the foes: the roster questions in section 12 (the Bomb, the marked goblin and revenant candidates), the head sizes if Ryan wants them level.
+- Built 15 October: a foe's blow at every machine (`all` on an attack move: each strike on each
+  live machine, its arrows to every machine, the plaque naming it once, the bot counting it on
+  each). No foe carries it; the foe kit refresh places it. The bosses' slate and Ryan's marks so
+  far are `docs/bosses_proposal.md`.
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -184,13 +187,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.164 (15 October: the lines that still called
-  cooldowns open retired, the Minerva row brought to the Armadillo as a form changer at tier
-  one, the rows' pointers moved from the page's section 12 to the briefs; v0.163 was main's
-  number for this branch's v0.162 with main's Bomb line, so the branch's rows are the shield
-  rule, Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's strafer, bomber and
-  shield-spender, and Minerva's open row), from the branch `ccr-777fd46a-32dw2m`, which main
-  must take before the next republish.
+  `docs/design-bible.html` after every change. Live: v0.165 (15 October): main's file plus the
+  rows of the cloud branches `ccr-3d9861dc` and `ccr-777fd46a`, which describe rules and code
+  not yet on main (their 0.156 to 0.162 and 0.164 were published from those branches).
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

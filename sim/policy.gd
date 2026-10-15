@@ -184,7 +184,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		var other := sk.foe_at(1 - target.rank, target.column)
 		if other != null and other != target and other.alive():
 			score += minf(mean, float(other.hp))
-	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
+	score += p_kill * (KILL_BONUS + _threat_now(target, sk) * HULL_WEIGHT)
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
 		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves
@@ -224,16 +224,16 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 					continue
 				score += float(o[1]) * minf(float(spill), float(behind.hp))
 				if spill >= behind.hp:
-					score += float(o[1]) * (KILL_BONUS + _threat_now(behind) * HULL_WEIGHT)
+					score += float(o[1]) * (KILL_BONUS + _threat_now(behind, sk) * HULL_WEIGHT)
 	if f.has(Face.Keyword.SUPPRESS):
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
-		score += (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT * maxf(0.0, lands)
+		score += (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT * maxf(0.0, lands)
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
 	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS))
 	if apps > 0:
-		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
+		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
 	if f.fills_hopper > 0:
@@ -258,7 +258,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				continue
 			uses += p
 			var link := damage_outcomes(ms, f, n)
-			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n) * HULL_WEIGHT))
+			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n, sk) * HULL_WEIGHT))
 			p *= _kill_odds(link, n.hp)
 	# The heat this entry adds, on top of what the gauge already holds: whatever ends the
 	# turn over the cap burns hull, and a machine burnt out is the worst trade there is. Asked
@@ -542,7 +542,7 @@ static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
 		return 0.0
 	for a in sk.legal_actions(foe):
 		if a != foe.action and not Foe.is_attack_action(a):
-			return _threat_now(foe) * HULL_WEIGHT
+			return _threat_now(foe, sk) * HULL_WEIGHT
 	return 0.0
 
 
@@ -725,11 +725,13 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 		rerolls += 1
 
 
-## The blow this foe is about to land, if it is aimed at anyone.
-static func _threat_now(f: Foe) -> float:
+## The blow this foe is about to land, if it is aimed at anyone: on every live machine for a
+## blow at every machine (`all`).
+static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
-	return float(f.damage() * f.strikes())
+	var machines: int = sk.live_mechs().size() if sk != null and f.hits_all() else 1
+	return float(f.damage() * f.strikes() * machines)
 
 
 func _tally(f: Face) -> void:

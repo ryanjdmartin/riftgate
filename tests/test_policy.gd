@@ -298,6 +298,27 @@ func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	assert_eq(Policy.disrupt_score(sk, sk.front[1]), 0.0, "a foe with only its blow cannot be moved")
 
 
+func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() -> void:
+	var sk := Skirmish.new(2, 2)
+	var tank := _mech("Tank", Die.single(Face.attack(0, I, K.LURE)), 40, 200)
+	var glass := _mech("Glass", Die.single(Face.blank()), 0, 10)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	var storm: Foe = sk.front[0]
+	storm.actions = [{"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""},
+		{"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""}]
+	storm.action = storm.actions[0]
+	storm.target = sk.mechs[1]   # named the glass, for a lure to have something to turn
+	assert_eq(Policy.disrupt_score(sk, storm), 20.0 * Policy.HULL_WEIGHT, "turning it to its roar saves the blow on both machines")
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.lure_score(sk, sk.mechs[0], [storm]), 0.0, "a lure saves nothing: the blow lands on both whoever it names")
+	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the glass is wrecked by it either way, the forecast says")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 10, "and the tank takes it too")
+
+
 func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
 	var sk := Skirmish.new(1, 1)
 	var plain := Face.attack(50, L)

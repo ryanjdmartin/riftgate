@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 109 implemented, 8 planned, 0 idea.
+Status: 110 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -197,6 +197,7 @@ Status: 109 implemented, 8 planned, 0 idea.
 | **Aim** | What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, armour coming off it as off any blow on hull, and if what gets through is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
+| **Every Machine** | A blow at every machine: each of its strikes lands on every machine in the fight in turn, so no aim and no lure moves it, and the number shown is what each machine takes. A shield saves only the machine it stands on; the answers that stop the whole blow are aimed at the striker: kill it, suppress it, disrupt it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves a stack of Scorched on the machine it hit: its weapons run hotter. | implemented |
 
@@ -275,6 +276,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Aim** (implemented): Decided 2 October (bible, section 5). Content: `aim` on a foe type and on a move; `when` on a move is the condition that lets a foe pick it, and a special never fires twice running.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Self-Destruct** (implemented): The Bomb's (decided 9 October, the Peak). A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other.
+- **Every Machine** (implemented): Built 15 October (Ryan: no foe struck more than one machine, the storms' three blows included). A property of a foe's attack action, like breach. No foe carries it yet; the foe kit refresh places it. Its number is per machine, so a move with it is priced well under a single blow from the same foe: three machines take three times the number. The name is a working one.
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder.
