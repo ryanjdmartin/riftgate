@@ -58,8 +58,7 @@ Rows in the bible and lines in `docs/rules.md`; none of it built yet.
 - **Cooldowns**: a printed property on specific pieces, shown on the entry as dark with the
   rounds left. Ryan: nearly every Rapid component reads "Rapid, cooldown 1", and the Nemesis's
   fists are simply Rapid. No cap on where a cooldown goes or how many a die carries (Ryan, 15
-  October: a cap is artificially limiting); a dark entry needs structure of its own beside
-  Rapid's switch-off and a foe's Disabled.
+  October: a cap is artificially limiting).
 - **The Dingo's Megataser Harpoon** carries Shock in place of Suppress.
 - **Misharu's payoff is Penance**, a weaken, in place of Suppress.
 - **Kestrel's gaps**: the strafer at tier one and the bomber above it.
