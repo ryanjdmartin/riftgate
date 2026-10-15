@@ -177,9 +177,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
   the page once its decisions are rows.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.160 (14 October: the shield rule,
-  Barrier and Ward, cooldowns, the Dingo's Shock, Kestrel's strafer and bomber, Minerva's
-  open row), from the branch `ccr-777fd46a-32dw2m`, which main must take before the next
+  `docs/design-bible.html` after every change. Live: v0.161 (15 October: the Oblation Mantle and the
+  Votive Screen named; 14 October: the shield rule, Barrier and Ward, cooldowns, the Dingo's
+  Shock, Kestrel's strafer and bomber, Minerva's open row), from the branch `ccr-777fd46a-32dw2m`, which main must take before the next
   republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

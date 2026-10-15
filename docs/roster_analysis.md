@@ -1198,7 +1198,7 @@ first every-ally equipment) read as written that morning; the rule changed that 
   until the round's end, riders landing, and is never granted to every ally at once; a Ward
   lasts the round and stops every rider, breach included, while the damage lands. Both up is
   the old whole block at twice its price. Ward is the buff's word, so the Oblation Ward and
-  the Votive Ward take new names.
+  the Votive Ward take new names: the Oblation Mantle and the Votive Screen (15 October).
 - **Cooldowns**, a printed property on specific pieces, shown on the entry as dark with the
   rounds left. Rapid reads as "act again" with a cooldown of one on nearly every carrier; the
   Nemesis's fists are Rapid with none, limited by rage.
@@ -1211,18 +1211,26 @@ first every-ally equipment) read as written that morning; the rule changed that 
   loops alone; and the bomber (its weapons spent on an empty slot wait there for whoever
   steps in, with their keywords, so the piece fitted is the bomb: napalm, a cluster, a shock,
   a stun) in place of section 8's interceptor, since the slot is already on screen and the
-  wait list is not.
+  wait list is not. Its shape, 15 October: the passive lets a weapon be spent on an empty
+  slot under the reach rules, the shot waiting there with its number (rolled when laid, shown
+  on the slot) and keywords, landing as the foe steps in and before it acts, one shot a slot
+  and a new shot replacing the old; the locked bay's own kills leave its shot in the slot they
+  empty, so the free mine lives on one piece and the chosen mine costs a spend.
 
 **Directions, not yet decisions:**
 
 - **The Onryō**: a flat on-hit per Grudge stack, the team's vengeance, rather than a damage
   over time or a multiplier; the wound stays the trigger until every domain lays a debuff on
   machines; a cap on stacks.
-- **The Armadillo as the hypertank at tier two**, with the conditional draw on its locked
-  shutters (blows at an ally's bare hull turn on it while they stand), so every round is open
-  or sealed and its hardpoints choose how often and what for: more ways to seal, guns for the
-  open rounds, a Retaliate buff to shock the strikers, Braced on top, a lure to draw without
-  sealing. The Faraday Hull moves to a lighter Minerva tier two struck by its own choice.
+- **The Armadillo as the hypertank at tier two**, a form shaper (Ryan, 15 October): sealed,
+  the shutters draw blows at allies' bare hull onto it, its defences rise and its heat climbs
+  every turn, so it cannot turtle forever; open, it is the heavy weapons carrier and cools.
+  The sealed form's payoff, Claude's lean: the strikers are Shocked for the team, the Faraday
+  Hull returning as the sealed form's rule rather than leaving the machine; the build hook is
+  how long it can stay sealed (vents, cooling, the Field Radiators) and who cashes the Shocks.
+  The alternative payoff is the pressure released on opening, its first open round's blows
+  adding the heat it banked, which is the Goshawk's cannon as a mode. If the Hull stays here,
+  the lighter Minerva tier two takes the lure line instead.
 - **The Baboon at tier two**, since its meter needs statuses and basics carry none; the rest
   of the reshuffle as put to Ryan in chat (the Boar, the Clydesdale, the boiler and the
   revolver down to one, the fan-boat up to two, the Dingo undecided), sorted by one test: tier
@@ -1250,3 +1258,14 @@ first every-ally equipment) read as written that morning; the rule changed that 
   three; the Arsenal none, three and three.
 - **Enemy Shock on machines**: none today; if any, on a hero or an elite, telegraphed, never
   on the rank and file.
+- **Cantrips** (Ryan, 15 October): a few small tier-two or tier-three pieces with Rapid and no
+  cooldown, whose worth is that a later reroll may bring them back in the same round; fuel for
+  the Gundam's chain and for anything that reads rerolls. The reroll rule (never onto an
+  identical entry) is their brake, as rage is the fists'.
+- **The offer and the shelf** (Ryan, 15 October): the host maker's offer after a win is a
+  module, a component and a chassis from its own catalogue, the guaranteed chassis the rebound
+  after a bad battle; the shelf should hold more than one machine, one slot a standing maker.
+  The bible's row says a blueprint where Ryan says a higher-tier component, to settle; the
+  Recommended chassis offer rate (one every two or three battles) retires if the chassis is
+  guaranteed, and the roster becomes a catalogue a run mostly sees, its variety across runs in
+  the fronts fought, the Favour spent and the kit found.
