@@ -7,7 +7,7 @@ Ryan's own list; the name is his.
 **Status**: direction. **Maker**: Minerva. **Proposed tier**: two. **Read first**:
 `docs/briefs/README.md`; `minerva_armadillo.md`; the bible's rows on the Faraday Hull (section
 7) and on retaliation and thorns (section 5); `docs/roster_analysis.md` section 8 (Minerva's
-gaps) and section 12; `content/components.json` (lockdown_shutters, proximity_klaxon,
+gaps); `content/components.json` (lockdown_shutters, proximity_klaxon,
 retribution_thurible).
 
 ## What Ryan said

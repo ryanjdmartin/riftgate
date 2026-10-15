@@ -7,7 +7,7 @@ working word; the name and the look are his.
 **Status**: decided (14 and 15 October). **Maker**: Kestrel. **Proposed tier**: two or three,
 by the size of its engine piece. **Read first**: `docs/briefs/README.md`; the bible's row on
 Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8 (Kestrel gap two, the
-interceptor it replaced) and section 12; `docs/rules.md` on reinforcements, reach and the
+interceptor it replaced); `docs/rules.md` on reinforcements, reach and the
 formation.
 
 ## How it came about
@@ -34,7 +34,7 @@ formation.
 - Ryan, 15 October: "Is that strong enough? If it kills a foe with a weapon, would the keywords
   still drop? Or do they drop regardless, replacing the mine with the fresh keywords every
   time? How flexible does it need to be? What damage does the mine do?"
-- Claude's answers, 15 October (the refined shape, recorded in the page's section 12): its
+- Claude's answers, 15 October (the refined shape): its
   passive lets any weapon be spent on an empty slot, under the reach rules as if a foe stood
   there; the shot waits with its number (rolled when laid, shown on the slot) and its keywords;
   it lands as the foe steps in, before it acts; one shot a slot, a new one replacing the old.

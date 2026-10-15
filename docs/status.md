@@ -29,23 +29,23 @@ document's job and every command are in `README.md`.
   struck and safe to delete. Pushed to `origin/main` on 13 October, evening. New work starts
   from main.
 - `ccr-550650c0-g0kcbg`, the Aphelion session, stopped on Ryan's word (13 October, evening):
-  its proposal `docs/aphelion_chassis_proposal.md` is on main and its bible rows were carried
-  in; its other document changes described a pre-refactor state and were not taken. Safe to
+  its proposal reached main and its bible rows were carried in (the proposal folded into the
+  briefs and retired on 15 October); its other document changes described a pre-refactor state and were not taken. Safe to
   delete. The local sprite session committed its round five on main (`53a1f26`) and may still
   be in flight in this folder: anything new and uncommitted under `art/foes/`, `content/foes.json`
   or `tools/foeforge` is its, left unstaged.
-- The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
-  (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
-  `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Aphelion's on main
-  (`docs/aphelion_chassis_proposal.md`, two rounds of proposals and their holes, no bench of
-  ideas set aside yet). Minerva's and Kestrel's are struck (Ryan, 13 and 14 October): each
-  maker's next chassis start fresh from the latest rules, in a session of their own, with
-  nothing of the struck designs in the records. A first pass at the analysis on 14 October
-  drifted into measuring stand-ins and rating on performance and was retired to git (the
-  branch's history). The analysis itself is `docs/roster_analysis.md` on the branch
-  `ccr-777fd46a-32dw2m` (14 October, from the brief in `docs/mechanic_budgets.md`; published,
-  the link under Pages); Ryan's go is in progress, and the design sessions it hands on run
-  from the briefs in `docs/briefs/`. That branch carries `ccr-3d9861dc-mp0v3w` (the
+- The chassis proposals: Wainwright & Sutler's, the Arsenal's and Aphelion's reached main as
+  proposal files and on 15 October were folded into the design-session briefs (`docs/briefs/`,
+  each the design's one home) and retired, the gunship's stand-in table to
+  `docs/measurements.md`; the multi-rotor's look tests stay in `tools/lowforge/looks/` and
+  `docs/looks/`. Minerva's and Kestrel's earlier proposals are struck (Ryan, 13 and 14
+  October): each maker's next chassis start fresh from the latest rules, with nothing of the
+  struck designs in the records. A first pass at the analysis on 14 October drifted into
+  measuring stand-ins and rating on performance and was retired to git (the branch's history).
+  The analysis itself is `docs/roster_analysis.md` on the branch `ccr-777fd46a-32dw2m` (14
+  October, from Ryan's brief of that day in `docs/mechanic_budgets.md`, retired with the
+  proposals; published, the link under Pages), background since the go, which is recorded in
+  the bible, the briefs, the to-do and `docs/economy_pass.md`. That branch carries `ccr-3d9861dc-mp0v3w` (the
   brief and the bible v0.158) beneath it, so main takes the two together.
 
 ## The game as left (13 October, evening)
@@ -76,10 +76,10 @@ document's job and every command are in `README.md`.
   4, Claude's walk-out proposal, which Ryan finds thematic and decides later); heat bites where
   it is carried, a cold build pays elsewhere, and a cool weapon is soft cooling, heat builds are a
   spectrum between passive cooling and venting, and the runner reads heat spikes, forced choices
-  and the damage forgone to heat rather than counting vents (section 5); cooldowns in a skirmish reopened, a
-  decision made for Ryan by a session (section 8); the Arsenal's tier-one components exist
+  and the damage forgone to heat rather than counting vents (section 5); cooldowns in a skirmish reopened
+  (decided 14 October: a printed property on specific pieces, section 8); the Arsenal's tier-one components exist
   (section 10); the map stays nine wide; the screens third in the order; Rift Pressure no longer
-  ticks per round fought, only on the map (section 4, built); `docs/mechanic_budgets.md` the brief for the roster session.
+  ticks per round fought, only on the map (section 4, built); the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
   row may be, what a Lean is and what a "never" must carry; the measurements live in
   `docs/measurements.md`; section 12 holds only the questions; this file holds the order of
@@ -134,22 +134,26 @@ document's job and every command are in `README.md`.
 - Danger close retires and area belongs to keywords on any reach: Splash folds into Spread and
   Penetrate, an explosive carries both (the Artillery Rangefinder needs a new rule).
 - A dispel keyword for the foes' buffs (its name, carriers and numbers open).
+- The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): a shield
+  absorbs its number and the excess passes to the hull, a breach ignores the shield, an injury
+  counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
+  pieces (Rapid as a cooldown of one); the Dingo's harpoon carrying Shock; Misharu's payoff
+  Penance; the Oblation Mantle and the Votive Screen; Kestrel's strafer and bomber; a suppressed
+  foe's intent line clears. The engine work is on the to-do.
 
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-1. **Ryan's go on the roster analysis, in progress** (`docs/roster_analysis.md`, 14 October,
-   published: the link under Pages). Decided in chat the same day and recorded: the shield rule
-   (a shield absorbs its number, a breach ignores it), Barrier and Ward, cooldowns as a printed
-   property, the Dingo's Shock, Misharu's Penance, Kestrel's strafer and bomber. The directions
-   still open (the Onryō, the Armadillo as a form changer at tier one, the Baboon at tier two,
-   the Gundam, the jellyfish, Mastema, the funnel-web) each have a brief in `docs/briefs/` (15
-   October: one per chassis proposal, direction and rework, each with what Ryan said and what is
-   open; the README gives the shared context, the tiers as proposed and an order), and the
-   design sessions run from them. Each further decision becomes a row, the stock pass takes what
-   the page's sections 10 and 12 list, and the page retires to git.
+1. **The design sessions, from the briefs** (`docs/briefs/`, 15 October). Ryan's go on the
+   roster analysis decided what "Decided, not built" lists; every proposal, direction and
+   rework it left open (the Onryō, the Armadillo as a form changer at tier one, the Baboon at
+   tier two, the Gundam, the jellyfish, Mastema, the funnel-web and the rest) is a brief, the
+   design's one home, with what Ryan said and what is open, and the README gives the shared
+   context, the tiers as proposed, the working budgets, the roster holes and an order. Each
+   decision becomes a row; the analysis page retires to git once the last brief that cites it
+   lands.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -184,12 +188,14 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py` and published 14 October
-  from the branch `ccr-777fd46a-32dw2m`; republish after the page changes, and retire it with
-  the page once its decisions are rows.
+  from the branch `ccr-777fd46a-32dw2m`, republished 15 October with its section 12 cut to a
+  pointer; republish after the page changes, and retire it with the page once the last brief
+  that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.165 (15 October): main's file plus the
-  rows of the cloud branches `ccr-3d9861dc` and `ccr-777fd46a`, which describe rules and code
-  not yet on main (their 0.156 to 0.162 and 0.164 were published from those branches).
+  `docs/design-bible.html` after every change. Live: v0.166 (15 October: the maker rows and
+  section 12 point at the briefs, the proposal files folded into them and retired), from the
+  branch `ccr-777fd46a-32dw2m`, whose file is main's v0.165 (main's every-machine rows on this
+  branch's v0.164) with this change; main must take the branch before its next republish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

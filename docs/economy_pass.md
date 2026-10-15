@@ -104,6 +104,32 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
 - Whether a held battle (a wipe the city survives) should pay any Favour. Today it pays
   none, and the ledger says only a win pays unless that proves terrible for balance.
 
+## From the roster analysis's go (14 and 15 October)
+
+Raised in Ryan's go on the roster analysis and left for this pass; none is decided.
+
+- **The host maker's offer after a win** (Ryan's latest shape): a module, a component one tier
+  above the shelf's and a chassis, all from its catalogue, the guaranteed chassis being the
+  rebound after a bad battle. The bible's offer row says a blueprint where this says a
+  component copy, to settle here; Claude's lean is the copy, since the boss's token already
+  yields a blueprint a win. If the chassis is guaranteed, the Recommended chassis offer rate (one
+  every two or three battles, bible section 3) retires.
+- **The boss's research token** unpacks into a choice of three blueprints of the domain's
+  theme at the Convergence's tier, so tier-three blueprints come only from late bosses (Claude's
+  proposal).
+- **Procurement**: tier ones early (Ryan asked whether the shelf and the offer should deal tier
+  ones early in a run, 14 October); Claude's proposal around it: a shelf slot for each standing
+  maker, the Arsenal's at the capital by the Convergence, the tier gated by the Convergence, a
+  blueprint on it rarely and at a premium, repeats allowed.
+- **Where blueprints come from, and what each currency buys.** Blueprints were meant to be
+  Salvage's main sink, so if they come mostly from tokens and the offer, the sinks are re-read
+  (Ryan's concern in the go). Claude's proposal: Salvage builds copies of owned blueprints,
+  replaces destroyed pieces and repairs the gate; Favour buys the shelf, rushes and rare
+  blueprints. Rates, not a redesign.
+- **The roster's size**: about ten chassis a city maker at the top end (Ryan's counts, in
+  `docs/briefs/README.md`), so the offer and the shelf deal from a catalogue far larger than
+  a run fields.
+
 Out of scope: the two shields no chassis stocks (the Halo Shield and the Corona Shield) keep
 their placeholder tiers, one and two. They wait for the content revision and expansion
 (Ryan, 7 October).

@@ -15,10 +15,13 @@ chat first.
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat
   and a file disagree, the chat is newer.
-- The proposal files (`docs/arsenal_proposal.md`, `docs/ws_chassis_proposal.md`,
-  `docs/aphelion_chassis_proposal.md`) and the roster analysis's sections 1 to 11 predate the
-  go: they were written under the whole-block shield rule, before Penance, the renames and the
-  directions. Where a brief and a source it cites differ, the brief is newer.
+- Each brief is the design's one home. The three makers' proposal files were folded into
+  their briefs on 15 October and retired, with `docs/mechanic_budgets.md`; git keeps them
+  (`git show 2df9340:docs/arsenal_proposal.md`, and likewise `ws_chassis_proposal.md`,
+  `aphelion_chassis_proposal.md` and `mechanic_budgets.md`) for the names offered, the retired
+  rounds and the full arithmetic, all of it written under the old whole-block shield rule.
+  The roster analysis's sections 1 to 11 predate the go too: where a brief and the analysis
+  differ, the brief is newer.
 - Propose in chat first. Ryan tweaks ideas against his own notes; a suggestion of his opens a
   discussion, so look for holes and raise them before building. If he reaffirms after hearing
   them, build it as he said.
@@ -90,20 +93,47 @@ Rows in the bible and lines in `docs/rules.md`; none of it built yet.
 - **As dealt**: the tender offers one tier-one machine of each city maker by seed and the
   player takes three, so each maker's tier-one pool should vary and more than one maker's deal
   should hold a front. The host maker's offer after a win and procurement's shelf deal the
-  higher tiers; the economy items are in the page's section 12.
+  higher tiers; the economy items the go raised are in `docs/economy_pass.md`.
 - Each brief gives a proposed tier; none is decided. The reshuffle proposed so far: the Wild
   Boar, the Clydesdale, the boiler and the revolver to tier one; the Baboon and the fan-boat to
   tier two; the Dingo undecided. One rule to reword if it lands: the 12 October tier row gives
   every tier one a locked piece, and the Clydesdale and the form-changing Armadillo would have
   none.
 
+The tiers as the briefs propose them (nothing decided; "down" and "up" against a chassis's
+tier today; the targets two or three tier ones a city maker, two or three tier twos and one
+tier three, the Arsenal none, three and three):
+
+| Maker | Tier one | Tier two | Tier three |
+|---|---|---|---|
+| Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the hedgehog | the siege battery |
+| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (or two, by its engine piece) |
+| Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
+| Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
+| The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
+
 ## Budgets (Claude's working rules, not confirmed)
 
-From the roster analysis's section 6: no hard-control piece below tier two, at most one locked
+The working rules every brief is read against, and their one home; the bible's section 12
+asks Ryan to confirm or move them. From the roster analysis's section 6: no hard-control piece below tier two, at most one locked
 on a die, at most one hard-control passive a maker (the Paradox is Aphelion's); a new chassis
 earns its place by a new read, a new product, a new price, or by changing what a kind of piece
 does; every passive has two routes in and two payoffs from other makers' pieces; a tier one
 shows its identity with basics alone.
+
+## Roster holes, as the go left them
+
+Soft control: Minos, the jellyfish, the hedgehog's lure, the Armadillo's lure-shields, filling.
+Amplify for others: the Dingo's Shock, the Onryō's on-hit, filling. Area on a hardpoint: the
+stock pass's explosives, the strafer's volume, the bomber's clusters. New prices: the cooldown,
+negative cooling. Reads nobody used: the foes' intents (the spider), the slots (the bomber),
+the die's own state (the revolver, the Gundam), the team's rerolls (the Armadillo's cash-in).
+The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
+with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
+Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from
+four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit), Venom (a
+share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward
+on our side.
 
 ## The briefs
 
@@ -128,7 +158,7 @@ shows its identity with basics alone.
 | `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
 | `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the siege battery's session (the foil) |
 | `aphelion_baboon.md` | rework | Aphelion | 2 (now 1) | the stock pass |
-| `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 | nothing |
+| `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
 | `arsenal_misharu.md` | proposal | the Arsenal | 2 | nothing |
 | `arsenal_onryo.md` | direction | the Arsenal | 2 | nothing |
 | `arsenal_mastema.md` | direction | the Arsenal | 3 | the foes' fresh start (riders on machines) |
@@ -136,9 +166,11 @@ shows its identity with basics alone.
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan); the empty slots toward each
 maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
-cooldown, a component for the stock pass, noted in the line frame's brief); enemy Shock on
-machines (the foes' fresh start); the economy items (the economy pass); the engine work (the
-to-do).
+cooldown, a component for the stock pass, noted in the line frame's brief); the Scapegoat
+Brand (a rare after the vocabulary pass, half of it now Mastema's mover: in Mastema's brief);
+enemy Shock on machines (none today; Claude's lean, if any: on a hero or an elite,
+telegraphed, never the rank and file; the foes' fresh start); the economy items
+(`docs/economy_pass.md`); the engine work (the to-do).
 
 ## A suggested order
 

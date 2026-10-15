@@ -6,7 +6,7 @@ unsealing, or whether there is a charge at all.
 
 **Status**: rework, a direction Ryan is still weighing ("Interesting. I'll think about it", 15
 October). **Maker**: Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`;
-`docs/roster_analysis.md` section 2 (the Armadillo's rating) and section 12 (the direction);
+`docs/roster_analysis.md` section 2 (the Armadillo's rating);
 `content/chassis.json` (armadillo) and `content/components.json` (lockdown_shutters,
 shoring_jack); the bible's rows on the Faraday Hull and the Armadillo's retaliation (section
 7), and on Guard, Braced lasting the round, retaliation and thorns (section 5).

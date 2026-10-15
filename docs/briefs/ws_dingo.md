@@ -5,7 +5,7 @@ piece.
 
 **Status**: rework; the harpoon's Shock decided (Ryan, 14 October), the tier open. **Maker**:
 Wainwright & Sutler. **Proposed tier**: one or two. **Read first**: `docs/briefs/README.md`;
-`docs/roster_analysis.md` section 2 (the Dingo's rating) and section 12; the bible's rows on
+`docs/roster_analysis.md` section 2 (the Dingo's rating); the bible's rows on
 the cars (section 7); `content/chassis.json` (dingo) and `content/components.json`
 (megataser_harpoon).
 

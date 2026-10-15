@@ -7,7 +7,7 @@ label; the name and the look are Ryan's.
 **Status**: decided (Ryan, 14 October: "Love the [strafer], lock that in and place it
 accordingly"). **Maker**: Kestrel. **Tier**: one. **Read first**: `docs/briefs/README.md`; the
 bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8
-(Kestrel's gaps, where the raider and the interceptor it replaced are) and section 12;
+(Kestrel's gaps, where the raider and the interceptor it replaced are);
 `content/chassis.json` (sparrowhawk); `docs/rules.md` on strikes and armour.
 
 ## The design as decided

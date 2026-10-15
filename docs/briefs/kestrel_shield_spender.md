@@ -6,7 +6,7 @@ the name and the look are Ryan's.
 
 **Status**: direction (Ryan, 15 October). **Maker**: Kestrel. **Proposed tier**: one. **Read
 first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 8 (Kestrel gap one, the
-raider) and section 12; the bible's shield rule and Kestrel rows; `content/chassis.json`
+raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
 (puffin, goshawk) and `content/components.json` (backwash_ionizer, laminar_deflector).
 
 ## How it came about
