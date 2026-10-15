@@ -1225,12 +1225,14 @@ first every-ally equipment) read as written that morning; the rule changed that 
 - **The Armadillo as the hypertank at tier two**, a form shaper (Ryan, 15 October): sealed,
   the shutters draw blows at allies' bare hull onto it, its defences rise and its heat climbs
   every turn, so it cannot turtle forever; open, it is the heavy weapons carrier and cools.
-  The sealed form's payoff, Claude's lean: the strikers are Shocked for the team, the Faraday
-  Hull returning as the sealed form's rule rather than leaving the machine; the build hook is
-  how long it can stay sealed (vents, cooling, the Field Radiators) and who cashes the Shocks.
-  The alternative payoff is the pressure released on opening, its first open round's blows
-  adding the heat it banked, which is the Goshawk's cannon as a mode. If the Hull stays here,
-  the lighter Minerva tier two takes the lure line instead.
+  No reward for being struck (Ryan, 15 October): a Shock on every striker under a draw is the
+  discharge again, scaling with the enemy's blows, so the Faraday Hull stays with the lighter
+  Minerva tier two, which has no draw. The sealed form's payoff is the protection and the
+  plate; the clock makes opening mandatory; the open form's payoff is its guns. The build hook
+  is the seal's length against the open rounds' volley: vents and cooling to hold the line
+  longer, big guns and Braced for the rounds it opens, a lure to draw without sealing. If an
+  offensive payoff is ever wanted it scales with rounds sealed and never with strikers (the
+  pressure released on opening), bounded by the heat clock.
 - **The Baboon at tier two**, since its meter needs statuses and basics carry none; the rest
   of the reshuffle as put to Ryan in chat (the Boar, the Clydesdale, the boiler and the
   revolver down to one, the fan-boat up to two, the Dingo undecided), sorted by one test: tier
@@ -1268,4 +1270,7 @@ first every-ally equipment) read as written that morning; the rule changed that 
   The bible's row says a blueprint where Ryan says a higher-tier component, to settle; the
   Recommended chassis offer rate (one every two or three battles) retires if the chassis is
   guaranteed, and the roster becomes a catalogue a run mostly sees, its variety across runs in
-  the fronts fought, the Favour spent and the kit found.
+  the fronts fought, the Favour spent and the kit found. Blueprints are not loot alone: the
+  boss's research token already guarantees one a won battle, themed on its domain, so the
+  offer's piece reads better as a copy from the maker's catalogue, and the shelf may sell a
+  blueprint rarely at a premium.
