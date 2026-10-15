@@ -1,102 +1,95 @@
-# The bosses: a proposal
+# The bosses and elites: a proposal
 
-Each domain needs three distinct bosses before its hero, drawn without repeats (the bible's
-section 9, "Three bosses beaten"), so the game needs twelve; four exist. The 9 October pitch
-never reached the records, so this file holds the slate until Ryan has marked all of it; then
-its picks become content and bible rows, and the file retires (git keeps it). Names are
+The roster's tiers are decided (Ryan, 15 October; the bible's section 9, "The roster comes in
+tiers"): tropes for the rank and file and its elites, the genre's iconic bosses three a domain,
+the genre's heroes as the finals, big as an attribute of any tier, and a boss's mechanics kept
+inside the skirmish. This file holds what fills the elite and boss tiers until Ryan has marked
+it all; then its picks become content and bible rows, and it retires (git keeps it). Names are
 working names, and everything here is Ryan's to move.
 
-## Standing
+## Elites
 
-| Domain | Boss | State |
-|---|---|---|
-| The Meadow | Treant | built |
-| The Waste | Sandworm | built |
-| The Marsh | Bone Wyvern | built |
-| The Peak | Magma Golem | built; the Summoner's (Ryan, 15 October), reopened by Ifrit (below) |
+Generic tropes, a pack of one or a pack in which every foe is unique, any size.
 
-The Treant and the Bone Wyvern share a kit (one big hit, a heal, a three-blow storm at
-anything), so each new boss carries its own idea.
+| Domain | Elite | Size | State |
+|---|---|---|---|
+| The Meadow | Treant | Big | Built, as the boss it stands in for until the bosses land |
+| The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not big | Ryan, 15 October: a decent elite |
+| The Waste | Sandworm | Big | Built, standing in as the boss |
+| The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
+| The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Proposed |
+| The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
+| Any | A pair of gate gargoyles (a pair trope) | Not big | Proposed |
 
-## Ryan's calls (15 October)
+## Bosses: the slate (second cut, 15 October)
 
-- Any Final Fantasy homage is probably incomplete without Bahamut, the Behemoth and Omega;
-  Ifrit and Shiva are next in line for most common.
-- If the reference is the genre's summoner, the Summoner calls Ifrit.
-- The Peak: the Cinder Tortoise in, the Adamantoise being more ubiquitous than the Fire Naga;
-  the Phoenix and the Elder Drake out (the bench).
-- The Mother Gel and the Great Needler are fine, but easy cuts for something more interesting.
+Each brings its signature move, inside the skirmish.
 
-## Where the five go (Claude's proposal)
-
-- **Ifrit, Shiva and Bahamut are the Summoner's.** In its final it calls Ifrit and Shiva, each
-  a move: a blow at every machine with its own rider. Ifrit's Pyroclasm scorches; Shiva's
-  Diamond Dust freezes the entry each machine shows (Disable). Promoted at the finale, its one
-  move more (the bible's promoted form) is Bahamut's Mega Flare, the one that hurts. Summons as
-  moves rather than companions: three massive companions could not stand in two ranks of four
-  with the wildlife, three moves can, and it keeps the Summoner apart from the Tamer and the
-  Necromancer, who call things into the fight every round. The answer is the back rank: reach
-  the Summoner, Suppress it or Disrupt it, or shield every machine. Every foe move is announced
-  a turn ahead, so they run on today's engine; the new work is their art and a moment on
-  screen for each to appear. The trade: they are seen only in runs that deal the Summoner.
-- **The Behemoth is a Peak boss**: Meteor at every machine as it dies (King Behemoth), so the
-  kill is the telegraph: shield up, then kill it. A blow on death is a small engine piece beside
-  the Gel's split; a Meteor below half runs today. The Nemesis's Meteor Artillery shares the word.
-- **Omega is the genre's superboss**, the bible's pinned slot (an optional fight past the
-  Rupture, never the finale). It is a machine, the one the genre brings, so it stays the only
-  one (the benches keep robots off but one late wildcard); painted flat like every foe, the
-  genre's idea of a machine against ours. It sits beside Ryan's pinned secret final boss, the
-  Arsenal's superweapon: a superweapon a side.
-
-Names: Bahamut, the Behemoth, Ifrit and Omega come from folklore, scripture and the alphabet,
-so the names are free and the looks are ours, never the series' designs; Ifrit is a spirit of
-fire, never a demon (the demonic is the Arsenal's, section 1). Shiva is the name of a living
-god, Hinduism's, which the series borrowed for its ice maiden, and games that used Hindu gods
-have drawn complaints; Diamond Dust carries the homage on its own, so the summon could take a
-name of ours. The Summoner's circles stay deep violet: the fire and the ice are the summons'.
-
-If the Summoner calls Ifrit, the Golem is no longer its identity, so the reason to replace it
-as the Peak's boss goes. If it stays, it and the Tortoise are both slow lava heavies that erupt
-below half: one of them changes its job (the Tortoise's could be its shell alone, the eruption
-left to the Golem).
-
-## The slate
-
-| Domain | Boss | What it asks of the player | Engine | Ryan |
+| Domain | Boss | From | Its signature | Engine |
 |---|---|---|---|---|
-| The Meadow | Goblin Warlord (his marked goblin take 4 at boss size) | Every goblin hits harder each round and more come: the leader or the swarm first? | Runs today | |
-| The Meadow | Rotbloom (a Malboro homage), for the Mother Gel | Bad Breath: a blow at every machine carrying every rider at once (scorch, burn, disable, corrupt); the riders are the threat and cleanse the answer | Runs today | |
-| The Waste | Sand Scorpion | Its pincers ruin the component a machine shows, its sting turns that weapon to stone: redundancy on the die | Runs today | |
-| The Waste | Pilgrim (a Tonberry homage), for the Great Needler | Shuffles closer, its intent counting down, then Everyone's Grudge: a blow that grows with every foe the team has killed and passes the shield, the Waste's fixed damage | Needs a countdown (the delayed blow, held longer) and a blow that grows with the team's kills; the Onryō's Grudge shares the word | |
-| The Marsh | Drowned King | Makes the dead hit harder and gets back up once: kill the king, twice | Runs today | |
-| The Marsh | Charnel Heap | Falls apart into revenants when killed, so the kill is not the end | Runs today | |
-| The Peak | Cinder Tortoise (the Adamantoise) | Withdraws into its shell, so hitting it that round is wasted; below half the volcano on its back erupts at every machine | Runs today | In |
-| The Peak | Behemoth | Meteor at every machine as it dies: shield up, then kill | A blow on death (small); runs today as a Meteor below half | |
-| The Peak | Magma Golem, if it stays; else the Fire Naga | The Naga (the first game's Marilith): six strikes at the hottest machine, each its own blow; a lure onto a cold machine | Runs today | |
+| The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
+| The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
+| The Meadow | Bourgeon | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos; spits miasma. The game places one in its Meadows | A swallow (new) |
+| The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
+| The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
+| The Waste | Retinite | Chrono Trigger | A sand creature in three parts, top, bottom and a core that feeds them: the halves shrug off blows while the core lives, so the core goes first (its water key becomes the kill order, elements being flavour) | Parts that guard each other (the White Mage's harden on allies, on the to-do) |
+| The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
+| The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
+| The Marsh | The Matador (or Persona's Reaper, inside the skirmish) | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes | Runs today |
+| The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A blow on death (small, beside the Gel's split) |
+| The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Runs today |
+| The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | A countdown (the delayed blow); armour while an ally stands |
 
-The Malboro and the Tonberry are the series' own coinages, so they take names of ours, as the
-Cactuar became the Needler.
+Six of the twelve are Final Fantasy's and six come from five other series. The weakest pick is
+the Waste's third: Retinite is a sidequest boss, not a who's-who name.
+
+Names: the series' coinages take names of ours (the Malboro, the Tonberry, the Adamantoise,
+Retinite, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
+(Gilgamesh, the Behemoth, the Matador, the Phantom Train; King Slime is the King Gel). Every
+look is ours, never the series' design.
+
+## Beyond the twelve
+
+- **Omega**, the genre's superboss, in the bible's pinned slot (an optional fight past the
+  Rupture, never the finale): the one machine the genre brings, painted flat like every foe.
+  It sits beside Ryan's pinned Arsenal superweapon, a superweapon a side.
+- **The Summoner's summons**: Ifrit and Shiva in its final, each a move at every machine with
+  its own rider (Ifrit's Pyroclasm scorches, Shiva's Diamond Dust freezes the entry each machine
+  shows); Bahamut's Mega Flare as its promoted form's one move more at the finale. Moves rather
+  than companions, since three massive companions could not stand in two ranks of four. Shiva is
+  a living god's name, which the series has carried for decades without real trouble: a
+  judgment call, not a blocker.
+- **Clair Obscur's Mime**, if wanted beside Bourgeon: a rare pack that throws the last blow it
+  took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
+  prize.
+
+## Questions for Ryan
+
+- Marks on the twelve, and a better icon for the Waste's third (the desert, or theft).
+- The Marsh's third: the Matador or the Reaper.
+- The Coven and the gargoyle pair as elites.
+- The Summoner's summons as moves; Omega as the superboss; the Mime.
+- The heroes' homages beyond Final Fantasy (the Thief as Persona 5's Joker, perhaps).
 
 ## Bench
 
 The ideas set aside, each with what set it aside.
 
-- Phoenix: it rises once from its ashes, the Drowned King's move and the Marsh's signature
-  (Ryan, 15 October).
-- Elder Drake: somewhat uninspired (Ryan, 15 October); it would also have been the third
-  dragon, after the Drake and the Bone Wyvern.
-- Ifrit as a boss: it is a summon, so it is the Summoner's (Ryan, 15 October).
-- The other summons (Titan, Leviathan, Ramuh, Odin) as domain bosses, the way some games make
-  the party fight one to earn it: it blurs "a summon is the Summoner's".
-- Mother Gel and Great Needler: easy cuts for something more interesting (Ryan, 15 October),
-  if the Rotbloom and the Pilgrim land.
+- Sephiroth, the Paintress, Lavos, Giygas: a story's final boss (Ryan, 15 October).
+- The Reaper running the party down on the map: a boss's mechanics stay inside the skirmish.
+- The Goblin Warlord, the Drowned King, the Charnel Heap, the Sand Scorpion, the Mother Gel, the
+  Great Needler: generic tropes or the wildlife grown big, so elites if anything (the first
+  slate).
+- Phoenix: getting back up is the Marsh's signature, and Neclord's (Ryan, 15 October, of the
+  Drowned King then).
+- Elder Drake: somewhat uninspired (Ryan, 15 October); and another dragon.
+- Ifrit as a boss, and the other summons (Titan, Leviathan, Ramuh, Odin): a summon is the
+  Summoner's.
+- Giga Gaia: a golem beside the Magma Golem elite; its parts live on in Retinite and the Tyrano.
 - Bomb King: waits on the Bomb's verdict in play.
-- Red Dragon: another dragon.
-
-## Questions for Ryan
-
-- The five's homes: Ifrit, Shiva and Bahamut as the Summoner's moves, the Behemoth at the
-  Peak, Omega as the superboss?
-- Shiva's name, or one of ours?
-- The Peak's third: the Golem kept (the Tortoise then its shell alone) or the Fire Naga?
-- The Rotbloom for the Mother Gel and the Pilgrim for the Great Needler?
+- Fire Emblem's weapon triangle: the bible refuses a damage-type triangle (section 9).
+- Shin Megami Tensei's demons (Jack Frost, Pyro Jack): demons are the Arsenal's register
+  (section 1).
+- Clair Obscur's parry and dodge: real-time timing, against an exact preview and a phone's
+  thumbs.
+- SaGa's glimmer (a technique learned mid-fight): components are never modified (section 10).

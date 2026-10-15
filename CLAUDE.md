@@ -69,6 +69,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   bounds" list in a proposal is his to write, never pre-applied. A cell delta is read at 200
   seeds or as a band; a 30-seed run is a direction and is called one; every run a decision
   cites goes in `docs/measurements.md`, and a row keeps the reason and the exit, never the run.
+- Sunk costs never count in design (Ryan, 15 October): finished art, built code or picked
+  sprites are no argument against a better design. Name the cost still to come when it
+  matters for planning, never as a reason against the change.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
