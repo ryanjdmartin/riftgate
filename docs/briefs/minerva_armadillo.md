@@ -162,12 +162,42 @@ second round. Raised in chat and open: with no cooldown, two copies can bounce b
 Claude's proposed limit is that Rapid's free reroll never lands on an entry already spent
 this round, which changes nothing for today's pieces (each switches itself off).
 
+**Claude's third round**, in chat: Braced agreed, a fixed amount tied to the mode, more
+shields adding shield and never Braced. The lure keeps Spread and Rapid (and a pair only made
+a lure show more often, which the reroll call above corrected: a pair chains); if a free
+three-foe draw is too generous, narrow it to one foe before touching Rapid. The mark goes with
+cooling: the blows the seal took pay for the heat it built, and never more than that, since
+cooling below zero is wasted; damage on the marked foe's next blow at it is thorns on a braced
+tank, the discharge the 12 October row retired. Marks from blows on the sealed shell, a mark a
+blow, not from the lure: a free Rapid lure on three foes would make the cooling unearned, and
+both would count twice. Only a weapon that deals damage spends marks, or the lure (a weapon of
+no damage) would cool the shell without opening it. The passive at the edge of the budget: "A
+shield it spends on itself seals it: Braced, and 20 hotter a round. Each blow on the sealed
+shell marks the striker. A vent opens it; so does a damaging weapon, whose hits spend their
+targets' marks, cooling it 10 each." Smaller holes: marks die with their foe, so an ally's
+kill wastes them; a Spread gun on a marked row cashes the row, so the die should show the net
+heat; a build with no weapons vents to open.
+
+**Ryan, third round**, in his words: "And I agree about the infinite cantrips. Rapid with no
+cooldown needs a limiter. Here's what I'd propose: more heat, since heat is now the
+armadillo's resources. Armadillo locked component: rapid, no cooldown, lure 1, 5 heat. Not
+sure if it needs 2 or not, depends on the odds. The stack it applies should recover a
+significant chunk of heat when consumed, not sure how much. And still not sure if that stack
+should be applied as part of the admittedly overloaded passive, or attached to this lure
+module."
+
+What it proposes: heat is the limit on a Rapid piece with no cooldown, paid every spend; the
+locked lure is Rapid with no cooldown, one foe, 5 heat; a mark spent cools a significant
+chunk. Claude's reply (in chat) weighs it.
+
 ## Open for the session
 
-1. How marks are made (a blow on the sealed shell, the lure, or both) and what may spend them.
-2. One lure or a pair, and its reach; Rapid as in the framework.
-3. The limit that keeps a no-cooldown Rapid lure's chain finite.
-4. The seal's Braced stacks, base armour, and the heat a round.
+1. Where marks come from, the passive (a blow on the sealed shell) or the lure (Ryan, third
+   round: not sure), and what may spend them (Claude: only a weapon that deals damage).
+2. One lure or a pair (Ryan: by the odds), one foe at any reach.
+3. Heat as the limit on a Rapid piece with no cooldown (Ryan's proposal), and whether it is
+   the rule for every such piece, the line frame's cantrips included.
+4. How much a spent mark cools; the seal's Braced, base armour and heat a round.
 5. Tier one confirmed, and the rule text with the marks in it.
 
 ## Refused along the way

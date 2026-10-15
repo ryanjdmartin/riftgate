@@ -20,8 +20,10 @@ skirmish.
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
-- **The die**: one entry per component, fixed components first, then one per hardpoint. An
-  empty hardpoint is a blank entry; nothing fills it. A full, undamaged machine is reliable.
+- **The die**: one entry per component, fixed components first, then one per hardpoint in
+  order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
+  down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  undamaged machine is reliable.
 - **Components**: a **weapon** is spent on a foe and need not deal damage; **equipment** (a
   shield, a vent or a buff) is spent on a machine: itself and allies by default, or self
   only, or allies only, as its chip says. A component has a number (or none), heat, strikes,

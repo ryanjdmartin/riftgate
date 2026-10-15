@@ -5,8 +5,8 @@ extends Control
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
 ## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
 ## glyph large at the top centre, the number or range beneath it, heat bottom-left, the lock
-## top-right. A locked die gets bracket corners and a LOCKED readout.
-## A unique effect adds a star chip.
+## top-right, the entry's place on its die top-left. A locked die gets bracket corners and a
+## LOCKED readout. A unique effect adds a star chip.
 ##
 ## Gestures:
 ##   tap   -> `tapped`         lock or unlock
@@ -32,10 +32,13 @@ const TAG_STEP := 28.0
 const BOB_PX := 3.0
 const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
+const SLOT_AT := Vector2(13, 30)   # the place's numeral, its baseline tucked under the cut corner
+const SLOT_SIZE := 18
 
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
+var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var spent: bool = false
 var dead: bool = false
@@ -212,6 +215,11 @@ func _draw() -> void:
 	if locked and not spent and not dead:
 		Hud.brackets(self, rect.grow(6.0), 14.0, hud, 1.5)
 		draw_string(Hud.mono(), Vector2(0, FACE + 12.0), "LOCKED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, hud)
+	if face != null and slot > 0:
+		# Which entry of the die this is, as a grey Roman numeral in the quotes' condensed
+		# italic: quiet by its colour and its face rather than its size, and never a stat
+		# (Ryan, 15 October). A reroll onto a copy shows by it; so does a stepping die's order.
+		draw_string(Hud.quote(), SLOT_AT + Vector2(0, bob), Hud.roman(slot), HORIZONTAL_ALIGNMENT_LEFT, -1, SLOT_SIZE, Color(Palette.MUTED, alpha))
 	if face == null or dead:
 		if dead:
 			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.ENEMY_DIM, 4.0)
