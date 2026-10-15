@@ -273,14 +273,14 @@
     "thief_chibi": {
       "foe": "thief",
       "role": "chibi",
-      "candidate": 6,
-      "source": "out/thief_chibi_takesM/thief_6.png",
+      "candidate": 10,
+      "source": "out/thief_chibi_takesN/thief_10.png",
       "kept": "picks/thief_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: the same wiry young woman with light brown skin and a messy black bob under a dark hood, a red scarf, crouched low, a stubby knife in each fist with a blade shorter than her hand.",
-      "note": "Rendered fresh from the stubby-knife take, Ryan's pick of 14 October",
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry young woman with light brown skin and a messy black bob under a dark hood, in a dark tunic and a red scarf, twin daggers drawn, crouched low to spring.",
       "cut": {
         "height": 42
-      }
+      },
+      "note": "Standing, rendered fresh; Ryan's pick of 14 October"
     },
     "thief": {
       "foe": "thief",
@@ -298,13 +298,14 @@
     "lancer_chibi": {
       "foe": "lancer",
       "role": "chibi",
-      "candidate": 7,
-      "source": "out/lancer_chibi_takesL/lancer_7.png",
+      "candidate": 10,
+      "source": "out/lancer_chibi_takesN/lancer_10.png",
       "kept": "picks/lancer_chibi.png",
-      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long spear upright beside her in one hand, its shaft one straight vertical pole from the blade high above her head to the butt on the ground by her boot, her other hand a fist at her side.",
+      "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, standing straight, holding a short spear upright beside her, the spear no taller than she is, its head level with the top of her helmet.",
       "cut": {
         "height": 42
-      }
+      },
+      "note": "Her tail is back, needs to go (the edit model next)"
     },
     "lancer": {
       "foe": "lancer",
@@ -372,7 +373,8 @@
       "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a wiry elderly man with olive skin and a long grey beard under a tall crooked hat, in a dark robe embroidered with flame sigils, a staff wreathed in fire raised in his left hand.",
       "cut": {
         "height": 42
-      }
+      },
+      "note": "Now it's a tiny little rod, it just needed a little shorter fire at the top. Like very little shorter (takes N; takes O next, the staff at hat-brim height)"
     },
     "black_mage": {
       "foe": "black_mage",
