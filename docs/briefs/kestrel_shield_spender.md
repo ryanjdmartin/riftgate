@@ -33,15 +33,44 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
 - Ryan's sketch pushes Rapid and multi-strike weapons, which the strafer and the stock pass
   also want.
 
+## The session (15 October)
+
+- Claude proposed: Ryan's sketch as the passive (every hit spends up to 5 of its shield for
+  that much more damage, per hit, so Rapid and multi-strike pieces spend more for more); the
+  decision in which entry is spent, the team's order (an ally's shield before it fires is
+  damage, after it is protection) and the intents (what will strike it shows before the
+  player acts); the shown number with the bonus in and a shield cost beside the heat;
+  overshield as the intended synergy and not too free, since it fades after the enemy's turn
+  and so guards that turn's blows; a locked gun of three small strikes, cool.
+- Ryan, 15 October: "a really great tier one since it's very straightforward"; the trick is
+  telling it from the strafer, since "both of their final results can converge easily -
+  multi-hit flat damage stacking", so it "needs a hook to diversify its options away from just
+  multi-hit to blast that shield". No multi-strike lock: "its completing the build and the
+  unit needs nothing but that and fill the rest of its hardpoints with shields."
+- Claude, 15 October, the hook: the convergence comes from "per hit" (a bonus per hit is a flat
+  on-hit, which the strafer doubles), so change what scales the burn rather than add beside
+  it: its weapons take their heat from its shield instead of its gauge and hit harder by as
+  much, once a spend as heat is paid, so multi-hit gains nothing. Kestrel's three tier ones
+  then want three kinds of weapon: the Sparrowhawk cold guns (it doubles heat), the strafer
+  many hits, this one hot guns (Aphelion's and the Arsenal's hot pieces, where the Sparrowhawk
+  pulls Minerva's and Wainwright & Sutler's kinetics). The decision moves onto the die with no
+  gesture: a hot entry burns shield for a big hit, a cold one burns nothing. Routes in: every
+  ally shield, and the Peak's Scorched (a stack makes its weapons 5 hotter: 5 more burnt, 5
+  more dealt). Holes: it changes the sketch's 5 a hit; while its shield stands its gauge
+  hardly moves, so vents are nearly dead on it (only Burning heats it), a direction refused;
+  the stock pass's heat prices set its whole economy; a weapon hotter than the shield left
+  pays the rest as heat and gains only what the shield paid. The lock: never a big hot gun,
+  which would complete the build; Claude's lean, once the hook is settled, a cold gun whose
+  hits regain shield, so the die always carries both halves of the decision, reload or burn.
+  Bench: 5 a spend in place of 5 a hit (ends the convergence but adds no appetite); the burn
+  sized by the blow (the Sparrowhawk's bargain at another price); a locked shield dump (the
+  Goshawk's vents-all in shield, and the build would be the dump and shields).
+
 ## Open for the session
 
-1. The decision: Ryan's sketch spends on every hit; "a real gameplay decision" asks where the
-   choice lies (per hit, per spend, or by keeping shield up or not).
-2. How the die shows the spend and the extra damage.
-3. Whether spending overshield, which fades at the round's end anyway, is the intended synergy
-   or too free.
-4. How it reads with basics alone at tier one, and whether it needs a locked piece.
-5. How it reads beside the strafer and the Sparrowhawk, the other two Kestrel tier ones.
+1. The hook (Claude: heat paid from the shield, above), then the locked piece.
+2. How the die shows the burn and the extra damage (proposed above).
+3. Its numbers, size and way of moving, matched to Ryan's silhouette.
 
 ## Holes already raised
 

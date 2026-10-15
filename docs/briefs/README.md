@@ -114,7 +114,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the hedgehog | the siege battery |
-| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (or two, by its engine piece) |
+| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
 | Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -158,7 +158,7 @@ on our side.
 | `minerva_siege_battery.md` | direction | Minerva | 3 | the Carrier's session (the foil) |
 | `kestrel_strafer.md` | decided | Kestrel | 1 | nothing |
 | `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
-| `kestrel_bomber.md` | decided | Kestrel | 2 or 3 | the foes' fresh start (reinforcements) |
+| `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
@@ -250,10 +250,11 @@ overrule)
 ## A suggested order
 
 1. Nothing to wait on: the Armadillo first, since it hands the Faraday Hull to the hedgehog;
-   then any of the Honey Badger, the strafer, the shield-spender, the line frame, Misharu, the
-   Onryō, the funnel-web, the revolver, the Prairie Dog and the Zoids walker (its maker first).
+   then any of the Honey Badger, the strafer, the shield-spender, the bomber, the line frame,
+   Misharu, the Onryō, the funnel-web, the revolver, the Prairie Dog and the Zoids walker (its
+   maker first).
 2. In pairs: the hedgehog after the Armadillo; the siege battery and the Carrier together
    (Ryan's battlecruiser foil); the Baboon and the Dingo with the stock pass.
 3. After the stock pass: the boiler, the gunship, the fan-boat; the multi-rotor once the die
    has its shown word.
-4. After the foes' fresh start: the bomber, the jellyfish, Mastema, Minos.
+4. After the foes' fresh start: the jellyfish, Mastema, Minos.

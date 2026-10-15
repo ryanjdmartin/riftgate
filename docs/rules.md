@@ -90,9 +90,10 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### Reach
 - **Direct** reaches the front rank, and a back-rank foe whose column's front slot is empty.
-- **Indirect** reaches any foe. Fired at the front rank it splashes: the firer loses shield
-  equal to half the damage the target took, rounded up, never hull (the Artillery
-  Rangefinder spares it).
+- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
+  built: today, fired at the front rank, it splashes: the firer loses shield equal to half
+  the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
+  it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
 
 ### A blow

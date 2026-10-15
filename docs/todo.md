@@ -34,7 +34,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The siege battery, with the Carrier's session (`minerva_siege_battery.md`)
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
-- [ ] The bomber (`kestrel_bomber.md`), best after the foes' fresh start
+- [ ] The bomber (`kestrel_bomber.md`)
 - [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
 - [ ] The revolver (`ws_revolver.md`)
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
@@ -52,7 +52,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The Onryō's Grudge (`arsenal_onryo.md`)
 - [ ] Mastema, fire through the team, with the Scapegoat Brand's fate (`arsenal_mastema.md`), best after the foes' fresh start
 - [ ] Minos (`arsenal_minos.md`), after the foes' fresh start
-- [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured; and what the briefs wait on: riders on machines in every domain (the Ward and Mastema's mover are blank without them; Scrambled is built and unused), reinforcements worth trapping (the bomber), back ranks in more fights (Minos), foes with more than one move (the jellyfish's Disrupt), and enemy Shock on a hero or an elite, telegraphed, if any, never on the rank and file (Claude's lean, 15 October: it is the Barrier's best moment)
+- [ ] The foes' fresh start with the fight-size spectrum and the Rupture meter, a session of its own after Ryan's answers in section 12: compositions with a front and a back spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the threat-weighted meter and fought with its formation, the campaign bot's withdrawing persona on, then both reports rerun and the fights a team fights together measured; and what the briefs wait on: riders on machines in every domain (the Ward and Mastema's mover are blank without them; Scrambled is built and unused), reinforcements worth trapping (the bomber's ground, though it no longer waits on them: Ryan, 15 October), back ranks in more fights (Minos), foes with more than one move (the jellyfish's Disrupt), and enemy Shock on a hero or an elite, telegraphed, if any, never on the rank and file (Claude's lean, 15 October: it is the Barrier's best moment)
 - [ ] The stock pass's content questions settled in chat (section 12), then the pass below, with heat re-priced so that it bites (the bible's heat row); it also takes the go's stock items: the Barrier's and the Ward's carriers and numbers (the Blast Door's fantasy is a Barrier), shield numbers re-read under the honest shield rule (the Goshawk's regen and the Puffin's overshield become hit points), cantrips if Ryan takes them (15 October: small Rapid pieces with no cooldown), multi-strike pieces (the Maxigun is the only one; Ryan, 14 October: badly needed), the hard control in the stocks weighed under the stun row's rule (Ryan, 15 October: always carefully considered, other options explored first; no caps), and the stock changes the briefs hand it (the Baboon's, the Dingo's, the Retribution Thurible's)
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles; and the items Ryan's go on the roster analysis left for it (the host maker's offer, the boss's token, the shelf, what Salvage and Favour buy), in the same file
 
@@ -90,6 +90,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The mission map (the capital centred, four cities, each front a card of words: domain, guest, ground, tier, how long its gate holds; a fallen city's horde marching on the centre; the capital's gate the one bar) and the hangar (the shop, the roster, the host maker's offer)
 - [ ] The draft screen: the tender, take three (`Campaign.tender`, `Campaign.new(seed, team)`)
 - [ ] The wreck's death on the map, and corruption in a pack's wake, once decided
+- [ ] The formation shows the reinforcements waiting (Ryan, 15 October: wanted, and no prerequisite of the bomber's): how many wait for each rank, a massive one marked
 
 ## Art
 

@@ -4,8 +4,8 @@ The session designs the decided Kestrel machine whose weapons can be spent on an
 the enemy's formation, the shot waiting there for whoever steps in. "The bomber" is Ryan's
 working word; the name and the look are his.
 
-**Status**: decided (14 and 15 October). **Maker**: Kestrel. **Proposed tier**: two or three,
-by the size of its engine piece. **Read first**: `docs/briefs/README.md`; the bible's row on
+**Status**: decided (14 and 15 October). **Maker**: Kestrel. **Tier**: three (Ryan, 15
+October). **Read first**: `docs/briefs/README.md`; the bible's row on
 Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8 (Kestrel gap two, the
 interceptor it replaced); `docs/rules.md` on reinforcements, reach and the
 formation.
@@ -54,20 +54,53 @@ action (hard control carried by the blueprint, not the chassis); a
 burn mine ticks on its first action; a shock mine doubles the team's first blow on it; a mine
 on an empty column catches the massive reinforcement that takes columns first. With
 reinforcements in the fight it is an engine; without them it is a plain machine, the right
-floor for its tier. Levers if weak: the bay's payload, a laid shot striking twice.
+floor for its tier. Levers if weak: a laid shot striking twice.
+
+## The session (15 October)
+
+- Claude proposed: tier three (it bends a rule the player has learned, a weapon spent on a
+  foe; the lowest floor and the highest ceiling; it stocks tier-two pieces, so its stock can
+  show the bombs; Kestrel's tier three); the bay Indirect and rolled with Spread and Burn,
+  every slot its kills empty taking its shot; a slot reached as if a foe stood there (Direct
+  the front slots and a back slot whose front is empty, Indirect any); everything about a laid
+  shot fixed when laid and shown on the slot, the arrival's armour and Shock read as it lands;
+  a massive arrival filling both slots of a column and taking both shots; Lure, Disrupt and
+  Chain inert on a laid shot (the round they work in is over); a mined slot marked by its
+  outline and a glyph, never by hue alone; the formation showing what waits before it lands.
+- Ryan, 15 October: "we can go ahead with this one too now, it doesn't need to wait. This is a
+  solid design already, and i'm not sure it needs the formation view to be viable. Still
+  something we should add, but it can be a separate to-do." Tier three, which "can stock all
+  kinds of cool stuff, so giving it a locked napalm bomb isn't really that interesting". The
+  lock in its place: a buff, self or ally, Rapid: "The next weapon fired by this unit will
+  leave a mine if it kills the target. Letting it lend allies its passive is probably busted,
+  but I want to try it, because it sounds fun." And: "If Minos or any other move effect causes
+  an enemy to step on a mine, it blows up. That's a synergy."
+- Claude, 15 October, on the buff: read as lending the kill-mine, not the passive's spend on an
+  empty slot (lending that would be much bigger); it lasts until the round's end and the next
+  weapon fired spends it, kill or not, so the decision is whom to buff (a flat weapon dragged
+  over a hurt foe shows a sure kill); the mine is the killing shot as fired (its number after
+  the firer's modifiers, its strikes and its keywords) in the target's slot only, so Spread's
+  other kills and Chain's later links leave none. Where it is strong: it copies the team's best
+  killer onto the arrival (a Sparrowhawk's doubled Railgun leaves 100 waiting, and the next foe
+  into that slot dies before it acts); its limits are one entry of the bomber's five, Rapid's
+  once a round, a kill, and a foe waiting for that rank; the levers if it proves busted: self
+  only, the mine at half the shot, a longer cooldown. With nothing waiting the buff does
+  nothing, tier three's low floor. Any foe that enters a mined slot by any means sets it off:
+  reinforcements, summons, regrown parts and Reraise's returns already arrive through the
+  reinforcement step, and Minos's turn of the ranks would be the first other way in, its mine
+  landing at once, in the player's turn. Indirect's splash is retired (11 October), so a laid
+  shot needs no splash rule.
 
 ## Open for the session
 
-1. Tier two or three.
-2. The bay's payload and numbers.
-3. How the reach rules apply to a slot (Direct reaches a back slot only through a hole), and
-   how the slot shows the waiting shot.
-4. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
+1. The buff's holes (above), on Ryan's read.
+2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on
 
-The foes' fresh start, which decides how many fights have reinforcements worth trapping; and a
-bot that values a mine.
+Nothing (Ryan, 15 October): the formation's view of what waits is its own to-do, not a
+prerequisite, and the foes' fresh start gives it more to trap. A bot that values a mine comes
+before its runner row.
 
 ## What the session hands back
 
