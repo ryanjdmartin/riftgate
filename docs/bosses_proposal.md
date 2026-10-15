@@ -17,13 +17,20 @@ Generic tropes, a pack of one or a pack in which every foe is unique, any size.
 | The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not big | Ryan, 15 October: a decent elite |
 | The Waste | Sandworm | Big | Built, standing in as the boss |
 | The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
+| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Proposed: a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Proposed |
 | The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
 | Any | A pair of gate gargoyles (a pair trope) | Not big | Proposed |
 
-## Bosses: the slate (second cut, 15 October)
+## Bosses: the slate (third cut, 15 October)
 
 Each brings its signature move, inside the skirmish.
+
+The boss in parts is a pattern worth including whoever carries it (Ryan, 15 October): parts that
+regrow, or stand for a while, until the core is killed, so the player chooses what to focus.
+Two fists and a head (Chrono Trigger's Giga Gaia), Retinite's core, Exor's hilt. In the engine:
+the core massive in its column, its parts separate foes in the next ones, regrowing while the core
+stands or shielding it until one falls.
 
 | Domain | Boss | From | Its signature | Engine |
 |---|---|---|---|---|
@@ -31,22 +38,40 @@ Each brings its signature move, inside the skirmish.
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
 | The Meadow | Bourgeon | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos; spits miasma. The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
-| The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | Retinite | Chrono Trigger | A sand creature in three parts, top, bottom and a core that feeds them: the halves shrug off blows while the core lives, so the core goes first (its water key becomes the kill order, elements being flavour) | Parts that guard each other (the White Mage's harden on allies, on the to-do) |
+| The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
+| The Waste | Exor | Super Mario RPG | The parts boss: a colossal sword fallen into the badlands, its two eyes shielding it and its mouth casting, the hilt that drives them untouchable until a part falls | The parts (above) |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
-| The Marsh | The Matador (or Persona's Reaper, inside the skirmish) | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes | Runs today |
+| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. The legacy pick (Ryan); the Reaper goes to the elites | Runs today |
 | The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A blow on death (small, beside the Gel's split) |
 | The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Runs today |
 | The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | A countdown (the delayed blow); armour while an ally stands |
 
-Six of the twelve are Final Fantasy's and six come from five other series. The weakest pick is
-the Waste's third: Retinite is a sidequest boss, not a who's-who name.
+Six of the twelve are Final Fantasy's and six come from six other series.
 
 Names: the series' coinages take names of ours (the Malboro, the Tonberry, the Adamantoise,
-Retinite, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
+Exor, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
 (Gilgamesh, the Behemoth, the Matador, the Phantom Train; King Slime is the King Gel). Every
 look is ours, never the series' design.
+
+## Other sources (15 October)
+
+- **Nintendo's games** (Super Mario RPG, Paper Mario, Pokémon): homage by archetype, as for
+  everything else: never a name or a look-alike design, and never one of its patented
+  mechanics. Nintendo and The Pokémon Company sued Pocketpair over Palworld in 2024 on patents
+  (capturing creatures, switching mounts), not on looks. And played straight: only their
+  straight-faced moments fit the register (Exor's sword falling into the keep). Pokémon's
+  natural home is the Tamer on the Meadow's bench, the trainer as a beast-tamer.
+- **Darkest Dungeon** is a Western gothic roguelike, not the genre, so it cannot invade; its
+  dread is the register the bible gives the Arsenal (section 1) and the Convergence's last tier.
+- **The genre's other subgenres**: the Mystery Dungeon roguelikes (Shiren the Wanderer,
+  Torneko's Great Adventure), the genre's own roguelike and Riftgate's nearest cousin, whose
+  Torneko is the Merchant on the Waste's bench; the monster-collectors (Pokémon, Dragon Quest
+  Monsters), the Tamer; the action RPGs, Mana's Rabite for the Meadow's wildlife and Kingdom
+  Hearts' Guard Armor as another boss in parts; the dungeon crawlers, whose Etrian Odyssey
+  FOEs (visible monsters far stronger than the floor, roaming the map) are already our hunters,
+  so a lone big elite that hunts is the homage with no new system. The tactics games give the
+  foes little: Disgaea's Prinnies are comic and Final Fantasy Tactics' Lucavi are demons.
 
 ## Beyond the twelve
 
@@ -65,8 +90,9 @@ look is ours, never the series' design.
 
 ## Questions for Ryan
 
-- Marks on the twelve, and a better icon for the Waste's third (the desert, or theft).
-- The Marsh's third: the Matador or the Reaper.
+- Marks on the twelve.
+- Exor for the Waste's third, as the parts boss.
+- The Matador as the Marsh's boss with the Reaper an elite.
 - The Coven and the gargoyle pair as elites.
 - The Summoner's summons as moves; Omega as the superboss; the Mime.
 - The heroes' homages beyond Final Fantasy (the Thief as Persona 5's Joker, perhaps).
@@ -85,7 +111,10 @@ The ideas set aside, each with what set it aside.
 - Elder Drake: somewhat uninspired (Ryan, 15 October); and another dragon.
 - Ifrit as a boss, and the other summons (Titan, Leviathan, Ramuh, Odin): a summon is the
   Summoner's.
-- Giga Gaia: a golem beside the Magma Golem elite; its parts live on in Retinite and the Tyrano.
+- Giga Gaia: a golem beside the Magma Golem elite; its parts live on in the parts pattern.
+- Retinite: a sidequest boss rather than a who's-who name; its pattern stays (the parts, Ryan,
+  15 October), carried by Exor.
+- Darkest Dungeon: not the genre (above).
 - Bomb King: waits on the Bomb's verdict in play.
 - Fire Emblem's weapon triangle: the bible refuses a damage-type triangle (section 9).
 - Shin Megami Tensei's demons (Jack Frost, Pyro Jack): demons are the Arsenal's register
