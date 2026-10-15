@@ -1,11 +1,10 @@
 # Brief: the Armadillo as a form-changing tank (rework)
 
 The session settles the Armadillo's rework into a form-changing tank at tier one, from Ryan's
-latest shape, and decides the one piece he left open: what its stored charge cashes in for on
-unsealing, or whether there is a charge at all.
+framework of 15 October (below, "The Minerva session"), aiming for the simplest rule text.
 
-**Status**: rework, a direction Ryan is still weighing ("Interesting. I'll think about it", 15
-October). **Maker**: Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`;
+**Status**: rework, in session (15 October): Ryan's framework set, its details open. **Maker**:
+Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`;
 `docs/roster_analysis.md` section 2 (the Armadillo's rating);
 `content/chassis.json` (armadillo) and `content/components.json` (lockdown_shutters,
 shoring_jack); the bible's rows on the Faraday Hull and the Armadillo's retaliation (section
@@ -65,7 +64,7 @@ porcupine").
   And giving the team tank stats is just as toxic as taking all the blows - it's an unkillable
   team by a different name. We need to think outside the box."
 
-## Ryan's latest shape (15 October), the starting point
+## Ryan's shape before the session (15 October)
 
 In his words: "The dillo hits a shield and transforms, building heat every turn. While
 transformed, it gains braced (base armour needs to go down), and stores the unmitigated damage
@@ -93,18 +92,50 @@ a spend that shows on the intent each round, never a blanket.
   while sealed (soft control, the thinnest class, but it overlaps the jellyfish); or a round of
   Indirect reach on its guns when it opens (the turret rising over the shell; worth nothing
   against a pack with no back rank).
+- Ryan refused rerolls in the session (below); the payout became optional.
+
+## The Minerva session (15 October)
+
+**Claude's first round**, in chat: every shield it spends is aimed at one foe, which turns on
+it, the shield landing on the Armadillo and sealing it; a weapon that deals damage opens it
+(lures, shocks and probes do not, so the sealed form keeps a control kit); sealed, it is Braced
+(two stacks) and its heat climbs 20 a round; base armour 15 down to 5; the Lockdown Shutters
+kept locked, Sealed Live gone, the shutters carrying the charge (blows on the sealed shell
+charge it by their number; opening gives the team a reroll for every 20, at most three). Holes
+raised with it: sealed without a draw protects nobody (the exposed aim skips a braced shell), so
+the draw is essential; the store rewards being struck by the enemy's blows unless the payout is
+capped; the heat clock forces venting rather than opening, since a vent spent while sealed
+would keep the seal.
+
+**Ryan's framework**, in his words: "Armadillo - lets work with this framework, aiming for
+simplicity of rules text:
+-Locked piece, a lure with rapid, no cooldown. One or a pair, not sure. the 4 weapons ports are
+the 4 hardpoints.
+-Shields on self enter defensive mode, gaining braced. Shields still work while sealed. While
+sealed, heat rises.
+-Damaging weapons and vents unseal it, losing the braced buff. This lets a weaponless build be
+possible, if a player so chooses.
+-Ally targeted shields, or ally/self targeted buffs, have no interaction with sealed/unsealed.
+-Optional: Mark foes that hit it while sealed. When unsealing, debuff marked foes somehow,
+ideally with something that stacks per hit. Can be a new unique debuff. Can be tied to the
+locked piece(s) only if rules text is becoming a premium. Only worth considering if the
+tanking/luring is feeling thin.
+-Don't do rerolls as the reward, that doesn't fit with the theme."
+
+What it settles: the draw is a locked lure, Rapid with no cooldown, in place of shields aimed at
+foes; the four weapon ports are the four hardpoints; a shield on itself seals it and keeps
+working while sealed; a vent opens it as a damaging weapon does, so the clock does force
+opening; nothing aimed at an ally, and no buff, touches the form; a build with no weapons is
+allowed; the Lockdown Shutters as a component and Sealed Live retire (the shutters live on as
+the look of the seal: the pinned "Lockdown Shutters made real").
 
 ## Open for the session
 
-1. The cash-in: rerolls, Disrupt, Indirect reach, something else, or no capacitor at all.
-2. Whether its shields become lures while sealed (Ryan's "perhaps"), and how the die shows a
-   shield entry as a lure in that form.
-3. The heat clock: how many rounds a seal can last before opening is forced, and whether hits
-   taken speed it (Ryan doubts it: a form changer must shift for more than a turn).
-4. How far base armour comes down, and how many Braced stacks the sealed form gives.
-5. Whether it keeps a locked piece (the shutters) or locks nothing because the form follows the
-   die.
-6. Tier one confirmed, and the passive's rule text within the budget.
+1. One lure or a pair, and its reach (the foe alone, or its neighbours too, as the Klaxon).
+2. How many Braced stacks sealing gives, and base armour.
+3. The heat clock: how much a round, and when it lands.
+4. The optional mark and its debuff, only if the tanking reads thin.
+5. Tier one confirmed, and the rule text.
 
 ## Refused along the way
 
@@ -117,23 +148,21 @@ Not to be proposed again without a new reason:
 - Team Braced or team shield on opening (an unkillable team by another name).
 - Unloading the charge as damage (Ryan: "back where we started").
 - Heat per hit so fast that a seal lasts a turn (tedious to play).
+- Rerolls as the payout (Ryan, 15 October: "that doesn't fit with the theme").
 
 ## Holes already raised
 
-- The passive is two rule lines at least (sealed, and the cash-in), at the edge of the
-  rule-text budget, so its description must do no other work.
-- A shield spent on a foe is a new gesture for equipment; a passive may make it a one-off, but
-  the die must show the entry as a lure while sealed.
-- Rerolls step the revolver and never land on an identical entry, so a team with a revolver
-  locks it before cashing the charge.
-- The unmitigated count ignores the plate on purpose, so Braced never fights the charge; the
-  heat clock decides how long the shell stays closed and is the number the stock pass tunes.
-- The greedy bot values none of it (a lure, rerolls for others), so the runner's rows wait on
-  its valuations.
+- Sealed without a draw protects nobody: the exposed aim weighs the hull a blow would reach, so
+  a braced shell is skipped unless something draws the blows (the locked lure, in Ryan's
+  framework).
+- The heat clock is the seal's limit and the number the stock pass tunes.
+- The greedy bot values a lure for allies at nothing, so the runner's rows wait on its
+  valuations.
 
 ## Pairs and dependencies
 
-- The hedgehog (`minerva_hedgehog.md`) takes the Faraday Hull; Sealed Live goes with it.
+- The echidna (`minerva_hedgehog.md`) was to take the Faraday Hull; Ryan's Sonic Needle took its
+  place there (15 October), so the Hull and Sealed Live leave with the Armadillo's old kit.
 - The shield rule (decided): shields are honest numbers now, so the plate it seals with is the
   shield's number.
 

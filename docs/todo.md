@@ -28,10 +28,11 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 - [x] The roster analysis, one fresh session from the brief in `docs/mechanic_budgets.md` (Ryan, 14 October): the roster and the proposals rated on quality, niche, build diversity and composition, fit not viability, nothing run; the tiers as dealt; Minerva's and Kestrel's gaps (`docs/roster_analysis.md`, 14 October, published); then Ryan's go
 The design sessions below run from the briefs in `docs/briefs/`, one session each, proposed in chat first; the briefs' README gives the shared context and an order.
 
-- [ ] The Armadillo as a form-changing tank, and its cash-in (`minerva_armadillo.md`)
-- [ ] The Honey Badger's identity (`minerva_honey_badger.md`)
-- [ ] The hedgehog, the Faraday Hull's new home, with the Retribution Thurible's change (`minerva_hedgehog.md`), after the Armadillo's
-- [ ] The siege battery, with the Carrier's session (`minerva_siege_battery.md`)
+- [ ] The Armadillo as a form-changing tank on Ryan's framework of 15 October (`minerva_armadillo.md`), in session
+- [ ] The Honey Badger's identity, the hopper as plate and shot (`minerva_honey_badger.md`), in session
+- [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), in session
+- [ ] The siege battery, Ryan's H-tank, and its turrets' charge (`minerva_siege_battery.md`), in session
+- [ ] The battlecruiser, Minerva's capital ship, with the Carrier's session (`minerva_battlecruiser.md`)
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
 - [ ] The bomber (`kestrel_bomber.md`), best after the foes' fresh start
@@ -45,7 +46,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The Dingo's tier and die (`ws_dingo.md`), with the stock pass
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
 - [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
-- [ ] The Carrier, with the siege battery's session (`aphelion_carrier.md`)
+- [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`)
 - [ ] The Baboon to tier two (`aphelion_baboon.md`), with the stock pass
 - [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
 - [ ] Misharu with Penance (`arsenal_misharu.md`)

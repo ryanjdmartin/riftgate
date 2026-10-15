@@ -1,10 +1,11 @@
-# Brief: the hedgehog, the Faraday Hull's new home (new chassis)
+# Brief: the echidna (the hedgehog), a tank that fights (new chassis)
 
-The session designs a lighter Minerva tier two that wants to be struck and pays for it in its
-own hull, carrying the Faraday Hull off the Armadillo. "The hedgehog" is a working label from
-Ryan's own list; the name is his.
+The session designs a lighter Minerva tier two that wants to be struck, first as the Faraday
+Hull's new home, since 15 October around Ryan's Sonic Needle (below, "The Minerva session").
+"The echidna" and "the hedgehog" are working labels from Ryan's own list; the name is his.
 
-**Status**: direction. **Maker**: Minerva. **Proposed tier**: two. **Read first**:
+**Status**: direction, in session (15 October): Ryan's Sonic Needle passive. **Maker**:
+Minerva. **Proposed tier**: two. **Read first**:
 `docs/briefs/README.md`; `minerva_armadillo.md`; the bible's rows on the Faraday Hull (section
 7) and on retaliation and thorns (section 5); `docs/roster_analysis.md` section 8 (Minerva's
 gaps); `content/components.json` (lockdown_shutters, proximity_klaxon,
@@ -41,25 +42,52 @@ The analysis (section 2) found the Thurible (a buff: for two rounds a foe that s
 machine's bare hull is Shocked) gives any machine the Faraday Hull's effect, stocked on the
 Nemesis. With the Hull on the hedgehog, the Thurible duplicates the hedgehog's passive.
 Claude's lean: it should differ on purpose or become a rare tier-three piece, and the Nemesis
-stock something of its own. The session decides this with the chassis.
+stock something of its own. The session decides this with the chassis. Ryan, 15 October (below):
+both, a rare tier three that differs.
+
+## The Minerva session (15 October)
+
+**Claude's first round**, in chat: the Faraday Hull as it stands, every wounding blow (Shocked
+never stacks, so once a foe; once a round the lever); a locked gun that lures, a Direct weapon
+whose blow turns the foe it hits (no damaging lure exists, and the engine already runs Lure on
+one, so content only); medium, hull 110, shield 20, armour 5, four hardpoints; not the
+discharge, since a Shock lands no damage and the team's dice cap its cashing, and each Shock
+costs a wound; amplify for others as a chassis identity, which nobody has; Sealed Live retiring;
+the Thurible a tier-three rare, or differing by taking Sealed Live's half. Bench: a lure that
+drops its own shield; every weapon luring (the analysis's "line").
+
+**Ryan**, in his words: "Hedgehog/Echidna - We can make this work, and I think the right way
+isn't necessarily to make it rely on hull damage. We just need to make the tank not only use
+tank abilities. What about Passive: Foes the echidna damages get marked with a Sonic Needle
+(sonic the hedgehog reference). When an enemy with a sonic needle strikes the Echidna, consume
+the Sonic needle to give it Shocked. The damaging lure you mentioned does both in one shot, and
+the only concern i have with that is that it eats all the die's uses."
+
+On the Thurible: "Thurible - I think a rare tier three AND it differs. it can be a retaliate
+chip damage for now, like deal 10 back to every attacker. We can make it more interesting later
+if need be."
+
+What it settles: the passive is the Sonic Needle, a debuff its blows leave that a strike on it
+turns into Shocked, so the Shock no longer rests on hull damage and comes only from foes it has
+already hit; the tank also fights; the damaging lure does both in one shot, at the cost of
+being the entry the die collapses onto; the Thurible leaves the Nemesis's stock as a tier-three
+rare whose Retaliate deals chip damage (10 to each attacker) in place of Shocked.
 
 ## Open for the session
 
-1. The lure: a locked piece, its reach and how many foes it turns.
-2. The numbers that make it "worry slightly about its own hull": its hull, armour and shield
-   against the Armadillo's.
-3. Whether every wounding blow Shocks, or once a round.
-4. The Thurible's fate, and Sealed Live's (the shutters' rule extending the Hull to blows on a
-   shield).
-5. Its size and way of moving, and its name (Ryan's).
+1. What "strikes" means for the needle: any blow, or one that deals it damage (shield or hull).
+2. How needled foes come to it without one entry eating the die.
+3. Its numbers, and whether it carries a locked piece.
+4. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
+5. The Thurible's chip damage: what keeps thorns off a megatank (the bible's thorns row).
+6. Its size and way of moving, and its name (Ryan's).
 
 ## Holes already raised
 
-- Under a lure, the Shocks a round equal the lured foes that wound it, so the lure's reach is
-  the lever that keeps it off the discharge's shape.
-- The Onryō also reads a foe's blow on hull, and the Nemesis banks rage on it; three machines
-  reading the same wound should part by payoff (the Hull a doubled team blow, the Nemesis
-  tempo, the Onryō its curse).
+- Under a draw, the Shocks a round equal the drawn foes that strike it, so the draw's reach is
+  the lever that keeps it off the discharge's shape; the needle narrows it to foes it has hit.
+- Under the Hull (before the needle), it read the wound the Onryō and the Nemesis read too; the
+  needle reads a strike by a foe it marked, which nothing else reads.
 - The greedy bot values neither being struck nor a Shock laid for an ally, so the runner's rows
   wait on its valuations.
 
@@ -70,5 +98,5 @@ overlap of niche, which is fine).
 
 ## What the session hands back
 
-A proposal in chat; on Ryan's go, the bible's rows (the Faraday Hull's home, the chassis), the
-Thurible's change for the stock pass, and this brief retired.
+A proposal in chat; on Ryan's go, the bible's rows (the Faraday Hull's fate, the Sonic Needle,
+the chassis), the Thurible's change for the stock pass, and this brief retired.

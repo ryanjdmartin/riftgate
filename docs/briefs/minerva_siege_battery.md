@@ -1,61 +1,64 @@
-# Brief: the siege battery (new chassis)
+# Brief: the siege battery, Ryan's H-tank (new chassis)
 
-The session designs Minerva's tier-three capstone, sketched in the roster analysis as the
-cooldown made an identity, and settles whether it is Minerva's battlecruiser, the foil Ryan
-named for Aphelion's Carrier.
+The session designs Minerva's treaded tier-three capstone from Ryan's old pitch of a gargantuan
+H-tank with two massive turrets, and finds the charge that makes the player decide when to fire
+them. The working label "the siege battery" stays; the name is Ryan's. Minerva's other tier
+three, the battlecruiser, has a brief of its own (`minerva_battlecruiser.md`), which also holds
+the broadside first proposed here.
 
-**Status**: direction (the analysis's gap, 14 October; not yet discussed with Ryan beyond the
-cooldown question). **Maker**: Minerva. **Proposed tier**: three. **Read first**:
-`docs/briefs/README.md`; `docs/roster_analysis.md` section 7 (cooldowns) and section 8
-(Minerva's gap two); `aphelion_carrier.md`; the bible's rows on cooldowns (section 8) and the
-makers table (section 7).
+**Status**: direction (Ryan's pitch, 15 October). **Maker**: Minerva. **Proposed tier**: three.
+**Read first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's rows on
+cooldowns (section 8), the makers table and the size classes (section 7), and the ways of
+moving (section 4).
 
-## The sketch (Claude, 14 October)
+## Ryan's pitch (15 October)
 
-Every weapon it fires strikes twice and goes dark for two rounds after: the Sparrowhawk's
-bargain paid in the die's reliability instead of heat. A new price, and volume rather than
-multiplied damage (two strikes, each losing the foe's armour, so it answers swarms rather than
-bosses). Tier three: the lowest floor in Minerva's line (a die half dark by the third round of
-a fight it fires freely in) and the highest ceiling (an alpha strike every other round). It
-reads its own die's dark entries, which nothing reads.
+In his words: "Siege battery: I had an old pitch that resembled this. A gargantuan, true H-tank
+with 4 separate tracks. Two massive double-barreled turrets, one in front, one behind, the
+chassis between the rear two treads higher so the rear turret rises above the front turret,
+armoured panels above the treads, gimbaled hardpoint mounts on each of them. The turrets are "so
+powerful that Minerva couldn't help but build a chassis big enough to mount two," so need a huge
+hit and maybe a massive cooldown or charge time or some other balancing mechanic. Slowest unit
+in the game, passive might be something like "Massive Chassis: terrain penalties don't apply"
+so that it is a steady slow crawler.
+-Updates to this based on newer learning: I think a massive gun (or two) with a cooldown isn't
+enough to balance it, since it will result in boom-boom-skirmish won. The cannons need a
+charge-up mechanic that will make the player decide WHEN to fire one, not how often. The obvious
+one is "every shield used on this" but I feel like that's been done to death."
 
-## Holes raised then
+And on the battlecruiser: "I think the battlecruiser should be a different design from the H
+tank, and the "fire everything" you mentioned kind of makes sense for a flying brick. The tank
+and the cruiser could be the two tier 3s, one the capstone treaded unit, one the capital ship
+that it seems like every maker is going to end up getting."
 
-- It waits on the cooldown rule (decided 14 October as a printed property).
-- Two strikes on every weapon double every rider too (a Burn piece lays its stacks twice); if
-  that is too much, the strikes become the locked piece's and the dark rounds the passive's.
-- A passive that only punishes is a cost without an identity, so the upside must be on the same
-  machine.
+What it settles: two locked turrets, front and rear, the rear superfiring over the front; four
+hardpoints, the gimbaled mounts on the four armoured panels; the slowest machine in the game;
+the turrets' balance is a charge that asks when, never a cooldown that asks how often; no charge
+from shields spent on it.
 
-## Since then
+## How it got here
 
-- Cooldowns decided (Ryan, 14 October), with no cap on where they go or how many a die
-  carries (Ryan, 15 October: a cap is artificially limiting); the battery may carry them as its
-  identity.
-- The strafer was decided as Kestrel's tier one with "every weapon it fires strikes twice at
-  half", so the battery's "strikes twice" now overlaps a Kestrel tier one. The session decides
-  whether the battery keeps its strikes or takes another upside.
-
-## The bench (section 11)
-
-- Minerva's hold-fire line: an entry left unspent at the end of its turn braces it for the
-  round (sustain, and a read nothing uses); named as a candidate upside for the battery.
-- A tier three as one big hit with a cooldown on its locked gun, not the whole die: smaller and
-  safer.
-
-## The battlecruiser
-
-The bible (Ryan, 12 October): the Carrier is "a foil to a Minervan Terran Battlecruiser", which
-does not exist yet, and Minerva's builds include "perhaps heavy bipeds and one flying brick".
-Whether the battery is that machine is open; the Carrier's session and this one are best run
-together.
+- The sketch (Claude, 14 October, the analysis's gap two): every weapon it fires strikes twice
+  and goes dark for two rounds after, the cooldown made an identity. Set aside: the strafer was
+  decided (14 October) with "every weapon it fires strikes twice at half", and mechanics should
+  not repeat.
+- The analysis's bench: Minerva's hold-fire line (an entry left unspent at the end of its turn
+  braces it for the round, a read nothing uses); a tier three as one big hit with a cooldown on
+  its locked gun (smaller and safer), which Ryan's update rules out as boom-boom.
+- Claude's first round in the session (15 October): the broadside (spend a weapon and every
+  live weapon on its die fires at that foe until it falls; each that fires goes dark for two
+  rounds) with a locked loader, as Minerva's battlecruiser. Ryan made the battlecruiser a design
+  of its own and kept the broadside for it (`minerva_battlecruiser.md`).
 
 ## Open for the session
 
-1. The upside that makes the dark rounds worth it: the strikes, the hold-fire brace, or
-   another.
-2. The cooldown's length and whether it falls on every weapon or a locked gun.
-3. Whether it is the battlecruiser (a flyer then), its size and its way of moving.
+1. The charge-up mechanic: what charges the turrets, what spends it, whether the two share it.
+2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
+   "double-barreled" means on the die.
+3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the
+   slowest move, or the charge as the passive and the map rule elsewhere.
+4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too).
+5. Its numbers and its way of moving.
 
 ## What the session hands back
 
