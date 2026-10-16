@@ -1015,16 +1015,20 @@ func _mech_rows(i: int) -> Array:
 					loop_names.append(m.name)
 		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Palette.SHIELD])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
-	# the fight's statuses live here, as chips that the hold expands into their descriptions).
+	# the fight's statuses live here, as chips that the hold expands into their descriptions),
+	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+	# anything that interacts with overcharged needs it displayed"): devour's stacks kept for
+	# the battle are a chip like a buff's for the round. A chassis passive, a module's rule or
+	# a battle reward that is no status stays in the codex.
 	# One chip a status, counting its stacks from every grant: a timed buff spent in two rounds
 	# is two modifiers, each going when its own rounds run out (16 October), and one status.
 	var order: Array[String] = []
 	var first := {}
 	var total := {}
 	for d in Effects.describe(ms.unit):
-		if int(d[3]) < Effects.SKIRMISH:
-			continue
 		var id := str(d[5])
+		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
+			continue
 		if not first.has(id):
 			order.append(id)
 			first[id] = d

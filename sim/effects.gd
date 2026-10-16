@@ -156,6 +156,20 @@ const STATUS := {
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 
 
+## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
+## Disabled (corrupted_<n>, disabled_<n>, one an entry)? A status is a chip in the fight
+## whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so anything that
+## interacts with overcharged needs it displayed"); a passive, a module's rule or a battle
+## reward is none.
+static func is_status(id: String) -> bool:
+	if STATUS.has(id):
+		return true
+	for head in ["corrupted_", "disabled_"]:
+		if id.begins_with(head) and id.substr(head.length()).is_valid_int():
+			return true
+	return false
+
+
 ## Kindled at a rally's own value: the status above with the move's value in place of the
 ## default, so the Howl's 5 is 5 and the chip says so.
 static func kindled(value: int) -> Dictionary:
