@@ -36,7 +36,7 @@ stands or shielding it until one falls.
 |---|---|---|---|---|
 | The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Bourgeon, which needs a name of ours (Ryan, 15 October), perhaps French as its game's are: bouton, the nearest (the flower's bud, where bourgeon is the branch's; also a button), or gemme (the botanist's word; also a gem). Or Nepenthes, the pitcher plant that drowns what falls in and the Odyssey's drug of forgetting (Claude's lean; it pulls the look from a bud toward a pitcher), Calyx, the leaves that close round a bud, or the Craw | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
+| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own) | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
 | The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough. Claude's lean: a war hammer planted haft-down, its two ends the parts and an eye in each, the face's blow one no shield answers and the pick prising loose the component a machine shows (the Waste's two halves), the haft the core; the axe's two bits would be a mirrored pair doing one job | The parts (above) |
@@ -53,6 +53,32 @@ Names: the series' coinages take names of ours (the Malboro, the Tonberry, the A
 Bourgeon, Exor, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
 (Gilgamesh, the Behemoth, the Matador, the Phantom Train; King Slime is the King Gel). Every
 look is ours, never the series' design.
+
+## Conversions (Ryan, 15 October: look for the bosses we could convert)
+
+The slate's six from Final Fantasy, with Claude's lean on each, by Ryan's measure (16 October:
+balance the series out a little, never purge it):
+
+- **The Behemoth**: keep. An FF homage is incomplete without it (Ryan), and its name is the Book
+  of Job's.
+- **The Adamantoise**: converted already, as the Cinder Tortoise, its signature the genre's (into
+  the shell, then a quake). For a myth's name as the Behemoth has one: Zaratan, the
+  island-tortoise of the old bestiaries.
+- **Gilgamesh**: keep, the series' recurring rival, as iconic as the dragoon. If one more is
+  wanted, the conversion is **Benkei**, the legend Final Fantasy V's Gilgamesh draws on: the
+  warrior monk who took a sword from every warrior crossing Gojō Bridge until the thousandth beat
+  him (FF5 fights its Gilgamesh on the Big Bridge). The same signature, the weapon a machine shows
+  taken and turned on it; the legend's death, standing in a storm of arrows, a kit idea new to the
+  engine (he holds his slot a round after he falls, the back rank still covered).
+- **The Malboro (Rotbloom)**: convert out. Beside Floraison the Meadow would hold two maw-plants,
+  and both names bloom. Its slot goes to a boss from another series, found at the slate's next
+  cut; Bad Breath (every rider at once) can go to whichever boss wants it.
+- **The Tonberry (Pilgrim)**: Ryan's call. Its dread was the countdown, which any foe can carry
+  now, and the Reaper is the genre's stalker among the elites, so its slot could go to another
+  series as well.
+- **The Phantom Train**: keep, Final Fantasy VI's own. The conversion, if wanted, is a ghost ship
+  (the Flying Dutchman), with the same signature: it runs one machine down and calls the dead
+  aboard.
 
 ## Other sources (15 October)
 
@@ -82,7 +108,13 @@ look is ours, never the series' design.
 - **The Summoner's summons** (Ryan, 15 October: yes, with names that are not the series' own;
   then full Norse): in content since that day, each a move, from the Norse world its rune circle
   opens on (its robes are stitched with runes). Surtr (the fire giant, in Ifrit's place; Ryan: a
-  perfect replacement): Pyroclasm, every machine scorched, below half. Skaði (the winter
+  perfect replacement): Pyroclasm, every machine scorched, below half. Ifrit's own move is
+  Hellfire (Ryan asked, 16 October). It was the Summoner's until 13 October, when it became
+  Pyroclasm: the bible gives hell's words to the Council's side and pins Hellfire as an Arsenal
+  prefix (the King James Bible's), and Surtr's fire is Muspelheim's, not Hel's. If the move
+  should carry the homage as Diamond Dust does, Surtr takes Hellfire and the Arsenal's prefix
+  takes Brimstone, the same Bible's other fire; Claude's lean keeps Pyroclasm, or takes the
+  Edda's own name for Surtr's flame, Surtalogi. Skaði (the winter
   giantess, in Shiva's place; Ryan: for sure), a huntress in white furs and an iron helm, her look
   far from Shiva's: Diamond Dust (Ryan: fine), a frostbite on the component every machine shows
   (corrupt all), soft rather than a freeze that switches components off, since freezing every
@@ -91,7 +123,7 @@ look is ours, never the series' design.
   on the promoted forms, drawn as the sagas tell it, a wingless serpent whose breath is venom,
   so neither its look nor its blow is Bahamut's. Art in the forge's drafts (the third round on
   the picker), and the screen's moment for each summon to appear is still to come.
-- **Clair Obscur's Mime**, if wanted beside Bourgeon: a rare pack that throws the last blow it
+- **Clair Obscur's Mime**, if wanted beside Floraison: a rare pack that throws the last blow it
   took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
   prize.
 
@@ -99,8 +131,8 @@ look is ours, never the series' design.
 
 - Marks on the rest of the twelve.
 - The Exor homage's weapon.
-- Bourgeon's name; where Omega lives; the Mime.
-- The heroes' homages beyond Final Fantasy: the bench pass (the to-do; Ryan, 15 October: the heroes need to focus on tropes that are not the series'), the Thief as Persona 5's Joker among its ideas.
+- The conversions above; where Omega lives; the Mime.
+- Surtr's move: Pyroclasm, Hellfire (the Arsenal's prefix then Brimstone), or Surtalogi.
 
 ## Bench
 
@@ -120,7 +152,11 @@ The ideas set aside, each with what set it aside.
   and the Cailleach, Morana and Boreas: the set went full Norse (Ryan, 15 October).
 - The Dragon King, the plain title, and Ryūjin: Fáfnir in Bahamut's place (Ryan's suggestion),
   the set full Norse.
-- Calice (the calyx) for Bourgeon's name: in Québec it is an oath.
+- Bouton, gemme, Nepenthes, Calyx and the Craw for Bourgeon's name: Floraison (Ryan, 15 October).
+  Calice (the calyx): in Québec it is an oath.
+- Wings on Fáfnir (Ryan, 15 October: some later depictions give him wings, so allowed if
+  wanted): the roster's two other dragons are winged (the Bone Wyvern, the Drake), so the
+  wingless wyrm is the silhouette a phone tells apart, and the move's name can carry Bahamut.
 - Giga Gaia: a golem beside the Magma Golem elite; its parts live on in the parts pattern.
 - Retinite: a sidequest boss rather than a who's-who name; its pattern stays (the parts, Ryan,
   15 October), carried by Exor.

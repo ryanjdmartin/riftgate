@@ -119,7 +119,7 @@ document's job and every command are in `README.md`.
   Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
-  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Bourgeon. The bosses' slate and Ryan's marks
+  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
   are `docs/bosses_proposal.md`.
 - Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
   (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
@@ -240,19 +240,25 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.181 (15 October), published from
-  `claude/adoring-planck-q8t63w` over the live v0.178: the reroll rows (section 6's rerolls
-  row, the Nemesis row's reason for its plain roll), the die entry's place (section 6's
-  die-entry row) and Rapid's limiter (section 7's Rapid row, the Wake Diffuser in section
-  12), which reach main's file when that branch merges. Main's file is v0.178: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Live: v0.184 (16 October, another branch's,
+  over main's v0.182); main's file v0.185 adds the Priest folded into the White Mage and the
+  Martial Artist kept (Ryan, 16 October), unpublished: the next publish reads the live page
+  through and merges onto it. The Minerva branch's file (main merged in, 16 October) carries
+  v0.185 and its own rows, which the page already has: the rerolls onto a copy, the die
+  entry's place, Rapid's limiter and the Wake Diffuser question. Main's file also carries the
+  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
   in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
   summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
-  heroes' tropes from beyond Final Fantasy. The live page also carries two changes from the
-  branch `claude/zealous-cori-8xoly7` (its v0.177: the Boar's later strikes spilling, Chain's
-  rework in section 12), which reach main's file when that branch merges.
+  heroes' tropes from beyond Final Fantasy, then of 16 October: balance the series out a
+  little, never purge it (the Lancer stays the dragoon, the Warrior the plain fighter, the Thief
+  Persona 5's Joker under its plain name). The live page also carries rows from two branches,
+  which reach main's file when they merge: `claude/zealous-cori-8xoly7` (its v0.177: the Boar's
+  later strikes spilling, Chain's rework in section 12) and `claude/adoring-planck-q8t63w` (its
+  v0.181: the die's Roman numerals, a reroll's copies, Rapid's limiter, the Nemesis's roll
+  again, the Wake Diffuser's question).
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
@@ -267,7 +273,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the boss art round (15 October): the first round's six sets that stand (the
   Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr) and the third (Skaði, Fáfnir, Bourgeon with its swallow and vines), built by
+  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
   `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
   misses sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
