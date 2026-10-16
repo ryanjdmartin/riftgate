@@ -40,7 +40,7 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "brac
                        "rally": "kindled", "revive_once": "risen"}
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt"}
-VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe")]}
+VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 
 # Printed rules, read off a component's face.
