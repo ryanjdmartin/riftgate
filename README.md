@@ -105,8 +105,9 @@ records every decision, recommendation and open question, and why; section 12 is
   go), the design-session briefs that came of it (`briefs/`, one per chassis proposal,
   direction and rework, each the design's one home, with a README; the makers' proposal files
   were folded into them and retired on 15 October), the Kestrel airframes as a canvas under
-  `canvas/`, the economy pass's brief (`economy_pass.md`) and the bosses' slate
-  (`bosses_proposal.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  `canvas/`, the economy pass's brief (`economy_pass.md`), the bosses' slate
+  (`bosses_proposal.md`) and the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), each
+  retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 

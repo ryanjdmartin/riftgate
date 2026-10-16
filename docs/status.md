@@ -111,11 +111,11 @@ document's job and every command are in `README.md`.
   the four storms since the foe kit refresh (Root Storm, Quake, Bone Storm, Cleave); and the
   boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
   in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
-  the moment a foe falls), foes helping foes (a cure and a protect; the White Mage's stay
-  planned until Ryan picks its three moves, section 12). The Summoner's summons are its moves
-  (Yuki-onna's frostbite, Surtr's Pyroclasm; working names; the Golem no longer called). The
-  boss art round is on the picker: nine sets from `tools/foeforge/drafts.json` (art ahead of
-  content), the Fallen Weapon drawn as hammer and as axe. The bosses' slate and Ryan's marks
+  the moment a foe falls), foes helping foes (a cure and a protect; the White Mage carries
+  Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
+  full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
+  boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
+  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
   are `docs/bosses_proposal.md`.
 - Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
   (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
@@ -221,28 +221,42 @@ into this file in the same commit as its first publish; the procedures are in `R
   `docs/design-bible.html` after every change. Live: v0.184 (16 October), published from the
   Kestrel session's branch: v0.182 as other sessions left it live (among them the die's place
   numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse summons, the White Mage's
-  three moves and the Wake Diffuser's question, not yet on GitHub's main) with the Kestrel
-  session's rows merged onto it (the Boar's spill, the keyword budget retired, Ryan's rules on
-  random and on overlap, section 12's Chain rework, and section 6's vocabulary: the naming
-  convention, Folded become Braced, every status a chip, and the two tables
-  `tools/pages/bible_tables.py` writes from content). Before
+  three moves and the Wake Diffuser's question) with the Kestrel session's rows merged onto it
+  (the Boar's spill, the keyword budget retired, Ryan's rules on random and on overlap, section
+  12's Chain rework, and section 6's vocabulary: the naming convention, Folded become Braced,
+  every status a chip, and the two tables `tools/pages/bible_tables.py` writes from content).
+  Main's v0.185 (the Priest folded into the White Mage and the Martial Artist kept, Ryan, 16
+  October) is merged into this branch's file and goes live with its next publish. Before
   that, v0.175, main's file: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
-  in parts, the last act, foes helping foes, the Summoner's summons).
+  in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
+  summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
+  heroes' tropes from beyond Final Fantasy, then of 16 October: balance the series out a
+  little, never purge it (the Lancer stays the dragoon, the Warrior the plain fighter, the Thief
+  Persona 5's Joker under its plain name). The live page also carries rows from two branches,
+  which reach main's file when they merge: `claude/zealous-cori-8xoly7` (its v0.177: the Boar's
+  later strikes spilling, Chain's rework in section 12) and `claude/adoring-planck-q8t63w` (its
+  v0.181: the die's Roman numerals, a reroll's copies, Rapid's limiter, the Nemesis's roll
+  again, the Wake Diffuser's question).
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
-  evening with the boss mechanics' foes and vocabulary alone. Its database
+  evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
+  and Skaði. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the 13 October round: the fixes, the Treant's and the Needler's takes, the heroes.
+  It holds the boss art round (15 October): the first round's six sets that stand (the
+  Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
+  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
+  `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
+  misses sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

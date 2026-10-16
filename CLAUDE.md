@@ -73,6 +73,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Sunk costs never count in design (Ryan, 15 October): finished art, built code or picked
   sprites are no argument against a better design. Name the cost still to come when it
   matters for planning, never as a reason against the change.
+- Names carry their proper marks (Ryan, 15 October: his keyboard has none, so fill them in,
+  in everything): Skaði, Fáfnir, Ragnarök. Content ids stay plain ASCII. Every font the game
+  ships draws Latin-1 (ð, á, ö, þ, æ); Share Tech Mono, the HUD's mono face, lacks the macrons
+  (ā, ō, ū), so a name that carries one is checked wherever the mono face shows it.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
