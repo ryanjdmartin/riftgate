@@ -64,7 +64,8 @@ records every decision, recommendation and open question, and why; section 12 is
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
-- `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `balance.gd` plays every
+- `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
+  writes the bible's two vocabulary tables from content; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
@@ -132,6 +133,9 @@ python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html   # the 
 
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
+
+# the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
+python3 tools/pages/bible_tables.py
 
 # the balance report: every chassis alone and the starting team against every pack and against
 # each faction's whole formation in one fight, played by random and by greedy over 200 seeds a

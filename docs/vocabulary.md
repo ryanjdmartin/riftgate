@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 113 implemented, 8 planned, 0 idea.
+Status: 117 implemented, 10 planned, 0 idea.
 
 ## Resource
 
@@ -43,7 +43,7 @@ Status: 113 implemented, 8 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Damage range** | A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. | implemented |
-| **Devour** | A rule printed on a weapon (the Soulcutter Talons'). Every foe it kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
+| **Devour** | A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit). Every foe it kills gives its owner a stack of Overcharged, which the Ammit keeps for the battle. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing hull** | A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
@@ -87,8 +87,8 @@ Status: 113 implemented, 8 planned, 0 idea.
 | **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it. | implemented |
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
-| **Overcharged** | Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
-| **Braced** | Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. It lasts until the round's end, every stack at once, whatever granted it: buff equipment, a bracing component, a passive. | implemented |
+| **Overcharged** | Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts the rounds the component says; from a module it lasts the skirmish, losing a stack at the end of each round; the stacks the Ammit's talons take are kept for the battle and never fade. | implemented |
+| **Braced** | Status. Armour +5 per stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it. On a machine (buff equipment, a bracing component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
@@ -100,6 +100,12 @@ Status: 113 implemented, 8 planned, 0 idea.
 | **Rage** | Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it. | implemented |
 | **Hopper** | Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it. | implemented |
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
+| **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
+| **Getting Back Up** | Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
+| **Scrambled** | Machine status. The die's next reroll may land anywhere, the same entry included. | implemented |
+| **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
+| **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | planned |
+| **Ward** | Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end. | planned |
 
 ## Resistance
 

@@ -157,10 +157,12 @@ grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
 On a machine:
-- **Overcharged** (buff): +5 damage a stack. From Devour it lasts the skirmish, losing a
-  stack each round's end (the Ammit keeps it for the battle).
-- **Braced** (buff): armour +5 a stack, until the round's end, every stack at once,
-  whatever granted it.
+- **Overcharged** (buff): +5 damage a stack. From buff equipment it lasts the rounds the
+  component says; from a module it lasts the skirmish, losing a stack each round's end; the
+  stacks the Ammit's talons take are kept for the battle and never fade.
+- **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
+  it: a machine's until the round's end, a foe's (from its brace) until its next action. (Not
+  built: today a foe's harden leaves Folded, armour +its value until its next action.)
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
@@ -195,7 +197,6 @@ On a foe:
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox
   causes adds none; a weapon's Suppressed does.
-- **Folded** (buff, Harden): armour +value until its next action.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -269,9 +270,10 @@ Burning, Suppressed, Shocked or Paradox.
   Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
-- **A special** replaces the blow: harden, regrow (heals its value), cure (the most hurt of its
-  own, itself included, heals its value), protect (armour on every foe in the fight through the
-  next round), revive once, summon,
+- **A special** replaces the blow: brace (Braced, its value in stacks of 5, until its next
+  action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
+  value), brace all (the same on every foe in the fight; not built: today harden and harden all,
+  leaving Folded), revive once, summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.
