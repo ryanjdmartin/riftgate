@@ -216,7 +216,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.182 (16 October), main's file: the
+  `docs/design-bible.html` after every change. Live: v0.184 (16 October, another branch's,
+  over main's v0.182); main's file v0.185 adds the Priest folded into the White Mage and the
+  Martial Artist kept (Ryan, 16 October), unpublished: the next publish reads the live page
+  through and merges onto it. Main's file also carries the
   budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
