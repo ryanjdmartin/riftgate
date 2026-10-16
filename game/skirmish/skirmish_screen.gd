@@ -942,8 +942,11 @@ func _foe_rows(foe: Foe) -> Array:
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
-	if Effects.has(foe, "folded"):
-		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
+	if Effects.has(foe, "braced"):
+		# Braced, the machines' status (16 October): their chip's glyph, with the armour every
+		# grant adds (its own brace, a Protect).
+		var arm := Effects.foe_armour_bonus(foe)
+		rows.append([status_glyph("braced"), "+%d" % arm, "Braced: armour +%d until its next action" % arm, Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):

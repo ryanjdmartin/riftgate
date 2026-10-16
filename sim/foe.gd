@@ -104,7 +104,7 @@ func is_massive() -> bool:
 	return size >= 2
 
 
-## Armour right now: the foe's own plus what a defend left on it (a hardened Spawn), read
+## Armour right now: the foe's own plus what a defend left on it (a braced Spawn), read
 ## through the pipeline like a machine's.
 func armour_total() -> int:
 	return maxi(0, armour + Effects.foe_armour_bonus(self))
@@ -218,12 +218,14 @@ func strikes() -> int:
 
 ## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
 ## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
-##   defend  harden: armour +`value` until its next action (Fold; flat since 2 October, one word
-##           and one icon for both sides, the half it was is gone)
+##   defend  brace: Braced, `value` / 5 stacks of armour +5, every stack going at its next
+##           action (Burrow; flat since 2 October, one word and one icon for both sides, the
+##           half it was is gone; Braced since 16 October, Ryan: an effect and the buff it
+##           creates share a name)
 ##           regrow: regains `value` hit points (Knit)
 ##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
-##           harden_all: armour +`value` on every foe in the fight through the next round
-##           (Protect, 15 October: until its next action, as the player sees it)
+##           brace_all: Braced, `value` / 5 stacks, on every foe in the fight through the next
+##           round (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
@@ -238,7 +240,7 @@ func strikes() -> int:
 ##           hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
-	"defend": ["harden", "regrow", "regrow_ally", "harden_all"],
+	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
 	"buff": ["revive_once", "summon", "rally"],
 	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
 }

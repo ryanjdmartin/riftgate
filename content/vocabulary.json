@@ -1176,7 +1176,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now."

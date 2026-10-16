@@ -59,6 +59,8 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 ## Engine
 
 - [ ] The shield rule (decided 14 October): a shield absorbs its number and the excess passes to the hull, a breach ignores the shield, injuries count what reaches the hull; Barrier and Ward as buffs (a Barrier's blow never injures; a Ward lasts the round); the cooldown property on an entry, dark with the rounds left, and Rapid's text as act again with a cooldown of one; the vocabulary first, then the engine, the tests, the HUD's dark entry and the two buff chips with structure of their own, then the balance report rerun (the Peak's cells will move)
+- [x] Every status shows as a chip, whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so anything that interacts with overcharged needs it displayed"), and the codex lists a kept status with its count, never as a reward
+- [x] Folded becomes Braced and the foes' harden becomes brace (Ryan, 16 October: "If it's effectively braced, it should be braced too"; a keyword and the buff or debuff it creates share a name)
 - [x] Timed stacks go when their own grant's rounds run out (Ryan, 16 October: "Timed stacks should decay based on when they started. Not stack and refresh."): a buff granted again in a later round no longer lengthens the first grant's stacks, and a status shows one chip with every stack
 - [x] The Wild Boar's spill takes every strike after the kill (Ryan, 15 October: "All its damage or subsequent strikes spill over."): today only the killing strike's excess spills, and the strikes after it are lost on the dead foe
 - [ ] Jenny's foe-down lines keyed by domain, once Ryan says whether a domain borrows an old family's pool or gets its own

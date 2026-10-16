@@ -114,8 +114,11 @@ const STATUS := {
 	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
 	# chassis stat, never a percentage.
 	# Braced lasts one turn from any source (Ryan, 12 October: a defensive buff that lingered,
-	# a stack fading a round, would stack into a wall; armour is the dearest stat there is).
-	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack, until the round's end.", "decay": "round",
+	# a stack fading a round, would stack into a wall; armour is the dearest stat there is),
+	# every stack going at once at its owner's turn: a machine's at the round's end, a foe's at
+	# its next action. A foe's brace grants it too (Ryan, 16 October: a keyword or an effect and
+	# the buff it creates share a name), its value in stacks (brace_stacks).
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
@@ -130,11 +133,9 @@ const STATUS := {
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
-	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
-	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
+	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
+	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
-	"folded": {"id": "folded", "name": "Folded", "description": "Armour +5 until its next action.",
-		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	# Kindled carries its rally's own value (13 October: the Dire Wolf's Howl says 5, Stoke the
 	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
 	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
@@ -152,7 +153,8 @@ const STATUS := {
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
-## The statuses a buff component may grant: the machines' own, never a foe's.
+## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
+## brace), never one only a foe carries.
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 
 
@@ -177,9 +179,26 @@ static func kindled(value: int) -> Dictionary:
 	d["description"] = "Hits %d harder this round." % value
 	d["effects"][0]["value"] = value
 	return d
+
+
+## The armour one stack of Braced adds (its add_stat).
+static func braced_armour() -> int:
+	for eff in STATUS["braced"]["effects"]:
+		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
+			return int(eff.get("value", 0))
+	return 0
+
+
+## The stacks of Braced a foe's brace of `value` armour grants (16 October): the value over a
+## stack's armour, so a brace of 10 is two stacks. The validator holds a brace's value to a
+## positive multiple of a stack's armour, so nothing is lost to the division.
+static func brace_stacks(value: int) -> int:
+	return int(maxi(0, value) / maxi(1, braced_armour()))
+
+
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
-## own buffs (Folded, Kindled, Getting Back Up).
+## own buffs (Braced, Kindled, Getting Back Up).
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
@@ -735,7 +754,7 @@ static func foe_attack_bonus(f) -> int:
 	return n
 
 
-## What a foe's armour gains from its statuses (add_stat armour, static; a hardened foe), per
+## What a foe's armour gains from its statuses (add_stat armour, static; a braced foe), per
 ## stack. A foe has no base dictionary, so this is its half of `stat`.
 static func foe_armour_bonus(f) -> int:
 	var n := 0

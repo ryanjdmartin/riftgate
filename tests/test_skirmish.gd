@@ -261,12 +261,12 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	var s2 := Skirmish.new(2, 2)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var sp := _ghoul(100, 10)
-	sp.actions = [_special("defend", "harden", {"value": 10, "when": ["below_half", "back_behind"]})]
+	sp.actions = [_special("defend", "brace", {"value": 10, "when": ["below_half", "back_behind"]})]
 	sp.action = sp.actions[0]
 	s2.add_foes([sp, _archer(30, 10)])
 	s2.begin()
 	s2.start_round()
-	assert_false(sp.attacks(), "something stands behind it, so the fold is open")
+	assert_false(sp.attacks(), "something stands behind it, so the brace is open")
 	s2.end_round()
 	s2.start_round()
 	assert_false(sp.attacks(), "its only move repeats: the rule needs something else to pick")
@@ -1977,7 +1977,7 @@ func test_a_status_on_a_foe_is_what_the_team_put_there() -> void:
 	assert_false(Effects.carries_status(g), "bare")
 	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2)
 	assert_false(Effects.carries_status(g), "Numbed is no status")
-	Effects.stack(g, Effects.STATUS["folded"], Effects.SKIRMISH, "foe", 1)
+	Effects.stack(g, Effects.STATUS["braced"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_ROUND)
 	assert_false(Effects.carries_status(g), "nor is its own buff")
 	Effects.stack(g, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_true(Effects.carries_status(g), "Paradox is")
@@ -1985,7 +1985,7 @@ func test_a_status_on_a_foe_is_what_the_team_put_there() -> void:
 	u.grant_passive({"id": "tensor", "name": "Tensor", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "target_status"}]})
 	assert_eq(int(Effects.attack(u, u.die.faces[0], 20, 0, g)["damage"]), 25, "so the Tensor reads it")
 	Effects.remove(g, "paradox")
-	assert_eq(int(Effects.attack(u, u.die.faces[0], 20, 0, g)["damage"]), 20, "and not Numbed or a Folded foe")
+	assert_eq(int(Effects.attack(u, u.die.faces[0], 20, 0, g)["damage"]), 20, "and not Numbed or a Braced foe")
 
 
 func test_a_buff_component_grants_its_status_through_the_round() -> void:
@@ -3033,12 +3033,15 @@ func _special(kind: String, effect: String, extra: Dictionary = {}) -> Dictionar
 	return a
 
 
-func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regrows() -> void:
+## A foe's brace is Braced, the machines' status (Ryan, 16 October: an effect and the buff it
+## creates share a name): its value in stacks of armour +5, standing through the player's turn
+## and going at the foe's next action, every stack at once.
+func test_a_bracing_foe_is_braced_until_its_next_action_and_a_knitting_one_regrows() -> void:
 	var sk := Skirmish.new(1, 1)
 	var m := _mech("A", Die.single(Face.attack(20, L)), 40, 100)
 	sk.add_mech(m)
 	var g := _ghoul(100, 10)
-	g.actions = [_special("defend", "harden", {"value": 10})]
+	g.actions = [_special("defend", "brace", {"value": 10})]
 	g.action = g.actions[0]
 	sk.add_foes([g])
 	sk.begin()
@@ -3049,15 +3052,25 @@ func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regr
 	assert_eq(sk.incoming_for(sk.mechs[0]), 0, "and the forecast is quiet")
 	sk.end_round()
 	assert_eq(m.shield, 40, "nothing struck")
-	assert_true(Effects.has(g, "folded"), "folded")
+	assert_eq(Effects.stacks_of(g, "braced"), 2, "Braced past the round's end, a stack for every 5 of the brace's 10")
+	assert_eq(g.armour_total(), 10, "armour +10, read through the pipeline")
+	assert_true("\n".join(sk.log).contains("Brace, Braced ×2 (armour +10 until its next action)"), "the log names the status")
+	var desc := ""
+	for d in Effects.describe(g):
+		if str(d[5]) == "braced":
+			desc = str(d[1])
+	assert_eq(desc, "Armour +5 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "the machines' description, for both sides")
 	sk.start_round()
 	sk.assign(0, g)
-	assert_eq(g.hp, 90, "the 20 lands as 10: the fold is armour 10, flat")
-	assert_eq(g.armour_total(), 10, "read through the pipeline")
+	assert_eq(g.hp, 90, "the next round's 20 lands as 10: the brace's armour comes off, flat")
+	sk.end_round()   # its next action: both stacks go at its tick, and its only move braces again
+	assert_eq(Effects.stacks_of(g, "braced"), 2, "two fresh stacks: a stack a turn would leave three, the round's end none")
 	g.actions = [Foe.basic_action()]
 	g.action = g.actions[0]
-	sk.end_round()   # its next action: the fold fades at its tick
-	assert_false(Effects.has(g, "folded"), "unfolded at its next action")
+	sk.start_round()
+	sk.end_round()   # its next action is a blow
+	assert_false(Effects.has(g, "braced"), "gone at its next action, every stack at once")
+	assert_eq(g.armour_total(), 0, "and its armour with them")
 	var s2 := Skirmish.new(2, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(20, L)), 40, 100))
 	var k := _ghoul(100, 10)
@@ -3074,6 +3087,41 @@ func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regr
 	s2.start_round()
 	s2.end_round()
 	assert_eq(k.hp, 100, "never past its maximum")
+
+
+## One status for one effect on both sides (Ryan, 16 October): a foe's armour from a defend is
+## the machines' Braced, and no status of its own.
+func test_a_foes_brace_is_the_machines_braced_and_no_status_of_its_own() -> void:
+	assert_false(Effects.STATUS.has("folded"), "no status \"folded\" exists")
+	assert_true(Foe.ACTION_EFFECTS["defend"].has("brace") and Foe.ACTION_EFFECTS["defend"].has("brace_all"), "the defends brace and brace_all")
+	assert_eq(Effects.braced_armour(), 5, "Braced is armour +5 a stack")
+	assert_eq(Effects.brace_stacks(10), 2, "so a brace of 10 is two stacks")
+	assert_eq(Effects.brace_stacks(5), 1, "and a brace of 5 one")
+
+
+## A brace is armour in stacks of Braced (16 October), so the validator holds its value to a
+## positive multiple of a stack's armour, on one foe or on every foe.
+func test_the_validator_holds_a_brace_to_whole_stacks_of_braced() -> void:
+	var db := ContentDB.new()   # its own copy: the foes below are added to it
+	db.load_dir(ContentDB.DIR)
+	var step := Effects.braced_armour()
+	var base: Dictionary = db.foes[db.foes.keys()[0]].duplicate(true)
+	var cases := {"brace_whole": ["brace", step * 2], "brace_odd": ["brace", step + 2], "brace_none": ["brace", 0], "brace_all_odd": ["brace_all", step * 2 + 1]}
+	for id in cases.keys():
+		var f: Dictionary = base.duplicate(true)
+		f["name"] = str(id).capitalize()
+		f["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
+			{"id": "dig", "name": "Dig", "kind": "defend", "effect": cases[id][0], "value": cases[id][1], "weight": 1, "text": "", "status": "implemented"}]
+		db.foes[id] = f
+	var refused := {}
+	for e in db.validate():
+		for id in cases.keys():
+			if e.begins_with("foe %s action dig" % id) and e.contains("multiple of %d" % step):
+				refused[id] = true
+	assert_false(refused.has("brace_whole"), "a brace of 10 is two whole stacks")
+	assert_true(refused.has("brace_odd"), "a brace of 7 is refused")
+	assert_true(refused.has("brace_none"), "and a brace of nothing")
+	assert_true(refused.has("brace_all_odd"), "a brace on every foe is held to it too")
 
 
 func test_a_readied_foe_gets_back_up_once() -> void:
@@ -3264,7 +3312,7 @@ func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
 
 func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:
 	var g := _ghoul(30, 10)
-	g.actions = [Foe.basic_action(), _special("defend", "harden", {"value": 10})]
+	g.actions = [Foe.basic_action(), _special("defend", "brace", {"value": 10})]
 	g.actions[0]["weight"] = 3
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1
@@ -3631,17 +3679,17 @@ func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	# order, and every blow carries its move's name and whether a boss struck.
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
-	var folder := _ghoul(100, 10)
-	folder.actions = [_special("defend", "harden", {"value": 10})]
-	folder.action = folder.actions[0]
+	var bracer := _ghoul(100, 10)
+	bracer.actions = [_special("defend", "brace", {"value": 10})]
+	bracer.action = bracer.actions[0]
 	var striker := _ghoul(100, 10)
 	striker.boss = true   # human-sized: a boss is the content's word, never its size (15 October)
-	sk.add_foes([folder, striker])
+	sk.add_foes([bracer, striker])
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
 	assert_eq(sk.turn_specials.size(), 1, "one special this turn")
-	assert_eq(str(sk.turn_specials[0]["name"]), "Harden", "it carries the move's name")
+	assert_eq(str(sk.turn_specials[0]["name"]), "Brace", "it carries the move's name")
 	assert_eq(str(sk.turn_specials[0]["kind"]), "defend", "and its kind")
 	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
 	assert_eq(str(sk.turn_events[0]["name"]), "Attack", "the blow carries its move's name")
@@ -3649,7 +3697,7 @@ func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	var spec_seq := int(sk.turn_specials[0]["seq"])
 	var blow_seq := int(sk.turn_events[0]["seq"])
 	assert_true(spec_seq != blow_seq, "one order for both lists")
-	assert_eq(spec_seq < blow_seq, sk.front[0] == folder, "whoever stands left acts first, and the order says so")
+	assert_eq(spec_seq < blow_seq, sk.front[0] == bracer, "whoever stands left acts first, and the order says so")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(sk.turn_specials.size(), 1, "the lists start over each turn")
@@ -3878,27 +3926,31 @@ func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 	assert_false(whole.legal_actions(idle).has(idle.actions[0]), "with none of its own hurt it has no cure to cast")
 
 
-func test_protect_armours_every_foe_through_the_next_round() -> void:
-	# The White Mage's Protect (15 October): armour on every foe, gone when the enemy acts again.
+func test_protect_braces_every_foe_through_the_next_round() -> void:
+	# The White Mage's Protect (15 October): a brace on every foe, gone when the enemy acts
+	# again; Braced since 16 October, the move's value in stacks of armour +5.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
 	var priest := Foe.make("priest", 60, 10, true)
-	priest.actions = [{"id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 5, "weight": 1, "when": ["others_on_field"], "text": ""}, Foe.basic_action()]
+	priest.actions = [{"id": "protect", "name": "Protect", "kind": "defend", "effect": "brace_all", "value": 10, "weight": 1, "when": ["others_on_field"], "text": ""}, Foe.basic_action()]
 	priest.action = priest.actions[0]
 	var g := _ghoul(100, 10)
-	sk.add_foes([g, priest])
+	var h := _ghoul(100, 10)
+	sk.add_foes([g, h, priest])
 	sk.begin()
 	sk.start_round()
 	priest.action = priest.actions[0]
 	priest.last_special = "protect"   # as announcing it would have, so it does not cast it twice running
 	sk.end_round()
-	assert_eq(g.armour_total(), 5, "every foe in the fight is armoured")
-	assert_eq(priest.armour_total(), 5, "the caster too")
+	assert_eq([Effects.stacks_of(g, "braced"), Effects.stacks_of(h, "braced"), Effects.stacks_of(priest, "braced")], [2, 2, 2], "every foe in the fight is Braced, a stack for every 5 of the 10")
+	assert_eq(g.armour_total(), 10, "every foe in the fight is armoured")
+	assert_eq(priest.armour_total(), 10, "the caster too")
 	sk.start_round()
 	assert_true(sk.assign(0, g), "through the player's turn")
-	assert_eq(g.hp, 75, "a blow of thirty takes twenty-five")
+	assert_eq(g.hp, 80, "a blow of thirty takes twenty")
 	sk.end_round()
 	assert_eq(g.armour_total(), 0, "and gone when the enemy has acted again")
+	assert_false(Effects.has(h, "braced") or Effects.has(priest, "braced"), "from every foe")
 
 
 func _core(guard: String, regrow: int = 0) -> Foe:

@@ -125,7 +125,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "regrow_ally", "harden_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -301,7 +301,7 @@ func _refresh_allies() -> void:
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
-## not suppressed, aimed at it with an attack (a foe folding, rallying or roaring lands no
+## not suppressed, aimed at it with an attack (a foe bracing, rallying or roaring lands no
 ## blow), and not about to die to burn first.
 func attackers_of(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
@@ -1100,7 +1100,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				continue
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
-			# small blows bounce off a hardened foe the way they do off a heavy machine.
+			# small blows bounce off a braced foe the way they do off a heavy machine.
 			var taken := Effects.damage_taken(foe, dmg)
 			var foe_armoured := mini(taken, foe.armour_total())
 			taken -= foe_armoured
@@ -1201,14 +1201,15 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 	_seq += 1
 	match effect:
-		"harden":
-			# Armour for a turn: the status carries the action's own number, flat off every blow,
-			# and fades at the foe's next action like the half it replaced.
-			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
-			guard["effects"][0]["value"] = maxi(0, value)
-			guard["description"] = "Armour +%d until its next action." % maxi(0, value)
-			Effects.stack(f, guard, Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
-			log.append("%s: %s (armour +%d until its next action)" % [f.display_name, str(a.get("name", "hardens")), maxi(0, value)])
+		"brace":
+			# Braced, the machines' status (Ryan, 16 October: an effect and the buff it creates
+			# share a name): the move's value in stacks of armour +5, flat off every blow, every
+			# stack going at once at the foe's next action (its tick), as a foe's armour from a
+			# defend always lasted.
+			var n := Effects.brace_stacks(value)
+			if n > 0:
+				Effects.stack(f, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
+			log.append("%s: %s, Braced ×%d (armour +%d until its next action)" % [f.display_name, str(a.get("name", "braces")), n, n * Effects.braced_armour()])
 		"regrow":
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
@@ -1226,19 +1227,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				var before := hurt.hp
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
 				log.append("%s: %s, %s regrows %d" % [f.display_name, str(a.get("name", "cures")), hurt.display_name, hurt.hp - before])
-		"harden_all":
-			# Armour on every foe in the fight through the next round, so it stands through the
+		"brace_all":
+			# Braced on every foe in the fight through the next round, so it stands through the
 			# player's turn and is gone when the enemy acts again: its next action, as the
-			# player sees it, which a per-foe fade would cut short for foes acting after it.
-			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
-			guard["effects"][0]["value"] = maxi(0, value)
-			guard["description"] = "Armour +%d through the next round." % maxi(0, value)
-			var guarded := 0
+			# player sees it, which going at each foe's own tick would cut short for the foes
+			# acting after it.
+			var n := Effects.brace_stacks(value)
+			var braced := 0
 			for other in field_foes():
-				if other.alive():
-					Effects.grant_for_rounds(other, guard, "foe:" + f.content_id, round + 1)
-					guarded += 1
-			log.append("%s: %s, armour +%d on %d of its own" % [f.display_name, str(a.get("name", "protects")), maxi(0, value), guarded])
+				if other.alive() and n > 0:
+					Effects.stack(other, Effects.STATUS["braced"], Effects.ROUNDS, "foe:" + f.content_id, n, Effects.DECAY_NONE, round + 1)
+					braced += 1
+			log.append("%s: %s, %d of its own Braced ×%d (armour +%d through the next round)" % [f.display_name, str(a.get("name", "protects")), braced, n, n * Effects.braced_armour()])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])

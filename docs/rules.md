@@ -161,8 +161,7 @@ On a machine:
   component says; from a module it lasts the skirmish, losing a stack each round's end; the
   stacks the Ammit's talons take are kept for the battle and never fade.
 - **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
-  it: a machine's until the round's end, a foe's (from its brace) until its next action. (Not
-  built: today a foe's harden leaves Folded, armour +its value until its next action.)
+  it: a machine's until the round's end, a foe's (from its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
@@ -272,8 +271,8 @@ Burning, Suppressed, Shocked or Paradox.
   Lure moves it).
 - **A special** replaces the blow: brace (Braced, its value in stacks of 5, until its next
   action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
-  value), brace all (the same on every foe in the fight; not built: today harden and harden all,
-  leaving Folded), revive once, summon,
+  value), brace all (the same on every foe in the fight, through the next round), revive once,
+  summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.

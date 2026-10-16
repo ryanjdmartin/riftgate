@@ -484,6 +484,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	for r in db.codex_for_unit(m)["passive_rows"]:
 		if str(r[0]).begins_with("OVERCHARGED"):
 			listed += 1
+			assert_true(str(r[0]).begins_with("OVERCHARGED ×2 (KEPT FOR THE BATTLE)"), "a kept status, never a reward, with its count: %s" % str(r[0]))
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
 	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",
@@ -496,6 +497,33 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	assert_eq(rules, 0, "a passive and a battle reward that are no status are no chip")
 	assert_true(Effects.is_status("corrupted_1") and Effects.is_status("disabled_0"), "a die entry's Corrupted and Disabled are statuses")
 	assert_false(Effects.is_status("keeper") or Effects.is_status("disabled_x"), "a passive is none")
+	s.free()
+
+
+## A foe's brace is Braced, the machines' status (16 October): the foe wears Braced's chip with
+## the armour it adds, and a Protect on top is the same chip, whatever scope each grant is in.
+func test_a_braced_foe_wears_one_braced_chip() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	foe.action = {"id": "dig", "name": "Dig", "kind": "defend", "effect": "brace", "value": 10, "weight": 1, "text": ""}
+	sk._foe_acts(foe, sk.mechs[0])
+	foe.action = {"id": "ward", "name": "Ward", "kind": "defend", "effect": "brace_all", "value": 5, "weight": 1, "text": ""}
+	sk._foe_acts(foe, sk.mechs[0])
+	var chips: Array = []
+	for r in s._foe_rows(foe):
+		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
+			chips.append(r)
+	assert_eq(chips.size(), 1, "one chip for its brace and the Protect on top")
+	if chips.size() == 1:
+		assert_eq(str(chips[0][1]), "+15", "the armour both add")
+		assert_eq(str(chips[0][2]), "Braced: armour +15 until its next action", "named Braced, as a machine's is")
 	s.free()
 
 
