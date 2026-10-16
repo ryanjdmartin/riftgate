@@ -107,6 +107,16 @@ strafer in its place (14 October). The raider returns as its own direction
   the session above.
 - Beside the Sparrowhawk, both Kestrel tier ones change every weapon; they part on magnitude
   against count.
+- The review (Claude, 16 October): the engine applies Suppress per strike, so a Suppress piece
+  on it tries twice a spend. When the first strike lands, the second lands too at 80% and adds
+  two more Numbed, four from one spend, so the next stun on that foe fails twice as often; the
+  second try helps only when the first was shrugged off. The session read "two tries" as a
+  gain; it is mostly a cost, unless Suppress is applied once a spend, as Shock is.
+- The review: a random strike of the lock spends a Shock the team set up, at half, random that
+  takes away by Ryan's test, unless the drag lights the Shocked foes among those in reach so
+  the player holds the spray while a Shock is up. And the die shows the first strike's number
+  only; the random strikes' numbers vary by their targets' armour, a soft break of "the die
+  shows the number" that the spray buys.
 
 ## What the session hands back
 

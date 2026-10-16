@@ -126,6 +126,15 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   reworked instead, Claude's pick is a trigger: spent on a mined slot, it sets that mine off now
   into the foes around the slot, so mines pay in a fight with nothing waiting.
 
+## Holes already raised
+
+- With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
+  identity is absent from a fight without reinforcements. The trigger (a spend on a mined slot
+  sets it off into the foes around it) is the floor; without it the floor is its tier-two stock
+  alone (the review, Claude, 16 October).
+- The header shows how many wait (REINF), never who, until the formation view lands (the
+  to-do): a mine is laid against a count, not a foe.
+
 ## Open for the session
 
 1. The lock: the buff reworded, or a trigger; the passive's one spend, one mine, and the mines
