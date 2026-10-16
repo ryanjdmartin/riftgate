@@ -254,6 +254,28 @@ about 13 points less and almost never overheats; a gun running 10 hot costs 4 to
 without the reroll it lures less and overheats more. The script was a throwaway; this
 paragraph is its whole description.
 
+Ryan, 16 October: "Currently, we allow allies to cool the armadillo while it's sealed. Does
+that affect your math at all?" The same model with allies cooling the sealed shell during the
+player's turn, at a seal of 15 a round, heat max 60 and a mark of 20. A teammate shows its one
+vent a fifth of the rounds; the Puffin's whole die on the shell cools it about 8 a round (its
+passive sheds 10 a shield, the Wake Diffuser vents 10, two of its five entries give nothing,
+and each Rapid entry switches off):
+
+| Allies cooling the sealed shell | Sealed, 8 rounds | Stint | Sealed, 16 rounds |
+|---|---|---|---|
+| None (the model above) | 68% | 2.7 | 63% |
+| One teammate, its vent given half the times it shows | 71% | 2.9 | 67% |
+| Three such teammates | 76% | 3.5 | 73% |
+| The Puffin's whole die | 81% | 4.2 | 78% |
+| The Puffin's whole die and two teammates' every vent | 91% | 6.3 | 90% |
+
+Read: an ordinary team stretches the seal a little and the marks still do most of the
+cooling; a team that spends everything on the shell nearly removes the clock, paid for by the
+Puffin doing nothing else and the hitters giving up their vents. The Puffin is the partner to
+watch, since its cooling rides on things it does anyway (a shield on the shell, a Rapid vent).
+At a seal of 20 the all-in team reads 82% with stints of 4.4, but the Armadillo alone drops to
+59% with stints of 2.0, so the seal stays tuned on the Armadillo alone.
+
 ## Open for the session
 
 1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above),
