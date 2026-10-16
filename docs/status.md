@@ -113,7 +113,7 @@ document's job and every command are in `README.md`.
   Dia, Cure and Holy, Ryan's three, its Protect parked). On 16 October the Augur (Clair
   Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
   bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
-  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The Summoner's summons are its moves,
+  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The White Mage is the Cleric (id kept), its promoted form's one move more Reraise on its allies, planned (Ryan, 16 October). The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
@@ -219,9 +219,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.186 (16 October), main's rows (the
-  Priest folded into the White Mage, the Martial Artist kept, the Augur in the Necromancer's
-  place, the Reraise question) merged onto the `zealous-cori` branch's v0.184, whose generated
+  `docs/design-bible.html` after every change. Live: v0.188 (16 October), main's rows (the
+  Augur in the Necromancer's place, the Cleric with its promoted form's Reraise on its allies,
+  the Martial Artist kept) merged onto the `zealous-cori` branch's v0.187, whose generated
   vocabulary tables were regenerated against main's content with that branch's script and
   vocabulary in a scratch layout (the script is not on main yet). Main's file carries the
   budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
@@ -244,7 +244,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions). Its database
+  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
+  Cleric (foes). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
