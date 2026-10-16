@@ -110,7 +110,10 @@ document's job and every command are in `README.md`.
   boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
   in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
   the moment a foe falls), foes helping foes (a cure and a protect; the White Mage carries
-  Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
+  Dia, Cure and Holy, Ryan's three, its Protect parked). On 16 October the Augur (Clair
+  Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
+  bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
+  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
@@ -216,10 +219,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.184 (16 October, another branch's,
-  over main's v0.182); main's file v0.185 adds the Priest folded into the White Mage and the
-  Martial Artist kept (Ryan, 16 October), unpublished: the next publish reads the live page
-  through and merges onto it. Main's file also carries the
+  `docs/design-bible.html` after every change. Live: v0.186 (16 October), main's rows (the
+  Priest folded into the White Mage, the Martial Artist kept, the Augur in the Necromancer's
+  place, the Reraise question) merged onto the `zealous-cori` branch's v0.184, whose generated
+  vocabulary tables were regenerated against main's content with that branch's script and
+  vocabulary in a scratch layout (the script is not on main yet). Main's file carries the
   budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
@@ -240,16 +244,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði. Its database
+  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the boss art round (15 October): the first round's six sets that stand (the
   Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
-  `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
-  misses sit in each set's `set_aside/`.
+  Reaper, Surtr), the third (Skaði, Fáfnir, Floraison with its swallow and vines) and the
+  Augur's hero and chibi sets (16 October, `heroart` and `chibi_heroart`), built by
+  `forge.py phone --only --tags bossart bossart3 heroart chibi_heroart --keys <the eleven sets>`;
+  the renders that lost a blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
