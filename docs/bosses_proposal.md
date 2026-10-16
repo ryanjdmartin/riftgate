@@ -56,18 +56,20 @@ look is ours, never the series' design.
 
 ## Conversions (Ryan, 15 October: look for the bosses we could convert)
 
-The slate's six from Final Fantasy, with Claude's lean on each:
+The slate's six from Final Fantasy, with Claude's lean on each, by Ryan's measure (16 October:
+balance the series out a little, never purge it):
 
 - **The Behemoth**: keep. An FF homage is incomplete without it (Ryan), and its name is the Book
   of Job's.
 - **The Adamantoise**: converted already, as the Cinder Tortoise, its signature the genre's (into
   the shell, then a quake). For a myth's name as the Behemoth has one: Zaratan, the
   island-tortoise of the old bestiaries.
-- **Gilgamesh**: convert to **Benkei**, the legend Final Fantasy V's Gilgamesh draws on: the
+- **Gilgamesh**: keep, the series' recurring rival, as iconic as the dragoon. If one more is
+  wanted, the conversion is **Benkei**, the legend Final Fantasy V's Gilgamesh draws on: the
   warrior monk who took a sword from every warrior crossing Gojō Bridge until the thousandth beat
   him (FF5 fights its Gilgamesh on the Big Bridge). The same signature, the weapon a machine shows
-  taken and turned on it. The legend's death, standing in a storm of arrows, is a kit idea new to
-  the engine: he holds his slot a round after he falls, the back rank still covered.
+  taken and turned on it; the legend's death, standing in a storm of arrows, a kit idea new to the
+  engine (he holds his slot a round after he falls, the back rank still covered).
 - **The Malboro (Rotbloom)**: convert out. Beside Floraison the Meadow would hold two maw-plants,
   and both names bloom. Its slot goes to a boss from another series, found at the slate's next
   cut; Bad Breath (every rider at once) can go to whichever boss wants it.
