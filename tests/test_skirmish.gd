@@ -2188,6 +2188,116 @@ func test_a_buffs_overcharged_and_devours_add_up() -> void:
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "the buff went with the round, devour's faded one")
 
 
+func test_a_timed_buff_granted_again_later_keeps_each_grants_own_rounds() -> void:
+	# Ryan, 16 October: "Timed stacks should decay based on when they started. Not stack and
+	# refresh." A buff for two rounds granted in round 1 runs through round 2; granted again in
+	# round 2 it runs through round 3, and never lengthens the first grant's stack.
+	var gun := Face.attack(20, L)
+	var m := _mech("A", Die.single(gun))
+	Effects.grant_buff(m, "overcharged", 1, "buff", 2)   # round 1, for two rounds
+	Effects.end_round(m, 1)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "the first grant outlasts round 1")
+	Effects.grant_buff(m, "overcharged", 1, "buff", 3)   # round 2, for two rounds
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "two stacks during round 2")
+	assert_eq(m.modifiers.size(), 2, "each grant a modifier of its own")
+	assert_eq(int(Effects.attack(m, gun, 20, 0)["damage"]), 30, "a blow reads both: 20 plus 5 a stack")
+	var named := 0
+	for t in Effects.explain(m, gun):
+		if str(t).contains("Overcharged"):
+			named += 1
+	assert_eq(named, 1, "the die's row names the status once")
+	# A save writes each grant, and a load keeps them apart, each with its own end.
+	var back := _mech("B", Die.single(Face.attack(20, L)))
+	for mod in m.modifiers:
+		back.modifiers.append(SaveGame._modifier_from(JSON.parse_string(JSON.stringify(SaveGame._modifier_dict(mod)))))
+	assert_eq(back.modifiers.size(), 2, "still two grants after a save and a load")
+	for u in [m, back]:
+		Effects.end_round(u, 2)
+		assert_eq(Effects.stacks_of(u, "overcharged"), 1, "the first grant's stack goes at the end of round 2")
+		Effects.end_round(u, 3)
+		assert_eq(Effects.stacks_of(u, "overcharged"), 0, "the second's at the end of round 3")
+
+
+func test_grants_of_a_timed_buff_ending_the_same_round_stack_as_one() -> void:
+	# Two coils spent in one round, or a brace beside a buff of Braced for the round: the same
+	# status ending the same round stacks onto one modifier and goes as one.
+	var m := _mech("A", Die.single(Face.attack(20, L)))
+	Effects.grant_buff(m, "overcharged", 1, "buff:coil", 2)
+	Effects.grant_buff(m, "overcharged", 2, "buff:other_coil", 2)
+	assert_eq(m.modifiers.size(), 1, "one modifier")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "with the stacks summed")
+	Effects.end_round(m, 1)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "both outlast round 1")
+	Effects.end_round(m, 2)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "and go together at the end of round 2")
+	assert_true(m.modifiers.is_empty(), "nothing left behind")
+	Effects.grant_buff(m, "braced", 2, "brace:plow", 3)
+	Effects.grant_buff(m, "braced", 1, "buff:jack", 3)
+	assert_eq(m.modifiers.size(), 1, "a brace and a buff of Braced for the same round: one modifier too")
+	assert_eq(Effects.stacks_of(m, "braced"), 3, "three stacks")
+
+
+func test_a_status_for_the_skirmish_still_stacks_onto_one_modifier() -> void:
+	# The timed rule is the rounds scope's alone: a status for the skirmish (or the battle)
+	# stacks onto the one there whenever it is granted, and decays as one.
+	var m := _mech("A", Die.single(Face.attack(20, L)))
+	var mark := {"id": "test_mark", "name": "Mark", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]}
+	Effects.stack(m, mark, Effects.SKIRMISH, "test", 1, Effects.DECAY_TICK)
+	Effects.end_round(m, 1)
+	Effects.stack(m, mark, Effects.SKIRMISH, "test", 2, Effects.DECAY_TICK)
+	assert_eq(m.modifiers.size(), 1, "one modifier for the skirmish")
+	assert_eq(Effects.stacks_of(m, "test_mark"), 3, "three stacks")
+	Effects.end_round(m, 2)
+	assert_eq(Effects.stacks_of(m, "test_mark"), 3, "a round's end leaves it be")
+	Effects.tick(m)
+	assert_eq(Effects.stacks_of(m, "test_mark"), 2, "a tick takes one stack off the one modifier")
+	Effects.stack(m, mark, Effects.BATTLE, "test", 1, Effects.DECAY_NONE)
+	Effects.stack(m, mark, Effects.BATTLE, "test", 1, Effects.DECAY_NONE)
+	assert_eq(m.modifiers.size(), 2, "the battle's stack onto one of their own")
+	assert_eq(Effects.stacks_of(m, "test_mark"), 4, "and every scope counts together")
+
+
+func test_a_two_round_buff_spent_in_two_rounds_goes_a_grant_at_a_time() -> void:
+	# The same through the skirmish: a buff entry for two rounds, spent in round 1 and again in
+	# round 2, leaves two stacks in round 2, and round 1's goes at the end of round 2.
+	var sk := Skirmish.new(1)
+	var coil := Face.buff("overcharged", 1, 2)
+	var m := _mech("A", Die.single(coil), 40, 300)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, null), "spent on itself in round 1")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it outlasts round 1")
+	sk.start_round()
+	assert_true(sk.assign(0, null), "and again in round 2")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "two stacks during round 2")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "round 1's goes at the end of round 2")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "round 2's at the end of round 3")
+
+
+func test_removing_a_status_clears_every_grant_of_it() -> void:
+	var m := _mech("A", Die.single(Face.attack(20, L)))
+	Effects.grant_buff(m, "overcharged", 1, "buff", 2)
+	Effects.grant_buff(m, "overcharged", 2, "buff", 3)
+	assert_eq(m.modifiers.size(), 2, "two grants")
+	assert_true(Effects.remove(m, "overcharged"), "the status went")
+	assert_false(Effects.has(m, "overcharged"), "both grants with it")
+	assert_true(m.modifiers.is_empty(), "nothing left behind")
+	assert_false(Effects.remove(m, "overcharged"), "and nothing more to remove")
+	# A spend takes from the grant ending soonest, whichever came first, so the later one
+	# keeps its stacks.
+	Effects.grant_buff(m, "overcharged", 2, "buff", 3)
+	Effects.grant_buff(m, "overcharged", 1, "buff", 2)
+	assert_eq(Effects.spend_stacks(m, "overcharged", 1), 1, "one stack spent")
+	Effects.end_round(m, 2)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "from the grant ending soonest: the later one keeps both its stacks")
+
+
 func test_a_live_hull_shocks_the_foe_that_strikes_it_and_the_next_blow_lands_double() -> void:
 	var live := {"id": "live_hull", "name": "Faraday Hull", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}

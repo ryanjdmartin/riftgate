@@ -14,8 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 465 tests, 19,804 checks, green on the Kestrel session's branch (15 October, the
-  Wild Boar's spill taking every later strike); 462 and 19,765 on main (the boss mechanics).
+- Tests: 471 tests, 19,841 checks, green on the Kestrel session's branch (16 October, with the
+  Wild Boar's spill taking every later strike and timed stacks keeping their own rounds); 462
+  and 19,765 on main (the boss mechanics).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models

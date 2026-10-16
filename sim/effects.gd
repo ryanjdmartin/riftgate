@@ -34,7 +34,11 @@ extends RefCounted
 ##
 ## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
 ## again adds stacks instead of a second copy; an add is worth its value per stack, a
-## multiply is applied once per stack. A status with tick decay ticks at its owner's turn:
+## multiply is applied once per stack. A timed grant (ROUNDS) adds its stacks only to one
+## that ends the same round, and is otherwise a modifier of its own, so each grant's stacks
+## go when its own rounds run out (Ryan, 16 October: "Timed stacks should decay based on when
+## they started. Not stack and refresh."); every reader sums a status across its modifiers.
+## A status with tick decay ticks at its owner's turn:
 ## its tick effects apply per stack (tick_hp, tick_heat), then it loses one stack and is
 ## gone at zero. A machine's Burning and Scorched tick at the end of its turn instead (turn
 ## decay, 13 October): Burning's heat lands before the overheat and a stack goes; Scorched
@@ -232,13 +236,14 @@ static func grant_for_rounds(u, passive: Dictionary, source: String, round: int)
 
 ## Add stacks of a status. The same id in the same scope stacks up instead of doubling;
 ## a fresh one is granted with `n` stacks. Tick-decaying statuses lose a stack per tick.
+## A timed one (ROUNDS) stacks up only with one ending the same round (two coils spent in
+## one round, a brace beside a buff of Braced); a grant ending another round is its own
+## modifier, so a later grant never lengthens an earlier one's stacks (16 October).
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.id == id and m.scope == scope:
+		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
-			if expires_round >= 0:
-				m.expires_round = maxi(m.expires_round, expires_round)
 			return m
 	var m := make(passive, scope, source)
 	if m == null:
@@ -249,8 +254,9 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 	return grant(u, m)
 
 
-## Every live stack of a status, across scopes: a buff's Overcharged for the round and
-## devour's for the skirmish are the same status to the machine.
+## Every live stack of a status, across scopes and grants: a buff's Overcharged for the round
+## and devour's for the skirmish, or a timed buff spent in two rounds, are one status to the
+## machine.
 static func stacks_of(u, id: String) -> int:
 	var n := 0
 	for m in live(u):
@@ -263,15 +269,16 @@ static func has(u, id: String) -> bool:
 	return stacks_of(u, id) > 0
 
 
-## Spend up to `n` stacks of a status, shortest-lived scope first (the hopper's loads, fired a
-## few a shot); a copy spent to nothing goes. Returns how many were spent.
+## Spend up to `n` stacks of a status, shortest-lived first (the hopper's loads, fired a few a
+## shot): the shortest scope, and among timed grants the one ending soonest; a copy spent to
+## nothing goes. Returns how many were spent.
 static func spend_stacks(u, id: String, n: int) -> int:
 	var spent := 0
 	var order: Array = []
 	for m in u.modifiers:
 		if m.id == id:
 			order.append(m)
-	order.sort_custom(func(a, b) -> bool: return a.scope > b.scope)
+	order.sort_custom(func(a, b) -> bool: return a.scope > b.scope or (a.scope == b.scope and a.expires_round < b.expires_round))
 	for m in order:
 		if spent >= n:
 			break
@@ -282,8 +289,8 @@ static func spend_stacks(u, id: String, n: int) -> int:
 	return spent
 
 
-## Drop every copy of a status, whatever its scope: a spent one-shot (Shocked, once the blow
-## it doubled has landed). Returns whether anything went.
+## Drop every copy of a status, whatever its scope or grant: a spent one-shot (Shocked, once
+## the blow it doubled has landed). Returns whether anything went.
 static func remove(u, id: String) -> bool:
 	var keep: Array = []
 	var gone := false
@@ -916,7 +923,8 @@ static func cleansable_disable(u, index: int) -> bool:
 
 
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
-## `until_round`. The same status from the same scope stacks up and keeps the later expiry.
+## `until_round`. A grant ending the same round as one already there stacks onto it; one
+## ending another round is its own, and each goes when its own rounds run out (16 October).
 static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:
 	if not STATUS.has(status_id):
 		return null
@@ -1044,7 +1052,14 @@ static func explain(u, face: Face) -> Array[String]:
 			out.append("passive: %s" % m.name)
 	if not face.is_attack():
 		return out
+	# A status granted again in a later round is a second modifier of one status (16 October):
+	# its effects are listed once.
+	var listed := {}
 	for m in live(u):
+		if STATUS.has(m.id):
+			if listed.has(m.id):
+				continue
+			listed[m.id] = true
 		for eff in m.effects:
 			var trig := str(eff.get("trigger", ""))
 			var name := str(eff.get("effect", ""))
@@ -1066,7 +1081,8 @@ static func explain(u, face: Face) -> Array[String]:
 
 
 ## Every live modifier as [name, description, source, scope, stacks, id]: the codex lists
-## the loadout and battle ones, the hold popup the skirmish and round ones.
+## the loadout and battle ones, the hold popup the skirmish and round ones. One row a
+## modifier, so a status granted in two rounds is two rows; the chips sum them by id.
 static func describe(u) -> Array:
 	var out: Array = []
 	for m in live(u):

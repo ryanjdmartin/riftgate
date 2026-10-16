@@ -312,7 +312,9 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn. Nothing writes to a stat.
+and a ticking status loses a stack at its owner's turn; a timed one stacks only with a grant
+that ends the same round, so each grant's stacks go when its own rounds run out. Nothing
+writes to a stat.
 
 ## The battlefield
 

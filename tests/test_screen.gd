@@ -409,6 +409,29 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	s.free()
 
 
+## A timed buff spent in two rounds is two grants, each going when its own rounds run out
+## (16 October), and one status on the machine: one chip, counting every stack.
+func test_a_status_granted_in_two_rounds_is_one_chip_with_every_stack() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.remove(m, "overcharged")
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round + 1)
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round + 2)
+	s._refresh()
+	var texts: Array[String] = []
+	for r in s._mech_rows(0):
+		if str(r[0]) == SkirmishScreen.status_glyph("overcharged"):
+			texts.append(str(r[1]))
+	assert_eq(texts, ["×2"] as Array[String], "one chip for the status, counting both grants")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()

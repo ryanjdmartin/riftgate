@@ -1016,13 +1016,25 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Palette.SHIELD])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions).
+	# One chip a status, counting its stacks from every grant: a timed buff spent in two rounds
+	# is two modifiers, each going when its own rounds run out (16 October), and one status.
+	var order: Array[String] = []
+	var first := {}
+	var total := {}
 	for d in Effects.describe(ms.unit):
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
+		if not first.has(id):
+			order.append(id)
+			first[id] = d
+			total[id] = 0
+		total[id] = int(total[id]) + int(d[4])
+	for id in order:
+		var d: Array = first[id]
 		var glyph := status_glyph(id)
 		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
-		var stacks := int(d[4])
+		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms, _drag_from == i)
