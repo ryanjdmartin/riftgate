@@ -279,11 +279,28 @@ At a seal of 20 the all-in team reads 82% with stints of 4.4, but the Armadillo 
 ## Open for the session
 
 1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above),
-   the seal's Braced and base armour.
-2. Who may spend a mark: the Armadillo alone, or any ally.
-3. The names of the lure and the mark (Ryan's; Claude's candidates in chat).
-4. Tier one confirmed, and the rule text: the passive (the form), the lure (the mark), the
+   the seal's Braced and base armour. Claude's lean: seal 15, heat max 60, a mark 20, lure 5,
+   cooling 5 open; the mark's number matters only in long fights, the seal's heat is the dial.
+2. Who may spend a mark: the Armadillo alone (Claude's lean: an ally popping it would cool a
+   machine for free, riding on a blow it makes anyway, where an ally's vent on the shell costs
+   that ally its action), or any ally.
+3. Allies cooling the sealed shell (allowed today; the table above): keep it, or "sealed,
+   nothing cools it" if the all-in team stalls in play. Claude's lean: keep it.
+4. The names of the lure and the mark, Ryan's. Claude's candidates (16 October), under the
+   hangar's Minerva register (hits hard and low-tech) and the convention decided in Kestrel's
+   session the same day (a keyword and the buff or debuff it creates share a name, so the mark
+   wants a keyword form and a status form): Chill Flinger, the mark Chill (a foundry's chill, the
+   iron block set in a mould to draw heat out of a casting; "chilled" means slowed in many
+   games, so the status would need its own word or the noun); Heatsink Launcher, Heatsink (the
+   plainest, an electronics word); Earthing Stake, Earthed (the ground rod, a nod to the old
+   Faraday Hull; "Grounded" reads as a flyer knocked down); Sinker Flinger, Sinker (a fishing
+   lure's sinker and a heat sink in one word, Wainwright & Sutler's kind of silly). Taken
+   already: Coolant, Harpoon, Spike, Needle, Flare, Beacon, Brand.
+5. Tier one confirmed, and the rule text: the passive (the form), the lure (the mark), the
    mark's codex (the cooling).
+6. The die's place numerals (built 15 October, Ryan's read on the glass owed): the grey
+   condensed italic as built, or Share Tech Mono at 15 (its I has serifs; it reads as a stat;
+   the hold's gutter widens). Claude's lean: the italic.
 
 ## Refused along the way
 
