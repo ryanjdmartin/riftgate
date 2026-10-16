@@ -113,7 +113,7 @@ document's job and every command are in `README.md`.
   Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
-  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Bourgeon. The bosses' slate and Ryan's marks
+  content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
   are `docs/bosses_proposal.md`.
 - Built later on 15 October (the small-work pass): the Oblation Ward is the Oblation Mantle
   (its name; the id stays, as the Bone Wyvern's did); the Megataser Harpoon carries Shock in
@@ -240,7 +240,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the boss art round (15 October): the first round's six sets that stand (the
   Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr) and the third (Skaði, Fáfnir, Bourgeon with its swallow and vines), built by
+  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
   `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
   misses sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
