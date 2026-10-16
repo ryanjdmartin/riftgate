@@ -83,9 +83,27 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   in-fight regen past the Goshawk, whose content note calls its regen the game's first, kept
   safe on one chassis (one target at a time, so never shield in bulk).
 
+- Ryan, 16 October: the regen was meant to wear off after a few turns, "so it could just be a
+  refresh. How dangerous is stacking?" For the zap: a plain blow, one that pierces armour, a
+  ping on a random foe, or a random ping that also Shocks "to set up its next hit"; "Not sure
+  what opens more build options."
+- Claude, 16 October: renew, never stack. The engine stacks a status by adding to it and
+  pushing every stack to the newest expiry, so a recast before the count runs out ramps without
+  end: a heal that grows each round it is kept up, lent to a tank, and doubled by a second
+  shield-spender. Renewing caps it at one regen a target however many cast it, and a recast
+  early only wastes the rounds left. The zap: Shock on its own target opens the most builds,
+  since it makes a state other pieces read (the Sparrowhawk's four-times blow, any big single
+  blow, the Paradox meter, the Susceptibility Tensor), keeps the choice in the aim and keeps the
+  waste on a kill (no zap, no Shock); to watch, its own next hot shot at that foe lands double,
+  near the Sparrowhawk's bargain, and it is a second Shock setter at tier one beside the
+  Dingo. Armour-piercing gives the sharpest identity (the armour-cracker, the strafer's
+  opposite) and the fewest new builds. The random ping is the boiler's blast again (a random
+  foe hit for the heat spent) and, beside the strafer's spray, a second random-target tier one
+  in one maker.
+
 ## Open for the session
 
-1. The readings above, and the regen's numbers.
+1. The zap's shape; the regen renewing (Claude) and its numbers.
 2. How the die shows the burn and the zap.
 3. Its numbers, size and way of moving, matched to Ryan's silhouette.
 

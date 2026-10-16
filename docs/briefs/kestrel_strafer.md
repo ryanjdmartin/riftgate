@@ -91,11 +91,12 @@ strafer in its place (14 October). The raider returns as its own direction
   by what falls first. Engine work: reach per strike, the random pick, and the bot's value of a
   spray (its mean over the foes in reach).
 
+- Ryan, 16 October: the reading stands; "Choose first strike, subsequent random."
+
 ## Open for the session
 
-1. The lock's reading (above) and its numbers.
-2. Its numbers, size and way of moving (Kestrel builds small and mid flyers and hovercraft on
-   big boosters), matched to Ryan's silhouette.
+1. Its numbers and the lock's, its size and way of moving (Kestrel builds small and mid flyers
+   and hovercraft on big boosters), matched to Ryan's silhouette; then it lands.
 
 ## Holes already raised
 

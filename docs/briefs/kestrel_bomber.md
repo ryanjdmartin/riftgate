@@ -105,9 +105,21 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   rank's four, the whole rank in one spend. Claude's lean: the target's slot alone, since a
   Spread weapon's mine carries Spread and hits the arrival's neighbours as it lands.
 
+- Ryan, 16 October, two worries: whether the bomber's own Spread weapon, spent on a rank with
+  several empty slots, leaves several mines; and that the kill-mine forces the notion of a
+  primary target, "which can be awkward".
+- Claude, 16 October: one spend lays one mine, in the slot the die is spent on, and the
+  weapon's keywords ride inside it and act as it lands: a Spread mine hits the arrival's
+  neighbours, a Penetrate mine the other rank of its column. Mines land once the reinforcement
+  step is done, left to right, so a Spread mine catches every arrival beside it. The target is
+  already the game's word and gesture, the foe the die is dragged onto (Spending's "drag a die
+  onto a target", Spread's "the target's neighbours", the number the die shows for the foe it
+  is dragged over, the strafer's aimed first strike), so the kill-mine reads: if the foe it is
+  spent on dies, the shot waits in its slot.
+
 ## Open for the session
 
-1. Spread's and Penetrate's kills: the target's slot alone, or every foe the spend kills.
+1. One spend, one mine, and the mines landing after the step (above), on Ryan's read.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on
