@@ -112,7 +112,10 @@ document's job and every command are in `README.md`.
   boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
   in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
   the moment a foe falls), foes helping foes (a cure and a protect; the White Mage carries
-  Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
+  Dia, Cure and Holy, Ryan's three, its Protect parked). On 16 October the Augur (Clair
+  Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
+  bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
+  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
@@ -218,16 +221,18 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.184 (16 October), published from the
-  Kestrel session's branch: v0.182 as other sessions left it live (among them the die's place
-  numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse summons, the White Mage's
-  three moves and the Wake Diffuser's question) with the Kestrel session's rows merged onto it
-  (the Boar's spill, the keyword budget retired, Ryan's rules on random and on overlap, section
-  12's Chain rework, and section 6's vocabulary: the naming convention, Folded become Braced,
-  every status a chip, and the two tables `tools/pages/bible_tables.py` writes from content).
-  Main's v0.185 (the Priest folded into the White Mage and the Martial Artist kept, Ryan, 16
-  October) is merged into this branch's file and goes live with its next publish. Before
-  that, v0.175, main's file: the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Live: v0.187 (16 October), published from the
+  Kestrel session's branch with main merged in: main's rows (the Priest folded into the White
+  Mage, the Martial Artist kept, the Augur in the Necromancer's place, the Reraise question, the
+  White Mage's Cure live, the Summoner's Norse names) with the Kestrel session's (the Boar's
+  spill, the keyword budget retired, Ryan's rules on random and on overlap, section 12's Chain
+  rework, and section 6's vocabulary: the naming convention, Folded become Braced, every status
+  a chip, and the two tables `tools/pages/bible_tables.py` writes from the merged content; the
+  script is on that branch, not yet on main). Main's own file says v0.186, the same rows
+  without the review's corrections. Before that, v0.184 and v0.183 from the same branch over
+  v0.182 as other sessions left it live (the die's place numeral, rerolls onto a copy, Rapid's
+  limiter, the benches' Norse summons, the Wake Diffuser's question), and v0.175, main's file:
+  the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
@@ -247,16 +252,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði. Its database
+  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the boss art round (15 October): the first round's six sets that stand (the
   Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
-  `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
-  misses sit in each set's `set_aside/`.
+  Reaper, Surtr), the third (Skaði, Fáfnir, Floraison with its swallow and vines) and the
+  Augur's hero and chibi sets (16 October, `heroart` and `chibi_heroart`), built by
+  `forge.py phone --only --tags bossart bossart3 heroart chibi_heroart --keys <the eleven sets>`;
+  the renders that lost a blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

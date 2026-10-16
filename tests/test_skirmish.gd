@@ -3814,6 +3814,37 @@ func test_a_bursting_blow_at_every_machine_lands_on_each_and_spends_the_striker_
 	assert_eq("\n".join(sk.log).count("bursts, and is gone"), 1, "once, after every machine took it")
 
 
+func test_a_countdown_blow_at_every_machine_gathers_then_lands_on_each() -> void:
+	# The Augur's Harvest (16 October): a countdown and `all` on one move, announced one round and
+	# landing on every machine the next.
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 10, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var augur := Foe.make("augur", 500, 20)
+	augur.actions = [{"id": "harvest", "name": "Harvest", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "countdown": 1, "text": ""}]
+	augur.action = augur.actions[0]
+	sk.add_foes([augur])
+	sk.begin()
+	sk.start_round()
+	assert_true(augur.gathering(), "announced, it gathers")
+	assert_false(augur.hits_all(), "and strikes nobody yet")
+	assert_true(augur.reaches_every_machine(), "though its arrows already reach every machine")
+	assert_eq(sk.incoming_for(sk.mechs[0]) + sk.incoming_for(sk.mechs[1]), 0, "nothing lands this round")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 200, "and nothing did")
+	sk.start_round()
+	assert_true(augur.hits_all(), "the next round it lands on every machine")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 20, "the forecast counts it on the first")
+	assert_eq(sk.incoming_for(sk.mechs[1]), 20, "and on the second")
+	sk.end_round()
+	assert_eq(a.hull, 80, "the bare machine took it")
+	assert_eq(b.shield, 0, "the shield took the other's")
+	assert_eq(b.hull, 100, "whole, under today's shield rule")
+	assert_true(augur.pending.is_empty(), "spent")
+
+
 func _gatherer(atk: int, countdown: int) -> Foe:
 	var f := Foe.make("lancer", 500, atk)
 	f.actions = [{"id": "jump", "name": "Jump", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "countdown": countdown, "text": ""}]
