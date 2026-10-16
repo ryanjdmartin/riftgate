@@ -101,9 +101,21 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   foe hit for the heat spent) and, beside the strafer's spray, a second random-target tier one
   in one maker.
 
+- Ryan, 16 October, later: renewal without stacking is the right shape, "or it risks becoming a
+  support"; the engine's stacking is a bug, timed stacks to decay from when they started (fixed
+  in the engine the same day). Shock on the zap's target "makes no sense to me, because you've
+  already chunked the guy for your weapon plus your shield", and a guaranteed Shock every round
+  riding on damage "seems cheesy". The random zap is no repeat of the boiler, rewarded for a
+  non-combat action, or of the strafer, a locked piece: "the only thing they have in common is
+  random, their contexts are very different."
+- Claude, 16 October: the zap as a random ping, any foe standing with its target among them, so
+  a lone boss still takes it and a kill never wastes it: the soft area a sustained hitter
+  wants, finishing stragglers wherever they stand. Plain is the zap with no hook;
+  armour-piercing the sharper single-target identity.
+
 ## Open for the session
 
-1. The zap's shape; the regen renewing (Claude) and its numbers.
+1. The zap's shape (Claude: the random ping); the regen's numbers.
 2. How the die shows the burn and the zap.
 3. Its numbers, size and way of moving, matched to Ryan's silhouette.
 

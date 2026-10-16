@@ -117,9 +117,19 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   is dragged over, the strafer's aimed first strike), so the kill-mine reads: if the foe it is
   spent on dies, the shot waits in its slot.
 
+- Ryan, 16 October, later: the area keywords travel inside the mine; but "one could make the
+  argument that everything damaged by an attack is a target. Maybe it's not worth the confusion
+  and we rework the locked parts of the bomber."
+- Claude, 16 October: the buff can name no target at all: every foe the next weapon spend kills
+  leaves the shot in its slot. Still one spend, so no whole rank from a Rapid gun or the
+  Nemesis; a Spread spend that kills three lays three, the most one buff can do. If the lock is
+  reworked instead, Claude's pick is a trigger: spent on a mined slot, it sets that mine off now
+  into the foes around the slot, so mines pay in a fight with nothing waiting.
+
 ## Open for the session
 
-1. One spend, one mine, and the mines landing after the step (above), on Ryan's read.
+1. The lock: the buff reworded, or a trigger; the passive's one spend, one mine, and the mines
+   landing after the reinforcement step.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on

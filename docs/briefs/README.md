@@ -79,7 +79,11 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
   for doing its job (being struck under a draw) is dangerous.
 - Niches can and should overlap across a larger roster so a player finds something that fits;
-  mechanics should not repeat.
+  mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
+  shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
+  this thing because that already kind of does it,' then you quickly run out of things").
+- Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
+  16 October).
 - The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
   Numbed is a resistance), which is why designs keep reaching for Burn or Suppress. New chips
   are fine, even unique to a chassis, since tooltips and popups carry them. The vocabulary
