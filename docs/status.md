@@ -146,8 +146,8 @@ document's job and every command are in `README.md`.
   numeral in the quotes' condensed italic, top left on the die and down the hold and the codex
   (a gutter left of each tile), counted fixed components first. It shows a reroll onto a copy,
   which hardpoint holds what, and the revolver's order. The codex's two narrow columns now
-  give a long description a second line rather than clipping it. Judged from screenshots at
-  the phone's layout; Ryan's read on the glass is owed.
+  give a long description a second line rather than clipping it. Ryan, 16 October, from the
+  screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -243,9 +243,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   `docs/design-bible.html` after every change. Live: v0.184 (16 October, another branch's,
   over main's v0.182); main's file v0.185 adds the Priest folded into the White Mage and the
   Martial Artist kept (Ryan, 16 October), unpublished: the next publish reads the live page
-  through and merges onto it. The Minerva branch's file (main merged in, 16 October) carries
-  v0.185 and its own rows, which the page already has: the rerolls onto a copy, the die
-  entry's place, Rapid's limiter and the Wake Diffuser question. Main's file also carries the
+  through and merges onto it. The Minerva branch's file (main merged in, 16 October) is
+  v0.186: main's v0.185, its own rows the page already has (the rerolls onto a copy, the die
+  entry's place, Rapid's limiter and the Wake Diffuser question), and two unpublished edits
+  (section 7's Minerva row rewritten to the session's shape, section 12's question on Braced
+  in stacks of 5 against the scale). Main's file also carries the
   budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's

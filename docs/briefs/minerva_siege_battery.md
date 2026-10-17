@@ -6,7 +6,7 @@ them. The working label "the siege battery" stays; the name is Ryan's. Minerva's
 three, the battlecruiser, has a brief of its own (`minerva_battlecruiser.md`), which also holds
 the broadside first proposed here.
 
-**Status**: direction (Ryan's pitch, 15 October). **Maker**: Minerva. **Proposed tier**: three.
+**Status**: direction (Ryan's pitch, 15 October; the charge open, 16 October). **Maker**: Minerva. **Proposed tier**: three.
 **Read first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's rows on
 cooldowns (section 8), the makers table and the size classes (section 7), and the ways of
 moving (section 4).
@@ -50,9 +50,49 @@ from shields spent on it.
   rounds) with a locked loader, as Minerva's battlecruiser. Ryan made the battlecruiser a design
   of its own and kept the broadside for it (`minerva_battlecruiser.md`).
 
+## The charge (15 and 16 October)
+
+Claude's second round (15 October): "steady aim", one charge the two turrets share, growing by
+one each round to three, a wound on the tank knocking one off, a turret's shot spending it at
++10 a charge; the foes' shown intents say when a wound is coming, so "fire now or lose a
+charge" is read off the screen; the alternative "ripe target", +10 a debuff on the target.
+Claude's review (16 October): steady aim is a cooldown in disguise, since the charge grows on
+its own and, with the Armadillo pulling blows, the wounds that knock it off are rare, so it
+becomes "fire every third round". Ryan, 16 October: "correct. Need help here. Looking for a soft
+way to push the player to timing their shots instead of just firing them on cooldown. It's
+possible that doesn't exist and the design is a non starter but that's why we're here."
+
+Claude's candidates (16 October), each against Ryan's test (when, never how often):
+
+- **Firing drops its guard** (Claude's lean): a turret may fire every round, but the tank that
+  fires is open until its next turn (armour 0, or Braced lost, or its shield down: the form is
+  the stock pass's). The "when" is the foes' shown intents: fire when nothing heavy is aimed at
+  it this round, hold or vent when something is, or have the Armadillo lure the blow off it
+  first, so Minerva's tanks feed its capstone. Not a cooldown; nothing to count; the foes have
+  already picked their targets when the player decides, so no aim reads the dropped guard. The
+  hole: against a pack that never aims at it (it is the hardest hull to reach) it fires every
+  round, which is a big gun with no limit; its heat is the second price.
+- **A magazine**: each turret holds so many shells a fight (two, say), restocked between
+  fights, nothing reloads them in one. The "when" is which moments of the fight: the Antlion
+  now or the Sandworm later. The one pure "which moments" shape; its risks are hoarding (shells
+  left at the fight's end are wasted, which answers it; section 8's consumables row) and a long
+  boss fight in which the tank becomes its hardpoints after the shells, which "mismatch costs
+  time, never ability" allows. Engine: an entry spent so many times a fight, then blank.
+- **The telegraph hunter**: a turret's shot does its full number only against a foe that is
+  winding up (a countdown, a special, a blow above some size on its intent), half against the
+  rest. The "when" is the enemy's wind-up, the design test's "interrupt the big hit" made a
+  gun. Its hole: in a fight with no telegraph it is a half gun fired on cooldown, so it earns
+  its keep only in the fights that matter.
+
+The bench, from the review: a charge the player builds by holding fire (an action paid, a
+cooldown by another name); a charge that decays or explodes if held (it forces the shot on
+time, the opposite of a choice); damage from the target's state kept debuffed (Ryan's
+objection to ripe target stands); the Badger's hopper shape (one turret loading the other).
+
 ## Open for the session
 
-1. The charge-up mechanic: what charges the turrets, what spends it, whether the two share it.
+1. The charge: which of the candidates above, or none (Ryan: possibly a non-starter), and
+   whether the two turrets share whatever it is.
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
 3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the

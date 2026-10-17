@@ -276,14 +276,62 @@ watch, since its cooling rides on things it does anyway (a shield on the shell, 
 At a seal of 20 the all-in team reads 82% with stints of 4.4, but the Armadillo alone drops to
 59% with stints of 2.0, so the seal stays tuned on the Armadillo alone.
 
+**Ryan, fifth round** (16 October, answering Claude's review of the session), in his words:
+on allies and the marks, "you're referring to allies popping the marks for the armadillo. What
+about popping the marks to cool themselves?"; on the team's rerolls spent fishing for a lure,
+"not so much of an issue because of locking. If the die is good, they lock, otherwise they
+probably want to roll anyway. The only way I see it hurting the team is if they wanted to
+choose their action based on the lure result"; on a one-foe lure making a boss tank, "the lure
+is rapid, no cooldown, and it has 2 in the current iteration. That's potentially lots of lures
+in a round"; on the seal's Braced, "I've said before but braced being increments of 5 seem so
+limiting. It makes ally hp and enemy damage have to be big numbers. I said no to single digits
+since we needed more fine grained numbers, but that doesn't mean everything needs to be huge,
+and this is somewhat of a universal problem - our scale. Regardless I think the intent here
+was 15 total including base armour"; on the loop running on rails, "true, we're running into
+the ubiquitous tank problem. How do you make a tank interesting while still being good at its
+job? I'll always take suggestions here"; on showing a cashing gun's net heat, "If you're
+referring to that the preview should show the net heat result on the heat bar, then yes. If
+you're saying to show it on the die, then no, that doesn't make sense, it's not a component
+modifier, it's a chassis effect"; and on the die's place numerals, "Keep the italic for the
+number, it works better."
+
+What it settles: sealed, armour is 15 in all, the base included; the forecast's heat gauge
+shows what a cashing gun leaves, never the die's own heat text; the numerals stay in the
+condensed italic; fishing for a lure with the team's rerolls costs the allies little, since a
+good die is locked; and a chain of lures (two Rapid copies, no cooldown, 5 heat each) draws
+several foes in a round, so the one-foe lure is no boss-only tank. With the player spending
+every lure and allies' dice locked: no reroll spent fishing, 0.4 lures a round (one in three
+rounds); one reroll, 0.9 (two or more a round 23% of rounds); two, 1.4; all three, 1.9 (three
+or more 29% of rounds), at 5 heat each, so a front rank pulled whole is a once-a-fight play
+paid in heat and rerolls.
+
+**Claude's fifth round**, in chat: the marks shared. Any machine's damaging hit spends a foe's
+marks and cools the hitter (the rule's text no longer than the exclusive one), so the tank's
+output is a resource the team contends for: the Armadillo wants it to reseal, the hot hitter to
+keep firing, and both hit the lured foe, so who shoots it first is the round's decision. The
+price is real: the Armadillo paid the heat and took the blow, and if the hitters take the
+marks it opens by venting, its die's action. One number for every spender; since the team then
+makes cooling of heat (5 paid, so much cashed), a mark cools 10 as the first placeholder, and
+the Armadillo's own loop holds at 10 (a cash of three marks is 30; the model put the mark's
+number's weight in long fights). An ally popping the marks to cool the Armadillo stays refused:
+free cooling of the sealed shell from blows the allies make anyway, and the shell never needs
+to open. The tank problem answered the same way: the decisions are whom to lure (the shown
+intents), how many (the heat budget), seal or stay open (a safe round against a cashing round),
+who cashes (the team's heat), and the kill order on a marked foe; each reads something that
+changes every round. On the scale: Braced in stacks of 5 (and Overcharged's +5 a stack) sits
+against the bible's scales row (magnitudes, not steps: an armour of 2); the fix is a status that
+carries its value (Braced 12, as the foe's chip already shows its armour) with stacks kept for
+the statuses that count things, raised in section 12 for the stock pass, since the Kestrel
+session built the foes' brace in multiples of 5 this week.
+
 ## Open for the session
 
-1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above),
-   the seal's Braced and base armour. Claude's lean: seal 15, heat max 60, a mark 20, lure 5,
-   cooling 5 open; the mark's number matters only in long fights, the seal's heat is the dial.
-2. Who may spend a mark: the Armadillo alone (Claude's lean: an ally popping it would cool a
-   machine for free, riding on a blow it makes anyway, where an ally's vent on the shell costs
-   that ally its action), or any ally.
+1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above).
+   Claude's lean: seal 15, heat max 60, lure 5, cooling 5 open, a mark 10 if shared (20 if the
+   Armadillo's alone); the mark's number matters only in long fights, the seal's heat is the
+   dial. Settled: armour 15 sealed in all, the base included.
+2. Who may spend a mark: any machine, cooling itself (Claude's lean, fifth round), or the
+   Armadillo alone. Never an ally cooling the Armadillo.
 3. Allies cooling the sealed shell (allowed today; the table above): keep it, or "sealed,
    nothing cools it" if the all-in team stalls in play. Claude's lean: keep it.
 4. The names of the lure and the mark, Ryan's. Claude's candidates (16 October), under the
@@ -297,10 +345,7 @@ At a seal of 20 the all-in team reads 82% with stints of 4.4, but the Armadillo 
    lure's sinker and a heat sink in one word, Wainwright & Sutler's kind of silly). Taken
    already: Coolant, Harpoon, Spike, Needle, Flare, Beacon, Brand.
 5. Tier one confirmed, and the rule text: the passive (the form), the lure (the mark), the
-   mark's codex (the cooling).
-6. The die's place numerals (built 15 October, Ryan's read on the glass owed): the grey
-   condensed italic as built, or Share Tech Mono at 15 (its I has serifs; it reads as a stat;
-   the hold's gutter widens). Claude's lean: the italic.
+   mark's codex (the cooling, and whom it cools).
 
 ## Refused along the way
 
