@@ -24,6 +24,11 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 17 October): the brief
+  carries Ryan's calls and the settled design, the go pending; merged into main on 17 October
+  on his word ("merge our changes into main"), docs only, and kept open for the go and the
+  next Wainwright & Sutler briefs (the revolver, the boiler, the fan-boat, the Prairie Dog,
+  then the maker's tiers).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -219,7 +224,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.188 (16 October), main's rows (the
+  `docs/design-bible.html` after every change. Live: v0.191 (17 October), the parallel sessions' publishes over main's
+  v0.188; main's file is v0.189 (17 October, the funnel-web session's lines: the spider
+  settled in the Wainwright & Sutler row, the price-over-scarcity lean in the stun row, the
+  riders note in the Barrier row, the time-shifter parked in the Aphelion row), unpublished:
+  the next publish reads the live page through and merges onto it. v0.188 was main's rows (the
   Augur in the Necromancer's place, the Cleric with its promoted form's Reraise on its allies,
   the Martial Artist kept) merged onto the `zealous-cori` branch's v0.187, whose generated
   vocabulary tables were regenerated against main's content with that branch's script and

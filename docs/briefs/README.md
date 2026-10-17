@@ -85,7 +85,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   are fine, even unique to a chassis, since tooltips and popups carry them. The vocabulary
   grows by kinds (a weaken, a flat on-hit, a share of current hull, a timed stun, a trapped
   slot), never by copies.
-- Stun is budgeted; prefer changing the enemy's problem over removing its turn.
+- Stun is budgeted; prefer changing the enemy's problem over removing its turn. Price, never
+  scarcity (17 October, of Suppress): a mechanic rationed by availability makes its carriers
+  must-picks, so it is priced so the other answers stay attractive.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
 
 ## Tiers
@@ -162,7 +164,7 @@ on our side.
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
-| `ws_funnel_web.md` | direction | Wainwright & Sutler | 2 | nothing |
+| `ws_funnel_web.md` | settled in chat, the go pending | Wainwright & Sutler | 2 | the elites in fights (Vitriol's targets) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | proposal, back to the board | Wainwright & Sutler | 2 (proposed as 1) | the stock pass's keywords |
 | `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |
@@ -201,6 +203,23 @@ in its brief; the full rounds are in git (above).
   considering that it's possible engagement range could change, it would be tough to balance
   it now"): a machine joining fights three hexes away; attack range is already a number on
   each unit (`Unit.attack_range`, 2 today).
+- The time-shifter (Ryan, 17 October, from the funnel-web's session: "There might be an
+  Aphelion machine that wants to control the battlefield by delaying and redirecting blows,
+  some kind of spacetime manipulator. Soft control, moving or delaying hits as a whole
+  identity."): delay (a foe's next move gathers a round, the countdown as built, so the blow
+  lands late and dies with the foe) and redirect (the blows meant for a machine re-pick by the
+  foes' aim, held rather than lost when no one else stands, the phase its action for the
+  round). Holes for its brief: delay alone is tempo and the fight's last blow, so it pairs with
+  burst; a redirect onto a chosen ally is an interpose by proxy, which the redirection row
+  allows on a locked piece only; our countdown chip on their foe must read as ours; it parts
+  from the jellyfish by pattern (the jellyfish changes the move and dispels; this moves the blow
+  in time and target).
+- The burrow, grown on the spider and moved here (Claude, 17 October; Ryan: "hilarious", and
+  "is this actually a broken ability, shuffling all intents away?"): equipment on itself,
+  every foe aiming at it re-picks. Broken on the spider (with Rapid it deletes the ambush
+  limit, a locked piece feeding only its own passive; alone, blows lost would be a free stun)
+  and a reverse Lure without the choice for the ally; sound as the time-shifter's shift with the
+  two fixes above.
 
 **The Arsenal** (Claude's, 11 and 12 October)
 
