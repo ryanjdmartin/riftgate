@@ -126,22 +126,22 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   sustained hitter that fights beside a team, and a reason it is not the detachment.
 - A shield spent is also an injury risked, since a blow on bare hull rolls the die; the entry
   should show the cost.
-- The review (Claude, 16 October): Scorched inverts on it. A stack makes its weapons run 5
-  hotter, and under the passive that is 5 more shield burnt and 5 more zapped, so the Peak's
-  scorchers make it a glass cannon rather than choking it. Self-limiting, since shield is hull,
-  and legible; whether it is wanted, or only a weapon's printed heat converts and Scorched's
-  heat still goes to the gauge, is Ryan's call.
-- The review: its die needs hot and cold entries both, or there is no decision on it; with no
-  weapon heat reaching the gauge, a vent on it is nearly a blank (Burning alone heats it), so
-  its stock should carry none.
-- The review: the regen's renew is a stacking policy the engine lacks (a timed grant stacks
-  beside others with its own end; Shocked alone never stacks). The policy belongs on the status
-  as engine data, read by the engine and by the bible's table alike, so the table never
-  restates what the code does.
-- The review: the zap's ping (any foe standing, its target included) and Chain's ping (Claude's
-  lean, any other foe) are two rules for one word, and the strafer's spray (among the foes in
-  reach, the same one again) a third random pick in one maker. One word and one rule for "a
-  random foe", before any of the three lands.
+- The review (Claude, 16 October) raised Scorched inverting on it: a stack makes its weapons run
+  5 hotter, under the passive 5 more shield burnt and 5 more zapped, so the Peak's scorchers
+  make it a glass cannon rather than choking it. Ryan, 17 October: "flipping the shield and heat
+  interactions on its head is kind of the shield-spender's whole deal": every point of heat its
+  weapons would generate burns shield instead, Scorched's included.
+- Its die carries hot and cold entries both, and its stock no vent (Ryan, 17 October, agreed:
+  "sometimes you might actually want to not explode your whole shield"; with no weapon heat
+  reaching the gauge a vent is nearly a blank, Burning alone heating it).
+- The regen renews and never stacks: a stacking policy the engine lacked until 17 October
+  (Ryan: "it should be supported, since that's a pretty common thing for a powerful or
+  non-number-related buff to do"), now read off the status's definition (add, renew or never;
+  the bible's section 5).
+- The zap's ping (any foe standing, its target included), Chain's ping (Claude's lean, any other
+  foe) and the strafer's spray (among the foes in reach, the same one again) are three rules for
+  a random foe. Ryan, 17 October: neither the zap nor Chain is final and the spray is a locked
+  unique, so the count is no worry now, "but point taken".
 
 ## What the session hands back
 

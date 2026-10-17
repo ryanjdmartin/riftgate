@@ -77,6 +77,10 @@ const CLEANSABLE := "cleansable"
 
 ## The engine's own statuses, granted by keywords and foe attacks. Names are placeholders
 ## for Ryan's vocabulary; ids are what the engine keys on.
+## A status may name how a second grant of it lands, "stacking" (Ryan, 17 October: renewal
+## without stacking must be supported, "a pretty common thing for a powerful or non-number-
+## related buff to do"): "add", the default, stacks it, a timed grant keeping its own end;
+## "renew" keeps one grant, its end the later and its count the larger; "never" ignores it.
 const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
@@ -96,7 +100,7 @@ const STATUS := {
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 5}]},
-	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
+	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
 	# modifier for the pipeline's arithmetic, and nothing reads it but suppress (FOE_STATUSES).
@@ -124,14 +128,14 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
 	# machine's bare hull is Shocked, and the team's next blow on it lands double.
-	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
+	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.", "stacking": "renew",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
 	# A core whose parts stand takes nothing (the boss in parts, 15 October): the skirmish grants
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
-	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.",
+	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "never",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.",
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.", "stacking": "never",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
@@ -142,7 +146,7 @@ const STATUS := {
 	# enemy's turn is over. The 10 here is only the default a bare grant would carry.
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
-	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.",
+	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "never",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
 	# hits, which the Bullion Fragmenter fires a few a shot. A store on the machine with no
@@ -150,7 +154,7 @@ const STATUS := {
 	# decays, and nothing cleanses it.
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
+	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "never",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
@@ -261,18 +265,49 @@ static func grant(u, m: Modifier) -> Modifier:
 
 ## A timed effect: gone after the end of `round`.
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
+	var held := _held(u, passive, ROUNDS, 1, round)
+	if held != null:
+		return held
 	var m := make(passive, ROUNDS, source)
 	if m != null:
 		m.expires_round = round
 	return grant(u, m)
 
 
+## How a second grant of a status lands: "add", "renew" or "never" (the STATUS note above).
+static func status_stacking(def: Dictionary) -> String:
+	return str(def.get("stacking", "add"))
+
+
+## The grant a second one of `passive` renews or leaves alone, or null when the status adds
+## (and the caller grants as usual). A renewal takes the later end of two timed grants and
+## the larger count, never a second stack; a status that never stacks keeps its first grant.
+static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int) -> Modifier:
+	var policy := status_stacking(passive)
+	if policy == "add":
+		return null
+	var id := str(passive.get("id", ""))
+	for m in u.modifiers:
+		if m.id != id:
+			continue
+		if policy == "renew":
+			if m.scope == ROUNDS and scope == ROUNDS:
+				m.expires_round = maxi(m.expires_round, expires_round)
+			m.stacks = maxi(m.stacks, n)
+		return m
+	return null
+
+
 ## Add stacks of a status. The same id in the same scope stacks up instead of doubling;
 ## a fresh one is granted with `n` stacks. Tick-decaying statuses lose a stack per tick.
 ## A timed one (ROUNDS) stacks up only with one ending the same round (two coils spent in
 ## one round, a brace beside a buff of Braced); a grant ending another round is its own
-## modifier, so a later grant never lengthens an earlier one's stacks (16 October).
+## modifier, so a later grant never lengthens an earlier one's stacks (16 October). A status
+## that renews or never stacks (its "stacking") is one grant however often it is granted.
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
+	var held := _held(u, passive, scope, n, expires_round)
+	if held != null:
+		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
 		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):

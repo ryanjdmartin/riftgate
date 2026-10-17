@@ -8,7 +8,8 @@ It rewrites what stands between the two bible-tables markers in docs/design-bibl
 leaves the rest of the file as it is.
 
 A status's effect is its vocabulary codex, the text the player reads; its kind, where it
-lands, how it stacks and how long it lasts are its vocabulary entry's design.table. Who grants
+lands, how it stacks and how long it lasts are its vocabulary entry's design.table (the
+# stacking word checked against the engine's policy on the status: add, renew or never). Who grants
 it is counted from content through the engine's words below, and its reach follows: unique
 when only chassis passives or locked components grant it, or on the foes' side when one foe
 alone has the move; global otherwise. A keyword's counts are the components carrying it,
@@ -277,6 +278,25 @@ def main():
     engine = set(re.findall(r'^\t"([a-z_]+)": \{"id": "[a-z_]+", "name"', effects, re.M))
     for s in sorted({ENGINE_ALIASES.get(s, s) for s in engine} - {e["id"] for e in entries}):
         print("warning: the engine status '%s' has no design.table in content/vocabulary.json" % s, file=sys.stderr)
+    # The table's stacking word against the engine's policy on the status (its "stacking":
+    # add, renew or never; 17 October), so the table never says what the code does not do.
+    policies = {}
+    for sid, line in re.findall(r'^\t"([a-z_]+)": (\{"id": "[a-z_]+", "name".*)$', effects, re.M):
+        found = re.search(r'"stacking": "([a-z]+)"', line)
+        policies[sid] = found.group(1) if found else "add"
+    words = {"Yes": ("add",), "No": ("never", "renew"), "Never": ("never",), "Renews": ("renew",)}
+    aliases = {}
+    for eng, voc in ENGINE_ALIASES.items():
+        aliases.setdefault(voc, []).append(eng)
+    for e in entries:
+        word = e["design"]["table"]["stacks"].split(":")[0].strip()
+        for sid in [e["id"]] + aliases.get(e["id"], []):
+            if sid not in policies:
+                continue
+            if word not in words:
+                print("warning: %s's stacks reads '%s'; a table's stacking word is Yes, No, Never or Renews" % (e["id"], word), file=sys.stderr)
+            elif policies[sid] not in words[word]:
+                print("warning: the table says %s stacks '%s' but the engine's policy on it is '%s'" % (e["id"], word, policies[sid]), file=sys.stderr)
     print("%d statuses and %d keyword rows written to %s" % (len(srows), len(krows), BIBLE.relative_to(ROOT)))
 
 

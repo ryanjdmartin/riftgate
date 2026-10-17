@@ -107,16 +107,17 @@ strafer in its place (14 October). The raider returns as its own direction
   the session above.
 - Beside the Sparrowhawk, both Kestrel tier ones change every weapon; they part on magnitude
   against count.
-- The review (Claude, 16 October): the engine applies Suppress per strike, so a Suppress piece
-  on it tries twice a spend. When the first strike lands, the second lands too at 80% and adds
-  two more Numbed, four from one spend, so the next stun on that foe fails twice as often; the
-  second try helps only when the first was shrugged off. The session read "two tries" as a
-  gain; it is mostly a cost, unless Suppress is applied once a spend, as Shock is.
-- The review: a random strike of the lock spends a Shock the team set up, at half, random that
-  takes away by Ryan's test, unless the drag lights the Shocked foes among those in reach so
-  the player holds the spray while a Shock is up. And the die shows the first strike's number
-  only; the random strikes' numbers vary by their targets' armour, a soft break of "the die
-  shows the number" that the spray buys.
+- The review (Claude, 16 October) found the engine applying Suppress per strike, so a Suppress
+  piece on it tried twice a spend, and a landed first strike's second try mostly added Numbed
+  (four from one spend). Ryan, 17 October: "That suppressed interaction is silly. A suppressed
+  foe should not gain numbed from being re-supressed, since suppressed doesn't stack." Built
+  that day: a suppress on a foe already suppressed for that action does nothing, so the second
+  strike's try counts only when the first was shrugged off, a small gain of the strafer's own.
+- The review raised a random strike of the lock spending a Shock at half, and the die showing
+  the first strike's number only. Ryan, 17 October: with one of four shocked, firing the spray
+  is an understood risk, "no different than using a cleave", not random that takes away "since
+  you still hit that guy for normal damage", and sometimes the result hoped for; showing the
+  first strike's number is correct, "exactly the same as spread". Both stand as designed.
 
 ## What the session hands back
 

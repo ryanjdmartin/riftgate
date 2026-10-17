@@ -1430,6 +1430,86 @@ func test_suppress_skips_the_action_and_numbs() -> void:
 	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "gone two turns later")
 
 
+func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
+	# Ryan, 17 October: "A suppressed foe should not gain numbed from being re-supressed, since
+	# suppressed doesn't stack." The second spend is wasted and numbs it no further; a Paradox
+	# carrying onto a suppressed foe still takes its next action, a second stun, and numbs it
+	# for that one.
+	var sk := Skirmish.new(1)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, g)
+	assert_true(g.is_suppressed(), "suppressed by the first")
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "and numbed for it")
+	sk.assign(1, g)
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "the second suppress numbs it no further")
+	var grants := 0
+	for m in g.modifiers:
+		if m.id == "suppressed":
+			grants += 1
+	assert_eq(grants, 1, "and leaves one Suppressed, never two")
+	assert_true("\n".join(sk.log).contains("already suppressed"), "the log says the spend was wasted")
+	assert_true(sk._suppress(g, true), "a Paradox carrying onto it lands")
+	assert_eq(Effects.stacks_of(g, "numbed"), 4, "and numbs it: a second action lost")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "numbed"), 3, "a stack faded at its turn")
+	sk.start_round()
+	assert_true(g.is_suppressed(), "suppressed next round too, by the carry")
+	assert_false(sk._suppress(g), "a plain suppress on that action, already lost, does nothing")
+	assert_eq(Effects.stacks_of(g, "numbed"), 3, "and numbs it no further")
+
+
+func test_a_status_stacks_renews_or_never_stacks_as_its_definition_says() -> void:
+	# Ryan, 17 October: renewal without stacking "should be supported, since that's a pretty
+	# common thing for a powerful or non-number-related buff to do". A status's definition
+	# names it: add (the default: a stack a grant, a timed grant keeping its own end), renew
+	# (one grant, its end the later and its count the larger) or never (a second grant ignored).
+	var m := _mech("A", Die.single(Face.attack(20, L)))
+	var steady := {"id": "steady", "name": "Steady", "description": "", "stacking": "renew", "tags": ["buff"],
+		"effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]}
+	Effects.stack(m, steady, Effects.ROUNDS, "buff:a", 1, Effects.DECAY_NONE, 2)
+	Effects.stack(m, steady, Effects.ROUNDS, "buff:b", 1, Effects.DECAY_NONE, 3)
+	assert_eq(m.modifiers.size(), 1, "a renewing status is one grant however often it is granted")
+	assert_eq(Effects.stacks_of(m, "steady"), 1, "never a second stack")
+	Effects.end_round(m, 2)
+	assert_eq(Effects.stacks_of(m, "steady"), 1, "the later end holds")
+	Effects.end_round(m, 3)
+	assert_eq(Effects.stacks_of(m, "steady"), 0, "and it goes after that")
+	Effects.stack(m, steady, Effects.ROUNDS, "buff:a", 2, Effects.DECAY_NONE, 6)
+	Effects.stack(m, steady, Effects.ROUNDS, "buff:b", 1, Effects.DECAY_NONE, 5)
+	assert_eq(Effects.stacks_of(m, "steady"), 2, "a renewal with a smaller count keeps the larger")
+	Effects.end_round(m, 5)
+	assert_eq(Effects.stacks_of(m, "steady"), 2, "and a shorter renewal never shortens")
+	Effects.end_round(m, 6)
+	assert_eq(Effects.stacks_of(m, "steady"), 0, "gone at the longer end")
+	Effects.grant_for_rounds(m, steady, "a", 7)
+	Effects.grant_for_rounds(m, steady, "b", 8)
+	assert_eq(m.modifiers.size(), 1, "a timed grant takes the policy too: one grant")
+	Effects.end_round(m, 7)
+	assert_eq(Effects.stacks_of(m, "steady"), 1, "to the later end")
+	Effects.end_round(m, 8)
+	var once := {"id": "once", "name": "Once", "description": "", "stacking": "never", "tags": ["buff"], "effects": []}
+	Effects.stack(m, once, Effects.SKIRMISH, "x", 1, Effects.DECAY_NONE)
+	Effects.stack(m, once, Effects.SKIRMISH, "y", 3, Effects.DECAY_NONE)
+	assert_eq(Effects.stacks_of(m, "once"), 1, "a status that never stacks ignores a second grant")
+	var again := 0
+	for mod in m.modifiers:
+		if mod.id == "once":
+			again += 1
+	assert_eq(again, 1, "one grant of it")
+	# The engine's own: Shocked never stacks, Suppressed and Retaliate renew, Overcharged adds.
+	assert_eq(Effects.status_stacking(Effects.STATUS["shocked"]), "never", "Shocked never stacks")
+	assert_eq(Effects.status_stacking(Effects.STATUS["suppressed"]), "renew", "Suppressed renews")
+	assert_eq(Effects.status_stacking(Effects.STATUS["retaliate"]), "renew", "Retaliate renews")
+	assert_eq(Effects.status_stacking(Effects.STATUS["overcharged"]), "add", "Overcharged adds")
+
+
 func test_stacked_adds_scale_with_stacks() -> void:
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
 	u.armour = 0

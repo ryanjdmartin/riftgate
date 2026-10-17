@@ -119,7 +119,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
 - **Burn**: each foe hit gains a Burning stack per 10 of the blow, rounded up.
-- **Suppress**: each foe hit is Suppressed unless its Numbed resists.
+- **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
+  that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
@@ -189,7 +190,9 @@ On a foe:
 - **Burning** (debuff): 5 damage a stack at the start of its action, past armour, then a
   stack fades. It never stops healing.
 - **Suppressed** (debuff): it skips its action this round; landed on a foe that has already
-  acted, or by a Paradox on a foe already suppressed, it costs the next action instead.
+  acted, or by a Paradox on a foe already suppressed, it costs the next action instead. It
+  never stacks: a second suppress on an action already lost does nothing, and numbs it no
+  further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
@@ -203,8 +206,9 @@ On a foe:
   whole, unless it self-destructed.
 - **Numbed** (a resistance, neither buff nor debuff, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
-  shrugged one adds none; a stack fades at each of its turns. Nothing reads, deepens,
-  spreads or cleanses it, and no foe resists by nature.
+  shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
+  at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by
+  nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
 Burning, Suppressed, Shocked or Paradox.
@@ -314,8 +318,10 @@ overrides (shortest-lived source, then latest granted). Every buff, debuff, pass
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
 and a ticking status loses a stack at its owner's turn; a timed one stacks only with a grant
-that ends the same round, so each grant's stacks go when its own rounds run out. Nothing
-writes to a stat.
+that ends the same round, so each grant's stacks go when its own rounds run out. A status's
+definition may say otherwise: one that renews keeps one grant, its end the later and its
+count the larger (Suppressed, Retaliate); one that never stacks ignores a second grant
+(Shocked, Getting Back Up, Guarded, Scrambled). Nothing writes to a stat.
 
 ## The battlefield
 

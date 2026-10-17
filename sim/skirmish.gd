@@ -1418,17 +1418,31 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## and numbs it no further, and Numbed loses a stack at each of the foe's turns, so a stun
 ## repeated on one foe stops landing while stuns spread across the formation keep working.
 ## `carry`: a foe already suppressed loses its next action instead (a Paradox tripping on
-## it, 10 October), so the knock-out is never spent on an action already lost.
+## it, 10 October), so the knock-out is never spent on an action already lost. A foe already
+## suppressed for the action this would take gains nothing more, Numbed included (Ryan, 17
+## October: Suppressed never stacks, so a second suppress is no second stun); the carry onto
+## a suppressed foe takes its next action, a second stun, and numbs it for that one.
 func _suppress(foe: Foe, carry: bool = false) -> bool:
+	# A foe that has already acted this turn loses its next action instead of one it has taken.
+	var next := _acted.has(foe) or (carry and foe.is_suppressed())
+	if _suppressed_through(foe, round + 1 if next else round):
+		log.append("%s is already suppressed" % foe.display_name)
+		return false
 	var resist := foe.resist_total()
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
-	# A foe that has already acted this turn loses its next action instead of one it has taken.
-	var next := _acted.has(foe) or (carry and foe.is_suppressed())
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
+
+
+## Is the foe's action of round `r` already lost to a Suppressed it carries?
+func _suppressed_through(foe: Foe, r: int) -> bool:
+	for m in Effects.live(foe):
+		if m.id == "suppressed" and (m.expires_round < 0 or m.expires_round >= r):
+			return true
+	return false
 
 
 ## The count that knocks a foe out through Paradox: the lowest any live machine runs, or 0 when

@@ -126,19 +126,50 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   reworked instead, Claude's pick is a trigger: spent on a mined slot, it sets that mine off now
   into the foes around the slot, so mines pay in a fight with nothing waiting.
 
+- Ryan, 17 October, a new idea: a locked component that pulls every mine on the field into a
+  targeted space, a foe there or not, "just so it plays by the passive rules"; with a foe there
+  they all blow. "It does implicitly allow mine stacking, which we need to decide if that's ok
+  to allow in general or only in this case." It may replace or supplement the buff; if the buff
+  stays it becomes "rapid, cooldown 1, mark enemy", and the mark is one of three: the next
+  weapon to hit the foe drops a mine ("double hit, probably broken"), the next weapon to hit it
+  drops a mine if it dies ("the softest"), or the next weapon to kill it drops a mine ("most
+  flexible").
+- Claude, 17 October, reading it: the pull is the floor the review asked for. Mines laid in a
+  quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), and
+  nothing laid against reinforcements that never come is lost. Each pulled mine lands as it was
+  fired, in laid order (its strikes, its keywords, armour on each), so a Shock doubles the first
+  mine only and a pile of Burn mines lays every stack; a pile landing as one blow would read
+  armour once and double whole, stronger and a second rule. Lean: the pull is a weapon with a
+  modest blow of its own, never a dead spend (with no mines it is a gun; on an empty slot it
+  lays its own mine and pulls the rest into it; on a foe its blow lands and the mines go off),
+  and not Rapid, so a pull costs the turn and the laying still has to be chosen (a Rapid pull
+  makes every mine liquid and the slot a formality). On stacking: everywhere, one rule, "a laid
+  shot joins what waits in the slot; the slot shows the total", retiring 15 October's "a new one
+  replacing the old", since the pull piles anyway and a second rule for the passive is one more
+  to learn; the pile on the slot that fills first is the bomber's pre-kill of an elite arrival,
+  paid in the spends it did not fire at the foes present. Bench: replace on the passive, pile
+  only by the pull (keeps "do not waste a slot" as a decision, at the price of a special case).
+  On the marks: the first has no trigger (a mine under a standing foe either blows at once, a
+  double hit, or waits for its death, which is the third with a weaker shot); the second adds a
+  one-hit timer to track; the third, a mark on the foe that any machine's killing weapon
+  cashes, is the lend without the "target" word, one mine a mark, visible as a chip, and a death
+  by a tick leaves nothing (finish it with a gun). Lean: the third, supplementing the pull: mark
+  the escort, kill it, pull its mine onto the boss.
+
 ## Holes already raised
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
-  identity is absent from a fight without reinforcements. The trigger (a spend on a mined slot
-  sets it off into the foes around it) is the floor; without it the floor is its tier-two stock
-  alone (the review, Claude, 16 October).
+  identity is absent from a fight without reinforcements (the review, Claude, 16 October).
+  Ryan's pull (17 October) answers it: mines laid in a quiet round are cashed on a chosen foe.
 - The header shows how many wait (REINF), never who, until the formation view lands (the
   to-do): a mine is laid against a count, not a foe.
 
 ## Open for the session
 
-1. The lock: the buff reworded, or a trigger; the passive's one spend, one mine, and the mines
-   landing after the reinforcement step.
+1. The lock: the pull (a weapon with a blow of its own, or a bare verb; Rapid or not) and the
+   mark's three forms (Claude's lean the third, supplementing the pull); mine stacking everywhere
+   or only by the pull (Ryan's call); the passive's one spend, one mine, and the mines landing
+   after the reinforcement step.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on
