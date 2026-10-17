@@ -942,8 +942,11 @@ func _foe_rows(foe: Foe) -> Array:
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
-	if Effects.has(foe, "folded"):
-		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
+	if Effects.has(foe, "braced"):
+		# Braced, the machines' status (16 October): their chip's glyph, with the armour every
+		# grant adds (its own brace, a Protect).
+		var arm := Effects.foe_armour_bonus(foe)
+		rows.append([status_glyph("braced"), "+%d" % arm, "Braced: armour +%d until its next action" % arm, Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):
@@ -1015,14 +1018,30 @@ func _mech_rows(i: int) -> Array:
 					loop_names.append(m.name)
 		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Palette.SHIELD])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
-	# the fight's statuses live here, as chips that the hold expands into their descriptions).
+	# the fight's statuses live here, as chips that the hold expands into their descriptions),
+	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+	# anything that interacts with overcharged needs it displayed"): devour's stacks kept for
+	# the battle are a chip like a buff's for the round. A chassis passive, a module's rule or
+	# a battle reward that is no status stays in the codex.
+	# One chip a status, counting its stacks from every grant: a timed buff spent in two rounds
+	# is two modifiers, each going when its own rounds run out (16 October), and one status.
+	var order: Array[String] = []
+	var first := {}
+	var total := {}
 	for d in Effects.describe(ms.unit):
-		if int(d[3]) < Effects.SKIRMISH:
-			continue
 		var id := str(d[5])
+		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
+			continue
+		if not first.has(id):
+			order.append(id)
+			first[id] = d
+			total[id] = 0
+		total[id] = int(total[id]) + int(d[4])
+	for id in order:
+		var d: Array = first[id]
 		var glyph := status_glyph(id)
 		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
-		var stacks := int(d[4])
+		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms, _drag_from == i)

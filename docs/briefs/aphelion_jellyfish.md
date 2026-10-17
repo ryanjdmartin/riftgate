@@ -51,9 +51,10 @@ marked Ryan's, and the numbers are the proposal's placeholders.
   would be a different, much bigger rule. Engine: new; no effect today carries a spend's riders
   to the foes beside its target without its damage (Spread, id `cleave`, carries the blow).
 - **The dispel**, decided by Ryan (12 October), its shape open:
-  - What it strips, as proposed: a foe's own buffs, today Folded (Harden), Kindled (Rally) and
-    Getting Back Up (Reraise), which the engine tags `guard`, `rally` and `revive`; later
-    Protect (a planned foe move) and Shell (open for the foes' fresh start, bible section 12).
+  - What it strips, as proposed: a foe's own buffs, today Braced (from a brace; Folded until
+    16 October), Kindled (Rally) and Getting Back Up (Reraise); later Protect's Braced (a
+    planned foe move, a brace on every foe) and Shell (open for the foes' fresh start, bible
+    section 12).
   - In round one Claude had weighed an EMP and dropped it, as a new keyword and because
     stripping Getting Back Up is a hard counter to the Marsh; Ryan overruled both (above), and
     the bible's dispel row keeps Getting Back Up in its reach until play says otherwise.

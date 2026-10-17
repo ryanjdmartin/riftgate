@@ -257,7 +257,13 @@
    "codex": "Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
    "status": "implemented",
    "design": {
-    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke."
+    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.",
+    "table": {
+     "kind": "resistance",
+     "on": "foe",
+     "stacks": "Yes: two a landed suppress, three on a massive foe",
+     "lasts": "A stack fades at each of its turns"
+    }
    }
   },
   {
@@ -267,7 +273,13 @@
    "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped."
+    "holes": "Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: one a debuff gained, a spend; at three it Suppresses and clears",
+     "lasts": "The skirmish; never decays"
+    }
    }
   },
   {
@@ -284,7 +296,7 @@
    "id": "devour",
    "category": "component_property",
    "name": "Devour",
-   "codex": "A rule printed on a weapon (the Soulcutter Talons'). Every foe it kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit). Every foe it kills gives its owner a stack of Overcharged, which the Ammit keeps for the battle.",
    "status": "implemented",
    "design": {
     "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap keeps the stacks for the battle. A keyword until 11 October, when Ryan folded it into a rule on its one carrier."
@@ -387,7 +399,13 @@
    "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always.",
    "status": "implemented",
    "design": {
-    "holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on."
+    "holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one does all it does",
+     "lasts": "The buff's rounds"
+    }
    }
   },
   {
@@ -397,27 +415,45 @@
    "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
    "status": "implemented",
    "design": {
-    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders."
+    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never",
+     "lasts": "Until the next team blow that deals it damage"
+    }
    }
   },
   {
    "id": "overcharged",
    "category": "status",
    "name": "Overcharged",
-   "codex": "Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise.",
+   "codex": "Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts the rounds the component says; from a module it lasts the skirmish, losing a stack at the end of each round; the stacks the Ammit's talons take are kept for the battle and never fade.",
    "status": "implemented",
    "design": {
-    "holes": "The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder."
+    "holes": "The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: +5 a stack",
+     "lasts": "A buff's rounds; a module's the skirmish, a stack fading each round; the Ammit's talons' the battle, never fading"
+    }
    }
   },
   {
    "id": "braced",
    "category": "status",
    "name": "Braced",
-   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. It lasts until the round's end, every stack at once, whatever granted it: buff equipment, a bracing component, a passive.",
+   "codex": "Status. Armour +5 per stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it. On a machine (buff equipment, a bracing component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack. One turn from every source since 12 October (Ryan: a lingering defensive buff would stack into a wall); a passive's stacks had faded one a round before."
+    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack. One turn from every source since 12 October (Ryan: a lingering defensive buff would stack into a wall); a passive's stacks had faded one a round before.",
+    "table": {
+     "kind": "buff",
+     "on": "both",
+     "stacks": "Yes: +5 armour a stack, every stack going at once",
+     "lasts": "A machine's until the round's end; a foe's until its next action"
+    }
    }
   },
   {
@@ -427,7 +463,13 @@
    "codex": "Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name (29 September)."
+    "holes": "Placeholder name (29 September).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a Burning stack a blow per stack",
+     "lasts": "The buff's rounds"
+    }
    }
   },
   {
@@ -437,7 +479,13 @@
    "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "Through the machine's next turn"
+    }
    }
   },
   {
@@ -447,7 +495,13 @@
    "codex": "Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
    "status": "implemented",
    "design": {
-    "holes": "The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK)."
+    "holes": "The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: a bite of 10 a stack",
+     "lasts": "The skirmish"
+    }
    }
   },
   {
@@ -457,7 +511,13 @@
    "codex": "Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round.",
    "status": "planned",
    "design": {
-    "holes": ""
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "both",
+     "stacks": "No",
+     "lasts": "Until the round's end"
+    }
    }
   },
   {
@@ -467,7 +527,13 @@
    "codex": "Status. On a foe: loses 5 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 5 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats.",
    "status": "implemented",
    "design": {
-    "holes": "One word, two effects by body (Ryan, 13 October): the machine side replaced Overheating, whose name the real overheat already had. Engine ids burning (a foe's) and burning_mech (a machine's)."
+    "holes": "One word, two effects by body (Ryan, 13 October): the machine side replaced Overheating, whose name the real overheat already had. Engine ids burning (a foe's) and burning_mech (a machine's).",
+    "table": {
+     "kind": "debuff",
+     "on": "both",
+     "stacks": "Yes: a stack per 10 of our blow, or as many as the foe's move says",
+     "lasts": "Until the stacks run out: one fades at each tick (a foe's action; the end of the player's turn on a machine)"
+    }
    }
   },
   {
@@ -477,7 +543,13 @@
    "codex": "Foe status. Skips its action this round, then clears.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "One action: this round's, or the next if it has acted"
+    }
    }
   },
   {
@@ -1104,7 +1176,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now."
@@ -1197,7 +1269,13 @@
    "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
+    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: one a hull hit, one spent a fist",
+     "lasts": "The skirmish; never decays"
+    }
    }
   },
   {
@@ -1207,7 +1285,13 @@
    "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
+    "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a load a foe the claw reaches, up to three spent a shot",
+     "lasts": "The skirmish; never decays"
+    }
    }
   },
   {
@@ -1217,7 +1301,109 @@
    "codex": "Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
    "status": "implemented",
    "design": {
-    "holes": "Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers."
+    "holes": "Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: 5 hotter a stack",
+     "lasts": "Until the end of the player's turn, every stack at once"
+    }
+   }
+  },
+  {
+   "id": "kindled",
+   "category": "status",
+   "name": "Kindled",
+   "codex": "Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed.",
+   "status": "implemented",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "Yes: each rally's value adds",
+     "lasts": "The next round"
+    }
+   }
+  },
+  {
+   "id": "risen",
+   "category": "status",
+   "name": "Getting Back Up",
+   "codex": "Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed.",
+   "status": "implemented",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "Until it falls; it returns once"
+    }
+   }
+  },
+  {
+   "id": "scrambled",
+   "category": "status",
+   "name": "Scrambled",
+   "codex": "Machine status. The die's next reroll may land anywhere, the same entry included.",
+   "status": "implemented",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "Until the die's next reroll, or the next round's end"
+    }
+   }
+  },
+  {
+   "id": "guarded",
+   "category": "status",
+   "name": "Guarded",
+   "codex": "Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe.",
+   "status": "implemented",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "While its parts stand"
+    }
+   }
+  },
+  {
+   "id": "barrier",
+   "category": "status",
+   "name": "Barrier",
+   "codex": "Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once.",
+   "status": "planned",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "Until the next blow a foe lands on it, or the round's end"
+    }
+   }
+  },
+  {
+   "id": "ward",
+   "category": "status",
+   "name": "Ward",
+   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.",
+   "status": "planned",
+   "design": {
+    "holes": "",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
+    }
    }
   },
   {

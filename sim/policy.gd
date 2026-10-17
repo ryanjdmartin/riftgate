@@ -416,7 +416,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 		var dmg: int = v + fired
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
-		# armour comes off every blow, so a hardened foe is worth less to a volume weapon.
+		# armour comes off every blow, so a braced foe is worth less to a volume weapon.
 		var arm := target.armour_total() if target != null else 0
 		var first := maxi(0, (Effects.damage_taken(target, dmg) if target != null else dmg) - arm)
 		out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])

@@ -22,7 +22,10 @@ Every number is a placeholder; the names below are working names except Vitriol 
   down, so it never finishes a foe and never sets off a last act. The keyword and the chip
   share the word.
 - **The web** (locked): "Webs a foe. After its action the web bursts: it and the next foe to
-  act beside it are Suppressed." Direct, no damage, heat 0. Its cooldown is the open item.
+  act beside it are Suppressed." Direct, no damage, heat 0. Its cooldown is the open item. A
+  foe the team has already suppressed this round gains nothing from the burst on itself
+  (Suppressed never stacks and never carries, Ryan, 17 October), so the team's stun and the
+  web go on different foes.
 - **No fangs** (Ryan, 17 October).
 - **Chassis**: medium walker, move 30; hull 110, shield 40, armour 5, heat 60, cooling 5,
   field recharge 20 (in band: the Baboon 100/40/0, the Ammit 120/40/5). Four hardpoints, a d5.
@@ -128,9 +131,10 @@ Every number is a placeholder; the names below are working names except Vitriol 
   Paradox and the Susceptibility Tensor read it), which Ryan's frame accepts.
 - **The web, weighed as hard control** (the stun row): the shapes weighed and why each falls
   short are on the bench below. Why Ryan's web survives: delayed (one action lands first), no
-  damage, Numbed's equilibrium on a boss, and since 17 October a second suppress on a lost
-  action does nothing, so the web and the team's stuns can't be laid on one foe for a longer
-  hold. Its two uses differ, and that is the decision: web the foe left of the threat and the
+  damage, Numbed's equilibrium on a boss, and Suppressed never stacking and never carrying
+  (Ryan, 17 October: "That way lies madness"), so the web and the team's stuns can't be laid
+  on one foe for a longer hold, a second suppress on a suppressed foe being wasted. Its two
+  uses differ, and that is the decision: web the foe left of the threat and the
   threat skips now (safety); web the boss and its blow lands now, it is held next round, and
   next round it shows no intent, a window. Direct to start; Indirect is a later lever. It also
   holds a boss's countdown a round.
@@ -163,10 +167,11 @@ damage) is the stun row's and the stock pass's.
 - **It waits on the elites** (above). The alternative, a floor on Vitriol's tick, is a second
   number and makes it Burning on small foes.
 - **The stunlock with the Baboon**: the web's chip, its burst and a bite are three debuffs on
-  one foe in a round, a Paradox trip, and a Paradox carrying onto a suppressed foe takes the
-  action after next; one web and one bite could hold a boss for two consecutive actions, and
-  Numbed (web 3, trip 3) makes the second cycle about 70% likely. Softer if the Paradox's
-  threshold rises (Ryan: it may). The boss cells must read it; the web's cooldown is the lever.
+  one foe in a round, a Paradox trip; since Suppressed never carries (Ryan, 17 October) a trip
+  on the webbed foe is wasted, so one web and the Baboon hold a boss for one action, not two,
+  and the stunlock is the web every few rounds with the Baboon's trips on the foes beside it.
+  Softer still if the Paradox's threshold rises (Ryan: it may). The boss cells must read it;
+  the web's cooldown is the lever.
 - The condition sits behind a hold (the chip row shows action and number, not target): the
   predator sense answers it.
 - Its own shield buys windows through the exposed weighting, which the player sees as arrows,
@@ -222,8 +227,10 @@ threat; with no foe to its right the burst catches the one to its left. The next
 neighbour over a random one (noise in the enemy's turn) or a picked one (a gesture); both
 neighbours was Ryan's lever if it proved weak. Edge cases, carried to the locked web: Numbed is
 checked at the burst, each foe for itself; a webbed foe killed before its turn takes its web
-with it; a webbed foe already Suppressed skips and its web still bursts at its turn's end,
-costing its next action. Its webs then came from Suppress pieces of any maker on its
+with it; a webbed foe already Suppressed by the team skips, and its web still bursts at its
+turn's end for the neighbour while the suppress on itself is wasted (Suppressed never stacks
+and never carries, Ryan, 17 October), so the team's stun and the web go on different foes. Its
+webs then came from Suppress pieces of any maker on its
 hardpoints; the go reworked that into the ambush and the locked web (14 October), and 17
 October settled the rest above.
 

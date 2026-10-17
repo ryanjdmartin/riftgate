@@ -394,6 +394,11 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "module":
 			head += " (MODULE)"
 			kind = "module"
+		elif d[3] == Effects.BATTLE and Effects.is_status(str(d[5])):
+			# A status the battle keeps (the Ammit's Overcharged, 16 October) is no reward: its
+			# count and how long it lasts, inked like what the battle has given.
+			head += "%s (KEPT FOR THE BATTLE)" % (" ×%d" % int(d[4]) if int(d[4]) > 1 else "")
+			kind = "reward"
 		elif d[3] == Effects.BATTLE:
 			head += " (REWARD)"
 			kind = "reward"
@@ -1140,6 +1145,13 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+				# A brace is armour in stacks of Braced (16 October), so its value is a positive
+				# multiple of a stack's armour: nothing is lost to the division.
+				if effect == "brace" or effect == "brace_all":
+					var step := maxi(1, Effects.braced_armour())
+					var v := int(a.get("value", 0))
+					if v <= 0 or v % step != 0:
+						errs.append("%s: a brace's value is armour in stacks of Braced, +%d a stack: a positive multiple of %d, got %d" % [aw, step, step, v])
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 				for key in ["factor", "strikes", "keywords", "countdown"]:

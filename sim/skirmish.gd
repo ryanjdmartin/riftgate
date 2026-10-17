@@ -125,7 +125,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "regrow_ally", "harden_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -301,7 +301,7 @@ func _refresh_allies() -> void:
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
-## not suppressed, aimed at it with an attack (a foe folding, rallying or roaring lands no
+## not suppressed, aimed at it with an attack (a foe bracing, rallying or roaring lands no
 ## blow), and not about to die to burn first.
 func attackers_of(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
@@ -1085,9 +1085,22 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
+			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
+			var spills := f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive()
+			if spills and not was_alive:
+				# A later strike on a foe an earlier strike of this spend killed (Ryan, 15 October:
+				# "All its damage or subsequent strikes spill over"): the fallen foe takes nothing
+				# more, its armour included, and the strike's whole number goes on behind it; with
+				# nothing standing there, it is lost. The blow's record counts it whole, as it
+				# counts the killing strike's excess.
+				_spill(ms, f, foe, dmg, hit)
+				if foe == target:
+					landed = dmg
+				continue
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
-			# small blows bounce off a hardened foe the way they do off a heavy machine.
+			# small blows bounce off a braced foe the way they do off a heavy machine.
 			var taken := Effects.damage_taken(foe, dmg)
 			var foe_armoured := mini(taken, foe.armour_total())
 			taken -= foe_armoured
@@ -1102,19 +1115,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.devours:
 				_devour(ms, foe)
-			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
-			# foe behind it in the column, as plain damage that still spends a shock and
-			# feeds a devour. A massive foe fills its column, so nothing stands behind it.
-			if was_alive and not foe.alive() and f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive():
-				var spill := taken - hp_before
-				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
-					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
-					behind.hp -= behind_taken
-					Effects.remove(behind, "shocked")
-					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-					if not behind.alive() and f.devours:
-						_devour(ms, behind)
+			# The killing strike: what it had past the kill carries on.
+			if spills and was_alive and not foe.alive():
+				_spill(ms, f, foe, taken - hp_before, hit)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
 				_note_status(gained, foe, "burning")
@@ -1198,14 +1201,15 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 	_seq += 1
 	match effect:
-		"harden":
-			# Armour for a turn: the status carries the action's own number, flat off every blow,
-			# and fades at the foe's next action like the half it replaced.
-			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
-			guard["effects"][0]["value"] = maxi(0, value)
-			guard["description"] = "Armour +%d until its next action." % maxi(0, value)
-			Effects.stack(f, guard, Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
-			log.append("%s: %s (armour +%d until its next action)" % [f.display_name, str(a.get("name", "hardens")), maxi(0, value)])
+		"brace":
+			# Braced, the machines' status (Ryan, 16 October: an effect and the buff it creates
+			# share a name): the move's value in stacks of armour +5, flat off every blow, every
+			# stack going at once at the foe's next action (its tick), as a foe's armour from a
+			# defend always lasted.
+			var n := Effects.brace_stacks(value)
+			if n > 0:
+				Effects.stack(f, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
+			log.append("%s: %s, Braced ×%d (armour +%d until its next action)" % [f.display_name, str(a.get("name", "braces")), n, n * Effects.braced_armour()])
 		"regrow":
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
@@ -1223,19 +1227,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				var before := hurt.hp
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
 				log.append("%s: %s, %s regrows %d" % [f.display_name, str(a.get("name", "cures")), hurt.display_name, hurt.hp - before])
-		"harden_all":
-			# Armour on every foe in the fight through the next round, so it stands through the
+		"brace_all":
+			# Braced on every foe in the fight through the next round, so it stands through the
 			# player's turn and is gone when the enemy acts again: its next action, as the
-			# player sees it, which a per-foe fade would cut short for foes acting after it.
-			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
-			guard["effects"][0]["value"] = maxi(0, value)
-			guard["description"] = "Armour +%d through the next round." % maxi(0, value)
-			var guarded := 0
+			# player sees it, which going at each foe's own tick would cut short for the foes
+			# acting after it.
+			var n := Effects.brace_stacks(value)
+			var braced := 0
 			for other in field_foes():
-				if other.alive():
-					Effects.grant_for_rounds(other, guard, "foe:" + f.content_id, round + 1)
-					guarded += 1
-			log.append("%s: %s, armour +%d on %d of its own" % [f.display_name, str(a.get("name", "protects")), maxi(0, value), guarded])
+				if other.alive() and n > 0:
+					Effects.stack(other, Effects.STATUS["braced"], Effects.ROUNDS, "foe:" + f.content_id, n, Effects.DECAY_NONE, round + 1)
+					braced += 1
+			log.append("%s: %s, %d of its own Braced ×%d (armour +%d through the next round)" % [f.display_name, str(a.get("name", "protects")), braced, n, n * Effects.braced_armour()])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
@@ -1364,6 +1367,23 @@ func _shock(foe: Foe, by: MechState) -> void:
 	_foe_gained_status(foe, "shocked")
 
 
+## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
+## behind it in the column as plain damage, through that foe's own damage taken and its armour;
+## it spends a shock and feeds a devour, and carries no other keyword of the blow. A foe behind
+## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
+## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
+func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> void:
+	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
+	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
+		return
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount) - behind.armour_total())
+	behind.hp -= behind_taken
+	Effects.remove(behind, "shocked")
+	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
+	if not behind.alive() and f.devours:
+		_devour(ms, behind)
+
+
 ## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
 ## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
 ## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
@@ -1392,23 +1412,36 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 	return n + extra
 
 
-## Suppress: the foe skips its action this round, then grows Numbed (two stacks, three for
-## a massive foe). It resists at its own base resistance plus 10% a stack, on the
-## skirmish's own die (Ryan, 26 September): a suppress it shrugs off does nothing at all
-## and numbs it no further, and Numbed loses a stack at each of the foe's turns, so a stun
-## repeated on one foe stops landing while stuns spread across the formation keep working.
-## `carry`: a foe already suppressed loses its next action instead (a Paradox tripping on
-## it, 10 October), so the knock-out is never spent on an action already lost.
-func _suppress(foe: Foe, carry: bool = false) -> bool:
+## Suppress: the foe loses its next action (this round's, or the next round's when it has
+## already acted this turn), then grows Numbed (two stacks, three for a massive foe). It
+## resists at its own base resistance plus 10% a stack, on the skirmish's own die (Ryan, 26
+## September): a suppress it shrugs off does nothing at all and numbs it no further, and
+## Numbed loses a stack at each of the foe's turns, so a stun repeated on one foe stops
+## landing while stuns spread across the formation keep working. A foe already suppressed
+## gains nothing more, Numbed included: Suppressed never stacks and never carries (Ryan, 17
+## October: "Suppressed is suppressed - they lose their next action. It does not stack, it
+## does not carry"), so a Paradox tripping on a suppressed foe is wasted, its meter spent.
+func _suppress(foe: Foe) -> bool:
+	# A foe that has already acted this turn loses its next action instead of one it has taken.
+	var next := _acted.has(foe)
+	if _suppressed_through(foe, round + 1 if next else round):
+		log.append("%s is already suppressed" % foe.display_name)
+		return false
 	var resist := foe.resist_total()
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
-	# A foe that has already acted this turn loses its next action instead of one it has taken.
-	var next := _acted.has(foe) or (carry and foe.is_suppressed())
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
+
+
+## Is the foe's action of round `r` already lost to a Suppressed it carries?
+func _suppressed_through(foe: Foe, r: int) -> bool:
+	for m in Effects.live(foe):
+		if m.id == "suppressed" and (m.expires_round < 0 or m.expires_round >= r):
+			return true
+	return false
 
 
 ## The count that knocks a foe out through Paradox: the lowest any live machine runs, or 0 when
@@ -1448,7 +1481,7 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		if Effects.stacks_of(foe, "paradox") >= meter[1]:
 			Effects.remove(foe, "paradox")
 			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, ms.unit.display_name])
-			_suppress(foe, true)
+			_suppress(foe)
 			return
 
 

@@ -14,7 +14,10 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 462 tests, 19,765 checks, green on main (15 October, the boss mechanics).
+- Tests: 478 tests, 19,906 checks, green on the Kestrel session's branch with main merged in
+  (17 October: the Augur's test and the Cleric with the Wild Boar's spill, timed stacks keeping
+  their own rounds, every status a chip, Folded become Braced, the stacking policy and the
+  re-suppress rule); 462 and 19,765 on main (the boss mechanics).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -224,16 +227,24 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.191 (17 October), the parallel sessions' publishes over main's
-  v0.188; main's file is v0.189 (17 October, the funnel-web session's lines: the spider
-  settled in the Wainwright & Sutler row, the price-over-scarcity lean in the stun row, the
-  riders note in the Barrier row, the time-shifter parked in the Aphelion row), unpublished:
-  the next publish reads the live page through and merges onto it. v0.188 was main's rows (the
-  Augur in the Necromancer's place, the Cleric with its promoted form's Reraise on its allies,
-  the Martial Artist kept) merged onto the `zealous-cori` branch's v0.187, whose generated
-  vocabulary tables were regenerated against main's content with that branch's script and
-  vocabulary in a scratch layout (the script is not on main yet). Main's file carries the
-  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Main's file is v0.192 (17 October, the
+  funnel-web session's lines: the spider settled in the Wainwright & Sutler row, Ryan's
+  price-over-scarcity lean in the stun row, his riders note in the Barrier row, the
+  time-shifter parked in the Aphelion row), unpublished until the spider's go, when the live
+  page is read through and the publish merges onto it. Live: v0.191 (17 October), published
+  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
+  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
+  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
+  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
+  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
+  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
+  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, the enemy-cleanse question; the bomber's pull and mark). Main's file carried
+  v0.188, the same rows without that branch's, until the branch merged on 17 October and
+  brought the script with it.
+  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
+  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
+  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
+  maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
