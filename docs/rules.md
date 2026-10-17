@@ -189,16 +189,16 @@ On a machine:
 On a foe:
 - **Burning** (debuff): 5 damage a stack at the start of its action, past armour, then a
   stack fades. It never stops healing.
-- **Suppressed** (debuff): it skips its action this round; landed on a foe that has already
-  acted, or by a Paradox on a foe already suppressed, it costs the next action instead. It
-  never stacks: a second suppress on an action already lost does nothing, and numbs it no
-  further.
+- **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
+  it has already acted this turn. It never stacks and never carries: a second suppress on a
+  foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
-  (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox
-  causes adds none; a weapon's Suppressed does.
+  (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
+  either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
+  Suppressed does.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.

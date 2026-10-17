@@ -178,6 +178,14 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   on a foe, so the Paradox meter would count it (Lure counts for nothing, being no status), a
   cheap Paradox stack every other round beside a Baboon. Lean: it counts, one rule, until the
   pairing proves cheesy in play.
+- Ryan, 17 October, the third round: the pull's question was never whether a shot of its own
+  would lay a mine (the passive's rule), but whether the component needs one. The Paradox is no
+  worry: "it can be tuned for the final ecosystem. Paradox's existence shouldn't dictate the
+  game." Marked counts.
+- Claude, 17 October: it needs none. The pull's work is gathering and setting off; with nothing
+  laid it is the dead spend Ryan allows, and a shot of its own would be a floor bolted on, not
+  a part of the design, and would blur what the entry is (a tool, not a gun). Lean: no damage.
+  The number is Ryan's.
 
 ## Holes already raised
 
@@ -189,10 +197,11 @@ floor for its tier. Levers if weak: a laid shot striking twice.
 
 ## Open for the session
 
-1. The pull's damage, and whether Marked feeds the Paradox; the mark Rapid with a cooldown of
-   1 (Claude's lean) or a full action. Decided 17 October: the pull an Indirect weapon, never
-   Rapid; mines stack and blow in laid order; the mark in its third form (the next weapon to
-   kill the marked foe leaves its shot in the slot), the second if it proves too strong.
+1. The pull's damage (Claude's lean: none, a bare verb); the mark Rapid with a cooldown of 1
+   (Claude's lean) or a full action. Decided 17 October: the pull Indirect, never Rapid; mines
+   stack and blow in laid order; the mark in its third form (the next weapon to kill the marked
+   foe leaves its shot in the slot), the second if it proves too strong; Marked feeds the
+   Paradox like any status, tuned later.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on

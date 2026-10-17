@@ -1432,9 +1432,9 @@ func test_suppress_skips_the_action_and_numbs() -> void:
 
 func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
 	# Ryan, 17 October: "A suppressed foe should not gain numbed from being re-supressed, since
-	# suppressed doesn't stack." The second spend is wasted and numbs it no further; a Paradox
-	# carrying onto a suppressed foe still takes its next action, a second stun, and numbs it
-	# for that one.
+	# suppressed doesn't stack." The second spend is wasted and numbs it no further, and nothing
+	# carries: "Suppressed is suppressed - they lose their next action. It does not stack, it
+	# does not carry." A Paradox tripping on a suppressed foe is wasted the same way.
 	var sk := Skirmish.new(1)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
 	var b := _mech("B", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
@@ -1455,14 +1455,12 @@ func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
 			grants += 1
 	assert_eq(grants, 1, "and leaves one Suppressed, never two")
 	assert_true("\n".join(sk.log).contains("already suppressed"), "the log says the spend was wasted")
-	assert_true(sk._suppress(g, true), "a Paradox carrying onto it lands")
-	assert_eq(Effects.stacks_of(g, "numbed"), 4, "and numbs it: a second action lost")
+	assert_false(sk._suppress(g), "a Paradox's trip on it is a suppress like any other: wasted")
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "and numbs it no further")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(g, "numbed"), 3, "a stack faded at its turn")
+	assert_eq(Effects.stacks_of(g, "numbed"), 1, "a stack faded at its turn")
 	sk.start_round()
-	assert_true(g.is_suppressed(), "suppressed next round too, by the carry")
-	assert_false(sk._suppress(g), "a plain suppress on that action, already lost, does nothing")
-	assert_eq(Effects.stacks_of(g, "numbed"), 3, "and numbs it no further")
+	assert_false(g.is_suppressed(), "it lost the one action and nothing carried into the next round")
 
 
 func test_a_status_stacks_renews_or_never_stacks_as_its_definition_says() -> void:
@@ -2016,7 +2014,8 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(Effects.stacks_of(g, "paradox"), 1, "two rounds on, the stack still stands")
-	# A weapon's suppress is a status gained; a trip on a foe already suppressed takes its next action.
+	# A weapon's suppress is a status gained; a trip on a foe already suppressed is wasted, the
+	# meter spent (Ryan, 17 October: Suppressed never stacks and never carries).
 	var s2 := Skirmish.new(2)
 	var m2 := _mech("B", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
 	m2.grant_passive(meter)
@@ -2031,11 +2030,13 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	Effects.remove(g2, "numbed")   # no resistance, so the trip is certain
 	s2._foe_gained_status(g2, "burning")
 	s2._foe_gained_status(g2, "shocked")
-	assert_eq(Effects.stacks_of(g2, "paradox"), 0, "tripped")
+	assert_eq(Effects.stacks_of(g2, "paradox"), 0, "tripped, and the meter is spent on a foe already suppressed")
+	assert_true("\n".join(s2.log).contains("already suppressed"), "the trip was wasted on it")
+	assert_eq(Effects.stacks_of(g2, "numbed"), 0, "and numbed it no further")
 	s2.end_round()
 	assert_eq(m2.hull, 100, "suppressed this round")
 	s2.start_round()
-	assert_true(g2.is_suppressed(), "and, already suppressed when it tripped, it loses its next action too")
+	assert_false(g2.is_suppressed(), "and nothing carried: it lost the one action")
 	# A machine that deepens what it applies deepens Paradox, so it trips sooner.
 	var s3 := Skirmish.new(3)
 	var m3 := _mech("C", Die.single(Face.attack(20, L, K.BURN)), 40, 100)

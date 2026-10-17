@@ -1412,19 +1412,18 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 	return n + extra
 
 
-## Suppress: the foe skips its action this round, then grows Numbed (two stacks, three for
-## a massive foe). It resists at its own base resistance plus 10% a stack, on the
-## skirmish's own die (Ryan, 26 September): a suppress it shrugs off does nothing at all
-## and numbs it no further, and Numbed loses a stack at each of the foe's turns, so a stun
-## repeated on one foe stops landing while stuns spread across the formation keep working.
-## `carry`: a foe already suppressed loses its next action instead (a Paradox tripping on
-## it, 10 October), so the knock-out is never spent on an action already lost. A foe already
-## suppressed for the action this would take gains nothing more, Numbed included (Ryan, 17
-## October: Suppressed never stacks, so a second suppress is no second stun); the carry onto
-## a suppressed foe takes its next action, a second stun, and numbs it for that one.
-func _suppress(foe: Foe, carry: bool = false) -> bool:
+## Suppress: the foe loses its next action (this round's, or the next round's when it has
+## already acted this turn), then grows Numbed (two stacks, three for a massive foe). It
+## resists at its own base resistance plus 10% a stack, on the skirmish's own die (Ryan, 26
+## September): a suppress it shrugs off does nothing at all and numbs it no further, and
+## Numbed loses a stack at each of the foe's turns, so a stun repeated on one foe stops
+## landing while stuns spread across the formation keep working. A foe already suppressed
+## gains nothing more, Numbed included: Suppressed never stacks and never carries (Ryan, 17
+## October: "Suppressed is suppressed - they lose their next action. It does not stack, it
+## does not carry"), so a Paradox tripping on a suppressed foe is wasted, its meter spent.
+func _suppress(foe: Foe) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken.
-	var next := _acted.has(foe) or (carry and foe.is_suppressed())
+	var next := _acted.has(foe)
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -1482,7 +1481,7 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		if Effects.stacks_of(foe, "paradox") >= meter[1]:
 			Effects.remove(foe, "paradox")
 			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, ms.unit.display_name])
-			_suppress(foe, true)
+			_suppress(foe)
 			return
 
 
