@@ -1271,7 +1271,7 @@
    "design": {
     "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
     "table": {
-     "kind": "store",
+     "kind": "buff",
      "on": "machine",
      "stacks": "Yes: one a hull hit, one spent a fist",
      "lasts": "The skirmish; never decays"
@@ -1287,7 +1287,7 @@
    "design": {
     "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
     "table": {
-     "kind": "store",
+     "kind": "buff",
      "on": "machine",
      "stacks": "Yes: a load a foe the claw reaches, up to three spent a shot",
      "lasts": "The skirmish; never decays"

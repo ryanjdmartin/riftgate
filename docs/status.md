@@ -222,14 +222,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.189 (17 October), published from the
+  `docs/design-bible.html` after every change. Live: v0.190 (17 October), published from the
   Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
   16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
   place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
   Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
   on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
   become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; and 17 October's stacking policy and re-suppress rule). Main's own file
+  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule; the bomber's pull and mark). Main's own file
   says v0.188, the same rows without this branch's, and the script is on this branch alone.
   Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
   live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse

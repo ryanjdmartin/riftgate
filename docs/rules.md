@@ -320,8 +320,9 @@ same status in the same scope stacks: an add counts per stack, a multiply applie
 and a ticking status loses a stack at its owner's turn; a timed one stacks only with a grant
 that ends the same round, so each grant's stacks go when its own rounds run out. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its
-count the larger (Suppressed, Retaliate); one that never stacks ignores a second grant
-(Shocked, Getting Back Up, Guarded, Scrambled). Nothing writes to a stat.
+count the larger (Suppressed, Retaliate), which on an untimed one-stack status (Shocked,
+Getting Back Up, Guarded, Scrambled) means a second grant changes nothing. Nothing writes to
+a stat.
 
 ## The battlefield
 

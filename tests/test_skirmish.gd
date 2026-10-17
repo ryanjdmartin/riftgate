@@ -1468,8 +1468,9 @@ func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
 func test_a_status_stacks_renews_or_never_stacks_as_its_definition_says() -> void:
 	# Ryan, 17 October: renewal without stacking "should be supported, since that's a pretty
 	# common thing for a powerful or non-number-related buff to do". A status's definition
-	# names it: add (the default: a stack a grant, a timed grant keeping its own end), renew
-	# (one grant, its end the later and its count the larger) or never (a second grant ignored).
+	# names it: add (the default: a stack a grant, a timed grant keeping its own end) or renew
+	# (one grant, its end the later and its count the larger; on an untimed one-stack status a
+	# second grant then changes nothing, which is all "never stacks" ever meant).
 	var m := _mech("A", Die.single(Face.attack(20, L)))
 	var steady := {"id": "steady", "name": "Steady", "description": "", "stacking": "renew", "tags": ["buff"],
 		"effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]}
@@ -1494,17 +1495,17 @@ func test_a_status_stacks_renews_or_never_stacks_as_its_definition_says() -> voi
 	Effects.end_round(m, 7)
 	assert_eq(Effects.stacks_of(m, "steady"), 1, "to the later end")
 	Effects.end_round(m, 8)
-	var once := {"id": "once", "name": "Once", "description": "", "stacking": "never", "tags": ["buff"], "effects": []}
+	var once := {"id": "once", "name": "Once", "description": "", "stacking": "renew", "tags": ["buff"], "effects": []}
 	Effects.stack(m, once, Effects.SKIRMISH, "x", 1, Effects.DECAY_NONE)
-	Effects.stack(m, once, Effects.SKIRMISH, "y", 3, Effects.DECAY_NONE)
-	assert_eq(Effects.stacks_of(m, "once"), 1, "a status that never stacks ignores a second grant")
+	Effects.stack(m, once, Effects.SKIRMISH, "y", 1, Effects.DECAY_NONE)
+	assert_eq(Effects.stacks_of(m, "once"), 1, "an untimed one-stack status renewed is one stack")
 	var again := 0
 	for mod in m.modifiers:
 		if mod.id == "once":
 			again += 1
-	assert_eq(again, 1, "one grant of it")
-	# The engine's own: Shocked never stacks, Suppressed and Retaliate renew, Overcharged adds.
-	assert_eq(Effects.status_stacking(Effects.STATUS["shocked"]), "never", "Shocked never stacks")
+	assert_eq(again, 1, "and one grant of it: never stacking is renewing with nothing to renew")
+	# The engine's own: Shocked, Suppressed and Retaliate renew, Overcharged adds.
+	assert_eq(Effects.status_stacking(Effects.STATUS["shocked"]), "renew", "Shocked renews, one stack")
 	assert_eq(Effects.status_stacking(Effects.STATUS["suppressed"]), "renew", "Suppressed renews")
 	assert_eq(Effects.status_stacking(Effects.STATUS["retaliate"]), "renew", "Retaliate renews")
 	assert_eq(Effects.status_stacking(Effects.STATUS["overcharged"]), "add", "Overcharged adds")

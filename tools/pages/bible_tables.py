@@ -9,7 +9,7 @@ leaves the rest of the file as it is.
 
 A status's effect is its vocabulary codex, the text the player reads; its kind, where it
 lands, how it stacks and how long it lasts are its vocabulary entry's design.table (the
-# stacking word checked against the engine's policy on the status: add, renew or never). Who grants
+# stacking word checked against the engine's policy on the status: add or renew). Who grants
 it is counted from content through the engine's words below, and its reach follows: unique
 when only chassis passives or locked components grant it, or on the foes' side when one foe
 alone has the move; global otherwise. A keyword's counts are the components carrying it,
@@ -54,7 +54,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on")))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all", "countdown", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above)."}
-KIND_ORDER = {"buff": 0, "store": 1, "debuff": 2, "resistance": 3}
+KIND_ORDER = {"buff": 0, "debuff": 1, "resistance": 2}
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
 
@@ -279,12 +279,12 @@ def main():
     for s in sorted({ENGINE_ALIASES.get(s, s) for s in engine} - {e["id"] for e in entries}):
         print("warning: the engine status '%s' has no design.table in content/vocabulary.json" % s, file=sys.stderr)
     # The table's stacking word against the engine's policy on the status (its "stacking":
-    # add, renew or never; 17 October), so the table never says what the code does not do.
+    # add or renew; 17 October), so the table never says what the code does not do.
     policies = {}
     for sid, line in re.findall(r'^\t"([a-z_]+)": (\{"id": "[a-z_]+", "name".*)$', effects, re.M):
         found = re.search(r'"stacking": "([a-z]+)"', line)
         policies[sid] = found.group(1) if found else "add"
-    words = {"Yes": ("add",), "No": ("never", "renew"), "Never": ("never",), "Renews": ("renew",)}
+    words = {"Yes": ("add",), "No": ("renew",), "Never": ("renew",), "Renews": ("renew",)}
     aliases = {}
     for eng, voc in ENGINE_ALIASES.items():
         aliases.setdefault(voc, []).append(eng)

@@ -156,6 +156,29 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   by a tick leaves nothing (finish it with a gun). Lean: the third, supplementing the pull: mark
   the escort, kill it, pull its mine onto the boss.
 
+- Ryan, 17 October, the second round: the mines blow in laid order ("The player probably doesn't
+  care anyway, might as well build the fair version"). No Rapid on the pull, "for sure"; it is
+  an Indirect weapon, its damage yet to be determined, and whether a pull with damage also lays
+  a mine was the uncertainty; a dead spend is no complete no-go ("technically a mech at no heat
+  could roll a vent 4 times and still be left with a dead spend"). Mines stack: "Stacking is a
+  pretty big tempo loss, and you need a spot empty for multiple turns, so I don't think it
+  would be abusable anyway without a lot more rank shuffling in the game. Or a hypothetical
+  reinforcement preventer, which I'm still unsure about." The mark is tried in its third form,
+  the second if it proves too strong; whether it carries Rapid, has value as a support action
+  alone, or needs another rider, is the question.
+- Claude, 17 October: a weapon spent on an empty slot lays its shot by the passive's own rule,
+  so a pull with damage lays its shot there and gathers the rest into it, one rule and no
+  exception; a pull of no damage gathers alone, and one with nothing laid is the dead spend
+  Ryan allows. The mark's Rapid: as a full action a mark costs the spend a laid mine would, for
+  a mine a teammate's kill has to lay (a bigger shot, a Sparrowhawk's doubled Railgun say, and
+  no empty slot needed in advance, but a gamble on the kill), so alone it rarely beats laying
+  one; Rapid with a cooldown of 1, as Ryan first wrote it, is what makes it worth carrying, a
+  free mark every other round paid for by the die's free reroll, and the pull is the rider
+  that makes every mine pay, so it needs no other. A hole: Marked is a status the team puts
+  on a foe, so the Paradox meter would count it (Lure counts for nothing, being no status), a
+  cheap Paradox stack every other round beside a Baboon. Lean: it counts, one rule, until the
+  pairing proves cheesy in play.
+
 ## Holes already raised
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
@@ -166,10 +189,10 @@ floor for its tier. Levers if weak: a laid shot striking twice.
 
 ## Open for the session
 
-1. The lock: the pull (a weapon with a blow of its own, or a bare verb; Rapid or not) and the
-   mark's three forms (Claude's lean the third, supplementing the pull); mine stacking everywhere
-   or only by the pull (Ryan's call); the passive's one spend, one mine, and the mines landing
-   after the reinforcement step.
+1. The pull's damage, and whether Marked feeds the Paradox; the mark Rapid with a cooldown of
+   1 (Claude's lean) or a full action. Decided 17 October: the pull an Indirect weapon, never
+   Rapid; mines stack and blow in laid order; the mark in its third form (the next weapon to
+   kill the marked foe leaves its shot in the slot), the second if it proves too strong.
 2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
 
 ## Waits on
