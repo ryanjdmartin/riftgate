@@ -14,9 +14,10 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 476 tests, 19,880 checks, green on the Kestrel session's branch with main merged in (16 October, the Augur's test with the
-  Wild Boar's spill, timed stacks keeping their own rounds, every status a chip and Folded
-  become Braced); 462 and 19,765 on main (the boss mechanics).
+- Tests: 478 tests, 19,906 checks, green on the Kestrel session's branch with main merged in
+  (17 October: the Augur's test and the Cleric with the Wild Boar's spill, timed stacks keeping
+  their own rounds, every status a chip, Folded become Braced, the stacking policy and the
+  re-suppress rule); 462 and 19,765 on main (the boss mechanics).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -115,7 +116,7 @@ document's job and every command are in `README.md`.
   Dia, Cure and Holy, Ryan's three, its Protect parked). On 16 October the Augur (Clair
   Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
   bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
-  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The Summoner's summons are its moves,
+  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The White Mage is the Cleric (id kept), its promoted form's one move more Reraise on its allies, planned (Ryan, 16 October). The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
@@ -221,18 +222,19 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.187 (16 October), published from the
-  Kestrel session's branch with main merged in: main's rows (the Priest folded into the White
-  Mage, the Martial Artist kept, the Augur in the Necromancer's place, the Reraise question, the
-  White Mage's Cure live, the Summoner's Norse names) with the Kestrel session's (the Boar's
-  spill, the keyword budget retired, Ryan's rules on random and on overlap, section 12's Chain
-  rework, and section 6's vocabulary: the naming convention, Folded become Braced, every status
-  a chip, and the two tables `tools/pages/bible_tables.py` writes from the merged content; the
-  script is on that branch, not yet on main). Main's own file says v0.186, the same rows
-  without the review's corrections. Before that, v0.184 and v0.183 from the same branch over
-  v0.182 as other sessions left it live (the die's place numeral, rerolls onto a copy, Rapid's
-  limiter, the benches' Norse summons, the Wake Diffuser's question), and v0.175, main's file:
-  the budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Live: v0.189 (17 October), published from the
+  Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
+  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
+  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
+  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
+  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
+  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
+  the merged content; and 17 October's stacking policy and re-suppress rule). Main's own file
+  says v0.188, the same rows without this branch's, and the script is on this branch alone.
+  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
+  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
+  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
+  maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
@@ -252,7 +254,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions). Its database
+  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
+  Cleric (foes). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
