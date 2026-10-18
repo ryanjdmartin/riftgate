@@ -49,7 +49,11 @@ name, as the Thief keeps its own, and every look is ours.
   hood (the first round drew a hooded coat), the blades bigger, both hands on the haft; so a
   sleeveless jerkin of dark green leather over a grey shirt, trousers and boots, bare-headed, the
   bone charms kept, no cards. The second round: fresh takes, image to image from the take he
-  called closest (the level hold, 7), and the chibi redrawn the same way.
+  called closest (the level hold, 7), and the chibi redrawn the same way; his notes on it (18
+  October): the tunics have to go too (3 picked as the base), the blades read as hooks, and the
+  chibi's 4 is closest on the weapon. The third round: a short jerkin and trousers, the blades long
+  sweeping crescents, image to image from his two picks at strength 0.5 beside fresh takes, one
+  set each.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is

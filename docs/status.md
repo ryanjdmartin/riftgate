@@ -331,7 +331,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   image, colour through the edit mode, costume by a fresh take); Floraison redrawn humanoid with
   take 1's face, Surtr made of fire rather than on fire,
   the Augur without the coat and hood, bigger blades, both hands on the haft (fresh takes and
-  image to image from the take he called closest). Its database
+  image to image from the take he called closest). His second picks, the same evening: the
+  Reaper (image to image, its third hand gone) and Fáfnir (the gold off) cut; the Matador, Skaði,
+  Surtr, Floraison and the Augur into a third round, image to image from his picks under the
+  fix-order rule. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
