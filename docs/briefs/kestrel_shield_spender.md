@@ -239,12 +239,70 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   die doubles its blow (a new price nobody uses, but it taxes the die's steering); a streak
   of rounds fired (a ramp, the easy design).
 
+## The third round (18 October)
+
+- Ryan, 18 October: "Kit 2 is interesting. Again, in a roster of up to 50 units, there's going
+  to be role and mechanic overlap. The trick is making the shape of each different enough that
+  they create a unique enough feeling. That said, first fire rapid is a great tier 1 design,
+  but I don't want to give up on the shield-centric design. The thing we haven't tapped is a
+  shield that actually does things. Shield armour is one, even though that feels more Minerva,
+  but it could be a way to give Kestrel a body. Shoot with the shield for damage or keep it up
+  when you need to take a few hits for the team. Not a true tank by any means, but a
+  conditional off-tank option. My other idea, which could also be a whole other chassis too,
+  was the idea of a mode-shifter that changes the properties of its shield somehow, maybe with
+  on-hit effects or altering its defensive properties somehow, or offering a buff while it
+  still holds." Also: "What was the glass gun?" (Claude's label for the design as proposed on
+  18 October, the burn with the zap; no more labels); reroll effects are Wainwright & Sutler's
+  to explore, not Kestrel's; a shield-on-kill design he would try with zero or negative field
+  recharge and the shield recharging from damage dealt, not kills, unsure what makes it worth
+  the stress; the Sparrowhawk should be riskier and move to tier two ("not sure, but that's how
+  I interpret the data"); the capital ship need not be assault size, the bomber could be it,
+  and what is Kestrel's other tier three?
+- Claude, 18 October, the shield-centric tier one as Ryan framed it, the shield dual-use:
+  while its shield stands every blow on it loses 5 (an armoured shield, "shields are never
+  armoured" bent as a one-off), and its weapons burn shield in place of heat with the zap of
+  the burn on the target (the 18 October proposal's half kept). The tension is the point: a
+  hot gun thins the plate, a cold gun keeps it. The hole in the off-tank half: the foes' exposed
+  aim picks the machine whose hull its blows would reach plus half the shield they would
+  break, so a plated shield makes them look elsewhere, and "take a few hits for the team"
+  needs a draw. The lock, the lean: a flare, Indirect, no damage, Lure with Spread, heat 5, so
+  the draw is a choice on the die and the flare's heat burns a little of the very shield it
+  raises the pack against; the regen buff on the bench as the lock if Ryan would rather the
+  draw come from a stock lure (the Proximity Klaxon as the cross-maker route in). The frame as
+  proposed: a medium hovercraft at 40, hull 70, shield 80, a d5.
+- Claude, 18 October, the mode-shifter as Kestrel's second tier three, the lean: three locked
+  shields, each a tuning that holds while its shield stands and is replaced by the next raised
+  (the form follows the die, as the Armadillo's does): Plate (blows on its shield land at
+  half), Lance (its next weapon adds its whole shield to the blow and spends it), Aura (while
+  it holds, every ally's blows gain 5); four hardpoints beside them, a d7, any maker's shield
+  topping up whichever tuning holds. The rule it bends: a shield absorbs its number and does
+  nothing else; its floor a shieldless d7, its ceiling the right tuning each round. Bench: a
+  reactive tuning (a foe striking its shield is Shocked; retaliation elsewhere needs a fantasy
+  of its own, the bible's thorns row). The alternative tier three, the chain: Rapid switches
+  nothing off on it and vents do nothing on it, so its Rapid pieces of every maker chain while
+  its heat lasts, an alpha strike then a hot brick; its hole, the Rapid vent Ryan is wary of,
+  answered by the dead vents. The bomber as the capital ship either way, heavy.
+- Claude, 18 October, the Sparrowhawk: the data agrees (alone, greedy, 85% against the packs
+  and 90% against the four big foes, the best of the tier ones, and 0 against every formation:
+  a glass that is not glass enough alone); the tiers row allows it (a lower floor and a higher
+  ceiling, never more power). The risk where its identity lives: everything doubled, the blows
+  that reach its hull too, its shield absorbing as normal, so bare it dies to anything and the
+  Barrier and the Puffin's overshield become its escorts; alternatives: its shield halved, or an
+  overheat burning double. Knock-on: the tender needs a built Kestrel tier one before it moves
+  (the strafer first), and the Kestrel team row re-reads.
+- Claude, 18 October, the shield from damage dealt with no field recharge: its interest is on
+  the map, a machine that must fight every turn to stay shielded, which the map cannot yet make
+  a decision (the four-machines row sends the whole roster to one front); benched as a Kestrel
+  tier two to revisit after the foes' fresh start, Ryan's version recorded.
+
 ## Open for the session
 
-1. Ryan's pick among the three kits of the second round (Claude's lean: the capacitor at
-   tier one, the glass gun kept for a tier-two slot), then that kit's numbers, lock, die and
-   frame (a medium hovercraft at 40, or a flyer), matched to Ryan's silhouette. If the glass
-   gun stays: the zap on the target or the ping, and the regen's numbers and name.
+1. Ryan's call on the dual-use shield (the plate while it stands, the burn when it fires, the
+   zap on the target) and its lock (the flare, Claude's lean, or his regen buff); then its
+   numbers and frame, matched to his silhouette. The capacitor of the second round stays on
+   the bench (overshield as ammunition, a Kestrel piece or chassis for later).
+2. Whether the interceptor (its first weapon each round Rapid) becomes a brief of its own as
+   Kestrel's third tier one, and the mode-shifter a brief as its second tier three.
 
 ## Holes already raised
 
