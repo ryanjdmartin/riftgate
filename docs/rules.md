@@ -169,11 +169,12 @@ On a machine:
   so it never injures; its riders land. Until the round's end. Never granted to every ally
   at once.
 - **Ward** (buff, not built): every blow a foe lands on this machine leaves no rider
-  (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.
-- **Rage** (a store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
+  (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage
+  lands. Until the round's end.
+- **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
-- **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
+- **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
@@ -204,7 +205,7 @@ On a foe:
   hits the number it showed.
 - **Getting Back Up** (buff, Reraise): after it falls it returns to the reinforcements once,
   whole, unless it self-destructed.
-- **Numbed** (a resistance, neither buff nor debuff, drawn in brackets): each stack is a 10%
+- **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
   at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by

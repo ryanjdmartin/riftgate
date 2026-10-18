@@ -252,14 +252,14 @@
   },
   {
    "id": "numbed",
-   "category": "resistance",
+   "category": "status",
    "name": "Numbed",
-   "codex": "Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
+   "codex": "Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or dispels it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes.",
    "status": "implemented",
    "design": {
-    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.",
+    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke. A buff with a cannot-be-removed line, not a kind of its own (Ryan, 18 October: \"no reason to have a billion types of objects\").",
     "table": {
-     "kind": "resistance",
+     "kind": "buff",
      "on": "foe",
      "stacks": "Yes: two a landed suppress, three on a massive foe",
      "lasts": "A stack fades at each of its turns"
@@ -370,6 +370,26 @@
    "status": "implemented",
    "design": {
     "holes": "No foe carries it yet; Ryan places it (The Chorus, presumably)."
+   }
+  },
+  {
+   "id": "silence",
+   "category": "foe",
+   "name": "Silence",
+   "codex": "Foe keyword. The machine it lands on is Silenced: its buffs count for nothing until the round's end. A Ward turns it away.",
+   "status": "planned",
+   "design": {
+    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff. Carriers are section 12's."
+   }
+  },
+  {
+   "id": "dispel",
+   "category": "foe",
+   "name": "Dispel",
+   "codex": "Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card tells of a dispeller, so the choice of front knows.",
+   "status": "planned",
+   "design": {
+    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's."
    }
   },
   {
@@ -1266,7 +1286,7 @@
    "id": "rage",
    "category": "status",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
+   "codex": "Machine buff, the Nemesis's, banked: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
@@ -1282,7 +1302,7 @@
    "id": "hopper",
    "category": "status",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
+   "codex": "Machine buff, the Honey Badger's, banked: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
@@ -1359,6 +1379,22 @@
    }
   },
   {
+   "id": "silenced",
+   "category": "status",
+   "name": "Silenced",
+   "codex": "Machine status, from a foe's silence: its buffs sleep this round, counting for nothing, and wake at the round's end. Can be cleansed; a Ward turns the silence away.",
+   "status": "planned",
+   "design": {
+    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Whether a silence also mutes keywords is open (Claude's lean: buffs only).",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
+    }
+   }
+  },
+  {
    "id": "guarded",
    "category": "status",
    "name": "Guarded",
@@ -1394,7 +1430,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.",
+   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage lands. Until the round's end.",
    "status": "planned",
    "design": {
     "holes": "",

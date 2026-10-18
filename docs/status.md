@@ -57,8 +57,16 @@ document's job and every command are in `README.md`.
   background since the go, which is recorded in the bible, the briefs, the to-do and
   `docs/economy_pass.md`.
 
-## The game as left (13 October, evening)
+## The game as left (18 October)
 
+- 18 October, the Kestrel session (`claude/zealous-cori-8xoly7`, fast-forwarded onto main as it
+  went): the three Kestrel briefs carry every round of their design (the strafer decided in
+  shape, the shield-spender's direction, the bomber's pull and mark); the bible's section 6
+  holds the vocabulary's two tables from `tools/pages/bible_tables.py` and the naming
+  convention; built: Folded become Braced, every status a chip, timed stacks keeping their own
+  rounds, the stacking policy (add or renew), Suppressed never stacking nor carrying, the Boar's
+  spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
+  Dispel decided for the enemy's side with Ward turning both away (not built).
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
   types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
   `docs/rules.md` states it, Rally included (Kindled at its move's value, live from the next
@@ -151,6 +159,9 @@ document's job and every command are in `README.md`.
 
 ## Decided, not built
 
+- Silence and Dispel on the enemy's side (the bible's section 5, 17 and 18 October): a Silenced
+  status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
+  section 12's.
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
   Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
@@ -222,14 +233,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.191 (17 October), published from the
+  `docs/design-bible.html` after every change. Live: v0.192 (18 October), published from the
   Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
   16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
   place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
   Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
   on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
   become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, the enemy-cleanse question; the bomber's pull and mark). Main's own file
+  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, Numbed and the stores as buffs, Silence and Dispel decided; the bomber's pull and mark). Main's own file
   says v0.188, the same rows without this branch's, and the script is on this branch alone.
   Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
   live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse

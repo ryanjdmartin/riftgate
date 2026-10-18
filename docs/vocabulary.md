@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 117 implemented, 10 planned, 0 idea.
+Status: 117 implemented, 13 planned, 0 idea.
 
 ## Resource
 
@@ -84,6 +84,7 @@ Status: 117 implemented, 10 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Numbed** | Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or dispels it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes. | implemented |
 | **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it. | implemented |
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
@@ -97,21 +98,16 @@ Status: 117 implemented, 10 planned, 0 idea.
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
-| **Rage** | Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it. | implemented |
-| **Hopper** | Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it. | implemented |
+| **Rage** | Machine buff, the Nemesis's, banked: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it. | implemented |
+| **Hopper** | Machine buff, the Honey Badger's, banked: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it. | implemented |
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
 | **Scrambled** | Machine status. The die's next reroll may land anywhere, the same entry included. | implemented |
+| **Silenced** | Machine status, from a foe's silence: its buffs sleep this round, counting for nothing, and wake at the round's end. Can be cleansed; a Ward turns the silence away. | planned |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
 | **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | planned |
-| **Ward** | Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end. | planned |
-
-## Resistance
-
-| Term | Codex | Status |
-|---|---|---|
-| **Numbed** | Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears. | implemented |
+| **Ward** | Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage lands. Until the round's end. | planned |
 
 ## Formation
 
@@ -200,6 +196,8 @@ Status: 117 implemented, 10 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Silence** | Foe keyword. The machine it lands on is Silenced: its buffs count for nothing until the round's end. A Ward turns it away. | planned |
+| **Dispel** | Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card tells of a dispeller, so the choice of front knows. | planned |
 | **Aim** | What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, armour coming off it as off any blow on hull, and if what gets through is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
@@ -232,13 +230,15 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it. Built 9 October as Guard (equipment spent on an ally, the foes aimed at it turning on the spender, on the Blast Door) and taken out the same day (Ryan: until we feel we need it); the parking stands.
 - **Shock** (implemented): Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks.
 - **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
-- **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
+- **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke. A buff with a cannot-be-removed line, not a kind of its own (Ryan, 18 October: "no reason to have a billion types of objects").
 - **Paradox** (implemented): Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
 - **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap keeps the stacks for the battle. A keyword until 11 October, when Ryan folded it into a rule on its one carrier.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Rapid** (implemented): On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
+- **Silence** (planned): The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff. Carriers are section 12's.
+- **Dispel** (planned): Reserved for high-level units (Ryan, 17 October); its carriers are section 12's.
 - **Cleanse** (implemented): Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day.
 - **Overshield** (implemented): Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end.
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
@@ -301,4 +301,5 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.
 - **Hopper** (implemented): Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.
 - **Scorched** (implemented): Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers.
+- **Silenced** (planned): Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Whether a silence also mutes keywords is open (Claude's lean: buffs only).
 - **Scorch** (implemented): Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine.
