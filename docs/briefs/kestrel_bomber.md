@@ -243,6 +243,18 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
   the pull, and the share of its spends that went to a slot; a direction only until the foes'
   fresh start gives fights a wait list worth trapping.
 
+- Ryan, 18 October, on the proposal: "Happy with the bomber as a whole. Only question is
+  size, I feel like it should be bigger than medium. What are our size classes currently?"
+- Claude, 18 October: four classes by mass (light, medium, heavy, assault; the bible's size
+  row), each only how big the model is drawn on the map and in the skirmish, an assault
+  machine overflowing its hex; no rule reads a machine's size (hunters pick by nearest,
+  weakest, strongest or slowest; massive is the foes' word). So heavy costs nothing in rules:
+  proposed heavy, a heavy flyer on big boosters, assault left free for a Kestrel capital ship
+  later. With it the makers table's "nothing big" takes its one exception (a Lean, never a
+  rule), a heavy flyer is a new lowforge model kind that Mastema would share, and the
+  numbers move to hull 110, shield 70, move 40 (a heavy that keeps Kestrel's pace), heat 80,
+  cooling 5, recharge 25, armour 0 (shield for plate, as every Kestrel), the d6 kept.
+
 ## Holes already raised
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
@@ -258,9 +270,9 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
 
 ## Open for the session
 
-1. Ryan's call on the proposal above: the pull of no damage and the mark Rapid with a
-   cooldown of one (Claude's leans, not yet moved); its numbers, size and way of moving (a
-   medium flyer at 40), matched to Ryan's silhouette; the stand-in stock. Decided 17 October:
+1. Ryan's call on heavy (his lean, 18 October: bigger than medium) and its numbers; the pull
+   of no damage and the mark Rapid with a cooldown of one stand with his "happy with the
+   bomber as a whole" (18 October); the stand-in stock. Decided 17 October:
    the pull Indirect, never Rapid; mines stack and blow in laid order; the mark in its third
    form (the next weapon to kill the marked foe leaves its shot in the slot), the second if it
    proves too strong; Marked feeds the Paradox like any status, tuned later.

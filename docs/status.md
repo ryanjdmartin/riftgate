@@ -41,8 +41,13 @@ document's job and every command are in `README.md`.
   proposal for the go" (the strafer's shape, numbers and spray; the shield-spender's zap on
   the target in place of the ping, its regen lock and its die; the bomber's shape with the
   pull of no damage and the Rapid mark), each brief's "Open for the session" now Ryan's call
-  on it, the holes it raised beneath. Docs only; nothing built, nothing in content. To resume:
-  Ryan's answers, then on his go the records each brief's "What the session hands back" lists.
+  on it, the holes it raised beneath. The second round (18 October): Ryan happy with the bomber
+  as a whole and leaning heavy (the size classes answered in its brief, heavy proposed); for
+  the shield-burner he asked for alternative kits with a unique identity, locks free to move:
+  three in its brief, the capacitor (overshield as ammunition) the lean, the glass gun kept
+  for a tier-two slot, the other Kestrel damage dealers holding. Docs only; nothing built,
+  nothing in content. To resume: Ryan's picks, then on his go the records each brief's "What
+  the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

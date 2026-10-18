@@ -188,12 +188,63 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   Puffin (the overshield as the magazine, Kestrel's locked pieces working together); beside a
   tank (the regen lent out); the share of its spends that burn against the share that hold.
 
+## The second round (18 October)
+
+- Ryan, 18 October, on the proposal: "Propose some alternative kits for the shield burner to
+  help give it a unique identity from the other Kestrel damage dealers, and/or if the other
+  damage dealers' identities need to be sharpened. Don't mind moving things around, even
+  'locked' items like the Sparrow and goshawk, to improve the roster as a whole."
+- Claude, 18 October, the overlap named: the Goshawk turns heat into shield and the burner
+  shield into damage, two converters on the same two gauges, both pulling hot guns, where the
+  Sparrowhawk pulls cold guns and the strafer rider pieces; the burner also loops alone (Ryan,
+  14 October), which is the tier-two shape by the sort. Three kits, the capacitor the lean:
+  1. **The capacitor: overshield is its ammunition.** Passive: shield it raises on itself may
+     pass its maximum, up to its maximum again, and the excess holds from round to round; a
+     weapon it fires adds the excess to the blow and spends it. The charge is a shield until
+     it is fired, and the enemy's blows eat it first, so each round asks whether to fire it
+     or hold it as plate. Lock, the lean: a converter gun (Direct, flat 10, heat 10) that
+     fires the charge at double; bench: a loader (a self shield of 30 with Overshield and
+     Rapid, charge and fire in one round when it shows). Stock stand-ins: the Laminar
+     Deflector (its Rapid is the loader: shield, act, fire), the Laser Carbine, the Twin
+     Autoguns, a plain shield. It reads a state nobody reads, overshield, the Puffin's own
+     product, so Kestrel's escort gets a Kestrel hitter to feed (the Ionizer loads it with 30
+     and vents it); it pulls shields of every maker (the Halo Shield, the Blast Door, the
+     Corona Shield, the Oblation Ward's 40 for 10 hull) and any gun, cold ones included; it
+     works alone with basics (a shield round, a gun round). Holes: a charged Spread blow
+     carries the charge to the neighbours, a build at the charge's price; it is a bank-and-
+     spend shape like the Goshawk's heat and the Badger's hopper, with the opposite valence
+     (a bank of safety that pays damage, where the Goshawk's is a danger that pays shield);
+     Misharu's Vigil Pavise would no longer be the only self overshield, its payoff bait where
+     this one's is ammunition; the overshield fade is broken on this chassis as a one-off,
+     capped at its maximum; the bot must value a charge as damage.
+  2. **The interceptor: its first weapon each round is Rapid.** The decision is the order of
+     two spends (a setup then a hit, a hit then a shield), the second entry the die's; the
+     price two spends' heat a round, so vents are real on it, and a small die. Lock: a
+     designator (0 damage, Direct, cool, Shock), so its own two passes are paint then fire.
+     It produces an extra skirmish action, which nothing has. Holes: tempo is the line frame's
+     claim (Ryan, 14 October: the most tempo-oriented damage dealer); "twice" is the strafer's
+     word too, strikes there and spends here; two spends at tier one wants glass numbers; the
+     Paradox and riders double a round.
+  3. **The glass gun**, the design as proposed on 18 October: the sharpest decision of the
+     three (hit points for damage), the Goshawk's axis, and the loop alone; if kept, its
+     better home is tier two beside the Puffin, where the machines only good together belong,
+     Kestrel's fourth tier two free in the 4-4-2 count.
+  The other damage dealers hold: the Sparrowhawk (the model of a double-edged niche
+  definer), the Goshawk (the cleanest loop in the roster) and the strafer (count). No lock
+  moves. The one wart, the Puffin's vent fighting the Goshawk's regen, is answered by the
+  capacitor without a move. One content fix: the Goshawk's niche word says ramping damage
+  and its passive is sustain. One stock move: the Laminar Deflector into the capacitor's
+  stand-ins, off the Sparrowhawk's as the stock pass already has it. Bench, one line each: a
+  kill regains shield (devour's pattern on the strafer's ground); a team reroll spent on its
+  die doubles its blow (a new price nobody uses, but it taxes the die's steering); a streak
+  of rounds fired (a ramp, the easy design).
+
 ## Open for the session
 
-1. Ryan's call on the proposal above: the zap on the target (Claude's lean since 18 October,
-   the random ping benched) or the ping; the regen's numbers (10 a round for three rounds)
-   and its working name; the die's reading of the burn; its numbers, size and way of moving
-   (a medium hovercraft at 40, or a flyer), matched to Ryan's silhouette.
+1. Ryan's pick among the three kits of the second round (Claude's lean: the capacitor at
+   tier one, the glass gun kept for a tier-two slot), then that kit's numbers, lock, die and
+   frame (a medium hovercraft at 40, or a flyer), matched to Ryan's silhouette. If the glass
+   gun stays: the zap on the target or the ping, and the regen's numbers and name.
 
 ## Holes already raised
 

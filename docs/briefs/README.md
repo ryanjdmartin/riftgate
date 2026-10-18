@@ -169,8 +169,8 @@ on our side.
 | `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
 | `kestrel_strafer.md` | decided; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal |
-| `kestrel_shield_spender.md` | direction; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal; its runner row on the shield rule's engine |
-| `kestrel_bomber.md` | decided; proposed for the go, 18 October | Kestrel | 3 (Ryan, 15 October) | Ryan's call on the proposal (nothing else: Ryan, 15 October) |
+| `kestrel_shield_spender.md` | direction; three kits proposed 18 October (the capacitor the lean) | Kestrel | 1 | Ryan's pick of the kit; its runner row on the shield rule's engine |
+| `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
