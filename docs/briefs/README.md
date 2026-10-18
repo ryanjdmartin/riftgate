@@ -99,7 +99,8 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 ## Tiers
 
 - **Ryan's counts** (14 and 15 October): about ten chassis per city maker at the top end, split
-  3-5-2 or 4-4-2 across tiers one, two and three; tier three late-game capstones, so few; the
+  3-5-2 or 4-4-2 across tiers one, two and three (18 October, of Wainwright & Sutler: eleven is
+  too many); tier three late-game capstones, so few; the
   Arsenal in reverse, little access early and much late. Ryan, 15 October, in the Minerva
   session: Minerva's two tier threes are a treaded capstone and a capital ship, "the capital
   ship that it seems like every maker is going to end up getting".
@@ -125,7 +126,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
-| Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
+| Wainwright & Sutler | Prairie Dog, the revolver, the boiler, the fan-boat (with its Indirect direction, 18 October) | the Dingo (with a second locked piece, proposed), the Clydesdale, the funnel-web (landed), the gunship | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -154,6 +155,12 @@ the slots (the bomber), the die's own state (the revolver, the Gundam, the battl
 team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
 with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
+Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
+damaging spends while no chassis was about the blow; the revolver and the boiler are promoted
+to damage class. The old-world artillery of the maker's lean (indirect fire and area) is
+nobody's chassis: its second tier three and its tenth, the last (big Indirect blows with area,
+the stock pass's explosives its kit, mobile where Minerva's siege battery sits on the cooldown
+property), undesigned.
 Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from
 four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit), Venom (a
 share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward

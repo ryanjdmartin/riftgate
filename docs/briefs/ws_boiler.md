@@ -66,6 +66,14 @@ payoff of its own; the roster's first build that wants to run hot outside Kestre
 whose kit is cold, which the heat row asked for. Every maker's vent is a route in and every hot
 weapon fuel; the Peak's heat debuffs are free fuel.
 
+## Since then
+
+Ryan, 18 October, on the maker's roster, which had no machine whose idea is the blow: "Yeah
+revolver and boiler are getting promoted to damage class." The boiler is the maker's sustained
+damage dealer, its vents its guns, a heavy body, hot by design; its session still waits on the
+stock pass's heat prices, its role no longer does. The maker's tiers as proposed after that day
+are in the README (4-4-2, the boiler at tier one).
+
 ## Its tier
 
 The reshuffle (Claude, 14 October) proposes tier one: a basic vent already blasts, so it is

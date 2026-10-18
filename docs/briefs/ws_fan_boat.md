@@ -3,7 +3,8 @@
 The session reworks the fan-boat hovercraft, whose weapons all fire its deck gun's shot with
 their own keywords, so that its identity shows at its tier.
 
-**Status**: proposal, back to the board with its tier (the analysis, 14 October). **Maker**:
+**Status**: direction (Ryan, 18 October: everything Indirect through the deck gun), its tier open
+again (one or two); back to the board since the analysis (14 October). **Maker**:
 Wainwright & Sutler. **Proposed tier**: one in its proposal; two in the analysis and the
 reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 4.
 
@@ -53,6 +54,27 @@ The rest of the proposal (12 and 13 October; Claude's unless marked Ryan's):
     the others never fire (one huge entry on a die of blanks); the hopper, weapons loading the
     deck gun, which fires them all (the Badger's already) (13 October).
 
+## Ryan's direction (18 October)
+
+- "The fan boat is obviously very unrefined, it's a nifty little thing but right now isn't
+  earning it's tier 2 status."
+- "Maybe we take the 'everything is indirect' angle and apply that to the fan-boat? Still needs
+  more but at least it's a role direction."
+
+Claude's reading, the same day: the deck gun becomes Indirect (a punt gun on a flat-bottomed
+boat is the silhouette), and every weapon fires its Indirect shot at its number with the
+weapon's own keywords. It passes the test that benched "every weapon Indirect" (free reach once
+danger close goes): here the reach costs the number, since a Howitzer's 25 or a big flat gun is
+wasted on it, and the deck gun's heat and danger close (while that rule stands) are the rest of
+the price. It also answers why the machine went back: with the deck gun Indirect the basics show
+the identity on their own (every basic reaches any foe), so tier one is open again and the
+keyword shells are the growth, not the premise. The "more": as a tier one, the price of reach
+sized right; as a tier two, the magazine (below) or the area half of the maker's lean, a punt
+gun's spread of shot, which the bench marks as pure upside unless its price shows. Claude's
+lean: tier one, the maker's light artillery (keyword shells at any reach), the heavy artillery
+being the maker's tier-three hole (the README). The role is a direction, not a design: the
+session proposes the rest in chat.
+
 ## Why it went back (the analysis, 14 October)
 
 A tier-one chassis stocks basics beside its locked piece, and basics carry no keyword by
@@ -65,8 +87,9 @@ last three keywords its other weapons fired) makes a better tier two.
 
 ## Open for the session
 
-1. Tier two, or a tier one with a locked keyword piece.
-2. The shells or the magazine.
+1. The deck gun Indirect as the role (Ryan's direction): what prices the reach (its number, its
+   heat, danger close while it stands), and what more the machine needs.
+2. Tier one with the Indirect angle, or tier two with the magazine or the area half.
 3. The proposal's holes: Rapid shells at the deck gun's number are its strongest build (the
    deck gun's number is the lever); a shell's own heat no longer counts.
 

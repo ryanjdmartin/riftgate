@@ -273,12 +273,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.200 (18 October, evening), main's
+  `docs/design-bible.html` after every change. Main's file is v0.201 (18 October, the Wainwright & Sutler row's
+  roster calls), unpublished: the live page moved under the Kestrel session at 23:14 (its own
+  v0.200, main merged in, with rows main takes when that branch merges), so the next publish
+  that merges main carries the clause. Before it, live v0.200 (18 October, evening), main's
   fix-order row (the foe art row: structure through image to image from the pick, colour
   through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
   most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,
-  the Ammit's kept stacks, Silence and Dispel); main's file is v0.200 with its own rows, the
-  branches' reaching it as they merge. Before that, v0.197 (18 October), published from the
+  the Ammit's kept stacks, Silence and Dispel); the branches' rows reach main's file as they merge. Before that, v0.197 (18 October), published from the
   Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
   row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
   principle in the stun row, his riders note in the Barrier row, the time-shifter parked in

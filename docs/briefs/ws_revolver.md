@@ -3,7 +3,8 @@
 The session finishes the chicken walker whose die steps to the next entry instead of rolling,
 and settles its locked piece and its tier.
 
-**Status**: in session (18 October), two rounds in; the locked piece and the tier open.
+**Status**: in session (18 October), three rounds in; a damage dealer by Ryan's call, the locked
+piece and the tier open.
 **Maker**: Wainwright & Sutler. **Proposed tier**: one (the reshuffle and this session); two
 in its proposal. **Read first**: `docs/briefs/README.md`; the bible's cooldown row (section
 8), its Rapid and rerolls rows (sections 7 and 6), its heat row (section 5) and its one-off
@@ -28,6 +29,9 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 - **Rapid**: a Rapid chamber fires, switches off for the round and steps on; a run of Rapid
   chambers fires in order, each once, the whole die the ceiling (the limiter rule, 15
   October). No rule on the revolver: the chain's price is heat, the stock pass's (below).
+- **Role** (Ryan, 18 October: "revolver and boiler are getting promoted to damage class"): the
+  maker's gunslinger, a damage dealer: its locked piece is its gun, the chain its tempo, and it
+  gets a body's hull to hold the tender's front (Claude's lean 100 or 110).
 - **The locked piece**: open. Ryan, 18 October: it must give the player a reason to consider
   not going all-in on the chain. The two-strike Hogleg is retired (Claude's name and shape
   from the retired proposal; no reason for the double hit).
@@ -60,6 +64,8 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 - 18 October, on the locked piece: "The locked piece needs to inject a reason for the player to
   consider not going all-in for the min-max build. Otherwise, dullness. I might even add
   another aspect to the passive to create a unique build hook."
+- 18 October, later, on the maker's roster (it had no machine whose idea is the blow): "Yeah
+  revolver and boiler are getting promoted to damage class."
 - 18 October, the principle (the bible's one-off row, section 2): "If a situation occurs where
   it seems reasonable to propose a one-off exception for balance reasons, look into the root
   causes as to why that seems like a reasonable solution."

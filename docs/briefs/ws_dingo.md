@@ -32,9 +32,23 @@ Two actions a turn on the map (the Retrograde Flywheel); light, wheeled; alone i
 every pack but two (a diagnostic; a support frame is expected to lose alone). The analysis
 rated it a strong map niche on a thin die, its die the stock pass's.
 
+## Since then
+
+Ryan, 18 October: "Dingo is pretty solid but we might be able to jam something else in there to
+add some interest, maybe two locked components, not sure." Claude's candidates, the same day,
+one line each: the winch, pairing with the harpoon as the Badger's claw pairs with its
+fragmenter (pin the foe, then pull it into the front rank where every Direct gun reaches it; its
+hole: a foe moving between ranks is engine work Minos also waits on, and it does nothing against
+a lone boss); a locked Disrupt flare (the foe changes its plan, then the harpoon doubles the
+ally's blow on it; cheap in the engine, two control verbs on one car); a locked ally-only vent,
+the water cans, the Coolant Dump's old job (thematic, small, no decision beyond whom); or one
+locked piece and the stock pass carrying the interest. A second locked piece reads as tier two by
+the sort (a pure team piece), which settles the tier with it and makes the maker's tiers 4-4-2
+(the README).
+
 ## Open for the session
 
-1. Tier one or two.
+1. A second locked piece, and the tier with it (one or two).
 2. Its stock beside the Shocking harpoon (the Coolant Dump retires in the stock pass).
 
 ## What the session hands back
