@@ -4,8 +4,8 @@ The session settles the four-legged spider as the roster's tank-buster: an oppor
 waits on the sidelines, binds its foes and bites with acid.
 
 **Status**: design settled in chat (Ryan, 17 October: "Vitriol is fine, no fangs, everything
-else seems good"), the go pending; one item open, the web's cooldown. **Maker**: Wainwright &
-Sutler. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; the bible's stun,
+else seems good"; 18 October: "No cooldown"), the go pending; nothing open. **Maker**:
+Wainwright & Sutler. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; the bible's stun,
 Numbed and Barrier rows (section 5), its chances row (section 2), its build-space row (section
 7) and its cooldown row (section 8); `sim/skirmish.gd` (`acting_on`).
 
@@ -22,8 +22,9 @@ Every number is a placeholder; the names below are working names except Vitriol 
   down, so it never finishes a foe and never sets off a last act. The keyword and the chip
   share the word.
 - **The web** (locked): "Webs a foe. After its action the web bursts: it and the next foe to
-  act beside it are Suppressed." Direct, no damage, heat 0. Its cooldown is the open item. A
-  foe the team has already suppressed this round gains nothing from the burst on itself
+  act beside it are Suppressed." Direct, no damage, heat 0, no cooldown (Ryan, 18
+  October): its gate is its timing, the foe acting once before the burst. A foe the team has
+  already suppressed this round gains nothing from the burst on itself
   (Suppressed never stacks and never carries, Ryan, 17 October), so the team's stun and the
   web go on different foes.
 - **No fangs** (Ryan, 17 October).
@@ -102,6 +103,7 @@ Every number is a placeholder; the names below are working names except Vitriol 
   decision to build their team in a way that makes it worthwhile. It doesn't have to be
   complex, either. Paradox is a great example". The web's gate is its timing (the foe acts
   once before the burst).
+- 18 October: "No cooldown".
 
 ## Claude's proposal, as reissued and corrected (17 October)
 
@@ -150,8 +152,8 @@ Every number is a placeholder; the names below are working names except Vitriol 
   (lowering its exposed weight for the round after and, being Rapid, still leaving a gun to
   fire), or a gun on a small foe looking away for the gun's own damage. Alone it is a plain d5
   with a web, and it loses, which is tier two's shape.
-- **How often the web shows**: one roll in five when up; with a reroll spent on it about every
-  three rounds without a cooldown, about every five with cooldown 2.
+- **How often the web shows**: one roll in five; with a reroll spent on it about every three
+  rounds (with cooldown 2 it would have been about every five).
 
 ## Open
 
@@ -213,7 +215,7 @@ Shapes weighed and set aside, one line each with the reason, Ryan's to overrule.
 - **Shape B** (Vitriol as one renewing grant of two actions): a hidden duration. A banked pool of
   "actions left" conflicted with Ryan's 16 October call that timed stacks never extend.
 - **A cooldown as the stun's price** (Claude, 14 to 17 October): set aside by Ryan's argument
-  that Numbed is the cooldown; the web's own cooldown stays open above.
+  that Numbed is the cooldown; the web carries none (Ryan, 18 October).
 - **No damage as the stun's price** (Claude, 17 October): set aside by Ryan's argument that a
   stun's damage is incidental to a turn without threat; like the cooldown it priced the stun
   where it is weakest (fodder), not where it is strongest (a boss).

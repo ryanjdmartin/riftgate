@@ -38,7 +38,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
 - [ ] The revolver (`ws_revolver.md`)
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
-- [ ] The funnel-web (`ws_funnel_web.md`): settled in chat 17 October (Vitriol per hit, the ambush read, the web with Suppress, no fangs), the web's cooldown open; lands on the go
+- [ ] The funnel-web (`ws_funnel_web.md`): settled in chat 17 and 18 October (Vitriol per hit, the ambush read, the web with Suppress and no cooldown, no fangs); lands on the go
 - [ ] The gunship (`ws_gunship.md`), with the stock pass's tags
 - [ ] The fan-boat back from the board (`ws_fan_boat.md`), with the stock pass's keywords
 - [ ] The Prairie Dog's fight half (`ws_prairie_dog.md`)
