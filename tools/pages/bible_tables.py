@@ -30,7 +30,8 @@ END = "<!-- bible-tables:end -->"
 # Who grants what, in the engine's own words (sim/skirmish.gd, sim/effects.gd), and the side it
 # lands on. A keyword or effect missing here grants no status.
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
-                      "suppress": [("suppressed", "foe"), ("numbed", "foe")]}
+                      "suppress": [("suppressed", "foe"), ("numbed", "foe")],
+                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper"}
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
@@ -135,6 +136,8 @@ def tally(words):
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":
                 t.grant(str(eff.get("value")), "machine", label, how, planned, who=who)
+            elif e == "lay_status":   # laid on each foe the blow hits (the funnel-web's Ambush)
+                t.grant(str(eff.get("value")), "foe", label, how, planned, who=who)
             elif e in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[e]
                 t.grant(status, on, label, how, planned, who=who)

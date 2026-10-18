@@ -174,7 +174,7 @@ on our side.
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
-| `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
+| `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | proposal, back to the board | Wainwright & Sutler | 2 (proposed as 1) | the stock pass's keywords |
 | `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |

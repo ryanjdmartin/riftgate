@@ -31,6 +31,7 @@ const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
+const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -229,9 +230,30 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT * maxf(0.0, lands)
+	if f.has(Face.Keyword.WEB):
+		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
+		score += (1.0 - p_kill) * web_score(sk, target)
+	# What this machine's passives lay on each foe the blow reaches, judged alone (the
+	# funnel-web's Ambush, 18 October): a stack per strike that lands with a number, worth its
+	# ticks over the actions to come on the hull the blow leaves, at the odds the foe outlives
+	# the blow. A blow of nothing lays nothing.
+	var laid_apps := 0
+	if f.power > 0 or f.power_max > 0:
+		for foe in sk.reached_by(f, target):
+			if not foe.alive():
+				continue
+			var lays := Effects.laid_statuses(ms.unit, f, foe)
+			if lays.is_empty():
+				continue
+			var left := int(maxf(0.0, float(foe.hp) - mean))
+			var survives := (1.0 - p_kill) if foe == target else 1.0
+			for pair in lays:
+				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+				if foe == target:
+					laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
-	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS))
+	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS)) + int(f.has(Face.Keyword.WEB)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
@@ -359,6 +381,28 @@ func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Fo
 			reached += 1
 	var room := maxi(0, per_shot * 2 - Effects.stacks_of(ms.unit, "hopper"))
 	return float(mini(f.fills_hopper * reached, room) * per_load) * HOPPER_WEIGHT
+
+
+## What `stacks` of a ticking status are worth on a foe with `hp` left, over the actions to
+## come as a stack fades each: a flat tick (Burning) its value a stack a tick, a share
+## (Vitriol) its share of what is left each tick, rounded down and never the last point, as
+## the engine ticks it (Effects.tick_preview). Read from the status, never hardcoded.
+static func dot_payout(status_id: String, stacks: int, hp: int) -> float:
+	var flat := Effects.status_value(status_id, "tick_hp")
+	var pct := Effects.status_value(status_id, "tick_hp_share")
+	var total := 0.0
+	var h := hp
+	for k in range(stacks, 0, -1):
+		if h <= 0:
+			break
+		var t := mini(h, flat * k)
+		h -= t
+		total += t
+		if pct > 0 and h > 1:
+			var s := mini(h - 1, int(floorf(float(h) * float(pct * k) / 100.0)))
+			h -= s
+			total += s
+	return total
 
 
 static func _stack_damage_gain(status_id: String, mean: float) -> float:
@@ -544,6 +588,35 @@ static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
 		if a != foe.action and not Foe.is_attack_action(a):
 			return _threat_now(foe, sk) * HULL_WEIGHT
 	return 0.0
+
+
+## A web on a foe (the funnel-web's Web Bomb, 18 October): the blow the foe it catches beside
+## it will not land (this round's when the catch acts after it; its next, read as this round's,
+## when it has acted), and the webbed foe's own next action, read as the blow it shows now,
+## each at the odds Numbed lets the burst land; nothing on a foe already suppressed, which
+## gains nothing from a second, and nothing on a foe already webbed.
+func web_score(sk: Skirmish, target: Foe) -> float:
+	if Effects.has(target, "webbed"):
+		return 0.0
+	var score := 0.0
+	if not target.is_suppressed():
+		score += _threat_next(target, sk) * HULL_WEIGHT * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
+	var beside := sk.web_catch(target)
+	if beside != null and not beside.is_suppressed():
+		score += _threat_next(beside, sk) * HULL_WEIGHT * maxf(0.0, 1.0 - float(beside.resist_total()) / 100.0)
+	return score
+
+
+## The blow a foe lands at its next action, read as the one it shows: its blow now, a
+## gathering one included, on every machine for a blow at every machine, or its base attack
+## when it shows a special.
+static func _threat_next(f: Foe, sk: Skirmish) -> float:
+	if f.target == null or not f.alive():
+		return 0.0
+	if f.attacks() or f.gathering():
+		var machines: int = sk.live_mechs().size() if f.reaches_every_machine() else 1
+		return float(f.damage() * f.strikes() * machines)
+	return float(f.attack)
 
 
 ## The team's hull at the round's end as the forecast sees it, and how many machines it

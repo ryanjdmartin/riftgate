@@ -124,8 +124,6 @@ var targeting_override: String = ""
 var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
-## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -312,13 +310,12 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 
 
 ## Every foe that will act on this mech when the round ends, whatever its action: alive, not
-## suppressed, aimed at it (or striking every machine), not about to die to burn first.
+## suppressed, showing intent on it (its pick, or a blow at every machine; a special that acts
+## on nobody in particular shows none: Foe.intent_on), and not about to die to burn first.
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for f in field_foes():
-		if not f.alive() or f.is_suppressed() or f.target == null:
-			continue
-		if f.target != ms and not f.hits_all():
+		if not f.intent_on(ms.unit):
 			continue
 		if f.hp - int(Effects.tick_preview(f)["hp"]) <= 0:   # burns to death before it strikes
 			continue
@@ -875,61 +872,30 @@ func _enemy_turn() -> void:
 	_rallies.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
-	# foe's statuses tick at the start of its action (burning may kill it first), a
-	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
-	# stops the first and the second reaches the hull.
+	# foe's statuses tick at the start of its action (burning may kill it first; vitriol eats
+	# its share of what is left and finishes nobody), a suppressed foe skips, and a foe with
+	# two strikes lands two separate blows, so a shield stops the first and the second reaches
+	# the hull. A web on the foe bursts at the end of its action, skipped or not (18 October).
 	_acted.clear()
 	for f in field_foes():
 		if not f.alive():
 			continue   # killed by a die this round; it stands until the dead are cleared, and does nothing
 		var tick := Effects.tick(f)
+		var share := int(tick.get("share", 0))
+		if int(tick["hp"]) - share > 0:
+			log.append("%s burns for %d" % [f.display_name, int(tick["hp"]) - share])
+		if share > 0:
+			log.append("vitriol eats %s for %d" % [f.display_name, share])
 		if int(tick["hp"]) > 0:
 			f.hp -= int(tick["hp"])
-			log.append("%s burns for %d" % [f.display_name, int(tick["hp"])])
 			if not f.alive():
-				continue
-		if tick["skip"]:
-			continue
-		var t := f.target as MechState
-		if t == null or not t.alive():
-			t = _pick_mech_target(f)
-		if t == null:
+				continue   # burnt to death before it acts: a web it carried goes with it
+		var more := true
+		if not tick["skip"]:   # a suppressed foe does nothing, and a web on it still bursts
+			more = _foe_turn(f)
+		_web_burst(f)
+		if not more:
 			break
-		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
-		if not f.pending.is_empty():
-			if f.charge > 0:
-				# A countdown move gathers this turn and lands when its count runs out; the
-				# plaque names it as it begins, so the warning has a voice (15 October).
-				if f.charge == Foe.countdown_of(f.pending):
-					turn_specials.append({"foe": f, "name": str(f.pending.get("name", "")), "kind": "charge", "seq": _seq})
-					_seq += 1
-				f.charge -= 1
-				var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
-				log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
-				continue
-			f.pending = {}   # it lands now
-		if f.hits_all():
-			# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
-			# machine in turn, left to right, so no aim or lure moves it; a screened machine is
-			# out of it.
-			for m in live_mechs():
-				if _screened.has(m):
-					log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
-					continue
-				_strike(f, m)
-		else:
-			if _screened.has(t):
-				log.append("%s's blow is lost in the static" % f.display_name)
-				continue
-			if not f.attacks():
-				_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
-				continue
-			_strike(f, t)
-		if f.has_keyword(f.action, "self_destruct") and f.alive():
-			# The blow spends the striker (the Bomb): it dies whole and never gets back up.
-			f.hp = 0
-			f.stays_down = true
-			log.append("%s bursts, and is gone" % f.display_name)
 	_acted.clear()
 	_clear_dead()
 	# The rallies land now, on the foes still standing: Kindled at each rally's own value,
@@ -943,6 +909,90 @@ func _enemy_turn() -> void:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
 		Effects.end_round(f, round)
+
+
+## One foe's action in the enemy's turn: its pick (or a new one, its machine gone), its
+## countdown gathering, its blow at one machine or at every machine, or its special in place of
+## a blow; then a self-destruct spends it. False when no machine stands to act on, which ends
+## the turn.
+func _foe_turn(f: Foe) -> bool:
+	var t := f.target as MechState
+	if t == null or not t.alive():
+		t = _pick_mech_target(f)
+	if t == null:
+		return false
+	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
+	if not f.pending.is_empty():
+		if f.charge > 0:
+			# A countdown move gathers this turn and lands when its count runs out; the
+			# plaque names it as it begins, so the warning has a voice (15 October).
+			if f.charge == Foe.countdown_of(f.pending):
+				turn_specials.append({"foe": f, "name": str(f.pending.get("name", "")), "kind": "charge", "seq": _seq})
+				_seq += 1
+			f.charge -= 1
+			var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
+			log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
+			return true
+		f.pending = {}   # it lands now
+	if f.hits_all():
+		# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
+		# machine in turn, left to right, so no aim or lure moves it; a screened machine is
+		# out of it.
+		for m in live_mechs():
+			if _screened.has(m):
+				log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
+				continue
+			_strike(f, m)
+	else:
+		if _screened.has(t):
+			log.append("%s's blow is lost in the static" % f.display_name)
+			return true
+		if not f.attacks():
+			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
+			return true
+		_strike(f, t)
+	if f.has_keyword(f.action, "self_destruct") and f.alive():
+		# The blow spends the striker (the Bomb): it dies whole and never gets back up.
+		f.hp = 0
+		f.stays_down = true
+		log.append("%s bursts, and is gone" % f.display_name)
+	return true
+
+
+## The web bursts at the end of the webbed foe's action (the funnel-web's Web Bomb, Ryan's go,
+## 18 October): a Suppress on it, costing its next action since it has acted (its countdown
+## held a round, if it gathers one), and one on the next foe to act beside it (web_catch), each
+## resisted by its own Numbed; a foe already suppressed for that action gains nothing, as from
+## any second suppress, so a web on a foe the team has stunned is spent on the neighbour alone.
+## The web is spent either way. A foe gone by the end of its action (a Bomb's burst) takes its
+## web with it, as one killed before it does.
+func _web_burst(f: Foe) -> void:
+	if not f.alive() or not Effects.has(f, "webbed"):
+		return
+	Effects.remove(f, "webbed")
+	var beside := web_catch(f)
+	log.append("%s's web bursts%s" % [f.display_name, "" if beside == null else ", catching %s" % beside.display_name])
+	if _suppress(f):
+		_foe_gained_status(f, "suppressed")
+	if beside != null and _suppress(beside):
+		_foe_gained_status(beside, "suppressed")
+
+
+## The foe a web on `f` catches: the next to act beside it, its right-hand neighbour in its
+## rank (which acts after it, so the burst costs this round's action), or with none standing
+## there the one to its left (which has acted, and loses its next); a massive foe stands in
+## both ranks, so it is beside either. Null with nobody standing beside it.
+func web_catch(f: Foe) -> Foe:
+	if f.column < 0 or f.rank < 0:
+		return null
+	var row: Array = front if f.rank == 0 else back
+	for c in [f.column + 1, f.column - 1]:
+		if c < 0 or c >= columns:
+			continue
+		var n: Foe = row[c]
+		if n != null and n != f and n.alive():
+			return n
+	return null
 
 
 ## A foe's blows on one machine: each strike lands on its own, so a shield stops the first and
@@ -1051,6 +1101,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
+	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column), the same for
+	# each strike, since a kill clears its slot only after the spend.
+	var hit := reached_by(f, target)
+	# What this machine's passives lay on each foe reached, judged alone and read now, before
+	# any strike's riders land (the funnel-web's Ambush, 18 October: a Suppress gun never feeds
+	# its own read): foe -> [[status id, stacks a hit], ...]; and what was laid, for the log.
+	var lays := {}
+	for foe in hit:
+		var l := Effects.laid_statuses(ms.unit, f, foe)
+		if not l.is_empty():
+			lays[foe] = l
+	var laid := {}
+	var webbed: Array[Foe] = []
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
 		if f.is_ranged():
@@ -1066,18 +1129,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		heat_total += modded["heat"]
 		extra_burn += modded["burn"]
 		vent += modded["vent"]
-		# Keywords stack: a cleaving, piercing blow hits the neighbours and the column.
-		var hit: Array[Foe] = [target]
-		if f.has(Face.Keyword.CLEAVE):
-			for c in [target.column - 1, target.column + 1]:
-				if c >= 0 and c < columns:
-					var n := foe_at(target.rank, c)
-					if n != null and not hit.has(n):
-						hit.append(n)
-		if f.has(Face.Keyword.PENETRATE):
-			var other := foe_at(1 - target.rank, target.column)
-			if other != null and not hit.has(other):
-				hit.append(other)
 		var landed := dmg
 		for foe in hit:
 			var was_alive := foe.alive()
@@ -1112,6 +1163,18 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
 			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
+			# A hit lays what the passives lay on this foe, a stack per strike that lands with a
+			# number: a blow of nothing (the web, a lure) is no hit, and a strike on a foe an
+			# earlier one killed lays nothing on it.
+			if was_alive and dmg > 0 and lays.has(foe):
+				for pair in lays[foe]:
+					var sid := str(pair[0])
+					var n_laid := _stacks_from(ms, sid, int(pair[1]))
+					Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n_laid, Effects.status_decay(Effects.STATUS[sid]))
+					_note_status(gained, foe, sid)
+					var per: Dictionary = laid.get(foe, {})
+					per[sid] = int(per.get(sid, 0)) + n_laid
+					laid[foe] = per
 			if was_alive and not foe.alive() and f.devours:
 				_devour(ms, foe)
 			# The killing strike: what it had past the kill carries on.
@@ -1122,10 +1185,24 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				_note_status(gained, foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
 				_note_status(gained, foe, "suppressed")
+			# Web (18 October): the foe is Webbed, one web however often it is webbed, and the
+			# skirmish bursts it at the end of the foe's action (_web_burst).
+			if f.has(Face.Keyword.WEB) and foe.alive() and not Effects.has(foe, "webbed"):
+				Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+				_note_status(gained, foe, "webbed")
+				webbed.append(foe)
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		total += landed
 		rolled_total += rolled
+	for foe in laid.keys():
+		var bits: Array[String] = []
+		for sid in laid[foe].keys():
+			bits.append("%s ×%d" % [str(Effects.STATUS[sid]["name"]), int(laid[foe][sid])])
+		log.append("%s lays %s on %s" % [ms.unit.display_name, ", ".join(bits), foe.display_name])
+	for foe in webbed:
+		var caught := web_catch(foe)
+		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_note_status(gained, target, "burning")
@@ -1188,6 +1265,25 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				_resolve_attack(mech_index, ms, f, cand)
 				_chaining = was_chaining
 				break
+
+
+## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
+## neighbours in its rank, a Penetrate's other rank of its column; a foe killed this round
+## still standing in its slot included, as the strikes find it. The resolver and the bot read
+## the same list.
+func reached_by(f: Face, target: Foe) -> Array[Foe]:
+	var hit: Array[Foe] = [target]
+	if f.has(Face.Keyword.CLEAVE):
+		for c in [target.column - 1, target.column + 1]:
+			if c >= 0 and c < columns:
+				var n := foe_at(target.rank, c)
+				if n != null and not hit.has(n):
+					hit.append(n)
+	if f.has(Face.Keyword.PENETRATE):
+		var other := foe_at(1 - target.rank, target.column)
+		if other != null and not hit.has(other):
+			hit.append(other)
+	return hit
 
 
 ## A foe's defend, buff or debuff action, resolved in its turn in place of a blow (the ten
@@ -1494,7 +1590,7 @@ func _lure(ms: MechState, foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive():
 			continue
-		if foe.hits_all() or (not foe.attacks() and str(foe.action.get("effect", "")) in UNTARGETED_EFFECTS):
+		if foe.hits_all() or foe.acts_on_nobody():
 			idle.append(foe.display_name)
 		if foe.target != ms:
 			foe.target = ms

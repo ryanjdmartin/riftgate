@@ -374,14 +374,18 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
-	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web since), found
-	# rather than named, so the test outlives the content.
+	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web until it was
+	# built that day), found rather than named, so the test outlives the content; with none
+	# planned, a synthetic one stands in.
 	var planned_kw := ""
 	for k in db.vocabulary.keys():
 		if db.vocabulary[k].get("category") == "keyword" and db.vocabulary[k].get("status") != "implemented":
 			planned_kw = str(k)
 			break
-	assert_true(not planned_kw.is_empty(), "the vocabulary names a planned keyword to test with")
+	if planned_kw.is_empty():
+		planned_kw = "taunt_test"
+		db.vocabulary[planned_kw] = {"id": planned_kw, "category": "keyword", "name": "Taunt", "codex": "A keyword the engine lacks.", "status": "planned", "design": {"holes": ""}}
+	assert_true(not planned_kw.is_empty(), "a planned keyword to test with")
 	plate["face"]["keywords"] = [planned_kw]
 	plate["status"] = "planned"
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -1226,3 +1230,27 @@ func test_a_locked_component_is_never_a_blueprint() -> void:
 	db = _fresh()
 	db.components[locked]["tier"] = 2
 	assert_true(_has_error(db, "locked on a chassis, so it carries no tier"), "a locked component storing a tier is refused")
+
+
+## lay_status (the funnel-web's Ambush, 18 October) names a status the engine has and lays at
+## least a stack a hit.
+func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.chassis["badger"].duplicate(true)
+	var cases := {"lay_ok": ["vitriol", 1], "lay_none": ["nothing", 1], "lay_zero": ["vitriol", 0]}
+	for id in cases.keys():
+		var c: Dictionary = base.duplicate(true)
+		c["id"] = id
+		c["name"] = str(id).capitalize()
+		c["passive"] = {"id": "p_" + str(id), "name": "P", "description": "", "effects": [
+			{"trigger": "on_attack", "effect": "lay_status", "value": cases[id][0], "stacks": cases[id][1], "when": "target_no_intent"}]}
+		db.chassis[id] = c
+	var refused := {}
+	for e in db.validate():
+		for id in cases.keys():
+			if e.begins_with("chassis %s" % id) and e.contains("lay_status"):
+				refused[id] = true
+	assert_false(refused.has("lay_ok"), "a status the engine has, a stack a hit: clean")
+	assert_true(refused.has("lay_none"), "a status the engine lacks is refused")
+	assert_true(refused.has("lay_zero"), "and so is a lay of no stacks")
+	assert_true(Effects.supports_when("target_no_intent"), "the ambush condition is one the engine runs")

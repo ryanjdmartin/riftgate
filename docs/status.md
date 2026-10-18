@@ -14,9 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 481 tests, 20,153 checks, green on main (18 October, the Kestrel session's last merge over the Minerva branch's:
-  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
-  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
+- Tests: 496 tests, 20,269 checks, green on `ccr-ffcf75fa-3gkbz9` (18 October, the funnel-web's
+  engine, over main's 481 and 20,153 of the Kestrel session's last merge).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -26,6 +25,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `ccr-ffcf75fa-3gkbz9` (18 October, the funnel-web's engine: Vitriol, the ambush condition,
+  the Web Bomb and Webbed, the predator sense, the bot's valuations, the content's planned
+  marks off, the to-do's engine line ticked; the bible at v0.198): to merge into main; the
+  assets line stays open.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
@@ -39,9 +42,9 @@ document's job and every command are in `README.md`.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
-  merged into main the same day, so a session can start on its engine and assets (the to-do's
-  two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
-  boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
+  merged into main the same day; its engine built on `ccr-ffcf75fa-3gkbz9` (18 October), its
+  assets the to-do's line; kept open for the next Wainwright & Sutler briefs (the revolver
+  next, then the boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -74,6 +77,25 @@ document's job and every command are in `README.md`.
 
 ## The game as left (18 October)
 
+- 18 October, the funnel-web's engine (`ccr-ffcf75fa-3gkbz9`): the chassis is playable, its
+  content's planned marks off; its model is still the Badger's (the to-do's assets line).
+  Vitriol is a foe status with a share tick of its own (`tick_hp_share`: after Burning, on
+  what it leaves, the whole share rounded down and never the last hit point); the ambush is a
+  passive effect, `lay_status` on the `target_no_intent` condition (`Foe.intent_on`, the read
+  the arrows draw: a foe on a special that acts on nobody shows no arrow now), read at the
+  spend before the spend's own riders, each foe reached judged alone, a stack per strike that
+  lands with a number, so the web's blow of nothing is no hit; the Web Bomb carries the Web
+  keyword, Webbed bursting at the end of the foe's action, skipped or not, into a Suppress on
+  it and on the next to act beside it (`Skirmish.web_catch`: the right-hand neighbour in its
+  rank, else the left, which has acted), each half feeding the Paradox as a weapon's would;
+  the chips (Vitriol's count; the web's `>` or `<` at its catch); the predator sense
+  (`PreyLayer`: the foes' ground dims, the eligible foes get narrowed pulsing eyes, ink on a
+  dark edge with a HUD glow; `RIFTGATE_PREY_DEBUG=1` keeps it on), started hot and not yet
+  judged on a phone; the bot values a bite by Vitriol's ticks on the hull the blow leaves
+  (`Policy.dot_payout`, `VITRIOL_WEIGHT`) and a web by the blows its burst stops
+  (`web_score`); its row alone at 30 seeds is in `docs/measurements.md`, a direction. Claude's
+  engine calls, Ryan's to overrule: a blow of nothing is no hit; the web is a keyword, not a
+  printed property; the chip's mark; the untargeted special's missing arrow.
 - 18 October, the Kestrel session (`claude/zealous-cori-8xoly7`, fast-forwarded onto main as it
   went): the three Kestrel briefs carry every round of their design (the strafer decided in
   shape, the shield-spender's direction, the bomber's pull and mark); the bible's section 6
@@ -89,8 +111,8 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis and a fourteenth planned (the funnel-web, 18 October, its
-  passive and its locked Web Bomb planned), 55 components (13 locked, 4 unstocked, among them
+- Content: five makers, 14 chassis (the funnel-web the fourteenth, its engine built 18
+  October, its model the Badger's until its asset session), 55 components (13 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -119,6 +141,7 @@ document's job and every command are in `README.md`.
   work; the to-do holds the tasks; the keyword line-up and the enemy roster proposal are
   retired (git has them), their open items in section 12 and their seeds in the bible's rows.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
+  on 18 October `RIFTGATE_PREY_DEBUG=1` (the predator sense kept on);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48);
   fourteen rounds on the phone picker, 13 to 15 October, closed every note he wrote on the
@@ -216,12 +239,6 @@ document's job and every command are in `README.md`.
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
-- The funnel-web (Ryan's go, 18 October; its row in section 7): its blows on a foe showing no
-  intent on it lay Vitriol (5% of current hull a stack at the foe's action, a stack per hit),
-  its locked Web Bomb a delayed Suppress on the foe and the next to act beside it, no cooldown,
-  no fangs; tier two; in content as planned entries; the engine and the assets are the
-  to-do's two lines. With it, Ryan's 17 and 18 October leans on hard control (priced by a gate,
-  never rationed) in the stun row, and the time-shifter parked in the Aphelion row.
 
 ## Next, in order
 
@@ -273,7 +290,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.197 (18 October), published from the
+  `docs/design-bible.html` after every change. Live: v0.198 (18 October, `ccr-ffcf75fa-3gkbz9`:
+  the funnel-web's row rewritten as built, its chassis table cell, the tables regenerated),
+  over v0.197 (18 October), published from the
   Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
   row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
   principle in the stun row, his riders note in the Barrier row, the time-shifter parked in

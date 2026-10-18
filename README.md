@@ -60,7 +60,7 @@ records every decision, recommendation and open question, and why; section 12 is
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), the feed
-    effects (`feed_fx.gd`, `tear_layer.gd`)
+    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
@@ -184,6 +184,9 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # second and the ground tears every couple of seconds, to judge them by eye.
 # RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
 # that spends rage: its chip bursts, then its die flips back with the reroll's sound.
+# RIFTGATE_PREY_DEBUG=1 (any skirmish) keeps the predator sense on: the foes' ground dims and the foes
+# the first ambusher's entry can reach that show no intent on it wear pulsing eyes (with no ambusher
+# on the team, the first machine's, the read forced), to judge it running.
 # The phone's layout on the Mac: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -296,6 +299,8 @@ when the current face would overheat. The gauges pulse over the part about to ch
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
 die to lock it, hold a die to see every face on it, drag a die onto a foe to spend an attack
 face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
+Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
+entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.
 Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
 land and the number flashes over the target; energy faces are static. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the

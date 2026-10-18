@@ -806,8 +806,10 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
-		if (effect == "keep_status" or effect == "stack_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
+		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
+			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:

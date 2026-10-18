@@ -63,6 +63,10 @@ static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
 ## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
 ## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+## RIFTGATE_PREY_DEBUG=1: the predator sense stays on, over the foes the first ambusher's entry
+## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
+## judge it running.
+static var PREY_DEBUG := OS.get_environment("RIFTGATE_PREY_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 var _rage_debug_at := -10.0
 
@@ -98,6 +102,8 @@ var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the m
 var _bg: HudBackdrop = null
 var _plaque: Plaque = null           # the other world's window: a foe's named move, announced
 var _plaque_debug_at := 0.0
+var _prey: PreyLayer = null          # the predator sense: the foes' ground dimmed, eyes on the foes looking away
+var _hold_die: int = -1              # the die being held, for the sense
 
 
 var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
@@ -382,6 +388,12 @@ func _build() -> void:
 	tear.position = Vector2(0.0, BACK_Y - 14.0)
 	tear.size = Vector2(W, LOG_Y - 10.0 - (BACK_Y - 14.0))
 	add_child(tear)
+	# The predator sense (the funnel-web, 18 October): the foes' ground and the foes on it
+	# dim while an ambusher's die is held or dragged, and the foes looking away get their eyes.
+	_prey = PreyLayer.new()
+	_prey.position = tear.position
+	_prey.size = tear.size
+	add_child(_prey)
 
 	# Log between the formation and the dice: every line, the newest brightest, scrolled to
 	# the end whenever something happens; drag to read back, double-tap for it full screen
@@ -804,6 +816,7 @@ func _refresh() -> void:
 	_end_btn.set_enabled(assigning)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
+	_refresh_prey()
 	if autosave.is_valid():
 		autosave.call()
 
@@ -927,8 +940,20 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 ## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
+	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
-		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
+		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])
+	var vitriol := Effects.stacks_of(foe, "vitriol")
+	if vitriol > 0:
+		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
+		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current hull a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
+	if Effects.has(foe, "webbed"):
+		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
+		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
+		var caught := sk.web_catch(foe)
+		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
+		var who := ", and nobody stands beside it" if caught == null else " and %s beside it%s" % [caught.display_name, ", which has acted and loses its next" if caught.column < foe.column else ""]
+		rows.append(["web", mark, "Webbed: at the end of its action the web bursts, Suppressing it (its next action)%s" % who, Palette.SHIELD])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
 	if not foe.last_act().is_empty():
@@ -1071,7 +1096,9 @@ func _refresh_arrows() -> void:
 	var list: Array = []
 	var inv := _arrows.get_global_transform().affine_inverse()
 	for foe in sk.field_foes():
-		if foe.target == null or foe.is_suppressed() or not foe.alive():
+		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
+		# its pick means nothing, and the ambush read says so too (Foe.intent_on, 18 October).
+		if foe.target == null or foe.is_suppressed() or not foe.alive() or foe.acts_on_nobody():
 			continue
 		# A blow at every machine (`all`) draws an arrow to each live machine.
 		var targets: Array[int] = []
@@ -1196,6 +1223,8 @@ func _on_die_held(i: int) -> void:
 	# a cracked component): the hold is the die's whole readout since the die codex went.
 	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
 	Sound.play("hold")
+	_hold_die = i
+	_refresh_prey()
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -1218,7 +1247,7 @@ func _on_foe_held(v: UnitView) -> void:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
 		if foe.target != null and foe.reaches_every_machine():
 			text += "\n→ every machine"
-		elif foe.target != null:
+		elif foe.target != null and not foe.acts_on_nobody():
 			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
@@ -1300,7 +1329,63 @@ func _on_hold_released() -> void:
 	_details.visible = false
 	_hold_foe = null
 	_hold_mech = -1
+	_hold_die = -1
 	_refresh_arrows()
+	_refresh_prey()
+
+
+## The predator sense (Ryan, 17 October; the funnel-web's row, 18 October): while a die is held
+## or dragged on a machine whose passive reads a foe's intent on it (the funnel-web's Ambush),
+## the foes' ground dims and the foes the entry showing can reach that show no intent on the
+## machine get their eyes. RIFTGATE_PREY_DEBUG=1 keeps it on.
+func _refresh_prey() -> void:
+	if _prey == null:
+		return
+	var i := _drag_from if _drag_from >= 0 else _hold_die
+	var force := false
+	if i < 0 and PREY_DEBUG:
+		for j in range(sk.mechs.size()):
+			if sk.mechs[j].alive() and Effects.reads_intent(sk.mechs[j].unit):
+				i = j
+				break
+		if i < 0 and not sk.mechs.is_empty():
+			i = 0
+			force = true
+	if i < 0:
+		_prey.hide_marks()
+		return
+	var foes := prey_for(i, force)
+	if foes.is_empty() and not (PREY_DEBUG and _drag_from < 0 and _hold_die < 0):
+		_prey.hide_marks()
+		return
+	var rects: Array = []
+	for foe in foes:
+		var fv := _foe_view_for(foe)
+		if fv == null or not fv.visible:
+			continue
+		var r := fv.drawing_rect()
+		var xf := fv.get_global_transform()
+		rects.append(Rect2(xf * r.position, xf.get_scale() * r.size))
+	_prey.show_marks(rects)
+
+
+## The foes an ambusher's entry showing marks: those it can reach that show no intent on the
+## machine, when the machine's passives read that (`force` reads it for any machine, the debug
+## switch's); nothing for another machine, an entry that is no weapon, or a spent die.
+func prey_for(i: int, force: bool = false) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if i < 0 or i >= sk.mechs.size():
+		return out
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if not ms.alive() or ms.assigned or not (force or Effects.reads_intent(ms.unit)):
+		return out
+	var f := sk.shown_face(ms, ms.face())
+	if f == null or not f.is_attack():
+		return out
+	for foe in sk.targets_for_face(ms, f):
+		if not foe.intent_on(ms.unit):
+			out.append(foe)
+	return out
 
 
 func _on_drag_started(i: int) -> void:
