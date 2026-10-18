@@ -155,16 +155,12 @@ Every number is a placeholder; the names below are working names except Vitriol 
 
 ## Open
 
-1. **The web's cooldown.** Ryan, 17 October: a cooldown is no penalty for a Suppress, Numbed
-   being in effect a cooldown. Claude's reading: Numbed is per foe, but on one foe it behaves
-   as one (each landed suppress adds three stacks to a massive foe, two to a small one, one
-   fades a turn, so the landed rate settles at about one stun in three rounds however often it
-   is tried, cooldown 2's rate), so on a boss the cooldown adds nothing; in a formation with
-   fresh targets Numbed never engages and the cooldown is the only brake besides the die's
-   odds. Under Ryan's 18 October frame (a stun priced by a gate, not by what it deals) the
-   web's gate is its timing, so Claude reads the cooldown as off, the runner watching the
-   spider's web share in formation fights and the Baboon pairing, cooldown 2 the lever if it
-   dominates. Ryan to confirm.
+Nothing on the spider. The web carries no cooldown (Ryan, 18 October: "No cooldown"): its gate
+is its timing, and on one foe Numbed is in effect its cooldown (each landed suppress adds three
+stacks to a massive foe and two to a small one, one fades a turn, so the landed rate settles at
+about one stun in three rounds however often it is tried); in a formation with fresh targets the
+die's odds are the brake, and the runner reads the spider's web share there and the Baboon
+pairing, cooldown 2 the lever if it dominates.
 
 Not this brief's: the price of hard control across the stocks (Ryan, 17 and 18 October: priced
 so the other mitigation stays attractive, never rationed, the price a gate: a condition, a
