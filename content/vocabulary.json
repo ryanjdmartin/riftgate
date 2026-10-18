@@ -201,16 +201,6 @@
    }
   },
   {
-   "id": "corrode",
-   "category": "keyword",
-   "name": "Corrode",
-   "codex": "Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour.",
-   "status": "planned",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
@@ -248,6 +238,16 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "web",
+   "category": "keyword",
+   "name": "Web",
+   "codex": "The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 18 October: a delayed Suppress, no damage, Direct, heat 0, and no cooldown (18 October: Numbed is in effect its cooldown on one foe, and a stun is priced by a gate, here its timing). Kept as hard control under the stun row (Ryan: it fits the kit). One locked piece carries it, so it may become a printed property rather than a keyword when built; the keyword and its chip share a word by the naming convention (Web, Webbed)."
    }
   },
   {
@@ -549,6 +549,38 @@
      "on": "foe",
      "stacks": "No",
      "lasts": "One action: this round's, or the next if it has acted"
+    }
+   }
+  },
+  {
+   "id": "vitriol",
+   "category": "status",
+   "name": "Vitriol",
+   "codex": "Foe status, the funnel-web's acid. At its action it loses 5% of its current hull a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The planned Corrode keyword (1% of HP a stack) renamed and re-stepped; Corroded is kept for the foes' damage over time on machines (Ryan, 17 October). Laid by the funnel-web's passive on a foe showing no intent on it, a stack per hit, so a multi-strike piece bites several times; nothing else lays it yet, and the keyword, if a piece ever carries it, shares the word. Engine: a tick of a share of current hull (tick_hp reads a flat number today), stacking add, a stack fading at the foe's turn; whether a tick passes Guarded is the parts' question, as Burning's is. The runner reads it once the bot values an ambush.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: a stack per hit on a foe showing no intent on the spider; a tick a stack",
+     "lasts": "A stack fades at each of its actions"
+    }
+   }
+  },
+  {
+   "id": "webbed",
+   "category": "status",
+   "name": "Webbed",
+   "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, Numbed resisting each for itself. Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 18 October. The chip carries the burst's timer (the to-do). Engine: a debuff laid by the Web Bomb that bursts in the enemy's turn after the foe's own action: a Suppress on it, costing its next action since it has acted, and one on the next foe to act beside it, costing this action; with no foe to its right, the one to its left. Suppressed never stacks and never carries (17 October), so the burst on a foe already suppressed is wasted and numbs it no further. The stunlock with the Baboon is the boss cells' first read.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "Until the end of its action this round, when it bursts"
     }
    }
   },

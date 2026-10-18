@@ -19,7 +19,7 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
-  (`content/chassis.json`). A run has four squad slots and starts with three machines.
+  and a fourteenth planned, the funnel-web (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint. An
   empty hardpoint is a blank entry; nothing fills it. A full, undamaged machine is reliable.
 - **Components**: a **weapon** is spent on a foe and need not deal damage; **equipment** (a
@@ -132,6 +132,8 @@ defeat when every machine is wrecked. There is no round limit.
   for the round.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
+- **Web** (the funnel-web's Web Bomb, not built): the foe hit is Webbed; at the end of its
+  action the web bursts, Suppressing it and the next foe to act beside it.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -199,6 +201,11 @@ On a foe:
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
   either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
   Suppressed does.
+- **Vitriol** (debuff, not built): at its action it loses 5% of its current hull a stack,
+  past armour, after Burning, rounded down, then a stack fades; it never finishes a foe.
+- **Webbed** (debuff, not built): at the end of its action the web bursts: it and the next
+  foe to act beside it are Suppressed (Numbed may resist, each for itself); killed first, it
+  takes its web with it.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -211,7 +218,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked or Paradox.
+Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -306,7 +313,8 @@ shields do not refill; a pack keeps its survivors, who return whole.
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
-  indirect; the target carries a debuff; an ally is in the fight; the component carries a tag.
+  indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
+  the target shows no intent on this machine (not built: the funnel-web's).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one.
 

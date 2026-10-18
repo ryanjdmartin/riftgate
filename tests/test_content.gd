@@ -374,7 +374,15 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
-	plate["face"]["keywords"] = ["corrode"]
+	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web since), found
+	# rather than named, so the test outlives the content.
+	var planned_kw := ""
+	for k in db.vocabulary.keys():
+		if db.vocabulary[k].get("category") == "keyword" and db.vocabulary[k].get("status") != "implemented":
+			planned_kw = str(k)
+			break
+	assert_true(not planned_kw.is_empty(), "the vocabulary names a planned keyword to test with")
+	plate["face"]["keywords"] = [planned_kw]
 	plate["status"] = "planned"
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate

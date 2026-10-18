@@ -170,7 +170,7 @@ on our side.
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
-| `ws_funnel_web.md` | settled in chat, the go pending | Wainwright & Sutler | 2 | the elites in fights (Vitriol's targets) |
+| `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | proposal, back to the board | Wainwright & Sutler | 2 (proposed as 1) | the stock pass's keywords |
 | `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |
@@ -276,8 +276,8 @@ overrule)
 
 1. Nothing to wait on: the Armadillo first, since it hands the Faraday Hull to the hedgehog;
    then any of the Honey Badger, the strafer, the shield-spender, the bomber, the line frame,
-   Misharu, the Onryō, the funnel-web, the revolver, the Prairie Dog and the Zoids walker (its
-   maker first).
+   Misharu, the Onryō, the revolver, the Prairie Dog and the Zoids walker (its maker first);
+   the funnel-web landed on 18 October.
 2. In pairs: the hedgehog after the Armadillo; the siege battery and the Carrier together
    (Ryan's battlecruiser foil); the Baboon and the Dingo with the stock pass.
 3. After the stock pass: the boiler, the gunship, the fan-boat; the multi-rotor once the die

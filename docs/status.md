@@ -27,11 +27,12 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 17 October): the brief
-  carries Ryan's calls and the settled design, the go pending; merged into main on 17 October
-  on his word ("merge our changes into main"), docs only, and kept open for the go and the
-  next Wainwright & Sutler briefs (the revolver, the boiler, the fan-boat, the Prairie Dog,
-  then the maker's tiers).
+- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
+  landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
+  vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
+  merged into main the same day, so a session can start on its engine and assets (the to-do's
+  two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
+  boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -71,8 +72,9 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis, 54 components (12 locked, 4 unstocked, among them the
-  shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
+- Content: five makers, 13 chassis and a fourteenth planned (the funnel-web, 18 October, its
+  passive and its locked Web Bomb planned), 55 components (13 locked, 4 unstocked, among them
+  the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
   the old kinetic-and-energy split (every rolled weapon cold, every flat one hot), which the
@@ -176,6 +178,12 @@ document's job and every command are in `README.md`.
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
+- The funnel-web (Ryan's go, 18 October; its row in section 7): its blows on a foe showing no
+  intent on it lay Vitriol (5% of current hull a stack at the foe's action, a stack per hit),
+  its locked Web Bomb a delayed Suppress on the foe and the next to act beside it, no cooldown,
+  no fangs; tier two; in content as planned entries; the engine and the assets are the
+  to-do's two lines. With it, Ryan's 17 and 18 October leans on hard control (priced by a gate,
+  never rationed) in the stun row, and the time-shifter parked in the Aphelion row.
 
 ## Next, in order
 
@@ -189,7 +197,7 @@ to-do's Ryan list).
    design's one home, with what Ryan said and what is open, and the README gives the shared
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
-   lands.
+   lands. The funnel-web landed first (18 October); the revolver is next.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -227,11 +235,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.194 (17 and 18 October, the
-  funnel-web session's lines: the spider settled in the Wainwright & Sutler row, Ryan's
-  price-over-scarcity lean and his gate principle in the stun row, his riders note in the Barrier row, the
-  time-shifter parked in the Aphelion row), unpublished until the spider's go, when the live
-  page is read through and the publish merges onto it. Live: v0.191 (17 October), published
+  `docs/design-bible.html` after every change. Live: v0.195 (18 October, the funnel-web's
+  landing: its row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his
+  gate principle in the stun row, his riders note in the Barrier row, the time-shifter parked
+  in the Aphelion row, the tables regenerated), main's file published over v0.191, which it
+  carried whole. Before it v0.191 (17 October), published
   from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
   16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
   place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the

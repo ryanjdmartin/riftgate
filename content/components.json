@@ -1469,6 +1469,35 @@
     "support",
     "tempo"
    ]
+  },
+  {
+   "id": "web_bomb",
+   "name": "Web Bomb",
+   "maker": "wainwright_sutler",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
+    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round.",
+    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The web keyword is planned, so the die builds this entry without it until the engine has it. Numbers are placeholders and the name a working one. Lands on the foe as Webbed, the chip carrying the burst's timer (the to-do)."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 0,
+    "keywords": [
+     "web"
+    ],
+    "heat": 0
+   },
+   "passive": null,
+   "tags": [
+    "kinetic",
+    "control"
+   ]
   }
  ]
 }
