@@ -38,7 +38,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
 - [ ] The bomber (`kestrel_bomber.md`)
 - [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
-- [ ] The revolver (`ws_revolver.md`)
+- [ ] The revolver (`ws_revolver.md`): in session since 18 October (the spin, the chain's price at the stock pass; the locked piece open)
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
 - [x] The funnel-web (`ws_funnel_web.md`): settled in chat 17 and 18 October and landed on Ryan's go (18 October): the bible's row, the rules, Vitriol, Web and Webbed in the vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git
 - [ ] The gunship (`ws_gunship.md`), with the stock pass's tags

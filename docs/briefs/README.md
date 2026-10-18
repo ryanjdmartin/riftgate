@@ -172,7 +172,7 @@ on our side.
 | `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
 | `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
-| `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
+| `ws_revolver.md` | in session since 18 October | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
