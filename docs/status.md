@@ -273,7 +273,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.197 (18 October), published from the
+  `docs/design-bible.html` after every change. Main's file is v0.198 (18 October, the one-off
+  row in section 2, Ryan's principle), unpublished: the live page moved under the Kestrel
+  session after v0.196 (its version of 18:51 that day), so the next publish reads it through and
+  merges onto it. Live: v0.197 (18 October), published from the
   Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
   row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
   principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
