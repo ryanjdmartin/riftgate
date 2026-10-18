@@ -282,11 +282,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.197 (18 October, from
+  `docs/design-bible.html` after every change. Live: v0.198 (18 October, from
   `ccr-3259e29d-ydwpom`: the Armoured row and the Burn row in section 5, the stacking row's
   decay-or-timer rule, the scales row's direction down, the Minerva row's Cryo and ammo bar,
   section 12's two questions closed and the machine-side Burning one opened, the tables
-  regenerated) over v0.196 (18 October), main's file: the
+  regenerated), a three-way merge onto another session's v0.197 of the same day (Numbed a
+  buff nothing removes, Silence and Dispel on the enemy's side, the Hopper and Rage rows'
+  wording, the Ammit's kept Overcharged for the battle only, resetting at the hangar; its
+  content and tables reach main's file when that branch merges, and the tables are then
+  regenerated), over v0.196 (18 October), main's file: the
   funnel-web's landing (v0.195: its row, the chassis table, the maker row, Ryan's
   price-over-scarcity lean and his gate principle in the stun row, his riders note in the
   Barrier row, the time-shifter parked in the Aphelion row, the tables regenerated) with the
