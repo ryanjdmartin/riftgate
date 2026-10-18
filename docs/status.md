@@ -273,10 +273,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.198 (18 October, the one-off
-  row in section 2, Ryan's principle), unpublished: the live page moved under the Kestrel
-  session after v0.196 (its version of 18:51 that day), so the next publish reads it through and
-  merges onto it. Live: v0.197 (18 October), published from the
+  `docs/design-bible.html` after every change. Live: v0.200 (18 October, evening), main's
+  fix-order row (the foe art row: structure through image to image from the pick, colour
+  through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
+  most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,
+  the Ammit's kept stacks, Silence and Dispel); main's file is v0.200 with its own rows, the
+  branches' reaching it as they merge. Before that, v0.197 (18 October), published from the
   Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
   row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
   principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
@@ -324,7 +326,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits
   land); his notes drove a second round, on the picker for his next picks: the Matador's missing
   hand, the Reaper's extra hand, Skaði's lower-hand weapon and Fáfnir's gold through the edit
-  model; Floraison redrawn humanoid with take 1's face, Surtr made of fire rather than on fire,
+  model (the Reaper's two edit passes failed and image to image from the pick fixed it, his pick
+  of that set cut on 18 October; the fix order is a bible row now: structure through image to
+  image, colour through the edit mode, costume by a fresh take); Floraison redrawn humanoid with
+  take 1's face, Surtr made of fire rather than on fire,
   the Augur without the coat and hood, bigger blades, both hands on the haft (fresh takes and
   image to image from the take he called closest). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
