@@ -14,9 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 481 tests, 20,129 checks, green on main (18 October, the Minerva branch merged in:
-  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
-  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
+- Tests: 483 tests, 20,175 checks, green on `ccr-3259e29d-ydwpom` (18 October, Armoured, the
+  halving and the numbered Burn built); before it, 481 and 20,129 on main with the Minerva
+  branch merged in.
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -31,11 +31,20 @@ document's job and every command are in `README.md`.
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
   reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
   word ("make sure main is up to date with any changes you've made"), main merged into it the
-  same day, and kept open: the session resumes on it in a fresh context. To resume, read
-  `docs/briefs/minerva_armadillo.md` (its open list and sixth round: the numbers, the mark's
-  spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
-  proposal, its third round), the to-do's review line under the design sessions (Armoured and
-  Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+  same day; the session went on in a fresh context on `ccr-3259e29d-ydwpom` (below), so this
+  branch is safe to delete.
+- `ccr-3259e29d-ydwpom` (18 October, the Minerva session resumed): Ryan's calls on the review
+  built and recorded (the bible's Armoured row and Burn row in section 5, the rules, the
+  vocabulary): Armoured on both sides at an armour point a stack, Overcharged a damage point a
+  stack halving at each round's end with no rounds, the Quintessence Tap keeping every
+  Overcharged on the Ammit and its kill two, Burn a numbered keyword at a damage point a
+  stack, "devour" out of the records (the talons' rule says what it does), the numbers' direction
+  down (section 11); the Armadillo's Cryo Flinger and Cryo named and the mark shared; the
+  siege battery's fourth round (Ryan's ammo bar, his Wainwright & Sutler worry). To resume,
+  read `docs/briefs/minerva_armadillo.md` (its open list: the numbers, allied cooling, tier
+  one and the texts), `docs/briefs/minerva_siege_battery.md` (its fourth round: Ryan's call on
+  the shells), then the bible's state below. The hangar page waits on a republish (the
+  content moved: Armoured's name and numbers, the Coil, the talons, the Burn numbers).
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -157,6 +166,17 @@ document's job and every command are in `README.md`.
   a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
   chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
   Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
+- Built 18 October, on `ccr-3259e29d-ydwpom` (Ryan's calls, 18 October; the bible's section
+  5): Braced is Armoured on both sides, an armour point a stack (the Shoring Jack 10, the
+  Breaching Plow 10, the Phase Conjugator 3 a shield, a foe's brace its value in stacks, the
+  engine id `braced` kept); Overcharged a damage point a stack, halving at the end of each
+  round, rounded down, from every source, a buff of it carrying no rounds (the Overcharge
+  Coil 2, the Grievance Reliquary a stack a blow); the Quintessence Tap keeps every
+  Overcharged on the Ammit whatever granted it, the talons giving two a kill; Burn a numbered
+  keyword (`burn` on the face beside the keyword, the validator asking for it: 3 on the
+  10-damage pieces, 5 on the 15s) and a foe's Burning a damage point a stack; the status
+  table's decays gained `half`, the brace validator asks a positive number, and the word
+  "devour" is gone from the records (the vocabulary's entry is "Overcharged a kill").
 - Built 15 October, on the Minerva branch (Ryan: "Roman numerals in the corner? ... grey on
   the black background"): every die entry shows its place on the die, from I, as a grey Roman
   numeral in the quotes' condensed italic, top left on the die and down the hold and the codex
@@ -262,7 +282,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.196 (18 October), main's file: the
+  `docs/design-bible.html` after every change. Live: v0.197 (18 October, from
+  `ccr-3259e29d-ydwpom`: the Armoured row and the Burn row in section 5, the stacking row's
+  decay-or-timer rule, the scales row's direction down, the Minerva row's Cryo and ammo bar,
+  section 12's two questions closed and the machine-side Burning one opened, the tables
+  regenerated) over v0.196 (18 October), main's file: the
   funnel-web's landing (v0.195: its row, the chassis table, the maker row, Ryan's
   price-over-scarcity lean and his gate principle in the stun row, his riders note in the
   Barrier row, the time-shifter parked in the Aphelion row, the tables regenerated) with the

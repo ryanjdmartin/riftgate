@@ -1226,3 +1226,55 @@ func test_a_locked_component_is_never_a_blueprint() -> void:
 	db = _fresh()
 	db.components[locked]["tier"] = 2
 	assert_true(_has_error(db, "locked on a chassis, so it carries no tier"), "a locked component storing a tier is refused")
+
+
+## Burn is a numbered keyword (Ryan, 18 October): a weapon says the stacks each blow leaves,
+## and the number rides with the keyword.
+func test_a_burn_weapon_says_its_stacks() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var mute: Dictionary = db.components["blazethrower"].duplicate(true)
+	mute["face"].erase("burn")
+	mute["tier"] = 1
+	db.components["mute_torch"] = mute
+	var stray: Dictionary = db.components["slugthrower"].duplicate(true)
+	stray["face"]["burn"] = 2
+	stray["tier"] = 1
+	db.components["stray_number"] = stray
+	var errs := db.validate()
+	var mute_refused := false
+	var stray_refused := false
+	for e in errs:
+		if e.begins_with("component mute_torch") and e.contains("says its stacks"):
+			mute_refused = true
+		if e.begins_with("component stray_number") and e.contains("rides with the Burn keyword"):
+			stray_refused = true
+	assert_true(mute_refused, "a Burn weapon with no number is refused")
+	assert_true(stray_refused, "a number with no Burn keyword is refused")
+	var shipped := ContentDB.new()
+	shipped.load_dir(ContentDB.DIR)
+	for c in shipped.components.values():
+		var fd: Dictionary = c.get("face", {})
+		if Array(fd.get("keywords", [])).has("burn"):
+			assert_true(int(fd.get("burn", 0)) >= 1, "%s carries its Burn number" % c["id"])
+	assert_eq(db.build_face(db.components["blazethrower"]["face"]).burn, int(db.components["blazethrower"]["face"]["burn"]), "the number reaches the entry")
+
+
+## A halving status has no duration (Ryan, 18 October: "Things either decrease to zero, or are
+## timed, not both"): a buff of Overcharged grants stacks and no rounds.
+func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_false(db.components["overcharge_coil"]["face"].has("rounds"), "the Overcharge Coil says its stacks and no rounds")
+	var timed: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	timed["face"]["rounds"] = 2
+	timed["tier"] = 1
+	db.components["timed_coil"] = timed
+	var refused := false
+	for e in db.validate():
+		if e.begins_with("component timed_coil") and e.contains("stacks and no rounds"):
+			refused = true
+	assert_true(refused, "a buff granting Overcharged for rounds is refused")
+	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Overcharged runs down on its own")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")

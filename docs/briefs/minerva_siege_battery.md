@@ -6,7 +6,8 @@ them. The working label "the siege battery" stays; the name is Ryan's. Minerva's
 three, the battlecruiser, has a brief of its own (`minerva_battlecruiser.md`), which also holds
 the broadside first proposed here.
 
-**Status**: direction (Ryan's pitch, 15 October; the charge open, 16 October). **Maker**: Minerva. **Proposed tier**: three.
+**Status**: direction (Ryan's pitch, 15 October; the charge open, 16 October; the shells proposed
+17 October, Ryan leaning to an ammo bar if they land, 18 October). **Maker**: Minerva. **Proposed tier**: three.
 **Read first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's rows on
 cooldowns (section 8), the makers table and the size classes (section 7), and the ways of
 moving (section 4).
@@ -128,11 +129,31 @@ and the hot guns lose their home); a locked loader entry in place of vents reloa
 reload becomes die luck, and other makers' vents lose their route in); steady aim and ripe
 target (above).
 
+**Ryan, fourth round** (18 October), in his words: "If we do the ammo version, I would just add a
+new ammo bar under or replacing the heat bar, to make it clear it's a resource and avoid
+interacting with other game effects. The only issue I have with it is that it really feels like a
+W&S design..."
+
+Claude's reading: the ammo bar of its own is better than the third round's "heat gauge shown in
+shells", since the Peak's Burning and Scorched then land on a heat gauge the machine still has
+and the shells touch nothing else; the heat gauge stays, small, for the foes' fire. On the feel:
+what makes a magazine Minervan rather than Wainwright & Sutler's is the register, not the
+mechanic. Wainwright & Sutler count rounds because they are poor (a revolver's six, a boiler's
+pressure); Minerva would count shells because its guns are too big to feed any other way, so the
+text says autoloader, breech and magazine, the reload is the coolant cycle racking a shell (a
+vent spent on it), and the numbers are heavy (a turret shot three shells of eight). If that does
+not carry it for Ryan, the alternatives are to give shells to Wainwright & Sutler's gunship or
+revolver later and find the battery another "when" (the telegraph hunter, or firing drops its
+guard, above), or to run the shells and judge the feel in play, since the look of the bar and the
+words on it are what read as a maker.
+
 ## Open for the session
 
-1. The charge: shells for every gun, vents reloading (Claude's third round), or one of the
-   earlier candidates, or none (Ryan: possibly a non-starter); the magazine's size, the
-   turrets' price and the vent-to-shell rate as placeholders.
+1. The charge: shells for every gun, vents reloading (Claude's third round; Ryan, 18 October, if
+   it lands, with an ammo bar of its own beside or in place of the heat bar, and his worry that
+   it reads as Wainwright & Sutler's), or one of the earlier candidates, or none (Ryan:
+   possibly a non-starter); the magazine's size, the turrets' price and the vent-to-shell rate
+   as placeholders.
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
 3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the

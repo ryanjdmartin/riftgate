@@ -27,7 +27,6 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 October with the player's damage)
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
@@ -1112,13 +1111,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
 			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-			if was_alive and not foe.alive() and f.devours:
-				_devour(ms, foe)
+			if was_alive and not foe.alive() and f.devours > 0:
+				_overcharge_on_kill(ms, foe, f.devours)
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit)
 			if f.has(Face.Keyword.BURN):
-				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
+				# Burn is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
+				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
+				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", f.burn))
 				_note_status(gained, foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
 				_note_status(gained, foe, "suppressed")
@@ -1201,14 +1202,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	_seq += 1
 	match effect:
 		"brace":
-			# Braced, the machines' status (Ryan, 16 October: an effect and the buff it creates
-			# share a name): the move's value in stacks of armour +5, flat off every blow, every
-			# stack going at once at the foe's next action (its tick), as a foe's armour from a
-			# defend always lasted.
+			# Armoured, the machines' status (Ryan, 16 October: an effect and the buff it creates
+			# share a name; Braced until 18 October): the move's value in stacks of armour, a
+			# point each, flat off every blow, every stack going at once at the foe's next action
+			# (its tick), as a foe's armour from a defend always lasted.
 			var n := Effects.brace_stacks(value)
 			if n > 0:
 				Effects.stack(f, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
-			log.append("%s: %s, Braced ×%d (armour +%d until its next action)" % [f.display_name, str(a.get("name", "braces")), n, n * Effects.braced_armour()])
+			log.append("%s: %s, %s ×%d (armour +%d until its next action)" % [f.display_name, str(a.get("name", "braces")), Effects.STATUS["braced"]["name"], n, n * Effects.braced_armour()])
 		"regrow":
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
@@ -1227,7 +1228,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
 				log.append("%s: %s, %s regrows %d" % [f.display_name, str(a.get("name", "cures")), hurt.display_name, hurt.hp - before])
 		"brace_all":
-			# Braced on every foe in the fight through the next round, so it stands through the
+			# Armoured on every foe in the fight through the next round, so it stands through the
 			# player's turn and is gone when the enemy acts again: its next action, as the
 			# player sees it, which going at each foe's own tick would cut short for the foes
 			# acting after it.
@@ -1237,7 +1238,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				if other.alive() and n > 0:
 					Effects.stack(other, Effects.STATUS["braced"], Effects.ROUNDS, "foe:" + f.content_id, n, Effects.DECAY_NONE, round + 1)
 					braced += 1
-			log.append("%s: %s, %d of its own Braced ×%d (armour +%d through the next round)" % [f.display_name, str(a.get("name", "protects")), braced, n, n * Effects.braced_armour()])
+			log.append("%s: %s, %d of its own %s ×%d (armour +%d through the next round)" % [f.display_name, str(a.get("name", "protects")), braced, Effects.STATUS["braced"]["name"], n, n * Effects.braced_armour()])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
@@ -1368,7 +1369,7 @@ func _shock(foe: Foe, by: MechState) -> void:
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
 ## behind it in the column as plain damage, through that foe's own damage taken and its armour;
-## it spends a shock and feeds a devour, and carries no other keyword of the blow. A foe behind
+## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
 func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> void:
@@ -1379,23 +1380,19 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> v
 	behind.hp -= behind_taken
 	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-	if not behind.alive() and f.devours:
-		_devour(ms, behind)
+	if not behind.alive() and f.devours > 0:
+		_overcharge_on_kill(ms, behind, f.devours)
 
 
-## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
-## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
-## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
-## round's end, so the ramp fades unless a passive keeps it.
-func _devour(ms: MechState, foe: Foe) -> void:
-	var m: Effects.Modifier
-	var stacks := _stacks_from(ms, "overcharged", 1)
-	if Effects.keeps(ms.unit, "overcharged"):
-		# The Ammit's Quintessence Tap: what the talons take is kept, for the battle, never fading.
-		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.BATTLE, "devour", stacks, Effects.DECAY_NONE)
-	else:
-		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", stacks, Effects.DECAY_TICK)
-	log.append("%s devours %s: %s ×%d" % [ms.unit.display_name, foe.display_name, m.name, Effects.stacks_of(ms.unit, "overcharged")])
+## The Soulcutter Talons' rule (28 September; built 29 September; a rule printed on its one
+## carrier and no keyword to learn since 11 October, Ryan: "devour is not a thing"): every foe
+## the entry kills gives its owner `per_kill` stacks of Overcharged (a spread that kills two
+## feeds twice, a chain feeds on every link). The stacks halve each round like any Overcharged;
+## on the Ammit its Quintessence Tap keeps them for the battle (Effects.stack applies the keep).
+func _overcharge_on_kill(ms: MechState, foe: Foe, per_kill: int) -> void:
+	var stacks := _stacks_from(ms, "overcharged", per_kill)
+	var m := Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", stacks, Effects.status_decay(Effects.STATUS["overcharged"]))
+	log.append("%s kills %s: %s ×%d" % [ms.unit.display_name, foe.display_name, m.name, Effects.stacks_of(ms.unit, "overcharged")])
 
 
 ## Stacks this machine is applying, deepened by its on_stack passives (the Stingray's

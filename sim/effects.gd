@@ -70,6 +70,7 @@ const DECAY_TICK := 1    # loses a stack each tick, gone at zero
 const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
 const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Burning, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
+const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Overcharged, 18 October: a halving rule has no duration)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
@@ -84,8 +85,10 @@ const CLEANSABLE := "cleansable"
 ## one-stack status (Shocked, Guarded) a second grant changes nothing (Ryan, 17 October:
 ## never stacking and renewing are one state, parted only by a timer).
 const STATUS := {
-	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
-		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
+	# A damage point a stack since 18 October (Ryan, in the spirit of flattening the numbers;
+	# 5 before), the stacks the Burn keyword's own number.
+	"burning": {"id": "burning", "name": "Burning", "description": "Loses 1 HP per stack at the start of its action, then loses a stack.",
+		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
 	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
@@ -112,20 +115,25 @@ const STATUS := {
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building: at the count it is Suppressed, and the Paradox clears.",
 		"effects": []},
-	# The machines' buffs (29 September): what buff equipment grants for a round or more.
-	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
-	# Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing to read).
-	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +5 damage per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
-	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
-	# chassis stat, never a percentage.
-	# Braced lasts one turn from any source (Ryan, 12 October: a defensive buff that lingered,
-	# a stack fading a round, would stack into a wall; armour is the dearest stat there is),
-	# every stack going at once at its owner's turn: a machine's at the round's end, a foe's at
-	# its next action. A foe's brace grants it too (Ryan, 16 October: a keyword or an effect and
-	# the buff it creates share a name), its value in stacks (brace_stacks).
-	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "decay": "round",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
+	# The machines' buffs (29 September): what buff equipment grants. Names are placeholders
+	# for Ryan. Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing
+	# to read). A damage point a stack since 18 October (Ryan: the count is the bonus, read at a
+	# glance), and it halves at the end of each round, rounded down, whatever granted it: a
+	# source feeding so many stacks a round settles near twice that, where a stack fading a
+	# round climbed without limit ("stacking to the moon and fueling massive ramp strategies").
+	# The Ammit's Quintessence Tap keeps every grant of it for the battle (stack()).
+	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
+	# Armoured (Braced until 18 October; the engine id stays) is temporary armour (2 October):
+	# flat off every blow, the same word and icon as the chassis stat, never a percentage, and
+	# a point a stack since 18 October (Ryan: both sides say Armoured, and the count is the
+	# armour). It lasts one turn from any source (Ryan, 12 October: a defensive buff that
+	# lingered, a stack fading a round, would stack into a wall; armour is the dearest stat
+	# there is), every stack going at once at its owner's turn: a machine's at the round's
+	# end, a foe's at its next action. A foe's brace grants it too (Ryan, 16 October: a
+	# keyword or an effect and the buff it creates share a name), its value its stacks.
+	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "decay": "round",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
@@ -187,7 +195,7 @@ static func kindled(value: int) -> Dictionary:
 	return d
 
 
-## The armour one stack of Braced adds (its add_stat).
+## The armour one stack of Armoured adds (its add_stat): one, since 18 October.
 static func braced_armour() -> int:
 	for eff in STATUS["braced"]["effects"]:
 		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
@@ -195,9 +203,8 @@ static func braced_armour() -> int:
 	return 0
 
 
-## The stacks of Braced a foe's brace of `value` armour grants (16 October): the value over a
-## stack's armour, so a brace of 10 is two stacks. The validator holds a brace's value to a
-## positive multiple of a stack's armour, so nothing is lost to the division.
+## The stacks of Armoured a foe's brace of `value` armour grants (16 October): the value over a
+## stack's armour, which is the value itself since a stack is a point (18 October).
 static func brace_stacks(value: int) -> int:
 	return int(maxi(0, value) / maxi(1, braced_armour()))
 
@@ -299,12 +306,19 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 
 
 ## Add stacks of a status. The same id in the same scope stacks up instead of doubling;
-## a fresh one is granted with `n` stacks. Tick-decaying statuses lose a stack per tick.
-## A timed one (ROUNDS) stacks up only with one ending the same round (two coils spent in
-## one round, a brace beside a buff of Braced); a grant ending another round is its own
+## a fresh one is granted with `n` stacks. Tick-decaying statuses lose a stack per tick, a
+## halving one half of them. A timed one (ROUNDS) stacks up only with one ending the same
+## round (a brace beside a buff of Armoured); a grant ending another round is its own
 ## modifier, so a later grant never lengthens an earlier one's stacks (16 October). A status
-## that renews (its "stacking") is one grant however often it is granted.
+## that renews (its "stacking") is one grant however often it is granted. A machine that
+## keeps the status (keep_status, the Ammit's Quintessence Tap) keeps every grant of it for
+## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
+## where it came from"): the grant's own scope and decay give way.
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
+	if keeps(u, str(passive.get("id", ""))):
+		scope = BATTLE
+		decay = DECAY_NONE
+		expires_round = -1
 	var held := _held(u, passive, scope, n, expires_round)
 	if held != null:
 		return held
@@ -411,10 +425,19 @@ static func ends_with_turn(m) -> bool:
 	return m.decay == DECAY_TURN or m.decay == DECAY_TURN_ALL
 
 
-## The decay a status names in its definition ("none", "round", "turn", "turn_all"), a
-## stack a tick when it names none.
+## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half"),
+## a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF}.get(str(def.get("decay", "")), DECAY_TICK)
+
+
+## Does the status run down to zero on its own clock (halving each tick), rather than end
+## with a timer? Ryan, 18 October: "Things either decrease to zero, or are timed, not both",
+## so a buff component granting such a status grants stacks and no rounds (grant_buff). Only
+## a status that names its decay counts: one that names none ticks a stack when a passive
+## grants it and is timed when a buff component does, as before.
+static func decays_to_zero(def: Dictionary) -> bool:
+	return str(def.get("decay", "")) == "half"
 
 
 ## The end of a machine's turn (the player's, 13 October): its turn statuses tick, Burning's
@@ -445,6 +468,11 @@ static func tick(u) -> Dictionary:
 			continue
 		if m.decay == DECAY_TICK:
 			m.stacks -= 1
+			if m.stacks <= 0:
+				continue
+		elif m.decay == DECAY_HALF:
+			# Rounded down, so it reaches zero on its own (one stack halves to none).
+			m.stacks = int(m.stacks / 2.0)
 			if m.stacks <= 0:
 				continue
 		keep.append(m)
@@ -873,8 +901,9 @@ static func hull_damaged(u) -> Dictionary:
 ## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
 ## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted
-## (stack_status: a stack for the skirmish, fading a stack a turn), on `onto` when it is
-## given (the ally an on_shield_granted passive shields) and on the machine itself otherwise.
+## (stack_status: its `stacks`, one by default, for the skirmish, decaying as the status
+## says), on `onto` when it is given (the ally an on_shield_granted passive shields) and on
+## the machine itself otherwise.
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
@@ -893,7 +922,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
 					var decay := status_decay(STATUS[id])
-					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), decay)
+					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), decay)
 					if m != null and not (out["statuses"] as Array).has(m.name):
 						(out["statuses"] as Array).append(m.name)
 	return out
@@ -993,10 +1022,15 @@ static func cleansable_disable(u, index: int) -> bool:
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
 ## `until_round`. A grant ending the same round as one already there stacks onto it; one
 ## ending another round is its own, and each goes when its own rounds run out (16 October).
+## A status that decays to zero on its own (Overcharged, halving) takes no rounds: the grant
+## carries the status's decay and lasts the skirmish or until it runs out (18 October).
 static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:
 	if not STATUS.has(status_id):
 		return null
-	return stack(u, STATUS[status_id], ROUNDS, source, stacks, DECAY_NONE, until_round)
+	var def: Dictionary = STATUS[status_id]
+	if decays_to_zero(def):
+		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
+	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
 
 
 ## Corrupt one die entry for the skirmish (the corrupt foe keyword, 25 September): every
@@ -1061,7 +1095,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
-		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"stack_status":
+			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
+			var k := maxi(1, int(eff.get("stacks", 1)))
+			body = ("gains a stack of %s" % nm) if k == 1 else ("gains %s ×%d" % [nm, k])
 		"add_attack": body = "attack +%s" % vs
 		"never_hunted": body = "no hunter ever picks it as its prey"
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]

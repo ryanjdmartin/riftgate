@@ -3,7 +3,9 @@
 The session settles the Armadillo's rework into a form-changing tank at tier one, from Ryan's
 framework of 15 October (below, "The Minerva session"), aiming for the simplest rule text.
 
-**Status**: rework, in session (15 October): Ryan's framework set, its details open. **Maker**:
+**Status**: rework, in session (15 to 18 October): Ryan's framework set; the names and the mark's
+spender settled (18 October); the numbers, allied cooling of the sealed shell, tier one and the
+texts open. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`;
 `docs/roster_analysis.md` section 2 (the Armadillo's rating);
 `content/chassis.json` (armadillo) and `content/components.json` (lockdown_shutters,
@@ -339,28 +341,41 @@ are other makers' pieces (Kestrel's today), the routes in the bible asks a passi
 limit on it is the one decided: every Rapid piece carries a limiter, and a Rapid vent of any
 kind is the one Ryan is wary of.
 
+**Ryan, seventh round** (18 October), in his words: "Cryo flinger. It launches a sticky cryo
+canister with a really annoying beep or something, for the lore reason. The debuff is then called
+cryo, and I would mark that for reuse somewhere, since it's probably a healthier way to grant ally
+cooling than venting directly. Also mark that it could carry a minor debuff rider, not sure what,
+but only if the ecosystem says there's room to make it more interesting. A minor DoT,
+differentiated from burn on that it doesn't bypass armour, or maybe this one does and burn
+doesn't. Or not at all."
+
+What it settles: the lure is the Cryo Flinger and the mark is Cryo (the keyword and the status
+share the word); the beep is why the foe turns on it; the mark is shared, since ally cooling is
+its point: any machine's damaging hit on a foe carrying Cryo spends the stacks and cools the
+hitter (so item 2 below closes on Claude's fifth-round lean). Marked for reuse: Cryo as the
+healthier way to cool an ally, so a later piece may lay it without a lure. Bench, Ryan's to open
+only if the roster has room: a minor rider on Cryo, a damage over time parted from Burning by
+whether it passes armour (Burning passes armour today; Cryo could be the one that does not, or
+the other way round), or none. The same day Ryan made Armoured a point a stack (the bible's
+Armoured row), so the seal's text reads as armour outright.
+
 ## Open for the session
 
-1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above).
-   Claude's lean: seal 15, heat max 60, lure 5, cooling 5 open, a mark 10 if shared (20 if the
-   Armadillo's alone); the mark's number matters only in long fights, the seal's heat is the
-   dial. Settled: armour 15 sealed in all, the base included.
-2. Who may spend a mark: any machine, cooling itself (Claude's lean, fifth round), or the
-   Armadillo alone. Never an ally cooling the Armadillo.
-3. Allies cooling the sealed shell (allowed today; the table above): keep it, or "sealed,
+1. The numbers: the seal's heat a round, the heat maximum, a Cryo stack's cooling (the model
+   above). Claude's lean: seal 15, heat max 60, the Flinger 5, cooling 5 open, a stack 10; the
+   stack's number matters only in long fights, the seal's heat is the dial. Settled: armour 15
+   sealed in all, the base included (Armoured 10 on base armour 5).
+2. Allies cooling the sealed shell (allowed today; the table above): keep it, or "sealed,
    nothing cools it" if the all-in team stalls in play. Claude's lean: keep it.
-4. The names of the lure and the mark, Ryan's. Claude's candidates (16 October), under the
-   hangar's Minerva register (hits hard and low-tech) and the convention decided in Kestrel's
-   session the same day (a keyword and the buff or debuff it creates share a name, so the mark
-   wants a keyword form and a status form): Chill Flinger, the mark Chill (a foundry's chill, the
-   iron block set in a mould to draw heat out of a casting; "chilled" means slowed in many
-   games, so the status would need its own word or the noun); Heatsink Launcher, Heatsink (the
-   plainest, an electronics word); Earthing Stake, Earthed (the ground rod, a nod to the old
-   Faraday Hull; "Grounded" reads as a flyer knocked down); Sinker Flinger, Sinker (a fishing
-   lure's sinker and a heat sink in one word, Wainwright & Sutler's kind of silly). Taken
-   already: Coolant, Harpoon, Spike, Needle, Flare, Beacon, Brand.
-5. Tier one confirmed, and the rule text: the passive (the form), the lure (the mark), the
-   mark's codex (the cooling, and whom it cools).
+3. Tier one confirmed, and the rule text as it stands, Ryan's to move: the passive, "A shield it
+   spends on itself seals it. Sealed, it is Armoured 10, nothing cools it, and it runs 15 hotter
+   at the end of each round. A vent or a damaging weapon opens it."; the Cryo Flinger, a fixed
+   pair, "Indirect, no damage. Lure, Rapid. 5 heat. The foe it lures is Cryo'd (Cryo 1)."; Cryo,
+   "Foe status. A damaging hit on it spends every stack and cools the hitter 10 a stack."
+
+Settled 18 October (Ryan's seventh round): the names, the Cryo Flinger and Cryo; the spender, any
+machine cooling itself, never an ally cooling the Armadillo. Claude's name candidates of 16
+October (Chill Flinger, Heatsink Launcher, Earthing Stake, Sinker Flinger) retire with it.
 
 ## Refused along the way
 

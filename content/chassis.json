@@ -568,7 +568,7 @@
    "passive": {
     "id": "quintessence_tap",
     "name": "Quintessence Tap",
-    "description": "What the talons take is kept. Overcharged never decays on this machine and lasts the battle.",
+    "description": "Overcharged never fades on this machine, whatever granted it, and lasts the battle.",
     "effects": [
      {
       "trigger": "static",
