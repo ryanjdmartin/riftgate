@@ -82,6 +82,11 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
   shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
   this thing because that already kind of does it,' then you quickly run out of things").
+  Ryan, 18 October: "in a roster of up to 50 units, there's going to be role and mechanic
+  overlap. The trick is making the shape of each different enough that they create a unique
+  enough feeling."
+- Reroll-related effects are Wainwright & Sutler's to explore, not Kestrel's (Ryan, 18
+  October); the team's rerolls as a read go to that maker's sessions.
 - Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
   16 October).
 - The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
@@ -124,7 +129,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
+| Kestrel | the strafer, the shield-spender (the dual-use shield, 18 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, riskier: Ryan's lean, 18 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the mode-shifter of its shield (proposed 18 October) |
 | Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -151,7 +156,8 @@ Amplify for others: the Dingo's Shock, the Onryō's on-hit, the echidna's Sonic 
 Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomber's clusters.
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
-team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
+team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October;
+Wainwright & Sutler's to explore, Ryan, 18 October).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
 with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
 Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from

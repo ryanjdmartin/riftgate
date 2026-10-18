@@ -45,9 +45,15 @@ document's job and every command are in `README.md`.
   as a whole and leaning heavy (the size classes answered in its brief, heavy proposed); for
   the shield-burner he asked for alternative kits with a unique identity, locks free to move:
   three in its brief, the capacitor (overshield as ammunition) the lean, the glass gun kept
-  for a tier-two slot, the other Kestrel damage dealers holding. Docs only; nothing built,
-  nothing in content. To resume: Ryan's picks, then on his go the records each brief's "What
-  the session hands back" lists.
+  for a tier-two slot, the other Kestrel damage dealers holding. The third round (18 October,
+  in the shield-spender's brief): Ryan keeps the shield-centric design as a dual-use shield
+  (plate while it stands, fired for damage, a conditional off-tank), likes the interceptor as
+  a tier one of its own, floats a shield mode-shifter, leans the Sparrowhawk riskier and up to
+  tier two, gives reroll effects to Wainwright & Sutler, and asks for Kestrel's other tier
+  three; Claude's answers are recorded there and the briefs README's tiers table carries the
+  Kestrel line as proposed. Docs only; nothing built, nothing in content. To resume: Ryan's
+  calls, then briefs for the interceptor and the mode-shifter if he takes them, then on his go
+  the records each brief's "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
