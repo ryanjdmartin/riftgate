@@ -290,9 +290,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.198 (18 October, `ccr-ffcf75fa-3gkbz9`:
-  the funnel-web's row rewritten as built, its chassis table cell, the tables regenerated),
-  over v0.197 (18 October), published from the
+  `docs/design-bible.html` after every change. Live: v0.199 (18 October, `ccr-ffcf75fa-3gkbz9`:
+  a three-way merge onto the Kestrel session's live v0.198, whose rows (Armoured and
+  Overcharged halving, Burn as a numbered keyword, the Braced renames, its section 12 question)
+  and whose generated tables come from that session's branch, not yet on main, so the tables
+  describe content this branch lacks (Armoured, Burn 3) beside this branch's (Vitriol, Webbed,
+  Web built) and `tools/pages/bible_tables.py` is rerun once that branch merges; with main's
+  v0.198, the one-off row in section 2, Ryan's principle, unpublished until then; and this
+  branch's funnel-web row rewritten as built, its chassis table cell and its table rows), over
+  v0.197 (18 October), published from the
   Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
   row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
   principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
