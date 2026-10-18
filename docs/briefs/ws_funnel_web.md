@@ -95,6 +95,13 @@ Every number is a placeholder; the names below are working names except Vitriol 
   must-pick." The roster-wide half of this is in the bible's stun row.
 - 17 October: "Not concerned about guarded since that's still just theory, no hard mechanics
   yet."
+- 18 October, on what prices a stun: "I'm not sure that dealing no damage is a drawback to
+  preventing an entire boss' turn. The point is that one guy stuns, the other 3 are free to
+  fire their best weapons without fear. Any damage the stun deals is incidental." And:
+  "Suppress gated by condition, setup, self-sacrifice, or timing, and then it's the player's
+  decision to build their team in a way that makes it worthwhile. It doesn't have to be
+  complex, either. Paradox is a great example". The web's gate is its timing (the foe acts
+  once before the burst).
 
 ## Claude's proposal, as reissued and corrected (17 October)
 
@@ -154,13 +161,14 @@ Every number is a placeholder; the names below are working names except Vitriol 
    fades a turn, so the landed rate settles at about one stun in three rounds however often it
    is tried, cooldown 2's rate), so on a boss the cooldown adds nothing; in a formation with
    fresh targets Numbed never engages and the cooldown is the only brake besides the die's
-   odds. Claude's lean: start without it, the web's price being that it deals nothing and lands
-   late, and let the runner read the spider's web share in formation fights and the Baboon
-   pairing; cooldown 2 is the lever if it dominates. Ryan's to keep or drop.
+   odds. Under Ryan's 18 October frame (a stun priced by a gate, not by what it deals) the
+   web's gate is its timing, so Claude reads the cooldown as off, the runner watching the
+   spider's web share in formation fights and the Baboon pairing, cooldown 2 the lever if it
+   dominates. Ryan to confirm.
 
-Not this brief's: the price of hard control across the stocks (Ryan, 17 October: priced so the
-other mitigation stays attractive, never rationed; Claude's proposal, hard control deals no
-damage) is the stun row's and the stock pass's.
+Not this brief's: the price of hard control across the stocks (Ryan, 17 and 18 October: priced
+so the other mitigation stays attractive, never rationed, the price a gate: a condition, a
+setup, a self-sacrifice or its timing) is the stun row's and the stock pass's.
 
 ## Holes
 
@@ -210,6 +218,9 @@ Shapes weighed and set aside, one line each with the reason, Ryan's to overrule.
   "actions left" conflicted with Ryan's 16 October call that timed stacks never extend.
 - **A cooldown as the stun's price** (Claude, 14 to 17 October): set aside by Ryan's argument
   that Numbed is the cooldown; the web's own cooldown stays open above.
+- **No damage as the stun's price** (Claude, 17 October): set aside by Ryan's argument that a
+  stun's damage is incidental to a turn without threat; like the cooldown it priced the stun
+  where it is weakest (fodder), not where it is strongest (a boss).
 - **The fangs of 13 October** (flat 10 and 20% of a Suppressed foe's current hull): their share
   moved into Vitriol, their condition (a Suppressed foe shows no intent) into the ambush read.
 - **Earlier**: the stun punish (a blow on a Suppressed foe striking every other Suppressed foe)

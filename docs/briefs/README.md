@@ -91,7 +91,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   slot), never by copies.
 - Stun is budgeted; prefer changing the enemy's problem over removing its turn. Price, never
   scarcity (17 October, of Suppress): a mechanic rationed by availability makes its carriers
-  must-picks, so it is priced so the other answers stay attractive.
+  must-picks, so it is priced so the other answers stay attractive. The price is a gate, never
+  the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
+  stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
 
 ## Tiers

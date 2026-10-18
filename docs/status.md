@@ -227,9 +227,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.192 (17 October, the
+  `docs/design-bible.html` after every change. Main's file is v0.193 (17 and 18 October, the
   funnel-web session's lines: the spider settled in the Wainwright & Sutler row, Ryan's
-  price-over-scarcity lean in the stun row, his riders note in the Barrier row, the
+  price-over-scarcity lean and his gate principle in the stun row, his riders note in the Barrier row, the
   time-shifter parked in the Aphelion row), unpublished until the spider's go, when the live
   page is read through and the publish merges onto it. Live: v0.191 (17 October), published
   from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
