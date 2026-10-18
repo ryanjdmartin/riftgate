@@ -14,7 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 481 tests, 20,129 checks, green on main (18 October, the Minerva branch merged in:
+- Tests: 481 tests, 20,153 checks, green on main (18 October, the Kestrel session's last merge over the Minerva branch's:
   the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
   entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
   A cloud session fetches
