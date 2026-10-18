@@ -187,6 +187,62 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   a part of the design, and would blur what the entry is (a tool, not a gun). Lean: no damage.
   The number is Ryan's.
 
+## The proposal for the go (Claude, 18 October)
+
+Claude's proposal, in chat first; every number a placeholder, the name and the look Ryan's.
+The design as decided on 15 to 17 October, written out whole with the two leans Ryan has not
+yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the shape.
+
+- **Shape.** Kestrel, tier three, a medium flyer on big boosters, move 40: Kestrel's biggest
+  frame, the Goshawk's class, since the makers table builds "nothing big". Hull 90, shield 60,
+  field recharge 25, heat maximum 80, cooling 5, armour 0; four hardpoints beside the two
+  locks, a d6; two module slots. Tier three is a lower floor and a higher ceiling, never more
+  power (the tiers row), so its numbers sit at the Goshawk's.
+- **The passive**, as the codex would print it: its weapons may be spent on an empty slot in
+  the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
+  a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
+  and modified when laid and its keywords, and joins what already waits; whoever steps in
+  takes it all, shot by shot in laid order, before it acts. A massive arrival takes both
+  slots' shots. Nothing expires.
+- **The pull**: Indirect, no damage (the lean stands: a tool, not a gun, and a dead spend
+  with nothing laid is the one Ryan allows), never Rapid, no cooldown: every mine on the
+  field is gathered into the slot it is spent on, and a foe standing there takes them now, in
+  laid order. Spent on an empty slot it gathers the field's mines there and lays nothing of
+  its own, having no shot.
+- **The mark**: a weapon of no damage, Rapid with a cooldown of one (the lean stands: as a
+  full action it rarely beats laying a mine; Rapid every other round, paid by the die's free
+  reroll, is what makes it worth carrying, the pull the rider that makes every mine pay).
+  The foe is Marked, a chip: the next weapon to kill it, any machine's, leaves its shot in the
+  slot it empties (the third form; the second, a mine only if that very blow kills, if it
+  proves too strong). One mine a mark, it lasts the skirmish, a death by a tick leaves
+  nothing, and Marked is a status the team put on the foe, so the Paradox and the
+  Susceptibility Tensor count it (Ryan, 17 October: tuned for the final ecosystem).
+- **Stock**, stand-ins until the stock pass, keyword pieces so the stock shows the bombs (a
+  tier three stocks tier two): the Incendiary Shells (napalm), the Suppression Battery (a stun
+  mine: hard control carried by the blueprint, gated by its setup under the stun row, a slot
+  mined in advance and a foe stepping into it), the Polarity Projector (a shock mine), the
+  Laminar Deflector. Every keyword rides inside the mine and acts as it lands: a Spread mine
+  hits the arrival's neighbours, a Penetrate mine the other rank of its column, a Shock mine
+  leaves the arrival Shocked for the team's first blow, a Suppress mine takes its first action.
+- **The display.** An empty slot lights as a target when a weapon of the right reach is
+  dragged, as a foe does; a mined slot shows its outline and a glyph with the total waiting
+  and a chip per keyword, never hue alone; the pull's gather is drawn as the mines sliding
+  into the slot; a Marked foe wears its chip; the header's REINF count stands beside it until
+  the formation view lands (the to-do), so a mine is laid against a count.
+- **Engine work.** A slot as a target (`targets_for_face` returns foes today, and the
+  bot's option list with it); the mine store on the skirmish, a list of laid shots a slot
+  (the number, the strikes, the keywords, in laid order), carried by the save; the landing
+  after the reinforcement step, left to right, each shot through the arrival's damage taken
+  and armour with its keywords acting; any other way into a mined slot setting it off at once
+  (Minos's turn of the ranks, when it exists); the pull and the mark as printed properties,
+  Marked a foe status in `FOE_STATUSES` with a kill hook; the bot's value of a mine (a shot
+  delayed, worth its number times the chance a foe steps in before the fight ends; the to-do's
+  valuations line, before its runner row); each tested with synthetic passives.
+- **What the runner reads.** Alone and in a team against the four formations, the only
+  fights with reinforcements today: mines laid, mines cashed by an arrival, mines cashed by
+  the pull, and the share of its spends that went to a slot; a direction only until the foes'
+  fresh start gives fights a wait list worth trapping.
+
 ## Holes already raised
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
@@ -194,15 +250,20 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   Ryan's pull (17 October) answers it: mines laid in a quiet round are cashed on a chosen foe.
 - The header shows how many wait (REINF), never who, until the formation view lands (the
   to-do): a mine is laid against a count, not a foe.
+- A withdrawal ends the skirmish and a pack keeps its survivors, so the mines laid are lost
+  with the field; the pull cashes them first if a foe stands to take them (Claude, 18 October).
+- Kill-then-mine is the team's order: a kill clears its slot at once, so the bomber mines the
+  slot an ally emptied this turn only if it spends after the ally, and the reinforcement steps
+  in at the round's end (Claude, 18 October; the 15 October tempo read, restated for the go).
 
 ## Open for the session
 
-1. The pull's damage (Claude's lean: none, a bare verb); the mark Rapid with a cooldown of 1
-   (Claude's lean) or a full action. Decided 17 October: the pull Indirect, never Rapid; mines
-   stack and blow in laid order; the mark in its third form (the next weapon to kill the marked
-   foe leaves its shot in the slot), the second if it proves too strong; Marked feeds the
-   Paradox like any status, tuned later.
-2. Its size and way of moving (Kestrel: flyers and hovercraft on big boosters).
+1. Ryan's call on the proposal above: the pull of no damage and the mark Rapid with a
+   cooldown of one (Claude's leans, not yet moved); its numbers, size and way of moving (a
+   medium flyer at 40), matched to Ryan's silhouette; the stand-in stock. Decided 17 October:
+   the pull Indirect, never Rapid; mines stack and blow in laid order; the mark in its third
+   form (the next weapon to kill the marked foe leaves its shot in the slot), the second if it
+   proves too strong; Marked feeds the Paradox like any status, tuned later.
 
 ## Waits on
 

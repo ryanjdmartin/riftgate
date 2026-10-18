@@ -36,6 +36,13 @@ document's job and every command are in `README.md`.
   spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
   proposal, its third round), the to-do's review line under the design sessions (Armoured and
   Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+- `ccr-b6da49d3-4ft738` (18 October, the Kestrel session resumed from main): Claude's
+  proposal for the go on the three Kestrel machines, recorded in their briefs under "The
+  proposal for the go" (the strafer's shape, numbers and spray; the shield-spender's zap on
+  the target in place of the ping, its regen lock and its die; the bomber's shape with the
+  pull of no damage and the Rapid mark), each brief's "Open for the session" now Ryan's call
+  on it, the holes it raised beneath. Docs only; nothing built, nothing in content. To resume:
+  Ryan's answers, then on his go the records each brief's "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -82,6 +89,8 @@ document's job and every command are in `README.md`.
   rounds, the stacking policy (add or renew), Suppressed never stacking nor carrying, the Boar's
   spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
   Dispel decided for the enemy's side with Ward turning both away (not built).
+  Later on 18 October (`ccr-b6da49d3-4ft738`, above): Claude's proposal for the go on all
+  three, in the briefs, waiting on Ryan.
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
   types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
   `docs/rules.md` states it, Rally included (Kindled at its move's value, live from the next
