@@ -324,6 +324,21 @@ carries its value (Braced 12, as the foe's chip already shows its armour) with s
 the statuses that count things, raised in section 12 for the stock pass, since the Kestrel
 session built the foes' brace in multiples of 5 this week.
 
+**Ryan, sixth round** (17 October), in his words: "I assume the numbers get even better if
+the armadillo has placed more lures on its hardpoints, or a non-weapon rapid (hypothetical
+buff, shield, or non damaging weapon)." Claude's count (the same toy, the player spending every
+lure, a Rapid piece beside the pair giving the turn back once and the die rerolling onto any
+other entry, the Klaxon a lure that ends the chain): lures a round with no reroll spent, one
+and all three: the pair on four plain hardpoints 0.4, 0.9, 1.9; with a Rapid shield (the
+Laminar Deflector) 0.5, 1.2, 2.3; with a Rapid shield and a Rapid vent 0.7, 1.5, 2.7; with the
+Klaxon 0.7, 1.3, 2.0; with the Klaxon and a Rapid shield 0.9, 1.5, 2.2; three Rapid pieces and
+no gun 1.2, 1.8, 2.3. So yes, and the Rapid shield is the build hook to name: a Rapid shield on
+itself seals it and gives the turn back, so the die can seal and lure in one round, which the
+plain die does only across two; a Rapid vent opens, cools and may reseal in the same turn. Both
+are other makers' pieces (Kestrel's today), the routes in the bible asks a passive to have. The
+limit on it is the one decided: every Rapid piece carries a limiter, and a Rapid vent of any
+kind is the one Ryan is wary of.
+
 ## Open for the session
 
 1. The numbers: the seal's heat a round, the heat maximum, a mark's cooling (the model above).

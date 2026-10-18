@@ -89,10 +89,50 @@ cooldown by another name); a charge that decays or explodes if held (it forces t
 time, the opposite of a choice); damage from the target's state kept debuffed (Ryan's
 objection to ripe target stands); the Badger's hopper shape (one turret loading the other).
 
+Ryan, 17 October, on the candidates: "the ammo is an interesting idea, but somewhere in here
+needs to live the tanks identity, the build openers. Since this is a tier 3, we can go wild with
+rule breaks, and if its a Minervan capstone even better. Something about needing ammo, and a
+way of recharging it faster... Do all the tanks guns use ammo? Is that the gimmick?"
+
+**Claude's third round** (17 October): yes, all of them, and the gimmick is that it runs on
+shells where every other machine runs on heat. The passive breaks the heat rule for one
+machine: its weapons add no heat and each costs a shell from its magazine, the turrets several;
+a vent spent on it reloads shells instead of cooling (so much vented a shell). What that gives:
+
+- The turrets' limit without a cooldown: a turret's shot is three shells of eight (placeholders),
+  so "fire now or hold" is "is this target worth three of what I have, against the vents I will
+  see". Two turret shots back to back are possible, at the price of everything else going quiet
+  and the magazine dry, which is the capstone doing its job once a fight and the choice the
+  test asks for.
+- The build openers, both from other makers: every vent in the game is its loader (the Blowout
+  Stack, the Coolant Jacket, the Puffin's shield that vents, a Rapid vent reloading and acting
+  again, the piece to watch), and every hot gun in the game is cold on it (the Overclocked
+  Railgun's 40 heat becomes one shell), so the hottest pieces have a home that pays in shells.
+  A tier-three module may widen the magazine.
+- The read: its heat gauge is a magazine, shown in shells; the foes' Burning and Scorched still
+  land on a small heat gauge of its own, so the Peak keeps its answer to it.
+- The identity test: a new price (shells), a change to what two kinds of piece do (weapons and
+  vents), two routes in, two payoffs.
+
+Holes: a dry gun is an entry that cannot be spent that turn, so a die of four guns and no vent
+wastes its turn once the magazine is empty (the heat build's overheat by another name:
+mismatch costs time, never ability, since vents, shields and buffs still spend); short fights
+are free and long ones are where it bites, the inverse of heat, which is right for a siege
+machine; a Rapid vent on it is a free reload with the turn given back (the Rapid limiter row);
+the magazine's size and the turrets' price are the whole balance; and whether shells carry
+between fights (a battle-long magazine, reloaded at the gate or from loot) is a dial, kept
+per fight in the first cut.
+
+Bench: shells on the turrets only, heat on the hardpoints (two gauges on one phone machine,
+and the hot guns lose their home); a locked loader entry in place of vents reloading (the
+reload becomes die luck, and other makers' vents lose their route in); steady aim and ripe
+target (above).
+
 ## Open for the session
 
-1. The charge: which of the candidates above, or none (Ryan: possibly a non-starter), and
-   whether the two turrets share whatever it is.
+1. The charge: shells for every gun, vents reloading (Claude's third round), or one of the
+   earlier candidates, or none (Ryan: possibly a non-starter); the magazine's size, the
+   turrets' price and the vent-to-shell rate as placeholders.
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
 3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the

@@ -32,6 +32,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The Honey Badger's identity, the hopper as plate and shot (`minerva_honey_badger.md`), in session
 - [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), in session
 - [ ] The siege battery, Ryan's H-tank, and its turrets' charge (`minerva_siege_battery.md`), in session
+- [ ] Review for Ryan (his ask, 17 October, left for the next session; his words in the bible's section 12, the scale question): Braced as Armoured on either side, a stack an armour point; Overcharged a damage point a stack, halving each round rounded up, the Ammit's kept stacks apart; and what carries Overcharged today (the Overcharge Coil, the Grievance Reliquary, devour), with what the halving does to each
 - [ ] The battlecruiser, Minerva's capital ship, with the Carrier's session (`minerva_battlecruiser.md`)
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
