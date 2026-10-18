@@ -106,7 +106,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 
 ## Art
 
-- [ ] The boss art round (15 October, on the picker): Ryan's picks of the draft sets cut (the first round's six that stand, and the third round's Skaði, Fáfnir and Floraison with its swallow and vines), the hammer or the axe settled; each boss's kit proposed in chat before it moves from `tools/foeforge/drafts.json` into content; a summon's moment on the skirmish screen, its sprite rising from the circle for its move
+- [ ] The boss art round (15 October, on the picker). Ryan's picks of 18 October: the Behemoth, the Cinder Tortoise and the Fallen Weapon (the axe, settled) cut and in `picks.json`; the Matador (a missing hand), the Reaper (an extra hand), Skaði (the lower-hand weapon) and Fáfnir (the gold) through the edit model; Floraison (humanoid, take 1's face), Surtr (made of fire) and the Augur (no coat or hood, bigger blades) redrawn, all for his next picks; each boss's kit proposed in chat before it moves from `tools/foeforge/drafts.json` into content; a summon's moment on the skirmish screen, its sprite rising from the circle for its move
 - [ ] Aphelion's thrusters as a model brief, how they look (the bible's makers table, section 7: it flies on thrusters and space-age rockets rather than rotors, "as a general rule", Ryan, 12 October; the Stingray's flush fans are its own silhouette)
 - [ ] New foe types from the candidates Ryan marked, once he decides them (section 12)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen

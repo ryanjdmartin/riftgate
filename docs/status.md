@@ -318,7 +318,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
-  Cleric (foes). Its database
+  Cleric (foes).
+- The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
+  Weapon (the axe, which settles hammer against axe) cut into `art/foes` and recorded in
+  `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits
+  land); his notes drove a second round, on the picker for his next picks: the Matador's missing
+  hand, the Reaper's extra hand, Skaði's lower-hand weapon and Fáfnir's gold through the edit
+  model; Floraison redrawn humanoid with take 1's face, Surtr made of fire rather than on fire,
+  the Augur without the coat and hood, bigger blades, both hands on the haft (fresh takes and
+  image to image from the take he called closest). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

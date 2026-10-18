@@ -45,8 +45,11 @@ name, as the Thief keeps its own, and every look is ours.
   marked machine, or the back rank is reached first. Numbers are placeholders.
   **Her weapon is the thing to get right** (Ryan): a twin scythe, one long haft with a curved
   reaping blade at each end, spun and thrown; every take on the picker shows both blades. Her
-  look is otherwise ours (a hooded coat of faded black over green leathers, bone charms, no
-  cards).
+  look is ours, and Ryan's notes of 18 October on the first round set it: no robes, long coat or
+  hood (the first round drew a hooded coat), the blades bigger, both hands on the haft; so a
+  sleeveless jerkin of dark green leather over a grey shirt, trousers and boots, bare-headed, the
+  bone charms kept, no cards. The second round: fresh takes, image to image from the take he
+  called closest (the level hold, 7), and the chibi redrawn the same way.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
@@ -109,7 +112,7 @@ The unbuilt heroes, by domain, and the trope each homages:
 
 ## Questions for Ryan
 
-- The Augur's picks on the picker (the twin scythe in every take), then the cut.
+- The Augur's second-round picks on the picker (no coat or hood, the blades bigger), then the cut.
 - Maelle as the Duelist on the Peak, in the Mage's place, or not; and the Blue Mage.
 
 ## Bench

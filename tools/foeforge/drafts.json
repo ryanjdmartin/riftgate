@@ -37,12 +37,12 @@
    "faction": "meadow",
    "size": 2,
    "design": {
-    "sprite": "a colossal plant bud as big as a house on a thick writhing stalk, its swollen petals parting around a ring of thorny teeth, root tendrils for legs",
+    "sprite": "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth",
     "variants": [
-     "a colossal plant bud as big as a house with its petals peeled wide open around a gaping maw ringed with thorny teeth, lunging forward to swallow, its root tendrils clawing the meadow",
-     "a colossal plant bud as big as a house with its petals clamped shut and bulging around something it has swallowed whole, veins pulsing under its green skin, leaning forward on root tendrils",
-     "a colossal plant bud as big as a house on a stalk coiled back to strike like a snake, its petals half open around thorny teeth, vines whipping from its base",
-     "a colossal plant bud as big as a house lashing a flurry of thorned vines from its base in every direction, its petals half open around a ring of thorny teeth, its root tendrils planted wide"
+     "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, standing tall with its vine arms spread wide and its petal-ringed mouth gaping",
+     "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, lunging forward with one thorned claw reaching out to seize, its mouth wide",
+     "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, hunched with both vine arms raised overhead about to slam down, petals flared",
+     "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, striding forward on its root-legs with vines whipping from its shoulders, its mouth opening"
     ]
    }
   },
@@ -98,13 +98,13 @@
    "size": 2,
    "design": {
     "where": "the Summoner's rune circle",
-    "look": "lit from inside by heat, black rock and embers",
-    "sprite": "a towering giant of black stone and living flame with a crown of fire, a burning sword held low, its eyes like furnace mouths",
+    "look": "lit from inside, fire against darkness",
+    "sprite": "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire",
     "variants": [
-     "a towering giant of black stone and living flame with a crown of fire, raising a burning sword overhead to bring it down, flames pouring off its stone shoulders",
-     "a towering giant of black stone and living flame with a crown of fire, striding forward out of a deep violet rune circle on the ground, a burning sword trailing fire behind it",
-     "a towering giant of black stone and living flame with a crown of fire, sweeping a burning sword in a wide arc that throws a wall of fire",
-     "a towering giant of black stone and living flame with a crown of fire, kneeling to plant a burning sword in the ground, fire racing out from the blade in every direction"
+     "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire, raising the sword of fire overhead with both hands to bring it down, flames pouring upward off its whole body",
+     "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire, striding forward out of a deep violet rune circle on the ground, its legs trailing into fire where they meet it, the sword of fire low at its side",
+     "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire, sweeping the sword of fire in a wide arc that throws a wall of flame, its body a column of fire",
+     "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire, standing with the sword of fire planted point-down before it, both hands on the hilt, its body burning upward into a crown of flame"
     ]
    }
   },

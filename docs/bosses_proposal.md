@@ -36,10 +36,10 @@ stands or shielding it until one falls.
 |---|---|---|---|---|
 | The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own) | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
+| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough. Claude's lean: a war hammer planted haft-down, its two ends the parts and an eye in each, the face's blow one no shield answers and the pick prising loose the component a machine shows (the Waste's two halves), the haft the core; the axe's two bits would be a mirrored pair doing one job | The parts (above) |
+| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts (above) |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
 | The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites | Runs today |
@@ -108,7 +108,7 @@ balance the series out a little, never purge it):
 - **The Summoner's summons** (Ryan, 15 October: yes, with names that are not the series' own;
   then full Norse): in content since that day, each a move, from the Norse world its rune circle
   opens on (its robes are stitched with runes). Surtr (the fire giant, in Ifrit's place; Ryan: a
-  perfect replacement): Pyroclasm, every machine scorched, below half. Ifrit's own move is
+  perfect replacement; his note of 18 October on the first takes: made of fire rather than on fire, so the fourth round draws a body that is itself flame over a core of slag): Pyroclasm, every machine scorched, below half. Ifrit's own move is
   Hellfire (Ryan asked, 16 October). It was the Summoner's until 13 October, when it became
   Pyroclasm: the bible gives hell's words to the Council's side and pins Hellfire as an Arsenal
   prefix (the King James Bible's), and Surtr's fire is Muspelheim's, not Hel's. If the move
@@ -129,7 +129,6 @@ balance the series out a little, never purge it):
 ## Questions for Ryan
 
 - Marks on the rest of the twelve.
-- The Exor homage's weapon.
 - The conversions above; where Omega lives; the Mime.
 
 ## Bench
