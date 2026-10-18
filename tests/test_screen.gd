@@ -144,6 +144,32 @@ func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 	s.free()
 
 
+func test_every_die_shows_the_place_of_the_entry_it_shows() -> void:
+	assert_eq(Hud.roman(1), "I", "one")
+	assert_eq(Hud.roman(4), "IV", "four")
+	assert_eq(Hud.roman(9), "IX", "nine")
+	assert_eq(Hud.roman(14), "XIV", "fourteen")
+	assert_eq(Hud.roman(0), "", "no place, no numeral")
+	var s := _screen(11)
+	for i in range(3):
+		assert_eq(s._dice[i].slot, s.sk.mechs[i].face_index + 1, "die %d shows its entry's place, from one" % i)
+	s._on_reroll()
+	for i in range(3):
+		assert_eq(s._dice[i].slot, s.sk.mechs[i].face_index + 1, "die %d's numeral follows the reroll" % i)
+	s.free()
+
+
+func test_a_long_codex_description_takes_two_lines_never_more() -> void:
+	var font := Hud.display()
+	var text := "20 fires the hopper, +5 a load (3 a shot) (+10 heat)"
+	var whole := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+	assert_eq(FaceListView._wrapped(font, text, whole + 1.0, 17, 2).size(), 1, "one line when it fits")
+	var two := FaceListView._wrapped(font, text, whole * 0.6, 17, 2)
+	assert_eq(two.size(), 2, "two when it does not")
+	assert_eq(" ".join(two), text, "every word kept, in order")
+	assert_eq(FaceListView._wrapped(font, text, 10.0, 17, 2).size(), 2, "never more than two, the rest on the last")
+
+
 func test_face_descriptions_drop_the_line_word() -> void:
 	assert_eq(Face.attack(10, Face.Reach.DIRECT, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
 	assert_true(Face.attack(20, Face.Reach.INDIRECT).describe().begins_with("indirect 20"), "indirect is called out")

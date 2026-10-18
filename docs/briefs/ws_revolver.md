@@ -58,6 +58,10 @@ The rest of the proposal (12 and 13 October; Claude's unless marked Ryan's):
   another machine. One tap a round, and it must be taught (Claude, 14 October).
 - Cooldowns decided (14 October): on a die that steps, a cooldown of so many rounds is exactly
   so many chambers (Claude), so it is the property's native reader.
+- Every die shows each entry's place (Ryan, 15 October, built): a grey Roman numeral top left
+  on the die, and down the hold and the codex, counted in the die's order, fixed components
+  first. So the chambers are numbered on every die already; the revolver's next-entry chip
+  can name the next numeral, and the hold's list is the fire plan in order.
 
 ## Its tier
 

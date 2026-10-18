@@ -812,8 +812,8 @@ func assign(mech_index: int, target = null) -> bool:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
-	# free (never the same entry), and the mech may act again. The disable is only there to
-	# stop an infinite turn.
+	# free (never the same entry; a copy of it may come up, so stacked copies chain), and the
+	# mech may act again. The disable is only there to stop an infinite turn.
 	if f.has(Face.Keyword.RAPID):
 		Effects.disable_entry(ms.unit, ms.face_index, "rapid", round)
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
@@ -821,10 +821,9 @@ func assign(mech_index: int, target = null) -> bool:
 		log.append("%s: rapid, rolls again" % ms.unit.display_name)
 	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
 	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
-	# round opens. Not Rapid's reroll: that never lands on an identical entry, and the
-	# Nemesis's two fists are identical, so it could never chain them. Nothing switches off:
-	# the stacks are the limit, and a fist that shows again punches again. A fight already won
-	# rolls nothing.
+	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll
+	# may show the same fist again. Nothing switches off: the stacks are the limit, and a fist
+	# that shows again punches again. A fight already won rolls nothing.
 	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
 			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
 		ms.face_index = ms.die.roll(rng)

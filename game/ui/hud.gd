@@ -302,6 +302,18 @@ static func hex_bytes(n: int, frame: int, salt: int = 0) -> String:
 	return " ".join(parts)
 
 
+## A die entry's place on its die as a Roman numeral (Ryan, 15 October), so the slot never
+## reads as a stat: 1 is "I", 4 "IV", 9 "IX". Nothing for 0 or less.
+static func roman(n: int) -> String:
+	var out := ""
+	for pair in [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"],
+			[50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]]:
+		while n >= int(pair[0]):
+			out += str(pair[1])
+			n -= int(pair[0])
+	return out
+
+
 ## A short diagonal tick, the mock's "leader" mark beside a unit.
 static func tick(ci: CanvasItem, at: Vector2, color: Color) -> void:
 	ci.draw_line(at, at + Vector2(7.0, -11.0), color, 1.0)

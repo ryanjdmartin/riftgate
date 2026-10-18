@@ -298,8 +298,8 @@ die to lock it, hold a die to see every face on it, drag a die onto a foe to spe
 face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
 Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
 land and the number flashes over the target; energy faces are static. Reroll up to three
-times per round, before or after attacking; a reroll always lands on a different face,
-never the one showing nor an equivalent one. End turn runs the enemy: its turn replays blow
+times per round, before or after attacking; a reroll lands on any other face, never the
+one showing, a copy of it included. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
 and then the next round's dice show. Hold a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it; the eye

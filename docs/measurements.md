@@ -318,3 +318,43 @@ Arc weapon rolls in these kits). Prices convert a win-rate change to hull by the
 at +20 and +40 hull. The roster's numbers are each machine's row as it stood; a machine's
 passive and locked pieces together are its row against `--nopassive --set
 chassis/<id>/fixed=[]`. Bible section 7 (Wainwright & Sutler's next chassis).
+
+## 15 October
+
+**A reroll that may land on a copy.** Ryan's call of 15 October: a reroll, the team's and
+Rapid's free one, lands on any other entry, a copy of the one showing included; before it, a
+reroll skipped every copy of the entry showing. The four machines whose default dice carry
+copies (the Baboon two Umbra Inducers of seven entries, the Wild Boar two Slugthrowers of six,
+the Nemesis two Knuckles of Fury of six, the Ammit four Soulcutter Talons of eight), each alone
+against the twenty packs, greedy only (the random rung never rerolls), 100 seeds a cell, then
+the same with the old rule restored. No default die carries copies of a Rapid piece, so this
+measures the team's rerolls only. Mean win %, mean hull lost, rerolls a round:
+
+| Row | Win, old rule | Win, new rule | Hull lost, old | Hull lost, new | Rerolls, old | Rerolls, new |
+|---|---|---|---|---|---|---|
+| Ammit | 34.2 | 33.5 | 78.8% | 78.8% | 0.90 | 0.94 |
+| Baboon | 26.2 | 26.2 | 81.2% | 81.2% | 0.94 | 0.94 |
+| Nemesis | 75.6 | 76.0 | 48.3% | 48.2% | 0.76 | 0.77 |
+| Wild Boar | 84.8 | 84.5 | 34.5% | 34.6% | 0.93 | 0.95 |
+
+Read: no row mean moved a point, inside the band of about 3 on a difference of two row means
+at 100 seeds, and no cell moved past its band (the largest: the Ammit against two Antlions 23
+to 14 and against four Bombs 50 to 41, the Nemesis against the Sandworm 47 to 54, the Wild
+Boar against the Marsh formation 51 to 45). The one shift is the Ammit's pick share: its
+Talons 46% of its spends to 51%, its Oblation Ward 21% to 18%, since a reroll from a Talon now
+lands on another three times in seven. The default dice cannot show the change: their copies
+are each machine's best entry, which the greedy bot rerolls toward, not away from, and from a
+unique entry both rules land alike. The abuse the old rule allowed, copies of a filler beside
+one key entry, is a build the player makes, which no default loadout is.
+
+To reproduce, with the runner as it stands; the old rule is `sim/die.gd` at commit 987f7ee,
+whose only difference is `Die.reroll`:
+
+```sh
+perl -e 'alarm 1500; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 100 \
+  --policies greedy --rows baboon,wild_boar,nemesis,ammit --out /tmp/new.md --json /tmp/new.json
+git show 987f7ee:sim/die.gd > sim/die.gd    # the old rule, then the same run to /tmp/old.*
+git checkout -- sim/die.gd
+```
+
+About ten minutes a run on one core. Bible section 6 (the rerolls row).

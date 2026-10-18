@@ -14,10 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 478 tests, 19,906 checks, green on the Kestrel session's branch with main merged in
-  (17 October: the Augur's test and the Cleric with the Wild Boar's spill, timed stacks keeping
-  their own rounds, every status a chip, Folded become Braced, the stacking policy and the
-  re-suppress rule); 462 and 19,765 on main (the boss mechanics).
+- Tests: 481 tests, 20,129 checks, green on main (18 October, the Minerva branch merged in:
+  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
+  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -27,6 +26,22 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
+  briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
+  Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
+  reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
+  word ("make sure main is up to date with any changes you've made"), main merged into it the
+  same day, and kept open: the session resumes on it in a fresh context. To resume, read
+  `docs/briefs/minerva_armadillo.md` (its open list and sixth round: the numbers, the mark's
+  spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
+  proposal, its third round), the to-do's review line under the design sessions (Armoured and
+  Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
+  landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
+  vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
+  merged into main the same day, so a session can start on its engine and assets (the to-do's
+  two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
+  boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -74,8 +89,9 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis, 54 components (12 locked, 4 unstocked, among them the
-  shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
+- Content: five makers, 13 chassis and a fourteenth planned (the funnel-web, 18 October, its
+  passive and its locked Web Bomb planned), 55 components (13 locked, 4 unstocked, among them
+  the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
   the old kinetic-and-energy split (every rolled weapon cold, every flat one hot), which the
@@ -138,6 +154,24 @@ document's job and every command are in `README.md`.
   pack `Unit.is_boss` (a save that says `elite` still loads), `RIFTGATE_BOSS=1` in place of
   `RIFTGATE_ELITE=1`; and a fight resumed from a save keeps a foe's boss, a Gel's split and a
   foe gone whole (all three were lost on the trip).
+- Built 15 October, on the Minerva branch (Ryan's call in that session): every reroll, the
+  team's and Rapid's free one, skips only the entry showing, so a copy of it may come up and
+  copies of one Rapid component chain. Skipping copies too was abusable: a die of one key entry
+  and copies of one filler sent every reroll from a filler onto the key. The machines with
+  copies on their dice (the Baboon's Inducers, the Boar's Slugthrowers, the Nemesis's fists,
+  the Ammit's talons) reroll onto a copy now and then: an A/B on those four, greedy, 100 seeds,
+  moved no row mean a point (`docs/measurements.md`, 15 October), since their copies are the
+  entries the bot keeps; the Ammit's Talons rose from 46% of its spends to 51%. Open with it:
+  a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
+  chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
+  Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
+- Built 15 October, on the Minerva branch (Ryan: "Roman numerals in the corner? ... grey on
+  the black background"): every die entry shows its place on the die, from I, as a grey Roman
+  numeral in the quotes' condensed italic, top left on the die and down the hold and the codex
+  (a gutter left of each tile), counted fixed components first. It shows a reroll onto a copy,
+  which hardpoint holds what, and the revolver's order. The codex's two narrow columns now
+  give a long description a second line rather than clipping it. Ryan, 16 October, from the
+  screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -182,6 +216,12 @@ document's job and every command are in `README.md`.
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
+- The funnel-web (Ryan's go, 18 October; its row in section 7): its blows on a foe showing no
+  intent on it lay Vitriol (5% of current hull a stack at the foe's action, a stack per hit),
+  its locked Web Bomb a delayed Suppress on the foe and the next to act beside it, no cooldown,
+  no fangs; tier two; in content as planned entries; the engine and the assets are the
+  to-do's two lines. With it, Ryan's 17 and 18 October leans on hard control (priced by a gate,
+  never rationed) in the stun row, and the time-shifter parked in the Aphelion row.
 
 ## Next, in order
 
@@ -195,7 +235,7 @@ to-do's Ryan list).
    design's one home, with what Ryan said and what is open, and the README gives the shared
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
-   lands.
+   lands. The funnel-web landed first (18 October); the revolver is next.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -233,15 +273,24 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.192 (18 October), published from the
-  Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
+  `docs/design-bible.html` after every change. Live: v0.197 (18 October), published from the
+  Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
+  row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
+  principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
+  the Aphelion row; the Minerva branch's two rows, section 7's Minerva row rewritten to the
+  session's shape and section 12's question on Braced in stacks of 5 against the scale) with
+  this session's last rows (Numbed and the stores as buffs, Silence and Dispel decided, Ward
+  turning both away). Before that, v0.196 and v0.195, main's file, over v0.191 (17 October),
+  published
+  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
   16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
   place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
   Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
   on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
   become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, Numbed and the stores as buffs, Silence and Dispel decided; the bomber's pull and mark). Main's own file
-  says v0.188, the same rows without this branch's, and the script is on this branch alone.
+  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying; the bomber's pull and mark). Main's file carried
+  v0.188, the same rows without that branch's, until the branch merged on 17 October and
+  brought the script with it.
   Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
   live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
   summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the

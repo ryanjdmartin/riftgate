@@ -676,6 +676,49 @@
     ]
    },
    "flavour": ""
+  },
+  {
+   "id": "funnel_web",
+   "name": "Funnel-web",
+   "designation": "Pattern 19 Ambush Walker",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "design": {
+    "fantasy": "Ryan, 14 October: \"a unit that sits on the sidelines, waiting to strike. Its opportunistic. We have many scaling threats, but no dedicated tank-buster, which was my inspiration - little spider takes down big thing with venom.\" A four-legged steampunk walker that does spider-like things (Ryan, 17 October); the lore is his and not written yet.",
+    "niche": "The roster's tank-buster, a team machine at tier two: its blows on a foe looking away lay Vitriol (a share of current hull), the team's Lures, stuns and bare-hulled tank making its windows; its locked Web Bomb binds. Alone it is a plain d5 with a web and loses, which is tier two's shape. It waits on the elites in fights for the venom to matter outside the boss fight.",
+    "notes": "Ryan's go, 18 October, on the design settled in chat 17 and 18 October (the brief retired to git: git show bfa8cf2:docs/briefs/ws_funnel_web.md; the bible's funnel-web row carries the decisions and their reasons). The name, the designation and every number are working placeholders (medium walker, move 30; hull 110, shield 40, armour 5, heat 60, cooling 5, recharge 20; four hardpoints, a d5). The stock is stand-ins until the stock pass: the Maxigun (its first chase piece: strikes are bites), the Howitzer, the Twin Autoguns, the Laminar Deflector. The passive is planned: the engine lacks the condition (the target shows no intent on this machine, the acting_on list's complement, read at the spend before its riders) and Vitriol's tick. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and gait are the asset session's. The HUD's predator sense (the field dims and eligible foes' eyes pulse while its die is held) is on the to-do."
+   },
+   "codex": "",
+   "hull": 110,
+   "shield": 40,
+   "movespeed": 30,
+   "heat_max": 60,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 5,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "medium",
+   "fixed": [
+    "web_bomb"
+   ],
+   "loadout": [
+    "maxigun",
+    "howitzer",
+    "twin_autoguns",
+    "laminar_deflector"
+   ],
+   "passive": {
+    "id": "ambush",
+    "name": "Ambush",
+    "description": "Its blows on a foe showing no intent on it lay Vitriol: a stack per hit, and at its action the foe loses 5% of its current hull a stack.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
   }
  ]
 }

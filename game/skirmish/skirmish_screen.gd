@@ -786,6 +786,7 @@ func _refresh() -> void:
 		var sf := sk.shown_face(ms, ms.face())   # reach as the passive reads it now
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
+		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
@@ -1308,6 +1309,7 @@ func _on_drag_started(i: int) -> void:
 	var sf := sk.shown_face(sk.mechs[i], sk.mechs[i].face())
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
+	_ghost.slot = sk.mechs[i].face_index + 1
 	_ghost.visible = true
 	_refresh()
 
