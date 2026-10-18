@@ -4,7 +4,7 @@ The session finds the Carrier's verb, designed beside Minerva's battlecruiser, t
 framed it against.
 
 **Status**: proposal, open (unfinished). **Maker**: Aphelion. **Proposed tier**: three. **Read
-first**: `docs/briefs/README.md`; `minerva_siege_battery.md`; the bible's shield rule and
+first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's shield rule and
 Barrier rows (section 5) and its rows on Aphelion's and Kestrel's next chassis (section 7).
 
 ## What stands
@@ -17,8 +17,9 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
 - Ryan, 11 October, his brief for Aphelion: "a flying fortress (many options from helicarrier
   to capital-class spacecraft)".
 - Ryan, 12 October: "What if the capital ship was the Protoss Carrier foil to the Minervan
-  Terran Battlecruiser?" The two are best designed together; the battlecruiser does not exist
-  yet.
+  Terran Battlecruiser?" The two are best designed together. Ryan, 15 October: the
+  battlecruiser is a design of its own, Minerva's flying brick, and its verb leans to the
+  broadside (`minerva_battlecruiser.md`).
 - The frame: tier three, assault, a flyer, move 20 (round one).
 - The proposal's round one, the flying fortress: a deep-space hull (the makers table's
   "deep-space programme"), the helicarrier and the capital ship at once, its lift fans gone
@@ -51,7 +52,7 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
 - Interceptors as extra strikes, the target's armour coming off each, are now the strafer's
   verb: Kestrel's tier one, decided 14 October, every weapon it fires striking twice at half,
   each strike losing the foe's armour. Niches may overlap, but mechanics should not repeat (the
-  briefs README); the siege battery's brief flags the same overlap for itself.
+  briefs README); the siege battery's brief set its own strikes aside for the same overlap.
 
 ## Open for the session
 

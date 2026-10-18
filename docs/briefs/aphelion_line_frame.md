@@ -69,7 +69,12 @@ section 7.
   hit on a phone).
 - Cantrips (15 October): a single Rapid entry never lands on itself, so "no cooldown" matters
   only when a later reroll brings it back in the same round; that is a cantrip's value and its
-  brake. Small pieces at tier two or three, the combo's fuel.
+  brake. Small pieces at tier two or three, the combo's fuel. Since Ryan's call the same day,
+  Rapid's free reroll may land on a copy (stacked copies chain), so stacked cantrips with no
+  cooldown can bounce from copy to copy, and a die of nothing but cantrips never ends its turn:
+  they need the limit raised in the Armadillo's brief (`minerva_armadillo.md`) before they are
+  built. Ryan's proposal there (15 October) is heat paid every spend; Claude's earlier one, a
+  Rapid reroll never landing on an entry already spent this round, is its alternative.
 
 ## The design as proposed (11 to 13 October)
 

@@ -28,10 +28,12 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 The design sessions below run from the briefs in `docs/briefs/`, one session each, proposed in chat first; the briefs' README gives the shared context and an order.
 
-- [ ] The Armadillo as a form-changing tank, and its cash-in (`minerva_armadillo.md`)
-- [ ] The Honey Badger's identity (`minerva_honey_badger.md`)
-- [ ] The hedgehog, the Faraday Hull's new home, with the Retribution Thurible's change (`minerva_hedgehog.md`), after the Armadillo's
-- [ ] The siege battery, with the Carrier's session (`minerva_siege_battery.md`)
+- [ ] The Armadillo as a form-changing tank on Ryan's framework of 15 October (`minerva_armadillo.md`), in session
+- [ ] The Honey Badger's identity, the hopper as plate and shot (`minerva_honey_badger.md`), in session
+- [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), in session
+- [ ] The siege battery, Ryan's H-tank, and its turrets' charge (`minerva_siege_battery.md`), in session
+- [ ] Review for Ryan (his ask, 17 October, left for the next session; his words in the bible's section 12, the scale question): Braced as Armoured on either side, a stack an armour point; Overcharged a damage point a stack, halving each round rounded up, the Ammit's kept stacks apart; and what carries Overcharged today (the Overcharge Coil, the Grievance Reliquary, devour), with what the halving does to each
+- [ ] The battlecruiser, Minerva's capital ship, with the Carrier's session (`minerva_battlecruiser.md`)
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
 - [ ] The bomber (`kestrel_bomber.md`)
@@ -45,7 +47,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The Dingo's tier and die (`ws_dingo.md`), with the stock pass
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
 - [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
-- [ ] The Carrier, with the siege battery's session (`aphelion_carrier.md`)
+- [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`)
 - [ ] The Baboon to tier two (`aphelion_baboon.md`), with the stock pass
 - [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
 - [ ] Misharu with Penance (`arsenal_misharu.md`)
@@ -60,7 +62,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 ## Engine
 
 - [ ] A Reraise on an ally (`revive_once_ally`: readies one of its own not yet readied, so the next time it falls it gets back up once), the promoted Cleric's move at the finale (Ryan, 16 October), with the promoted forms
-- [ ] The shield rule (decided 14 October): a shield absorbs its number and the excess passes to the hull, a breach ignores the shield, injuries count what reaches the hull; Barrier and Ward as buffs (a Barrier's blow never injures; a Ward lasts the round); the cooldown property on an entry, dark with the rounds left, and Rapid's text as act again with a cooldown of one; the vocabulary first, then the engine, the tests, the HUD's dark entry and the two buff chips with structure of their own, then the balance report rerun (the Peak's cells will move)
+- [ ] The shield rule (decided 14 October): a shield absorbs its number and the excess passes to the hull, a breach ignores the shield, injuries count what reaches the hull; Barrier and Ward as buffs (a Barrier's blow never injures; a Ward lasts the round); the cooldown property on an entry, dark with the rounds left, and Rapid's text as act again with a cooldown of one, with the validator refusing a Rapid piece that carries no limiter (a cooldown, heat or Volatile; Ryan, 15 October); the vocabulary first, then the engine, the tests, the HUD's dark entry and the two buff chips with structure of their own, then the balance report rerun (the Peak's cells will move)
 - [x] Every status shows as a chip, whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so anything that interacts with overcharged needs it displayed"), and the codex lists a kept status with its count, never as a reward
 - [x] Folded becomes Braced and the foes' harden becomes brace (Ryan, 16 October: "If it's effectively braced, it should be braced too"; a keyword and the buff or debuff it creates share a name)
 - [x] Timed stacks go when their own grant's rounds run out (Ryan, 16 October: "Timed stacks should decay based on when they started. Not stack and refresh."): a buff granted again in a later round no longer lengthens the first grant's stacks, and a status shows one chip with every stack

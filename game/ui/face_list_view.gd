@@ -2,11 +2,14 @@ class_name FaceListView
 extends Control
 
 ## Every face of a die in a column: a small face on the left, its description to the right.
-## The current face is bracketed and drawn bright; the rest are dimmed. Used by the die's hold
+## The current face is bracketed and drawn bright; the rest are dimmed. Each row opens on the
+## entry's place on its die, a grey Roman numeral as on the die itself. Used by the die's hold
 ## readout and by the codex.
 
 const ROW := 54.0
 const MINI := 44.0
+const GUTTER := 26.0      # the place's numeral, right-aligned left of the tile
+const LINE := 19.0        # a description's line height when it takes two
 
 var faces: Array = []     # Face
 var current: int = -1
@@ -39,13 +42,16 @@ func _draw() -> void:
 		var widest := 0.0
 		for i in range(c * rows, mini(faces.size(), (c + 1) * rows)):
 			widest = maxf(widest, disp.get_string_size(faces[i].describe(), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x)
-		var content := MINI + 22.0 + widest
+		var content := GUTTER + MINI + 22.0 + widest
 		offsets.append(maxf(0.0, (col_w - content) * 0.5) if cols > 1 else 0.0)
 	for i in range(faces.size()):
 		var f: Face = faces[i]
 		var column := i / rows
 		var x0 := float(column) * col_w + offsets[column]      # fill down the first column, then the next
 		var y := float(i % rows) * ROW
+		draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + 1), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
+				Color(Palette.MUTED, 1.0 if i == current else 0.75))
+		x0 += GUTTER
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current
 		var col := Palette.HUD if cur else Color(Palette.HUD, 0.5)
@@ -86,7 +92,28 @@ func _draw() -> void:
 				draw_line(rect.position + Vector2(6.0, MINI - 6.0), rect.position + Vector2(MINI - 6.0, 6.0), Palette.ENEMY, 1.5)
 		var ink := Palette.INK if cur else Palette.MUTED
 		if i < labels.size() and not str(labels[i]).is_empty():
-			draw_string(mono, Vector2(x0 + MINI + 22.0, y + 21.0), str(labels[i]), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 11, Color(Palette.HUD, 0.8 if cur else 0.5))
-			draw_string(disp, Vector2(x0 + MINI + 22.0, y + 42.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)
+			draw_string(mono, Vector2(x0 + MINI + 22.0, y + 21.0), str(labels[i]), HORIZONTAL_ALIGNMENT_LEFT, col_w - GUTTER - MINI - 26.0, 11, Color(Palette.HUD, 0.8 if cur else 0.5))
+			draw_string(disp, Vector2(x0 + MINI + 22.0, y + 42.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - GUTTER - MINI - 26.0, 17, ink)
 		else:
-			draw_string(disp, Vector2(x0 + MINI + 22.0, y + ROW * 0.5 + 6.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)
+			# The codex's two columns are narrow: a long description takes a second line rather
+			# than running off its column.
+			var lines := _wrapped(disp, f.describe(), col_w - GUTTER - MINI - 26.0, 17, 2)
+			var base := y + ROW * 0.5 + 6.0 - float(lines.size() - 1) * LINE * 0.5
+			for k in range(lines.size()):
+				draw_string(disp, Vector2(x0 + MINI + 22.0, base + k * LINE), lines[k], HORIZONTAL_ALIGNMENT_LEFT, col_w - GUTTER - MINI - 26.0, 17, ink)
+
+
+## `text` broken at spaces into at most `max_lines` lines no wider than `width`; the last line
+## keeps whatever is left.
+static func _wrapped(font: Font, text: String, width: float, size_px: int, max_lines: int) -> PackedStringArray:
+	var out: PackedStringArray = []
+	var line := ""
+	for word in text.split(" "):
+		var trial := word if line.is_empty() else line + " " + word
+		if line.is_empty() or out.size() == max_lines - 1 or font.get_string_size(trial, HORIZONTAL_ALIGNMENT_LEFT, -1, size_px).x <= width:
+			line = trial
+		else:
+			out.append(line)
+			line = word
+	out.append(line)
+	return out

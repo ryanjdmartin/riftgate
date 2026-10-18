@@ -100,7 +100,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 
 - **Ryan's counts** (14 and 15 October): about ten chassis per city maker at the top end, split
   3-5-2 or 4-4-2 across tiers one, two and three; tier three late-game capstones, so few; the
-  Arsenal in reverse, little access early and much late.
+  Arsenal in reverse, little access early and much late. Ryan, 15 October, in the Minerva
+  session: Minerva's two tier threes are a treaded capstone and a capital ship, "the capital
+  ship that it seems like every maker is going to end up getting".
 - **The sort** (Claude's, partly agreed): tier one is itself with basics alone and stands in a
   start (a body or a hitter, not a support); tier three bends a rule the player has already
   learned; the rest is tier two, where the supports and the machines that are only good
@@ -112,8 +114,8 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 - Each brief gives a proposed tier; none is decided. The reshuffle proposed so far: the Wild
   Boar, the Clydesdale, the boiler and the revolver to tier one; the Baboon and the fan-boat to
   tier two; the Dingo undecided. One rule to reword if it lands: the 12 October tier row gives
-  every tier one a locked piece, and the Clydesdale and the form-changing Armadillo would have
-  none.
+  every tier one a locked piece, and the Clydesdale would have none (the form-changing
+  Armadillo keeps one, its lure, by Ryan's framework of 15 October).
 
 The tiers as the briefs propose them (nothing decided; "down" and "up" against a chassis's
 tier today; the targets two or three tier ones a city maker, two or three tier twos and one
@@ -121,7 +123,7 @@ tier three, the Arsenal none, three and three):
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the hedgehog | the siege battery |
+| Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
 | Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
@@ -144,11 +146,12 @@ Decided on the roster analysis's budgets; the bible's rows hold them.
 
 ## Roster holes, as the go left them
 
-Soft control: Minos, the jellyfish, the hedgehog's lure, the Armadillo's lure-shields, filling.
-Amplify for others: the Dingo's Shock, the Onryō's on-hit, filling. Area on a hardpoint: the
-stock pass's explosives, the strafer's volume, the bomber's clusters. New prices: the cooldown,
-negative cooling. Reads nobody used: the foes' intents (the spider), the slots (the bomber),
-the die's own state (the revolver, the Gundam), the team's rerolls (the Armadillo's cash-in).
+Soft control: Minos, the jellyfish, the echidna's draw, the Armadillo's locked lure, filling.
+Amplify for others: the Dingo's Shock, the Onryō's on-hit, the echidna's Sonic Needle, filling.
+Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomber's clusters.
+New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
+the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
+team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
 with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
 Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from
@@ -160,10 +163,11 @@ on our side.
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
-| `minerva_armadillo.md` | rework | Minerva | 1 | nothing |
-| `minerva_honey_badger.md` | rework | Minerva | 1 | nothing |
-| `minerva_hedgehog.md` | direction | Minerva | 2 | the Armadillo's session |
-| `minerva_siege_battery.md` | direction | Minerva | 3 | the Carrier's session (the foil) |
+| `minerva_armadillo.md` | rework, in session | Minerva | 1 | nothing |
+| `minerva_honey_badger.md` | rework, in session | Minerva | 1 | nothing |
+| `minerva_hedgehog.md` | direction, in session (the echidna) | Minerva | 2 | nothing |
+| `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
+| `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
 | `kestrel_strafer.md` | decided | Kestrel | 1 | nothing |
 | `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
 | `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
@@ -177,7 +181,7 @@ on our side.
 | `ws_dingo.md` | rework | Wainwright & Sutler | 1 or 2 | the stock pass |
 | `aphelion_line_frame.md` | direction | Aphelion | 1 | nothing |
 | `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
-| `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the siege battery's session (the foil) |
+| `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the battlecruiser's session (the foil) |
 | `aphelion_baboon.md` | rework | Aphelion | 2 (now 1) | the stock pass |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
 | `arsenal_misharu.md` | proposal | the Arsenal | 2 | nothing |
@@ -274,12 +278,12 @@ overrule)
 
 ## A suggested order
 
-1. Nothing to wait on: the Armadillo first, since it hands the Faraday Hull to the hedgehog;
-   then any of the Honey Badger, the strafer, the shield-spender, the bomber, the line frame,
-   Misharu, the Onryō, the revolver, the Prairie Dog and the Zoids walker (its maker first);
-   the funnel-web landed on 18 October.
-2. In pairs: the hedgehog after the Armadillo; the siege battery and the Carrier together
-   (Ryan's battlecruiser foil); the Baboon and the Dingo with the stock pass.
+1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
+   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
+   the line frame, Misharu, the Onryō, the revolver, the Prairie Dog and the Zoids walker (its
+   maker first); the funnel-web landed on 18 October.
+2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon and the Dingo
+   with the stock pass.
 3. After the stock pass: the boiler, the gunship, the fan-boat; the multi-rotor once the die
    has its shown word.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.

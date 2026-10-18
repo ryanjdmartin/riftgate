@@ -3,7 +3,8 @@
 The session settles who the Honey Badger is: its passive, which today says nothing in a fight,
 and how its hardpoints get a route into its locked pair.
 
-**Status**: rework; open since 12 October and not yet discussed in the go. **Maker**: Minerva.
+**Status**: rework, in session (15 October): the hopper lean taken up, its numbers in
+discussion. **Maker**: Minerva.
 **Proposed tier**: one. **Read first**: `docs/briefs/README.md`; the bible's open row "The
 Honey Badger's identity" (section 7); `docs/roster_analysis.md` section 2 (the Badger's rating)
 and section 11 (the bench); `content/chassis.json` (badger) and `content/components.json`
@@ -62,11 +63,60 @@ pack alone for a tenth of its hull (a diagnostic).
 - Ryan's taste: one passive, one idea; the hopper lean is one idea (ore held is plate, ore
   fired is damage) if it stays simple.
 
+## The Minerva session (15 October)
+
+**Claude's first round**, in chat: the hopper as the passive's business, a bruiser that turns a
+fight into plate and shot. Every weapon it fires puts a load in the hopper for each foe its
+blow damages; the hopper holds five; each load held is 2 armour; base armour 10 down to 5 (5
+empty, 15 full); the claw digs two loads a foe so it stays the best filler once the explosives
+carry Spread and Penetrate; the fragmenter still fires up to three at +5. Firing strips plate,
+and the exposed aim weighs hull reached, so an emptied Badger draws fire and a full one sheds
+it. Capped and drained, the hopper oscillates rather than ramps. "Never destroyed" to a Minerva
+module keeping its name, Reinforced Skeleton, and Ryan's text. Bench: melee hits only (five of
+the seven melee pieces are locked, so it would feed only fixed parts); Braced in place of
+armour (a derived Braced muddies "lasts the round"); leftover ore as salvage at a fight's end
+(for when the economy exists); riders never sticking to it (a permanent Ward, thin in two
+domains of four).
+
+**Ryan**, in his words: "Badger - worth considering, the effect can be dangerous if tuned badly,
+as you've stated. Various ranges exist from the fragmenter spending small amounts of ore to the
+whole load. it does push it into the detachment niche, which is fine, as it needs a proper role
+other than "bruiser." I think if we stick with "every foe damaged," that's going to push it into
+AoE territory anyway, so we can probably go to 1 armour a stack and assume that a competent
+player is going to hit 2-3 enemies a hit anyway, and then make 10 the max stacks to keep your
+final number. I would make the claw hit twice for sure, and maybe at 2 per hit, making it the
+most efficient fill but perhaps not the most effective weapon. Fragmenter can start by losing 5
+stacks, so half of max."
+
+What it settles: the hopper as the identity, every foe damaged loading it (the area build, and
+the detachment as the Badger's role beyond "bruiser"); 1 armour a load, ten at most, so 5 empty
+and 15 full; the claw strikes twice, the most efficient filler and not the most effective
+weapon; the fragmenter fires five loads, half the hopper.
+
+**Claude's second round**, in chat: the claw read as two strikes each loading one a foe (two a
+hit would fill the hopper from empty in one swing against a row); its number a strike down so
+it fills best without hitting best; a load counted for each blow, so multi-strike pieces fill;
+the fragmenter at +5 a load (45 full) or +3 (35, today's top); against swarms one swing refills
+what a shot spends, so the hold-or-fire decision lives in boss fights; full plate makes it
+immune to the Meadow's rank and file, the reason base armour stays at 5.
+
+**Ryan, second round**, in his words: "Badger - that was my note intention, per foe damaged, I
+think I said that. I didn't realize the claw had spread, I would remove spread from it, and
+keep it as the chase spend for bosses, tuning as necessary. Never destroyed - module, yes. Tier
+2 or 3, not sure. Can have positive stats since that's not that impactful an effect."
+
+What it settles: a load for each foe a spend damages, never for each strike; the claw loses
+Spread and becomes the single-target spend to chase against a boss (two strikes, two loads a
+hit, tuned as needed); "never destroyed" becomes a module at tier two or three, with positive
+stats.
+
 ## Open for the session
 
-1. The identity: the hopper lean, a benched shape, or Ryan's own.
-2. If the hopper: whether held loads give armour or Braced, the cap, and which weapons fill.
-3. Where "never destroyed" goes (a module, or gone).
+1. The claw's number a strike, since two strikes pay a boss's armour twice.
+2. The swarm fill at tier one, now that the claw has no Spread and a tier one's stock is plain
+   basics.
+3. The fragmenter's bonus a load, now that a shot fires five.
+4. The module's tier and stat line.
 
 ## What the session hands back
 

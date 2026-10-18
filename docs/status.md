@@ -14,10 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 478 tests, 19,906 checks, green on the Kestrel session's branch with main merged in
-  (17 October: the Augur's test and the Cleric with the Wild Boar's spill, timed stacks keeping
-  their own rounds, every status a chip, Folded become Braced, the stacking policy and the
-  re-suppress rule); 462 and 19,765 on main (the boss mechanics).
+- Tests: 481 tests, 20,129 checks, green on main (18 October, the Minerva branch merged in:
+  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
+  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -27,6 +26,16 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
+  briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
+  Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
+  reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
+  word ("make sure main is up to date with any changes you've made"), main merged into it the
+  same day, and kept open: the session resumes on it in a fresh context. To resume, read
+  `docs/briefs/minerva_armadillo.md` (its open list and sixth round: the numbers, the mark's
+  spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
+  proposal, its third round), the to-do's review line under the design sessions (Armoured and
+  Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -137,6 +146,24 @@ document's job and every command are in `README.md`.
   pack `Unit.is_boss` (a save that says `elite` still loads), `RIFTGATE_BOSS=1` in place of
   `RIFTGATE_ELITE=1`; and a fight resumed from a save keeps a foe's boss, a Gel's split and a
   foe gone whole (all three were lost on the trip).
+- Built 15 October, on the Minerva branch (Ryan's call in that session): every reroll, the
+  team's and Rapid's free one, skips only the entry showing, so a copy of it may come up and
+  copies of one Rapid component chain. Skipping copies too was abusable: a die of one key entry
+  and copies of one filler sent every reroll from a filler onto the key. The machines with
+  copies on their dice (the Baboon's Inducers, the Boar's Slugthrowers, the Nemesis's fists,
+  the Ammit's talons) reroll onto a copy now and then: an A/B on those four, greedy, 100 seeds,
+  moved no row mean a point (`docs/measurements.md`, 15 October), since their copies are the
+  entries the bot keeps; the Ammit's Talons rose from 46% of its spends to 51%. Open with it:
+  a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
+  chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
+  Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
+- Built 15 October, on the Minerva branch (Ryan: "Roman numerals in the corner? ... grey on
+  the black background"): every die entry shows its place on the die, from I, as a grey Roman
+  numeral in the quotes' condensed italic, top left on the die and down the hold and the codex
+  (a gutter left of each tile), counted fixed components first. It shows a reroll onto a copy,
+  which hardpoint holds what, and the revolver's order. The codex's two narrow columns now
+  give a long description a second line rather than clipping it. Ryan, 16 October, from the
+  screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Measured, 13 October
@@ -235,11 +262,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.195 (18 October, the funnel-web's
-  landing: its row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his
-  gate principle in the stun row, his riders note in the Barrier row, the time-shifter parked
-  in the Aphelion row, the tables regenerated), main's file published over v0.191, which it
-  carried whole. Before it v0.191 (17 October), published
+  `docs/design-bible.html` after every change. Live: v0.196 (18 October), main's file: the
+  funnel-web's landing (v0.195: its row, the chassis table, the maker row, Ryan's
+  price-over-scarcity lean and his gate principle in the stun row, his riders note in the
+  Barrier row, the time-shifter parked in the Aphelion row, the tables regenerated) with the
+  Minerva branch's two rows merged in (section 7's Minerva row rewritten to the session's
+  shape; section 12's question on Braced in stacks of 5 against the scale, with Ryan's words on
+  Armoured and Overcharged's halving), published over v0.195 and, before it, v0.191 (17
+  October), published
   from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
   16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
   place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
