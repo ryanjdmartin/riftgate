@@ -93,9 +93,10 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### Reach
 - **Direct** reaches the front rank, and a back-rank foe whose column's front slot is empty.
-- **Indirect** reaches any foe. Fired at the front rank it splashes: the firer loses shield
-  equal to half the damage the target took, rounded up, never hull (the Artillery
-  Rangefinder spares it).
+- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
+  built: today, fired at the front rank, it splashes: the firer loses shield equal to half
+  the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
+  it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
 
 ### A blow
@@ -121,7 +122,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
 - **Burn**: each foe hit gains a Burning stack per 10 of the blow, rounded up.
-- **Suppress**: each foe hit is Suppressed unless its Numbed resists.
+- **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
+  that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
@@ -154,15 +156,17 @@ with a stack of its status spends one, and the die rolls again, a plain roll as 
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
-carries into the foe behind it as plain damage; the engine runs it as a keyword the passive
+carries into the foe behind it as plain damage, the killing strike's excess and every later
+strike of the spend whole; the engine runs it as a keyword the passive
 grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
 On a machine:
-- **Overcharged** (buff): +5 damage a stack. From Devour it lasts the skirmish, losing a
-  stack each round's end (the Ammit keeps it for the battle).
-- **Braced** (buff): armour +5 a stack, until the round's end, every stack at once,
-  whatever granted it.
+- **Overcharged** (buff): +5 damage a stack. From buff equipment it lasts the rounds the
+  component says; from a module it lasts the skirmish, losing a stack each round's end; the
+  stacks the Ammit's talons take are kept for the battle and never fade.
+- **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
+  it: a machine's until the round's end, a foe's (from its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
@@ -189,15 +193,16 @@ On a machine:
 On a foe:
 - **Burning** (debuff): 5 damage a stack at the start of its action, past armour, then a
   stack fades. It never stops healing.
-- **Suppressed** (debuff): it skips its action this round; landed on a foe that has already
-  acted, or by a Paradox on a foe already suppressed, it costs the next action instead.
+- **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
+  it has already acted this turn. It never stacks and never carries: a second suppress on a
+  foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
-  (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox
-  causes adds none; a weapon's Suppressed does.
-- **Folded** (buff, Harden): armour +value until its next action.
+  (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
+  either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
+  Suppressed does.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -205,8 +210,9 @@ On a foe:
   whole, unless it self-destructed.
 - **Numbed** (a resistance, neither buff nor debuff, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
-  shrugged one adds none; a stack fades at each of its turns. Nothing reads, deepens,
-  spreads or cleanses it, and no foe resists by nature.
+  shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
+  at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by
+  nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
 Burning, Suppressed, Shocked or Paradox.
@@ -271,9 +277,10 @@ Burning, Suppressed, Shocked or Paradox.
   Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
-- **A special** replaces the blow: harden, regrow (heals its value), cure (the most hurt of its
-  own, itself included, heals its value), protect (armour on every foe in the fight through the
-  next round), revive once, summon,
+- **A special** replaces the blow: brace (Braced, its value in stacks of 5, until its next
+  action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
+  value), brace all (the same on every foe in the fight, through the next round), revive once,
+  summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
   disable.
@@ -314,7 +321,12 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn. Nothing writes to a stat.
+and a ticking status loses a stack at its owner's turn; a timed one stacks only with a grant
+that ends the same round, so each grant's stacks go when its own rounds run out. A status's
+definition may say otherwise: one that renews keeps one grant, its end the later and its
+count the larger (Suppressed, Retaliate), which on an untimed one-stack status (Shocked,
+Getting Back Up, Guarded, Scrambled) means a second grant changes nothing. Nothing writes to
+a stat.
 
 ## The battlefield
 

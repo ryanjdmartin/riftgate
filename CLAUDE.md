@@ -13,6 +13,7 @@ godot --headless --path . --import                 # first run, and after adding
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
+python3 tools/pages/bible_tables.py                       # the bible's buff, debuff and keyword tables, after any content change
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (about 45 minutes); --trace "row|pack|policy|seed" for one fight's log
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (two minutes)
 ```

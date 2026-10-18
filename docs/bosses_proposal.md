@@ -112,9 +112,8 @@ balance the series out a little, never purge it):
   Hellfire (Ryan asked, 16 October). It was the Summoner's until 13 October, when it became
   Pyroclasm: the bible gives hell's words to the Council's side and pins Hellfire as an Arsenal
   prefix (the King James Bible's), and Surtr's fire is Muspelheim's, not Hel's. If the move
-  should carry the homage as Diamond Dust does, Surtr takes Hellfire and the Arsenal's prefix
-  takes Brimstone, the same Bible's other fire; Claude's lean keeps Pyroclasm, or takes the
-  Edda's own name for Surtr's flame, Surtalogi. Skaði (the winter
+  should carry the homage as Diamond Dust does, Surtr could take Hellfire and the Arsenal's
+  prefix Brimstone, the same Bible's other fire; Ryan, 16 October: Pyroclasm stays. Skaði (the winter
   giantess, in Shiva's place; Ryan: for sure), a huntress in white furs and an iron helm, her look
   far from Shiva's: Diamond Dust (Ryan: fine), a frostbite on the component every machine shows
   (corrupt all), soft rather than a freeze that switches components off, since freezing every
@@ -132,7 +131,6 @@ balance the series out a little, never purge it):
 - Marks on the rest of the twelve.
 - The Exor homage's weapon.
 - The conversions above; where Omega lives; the Mime.
-- Surtr's move: Pyroclasm, Hellfire (the Arsenal's prefix then Brimstone), or Surtalogi.
 
 ## Bench
 

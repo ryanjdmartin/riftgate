@@ -14,9 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 465 tests, 19,988 checks, green on `claude/adoring-planck-q8t63w` (15 October, main
-  merged in, the reroll fix and the entries' places); main's last run was 462 tests, 19,765
-  checks.
+- Tests: 481 tests, 20,129 checks, green on main (18 October, the Minerva branch merged in:
+  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
+  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -26,10 +26,21 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-- `claude/adoring-planck-q8t63w` (15 October, the Minerva design session from the briefs: the
-  Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser, Ryan's calls
-  recorded round by round in their briefs, nothing of the designs built; and the reroll fix
-  and the entries' places, built, below): not merged; main merged into it on 15 October.
+- `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
+  briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
+  Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
+  reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
+  word ("make sure main is up to date with any changes you've made"), main merged into it the
+  same day, and kept open: the session resumes on it in a fresh context. To resume, read
+  `docs/briefs/minerva_armadillo.md` (its open list and sixth round: the numbers, the mark's
+  spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
+  proposal, its third round), the to-do's review line under the design sessions (Armoured and
+  Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 17 October): the brief
+  carries Ryan's calls and the settled design, the go pending; merged into main on 17 October
+  on his word ("merge our changes into main"), docs only, and kept open for the go and the
+  next Wainwright & Sutler briefs (the revolver, the boiler, the fan-boat, the Prairie Dog,
+  then the maker's tiers).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -116,7 +127,10 @@ document's job and every command are in `README.md`.
   boss mechanics, each inside the skirmish: a countdown (the Lancer's Jump runs on it), a boss
   in parts (a core Guarded while its parts stand, parts regrowing), a last act (a death blow
   the moment a foe falls), foes helping foes (a cure and a protect; the White Mage carries
-  Dia, Cure and Holy, Ryan's three, its Protect parked). The Summoner's summons are its moves,
+  Dia, Cure and Holy, Ryan's three, its Protect parked). On 16 October the Augur (Clair
+  Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
+  bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
+  on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The White Mage is the Cleric (id kept), its promoted form's one move more Reraise on its allies, planned (Ryan, 16 October). The Summoner's summons are its moves,
   full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
@@ -240,15 +254,27 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.184 (16 October, another branch's,
-  over main's v0.182); main's file v0.185 adds the Priest folded into the White Mage and the
-  Martial Artist kept (Ryan, 16 October), unpublished: the next publish reads the live page
-  through and merges onto it. The Minerva branch's file (main merged in, 16 October) is
-  v0.186: main's v0.185, its own rows the page already has (the rerolls onto a copy, the die
-  entry's place, Rapid's limiter and the Wake Diffuser question), and two unpublished edits
-  (section 7's Minerva row rewritten to the session's shape, section 12's question on Braced
-  in stacks of 5 against the scale). Main's file also carries the
-  budgets decided, the maker rows pointing at the briefs, the proposal files retired, the
+  `docs/design-bible.html` after every change. Main's file is v0.194 (17 and 18 October, the
+  funnel-web session's lines: the spider settled in the Wainwright & Sutler row, Ryan's
+  price-over-scarcity lean and his gate principle in the stun row, his riders note in the Barrier row, the
+  time-shifter parked in the Aphelion row), unpublished until the spider's go, when the live
+  page is read through and the publish merges onto it. The Minerva branch's file (main merged in, 18 October) is v0.195: main's v0.194 with
+  two unpublished edits of its own (section 7's Minerva row rewritten to the session's shape,
+  section 12's question on Braced in stacks of 5 against the scale, with Ryan's words on
+  Armoured and Overcharged's halving), its other rows on the page since v0.183. Live: v0.191 (17 October), published
+  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
+  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
+  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
+  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
+  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
+  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
+  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, the enemy-cleanse question; the bomber's pull and mark). Main's file carried
+  v0.188, the same rows without that branch's, until the branch merged on 17 October and
+  brought the script with it.
+  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
+  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
+  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
+  maker rows pointing at the briefs, the proposal files retired, the
   Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
   rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
   Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
@@ -268,16 +294,18 @@ into this file in the same commit as its first publish; the procedures are in `R
   only the four content files that had moved since 13 October (chassis, components, foes,
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði. Its database
+  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
+  Cleric (foes). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
   It holds the boss art round (15 October): the first round's six sets that stand (the
   Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr) and the third (Skaði, Fáfnir, Floraison with its swallow and vines), built by
-  `forge.py phone --only --tags bossart bossart3 --keys <the nine sets>`; the second-pass
-  misses sit in each set's `set_aside/`.
+  Reaper, Surtr), the third (Skaði, Fáfnir, Floraison with its swallow and vines) and the
+  Augur's hero and chibi sets (16 October, `heroart` and `chibi_heroart`), built by
+  `forge.py phone --only --tags bossart bossart3 heroart chibi_heroart --keys <the eleven sets>`;
+  the renders that lost a blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

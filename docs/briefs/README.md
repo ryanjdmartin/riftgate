@@ -79,13 +79,21 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
   for doing its job (being struck under a draw) is dangerous.
 - Niches can and should overlap across a larger roster so a player finds something that fits;
-  mechanics should not repeat.
+  mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
+  shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
+  this thing because that already kind of does it,' then you quickly run out of things").
+- Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
+  16 October).
 - The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
   Numbed is a resistance), which is why designs keep reaching for Burn or Suppress. New chips
   are fine, even unique to a chassis, since tooltips and popups carry them. The vocabulary
   grows by kinds (a weaken, a flat on-hit, a share of current hull, a timed stun, a trapped
   slot), never by copies.
-- Stun is budgeted; prefer changing the enemy's problem over removing its turn.
+- Stun is budgeted; prefer changing the enemy's problem over removing its turn. Price, never
+  scarcity (17 October, of Suppress): a mechanic rationed by availability makes its carriers
+  must-picks, so it is priced so the other answers stay attractive. The price is a gate, never
+  the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
+  stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
 
 ## Tiers
@@ -116,7 +124,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (or two, by its engine piece) |
+| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
 | Wainwright & Sutler | Prairie Dog, Clydesdale (down), the boiler, the revolver; the Dingo undecided | the Dingo if it moves, the funnel-web, the gunship, the fan-boat | the multi-rotor |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -162,11 +170,11 @@ on our side.
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
 | `kestrel_strafer.md` | decided | Kestrel | 1 | nothing |
 | `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
-| `kestrel_bomber.md` | decided | Kestrel | 2 or 3 | the foes' fresh start (reinforcements) |
+| `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
-| `ws_funnel_web.md` | direction | Wainwright & Sutler | 2 | nothing |
+| `ws_funnel_web.md` | settled in chat, the go pending | Wainwright & Sutler | 2 | the elites in fights (Vitriol's targets) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | proposal, back to the board | Wainwright & Sutler | 2 (proposed as 1) | the stock pass's keywords |
 | `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |
@@ -205,6 +213,23 @@ in its brief; the full rounds are in git (above).
   considering that it's possible engagement range could change, it would be tough to balance
   it now"): a machine joining fights three hexes away; attack range is already a number on
   each unit (`Unit.attack_range`, 2 today).
+- The time-shifter (Ryan, 17 October, from the funnel-web's session: "There might be an
+  Aphelion machine that wants to control the battlefield by delaying and redirecting blows,
+  some kind of spacetime manipulator. Soft control, moving or delaying hits as a whole
+  identity."): delay (a foe's next move gathers a round, the countdown as built, so the blow
+  lands late and dies with the foe) and redirect (the blows meant for a machine re-pick by the
+  foes' aim, held rather than lost when no one else stands, the phase its action for the
+  round). Holes for its brief: delay alone is tempo and the fight's last blow, so it pairs with
+  burst; a redirect onto a chosen ally is an interpose by proxy, which the redirection row
+  allows on a locked piece only; our countdown chip on their foe must read as ours; it parts
+  from the jellyfish by pattern (the jellyfish changes the move and dispels; this moves the blow
+  in time and target).
+- The burrow, grown on the spider and moved here (Claude, 17 October; Ryan: "hilarious", and
+  "is this actually a broken ability, shuffling all intents away?"): equipment on itself,
+  every foe aiming at it re-picks. Broken on the spider (with Rapid it deletes the ambush
+  limit, a locked piece feeding only its own passive; alone, blows lost would be a free stun)
+  and a reverse Lure without the choice for the ally; sound as the time-shifter's shift with the
+  two fixes above.
 
 **The Arsenal** (Claude's, 11 and 12 October)
 
@@ -254,11 +279,11 @@ overrule)
 ## A suggested order
 
 1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
-   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the line
-   frame, Misharu, the Onryō, the funnel-web, the revolver, the Prairie Dog and the Zoids
+   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
+   the line frame, Misharu, the Onryō, the funnel-web, the revolver, the Prairie Dog and the Zoids
    walker (its maker first).
 2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon and the Dingo
    with the stock pass.
 3. After the stock pass: the boiler, the gunship, the fan-boat; the multi-rotor once the die
    has its shown word.
-4. After the foes' fresh start: the bomber, the jellyfish, Mastema, Minos.
+4. After the foes' fresh start: the jellyfish, Mastema, Minos.

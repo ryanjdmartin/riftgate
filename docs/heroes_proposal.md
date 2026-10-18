@@ -3,7 +3,8 @@
 Ryan, 15 October: the Priest is fine, but the heroes need to focus on tropes that are not the
 series', and the ones already built may convert. Ryan, 16 October: balance the series out a
 little, never purge it; the Martial Artist stays for now; the Priest folds into the White Mage,
-their kits being much alike; and the Necromancer is the weakest homage, its place free to shuffle. The bible's tiers row (section 9) says the finals are homages to the
+their kits being much alike; the Necromancer, the weakest homage, is dumped and Sciel takes its
+place (in content since 16 October, as the Augur, a working name). The bible's tiers row (section 9) says the finals are homages to the
 genre's heroes, spread beyond Final Fantasy, and homage is by archetype (section 1): names and
 looks of ours, no series' coinage, no patented mechanic. This file holds the pass until Ryan has
 marked it; then its picks become content, art and bible rows, and it retires (git keeps it).
@@ -21,8 +22,8 @@ come is a forge round for each converted hero (its sprite and its chibi) and con
 | Martial Artist | Meadow, front | Final Fantasy's monk, Dragon Quest's martial artist, Chrono Trigger's Ayla (content says a cavewoman with a club; she fights barehanded); Flurry, then Counter, Chakra and Hundred Fists, which are Final Fantasy's monk's (Hundred Fists is Final Fantasy XI's) | Stays for now (Ryan, 16 October). The most Final Fantasy of the generic three, by its moves; if it is ever balanced, its homage leans to Ayla, the cavewoman brawler, its moves renamed in plain words. |
 | Thief | Waste, front | Final Fantasy's, Dragon Quest's and Octopath's thief; Mug, Steal, Flee (planned) | **Persona 5's Joker under the plain name** (Ryan, 16 October: still the Thief, for the extra tongue in cheek): masked, a knife and a gun, its calling card the countdown already built, the Steal announced before it lands. Its kit proposed in chat first. |
 | Lancer | Waste, front | Final Fantasy's dragoon (the Jump), Legend of Dragoon; Thrust, Jump, Dragon Dive | Keep (Ryan, 16 October: the dragoon is way too iconic to lose). |
-| White Mage | Marsh, back | Final Fantasy's white mage, in the series' white robe with the red trim; Dia, Cure, Holy | Keep, as the homage to every white mage and priest, the bench's Priest folded in (Ryan, 16 October: their kits would be much alike). The red trim, the one thing about it that is only Final Fantasy's, can go at its next redraw. |
-| Necromancer | Marsh, back | Final Fantasy V's necromancer (the Advance version's job) and every bestiary's dark mage; Drain, Raise and Mass Raise, the series' spell names (its Raise revives one's own; ours calls revenants) | The weakest homage (Ryan, 16 October), and its built place is free to shuffle: a Clair Obscur hero can take it (below). The Necromancer itself works, and its raise every round is the Marsh's signature, so it can stay on the bench as a dealable third, or go. Tactics Ogre's necromancer Nybeth is its nearest source beyond the series, should it stay. |
+| White Mage, now the Cleric | Marsh, back | Final Fantasy's white mage, in the series' white robe with the red trim; Dia, Cure, Holy | Renamed the Cleric (Ryan, 16 October), the homage to every white mage and priest, the bench's Priest folded in (their kits would be much alike); the id stays `white_mage`. The red trim, the one thing about it that is only Final Fantasy's, goes at its next redraw. |
+| Necromancer | Marsh, back | Final Fantasy V's necromancer (the Advance version's job) and every bestiary's dark mage; Drain, Raise and Mass Raise, the series' spell names (its Raise revives one's own; ours calls revenants) | Dumped (Ryan, 16 October: the weakest homage); Sciel's hero stands in its place (below). Its art (the sprite, the chibi) came off `art/foes`; the picks keep the sources. Raising the dead stays the Marsh's through its wildlife. |
 | Black Mage | Peak, back | Final Fantasy's black mage, the hat; Fire, Fira, Flare | Keep, the spine's own (Final Fantasy is the spine, section 1). |
 | Summoner | Peak, back | Final Fantasy's summoner, Golden Sun's adepts, Megami Tensei's demon summoners; Ruin (Final Fantasy XIV's), Diamond Dust (Shiva's; Ryan: fine), Pyroclasm | Keep: its summons are the Norse world's (Skaði, Surtr, Fáfnir), which balance it already. |
 
@@ -35,12 +36,24 @@ homage. Their names are proposed with the promoted forms (the to-do).
 Clair Obscur's heroes, by archetype: its names are its coinages, so each takes a plain job's
 name, as the Thief keeps its own, and every look is ours.
 
-- **Sciel, in the Necromancer's place** (the Marsh, back rank). Her Foretell, in our engine, is
-  the countdown already built: a blow announced at one machine, held there and landing later,
-  and her signature below half lands every pending mark at once. The answers are the
-  countdown's: Suppress holds it, Disrupt breaks it off, a shield goes on the marked machine, or
-  the back rank is reached first. Fate and the harvest suit the graveyard. A working name: the
-  Seer.
+- **Sciel, in the Necromancer's place** (the Marsh, back rank): in (Ryan, 16 October), in
+  content as `augur`. Her Foretell is the countdown already built: Omen, a blow named at one
+  machine as the round opens and landing two rounds on, at twice her number; below half,
+  Harvest, every omen due at once, a countdown of one and `all` on one move (the engine's first
+  pairing of the two; tested). Reap is her plain blow, the twin scythe thrown and caught. The
+  answers are the countdown's: Suppress holds it, Disrupt breaks it off, a shield goes on the
+  marked machine, or the back rank is reached first. Numbers are placeholders.
+  **Her weapon is the thing to get right** (Ryan): a twin scythe, one long haft with a curved
+  reaping blade at each end, spun and thrown; every take on the picker shows both blades. Her
+  look is otherwise ours (a hooded coat of faded black over green leathers, bone charms, no
+  cards).
+  **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
+  the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
+  omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
+  coming, death's herald with a scythe, a role rather than a job; the **Haruspex**, the reader
+  of entrails, the grimmest and the least known; the **Soothsayer** ("beware the ides of
+  March"), a seer of doom in plain English; the **Doomsayer**, plainer still, a touch comic.
+  Ryan, 16 October: the Augur.
 - **Maelle, as the Duelist**: the easiest homage (Ryan). A fencer whose stance shows on her chip
   and changes with her moves: offensive, she deals and takes more; defensive, she takes less;
   virtuose, the big hit. Stances are statuses, which every number reads already. Not in the
@@ -48,8 +61,32 @@ name, as the Thief keeps its own, and every look is ours.
   she would be its first front-rank hero and her virtuose its telegraphed hard hit, the Peak's
   own signature, in the place of the bench's thin Mage.
 
-Claude's lean: Sciel in the Necromancer's place, since it mends the weakest homage where it
-stands; Maelle on the Peak in the Mage's place if two are wanted.
+Maelle stays on the table for the Peak's Mage place, if two are wanted.
+
+## Reraise back on the healer (Ryan, 16 October: consider it)
+
+Settled the same day: Reraise is the promoted Cleric's one move more at the finale, cast on its
+allies, the other party members, never itself (Ryan: "appropriately threatening"). In content
+planned (`revive_once_ally`, an engine piece to come: today's revive-once is a foe's own), and
+Protect left the kit. The reasoning that got there:
+
+The hole: a hero carries three moves and the validator holds it to three (a boss or hero three,
+the third a signature opening below half), and the White Mage carries Dia, Cure and Holy; Dia
+cannot go, since a foe needs a plain blow for the rounds no special's condition holds, and Cure
+is the Marsh's question. So Reraise comes back one of three ways: as the **promoted form's one
+move more** at the finale, in Protect's place (Claude's lean: the healer that gets back up once
+is the finale's own escalation, and Protect, armour on every foe, is the duller fourth); as a
+fourth move on the hero in its final, which bends the three-move rule for one hero (the
+promoted forms already carry four, so a four-move final would read as a promoted form early);
+or in Cure's place, which it should not. The Zombie Knight carries the same move, so the Marsh
+would have two Getting Back Up chips on the field, which is fine: it is the domain's signature.
+
+**The merged healer's name** (Ryan: a combo name?; the Cleric, 16 October): "White Priest" is
+no job anywhere. The **Cleric** was Claude's lean: the genre's generic word for the healer (Octopath's Ophilia is a
+Cleric, Dungeons & Dragons' healer too), no series' coinage, short on a chip. The **Priest** is
+Dragon Quest's and Tactics' word; **White Mage** is Final Fantasy's own coinage, kept if the
+spine is to show here as it does in the Black Mage; the **Hierophant** and the **Bishop** are
+grander, the Bishop a chess word. The red trim goes at the next redraw whichever name wins.
 
 ## The benches
 
@@ -72,9 +109,8 @@ The unbuilt heroes, by domain, and the trope each homages:
 
 ## Questions for Ryan
 
-- The Clair Obscur hero: Sciel in the Necromancer's place, Maelle on the Peak, or both; and the
-  Necromancer kept as the Marsh's third, or gone.
-- The Blue Mage: a trope of its own, or gone.
+- The Augur's picks on the picker (the twin scythe in every take), then the cut.
+- Maelle as the Duelist on the Peak, in the Mage's place, or not; and the Blue Mage.
 
 ## Bench
 
@@ -88,6 +124,13 @@ The ideas set aside, each with what set it aside.
   16 October).
 - The Black Mage renamed the Mage: the spine keeps its own.
 - Maelle's duelist in the Marsh: the Matador, its boss, asks the same question.
+- The Seer as Sciel's name: fine, but a more specific term was asked for (Ryan, 16 October).
+- The Necromancer kept as the Marsh's dealable third: dumped instead (Ryan, 16 October).
+- Hellfire for Surtr: Pyroclasm stays (Ryan, 16 October).
+- Protect as the promoted healer's move, and Reraise on itself: Reraise on its allies took the
+  place (Ryan, 16 October).
+- The Harbinger, the Haruspex and the Soothsayer for Sciel; the Priest and White Mage for the
+  healer: the Augur and the Cleric (Ryan, 16 October).
 - Chrono Trigger's Lucca for the fire caster: an inventor brings our side's register,
   technology, into the invasion.
 - Kingdom Hearts' keyblade wielder: Disney's.

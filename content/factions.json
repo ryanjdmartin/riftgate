@@ -47,7 +47,7 @@
         { "foe": "ghost", "strength": 3 }
       ],
       "boss": "bone_dragon",
-      "bench": ["white_mage", "necromancer"],
+      "bench": ["white_mage", "augur"],
       "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
     },
     {

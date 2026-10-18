@@ -435,6 +435,124 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	s.free()
 
 
+## A timed buff spent in two rounds is two grants, each going when its own rounds run out
+## (16 October), and one status on the machine: one chip, counting every stack.
+func test_a_status_granted_in_two_rounds_is_one_chip_with_every_stack() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.remove(m, "overcharged")
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round + 1)
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round + 2)
+	s._refresh()
+	var texts: Array[String] = []
+	for r in s._mech_rows(0):
+		if str(r[0]) == SkirmishScreen.status_glyph("overcharged"):
+			texts.append(str(r[1]))
+	assert_eq(texts, ["×2"] as Array[String], "one chip for the status, counting both grants")
+	s.free()
+
+
+## The chip texts machine `i` wears for status `id`, one a chip.
+func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
+	var texts: Array[String] = []
+	for r in s._mech_rows(i):
+		if str(r[0]) == SkirmishScreen.status_glyph(id):
+			texts.append(str(r[1]))
+	return texts
+
+
+## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+## anything that interacts with overcharged needs it displayed"). Devour's Overcharged, kept
+## for the battle when its owner keeps the status, is a chip with its count; a buff's for the
+## round joins it in the one chip, and the hold and the codex each list it once.
+func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	m.grant_passive({"id": "keeper", "name": "Keeper", "description": "Keeps what it devours.",
+		"effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.remove(m, "overcharged")
+	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Overcharged")
+	sk._devour(sk.mechs[0], sk.front[0])
+	sk._devour(sk.mechs[0], sk.front[0])
+	var scopes: Array = []
+	for d in Effects.describe(m):
+		if str(d[5]) == "overcharged":
+			scopes.append(int(d[3]))
+	assert_eq(scopes, [Effects.BATTLE], "two devours kept for the battle: one grant, below the skirmish's scope")
+	s._refresh()
+	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Overcharged chip with its count")
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
+	s._refresh()
+	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
+	var held := 0
+	for r in s._readout_rows(s._mech_rows(0)):
+		if str(r[1]).begins_with("Overcharged"):
+			held += 1
+	assert_eq(held, 1, "the hold lists it once")
+	var named := 0
+	for note in Effects.explain(m, m.die.faces[0]):
+		if note.contains("Overcharged"):
+			named += 1
+	assert_eq(named, 1, "the die's row names it once")
+	var listed := 0
+	for r in db.codex_for_unit(m)["passive_rows"]:
+		if str(r[0]).begins_with("OVERCHARGED"):
+			listed += 1
+			assert_true(str(r[0]).begins_with("OVERCHARGED ×2 (KEPT FOR THE BATTLE)"), "a kept status, never a reward, with its count: %s" % str(r[0]))
+	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
+	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
+	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 10}]}, Effects.BATTLE, "reward"))
+	s._refresh()
+	var rules := 0
+	for r in s._mech_rows(0):
+		if str(r[2]).begins_with("Keeper") or str(r[2]).begins_with("Spoils"):
+			rules += 1
+	assert_eq(rules, 0, "a passive and a battle reward that are no status are no chip")
+	assert_true(Effects.is_status("corrupted_1") and Effects.is_status("disabled_0"), "a die entry's Corrupted and Disabled are statuses")
+	assert_false(Effects.is_status("keeper") or Effects.is_status("disabled_x"), "a passive is none")
+	s.free()
+
+
+## A foe's brace is Braced, the machines' status (16 October): the foe wears Braced's chip with
+## the armour it adds, and a Protect on top is the same chip, whatever scope each grant is in.
+func test_a_braced_foe_wears_one_braced_chip() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	foe.action = {"id": "dig", "name": "Dig", "kind": "defend", "effect": "brace", "value": 10, "weight": 1, "text": ""}
+	sk._foe_acts(foe, sk.mechs[0])
+	foe.action = {"id": "ward", "name": "Ward", "kind": "defend", "effect": "brace_all", "value": 5, "weight": 1, "text": ""}
+	sk._foe_acts(foe, sk.mechs[0])
+	var chips: Array = []
+	for r in s._foe_rows(foe):
+		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
+			chips.append(r)
+	assert_eq(chips.size(), 1, "one chip for its brace and the Protect on top")
+	if chips.size() == 1:
+		assert_eq(str(chips[0][1]), "+15", "the armour both add")
+		assert_eq(str(chips[0][2]), "Braced: armour +15 until its next action", "named Braced, as a machine's is")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()
