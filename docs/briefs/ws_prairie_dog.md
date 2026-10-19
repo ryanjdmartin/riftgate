@@ -3,7 +3,8 @@
 The session gives the Prairie Dog a die that can finish the small pack its map rule lets it
 choose, without a second idea on its passive.
 
-**Status**: in session (19 October): Claude's proposal below, in chat, Ryan's calls pending. **Maker**:
+**Status**: in session (19 October): Claude's Spread-alone proposal below, then Ryan's Flak
+shape (below it), under discussion. **Maker**:
 Wainwright & Sutler. **Tier**: one. **Read first**: `docs/briefs/README.md`;
 `docs/roster_analysis.md` section 2 (the Prairie Dog's rating); the bible's rows on the cars
 (section 7), on a map action that buys a fight buff (section 2), and on the four machines
@@ -100,9 +101,73 @@ pack alone for a tenth of its hull); section 4's row wants one among the fast ma
   elusive car rarely joins).
 - The old slip-out (the Static-screen Projector): retired 8 October, the guaranteed enemy turn.
 
+## Ryan's shape (19 October): Flak
+
+"Flak repeater - if it was a low damage, spread, maybe rapid, weapon with a new debuff: flak,
+target takes X damage per stack when attacked (also considered when it acts, in addition or
+instead). Could be part of a new Flak family of W&S weapons, their signature status. Does that
+shape do anything?"
+
+Claude's reading, the same day:
+
+- **What it is.** A flat on-hit debuff: the kind Ryan named as missing on 14 October in the
+  Onryō's brief ("a flat number per stack, because we already have a multiplier with Shock. A
+  flat number reads as an on-hit and it's not something we have"). Shocked is the multiplier
+  that one blow spends; Flak is the flat add that many blows cash. The two are different
+  patterns in context, and they pair: adds before multiplies in the pipeline, so a Shocked foe
+  carrying Flak takes (blow + Flak) doubled.
+- **What it does.** It gives Wainwright &amp; Sutler the identity its kit already has: many
+  small kinetic blows (the Twin Autoguns, the Maxigun's strikes, the Ankle Mortar, Rapid, the
+  Clydesdale's nine dice, the Cottonmouth's rank shots) with a status that makes often matter.
+  Routes in: any spray or multi-hit piece lays it; a Flak shell through the Cottonmouth's drum
+  lays it on a whole rank; the Cassowary's sixth shot doubles the stacks it lays. Payoffs:
+  every small blow on the team, the Maxigun's strikes above all; the Dingo's Shocked on a
+  flakked foe; the Baboon's Paradox counts the debuff and the Tensor reads it. Budget rule 4
+  passes where the alone rule could not, and rule 5 passes (the Repeater is locked and the
+  basics cash it).
+- **The decision it makes.** Lay before cash within a round (the Repeater first, its Rapid
+  reroll into the cashers); spread it across a rank for the team's area pieces or stack it on
+  the one foe the Maxigun will chew; and the build question of the maker's two amplifiers,
+  many small blows (Flak) against one big blow (Shock).
+- **When attacked, not when it acts.** Burning is now a damage point a stack at the foe's
+  action (the Burn row, 18 October), so a Flak that ticks at its action is Burning with
+  another chip, the argument the Onryō's brief already made against a second flat DoT; "in
+  addition" is two ideas on one status. The on-hit half is the new kind; keep that half only.
+- **Decay.** Ryan's own clock for Overcharged (18 October): halves at the end of each round,
+  rounded down, so a sprayer feeding three stacks a round settles near six and a boss never
+  ramps to the moon; a stack fading at the foe's action is Burning's shape and a status that
+  never fades is the boss ramp Ryan named. Claude's lean: the halving clock.
+- **Numbers, placeholders.** A numbered keyword like Burn N (Flak 2: two stacks on each foe
+  hit, whatever the blow dealt), a point of damage a stack on every blow the foe takes, past
+  armour or not being the stock pass's question (five foes carry armour 5 today, the bosses
+  and the Zombie Knight, and the maker's fives bounce off them). The Repeater: Direct, flat 5,
+  Spread, Rapid, Flak 2, heat 0; three keywords on a tier-one locked piece is the authored cap.
+- **The collision to settle.** The flat on-hit is one kind, and the Onryō's Grudge was read
+  toward it after the go (its brief: "Grudge the on-hit that stays; a cap on stacks, never
+  fading inside the cap"). Two statuses that add a point a stack on every blow, differing in
+  decay and who lays them, are one kind with two chips, the copy the vocabulary rule refuses;
+  so Flak takes the kind and the Onryō's session finds Grudge another shape, or Grudge keeps it
+  and the Repeater's Flak is something else. Claude's lean: Flak, since a whole maker's kit
+  reads it and the Onryō is a tier-two build-around with its brief still open.
+- **What it changes about this brief.** The Prairie Dog stops being the roster's second
+  detachment identity and becomes the maker's softener: it skims in, sprays Flak on the rank,
+  and the four cash it. The alone rule and the section 2 question retire with it; the map
+  half stays what it is (freedom of position, scouting once the map has things to scout), the
+  cars row stands, and section 4's want of a fast machine that fights alone stays open. Alone
+  it still cashes its own Flak with its Rapid second shot, so the solo row should move a
+  little, not much; the runner says.
+- **The family.** The maker's lean grows from Suppress, Penetrate and strikes to Flak and
+  strikes: the Repeater (locked), an airburst shell (Indirect, Spread, Flak, a low number; the
+  Cottonmouth's best friend) and a flak cannon (Direct, strikes, Flak) as slot-ins above the
+  basics, which carry no keyword by rule. Names are Ryan's.
+- **Naming.** Flak as the keyword and Flak as the chip (the convention asks for the same word;
+  Burning and Webbed are the participle habit, not the rule), FLAK ×2 on the chip.
+
 ## Open for the session
 
-1. Whether Spread alone is the shape (or the bench's number), and the rule's name.
+1. Ryan's Flak shape against Claude's Spread-alone one: which, and the decay (halving, the
+   lean), the number and the on-hit-only reading; the Grudge collision; the rule's name if the
+   alone shape stands.
 2. The go: the Repeater's passive built with the `alone` condition and its test, the bible's
    row, the rules' passive-condition line, the solo row rerun at 200 seeds into
    `docs/measurements.md`, this brief retired.
