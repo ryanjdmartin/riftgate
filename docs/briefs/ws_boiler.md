@@ -58,6 +58,10 @@ The rest of the proposal (12 and 13 October; Claude's unless marked Ryan's):
 - **Set aside along the way**: a target the player chooses (12 October; Ryan: random, which he
   times and the passive needs); a vent spent on an ally blasting with that ally's heat (13
   October; Ryan: an ally's vent is its own decision, and thematically odd).
+- **Its look, a lean** (Ryan, 19 October, judging the funnel-web's second cut): a low quad in
+  the BattleTech Scorpion's shape, the body slung between the legs and the gun out of it, is
+  more the shape this larger boiler spider is likely to take; the funnel-web took the Revenant's
+  and the Arachnotron's legs under a turret instead, the smaller machine's silhouette.
 
 ## The analysis (14 October)
 

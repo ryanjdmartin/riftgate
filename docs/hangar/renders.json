@@ -425,8 +425,8 @@
    }
   },
   "funnel_web": {
-   "when": "Second cut, 19 October.",
-   "note": "Ryan's first notes (19 October): the spider homage too literal, more war machine; an abdomen hung out behind would unbalance a real machine, so the legs go under the mass; more leg to body; geometry of the hull's own for the gear, so nothing overlaps; practical feet. The second cut: one low ironclad hull on four long arched legs out of cuffs at its corners, broad flat feet with toe plates; a cupola with a visor and a lamp bar on the bow, the Maxigun in a mantlet under the nose, a bolted sponson each flank for the outward-only turrets, a boiler sunk into the stern carrying the web battery, the stack off its left shoulder, the dish on a mast at the right quarter. Rendered bare; the lunge of its stalk and a side-on stride of its walk beside the front and rear. Judge the acts and the walk running in the Animation tab.",
+   "when": "Third cut, 19 October.",
+   "note": "Ryan's second notes (19 October): the low quad hews toward the BattleTech Scorpion, a fine direction but the shape the larger boiler spider is likely to take; this one wants a silhouette more intimidating than a spindly armadillo, the BattleTech Revenant's and the Doom Arachnotron's legs under a turret, which gives sides as well as a top and a front for the weapons and suits a diminutive little death machine. The third cut: a compact armoured head that turns and nods on a hub over four long legs radiating from its corners, flat feet with toe plates; its rear half a riveted boiler with a stack and a lit firebox door, its face a visor under a brow with four lamps, the Maxigun in a mantlet under the chin, a weapon pod on each flank (the Howitzer left on its elevation, the Twin Autoguns right, each a turret traversing outward), the dish a crest on the forehead, and the web battery on a boom arm off the back of the head, carried up and over it. Rendered bare; the lunge of its stalk and a side-on stride beside the front and rear. Judge the acts and the walk running in the Animation tab.",
    "images": [
     {
      "file": "funnel_web/funnel_web_front.png",
@@ -446,7 +446,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the first pass, 19 October, a mechanical spider (a carapace and an abdomen hung out behind, the legs at the front body, spindly clawed feet); Ryan's notes the same day sent it toward a war machine.",
+    "summary": "Before: the second cut, 19 October, a low quad in the BattleTech Scorpion's shape (one hull with the legs at its corners); Ryan's second notes the same day sent it toward the Revenant's and the Arachnotron's legs under a turret.",
     "images": [
      {
       "file": "funnel_web/before_funnel_web_front.png",
@@ -462,7 +462,7 @@
      },
      {
       "file": "funnel_web/before_funnel_web_walk.png",
-      "alt": "Earlier: funnel-web, a stride of its walk"
+      "alt": "Earlier: funnel-web, a stride of its walk, side on"
      }
     ]
    }
