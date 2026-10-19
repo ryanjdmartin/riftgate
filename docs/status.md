@@ -14,7 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 496 tests, 22,199 checks, green on `ccr-ffcf75fa-3gkbz9` (19 October, the funnel-web's
+- Tests: 496 tests, 22,095 checks, green on `ccr-ffcf75fa-3gkbz9` (19 October, the funnel-web's
   assets, the rig test covering its model's fourth cut; 20,269 after its engine, over main's 481 and 20,153 of
   the Kestrel session's last merge).
   A cloud session fetches
@@ -29,7 +29,7 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 and 19 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.207): to merge into
+  and page; the to-do's engine and assets lines ticked; the bible at v0.208): to merge into
   main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -89,19 +89,19 @@ document's job and every command are in `README.md`.
   military camp (the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's
   steam; no boiler, stack or hazard stripes), a dark lower hull running into a snout under an
   armoured upper hull with a wedge brow, two slit eyes, livery appliqué, an exhaust grille and
-  a whip antenna; the `head` joint yaws and nods the whole body on the hub; the Maxigun a
-  level bow gun in the snout on `elev_fang` (a hanging chin gun read as a proboscis); armoured
-  pods each flank with their guns on `elev_l` and `elev_r`, no traverse, the torso twist aims
-  them; the dish a low crest on the roof; the Web Bomb's lit four-tube box launcher on the
-  roof's rear on `elev_rack`. The legs: `coxa_` joints at the hub's corners carry struts down
+  a whip antenna; the `head` joint yaws and nods the whole body on the hub; the stations as
+  his fifth notes dealt them: the Maxigun and the Twin Autoguns static in two mantlets on the
+  jaw's flat face (a hanging chin gun had read as a proboscis), the Howitzer alone on the roof
+  on `elev_top`, the Web Bomb's lit four-tube launcher out of the left pod on `elev_l`, the
+  dish on the right pod on `elev_r`; no traverse anywhere, the torso twist aims them. The legs: `coxa_` joints at the hub's corners carry struts down
   to low hips, thighs up to high knees, shins down to flat feet with toe plates (hip, knee and
-  ankle each); 21 joints. Four acts (`stalk`, a sink and a lunge on a sharp servo; `scan`;
-  `sight_in`, the torso twisting to each pod as its gun elevates, the launcher rising lit;
-  `probe`, a fore leg tapping ahead) and the creep: `_plant` with the hind feet out of step and
-  the fore feet on two cycles (two short steps to each hind stride, the Ammit's hands), plus
-  the coxae beside the solver (`_coxa_hitch`: each leg lifts from its base through its swing,
-  at rest through every stance so no planted foot moves) and the head turning toward each
-  reaching foot; the cornering numbers; the rig test covers it; the hangar's renders (front,
+  ankle each); 20 joints. Four acts (`stalk`, a sink and a lunge on a sharp servo; `scan`;
+  `sight_in`, the torso twisting to the launcher as it rises lit, then to the roof gun as it
+  elevates; `probe`, a fore leg tapping ahead) and the creep: `_plant` with every foot one step
+  a stride, out of step, plus the coxae beside the solver (`_coxa_hitch`: each leg lifts from
+  its base through its swing, at rest through every stance so no planted foot moves); the fore
+  feet's two short steps a stride and the head's turn toward each foot were cut on his fifth
+  notes (hot-stepping, too busy; weird); the cornering numbers; the rig test covers it; the hangar's renders (front,
   rear, the lunge, a side-on moment of the creep; the third cut under "before") and the page
   republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
   to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
@@ -319,9 +319,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.207 (19 October, `ccr-ffcf75fa-3gkbz9`:
-  the funnel-web's model in its row, four cuts on Ryan's notes, the size row and the motion
-  table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
+  `docs/design-bible.html` after every change. Live: v0.208 (19 October, `ccr-ffcf75fa-3gkbz9`:
+  the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
+  fifth, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
   row carries the heroes' costumes and the Augur's dark omen-smoke, and v0.200 of 18 October,
   whose foe-art row carries the image-to-image route, both Ryan's calls, now in this branch's
   file too), over v0.199 (18 October,
@@ -376,7 +376,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 October with the funnel-web's model, rig sidecar, pins and renders and
-  the content that had moved, and again with each later cut, the fourth last (`ccr-ffcf75fa-3gkbz9`). Its database
+  the content that had moved, and again with each later cut, the fourth and its revision last (`ccr-ffcf75fa-3gkbz9`). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
