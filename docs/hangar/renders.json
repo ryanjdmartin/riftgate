@@ -425,8 +425,8 @@
    }
   },
   "funnel_web": {
-   "when": "Third cut, 19 October; its legs revised the same day.",
-   "note": "Ryan's second notes (19 October): the low quad hews toward the BattleTech Scorpion, a fine direction but the shape the larger boiler spider is likely to take; this one wants a silhouette more intimidating than a spindly armadillo, the BattleTech Revenant's and the Doom Arachnotron's legs under a turret, which gives sides as well as a top and a front for the weapons and suits a diminutive little death machine. The third cut: a compact armoured head that turns and nods on a hub over four long legs radiating from its corners, flat feet with toe plates; its rear half a riveted boiler with a stack and a lit firebox door, its face a visor under a brow with four lamps, the Maxigun in a mantlet under the chin, a weapon pod on each flank (the Howitzer left on its elevation, the Twin Autoguns right, each a turret traversing outward), the dish a crest on the forehead, and the web battery on a boom arm off the back of the head, carried up and over it. Ryan's third notes: not enough clearance between the thighs and the body, which every reference resolves by making the legs go down, up and down; so a short strut drops from the hub to a low hip hinge clear of the flank, the thigh rises from it to the high knee, the shin falls to the foot (leggy is fine, Ryan). Rendered bare; the lunge of its stalk and a side-on stride beside the front and rear. Judge the acts and the walk running in the Animation tab.",
+   "when": "Fourth cut, 19 October.",
+   "note": "Ryan's fourth notes (19 October): the body in W&S's military camp, the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's funky steam, more aggressive; the side guns pitch only, the torso twist aims them; nothing hanging like a proboscis; the upper legs in the walk beside the solver, the Ammit's way, so it walks creepy. The fourth cut: a dark lower hull running into a snout under an armoured upper hull with a wedge brow, two slit eyes in a dark visor band, livery appliqué on the flanks, an exhaust grille and a whip antenna at the tail; the Maxigun a level bow gun in the snout on its drop joint, armoured pods each flank with their guns on elevations, the dish a low crest on the roof, the web launcher a four-tube box on the roof's rear. The walk: the hind feet stride out of step, the fore feet take two short steps to each, and every leg lifts from its coxa through its swing while the solver plants the feet; the head turns toward each reaching foot. Rendered bare; the lunge of its stalk and a side-on moment of the creep, a fore leg lifted from its base, beside the front and rear. Judge the acts and the walk running in the Animation tab.",
    "images": [
     {
      "file": "funnel_web/funnel_web_front.png",
@@ -442,11 +442,11 @@
     },
     {
      "file": "funnel_web/funnel_web_walk.png",
-     "alt": "funnel-web, a stride of its walk, side on"
+     "alt": "funnel-web, a moment of the creep, side on"
     }
    ],
    "before": {
-    "summary": "Before: the second cut, 19 October, a low quad in the BattleTech Scorpion's shape (one hull with the legs at its corners); Ryan's second notes the same day sent it toward the Revenant's and the Arachnotron's legs under a turret.",
+    "summary": "Before: the third cut, 19 October, legs under a turret with a steam body (a boiler, a stack, a boom-mounted web battery) and the chin gun hanging; Ryan's fourth notes sent the body to W&S's military camp, the side guns to pitch only, the chin gun level, and the upper legs into a creeping walk.",
     "images": [
      {
       "file": "funnel_web/before_funnel_web_front.png",

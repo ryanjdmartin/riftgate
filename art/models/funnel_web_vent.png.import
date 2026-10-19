@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjfhobdytpxoi"
-path="res://.godot/imported/funnel_web_stripe.png-fca19fa10dc5aab9ff6236292f70ab27.ctex"
+uid="uid://c5o4cd0j85vkk"
+path="res://.godot/imported/funnel_web_vent.png-1a0301321180afcd936b2da073683ba1.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "131970f82743a0b624cdc58dfa2ac2c2"
+"md5": "a619c627fafdf8092a7b590ed9479c50"
 }
 
 [deps]
 
-source_file="res://art/models/funnel_web_stripe.png"
-dest_files=["res://.godot/imported/funnel_web_stripe.png-fca19fa10dc5aab9ff6236292f70ab27.ctex"]
+source_file="res://art/models/funnel_web_vent.png"
+dest_files=["res://.godot/imported/funnel_web_vent.png-1a0301321180afcd936b2da073683ba1.ctex"]
 
 [params]
 

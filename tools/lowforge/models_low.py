@@ -1519,35 +1519,38 @@ dingo.maker = "wainwright_sutler"
 
 def funnel_web(b):
     """Wainwright & Sutler "Funnel-web" (Pattern 19 Ambush Walker): the roster's tank-buster,
-    a four-legged steampunk walker that does spider-like things (Ryan, 14 and 17 October: a
-    little spider takes down a big thing with venom). A war machine, not a mechanical spider
-    (Ryan, 19 October, on the first cut: the homage taken too literally; the legs under the
-    mass; more leg to body; geometry of its own for the gear; practical feet), and on the
-    second, a low quad in the BattleTech Scorpion's shape, his second notes the same day: a
-    fine direction, but the shape the larger boiler spider is likely to take; this one wants a
-    silhouette more intimidating than a spindly armadillo, the BattleTech Revenant's and the
-    Doom Arachnotron's, legs under a turret, which gives sides as well as a top and a front
-    for the weapons and suits a diminutive little death machine. So, the third cut: a compact
-    armoured head of a body that turns and nods on a hub (the head joint: the whole body is
-    the turret), four long legs radiating from the hub's corners under it, each a thigh out
-    and up to a knee standing wide and high and a long shin down to a flat foot with a toe
-    plate. The head's rear half is a riveted boiler with a stack and its firebox door lit at
-    the tail; its face a visor under a brow with four lamps; the Maxigun in a mantlet under
-    the chin on a drop joint, the fangs (hp_1: its first chase piece, strikes are bites); a
-    weapon pod on each flank, each a turret that only traverses outward, the Howitzer's on the
-    left on its elevation (hp_2), the Twin Autoguns' on the right (hp_3); the deflector's dish
-    a crest on the forehead (hp_4); and the Web Bomb (fixed, no pin) a battery of four tubes on
-    a boom arm off the back of the head, carried up and over it on its own elevation, the
-    tubes' floors lit: it lobs its web ahead over its own face. Third cut, 19 October; the rig,
-    the acts and the gait are a first cut for Ryan to judge running."""
+    a four-legged walker that does spider-like things (Ryan, 14 and 17 October: a little
+    spider takes down a big thing with venom). Four cuts on 19 October, each on Ryan's notes:
+    a war machine, not a mechanical spider (the first: the legs under the mass, more leg to
+    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's low
+    quad (the second: the larger boiler spider's likely shape) but the Revenant's and the Doom
+    Arachnotron's legs under a turret, sides as well as a top and a front for the weapons, a
+    diminutive little death machine; the legs going down, up and down so the thighs clear the
+    body (the third; leggy is fine); and this, the fourth: the body in W&S's military camp,
+    the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's funky steam
+    (no boiler, no stack, no hazard stripes), more aggressive; the side guns pitching only,
+    since the torso twist aims them; nothing hanging like a proboscis (the chin gun lay
+    pitched down and read as the web-shooter); and the upper legs in the walk beside the
+    solver, the Ammit's way, so it walks creepy. So: a compact angular turret of a body on a
+    hub, turning and nodding on it (the head joint: the whole body is the turret), its lower
+    hull dark, its upper hull a wedge-browed armoured head with two slit eyes in a dark visor
+    band, appliqué plates in the livery on its flanks, an exhaust grille and a whip antenna at
+    its tail. The Maxigun a bow gun in the snout, level, on a drop joint for the bite (hp_1);
+    an armoured pod on each flank with its gun on an elevation, the Howitzer's on the left
+    (hp_2), the Twin Autoguns' on the right (hp_3); the deflector's dish a low crest on the
+    roof (hp_4); the Web Bomb (fixed, no pin) a box launcher of four tubes on the roof's
+    rear, pitched up on its own elevation, the tubes' floors lit. Four long legs from coxa
+    joints at the hub's corners, each a strut down and out to a low hip, a thigh up to a knee
+    wide and high, a shin down to a flat foot with a toe plate. The rig, the acts and the gait
+    are for Ryan to judge running."""
     # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
-    # (Ryan, 19 October, the third notes: the thighs had no clearance from the body, and every
-    # reference resolves it so): a short strut drops from the hub's corner, down and out, to a
-    # low hip hinge clear of the body's flank; the thigh rises from it to a knee standing wide
-    # and high; the shin falls to the foot. The strut is the hub's (the walk solver drives two
-    # links), so the hip is its low end. Nothing hangs below z = 0, the ground.
+    # (the third notes: the thighs had no clearance from the body, and every reference resolves
+    # it so): a strut drops from a coxa joint at the hub's corner, down and out, to a low hip
+    # hinge clear of the body's flank; the thigh rises from it to a knee standing wide and
+    # high; the shin falls to the foot. The walk solver drives the thigh and the shin from the
+    # hip; the coxa is the walk's own (below). Nothing hangs below z = 0, the ground.
     b.box(-12.0, 12.0, -12.0, 12.0, 30.0, 39.5, "steel.dark", "hub")
-    legs = {}
+    legs, roots = {}, {}
     for yh, fa in ((10.0, "f"), (-10.0, "h")):
         f = 1.0 if fa == "f" else -1.0
         for s in (-1.0, 1.0):
@@ -1556,115 +1559,107 @@ def funnel_web(b):
             hip = (s * 22.0, yh + f * 10.0, 24.0)
             knee = (s * 38.0, yh + f * 26.0, 56.0)
             ankle = (s * 46.0, yh + f * 34.0, 7.0)
-            legs[leg] = (hip, knee, ankle)
-            _beam(b, root, hip, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.dark", "strut")
-            b.prism("x", hip[0], hip[1], hip[2], 5.5, 10.5, "steel.dark", 6, "hip_pin")
-            # Hip, knee and ankle on every leg, the ankle keeping the foot flat through a stride;
-            # the limits hold what the gait and the acts below ask, with a margin.
-            with b.joint("hip_%s" % leg, hip, limits=(-50.0, 50.0)):
-                _beam(b, hip, knee, _sq(10.0, 11.0), _sq(8.5, 9.5), "steel.plate", "thigh")
-                b.prism("x", knee[0], knee[1], knee[2], 6.4, 11.5, "steel.dark", 6, "knee")   # a hinge block big enough to own the corner
-                with b.joint("knee_%s" % leg, knee, limits=(-60.0, 60.0)):
-                    _beam(b, knee, ankle, _sq(8.0, 9.0), _sq(7.0, 8.0), "steel.panel", "shin")
-                    b.prism("x", ankle[0], ankle[1], ankle[2], 3.8, 9.0, "steel.dark", 6, "ankle_pin")
-                    with b.joint("ankle_%s" % leg, ankle, limits=(-50.0, 50.0)):
-                        b.box(ankle[0] - 6.0, ankle[0] + 6.0, ankle[1] - 7.0, ankle[1] + 7.0, 2.0, 7.5, "steel.dark", "foot")
-                        b.box(ankle[0] - 7.5, ankle[0] + 7.5, ankle[1] - 8.5, ankle[1] + 8.5, 0.0, 2.5, "steel.dark", "sole")
-                        b.box(ankle[0] - 6.5, ankle[0] + 6.5, ankle[1] + min(f * 8.5, f * 11.5), ankle[1] + max(f * 8.5, f * 11.5), 0.0, 4.0, "steel.stripe", "toe_plate")
-    # The head: the whole body, a turret on the hub that turns and nods (the joint named head
-    # yaws). An armoured casemate loft, its face the front; the rear half a riveted boiler
-    # along its line with two livery bands, a tail cap with the firebox door lit in it and the
-    # stack off its left shoulder.
+            legs[leg], roots[leg] = (hip, knee, ankle), root
+            b.prism("x", root[0], root[1], root[2], 5.0, 6.0, "steel.dark", 6, "coxa_pin")
+            with b.joint("coxa_%s" % leg, root, limits=(-25.0, 25.0)):
+                _beam(b, root, hip, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.dark", "strut")
+                b.prism("x", hip[0], hip[1], hip[2], 5.5, 10.5, "steel.dark", 6, "hip_pin")
+                # Hip, knee and ankle on every leg, the ankle keeping the foot flat through a
+                # stride; the limits hold what the gait and the acts below ask, with a margin.
+                with b.joint("hip_%s" % leg, hip, limits=(-50.0, 50.0)):
+                    _beam(b, hip, knee, _sq(10.0, 11.0), _sq(8.5, 9.5), "steel.plate", "thigh")
+                    b.prism("x", knee[0], knee[1], knee[2], 6.4, 11.5, "steel.dark", 6, "knee")   # a hinge block big enough to own the corner
+                    with b.joint("knee_%s" % leg, knee, limits=(-60.0, 60.0)):
+                        _beam(b, knee, ankle, _sq(8.0, 9.0), _sq(7.0, 8.0), "steel.panel", "shin")
+                        b.prism("x", ankle[0], ankle[1], ankle[2], 3.8, 9.0, "steel.dark", 6, "ankle_pin")
+                        with b.joint("ankle_%s" % leg, ankle, limits=(-50.0, 50.0)):
+                            b.box(ankle[0] - 6.0, ankle[0] + 6.0, ankle[1] - 7.0, ankle[1] + 7.0, 2.0, 7.5, "steel.dark", "foot")
+                            b.box(ankle[0] - 7.5, ankle[0] + 7.5, ankle[1] - 8.5, ankle[1] + 8.5, 0.0, 2.5, "steel.dark", "sole")
+                            b.box(ankle[0] - 6.5, ankle[0] + 6.5, ankle[1] + min(f * 8.5, f * 11.5), ankle[1] + max(f * 8.5, f * 11.5), 0.0, 4.0, "steel.plate", "toe_plate")
+    # The body, a turret on the hub that turns and nods (the joint named head yaws): a dark
+    # lower hull running out into a snout, an armoured upper hull over it with a wedge brow,
+    # its face a dark visor band with two slit eyes (lamps, so they burn: the rule, lean
+    # hotter), a brim over them; appliqué plates in the livery on the flanks, an exhaust
+    # grille and two stubs at the tail, a whip antenna off the left rear corner.
     with b.joint("head", (0.0, 0.0, 39.5), limits={"yaw": (-40.0, 40.0), "pitch": (-10.0, 8.0)}):
-        b.loft([(-6.0, _case(36.0, 39.0, 68.0, 7.0)), (14.0, _case(36.0, 39.0, 68.0, 7.0)), (22.0, _case(28.0, 43.0, 62.0, 5.0))], "steel.plate", "head")
-        PH = math.pi / 8.0
-        b.prism("y", 0.0, -14.0, 53.0, 14.0, 20.0, "steel.panel", 8, "boiler", phase=PH)
-        for yb in (-22.0, -8.0):
-            b.prism("y", 0.0, yb, 53.0, 14.6, 1.6, "livery.livery2", 8, "band", phase=PH)
-        b.prism("y", 0.0, -25.0, 53.0, 10.5, 2.4, "steel.dark", 8, "tail_cap", phase=PH)
-        b.box(-3.4, 3.4, -26.9, -26.1, 49.5, 56.5, "amber.light", "firebox")
-        b.box(-10.5, -5.5, -20.5, -15.5, 61.0, 66.0, "steel.dark", "stack_base")
-        b.prism("z", -8.0, -18.0, 70.0, 2.6, 10.0, "steel.dark", 6, "stack")
-        b.prism("z", -8.0, -18.0, 75.7, 3.4, 1.4, "steel.plate", 6, "stack_cap")
-        # The face: a visor slit under a brow, two big lamps over it and one at each cheek,
-        # big and bright so a phone reads them (the rule: lean hotter).
-        b.box(-9.0, 9.0, 22.0, 22.9, 55.0, 59.0, "glass.glass", "visor")
-        b.box(-11.0, 11.0, 20.0, 23.2, 59.0, 61.5, "steel.panel", "brow")
-        for x0, x1 in ((-5.5, -1.0), (1.0, 5.5)):
-            b.box(x0, x1, 22.5, 23.4, 61.5, 64.5, "amber.light", "lamp")
+        b.loft([(-22.0, _case(30.0, 39.0, 47.0, 4.0)), (10.0, _case(32.0, 39.0, 47.0, 4.0)), (26.0, _case(26.0, 41.0, 50.0, 3.0)), (34.0, _case(16.0, 44.0, 50.0, 2.0))], "steel.dark", "lower_hull")
+        b.loft([(-24.0, _case(34.0, 46.0, 64.0, 8.0)), (-4.0, _case(38.0, 44.0, 68.0, 8.0)), (14.0, _case(38.0, 45.0, 68.0, 8.0)), (22.0, _case(32.0, 47.0, 64.0, 6.0)), (26.0, _case(28.0, 49.0, 61.0, 4.0))], "steel.plate", "upper_hull")
+        b.box(-12.0, 12.0, 25.5, 27.5, 55.0, 60.5, "steel.dark", "visor_band")
+        for x0, x1 in ((-11.5, -3.0), (3.0, 11.5)):
+            b.box(x0, x1, 27.0, 28.4, 56.6, 59.8, "amber.light", "lamp")   # wide and proud of the band: a phone must read the eyes
+        b.box(-13.0, 13.0, 24.0, 29.0, 60.5, 62.5, "steel.plate", "brim")
         for s in (-1.0, 1.0):
-            b.box(min(s * 9.5, s * 12.0), max(s * 9.5, s * 12.0), 22.3, 23.2, 56.0, 59.5, "amber.light", "lamp")
-        # The fangs (hp_1): the Maxigun in a mantlet under the chin, pitched down to bite, on
-        # its own drop joint.
-        b.box(-6.0, 6.0, 17.0, 24.0, 41.0, 47.0, "steel.dark", "mantlet")
-        with b.joint("elev_fang", (0.0, 20.0, 44.0), limits=(-22.0, 10.0)):
-            b.stock("hp_1", (0.0, 23.5, 43.0), "barrel", forward=(0.0, math.cos(math.radians(30.0)), -math.sin(math.radians(30.0))), scale=0.8)
-        # The pods: a weapon pod on each flank on a hinge boss, each a turret traversing
-        # outward only (the Clydesdale's rule), a livery panel on its outer face and a sight
-        # on its front: the howitzer's on the left on its elevation (hp_2), the twin autoguns'
-        # level on the right (hp_3).
+            b.box(min(s * 19.0, s * 20.5), max(s * 19.0, s * 20.5), -20.0, -8.0, 48.0, 62.0, "livery.livery2", "applique")
+        b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
+        for s in (-1.0, 1.0):
+            b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
+        b.prism("z", -14.0, -20.0, 75.0, 1.2, 16.0, "steel.dark", 6, "antenna")
+        b.box(-15.5, -12.5, -21.5, -18.5, 64.0, 67.5, "steel.dark", "antenna_base")
+        # The bow gun (hp_1): the Maxigun in the snout, level, on a drop joint, so the bite
+        # dips it; nothing hangs.
+        b.box(-6.0, 6.0, 30.0, 35.0, 44.5, 51.0, "steel.dark", "mantlet")
+        with b.joint("elev_fang", (0.0, 30.0, 48.0), limits=(-25.0, 10.0)):
+            b.stock("hp_1", (0.0, 34.0, 48.0), "barrel", scale=0.8)
+        # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
+        # on its front, the gun inside on an elevation (Ryan, 19 October: the side guns pitch,
+        # never traverse, since the torso twist aims them): the howitzer's on the left (hp_2),
+        # the twin autoguns' on the right (hp_3).
         for s, k, shape, fwd in ((-1.0, 2, "barrel", (0.0, 0.866, 0.5)), (1.0, 3, "twin_barrel", (0.0, 1.0, 0.0))):
-            px = s * 22.0
-            b.prism("x", s * 18.0, 0.0, 55.0, 5.0, 2.0, "steel.dark", 8, "pod_boss")
-            with b.joint("turret_%s" % ("l" if s < 0 else "r"), (px, 0.0, 55.0), limits=(0.0, 90.0) if s < 0 else (-90.0, 0.0)):
-                b.box(px - 4.0, px + 4.0, -8.0, 8.0, 48.0, 62.0, "steel.plate", "pod")
-                b.box(min(s * 26.0, s * 26.8), max(s * 26.0, s * 26.8), -6.0, 6.0, 50.0, 60.0, "livery.livery2", "pod_panel")
-                b.box(px - 1.5, px + 1.5, 8.0, 9.0, 59.0, 61.0, "amber.light", "sight")
-                if k == 2:
-                    with b.joint("elev_howitzer", (px, 4.0, 56.0), limits=(-10.0, 28.0)):
-                        b.stock("hp_%d" % k, (px, 8.0, 56.0), shape, forward=fwd, scale=0.9)
-                else:
-                    b.stock("hp_%d" % k, (px, 8.0, 56.0), shape, forward=fwd, scale=0.9)
-        # The Web Bomb (fixed, no pin): a boom arm off the back of the head rising to a
-        # knuckle over it, the battery of four tubes on the knuckle pitched up and forward,
-        # stripe rails down its sides, the whole arm on its own elevation; each tube's floor
-        # is lit, so the battery glows when it is about to lob.
-        b.box(-5.0, 5.0, -14.0, -8.0, 65.0, 69.0, "steel.dark", "boom_base")
-        with b.joint("elev_rack", (0.0, -11.0, 68.0), limits=(-6.0, 30.0)):
-            _beam(b, (0.0, -11.0, 68.0), (0.0, -8.0, 79.0), _sq(7.0, 6.0), _sq(6.0, 5.0), "steel.plate", "boom")
-            b.prism("x", 0.0, -8.0, 79.0, 3.6, 9.0, "steel.dark", 6, "boom_knuckle")
-            D = Vector((0.0, math.cos(math.radians(45.0)), math.sin(math.radians(45.0))))
-            UP = Vector((0.0, -D.z, D.y))   # the block's own up, tilted back with it
-            P0 = Vector((0.0, -7.0, 79.0))
-            _beam(b, tuple(P0), tuple(P0 + D * 12.0), _sq(13.0, 9.0), _sq(13.0, 9.0), "steel.panel", "web_rack")
+            px = s * 23.0
+            b.box(min(s * 18.5, s * 27.5), max(s * 18.5, s * 27.5), -10.0, 8.0, 50.0, 64.0, "steel.plate", "pod")
+            b.box(min(s * 27.5, s * 28.3), max(s * 27.5, s * 28.3), -8.0, 6.0, 52.0, 62.0, "livery.livery2", "pod_panel")
+            b.box(px - 1.5, px + 1.5, 8.0, 9.0, 61.0, 63.0, "amber.light", "sight")
+            with b.joint("elev_%s" % ("l" if s < 0 else "r"), (px, 4.0, 57.0), limits=(-10.0, 30.0)):
+                b.stock("hp_%d" % k, (px, 8.0, 57.0), shape, forward=fwd, scale=0.9)
+        # The Web Bomb (fixed, no pin): a box launcher of four tubes on the roof's rear,
+        # livery panels down its sides, pitched up on its own elevation; each tube's floor is
+        # lit, so the launcher glows when it is about to lob.
+        D = Vector((0.0, math.cos(math.radians(45.0)), math.sin(math.radians(45.0))))
+        UP = Vector((0.0, -D.z, D.y))   # the box's own up, tilted back with it
+        P0 = Vector((0.0, -12.0, 67.0))
+        b.box(-7.0, 7.0, -18.0, -6.0, 65.0, 68.5, "steel.dark", "launcher_base")
+        with b.joint("elev_rack", (0.0, -12.0, 68.0), limits=(-6.0, 30.0)):
+            _beam(b, tuple(P0), tuple(P0 + D * 12.0), _sq(13.0, 9.0), _sq(13.0, 9.0), "steel.plate", "web_rack")
             for sx in (-7.0, 7.0):
-                _beam(b, tuple(P0 + Vector((sx, 0.0, 0.0))), tuple(P0 + Vector((sx, 0.0, 0.0)) + D * 11.0), _sq(1.2, 9.6), _sq(1.2, 9.6), "steel.stripe", "rack_rail")
+                _beam(b, tuple(P0 + Vector((sx, 0.0, 0.0))), tuple(P0 + Vector((sx, 0.0, 0.0)) + D * 11.0), _sq(1.2, 7.6), _sq(1.2, 7.6), "livery.livery2", "rack_panel")
             for ux in (-3.2, 3.2):
                 for uz in (-2.3, 2.3):
                     off = Vector((ux, 0.0, 0.0)) + UP * uz
                     _tube(b, tuple(P0 + off + D * 2.0), tuple(P0 + off + D * 12.3), 2.3, 1.8, 6, "steel.dark", "web_tube", floor_material="amber.light", floor_depth=8.0)
-        # The deflector's dish (hp_4): a crest on the forehead, facing forward over the brow,
-        # the battery behind and above it, so nothing stands in front of either.
-        b.box(-3.5, 3.5, 6.0, 14.0, 67.0, 69.0, "steel.dark", "dish_base")
-        b.stock("hp_4", (0.0, 10.0, 69.0), "dish", scale=0.9)
+        # The deflector's dish (hp_4): a low crest on the roof's front, facing forward over
+        # the brim, the launcher behind and above it.
+        b.box(-3.5, 3.5, 10.0, 18.0, 67.0, 69.0, "steel.dark", "dish_base")
+        b.stock("hp_4", (0.0, 14.0, 69.0), "dish", scale=0.9)
 
     # Idle acts (the builder's rules: curves a part runs on through, held poses that drift,
     # every gun turning slowly and not far with a pause before it turns back). Degrees and
     # seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a body
     # key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k
-    # the light added over rest. The feet stay planted while the hub moves (_planted).
+    # the light added over rest. The feet stay planted while the hub moves (_planted); the
+    # coxae rest through the acts, since the solver plants from the hips.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
     limbs = {leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")}
-    # The ambush: it sinks and leans in slowly, every lamp burning, holds, and lunges, the
-    # fangs dropping to bite; then it draws back up. The lunge on a sharp servo.
+    # The ambush: it sinks and leans in slowly, the eyes burning, holds, and lunges, the bow
+    # gun dipping to bite; then it draws back up. The lunge on a sharp servo.
     tracks, body = _planted(list(limbs.values()),
                             [(0.5, 0.0, 0.0, 0.0), (1.8, 0.0, -6.0, 2.0), (3.4, 0.0, -6.5, 2.4), (3.75, 6.0, -2.0, -2.5), (4.2, 6.0, -2.5, -2.0), (5.3, 0.0, 0.0, 0.0)])
     tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.8, -7.0, 0.0, 0.0), (3.4, -8.0, 0.0, 0.0), (3.75, 5.0, 0.0, 0.0), (4.2, 4.0, 0.0, 0.0), (5.3, 0.0, 0.0, 0.0)]
-    tracks["elev_fang"] = [(3.3, 0.0), (3.75, -20.0), (4.2, -20.0), (5.0, 0.0)]
+    tracks["elev_fang"] = [(3.3, 0.0), (3.75, -22.0), (4.2, -22.0), (5.0, 0.0)]
     b.act("stalk", 5.8, tracks, body=body, heft=0.08,
           glow=[(["lamp"], [(0.8, 0.0), (1.8, 5.0), (3.6, 7.0), (4.6, 0.0)])])
-    # The scan: the whole head turns slowly on its hub one way, the lamps up, holds staring,
+    # The scan: the whole body turns slowly on its hub one way, the eyes up, holds staring,
     # then the other.
     b.act("scan", 6.4, {
         "head": [(1.0, 0.0, 0.0, 0.0), (2.2, -4.0, 32.0, 0.0), (3.0, -5.0, 34.0, 0.0), (4.4, 3.0, -32.0, 0.0), (5.2, 4.0, -34.0, 0.0), (6.2, 0.0, 0.0, 0.0)],
     }, glow=[(["lamp"], [(0.6, 0.0), (1.4, 6.0), (5.4, 6.0), (6.2, 0.0)])])
-    # Every gun in sequence: the pods out, the howitzer up, the web battery's boom up and lit.
-    b.act("swivel_weapons", 8.0, {
-        "turret_l": [(0.5, 0.0), (2.5, 60.0), (3.5, 60.0), (5.5, 0.0)],
-        "turret_r": [(1.0, 0.0), (3.0, -60.0), (4.0, -60.0), (6.0, 0.0)],
-        "elev_howitzer": [(1.6, 0.0), (2.6, 22.0), (3.6, 24.0), (4.8, 0.0)],
-        "elev_rack": [(3.6, 0.0), (5.0, 26.0), (6.2, 27.0), (7.6, 0.0)],
-    }, glow=[(["web_tube_floor"], [(4.2, 0.0), (5.0, 7.0), (6.4, 7.0), (7.2, 0.0)])])
+    # Sighting in: the torso twists to bring the left pod's gun to bear as it elevates, holds,
+    # then the right, the launcher rising lit meanwhile.
+    b.act("sight_in", 8.0, {
+        "head": [(0.5, 0.0, 0.0, 0.0), (2.3, 0.0, 28.0, 0.0), (3.3, 0.0, 30.0, 0.0), (5.3, 0.0, -28.0, 0.0), (6.3, 0.0, -30.0, 0.0), (7.8, 0.0, 0.0, 0.0)],
+        "elev_l": [(1.3, 0.0), (2.3, 20.0), (3.3, 22.0), (4.4, 0.0)],
+        "elev_r": [(4.3, 0.0), (5.3, 20.0), (6.3, 22.0), (7.4, 0.0)],
+        "elev_rack": [(3.4, 0.0), (4.8, 26.0), (6.2, 27.0), (7.6, 0.0)],
+    }, glow=[(["web_tube_floor"], [(4.0, 0.0), (4.8, 7.0), (6.4, 7.0), (7.2, 0.0)])])
     # The probe: the fore-left leg lifts and reaches ahead, taps the ground twice, and comes
     # back to its stance, the hub settling back a hair off it (_steps: the feet in their own
     # planes, the others planted); the head follows the foot.
@@ -1681,16 +1676,55 @@ def funnel_web(b):
     ])
     tracks["head"] = [(0.8, 0.0, 0.0, 0.0), (1.6, -6.0, 14.0, 0.0), (3.7, -7.0, 16.0, 0.0), (4.9, 0.0, 0.0, 0.0)]
     b.act("probe", 5.4, tracks, body=body)
-    # Movement: a four-beat walk, each hind foot followed by the fore on its side (hl, fl,
-    # hr, fr), three feet down at any moment, each lifting briskly and set down ahead with a
-    # small drop onto it; the head level, never rolling. A first cut for Ryan to judge running.
-    walk = [dict(limbs[leg], phase={"hl": 0.0, "fl": 0.25, "hr": 0.5, "fr": 0.75}[leg], shift=(4.0 if leg[0] == "f" else -4.0), nod=(0.6 if leg[0] == "f" else -0.4))
+    # Movement, a creep (Ryan, 19 October: walk creepy, the upper legs in the walk beside the
+    # solver, the Ammit's way): the hind feet stride, out of step, and the fore feet take two
+    # short steps to each of theirs (a limb's cycles, the Ammit's hands), feeling ahead; every
+    # foot planted while the body passes over it, three or more down at any moment, the body
+    # level and never rolling. Beside the solver, the coxae: each leg lifts from its base
+    # through its swing, up briskly, held high and set down with the foot (_coxa_hitch, the
+    # coxa's own cyclic track, at rest through every stance so no planted foot moves), and
+    # the head turns a little toward each fore foot as it reaches.
+    DUTY = 0.7
+    walk = [dict(limbs[leg], phase={"hl": 0.0, "hr": 0.5, "fl": 0.2, "fr": 0.7}[leg], cycles=(2 if leg[0] == "f" else 1),
+                 shift=(4.0 if leg[0] == "f" else -4.0), nod=(0.6 if leg[0] == "f" else -0.4))
             for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
-    tracks, body, stride = _plant(walk, sweep=30.0, duty=0.7, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80)
+    tracks, body, stride = _plant(walk, sweep=30.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80)
+    for l in walk:
+        tracks["coxa_" + l["hip"][4:]] = _coxa_hitch(l, DUTY, 12.0 if l["hip"][4] == "f" else -12.0)
+    tracks["head"] = ([(i / 80.0, round(4.0 * math.sin(2.0 * math.pi * (i / 80.0 - 0.2)), 3)) for i in range(81)], 0.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"
+
+
+def _coxa_hitch(l, duty, lift, n=80):
+    """A cyclic track for a leg's coxa (the strut its hip hangs from) through a walk from
+    _plant: `lift` degrees on the coxa's own axis through the limb's swing, up briskly in the
+    first fifth, held, and set down through the last quarter so it is at rest as the foot
+    lands, and at rest through the whole stance, so the solver's planted foot never moves
+    (the Funnel-web, 19 October: the upper legs in the walk beside the solver). `l` is the
+    limb as _plant took it (its phase and cycles), `duty` the share of a step its foot is
+    down. Returns (keys, phase) for b.gait."""
+    k = int(l.get("cycles", 1))
+    keys = []
+    for i in range(n + 1):
+        p = i / float(n)
+        q = (p * k - l["phase"]) % 1.0
+        if q < duty:
+            v = 0.0
+        else:
+            s = (q - duty) / (1.0 - duty)
+            if s < 0.2:
+                r = s / 0.2
+                v = lift * (1.0 - (1.0 - r) * (1.0 - r))
+            elif s < 0.72:
+                v = lift
+            else:
+                r = (s - 0.72) / 0.28
+                v = lift * (1.0 - r * r)
+        keys.append((round(p, 4), round(v, 3)))
+    return (keys, 0.0)
 
 
 def goshawk(b):
