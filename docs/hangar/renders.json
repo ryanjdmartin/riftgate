@@ -423,6 +423,28 @@
      }
     ]
    }
+  },
+  "funnel_web": {
+   "when": "First pass, 19 October.",
+   "note": "From the content's fantasy: a riveted carapace and a boiler abdomen on four arched legs, the Maxigun as fangs under the chin, outward-only shoulder turrets, the dish on the abdomen, the Web Bomb a lit four-tube battery pitched up on its crown. Rendered bare; the lunge of its stalk and a stride of its walk beside the front and rear. Judge the acts and the walk running in the Animation tab.",
+   "images": [
+    {
+     "file": "funnel_web/funnel_web_front.png",
+     "alt": "funnel-web, front"
+    },
+    {
+     "file": "funnel_web/funnel_web_rear.png",
+     "alt": "funnel-web, rear"
+    },
+    {
+     "file": "funnel_web/funnel_web_stalk.png",
+     "alt": "funnel-web, the lunge of its stalk"
+    },
+    {
+     "file": "funnel_web/funnel_web_walk.png",
+     "alt": "funnel-web, a stride of its walk"
+    }
+   ]
   }
  }
 }

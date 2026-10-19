@@ -1576,16 +1576,16 @@ def funnel_web(b):
     # four lamp eyes in a row, a visor slit, a lamp at each temple; under the chin the fangs
     # (hp_1) on a drop joint, pitched down to bite.
     with b.joint("head", (0.0, 24.0, 34.0), limits={"yaw": (-35.0, 35.0), "pitch": (-12.0, 10.0)}):
-        b.box(-9.0, 9.0, 24.0, 36.0, 27.0, 41.0, "steel.panel", "head")
-        b.box(-10.0, 10.0, 31.0, 37.0, 41.0, 43.5, "steel.plate", "brow")
-        b.box(-7.0, 7.0, 36.0, 37.0, 33.0, 37.5, "glass.glass", "visor")
-        for ex in (-7.5, -2.5, 2.5, 7.5):
-            b.box(ex - 1.2, ex + 1.2, 37.0, 37.8, 41.6, 43.0, "amber.light", "eye")
+        b.box(-10.0, 10.0, 24.0, 37.0, 26.5, 41.0, "steel.panel", "head")
+        b.box(-11.0, 11.0, 32.0, 38.0, 41.0, 43.8, "steel.plate", "brow")
+        b.box(-8.0, 8.0, 37.0, 38.0, 33.0, 37.5, "glass.glass", "visor")
+        for ex in (-8.2, -2.8, 2.8, 8.2):   # the eyes big and bright: a phone must read them (the rule: lean hotter)
+            b.box(ex - 1.3, ex + 1.3, 38.0, 38.9, 41.5, 43.3, "amber.light", "eye")
         for s in (-1.0, 1.0):
-            b.box(min(s * 9.0, s * 10.3), max(s * 9.0, s * 10.3), 30.0, 35.0, 35.0, 39.5, "amber.light", "lamp")
-        b.box(-7.0, 7.0, 30.0, 37.0, 24.5, 27.0, "steel.dark", "chin")
+            b.box(min(s * 10.0, s * 11.4), max(s * 10.0, s * 11.4), 29.0, 35.0, 34.0, 39.5, "amber.light", "lamp")
+        b.box(-8.0, 8.0, 30.0, 38.0, 24.5, 26.5, "steel.dark", "chin")
         with b.joint("elev_fang", (0.0, 31.0, 25.5), limits=(-22.0, 10.0)):
-            b.stock("hp_1", (0.0, 33.0, 25.0), "barrel", forward=(0.0, math.cos(math.radians(25.0)), -math.sin(math.radians(25.0))), scale=0.8)
+            b.stock("hp_1", (0.0, 34.0, 25.0), "barrel", forward=(0.0, math.cos(math.radians(25.0)), -math.sin(math.radians(25.0))), scale=0.8)
     # The shoulder turrets on the deck, each traversing outward only (the Clydesdale's
     # rule): the howitzer on the left on its elevation (hp_2), the twin autoguns level on
     # the right (hp_3).
@@ -1648,8 +1648,8 @@ def funnel_web(b):
     }, glow=[(["eye"], [(0.6, 0.0), (1.4, 6.0), (5.4, 6.0), (6.2, 0.0)])])
     # Every gun in sequence: the turrets out, the howitzer up, the web battery up and lit.
     b.act("swivel_weapons", 8.0, {
-        "turret_l": [(0.5, 0.0), (2.3, 70.0), (3.3, 70.0), (5.1, 0.0)],
-        "turret_r": [(1.0, 0.0), (2.8, -70.0), (3.8, -70.0), (5.6, 0.0)],
+        "turret_l": [(0.5, 0.0), (2.5, 60.0), (3.5, 60.0), (5.5, 0.0)],
+        "turret_r": [(1.0, 0.0), (3.0, -60.0), (4.0, -60.0), (6.0, 0.0)],
         "elev_howitzer": [(1.6, 0.0), (2.6, 22.0), (3.6, 24.0), (4.8, 0.0)],
         "elev_rack": [(3.6, 0.0), (5.0, 26.0), (6.2, 27.0), (7.6, 0.0)],
     }, glow=[(["web_tube_floor"], [(4.2, 0.0), (5.0, 7.0), (6.4, 7.0), (7.2, 0.0)])])
