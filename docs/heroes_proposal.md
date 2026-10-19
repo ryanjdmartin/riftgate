@@ -91,6 +91,28 @@ name, as the Thief keeps its own, and every look is ours.
   wreathing the lower blade, or from her eyes). He asked for the lean he described too, the staff's
   top high on the right and the lower blade behind her legs on the left, a unique silhouette:
   rendered from her own prompt, three usable each size, on the picker beside his pick.
+  The sixth round (19 October) answers the three flaws and the lean, one set per question on the
+  picker (six sets of her, each fixing one flaw on a different parent, would have been the 13
+  October mistake again): the lean (`augur_heroart9`, hero and chibi), three usable each size,
+  the hero's 1 the cleanest (both crescents, the smoke off the upper blade); her blades
+  (`augur_blades`), three options on one base; her smoke (`augur_smoke`), three homes. What the
+  round found. The eyes: a first edit lit her whole face; a tighter one (two small points of
+  pale light, no pupils, within her face as it is) landed, and every candidate of the two sets
+  carries it. The blades: the edit model gained little (the lower blade sits in the frame's
+  bottom-right corner, and a second pass grew only the upper), and room alone did nothing (the
+  pick shrunk to 80% and passed at 0.85 came back in the same proportions, the room unused), so
+  the long blades are a composite, both heads cut and scaled by a third about their collars and
+  the staff lengthened to keep the upper crescent off her head, closed at 0.85, which held them
+  every seed. Measured in the cut, the cost: his pick's silhouette already sits at the frame's
+  aspect, so a longer weapon widens the box and the body pays, 128 px of 144 down to 103, a
+  fifth; and the blades cannot grow inward instead, the upper's tip being fifteen pixels from her
+  hair. So the set holds three: the blades as picked, long at a fifth less body, and broader (the
+  edit model deepening each crescent's belly within the same span, no cost; two of its three
+  came out axe heads and are set aside, and it drifted her eyes red and the steel blue-grey;
+  the eyes relit after, while a recolour of the steel greyed the whole staff, shaft and all, so
+  it is set aside and the tint stays, to come off at the cut or by a later pass). The smoke's
+  three homes, his call, each twice on the eyes-lit base: gone,
+  wreathing the lower blade, rising from her eyes.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
