@@ -304,10 +304,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.202 (18 and 19 October, the Wainwright & Sutler row's
-  roster calls and the maker's three versatilities with the tiers 3-5-2), unpublished: the live page moved under the Kestrel session at 23:14 (its own
-  v0.200, main merged in, with rows main takes when that branch merges), so the next publish
-  that merges main carries the clause. Before it, live v0.200 (18 October, evening), main's
+  `docs/design-bible.html` after every change. Main's file is v0.205 (19 October: the
+  Cassowary, the Cottonmouth and the Dingo's Translocator rows, with the chassis, size and
+  maker tables, the Rapid and reroll clauses and Spun Up and Swap in the generated tables, over
+  the sprite session's v0.204 art rows and the 18 and 19 October Wainwright & Sutler clauses),
+  unpublished: the live page is the sprite session's v0.204 (19 October, main's art rows
+  merged onto another session's v0.202, which carries Armoured and Overcharged in points, Burn
+  numbered and Armoured's duration, with that branch's tables), so the next publish that
+  merges main carries the three rows and the two statuses. Before it, live v0.200 (18 October, evening), main's
   fix-order row (the foe art row: structure through image to image from the pick, colour
   through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
   most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,
@@ -371,7 +375,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   Matador's 3, 1's head on Floraison's 2), a defined face and a held sword on Surtr, another set
   for the Augur and a retry for Skaði; the fourth round answers each (the composites as layouts
   re-rendered close beside the edit model's version; the Augur from a prompt of her own, since
-  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. Its database
+  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. His
+  fourth picks (19 October) each carry one edit more (the Matador's jaw, Floraison's clipped
+  spines, Skaði's lower half as the edit's, Surtr's sword alone after a two-part edit broke it,
+  the Augur's omen dark then her blades matched, chained), the fifth round; the heroes' costume
+  variety pass is a to-do, the Augur's omen dark in the bible's art row (v0.204, live, merged onto another session's v0.202). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

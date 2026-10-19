@@ -59,7 +59,20 @@ name, as the Thief keeps its own, and every look is ours.
   hood) read to the model as a request, so the fourth round renders her from a prompt of her own
   that names only what she wears (a laced leather vest, shirt, trousers, boots); every take came
   out in it. The double blades still read as hooks or axe heads as often as crescents; the
-  chibi's most of all.
+  chibi's most of all. Ryan, 19 October, on the fourth round: 4 picked for both, "close, definitely
+  usable"; the omen in her hand is to be dark, not light, and the lower blade to mirror the upper
+  if it can (his guess at the cause: the blade bent to fit the frame); the chibi's upper blade
+  carries a second-edge artifact to smooth. The style finding reaches the other heroes: the mages
+  all wear the same robes, so a variety pass is on the to-do for later, each hero with a prompt of
+  its own. The fifth round (19 October): the omen darkened by the edit model at both sizes, first
+  time; then the blades, where Ryan's guess was right: the lower blade is a hook because it sits
+  on the frame's bottom edge, and the edit model redraws nothing it has no room for (four
+  candidates, the hook unmoved; the chibi's upper-blade artifact smoothed as asked). So the sixth
+  gives her room: the pick shrunk onto a taller white canvas, then a close image-to-image pass
+  (0.7) whose prompt names two mirror-image blades, the lower one below her boots. It worked: with
+  room, the lower blade came out a full crescent at both sizes, first time; at 0.7 the figure
+  drifted (hair, costume, face), so the candidates nearest the pick are kept (the hero's 3, the
+  chibi's 2) and a tighter pass (0.85) ran beside them, which held the figure and kept both crescents (four each, the hero's 5 and the chibi's 5 the nearest the pick); all on the picker for his pick.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
