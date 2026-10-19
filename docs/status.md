@@ -384,7 +384,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   (three usable each size) and on the picker beside the upright picks and his last pick; the
   slant gains the hero's body about a tenth in the cut, the chibi little. The size worry that
   started it was Claude's misreading (the cut crops to the figure's box, so a render's margin
-  costs nothing), corrected in the heroes' proposal and the picker memory. Its database
+  costs nothing), corrected in the heroes' proposal and the picker memory.
+  His fifth picks (19 October): Skaði cut (fixbow5 1); the Matador's and Floraison's edits failed,
+  so both go back to composites of aligned siblings, raw and after a close pass; Surtr's blade
+  added to the grip he liked; the Augur's slanted 4 picked, its blades lengthened first, the eyes
+  and the smoke to follow, and the other lean rendered at his ask. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

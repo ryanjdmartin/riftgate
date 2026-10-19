@@ -84,7 +84,13 @@ name, as the Thief keeps its own, and every look is ours.
   the picker beside the upright ones. Measured in the cut: the slant takes the hero's body from
   about 115 to about 128 px of 144 and the sprite's width from 79 to 93 of 96, the box's aspect
   now the frame's; the chibi gains little (29 to 31 px wide, the body a point or two), its frame
-  being squarer already.
+  being squarer already. Ryan's pick (19 October): the slanted 4, "pretty good", its flaws the
+  glowing eyes of the first pick lost, the dark smoke hanging off to the side now that both hands
+  hold the staff, and blades that could be much longer now they have the room; the blades first
+  (the edit model), the eyes next, the smoke's home his call (Claude's three to choose from: gone,
+  wreathing the lower blade, or from her eyes). He asked for the lean he described too, the staff's
+  top high on the right and the lower blade behind her legs on the left, a unique silhouette:
+  rendered from her own prompt, three usable each size, on the picker beside his pick.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
