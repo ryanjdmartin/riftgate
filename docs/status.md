@@ -384,17 +384,29 @@ into this file in the same commit as its first publish; the procedures are in `R
   (three usable each size) and on the picker beside the upright picks and his last pick; the
   slant gains the hero's body about a tenth in the cut, the chibi little. The size worry that
   started it was Claude's misreading (the cut crops to the figure's box, so a render's margin
-  costs nothing), corrected in the heroes' proposal and the picker memory. Its database
+  costs nothing), corrected in the heroes' proposal and the picker memory.
+  His fifth picks (19 October): Skaði cut (fixbow5 1); the Matador's and Floraison's edits failed,
+  so both go back to composites of aligned siblings, raw and after a close pass; Surtr's blade
+  added to the grip he liked; the Augur's slanted 4 picked, its blades lengthened first, the eyes
+  and the smoke to follow, and the other lean rendered at his ask. The sixth round is on the
+  picker (19 October), one set per question: the Matador's and Floraison's composites clean (raw
+  and closed), Surtr's blade of fire by the edit model (the pass at 0.6 lost it), the Augur's
+  other lean (three usable each size), her blade options on one base (as picked; long, a
+  composite stretch, at a fifth less body in the cut, 128 px of 144 to 103, measured; broader at
+  no cost) and her smoke's three homes, her eyes relit on every one; the heroes' proposal has
+  the round and what it found (room alone grows nothing, a pass redraws an earlier colour edit,
+  so structure first and colour last). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round (15 October): the first round's six sets that stand (the
-  Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr), the third (Skaði, Fáfnir, Floraison with its swallow and vines) and the
-  Augur's hero and chibi sets (16 October, `heroart` and `chibi_heroart`), built by
-  `forge.py phone --only --tags bossart bossart3 heroart chibi_heroart --keys <the eleven sets>`;
-  the renders that lost a blade or a brief sit in each set's `set_aside/`.
+  It holds the boss art round's sixth sets (19 October): the Matador's and Floraison's
+  composites (`matador_fixhand6`, `bourgeon_bossart9`), Surtr's blade (`surtr_bossart9`), the
+  Augur's other lean (`augur_heroart9`, `augur_chibi_heroart9`), her blade options
+  (`augur_blades`) and her smoke's homes (`augur_smoke`), built by `forge.py phone --only --tags
+  fixhand6 bossart9 heroart9 chibi_heroart9 blades smoke --keys <the seven sets>`; every earlier
+  round's folder stays under `tools/foeforge/out/` as the record, and the renders that lost a
+  blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

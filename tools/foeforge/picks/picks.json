@@ -470,6 +470,19 @@
         "asked": "remove all the gold: the pile of gold bars beneath and around its coils becomes bare dark cavern rock and earth; keep the serpent, its head and its coils exactly as they are"
       },
       "note": "Ryan's pick of 18 October: his first pick (fafnir_bossart3 1, the head and upper section he loved) with the gold hoard taken off by the edit model, a colour-and-ground change; the Summoner's promoted form's summon, cut at the massive frame ahead of the promoted forms"
+    },
+    "skadi": {
+      "foe": "skadi",
+      "role": "sprite",
+      "candidate": 1,
+      "source": "out/skadi_fixbow5/skadi_1.png",
+      "kept": "picks/skadi.png",
+      "prompt": "source: tools/foeforge/out/skadi_fixbow4/skadi_4.png\n\nEdit this 16-bit SNES JRPG battle sprite. Keep everything else exactly as it is: the same figure, pose, proportions, colours, one-pixel dark outline, shading and painterly pixel art style, on the same solid flat pure white background. Change only this: her hands wear dark leather gloves; below her belt she wears a long grey tabard panel hanging to the knees, dark leather trousers, white fur wrapped around her thighs in place of the skirt, and tall fur-trimmed dark leather boots; everything from the waist up, the raised hand, the ice, the bow on her back and the pose stay exactly as they are",
+      "fix": {
+        "from": "out/skadi_fixbow4/skadi_4.png",
+        "asked": "gloves; below the belt a long grey tabard, dark leather trousers, white fur round the thighs in place of the skirt, tall fur-trimmed boots; the upper half, the raised hand, the ice, the bow on her back and the pose kept"
+      },
+      "note": "Ryan's pick of 19 October after five rounds on her lowered hand (a bow, a spear, knives drawn into it never read; the edit model emptied it and slung the bow on her back): the fresh-take pose (fixbow4 4) with the edit's lower half (fixbow4 1) through the edit model. The Summoner's summon in Shiva's place, cut at the massive frame ahead of the summon's screen moment"
     }
   },
   "reference": {
