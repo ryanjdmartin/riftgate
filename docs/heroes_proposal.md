@@ -114,7 +114,22 @@ name, as the Thief keeps its own, and every look is ours.
   three homes, his call, rendered twice each on the eyes-lit base and one of each on the picker
   (gone, wreathing the lower blade, rising from her eyes): two of the six turned her eyes yellow
   and the hotter eye-smoke tinted her whole face, set aside, so a hotter version of the home he
-  picks is the next edit.
+  picks is the next edit. Ryan's picks of the sixth (19 October, afternoon): the lean's 1 is his
+  new favourite base, hero and chibi (the chibi's 2), though the rotation went too far, her other
+  hand on the staff now and the lower blade boxed on the left instead; from it he wants the smoke
+  gone and the top blade flipped to point the other way, its long edge toward the middle of the
+  portrait; the blade and smoke sets went unpicked, superseded. The seventh round: the smoke
+  erased by hand (it sat over white, the one hand edit that passes) and the flip tried two ways.
+  The head reflected across the shaft's axis by hand as a layout for a pass at 0.85 failed at the
+  hero's size (the first reflections carried the shaft's own outline, which the pass drew as a
+  second prong; a reflection is only as good as its mask and its axis, both measured from the
+  brown of the shaft alone); the edit model with the reversed crescent described landed in two
+  of six (3, a spearhead with a small inward hook; 9, a full crescent hanging inward, the better),
+  the rest drawing the crescent outward again or a plain spearhead. The chibi's axe-shaped head
+  resisted the edit model (ten seeds: outward axes, plain spearheads, and one two-bladed head,
+  9; a removal of its outer blade took the inner one too), so its flip is the reflection, with
+  the mask and axis fixed, passed at 0.85. On the picker as `augur_heroart16` and
+  `augur_chibi_heroart16`.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is

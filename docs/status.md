@@ -370,7 +370,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
   Weapon (the axe, which settles hammer against axe) cut into `art/foes` and recorded in
   `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits
-  land); his notes drove a second round, on the picker for his next picks: the Matador's missing
+  land); since then the Reaper, Fáfnir, Skaði and the Matador (19 October) the same way, so of
+  the slate on the picker only Surtr, Floraison and the Augur remain; his notes drove a second round, on the picker for his next picks: the Matador's missing
   hand, the Reaper's extra hand, Skaði's lower-hand weapon and Fáfnir's gold through the edit
   model (the Reaper's two edit passes failed and image to image from the pick fixed it, his pick
   of that set cut on 18 October; the fix order is a bible row now: structure through image to
@@ -404,18 +405,28 @@ into this file in the same commit as its first publish; the procedures are in `R
   composite stretch, at a fifth less body in the cut, 128 px of 144 to 103, measured; broader at
   no cost) and her smoke's three homes, her eyes relit on every one; the heroes' proposal has
   the round and what it found (room alone grows nothing, a pass redraws an earlier colour edit,
-  so structure first and colour last). Its database
+  so structure first and colour last). His sixth picks (19 October, afternoon): the Matador cut
+  (fixhand6 3, the second close pass, recorded and imported); Surtr's 2 "so close", its blade to
+  turn five degrees clockwise onto the grip's line, done by hand as a layout and closed at 0.9,
+  the sword's column pasted back onto his pick beside the full pass; Floraison "still weird even
+  at phone scale, cut off or blurred", so another way: the eyes inside the maw painted out on his
+  pick itself (an erase over dark, nothing re-rendered) beside image to image at 0.7; the Augur's
+  lean 1 his new base at both sizes (the rotation went too far, her other hand on the staff), the
+  smoke erased by hand and the top blade flipped inward (the edit model landed the hero's in two
+  of six seeds; the chibi's by a reflection of the head across the shaft's axis, the hand edit the
+  layout for a pass); the blade and smoke sets superseded unpicked. The seventh round is on the
+  picker. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round's sixth sets (19 October): the Matador's and Floraison's
-  composites (`matador_fixhand6`, `bourgeon_bossart9`), Surtr's blade (`surtr_bossart9`), the
-  Augur's other lean (`augur_heroart9`, `augur_chibi_heroart9`), her blade options
-  (`augur_blades`) and her smoke's homes (`augur_smoke`), built by `forge.py phone --only --tags
-  fixhand6 bossart9 heroart9 chibi_heroart9 blades smoke --keys <the seven sets>`; every earlier
-  round's folder stays under `tools/foeforge/out/` as the record, and the renders that lost a
-  blade or a brief sit in each set's `set_aside/`.
+  It holds the boss art round's seventh sets (19 October): Surtr's blade on the grip's line
+  (`surtr_bossart10`), Floraison's eyes painted out (`bourgeon_bossart10`) and the Augur's new
+  base with the smoke gone and the top blade flipped inward (`augur_heroart16`,
+  `augur_chibi_heroart16`), built by `forge.py phone --only --tags bossart10 heroart16
+  chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16
+  augur_chibi_heroart16`; every earlier round's folder stays under `tools/foeforge/out/` as the
+  record, and the renders that lost a blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
