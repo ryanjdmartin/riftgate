@@ -370,6 +370,54 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
+func test_a_planned_buff_may_grant_a_planned_machine_status() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var coil := ""
+	for cid in db.components.keys():
+		if str(db.components[cid].get("face", {}).get("kind", "")) == "buff" and db.components[cid].get("status", "implemented") == "implemented":
+			coil = str(cid)
+			break
+	assert_true(not coil.is_empty(), "the content has a built buff component to copy")
+	var drafted_status := ""
+	for k in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[k]
+		if e.get("category") == "status" and e.get("status") != "implemented" and str(e.get("design", {}).get("table", {}).get("on", "")) == "machine":
+			drafted_status = str(k)
+			break
+	assert_true(not drafted_status.is_empty(), "the vocabulary names a planned machine status to test with")
+	var piece: Dictionary = db.components[coil].duplicate(true)
+	piece["face"] = Dictionary(piece["face"]).duplicate(true)
+	piece["face"]["status"] = drafted_status
+	piece["status"] = "planned"
+	piece["tier"] = 2   # no chassis stocks it, so it carries its own tier
+	db.components["draft_coil"] = piece
+	for e in db.validate():
+		assert_false(e.begins_with("component draft_coil"), "a planned buff granting a planned machine status validates clean: %s" % e)
+	piece["status"] = "implemented"
+	db.components["draft_coil"] = piece
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component draft_coil") and e.contains("a buff needs 'status'"):
+			hit = true
+	assert_true(hit, "the same buff marked implemented is refused until the engine has the status")
+	var foe_status := ""
+	for k in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[k]
+		if e.get("category") == "status" and e.get("status") != "implemented" and str(e.get("design", {}).get("table", {}).get("on", "")) == "foe":
+			foe_status = str(k)
+			break
+	if not foe_status.is_empty():
+		piece["face"]["status"] = foe_status
+		piece["status"] = "planned"
+		db.components["draft_coil"] = piece
+		hit = false
+		for e in db.validate():
+			if e.begins_with("component draft_coil"):
+				hit = true
+		assert_true(hit, "a planned buff cannot grant a foe's planned status")
+
+
 func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

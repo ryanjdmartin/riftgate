@@ -738,9 +738,16 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		if Array(fd.get("keywords", [])).has("rapid"):
 			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
 	if kind == "buff":
-		# A buff grants one of the machines' statuses: it must exist and be theirs.
+		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
+		# component may grant a machine status the vocabulary names but the engine lacks (the
+		# Spin-Up's Spun Up, 19 October), as it may carry a planned keyword: spent, it grants
+		# nothing until the engine has the status.
 		var st := str(fd.get("status", ""))
-		if not Effects.STATUS.has(st):
+		var drafted_status: bool = planned and vocabulary.has(st) and vocabulary[st].get("status") != "implemented" \
+			and vocabulary[st].get("category") == "status" and str(vocabulary[st].get("design", {}).get("table", {}).get("on", "")) == "machine"
+		if drafted_status:
+			pass
+		elif not Effects.STATUS.has(st):
 			errs.append("%s: a buff needs 'status', one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
 		elif not Effects.MECH_STATUSES.has(st):
 			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])

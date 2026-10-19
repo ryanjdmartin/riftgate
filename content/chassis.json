@@ -391,7 +391,7 @@
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
     "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier.",
-    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): stealth is gone; the Dingo is tireless, two actions a turn, the pack animal that drifts between fights, its Tactical Databank making its second action count in an ally's fight. It can be hunted, and dies if it strays from the pack. 8 October, later (Ryan): the second action is the Dingo's passive (named the Retrograde Flywheel, 9 October, by Ryan: the perfect amount of no-sense), and the Tactical Databank leaves the Dingo to become the game's first module, its name kept (Ryan): \"With an ally in the fight, this machine's kinetic weapons roll their maximum\" (on_attack, roll_max, when ally_present), for when modules exist (bible section 10)."
+    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): stealth is gone; the Dingo is tireless, two actions a turn, the pack animal that drifts between fights, its Tactical Databank making its second action count in an ally's fight. It can be hunted, and dies if it strays from the pack. 8 October, later (Ryan): the second action is the Dingo's passive (named the Retrograde Flywheel, 9 October, by Ryan: the perfect amount of no-sense), and the Tactical Databank leaves the Dingo to become the game's first module, its name kept (Ryan): \"With an ally in the fight, this machine's kinetic weapons roll their maximum\" (on_attack, roll_max, when ally_present), for when modules exist (bible section 10). Ryan's go, 19 October (the bible's Dingo row; the brief retired to git: git show 021f075:docs/briefs/ws_dingo.md): a second locked piece, the Combat Translocator (his working name), which picks two foes or a foe and an empty slot and swaps them (the Swap keyword, planned in the vocabulary), tier two with it. The piece lands in content with its engine (a spend that takes two targets, a foe moving between slots), not before: a planned locked piece would keep the Dingo out of the tender and fix the maker's deal on the Prairie Dog, which the tier move is timed to avoid; the tier moves when a Wainwright & Sutler tier one beside the Prairie Dog can be dealt. Its stock beside the harpoon is the stock pass's (the Coolant Dump retires there)."
    },
    "codex": "",
    "hull": 60,
@@ -715,6 +715,91 @@
     "id": "ambush",
     "name": "Ambush",
     "description": "Its blows on a foe showing no intent on it lay Vitriol: a stack per hit, and at its action the foe loses 5% of its current hull a stack.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
+  },
+  {
+   "id": "cassowary",
+   "name": "Cassowary",
+   "designation": "Pattern 15 Gun Walker",
+   "maker": "wainwright_sutler",
+   "tier": 1,
+   "design": {
+    "fantasy": "Ryan's revolver (12 October): \"Whenever its die rolls, it moves to the next entry instead, in sequence.\" The six-shooter homage on a chicken walker: a squared cab on two long digitigrade legs, no arms, the revolver drum on the cab's flank clicking round a chamber at every roll. Ryan, 18 October: the first chamber randomized, \"like a revolver spinning, the only random factor we're able to inject in an otherwise deterministic chassis\". Named by Ryan, 19 October: the flightless bird that kills.",
+    "niche": "The maker's gunslinger, a damage dealer at tier one (Ryan, 18 October: promoted to damage class). Its die never rolls: each fight opens on a random chamber and steps from there, so the plan is adjacency (the shield before the big gun, the Rapid before the chamber it should double) and the team's rerolls are its dial. Every sixth shot counts double; its locked Spin-Up spins the cylinder and primes the next shot. Squishy on purpose (Ryan, 19 October: \"we're packing a lot of firepower in it\"), so the maker's tender deal holds no front, accepted.",
+    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md; the bible's Cassowary row carries the decisions and their reasons). Ryan's names: the Cassowary, the Spin-Up, Spun Up; the passive's name and the designation are Claude's working ones. Every number is a placeholder (medium walker, move 40; hull 80, shield 30, armour 0, heat 60, cooling 5, recharge 20; five hardpoints and the Spin-Up, a six-chamber die). The stock is stand-ins until the stock pass, basics only, in an order that teaches the cycle: the Blast Door and the Coolant Jacket at V and VI, two quiet chambers before the Spin-Up at I and the Howitzer at II. The passive is planned: the engine lacks the die mode (the spin at the fight's start, a step on every roll and reroll, Scramble a true roll, a lock a hold), the sixth-shot count with its six pips under the heat bar, the next-chamber chip, the hold's ring and the hangar's numbered chambers. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and gait are the asset session's. The Rapid chain's price is the stock pass's (Rapid priced in heat), so its balance waits on that pass and its runner row is a verdict on the bot until the bot plans a cycle."
+   },
+   "codex": "",
+   "hull": 80,
+   "shield": 30,
+   "movespeed": 40,
+   "heat_max": 60,
+   "hardpoints": 5,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "medium",
+   "fixed": [
+    "spin_up"
+   ],
+   "loadout": [
+    "howitzer",
+    "twin_autoguns",
+    "ankle_mortar",
+    "blast_door",
+    "coolant_jacket"
+   ],
+   "passive": {
+    "id": "indexed_cylinder",
+    "name": "Indexed Cylinder",
+    "description": "Its die never rolls: each fight opens on a random chamber, and every roll steps it to the next entry in order. Every sixth shot counts double, its damage and the stacks it lays.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
+  },
+  {
+   "id": "cottonmouth",
+   "name": "Cottonmouth",
+   "designation": "Pattern 16 Hover Gunboat",
+   "maker": "wainwright_sutler",
+   "tier": 1,
+   "design": {
+    "fantasy": "Ryan, 13 October: a simple hovercraft with a deck gun, and everything it fires goes through the deck gun. Ryan, 19 October: \"I picture it honestly not as a deck gun, but like a big rotating set of barrels with the guns mounted (invisibly) inside, like a multi shot grenade launcher. We call it a fan boat but the profile is more sophisticated than that, it is still future-tech after all.\" Named by Ryan, 19 October: the water moccasin, the bayou's snake.",
+    "niche": "The maker's versatility in a third form, of reach (Ryan, 19 October: the Clydesdale's is loadout, the gunship's stats, this one's reach), a tier one that plugs holes in many draft compositions. Every weapon it fires leaves the drum as the drum's Indirect shot with the weapon's own keywords, so a keyword shell of any maker becomes an area shot at any reach; the shape follows the aim (the back rank punched through, the front rank sprayed), so a column or a row is the decision on every shot. It spreads statuses well, which steps on Aphelion's toes and is fine (Ryan: status spread is no monopoly and no complete identity). It locks nothing, as the Clydesdale and the gunship do.",
+    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_fan_boat.md; the bible's Cottonmouth row carries the decisions and their reasons). Ryan's names: the Cottonmouth, the Adaptive Munitions Drum; the designation is Claude's working one. The launcher is the passive's rule, not an entry on the die (Ryan: \"the deck gun isn't actually a locked component\"): Indirect, flat 15 (Ryan: 15 is ok), heat 10 (Claude's lean over 5, taken 19 October: at 5 under cooling 10 the machine never heats, even firing a Rapid shell twice a turn; the stock pass re-prices it), tagged Ballistic. Every number is a placeholder (light hover, move 50; hull 60, shield 30, armour 0, heat 60, cooling 10, recharge 30; four hardpoints and nothing locked, a d4). The stock is stand-ins until the stock pass: the Incendiary Shells (Burn rides the spray, the passive's lesson), the Ankle Mortar (a plain shot, so the number is the drum's), the Blast Door (equipment fires as itself), the Coolant Jacket. The passive is planned: the engine lacks the rewrite of every weapon spent (the drum's number, reach and heat, one blow, the weapon's keywords, rule and tags kept, the die showing the shot as it will fire over the foe it is dragged over), a keyword granted by the target's rank (a new condition), and while danger close stands the front-rank spray costs shield. No model yet (MechView3D borrows the Badger's); for the asset session: a hover hull under a drum, the fitted guns inside the drum, so this is the one machine whose hardpoints show no mounts on the model."
+   },
+   "codex": "",
+   "hull": 60,
+   "shield": 30,
+   "movespeed": 50,
+   "heat_max": 60,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 30,
+   "cooling": 10,
+   "traits": [
+    "hover"
+   ],
+   "size": "light",
+   "fixed": [],
+   "loadout": [
+    "incendiary_shells",
+    "ankle_mortar",
+    "blast_door",
+    "coolant_jacket"
+   ],
+   "passive": {
+    "id": "adaptive_munitions_drum",
+    "name": "Adaptive Munitions Drum",
+    "description": "Every weapon it fires leaves the drum as the drum's shot: Indirect, 15, heat 10, with the weapon's own keywords. Aimed at the back rank the shot punches through (Penetrate); aimed at the front rank it sprays (Spread).",
     "status": "planned",
     "effects": []
    },

@@ -107,7 +107,8 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 - **The sort** (Claude's, partly agreed): tier one is itself with basics alone and stands in a
   start (a body or a hitter, not a support); tier three bends a rule the player has already
   learned; the rest is tier two, where the supports and the machines that are only good
-  together belong. Ryan reads the Baboon as tier two and is unsure of the Dingo.
+  together belong. Ryan reads the Baboon as tier two; the Dingo is tier two with its
+  Translocator (19 October).
 - **As dealt**: the tender offers one tier-one machine of each city maker by seed and the
   player takes three, so each maker's tier-one pool should vary and more than one maker's deal
   should hold a front. The host maker's offer after a win and procurement's shelf deal the
@@ -115,8 +116,8 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 - Each brief gives a proposed tier; none is decided. The reshuffle proposed so far: the Wild
   Boar, the Clydesdale, the boiler and the revolver to tier one; the Baboon and the fan-boat to
   tier two; the Dingo undecided. One rule to reword if it lands: the 12 October tier row gives
-  every tier one a locked piece, and the Clydesdale would have none (the form-changing
-  Armadillo keeps one, its lure, by Ryan's framework of 15 October).
+  every tier one a locked piece, and the Clydesdale would have none, nor does the Cottonmouth
+  (the form-changing Armadillo keeps one, its lure, by Ryan's framework of 15 October).
 
 The tiers as the briefs propose them (nothing decided; "down" and "up" against a chassis's
 tier today; the targets two or three tier ones a city maker, two or three tier twos and one
@@ -126,7 +127,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
-| Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the revolver, the Cottonmouth (the fan-boat) | the Dingo (with its Combat Translocator), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
+| Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -153,10 +154,12 @@ Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomb
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
 team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
-The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
-with the revolver at tier one; Aphelion's with the line frame. Wainwright & Sutler's
+The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
+(Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
+if one is ever wanted; a planned chassis is never dealt, so its deal is the Prairie Dog or the
+Dingo until an engine lands); Aphelion's with the line frame. Wainwright & Sutler's
 versatility comes in three forms (Ryan, 19 October): the Clydesdale's loadout, the gunship's
-stats, the fan-boat's reach.
+stats, the Cottonmouth's reach.
 Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
 damaging spends while no chassis was about the blow; the revolver and the boiler are promoted
 to damage class. The old-world artillery of the maker's lean (indirect fire and area) is
@@ -181,13 +184,13 @@ on our side.
 | `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
 | `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
-| `ws_revolver.md` | in session since 18 October | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's Rapid prices, for its balance |
+| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
-| `ws_fan_boat.md` | proposal, back to the board | Wainwright & Sutler | 2 (proposed as 1) | the stock pass's keywords |
+| `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
 | `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |
-| `ws_dingo.md` | rework | Wainwright & Sutler | 1 or 2 | the stock pass |
+| `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 (1 in content until its piece's engine) | its engine (the to-do); its stock with the stock pass |
 | `aphelion_line_frame.md` | direction | Aphelion | 1 | nothing |
 | `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
 | `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the battlecruiser's session (the foil) |
@@ -289,10 +292,11 @@ overrule)
 
 1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
    H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
-   the line frame, Misharu, the Onryō, the revolver, the Prairie Dog and the Zoids walker (its
-   maker first); the funnel-web landed on 18 October.
-2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon and the Dingo
-   with the stock pass.
-3. After the stock pass: the boiler, the gunship, the fan-boat; the multi-rotor once the die
-   has its shown word.
+   the line frame, Misharu, the Onryō, the Prairie Dog and the Zoids walker (its maker
+   first); the funnel-web landed on 18 October, the revolver (the Cassowary), the fan-boat (the
+   Cottonmouth) and the Dingo's Translocator on 19 October.
+2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the
+   stock pass.
+3. After the stock pass: the boiler, the gunship; the multi-rotor once the die has its shown
+   word.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.

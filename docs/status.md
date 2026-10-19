@@ -40,8 +40,10 @@ document's job and every command are in `README.md`.
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
   merged into main the same day, so a session can start on its engine and assets (the to-do's
-  two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
-  boiler, the fan-boat, the Prairie Dog, then the maker's tiers). The tender, the campaign
+  two lines); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
+  fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
+  rows, the rules, planned content, the briefs retired), so the boiler, the Prairie Dog and
+  then the maker's tiers remain. The tender, the campaign
   runner and the balance runner skip a chassis whose passive or locked piece is planned
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
@@ -93,8 +95,10 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis and a fourteenth planned (the funnel-web, 18 October, its
-  passive and its locked Web Bomb planned), 55 components (13 locked, 4 unstocked, among them
+- Content: five makers, 13 chassis and three planned (the funnel-web, 18 October, its passive
+  and its locked Web Bomb planned; the Cassowary and the Cottonmouth, 19 October, their
+  passives and the Cassowary's locked Spin-Up planned; a planned chassis is never dealt, the
+  campaign's Start rule), 56 components (14 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -226,6 +230,27 @@ document's job and every command are in `README.md`.
   no fangs; tier two; in content as planned entries; the engine and the assets are the
   to-do's two lines. With it, Ryan's 17 and 18 October leans on hard control (priced by a gate,
   never rationed) in the stun row, and the time-shifter parked in the Aphelion row.
+- The Cassowary (Ryan's go, 19 October; its row in section 7): the revolver, the maker's
+  gunslinger at tier one, a chicken walker whose die never rolls (each fight opens on a random
+  chamber and every roll steps to the next; a lock holds, Scramble a true roll), every sixth
+  weapon spend double, its locked Spin-Up a true spin of the whole cylinder (itself included,
+  his exception to the reroll rule) with no cooldown, no heat and no Volatile (the cylinder
+  is its limiter) granting Spun Up (+5 a stack on the next weapon spend, carried between
+  turns); squishy, so the maker's tender deal holds no front, accepted; the names his, the
+  passive's and the designation Claude's working ones; in content as planned entries; the
+  engine and the assets are the to-do's two lines, the chain's price the stock pass's.
+- The Cottonmouth (Ryan's go, 19 October; its row in section 7): the fan-boat, the maker's
+  versatility of reach at tier one, a light hovercraft that locks nothing (a d4); its
+  Adaptive Munitions Drum fires every weapon as the drum's Indirect shot (flat 15, heat 10,
+  Ballistic) with the weapon's own keywords, punching through at the back rank (Penetrate)
+  and spraying at the front (Spread), the shape following the aim; in content as a planned
+  entry; the engine and the assets are the to-do's two lines.
+- The Dingo's Combat Translocator (Ryan's go, 19 October; its row in section 7): a second
+  locked piece that picks two foes, or a foe and an empty slot, and swaps them (Swap, planned
+  in the vocabulary; a massive foe stays; an empty front slot makes it a pull), tier two with
+  it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
+  dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
+  line); its stock with the stock pass.
 
 ## Next, in order
 
@@ -239,7 +264,9 @@ to-do's Ryan list).
    design's one home, with what Ryan said and what is open, and the README gives the shared
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
-   lands. The funnel-web landed first (18 October); the revolver is next.
+   lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth and the
+   Dingo's Translocator on 19 October; the boiler and the Prairie Dog's fight half are next,
+   then the maker's tiers.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
