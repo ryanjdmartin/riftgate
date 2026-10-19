@@ -58,9 +58,12 @@ document's job and every command are in `README.md`.
   team's rerolls as its passes, a throttle that buys one with heat); the Sparrowhawk's tier-two
   niche proposed as the caster-killer (the Pinion Driver reaching any foe, the double on the
   printed number only, kills shielding it past its maximum, paper hull); the mode-shifter to
-  Aphelion's bench. Docs only; nothing built, nothing in content. To resume: Ryan's calls,
-  then briefs for the interceptor, the Sparrowhawk's rework and the gun platform if he takes
-  them, then on his go the records each brief's "What the session hands back" lists.
+  Aphelion's bench. The fifth round (19 October): the gun platform and the Sparrowhawk's
+  rework have briefs of their own (`kestrel_gun_platform.md`, the kit laid out;
+  `kestrel_sparrowhawk.md`, the caster-killer niche and the cool-gun abuse answered by Ryan's
+  cooldown), the to-do's lines with them and an Aphelion defensive tier one (Ryan's ask).
+  Docs only; nothing built, nothing in content. To resume: Ryan's calls in the three Kestrel
+  briefs open, then on his go the records each brief's "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

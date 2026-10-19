@@ -37,6 +37,9 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
 - [ ] The bomber (`kestrel_bomber.md`)
+- [ ] The gun platform, Kestrel's capstone (`kestrel_gun_platform.md`), the team's rerolls as its passes
+- [ ] The Sparrowhawk at tier two (`kestrel_sparrowhawk.md`), with the cooldown property
+- [ ] An Aphelion defensive tier one (Ryan, 19 October: to balance the tier-one bodies beside Minerva's and Kestrel's off-tank), in Aphelion's session
 - [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
 - [ ] The revolver (`ws_revolver.md`)
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word

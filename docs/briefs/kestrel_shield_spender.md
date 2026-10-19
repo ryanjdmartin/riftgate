@@ -282,14 +282,8 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   nothing off on it and vents do nothing on it, so its Rapid pieces of every maker chain while
   its heat lasts, an alpha strike then a hot brick; its hole, the Rapid vent Ryan is wary of,
   answered by the dead vents. The bomber as the capital ship either way, heavy.
-- Claude, 18 October, the Sparrowhawk: the data agrees (alone, greedy, 85% against the packs
-  and 90% against the four big foes, the best of the tier ones, and 0 against every formation:
-  a glass that is not glass enough alone); the tiers row allows it (a lower floor and a higher
-  ceiling, never more power). The risk where its identity lives: everything doubled, the blows
-  that reach its hull too, its shield absorbing as normal, so bare it dies to anything and the
-  Barrier and the Puffin's overshield become its escorts; alternatives: its shield halved, or an
-  overheat burning double. Knock-on: the tender needs a built Kestrel tier one before it moves
-  (the strafer first), and the Kestrel team row re-reads.
+- Claude, 18 October, the Sparrowhawk: moved to `kestrel_sparrowhawk.md` (its brief since 19
+  October), with Ryan's lean of the day.
 - Claude, 18 October, the shield from damage dealt with no field recharge: its interest is on
   the map, a machine that must fight every turn to stay shielded, which the map cannot yet make
   a decision (the four-machines row sends the whole roster to one front); benched as a Kestrel
@@ -348,44 +342,26 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   gunship, a big slow airframe with its guns down one side (the capstone as a flyer); the
   airship on boosters; the jet car on wheels, Kestrel's one ground machine for the Steppe.
   Silhouettes are Ryan's; the list is for matching.
-- Claude, 19 October, the capstone, the gun platform, its gimmick the team's rerolls: every
-  team reroll also rerolls its spent die, so it acts again; the rerolls that fix the team's
-  dice are the passes it does not fly. Its lock, the throttle: equipment on itself, heat 20,
-  the team gains a reroll this round, so a pass can be bought with heat and the overheat is
-  the accident. Six hardpoints beside it, a d7 of guns of every maker, cold ones making cheap
-  passes; heavy or assault, hover or flyer, move 20, hull 120, shield 80, heat 120, cooling
-  10, armour 0. The rules it bends: a die is spent once a round, and a reroll rerolls only
-  unspent dice; it reads the team's rerolls, which nothing reads. Holes: it can eat the whole
-  turn's rerolls (the runner reads the share it takes and whether the others' dice sit
-  unfixed), the bot's reroll policy must learn it, the Paradox counts each pass, and a
-  Scrambled die's reroll lands anywhere. Alternatives: unspent team rerolls at the round's end
-  bank as Overcharged on it (the bench's reroll idea reversed, press your luck by holding);
-  the chain of the third round. The mode-shifter goes to Aphelion's bench as an aura support.
-- Claude, 19 October, the Sparrowhawk's niche at tier two: the caster-killer. The decisions
-  that frame it: the roster fights as a body at one front; formations spawn with a front and
-  a back; elites surface from the wait; the boss is fought with its formation; five to ten
-  skirmishes that matter, then the boss. In those fights the back rank's specials are what the
-  body cannot stop (a scorch on every machine, a countdown on every machine, a summon, a
-  raise), and nothing kills a caster before it acts except a hole in the front or the
-  artillery makers' pieces. The assassin's job is that kill, and the kill is what keeps it
-  alive. The shape: the Pinion Driver reaches any foe (the finisher is the dive, so the team's
-  artillery, Penetrate and Vitriol hurt the caster and the Sparrowhawk finishes it); the
-  double stays and counts only what is printed on the entry, number and heat, buffs once (the
-  mirror of the strafer's halving, the answer to "thin and abusable"); a kill shields it 30
-  past its maximum, fading 15 a round (a slower fade than Overshield's, a one-off on this
-  chassis); hull 30, shield 60, recharge 30. Alone it loses formations and bosses, which is
-  the floor; in a team it is the Puffin's and the Barrier's machine. Bench: a Barrier a kill
-  (the full assassin, immune while farming trash: Ryan's danger named) and every weapon
-  Indirect (free reach on a glass is the raider's loop again). The runner reads casters killed
-  before their first special, a new read.
+- Claude, 19 October, the capstone: moved to `kestrel_gun_platform.md` (its brief since 19
+  October). The mode-shifter goes to Aphelion's bench as an aura support.
+- Claude, 19 October, the Sparrowhawk's niche at tier two: moved to `kestrel_sparrowhawk.md`.
+
+## The fifth round (19 October)
+
+- Ryan, 19 October: "The point of adding another tier one lure is to take the pressure off of
+  making the armadillo a must-pick. Aphelion also will need a defensive tier 1 to balance
+  things out even more." His two questions of the day, the platform's kit and the
+  Sparrowhawk's cool guns, are answered in their briefs.
+- Claude, 19 October: recorded as the reason in the briefs README (a tier-one body from more
+  than one maker) and the Aphelion defensive tier one as a line for Aphelion's session.
 
 ## Open for the session
 
 1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
    reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and
    Ryan's go. The capacitor of the second round stays on the bench (overshield as ammunition).
-2. Whether the interceptor, the Sparrowhawk's rework and the gun platform become briefs of
-   their own (the fourth round carries their proposals).
+2. Whether the interceptor becomes a brief of its own (the Sparrowhawk's rework and the gun
+   platform have theirs since 19 October).
 
 ## Holes already raised
 

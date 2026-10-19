@@ -88,9 +88,11 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
 - Reroll-related effects are Kestrel's (Ryan, 19 October, after sending them to Wainwright &
   Sutler on 18 October: that maker's ten filled without effort): "it actually fits, and means
   we can push Kestrel way into the risk-versus-reward space, like a real maverick pilot."
-- A tier-one body from more than one maker eases the pressure off Minerva (Ryan, 19 October:
-  Wainwright & Sutler is pure offence and utility, Aphelion to be decided), which is why the
-  Kestrel off-tank takes a tier-one slot.
+- A tier-one body from more than one maker takes the pressure off the Armadillo being a
+  must-pick (Ryan, 19 October: Wainwright & Sutler is pure offence and utility, Aphelion to be
+  decided), which is why the Kestrel off-tank takes a tier-one slot with a lure of its own;
+  Aphelion also needs a defensive tier one (Ryan, 19 October), a line in the to-do for its
+  session.
 - Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
   16 October).
 - The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
@@ -181,6 +183,8 @@ on our side.
 | `kestrel_strafer.md` | decided; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal |
 | `kestrel_shield_spender.md` | direction; three kits proposed 18 October (the capacitor the lean) | Kestrel | 1 | Ryan's pick of the kit; its runner row on the shield rule's engine |
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
+| `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
+| `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | nothing |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
