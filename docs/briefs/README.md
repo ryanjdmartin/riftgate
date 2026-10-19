@@ -149,7 +149,8 @@ Decided on the roster analysis's budgets; the bible's rows hold them.
 ## Roster holes, as the go left them
 
 Soft control: Minos, the jellyfish, the echidna's draw, the Armadillo's locked lure, filling.
-Amplify for others: the Dingo's Shock, the Onryō's on-hit, the echidna's Sonic Needle, filling.
+Amplify for others: the Dingo's Shock, Flak (the Prairie Dog's Flakshot, the maker's on-hit,
+19 October), the echidna's Sonic Needle; the Onryō's Grudge finds another shape.
 Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomber's clusters.
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
@@ -189,7 +190,7 @@ on our side.
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
-| `ws_prairie_dog.md` | rework | Wainwright & Sutler | 1 | nothing |
+| `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | Flak's engine (the to-do) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 (1 in content until its piece's engine) | its engine (the to-do); its stock with the stock pass |
 | `aphelion_line_frame.md` | direction | Aphelion | 1 | nothing |
 | `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
@@ -292,9 +293,9 @@ overrule)
 
 1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
    H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
-   the line frame, Misharu, the Onryō, the Prairie Dog and the Zoids walker (its maker
-   first); the funnel-web landed on 18 October, the revolver (the Cassowary), the fan-boat (the
-   Cottonmouth) and the Dingo's Translocator on 19 October.
+   the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
+   landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
+   Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the
    stock pass.
 3. After the stock pass: the boiler, the gunship; the multi-rotor once the die has its shown

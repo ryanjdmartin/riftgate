@@ -261,6 +261,16 @@
    }
   },
   {
+   "id": "flak",
+   "category": "keyword",
+   "name": "Flak",
+   "codex": "Flak N: each foe hit gains N stacks of Flak, whatever the blow dealt.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). A numbered keyword like Burn N (the Burn row of 18 October, on the numbers branch), its number carried on the face beside the keyword: the face's flak field here, to be aligned with that branch's numbered-keyword field when it merges. Carried first by the Flakshot Repeater, locked on the Prairie Dog, which the die builds without it until the engine has it; the family Ryan named (an airburst shell, a flak cannon, Wainwright & Sutler slot-ins above the basics, which carry no keyword by rule) is the stock pass's, proposed in chat first. The engine: the keyword, its number, the stacks laid on each foe hit, with the numbered-keyword machinery."
+   }
+  },
+  {
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
@@ -627,6 +637,22 @@
      "on": "machine",
      "stacks": "Yes: +5 damage a stack, every stack spent by the next weapon spend",
      "lasts": "Until its next weapon spend, across turns"
+    }
+   }
+  },
+  {
+   "id": "flakked",
+   "category": "status",
+   "name": "Flak",
+   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). The chip reads FLAK with its count, the keyword and the chip sharing the word; the id is the participle habit (Burning, Webbed) and Claude's. A flat on-hit, the kind Ryan named missing on 14 October (the Onryō's brief: \"a flat number reads as an on-hit and it's not something we have\"), beside Shocked, the multiplier one blow spends: adds come before multiplies, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The halving clock is Overcharged's (Ryan, 18 October, the numbers branch): a sprayer feeding three a round settles near six, and a boss never ramps. On-hit only (Ryan, 19 October): a tick at the foe's action is Burning with another chip. Numbers are placeholders, and Ryan's note of 19 October stands: the numbers branch has Overcharged at a point a stack, so Flak at a point a stack on every blow may be overpowered beside it; read the two together when that branch merges. Past armour or not is the stock pass's question. Engine: add_damage_taken a stack on the foe and the halving decay at the round's end; the bot valuing it as damage in hand for the team's blows; the Paradox counts it as a debuff and the Tensor reads it. The flat on-hit is one kind, so the Onryō's Grudge finds another shape (its brief).",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow it takes, a stack",
+     "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }
   },

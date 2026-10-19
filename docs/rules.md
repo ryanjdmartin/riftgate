@@ -147,6 +147,8 @@ defeat when every machine is wrecked. There is no round limit.
   action the web bursts, Suppressing it and the next foe to act beside it.
 - **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
   trade places; no damage; a massive foe does not move.
+- **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
+  Flak, whatever the blow dealt.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -222,6 +224,8 @@ On a foe:
 - **Webbed** (debuff, not built): at the end of its action the web bursts: it and the next
   foe to act beside it are Suppressed (Numbed may resist, each for itself); killed first, it
   takes its web with it.
+- **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
+  halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -234,7 +238,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
+Burning, Suppressed, Shocked or Paradox (Vitriol, Webbed and Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches

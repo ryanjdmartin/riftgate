@@ -42,8 +42,8 @@ document's job and every command are in `README.md`.
   merged into main the same day, so a session can start on its engine and assets (the to-do's
   two lines); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
   fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
-  rows, the rules, planned content, the briefs retired), so the boiler, the Prairie Dog and
-  then the maker's tiers remain. The tender, the campaign
+  rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
+  same day (Flak), so the boiler and then the maker's tiers remain. The tender, the campaign
   runner and the balance runner skip a chassis whose passive or locked piece is planned
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
@@ -251,6 +251,14 @@ document's job and every command are in `README.md`.
   it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
   dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
   line); its stock with the stock pass.
+- The Prairie Dog's fight half (Ryan's go, 19 October; its row in section 7): Flak, the
+  maker's on-hit, a foe status that adds a point a stack to every blow it takes and halves at
+  each round's end (Overcharged's clock), on-hit only; laid by the Flakshot Repeater, now a
+  flat 5 that sprays (Spread, built) and rolls again, Flak 2 (planned); the car is the maker's
+  softener, not a detachment identity; the flat on-hit kind is Flak's, so the Onryō's Grudge
+  finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
+  Overcharged at a point, read together when the numbers branch merges; the engine is the
+  to-do's line, the family the stock pass's.
 
 ## Next, in order
 
@@ -264,8 +272,8 @@ to-do's Ryan list).
    design's one home, with what Ryan said and what is open, and the README gives the shared
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
-   lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth and the
-   Dingo's Translocator on 19 October; the boiler and the Prairie Dog's fight half are next,
+   lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth, the
+   Dingo's Translocator and the Prairie Dog's fight half on 19 October; the boiler is next,
    then the maker's tiers.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
@@ -304,14 +312,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.205 (19 October: the
-  Cassowary, the Cottonmouth and the Dingo's Translocator rows, with the chassis, size and
-  maker tables, the Rapid and reroll clauses and Spun Up and Swap in the generated tables, over
+  `docs/design-bible.html` after every change. Main's file is v0.206 (19 October: the
+  Prairie Dog's Flak row with the chassis table, the cars row and the leans row, over v0.205's
+  Cassowary, Cottonmouth and Dingo rows, with the chassis, size and
+  maker tables, the Rapid and reroll clauses and Spun Up, Swap and Flak in the generated tables, over
   the sprite session's v0.204 art rows and the 18 and 19 October Wainwright & Sutler clauses),
   unpublished: the live page is the sprite session's v0.204 (19 October, main's art rows
   merged onto another session's v0.202, which carries Armoured and Overcharged in points, Burn
   numbered and Armoured's duration, with that branch's tables), so the next publish that
-  merges main carries the three rows and the two statuses. Before it, live v0.200 (18 October, evening), main's
+  merges main carries the four rows and the three statuses. Before it, live v0.200 (18 October, evening), main's
   fix-order row (the foe art row: structure through image to image from the pick, colour
   through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
   most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,

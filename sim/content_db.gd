@@ -770,8 +770,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
-		# (taunt, corrode): Face.from_dict builds it without that keyword until it is coded.
-		if planned and vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented":
+		# (taunt, corrode once; Web now), and a built component may carry a planned one (the
+		# Flakshot Repeater's Flak, 19 October): Face.from_dict builds the entry without that
+		# keyword until it is coded, so content is written ahead of the engine either way,
+		# the keyword never shown and never run. An idea-stage keyword rides only on a draft.
+		var drafted: bool = vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented"
+		if drafted and (planned or vocabulary[str(k)].get("status") == "planned"):
 			continue
 		var kw := Face.keyword_from_name(str(k))
 		if kw <= 0:

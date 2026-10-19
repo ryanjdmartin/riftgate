@@ -169,7 +169,10 @@ Ryan's.
 ## Open for the session
 
 1. The curse's kind: the flat on-hit (Claude's lean, Ryan's preferred amp shape), or a DoT
-   after all (Ryan's two niches for one).
+   after all (Ryan's two niches for one). 19 October: the flat on-hit kind is Flak's, the
+   Prairie Dog's go (the bible's Prairie Dog row), so Grudge's kind is open again: a flat on-hit
+   would be Flak with another chip, a DoT at the foe's action Burning's kind, so Grudge reads
+   something else or lays one of them in its own way.
 2. The trigger: a foe's blow that wounds any machine while the Onryō fights, the wound the
    Onryō takes through the Pall, or a debuff a foe lays (once every domain lays one).
 3. The cap, and whether Grudge outlasts the Onryō.
