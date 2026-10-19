@@ -29,7 +29,7 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 and 19 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.209): to merge into
+  and page; the to-do's engine and assets lines ticked; the bible at v0.210): to merge into
   main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -105,7 +105,10 @@ document's job and every command are in `README.md`.
   steepened so the turn rows the hip fore and aft), a longer stride (sweep 36, stride 51) and
   the solver's new `carry` window, (0.04, 0.92) here, the old (0.12, 0.76) the default for every
   other walker; the fore feet's two short steps a stride and the head's turn toward each foot
-  were cut on his fifth notes (hot-stepping, too busy; weird); the cornering numbers; the rig test covers it; the hangar's renders (front,
+  were cut on his fifth notes (hot-stepping, too busy; weird); the row at twenty degrees as
+  the gait option `row_extreme` (his seventh: what would the extreme look like); the jaw six
+  shorter with the bow guns near flush and the roof mount aft of the pods (the seventh too);
+  the cornering numbers; the rig test covers it; the hangar's renders (front,
   rear, the lunge, a side-on moment of the creep; the third cut under "before") and the page
   republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
   to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
@@ -323,9 +326,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.209 (19 October, `ccr-ffcf75fa-3gkbz9`:
+  `docs/design-bible.html` after every change. Live: v0.210 (19 October, `ccr-ffcf75fa-3gkbz9`:
   the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
-  fifth and sixth, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
+  fifth, sixth and seventh, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
   row carries the heroes' costumes and the Augur's dark omen-smoke, and v0.200 of 18 October,
   whose foe-art row carries the image-to-image route, both Ryan's calls, now in this branch's
   file too), over v0.199 (18 October,

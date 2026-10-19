@@ -1590,7 +1590,7 @@ def funnel_web(b):
     # the rule, lean hotter), a brim over them; appliqué plates in the livery on the flanks, an
     # exhaust grille and two stubs at the tail, a whip antenna off the left rear corner.
     with b.joint("head", (0.0, 0.0, 39.5), limits={"yaw": (-40.0, 40.0), "pitch": (-10.0, 8.0)}):
-        b.loft([(-22.0, _case(30.0, 39.0, 47.0, 4.0)), (10.0, _case(32.0, 39.0, 47.0, 4.0)), (24.0, _case(30.0, 40.0, 50.0, 3.0)), (36.0, _case(28.0, 42.0, 52.0, 3.0))], "steel.dark", "lower_hull")
+        b.loft([(-22.0, _case(30.0, 39.0, 47.0, 4.0)), (10.0, _case(32.0, 39.0, 47.0, 4.0)), (22.0, _case(30.0, 40.0, 50.0, 3.0)), (30.0, _case(28.0, 42.0, 52.0, 3.0))], "steel.dark", "lower_hull")
         b.loft([(-24.0, _case(34.0, 46.0, 64.0, 8.0)), (-4.0, _case(38.0, 44.0, 68.0, 8.0)), (14.0, _case(38.0, 45.0, 68.0, 8.0)), (22.0, _case(32.0, 47.0, 64.0, 6.0)), (26.0, _case(28.0, 49.0, 61.0, 4.0))], "steel.plate", "upper_hull")
         b.box(-12.0, 12.0, 25.5, 27.5, 55.0, 60.5, "steel.dark", "visor_band")
         for x0, x1 in ((-11.5, -3.0), (3.0, 11.5)):
@@ -1605,15 +1605,18 @@ def funnel_web(b):
         b.box(-15.5, -12.5, -21.5, -18.5, 64.0, 67.5, "steel.dark", "antenna_base")
         # The jaw's two static bow guns (the fifth notes): a mantlet each side of the jaw's
         # flat face, no joint, the Maxigun's on the left (hp_1), the Twin Autoguns' on the
-        # right (hp_3); the torso twist and the legs aim them.
+        # right (hp_3); the torso twist and the legs aim them. Pulled back in (the seventh
+        # notes): the jaw six shorter and the mantlets near flush with its face, the guns'
+        # receivers sunk into them.
         for s, k, shape in ((-1.0, 1, "barrel"), (1.0, 3, "twin_barrel")):
-            b.box(min(s * 3.5, s * 12.5), max(s * 3.5, s * 12.5), 35.0, 38.5, 44.0, 51.0, "steel.dark", "mantlet")
-            b.stock("hp_%d" % k, (s * 8.0, 38.5, 47.5), shape, scale=0.75)
-        # The roof's one mount (hp_2): the howitzer on a low pedestal at the roof's centre, on
-        # its elevation, the torso twist its traverse.
-        b.box(-5.0, 5.0, -3.0, 7.0, 67.0, 70.0, "steel.dark", "top_mount")
-        with b.joint("elev_top", (0.0, 2.0, 70.0), limits=(-8.0, 30.0)):
-            b.stock("hp_2", (0.0, 4.0, 71.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
+            b.box(min(s * 3.5, s * 12.5), max(s * 3.5, s * 12.5), 28.0, 31.5, 44.0, 51.0, "steel.dark", "mantlet")
+            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75)
+        # The roof's one mount (hp_2): the howitzer on a low pedestal aft of the pods (the
+        # seventh notes: not in line with the side mounts), on its elevation, the torso twist
+        # its traverse.
+        b.box(-5.0, 5.0, -19.0, -9.0, 66.0, 70.0, "steel.dark", "top_mount")
+        with b.joint("elev_top", (0.0, -14.0, 70.0), limits=(-8.0, 30.0)):
+            b.stock("hp_2", (0.0, -12.0, 71.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
         # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
         # on its front, what it carries on an elevation and never a traverse (the fourth
         # notes: the torso twist aims them). The left pod carries the Web Bomb (fixed, no
@@ -1702,6 +1705,12 @@ def funnel_web(b):
             for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
     tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # The row at its extreme, as an option for the hangar's Walk (Ryan, the seventh notes:
+    # what would the extreme look like?): the coxae swinging the whole twenty degrees, the
+    # thighs nearly still, the legs sweeping from their bases.
+    extreme = [dict(l, coxa=(l["coxa"][0], l["coxa"][1], _coxa_row(DUTY, 20.0))) for l in walk]
+    xtracks, xbody, xstride = _plant(extreme, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
+    b.gait_option("row_extreme", stride=xstride, tracks=xtracks, body=xbody, ease="linear")
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"
