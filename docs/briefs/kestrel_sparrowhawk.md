@@ -168,6 +168,27 @@ rounds, 8,000 fights, cautious unless marked.
 | mixed | lock | 1, fishing | 2.7 | 0.8 | 2 | 0.8 |
 | boss | either | 1 | 0 | 0 | 1 | 0.9 |
 
+- Ryan, 19 October, the fourth round: "The execute component is definitely sticking around as
+  a tier 2 or 3 component if it leaves the hawk. If the reset is on the lock, it becomes less
+  snowbally, but then because it's less snowbally it's niche becomes less sharp, since with
+  the heat spikes sticking around its pretty much dead weight in a boss fight, waiting around
+  to get scrapped. It shouldn't be good in a boss fight, but it can't be a waste of resources
+  either. Although, if the boss is massive, then it can just lay into it I guess and avoid
+  killing anything else to trip it's passive, that could just be learned behavior by the
+  player."
+- Claude, 19 October: the Pinion Driver a tier-two or tier-three blueprint, so the
+  caster-killer build is the player's to fit on a hardpoint (its reach then the component's,
+  if it carries one). In a boss fight it is not dead weight: a doubled gun every round, the
+  reset gun's 30 or the Slugthrower's 30 to 60, at 10 flat heat a shot with cooling 10, so
+  one shot a round for ever at no tax, about 35 a round into armour 5, a boss's 160 hull in
+  five rounds alone; dark two rounds on a d3 costs one dead round in six with a reroll. The
+  tax is what the learned behaviour is about: two escort kills make its shots 20 and it
+  overheats by the third round, so the decision in a boss fight with its formation is chain
+  the escorts early and be hot for the boss, or save it for the boss, which is the right kind
+  of decision for a tier two. The niche as it stands: the trash chain in the fights that
+  matter, a steady doubled gun on the boss, and the execute as the blueprint that makes it
+  the caster-killer again by choice.
+
 ## The design as it stands (Claude's spec on Ryan's direction, 19 October)
 
 - **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
@@ -176,7 +197,7 @@ rounds, 8,000 fights, cautious unless marked.
 - **Lock**, the reset gun (Claude's lean, 19 October; Ryan's "the reset could be on the locked
   component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0.
   If it kills, every weapon comes back and the Sparrowhawk acts again. The Pinion Driver
-  leaves the lock for the pool, a Kestrel blueprint.
+  leaves the lock for the pool as a tier-two or tier-three blueprint (Ryan, 19 October).
 - **Numbers.** Hull 30 (Ryan, 19 October), shield 40, field recharge 30, heat 40, cooling 10,
   armour 0, move 50, a light flyer; two hardpoints beside the lock, a d3; tier two, stocking
   tier-one pieces and basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters

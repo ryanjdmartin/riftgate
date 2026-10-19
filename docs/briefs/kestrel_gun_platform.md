@@ -138,10 +138,82 @@ Every number a placeholder; the name and the look Ryan's.
   rerolls it rides, dead rolls on the bust face, the battery's share of its damage; the
   cautious and reckless personas as the lock-or-ride policy.
 
+## The fourth round (19 October)
+
+- Ryan, 19 October: "I wouldn't give the gamble platform an ability to double its payout,
+  since every rapid gives it a boost (intentionally), a minmaxed build will get out of hand
+  just fine on its own without a payoff. Its the unit that can actually make the weaker rapid
+  pieces into effective equipment. It also can make its own payoffs with multi-hit weapons, or
+  hypothetically a multi hit shield or vent, which only this would want." And: "I just want to
+  check - how many chassis want rapid as their primary chase pieces right now? Check across
+  branches." And the big brother: "The double-hitters big brother, the all in gambler: each
+  time this die rolls, it gains a stack. Components are used once for every stack. Stacks
+  clear at the end of turn. So everything it does gets a multi-hit. Obviously super broken."
+- Claude, 19 October: the main battery dropped; the growth counts on every strike, so
+  multi-hit pieces are its payoffs in the stock, and the second lock can be the piece only it
+  wants, a three-strike shield (self, 10 a strike, each strike grown), a multi-hit vent its
+  sibling for the stock pass. Three shapes of the gamble, one spend after n rolls this round
+  (the arithmetic below): growth, 10 a roll on every strike; half-strikes, the spend repeated
+  n times more at half, the strafer's shape scaled by rolls, riders on every strike; whole
+  stacks, the component used n + 1 times whole, Ryan's big brother.
+
+  | Piece, after rolls | Growth, armour 0 / 5 | Half-strikes | Whole stacks, heat if paid a use |
+  |---|---|---|---|
+  | Pulse Vacillator 5, after 4 | 45 / 40 | 15 / 0 | 25 / 0, 25 |
+  | cold gun 10, after 4 | 50 / 45 | 30 / 5 | 50 / 25, 0 |
+  | Slugthrower 15–30, after 2 | 42 / 38 | 45 / 30 | 68 / 52, 30 |
+  | Railgun 50, after 2 | 70 / 65 | 100 / 85 | 150 / 135, 120 |
+  | Railgun 50, after 4 | 90 / 85 | 150 / 125 | 250 / 225, 200 |
+  | Maxigun 5–10 ×3, after 4 | 142 / 128 | 68 / 8 | 112 / 38, 25 |
+
+  The read: growth is additive and bounded, and it favours the small and the many (the
+  Vacillator 5 becomes 45, the Maxigun 22 becomes 142), which is "the unit that makes the
+  weaker Rapid pieces effective"; whole stacks multiply the biggest single gun (a Railgun 250)
+  and break unless heat is paid a use, and then a cold gun four times is still free, the
+  Sparrowhawk's old abuse again; half-strikes sit between, bounded at (n + 2) over 2, paying
+  the foe's armour on every strike (the Maxigun 8 into plate) and laying riders on every
+  strike (Burn, Flak, Vitriol), the tunable form of the big brother if Ryan wants it literally,
+  and a cousin of the strafer's passive by design. Claude's lean stays growth, for the pieces it
+  lifts.
+- Claude, 19 October, the Rapid census, across main as merged on 19 October and this branch's
+  briefs. Pieces that carry Rapid in content: the Laminar Deflector (Kestrel, shield 20), the
+  Wake Diffuser (Kestrel, vent 10), the Pulse Vacillator (Aphelion, a 5 gun), the Flakshot
+  Repeater (Wainwright & Sutler, the Prairie Dog's lock: 5, Spread, Rapid, Flak 2), the Spin-Up
+  (the Cassowary's lock, planned: no damage, no cooldown, a true spin). Proposed: the
+  Armadillo's lure (its lock, Rapid with no cooldown, heat 5), the bomber's mark (Rapid,
+  cooldown one), this platform's throttle, the Misericorde (the Arsenal's bench), cantrips (the
+  stock pass, tier two or three), a Missile-Rapid line in the gunship's brief. Chassis whose
+  best build chases Rapid pieces: the Cassowary (spin, a Rapid piece, the Spin-Up, the big gun;
+  the README's row names the stock pass's Rapid prices for its balance), the Armadillo (the
+  Rapid shield its build hook: seal and give the turn back), the line frame (the combo counts
+  weapons spent, so Rapid climbs it faster and cantrips are its fuel), and this platform (Rapid
+  rolls as growth, by design): four, in three makers. Strong second chases: the Cottonmouth (a
+  Rapid shell through the drum is its strongest build, its brief's hole), the interceptor (its
+  passive is Rapid once, Rapid pieces extend it), the Puffin (the Diffuser: cool an ally and
+  act again). Exploit-shaped: the siege battery (a Rapid vent a free reload, flagged), the
+  multi-rotor (a lent Rapid entry a further lent spend). Makers of Rapid rather than chasers:
+  the Zoids walker (a kill makes the spend Rapid), the interceptor's passive, the Cassowary's
+  Spin-Up. No interest: the strafer, the shield-spender, the Sparrowhawk, the Goshawk, the
+  Badger, the Boar, the Nemesis (it rolls again on rage instead), the Ammit, the Stingray, the
+  Baboon, the Clydesdale (free rerolls instead), the Dingo, the funnel-web, the Cottonmouth's
+  guns otherwise, Misharu, the Onryō, Mastema, Minos, the jellyfish, the Carrier, the
+  battlecruiser (its loader resets its dark entries), the hedgehog (a damaging lure never
+  Rapid), the boiler, the bomber. The read: four primary chasers in three makers for five
+  pieces, one locked and one planned, so three free Rapid pieces in the pool for four machines
+  whose best build wants them; the pool must grow (the stock pass's cantrips) and Rapid's
+  price a piece is a shared balance, as the Cassowary's row already says. Kestrel leans Rapid
+  by its pieces, but the machines that want Rapid most are other makers'. The platform's claim
+  to make the weak Rapid pieces good is shared with the Cassowary (a Rapid piece steps it to
+  its double) and the line frame (fuel), in three shapes (growth, stepping, combo), which is
+  Ryan's rule; the levers if it crowds: the platform as the home of multi-hit equipment rather
+  than the Rapid chaser, or its growth counting team rerolls only.
+
 ## Open for the session
 
-1. Ryan's call on his shape's package (growth a roll, the throttle, the main battery with
-   its bust face), or the push of the second round, or a bench mechanic in its place.
+1. Ryan's call on the shape (growth a roll, Claude's lean; half-strikes if he wants the
+   double-hitter's big brother literally) and the second lock (a three-strike shield, the piece
+   only it wants), the main battery dropped (Ryan, 19 October: no doubled payout).
+2. Whether the census moves it: the Rapid chaser, or the home of multi-hit equipment.
 2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
 3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
 
