@@ -3,8 +3,8 @@
 The session finishes the chicken walker whose die steps to the next entry instead of rolling,
 and settles its locked piece and its tier.
 
-**Status**: in session (18 October), three rounds in; a damage dealer by Ryan's call, the locked
-piece and the tier open.
+**Status**: in session (18 October), four rounds in; a damage dealer by Ryan's call, his kit
+proposed and analysed (the sixth shot, the Spin), its last numbers and the go open.
 **Maker**: Wainwright & Sutler. **Proposed tier**: one (the reshuffle and this session); two
 in its proposal. **Read first**: `docs/briefs/README.md`; the bible's cooldown row (section
 8), its Rapid and rerolls rows (sections 7 and 6), its heat row (section 5) and its one-off
@@ -32,9 +32,14 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 - **Role** (Ryan, 18 October: "revolver and boiler are getting promoted to damage class"): the
   maker's gunslinger, a damage dealer: its locked piece is its gun, the chain its tempo, and it
   gets a body's hull to hold the tender's front (Claude's lean 100 or 110).
-- **The locked piece**: open. Ryan, 18 October: it must give the player a reason to consider
-  not going all-in on the chain. The two-strike Hogleg is retired (Claude's name and shape
-  from the retired proposal; no reason for the double hit).
+- **The sixth shot** (Ryan's kit, 18 October): every sixth shot deals double, the count being
+  weapon spends only, reset each fight, shown as six dots with the sixth lit when it is next.
+  Spins and equipment are not shots, so the player steers which chamber takes the sixth.
+- **The Spin** (locked, Ryan's working name): no damage, Rapid with no cooldown, its reroll a
+  true spin of the cylinder, the next shot +5 (Claude: stacking, lasting until that shot), heat
+  5 as its limiter (Claude's lean, by the Rapid rule; the Armadillo's lure is the precedent).
+  The two-strike Hogleg is retired (Claude's name and shape from the retired proposal; no
+  reason for the double hit).
 - **Numbers**, the proposal's placeholders: medium walker, move 40; hull 90 (Claude's lean:
   100 or 110 if it is the tender's front), shield 40, armour 5, heat 60, cooling 5, field
   recharge 20. Five hardpoints, a six-chamber die. Stand-in stock at tier one, basics only:
@@ -66,6 +71,12 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   another aspect to the passive to create a unique build hook."
 - 18 October, later, on the maker's roster (it had no machine whose idea is the blow): "Yeah
   revolver and boiler are getting promoted to damage class."
+- 18 October, later, the kit: "I had a potential kit for the revolver: Every 6th shot gains
+  double damage and doubles its effects. Or fires twice but that kind of breaks the six-shooter
+  homage, but obviously that's a way easier implementation. The locked piece is simple: spin
+  the barrel, rapid, no cooldown, next component gets +5 damage or something. We might be
+  able get away with a rapid no cooldown since it spins the barrel, and the chase would be to
+  hit it multiple times in a round, but I need analysis to see if that's easily abused."
 - 18 October, the principle (the bible's one-off row, section 2): "If a situation occurs where
   it seems reasonable to propose a one-off exception for balance reasons, look into the root
   causes as to why that seems like a reasonable solution."
@@ -100,6 +111,26 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
     the team's rerolls are its ammunition and the double hit keeps a reason. Its hole: skip
     everything, fire only this, feed it three rerolls a round, a one-entry machine on the
     team's rerolls.
+- **Ryan's kit, analysed** (18 October). Double over twice: two blows lose the foe's armour
+  twice, the second finds the Shock spent and a second Suppress lands for nothing; a doubled
+  blow keeps it one shot. "Doubles its effects" needs little text: Burn is per 10 of the blow,
+  so doubled damage doubles it, and the only stackable rider not derived from damage is
+  Vitriol, the spider's passive; "every sixth shot deals double" suffices, with "and lays its
+  statuses twice" the line to add if a per-hit slot-in rider ever exists. The sixth on a
+  Shocked foe is four times, once a cylinder: a high moment. The Spin can only be read as a
+  true spin (a step from chamber I never returns to I in a round). Every way to hit it twice
+  in a round, with its ceiling: the spin landing on itself (if a spin may: one in six, about a
+  fifth of a spin extra on average); a Rapid piece in chamber VI stepping into I after it fires
+  (one in five a spin, each loop spending a switch-off, so n Rapid pieces loop at most n times
+  and an all-Rapid die runs out of guns to give the +5 to); a team reroll from VI into I, once
+  a round for a shared reroll. The stacked +5s top out around +15 to +25 in the freakiest round
+  on a die with nothing left to fire: no exploit in damage, the action economy bounded by the
+  other chambers' switch-offs, and the no-cooldown buys the chase Ryan named (spin into a Rapid
+  piece into the Spin into the big gun). Its limiter by the 15 October rule: heat 5 a spin,
+  nothing to the slow cycle and a tax where the loop lives, rather than an exception. Each Spin
+  re-randomises the cylinder's phase, which the opening spin had already made the plan's
+  nature (adjacency, not sequence); the random factor stays one, the spin. The hammer-cocks
+  and fanned-hammer shapes go to the bench, superseded by the kit.
 - **The passive**: one idea, the hook on the locked piece, unless Ryan has a hook in mind. The
   candidate that reads the revolver's own structure: a chamber skipped stays loaded and fires
   twice when it next comes round, which rewards the dial in the cold cycle and gives the chain
@@ -107,15 +138,19 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 
 ## Open
 
-1. The locked piece: A or B, its name, its numbers.
-2. A second aspect on the passive, if Ryan wants a hook there.
+1. The Spin's heat (5 by the Rapid rule, Claude's lean) and whether a spin may land on itself.
+2. The +5 stacking and lasting until the next shot.
 3. Tier one; hull 90 or 100.
-4. The stand-in stock.
+4. The stand-in stock; then the go.
 
 ## Holes
 
 - The chain is free until Rapid carries heat, so the revolver's balance waits on the stock
   pass's Rapid prices and the Rapid vent's fate.
+- The sixth shot's count and the Spin's +5 are counts to show (six dots on the machine, the
+  +5 on the die's number), or they are hidden counts.
+- The Spin's true spin is one special case in the die mode (a Rapid reroll from this piece
+  spins, every other reroll steps), a printed property of the locked piece.
 - With the spin, a short fight uses a random window of the cycle; the early-and-late planning
   the fixed opener gave is gone, adjacency remains.
 - It breaks the one-source-of-randomness test on one machine, which the one-off rule for
@@ -129,6 +164,11 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   the same optimized way being dull; the cylinder keeping its place between fights, set aside
   earlier as hidden state.
 - The two-strike Hogleg (Claude, 12 October): no reason for the double hit; retired.
+- The hammer cocks (+10 a round held, up to +50) and the fanned hammer (a strike a chamber
+  skipped), Claude's shapes for the locked piece (18 October): superseded by Ryan's kit the
+  same day, the sixth shot and the Spin.
+- The sixth shot fired twice in place of doubled (Ryan's alternative, 18 October): easier to
+  build, but two blows lose armour twice and waste a Shock, and it breaks the six-shooter.
 - Rapid once a round on it: a one-off reached for because the chain is free; the root is
   Rapid's heat (the one-off row).
 - "Cooldowns are nearly free on it" (Claude, 18 October): true only in the slow cycle, wrong
