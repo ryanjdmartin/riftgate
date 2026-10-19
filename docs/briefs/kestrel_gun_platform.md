@@ -66,9 +66,37 @@ Every number a placeholder; the name and the look Ryan's.
   report); the team rows with and without it, since count dominates composition and four
   passes from one machine may read as a four of one.
 
+## The second round (19 October)
+
+- Ryan, 19 October: "cool, not deep enough. Doesn't push the maverick fantasy, its more just
+  like free extra shots."
+- Claude, 19 October, the push: each pass raises the stakes. The passive: a team reroll rolls
+  its die again after it has acted, and it acts again; each pass after the first this round
+  adds 10 to the blow and 10 to its heat. The second pass is +10 and +10, the third +20 and
+  +20, the fourth +30 and +30, the throttle's fifth +40 and +40; the die shows the next pass's
+  number and heat with the push in, so the bet is read before it is placed. The bust is the
+  overheat at the end of the turn, hull burned one for one, and hull never heals in a battle,
+  so bravado costs the campaign. What makes it deeper than free shots: every pass is a bet
+  with rising stakes and the decision is when to stop; the entry each pass lands on is the
+  die's (a vent mid-push is a cooling pass that extends the run, a shield a pass wasted or a
+  pass kept for the enemy's turn); heat carries across rounds, so a big push today is a small
+  one tomorrow; and the team's rerolls are its fuel, so the whole team plays the push. The
+  throttle stays: Rapid, cooldown one, heat 20, the team gains a reroll, the engines pushed
+  for one more pass. The knobs: the step (10 and 10), the heat maximum (120), cooling (10),
+  the throttle's heat, a cap on passes; the runner's cautious and reckless personas (the heat
+  row) differ most on this machine, which is its read. Bench, for Ryan to overrule: luck by
+  rerolls left (its rolled weapons roll twice and take the better while the team holds a
+  reroll, the worse once none is left: a maverick riding the team's nerve); the called shot (a
+  bet on a rolled range, the top half doubled and the bottom half a fizzle), which the no-crits
+  row refuses as a threshold on the damage; the dive (a Direct weapon spent on a back-rank
+  foe through a standing front, the front foe of that column striking it as it passes), a
+  maverick's mechanic for a smaller Kestrel, the interceptor perhaps, since a flagship does
+  not dive; and the first kit, the free passes.
+
 ## Open for the session
 
-1. Ryan's call on the gimmick (the team's rerolls as its passes) and the throttle.
+1. Ryan's call on the push (passes bought with the team's rerolls, each hotter and harder
+   than the last) and the throttle; or one of the bench's maverick mechanics in its place.
 2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
 3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
 

@@ -75,24 +75,86 @@ against every formation with all its hull lost. A glass that is not glass enough
   lean: the cooldown, since it makes the hawk a reroll-eater beside the platform and the stock
   pass's heat prices raise the cold guns' price anyway.
 
+- Ryan, 19 October, later: "what if we made it even more polarizing, and gave it a d3? And/or
+  kills refresh its cooldowns? And instead of double heat, it adds flat heat to every shot?
+  Double damage, flat heat, with a thin hull we can effectively cap how much it can fire. All
+  in aggro, dangerous but potentially fun: Guns go on cooldown after firing. Kills reset its
+  cooldowns AND lets it act again this turn, but raises the flat heat per weapon by X,
+  stacking? Shield on kill maybe, maybe not - depends on what the fantasy is. A hit-and run
+  skirmisher, flies in, kills a couple things, gets out when it gets too hot or the enemy heat
+  is too much? Burst, personified? Is that tunable?"
+- Claude, 19 October: tunable, and the toy below says where each knob bites. The flat heat
+  answers the cool-gun abuse by itself (every shot pays it, a cold gun included, and a hot
+  gun pays its own on top); the d3 makes every dark entry felt and the team's rerolls its fix,
+  Kestrel's reroll lean from the other side; the kill chain is the burst and the heat tax its
+  rising price; the paper hull is the cap on how much it can fire, since the overheat burns
+  it. The fantasy as read: the hit half is the chain, the run half is the map (a flyer at 50
+  with Kestrel's field recharge detaches, kills a couple of things and flies off), and in the
+  skirmish "getting out" is going dark and letting the team cover it; so no shield on kill in
+  the first cut, the Puffin and the Barrier its escorts, the kill-shield the lever if it dies
+  too often. Holes: one act-again a spend that kills, the tax a stack a kill, so a Spread kill
+  of three is one more action and 15 more heat; Chain on it repeats the attack and then the
+  passive acts again, which the runner reads; the injury rule (a quarter of its maximum hull
+  reaching it rolls the die) bites at 8 on a hull of 30, so every blow that lands cracks
+  something, which is the accident or a reason for 40; the Paradox counts a spend.
+
+## A toy of the chain (19 October)
+
+A toy of the Sparrowhawk alone, not the game's runner (cooldowns and the kill trigger are not
+built): a d3 of the Pinion Driver and two cold guns, every shot paying the flat heat F plus
+the fight's tax (X a kill), guns dark for the rounds shown after firing, a kill resetting
+every cooldown and giving another action, heat over the maximum H burning hull one for one
+at the end of the turn, cooling 10 a round, hull 30, six rounds, 6,000 fights. p is the odds a
+shot kills (0.9 trash, 0.5 a mixed fight, 0 a boss). "Cautious" stops a chain when the next
+shot would overheat; "reckless" fires while it kills, short of a burn that would wreck it. One
+team reroll a round may fix a dead roll (the die on a dark entry), or none.
+
+| Fight | Persona, rerolls | F, X, H, dark | Kills a fight | Shots | Hull burned | Dead rounds |
+|---|---|---|---|---|---|---|
+| trash | cautious, 1 | 10, 5, 40, 2 | 3.9 | 4.3 | 0 | 0.0 |
+| trash | reckless, 1 | 10, 5, 40, 2 | 4.7 | 5.2 | 21 | 0.0 |
+| trash | cautious, 1 | 5, 5, 60, 2 | 5.5 | 6.1 | 0 | 0.0 |
+| trash | reckless, 1 | 5, 5, 60, 2 | 5.9 | 6.5 | 24 | 0.0 |
+| trash | cautious, 1 | 10, 10, 40, 2 | 3.0 | 3.3 | 0 | 0.0 |
+| mixed | cautious, 1 | 10, 5, 40, 2 | 2.6 | 5.3 | 0 | 0.3 |
+| mixed | reckless, 1 | 10, 5, 40, 2 | 3.1 | 6.1 | 19 | 0.3 |
+| mixed | cautious, 0 | 10, 5, 40, 2 | 2.4 | 4.8 | 0 | 1.2 |
+| boss | either, 1 | 10, 5, 40, 2 | 0 | 5.1 | 0 | 0.9 |
+| boss | either, 0 | 10, 5, 40, 2 | 0 | 4.0 | 0 | 2.0 |
+| boss | either, 1 | 10, 5, 40, 1 | 0 | 6.0 | 0 | 0.0 |
+
+The read: against trash the chain runs two to four kills a round before the heat says stop,
+and the reckless pilot buys one more kill a fight for two thirds of its hull, which is the
+accident; against a boss it is one doubled shot a round, two rounds in three without a
+reroll, every round with one, so the team's rerolls are its boss-fight price. The knobs and
+what each moves: F and H set the chain's length in a round (H over F shots, less the tax); X
+sets how fast a fight's kills get dear (four kills and every shot costs 30); cooling sets the
+trickle after the burst round; the dark rounds set the boss-fight floor and what the rerolls
+buy back; the hull sets the size of the accident; the double and the die size the magnitude.
+
 ## The design as it stands (Claude's spec on Ryan's direction, 19 October)
 
-- **Passive.** Everything doubled: its damage, its heat and its reload, so a weapon it fires
-  goes dark for two rounds; the double counts what is printed on the entry, buffs once. A
-  kill shields it 30 past its maximum, fading 15 a round.
-- **Lock.** The Pinion Driver, reaching any foe.
-- **Numbers.** Hull 30, shield 60, field recharge 30, heat 60, cooling 0, armour 0, move 50, a
-  light flyer; three hardpoints beside the lock, a d4; tier two, stocking tier-one pieces and
-  basics.
-- **Engine.** The cooldown property (the to-do's shield-rule line; not built), a passive that
-  grants it to every weapon; the printed-only double (a multiply on the face's number before
-  the pipeline's adds, the strafer's halving's mirror); the kill-shield as a status with its
-  own fade; the finisher's reach as a `set_reach` on the lock.
+- **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
+  (the printed number, buffs once), adds 10 heat and goes dark for two rounds. A kill brings
+  every weapon back and it acts again; each kill this fight adds 5 to the heat of its shots.
+- **Lock.** The Pinion Driver, reaching any foe: the chain's opener on a hurt caster.
+- **Numbers.** Hull 30, shield 40, field recharge 30, heat 40, cooling 10, armour 0, move 50,
+  a light flyer; two hardpoints beside the lock, a d3; tier two, stocking tier-one pieces and
+  basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters that kill trash
+  doubled and pay the flat heat for it). No shield on kill in the first cut.
+- **Engine.** The cooldown property (not built), granted to every weapon by the passive; a
+  kill trigger (new; the Zoids walker's brief wants it too); act again on a kill through
+  Rapid's path (a free roll onto another entry); the heat tax as a status on the machine, a
+  stack a kill, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
+  multiply on the face's number before the adds, the strafer's halving's mirror); the
+  finisher's reach as a `set_reach` on the lock.
 
 ## Open for the session
 
-1. Ryan's call on the cooldown (two, or one) against the heat floor, and on the niche.
-2. The kill-shield's numbers and fade; the hull; whether the Pinion Driver's reach is the dive.
+1. Ryan's call on the spec as it stands (his sketch written out) and its numbers: the flat
+   heat, the tax, the heat maximum, the dark rounds, the hull (30 or 40 against the injury
+   rule), with the toy's knobs; a shield on kill or none.
+2. Whether the Pinion Driver's reach is the dive, and the niche (the caster-killer).
 3. When it moves: after a Kestrel tier one lands for the tender.
 
 ## Holes already raised

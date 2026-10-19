@@ -62,8 +62,13 @@ document's job and every command are in `README.md`.
   rework have briefs of their own (`kestrel_gun_platform.md`, the kit laid out;
   `kestrel_sparrowhawk.md`, the caster-killer niche and the cool-gun abuse answered by Ryan's
   cooldown), the to-do's lines with them and an Aphelion defensive tier one (Ryan's ask).
-  Docs only; nothing built, nothing in content. To resume: Ryan's calls in the three Kestrel
-  briefs open, then on his go the records each brief's "What the session hands back" lists.
+  The sixth round (19 October): the gun platform's passes now a push (each pass after the
+  first hotter and harder, the bust the overheat; Ryan found the free passes not deep enough),
+  and the Sparrowhawk on Ryan's own sketch (a d3, doubled, flat heat a shot, dark two rounds,
+  a kill bringing every weapon back and another action, the heat rising a kill) with a toy in
+  its brief showing it tunes. Docs only; nothing built, nothing in content. To resume: Ryan's
+  calls in the three Kestrel briefs open, then on his go the records each brief's "What the
+  session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
