@@ -1540,23 +1540,27 @@ def funnel_web(b):
     a boom arm off the back of the head, carried up and over it on its own elevation, the
     tubes' floors lit: it lobs its web ahead over its own face. Third cut, 19 October; the rig,
     the acts and the gait are a first cut for Ryan to judge running."""
-    # The hub: the legs' pelvis under the body, a dark block with a cuff and a hinge pin at
-    # each corner. Nothing hangs below z = 0, the ground.
-    b.box(-13.0, 13.0, -13.0, 13.0, 30.0, 39.5, "steel.dark", "hub")
+    # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
+    # (Ryan, 19 October, the third notes: the thighs had no clearance from the body, and every
+    # reference resolves it so): a short strut drops from the hub's corner, down and out, to a
+    # low hip hinge clear of the body's flank; the thigh rises from it to a knee standing wide
+    # and high; the shin falls to the foot. The strut is the hub's (the walk solver drives two
+    # links), so the hip is its low end. Nothing hangs below z = 0, the ground.
+    b.box(-12.0, 12.0, -12.0, 12.0, 30.0, 39.5, "steel.dark", "hub")
     legs = {}
-    for yh, fa in ((13.0, "f"), (-13.0, "h")):
+    for yh, fa in ((10.0, "f"), (-10.0, "h")):
         f = 1.0 if fa == "f" else -1.0
         for s in (-1.0, 1.0):
             leg = fa + ("l" if s < 0 else "r")
-            hip = (s * 13.0, yh, 34.0)
-            knee = (s * 34.0, yh + f * 18.0, 56.0)
-            ankle = (s * 46.0, yh + f * 28.0, 7.0)
+            root = (s * 10.0, yh, 32.0)
+            hip = (s * 22.0, yh + f * 10.0, 24.0)
+            knee = (s * 38.0, yh + f * 26.0, 56.0)
+            ankle = (s * 46.0, yh + f * 34.0, 7.0)
             legs[leg] = (hip, knee, ankle)
-            b.box(min(s * 9.0, s * 16.5), max(s * 9.0, s * 16.5), min(yh - f * 4.0, yh + f * 3.5), max(yh - f * 4.0, yh + f * 3.5), 29.0, 40.5, "steel.panel", "hip")
-            b.prism("x", hip[0], hip[1], hip[2], 5.0, 5.0, "steel.dark", 6, "hip_pin")
-            # The legs (the second cut's, Ryan's practical feet kept): hip, knee and ankle on
-            # every leg, the ankle keeping the foot flat through a stride; the limits hold what
-            # the gait and the acts below ask, with a margin.
+            _beam(b, root, hip, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.dark", "strut")
+            b.prism("x", hip[0], hip[1], hip[2], 5.5, 10.5, "steel.dark", 6, "hip_pin")
+            # Hip, knee and ankle on every leg, the ankle keeping the foot flat through a stride;
+            # the limits hold what the gait and the acts below ask, with a margin.
             with b.joint("hip_%s" % leg, hip, limits=(-50.0, 50.0)):
                 _beam(b, hip, knee, _sq(10.0, 11.0), _sq(8.5, 9.5), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 6.4, 11.5, "steel.dark", 6, "knee")   # a hinge block big enough to own the corner
@@ -1680,9 +1684,9 @@ def funnel_web(b):
     # Movement: a four-beat walk, each hind foot followed by the fore on its side (hl, fl,
     # hr, fr), three feet down at any moment, each lifting briskly and set down ahead with a
     # small drop onto it; the head level, never rolling. A first cut for Ryan to judge running.
-    walk = [dict(limbs[leg], phase={"hl": 0.0, "fl": 0.25, "hr": 0.5, "fr": 0.75}[leg], shift=0.0, nod=(0.6 if leg[0] == "f" else -0.4))
-            for leg in ("fl", "fr", "hl", "hr")]
-    tracks, body, stride = _plant(walk, sweep=30.0, duty=0.7, lift=6.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80)
+    walk = [dict(limbs[leg], phase={"hl": 0.0, "fl": 0.25, "hr": 0.5, "fr": 0.75}[leg], shift=(4.0 if leg[0] == "f" else -4.0), nod=(0.6 if leg[0] == "f" else -0.4))
+            for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
+    tracks, body, stride = _plant(walk, sweep=30.0, duty=0.7, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=0.9, heft=0.16)
 
