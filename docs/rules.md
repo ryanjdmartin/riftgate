@@ -19,7 +19,8 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
-  and a fourteenth planned, the funnel-web (`content/chassis.json`). A run has four squad slots and starts with three machines.
+  and three planned, the funnel-web, the Cassowary and the Cottonmouth (`content/chassis.json`).
+  A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
   down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
@@ -85,6 +86,11 @@ defeat when every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
+- **A stepping die** (the Cassowary's, not built): it never rolls. Each fight opens on a
+  random entry, and every roll or reroll steps it to the next entry in order; a lock holds
+  it; a foe's Scramble is a true roll, and the sequence runs on from where it lands. Its
+  Spin-Up spins the whole die, the entry showing included, the one exception to the reroll
+  rule. Every sixth weapon spend counts double, its damage and the stacks it lays.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -133,11 +139,16 @@ defeat when every machine is wrecked. There is no round limit.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   A Rapid component always carries a limiter, a cooldown, heat or Volatile; every Rapid
-  component today carries a cooldown of one: the entry switches off for the round.
+  component today carries a cooldown of one: the entry switches off for the round. The
+  Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it into itself.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
 - **Web** (the funnel-web's Web Bomb, not built): the foe hit is Webbed; at the end of its
   action the web bursts, Suppressing it and the next foe to act beside it.
+- **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
+  trade places; no damage; a massive foe does not move.
+- **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
+  Flak, whatever the blow dealt.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -170,6 +181,8 @@ On a machine:
 - **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
   it: a machine's until the round's end, a foe's (from its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
+- **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
+  spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
   so it never injures; its riders land. Until the round's end. Never granted to every ally
@@ -211,6 +224,8 @@ On a foe:
 - **Webbed** (debuff, not built): at the end of its action the web bursts: it and the next
   foe to act beside it are Suppressed (Numbed may resist, each for itself); killed first, it
   takes its web with it.
+- **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
+  halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -223,7 +238,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
+Burning, Suppressed, Shocked or Paradox (Vitriol, Webbed and Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -319,9 +334,12 @@ shields do not refill; a pack keeps its survivors, who return whole.
   gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
-  the target shows no intent on this machine (not built: the funnel-web's).
+  the target shows no intent on this machine (not built: the funnel-web's); the target's
+  rank (not built: the Cottonmouth's).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
-  changed is what is spent, shown and weighed, while the die keeps the real one.
+  changed is what is spent, shown and weighed, while the die keeps the real one. Not built:
+  the Cottonmouth's replaces every weapon's shot whole (Indirect, 15, heat 10, the weapon's
+  keywords kept), Penetrate at the back rank and Spread at the front.
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in
@@ -390,7 +408,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   maker. A city's gate is 200, the capital's 300. The capital's gate is the run's life: the
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
-  loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
+  loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
   every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played

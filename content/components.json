@@ -651,24 +651,26 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A drum-fed scattergun on a pintle. Fire, and the car is already moving.",
-    "niche": "The Prairie Dog's locked tempo: a rapid kinetic gun, so its round is shoot, roll again, shoot, leave.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
+    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat 5 that sprays the target's rank (Spread), rolls again (Rapid) and lays Flak 2 on each foe hit, so the team's many small blows land harder. The softener's round: spray, roll again, cash.",
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md): Direct, flat 5 (5 to 15 rolled before), Spread, Rapid, Flak 2, heat 0, every number a placeholder. The Spread and the flat 5 are built; Flak is a planned keyword the die builds the entry without until the engine has the numbered keyword and the halving status (the to-do), so the gun sprays today and lays nothing. The flak field on the face is the keyword's number, to align with the numbers branch's numbered-keyword field when it merges. Three keywords is the authored cap, carried by a tier-one locked piece because its number is the lowest in the game."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 5,
-    "power_max": 15,
     "keywords": [
-     "rapid"
+     "cleave",
+     "rapid",
+     "flak"
     ],
+    "flak": 2,
     "heat": 0
    },
    "passive": null,
    "tags": [
     "kinetic",
-    "single",
+    "horde",
     "tempo"
    ]
   },
@@ -1497,6 +1499,35 @@
    "tags": [
     "kinetic",
     "control"
+   ]
+  },
+  {
+   "id": "spin_up",
+   "name": "Spin-Up",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
+    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up (+5 on the next weapon spend, carried between turns). Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun.",
+    "notes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). The names are his (Spin-Up, Spun Up). The spin landing on itself is his exception to the reroll rule (never onto the entry showing), a design one-off and no balance one; no penalty (Ryan, 19 October: a combo piece, not a typical Rapid one, and the stepped barrel prevents its abuse; Claude's heat-5 limiter set aside). Planned until the die mode exists: the face's rounds are a placeholder, Spun Up having no round count, and the engine does not yet spin. Shape none: the drum is the chassis's own, clicking round on the model."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "spun_up",
+    "stacks": 1,
+    "rounds": 1,
+    "targets": "self",
+    "keywords": [
+     "rapid"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "tempo"
    ]
   }
  ]

@@ -45,6 +45,7 @@ var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
 var no_passive := false     # --nopassive: every chassis stripped of its passive
+var unmeasured: Array = []  # chassis the engine cannot field yet (a planned passive or locked piece): no row, no trio
 var edits: Array = []       # --set: "path=json" content replacements for this run only
 
 var db: ContentDB
@@ -179,13 +180,16 @@ func _parse_args() -> void:
 ## names, then each faction's boss alone.
 func _build_matrix() -> void:
 	for id in db.chassis.keys():
+		if not db.chassis_runnable(str(id)):
+			unmeasured.append(str(db.chassis[id].get("name", id)))
+			continue
 		rows.append({"id": str(id), "name": str(db.chassis[id].get("name", id)), "chassis": [str(id)]})
 	var team: Array = db.default_team()
 	rows.append({"id": "team", "name": "Team (%s)" % ", ".join(_names(team)), "chassis": team})
 	for mk in db.makers.keys():
 		var own: Array = []
 		for id in db.chassis.keys():
-			if str(db.chassis[id].get("maker", "")) == str(mk):
+			if str(db.chassis[id].get("maker", "")) == str(mk) and db.chassis_runnable(str(id)):
 				own.append(str(id))
 		if own.size() < 3:
 			continue
@@ -431,6 +435,7 @@ func _report(fights: int, secs: float) -> String:
 		+ ("" if fit_module.is_empty() else " Every machine wears the %s." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
 		+ ("" if not no_passive else " No chassis has its passive.")
+		+ ("" if unmeasured.is_empty() else " Not measured, the engine lacking their kit: %s." % ", ".join(unmeasured))
 		+ ("" if edits.is_empty() else " Content changed for this run: %s." % ", ".join(edits)))
 	L.append("")
 	L.append("Read the bands, not the numbers. A pack random play beats is too easy; a pack greedy play cannot beat is a wall; a cell where both rungs land together holds no decision. Numbers in content are placeholders, so this is the shape of the game, not its balance.")

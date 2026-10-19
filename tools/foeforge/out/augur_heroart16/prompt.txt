@@ -1,0 +1,3 @@
+source: tools/foeforge/out/augur_heroart16/layout_nosmoke.png
+
+Edit this 16-bit SNES JRPG battle sprite. Keep everything else exactly as it is: the same figure, pose, proportions, colours, one-pixel dark outline, shading and painterly pixel art style, on the same solid flat pure white background. Change only this: the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are

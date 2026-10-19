@@ -4,7 +4,8 @@ The session finishes the eight-legged spider whose vents blast a random foe for 
 shed, and settles its tier.
 
 **Status**: proposal with a place (the analysis, 14 October). **Maker**: Wainwright & Sutler.
-**Proposed tier**: two in its proposal; one in the reshuffle (not decided). **Read first**:
+**Tier**: two (Ryan, 19 October: so that not both of the maker's damage dealers sit at tier
+one, and it is the more complex; the reshuffle's tier one withdrawn). **Read first**:
 `docs/briefs/README.md`; `docs/roster_analysis.md` section 4 (its rating); the bible's heat
 rows (section 5) and its row on a damage rider needing a limit (section 2).
 
@@ -66,9 +67,17 @@ payoff of its own; the roster's first build that wants to run hot outside Kestre
 whose kit is cold, which the heat row asked for. Every maker's vent is a route in and every hot
 weapon fuel; the Peak's heat debuffs are free fuel.
 
+## Since then
+
+Ryan, 18 October, on the maker's roster, which had no machine whose idea is the blow: "Yeah
+revolver and boiler are getting promoted to damage class." The boiler is the maker's sustained
+damage dealer, its vents its guns, a heavy body, hot by design; its session still waits on the
+stock pass's heat prices, its role no longer does. The maker's tiers as proposed after that day
+are in the README (4-4-2, the boiler at tier one).
+
 ## Its tier
 
-The reshuffle (Claude, 14 October) proposes tier one: a basic vent already blasts, so it is
+Tier two (Ryan, 19 October, above). The reshuffle (Claude, 14 October) had proposed tier one: a basic vent already blasts, so it is
 itself at once, and it is the heavy body Wainwright & Sutler's tender deal lacks. The hole:
 negative cooling in a new player's hands from the first fight, which the Sparrowhawk's doubled
 heat already asks.
@@ -78,7 +87,6 @@ heat already asks.
 1. The proposal's questions: is cooling -10 the right pressure (the gain must stay under a
    vent's number); the blast at the full heat vented, or half; when, if ever, an ally's vent
    should blast.
-2. Tier one or two.
 
 ## Waits on
 

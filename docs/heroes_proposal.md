@@ -45,8 +45,91 @@ name, as the Thief keeps its own, and every look is ours.
   marked machine, or the back rank is reached first. Numbers are placeholders.
   **Her weapon is the thing to get right** (Ryan): a twin scythe, one long haft with a curved
   reaping blade at each end, spun and thrown; every take on the picker shows both blades. Her
-  look is otherwise ours (a hooded coat of faded black over green leathers, bone charms, no
-  cards).
+  look is ours, and Ryan's notes of 18 October on the first round set it: no robes, long coat or
+  hood (the first round drew a hooded coat), the blades bigger, both hands on the haft; so a
+  sleeveless jerkin of dark green leather over a grey shirt, trousers and boots, bare-headed, the
+  bone charms kept, no cards. The second round: fresh takes, image to image from the take he
+  called closest (the level hold, 7), and the chibi redrawn the same way; his notes on it (18
+  October): the tunics have to go too (3 picked as the base), the blades read as hooks, and the
+  chibi's 4 is closest on the weapon. The third round: a short jerkin and trousers, the blades long
+  sweeping crescents, image to image from his two picks at strength 0.5 beside fresh takes, one
+  set each; Ryan, 19 October: another set, the chibi's 2 "not horrible but can be better". The root
+  cause found then: the hero style prompt asks every hero for "ornate armour or robes with gold
+  trim and flowing cloth", and the content's own words for what she must not wear (a coat, a
+  hood) read to the model as a request, so the fourth round renders her from a prompt of her own
+  that names only what she wears (a laced leather vest, shirt, trousers, boots); every take came
+  out in it. The double blades still read as hooks or axe heads as often as crescents; the
+  chibi's most of all. Ryan, 19 October, on the fourth round: 4 picked for both, "close, definitely
+  usable"; the omen in her hand is to be dark, not light, and the lower blade to mirror the upper
+  if it can (his guess at the cause: the blade bent to fit the frame); the chibi's upper blade
+  carries a second-edge artifact to smooth. The style finding reaches the other heroes: the mages
+  all wear the same robes, so a variety pass is on the to-do for later, each hero with a prompt of
+  its own. The fifth round (19 October): the omen darkened by the edit model at both sizes, first
+  time; then the blades, where Ryan's guess was right: the lower blade is a hook because it sits
+  on the frame's bottom edge, and the edit model redraws nothing it has no room for (four
+  candidates, the hook unmoved; the chibi's upper-blade artifact smoothed as asked). So the sixth
+  gives her room: the pick shrunk onto a taller white canvas, then a close image-to-image pass
+  (0.7) whose prompt names two mirror-image blades, the lower one below her boots. It worked: with
+  room, the lower blade came out a full crescent at both sizes, first time; at 0.7 the figure
+  drifted (hair, costume, face), so the candidates nearest the pick are kept (the hero's 3, the
+  chibi's 2) and a tighter pass (0.85) ran beside them, which held the figure and kept both crescents (four each, the hero's 5 and the chibi's 5 the nearest the pick); all on the picker for his pick, his last pick beside them to
+  compare. The size worry was Claude's error, found on 19 October by measuring: the cut crops to
+  the figure's own box before scaling, so the render's white margin costs nothing, and the new
+  picks cut within 3% of the old (a body of about 115 px of 144 against 118; 38 of 48 against 39)
+  and wider. Ryan's lever for a bigger body than either is the staff slanted thirty to forty
+  degrees, pivoting at its top so the lower blade goes behind her legs: the shaft's vertical run
+  shrinks and the figure fills more of the frame. Rendered from her own prompt with the slant
+  described (fresh takes; image to image at 0.5 kept the staff upright, so a change of
+  composition is a fresh render too), three usable each (a fourth drew two weapons crossed), on
+  the picker beside the upright ones. Measured in the cut: the slant takes the hero's body from
+  about 115 to about 128 px of 144 and the sprite's width from 79 to 93 of 96, the box's aspect
+  now the frame's; the chibi gains little (29 to 31 px wide, the body a point or two), its frame
+  being squarer already. Ryan's pick (19 October): the slanted 4, "pretty good", its flaws the
+  glowing eyes of the first pick lost, the dark smoke hanging off to the side now that both hands
+  hold the staff, and blades that could be much longer now they have the room; the blades first
+  (the edit model), the eyes next, the smoke's home his call (Claude's three to choose from: gone,
+  wreathing the lower blade, or from her eyes). He asked for the lean he described too, the staff's
+  top high on the right and the lower blade behind her legs on the left, a unique silhouette:
+  rendered from her own prompt, three usable each size, on the picker beside his pick.
+  The sixth round (19 October) answers the three flaws and the lean, one set per question on the
+  picker (six sets of her, each fixing one flaw on a different parent, would have been the 13
+  October mistake again): the lean (`augur_heroart9`, hero and chibi), three usable each size,
+  the hero's 1 the cleanest (both crescents, the smoke off the upper blade); her blades
+  (`augur_blades`), three options on one base; her smoke (`augur_smoke`), three homes. What the
+  round found. The eyes: a first edit lit her whole face; a tighter one (two small points of
+  pale light, no pupils, within her face as it is) landed, and every candidate of the two sets
+  carries it. The blades: the edit model gained little (the lower blade sits in the frame's
+  bottom-right corner, and a second pass grew only the upper), and room alone did nothing (the
+  pick shrunk to 80% and passed at 0.85 came back in the same proportions, the room unused), so
+  the long blades are a composite, both heads cut and scaled by a third about their collars and
+  the staff lengthened to keep the upper crescent off her head, closed at 0.85, which held them
+  every seed. Measured in the cut, the cost: his pick's silhouette already sits at the frame's
+  aspect, so a longer weapon widens the box and the body pays, 128 px of 144 down to 103, a
+  fifth; and the blades cannot grow inward instead, the upper's tip being fifteen pixels from her
+  hair. So the set holds three: the blades as picked, long at a fifth less body, and broader (the
+  edit model deepening each crescent's belly within the same span, no cost; two of its three
+  came out axe heads and are set aside, and it drifted her eyes red and the steel blue-grey;
+  the eyes relit after, while a recolour of the steel greyed the whole staff, shaft and all, so
+  it is set aside and the tint stays, to come off at the cut or by a later pass). The smoke's
+  three homes, his call, rendered twice each on the eyes-lit base and one of each on the picker
+  (gone, wreathing the lower blade, rising from her eyes): two of the six turned her eyes yellow
+  and the hotter eye-smoke tinted her whole face, set aside, so a hotter version of the home he
+  picks is the next edit. Ryan's picks of the sixth (19 October, afternoon): the lean's 1 is his
+  new favourite base, hero and chibi (the chibi's 2), though the rotation went too far, her other
+  hand on the staff now and the lower blade boxed on the left instead; from it he wants the smoke
+  gone and the top blade flipped to point the other way, its long edge toward the middle of the
+  portrait; the blade and smoke sets went unpicked, superseded. The seventh round: the smoke
+  erased by hand (it sat over white, the one hand edit that passes) and the flip tried two ways.
+  The head reflected across the shaft's axis by hand as a layout for a pass at 0.85 failed at the
+  hero's size (the first reflections carried the shaft's own outline, which the pass drew as a
+  second prong; a reflection is only as good as its mask and its axis, both measured from the
+  brown of the shaft alone); the edit model with the reversed crescent described landed in two
+  of six (3, a spearhead with a small inward hook; 9, a full crescent hanging inward, the better),
+  the rest drawing the crescent outward again or a plain spearhead. The chibi's axe-shaped head
+  resisted the edit model (ten seeds: outward axes, plain spearheads, and one two-bladed head,
+  9; a removal of its outer blade took the inner one too), so its flip is the reflection, with
+  the mask and axis fixed, passed at 0.85. On the picker as `augur_heroart16` and
+  `augur_chibi_heroart16`.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
@@ -109,7 +192,7 @@ The unbuilt heroes, by domain, and the trope each homages:
 
 ## Questions for Ryan
 
-- The Augur's picks on the picker (the twin scythe in every take), then the cut.
+- The Augur's second-round picks on the picker (no coat or hood, the blades bigger), then the cut.
 - Maelle as the Duelist on the Peak, in the Mage's place, or not; and the Blue Mage.
 
 ## Bench

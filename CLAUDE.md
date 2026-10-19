@@ -82,6 +82,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
   these included, is open to debate for a good reason (bible section 2), so argue for changing
   one in the open rather than designing around it.
+- A one-off exception proposed for balance is a symptom (Ryan, 18 October): before proposing
+  one, look for the root cause that makes it seem reasonable and fix that, in the open; a
+  passive breaking a rule for its design is a different thing (bible section 7).
 - Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
   breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
   (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when

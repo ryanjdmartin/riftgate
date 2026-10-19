@@ -358,3 +358,22 @@ git checkout -- sim/die.gd
 ```
 
 About ten minutes a run on one core. Bible section 6 (the rerolls row).
+
+**The Flakshot Repeater as a flat 5 that sprays** (the Prairie Dog's go, 19 October). The
+Prairie Dog's solo row rerun with the Repeater at Direct, flat 5, Spread, Rapid, its Flak
+planned and so not run (`tools/balance.gd --rows prairie_dog`, 200 seeds a cell,
+random/greedy, 8,000 fights), against the 13 October report at the same seeds: the row did
+not move. The Wolves 65/98 (64/98 before), the Gels 0/16 (0/14), the Needlers 5/28 (1/32), the
+Antlions 2/25 (5/26), the Ghosts 82/100 (79/100), the Bombs 1/18 (0/20), the Drakes 39/62
+(32/72), the Treant 3/25 (2/30), the rest at 0 or 100 as before; the Repeater's share of its
+spends 15% (18%), its hull left within a few points everywhere. Read: a flat 5 that sprays is
+worth about what a rolled 5 to 15 single shot was, less on a pack of two and more on a full
+rank, so the built half of the go changes nothing alone, and Claude's Spread-alone shape
+would not have moved the row either; the fight half is Flak's, and the row is re-read when
+the engine has it (the to-do). The maker's trio (the Clydesdale, the Prairie Dog, the Dingo;
+`--rows "wainwright_sutler team"`, 8,000 fights, 947 s) did not move either: the Goblins
+90/100 (91/100), the Meadow formation 3/96 (4/99), the Waste 40/100 (34/100), the Marsh 0/5
+(0/12), the Peak 0/59 (0/68), everything else at 97 to 100. Its pick shares are no clean read
+of the Repeater, since the 13 October report predates the harpoon's Shock (15 October): the
+Harpoon 9% (17%), the Twin Autoguns 23% (16%), the Ankle Mortar 8% (5%), the Repeater 6%
+(8%), rerolls 1.97 a round (2.30). Bible section 7, the Prairie Dog row.

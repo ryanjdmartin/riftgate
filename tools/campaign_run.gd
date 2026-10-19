@@ -223,6 +223,8 @@ func report() -> String:
 	L.append("| Machine | Runs started | Won |")
 	L.append("|---|---|---|")
 	for id in db.chassis_of_tier(1):
+		if not db.chassis_runnable(str(id)):
+			continue   # a planned draft is never dealt
 		var started := 0
 		var won_with := 0
 		for r in results:
