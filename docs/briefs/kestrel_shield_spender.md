@@ -295,14 +295,97 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   a decision (the four-machines row sends the whole roster to one front); benched as a Kestrel
   tier two to revisit after the foes' fresh start, Ryan's version recorded.
 
+## The fourth round (19 October)
+
+- Ryan, 19 October: "If the shield-burner is leaning towards off-tank, then I'd like it to
+  take a tier 1 slot if possible to ease the pressure off Minerva (seems like W&S is pure
+  offense and utility, aphelion tbd). That means that it will need a lure or something baked
+  in. it could be attached to the regen buff, luring a foe while granting itself regen, and we
+  remove the ally-targeting, meaning the buff can be stronger (or stackable). It works as a
+  package, actually, now we just need to refine it." On shapes: he never gave Kestrel specific
+  shapes, only "things other than dogfighters"; the bomber is a bomber, another hovercraft
+  makes sense, and the exposed-rotor helicopter sent to Wainwright & Sutler on 12 October could
+  come here. The mode-shifter reads to him as an Aphelion tier three, an all-in aura support
+  with shifting auras; he asks for other Kestrel capstone or flagship ideas, "a giant, mean
+  looking, fast-looking-but-slow mobile gun platform" allowed if the gimmick is Kestrel's.
+  Reroll-based effects are back on Kestrel's table, since Wainwright & Sutler's ten filled
+  without effort: "it actually fits, and means we can push Kestrel way into the
+  risk-versus-reward space, like a real maverick pilot." The Sparrowhawk at tier two: "the
+  whole gimmick is that its a flying accident waiting to happen, scoring kills by the seat of
+  its pants in order to stay alive", pushed past double-damage-double-heat, "which by todays
+  standards feels thin and abusable"; kills scoring shield past the cap, decaying a turn, with
+  a hull as thin as paper, or as far as kills granting invulnerability, "but there's danger
+  there"; what niche it fills under the latest skirmish and battlefield decisions.
+- Claude, 19 October, the package refined (tier one, the off-tank, in Ryan's frame). The
+  passive as the third round left it: while its shield stands every blow on it loses 5, and
+  its weapons burn shield in place of heat with the zap of the burn on the target. The lock:
+  a weapon of no damage, Indirect, heat 0, spent on one foe: that foe is Lured for the round
+  and the spender gains Regenerating, 10 shield at the start of each round for three rounds,
+  stacking (timed stacks keep their own end, so two casts are 20 a round until the first runs
+  out); self only, never Rapid, no cooldown, the die its brake. The loop: lure and regen, the
+  plate takes the blow, the regen refills it, a hot gun burns it when the damage is wanted.
+  Shown: a weapon glyph with the Lure chip and the star, the hold reading the self regen. The
+  order the regen lands in matters: the lured blow lands this enemy turn, the first 10 at the
+  next round's start. Frame: a medium hovercraft at 40, hull 70, shield 80, four hardpoints
+  beside the lock; stand-ins the Laser Carbine, the Overclocked Railgun, the Twin Autoguns, a
+  plain shield. The tender gains a body from a second maker. Holes: the Armadillo's form
+  changer is a tier-one off-tank with a locked lure too (seal, Braced and a heat clock there;
+  plate, regen and the burn here: the shapes differ, Ryan's rule of the third round); a lure
+  onto a plated shield with stacking regen may wall trash, which the runner reads on the
+  formation cells; the engine needs a weapon's rider on its own spender (new, small), the regen
+  as a status (a round-start shield effect the Goshawk already fires), and the plate as a
+  damage-taken add while the shield stands (a new condition). Ryan's regen was lent to allies
+  on 16 October and renewed for that reason; self only, it stacks as he says.
+- Claude, 19 October, on shapes: "hovercraft on big boosters" is the makers table's own line
+  (Kestrel: small and mid flyers and hovercraft on big boosters, all the fast jets, nothing
+  big) and the Puffin is the one built, a ground-effect escort. Shapes beyond the dogfighter,
+  each with a reading: the attack jet with a gun run (the strafer); the flying wing (the
+  bomber); the ground-effect hovercraft (the off-tank, a skirted body with a shield prow); the
+  exposed-rotor helicopter, free since Wainwright & Sutler's ten filled (the interceptor's two
+  passes, or the off-tank as a flying tank); the tilt-jet with swinging nacelles (the
+  interceptor); the ekranoplan, a giant ground-effect plane with a missile battery on its
+  back, hover, slow on rough ground and fast on water (the capstone: fast-looking, slow); the
+  gunship, a big slow airframe with its guns down one side (the capstone as a flyer); the
+  airship on boosters; the jet car on wheels, Kestrel's one ground machine for the Steppe.
+  Silhouettes are Ryan's; the list is for matching.
+- Claude, 19 October, the capstone, the gun platform, its gimmick the team's rerolls: every
+  team reroll also rerolls its spent die, so it acts again; the rerolls that fix the team's
+  dice are the passes it does not fly. Its lock, the throttle: equipment on itself, heat 20,
+  the team gains a reroll this round, so a pass can be bought with heat and the overheat is
+  the accident. Six hardpoints beside it, a d7 of guns of every maker, cold ones making cheap
+  passes; heavy or assault, hover or flyer, move 20, hull 120, shield 80, heat 120, cooling
+  10, armour 0. The rules it bends: a die is spent once a round, and a reroll rerolls only
+  unspent dice; it reads the team's rerolls, which nothing reads. Holes: it can eat the whole
+  turn's rerolls (the runner reads the share it takes and whether the others' dice sit
+  unfixed), the bot's reroll policy must learn it, the Paradox counts each pass, and a
+  Scrambled die's reroll lands anywhere. Alternatives: unspent team rerolls at the round's end
+  bank as Overcharged on it (the bench's reroll idea reversed, press your luck by holding);
+  the chain of the third round. The mode-shifter goes to Aphelion's bench as an aura support.
+- Claude, 19 October, the Sparrowhawk's niche at tier two: the caster-killer. The decisions
+  that frame it: the roster fights as a body at one front; formations spawn with a front and
+  a back; elites surface from the wait; the boss is fought with its formation; five to ten
+  skirmishes that matter, then the boss. In those fights the back rank's specials are what the
+  body cannot stop (a scorch on every machine, a countdown on every machine, a summon, a
+  raise), and nothing kills a caster before it acts except a hole in the front or the
+  artillery makers' pieces. The assassin's job is that kill, and the kill is what keeps it
+  alive. The shape: the Pinion Driver reaches any foe (the finisher is the dive, so the team's
+  artillery, Penetrate and Vitriol hurt the caster and the Sparrowhawk finishes it); the
+  double stays and counts only what is printed on the entry, number and heat, buffs once (the
+  mirror of the strafer's halving, the answer to "thin and abusable"); a kill shields it 30
+  past its maximum, fading 15 a round (a slower fade than Overshield's, a one-off on this
+  chassis); hull 30, shield 60, recharge 30. Alone it loses formations and bosses, which is
+  the floor; in a team it is the Puffin's and the Barrier's machine. Bench: a Barrier a kill
+  (the full assassin, immune while farming trash: Ryan's danger named) and every weapon
+  Indirect (free reach on a glass is the raider's loop again). The runner reads casters killed
+  before their first special, a new read.
+
 ## Open for the session
 
-1. Ryan's call on the dual-use shield (the plate while it stands, the burn when it fires, the
-   zap on the target) and its lock (the flare, Claude's lean, or his regen buff); then its
-   numbers and frame, matched to his silhouette. The capacitor of the second round stays on
-   the bench (overshield as ammunition, a Kestrel piece or chassis for later).
-2. Whether the interceptor (its first weapon each round Rapid) becomes a brief of its own as
-   Kestrel's third tier one, and the mode-shifter a brief as its second tier three.
+1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
+   reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and
+   Ryan's go. The capacitor of the second round stays on the bench (overshield as ammunition).
+2. Whether the interceptor, the Sparrowhawk's rework and the gun platform become briefs of
+   their own (the fourth round carries their proposals).
 
 ## Holes already raised
 

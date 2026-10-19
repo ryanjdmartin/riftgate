@@ -51,9 +51,16 @@ document's job and every command are in `README.md`.
   a tier one of its own, floats a shield mode-shifter, leans the Sparrowhawk riskier and up to
   tier two, gives reroll effects to Wainwright & Sutler, and asks for Kestrel's other tier
   three; Claude's answers are recorded there and the briefs README's tiers table carries the
-  Kestrel line as proposed. Docs only; nothing built, nothing in content. To resume: Ryan's
-  calls, then briefs for the interceptor and the mode-shifter if he takes them, then on his go
-  the records each brief's "What the session hands back" lists.
+  Kestrel line as proposed. The fourth round (19 October, in the same brief): the off-tank
+  takes a tier-one slot on Ryan's word with its lure baked into a self-only regen buff, the
+  package refined; the shapes beyond the dogfighter listed; reroll effects back on Kestrel's
+  table (risk versus reward, the maverick); the gun platform proposed as the capstone (the
+  team's rerolls as its passes, a throttle that buys one with heat); the Sparrowhawk's tier-two
+  niche proposed as the caster-killer (the Pinion Driver reaching any foe, the double on the
+  printed number only, kills shielding it past its maximum, paper hull); the mode-shifter to
+  Aphelion's bench. Docs only; nothing built, nothing in content. To resume: Ryan's calls,
+  then briefs for the interceptor, the Sparrowhawk's rework and the gun platform if he takes
+  them, then on his go the records each brief's "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
