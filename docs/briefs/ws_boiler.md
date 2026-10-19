@@ -134,6 +134,8 @@ prices heat, and none of the calls hinges on one.
   rewrites every stock.
 - **Tier two** (Ryan, 19 October), so the maker's tier one is the Prairie Dog, the Cassowary
   and the Cottonmouth, and the boiler and the Cassowary do not both sit there.
+- Superseded the same day by Ryan's directions below: the passive gain is in question and the
+  locked piece may be another shape than the Cannon.
 
 ## Holes
 
@@ -169,11 +171,68 @@ prices heat, and none of the calls hinges on one.
   aside.
 - An ally's vent blasting: the first buff if the row reads weak (the exit, not the design).
 
+## Ryan's directions (19 October, later)
+
+"Couple of directions I'd like to explore: A combo piece that lets it raise heat over maximum,
+I wouldn't give it rapid (too easy) but lets it end it's turn with some kind of buff. Like a
+huge heat spike, barrier, heat can go over max this turn. An aoe lure that grants armour, and
+heat rises for every hit taken. An enemy and/or self targeted component that applies Burn to
+itself and/or an enemy. The passive heat gain might make it too easy, so I'm exploring other
+shapes. Steam Cannon is fine, but if there's another shape that works, it can be reappropriated."
+
+Claude's reading, the same day. The three are three ways to make the fuel a decision instead of
+a drip, which answers the worry at its root: drop the passive gain, give the boiler cooling 0
+(nothing cools it but its own valves, so every point of heat it earns stays until a vent takes
+it off and blasts it), and let the locked piece be the fuel decision. The exit if the row reads
+cold: a pilot light of 5 a round.
+
+- **The Overpressure piece** (Ryan's first): equipment on itself, no Rapid: a spike of 40 heat,
+  Barrier, and no overheat at this turn's end, so the heat stands past the maximum into the
+  next round. The engine settles heat at the end of the player's turn (the overflow burns hull
+  and the heat is clamped to the maximum), so the clause is one skipped settle; Barrier
+  (planned) is the next blow a foe lands dealing no damage, until the round's end. What it
+  does: a setup turn. Spiked past the brim and shielded against one blow, the boiler must vent
+  next round or burn the overflow at that turn's end; a machine spends one entry a round, so
+  the usable overflow is one vent's number, and the team's three rerolls fish for a vent (two
+  vents on a d5: 87% with every reroll spent on it). The decision is when (the foes' heavy
+  round, rerolls in hand). Holes: spiking cold is a free Barrier and 40 of fuel, the tempo of
+  the turn its only price; the boiler would be the first Barrier carrier in content, ahead of
+  the stock pass's slot-in question; the heat bar must show the overflow.
+- **The Steam Whistle** (Ryan's second, refined): Indirect, no damage, Lure and Spread (the
+  front rank turns on it), the boiler Armoured 2 for the round, and it gains 30 heat, flat.
+  The heat per hit taken is the part to drop: Ryan's own taste line (the README) strikes a
+  reward for being struck that scales with the enemy's blows, the old discharge, and under a
+  draw the scaling is the tank doing its job; its drawback (the overheat) bites only past the
+  maximum and the die decides whether a vent comes. Flat, the heat is the lure's price and the
+  boiler's fuel, chosen: draw the pack's blows off the squishy ally, take them on armour,
+  open the valves next round. What it adds that the spike does not: a team turn, which is
+  what the analysis found thin ("sound as a body, thin as a partner") and what the sort puts
+  at tier two. The Breaching Plow already braces its owner on a spend, and Lure rides on any
+  entry aimed at a foe, so the engine's cost is the flat heat rider. Hole: Lure and Braced
+  are Minerva's leans; here the fantasy calls for them (the hissing, glowing machine the pack
+  goes for), and a lean is never an exclusion.
+- **The Stoker** (Ryan's third): Burn on a foe and Burning on itself. On a machine Burning is
+  +5 heat a stack at the end of the player's turn, after the vents and before the overheat,
+  then a stack fades, so Burning 4 on itself is 20, 15, 10, 5 over four turns, each turn's
+  vents blasting the last turn's burn: slow fuel by decision, cleansable, and a furnace on the
+  Peak. A piece that targets self or foe needs a face kind the engine lacks; an attack (Burn 3
+  on the foe, a small blow) whose firer takes Burning 2 is one face and the self-cost class
+  (rule 2's new price: paid in future heat). Claude's lean: a Wainwright &amp; Sutler slot-in
+  in the boiler's stock (tier two stocks keyword pieces), the first of the stokers, rather
+  than the locked piece.
+- **The lean.** The Whistle locked, the Overpressure spike benched as the self-contained
+  alternative (or the first buff, if the Whistle's tank turn reads weak), the Stoker a stock
+  piece, the Steam Cannon a stock gun (Direct, flat 30, heat 30, the hot stand-in) rather than
+  locked, and no passive gain. The die: the Whistle, the Cannon, two Coolant Jackets, the
+  Stoker or the Maxigun. The round: fire hot, whistle when the pack's intents point at an ally,
+  vent into the crowd.
+
 ## Open for the session
 
-1. The names (the mechanics agreed, 19 October): the passive's, more weaponized than Relief
-   Valves (Claude's second round: Blast Valves, lean; Blowdown Guns; Scald Ports; Overpressure
-   Ordnance); the chassis's; the locked gun's.
+1. Ryan's call among the three (the Whistle locked, Claude's lean; the Overpressure spike;
+   the Stoker), whether the passive gain goes (Claude's lean: cooling 0, the valves the only
+   cooling), and the names: the passive's, more weaponized than Relief Valves (Blast Valves,
+   lean; Blowdown Guns; Scald Ports; Overpressure Ordnance), the chassis's, the locked piece's.
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
