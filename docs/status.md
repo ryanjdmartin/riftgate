@@ -336,7 +336,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   image to image from the take he called closest). His second picks, the same evening: the
   Reaper (image to image, its third hand gone) and Fáfnir (the gold off) cut; the Matador, Skaði,
   Surtr, Floraison and the Augur into a third round, image to image from his picks under the
-  fix-order rule. Its database
+  fix-order rule. His third picks (19 October) asked for composites (2's head and boots on the
+  Matador's 3, 1's head on Floraison's 2), a defined face and a held sword on Surtr, another set
+  for the Augur and a retry for Skaði; the fourth round answers each (the composites as layouts
+  re-rendered close beside the edit model's version; the Augur from a prompt of her own, since
+  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

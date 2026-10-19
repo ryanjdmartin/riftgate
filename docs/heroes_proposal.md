@@ -53,7 +53,13 @@ name, as the Thief keeps its own, and every look is ours.
   October): the tunics have to go too (3 picked as the base), the blades read as hooks, and the
   chibi's 4 is closest on the weapon. The third round: a short jerkin and trousers, the blades long
   sweeping crescents, image to image from his two picks at strength 0.5 beside fresh takes, one
-  set each.
+  set each; Ryan, 19 October: another set, the chibi's 2 "not horrible but can be better". The root
+  cause found then: the hero style prompt asks every hero for "ornate armour or robes with gold
+  trim and flowing cloth", and the content's own words for what she must not wear (a coat, a
+  hood) read to the model as a request, so the fourth round renders her from a prompt of her own
+  that names only what she wears (a laced leather vest, shirt, trousers, boots); every take came
+  out in it. The double blades still read as hooks or axe heads as often as crescents; the
+  chibi's most of all.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
