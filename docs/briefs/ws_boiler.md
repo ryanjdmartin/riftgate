@@ -3,8 +3,11 @@
 The session finishes the eight-legged spider whose vents blast a random foe for the heat they
 shed, and settles its tier.
 
-**Status**: in session (19 October): Claude's recommendations on the open questions below, in
-chat, Ryan's calls pending. **Maker**: Wainwright & Sutler.
+**Status**: in session (19 October): the mechanics agreed (Ryan: "Agreed with your mechanics
+choices": the pressure as the passive's line, the blast at the full heat vented, the draw over
+every live foe, an ally's vent blasting nothing); the names open (Ryan: "relief valves is ok
+but could be refined to sound more weaponized"; he asked what the locked piece is). **Maker**:
+Wainwright & Sutler.
 **Tier**: two (Ryan, 19 October: so that not both of the maker's damage dealers sit at tier
 one, and it is the more complex; the reshuffle's tier one withdrawn). **Read first**:
 `docs/briefs/README.md`; `docs/roster_analysis.md` section 4 (its rating); the bible's heat
@@ -168,7 +171,9 @@ prices heat, and none of the calls hinges on one.
 
 ## Open for the session
 
-1. Ryan's calls on the above: the passive form of the pressure, the full blast, the names.
+1. The names (the mechanics agreed, 19 October): the passive's, more weaponized than Relief
+   Valves (Claude's second round: Blast Valves, lean; Blowdown Guns; Scald Ports; Overpressure
+   Ordnance); the chassis's; the locked gun's.
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
