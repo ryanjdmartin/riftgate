@@ -29,7 +29,7 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 and 19 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.208): to merge into
+  and page; the to-do's engine and assets lines ticked; the bible at v0.209): to merge into
   main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -98,10 +98,14 @@ document's job and every command are in `README.md`.
   ankle each); 20 joints. Four acts (`stalk`, a sink and a lunge on a sharp servo; `scan`;
   `sight_in`, the torso twisting to the launcher as it rises lit, then to the roof gun as it
   elevates; `probe`, a fore leg tapping ahead) and the creep: `_plant` with every foot one step
-  a stride, out of step, plus the coxae beside the solver (`_coxa_hitch`: each leg lifts from
-  its base through its swing, at rest through every stance so no planted foot moves); the fore
-  feet's two short steps a stride and the head's turn toward each foot were cut on his fifth
-  notes (hot-stepping, too busy; weird); the cornering numbers; the rig test covers it; the hangar's renders (front,
+  a stride, out of step, and the coxae rowing under the solver (his sixth notes, his pick of
+  the options after the feet still flicked forward: a limb's `coxa` in `_plant`, the rest
+  points turned about the pivot before each solve by `_turned`, the angle folded into the
+  foot's flatness, the angle from `_coxa_row`, each half of the cycle a cosine; the strut
+  steepened so the turn rows the hip fore and aft), a longer stride (sweep 36, stride 51) and
+  the solver's new `carry` window, (0.04, 0.92) here, the old (0.12, 0.76) the default for every
+  other walker; the fore feet's two short steps a stride and the head's turn toward each foot
+  were cut on his fifth notes (hot-stepping, too busy; weird); the cornering numbers; the rig test covers it; the hangar's renders (front,
   rear, the lunge, a side-on moment of the creep; the third cut under "before") and the page
   republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
   to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
@@ -319,9 +323,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.208 (19 October, `ccr-ffcf75fa-3gkbz9`:
+  `docs/design-bible.html` after every change. Live: v0.209 (19 October, `ccr-ffcf75fa-3gkbz9`:
   the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
-  fifth, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
+  fifth and sixth, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
   row carries the heroes' costumes and the Augur's dark omen-smoke, and v0.200 of 18 October,
   whose foe-art row carries the image-to-image route, both Ryan's calls, now in this branch's
   file too), over v0.199 (18 October,
@@ -376,7 +380,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 October with the funnel-web's model, rig sidecar, pins and renders and
-  the content that had moved, and again with each later cut, the fourth and its revision last (`ccr-ffcf75fa-3gkbz9`). Its database
+  the content that had moved, and again with each later cut, the fourth and its revisions last (`ccr-ffcf75fa-3gkbz9`). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

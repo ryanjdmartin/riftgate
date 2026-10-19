@@ -1564,7 +1564,7 @@ def funnel_web(b):
         for s in (-1.0, 1.0):
             leg = fa + ("l" if s < 0 else "r")
             root = (s * 10.0, yh, 32.0)
-            hip = (s * 22.0, yh + f * 10.0, 24.0)
+            hip = (s * 22.0, yh + f * 4.0, 22.0)   # the strut near plumb, so a turn of the coxa rows the hip fore and aft (the sixth notes)
             knee = (s * 38.0, yh + f * 26.0, 56.0)
             ankle = (s * 46.0, yh + f * 34.0, 7.0)
             legs[leg], roots[leg] = (hip, knee, ankle), root
@@ -1685,52 +1685,27 @@ def funnel_web(b):
     # Movement, a creep (Ryan, 19 October: walk creepy, the upper legs in the walk beside the
     # solver, the Ammit's way): every foot takes one step a stride, out of step, hind then
     # fore on a side and the pairs offset, three or more feet down at any moment, each planted
-    # while the body passes over it, the body level and never rolling. Beside the solver, the
-    # coxae: each leg lifts from its base through its swing, up briskly, held high and set
-    # down with the foot (_coxa_hitch, the coxa's own cyclic track, at rest through every
-    # stance so no planted foot moves). The fifth notes cut the fore feet's two short steps to
-    # each hind stride (hot-stepping, far too busy) and the head's turn toward each foot
-    # (weird); the feet stay down, which reads right against the other quads.
+    # while the body passes over it, the body level and never rolling. The coxae row (his
+    # choice among the options, the sixth notes): each leg's base swings forward as its foot
+    # lands, smoothly back through the stance and forward again through the swing, the solver
+    # planting the foot under it (a limb's "coxa" in _plant), so the whole leg sweeps as one
+    # and nothing in it is a bump; it had lifted each leg in a hitch through the swing. The
+    # feet flicked forward (the sixth notes): the stride is longer (a sweep of 36, so the
+    # swing lasts longer at the map's pace) and the foot's carry fills nearly the whole swing
+    # (`carry`), the feet still down seven tenths of the time. The fifth notes had cut the
+    # fore feet's two short steps to each hind stride (hot-stepping, far too busy) and the
+    # head's turn toward each foot (weird).
     DUTY = 0.7
     walk = [dict(limbs[leg], phase={"hl": 0.0, "hr": 0.5, "fl": 0.2, "fr": 0.7}[leg],
-                 shift=(4.0 if leg[0] == "f" else -4.0), nod=(0.6 if leg[0] == "f" else -0.4))
+                 shift=(6.0 if leg[0] == "f" else -6.0), nod=(0.6 if leg[0] == "f" else -0.4),
+                 coxa=("coxa_" + leg, roots[leg], _coxa_row(DUTY, 10.0)))
             for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
-    tracks, body, stride = _plant(walk, sweep=30.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80)
-    for l in walk:
-        tracks["coxa_" + l["hip"][4:]] = _coxa_hitch(l, DUTY, 12.0 if l["hip"][4] == "f" else -12.0)
+    tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"
 
-
-def _coxa_hitch(l, duty, lift, n=80):
-    """A cyclic track for a leg's coxa (the strut its hip hangs from) through a walk from
-    _plant: `lift` degrees on the coxa's own axis through the limb's swing, up briskly in the
-    first fifth, held, and set down through the last quarter so it is at rest as the foot
-    lands, and at rest through the whole stance, so the solver's planted foot never moves
-    (the Funnel-web, 19 October: the upper legs in the walk beside the solver). `l` is the
-    limb as _plant took it (its phase and cycles), `duty` the share of a step its foot is
-    down. Returns (keys, phase) for b.gait."""
-    k = int(l.get("cycles", 1))
-    keys = []
-    for i in range(n + 1):
-        p = i / float(n)
-        q = (p * k - l["phase"]) % 1.0
-        if q < duty:
-            v = 0.0
-        else:
-            s = (q - duty) / (1.0 - duty)
-            if s < 0.2:
-                r = s / 0.2
-                v = lift * (1.0 - (1.0 - r) * (1.0 - r))
-            elif s < 0.72:
-                v = lift
-            else:
-                r = (s - 0.72) / 0.28
-                v = lift * (1.0 - r * r)
-        keys.append((round(p, 4), round(v, 3)))
-    return (keys, 0.0)
 
 
 def goshawk(b):
@@ -3538,7 +3513,7 @@ def _steps(limbs, frames):
     return tracks, body
 
 
-def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0, stomp=False):
+def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0, stomp=False, carry=(0.12, 0.76)):
     """A walk worked out foot by foot (Ryan, 4 October, the third pass: legs too fast, the
     weight shift far too pronounced; stomp and plod, mechanical, MechWarrior or Star Wars, not
     Gundam or Evangelion). Each limb's foot stays planted on the ground through its stance,
@@ -3569,8 +3544,19 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     AT-AT's weight, not a plod) lifts each foot briskly and holds it high, then slams it down
     in the last fifth of its swing, and each landing drops the body hard and lets it shudder,
     a rebound and a settle; a limb's "nod" (1 unless given) signs and scales the body's pitch
-    at its landing, so a fore foot can dip the nose and a hind one lift it. Returns (tracks,
-    body, stride) for b.gait with ease "linear" (dense keys, n a cycle)."""
+    at its landing, so a fore foot can dip the nose and a hind one lift it. `carry` is the
+    share of the swing the foot's forward travel takes, (start, length): the foot lifts
+    straight up until `start` of its swing and sets straight down after start + length, and
+    crosses the sweep between, so a wider carry is a slower flick (the Funnel-web, 19
+    October: its feet flicked forward). A limb's "coxa" is a joint between the body and its
+    hip, turning on the limb's own axle, (joint name, pivot, angle): the angle a function of
+    the limb's step phase (0 landing, `duty` lifting off) giving degrees, the coxa's own
+    cyclic motion, and the solver plants the foot under it: the limb's rest points are turned
+    about the pivot by the angle before each solve, so the hip and knee are relative to the
+    coxa, and the foot stays flat under all three (the Funnel-web's row, Ryan's choice of 19
+    October: the leg's base swings back through the stance and forward through the swing,
+    so the whole leg sweeps as one and nothing in it is a bump). Returns (tracks, body,
+    stride) for b.gait with ease "linear" (dense keys, n a cycle)."""
     stride = sweep / duty
     loop = max(int(l.get("cycles", 1)) for l in limbs)   # the most steps any limb takes in a cycle
     landings = sorted({round(((l["phase"] + j) / int(l.get("cycles", 1))) % 1.0, 4) for l in limbs for j in range(int(l.get("cycles", 1)))})
@@ -3586,7 +3572,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         if q < duty:
             return y0 + sw * 0.5 - sw * (q / duty), e[2], True
         s = (q - duty) / (1.0 - duty)
-        u = min(1.0, max(0.0, (s - 0.12) / 0.76))
+        u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
         y = y0 - sw * 0.5 + sw * u * u * (3.0 - 2.0 * u)
         if stomp:
             if s < 0.25:
@@ -3656,12 +3642,20 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     pose = [(rides[i] - crouch - dip * jolts[i], -nod * pitch_jolts[i]) for i in range(n + 1)]
     tracks = {}
     for l in limbs:
-        rows = {"hip": [], "knee": [], "ankle": []}
+        rows = {"hip": [], "knee": [], "ankle": [], "coxa": []}
+        coxa = l.get("coxa")
+        k = int(l.get("cycles", 1))
         for i in range(n + 1):
             p = i / float(n)
             y, z, _down = foot(l, p)
             dz, pitch = pose[i]
-            a, b, c = _limb_angles(l, _to_body(y, z, 0.0, dz, pitch), pitch)
+            if coxa:
+                th = float(coxa[2]((p * k - l["phase"]) % 1.0))
+                a, b, c = _limb_angles(dict(l, at=_turned(l["at"], coxa[1], th)), _to_body(y, z, 0.0, dz, pitch), pitch)
+                c -= th
+                rows["coxa"].append((p, round(th, 3)))
+            else:
+                a, b, c = _limb_angles(l, _to_body(y, z, 0.0, dz, pitch), pitch)
             rows["hip"].append((p, round(a, 3)))
             rows["knee"].append((p, round(b, 3)))
             rows["ankle"].append((p, round(c, 3)))
@@ -3669,8 +3663,33 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         tracks[l["knee"]] = (rows["knee"], 0.0)
         if l.get("ankle"):
             tracks[l["ankle"]] = (rows["ankle"], 0.0)
+        if coxa:
+            tracks[coxa[0]] = (rows["coxa"], 0.0)
     body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
     return tracks, body, stride
+
+
+def _turned(at, pivot, degrees):
+    """A limb's (hip, knee, end) rest points turned `degrees` about `pivot` on the limb's
+    axle (x; positive raises the forward end, the joints' own sense), for a solve under a
+    coxa that has turned so far."""
+    c, s = math.cos(math.radians(degrees)), math.sin(math.radians(degrees))
+    out = []
+    for px, py, pz in at:
+        dy, dz = py - pivot[1], pz - pivot[2]
+        out.append((px, pivot[1] + dy * c - dz * s, pivot[2] + dy * s + dz * c))
+    return tuple(out)
+
+
+def _coxa_row(duty, row):
+    """A coxa's row for _plant: `row` degrees forward as the foot lands, swung smoothly back
+    to `row` degrees behind as it lifts off, and forward again through the swing, each half
+    a cosine so the base never snaps (the Funnel-web, 19 October)."""
+    def angle(q):
+        if q < duty:
+            return row * math.cos(math.pi * q / duty)
+        return -row * math.cos(math.pi * (q - duty) / (1.0 - duty))
+    return angle
 
 
 def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0, reach=0.97, smooth=0.03, n=160, thud=False, airborne=None):
