@@ -62,14 +62,14 @@ between slots, which Minos's rank turn also needs. Ryan, 19 October: "Dingo seem
 that." Later that day: "Dingo - probably isn't a real winch since that doesn't make sense.
 Can't go that low tech. More teleporter -ey": a cable cannot swap two things, so the piece is a
 teleporter in the maker's register, which for a teleporter is wire, the telegraph. Claude's
-candidates: Switchboard (an operator swapping two lines, the rule in a word; lean), Telegraph
-Transposer; the fantasy the pack animal's dispatcher.
+candidates were Switchboard and Telegraph Transposer; Ryan, 19 October: "a little too
+nonsensical. Something more like 'guys this totally isn't just a teleporter.' Like Combat
+Translocator or something." The piece is the Combat Translocator (his working name).
 
 ## Open for the session
 
-1. The swap piece's name (not a winch: Switchboard, Claude's lean); then the go (the swap
-   planned in content; the tier change with the first dealable tier one of the revolver and
-   the fan-boat, or the stock pass).
+1. The go (the Combat Translocator planned in content; the tier change with the first
+   dealable tier one of the revolver and the Cottonmouth, or the stock pass).
 2. Its stock beside the Shocking harpoon (the Coolant Dump retires in the stock pass).
 
 ## What the session hands back

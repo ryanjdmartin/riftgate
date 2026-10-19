@@ -1,10 +1,11 @@
-# Brief: the fan-boat (proposal, back to the board)
+# Brief: the Cottonmouth, the fan-boat (settled in chat, the go pending)
 
 The session reworks the fan-boat hovercraft, whose weapons all fire its deck gun's shot with
 their own keywords, so that its identity shows at its tier.
 
 **Status**: settled in chat (Ryan, 19 October: versatility of reach, the shape by the aim, tier
-one, nothing locked, the deck gun's 15), the go pending; open: its names, the stock. **Maker**:
+one, nothing locked, the launcher's 15, the name Cottonmouth), the go pending; open: the
+passive's name, the stock. **Maker**:
 Wainwright & Sutler. **Proposed tier**: one in its proposal; two in the analysis and the
 reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 4.
 
@@ -15,10 +16,16 @@ reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` se
   draft compositions.
 - **Passive**: everything it fires goes through its deck gun: each weapon fires the deck gun's
   shot, with its own keywords.
-- **The deck gun** is the passive's rule, not an entry on the die (Ryan, 19 October: "the
+- **The launcher** is the passive's rule, not an entry on the die (Ryan, 19 October: "the
   deck gun isn't actually a locked component"), so the machine locks nothing, as the
   Clydesdale and the gunship do: the maker's three versatilities all lock nothing. Its shot:
-  Indirect, flat 15 (Ryan: 15 is ok), heat 5, Ballistic. Fired at the back rank its shot punches through
+  Indirect, flat 15 (Ryan: 15 is ok), heat 5, Ballistic. Ryan's picture (19 October): not a
+  deck gun but "a big rotating set of barrels with the guns mounted (invisibly) inside, like a
+  multi shot grenade launcher"; the machine is future-tech and its profile more sophisticated
+  than "fan-boat" says, so the gun cannot sound low-tech. Two consequences for the asset
+  session: the silhouette is a hover hull under a drum, and the fitted guns live inside the
+  drum, so this is the one machine whose hardpoints show no mounts on the model (the lowforge
+  rule that gives every fitted component a mount wants a note for it). Fired at the back rank its shot punches through
   (Penetrate, the front foe of that column too); fired at the front rank it sprays (Spread, the
   row's neighbours). The shape follows the aim, so a column or a row is the decision on every
   shot. The number is the lever at tier one.
@@ -139,9 +146,16 @@ one pays in the number and the light hull, and the aim is its interest.
   count? Since the deck gun isn't actually a locked component. Name - some kind of snake, maybe
   aquatic?" Claude's candidates, the reserved names checked (Copperhead, the mambas, the vipers
   and the adders are taken): the chassis Cottonmouth (the water moccasin, the bayou's snake and
-  the airboat's home; lean), Moccasin, Mud Snake; the passive Common Breech (every shell loads
-  through one breech; lean), Swivel Mount (the shape follows the aim, a swivel gun being a
-  boat gun), or the gun's own name, Punt Gun or Fowling Piece.
+  the airboat's home), Moccasin, Mud Snake; the passive Common Breech, Swivel Mount, Punt Gun
+  or Fowling Piece.
+- 19 October, later: "Cottonmouth is good, and again the gun can't sound too low-tech.
+  Omni-launch system or something, not sure. Something about adapting firing shapes. I picture
+  it honestly not as a deck gun, but like a big rotating set of barrels with the guns mounted
+  (invisibly) inside, like a multi shot grenade launcher. We call it a fan boat but the profile
+  is more sophisticated than that, it is still future-tech after all." The chassis is the
+  Cottonmouth; the low-tech passive names retired. Claude's candidates for the passive:
+  Omni-launch System (Ryan's), Variable-Geometry Launcher (the aviation word for a shape that
+  adapts, and the mechanic; lean), Adaptive Launch Drum (the rotating barrels), Pattern Drum.
 
 ## Why it went back (the analysis, 14 October)
 
@@ -155,7 +169,7 @@ last three keywords its other weapons fired) makes a better tier two.
 
 ## Open for the session
 
-1. The names (the chassis, the passive); the deck gun's heat.
+1. The passive's name; the launcher's heat.
 2. The stand-in stock (basics); then the go.
 3. The proposal's holes: Rapid shells at the deck gun's number are its strongest build (the
    deck gun's number is the lever); a shell's own heat no longer counts.
