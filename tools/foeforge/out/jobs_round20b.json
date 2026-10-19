@@ -1,0 +1,37 @@
+[
+ [
+  "augur hero flip pass (fixed layout)",
+  "generate",
+  "augur",
+  "--prompt",
+  "A lean young woman with olive skin and a long black braid, bare-headed, in a sleeveless fitted leather vest of dark green laced up the front over a grey long-sleeved shirt, a wide belt hung with a cord of carved bone charms, close-fitting dark trousers tucked into knee-high boots, her legs plain to see from belt to boot, carrying a double-ended scythe staff: a long wooden pole with a great curved reaper's blade at the top end and an identical great curved reaper's blade at the bottom end, both blades long thin crescents, the staff gripped in her right hand on the viewer's right, its upper blade high in the top right corner above her right shoulder, that blade's crescent hanging on the inner side of the shaft and curving in toward her, its long edge toward the middle of the picture, the shaft slanting down to the LEFT behind her back, tilted about forty degrees from upright, so that the lower blade comes out low on the viewer's left behind her legs, the whole staff a diagonal from the top right down to the bottom left; her left hand raised and empty, no smoke anywhere. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate fitted leather and metal with gold trim, close-cut and practical, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Augur, a hero of the party who comes out of the swamp and graveyard. Light: dim and damp, rust and old bone, lantern light in fog.",
+  "--image",
+  "tools/foeforge/out/augur_heroart16/layout_flip.png",
+  "--strength",
+  "0.85",
+  "--tag",
+  "heroart16",
+  "--n",
+  "2",
+  "--seed",
+  "5"
+ ],
+ [
+  "augur chibi flip pass (fixed layout)",
+  "generate",
+  "augur",
+  "--chibi",
+  "--prompt",
+  "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a lean young woman with olive skin and a long black braid, bare-headed, in a sleeveless fitted leather vest of dark green laced up the front over a grey long-sleeved shirt, a wide belt hung with a cord of carved bone charms, close-fitting dark trousers tucked into knee-high boots, her legs plain to see from belt to boot, carrying a double-ended scythe staff: a long wooden pole with a great curved reaper's blade at the top end and an identical great curved reaper's blade at the bottom end, both blades long thin crescents, the staff gripped in her right hand on the viewer's right, its upper blade high in the top right corner above her right shoulder, that blade's crescent hanging on the inner side of the shaft and curving in toward her, its long edge toward the middle of the picture, the shaft slanting down to the LEFT behind her back, tilted about forty degrees from upright, so that the lower blade comes out low on the viewer's left behind her legs, the whole staff a diagonal from the top right down to the bottom left; her left hand raised and empty, no smoke anywhere.",
+  "--image",
+  "tools/foeforge/out/augur_chibi_heroart16/layout_flip.png",
+  "--strength",
+  "0.85",
+  "--tag",
+  "heroart16",
+  "--n",
+  "2",
+  "--seed",
+  "5"
+ ]
+]
