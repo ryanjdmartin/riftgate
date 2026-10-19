@@ -3,7 +3,8 @@
 The session finishes the eight-legged spider whose vents blast a random foe for the heat they
 shed, and settles its tier.
 
-**Status**: proposal with a place (the analysis, 14 October). **Maker**: Wainwright & Sutler.
+**Status**: in session (19 October): Claude's recommendations on the open questions below, in
+chat, Ryan's calls pending. **Maker**: Wainwright & Sutler.
 **Tier**: two (Ryan, 19 October: so that not both of the maker's damage dealers sit at tier
 one, and it is the more complex; the reshuffle's tier one withdrawn). **Read first**:
 `docs/briefs/README.md`; `docs/roster_analysis.md` section 4 (its rating); the bible's heat
@@ -82,15 +83,100 @@ itself at once, and it is the heavy body Wainwright & Sutler's tender deal lacks
 negative cooling in a new player's hands from the first fight, which the Sparrowhawk's doubled
 heat already asks.
 
+## Claude's recommendations (19 October)
+
+Ryan's calls of 12 and 13 October stand as the design: the vents blast a random foe for the
+heat they take off it, the heat its own, the random target the rider's limit and the player's
+timing. What the session settles is below; every number is a placeholder until the stock pass
+prices heat, and none of the calls hinges on one.
+
+- **The pressure: 10 a round, as a passive rather than a stat.** The gain stays under the
+  smallest vent (20), so a vent is never a free blow: a boiler that gained only its 10 vents
+  10 and blasts 10, since the blast is the heat actually removed. Written as the passive's
+  own line ("at the start of its turn it builds 10 pressure") on a chassis with cooling 0,
+  it bends nothing: the validator keeps refusing negative cooling and the pipeline keeps its
+  floor, the hangar prints cooling 0 beside the passive's line, and a cooling module still
+  reads as it should (+5 cooling is 5 shed, then 10 built, a net 5 as -10 + 5 would give).
+  Ryan's -10 is the same number; the stat form is the bench's if he wants the minus sign on
+  the sheet. The upside and its cost are one passive (the blast, the pressure).
+- **The blast at the full heat vented.** The heat was paid for twice already, once as the gun's
+  cost and once as the overheat it threatens, and the random target and the die are the
+  limits (a vent must show; a d5 with two vents shows one two rounds in five). Half is the
+  lever if the solo row takes the formations, never the start. The heat row's test holds by
+  construction: the Steam Cannon every round is 40, 80, 120 against a maximum of 100, an
+  overheat by the third round, so the fights that matter force the vent.
+- **An ally's vent blasts nothing**, as Ryan set it; letting it blast (the Puffin's shield too,
+  which sheds 10) stays the first buff if the row reads weak, written as the row's exit.
+- **The random draw is over every live foe**, back rank included: the maker's indirect fire
+  in the passive's own register, a lone caster behind the line as likely as the brute before
+  it, which no Direct gun on the die can promise.
+- **What it makes the player do.** Run hot on purpose and time the vent: fire the Cannon into
+  the brute, vent when only decent targets stand or as the opener while every target is alike,
+  hold the vent a round to let the pressure build when the die allows it, and carry the
+  overheat risk through the Peak, where Burning adds heat after its vents (the next round's
+  fuel) and Scorched runs its guns hotter. The decision is when, and the price is the overheat.
+- **Names** (Ryan's to pick; Claude's candidates, the reserved list checked: Scorpion,
+  Tarantula and Huntsman are taken). The chassis: **Vinegaroon** (lean: the whip scorpion of
+  the American desert, eight legs, which sprays acid from its rear when provoked, so the
+  machine's name says what its vents do), Redback, Trapdoor, Harvestman, Camel Spider. The
+  passive: **Relief Valves** (lean), Blow-off Valves, Runaway Boiler. The locked gun: Steam
+  Cannon (the working name; the steampunk is the fantasy, Ryan's "crazy steampunk machine
+  venting everywhere", so a plain name may be right here), Superheater Cannon, Scald Lance.
+- **Numbers and kit, placeholders.** Heavy walker, move 20; hull 150, shield 30, armour 10,
+  heat 100, cooling 0 and 10 pressure a round, field recharge 15; four hardpoints and the
+  Steam Cannon, a d5; the Cannon Direct, flat 30, heat 30. Stand-in stock for tier two: two
+  Coolant Jackets (copies are allowed, and two vents on a d5 is the pressure's answer), the
+  Maxigun (strikes; a Flak piece once the family exists), the Suppression Battery (its 20
+  heat is fuel; whether it keeps Suppress is the stock pass's gate question). The stock pass
+  rewrites every stock.
+- **Tier two** (Ryan, 19 October), so the maker's tier one is the Prairie Dog, the Cassowary
+  and the Cottonmouth, and the boiler and the Cassowary do not both sit there.
+
+## Holes
+
+- The Wake Diffuser (Kestrel's vent of 10 with Rapid) on this chassis is a Rapid gun of 10:
+  one blast and a reroll every time it shows, its switch-off the limit; section 12's question
+  on the Diffuser gains this reason for Volatile or no Rapid at the stock pass.
+- The Entropy Condenser (the Arsenal's vent of 40 for 10 hull) is its biggest shot, which is
+  the cross-maker chase rule 4 wants and a hull price rule 2 likes.
+- The Sponsorship tally for the maker counts dice spent on entries that deal damage; a vent
+  that blasts should count, or the maker's own damage dealer feeds it nothing (the to-do's
+  Sponsorship line).
+- The bot scores a vent by the heat it removes and must learn the blast as a blow at its
+  expected value over the live foes, or the runner reads the boiler as a tank with a dead
+  die; the forecast must show the blast's number on the vent entry and mark every foe it may
+  land on, the star chip carrying the rule (the hold's notes).
+- Against a lone boss random is no limit, and the boiler is at its strongest where the game
+  wants its damage dealers to be: the number lever (half) is what answers it if the boss cells
+  fall too easily.
+- A blast spends a Shocked foe's double if the draw lands on it: the random target's cost
+  as much as its gift.
+
+## Bench
+
+- A target the player chooses (Claude, 12 October): set aside by Ryan, random being the limit
+  the rider needs, and timed.
+- A vent spent on an ally blasting with that ally's heat (13 October): set aside by Ryan, an
+  ally's vent being its own decision, and thematically odd.
+- Cooling -10 as a stat: set aside for the passive form, the same number with no floor bent;
+  Ryan's to take back if he wants the minus sign on the sheet.
+- Tier one (the reshuffle, 14 October): withdrawn by Ryan, 19 October.
+- The blast at half the heat vented: kept as the lever, not the start.
+- The blast carrying Burn (steam scalds): a rider on a rider, and the Arsenal's lean; set
+  aside.
+- An ally's vent blasting: the first buff if the row reads weak (the exit, not the design).
+
 ## Open for the session
 
-1. The proposal's questions: is cooling -10 the right pressure (the gain must stay under a
-   vent's number); the blast at the full heat vented, or half; when, if ever, an ally's vent
-   should blast.
+1. Ryan's calls on the above: the passive form of the pressure, the full blast, the names.
+2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
+   plain gun), the bible's row, the rules' chassis count and passive line, the README, the
+   to-do's engine and asset lines, this brief retired.
 
 ## Waits on
 
-The stock pass's heat prices, which set every vent's number and every weapon's heat.
+The stock pass's heat prices, which set every vent's number and every weapon's heat; the
+design does not.
 
 ## What the session hands back
 
