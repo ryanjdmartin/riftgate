@@ -1589,15 +1589,20 @@ def funnel_web(b):
     # it with a wedge brow, its face a dark visor band with two slit eyes (lamps, so they burn:
     # the rule, lean hotter), a brim over them; appliqué plates in the livery on the flanks, an
     # exhaust grille and two stubs at the tail, a whip antenna off the left rear corner.
-    with b.joint("head", (0.0, 0.0, 39.5), limits={"yaw": (-40.0, 40.0), "pitch": (-10.0, 8.0)}):
+    with b.joint("head", (0.0, 0.0, 39.5), limits={"yaw": (-40.0, 40.0), "pitch": (-20.0, 15.0)}):   # the pitch wide (the eighth notes): it looks up and down with its legs and its torso
         b.loft([(-22.0, _case(30.0, 39.0, 47.0, 4.0)), (10.0, _case(32.0, 39.0, 47.0, 4.0)), (22.0, _case(30.0, 40.0, 50.0, 3.0)), (30.0, _case(28.0, 42.0, 52.0, 3.0))], "steel.dark", "lower_hull")
         b.loft([(-24.0, _case(34.0, 46.0, 64.0, 8.0)), (-4.0, _case(38.0, 44.0, 68.0, 8.0)), (14.0, _case(38.0, 45.0, 68.0, 8.0)), (22.0, _case(32.0, 47.0, 64.0, 6.0)), (26.0, _case(28.0, 49.0, 61.0, 4.0))], "steel.plate", "upper_hull")
         b.box(-12.0, 12.0, 25.5, 27.5, 55.0, 60.5, "steel.dark", "visor_band")
         for x0, x1 in ((-11.5, -3.0), (3.0, 11.5)):
             b.box(x0, x1, 27.0, 28.4, 56.6, 59.8, "amber.light", "lamp")   # wide and proud of the band: a phone must read the eyes
         b.box(-13.0, 13.0, 24.0, 29.0, 60.5, 62.5, "steel.plate", "brim")
+        # The fins (the eighth notes: the flank plates stood out and said nothing, so they are
+        # embraced): a raked blade in the livery off each flank's rear, rising up and behind,
+        # in the spirit of a samurai's banner but iron, a little flair on a utilitarian maker;
+        # each on a dark bracket.
         for s in (-1.0, 1.0):
-            b.box(min(s * 19.0, s * 20.5), max(s * 19.0, s * 20.5), -20.0, -8.0, 48.0, 62.0, "livery.livery2", "applique")
+            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -16.0, -8.0, 50.0, 58.0, "steel.dark", "fin_bracket")
+            _beam(b, (s * 20.5, -12.0, 54.0), (s * 20.5, -27.0, 84.0), _sq(1.6, 14.0), _sq(1.0, 7.0), "livery.livery2", "fin")
         b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
         for s in (-1.0, 1.0):
             b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
@@ -1614,9 +1619,9 @@ def funnel_web(b):
         # The roof's one mount (hp_2): the howitzer on a low pedestal aft of the pods (the
         # seventh notes: not in line with the side mounts), on its elevation, the torso twist
         # its traverse.
-        b.box(-5.0, 5.0, -19.0, -9.0, 66.0, 70.0, "steel.dark", "top_mount")
-        with b.joint("elev_top", (0.0, -14.0, 70.0), limits=(-8.0, 30.0)):
-            b.stock("hp_2", (0.0, -12.0, 71.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
+        b.box(-5.0, 5.0, -19.0, -9.0, 63.0, 68.0, "steel.dark", "top_mount")   # sunk into the roof (the eighth notes: a gap showed)
+        with b.joint("elev_top", (0.0, -14.0, 68.0), limits=(-8.0, 30.0)):
+            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
         # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
         # on its front, what it carries on an elevation and never a traverse (the fourth
         # notes: the torso twist aims them). The left pod carries the Web Bomb (fixed, no
@@ -1626,7 +1631,7 @@ def funnel_web(b):
         for s in (-1.0, 1.0):
             px = s * 23.5
             b.box(min(s * 18.0, s * 29.0), max(s * 18.0, s * 29.0), -10.0, 8.0, 50.0, 64.0, "steel.plate", "pod")
-            b.box(min(s * 29.0, s * 29.8), max(s * 29.0, s * 29.8), -8.0, 6.0, 52.0, 62.0, "livery.livery2", "pod_panel")
+            b.box(min(s * 29.0, s * 29.2), max(s * 29.0, s * 29.2), -8.0, 6.0, 52.0, 62.0, "livery.livery2", "pod_panel")   # flush, a painted panel (the eighth notes)
             b.box(px - 1.5, px + 1.5, 8.0, 9.0, 61.5, 63.5, "amber.light", "sight")
             if s < 0:
                 D = Vector((0.0, math.cos(math.radians(10.0)), math.sin(math.radians(10.0))))
@@ -1647,43 +1652,90 @@ def funnel_web(b):
     # seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a body
     # key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k
     # the light added over rest. The feet stay planted while the hub moves (_planted); the
-    # coxae rest through the acts, since the solver plants from the hips.
+    # coxae rest through the acts, since the solver plants from the hips. The eighth notes:
+    # the guns clipped the fore legs' shins when the body twisted past twenty-five degrees,
+    # so a twist is the head's twenty and a shuffle of the legs for the rest, a little
+    # predatory skittering (`shuffle`: the body turns in quick steps, one foot lifted at a
+    # time with the turn advancing while it is up, so three feet slide a hair under each);
+    # and the vertical range is this walker's own, its legs and its torso mount looking up
+    # and down, so it rears, sinks and coils through the acts.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
     limbs = {leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")}
-    # The ambush: it sinks and leans in slowly, the eyes burning, holds, and lunges, the whole
-    # body dipping to bite; then it draws back up. The lunge on a sharp servo.
+
+    def shuffle(t0, t1, yaw0, yaw1, pose, order=("fl", "hr", "fr", "hl")):
+        """Frames for _steps turning the body from yaw0 to yaw1 over t0..t1 in quick steps,
+        one foot of `order` lifted at a time, the turn advancing while it is up; `pose` the
+        (dy, dz, pitch) held meanwhile. Returns [(frame, yaw), ...]."""
+        out, n = [], len(order)
+        dt = (t1 - t0) / n
+        for i, leg in enumerate(order):
+            a = t0 + i * dt
+            e = legs[leg][2]
+            f = 1.0 if leg[0] == "f" else -1.0
+            ya, yb = yaw0 + (yaw1 - yaw0) * i / n, yaw0 + (yaw1 - yaw0) * (i + 1) / n
+            out.append(((round(a + dt * 0.4, 3), pose, {leg: (e[1] + f * 2.0, e[2] + 7.0)}), round(ya + (yb - ya) * 0.5, 3)))
+            out.append(((round(a + dt * 0.95, 3), pose, {leg: (e[1], e[2])}), round(yb, 3)))
+        return out
+
+    def stepped(rows):
+        """Leg tracks and body keys from [(frame, yaw), ...] through _steps, the yaw put back
+        into the body keys (the solver works in each leg's plane and knows no yaw)."""
+        tracks, body = _steps(limbs, [fr for fr, _yaw in rows])
+        body = [(t, dx, dy, dz, yaw, pitch, roll) for (t, dx, dy, dz, _y, pitch, roll), (_fr, yaw) in zip(body, rows)]
+        return tracks, body
+
+    # The ambush: it sinks low and coils, the eyes burning, the whole body tipped down at
+    # what it watches, holds, and strikes, up and forward; then it draws back up. The strike
+    # on a sharp servo.
     tracks, body = _planted(list(limbs.values()),
-                            [(0.5, 0.0, 0.0, 0.0), (1.8, 0.0, -6.0, 2.0), (3.4, 0.0, -6.5, 2.4), (3.75, 6.0, -2.0, -2.5), (4.2, 6.0, -2.5, -2.0), (5.3, 0.0, 0.0, 0.0)])
-    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.8, -7.0, 0.0, 0.0), (3.4, -8.0, 0.0, 0.0), (3.75, 5.0, 0.0, 0.0), (4.2, 4.0, 0.0, 0.0), (5.3, 0.0, 0.0, 0.0)]
-    b.act("stalk", 5.8, tracks, body=body, heft=0.08,
-          glow=[(["lamp"], [(0.8, 0.0), (1.8, 5.0), (3.6, 7.0), (4.6, 0.0)])])
-    # The scan: the whole body turns slowly on its hub one way, the eyes up, holds staring,
-    # then the other.
-    b.act("scan", 6.4, {
-        "head": [(1.0, 0.0, 0.0, 0.0), (2.2, -4.0, 32.0, 0.0), (3.0, -5.0, 34.0, 0.0), (4.4, 3.0, -32.0, 0.0), (5.2, 4.0, -34.0, 0.0), (6.2, 0.0, 0.0, 0.0)],
-    }, glow=[(["lamp"], [(0.6, 0.0), (1.4, 6.0), (5.4, 6.0), (6.2, 0.0)])])
-    # Sighting in: the torso twists to bring the left pod's launcher to bear as it rises lit,
-    # holds, then twists the other way as the roof gun elevates.
-    b.act("sight_in", 8.0, {
-        "head": [(0.5, 0.0, 0.0, 0.0), (2.3, 0.0, 28.0, 0.0), (3.3, 0.0, 30.0, 0.0), (5.3, 0.0, -28.0, 0.0), (6.3, 0.0, -30.0, 0.0), (7.8, 0.0, 0.0, 0.0)],
-        "elev_l": [(1.3, 0.0), (2.3, 18.0), (3.3, 20.0), (4.4, 0.0)],
-        "elev_top": [(4.3, 0.0), (5.3, 22.0), (6.3, 24.0), (7.4, 0.0)],
-    }, glow=[(["web_tube_floor"], [(1.6, 0.0), (2.4, 7.0), (3.6, 7.0), (4.4, 0.0)])])
+                            [(0.5, 0.0, 0.0, 0.0), (2.0, 0.0, -10.0, 3.0), (3.6, 0.0, -11.0, 3.5), (3.9, 6.0, -3.0, -3.0), (4.3, 6.0, -3.5, -2.5), (5.6, 0.0, 0.0, 0.0)])
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.0, -16.0, 0.0, 0.0), (3.6, -18.0, 0.0, 0.0), (3.9, 9.0, 0.0, 0.0), (4.3, 7.0, 0.0, 0.0), (5.6, 0.0, 0.0, 0.0)]
+    b.act("stalk", 6.2, tracks, body=body, heft=0.08,
+          glow=[(["lamp"], [(0.8, 0.0), (2.0, 5.0), (3.8, 7.0), (4.9, 0.0)])])
+    # The scan: it rears up on its legs looking up, shuffles round to the right and stares,
+    # sinks low looking down while it shuffles round to the left and stares, and comes back.
+    REAR, LOW = (0.0, 8.0, 3.0), (0.0, -8.0, -3.0)
+    rows = [((0.5, (0.0, 0.0, 0.0), {}), 0.0), ((1.6, REAR, {}), 0.0)]
+    rows += shuffle(1.7, 3.4, 0.0, 12.0, REAR)
+    rows += [((4.6, REAR, {}), 12.0)]
+    rows += shuffle(4.7, 6.3, 12.0, -12.0, LOW, order=("hl", "fr", "hr", "fl"))
+    rows += [((7.4, LOW, {}), -12.0)]
+    rows += shuffle(7.5, 8.9, -12.0, 0.0, (0.0, 0.0, 0.0))
+    rows += [((9.4, (0.0, 0.0, 0.0), {}), 0.0)]
+    tracks, body = stepped(rows)
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.6, 12.0, 0.0, 0.0), (3.4, 12.0, 20.0, 0.0), (4.6, 13.0, 22.0, 0.0), (6.3, -14.0, -20.0, 0.0), (7.4, -15.0, -22.0, 0.0), (9.0, 0.0, 0.0, 0.0)]
+    b.act("scan", 10.0, tracks, body=body,
+          glow=[(["lamp"], [(1.0, 0.0), (1.8, 6.0), (8.6, 6.0), (9.4, 0.0)])])
+    # Sighting in: it shuffles and twists to bring the launcher to bear as it rises lit,
+    # holds, then shuffles and twists the other way, rearing as the roof gun elevates.
+    rows = [((0.5, (0.0, 0.0, 0.0), {}), 0.0)]
+    rows += shuffle(0.6, 2.0, 0.0, 8.0, (0.0, 0.0, 0.0))
+    rows += [((3.4, (0.0, 0.0, 0.0), {}), 8.0)]
+    rows += shuffle(3.6, 5.2, 8.0, -8.0, (0.0, 3.0, 1.0), order=("hl", "fr", "hr", "fl"))
+    rows += [((5.4, (0.0, 6.0, 2.0), {}), -8.0), ((6.4, (0.0, 6.5, 2.0), {}), -8.0)]
+    rows += shuffle(6.5, 7.9, -8.0, 0.0, (0.0, 0.0, 0.0))
+    rows += [((8.2, (0.0, 0.0, 0.0), {}), 0.0)]
+    tracks, body = stepped(rows)
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.2, 0.0, 20.0, 0.0), (3.4, 0.0, 21.0, 0.0), (5.4, 6.0, -20.0, 0.0), (6.4, 7.0, -21.0, 0.0), (7.9, 0.0, 0.0, 0.0)]
+    tracks["elev_l"] = [(1.3, 0.0), (2.3, 18.0), (3.3, 20.0), (4.4, 0.0)]
+    tracks["elev_top"] = [(4.3, 0.0), (5.3, 22.0), (6.3, 24.0), (7.4, 0.0)]
+    b.act("sight_in", 8.6, tracks, body=body,
+          glow=[(["web_tube_floor"], [(1.6, 0.0), (2.4, 7.0), (3.6, 7.0), (4.4, 0.0)])])
     # The probe: the fore-left leg lifts and reaches ahead, taps the ground twice, and comes
-    # back to its stance, the hub settling back a hair off it (_steps: the feet in their own
-    # planes, the others planted); the head follows the foot.
+    # back to its stance, the body sinking a little and tipping down to look at what it taps
+    # (_steps: the feet in their own planes, the others planted).
     fl = legs["fl"][2]
     tracks, body = _steps(limbs, [
         (0.6, (0.0, 0.0, 0.0), {}),
-        (1.3, (-1.5, -0.6, 0.4), {"fl": (fl[1] + 5.0, fl[2] + 10.0)}),
-        (2.0, (-1.5, -0.6, 0.4), {"fl": (fl[1] + 12.0, fl[2] + 0.0)}),
-        (2.5, (-1.5, -0.6, 0.4), {"fl": (fl[1] + 12.0, fl[2] + 6.0)}),
-        (2.9, (-1.5, -0.6, 0.4), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
-        (3.7, (-1.5, -0.6, 0.4), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
-        (4.3, (-0.8, -0.3, 0.2), {"fl": (fl[1] + 5.0, fl[2] + 9.0)}),
+        (1.3, (-1.5, -2.5, 1.5), {"fl": (fl[1] + 5.0, fl[2] + 10.0)}),
+        (2.0, (-1.5, -4.0, 2.5), {"fl": (fl[1] + 12.0, fl[2] + 0.0)}),
+        (2.5, (-1.5, -4.0, 2.5), {"fl": (fl[1] + 12.0, fl[2] + 6.0)}),
+        (2.9, (-1.5, -4.5, 2.5), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
+        (3.7, (-1.5, -4.5, 2.5), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
+        (4.3, (-0.8, -2.0, 1.0), {"fl": (fl[1] + 5.0, fl[2] + 9.0)}),
         (4.9, (0.0, 0.0, 0.0), {"fl": (fl[1], fl[2])}),
     ])
-    tracks["head"] = [(0.8, 0.0, 0.0, 0.0), (1.6, -6.0, 14.0, 0.0), (3.7, -7.0, 16.0, 0.0), (4.9, 0.0, 0.0, 0.0)]
+    tracks["head"] = [(0.8, 0.0, 0.0, 0.0), (2.0, -14.0, 12.0, 0.0), (3.7, -15.0, 14.0, 0.0), (4.9, 0.0, 0.0, 0.0)]
     b.act("probe", 5.4, tracks, body=body)
     # Movement, a creep (Ryan, 19 October: walk creepy, the upper legs in the walk beside the
     # solver, the Ammit's way): every foot takes one step a stride, out of step, hind then
@@ -1704,13 +1756,7 @@ def funnel_web(b):
                  coxa=("coxa_" + leg, roots[leg], _coxa_row(DUTY, 10.0)))
             for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
     tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
-    # The row at its extreme, as an option for the hangar's Walk (Ryan, the seventh notes:
-    # what would the extreme look like?): the coxae swinging the whole twenty degrees, the
-    # thighs nearly still, the legs sweeping from their bases.
-    extreme = [dict(l, coxa=(l["coxa"][0], l["coxa"][1], _coxa_row(DUTY, 20.0))) for l in walk]
-    xtracks, xbody, xstride = _plant(extreme, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
-    b.gait_option("row_extreme", stride=xstride, tracks=xtracks, body=xbody, ease="linear")
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")   # the row at twenty degrees was an option for a day (the seventh notes); Ryan could not tell the two apart, so it is gone (the eighth)
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"
