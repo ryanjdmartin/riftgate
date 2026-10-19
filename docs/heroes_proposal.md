@@ -111,8 +111,10 @@ name, as the Thief keeps its own, and every look is ours.
   came out axe heads and are set aside, and it drifted her eyes red and the steel blue-grey;
   the eyes relit after, while a recolour of the steel greyed the whole staff, shaft and all, so
   it is set aside and the tint stays, to come off at the cut or by a later pass). The smoke's
-  three homes, his call, each twice on the eyes-lit base: gone,
-  wreathing the lower blade, rising from her eyes.
+  three homes, his call, rendered twice each on the eyes-lit base and one of each on the picker
+  (gone, wreathing the lower blade, rising from her eyes): two of the six turned her eyes yellow
+  and the hotter eye-smoke tinted her whole face, set aside, so a hotter version of the home he
+  picks is the next edit.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
