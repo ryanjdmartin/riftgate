@@ -379,7 +379,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   fourth picks (19 October) each carry one edit more (the Matador's jaw, Floraison's clipped
   spines, Skaði's lower half as the edit's, Surtr's sword alone after a two-part edit broke it,
   the Augur's omen dark then her blades matched, chained), the fifth round; the heroes' costume
-  variety pass is a to-do, the Augur's omen dark in the bible's art row (v0.204, live, merged onto another session's v0.202). Its database
+  variety pass is a to-do, the Augur's omen dark in the bible's art row (v0.204, live, merged onto another session's v0.202).
+  Ryan's ask of 19 October, the staff slanted so the lower blade goes behind her legs, is rendered
+  (three usable each size) and on the picker beside the upright picks and his last pick; the
+  slant gains the hero's body about a tenth in the cut, the chibi little. The size worry that
+  started it was Claude's misreading (the cut crops to the figure's box, so a render's margin
+  costs nothing), corrected in the heroes' proposal and the picker memory. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account

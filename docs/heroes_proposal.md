@@ -72,7 +72,19 @@ name, as the Thief keeps its own, and every look is ours.
   (0.7) whose prompt names two mirror-image blades, the lower one below her boots. It worked: with
   room, the lower blade came out a full crescent at both sizes, first time; at 0.7 the figure
   drifted (hair, costume, face), so the candidates nearest the pick are kept (the hero's 3, the
-  chibi's 2) and a tighter pass (0.85) ran beside them, which held the figure and kept both crescents (four each, the hero's 5 and the chibi's 5 the nearest the pick); all on the picker for his pick.
+  chibi's 2) and a tighter pass (0.85) ran beside them, which held the figure and kept both crescents (four each, the hero's 5 and the chibi's 5 the nearest the pick); all on the picker for his pick, his last pick beside them to
+  compare. The size worry was Claude's error, found on 19 October by measuring: the cut crops to
+  the figure's own box before scaling, so the render's white margin costs nothing, and the new
+  picks cut within 3% of the old (a body of about 115 px of 144 against 118; 38 of 48 against 39)
+  and wider. Ryan's lever for a bigger body than either is the staff slanted thirty to forty
+  degrees, pivoting at its top so the lower blade goes behind her legs: the shaft's vertical run
+  shrinks and the figure fills more of the frame. Rendered from her own prompt with the slant
+  described (fresh takes; image to image at 0.5 kept the staff upright, so a change of
+  composition is a fresh render too), three usable each (a fourth drew two weapons crossed), on
+  the picker beside the upright ones. Measured in the cut: the slant takes the hero's body from
+  about 115 to about 128 px of 144 and the sprite's width from 79 to 93 of 96, the box's aspect
+  now the frame's; the chibi gains little (29 to 31 px wide, the body a point or two), its frame
+  being squarer already.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
