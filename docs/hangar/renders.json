@@ -425,8 +425,8 @@
    }
   },
   "funnel_web": {
-   "when": "First pass, 19 October.",
-   "note": "From the content's fantasy: a riveted carapace and a boiler abdomen on four arched legs, the Maxigun as fangs under the chin, outward-only shoulder turrets, the dish on the abdomen, the Web Bomb a lit four-tube battery pitched up on its crown. Rendered bare; the lunge of its stalk and a stride of its walk beside the front and rear. Judge the acts and the walk running in the Animation tab.",
+   "when": "Second cut, 19 October.",
+   "note": "Ryan's first notes (19 October): the spider homage too literal, more war machine; an abdomen hung out behind would unbalance a real machine, so the legs go under the mass; more leg to body; geometry of the hull's own for the gear, so nothing overlaps; practical feet. The second cut: one low ironclad hull on four long arched legs out of cuffs at its corners, broad flat feet with toe plates; a cupola with a visor and a lamp bar on the bow, the Maxigun in a mantlet under the nose, a bolted sponson each flank for the outward-only turrets, a boiler sunk into the stern carrying the web battery, the stack off its left shoulder, the dish on a mast at the right quarter. Rendered bare; the lunge of its stalk and a side-on stride of its walk beside the front and rear. Judge the acts and the walk running in the Animation tab.",
    "images": [
     {
      "file": "funnel_web/funnel_web_front.png",
@@ -442,9 +442,30 @@
     },
     {
      "file": "funnel_web/funnel_web_walk.png",
-     "alt": "funnel-web, a stride of its walk"
+     "alt": "funnel-web, a stride of its walk, side on"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the first pass, 19 October, a mechanical spider (a carapace and an abdomen hung out behind, the legs at the front body, spindly clawed feet); Ryan's notes the same day sent it toward a war machine.",
+    "images": [
+     {
+      "file": "funnel_web/before_funnel_web_front.png",
+      "alt": "Earlier: funnel-web, front"
+     },
+     {
+      "file": "funnel_web/before_funnel_web_rear.png",
+      "alt": "Earlier: funnel-web, rear"
+     },
+     {
+      "file": "funnel_web/before_funnel_web_stalk.png",
+      "alt": "Earlier: funnel-web, the lunge of its stalk"
+     },
+     {
+      "file": "funnel_web/before_funnel_web_walk.png",
+      "alt": "Earlier: funnel-web, a stride of its walk"
+     }
+    ]
+   }
   }
  }
 }

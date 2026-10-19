@@ -14,8 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 496 tests, 21,789 checks, green on `ccr-ffcf75fa-3gkbz9` (19 October, the funnel-web's
-  assets, the rig test covering its model; 20,269 after its engine, over main's 481 and 20,153 of
+- Tests: 496 tests, 21,787 checks, green on `ccr-ffcf75fa-3gkbz9` (19 October, the funnel-web's
+  assets, the rig test covering its model's second cut; 20,269 after its engine, over main's 481 and 20,153 of
   the Kestrel session's last merge).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
@@ -29,7 +29,7 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 and 19 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.201): to merge into
+  and page; the to-do's engine and assets lines ticked; the bible at v0.202): to merge into
   main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -80,16 +80,23 @@ document's job and every command are in `README.md`.
 ## The game as left (18 October)
 
 - 19 October, the funnel-web's assets (`ccr-ffcf75fa-3gkbz9`): its lowforge model
-  (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron: a riveted carapace and a boiler
-  abdomen on a waist, four arched legs on hip, knee and ankle with clawed pads, a head on a
-  neck joint with four lamp eyes, the Maxigun as fangs under the chin on a drop joint,
-  outward-only shoulder turrets for the Howitzer and the Twin Autoguns, the deflector's dish on
-  the abdomen's front, the Web Bomb a fixed four-tube battery on its crown with lit floors,
-  pitched up on its own elevation), 18 joints, four acts (`stalk`, a sink and a lunge on a
-  sharp servo; `scan`; `swivel_weapons`; `probe`, a fore leg tapping ahead), a four-beat walk
-  from `_plant` (hind then fore on a side, duty 0.7, stride 37) and the cornering numbers; the
-  rig test covers it; the hangar's renders (front, rear, the lunge, a stride) and the page
-  republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
+  (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron), two cuts in the day. The first
+  was a mechanical spider (a carapace and an abdomen hung out behind, the legs at the front
+  body, spindly clawed feet); Ryan's notes on it: too literal, a war machine; an abdomen like
+  that unbalances a real machine, so the legs go under the mass, centred; more leg to body;
+  the hull needs geometry of its own for the gear so nothing overlaps; practical feet. The
+  second cut, as it stands: one low ironclad hull with a wedge bow on four long arched legs
+  out of cuffs at its corners (hip, knee and ankle each), broad flat feet on soles with toe
+  plates; a cupola with a visor and a lamp bar on the bow (the `head` joint), the Maxigun in a
+  mantlet under the nose on `elev_fang`, a bolted sponson each flank carrying an outward-only
+  turret (the Howitzer left on its elevation, the Twin Autoguns right), a boiler sunk into the
+  stern carrying the Web Bomb's lit four-tube battery on `elev_rack`, the stack off its left
+  shoulder, the dish on a mast at the right quarter above the turrets; 18 joints, four acts
+  (`stalk`, a sink and a lunge on a sharp servo; `scan`; `swivel_weapons`; `probe`, a fore leg
+  tapping ahead), a four-beat walk from `_plant` (hind then fore on a side, duty 0.7, stride
+  43) and the cornering numbers; the rig test covers it; the hangar's renders (front, rear,
+  the lunge, a side-on stride; the first cut under "before") and the page republished.
+  Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
   to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
   byte-different and the import four Prairie Dog textures, restore both rather than commit.
 - 18 October, the funnel-web's engine (`ccr-ffcf75fa-3gkbz9`): the chassis is playable, its
@@ -305,8 +312,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.201 (19 October, `ccr-ffcf75fa-3gkbz9`:
-  the funnel-web's model in its row, the size row and the motion table, merged onto another
+  `docs/design-bible.html` after every change. Live: v0.202 (19 October, `ccr-ffcf75fa-3gkbz9`:
+  the funnel-web's model in its row, its second cut on Ryan's first notes, the size row and the
+  motion table, merged onto another
   session's live v0.200 of 18 October, whose foe-art row carries the image-to-image route, Ryan's
   18 October call, now in this branch's file too), over v0.199 (18 October,
   the same branch:
@@ -360,7 +368,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 October with the funnel-web's model, rig sidecar, pins and renders and
-  the content that had moved (`ccr-ffcf75fa-3gkbz9`). Its database
+  the content that had moved, and again with its second cut (`ccr-ffcf75fa-3gkbz9`). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
