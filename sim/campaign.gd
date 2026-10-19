@@ -130,7 +130,9 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 ## The starting draft (Ryan, 7 October): a tender. Each city maker offers one of its
 ## tier-one chassis, drawn by the run's seed, in its stock loadout, and the player takes
 ## START_MACHINES of them. The Arsenal never offers; a maker with no tier-one chassis
-## offers nothing. The same seed always offers the same machines.
+## offers nothing, and a chassis the engine cannot field yet (its passive or a locked piece
+## planned; ContentDB.chassis_runnable) is never dealt, so a maker whose only tier one is a
+## draft offers nothing until it lands. The same seed always offers the same machines.
 static func tender(content: ContentDB, seed_arg: int) -> Array:
 	var r := RandomNumberGenerator.new()
 	r.seed = seed_arg
@@ -139,7 +141,7 @@ static func tender(content: ContentDB, seed_arg: int) -> Array:
 	for mk in content.city_makers():
 		var pool: Array = []
 		for id in tier_one:
-			if str(content.chassis[id].get("maker", "")) == str(mk):
+			if str(content.chassis[id].get("maker", "")) == str(mk) and content.chassis_runnable(str(id)):
 				pool.append(str(id))
 		if not pool.is_empty():
 			out.append(pool[r.randi_range(0, pool.size() - 1)])

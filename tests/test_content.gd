@@ -370,6 +370,29 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
+func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var built: Dictionary = db.chassis["sparrowhawk"].duplicate(true)   # its passive is built
+	db.chassis["built"] = built
+	assert_true(db.chassis_runnable("built"), "a chassis whose passive is built can be fielded")
+	var drafted: Dictionary = built.duplicate(true)
+	drafted["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned", "effects": []}
+	db.chassis["drafted"] = drafted
+	assert_false(db.chassis_runnable("drafted"), "a planned passive keeps the chassis off the table")
+	var locked: Dictionary = built.duplicate(true)
+	locked["passive"] = null
+	locked["fixed"] = ["draft_piece"]
+	var piece: Dictionary = db.components["twin_autoguns"].duplicate(true)
+	piece["status"] = "planned"
+	db.components["draft_piece"] = piece
+	db.chassis["locked"] = locked
+	assert_false(db.chassis_runnable("locked"), "a planned locked piece keeps the chassis off the table")
+	for id in ["built", "drafted", "locked"]:
+		for e in db.validate():
+			assert_false(e.begins_with("chassis %s" % id), "the draft validates clean: %s" % e)
+
+
 func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

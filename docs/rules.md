@@ -390,7 +390,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   maker. A city's gate is 200, the capital's 300. The capital's gate is the run's life: the
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
-  loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
+  loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
   every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played

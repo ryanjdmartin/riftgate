@@ -88,9 +88,40 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 		assert_eq(Campaign.tender(db, seed_value), offered, "a seed always offers the same")
 	var city_tier_one := 0
 	for id in db.chassis_of_tier(1):
-		if str(db.chassis[id].get("maker", "")) != db.capital_maker():
+		if str(db.chassis[id].get("maker", "")) != db.capital_maker() and db.chassis_runnable(id):
 			city_tier_one += 1
-	assert_eq(seen.size(), city_tier_one, "across seeds every city maker's tier-one machine is offered")
+	assert_eq(seen.size(), city_tier_one, "across seeds every city maker's tier-one machine the engine can field is offered")
+
+
+func test_the_tender_never_deals_a_planned_chassis() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var mk := str(db.city_makers()[0])
+	var base := ""
+	for id in db.chassis_of_tier(1):
+		if str(db.chassis[id].get("maker", "")) == mk:
+			base = str(id)
+			break
+	assert_true(not base.is_empty(), "the maker has a tier one to copy")
+	var draft: Dictionary = db.chassis[base].duplicate(true)
+	draft["name"] = "Draft"
+	draft["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned", "effects": []}
+	db.chassis["draft"] = draft
+	for seed_value in range(1, 41):
+		var offered := Campaign.tender(db, seed_value)
+		assert_false(offered.has("draft"), "a chassis whose passive is planned is never dealt")
+		var from_maker := 0
+		for id in offered:
+			if str(db.chassis[id].get("maker", "")) == mk:
+				from_maker += 1
+		assert_eq(from_maker, 1, "the maker still offers one of its built tier ones")
+	# The maker's only tier one planned: it offers nothing until the draft lands.
+	for id in db.chassis_of_tier(1):
+		if id != "draft" and str(db.chassis[id].get("maker", "")) == mk:
+			db.chassis[id]["tier"] = 2
+	var offered := Campaign.tender(db, 5)
+	for id in offered:
+		assert_true(str(db.chassis[id].get("maker", "")) != mk, "a maker whose only tier one is a draft offers nothing")
 
 
 func test_the_content_names_exactly_one_capital() -> void:

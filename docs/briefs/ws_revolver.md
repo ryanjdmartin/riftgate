@@ -167,10 +167,11 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 
 1. The buff's name, and the chassis's and the Spin's (Ryan's; working names until then).
 2. The glass deal: accept that the maker's tender deal holds no front, or the Clydesdale down.
-3. The stand-in stock; then the go, which also needs the tender to skip a chassis whose
-   passive is planned (today `chassis_of_tier(1)` deals every tier one, so planned content at
-   tier one would put a plain d6 with a dead Spin in the draft): one line and a test, or the
-   content lands when the die mode does.
+3. The stand-in stock; then the go. What the go needed of the engine is built (19 October):
+   the tender skips a chassis whose passive or locked piece is planned, as do the campaign
+   and balance runners (`ContentDB.chassis_runnable`), so the revolver can land planned at
+   tier one without putting a plain d6 with a dead Spin in the draft; until its die mode is
+   built, the maker's deal is the Prairie Dog.
 
 ## Holes
 

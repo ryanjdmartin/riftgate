@@ -521,13 +521,30 @@ func is_fixed(component_id: String) -> bool:
 	return false
 
 
-## The chassis of one tier, in content order.
+## The chassis of one tier, in content order, planned drafts included (chassis_runnable
+## says which the engine can field).
 func chassis_of_tier(t: int) -> Array:
 	var out: Array = []
 	for id in chassis.keys():
 		if int(chassis[id].get("tier", 0)) == t:
 			out.append(str(id))
 	return out
+
+
+## Can the engine field this chassis today? Not while its passive or one of its locked
+## components is a planned draft (19 October): a draft is kept in content so it can be written
+## ahead of its engine, but dealt it would put a plain die with a dead piece in the player's
+## hands, and measured it would read the body without the kit. The tender, the campaign
+## runner and the balance runner skip what this refuses.
+func chassis_runnable(chassis_id: String) -> bool:
+	var c: Dictionary = chassis.get(chassis_id, {})
+	var p = c.get("passive")
+	if p is Dictionary and str(p.get("status", "implemented")) == "planned":
+		return false
+	for cid in c.get("fixed", []):
+		if str(components.get(cid, {}).get("status", "implemented")) == "planned":
+			return false
+	return true
 
 
 ## The blueprints a run starts with: every tier-one component (Ryan, 7 October: each

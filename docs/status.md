@@ -36,12 +36,16 @@ document's job and every command are in `README.md`.
   spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
   proposal, its third round), the to-do's review line under the design sessions (Armoured and
   Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
-- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
+- `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
   merged into main the same day, so a session can start on its engine and assets (the to-do's
   two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
-  boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
+  boiler, the fan-boat, the Prairie Dog, then the maker's tiers). The tender, the campaign
+  runner and the balance runner skip a chassis whose passive or locked piece is planned
+  (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
+  planned at tier one without being dealt; until their engine lands the maker's deal is the
+  Prairie Dog.
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
