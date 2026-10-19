@@ -59,12 +59,17 @@ Useless against a lone boss, which does not matter for a tier-two team piece who
 still works there. Edges for its row: a massive foe fills its column and does not swap, so
 bosses are out by rule; a swap with an empty front slot is a pull. Engine: a foe moving
 between slots, which Minos's rank turn also needs. Ryan, 19 October: "Dingo seems good like
-that."
+that." Later that day: "Dingo - probably isn't a real winch since that doesn't make sense.
+Can't go that low tech. More teleporter -ey": a cable cannot swap two things, so the piece is a
+teleporter in the maker's register, which for a teleporter is wire, the telegraph. Claude's
+candidates: Switchboard (an operator swapping two lines, the rule in a word; lean), Telegraph
+Transposer; the fantasy the pack animal's dispatcher.
 
 ## Open for the session
 
-1. The winch's name; then the go (the swap planned in content; the tier change with the first
-   dealable tier one of the revolver and the fan-boat, or the stock pass).
+1. The swap piece's name (not a winch: Switchboard, Claude's lean); then the go (the swap
+   planned in content; the tier change with the first dealable tier one of the revolver and
+   the fan-boat, or the stock pass).
 2. Its stock beside the Shocking harpoon (the Coolant Dump retires in the stock pass).
 
 ## What the session hands back

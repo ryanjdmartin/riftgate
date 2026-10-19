@@ -4,7 +4,7 @@ The session reworks the fan-boat hovercraft, whose weapons all fire its deck gun
 their own keywords, so that its identity shows at its tier.
 
 **Status**: settled in chat (Ryan, 19 October: versatility of reach, the shape by the aim, tier
-one), the go pending; open: the deck gun's number and name, the stock. **Maker**:
+one, nothing locked, the deck gun's 15), the go pending; open: its names, the stock. **Maker**:
 Wainwright & Sutler. **Proposed tier**: one in its proposal; two in the analysis and the
 reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 4.
 
@@ -15,14 +15,18 @@ reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` se
   draft compositions.
 - **Passive**: everything it fires goes through its deck gun: each weapon fires the deck gun's
   shot, with its own keywords.
-- **The deck gun** (locked; the Fowling Cannon was Claude's working name, the name Ryan's):
-  Indirect, flat 15, heat 5, Ballistic. Fired at the back rank its shot punches through
+- **The deck gun** is the passive's rule, not an entry on the die (Ryan, 19 October: "the
+  deck gun isn't actually a locked component"), so the machine locks nothing, as the
+  Clydesdale and the gunship do: the maker's three versatilities all lock nothing. Its shot:
+  Indirect, flat 15 (Ryan: 15 is ok), heat 5, Ballistic. Fired at the back rank its shot punches through
   (Penetrate, the front foe of that column too); fired at the front rank it sprays (Spread, the
   row's neighbours). The shape follows the aim, so a column or a row is the decision on every
   shot. The number is the lever at tier one.
-- **The die**: three hardpoints, a d4; stock basics (two basic guns, which become area shots
+- **The die**: four hardpoints and nothing locked, a d4 of hardpoints like the Sparrowhawk's
+  (the validator's floor is a die of four); stock basics (basic guns, which become area shots
   at the deck gun's number, and a basic shield, which equipment being no weapon fires as
-  itself).
+  itself). The 12 October tier row gives every tier one a locked piece; it is reworded at the
+  tiers item, for the Clydesdale and the Armadillo already.
 - **Numbers** (placeholders): light, hover, move 50; hull 60, shield 30, armour 0, heat 60,
   cooling 10, field recharge 30.
 - **Engine**: the passive rewrites every weapon it spends to the deck gun's number, reach and
@@ -131,6 +135,13 @@ one pays in the number and the light hull, and the aim is its interest.
   target based version can be done, then let's do that."
 - "Obviously it's able to spread status well, and that can step on Aphelion's toes, but I think
   that's fine. Status spread isn't a monopy, nor is it a complete identity."
+- 19 October, later: "Fan boat - 15 is ok, needs a cool name for the passive. What's the die
+  count? Since the deck gun isn't actually a locked component. Name - some kind of snake, maybe
+  aquatic?" Claude's candidates, the reserved names checked (Copperhead, the mambas, the vipers
+  and the adders are taken): the chassis Cottonmouth (the water moccasin, the bayou's snake and
+  the airboat's home; lean), Moccasin, Mud Snake; the passive Common Breech (every shell loads
+  through one breech; lean), Swivel Mount (the shape follows the aim, a swivel gun being a
+  boat gun), or the gun's own name, Punt Gun or Fowling Piece.
 
 ## Why it went back (the analysis, 14 October)
 
@@ -144,7 +155,7 @@ last three keywords its other weapons fired) makes a better tier two.
 
 ## Open for the session
 
-1. The deck gun's number at tier one (15 the placeholder, the lever) and its heat; its name.
+1. The names (the chassis, the passive); the deck gun's heat.
 2. The stand-in stock (basics); then the go.
 3. The proposal's holes: Rapid shells at the deck gun's number are its strongest build (the
    deck gun's number is the lever); a shell's own heat no longer counts.

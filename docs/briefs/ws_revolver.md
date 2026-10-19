@@ -51,9 +51,13 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   that ever makes a free chain gets a limiter of its own.
   The two-strike Hogleg is retired (Claude's name and shape from the retired proposal; no
   reason for the double hit).
-- **Numbers**, the proposal's placeholders: medium walker, move 40; hull 90 (Claude's lean:
-  100 or 110 if it is the tender's front), shield 40, armour 5, heat 60, cooling 5, field
-  recharge 20. Five hardpoints, a six-chamber die. Stand-in stock at tier one, basics only:
+- **Numbers**, placeholders: medium walker, move 40; squishy (Ryan, 19 October: "we're
+  packing a lot of firepower in it"), so hull 80, shield 30, armour 0 (Claude's placeholders,
+  the Stingray's class of body), heat 60, cooling 5, field recharge 20. The consequence: the
+  maker's tender deal (the Prairie Dog, the revolver, the fan-boat) holds no front, the
+  analysis's finding returned; Claude's lean is to accept it as the maker's deal (reach and
+  damage, known to the player), the Clydesdale down being the body lever if a front is ever
+  wanted. Five hardpoints, a six-chamber die. Stand-in stock at tier one, basics only:
   Twin Autoguns, Howitzer, Blast Door, Ankle Mortar, Coolant Jacket.
 - **Showing it**: the die's places are numbered (the Roman numerals, built), so the chambers
   come free; the next-chamber chip, the hold's ring (the entries in order, the current lit, an
@@ -98,6 +102,8 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   the turn ended without an attack."
 - 19 October: "I think we can allow the high-roll for the revolver spin, landing on itself,
   as an exception to the global rule."
+- 19 October: "Revolver probably needs to be squishy since we're packing a lot of firepower
+  in it, yes?"
 - 18 October, the principle (the bible's one-off row, section 2): "If a situation occurs where
   it seems reasonable to propose a one-off exception for balance reasons, look into the root
   causes as to why that seems like a reasonable solution."
@@ -159,8 +165,8 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 
 ## Open
 
-1. Hull 90 or 100 (Claude's lean 100, a tender front).
-2. The buff's name.
+1. The buff's name, and the chassis's and the Spin's (Ryan's; working names until then).
+2. The glass deal: accept that the maker's tender deal holds no front, or the Clydesdale down.
 3. The stand-in stock; then the go, which also needs the tender to skip a chassis whose
    passive is planned (today `chassis_of_tier(1)` deals every tier one, so planned content at
    tier one would put a plain d6 with a dead Spin in the draft): one line and a test, or the
