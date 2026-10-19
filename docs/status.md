@@ -66,9 +66,13 @@ document's job and every command are in `README.md`.
   first hotter and harder, the bust the overheat; Ryan found the free passes not deep enough),
   and the Sparrowhawk on Ryan's own sketch (a d3, doubled, flat heat a shot, dark two rounds,
   a kill bringing every weapon back and another action, the heat rising a kill) with a toy in
-  its brief showing it tunes. Docs only; nothing built, nothing in content. To resume: Ryan's
-  calls in the three Kestrel briefs open, then on his go the records each brief's "What the
-  session hands back" lists.
+  its brief showing it tunes. The seventh round (19 October): the Sparrowhawk's hull 30
+  decided, its tax per attack that killed, its lock a plain reset gun in the execute's place
+  (the toy: the chain capped at two, the kills unmoved, hungrier for rerolls), the Pinion
+  Driver back to the pool; the platform's package laid out around Ryan's shape (growth a roll
+  of its die, lock or ride; a throttle; a main battery with a bust face). Docs only; nothing
+  built, nothing in content. To resume: Ryan's calls in the three Kestrel briefs open, then on
+  his go the records each brief's "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

@@ -132,16 +132,55 @@ sets how fast a fight's kills get dear (four kills and every shot costs 30); coo
 trickle after the burst round; the dark rounds set the boss-fight floor and what the rerolls
 buy back; the hull sets the size of the accident; the double and the die size the magnitude.
 
+- Ryan, 19 October, later: "Go sparrow 30, and I would reword the mechanic to 'after an
+  attack, if it killed something' to avoid the 15 heat tax. Also, on a d3, one locked
+  component being an execute might not fly. The reset could be on the locked component, but
+  not sure if that works or not."
+- Claude, 19 October: hull 30 decided; the tax a stack an attack that killed, not a kill. The
+  execute on a d3 is a third of every roll spent on a situational entry (a flat 10 doubled is
+  20 with nothing hurt, and a goblin has 30), so the lock becomes a plain reset gun and the
+  Pinion Driver goes back to the pool as a Kestrel blueprint any Kestrel build may stock. The
+  reset on the lock works, and the toy says what it changes: the chain caps at two actions a
+  round (the lock kills, everything comes back, one more gun fires, and the free roll never
+  lands on the lock just spent), which is "kills a couple of things" exactly; the kills a fight
+  hardly move, since the heat caps the chain near two anyway; the stock guns stay dark after
+  their shots, so it is hungrier for the team's rerolls, fishing for the live lock as well as
+  fixing dead rolls, which is the reroll lean paying in; and the rule text parts cleanly, the
+  passive one idea (over-tuned guns that jam) and the lock the trigger. Claude's lean: the
+  reset on the lock, the tax on the passive so every kill costs the fight something.
+
+## The toy, round three (19 October)
+
+The same toy with the lock either a reset gun ("lock": only its kill brings every weapon back
+and gives another action) or a plain gun under a passive that resets on any kill ("any"); a
+team reroll on it fixes a dead roll, and "fish" spends one to find the live lock when another
+entry shows. F 10, X 5 an attack that killed, H 40, hull 30, dark two rounds, cooling 10, six
+rounds, 8,000 fights, cautious unless marked.
+
+| Fight | Shape | Rerolls on it | Kills a fight | Rounds with a chain | Longest chain | Dead rounds |
+|---|---|---|---|---|---|---|
+| trash | any | 0 | 3.8 | 1.0 | 2 | 0.2 |
+| trash | lock | 0 | 3.7 | 0.7 | 2 | 1.5 |
+| trash | lock | 1, fishing | 3.8 | 0.9 | 2 | 0.5 |
+| trash, reckless | any | 1 | 4.7 | 1.1 | 3 | 0.0 |
+| trash, reckless | lock | 1, fishing | 4.6 | 1.5 | 2 | 0.7 |
+| mixed | any | 1 | 2.8 | 1.0 | 2 | 0.2 |
+| mixed | lock | 1, fishing | 2.7 | 0.8 | 2 | 0.8 |
+| boss | either | 1 | 0 | 0 | 1 | 0.9 |
+
 ## The design as it stands (Claude's spec on Ryan's direction, 19 October)
 
 - **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
-  (the printed number, buffs once), adds 10 heat and goes dark for two rounds. A kill brings
-  every weapon back and it acts again; each kill this fight adds 5 to the heat of its shots.
-- **Lock.** The Pinion Driver, reaching any foe: the chain's opener on a hurt caster.
-- **Numbers.** Hull 30, shield 40, field recharge 30, heat 40, cooling 10, armour 0, move 50,
-  a light flyer; two hardpoints beside the lock, a d3; tier two, stocking tier-one pieces and
-  basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters that kill trash
-  doubled and pay the flat heat for it). No shield on kill in the first cut.
+  (the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
+  that killed, its shots run 5 hotter this fight.
+- **Lock**, the reset gun (Claude's lean, 19 October; Ryan's "the reset could be on the locked
+  component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0.
+  If it kills, every weapon comes back and the Sparrowhawk acts again. The Pinion Driver
+  leaves the lock for the pool, a Kestrel blueprint.
+- **Numbers.** Hull 30 (Ryan, 19 October), shield 40, field recharge 30, heat 40, cooling 10,
+  armour 0, move 50, a light flyer; two hardpoints beside the lock, a d3; tier two, stocking
+  tier-one pieces and basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters
+  that kill trash doubled and pay the flat heat for it). No shield on kill in the first cut.
 - **Engine.** The cooldown property (not built), granted to every weapon by the passive; a
   kill trigger (new; the Zoids walker's brief wants it too); act again on a kill through
   Rapid's path (a free roll onto another entry); the heat tax as a status on the machine, a
@@ -151,10 +190,11 @@ buy back; the hull sets the size of the accident; the double and the die size th
 
 ## Open for the session
 
-1. Ryan's call on the spec as it stands (his sketch written out) and its numbers: the flat
-   heat, the tax, the heat maximum, the dark rounds, the hull (30 or 40 against the injury
-   rule), with the toy's knobs; a shield on kill or none.
-2. Whether the Pinion Driver's reach is the dive, and the niche (the caster-killer).
+1. Ryan's call on the reset gun as the lock (the chain capped at two, the Pinion Driver to
+   the pool) and the numbers: the flat heat, the tax, the heat maximum, the dark rounds, the
+   lock's number; a shield on kill or none.
+2. The niche (the caster-killer) now that the finisher's reach is gone with the lock: the dive
+   as a stock piece, or the chain its whole niche.
 3. When it moves: after a Kestrel tier one lands for the tender.
 
 ## Holes already raised
