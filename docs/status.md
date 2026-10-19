@@ -344,7 +344,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   Matador's 3, 1's head on Floraison's 2), a defined face and a held sword on Surtr, another set
   for the Augur and a retry for Skaði; the fourth round answers each (the composites as layouts
   re-rendered close beside the edit model's version; the Augur from a prompt of her own, since
-  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. Its database
+  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. His
+  fourth picks (19 October) each carry one edit more (the Matador's jaw, Floraison's clipped
+  spines, Skaði's lower half as the edit's, Surtr's sword alone after a two-part edit broke it,
+  the Augur's omen dark then her blades matched, chained), the fifth round; the heroes' costume
+  variety pass is a to-do, the Augur's omen dark in the bible's art row (v0.204, live, merged onto another session's v0.202). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
