@@ -42,9 +42,9 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
 - [x] The funnel-web (`ws_funnel_web.md`): settled in chat 17 and 18 October and landed on Ryan's go (18 October): the bible's row, the rules, Vitriol, Web and Webbed in the vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git
 - [ ] The gunship (`ws_gunship.md`), with the stock pass's tags
-- [ ] The fan-boat back from the board (`ws_fan_boat.md`): everything Indirect through the deck gun as its role direction (Ryan, 18 October), its tier open again; with the stock pass's keywords
+- [ ] The fan-boat back from the board (`ws_fan_boat.md`): everything Indirect through the deck gun as its role direction (Ryan, 18 October) and area by the aim proposed (19 October), its tier open; with the stock pass's keywords
 - [ ] The Prairie Dog's fight half (`ws_prairie_dog.md`)
-- [ ] The Dingo's tier and die (`ws_dingo.md`), a second locked piece to weigh (Ryan, 18 October), with the stock pass
+- [ ] The Dingo's tier and die (`ws_dingo.md`): the winch as a swap of two foes or spaces (Ryan, 19 October), tier two with it; with the stock pass
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
 - [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
 - [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`)

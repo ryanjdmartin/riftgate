@@ -43,12 +43,26 @@ a lone boss); a locked Disrupt flare (the foe changes its plan, then the harpoon
 ally's blow on it; cheap in the engine, two control verbs on one car); a locked ally-only vent,
 the water cans, the Coolant Dump's old job (thematic, small, no decision beyond whom); or one
 locked piece and the stock pass carrying the interest. A second locked piece reads as tier two by
-the sort (a pure team piece), which settles the tier with it and makes the maker's tiers 4-4-2
-(the README).
+the sort (a pure team piece), which settles the tier with it (the maker's tiers in the README).
+
+Ryan, 19 October: "Dingo winch is perfect. We could increase it's flexibility by allowing
+lateral movement as well, unique from the Minos. Target two foes/spaces and swap them? Useless
+against a boss, sure, not sure if that matters." Claude's reading, the same day: the general
+swap is the piece and the whole rule ("target two foes or spaces and swap them"), distinct from
+Minos by pattern (Minos turns whole ranks over involuntarily; the Dingo chooses two). It exposes
+a caster to Direct fire, sets the acting order (which foe is the next to act beside another,
+for the spider's web and a stun's timing) and bunches foes for every area piece (the fan-boat's
+shells, the strafer's spray, the Boar's spill), so a swap then a shell is a cross-maker combo:
+the aspiration of feeding other makers' pieces met by one locked piece, and soft control.
+Useless against a lone boss, which does not matter for a tier-two team piece whose harpoon
+still works there. Edges for its row: a massive foe fills its column and does not swap, so
+bosses are out by rule; a swap with an empty front slot is a pull. Engine: a foe moving
+between slots, which Minos's rank turn also needs.
 
 ## Open for the session
 
-1. A second locked piece, and the tier with it (one or two).
+1. The winch as the general swap (Claude's lean) or the harpooned foe's pull alone; tier two
+   with it.
 2. Its stock beside the Shocking harpoon (the Coolant Dump retires in the stock pass).
 
 ## What the session hands back

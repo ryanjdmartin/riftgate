@@ -3,8 +3,9 @@
 The session finishes the chicken walker whose die steps to the next entry instead of rolling,
 and settles its locked piece and its tier.
 
-**Status**: in session (18 October), four rounds in; a damage dealer by Ryan's call, his kit
-proposed and analysed (the sixth shot, the Spin), its last numbers and the go open.
+**Status**: in session (18 and 19 October), five rounds in; a damage dealer by Ryan's call, his
+kit settled (the sixth shot, the Spin, the pips, the buff), hull and the buff's name open, then
+the go.
 **Maker**: Wainwright & Sutler. **Proposed tier**: one (the reshuffle and this session); two
 in its proposal. **Read first**: `docs/briefs/README.md`; the bible's cooldown row (section
 8), its Rapid and rerolls rows (sections 7 and 6), its heat row (section 5) and its one-off
@@ -32,12 +33,20 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 - **Role** (Ryan, 18 October: "revolver and boiler are getting promoted to damage class"): the
   maker's gunslinger, a damage dealer: its locked piece is its gun, the chain its tempo, and it
   gets a body's hull to hold the tender's front (Claude's lean 100 or 110).
-- **The sixth shot** (Ryan's kit, 18 October): every sixth shot deals double, the count being
-  weapon spends only, reset each fight, shown as six dots with the sixth lit when it is next.
-  Spins and equipment are not shots, so the player steers which chamber takes the sixth.
-- **The Spin** (locked, Ryan's working name): no damage, Rapid with no cooldown, its reroll a
-  true spin of the cylinder, the next shot +5 (Claude: stacking, lasting until that shot), heat
-  5 as its limiter (Claude's lean, by the Rapid rule; the Armadillo's lure is the precedent).
+- **The sixth shot** (Ryan's kit, 18 October): "every sixth shot counts double: its damage and
+  the stacks it lays" (Burn becoming stacks applied directly, Ryan, 19 October, so the clause
+  earns its text; Vitriol likewise; nothing to say of Shock or Suppress). The count is weapon
+  spends only, reset each fight; spins and equipment are not shots, so the player steers which
+  chamber takes the sixth. Shown as six pips under the heat bar (Ryan, 19 October: the best
+  spot), the sixth lit when it is next.
+- **The Spin** (locked, Ryan's working name): no damage, Rapid with no cooldown and no penalty,
+  its reroll a true spin of the cylinder; it grants a unique stacking buff on the machine, +5
+  damage a stack, spent whole by the next shot and carried between turns if a turn ends without
+  one (Ryan, 19 October; the name his). Its limiter is the cylinder, not its own: it cannot
+  chain itself, and the way back to it in a round runs through the other chambers' switch-offs
+  or the team's rerolls (Ryan: a combo piece, not a typical Rapid one, and the stepped barrel
+  prevents its abuse); the Rapid row says so at the go, with the exit that a stepping-die piece
+  that ever makes a free chain gets a limiter of its own.
   The two-strike Hogleg is retired (Claude's name and shape from the retired proposal; no
   reason for the double hit).
 - **Numbers**, the proposal's placeholders: medium walker, move 40; hull 90 (Claude's lean:
@@ -77,6 +86,14 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   the barrel, rapid, no cooldown, next component gets +5 damage or something. We might be
   able get away with a rapid no cooldown since it spins the barrel, and the chase would be to
   hit it multiple times in a round, but I need analysis to see if that's easily abused."
+- 19 October, on the kit's last pieces: "Burn is being reworked into exactly that, stacks
+  applied directly, so the double works there. Honestly the only reason to say double instead
+  of fires twice is that fire twice seems common." "The six pips should probably show like
+  another resource bar under the heat bar, best spot probably. I would argue that this
+  particular rapid component is a combo piece, not a typical one, and the stepped barrel
+  prevents it from being abused as you just proved. So it probably doesn't need a penalty. I'd
+  also make it's effect a stacking unique buff, so that it could be carried between turns, if
+  the turn ended without an attack."
 - 18 October, the principle (the bible's one-off row, section 2): "If a situation occurs where
   it seems reasonable to propose a one-off exception for balance reasons, look into the root
   causes as to why that seems like a reasonable solution."
@@ -138,10 +155,10 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 
 ## Open
 
-1. The Spin's heat (5 by the Rapid rule, Claude's lean) and whether a spin may land on itself.
-2. The +5 stacking and lasting until the next shot.
-3. Tier one; hull 90 or 100.
-4. The stand-in stock; then the go.
+1. Hull 90 or 100 (Claude's lean 100, a tender front).
+2. The buff's name, and whether a spin may land on itself (Claude: let it, one in six, the
+   chase).
+3. The stand-in stock; then the go.
 
 ## Holes
 
@@ -173,6 +190,8 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   Rapid's heat (the one-off row).
 - "Cooldowns are nearly free on it" (Claude, 18 October): true only in the slow cycle, wrong
   where it matters; withdrawn.
+- Heat 5 on the Spin as its limiter (Claude, 18 October): set aside by Ryan, the cylinder
+  being its limiter (above); no exception to the Rapid rule, the rule met another way.
 - The player choosing the opening chamber, a gesture a fight: the dial already buys it.
 - The Rapid chain's ceiling as the brief measured it: five Rapid pieces and a gun fire all
   six chambers every round, against three and a half on a rolled die; a lever (Rapid once a

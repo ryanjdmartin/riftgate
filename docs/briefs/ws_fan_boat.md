@@ -75,6 +75,28 @@ lean: tier one, the maker's light artillery (keyword shells at any reach), the h
 being the maker's tier-three hole (the README). The role is a direction, not a design: the
 session proposes the rest in chat.
 
+## Ryan's area question (19 October)
+
+"Fan boat - is everything penetrate too bold? Might not be. Could also have two locked, one
+that fires penetrate, one that fires spread? Or the same one that flips shapes by some
+mechanism? With the fixed damage of the gun, it could be balanced, maybe?"
+
+Claude's reading, the same day: not too bold at a fixed 15, since the fixed number is what
+makes any shape balanceable (the per-foe hit never grows, so the ceiling is 15 times the foes
+in the shape and a lone boss takes 15). The shape by the aim, a fourth form that is the second
+and third without a mechanism: fired at the back rank the shot punches through (Penetrate, the
+front foe of that column too); fired at the front rank it sprays (Spread, the row's
+neighbours). No second locked piece ("goes through the deck gun" stops meaning one thing with
+two), no flip state (a counter to track for a choice the aim makes for free), one sentence, and
+a decision on every shot with full information. With area it earns tier two on its own (the
+maker's light artillery; the tiers then 3-5-2, the README), and its stock carries a keyword
+shell from the first fight. The hole to read: every status shell becomes a two-or-three-foe
+status (a Burn shell burns a row, a Lure shell lures a column, a Suppress shell would stun two),
+so the gate principle holds per piece (the Battery's counter-battery form would still stun only
+the back-rank foe); beside the Baboon it is a Paradox engine, for the boss cells. The bench's
+earlier forms (Indirect striking twice, a Ballistic splash for half) failed as pure upside; this
+one pays in the number and the light hull, and the aim is its interest.
+
 ## Why it went back (the analysis, 14 October)
 
 A tier-one chassis stocks basics beside its locked piece, and basics carry no keyword by
@@ -87,9 +109,10 @@ last three keywords its other weapons fired) makes a better tier two.
 
 ## Open for the session
 
-1. The deck gun Indirect as the role (Ryan's direction): what prices the reach (its number, its
-   heat, danger close while it stands), and what more the machine needs.
-2. Tier one with the Indirect angle, or tier two with the magazine or the area half.
+1. The deck gun Indirect as the role (Ryan's direction), and its area: everything Penetrate,
+   two locked guns, a flipping gun, or the shape by the aim (Claude's lean); what prices the
+   reach (its number, its heat, danger close while it stands).
+2. Tier two with the area (Claude's lean), or tier one with the Indirect angle alone.
 3. The proposal's holes: Rapid shells at the deck gun's number are its strongest build (the
    deck gun's number is the lever); a shell's own heat no longer counts.
 
