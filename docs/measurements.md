@@ -370,4 +370,10 @@ spends 15% (18%), its hull left within a few points everywhere. Read: a flat 5 t
 worth about what a rolled 5 to 15 single shot was, less on a pack of two and more on a full
 rank, so the built half of the go changes nothing alone, and Claude's Spread-alone shape
 would not have moved the row either; the fight half is Flak's, and the row is re-read when
-the engine has it (the to-do). Bible section 7, the Prairie Dog row.
+the engine has it (the to-do). The maker's trio (the Clydesdale, the Prairie Dog, the Dingo;
+`--rows "wainwright_sutler team"`, 8,000 fights, 947 s) did not move either: the Goblins
+90/100 (91/100), the Meadow formation 3/96 (4/99), the Waste 40/100 (34/100), the Marsh 0/5
+(0/12), the Peak 0/59 (0/68), everything else at 97 to 100. Its pick shares are no clean read
+of the Repeater, since the 13 October report predates the harpoon's Shock (15 October): the
+Harpoon 9% (17%), the Twin Autoguns 23% (16%), the Ankle Mortar 8% (5%), the Repeater 6%
+(8%), rerolls 1.97 a round (2.30). Bible section 7, the Prairie Dog row.
