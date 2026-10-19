@@ -358,3 +358,16 @@ git checkout -- sim/die.gd
 ```
 
 About ten minutes a run on one core. Bible section 6 (the rerolls row).
+
+**The Flakshot Repeater as a flat 5 that sprays** (the Prairie Dog's go, 19 October). The
+Prairie Dog's solo row rerun with the Repeater at Direct, flat 5, Spread, Rapid, its Flak
+planned and so not run (`tools/balance.gd --rows prairie_dog`, 200 seeds a cell,
+random/greedy, 8,000 fights), against the 13 October report at the same seeds: the row did
+not move. The Wolves 65/98 (64/98 before), the Gels 0/16 (0/14), the Needlers 5/28 (1/32), the
+Antlions 2/25 (5/26), the Ghosts 82/100 (79/100), the Bombs 1/18 (0/20), the Drakes 39/62
+(32/72), the Treant 3/25 (2/30), the rest at 0 or 100 as before; the Repeater's share of its
+spends 15% (18%), its hull left within a few points everywhere. Read: a flat 5 that sprays is
+worth about what a rolled 5 to 15 single shot was, less on a pack of two and more on a full
+rank, so the built half of the go changes nothing alone, and Claude's Spread-alone shape
+would not have moved the row either; the fight half is Flak's, and the row is re-read when
+the engine has it (the to-do). Bible section 7, the Prairie Dog row.
