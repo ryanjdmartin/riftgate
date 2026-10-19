@@ -37,14 +37,14 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The strafer (`kestrel_strafer.md`)
 - [ ] The shield-spender (`kestrel_shield_spender.md`)
 - [ ] The bomber (`kestrel_bomber.md`)
-- [ ] The boiler (`ws_boiler.md`), with the stock pass's heat prices
+- [ ] The boiler (`ws_boiler.md`): a damage dealer at tier two (Ryan, 18 and 19 October), with the stock pass's heat prices
 - [ ] The revolver (`ws_revolver.md`): in session since 18 October (the spin, the chain's price at the stock pass, Ryan's kit: the sixth shot doubled and the Spin, analysed; its last numbers and the go open)
 - [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
 - [x] The funnel-web (`ws_funnel_web.md`): settled in chat 17 and 18 October and landed on Ryan's go (18 October): the bible's row, the rules, Vitriol, Web and Webbed in the vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git
 - [ ] The gunship (`ws_gunship.md`), with the stock pass's tags
-- [ ] The fan-boat back from the board (`ws_fan_boat.md`): everything Indirect through the deck gun as its role direction (Ryan, 18 October) and area by the aim proposed (19 October), its tier open; with the stock pass's keywords
+- [ ] The fan-boat (`ws_fan_boat.md`): settled in chat 19 October (versatility of reach: everything through an Indirect deck gun whose shape follows the aim, tier one), the go pending; its deck gun's number and stock first
 - [ ] The Prairie Dog's fight half (`ws_prairie_dog.md`)
-- [ ] The Dingo's tier and die (`ws_dingo.md`): the winch as a swap of two foes or spaces (Ryan, 19 October), tier two with it; with the stock pass
+- [ ] The Dingo (`ws_dingo.md`): settled in chat 19 October (the winch as a swap of two foes or spaces, tier two), the go pending; its tier moves when the revolver or the fan-boat can be dealt
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
 - [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
 - [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`)

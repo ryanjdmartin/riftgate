@@ -40,7 +40,9 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   chamber takes the sixth. Shown as six pips under the heat bar (Ryan, 19 October: the best
   spot), the sixth lit when it is next.
 - **The Spin** (locked, Ryan's working name): no damage, Rapid with no cooldown and no penalty,
-  its reroll a true spin of the cylinder; it grants a unique stacking buff on the machine, +5
+  its reroll a true spin of the cylinder over all six chambers, itself included (Ryan, 19
+  October: the high roll, allowed as an exception to the reroll rule, a design one-off and no
+  balance one); it grants a unique stacking buff on the machine, +5
   damage a stack, spent whole by the next shot and carried between turns if a turn ends without
   one (Ryan, 19 October; the name his). Its limiter is the cylinder, not its own: it cannot
   chain itself, and the way back to it in a round runs through the other chambers' switch-offs
@@ -94,6 +96,8 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
   prevents it from being abused as you just proved. So it probably doesn't need a penalty. I'd
   also make it's effect a stacking unique buff, so that it could be carried between turns, if
   the turn ended without an attack."
+- 19 October: "I think we can allow the high-roll for the revolver spin, landing on itself,
+  as an exception to the global rule."
 - 18 October, the principle (the bible's one-off row, section 2): "If a situation occurs where
   it seems reasonable to propose a one-off exception for balance reasons, look into the root
   causes as to why that seems like a reasonable solution."
@@ -156,9 +160,11 @@ Every number is a placeholder; names are Ryan's, the working ones marked.
 ## Open
 
 1. Hull 90 or 100 (Claude's lean 100, a tender front).
-2. The buff's name, and whether a spin may land on itself (Claude: let it, one in six, the
-   chase).
-3. The stand-in stock; then the go.
+2. The buff's name.
+3. The stand-in stock; then the go, which also needs the tender to skip a chassis whose
+   passive is planned (today `chassis_of_tier(1)` deals every tier one, so planned content at
+   tier one would put a plain d6 with a dead Spin in the draft): one line and a test, or the
+   content lands when the die mode does.
 
 ## Holes
 

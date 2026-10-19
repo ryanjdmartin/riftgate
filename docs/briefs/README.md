@@ -126,7 +126,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
-| Wainwright & Sutler | Prairie Dog, the revolver, the boiler, the fan-boat (with its Indirect direction, 18 October) | the Dingo (with a second locked piece, proposed), the Clydesdale, the funnel-web (landed), the gunship | the multi-rotor, the old-world artillery (the tenth, undesigned) |
+| Wainwright & Sutler (Ryan, 19 October) | Prairie Dog, the revolver, the fan-boat | the Dingo (with its winch), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -154,7 +154,9 @@ New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
 team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's deal holds a front
-with the boiler, the revolver or the Clydesdale at tier one; Aphelion's with the line frame.
+with the revolver at tier one; Aphelion's with the line frame. Wainwright & Sutler's
+versatility comes in three forms (Ryan, 19 October): the Clydesdale's loadout, the gunship's
+stats, the fan-boat's reach.
 Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
 damaging spends while no chassis was about the blow; the revolver and the boiler are promoted
 to damage class. The old-world artillery of the maker's lean (indirect fire and area) is

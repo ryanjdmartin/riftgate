@@ -3,10 +3,35 @@
 The session reworks the fan-boat hovercraft, whose weapons all fire its deck gun's shot with
 their own keywords, so that its identity shows at its tier.
 
-**Status**: direction (Ryan, 18 October: everything Indirect through the deck gun), its tier open
-again (one or two); back to the board since the analysis (14 October). **Maker**:
+**Status**: settled in chat (Ryan, 19 October: versatility of reach, the shape by the aim, tier
+one), the go pending; open: the deck gun's number and name, the stock. **Maker**:
 Wainwright & Sutler. **Proposed tier**: one in its proposal; two in the analysis and the
 reshuffle. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 4.
+
+## Where it stands (19 October)
+
+- **What it is** (Ryan, 19 October): the maker's versatility in a third form, of reach, beside
+  the Clydesdale's (loadout) and the gunship's (stats); tier one, since it plugs holes in many
+  draft compositions.
+- **Passive**: everything it fires goes through its deck gun: each weapon fires the deck gun's
+  shot, with its own keywords.
+- **The deck gun** (locked; the Fowling Cannon was Claude's working name, the name Ryan's):
+  Indirect, flat 15, heat 5, Ballistic. Fired at the back rank its shot punches through
+  (Penetrate, the front foe of that column too); fired at the front rank it sprays (Spread, the
+  row's neighbours). The shape follows the aim, so a column or a row is the decision on every
+  shot. The number is the lever at tier one.
+- **The die**: three hardpoints, a d4; stock basics (two basic guns, which become area shots
+  at the deck gun's number, and a basic shield, which equipment being no weapon fires as
+  itself).
+- **Numbers** (placeholders): light, hover, move 50; hull 60, shield 30, armour 0, heat 60,
+  cooling 10, field recharge 30.
+- **Engine**: the passive rewrites every weapon it spends to the deck gun's number, reach and
+  heat, one blow, the weapon's keywords, rule and tags kept; a keyword granted by the target's
+  rank (a new condition), the die showing the shot as it will fire over the foe it is dragged
+  over. While danger close stands an Indirect shot at the front rank costs the firer shield, so
+  until the stock pass retires it the fan-boat pays shield to spray and nothing to punch.
+- **Status spread** (Ryan, 19 October): it spreads statuses well, which steps on Aphelion's
+  toes, and that is fine: status spread is no monopoly and no complete identity.
 
 ## The design (the proposal)
 
@@ -97,6 +122,16 @@ the back-rank foe); beside the Baboon it is a Paradox engine, for the boss cells
 earlier forms (Indirect striking twice, a Ballistic splash for half) failed as pure upside; this
 one pays in the number and the light hull, and the aim is its interest.
 
+## Ryan's calls (19 October)
+
+- "I think the point of the fan boat is to show W&S versatility in a third form. Clydesdale
+  is versatility of loadout, gunship is versatility of stats, and this is versatility of reach.
+  For that reason, I think it belongs in tier 1, as it can plug holes in a lot of draft comps.
+  Boiler should be tier 2, so not both damage dealers are in 1. Plus, it's more complex. If the
+  target based version can be done, then let's do that."
+- "Obviously it's able to spread status well, and that can step on Aphelion's toes, but I think
+  that's fine. Status spread isn't a monopy, nor is it a complete identity."
+
 ## Why it went back (the analysis, 14 October)
 
 A tier-one chassis stocks basics beside its locked piece, and basics carry no keyword by
@@ -109,10 +144,8 @@ last three keywords its other weapons fired) makes a better tier two.
 
 ## Open for the session
 
-1. The deck gun Indirect as the role (Ryan's direction), and its area: everything Penetrate,
-   two locked guns, a flipping gun, or the shape by the aim (Claude's lean); what prices the
-   reach (its number, its heat, danger close while it stands).
-2. Tier two with the area (Claude's lean), or tier one with the Indirect angle alone.
+1. The deck gun's number at tier one (15 the placeholder, the lever) and its heat; its name.
+2. The stand-in stock (basics); then the go.
 3. The proposal's holes: Rapid shells at the deck gun's number are its strongest build (the
    deck gun's number is the lever); a shell's own heat no longer counts.
 

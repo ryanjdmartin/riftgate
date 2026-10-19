@@ -3,8 +3,9 @@
 The session settles the Dingo after its harpoon's change: its tier, and its die as a team
 piece.
 
-**Status**: rework; the harpoon's Shock in content (Ryan, 14 October; built 15 October), the
-tier open. **Maker**: Wainwright & Sutler. **Proposed tier**: one or two. **Read first**:
+**Status**: settled in chat (Ryan, 19 October: the winch as a swap of two foes or spaces, tier
+two with it), the go pending; its tier moves in content when the revolver or the fan-boat can
+be dealt, so the maker's tender deal never fixes on the Prairie Dog. **Maker**: Wainwright & Sutler. **Proposed tier**: one or two. **Read first**:
 `docs/briefs/README.md`; `docs/roster_analysis.md` section 2 (the Dingo's rating); the bible's
 rows on the cars (section 7); `content/chassis.json` (dingo) and `content/components.json`
 (megataser_harpoon).
@@ -57,12 +58,13 @@ the aspiration of feeding other makers' pieces met by one locked piece, and soft
 Useless against a lone boss, which does not matter for a tier-two team piece whose harpoon
 still works there. Edges for its row: a massive foe fills its column and does not swap, so
 bosses are out by rule; a swap with an empty front slot is a pull. Engine: a foe moving
-between slots, which Minos's rank turn also needs.
+between slots, which Minos's rank turn also needs. Ryan, 19 October: "Dingo seems good like
+that."
 
 ## Open for the session
 
-1. The winch as the general swap (Claude's lean) or the harpooned foe's pull alone; tier two
-   with it.
+1. The winch's name; then the go (the swap planned in content; the tier change with the first
+   dealable tier one of the revolver and the fan-boat, or the stock pass).
 2. Its stock beside the Shocking harpoon (the Coolant Dump retires in the stock pass).
 
 ## What the session hands back

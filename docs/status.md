@@ -273,8 +273,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.201 (18 October, the Wainwright & Sutler row's
-  roster calls), unpublished: the live page moved under the Kestrel session at 23:14 (its own
+  `docs/design-bible.html` after every change. Main's file is v0.202 (18 and 19 October, the Wainwright & Sutler row's
+  roster calls and the maker's three versatilities with the tiers 3-5-2), unpublished: the live page moved under the Kestrel session at 23:14 (its own
   v0.200, main merged in, with rows main takes when that branch merges), so the next publish
   that merges main carries the clause. Before it, live v0.200 (18 October, evening), main's
   fix-order row (the foe art row: structure through image to image from the pick, colour
