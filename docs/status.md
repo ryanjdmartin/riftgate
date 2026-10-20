@@ -33,8 +33,9 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.217; and 20 October's
-  planted footwork for the Armadillo, the Nemesis and the Ammit): to merge into main.
+  and page; the to-do's engine and assets lines ticked; the bible at v0.219 after the merge; and 20 October's
+  planted footwork for the Armadillo, the Nemesis and the Ammit): merged into main on 20 October (`0e7d6d4`), the
+  worktree on the Mac free to go.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
