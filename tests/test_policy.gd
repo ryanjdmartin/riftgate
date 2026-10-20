@@ -410,3 +410,53 @@ func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
 			break
 	assert_true(first.begins_with("Rolls hits"), "the rolled die goes first: %s" % first)
 	assert_false(small.alive(), "and the sure one finishes whatever the roll left")
+
+
+## The funnel-web's valuations (18 October): an ambush bite on a foe looking away is worth
+## Vitriol's ticks on what the blow leaves, as the engine ticks it; a web the blows its burst
+## will stop.
+func test_greedy_bites_the_foe_looking_away() -> void:
+	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+	var sk := Skirmish.new(3, 2)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 500)
+	a.grant_passive(ambush)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var looking := _ghoul(200, 10)
+	var away := _ghoul(200, 10)
+	sk.add_foes([looking, away])
+	sk.begin()
+	sk.start_round()
+	looking.target = sk.mechs[0]
+	away.target = sk.mechs[1]
+	var pol := Policy.make(Policy.GREEDY)
+	var f := a.die.faces[0]
+	assert_true(pol.attack_score(sk, sk.mechs[0], f, away) > pol.attack_score(sk, sk.mechs[0], f, looking), "the foe looking away is worth the bite")
+	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), 36, "a Maxigun bite's three stacks on a 160-hull boss that took 22: about 36 over its next three actions")
+	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 6, "Burning's flat ticks: three, two, one stacks of a point (18 October)")
+	pol.play_round(sk)
+	assert_eq(Effects.stacks_of(away, "vitriol"), 1, "and the die went there")
+	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")
+
+
+func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
+	var sk := Skirmish.new(3, 3)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	sk.add_mech(a)
+	var small := _ghoul(500, 10)
+	var mid := _ghoul(500, 20)
+	var big := _ghoul(500, 40)
+	sk.add_foes([small, mid, big])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT, "a web on the big one: its own next blow and the middle one's, caught beside it")
+	assert_eq(pol.web_score(sk, small), 30.0 * Policy.HULL_WEIGHT, "on the small one: its own and the middle one's to its left, which has acted")
+	Effects.grant_for_rounds(big, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_eq(pol.web_score(sk, big), 20.0 * Policy.HULL_WEIGHT, "a stunned foe gains nothing from the burst on itself: the catch alone")
+	Effects.remove(big, "suppressed")
+	pol.play_round(sk)
+	assert_true(Effects.has(big, "webbed"), "greedy webs the big one")
+	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")

@@ -653,24 +653,26 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A drum-fed scattergun on a pintle. Fire, and the car is already moving.",
-    "niche": "The Prairie Dog's locked tempo: a rapid kinetic gun, so its round is shoot, roll again, shoot, leave.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
+    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat 5 that sprays the target's rank (Spread), rolls again (Rapid) and lays Flak 2 on each foe hit, so the team's many small blows land harder. The softener's round: spray, roll again, cash.",
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md): Direct, flat 5 (5 to 15 rolled before), Spread, Rapid, Flak 2, heat 0, every number a placeholder. The Spread and the flat 5 are built; Flak is a planned keyword the die builds the entry without until the engine has the numbered keyword and the halving status (the to-do), so the gun sprays today and lays nothing. The flak field on the face is the keyword's number, to align with the numbers branch's numbered-keyword field when it merges. Three keywords is the authored cap, carried by a tier-one locked piece because its number is the lowest in the game."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 5,
-    "power_max": 15,
     "keywords": [
-     "rapid"
+     "cleave",
+     "rapid",
+     "flak"
     ],
+    "flak": 2,
     "heat": 0
    },
    "passive": null,
    "tags": [
     "kinetic",
-    "single",
+    "horde",
     "tempo"
    ]
   },
@@ -1482,12 +1484,11 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
     "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round.",
-    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The web keyword is planned, so the die builds this entry without it until the engine has it. Numbers are placeholders and the name a working one. Lands on the foe as Webbed, the chip carrying the burst's timer (the to-do)."
+    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). Built 18 October: the web keyword lands Webbed on the foe, whose chip says which neighbour the burst catches (> the right-hand one, which acts after it; < the left-hand one, which has acted), and the web bursts at the end of the foe's action (Skirmish._web_burst). Its blow of nothing lays no Vitriol, so the web never feeds the ambush directly; the window it opens next round does. Numbers are placeholders and the name a working one."
    },
    "face": {
     "kind": "attack",
@@ -1502,6 +1503,93 @@
    "tags": [
     "kinetic",
     "control"
+   ]
+  },
+  {
+   "id": "spin_up",
+   "name": "Spin-Up",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
+    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up (+5 on the next weapon spend, carried between turns). Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun.",
+    "notes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). The names are his (Spin-Up, Spun Up). The spin landing on itself is his exception to the reroll rule (never onto the entry showing), a design one-off and no balance one; no penalty (Ryan, 19 October: a combo piece, not a typical Rapid one, and the stepped barrel prevents its abuse; Claude's heat-5 limiter set aside). Planned until the die mode exists: the face's rounds are a placeholder, Spun Up having no round count, and the engine does not yet spin. Shape none: the drum is the chassis's own, clicking round on the model."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "spun_up",
+    "stacks": 1,
+    "rounds": 1,
+    "targets": "self",
+    "keywords": [
+     "rapid"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "tempo"
+   ]
+  },
+  {
+   "id": "heliographic_siphon",
+   "name": "Heliographic Siphon",
+   "maker": "wainwright_sutler",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A signal mirror on a mast that every foe on the field turns to face, and a siphon that drinks the blows they land into the pressure vessel. Ryan, 19 October: \"An aoe lure that grants armour, and heat rises for every hit taken\"; 20 October: a lure-all, riskier and more rewarding; the name his (\"Keep heliographic cause its dumber\").",
+    "niche": "The Whip Scorpion's locked fuel decision: no damage; every foe in the fight turns on it for the round (Lure, every foe reached); it is Armoured 2 for the round; and every blow landed on it that round adds 10 heat, which its vents blast next round. Bad against a boss (one blow, little heat) and good against a swarm (many small blows that bounce off armour), the opposite of where its vents already excel, so the decision is whistle at the swarm, never at the brutes; the reward is capped by the heat maximum and one vent a round, the risk is the whole formation's blows and the overflow burning at the next turn's end.",
+    "notes": "Ryan's go, 20 October (the bible's Whip Scorpion row; the brief retired to git: git show 4a8ab1d:docs/briefs/ws_boiler.md). Planned: the engine lacks a reach over every foe on the player's side (the face's reaches_all), the heat per blow landed on the owner for the round (heat_per_blow; the blows land in the enemy's turn, after the overheat settles, so it is next round's fuel or next turn's burn), and the die's forecast of both; Lure and braces run today, so the harness fields a one-target lure that braces until then. No Rapid (Ryan: too easy). Numbers are placeholders: Armoured 2 reads in the numbers branch's points (braces 2 is stacks of 5 until it merges); 10 a blow is the lever (5 was half a vent). The per-hit heat against the README's taste line on rewards for being struck: the Siphon spends the machine's own turn and pays out a round later at random, so it is not the old discharge (Ryan, 20 October; the line's row carries the condition)."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "lure"
+    ],
+    "heat": 0,
+    "braces": 2,
+    "reaches_all": true,
+    "heat_per_blow": 10
+   },
+   "passive": null,
+   "tags": [
+    "control",
+    "defense"
+   ]
+  },
+  {
+   "id": "thermal_ray",
+   "name": "Thermal Ray",
+   "maker": "wainwright_sutler",
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat 30, heat 30, so one shot fills the next vent's blast whatever else the stock carries. A hot slot-in for any machine that can vent.",
+    "notes": "Ryan's go, 20 October (the bible's Whip Scorpion row). Was the Steam Cannon, the proposal's locked piece (12 October), reappropriated to the stock when the Heliographic Siphon took the locked slot and renamed in the maker's future-tech register. Numbers are placeholders; its heat price is the stock pass's. Tier two, derived from the chassis that stocks it."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 30,
+    "keywords": [],
+    "heat": 30
+   },
+   "passive": null,
+   "tags": [
+    "energy",
+    "single"
    ]
   }
  ]

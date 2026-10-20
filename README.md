@@ -60,7 +60,7 @@ records every decision, recommendation and open question, and why; section 12 is
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), the feed
-    effects (`feed_fx.gd`, `tear_layer.gd`)
+    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
@@ -114,6 +114,20 @@ records every decision, recommendation and open question, and why; section 12 is
 ## Running
 
 Open the folder in Godot 4.7 or later, or from a terminal:
+
+On Windows (the desk machine since 19 October, when the Mac went out of reach) every command
+below runs as written from Git Bash; from PowerShell, wrap one as
+`& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. What makes them run there: `godot` and
+`python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
+`%LOCALAPPDATA%\Programs\Godot`; Python 3.13, since Windows' own `python3` is a Microsoft Store
+stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
+`BPY_PYTHON` points lowforge at `.bpy` (Python 3.11 with `bpy==5.0.1`; `.bpy/` and
+`tools/soundforge/.venv-piper/` sit in `.git/info/exclude`); and `PYTHONUTF8=1` is set, since
+the tools open text without naming an encoding and Windows would read it as cp1252. Python
+writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
+the engine as it does on the Mac. The tests take about a minute. The first import rewrites
+the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
+`fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card).
 
 ```sh
 # first run only: build the script class cache
@@ -184,6 +198,9 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # second and the ground tears every couple of seconds, to judge them by eye.
 # RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
 # that spends rage: its chip bursts, then its die flips back with the reroll's sound.
+# RIFTGATE_PREY_DEBUG=1 (any skirmish) keeps the predator sense on: the foes' ground dims and the foes
+# the first ambusher's entry can reach that show no intent on it wear pulsing eyes (with no ambusher
+# on the team, the first machine's, the read forced), to judge it running.
 # The phone's layout on the Mac: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -201,7 +218,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
@@ -210,7 +227,7 @@ godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     #
 tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 
-# better enemy sprites from an image model on this Mac (see tools/foeforge/README.md). The picker page
+# better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
 # a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
 # Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 46 on
@@ -218,8 +235,8 @@ godot --headless --path . --import
 # note names is tried first with `forge.py fix` (the edit model on the picked source, four candidates into out/<foe>_fix). Rebuild the
 # page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
-# the picks. Every candidate's source render lives only in tools/foeforge/out on Ryan's Mac (git-ignored; never delete it), so
-# cutting, rebuilding and rendering need the Mac.
+# the picks. Every candidate's source render lived only in tools/foeforge/out on Ryan's Mac (git-ignored); the seventh round's
+# were force-added under it (fb45141, 19 October), so its picks cut and its page rebuilds on any machine. Rendering needs the Mac.
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --tags fix fix2 chibi_takesF takesF --only   # the 13 October round as a phone page in out/phone (status has the link)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
@@ -269,7 +286,9 @@ godot --headless --path . --import
 # screen. Sizes and touch are the phone's own, the frame rate is the browser's.
 # Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
 # from the Godot release, unzip, and put its `templates` folder at
-# ~/Library/Application Support/Godot/export_templates/4.7.2.stable
+# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on Windows,
+# %APPDATA%\Godot\export_templates\4.7.2.stable). On Windows the first serve asks Windows
+# Firewall to let Python take connections: allow it on private networks.
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 
 # the real thing: a debug APK exported, installed over USB and launched (USB debugging on
@@ -277,10 +296,19 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # (brew install --cask android-commandlinetools, then sdkmanager "platform-tools"
 # "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
-# (keytool, at the path Godot's editor settings name). All of that is set up on this Mac.
+# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
+# On Windows, where it is set up now: the SDK at %LOCALAPPDATA%\Android\Sdk (Google's
+# command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
+# build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
+# names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
+# unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
+# other software opens .jar files with stays the default), and the keystore at
+# %APPDATA%\Godot\keystores\debug.keystore. The export needs no NDK (no Gradle build). A phone
+# holding a build signed on the Mac refuses this machine's until that build is uninstalled.
 tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
 # after a crash on the phone: the abort and its backtrace; and the app's memory while it
-# runs (Native Heap and EGL/GL mtrack are the columns that climb when something leaks)
+# runs (Native Heap and EGL/GL mtrack are the columns that climb when something leaks;
+# on Windows, adb is %LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe)
 ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash | grep -A 12 "Abort message"
 ~/Library/Android/sdk/platform-tools/adb shell dumpsys meminfo com.publabs.riftgate
 ```
@@ -296,6 +324,8 @@ when the current face would overheat. The gauges pulse over the part about to ch
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
 die to lock it, hold a die to see every face on it, drag a die onto a foe to spend an attack
 face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
+Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
+entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.
 Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
 land and the number flashes over the target; energy faces are static. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the

@@ -18,8 +18,9 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
-  and a fourteenth planned, the funnel-web (`content/chassis.json`). A run has four squad slots and starts with three machines.
+  slots (two; the Clydesdale three) and one passive. Fourteen chassis from five makers
+  and three planned, the Cassowary, the Cottonmouth and the Whip Scorpion
+  (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
   down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
@@ -85,6 +86,11 @@ defeat when every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
+- **A stepping die** (the Cassowary's, not built): it never rolls. Each fight opens on a
+  random entry, and every roll or reroll steps it to the next entry in order; a lock holds
+  it; a foe's Scramble is a true roll, and the sequence runs on from where it lands. Its
+  Spin-Up spins the whole die, the entry showing included, the one exception to the reroll
+  rule. Every sixth weapon spend counts double, its damage and the stacks it lays.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -129,17 +135,25 @@ defeat when every machine is wrecked. There is no round limit.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
-- **Lure**: every foe reached and left standing turns on the spender for the round.
+- **Lure**: every foe reached and left standing turns on the spender for the round. (Not
+  built: the Whip Scorpion's Siphon reaches every foe in the fight, and every blow landed on
+  it that round adds 10 heat to it.)
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   A Rapid component always carries a limiter, a cooldown, heat or Volatile; every Rapid
-  component today carries a cooldown of one: the entry switches off for the round.
+  component today carries a cooldown of one: the entry switches off for the round. The
+  Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it into itself.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
-- **Web** (the funnel-web's Web Bomb, not built): the foe hit is Webbed; at the end of its
-  action the web bursts, Suppressing it and the next foe to act beside it.
+- **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
+  webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
+  beside it (Webbed, below).
+- **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
+  trade places; no damage; a massive foe does not move.
+- **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
+  Flak, whatever the blow dealt.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -174,16 +188,19 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
+- **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
+  spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
   so it never injures; its riders land. Until the round's end. Never granted to every ally
   at once.
 - **Ward** (buff, not built): every blow a foe lands on this machine leaves no rider
-  (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.
-- **Rage** (a store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
+  (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage
+  lands. Until the round's end.
+- **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
-- **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
+- **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
@@ -209,24 +226,33 @@ On a foe:
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
   either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
   Suppressed does.
-- **Vitriol** (debuff, not built): at its action it loses 5% of its current hull a stack,
-  past armour, after Burning, rounded down, then a stack fades; it never finishes a foe.
-- **Webbed** (debuff, not built): at the end of its action the web bursts: it and the next
-  foe to act beside it are Suppressed (Numbed may resist, each for itself); killed first, it
-  takes its web with it.
+- **Vitriol** (debuff): at its action it loses 5% of its current hull a stack, past armour,
+  after Burning on what it leaves, the whole share rounded down and never the last hit point,
+  then a stack fades; it never finishes a foe. A passive lays it a stack per strike that lands
+  with a number; a blow of nothing (a web, a lure) lays none.
+- **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
+  Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
+  and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
+  this round's action, or with none standing there its left-hand one, which has acted and
+  loses its next (Numbed may resist, each for itself; a foe already suppressed gains nothing,
+  as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
+  Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
+  the neighbour the burst catches.
+- **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
+  halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
 - **Getting Back Up** (buff, Reraise): after it falls it returns to the reinforcements once,
   whole, unless it self-destructed.
-- **Numbed** (a resistance, neither buff nor debuff, drawn in brackets): each stack is a 10%
+- **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
   at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
+Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -280,7 +306,9 @@ Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
   machine showing an intact weapon), focus (its rank shares one pick). A move may carry its
-  own aim. The pick is a commitment; Lure and Disrupt move it.
+  own aim. The pick is a commitment; Lure and Disrupt move it. A special that acts on nobody
+  in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
+  it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders: breach (the blow ignores the shield;
   not built: today only its overflow passes), scorch (a stack of
@@ -304,7 +332,8 @@ Burning, Suppressed, Shocked or Paradox (Vitriol and Webbed once built).
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
-  included); a suppressed foe does nothing.
+  included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
+  on it bursts at the end of its action, skipped or not.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. A dead Gel
   splits into two Half-Gels in the reinforcements (one deep).
@@ -322,9 +351,20 @@ shields do not refill; a pack keeps its survivors, who return whole.
   gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
-  the target shows no intent on this machine (not built: the funnel-web's).
+  the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
+  arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
+  when aimed at another machine, Suppressed, or on a special that acts on nobody in
+  particular; read at the spend, before the spend's own riders, each foe reached judged
+  alone); the target's
+  rank (not built: the Cottonmouth's).
+- A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
+  number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
-  changed is what is spent, shown and weighed, while the die keeps the real one.
+  changed is what is spent, shown and weighed, while the die keeps the real one. Not built:
+  the Cottonmouth's replaces every weapon's shot whole (Indirect, 15, heat 10, the weapon's
+  keywords kept), Penetrate at the back rank and Spread at the front; the Whip Scorpion's
+  makes every vent it spends on itself blast a random live foe for the heat it took off, as
+  its own blow (a vent on an ally blasts nothing, an ally's vent on it blasts nothing).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in
@@ -395,7 +435,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   maker. A city's gate is 200, the capital's 300. The capital's gate is the run's life: the
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
-  loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
+  loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
   every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played

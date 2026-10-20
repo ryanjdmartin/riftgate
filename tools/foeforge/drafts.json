@@ -37,12 +37,12 @@
    "faction": "meadow",
    "size": 2,
    "design": {
-    "sprite": "a colossal plant bud as big as a house on a thick writhing stalk, its swollen petals parting around a ring of thorny teeth, root tendrils for legs",
+    "sprite": "a colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth",
     "variants": [
-     "a colossal plant bud as big as a house with its petals peeled wide open around a gaping maw ringed with thorny teeth, lunging forward to swallow, its root tendrils clawing the meadow",
-     "a colossal plant bud as big as a house with its petals clamped shut and bulging around something it has swallowed whole, veins pulsing under its green skin, leaning forward on root tendrils",
-     "a colossal plant bud as big as a house on a stalk coiled back to strike like a snake, its petals half open around thorny teeth, vines whipping from its base",
-     "a colossal plant bud as big as a house lashing a flurry of thorned vines from its base in every direction, its petals half open around a ring of thorny teeth, its root tendrils planted wide"
+     "a tall gaunt humanoid plant creature of thin knotted vines and bark, long spindly stick-thin arms and legs, a narrow chest, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with needle teeth, the mouth a dark empty throat with no eyes in it, thin vines trailing from its shoulders",
+     "a tall gaunt humanoid plant creature of thin knotted vines and bark, long spindly stick-thin arms and legs, a narrow chest, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with needle teeth, the mouth a dark empty throat with no eyes in it, thin vines trailing from its shoulders",
+     "a tall gaunt humanoid plant creature of thin knotted vines and bark, long spindly stick-thin arms and legs, a narrow chest, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with needle teeth, the mouth a dark empty throat with no eyes in it, thin vines trailing from its shoulders, the same figure",
+     "a tall gaunt humanoid plant creature of thin knotted vines and bark, long spindly stick-thin arms and legs, a narrow chest, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with needle teeth, the mouth a dark empty throat with no eyes in it, thin vines trailing from its shoulders, every line clean"
     ]
    }
   },
@@ -54,10 +54,10 @@
    "design": {
     "sprite": "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, a red cape in one bony hand and a slim sword in the other",
     "variants": [
-     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, sweeping a red cape in a graceful pass with a slim sword held high behind it, its skull tilted with mocking poise",
-     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, poised on its toes with a slim sword aimed straight forward for the killing thrust, a red cape trailing low",
-     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, bowing low with a red cape held out to one side and a slim sword at its hip, its eye sockets glowing",
-     "a skeletal bullfighter in a tattered suit of lights of black and tarnished gold, spinning mid-flourish so a red cape flares in a wide arc and a slim sword flashes"
+     "a skeletal bullfighter with a horned skull for a head, its eye sockets glowing red, in a tattered suit of lights of black and tarnished gold, a slim sword raised in his right hand, his red cape flaring behind him, his left arm bent in front of his chest with its bony hand gripping the cape's edge, dark leather shoes under gold greaves on his feet",
+     "a skeletal bullfighter with a horned skull for a head, its eye sockets glowing red, in a tattered suit of lights of black and tarnished gold, a slim sword raised in his right hand, his red cape flaring behind him, his left arm bent in front of his chest with its bony hand gripping the cape's edge, dark leather shoes under gold greaves on his feet",
+     "a skeletal bullfighter with a horned skull for a head, its eye sockets glowing red, in a tattered suit of lights of black and tarnished gold, a slim sword raised in his right hand, his red cape flaring behind him, his left arm bent in front of his chest with its bony hand gripping the cape's edge, dark leather shoes under gold greaves on his feet, the same figure",
+     "a skeletal bullfighter with a horned skull for a head, its eye sockets glowing red, in a tattered suit of lights of black and tarnished gold, a slim sword raised in his right hand, his red cape flaring behind him, his left arm bent in front of his chest with its bony hand gripping the cape's edge, dark leather shoes under gold greaves on his feet, every line clean"
     ]
    }
   },
@@ -98,13 +98,13 @@
    "size": 2,
    "design": {
     "where": "the Summoner's rune circle",
-    "look": "lit from inside by heat, black rock and embers",
-    "sprite": "a towering giant of black stone and living flame with a crown of fire, a burning sword held low, its eyes like furnace mouths",
+    "look": "lit from inside, fire against darkness",
+    "sprite": "a towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire",
     "variants": [
-     "a towering giant of black stone and living flame with a crown of fire, raising a burning sword overhead to bring it down, flames pouring off its stone shoulders",
-     "a towering giant of black stone and living flame with a crown of fire, striding forward out of a deep violet rune circle on the ground, a burning sword trailing fire behind it",
-     "a towering giant of black stone and living flame with a crown of fire, sweeping a burning sword in a wide arc that throws a wall of fire",
-     "a towering giant of black stone and living flame with a crown of fire, kneeling to plant a burning sword in the ground, fire racing out from the blade in every direction"
+     "a towering giant whose whole body is living flame over a dim core of black slag, its head a sharply drawn mask of darker fire within the blaze with two deep black pits for eyes, a great sword of fire held out in a clear clenched fist, a visible hilt and crossguard between the fingers and the blade",
+     "a towering giant whose whole body is living flame over a dim core of black slag, its head a sharply drawn mask of darker fire within the blaze with two deep black pits for eyes, a great sword of fire held out in a clear clenched fist, a visible hilt and crossguard between the fingers and the blade, the fist and hilt plain to see",
+     "a towering giant whose whole body is living flame over a dim core of black slag, its head a sharply drawn mask of darker fire within the blaze with two deep black pits for eyes, a great sword of fire held out in a clear clenched fist, a visible hilt and crossguard between the fingers and the blade, the face a dark shape in the fire",
+     "a towering giant whose whole body is living flame over a dim core of black slag, its head a sharply drawn mask of darker fire within the blaze with two deep black pits for eyes, a great sword of fire held out in a clear clenched fist, a visible hilt and crossguard between the fingers and the blade"
     ]
    }
   },
@@ -118,10 +118,10 @@
     "look": "a winter mountain under a hard cold sky",
     "sprite": "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, a great hunting bow of black yew in one hand",
     "variants": [
-     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, drawing a great bow of black yew with an arrow of ice nocked, her long pale braids rimed with frost and snow streaming off her shoulders",
-     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, striding out of a deep violet rune circle on long skis of bone, a great bow of black yew slung across her back and a blizzard at her heels",
-     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, raising one hand into a storm of glittering ice crystals, a great bow of black yew held low in the other, her long pale braids rimed with frost",
-     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, loosing a volley of ice arrows that burst into frost, her long pale braids and white fur cloak streaming in the cold wind"
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, her right hand raised high calling a storm of glittering ice crystals, her left hand empty and open at her side, a tall longbow of black yew and a quiver of arrows slung across her back, the bow's upper limb rising over her shoulder",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, her right hand raised high calling a storm of glittering ice crystals, her left hand empty and open at her side, a tall longbow of black yew and a quiver of arrows slung across her back, the bow's upper limb rising over her shoulder",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, her right hand raised high calling a storm of glittering ice crystals, her left hand empty and open at her side, a tall longbow of black yew and a quiver of arrows slung across her back, the bow's upper limb rising over her shoulder, standing square to the viewer",
+     "a tall powerful woman, a giantess of the winter mountains, with a stern woman's face, in a cloak and tunic of white furs over dark leather, fur-trimmed leather boots and a horned iron helm, long pale braids rimed with frost, her right hand raised high calling a storm of glittering ice crystals, her left hand empty and open at her side, a tall longbow of black yew and a quiver of arrows slung across her back, the bow's upper limb rising over her shoulder, her weight on one leg"
     ]
    }
   },

@@ -245,6 +245,31 @@ const ACTION_EFFECTS := {
 	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
 }
 
+## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
+## is shown intent (the ambush read below).
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+
+
+## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
+## is drawn like any foe's, and means nothing: no arrow, no intent on anyone.
+func acts_on_nobody() -> bool:
+	return not is_attack_action(action) and UNTARGETED_EFFECTS.has(str(action.get("effect", "")))
+
+
+## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
+## HUD draws the arrows): alive, not suppressed, and its arrow on it, its pick or a blow at
+## every machine, a gathering countdown included. A foe on a special that acts on nobody in
+## particular shows intent on no machine, whatever its pick. `u` is the machine's Unit.
+func intent_on(u) -> bool:
+	if u == null or not alive() or is_suppressed() or target == null:
+		return false
+	if reaches_every_machine():
+		return true
+	if acts_on_nobody():
+		return false
+	return target.get("unit") == u
+
+
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
 ## breach: overflows shield into hull. scorch: a stack of Scorched on the machine it hits, its

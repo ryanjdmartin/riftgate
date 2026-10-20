@@ -7,7 +7,7 @@ three, the battlecruiser, has a brief of its own (`minerva_battlecruiser.md`), w
 the broadside first proposed here.
 
 **Status**: direction (Ryan's pitch, 15 October; the charge open, 16 October; the shells proposed
-17 October, Ryan leaning to an ammo bar if they land, 18 October). **Maker**: Minerva. **Proposed tier**: three.
+17 October and given to Wainwright & Sutler, 20 October, so the charge is open again). **Maker**: Minerva. **Proposed tier**: three.
 **Read first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's rows on
 cooldowns (section 8), the makers table and the size classes (section 7), and the ways of
 moving (section 4).
@@ -147,13 +147,19 @@ revolver later and find the battery another "when" (the telegraph hunter, or fir
 guard, above), or to run the shells and judge the feel in play, since the look of the bar and the
 words on it are what read as a maker.
 
+**Ryan, fifth round** (20 October, in the Wainwright & Sutler session; the briefs README's damage
+dealers note): the all-shells machine reads to him as a Wainwright & Sutler tier three, and Claude
+agreed there that it is that maker's artillery tenth (the cold price the heat row asked for, on
+the maker whose kit is cold, the carrier's resupply its loader), a brief of its own when he says
+so. So the shells leave this brief, and the battery's charge is open again among the earlier
+candidates: firing drops its guard, the magazine as a per-fight count, the telegraph hunter, or
+none.
+
 ## Open for the session
 
-1. The charge: shells for every gun, vents reloading (Claude's third round; Ryan, 18 October, if
-   it lands, with an ammo bar of its own beside or in place of the heat bar, and his worry that
-   it reads as Wainwright & Sutler's), or one of the earlier candidates, or none (Ryan:
-   possibly a non-starter); the magazine's size, the turrets' price and the vent-to-shell rate
-   as placeholders.
+1. The charge, with the shells gone to Wainwright & Sutler (20 October): firing drops its guard
+   (Claude's lean of 16 October), the magazine, the telegraph hunter, or none (Ryan, 16
+   October: possibly a non-starter).
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
 3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the

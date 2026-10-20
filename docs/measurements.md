@@ -358,3 +358,44 @@ git checkout -- sim/die.gd
 ```
 
 About ten minutes a run on one core. Bible section 6 (the rerolls row).
+
+**The Flakshot Repeater as a flat 5 that sprays** (the Prairie Dog's go, 19 October). The
+Prairie Dog's solo row rerun with the Repeater at Direct, flat 5, Spread, Rapid, its Flak
+planned and so not run (`tools/balance.gd --rows prairie_dog`, 200 seeds a cell,
+random/greedy, 8,000 fights), against the 13 October report at the same seeds: the row did
+not move. The Wolves 65/98 (64/98 before), the Gels 0/16 (0/14), the Needlers 5/28 (1/32), the
+Antlions 2/25 (5/26), the Ghosts 82/100 (79/100), the Bombs 1/18 (0/20), the Drakes 39/62
+(32/72), the Treant 3/25 (2/30), the rest at 0 or 100 as before; the Repeater's share of its
+spends 15% (18%), its hull left within a few points everywhere. Read: a flat 5 that sprays is
+worth about what a rolled 5 to 15 single shot was, less on a pack of two and more on a full
+rank, so the built half of the go changes nothing alone, and Claude's Spread-alone shape
+would not have moved the row either; the fight half is Flak's, and the row is re-read when
+the engine has it (the to-do). The maker's trio (the Clydesdale, the Prairie Dog, the Dingo;
+`--rows "wainwright_sutler team"`, 8,000 fights, 947 s) did not move either: the Goblins
+90/100 (91/100), the Meadow formation 3/96 (4/99), the Waste 40/100 (34/100), the Marsh 0/5
+(0/12), the Peak 0/59 (0/68), everything else at 97 to 100. Its pick shares are no clean read
+of the Repeater, since the 13 October report predates the harpoon's Shock (15 October): the
+Harpoon 9% (17%), the Twin Autoguns 23% (16%), the Ankle Mortar 8% (5%), the Repeater 6%
+(8%), rerolls 1.97 a round (2.30). Bible section 7, the Prairie Dog row.
+
+## 18 October, the funnel-web alone
+
+**The funnel-web's row alone, a diagnostic the day its engine landed.** `tools/balance.gd
+--rows funnel_web --seeds 30`, both rungs, the stock stand-ins (the Web Bomb, the Maxigun, the
+Howitzer, the Twin Autoguns, the Laminar Deflector), the bot valuing a bite by Vitriol's ticks
+on the hull the blow leaves and a web by the blows its burst stops. Thirty seeds: a direction.
+Random / greedy win rates: 0 / 0 against the Goblins, the Revenants, the Salamanders and every
+formation; 7 / 87 the Gels, 80 / 90 the Needlers, 67 / 97 the Antlions, 10 / 13 the Bombs,
+13 / 87 the Treant, 3 / 37 the Sandworm, 13 / 87 the Bone Wyvern, 0 / 3 the Magma Golem; 100 /
+100 against the Dire Wolves, the Mandragoras, the Cockatrices, the Ghosts and the Drakes. Pick
+share, greedy: Web Bomb 30%, Maxigun 30%, Howitzer 21%, Laminar Deflector 11%, Twin Autoguns
+7%; 0.92 rerolls a round.
+
+Read: alone it is a plain d5 with a web and loses where every machine alone loses, which is
+tier two's shape and what the brief said. Alone, every foe aims at it, so the ambush bites
+only through the window its own web opens (the webbed foe held the round after shows no
+intent) and the row cannot read the passive; the web's third of its spends is the die's odds
+(one entry in five, rerolled toward) and the bot's valuation of a stun it can always use, no
+must-pick read, since no team row ran. The reads the bible's funnel-web row asks for (the
+share of its blows that bite, the web's share in formation fights, the Baboon pairing) are
+team rows at 200 seeds, after the stock pass; the runner does not yet count the bites.

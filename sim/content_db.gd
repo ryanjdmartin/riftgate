@@ -521,13 +521,30 @@ func is_fixed(component_id: String) -> bool:
 	return false
 
 
-## The chassis of one tier, in content order.
+## The chassis of one tier, in content order, planned drafts included (chassis_runnable
+## says which the engine can field).
 func chassis_of_tier(t: int) -> Array:
 	var out: Array = []
 	for id in chassis.keys():
 		if int(chassis[id].get("tier", 0)) == t:
 			out.append(str(id))
 	return out
+
+
+## Can the engine field this chassis today? Not while its passive or one of its locked
+## components is a planned draft (19 October): a draft is kept in content so it can be written
+## ahead of its engine, but dealt it would put a plain die with a dead piece in the player's
+## hands, and measured it would read the body without the kit. The tender, the campaign
+## runner and the balance runner skip what this refuses.
+func chassis_runnable(chassis_id: String) -> bool:
+	var c: Dictionary = chassis.get(chassis_id, {})
+	var p = c.get("passive")
+	if p is Dictionary and str(p.get("status", "implemented")) == "planned":
+		return false
+	for cid in c.get("fixed", []):
+		if str(components.get(cid, {}).get("status", "implemented")) == "planned":
+			return false
+	return true
 
 
 ## The blueprints a run starts with: every tier-one component (Ryan, 7 October: each
@@ -726,9 +743,16 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		if Array(fd.get("keywords", [])).has("rapid"):
 			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
 	if kind == "buff":
-		# A buff grants one of the machines' statuses: it must exist and be theirs.
+		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
+		# component may grant a machine status the vocabulary names but the engine lacks (the
+		# Spin-Up's Spun Up, 19 October), as it may carry a planned keyword: spent, it grants
+		# nothing until the engine has the status.
 		var st := str(fd.get("status", ""))
-		if not Effects.STATUS.has(st):
+		var drafted_status: bool = planned and vocabulary.has(st) and vocabulary[st].get("status") != "implemented" \
+			and vocabulary[st].get("category") == "status" and str(vocabulary[st].get("design", {}).get("table", {}).get("on", "")) == "machine"
+		if drafted_status:
+			pass
+		elif not Effects.STATUS.has(st):
 			errs.append("%s: a buff needs 'status', one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
 		elif not Effects.MECH_STATUSES.has(st):
 			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])
@@ -755,8 +779,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
-		# (taunt, corrode): Face.from_dict builds it without that keyword until it is coded.
-		if planned and vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented":
+		# (taunt, corrode once; Web now), and a built component may carry a planned one (the
+		# Flakshot Repeater's Flak, 19 October): Face.from_dict builds the entry without that
+		# keyword until it is coded, so content is written ahead of the engine either way,
+		# the keyword never shown and never run. An idea-stage keyword rides only on a draft.
+		var drafted: bool = vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented"
+		if drafted and (planned or vocabulary[str(k)].get("status") == "planned"):
 			continue
 		var kw := Face.keyword_from_name(str(k))
 		if kw <= 0:
@@ -815,8 +843,10 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
-		if (effect == "keep_status" or effect == "stack_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
+		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
+			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:

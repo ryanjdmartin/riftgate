@@ -677,3 +677,51 @@ func test_the_plaque_shows_a_name_in_its_pixel_face() -> void:
 	assert_true(s._plaque.position.x > 0.0 and s._plaque.position.x + s._plaque.size.x < SkirmishScreen.W, "centred over the foes")
 	s.free()
 	p.free()
+
+
+## The predator sense (the funnel-web, 18 October): while an ambusher's die is held or dragged
+## the foes' ground dims and the foes its entry can reach that show no intent on it are marked;
+## and a webbed or acid-eaten foe wears its chip, the web's pointing at the neighbour it catches.
+func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_or_dragged() -> void:
+	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+	var s := _screen(7)
+	var i := 0
+	var ms: Skirmish.MechState = s.sk.mechs[i]
+	for k in range(ms.die.faces.size()):
+		if ms.die.faces[k].is_attack():
+			ms.face_index = k
+			break
+	assert_true(ms.face().is_attack(), "the first machine shows a weapon")
+	ms.unit.grant_passive(ambush)
+	for foe in s.sk.field_foes():
+		foe.target = s.sk.mechs[1]
+	s._refresh()
+	assert_false(s._prey.on, "off until the die is held or dragged")
+	var reach := s.sk.targets_for(i)
+	assert_true(reach.size() >= 2, "foes in reach to mark")
+	s._on_die_held(i)
+	assert_true(s._prey.on, "on while the die is held")
+	assert_eq(s._prey.marks.size(), reach.size(), "every foe in reach looks at another machine: every one marked")
+	s._on_hold_released()
+	assert_false(s._prey.on, "off when the die is let go")
+	var t: Foe = reach[0]
+	t.target = ms
+	s._on_drag_started(i)
+	assert_true(s._prey.on, "on while the die is dragged")
+	assert_eq(s._prey.marks.size(), reach.size() - 1, "the foe that turned on it loses its eyes")
+	assert_false(s.prey_for(i).has(t), "the read is the foe's intent on the machine")
+	s._on_drag_ended(Vector2(-100, -100))
+	assert_false(s._prey.on, "off when the drag ends")
+	assert_true(s.prey_for(1).is_empty(), "a machine without the read marks nothing")
+	var foe: Foe = s.sk.front[0]
+	Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(foe, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
+	s._refresh()
+	var glyphs: Array = []
+	for r in s._foe_rows(foe):
+		glyphs.append(r[0])
+		if r[0] == "web":
+			assert_eq(r[1], ">", "the web's chip points at the neighbour it catches, to its right")
+	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
+	s.free()

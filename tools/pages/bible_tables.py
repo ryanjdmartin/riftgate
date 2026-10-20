@@ -30,11 +30,12 @@ END = "<!-- bible-tables:end -->"
 # Who grants what, in the engine's own words (sim/skirmish.gd, sim/effects.gd), and the side it
 # lands on. A keyword or effect missing here grants no status.
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
-                      "suppress": [("suppressed", "foe"), ("numbed", "foe")]}
+                      "suppress": [("suppressed", "foe"), ("numbed", "foe")],
+                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper"}
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
-FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted"}
+FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "scramble": "scrambled"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
@@ -52,9 +53,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on")))]
-FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all", "countdown", "last_act", "parts"]
+FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above)."}
-KIND_ORDER = {"buff": 0, "debuff": 1, "resistance": 2}
+KIND_ORDER = {"buff": 0, "debuff": 1}
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
 
@@ -135,6 +136,8 @@ def tally(words):
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":
                 t.grant(str(eff.get("value")), "machine", label, how, planned, who=who)
+            elif e == "lay_status":   # laid on each foe the blow hits (the funnel-web's Ambush)
+                t.grant(str(eff.get("value")), "foe", label, how, planned, who=who)
             elif e in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[e]
                 t.grant(status, on, label, how, planned, who=who)
@@ -241,6 +244,8 @@ def keyword_rows(t, vocab, words):
         c = t.keywords.get(key, empty)
         word = words.get(key, {})
         name = {"burn": "Burn (a foe's)"}.get(key, word.get("name", key))
+        if word.get("status", "implemented") != "implemented":
+            name += " (planned)"
         who = ", ".join(sorted(the(n) for n in c["foes"]))
         note = cell(c["foe"]) + (" (%s)" % who if who else "")
         if c["moves"][0]:

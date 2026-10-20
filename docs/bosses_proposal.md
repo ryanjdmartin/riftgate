@@ -17,7 +17,7 @@ Generic tropes, a pack of one or a pack in which every foe is unique, any size.
 | The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not big | Ryan, 15 October: a decent elite |
 | The Waste | Sandworm | Big | Built, standing in as the boss |
 | The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
-| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador |
+| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Noted for later (Ryan, 15 October: not yet) |
 | The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
 | Any | A pair of gate gargoyles (a pair trope) | Not big | Noted for later (Ryan, 15 October: not yet) |
@@ -36,13 +36,13 @@ stands or shielding it until one falls.
 |---|---|---|---|---|
 | The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own) | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
+| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes; his pick of it (4), redrawn less muscular, lanky as a sapling, for the fifth; his pick of that (2) wanted 1's eyeless maw (19 October), so the sixth is the edit model on 2 (the eyes inside the mouth removed) beside a composite of 1's head onto 2 re-rendered close; his pick of that (3, the composite) lost spines and vines on the head's left where the paste box clipped, so the seventh completed them (the edit model, and the composite redone wider), which did not work either (Ryan, 19 October: "maybe go back and try the head-swap compositing again"); the eighth is the composite of 1's head onto 2 again, a generous box, shown raw and after a close pass at 0.9: the spines and vines complete at last, all three clean to Claude's eye; Ryan (19 October): still weird even at phone scale, cut off or blurred by turns, is there another way? The ninth round is another way: the two eyes inside the maw painted out with the maw's own black on his pick itself (an erase over dark, as an erase over white is the one hand edit that has passed his bar; nothing re-rendered, so nothing blurs), beside image to image from his pick at 0.7 with the maw described eyeless (0.8 kept the eyes, set aside) | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough. Claude's lean: a war hammer planted haft-down, its two ends the parts and an eye in each, the face's blow one no shield answers and the pick prising loose the component a machine shows (the Waste's two halves), the haft the core; the axe's two bits would be a mirrored pair doing one job | The parts (above) |
+| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts (above) |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
-| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites | Runs today |
+| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites. Art: his pick of 18 October (the flourish, 4) lacks the hand on the arm bent across his chest; an added arm and a cape grip through the edit model both missed, so the third round was image to image from the pick, as he asked, and landed the hand; his pick of it (3) wanted 2's head and boots (19 October), so the fourth round was the edit model on 3 (red eye sockets, shoes under the greaves) beside a composite of 2's head and shoes onto 3 re-rendered close (image to image at 0.8), the first composite tried since hand edits failed in October; his pick of that (2, the edit) wanted 3's bolder jaw and nose bone, and the fifth round's edit of the skull was "way too much, full of artifacts" (Ryan, 19 October), so the sixth is a composite of 3's skull onto 2, the two aligned siblings, shown raw and after a close pass at 0.9: the jaw and nose bone carried over clean, no artifacts; Ryan's pick (19 October) the second close pass (fixhand6 3), cut into `art/foes` and recorded in picks.json: the Matador is done | Runs today |
 | The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A blow on death (small, beside the Gel's split) |
 | The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Runs today |
 | The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | A countdown (the delayed blow); armour while an ally stands |
@@ -108,7 +108,7 @@ balance the series out a little, never purge it):
 - **The Summoner's summons** (Ryan, 15 October: yes, with names that are not the series' own;
   then full Norse): in content since that day, each a move, from the Norse world its rune circle
   opens on (its robes are stitched with runes). Surtr (the fire giant, in Ifrit's place; Ryan: a
-  perfect replacement): Pyroclasm, every machine scorched, below half. Ifrit's own move is
+  perfect replacement; his note of 18 October on the first takes: made of fire rather than on fire, so the fourth round draws a body that is itself flame over a core of slag): Pyroclasm, every machine scorched, below half. Ifrit's own move is
   Hellfire (Ryan asked, 16 October). It was the Summoner's until 13 October, when it became
   Pyroclasm: the bible gives hell's words to the Council's side and pins Hellfire as an Arsenal
   prefix (the King James Bible's), and Surtr's fire is Muspelheim's, not Hel's. If the move
@@ -121,7 +121,31 @@ balance the series out a little, never purge it):
   cursed gold, in Bahamut's place; Ryan's suggestion): the promoted form's one move more, waiting
   on the promoted forms, drawn as the sagas tell it, a wingless serpent whose breath is venom,
   so neither its look nor its blow is Bahamut's. Art in the forge's drafts (the third round on
-  the picker), and the screen's moment for each summon to appear is still to come.
+  the picker), and the screen's moment for each summon to appear is still to come. Fáfnir is picked and cut (Ryan, 18 October: the head and upper section of the
+  first take, the gold hoard taken off by the edit model); Skaði's pick waits on her lower-hand
+  weapon reading (a bow failed twice; a third round offers the bow again and a hunting spear);
+  Surtr's on a head that is not a skull (his pick of the fire-bodied takes, 3, redrawn: the
+  edit model and a freer pass took the skull off, his pick 5 the crowned head of fire; 19 October,
+  his two worries, the head's definition when shrunk and a sword that seems to grow from the arm,
+  through the edit model and a close pass). Skaði's lowered hand has had a bow, a spear and
+  knives drawn into it over three rounds without one reading; the fourth empties the hand and
+  slings the bow on her back, and lands (Ryan, 19 October: the fresh take 4 great from the waist
+  up, the pose and the bow; the edit's 1 best below the waist, trousers, a longer tabard, thigh furs
+  and its boots, and its gloves), so the fifth dresses 4's lower half as 1's through the edit
+  model. Surtr's fourth round "busted the sword more" (a face-and-sword edit in one instruction),
+  so the fifth asked for the sword alone on his pick 5: a crossguard and pommel between fist and blade;
+  it drew the grip right and lost the blade (Ryan: none of these have a blade at all; 1 holds the hilt
+  and crossguard correctly), so the sixth adds a blade of fire to 1's grip, the edit model and a pass
+  at 0.6 side by side: the edit model landed it (two candidates, a blade of flame from the held
+  crossguard, on the picker) and the pass at 0.6 lost the blade again (set aside), the colour
+  rule of the fix-order row holding for an added glow. Ryan on it (19 October): "so close", 2
+  picked, its blade to turn clockwise about five degrees and move right onto the line of the
+  grip. The seventh does that by hand (the blade cut by its mask, turned five degrees about its
+  base and moved onto the grip's line, the hand edit the layout for a close pass at 0.9, never
+  shown raw): the pass drew the blade on the grip's line and joined to the crossguard, but
+  redrew his head a little, so the sword's column alone is pasted back onto his pick (the two
+  aligned, the seam in white and in the fist both share), shown beside the full pass. Skaði is picked and cut (19 October: the fifth round's 1, the fresh-take pose
+  with the edit's lower half).
 - **Clair Obscur's Mime**, if wanted beside Floraison: a rare pack that throws the last blow it
   took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
   prize.
@@ -129,7 +153,6 @@ balance the series out a little, never purge it):
 ## Questions for Ryan
 
 - Marks on the rest of the twelve.
-- The Exor homage's weapon.
 - The conversions above; where Omega lives; the Mime.
 
 ## Bench

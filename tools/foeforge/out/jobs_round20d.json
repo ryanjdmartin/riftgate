@@ -1,0 +1,28 @@
+[
+ [
+  "augur chibi flip, more seeds",
+  "fix",
+  "tools/foeforge/out/augur_chibi_heroart16/layout_nosmoke.png",
+  "augur",
+  "the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are",
+  "--tag",
+  "chibi_heroart16",
+  "--n",
+  "4",
+  "--seed",
+  "11"
+ ],
+ [
+  "augur chibi 9, outer blade removed",
+  "fix",
+  "tools/foeforge/out/augur_chibi_heroart16/augur_9.png",
+  "augur",
+  "the axe blade on the outer right side of the upper head is gone, leaving only the spearhead and the crescent that curves in toward her on the inner side; the shaft, her grip, her face and everything else stay exactly as they are",
+  "--tag",
+  "chibi_heroart16",
+  "--n",
+  "2",
+  "--seed",
+  "15"
+ ]
+]

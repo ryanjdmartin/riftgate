@@ -51,7 +51,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
@@ -61,7 +61,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_granted": ["vent_heat", "stack_status"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
-	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
+	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 }
@@ -115,6 +115,18 @@ const STATUS := {
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building: at the count it is Suppressed, and the Paradox clears.",
 		"effects": []},
+	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
+	# current hull a stack at its action, past armour, after Burning's flat tick, rounded down
+	# and never the last hit point, then a stack fades (Burning's shape, stacking add): it
+	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
+	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses 5% of its current hull per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
+		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 5}]},
+	# The funnel-web's web (18 October): the mark its Web Bomb leaves. The skirmish bursts it at
+	# the end of the foe's action (Skirmish._web_burst): a Suppress on it and on the next foe
+	# to act beside it, each for itself. One web on a foe, however often it is webbed.
+	"webbed": {"id": "webbed", "name": "Webbed", "description": "At the end of its action the web bursts: it and the next foe to act beside it are Suppressed.", "stacking": "renew", "decay": "none",
+		"tags": ["web"], "effects": []},
 	# The machines' buffs (29 September): what buff equipment grants. Names are placeholders
 	# for Ryan. Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing
 	# to read). A damage point a stack since 18 October (Ryan: the count is the bonus, read at a
@@ -212,12 +224,16 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
 ## own buffs (Braced, Kindled, Getting Back Up).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
 ## its own; a passive may read one its machine's stock carries, the Badger's melee).
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present"]
+## target_no_intent (the funnel-web's Ambush, 18 October): the foe struck shows no intent on this
+## machine, as the HUD draws its arrow (Foe.intent_on): aimed at another machine, Suppressed, or
+## on a special that acts on nobody in particular; a gathering countdown and a blow at every
+## machine count as aimed. Read at the spend before its own riders, each foe reached alone.
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -397,11 +413,15 @@ static func shocks_striker(u, blocked: bool) -> bool:
 
 
 ## What a status effect amounts to right now across live statuses: {hp, heat, skip,
-## resist}. hp and heat are per stack sums; skip is any skip_action; resist is percent.
+## resist, share}. hp and heat are per stack sums; skip is any skip_action; resist is percent;
+## share is the part of hp that is a share of the owner's current hull (tick_hp_share:
+## Vitriol, 18 October), read after the flat ticks (after Burning), the whole share rounded
+## down and never the last hit point, so it opens on a boss and finishes no foe.
 ## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
 ## machine's Burning and Scorched), and only those; otherwise every other.
 static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
-	var out := {"hp": 0, "heat": 0, "skip": false, "resist": 0}
+	var out := {"hp": 0, "heat": 0, "skip": false, "resist": 0, "share": 0}
+	var pct := 0
 	for pair in _taking_part(u, "status", null):
 		var eff: Dictionary = pair[0]
 		var m: Modifier = pair[1]
@@ -411,13 +431,31 @@ static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 		match str(eff.get("effect", "")):
 			"tick_hp":
 				out["hp"] += v
+			"tick_hp_share":
+				pct += v
 			"tick_heat":
 				out["heat"] += v
 			"skip_action":
 				out["skip"] = true
 			"resist_suppress":
 				out["resist"] += v
+	if pct > 0:
+		var hp_now = u.get("hp")   # a foe's hull; a machine carries no share tick, and has no hp
+		var left := (int(hp_now) if hp_now != null else 0) - int(out["hp"])
+		if left > 1:
+			out["share"] = mini(left - 1, int(floorf(float(left) * float(pct) / 100.0)))
+			out["hp"] += int(out["share"])
 	return out
+
+
+## The value one stack of a status ticks for by an effect's name ("tick_hp_share" for the
+## share Vitriol eats a stack): the chips and the bot read it here, never hardcoded.
+static func status_value(status_id: String, effect: String) -> int:
+	var n := 0
+	for eff in STATUS.get(status_id, {}).get("effects", []):
+		if str(eff.get("trigger", "")) == "status" and str(eff.get("effect", "")) == effect:
+			n += int(eff.get("value", 0))
+	return n
 
 
 ## Does this modifier end with its owner's turn rather than the round (turn decay, either kind)?
@@ -574,6 +612,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			return target != null and target.get("modifiers") != null and carries_status(target)
+		"target_no_intent":
+			return target != null and target.has_method("intent_on") and not target.intent_on(u)
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
 	var w := str(eff.get("when", ""))
@@ -737,6 +777,36 @@ static func granted_keywords(u, face: Face) -> Array[int]:
 		if fits:
 			out.append(kw)
 	return out
+
+
+## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
+## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
+## [[status id, stacks a hit], ...]. The skirmish asks once a foe at the spend, before any
+## strike's riders land, and lays them a stack per strike that lands with a number; the bot
+## asks the same. Nothing for a foe the condition rules out.
+static func laid_statuses(u, face: Face, target) -> Array:
+	var out: Array = []
+	if face == null or not face.is_attack() or target == null:
+		return out
+	for pair in _taking_part(u, "on_attack", face, target):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "lay_status":
+			continue
+		var id := str(eff.get("value", ""))
+		if not STATUS.has(id):
+			continue
+		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)])
+	return out
+
+
+## Does any live passive of this machine read a foe's intent on it (a `when` of
+## target_no_intent)? The screen's predator sense shows for such a machine alone.
+static func reads_intent(u) -> bool:
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("when", "")) == "target_no_intent":
+				return true
+	return false
 
 
 ## The component as it is right now for this machine: its own entry, unless a live passive
@@ -1077,6 +1147,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_heat": body = "heat ×%s" % vs
 		"add_heat": body = "heat +%s" % vs
 		"add_burn": body = "+%s burn" % vs
+		"lay_status":
+			var n := int(eff.get("stacks", 1))
+			body = "lays %s on each foe hit, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a stack" if n <= 1 else "%d stacks" % n]
 		"vent_heat": body = "sheds %s heat" % vs
 		"add_ceiling": body = "rolls reach %s higher" % vs
 		"add_floor": body = "the lowest roll %s higher" % vs
@@ -1109,6 +1182,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
+		"tick_hp_share": body = "loses %s%% of its current hull per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs
@@ -1139,6 +1213,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
+		"target_no_intent": lead += "foes showing no intent on this machine: "
 		"ally_present": lead += "with an ally in the fight: "
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
@@ -1180,7 +1255,7 @@ static func explain(u, face: Face) -> Array[String]:
 				# the row has no target in hand. A raised ceiling means nothing to a flat face.
 				if (name == "add_ceiling" or name == "add_floor") and not face.is_ranged():
 					continue
-				if _usable(u, m, name) and (str(eff.get("when", "")) == "target_status" or _holds(u, eff, face)):
+				if _usable(u, m, name) and (str(eff.get("when", "")) in ["target_status", "target_no_intent"] or _holds(u, eff, face)):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 	return out
 

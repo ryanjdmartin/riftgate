@@ -14,10 +14,15 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 483 tests, 20,175 checks, green on `ccr-3259e29d-ydwpom` (18 October, Armoured, the
-  halving and the numbered Burn built); before it, 481 and 20,129 on main with the Minerva
-  branch merged in.
-  A cloud session fetches
+- The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
+  `C:\Users\jam82\Desktop\Code\riftgate`, set up that day; the README's Running section says
+  what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
+  renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
+  `fix` have no machine until a route for the image model is chosen.
+- Tests: 502 tests, 61,009 checks, green on `ccr-3259e29d-ydwpom` with main merged in (20
+  October; main alone 500 and 60,987 after the funnel-web and planted-footwork branch merged;
+  485 and 20,291 on the Windows desk machine on 19 October, about a minute there). A cloud
+  session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -26,6 +31,12 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
+  the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
+  content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
+  and page; the to-do's engine and assets lines ticked; the bible at v0.219 after the merge; and 20 October's
+  planted footwork for the Armadillo, the Nemesis and the Ammit): merged into main on 20 October (`0e7d6d4`), the
+  worktree on the Mac free to go.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
@@ -45,12 +56,46 @@ document's job and every command are in `README.md`.
   one and the texts), `docs/briefs/minerva_siege_battery.md` (its fourth round: Ryan's call on
   the shells), then the bible's state below. The hangar page waits on a republish (the
   content moved: Armoured's name and numbers, the Coil, the talons, the Burn numbers).
-- `claude/festive-cray-i7lvnm` (the funnel-web's design session, 15 to 18 October): the spider
+- `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
+  proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
+  Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
+  proposed for the go; the shield-spender an off-tank package at tier one on Ryan's word (a
+  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a whole,
+  heavy proposed and the capital ship; two briefs of their own, `kestrel_gun_platform.md` (the
+  capstone, Ryan's shape: every roll of its die grows its entries, lock or ride) and
+  `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat, dark two rounds, a locked
+  reset gun whose kill brings every weapon back; hull 30 decided); the interceptor (its first
+  weapon each round Rapid) in the README's tiers table, no brief yet; Ryan's leans recorded
+  (overlap is fine if the shapes differ, rerolls Kestrel's, a second tier-one lure so the
+  Armadillo is no must-pick, Aphelion to need a defensive tier one, the mode-shifter to
+  Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's direction
+  goes to main before anything else does any work) and kept open for the Kestrel line
+  review. The eighth round (19 October) in the platform's brief: no doubled
+  payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
+  (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
+  chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
+  Ryan's deep-dive ask on the action economy, answered in the briefs README (Rapid sells five
+  wants, four carriers ungated, a home for each want other than more Rapid pieces, the
+  commander layer among them), and the platform's engine moved from Rapid to rerolls (an own
+  reroll a round, the throttle retired, the three-strike shield its lock). Docs only; nothing
+  built, nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To
+  resume: Ryan's calls in the open Kestrel briefs, then on his go the records each brief's
+  "What the session hands back" lists.
+- `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
-  merged into main the same day, so a session can start on its engine and assets (the to-do's
-  two lines); kept open for the next Wainwright & Sutler briefs (the revolver next, then the
-  boiler, the fan-boat, the Prairie Dog, then the maker's tiers).
+  merged into main the same day; its engine and its assets built on `ccr-ffcf75fa-3gkbz9`
+  (18 to 20 October, merged into main on 20 October); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
+  fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
+  rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
+  same day (Flak), the boiler as the Whip Scorpion on 20 October and the maker's tiers
+  confirmed the same day (3-5-2), so of the maker's briefs only the gunship's and the
+  multi-rotor's remain, with the stock pass and the die's shown word; next the Rapid
+  discussion in the maker's context. The tender, the campaign
+  runner and the balance runner skip a chassis whose passive or locked piece is planned
+  (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
+  planned at tier one without being dealt; until their engine lands the maker's deal is the
+  Prairie Dog.
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
@@ -81,8 +126,107 @@ document's job and every command are in `README.md`.
   background since the go, which is recorded in the bible, the briefs, the to-do and
   `docs/economy_pass.md`.
 
-## The game as left (13 October, evening)
+## The game as left (18 October)
 
+- 19 October, the funnel-web's assets (`ccr-ffcf75fa-3gkbz9`): its lowforge model
+  (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron), four cuts in the day, each on
+  Ryan's notes (the bible's funnel-web row has each and its reasons): a mechanical spider (too
+  literal; a war machine), a low quad in the BattleTech Scorpion's shape (the larger boiler
+  spider's likely shape, a lean in `docs/briefs/ws_boiler.md`; this one wants the Revenant's
+  and the Arachnotron's legs under a turret), that turret on a hub with the legs going down,
+  up and down for clearance (leggy is fine), and the fourth as it stands: the body in W&S's
+  military camp (the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's
+  steam; no boiler, stack or hazard stripes), a dark lower hull running into a snout under an
+  armoured upper hull with a wedge brow, two slit eyes, livery appliqué, an exhaust grille and
+  a whip antenna; the `head` joint yaws and nods the whole body on the hub; the stations as
+  his fifth notes dealt them: the Maxigun and the Twin Autoguns static in two mantlets on the
+  jaw's flat face (a hanging chin gun had read as a proboscis), the Howitzer alone on the roof
+  on `elev_top`, the Web Bomb's lit four-tube launcher out of the left pod on `elev_l`, the
+  dish on the right pod on `elev_r`; no traverse anywhere, the torso twist aims them. The legs: `coxa_` joints at the hub's corners carry struts down
+  to low hips, thighs up to high knees, shins down to flat feet with toe plates (hip, knee and
+  ankle each); 20 joints. Four acts (`stalk`, a sink and a lunge on a sharp servo; `scan`;
+  `sight_in`, the torso twisting to the launcher as it rises lit, then to the roof gun as it
+  elevates; `probe`, a fore leg tapping ahead) and the creep: `_plant` with every foot one step
+  a stride, out of step, and the coxae rowing under the solver (his sixth notes, his pick of
+  the options after the feet still flicked forward: a limb's `coxa` in `_plant`, the rest
+  points turned about the pivot before each solve by `_turned`, the angle folded into the
+  foot's flatness, the angle from `_coxa_row`, each half of the cycle a cosine; the strut
+  steepened so the turn rows the hip fore and aft), a longer stride (sweep 36, stride 51) and
+  the solver's new `carry` window, (0.04, 0.92) here, the old (0.12, 0.76) the default for every
+  other walker; the fore feet's two short steps a stride and the head's turn toward each foot
+  were cut on his fifth notes (hot-stepping, too busy; weird); the row at twenty degrees was
+  a gait option for a day (his seventh: what would the extreme look like; his eighth: no
+  visible difference, so it is gone); the jaw six shorter with the bow guns near flush and the
+  roof mount aft of the pods (the seventh), sunk into the roof (the eighth); the flank plates
+  are raked fins in the livery (the eighth); the acts on the eighth notes: the scan and the
+  sighting twist the head twenty and turn the rest by pivoting the legs (quick steps, one
+  foot up at a time; his ninth, 20 October: a shuffle whose planted feet slid was no shuffle,
+  so each leg has a `yaw_` joint at its root and `_pivot` solves the yaw per frame that keeps
+  a planted foot's world position in the leg's plane, the planar solver taking the rest, each
+  stepping foot set down at rest under the body as the round ends; forward kinematics checks
+  no planted foot moves; 24 joints), the fins' base squared off and the antenna's base run
+  into the hull (the ninth too; his tenth, 20 October: a toned-back cut of the fins was too
+  small, so they are the eighth's shape and size on a level base, and the scan's first turn,
+  the slow one, goes in under a second; his eleventh, the same day: the antenna a little
+  inboard, clear of the fin, and the model is good to go),
+  and the acts use the vertical range (the stalk coils ten deep and strikes up, the scan rears
+  and sinks, the sighting rears, the probe dips; the head's pitch limits -20 to 15); the
+  cornering numbers; the rig test covers it; the hangar's renders (front,
+  rear, the lunge, a side-on moment of the creep; the third cut under "before") and the page
+  republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
+  to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
+  byte-different and the import four Prairie Dog textures, restore both rather than commit.
+- 20 October, planted footwork across the walkers (`ccr-ffcf75fa-3gkbz9`, Ryan's ask after
+  the funnel-web's pivot: a turn for the Dillo, lateral motion for the bipeds, more joints never
+  hurt; the Clydesdale left as it is by lore, the Baboon as it is): `_footwork` in
+  `models_low.py` plans a body free in every axis over planted feet and steps some of them,
+  each hip's own yaw and roll keeping its foot where it stands and pointing where it landed
+  (`_leg_fk6` and `_leg_newton6`, the engine's sums, six axes a leg, thirty keys a second;
+  no joints added, since every joint carries three channels and the hips' limits name only
+  the pitch; a step lands under the body as it will stand at a named moment, or halfway to
+  the limb's next lift); sparse tracks beside the dense legs go through `_dense` so they keep
+  their smooth ease under the act's linear one. The acts: the Armadillo's `come_about` (four
+  diagonal pairs, eight degrees a step on the planted pair, twenty-four round, guns up and
+  lamps lit in the hold, and back; it sits four and a half lower through it, its legs straight
+  in their planes), the Nemesis's `raise_meteor` braced (its right foot back and out as the
+  machine turns ten to its mark, the waist's sixteen on top; it was the waist alone) and
+  `square_up` (the left foot stamps out wide and back as the machine turns twenty-six on its
+  planted right, fists up, the torso wound further on the waist, the core burning, then the
+  stamp back; a sideways `pace` was built first and looked like dancing to Ryan, so it is
+  gone, git keeps it), the Ammit's `circle` (an arc about a point ahead, facing it, the hands
+  two steps to a foot's one, two moves round to one side and two back, nose down, talons
+  working; one each way through the centre read weaker to Ryan). The hangar's renders carry
+  a frame of each; the bible's row and its motion table. Ryan's reads so far: the Dillo good;
+  the square-up and the circle's second cut his to judge running.
+- 18 October, the funnel-web's engine (`ccr-ffcf75fa-3gkbz9`): the chassis is playable, its
+  content's planned marks off; its model landed 19 October (above).
+  Vitriol is a foe status with a share tick of its own (`tick_hp_share`: after Burning, on
+  what it leaves, the whole share rounded down and never the last hit point); the ambush is a
+  passive effect, `lay_status` on the `target_no_intent` condition (`Foe.intent_on`, the read
+  the arrows draw: a foe on a special that acts on nobody shows no arrow now), read at the
+  spend before the spend's own riders, each foe reached judged alone, a stack per strike that
+  lands with a number, so the web's blow of nothing is no hit; the Web Bomb carries the Web
+  keyword, Webbed bursting at the end of the foe's action, skipped or not, into a Suppress on
+  it and on the next to act beside it (`Skirmish.web_catch`: the right-hand neighbour in its
+  rank, else the left, which has acted), each half feeding the Paradox as a weapon's would;
+  the chips (Vitriol's count; the web's `>` or `<` at its catch); the predator sense
+  (`PreyLayer`: the foes' ground dims, the eligible foes get narrowed pulsing eyes, ink on a
+  dark edge with a HUD glow; `RIFTGATE_PREY_DEBUG=1` keeps it on), started hot and not yet
+  judged on a phone; the bot values a bite by Vitriol's ticks on the hull the blow leaves
+  (`Policy.dot_payout`, `VITRIOL_WEIGHT`) and a web by the blows its burst stops
+  (`web_score`); its row alone at 30 seeds is in `docs/measurements.md`, a direction. Claude's
+  engine calls, Ryan's to overrule: a blow of nothing is no hit; the web is a keyword, not a
+  printed property; the chip's mark; the untargeted special's missing arrow.
+- 18 October, the Kestrel session (`claude/zealous-cori-8xoly7`, fast-forwarded onto main as it
+  went): the three Kestrel briefs carry every round of their design (the strafer decided in
+  shape, the shield-spender's direction, the bomber's pull and mark); the bible's section 6
+  holds the vocabulary's two tables from `tools/pages/bible_tables.py` and the naming
+  convention; built: Folded become Braced, every status a chip, timed stacks keeping their own
+  rounds, the stacking policy (add or renew), Suppressed never stacking nor carrying, the Boar's
+  spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
+  Dispel decided for the enemy's side with Ward turning both away (not built).
+  Then 18 and 19 October (`ccr-b6da49d3-4ft738`, above): the session's rounds with Ryan in
+  the Kestrel briefs, waiting on his calls.
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
   types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
   `docs/rules.md` states it, Rally included (Kindled at its move's value, live from the next
@@ -90,8 +234,11 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis and a fourteenth planned (the funnel-web, 18 October, its
-  passive and its locked Web Bomb planned), 55 components (13 locked, 4 unstocked, among them
+- Content: five makers, 14 chassis and three planned (the funnel-web built, its engine 18
+  October and its model 19 to 20 October, its Web Bomb built; the Cassowary and the Cottonmouth,
+  19 October, their passives and the Cassowary's locked Spin-Up planned; the Whip Scorpion, 20
+  October, its passive and its locked Heliographic Siphon planned; a planned chassis is never
+  dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -120,6 +267,7 @@ document's job and every command are in `README.md`.
   work; the to-do holds the tasks; the keyword line-up and the enemy roster proposal are
   retired (git has them), their open items in section 12 and their seeds in the bible's rows.
 - Debug switches added on 12 and 13 October: `RIFTGATE_RAGE_DEBUG=1` (the rage's roll again);
+  on 18 October `RIFTGATE_PREY_DEBUG=1` (the predator sense kept on);
   screenshot poses `rage` and `heat` (`tools/screenshot.gd`).
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48);
   fourteen rounds on the phone picker, 13 to 15 October, closed every note he wrote on the
@@ -205,6 +353,15 @@ document's job and every command are in `README.md`.
 
 ## Decided, not built
 
+- The action economy's direction (the bible's section 5, 20 October, beside the stun row):
+  Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
+  a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
+  combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
+  commander actions on map cooldowns); what the stock pass does with it is in the to-do's
+  stock pass line, the reasoning in the briefs README.
+- Silence and Dispel on the enemy's side (the bible's section 5, 17 and 18 October): a Silenced
+  status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
+  section 12's.
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
   Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
@@ -225,12 +382,47 @@ document's job and every command are in `README.md`.
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
-- The funnel-web (Ryan's go, 18 October; its row in section 7): its blows on a foe showing no
-  intent on it lay Vitriol (5% of current hull a stack at the foe's action, a stack per hit),
-  its locked Web Bomb a delayed Suppress on the foe and the next to act beside it, no cooldown,
-  no fangs; tier two; in content as planned entries; the engine and the assets are the
-  to-do's two lines. With it, Ryan's 17 and 18 October leans on hard control (priced by a gate,
-  never rationed) in the stun row, and the time-shifter parked in the Aphelion row.
+- The Cassowary (Ryan's go, 19 October; its row in section 7): the revolver, the maker's
+  gunslinger at tier one, a chicken walker whose die never rolls (each fight opens on a random
+  chamber and every roll steps to the next; a lock holds, Scramble a true roll), every sixth
+  weapon spend double, its locked Spin-Up a true spin of the whole cylinder (itself included,
+  his exception to the reroll rule) with no cooldown, no heat and no Volatile (the cylinder
+  is its limiter) granting Spun Up (+5 a stack on the next weapon spend, carried between
+  turns); squishy, so the maker's tender deal holds no front, accepted; the names his, the
+  passive's and the designation Claude's working ones; in content as planned entries; the
+  engine and the assets are the to-do's two lines, the chain's price the stock pass's.
+- The Cottonmouth (Ryan's go, 19 October; its row in section 7): the fan-boat, the maker's
+  versatility of reach at tier one, a light hovercraft that locks nothing (a d4); its
+  Adaptive Munitions Drum fires every weapon as the drum's Indirect shot (flat 15, heat 10,
+  Ballistic) with the weapon's own keywords, punching through at the back rank (Penetrate)
+  and spraying at the front (Spread), the shape following the aim; in content as a planned
+  entry; the engine and the assets are the to-do's two lines.
+- The Dingo's Combat Translocator (Ryan's go, 19 October; its row in section 7): a second
+  locked piece that picks two foes, or a foe and an empty slot, and swaps them (Swap, planned
+  in the vocabulary; a massive foe stays; an empty front slot makes it a pull), tier two with
+  it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
+  dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
+  line); its stock with the stock pass.
+- The Prairie Dog's fight half (Ryan's go, 19 October; its row in section 7): Flak, the
+  maker's on-hit, a foe status that adds a point a stack to every blow it takes and halves at
+  each round's end (Overcharged's clock), on-hit only; laid by the Flakshot Repeater, now a
+  flat 5 that sprays (Spread, built) and rolls again, Flak 2 (planned); the car is the maker's
+  softener, not a detachment identity; the flat on-hit kind is Flak's, so the Onryō's Grudge
+  finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
+  Overcharged at a point, read together when the numbers branch merges; the engine is the
+  to-do's line, the family the stock pass's.
+  The pivot (Ryan, 20 October): the Repeater loses Rapid for Spread and Flak 3, and the
+  passive gains the fight half, 5 less damage from any foe carrying Flak; its go lands the
+  content and the attacker-status condition.
+- The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
+  sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
+  live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
+  else cools (cooling 0; the passive gain of 10 a round retired as too easy); its locked
+  Heliographic Siphon a lure-all that Armours it and adds 10 heat per blow landed that round
+  (bad against bosses, good against swarms, Ryan's counter-profile; the taste line on rewards
+  for being struck gains its condition); the Thermal Ray its stock gun (flat 30, heat 30);
+  the Stoker the stock pass's; in content as planned entries; the engine and the assets are
+  the to-do's two lines.
 
 ## Next, in order
 
@@ -244,7 +436,12 @@ to-do's Ryan list).
    design's one home, with what Ryan said and what is open, and the README gives the shared
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
-   lands. The funnel-web landed first (18 October); the revolver is next.
+   lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth, the
+   Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
+   Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
+   roster row); next, Ryan's Rapid discussion in the maker's context (the action economy's
+   direction, section 5), then the gunship and the multi-rotor with the stock pass and the
+   die's shown word.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -282,47 +479,18 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.198 (18 October, from
-  `ccr-3259e29d-ydwpom`: the Armoured row and the Burn row in section 5, the stacking row's
-  decay-or-timer rule, the scales row's direction down, the Minerva row's Cryo and ammo bar,
-  section 12's two questions closed and the machine-side Burning one opened, the tables
-  regenerated), a three-way merge onto another session's v0.197 of the same day (Numbed a
-  buff nothing removes, Silence and Dispel on the enemy's side, the Hopper and Rage rows'
-  wording, the Ammit's kept Overcharged for the battle only, resetting at the hangar; its
-  content and tables reach main's file when that branch merges, and the tables are then
-  regenerated), over v0.196 (18 October), main's file: the
-  funnel-web's landing (v0.195: its row, the chassis table, the maker row, Ryan's
-  price-over-scarcity lean and his gate principle in the stun row, his riders note in the
-  Barrier row, the time-shifter parked in the Aphelion row, the tables regenerated) with the
-  Minerva branch's two rows merged in (section 7's Minerva row rewritten to the session's
-  shape; section 12's question on Braced in stacks of 5 against the scale, with Ryan's words on
-  Armoured and Overcharged's halving), published over v0.195 and, before it, v0.191 (17
-  October), published
-  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
-  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
-  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
-  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
-  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
-  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying, the enemy-cleanse question; the bomber's pull and mark). Main's file carried
-  v0.188, the same rows without that branch's, until the branch merged on 17 October and
-  brought the script with it.
-  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
-  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
-  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
-  maker rows pointing at the briefs, the proposal files retired, the
-  Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
-  rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
-  Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
-  in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
-  summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
-  heroes' tropes from beyond Final Fantasy, then of 16 October: balance the series out a
-  little, never purge it (the Lancer stays the dragoon, the Warrior the plain fighter, the Thief
-  Persona 5's Joker under its plain name). The live page also carries rows from two branches,
-  which reach main's file when they merge: `claude/zealous-cori-8xoly7` (its v0.177: the Boar's
-  later strikes spilling, Chain's rework in section 12) and `claude/adoring-planck-q8t63w` (its
-  v0.181: the die's Roman numerals, a reroll's copies, Rapid's limiter, the Nemesis's roll
-  again, the Wake Diffuser's question).
+  `docs/design-bible.html` after every change. Live: v0.220 (20 October, from
+  `ccr-3259e29d-ydwpom` after main merged in: main's v0.219 with the tables regenerated from
+  the merged content, so Armoured, Overcharged, Burning, Burn and the talons' kill rule read as
+  built on 18 October; the rows themselves had reached the live page through other sessions'
+  merges). Before it, v0.219 (20 October, main's file too, after
+  the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's
+  Laminar Deflector calls of 20 October over the v0.217 that carried that branch's rows, the
+  funnel-web's model and the walkers' planted footwork, over other sessions' pages of 18 to 20
+  October) with main's v0.208 to v0.210 rows (the Whip Scorpion, the maker's roster, the
+  Prairie Dog's pivot, the basic-kit rewording, the damage-rider and thorns rows, the chassis,
+  maker and size tables) and the tables regenerated from the merged content. Git and the page's
+  version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
@@ -331,17 +499,69 @@ into this file in the same commit as its first publish; the procedures are in `R
   vocabulary), the page, the models and the renders checked unchanged and kept; again that
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
-  Cleric (foes). Its database
+  Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
+  the content that had moved, and the walkers' planted footwork, the last on 20 October
+  (`ccr-ffcf75fa-3gkbz9`). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
+- The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
+  Weapon (the axe, which settles hammer against axe) cut into `art/foes` and recorded in
+  `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits
+  land); since then the Reaper, Fáfnir, Skaði and the Matador (19 October) the same way, so of
+  the slate on the picker only Surtr, Floraison and the Augur remain; his notes drove a second round, on the picker for his next picks: the Matador's missing
+  hand, the Reaper's extra hand, Skaði's lower-hand weapon and Fáfnir's gold through the edit
+  model (the Reaper's two edit passes failed and image to image from the pick fixed it, his pick
+  of that set cut on 18 October; the fix order is a bible row now: structure through image to
+  image, colour through the edit mode, costume by a fresh take); Floraison redrawn humanoid with
+  take 1's face, Surtr made of fire rather than on fire,
+  the Augur without the coat and hood, bigger blades, both hands on the haft (fresh takes and
+  image to image from the take he called closest). His second picks, the same evening: the
+  Reaper (image to image, its third hand gone) and Fáfnir (the gold off) cut; the Matador, Skaði,
+  Surtr, Floraison and the Augur into a third round, image to image from his picks under the
+  fix-order rule. His third picks (19 October) asked for composites (2's head and boots on the
+  Matador's 3, 1's head on Floraison's 2), a defined face and a held sword on Surtr, another set
+  for the Augur and a retry for Skaði; the fourth round answers each (the composites as layouts
+  re-rendered close beside the edit model's version; the Augur from a prompt of her own, since
+  the hero style's "robes and flowing cloth" was drawing her tunics) and is on the picker. His
+  fourth picks (19 October) each carry one edit more (the Matador's jaw, Floraison's clipped
+  spines, Skaði's lower half as the edit's, Surtr's sword alone after a two-part edit broke it,
+  the Augur's omen dark then her blades matched, chained), the fifth round; the heroes' costume
+  variety pass is a to-do, the Augur's omen dark in the bible's art row (v0.204, live, merged onto another session's v0.202).
+  Ryan's ask of 19 October, the staff slanted so the lower blade goes behind her legs, is rendered
+  (three usable each size) and on the picker beside the upright picks and his last pick; the
+  slant gains the hero's body about a tenth in the cut, the chibi little. The size worry that
+  started it was Claude's misreading (the cut crops to the figure's box, so a render's margin
+  costs nothing), corrected in the heroes' proposal and the picker memory.
+  His fifth picks (19 October): Skaði cut (fixbow5 1); the Matador's and Floraison's edits failed,
+  so both go back to composites of aligned siblings, raw and after a close pass; Surtr's blade
+  added to the grip he liked; the Augur's slanted 4 picked, its blades lengthened first, the eyes
+  and the smoke to follow, and the other lean rendered at his ask. The sixth round is on the
+  picker (19 October), one set per question: the Matador's and Floraison's composites clean (raw
+  and closed), Surtr's blade of fire by the edit model (the pass at 0.6 lost it), the Augur's
+  other lean (three usable each size), her blade options on one base (as picked; long, a
+  composite stretch, at a fifth less body in the cut, 128 px of 144 to 103, measured; broader at
+  no cost) and her smoke's three homes, her eyes relit on every one; the heroes' proposal has
+  the round and what it found (room alone grows nothing, a pass redraws an earlier colour edit,
+  so structure first and colour last). His sixth picks (19 October, afternoon): the Matador cut
+  (fixhand6 3, the second close pass, recorded and imported); Surtr's 2 "so close", its blade to
+  turn five degrees clockwise onto the grip's line, done by hand as a layout and closed at 0.9,
+  the sword's column pasted back onto his pick beside the full pass; Floraison "still weird even
+  at phone scale, cut off or blurred", so another way: the eyes inside the maw painted out on his
+  pick itself (an erase over dark, nothing re-rendered) beside image to image at 0.7; the Augur's
+  lean 1 his new base at both sizes (the rotation went too far, her other hand on the staff), the
+  smoke erased by hand and the top blade flipped inward (the edit model landed the hero's in two
+  of six seeds; the chibi's by a reflection of the head across the shaft's axis, the hand edit the
+  layout for a pass); the blade and smoke sets superseded unpicked. The seventh round is on the
+  picker.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round (15 October): the first round's six sets that stand (the
-  Behemoth, the Cinder Tortoise, the Matador, the Fallen Weapon as hammer and as axe, the
-  Reaper, Surtr), the third (Skaði, Fáfnir, Floraison with its swallow and vines) and the
-  Augur's hero and chibi sets (16 October, `heroart` and `chibi_heroart`), built by
-  `forge.py phone --only --tags bossart bossart3 heroart chibi_heroart --keys <the eleven sets>`;
-  the renders that lost a blade or a brief sit in each set's `set_aside/`.
+  It holds the boss art round's seventh sets (19 October): Surtr's blade on the grip's line
+  (`surtr_bossart10`), Floraison's eyes painted out (`bourgeon_bossart10`) and the Augur's new
+  base with the smoke gone and the top blade flipped inward (`augur_heroart16`,
+  `augur_chibi_heroart16`), built by `forge.py phone --only --tags bossart10 heroart16
+  chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16
+  augur_chibi_heroart16`; every earlier round's folder stays under `tools/foeforge/out/` as the
+  record, and the renders that lost a blade or a brief sit in each set's `set_aside/`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

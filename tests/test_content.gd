@@ -370,18 +370,121 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
+func test_a_built_component_may_carry_a_planned_keyword() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var planned_kw := ""
+	for k in db.vocabulary.keys():
+		if db.vocabulary[k].get("category") == "keyword" and db.vocabulary[k].get("status") == "planned":
+			planned_kw = str(k)
+			break
+	assert_true(not planned_kw.is_empty(), "the vocabulary names a planned keyword to test with")
+	var gun: Dictionary = db.components["twin_autoguns"].duplicate(true)
+	gun["face"] = Dictionary(gun["face"]).duplicate(true)
+	gun["face"]["keywords"] = [planned_kw]
+	gun["tier"] = 2   # no chassis stocks it, so it carries its own tier
+	db.components["ahead_gun"] = gun
+	for e in db.validate():
+		assert_false(e.begins_with("component ahead_gun"), "a built component may carry a planned keyword: %s" % e)
+	var f := db.build_face(gun["face"])
+	assert_true(f.keywords.is_empty(), "the die builds the entry without the keyword the engine lacks")
+	db.vocabulary["someday"] = {"id": "someday", "category": "keyword", "name": "Someday", "codex": "An idea.", "status": "idea"}
+	gun["face"]["keywords"] = ["someday"]
+	db.components["ahead_gun"] = gun
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component ahead_gun"):
+			hit = true
+	assert_true(hit, "an idea-stage keyword rides only on a planned component")
+
+
+func test_a_planned_buff_may_grant_a_planned_machine_status() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var coil := ""
+	for cid in db.components.keys():
+		if str(db.components[cid].get("face", {}).get("kind", "")) == "buff" and db.components[cid].get("status", "implemented") == "implemented":
+			coil = str(cid)
+			break
+	assert_true(not coil.is_empty(), "the content has a built buff component to copy")
+	var drafted_status := ""
+	for k in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[k]
+		if e.get("category") == "status" and e.get("status") != "implemented" and str(e.get("design", {}).get("table", {}).get("on", "")) == "machine":
+			drafted_status = str(k)
+			break
+	assert_true(not drafted_status.is_empty(), "the vocabulary names a planned machine status to test with")
+	var piece: Dictionary = db.components[coil].duplicate(true)
+	piece["face"] = Dictionary(piece["face"]).duplicate(true)
+	piece["face"]["status"] = drafted_status
+	piece["status"] = "planned"
+	piece["tier"] = 2   # no chassis stocks it, so it carries its own tier
+	db.components["draft_coil"] = piece
+	for e in db.validate():
+		assert_false(e.begins_with("component draft_coil"), "a planned buff granting a planned machine status validates clean: %s" % e)
+	piece["status"] = "implemented"
+	db.components["draft_coil"] = piece
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component draft_coil") and e.contains("a buff needs 'status'"):
+			hit = true
+	assert_true(hit, "the same buff marked implemented is refused until the engine has the status")
+	var foe_status := ""
+	for k in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[k]
+		if e.get("category") == "status" and e.get("status") != "implemented" and str(e.get("design", {}).get("table", {}).get("on", "")) == "foe":
+			foe_status = str(k)
+			break
+	if not foe_status.is_empty():
+		piece["face"]["status"] = foe_status
+		piece["status"] = "planned"
+		db.components["draft_coil"] = piece
+		hit = false
+		for e in db.validate():
+			if e.begins_with("component draft_coil"):
+				hit = true
+		assert_true(hit, "a planned buff cannot grant a foe's planned status")
+
+
+func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var built: Dictionary = db.chassis["sparrowhawk"].duplicate(true)   # its passive is built
+	db.chassis["built"] = built
+	assert_true(db.chassis_runnable("built"), "a chassis whose passive is built can be fielded")
+	var drafted: Dictionary = built.duplicate(true)
+	drafted["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned", "effects": []}
+	db.chassis["drafted"] = drafted
+	assert_false(db.chassis_runnable("drafted"), "a planned passive keeps the chassis off the table")
+	var locked: Dictionary = built.duplicate(true)
+	locked["passive"] = null
+	locked["fixed"] = ["draft_piece"]
+	var piece: Dictionary = db.components["twin_autoguns"].duplicate(true)
+	piece["status"] = "planned"
+	db.components["draft_piece"] = piece
+	db.chassis["locked"] = locked
+	assert_false(db.chassis_runnable("locked"), "a planned locked piece keeps the chassis off the table")
+	for id in ["built", "drafted", "locked"]:
+		for e in db.validate():
+			assert_false(e.begins_with("chassis %s" % id), "the draft validates clean: %s" % e)
+
+
 func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
-	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web since), found
-	# rather than named, so the test outlives the content.
+	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web until it was
+	# built that day), found rather than named, so the test outlives the content; with none
+	# planned, a synthetic one stands in.
 	var planned_kw := ""
 	for k in db.vocabulary.keys():
 		if db.vocabulary[k].get("category") == "keyword" and db.vocabulary[k].get("status") != "implemented":
 			planned_kw = str(k)
 			break
-	assert_true(not planned_kw.is_empty(), "the vocabulary names a planned keyword to test with")
+	if planned_kw.is_empty():
+		planned_kw = "taunt_test"
+		db.vocabulary[planned_kw] = {"id": planned_kw, "category": "keyword", "name": "Taunt", "codex": "A keyword the engine lacks.", "status": "planned", "design": {"holes": ""}}
+	assert_true(not planned_kw.is_empty(), "a planned keyword to test with")
 	plate["face"]["keywords"] = [planned_kw]
 	plate["status"] = "planned"
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -393,11 +496,15 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	plate.erase("status")
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
+	for e in db.validate():
+		assert_false(e.begins_with("component loud_plate"), "a built component may carry a planned keyword too (19 October, the Flakshot's Flak): %s" % e)
+	plate["face"]["keywords"] = ["no_such_keyword"]
+	db.components["loud_plate"] = plate
 	var hit := false
 	for e in db.validate():
 		if e.begins_with("component loud_plate") and e.contains("unknown keyword"):
 			hit = true
-	assert_true(hit, "the same component marked implemented is refused")
+	assert_true(hit, "a keyword the vocabulary does not name is refused")
 
 
 ## No crits (10 October): a face carrying a crit chance and a passive on the old on_crit trigger
@@ -1278,3 +1385,27 @@ func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Overcharged runs down on its own")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
+
+
+## lay_status (the funnel-web's Ambush, 18 October) names a status the engine has and lays at
+## least a stack a hit.
+func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.chassis["badger"].duplicate(true)
+	var cases := {"lay_ok": ["vitriol", 1], "lay_none": ["nothing", 1], "lay_zero": ["vitriol", 0]}
+	for id in cases.keys():
+		var c: Dictionary = base.duplicate(true)
+		c["id"] = id
+		c["name"] = str(id).capitalize()
+		c["passive"] = {"id": "p_" + str(id), "name": "P", "description": "", "effects": [
+			{"trigger": "on_attack", "effect": "lay_status", "value": cases[id][0], "stacks": cases[id][1], "when": "target_no_intent"}]}
+		db.chassis[id] = c
+	var refused := {}
+	for e in db.validate():
+		for id in cases.keys():
+			if e.begins_with("chassis %s" % id) and e.contains("lay_status"):
+				refused[id] = true
+	assert_false(refused.has("lay_ok"), "a status the engine has, a stack a hit: clean")
+	assert_true(refused.has("lay_none"), "a status the engine lacks is refused")
+	assert_true(refused.has("lay_zero"), "and so is a lay of no stacks")
+	assert_true(Effects.supports_when("target_no_intent"), "the ambush condition is one the engine runs")

@@ -700,10 +700,16 @@ def write(name, x):
         w.setframerate(F.SR)
         w.writeframes(pcm.tobytes())
     m4a = os.path.join(OUT, name + ".mp4")   # AAC in an MP4 container: what the listening page serves
-    try:
-        subprocess.run(["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a], check=True, capture_output=True)
-    except (OSError, subprocess.CalledProcessError) as e:
-        print("  (no aac for %s: %s)" % (name, e))
+    # afconvert on the Mac; ffmpeg at 256 kbps where there is none (fx_sketches.write says why 256).
+    for cmd in (["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a],
+                ["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", m4a]):
+        try:
+            subprocess.run(cmd, check=True, capture_output=True)
+            break
+        except (OSError, subprocess.CalledProcessError) as e:
+            err = e
+    else:
+        print("  (no aac for %s: %s)" % (name, err))
         m4a = None
     return wav, m4a
 

@@ -1,0 +1,28 @@
+[
+ [
+  "augur hero flip by edit, more seeds",
+  "fix",
+  "tools/foeforge/out/augur_heroart16/layout_nosmoke.png",
+  "augur",
+  "the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are",
+  "--tag",
+  "heroart16",
+  "--n",
+  "4",
+  "--seed",
+  "7"
+ ],
+ [
+  "augur chibi flip by edit, more seeds",
+  "fix",
+  "tools/foeforge/out/augur_chibi_heroart16/layout_nosmoke.png",
+  "augur",
+  "the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are",
+  "--tag",
+  "chibi_heroart16",
+  "--n",
+  "4",
+  "--seed",
+  "7"
+ ]
+]

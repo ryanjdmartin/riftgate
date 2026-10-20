@@ -245,21 +245,41 @@
    "category": "keyword",
    "name": "Web",
    "codex": "The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's go, 18 October: a delayed Suppress, no damage, Direct, heat 0, and no cooldown (18 October: Numbed is in effect its cooldown on one foe, and a stun is priced by a gate, here its timing). Kept as hard control under the stun row (Ryan: it fits the kit). Built 18 October as a keyword (Face.Keyword.WEB) rather than a printed property, since a keyword's chip, tag and validator checks come for free: the foe hit is Webbed, and the burst is the skirmish's at the end of the foe's action (Skirmish._web_burst). The keyword and its chip share a word by the naming convention (Web, Webbed)."
+   }
+  },
+  {
+   "id": "swap",
+   "category": "keyword",
+   "name": "Swap",
+   "codex": "The Dingo's Combat Translocator, locked: pick two foes, or a foe and an empty slot, and they trade places; no damage. A massive foe does not move.",
    "status": "planned",
    "design": {
-    "holes": "Ryan's go, 18 October: a delayed Suppress, no damage, Direct, heat 0, and no cooldown (18 October: Numbed is in effect its cooldown on one foe, and a stun is priced by a gate, here its timing). Kept as hard control under the stun row (Ryan: it fits the kit). One locked piece carries it, so it may become a printed property rather than a keyword when built; the keyword and its chip share a word by the naming convention (Web, Webbed)."
+    "holes": "Ryan's go, 19 October (the bible's Dingo row; the brief retired to git: git show 021f075:docs/briefs/ws_dingo.md). The general swap is the whole rule (Ryan: \"Target two foes/spaces and swap them?\"), distinct from Minos's rank turn by pattern (Minos turns whole ranks over, the Dingo chooses two): it exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, soft control that feeds other makers' pieces. A swap with an empty front slot is a pull; a massive foe fills its column and stays, so bosses are out by rule. Engine: a spend that takes two targets, and a foe moving between slots, which Minos also waits on. No piece carries it in content yet: the Combat Translocator lands with that engine, since a planned locked piece would keep the Dingo out of the tender (the campaign's Start rule) and fix the maker's deal on the Prairie Dog; the keyword and the piece's chip share the word."
+   }
+  },
+  {
+   "id": "flak",
+   "category": "keyword",
+   "name": "Flak",
+   "codex": "Flak N: each foe hit gains N stacks of Flak, whatever the blow dealt.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). A numbered keyword like Burn N (the Burn row of 18 October, on the numbers branch), its number carried on the face beside the keyword: the face's flak field here, to be aligned with that branch's numbered-keyword field when it merges. Carried first by the Flakshot Repeater, locked on the Prairie Dog, which the die builds without it until the engine has it; the family Ryan named (an airburst shell, a flak cannon, Wainwright & Sutler slot-ins above the basics, which carry no keyword by rule) is the stock pass's, proposed in chat first. The engine: the keyword, its number, the stacks laid on each foe hit, with the numbered-keyword machinery."
    }
   },
   {
    "id": "numbed",
-   "category": "resistance",
+   "category": "status",
    "name": "Numbed",
-   "codex": "Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
+   "codex": "Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or dispels it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes.",
    "status": "implemented",
    "design": {
-    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.",
+    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke. A buff with a cannot-be-removed line, not a kind of its own (Ryan, 18 October: \"no reason to have a billion types of objects\").",
     "table": {
-     "kind": "resistance",
+     "kind": "buff",
      "on": "foe",
      "stacks": "Yes: two a landed suppress, three on a massive foe",
      "lasts": "A stack fades at each of its turns"
@@ -370,6 +390,26 @@
    "status": "implemented",
    "design": {
     "holes": "No foe carries it yet; Ryan places it (The Chorus, presumably)."
+   }
+  },
+  {
+   "id": "silence",
+   "category": "foe",
+   "name": "Silence",
+   "codex": "Foe keyword. The machine it lands on is Silenced: its buffs count for nothing until the round's end. A Ward turns it away.",
+   "status": "planned",
+   "design": {
+    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff. Carriers are section 12's."
+   }
+  },
+  {
+   "id": "dispel",
+   "category": "foe",
+   "name": "Dispel",
+   "codex": "Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card tells of a dispeller, so the choice of front knows.",
+   "status": "planned",
+   "design": {
+    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's."
    }
   },
   {
@@ -557,9 +597,9 @@
    "category": "status",
    "name": "Vitriol",
    "codex": "Foe status, the funnel-web's acid. At its action it loses 5% of its current hull a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The planned Corrode keyword (1% of HP a stack) renamed and re-stepped; Corroded is kept for the foes' damage over time on machines (Ryan, 17 October). Laid by the funnel-web's passive on a foe showing no intent on it, a stack per hit, so a multi-strike piece bites several times; nothing else lays it yet, and the keyword, if a piece ever carries it, shares the word. Engine: a tick of a share of current hull (tick_hp reads a flat number today), stacking add, a stack fading at the foe's turn; whether a tick passes Guarded is the parts' question, as Burning's is. The runner reads it once the bot values an ambush.",
+    "holes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The planned Corrode keyword (1% of HP a stack) renamed and re-stepped; Corroded is kept for the foes' damage over time on machines (Ryan, 17 October). Laid by the funnel-web's passive on a foe showing no intent on it, a stack per hit, so a multi-strike piece bites several times; nothing else lays it yet, and the keyword, if a piece ever carries it, shares the word. Engine (built 18 October): a status effect of its own, tick_hp_share, read after the flat ticks on the hull they leave, the whole share rounded down and never the last hit point (Effects.tick_preview); stacking add, a stack fading at the foe's action; laid by lay_status on the funnel-web's passive, a stack per strike that lands with a number, so a blow of nothing (the web, a lure) is no hit. Whether a tick passes Guarded is the parts' question, as Burning's is. The bot values it by its ticks on the hull the blow leaves (Policy.dot_payout).",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -573,14 +613,46 @@
    "category": "status",
    "name": "Webbed",
    "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, Numbed resisting each for itself. Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 18 October. The chip carries the burst's timer (the to-do). Engine: a debuff laid by the Web Bomb that bursts in the enemy's turn after the foe's own action: a Suppress on it, costing its next action since it has acted, and one on the next foe to act beside it, costing this action; with no foe to its right, the one to its left. Suppressed never stacks and never carries (17 October), so the burst on a foe already suppressed is wasted and numbs it no further. The stunlock with the Baboon is the boss cells' first read.",
+    "holes": "Ryan's go, 18 October; built the same day. Engine: a debuff laid by the Web Bomb (one web on a foe, however often it is webbed) that bursts in the enemy's turn after the foe's own action, skipped or not: a Suppress on it, costing its next action since it has acted (a gathering countdown held a round), and one on the next foe to act beside it in its rank, costing this action; with no foe standing to its right, the one to its left, which has acted and loses its next. Suppressed never stacks and never carries (17 October), so the burst on a foe already suppressed is wasted and numbs it no further; each half feeds the Paradox as a weapon's Suppressed does. The chip says which neighbour the burst catches (> or <) and the hold names it. The stunlock with the Baboon is the boss cells' first read.",
     "table": {
      "kind": "debuff",
      "on": "foe",
      "stacks": "No",
      "lasts": "Until the end of its action this round, when it bursts"
+    }
+   }
+  },
+  {
+   "id": "spun_up",
+   "category": "status",
+   "name": "Spun Up",
+   "codex": "Mech status, the Cassowary's. Its next weapon spend deals 5 more a stack, then every stack is spent. Carried between turns until a weapon spends it.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). Granted by the Spin-Up, a stack a spin, stacking, and carried if a turn ends without a shot (Ryan, 19 October: \"a stacking unique buff, so that it could be carried between turns\"). Spent whole by the next weapon spend, damage or none. The chip reads SPUN UP with its count, and the +5 shows on the die's number once the engine has it. Engine: a buff with no round count, spent by the spend rather than fading (every buff today lasts rounds); the bot values it as damage in hand.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: +5 damage a stack, every stack spent by the next weapon spend",
+     "lasts": "Until its next weapon spend, across turns"
+    }
+   }
+  },
+  {
+   "id": "flakked",
+   "category": "status",
+   "name": "Flak",
+   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). The chip reads FLAK with its count, the keyword and the chip sharing the word; the id is the participle habit (Burning, Webbed) and Claude's. A flat on-hit, the kind Ryan named missing on 14 October (the Onryō's brief: \"a flat number reads as an on-hit and it's not something we have\"), beside Shocked, the multiplier one blow spends: adds come before multiplies, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The halving clock is Overcharged's (Ryan, 18 October, the numbers branch): a sprayer feeding three a round settles near six, and a boss never ramps. On-hit only (Ryan, 19 October): a tick at the foe's action is Burning with another chip. Numbers are placeholders, and Ryan's note of 19 October stands: the numbers branch has Overcharged at a point a stack, so Flak at a point a stack on every blow may be overpowered beside it; read the two together when that branch merges. Past armour or not is the stock pass's question. Engine: add_damage_taken a stack on the foe and the halving decay at the round's end; the bot valuing it as damage in hand for the team's blows; the Paradox counts it as a debuff and the Tensor reads it. The flat on-hit is one kind, so the Onryō's Grudge finds another shape (its brief).",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow it takes, a stack",
+     "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }
   },
@@ -1298,7 +1370,7 @@
    "id": "rage",
    "category": "status",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
+   "codex": "Machine buff, the Nemesis's, banked: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
@@ -1314,7 +1386,7 @@
    "id": "hopper",
    "category": "status",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
+   "codex": "Machine buff, the Honey Badger's, banked: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
@@ -1391,6 +1463,22 @@
    }
   },
   {
+   "id": "silenced",
+   "category": "status",
+   "name": "Silenced",
+   "codex": "Machine status, from a foe's silence: its buffs sleep this round, counting for nothing, and wake at the round's end. Can be cleansed; a Ward turns the silence away.",
+   "status": "planned",
+   "design": {
+    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Whether a silence also mutes keywords is open (Claude's lean: buffs only).",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
+    }
+   }
+  },
+  {
    "id": "guarded",
    "category": "status",
    "name": "Guarded",
@@ -1426,7 +1514,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.",
+   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage lands. Until the round's end.",
    "status": "planned",
    "design": {
     "holes": "",

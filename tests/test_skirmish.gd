@@ -4305,3 +4305,320 @@ func test_the_reach_tally_counts_a_spend_its_hull_and_its_splash() -> void:
 	assert_eq(int(t["front_spends"]), 1, "so it is a front spend")
 	assert_eq(int(t["splash"]), 10, "and danger close cost half the blow in shield")
 	assert_false(sk.reach_tally.has("direct"), "no direct spend happened")
+
+
+# ---------------------------------------------------------------- the funnel-web (18 October)
+
+## A synthetic ambush: the engine's lay_status on its target_no_intent condition, never the
+## content's passive.
+const AMBUSH := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
+	{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+
+
+func _strikes(f: Face, n: int) -> Face:
+	f.strikes = n
+	return f
+
+
+## Vitriol (Ryan's go, 18 October): a share of the foe's current hull a stack at its action,
+## read after Burning on what it leaves, past armour, rounded down, then a stack fades; and it
+## never finishes a foe, so it sets off no last act.
+func test_vitriol_eats_a_share_of_the_hull_burning_leaves_and_never_finishes_a_foe() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 500)
+	sk.add_mech(m)
+	var g := _ghoul(100, 10)
+	g.armour = 5   # armour never sees a tick, as with Burning
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(g, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(g, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 3)
+	var tp := Effects.tick_preview(g)
+	assert_eq(int(tp["share"]), 14, "three stacks eat 15% of the 98 Burning's 2 leaves (a point a stack since 18 October), rounded down")
+	assert_eq(int(tp["hp"]), 16, "the whole tick is Burning's and the share")
+	sk.end_round()
+	assert_eq(g.hp, 84, "100, less Burning's 2, less Vitriol's 14, past armour")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 2, "a stack faded at its action")
+	assert_true("\n".join(sk.log).contains("vitriol eats revenant for 14"), "the log says what it ate")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(g.hp, 75, "after Burning's last point, two stacks eat 10% of 83: 8")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 1, "another faded")
+	var low := _ghoul(1, 10)
+	Effects.stack(low, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 5)
+	assert_eq(int(Effects.tick_preview(low)["hp"]), 0, "nothing to eat on a foe at one hull")
+	var mid := _ghoul(3, 10)
+	Effects.stack(mid, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 20)
+	assert_eq(int(Effects.tick_preview(mid)["hp"]), 2, "stacks enough to eat all three leave the last point: it never finishes a foe")
+	assert_true(Effects.carries_status(mid), "a foe carrying Vitriol carries a status the team put on it")
+	assert_eq(Effects.status_stacking(Effects.STATUS["vitriol"]), "add", "Vitriol adds, Burning's shape")
+
+
+## The ambush read (18 October): a foe shows intent on the machine when its arrow is on it, a
+## gathering countdown and a blow at every machine included; none when aimed at another
+## machine, Suppressed, or on a special that acts on nobody in particular. A stack per hit.
+func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per_hit() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(_strikes(Face.attack(10, L), 3)), 0, 500)
+	a.grant_passive(AMBUSH)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var at_a := _ghoul(500, 10)
+	var at_b := _ghoul(500, 10)
+	var stunned := _ghoul(500, 10)
+	sk.add_foes([at_a, at_b, stunned])
+	sk.begin()
+	sk.start_round()
+	var me: Skirmish.MechState = sk.mechs[0]
+	var other: Skirmish.MechState = sk.mechs[1]
+	at_a.target = me
+	at_b.target = other
+	stunned.target = me
+	Effects.grant_for_rounds(stunned, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_true(at_a.intent_on(a), "aimed at the ambusher: intent on it")
+	assert_false(at_b.intent_on(a), "aimed at an ally: none on it")
+	assert_false(stunned.intent_on(a), "a suppressed foe shows intent on nobody")
+	assert_true(sk.acting_on(me).has(at_a) and not sk.acting_on(me).has(at_b), "acting_on reads the same")
+	assert_true(sk.assign(0, at_b), "the bite")
+	assert_eq(Effects.stacks_of(at_b, "vitriol"), 3, "three strikes on a foe looking away: three stacks")
+	assert_true("\n".join(sk.log).contains("A lays Vitriol ×3 on revenant"), "the log says so")
+	sk.end_round()
+	sk.start_round()
+	at_a.target = me
+	assert_true(sk.assign(0, at_a), "the blow on the one looking")
+	assert_eq(Effects.stacks_of(at_a, "vitriol"), 0, "a foe aimed at the ambusher takes the blow and no acid")
+	sk.end_round()
+	sk.start_round()
+	stunned.target = me
+	Effects.grant_for_rounds(stunned, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_true(sk.assign(0, stunned), "the blow on the stunned one")
+	assert_eq(Effects.stacks_of(stunned, "vitriol"), 3, "a suppressed foe looks away: three stacks")
+	# The read's edges, on the foe itself.
+	at_a.target = me
+	at_a.action = {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regrow", "value": 10, "weight": 1, "text": ""}
+	assert_true(at_a.acts_on_nobody(), "a regrow acts on nobody in particular")
+	assert_false(at_a.intent_on(a), "so it shows intent on no machine, whatever its pick")
+	at_a.action = {"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}
+	at_a.target = other
+	assert_true(at_a.intent_on(a), "a blow at every machine is aimed at the ambusher too")
+	at_a.pending = at_a.action
+	at_a.charge = 1
+	assert_true(at_a.intent_on(a), "gathering as much as landing")
+	at_a.action = at_a.actions[0]
+	at_a.pending = at_a.action
+	at_a.charge = 2
+	at_a.target = me
+	assert_true(at_a.intent_on(a), "a countdown aimed at it shows intent")
+	at_a.target = other
+	assert_false(at_a.intent_on(a), "and one aimed elsewhere shows none")
+
+
+func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(_strikes(Face.attack(10, L, K.SUPPRESS), 2)), 0, 500)
+	a.grant_passive(AMBUSH)
+	sk.add_mech(a)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[0]
+	assert_true(sk.assign(0, g), "two suppressing strikes")
+	assert_true(g.is_suppressed(), "the first strike suppressed it")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 0, "and the second lays nothing: the read came before the spend's own riders, so a Suppress gun never feeds itself")
+	var notes := Effects.explain(a, a.die.faces[0])
+	assert_true(notes.size() == 1 and notes[0].begins_with("foes showing no intent on this machine: lays Vitriol"), "the die row shows the rule with its condition: %s" % str(notes))
+
+
+func test_a_spread_judges_each_foe_reached_alone() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.CLEAVE)), 0, 500)
+	a.grant_passive(AMBUSH)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var left := _ghoul(500, 10)
+	var mid := _ghoul(500, 10)
+	var right := _ghoul(500, 10)
+	sk.add_foes([left, mid, right])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.front[1], mid, "ties keep arrival order: the middle foe holds the middle column")
+	left.target = sk.mechs[1]
+	mid.target = sk.mechs[0]
+	right.target = sk.mechs[0]
+	Effects.grant_for_rounds(right, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_true(sk.assign(0, mid), "the spread on the middle")
+	assert_eq(Effects.stacks_of(mid, "vitriol"), 0, "the target looks at the ambusher: no acid")
+	assert_eq(Effects.stacks_of(left, "vitriol"), 1, "its neighbour looks at an ally: a stack")
+	assert_eq(Effects.stacks_of(right, "vitriol"), 1, "its other neighbour is suppressed: a stack")
+
+
+func test_a_blow_of_nothing_lays_no_vitriol_and_the_web_lands() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	a.grant_passive(AMBUSH)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[1]
+	assert_true(sk.assign(0, g), "the web")
+	assert_eq(g.hp, 500, "a web deals nothing")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 0, "and a blow of nothing is no hit: the web never feeds the ambush directly")
+	assert_true(Effects.has(g, "webbed"), "the foe is webbed")
+	assert_true(Effects.carries_status(g), "Webbed is a status the team put on it")
+	assert_true("\n".join(sk.log).contains("A webs revenant"), "the log says so")
+
+
+## The web (Ryan's go, 18 October): the webbed foe acts once; at the end of its action the web
+## bursts, Suppressing it (its next action, since it has acted) and the next foe to act beside
+## it (its right-hand neighbour, which loses this round's action).
+func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	sk.add_mech(m)
+	var small := _ghoul(500, 10)
+	var mid := _ghoul(500, 20)
+	var big := _ghoul(500, 40)
+	sk.add_foes([small, mid, big])
+	sk.begin()
+	assert_eq(sk.front[0], big, "the heaviest hitter stands left and acts first")
+	sk.start_round()
+	assert_eq(sk.web_catch(big), mid, "a web on it would catch the one to its right, which acts after it")
+	assert_true(sk.assign(0, big), "web the big one")
+	sk.end_round()
+	assert_eq(m.hull, 450, "the webbed foe's blow lands now and the small one's too; the burst catches the middle one's")
+	assert_true("\n".join(sk.log).contains("revenant's web bursts, catching revenant"), "the log tells the burst")
+	assert_false(Effects.has(big, "webbed"), "the web is spent")
+	assert_true(big.is_suppressed(), "the webbed foe is held: it has acted, so it loses its next action")
+	assert_false(mid.is_suppressed(), "the caught one lost this round's action, and nothing carries")
+	assert_eq(Effects.stacks_of(big, "numbed"), 2, "a landed suppress numbs the webbed foe")
+	assert_eq(Effects.stacks_of(mid, "numbed"), 1, "and the caught one, a stack already faded at the turn it skipped")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 420, "the round after, the big one skips and the other two strike")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 350, "then every blow lands again")
+
+
+func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left_which_has_acted() -> void:
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	sk.add_mech(m)
+	var small := _ghoul(500, 10)
+	var mid := _ghoul(500, 20)
+	var big := _ghoul(500, 40)
+	sk.add_foes([small, mid, big])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.front[2], small, "the small one stands at the right")
+	assert_eq(sk.web_catch(small), mid, "with nobody to its right, the web catches the one to its left")
+	assert_true(sk.assign(0, small), "web the small one")
+	sk.end_round()
+	assert_eq(m.hull, 430, "every blow lands this round: the caught neighbour had already acted")
+	assert_true(small.is_suppressed() and mid.is_suppressed(), "both lose their next action")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 390, "the big one alone strikes the round after")
+
+
+func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var b := _mech("B", Die.single(Face.attack(500, L)), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var mid := _ghoul(100, 20)
+	var big := _ghoul(100, 40)
+	sk.add_foes([mid, big])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, big), "web the big one")
+	assert_true(sk.assign(1, big), "then kill it")
+	assert_false(big.alive(), "killed before it acted")
+	sk.end_round()
+	assert_false("\n".join(sk.log).contains("web bursts"), "no burst: the web went with it")
+	assert_false(mid.is_suppressed(), "and the one beside it acted")
+	assert_eq(a.hull + b.hull, 980, "its blow landed")
+
+
+func test_a_web_on_a_foe_the_team_suppressed_wastes_its_half_and_still_catches_the_neighbour() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 500)
+	var b := _mech("B", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var small := _ghoul(500, 10)
+	var mid := _ghoul(500, 20)
+	var big := _ghoul(500, 40)
+	sk.add_foes([small, mid, big])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, big), "stun the big one")
+	assert_true(big.is_suppressed(), "stunned")
+	assert_true(sk.assign(1, big), "and web it")
+	assert_true(Effects.has(big, "webbed"), "webbed on top of the stun")
+	sk.end_round()
+	assert_eq(a.hull + b.hull, 990, "the stunned foe skipped, the burst caught the middle one, the small one struck")
+	assert_eq(Effects.stacks_of(big, "numbed"), 1, "the burst's half on itself was wasted: two from the stun, one faded, none from the web")
+	assert_true("\n".join(sk.log).contains("already suppressed"), "the log says the half was wasted")
+	sk.start_round()
+	assert_false(big.is_suppressed(), "it lost the one action and nothing carried")
+
+
+func test_a_second_web_changes_nothing_and_a_web_feeds_the_paradox_at_the_spend_and_at_the_burst() -> void:
+	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 5}]}
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	a.grant_passive(meter)
+	var b := _mech("B", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, g), "the first web")
+	assert_eq(Effects.stacks_of(g, "paradox"), 1, "Webbed is a status gained: the meter counts it")
+	assert_true(sk.assign(1, g), "a second web")
+	var grants := 0
+	for m in g.modifiers:
+		if m.id == "webbed":
+			grants += 1
+	assert_eq(grants, 1, "one web still, however often it is webbed")
+	assert_eq(Effects.stacks_of(g, "paradox"), 1, "and nothing gained from the second")
+	sk.end_round()
+	assert_true(g.is_suppressed(), "the burst held it")
+	assert_eq(Effects.stacks_of(g, "paradox"), 2, "the burst's Suppressed is a weapon's: the meter counts it too")
+
+
+func test_a_web_holds_a_gathering_countdown_a_round() -> void:
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 100)
+	sk.add_mech(a)
+	var walker := _gatherer(20, 2)
+	sk.add_foes([walker])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, walker), "web the gatherer")
+	sk.end_round()
+	assert_eq(walker.charge, 1, "it gathered a round")
+	assert_true(walker.is_suppressed(), "and the burst holds it")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(walker.charge, 1, "held: the countdown did not move")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(walker.charge, 0, "then it gathers on")
+	assert_eq(a.hull, 100, "nothing has landed")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(a.hull, 80, "it lands a round later than it would have")
