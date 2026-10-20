@@ -30,6 +30,18 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
+- `claude/busy-carson-hmaz96` (15, 16 and 20 October, the Arsenal design session from the
+  briefs: Misharu, the Onryō, Mastema and Minos, the Zoids walker left out at Ryan's word):
+  Claude's first round in chat (15 October) and Claude's review of it at Ryan's ask (16
+  October), with what main has landed since that bears on each (Flak taking the Onryō's flat
+  on-hit, the retaliation row's reopening condition, the Dingo's swap and the bomber's mines
+  beside Minos), recorded in the four briefs' "The Arsenal session" sections and their open
+  lists rewritten. Ryan has answered none of it, so no rows and nothing in content; docs only,
+  main fast-forwarded in on 20 October. The round's arithmetic is at 16 October's scales, and
+  none of the four reads in the runner until the shield rule's engine and the bot's valuations
+  land (each brief's holes say which). Kept open: to resume, read the four briefs, then put
+  Misharu's two calls to Ryan (Penance's shape, how often it may fire), then the Onryō's kind
+  and trigger, which Flak reopened.
 - `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
@@ -420,7 +432,8 @@ to-do's Ryan list).
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row); next, Ryan's Rapid discussion in the maker's context (the action economy's
    direction, section 5), then the gunship and the multi-rotor with the stock pass and the
-   die's shown word.
+   die's shown word. The Arsenal's four are in session (`claude/busy-carson-hmaz96`, Claude's
+   first round and its review in their briefs, none of it answered), Misharu first.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.

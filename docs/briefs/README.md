@@ -311,10 +311,10 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the battlecruiser's session (the foil) |
 | `aphelion_baboon.md` | rework | Aphelion | 2 (now 1) | the stock pass |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
-| `arsenal_misharu.md` | proposal | the Arsenal | 2 | nothing |
-| `arsenal_onryo.md` | direction | the Arsenal | 2 | nothing |
-| `arsenal_mastema.md` | direction | the Arsenal | 3 | the foes' fresh start (riders on machines) |
-| `arsenal_minos.md` | proposal | the Arsenal | 3 | the foes' fresh start (back ranks) |
+| `arsenal_misharu.md` | proposal, in session | the Arsenal | 2 | nothing |
+| `arsenal_onryo.md` | direction, in session | the Arsenal | 2 | nothing |
+| `arsenal_mastema.md` | direction, in session | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
+| `arsenal_minos.md` | proposal, in session | the Arsenal | 3 | the foes' fresh start (back ranks) |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no

@@ -3,8 +3,9 @@
 The session finishes Minos, whose every foe reached changes rank, as written or adjusted, and
 settles when it is worth its slot.
 
-**Status**: proposal with a place, as proposed (the analysis, 14 October). **Maker**: the
-Arsenal. **Proposed tier**: three. **Read first**: `docs/briefs/README.md`; "The design as
+**Status**: proposal with a place, as proposed (the analysis, 14 October); in session since 15
+October (Claude's first round and its review, below; Ryan has answered none of it). **Maker**:
+the Arsenal. **Proposed tier**: three. **Read first**: `docs/briefs/README.md`; "The design as
 proposed" below, with Ryan's calls; `docs/roster_analysis.md` section 4; `docs/rules.md` on the
 formation and reach.
 
@@ -101,10 +102,45 @@ diagnostic.
   hoverjets with a ring of eyes). Ryan took the turn further (12 October: hitting any unit
   flips its rank), and the dark Gundam replaced the saint. Penance is now Misharu's word.
 
+## The Arsenal session (15 and 16 October)
+
+Nothing here is Ryan's yet. Claude's first round went to chat on 15 October and Claude's review
+of it on 16 October (Ryan's ask: errors in logic, biases, wrong assumptions, gaps in design).
+He has answered none of it.
+
+**Claude's first round (15 October)**: keep it as written; decide the design now (its row, the
+passive planned in content) and build it after the foes' fresh start, since only formations
+have a back rank today. Nothing in the go or the shield rule changed it. The round added that
+every boss is massive, so Minos never touches one and its job is formations and a boss's adds.
+
+**Claude's review (16 October)**: that line was wrong when the round wrote it. Since the tiers
+row (Ryan, 15 October; the engine reads a boss whatever its size since that day) a boss may be
+human-sized, and the four massive bosses step down to elites as the slate lands, so Minos may
+turn a boss's rank, and a core's beside its parts (a boss in parts, built 15 October): ground
+Ryan has not ruled on. Unexamined with it: a turn that moves a part and its core in one column.
+
+**Since then on main (to 20 October)**:
+
+- The Dingo's Combat Translocator (Ryan's go, 19 October): any two foes, or a foe and an empty
+  slot, trade places, a massive foe staying. The bible's Dingo row parts it from Minos by
+  pattern (Minos turns whole ranks over, the Dingo chooses two), and the engine piece that
+  moves a foe between slots is the one Minos's turn waits on too (the to-do's Translocator
+  line). Soft control has a tier-two carrier before Minos lands.
+- The bomber (Kestrel, tier three) leaves mines on empty slots, and Ryan, 15 October: "If Minos
+  or any other move effect causes an enemy to step on a mine, it blows up. That's a synergy." A
+  Minos spend on a lone foe steps it into the empty slot of its column.
+- Indirect's splash is retired (decided, not built: area belongs to the keywords), so the edge
+  on where an Indirect spend splashes goes when that lands; Chain's rework, open in section 12,
+  would change the edge that a Chain turns every link's survivors once.
+
 ## Open for the session
 
+The first round's answer is above; Ryan has given none.
+
 1. The proposal's questions (the design above): as written, and whether it waits for the
-   foes' formations to be worth its slot.
+   foes' formations to be worth its slot (the round: as written, decided now, built after).
+2. A human-sized boss: whether Minos turns it as it turns any foe (the rule as written does),
+   and a boss in parts.
 
 ## Holes already raised
 

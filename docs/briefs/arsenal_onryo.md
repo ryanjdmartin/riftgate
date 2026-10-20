@@ -1,12 +1,14 @@
 # Brief: the Onryō and its Grudge (proposal reworked into a direction)
 
-The session settles what the Onryō's curse does, whether a damage over time or the team's flat
-on-hit, and what lays it.
+The session settles what the Onryō's curse does, now that the flat on-hit is Flak's (19
+October) and a damage over time at the foe's action Burning's, and what lays it.
 
-**Status**: direction (14 October). **Maker**: the Arsenal. **Proposed tier**: two. **Read
-first**: `docs/briefs/README.md`; "The design as proposed" below, with Ryan's calls and the
-Pall in full; `docs/roster_analysis.md` section 4 (its rating); the bible's rows on retaliation
-and thorns, and on damage redirection (section 5).
+**Status**: direction (14 October); in session since 15 October (Claude's first round and its
+review, below; Ryan has answered none of it, and Flak took the round's curse on 19 October).
+**Maker**: the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The
+design as proposed" below, with Ryan's calls and the Pall in full; `docs/roster_analysis.md`
+section 4 (its rating); the bible's rows on retaliation and thorns, and on damage redirection
+(section 5).
 
 ## The design (the proposal)
 
@@ -163,24 +165,92 @@ Ryan's.
   of the wound it dealt, and the Onryō's own next blow on it dealt that much more, spending it;
   set aside as a third copy of Shocked. It is close to the go's on-hit lean, which differs: a
   flat number per stack on every team blow on the cursed foe, kept and capped, with Shock
-  staying the multiplier that spends. The session decides whether the bench's reason still
-  holds against the lean.
+  staying the multiplier that spends. The on-hit lean is Flak's since 19 October (open item 1).
+
+## The Arsenal session (15 and 16 October)
+
+Nothing here is Ryan's yet. Claude's first round went to chat on 15 October and Claude's review
+of it on 16 October (Ryan's ask: errors in logic, biases, wrong assumptions, gaps in design);
+main has since landed two decisions that overtake the round's curse (below). He has answered
+none of it.
+
+**Claude's first round (15 October)**, by the open items below:
+
+- **The curse (items 1 and 3).** Ryan's flat on-hit, every team blow on a cursed foe dealing 5
+  more a stack (armour in reverse), at most three stacks, never fading, kept after the Onryō
+  falls: amplify for others, the class with no chassis identity. The roster's second damage
+  over time was left to the spider's share of current hull, so item 6 fell away.
+- **The trigger (item 2).** A wound on the Onryō's own hull curses its striker, whether the
+  blow was aimed at it or moved onto it by the Pall. Not every machine's wounds (the crowded
+  read, and the well-played team feeds it least); not the Pall's alone, which the round wrongly
+  said broke the build-space row (the review, below). Routes in: the Pall, any Lure, its armour
+  0 drawing the exposed aim; payoffs: every hitter on the team, multi-strike pieces most. Ryan's
+  trigger on a debuff a foe lays stayed the candidate once every domain lays one.
+- **The Pall (item 4)** as drafted; under the shield rule the ally's shield and armour come off
+  first and what reaches its hull moves.
+
+Its holes: the Onryō and the Nemesis both reading their own hull, parted by payoff (rage buys
+the Nemesis actions, Grudge marks the striker for the team) and by source (any hull loss,
+against a foe's blow only); Ryan's taste line on rewarding a machine for being struck while it
+draws blows, answered by the cap being per foe (it grows with how many foes wound it, not how
+often) and paid in hull that never heals in a battle; a boss snowballing at the cap (15 more on
+every team blow, more with multi-strike pieces), the cap and the number its levers. And a pair:
+Misharu's bait on an ally under the Pall gives the striker a Penance and a Grudge from one
+blow, the overflow landing on the Onryō.
+
+**Claude's review (16 October)**, correcting the round:
+
+- The build-space row was misread. It says a passive that only *feeds* its own fixed pieces
+  adds nothing, which is about what it produces; a Grudge laid only through the Pall is fed by
+  the Pall and feeds every hitter on the team (the Nemesis's rage and fists, the other way
+  round). The real objection to it is one route in, never the row.
+- The own-hull trigger is the shape Ryan called dangerous on 15 October, of the Armadillo's
+  Shock under a draw ("rewarding it for doing it's job seems potentially dangerous"), and the
+  per-foe cap does not tell them apart, since Shocked never stacked either. What differs is the
+  price: armour 0, so a lured pack of wolves is 60 hull a round, and hull never heals. The lure
+  build is the old discharge's shape, priced in hull.
+- A Grudge laid only through the Pall makes every curse a spend that shows on an intent, which
+  is how Ryan settled the Armadillo's draw, but it is blank when a lone boss picks the Onryō
+  itself, which the exposed aim does often at armour 0 and shield 30. Both triggers stood after
+  the review, with no clean lean.
+- The strafer pair the round called clean is the convergence Ryan flagged on the
+  shield-spender ("multi-hit flat damage stacking"): at the cap, the Maxigun's six strikes on
+  the strafer gain 90 a spend. A cell to read first, never a feature.
+
+**Since then on main (18 to 20 October)**:
+
+- Flak (the Prairie Dog's go, 19 October) is the flat on-hit kind: every blow on the foe deals
+  a point more a stack, the stacks halving at each round's end. The round's curse is Flak with
+  another chip, so its kind is open again (open item 1, updated on main that day). Kestrel's
+  line review (`ccr-b6da49d3-4ft738`, not merged) turned away a stacking Exposed on the same
+  ground, "the copy the Grudge was turned away for".
+- Vitriol (the funnel-web's go, 18 October) is the share of current hull the round left to the
+  spider, so the foes' damage over time is Burning (stacks at its action) and Vitriol (a share
+  of current hull); a third reads something else, or it copies one.
+- The retaliation row carries the condition that reopens a reward for being struck (Ryan, 20
+  October, on the Whip Scorpion's Heliographic Siphon): the machine spends its own turn to be
+  struck, deals nothing that turn, and is paid later and at random. Claude, 20 October, reading
+  the fork against it: the own-hull trigger rides turns the Onryō takes anyway, the discharge's
+  shape; a Grudge laid through the Pall is a spend and pays later, though on one die rather
+  than a whole turn and never at random. The row leans to the Pall without settling it.
 
 ## Open for the session
 
-1. The curse's kind: the flat on-hit (Claude's lean, Ryan's preferred amp shape), or a DoT
-   after all (Ryan's two niches for one). 19 October: the flat on-hit kind is Flak's, the
-   Prairie Dog's go (the bible's Prairie Dog row), so Grudge's kind is open again: a flat on-hit
-   would be Flak with another chip, a DoT at the foe's action Burning's kind, so Grudge reads
-   something else or lays one of them in its own way.
-2. The trigger: a foe's blow that wounds any machine while the Onryō fights, the wound the
-   Onryō takes through the Pall, or a debuff a foe lays (once every domain lays one).
-3. The cap, and whether Grudge outlasts the Onryō.
-4. The Pall's details (above).
+The first round's answers and the review's corrections are above; Ryan has given none.
+
+1. The curse's kind. The flat on-hit (Ryan's amp shape, the round's lean) is Flak's since 19
+   October, the Prairie Dog's go (the bible's Prairie Dog row), and a damage over time at the
+   foe's action is Burning's kind: Grudge reads something else, or lays one of them in its own
+   way. Ryan's "unique status" holds the slot; no shape is proposed yet.
+2. The trigger: the Onryō's own hull (the round), the wound it takes through the Pall (the
+   analysis), or a debuff a foe lays (Ryan, once every domain lays one), each read against the
+   retaliation row's reopening condition (above).
+3. The cap, and whether Grudge outlasts the Onryō (the round: three stacks, kept).
+4. The Pall's details (above; the round kept them as drafted).
 5. The wound trigger under the shield rule: the proposal counted wounds when a standing shield
    blocked a whole blow and only a breach's overflow passed it; now every blow's excess past
    the shield reaches the hull, and a breach's whole blow does, so more blows wound.
-6. If the curse stays a damage over time, whether the Bellows spreads it: the proposal kept
+6. If the curse ends a damage over time, whether the Bellows spreads it: the proposal kept
    Mastema's Bellows off Grudge unless Ryan wanted the Arsenal's two curses to spread together,
    and his 14 October niches for a DoT include "a soft synergy with Burn".
 
@@ -198,9 +268,10 @@ Ryan's.
 - As a damage over time, Grudge and a Corrupted moved onto a foe (the Scapegoat Brand's shape
   D, `arsenal_mastema.md`) would be one shape twice; Ryan named Grudge, so that call is his.
 - The lure route (build space, place 2: a lure draws a pack onto whichever machine can afford
-  the wounds, each wound a Grudge) may sit against Ryan's taste line in the briefs' README, no
-  reward for being struck that scales with the enemy's blows (said of tanks, 14 and 15
-  October): does a curse per wound, invited by a lure, scale the same way?
+  the wounds, each wound a Grudge) may sit against Ryan's taste line, no reward for being
+  struck that scales with the enemy's blows (said of tanks, 14 and 15 October; the bible's
+  retaliation row, with its reopening condition since 20 October): does a curse per wound,
+  invited by a lure, scale the same way? The review's answer: yes, priced in hull.
 
 ## What the session hands back
 
