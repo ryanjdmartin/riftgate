@@ -4,8 +4,8 @@ The session designs Aphelion's Gundam homage as the most tempo-oriented damage d
 game: a duelist whose combo builds a rhythm until something breaks it. "The line frame" is a
 working label; the name and the look are Ryan's.
 
-**Status**: direction (14 and 15 October); in session since 15 October (Claude's first round
-and its review, below; Ryan's calls to come). **Maker**: Aphelion.
+**Status**: direction (14 and 15 October); in session since 15 October (Claude's first round,
+its review and Ryan's first calls, below). **Maker**: Aphelion.
 **Proposed tier**: one. **Read first**: `docs/briefs/README.md`; the bible's rows on
 Aphelion's next chassis, on tags and on motion ("Heavy and mechanical, with inertia"), all in
 section 7.
@@ -117,15 +117,15 @@ jellyfish and the Carrier in chat that day. On 16 October, at Ryan's ask ("Revie
 talked about and worked on so far. Look for errors in logic, biases, incorrect assumptions, and
 gaps in good game design principles"), Claude reviewed its own proposal against main and the
 open branches. On 20 October it was written down for Ryan to pick up later, with what had moved
-on main by then. Ryan has not answered it yet: everything in this section is Claude's, for him
-to move, and every number is a placeholder.
+on main by then. Ryan's first calls on it came the same day (below); everything else in this
+section is Claude's, for him to move, and every number is a placeholder.
 
 **The proposal, as the review left it**
 
 - **The combo**: a stack for every hit its weapons land (Ryan's "a stack on every hit", 14
   October; a fighting game's hit counter). A turn it ends without spending a weapon clears it,
-  its locked parry counting as a weapon for this. It lasts the skirmish. What one hit is stays
-  open (below).
+  its locked parry counting as a weapon for this. It lasts the skirmish. Every blow counts,
+  strikes included (Ryan's call of 20 October, below).
 - **The payoffs**, Ryan's thresholds as placeholders: at 5 it cools more, at 10 it regains
   shield as each round opens, at 20 its blows deal more; past 20 the count climbs for the show
   and pays nothing more. Each payoff takes away a reason to break the combo (heat forces a
@@ -148,8 +148,9 @@ to move, and every number is a placeholder.
   at worst", the bible's section 12). Its keyword is open; scaling with the count stays a dial
   for later.
 - **The rifle**: the basic Laser Carbine, tagged Beam in the stock pass, held in the hand (a
-  look; the hand-holds row stays pinned). Two Beam pieces at the start, three if the shield is
-  tagged Beam (Ryan called it a physical shield, 14 October).
+  look; the hand-holds row stays pinned). Two Beam pieces at the start; whether the shield
+  carries Beam is the model session's (Ryan's call of 20 October, below; he called it a
+  physical shield, 14 October).
 
 **What the review corrected** (16 October)
 
@@ -197,10 +198,23 @@ to move, and every number is a placeholder.
 - The heat numbers here re-scale with the stock pass's heat scale (1 to 20, proposed on the
   Kestrel branch on 20 October, not on main yet).
 
+**Ryan's calls on the first round** (20 October), in his words:
+
+- "Every blow counts, and we will follow the new conventions when we pick this up again."
+- "Don't tag the shield beam now, that's the model session's job."
+
+What they settle: the combo counts every blow its weapons land, strikes included, so strikes
+and area pieces are its fuel, as the action-economy row has it; the session resumes under the
+conventions decided since 15 October (as Claude reads them: the action-economy row, Rapid's
+limiter, a Suppress priced by a gate, the overlap rule, random that adds against random that
+takes away); and the shield's tag waits on the line frame's model session, not this one.
+
 **The bench** (each with what set it aside)
 
 - Counting spends: too slow to see in fights of these lengths, and the action-economy row
   points counters at blows.
+- Counting each foe a spend damages (the hopper's rule): Ryan's call, 20 October, every blow
+  counts.
 - A combo that lasts the battle: it reaches 20 on spends, but one bad roll wipes a battle's
   work, and the team would spend every reroll guarding it.
 - A Rapid parry: free, so no decision; and the 20 October rule on a Rapid shield's tier.
@@ -212,21 +226,17 @@ to move, and every number is a placeholder.
 
 ## Open for the session
 
-1. What one hit is: every blow, strikes included (the action-economy row's lever: strikes and
-   area its fuel, the Maxigun a combo piece, the thresholds tuning the rate), or every foe a
-   spend damages (the hopper's rule since 15 October, never a load a strike; Ryan: "that was
-   my note intention, per foe damaged"). Claude's lean in the review: per foe damaged, by the
-   hopper's precedent; since the 20 October row, per blow, the thresholds the lever. Put to
-   Ryan on 16 October.
-2. What breaks it: a turn ended without a weapon spent (Ryan's), or only equipment spent (the
+Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
+to the model session; what stays open:
+
+1. What breaks it: a turn ended without a weapon spent (Ryan's), or only equipment spent (the
    review's alternative, so the die never takes the ramp away).
-3. The thresholds' numbers against these fight lengths, and the cooling kept under the
-   weapons' heat.
-4. The parry: a self-Barrier, cooldown 2, keeping the combo (proposed), or Rapid against the
+2. The thresholds' numbers against these fight lengths, now that strikes and area pieces climb
+   the count, and the cooling kept under the weapons' heat.
+3. The parry: a self-Barrier, cooldown 2, keeping the combo (proposed), or Rapid against the
    20 October tier rule.
-5. The saber's keyword now that Chain is being reworked; its scaling with the count later.
-6. The rifle and the Beam count: is the shield tagged Beam? (Put to Ryan on 15 October.)
-7. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
+4. The saber's keyword now that Chain is being reworked; its scaling with the count later.
+5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
 
 ## Holes already raised
 

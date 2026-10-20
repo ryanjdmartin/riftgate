@@ -91,11 +91,16 @@ document's job and every command are in `README.md`.
   in chat on 15 October (the line frame, the Baboon, the jellyfish, the Carrier), its review on
   16 October at Ryan's ask, and both written down on 20 October in the four briefs' "Aphelion
   session, first round" sections, each with what moved on main since and its open list
-  rewritten. Nothing from Ryan on the designs yet; docs only, nothing built, the bible
-  untouched. To resume: those four sections and open lists, the line frame and the Baboon first
-  (the pair that keeps Aphelion's tier-one deal varied; the line frame's first question, what
-  one hit is, waits on Ryan), then the jellyfish; the Carrier with the battlecruiser's session;
-  Aphelion's defensive tier one (the to-do) unproposed. Unmerged then and read for it:
+  rewritten. Ryan's calls of 20 October, recorded in the briefs: every blow counts for the line
+  frame's combo, and the session follows the conventions decided since 15 October when it
+  resumes; Purge is the word on both sides for now (the foes' Dispel renamed with ours: the
+  bible's rows, the rules' Ward line and the vocabulary's entry, its id kept); the shield's
+  Beam tag is the line frame's model session's; the battlecruiser's session never joins this
+  one (not related, joined by homage perhaps). Bible v0.221 on this branch, unpublished (the
+  Pages line). To resume: those four sections
+  and open lists, the line frame and the Baboon first (the pair that keeps Aphelion's tier-one
+  deal varied), then the jellyfish; the Carrier on its own; Aphelion's defensive tier one (the
+  to-do) unproposed. Unmerged then and read for it:
   `ccr-b6da49d3-4ft738` (Kestrel's evening of 20 October: the stock pass's heat scale of 1 to 20,
   the exposed-rotor helicopter to Aphelion's bench as a shape) and `ccr-3259e29d-ydwpom`
   (Armoured and Overcharged in points, built).
@@ -227,7 +232,8 @@ document's job and every command are in `README.md`.
   convention; built: Folded become Braced, every status a chip, timed stacks keeping their own
   rounds, the stacking policy (add or renew), Suppressed never stacking nor carrying, the Boar's
   spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
-  Dispel decided for the enemy's side with Ward turning both away (not built).
+  Dispel (Purge since 20 October) decided for the enemy's side with Ward turning both away (not
+  built).
   Then 18 and 19 October (`ccr-b6da49d3-4ft738`, above): the session's rounds with Ryan in
   the Kestrel briefs, waiting on his calls.
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
@@ -351,7 +357,8 @@ document's job and every command are in `README.md`.
   combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
   commander actions on map cooldowns); what the stock pass does with it is in the to-do's
   stock pass line, the reasoning in the briefs README.
-- Silence and Dispel on the enemy's side (the bible's section 5, 17 and 18 October): a Silenced
+- Silence and Purge on the enemy's side (the bible's section 5, 17 and 18 October; the foes'
+  keyword named Dispel until 20 October): a Silenced
   status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
   section 12's.
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
@@ -364,7 +371,8 @@ document's job and every command are in `README.md`.
   that it bites (section 5's heat row: a machine firing every round overheats by its third).
 - Danger close retires and area belongs to keywords on any reach: Splash folds into Spread and
   Penetrate, an explosive carries both (the Artillery Rangefinder needs a new rule).
-- A dispel keyword for the foes' buffs (its name, carriers and numbers open).
+- Purge, our keyword for the foes' buffs (its carriers and numbers open; Purge on both sides for
+  now, Ryan, 20 October).
 - The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): a shield
   absorbs its number and the excess passes to the hull, a breach ignores the shield, an injury
   counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
@@ -472,7 +480,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.220 (20 October: the Phased
+  `docs/design-bible.html` after every change. `claude/intelligent-planck-uwmbhg`'s file is
+  v0.221 (20 October: Purge on both sides, the line frame's combo counting every blow, the
+  Carrier apart from the battlecruiser), built on main's v0.220 and unpublished: the next
+  publish reads the live page through and merges onto it. Main's file is v0.220 (20 October: the Phased
   row, the roster row's two capstones and the Wainwright & Sutler row), to publish over the
   live v0.219. Live: v0.219 (20 October, main's file before it, after
   the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's

@@ -28,8 +28,9 @@ row's rule: hard control always carefully considered, other options explored fir
 
 Opened by Ryan on 15 October with the line frame, the jellyfish and the Carrier (its record is
 in `aphelion_line_frame.md`): Claude's proposal in chat that day, Claude's review of it on 16
-October at Ryan's ask, written down on 20 October. Ryan has not answered it yet; everything here
-is Claude's, for him to move.
+October at Ryan's ask, written down on 20 October. Ryan's calls of 20 October on the session
+(every blow counts for the line frame, Purge for both sides, the battlecruiser never joining)
+leave the Baboon's open; everything here is Claude's, for him to move.
 
 **The proposal** (15 October)
 

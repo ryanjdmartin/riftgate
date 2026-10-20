@@ -195,7 +195,7 @@ On a machine:
   so it never injures; its riders land. Until the round's end. Never granted to every ally
   at once.
 - **Ward** (buff, not built): every blow a foe lands on this machine leaves no rider
-  (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage
+  (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage
   lands. Until the round's end.
 - **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
