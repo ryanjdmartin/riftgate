@@ -459,18 +459,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.220 (20 October: the Phased
-  row, the roster row's two capstones and the Wainwright & Sutler row), to publish over the
-  live v0.219. Live: v0.219 (20 October, main's file before it, after
-  the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's
-  Laminar Deflector calls of 20 October over the v0.217 that carried that branch's rows, the
-  funnel-web's model and the walkers' planted footwork, over other sessions' pages of 18 to 20
-  October) with main's v0.208 to v0.210 rows (the Whip Scorpion, the maker's roster, the
-  Prairie Dog's pivot, the basic-kit rewording, the damage-rider and thorns rows, the chassis,
-  maker and size tables) and the tables regenerated from the merged content. Git and the page's
-  version history carry what each earlier publish brought.
+  `docs/design-bible.html` after every change. Main's file is v0.221, and so is the live
+  (20 October): main's v0.220 rows (the Phased row, the roster row's two capstones and the
+  Wainwright & Sutler row) merged three-way onto the live v0.220 that another session
+  published from the numbers branch, whose tables are regenerated from that branch's content
+  (Overcharged a point a stack and halving, Armoured in Braced's place, Burn numbered, the
+  Ammit's rule unnamed), so the live tables run ahead of main's until that branch merges and
+  `tools/pages/bible_tables.py` regenerates them here. Git and the page's version history carry
+  what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
-  merge onto it.
+  merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
+  first line and its trailing `</body></html>` stripped from the saved live source).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
   only the four content files that had moved since 13 October (chassis, components, foes,

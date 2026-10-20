@@ -362,8 +362,8 @@ many clocks on one die: a point a round in the fight, three at most, the pieces 
 never the commander's.
 
 1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); the kit after the cut (the carry alone as the passive, the three locked pieces on cooldowns, the bar benched);
-   the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
-   component; the mark's rider and the Exposed question to the Kestrel session; then the
+   the recovery as one locked piece with the wreck case once a skirmish; the mark's rider and
+   the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
    property, Phased with its rule, the lure-all reach the Whip Scorpion also waits on, a wreck
    returning mid-fight).
