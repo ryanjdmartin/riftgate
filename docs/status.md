@@ -51,7 +51,9 @@ document's job and every command are in `README.md`.
   weapon each round Rapid) in the README's tiers table, no brief yet; Ryan's leans recorded
   (overlap is fine if the shapes differ, rerolls Kestrel's, a second tier-one lure so the
   Armadillo is no must-pick, Aphelion to need a defensive tier one, the mode-shifter to
-  Aphelion's bench). The eighth round (19 October) in the platform's brief: no doubled
+  Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's direction
+  goes to main before anything else does any work) and kept open for the Kestrel line
+  review. The eighth round (19 October) in the platform's brief: no doubled
   payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
   (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
   chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
@@ -229,6 +231,12 @@ document's job and every command are in `README.md`.
 
 ## Decided, not built
 
+- The action economy's direction (the bible's section 5, 20 October, beside the stun row):
+  Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
+  a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
+  combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
+  commander actions on map cooldowns); what the stock pass does with it is in the to-do's
+  stock pass line, the reasoning in the briefs README.
 - Silence and Dispel on the enemy's side (the bible's section 5, 17 and 18 October): a Silenced
   status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
   section 12's.
@@ -340,7 +348,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.206 (19 October: the
+  `docs/design-bible.html` after every change. Main's file is v0.207 (20 October: the action
+  economy's row beside the stun row), over v0.206 (19 October: the
   Prairie Dog's Flak row with the chassis table, the cars row and the leans row, over v0.205's
   Cassowary, Cottonmouth and Dingo rows, with the chassis, size and
   maker tables, the Rapid and reroll clauses and Spun Up, Swap and Flak in the generated tables, over

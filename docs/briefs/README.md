@@ -106,6 +106,11 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
   stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
+- The action economy (Ryan, 20 October; the bible's row beside the stun row, section 5): Rapid
+  is the new Suppress in build ubiquity, so it is priced by a gate and never rationed, and each
+  of the wants it sells gets a home that is not a Rapid piece (the section below). A design
+  that wants many blows is pointed at strikes; one that wants order is given a die mechanic;
+  one that wants a second action pays in a banked resource, a cooldown or an ally's turn.
 
 ## Tiers
 
