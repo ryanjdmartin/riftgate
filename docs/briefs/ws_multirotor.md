@@ -171,12 +171,73 @@ tempo abuse gone. The chassis's one passive object carries both halves as one id
 supply ship that carries the squad and outfits it, within the three effects a passive may
 hold.
 
+Ryan, 20 October, later, on the carry: "The point of the carrier carrying would be to give
+extended reach. It doesn't count as their action, otherwise you wouldn't be able to move a unit
+to get on the carrier, and then the carrier moves. Its not a reset, though. If it picks up an
+adjacent unit that hasn't acted, then on landing that unit can still move and attack. If a unit
+moves to it to get picked up, I think its ambiguous if that unit can then fight after from
+where it lands, I'm not sure if that makes sense or if its just confusing UI. It doesn't step
+on the dingo because the dingo can still act twice AND hop on the carrier in one round, so its
+the only one that can drive, get picked up, and then drive again. I don't anticipate the
+carrier having a lot of move points, that's the point. It's just a little bump, getting a unit
+over a river or a mountain, or repositioning so that they can reach that side pack just out of
+reach. Its meant as a strategic piece, not a movement abuse, its tier-3 power." On the
+Manifest: "setting it up in the hangar would be impossibly complex. Literally not tenable.
+However, I think a variant might have merit: Two of its hardpoint slots are 'equipment' slots.
+When those faces come up, the carrier can drag them onto another units die to give it to them
+for the duration of the skirmish, then both dice reroll." And four locked-slot ideas: a mark
+(from the Kestrel session's brainstorming: the target reachable by any weapon and taking extra
+on-hit damage this round, a new debuff, Exposed; the interceptor gets it free with its Rapid,
+so the carrier's wants another rider to be worth a whole non-Rapid spend); a resupply (an
+ally's shield to its maximum, heat to zero, cleansed; a long cooldown); a revive (a scrapped
+unit back with full shield and 10% hull, once a skirmish; unsure whether it is a dangerous
+commander ability, perhaps fine as a die ability, or both); all units dock (every other ally
+Phased this round, perhaps cleansed, every enemy lured onto the carrier; the one-unit form,
+one ally docked and its attackers lured, he reads as stronger, a game-swinging risk).
+
+Claude's reading, the same day. The carry as he has it, the lift leaving the rider's action
+exactly as it stands: a rider that has not acted lands and may move and fight; one that moved
+to board keeps whatever move it had left and its fight, since the round already lets a machine
+move in pieces and fight after (the lift changes where it is, never what it has left), and the
+map draws its remaining ring from the landing hex, which is the UI answer to the ambiguity.
+The set-down rule stands (the nearest standable hexes; the carrier cannot stop where a rider
+cannot be set down). The carrier's move 20, two hexes as a flyer: the bump. The Dingo's two
+actions and the lift compose as Ryan says. The equipment slots: the Manifest at die time, with
+its own gates: a hand-over only when the slot's entry shows, once per piece a skirmish (the
+piece leaves the carrier's die and joins the ally's for the fight, so the carrier's die shrinks
+as it outfits), the reroll of both dice its cantrip half, bounded by the two pieces; the slots
+take equipment (a shield, a vent, a buff: the refuelling and support Ryan named), so a lent
+flat gun on the Sparrowhawk, the old abuse, cannot happen, and a lent vent on the Whip
+Scorpion, the hook he wants, can; the hangar chooses only which two pieces ride in the slots,
+which is any loadout. The mark: the reach half (reachable by any weapon this round) is the
+observer's and new; the on-hit damage half is Flak's kind (a point a stack on every blow),
+so Exposed and Flak would be one kind under two chips unless Exposed is reach alone, which
+goes to the Kestrel session that is designing it; the carrier's rider over the interceptor's:
+duration (until the marked foe's next action rather than the round), which a non-Rapid spend
+can carry. The resupply: fine under the cooldown property (not built), which the capstone may
+carry; not team-wide, so the unkillable-team line is clear; the Whip Scorpion declines it. The
+revive: a die piece once a skirmish is the safer form (the die's odds and the carrier's spend
+gate it, where a commander verb is a guaranteed reset); it bends "damage sticks" (section 4) at
+10% hull, which a tier three may, and the foes' Risen is its mirror; Claude's lean: a brief of
+its own rather than this ship's first kit, since three verbs are already a capstone. The dock:
+the late-dock trick is the hole (every ally acts, then docks for a free immune enemy turn at
+the carrier's hull's expense), so the dock is the opening act or nothing: only while no ally
+has spent this round, so its price is the team's whole turn, Darkest Dungeon's planned turn;
+Phased (planned, Aphelion's: cannot attack nor be damaged until the round's end) is the status
+it grants; two lure-alls in one maker (the Whip Scorpion's Siphon and the dock) are two
+patterns, fuel against protection. The one-unit dock is the bodyguard, stronger as Ryan says
+because it costs one turn or none; the bench. The kit as leaned: the carry (the map half of
+the passive), the equipment slots (the combat half), three locked pieces (the mark, the
+resupply, the dock) and two or three plain hardpoints, a die of eight or nine, the capstone's
+complexity; the revive its own brief.
+
 ## Open for the session
 
-1. The map half's two rules (the set-down and the lift as the rider's move), the combat half
-   (the Manifest or spotting), its name, then its design in full: numbers, the engine (the
-   carry on the map; a piece dealt onto another die for the fight), the hangar's assignment,
-   the bot.
+1. Ryan's calls on the reading: the lift's rule (the rider keeps what it had), the equipment
+   slots as equipment only, the mark's rider and the Exposed question to the Kestrel session,
+   the resupply's cooldown, the revive's place, the dock's opening gate; its name; then the
+   numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
+   property, Phased, the lure-all reach the Whip Scorpion also waits on).
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
    Ryan, 13 October), if any of it names the die.
 
