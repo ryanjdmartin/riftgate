@@ -291,9 +291,20 @@ the mechanic), Threat Siphon, Thermal Intake, Impact Accumulator; the stock gun,
 Cannon is too on the nose: Pressure Cannon, Thermal Lance. The steam names (Forced Draught,
 Blast Valves, the Steam Whistle) retire with the register.
 
+Ryan, 20 October, later: "Thermal Ejection Manifold / Heliographic Siphon? / Thermal Lance is
+good, unless we still have a lance somewhere." So the passive is the Thermal Ejection
+Manifold (his), the lure the Heliographic Siphon (his, with a question mark: Claude, the same
+day: it works, the heliograph being the field signal that draws every eye and the siphon the
+heat it pulls in, the most Wainwright &amp; Sutler of the lot; Heliograph Siphon is the
+shorter form if the chip wants it), and the gun: one lance stands in content, Aphelion's
+Photosphere Lance, the Stingray's locked beam, so Claude's fix is the Thermic Lance, the real
+industrial tool's name (a burning iron rod that cuts steel, a thermal weapon that is no beam),
+one letter from his and no clash; Thermal Lance stays his if two lances are fine.
+
 ## Open for the session
 
-1. The names (the passive's, the lure's, the stock gun's), then the go.
+1. The lure's name confirmed (Heliographic Siphon or Heliograph Siphon) and the gun's (Thermic
+   Lance or Thermal Lance); then the go.
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
