@@ -493,10 +493,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.221 (20 October, from
+  `docs/design-bible.html` after every change. Live: v0.222 (20 October, from
   `ccr-3259e29d-ydwpom`: the Armadillo's row, the Minerva roster row, its retaliation row
-  closed, the chassis table, the seal made real, the Sealed and Cryo table rows) over v0.220
-  (the same day, the same branch: main's v0.219 with the tables regenerated from the merged
+  closed, the chassis table, the seal made real, the Sealed and Cryo table rows) over another
+  session's v0.221 (the same day: the Phased row, the helicarrier in the Wainwright & Sutler
+  roster row, section 12's fresh-start item), itself over v0.220
+  (the same day, this branch: main's v0.219 with the tables regenerated from the merged
   content, so Armoured, Overcharged, Burning, Burn and the talons' kill rule read as built on
   18 October). Before it, v0.219 (20 October, main's file too, after
   the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's
