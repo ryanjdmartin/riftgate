@@ -269,9 +269,22 @@ Kestrel's are raptors first); the maker's working animals as the alternatives: C
 of the desert, carrying the squad over hard ground; lean among them), Mule (the army's pack
 animal), Dray (the wainwright's own wagon).
 
+Ryan, 20 October, later: "So the recovery is a cooldown for an alive ally, or a one-a-fight
+for a scrapped one? I'm actually hesitant to give W and S a bird, because even Kestrel has non
+raptor birds such as the puffin. What other names do you suggest, whether it's a flying animal,
+insect, or a land-based animal, or anything?" Claude: yes, one piece, two cases: on a live ally
+the resupply under its printed cooldown; on a wreck the recovery, which spends the cooldown and
+the once-a-skirmish charge both, and the entry shows the rounds left and the charge spent;
+ally only, the carrier never resupplying itself, so it stays a team piece. Names without a
+bird, the reserved list checked: Camel (the ship of the desert; the outback's camel trains
+carried the frontier; lean), Flying Fox (the one flyer that is no bird: a fruit bat, an
+orchard pest, which carries its young in flight), Bullock (the bullock dray, the frontier's
+heavy haul), Mule (the army's pack animal), Pack Rat (the pest that carries, the maker's
+humour), Dray (the wainwright's own wagon, no animal at all).
+
 ## Open for the session
 
-1. Ryan's calls: the name (Albatross, Camel, Mule, Dray); Phased's rule as the dock's gate;
+1. Ryan's calls: the name (Camel, Flying Fox, Bullock, Mule, Pack Rat, Dray); Phased's rule as the dock's gate;
    the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
    component; the mark's rider and the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
