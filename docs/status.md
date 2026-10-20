@@ -299,6 +299,9 @@ document's job and every command are in `README.md`.
   finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
   Overcharged at a point, read together when the numbers branch merges; the engine is the
   to-do's line, the family the stock pass's.
+  The pivot (Ryan, 20 October): the Repeater loses Rapid for Spread and Flak 3, and the
+  passive gains the fight half, 5 less damage from any foe carrying Flak; its go lands the
+  content and the attacker-status condition.
 - The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
   sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
   live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
@@ -370,7 +373,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   maker tables; v0.204's art rows) merged onto the review session's v0.211 (branch
   `ccr-ffcf75fa-3gkbz9`: Armoured and Overcharged in points, Burn numbered, Armoured's
   duration, its dispel in the Armoured row, the funnel-web's built clause, that branch's
-  tables). Main's file is v0.209 (20 October: the Wainwright & Sutler roster row and the basic-kit row's rewording; the Whip Scorpion's row with the chassis, size and maker tables, the damage-rider and thorns rows, unpublished, over v0.207); the review branch's three rows reach it when that branch
+  tables). Main's file is v0.210 (20 October: the Prairie Dog's pivot in the Flak row; the Wainwright & Sutler roster row and the basic-kit row's rewording; the Whip Scorpion's row with the chassis, size and maker tables, the damage-rider and thorns rows, unpublished, over v0.207); the review branch's three rows reach it when that branch
   merges. Git and the page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

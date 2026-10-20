@@ -140,11 +140,43 @@ Either way the artillery tenth keeps the raining-death niche, the roster row's s
 multi-rotor's name retires; the chassis's is Ryan's, a frontier flyer or pest in the maker's
 register), and the look stands because it fits, never because it is built.
 
+Ryan, 20 October, later: "Carrier is in the same boat, I think it wants a map passive (one
+maker identity) and a combat passive, as I don't think there will be enough build hooks on
+locked components alone. I like the map passive half as something simple like 'units adjacent
+to the carrier travel with it.' Grants other units extended range, over otherwise difficult
+terrain, and is a culmination of the makers map-centric abilities. Only issue is being able to
+drop units on mountains, so that needs a solve. I'm not sure what kind of form an in-battle
+identity could be. The extreme would be outfitting allies with new abilities, a more refined
+version of the die-lending we had before."
+
+Claude's reading, the same day. The map half as Ryan has it: machines adjacent to the carrier
+when it moves travel with it. The solve for the mountains: riders are set down on the nearest
+hexes they can stand on around where it stops (the field already finds one), and the carrier
+cannot stop where a rider cannot be set down, so it flies over the crags and lands beyond them
+when its move spans the band. The lift is the rider's move: a carried machine may still fight
+from where it is set down but does not move again, or the carry is a free second move for
+the whole squad every turn, the Dingo's identity handed out in bulk. The carrier's move sets
+the reach (a flyer: 30 or 40, every ground normal), and the squad bunches, one fight for all,
+which is the carry's price and the maker's map identity brought to its end. The combat half,
+two candidates: the Manifest (the sutler supplies the field: at a fight's start each of the
+carrier's supply pieces goes onto one ally's die for the fight, the hangar saying which to
+whom; the ally's die grows by one, no extra action, the lent piece firing with the ally's own
+passives, so the old pairings return at die odds, once a fight, with nothing to chain and no
+obvious pick each round; the carrier fights with its locked pieces and what it kept), or
+spotting (a foe the carrier has hit this round is in every ally's reach whatever its rank, the
+observer directing fire: its own target choice is the decision, and it changes the enemy's
+problem). Claude's lean: the Manifest, the outfitting Ryan named as the extreme, with the
+build hooks he wants (which piece to which machine), the lending's combos kept and its
+tempo abuse gone. The chassis's one passive object carries both halves as one idea, the
+supply ship that carries the squad and outfits it, within the three effects a passive may
+hold.
+
 ## Open for the session
 
-1. The framing (A or B, or Ryan's own), its name, then its design in full: the verbs, their
-   costs and cooldowns, the numbers, the engine (the commander's layer for A; a spend that
-   grants reach for the round and the carry for B).
+1. The map half's two rules (the set-down and the lift as the rider's move), the combat half
+   (the Manifest or spotting), its name, then its design in full: numbers, the engine (the
+   carry on the map; a piece dealt onto another die for the fight), the hangar's assignment,
+   the bot.
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
    Ryan, 13 October), if any of it names the die.
 
