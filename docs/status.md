@@ -71,8 +71,10 @@ document's job and every command are in `README.md`.
   two lines); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
   fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
   rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
-  same day (Flak), and the boiler as the Whip Scorpion on 20 October, so the maker's tiers
-  remain. The tender, the campaign
+  same day (Flak), the boiler as the Whip Scorpion on 20 October and the maker's tiers
+  confirmed the same day (3-5-2), so of the maker's briefs only the gunship's and the
+  multi-rotor's remain, with the stock pass and the die's shown word; next the Rapid
+  discussion in the maker's context. The tender, the campaign
   runner and the balance runner skip a chassis whose passive or locked piece is planned
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
@@ -321,7 +323,10 @@ to-do's Ryan list).
    decision becomes a row; the analysis page retires to git once the last brief that cites it
    lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth, the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
-   Scorpion on 20 October; the maker's tiers are next.
+   Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
+   roster row); next, Ryan's Rapid discussion in the maker's context (the action economy's
+   direction, section 5), then the gunship and the multi-rotor with the stock pass and the
+   die's shown word.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -365,7 +370,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   maker tables; v0.204's art rows) merged onto the review session's v0.211 (branch
   `ccr-ffcf75fa-3gkbz9`: Armoured and Overcharged in points, Burn numbered, Armoured's
   duration, its dispel in the Armoured row, the funnel-web's built clause, that branch's
-  tables). Main's file is v0.208 (20 October: the Whip Scorpion's row with the chassis, size and maker tables, the damage-rider and thorns rows, unpublished, over v0.207); the review branch's three rows reach it when that branch
+  tables). Main's file is v0.209 (20 October: the Wainwright & Sutler roster row and the basic-kit row's rewording; the Whip Scorpion's row with the chassis, size and maker tables, the damage-rider and thorns rows, unpublished, over v0.207); the review branch's three rows reach it when that branch
   merges. Git and the page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

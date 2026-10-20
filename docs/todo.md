@@ -8,7 +8,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 ## Ryan
 
 - [ ] Read `docs/rules.md` once and the bible's first row; answer section 12's questions as they come up, the foe roster after the picks and the mechanic budgets first
-- [ ] Finish the go on the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages): what it left open is in `docs/briefs/README.md`, the tiers the briefs propose (the reshuffle, the ten-a-maker counts, the tier row that gives every tier one a locked piece); each design question is its brief's session (the lines below)
+- [ ] Finish the go on the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages): what it left open is in `docs/briefs/README.md`, the tiers the briefs propose (the reshuffle, the ten-a-maker counts; the tier row's locked-piece clause reworded and Wainwright & Sutler's tiers decided, 20 October); each design question is its brief's session (the lines below)
 - [ ] Text: codex and flavour for the nine new machines, the Baboon's flavour, the components without a codex; each maker's Sponsorship notice in its voice; the mitigation discussion for the bible
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
 - [ ] Play the 11 October builds: the Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5), the overheat at the end of the turn, armour off a breach's overflow

@@ -131,11 +131,13 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   player takes three, so each maker's tier-one pool should vary and more than one maker's deal
   should hold a front. The host maker's offer after a win and procurement's shelf deal the
   higher tiers; the economy items the go raised are in `docs/economy_pass.md`.
-- Each brief gives a proposed tier; none is decided. The reshuffle proposed so far: the Wild
-  Boar, the Clydesdale, the boiler and the revolver to tier one; the Baboon and the fan-boat to
-  tier two; the Dingo undecided. One rule to reword if it lands: the 12 October tier row gives
-  every tier one a locked piece, and the Clydesdale would have none, nor does the Cottonmouth
-  (the form-changing Armadillo keeps one, its lure, by Ryan's framework of 15 October).
+- Each brief gives a proposed tier; none is decided but Wainwright & Sutler's (20 October, the
+  bible's roster row: 3-5-2). The reshuffle proposed so far: the Wild Boar to tier one; the
+  Baboon to tier two (the Clydesdale, the boiler, the revolver, the fan-boat and the Dingo are
+  settled by the maker's row). The 12 October basic-kit row no longer gives every tier one a
+  locked piece (reworded 20 October): a tier one shows its identity with basics alone, with a
+  locked piece or without (the Cottonmouth; the form-changing Armadillo keeps its lure by
+  Ryan's framework of 15 October).
 
 The tiers as the briefs propose them (nothing decided; "down" and "up" against a chassis's
 tier today; the targets two or three tier ones a city maker, two or three tier twos and one
@@ -145,7 +147,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
-| Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (the boiler, landed) | the multi-rotor, the old-world artillery (the tenth, undesigned) |
+| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
