@@ -184,6 +184,10 @@ On a machine:
 - **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
   it: a machine's until the round's end, a foe's (from its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
+- **Phased** (buff, either side, not built): cannot act, take damage or be targeted until the
+  round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
+  cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
+  this round.
 - **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
   spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.

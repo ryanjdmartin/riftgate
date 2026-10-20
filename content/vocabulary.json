@@ -548,10 +548,10 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round.",
+   "codex": "Player and enemy status. It cannot act, take damage or be targeted until the round's end. Granted only to a unit that has not acted this round.",
    "status": "planned",
    "design": {
-    "holes": "",
+    "holes": "Ryan, 20 October (the helicarrier's session, the bible's carrier row at its go): the wording his; the gate, a unit that has acted cannot be Phased, so the status always costs the action it protects (his first form, invulnerable now and the next action lost, offset the two halves). Not targetable means allies cannot vent or shield it either, and a foe's intent on it re-picks; it still cools by its own cooling, so an overheated machine phases with its problem intact; ticks and overheats still land. Granted by the helicarrier's dock (every ally that has not acted), and planned for Aphelion's pieces.",
     "table": {
      "kind": "buff",
      "on": "both",
