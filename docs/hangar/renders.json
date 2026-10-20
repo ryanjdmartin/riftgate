@@ -162,8 +162,8 @@
    }
   },
   "armadillo": {
-   "when": "The sixth notes, 5 October.",
-   "note": "A square channel cut through the shell along the missile cell's own line, so the cell slides up out of it instead of through the top panel; the stripe frame a sleeve over its lower part, floored dark deep in the shell. The last picture is still the fourteenth round's, with a Slug Cannon and a Missile Rack fitted to the forward ports.",
+   "when": "The sixth notes, 5 October; a come-about on planted footwork, 20 October.",
+   "note": "A square channel cut through the shell along the missile cell's own line, so the cell slides up out of it instead of through the top panel; the stripe frame a sleeve over its lower part, floored dark deep in the shell. The third picture is still the fourteenth round's, with a Slug Cannon and a Missile Rack fitted to the forward ports. Ryan, 20 October: with no head and no waist it turns its whole shell to look, in the diagonal pairs it walks in, eight degrees on the planted pair a step, twenty-four round, guns up and lamps lit while it holds, then back (come_about; every hip's own yaw and roll keep its foot planted and pointing where it landed). Judge it running in the Animation tab.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -176,6 +176,10 @@
     {
      "file": "armadillo/armadillo_forward_ports_fitted.png",
      "alt": "armadillo, forward ports fitted"
+    },
+    {
+     "file": "armadillo/armadillo_come_about.png",
+     "alt": "armadillo, coming about, a pair stepping"
     }
    ],
    "before": {
@@ -309,8 +313,8 @@
    }
   },
   "nemesis": {
-   "when": "Sixth round, 1 October.",
-   "note": "The condenser's slots on the lit tile too. Otherwise as the fifth round.",
+   "when": "Sixth round, 1 October; a pace and a braced meteor stance on planted footwork, 20 October.",
+   "note": "The condenser's slots on the lit tile too. Otherwise as the fifth round. Ryan, 20 October (lateral motion for an angry boy): it paces, caged, a shuffle to its left, a glare at its mark, two back across to its right, a glare, and one home, the fists clenched before the chest (pace); and the meteor's firing stance is a real one, the right foot back and out as the whole machine turns ten degrees to its mark on its planted left, the waist's turn on top (raise_meteor). Judge them running in the Animation tab.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -319,6 +323,10 @@
     {
      "file": "nemesis/nemesis_rear.png",
      "alt": "nemesis, rear"
+    },
+    {
+     "file": "nemesis/nemesis_pace.png",
+     "alt": "nemesis, pacing, the lead foot out"
     }
    ],
    "before": {
@@ -336,8 +344,8 @@
    }
   },
   "ammit": {
-   "when": "The fifth notes, 5 October.",
-   "note": "Wrists on the middle hands, so the talons stay flat on the ground as it sinks, threatens and walks, and the front toes splayed a little (Ryan, 5 October). A waist under the upper body, so it turns without pivoting on its feet.",
+   "when": "The fifth notes, 5 October; a circling act on planted footwork, 20 October.",
+   "note": "Wrists on the middle hands, so the talons stay flat on the ground as it sinks, threatens and walks, and the front toes splayed a little (Ryan, 5 October). A waist under the upper body, so it turns without pivoting on its feet. Ryan, 20 October (lateral motion for a creepy stalker): it circles its prey with the snout kept on it, the body sliding round an arc about a point ahead and turning to face it, the feet and the hands scuttling sideways under it, the hands two short steps to a foot's one, round to one side, back past its mark to the other, and home, nose down, the claws at their guard with the talons slowly working (circle). Judge it running in the Animation tab.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -346,6 +354,10 @@
     {
      "file": "ammit/ammit_rear.png",
      "alt": "ammit, rear"
+    },
+    {
+     "file": "ammit/ammit_circle.png",
+     "alt": "ammit, circling its prey, a hand and a foot stepping"
     }
    ],
    "before": {

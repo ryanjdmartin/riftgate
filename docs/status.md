@@ -14,8 +14,9 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 496 tests, 35,713 checks, green on `ccr-ffcf75fa-3gkbz9` (20 October, the funnel-web's
-  assets, the rig test covering its model's fourth cut and its 24 joints; 20,269 after its engine, over main's 481 and 20,153 of
+- Tests: 496 tests, 63,145 checks, green on `ccr-ffcf75fa-3gkbz9` (20 October, the funnel-web's
+  assets and the walkers' planted footwork, the rig test covering the funnel-web's 24 joints and
+  the three machines' new acts; 20,269 after its engine, over main's 481 and 20,153 of
   the Kestrel session's last merge).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
@@ -29,8 +30,8 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.214): to merge into
-  main.
+  and page; the to-do's engine and assets lines ticked; the bible at v0.215; and 20 October's
+  planted footwork for the Armadillo, the Nemesis and the Ammit): to merge into main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
@@ -126,6 +127,25 @@ document's job and every command are in `README.md`.
   republished. Judging it running is Ryan's. A cloud note: the bpy wheel took twenty minutes
   to install; a build regenerates the maker's review tiles (`tools/lowforge/tiles/`)
   byte-different and the import four Prairie Dog textures, restore both rather than commit.
+- 20 October, planted footwork across the walkers (`ccr-ffcf75fa-3gkbz9`, Ryan's ask after
+  the funnel-web's pivot: a turn for the Dillo, lateral motion for the bipeds, more joints never
+  hurt; the Clydesdale left as it is by lore, the Baboon as it is): `_footwork` in
+  `models_low.py` plans a body free in every axis over planted feet and steps some of them,
+  each hip's own yaw and roll keeping its foot where it stands and pointing where it landed
+  (`_leg_fk6` and `_leg_newton6`, the engine's sums, six axes a leg, thirty keys a second;
+  no joints added, since every joint carries three channels and the hips' limits name only
+  the pitch; a step lands under the body as it will stand at a named moment, or halfway to
+  the limb's next lift); sparse tracks beside the dense legs go through `_dense` so they keep
+  their smooth ease under the act's linear one. The acts: the Armadillo's `come_about` (four
+  diagonal pairs, eight degrees a step on the planted pair, twenty-four round, guns up and
+  lamps lit in the hold, and back; it sits four and a half lower through it, its legs straight
+  in their planes), the Nemesis's `raise_meteor` braced (its right foot back and out as the
+  machine turns ten to its mark, the waist's sixteen on top; it was the waist alone) and
+  `pace` (a shuffle left, a glare, two right, a glare, one home, fists clenched, the torso
+  turned back to its mark), the Ammit's `circle` (an arc about a point ahead, facing it, the
+  hands two steps to a foot's one, to each side and home, nose down, talons working). The
+  hangar's renders carry a frame of each; the bible's row and its motion table; judging them
+  running is Ryan's, the hips' splay in the sidesteps first.
 - 18 October, the funnel-web's engine (`ccr-ffcf75fa-3gkbz9`): the chassis is playable, its
   content's planned marks off; its model landed 19 October (above).
   Vitriol is a foe status with a share tick of its own (`tick_hp_share`: after Burning, on
@@ -339,8 +359,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.214 (20 October, `ccr-ffcf75fa-3gkbz9`:
-  the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
+  `docs/design-bible.html` after every change. Live: v0.215 (20 October, `ccr-ffcf75fa-3gkbz9`:
+  the planted-footwork row and three motion table cells; the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
   fifth to tenth, the size row and the motion table, merged onto three other sessions' live
   pages: v0.212 of 20 October, whose rows carry the action economy, the Cassowary, the
   Cottonmouth, the Dingo's Combat Translocator and the Prairie Dog's Flak, all Ryan's calls
