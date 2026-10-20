@@ -330,7 +330,38 @@ battle); the heat reset; the dock's planned turn. Claude's lean: B as the comman
 with the carrier its vessel, the mobile command Ryan named first, if the scope is accepted;
 else A with the heat reset softened.
 
-1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); Phased's rule as the dock's gate (Claude's ruling above); the recovery's form (A to D, the bar B the lean);
+Ryan, 20 October, later: "Sure, go with that definition of phased, except I think 'cannot act,
+take damage, or be targeted' is cleaner. If an overheated unit phases, its allies cannot vent
+it, and its heat will tick down by its cooling value, leaving the heat still a problem for next
+turn, so I think that's fine. Also, the cannot be targeted clause shifts the intent lines as
+intended, and the lure portion of the dock component isn't actually necessary. The commander
+layer is the commander layer. The carrier is not the commander entering the battlefield. Their
+abilities can and should be distinct. Regarding the overloaded passive, I think if I was to cut
+something, it would actually be the component gifting. The more i think about playing it, the
+more I realize how tedious it is both to play and balance. I think it needs to be cut. It's a
+helicarrier, a mobile HQ, made for strategic and tactical support, and possible resupply. Let's
+focus on that."
+
+So (decided, 20 October): Phased is "cannot act, take damage or be targeted until the round's
+end", granted only to a unit that has not acted this round (the vocabulary and the rules carry
+it; a Phased machine cannot be vented and cools by its own cooling alone); the dock needs no
+lure, since untargetable allies send the intents onto the carrier by themselves; the command
+bar is not the commander's layer, whose abilities are distinct from the carrier's; the
+equipment slots are cut. The kit after the cut (Claude, the same day): the passive is the carry
+alone, one idea, the map half of the maker's identity brought to its end; the combat half is
+the locked pieces, which is what a tier's "more locked pieces" is for: the mark (a foe the
+carrier marks is in every ally's reach until its next action; no damage of its own, Flak's
+kind; Exposed's shape is the Kestrel session's), the recovery (an ally's shield to its maximum,
+its heat to zero and cleansed, on a printed cooldown; a wrecked ally instead returns with full
+shield and 10% hull, once a battle), the dock (every ally that has not acted is Phased and
+cleansed; the opening act or nothing by Phased's own rule); three or four hardpoints for its
+own guns, a d6 or d7. The build hooks are the pieces' (every Direct gun through the mark, the
+hot builds through the recovery, the planned turn through the dock) and the hardpoints'. The
+bar stays on the bench as the carrier's own pacing device if the three cooldowns read as too
+many clocks on one die: a point a round in the fight, three at most, the pieces spending it,
+never the commander's.
+
+1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); the kit after the cut (the carry alone as the passive, the three locked pieces on cooldowns, the bar benched);
    the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
    component; the mark's rider and the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown

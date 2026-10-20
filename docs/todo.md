@@ -44,7 +44,8 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] An Aphelion defensive tier one (Ryan, 19 October: to balance the tier-one bodies beside Minerva's and Kestrel's off-tank), in Aphelion's session
 - [x] The boiler (`ws_boiler.md`): settled in chat 12 to 20 October and landed on Ryan's go (20 October) as the Whip Scorpion: the bible's row, the rules, the chassis planned in content with its Heliographic Siphon planned and its Thermal Ray built, the brief retired to git
 - [x] The revolver (`ws_revolver.md`): settled in chat 18 and 19 October and landed on Ryan's go (19 October) as the Cassowary: the bible's row, the rules, Spun Up in the vocabulary, the chassis and its Spin-Up planned in content, the tender skipping a planned chassis, the brief retired to git
-- [ ] The multi-rotor (`ws_multirotor.md`), once the die has its shown word
+- [ ] The helicarrier (`ws_multirotor.md`, the multi-rotor reworked): in session 20 October (the carry as the map passive, the mark, the recovery and the dock locked, the equipment slots cut), its name and the go open
+- [ ] The artillery, the ammo build (`ws_artillery.md`): briefed 20 October from the Minerva session's all-shells candidate; its shape, name and look, with the stock pass's explosives
 - [x] The funnel-web (`ws_funnel_web.md`): settled in chat 17 and 18 October and landed on Ryan's go (18 October): the bible's row, the rules, Vitriol, Web and Webbed in the vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git
 - [ ] The gunship (`ws_gunship.md`), with the stock pass's tags
 - [x] The Cottonmouth, the fan-boat (`ws_fan_boat.md`): settled in chat 19 October and landed on Ryan's go (19 October): the bible's row, the rules, the chassis planned in content with its Adaptive Munitions Drum, the brief retired to git

@@ -72,7 +72,9 @@ Claude's candidates (16 October), each against Ryan's test (when, never how ofte
   already picked their targets when the player decides, so no aim reads the dropped guard. The
   hole: against a pack that never aims at it (it is the hardest hull to reach) it fires every
   round, which is a big gun with no limit; its heat is the second price.
-- **A magazine**: each turret holds so many shells a fight (two, say), restocked between
+- **A magazine** (Ryan, 20 October: the all-shells form of the third round reads as a Wainwright
+  & Sutler tier three, and has its brief, `ws_artillery.md`; the charge stays this brief's):
+  each turret holds so many shells a fight (two, say), restocked between
   fights, nothing reloads them in one. The "when" is which moments of the fight: the Antlion
   now or the Sandworm later. The one pure "which moments" shape; its risks are hoarding (shells
   left at the fight's end are wasted, which answers it; section 8's consumables row) and a long

@@ -418,9 +418,10 @@ to-do's Ryan list).
    lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth, the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
-   roster row); next, Ryan's Rapid discussion in the maker's context (the action economy's
-   direction, section 5), then the gunship and the multi-rotor with the stock pass and the
-   die's shown word.
+   roster row). The Rapid discussion in the maker's context followed (20 October): the
+   Prairie Dog's pivot settled (its go pending), the multi-rotor reworked toward the helicarrier
+   (in session) and the artillery briefed as the ammo build; next, the helicarrier's go and the
+   artillery's session, the gunship with the stock pass.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -458,7 +459,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.219 (20 October, main's file too, after
+  `docs/design-bible.html` after every change. Main's file is v0.220 (20 October: the Phased
+  row, the roster row's two capstones and the Wainwright & Sutler row), to publish over the
+  live v0.219. Live: v0.219 (20 October, main's file before it, after
   the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's
   Laminar Deflector calls of 20 October over the v0.217 that carried that branch's rows, the
   funnel-web's model and the walkers' planted footwork, over other sessions' pages of 18 to 20
