@@ -306,10 +306,10 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | Flak's engine (the to-do) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 (1 in content until its piece's engine) | its engine (the to-do); its stock with the stock pass |
-| `aphelion_line_frame.md` | direction | Aphelion | 1 | nothing |
-| `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
-| `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the battlecruiser's session (the foil) |
-| `aphelion_baboon.md` | rework | Aphelion | 2 (now 1) | the stock pass |
+| `aphelion_line_frame.md` | direction, in session (15 October; Claude's first round and its review in the brief) | Aphelion | 1 | Ryan's calls on the first round |
+| `aphelion_jellyfish.md` | direction, in session (15 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
+| `aphelion_carrier.md` | proposal, open, in session (15 October) | Aphelion | 3 | the battlecruiser's session (the foil) |
+| `aphelion_baboon.md` | rework, in session (15 October) | Aphelion | 2 (now 1) | Ryan's calls; the stock pass |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
 | `arsenal_misharu.md` | proposal | the Arsenal | 2 | nothing |
 | `arsenal_onryo.md` | direction | the Arsenal | 2 | nothing |

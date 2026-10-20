@@ -86,6 +86,19 @@ document's job and every command are in `README.md`.
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
   Prairie Dog.
+- `claude/intelligent-planck-uwmbhg` (15 to 20 October, the Aphelion design session from the
+  briefs; Ryan, 15 October: "Not including the Zoid walker question, yet"): Claude's first round
+  in chat on 15 October (the line frame, the Baboon, the jellyfish, the Carrier), its review on
+  16 October at Ryan's ask, and both written down on 20 October in the four briefs' "Aphelion
+  session, first round" sections, each with what moved on main since and its open list
+  rewritten. Nothing from Ryan on the designs yet; docs only, nothing built, the bible
+  untouched. To resume: those four sections and open lists, the line frame and the Baboon first
+  (the pair that keeps Aphelion's tier-one deal varied; the line frame's first question, what
+  one hit is, waits on Ryan), then the jellyfish; the Carrier with the battlecruiser's session;
+  Aphelion's defensive tier one (the to-do) unproposed. Unmerged then and read for it:
+  `ccr-b6da49d3-4ft738` (Kestrel's evening of 20 October: the stock pass's heat scale of 1 to 20,
+  the exposed-rotor helicopter to Aphelion's bench as a shape) and `ccr-3259e29d-ydwpom`
+  (Armoured and Overcharged in points, built).
 - `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
   harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
   below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.

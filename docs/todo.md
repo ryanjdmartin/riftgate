@@ -50,10 +50,10 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [x] The Cottonmouth, the fan-boat (`ws_fan_boat.md`): settled in chat 19 October and landed on Ryan's go (19 October): the bible's row, the rules, the chassis planned in content with its Adaptive Munitions Drum, the brief retired to git
 - [x] The Prairie Dog's fight half (`ws_prairie_dog.md`): settled in chat 19 October and landed on Ryan's go (19 October): Flak, the maker's on-hit, on the Flakshot Repeater (flat 5, Spread, Rapid, Flak 2); the bible's row, the rules, Flak planned in the vocabulary, the brief retired to git
 - [x] The Dingo (`ws_dingo.md`): settled in chat 19 October and landed on Ryan's go (19 October) as records: the bible's row, the rules, Swap planned in the vocabulary, the brief retired to git; the Combat Translocator's content and the tier move are its engine line below
-- [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`)
-- [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), best after the foes' fresh start
-- [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`)
-- [ ] The Baboon to tier two (`aphelion_baboon.md`), with the stock pass
+- [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`), in session
+- [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), in session; its Disrupt read again after the foes' fresh start
+- [ ] The Carrier, with the battlecruiser's session (`aphelion_carrier.md`), in session
+- [ ] The Baboon to tier two and its Umbra Inducer's gate (`aphelion_baboon.md`), in session, with the stock pass
 - [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
 - [ ] Misharu with Penance (`arsenal_misharu.md`)
 - [ ] The Onryō's Grudge (`arsenal_onryo.md`)

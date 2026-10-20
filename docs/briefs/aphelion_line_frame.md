@@ -4,7 +4,8 @@ The session designs Aphelion's Gundam homage as the most tempo-oriented damage d
 game: a duelist whose combo builds a rhythm until something breaks it. "The line frame" is a
 working label; the name and the look are Ryan's.
 
-**Status**: direction (14 and 15 October); the proposal was unfinished. **Maker**: Aphelion.
+**Status**: direction (14 and 15 October); in session since 15 October (Claude's first round
+and its review, below; Ryan's calls to come). **Maker**: Aphelion.
 **Proposed tier**: one. **Read first**: `docs/briefs/README.md`; the bible's rows on
 Aphelion's next chassis, on tags and on motion ("Heavy and mechanical, with inertia"), all in
 section 7.
@@ -108,15 +109,124 @@ The bench, the forms set aside:
   aside in the go, where Ryan's shield keeps the combo or is Rapid, and may parry as a
   self-Barrier (14 October).
 
+## The Aphelion session, first round (15 to 20 October)
+
+Ryan, 15 October, opening the session: "I want to work on the Aphelion design brief. Not
+including the Zoid walker question, yet." Claude proposed for the line frame, the Baboon, the
+jellyfish and the Carrier in chat that day. On 16 October, at Ryan's ask ("Review what we've
+talked about and worked on so far. Look for errors in logic, biases, incorrect assumptions, and
+gaps in good game design principles"), Claude reviewed its own proposal against main and the
+open branches. On 20 October it was written down for Ryan to pick up later, with what had moved
+on main by then. Ryan has not answered it yet: everything in this section is Claude's, for him
+to move, and every number is a placeholder.
+
+**The proposal, as the review left it**
+
+- **The combo**: a stack for every hit its weapons land (Ryan's "a stack on every hit", 14
+  October; a fighting game's hit counter). A turn it ends without spending a weapon clears it,
+  its locked parry counting as a weapon for this. It lasts the skirmish. What one hit is stays
+  open (below).
+- **The payoffs**, Ryan's thresholds as placeholders: at 5 it cools more, at 10 it regains
+  shield as each round opens, at 20 its blows deal more; past 20 the count climbs for the show
+  and pays nothing more. Each payoff takes away a reason to break the combo (heat forces a
+  vent, danger a shield), and its damage does not grow until 20: what grows is how long it
+  keeps attacking, Claude's reading of "not Scaling, not burst, just sustained damage". The
+  review's correction: the cooling stays under its own weapons' heat, so the gauge still climbs
+  while it fires, only slower. The 15 October figure (10 more on a base of 5, beside 10-heat
+  beams) was close to heat-neutral, the free way out of the heat system Ryan is very wary of
+  (the bible's Rapid row, 15 and 20 October).
+- **The parry**: the locked shield, self only, grants a Barrier (the next blow deals no damage
+  and its riders land: the foes' small avenue Ryan asked for, 14 October). Cooldown 2, and
+  spending it keeps the combo. Chosen over Rapid: a Rapid parry is free (a parry and an attack
+  in every round it shows), and Ryan's rule of 20 October, a Rapid shield never below tier two,
+  reads against one on a tier one, locked or not (his call). Under "keeps the combo" a live
+  parry is a safe entry and a dark one rolls as a blank, so the cooldown raises the odds of a
+  break for the two rounds after a parry.
+- **The saber**: locked, melee, flat, tagged Beam. Proposed on 15 October with Chain, the
+  trash-slaughter (a flat kill carried on to the next foe, each link a hit); withdrawn in the
+  review, since Chain is being reworked (Ryan, 15 and 16 October: "janky at best and snowbally
+  at worst", the bible's section 12). Its keyword is open; scaling with the count stays a dial
+  for later.
+- **The rifle**: the basic Laser Carbine, tagged Beam in the stock pass, held in the hand (a
+  look; the hand-holds row stays pinned). Two Beam pieces at the start, three if the shield is
+  tagged Beam (Ryan called it a physical shield, 14 October).
+
+**What the review corrected** (16 October)
+
+- **Fight lengths.** The 15 October case for counting hits used single-pack fights (a lone
+  machine 1 to 12 rounds, a team 1 to 6, most under 4). Against a formation a team fights 4 to
+  16 rounds, most 5 to 10, and against one of the big foes (the 13 October bosses, elites
+  since) 2 to 7 (`docs/balance.md`, greedy, 13 October); the pacing row asks for longer
+  fights. At one hit a round, a single-strike kit reaches 5 in a typical formation fight and 10
+  only in the longest, and seldom passes 5 against a big foe today; 20 needs volume. A
+  formation machine first, which suits "a battle rhythm", but a different claim from the 15
+  October one.
+- **A break the die forces** is random that takes away (section 2's chances row, Ryan, 16
+  October). It is rare with three weapons on the die and the team's three rerolls, but the ramp
+  is lost through no choice of the player's. The alternative for Ryan: only spending equipment
+  (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
+- **Decision density.** Once the combo is up, its payoffs take away the reasons to break it,
+  and in the Marsh nothing attacks the die or heats it (the Meadow drains rerolls, the Waste
+  disables, the Peak scorches and corrupts), so there it is a stat line that grows. The
+  decisions left are the team's: rerolls spent on its die rather than an ally's, and allies
+  cooling or shielding it (an ally's equipment spent on it never breaks it). The double-edged
+  form has its decision built in and was undersold on 15 October.
+- **The second in-fight shield regen** beside the Goshawk's (the first hole below), read by
+  pattern in context (Ryan, 16 October): its regen is paid only while it attacks every round,
+  so it cannot turtle; the runner's stall mark (past 60 rounds) reads it.
+- **Showing it**: a count chip like the Paradox's with the next threshold, loud, and a debug
+  switch that runs it.
+
+**Since then, on main** (to 20 October)
+
+- The action-economy row (section 5, Ryan, 20 October): counters count blows, not spends, so
+  strikes and area pieces are their fuel. The briefs README's table lists the combo under
+  "spends counted", and the Kestrel session parts the tempo machines by currency with the line
+  frame on blows (`kestrel_gun_platform.md`, its fifth round). The row makes cantrips combined
+  entries before Rapid ones, so the 15 October note above (cantrips as the combo's fuel) is
+  superseded: the fuel is blows.
+- Kestrel's interceptor (tier one; Ryan, 18 October: "a great tier-one design") spends twice a
+  round, and its brief raised that tempo was this machine's claim. The shapes part: a combo
+  that a weaponless turn breaks, against two spends a round.
+- Ryan, 19 October: Aphelion needs a defensive tier one (the to-do's line for this session).
+  With the Baboon going up and this machine a duelist, Aphelion's tier ones as proposed (the
+  Stingray, the line frame) hold no body.
+- The Arsenal's Minos is drawn as a corrupted Gundam (Ryan, 12 October: "Two Gundams are fine,
+  since this is the stereotypical dark one and not the hero frame"), so the two silhouettes
+  must part (Ryan's).
+- The heat numbers here re-scale with the stock pass's heat scale (1 to 20, proposed on the
+  Kestrel branch on 20 October, not on main yet).
+
+**The bench** (each with what set it aside)
+
+- Counting spends: too slow to see in fights of these lengths, and the action-economy row
+  points counters at blows.
+- A combo that lasts the battle: it reaches 20 on spends, but one bad roll wipes a battle's
+  work, and the team would spend every reroll guarding it.
+- A Rapid parry: free, so no decision; and the 20 October rule on a Rapid shield's tier.
+- 1 cooling and 1 shield a stack: too small to see on a phone.
+- The double-edged form (stacks raise damage and lower defence, broken by choice): Ryan finds
+  it less Gundam, and the Sparrowhawk has the shape; its built-in decision is the review's
+  point in its favour.
+- Chain on the saber: Chain's rework.
+
 ## Open for the session
 
-1. Per-stack payoffs or thresholds, and what the thresholds pay (cooling, shield regen,
-   damage).
-2. The shield: keeps the combo, or Rapid; the parry as a self-Barrier whose riders land (Ryan),
-   and its cooldown.
-3. The saber, the rifle and the Beam tag (Ryan: Beam sets it up for a later synergy).
-4. The double-edged alternative, which Ryan finds less Gundam.
-5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
+1. What one hit is: every blow, strikes included (the action-economy row's lever: strikes and
+   area its fuel, the Maxigun a combo piece, the thresholds tuning the rate), or every foe a
+   spend damages (the hopper's rule since 15 October, never a load a strike; Ryan: "that was
+   my note intention, per foe damaged"). Claude's lean in the review: per foe damaged, by the
+   hopper's precedent; since the 20 October row, per blow, the thresholds the lever. Put to
+   Ryan on 16 October.
+2. What breaks it: a turn ended without a weapon spent (Ryan's), or only equipment spent (the
+   review's alternative, so the die never takes the ramp away).
+3. The thresholds' numbers against these fight lengths, and the cooling kept under the
+   weapons' heat.
+4. The parry: a self-Barrier, cooldown 2, keeping the combo (proposed), or Rapid against the
+   20 October tier rule.
+5. The saber's keyword now that Chain is being reworked; its scaling with the count later.
+6. The rifle and the Beam count: is the shield tagged Beam? (Put to Ryan on 15 October.)
+7. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
 
 ## Holes already raised
 
@@ -126,8 +236,8 @@ The bench, the forms set aside:
 - Once the combo is up, the enemy breaks it: the Waste's Disabled and Scrambled attack the die,
   and the Peak's Scorched runs its beams hotter than the stacks cool.
 - The count must show on the machine, and the die's heat must show the cooling it has earned.
-- At tier one it is Aphelion's third tier one, which varies its tender deal, and the first
-  Aphelion machine with a locked shield.
+- At tier one it is Aphelion's third tier one (its second once the Baboon moves up), which
+  varies its tender deal, and the first Aphelion machine with a locked shield.
 - The rifle as stock (raised 15 October, folding the proposal in): a tier one stocks only
   basics beside its locked pieces (`docs/rules.md`, tiers), so a stocked rifle is a basic the
   player may replace, while Ryan counts three Beam pieces at the start ("it starts with 3 of
@@ -135,5 +245,6 @@ The bench, the forms set aside:
 
 ## What the session hands back
 
-A proposal in chat; on Ryan's go, the bible's Aphelion row, content planned, cantrips as a
-stock-pass item if Ryan takes them, and this brief retired.
+A proposal in chat; on Ryan's go, the bible's Aphelion row, content planned, and this brief
+retired (cantrips are the stock pass's, as combined entries, since the action-economy row of 20
+October).
