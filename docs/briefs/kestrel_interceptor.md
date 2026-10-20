@@ -40,56 +40,75 @@ price is heat, Kestrel's resource (two spends' heat on a tier-one gauge), which 
 banked-resource price the row asks of a second action. So the passive stands as Ryan wrote
 it; the kit is what the line review found missing.
 
-## The kit (Claude, 20 October)
+## The kit, written out (Claude, 20 October)
 
-Every number a placeholder; the name and the look Ryan's.
+Every number a placeholder; the name and the look Ryan's. The stock is by kind (Ryan, 20
+October: the stock pieces are placeholders until the stock pass).
 
-- **The passive**, as the codex would print it: the first weapon it fires each round is
-  Rapid: the die rolls free onto another entry and the machine acts again. Once a round; the
-  second spend is whatever the die shows, and every spend pays its own heat. Equipment first
-  earns nothing (the first weapon, not the first spend), so the order is the decision: the
-  hot gun or the cold one first, the dive first or after the team has softened the front.
-- **The lock, the dive.** A weapon: Direct, flat 15, heat 10, with a printed property (the
-  star): it may be spent on a back-rank foe behind a standing front, and as it passes, the
-  front foe of that column strikes it: that foe's blow (its base attack, its swarm counted,
-  no factor, no rider), through the shield like any blow, an injury if enough reaches the hull.
-  Dragged over the back-rank foe the die shows the blow it deals and the price it pays. A
-  suppressed front foe strikes nothing (the team's setup pays the way in); a Barrier takes the
-  price; a massive foe has nothing behind it; a Lured front foe still strikes, since the price
-  is not its aim.
-  - Why this and not the designator: the designator was the Polarity Projector with a Kestrel
-    name (0 damage, Direct, Shock), a copy the content rule forbids. The dive is a reach nobody
-    has: the artillery makers reach the back rank by Indirect, free; Kestrel reaches it by
-    flying through the front and paying the front foe's blow, so "dive past the goblin, not
-    the knight" is read on the die and the price scales with the front's threat, which is the
-    risk-against-reward Ryan wants Kestrel pushed into. It takes the priority-target fantasy
-    the Sparrowhawk's codex describes and the Sparrowhawk's rework leaves behind (the chain
-    is its niche now; `kestrel_sparrowhawk.md`, open item 2), so the caster-killer lives at
-    tier one, on the lock, by choice. And it is the two passes as a sequence: dive on the
-    caster, then the die's second spend; or the front softened first, then the dive.
-  - Parting: from the Pinion Driver's old reach (a free flat finisher that reached any foe)
-    by its price; from Indirect by its price and its reach (a back-rank foe behind a standing
-    front, never any foe); from the Cottonmouth's drum (every weapon Indirect by the passive)
-    by being one entry.
-- **Numbers.** A light flyer or tilt-jet at move 50, Kestrel's pace; hull 60, shield 50,
-  field recharge 30, heat maximum 60, cooling 5, armour 0; three hardpoints beside the lock,
-  a d4; two module slots. Glass on purpose: two spends a round at tier one wants glass
-  numbers, and the dive's price lands on this frame.
-- **Stock**, stand-ins until the stock pass: the Laser Carbine, the Twin Autoguns, the
-  Ram-air Scoop (its vent is real, since two spends a round heat it).
-- **The round as played.** Roll. A weapon showing: fire it (the dive if the caster is worth
-  the price), the die rolls again, spend what shows. Equipment showing: spend it and the
-  round is one spend, or reroll for a weapon. The second spend is the die's, so the first is
-  the choice.
-- **Engine.** Rapid granted by the passive to the first weapon spend of the round (the
-  engine grants keywords by passive today; the condition, no weapon spent yet this round, is
-  new and small); the dive as a printed property: a reach exception on one face
-  (`targets_for_face`), a foe's blow in the player's turn (the path a death blow takes), the
-  bot's valuation (the blow less the price, against what the second spend buys); synthetic
-  passives in the tests.
-- **What the runner reads.** Spends a round against the other tier ones; the dive's share of
-  its spends and the hull it costs; alone against the packs (the glass) and the four big foes;
-  beside a body; beside the funnel-web (a web, then the dive through the suppressed front).
+**The frame.** A light flyer or tilt-jet at move 50, Kestrel's pace. Hull 60, shield 50, field
+recharge 30, heat maximum 60, cooling 5, armour 0. Three hardpoints beside the lock, a d4; two
+module slots. Glass on purpose: two spends a round at tier one wants glass numbers, and the
+dive's price lands on this frame.
+
+**The passive**, as the codex would print it: the first weapon it fires each round is Rapid:
+the die rolls free onto another entry and the machine acts again. Once a round. Equipment
+first earns nothing (the first weapon, not the first spend), so the order is the decision:
+the hot gun or the cold one first, the dive first or after the team has softened the front.
+
+**The lock, the dive.** A weapon: Direct, flat 15, heat 10, with a printed property (the
+star): it may be spent on a back-rank foe behind a standing front, and as it passes, the front
+foe of that column strikes it: that foe's blow (its base attack with its swarm, no factor, no
+rider), through the shield like any blow, an injury if enough reaches the hull. Dragged over
+the back-rank foe the die shows the blow it deals and the price it pays. A suppressed front
+foe strikes nothing (the team's setup pays the way in); a Barrier takes the price; a massive
+foe has nothing behind it; a Lured front foe still strikes, since the price is not its aim.
+
+**The die.**
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the dive: Direct, 15, heat 10, the back rank through a standing front | the caster, at the front foe's price |
+| II | a warm flat gun | the plain first weapon |
+| III | a cold rolled gun | the cheap second spend |
+| IV | a vent | two spends a round heat it |
+
+**The round as played.** Roll. A weapon showing: fire it, the die rolls again, spend what
+shows: the dive on the caster, then the gun on what is left; or the gun first and the dive
+after an ally has suppressed or webbed the front. Equipment showing: spend it and the round is
+one spend, or reroll for a weapon. The second spend is the die's, so the first is the choice.
+
+**The arithmetic.** Two warm 10s a round for 10 heat; the dive and a gun, 25 for 20 heat and
+the price: a lone goblin's 5, six goblins' 30 with their swarm, a Warrior's 30, a Golem's 40.
+Its shield of 50 pays the first dives and its hull the later ones, an injury once 15 reaches
+the hull; the field recharge refills it between fights, which is the detachment's rhythm.
+
+**With the team.** It wants a front softened or suppressed (the funnel-web's web, the
+Armadillo's seal, a Barrier or an overshield before a dive) and cool guns. It gives the caster
+dead before its special, and a second spend's riders a round (the Baboon's Paradox counts it
+twice).
+
+**Why the dive and not the designator.** The designator was the Polarity Projector with a
+Kestrel name (0 damage, Direct, Shock), a copy the content rule forbids. The dive is a reach
+nobody has: the artillery makers reach the back rank by Indirect, free; Kestrel reaches it by
+flying through the front and paying the front foe's blow, so "dive past the goblin, not the
+knight" is read on the die and the price scales with the front's threat, the risk against
+reward Ryan wants Kestrel pushed into. It takes the priority-target fantasy the Sparrowhawk's
+codex describes and its rework leaves behind (the chain is that machine's niche now;
+`kestrel_sparrowhawk.md`), so the caster-killer lives at tier one, on a lock, by choice. It
+parts from the Pinion Driver's old reach (a free flat finisher that reached any foe) by its
+price, from Indirect by its price and its reach (a back-rank foe behind a standing front,
+never any foe), and from the Cottonmouth's drum (every weapon Indirect by the passive) by
+being one entry.
+
+**Engine.** Rapid granted by the passive to the first weapon spend of the round (the engine
+grants keywords by passive today; the condition, no weapon spent yet this round, is new and
+small); the dive as a printed property: a reach exception on one face (`targets_for_face`), a
+foe's blow in the player's turn (the path a death blow takes), the bot's valuation (the blow
+less the price, against what the second spend buys); synthetic passives in the tests.
+
+**What the runner reads.** Spends a round against the other tier ones; the dive's share of its
+spends and the hull it costs; alone against the packs (the glass) and the four big foes;
+beside a body; beside the funnel-web (a web, then the dive through the suppressed front).
 
 ## Holes already raised
 

@@ -237,7 +237,64 @@ as its second and the chase, per the row's own-rerolls-as-a-number home, which a
 Sparrowhawk's fishing and the Armadillo's. The stock holes the review names for it: the
 Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
 
-## Open for the session
+## The kit, written out (Claude, 20 October)
+
+Ryan's shape of 19 October with the fifth round's engine and the line review's settlements,
+whole; every number a placeholder, the name and the look Ryan's, the stock by kind (Ryan, 20
+October: the stock pieces are placeholders until the stock pass).
+
+**The frame.** Heavy or assault: the ekranoplan as a hover (a giant ground-effect plane with a
+battery on its back, fast on water and slow on rough ground) or the gunship as a flyer (its
+guns down one side); move 20, fast-looking and slow. Hull 120, shield 80, field recharge 20,
+heat maximum 120, cooling 10, armour 0. Six hardpoints beside the lock, a d7; two module
+slots.
+
+**The passive**, as the codex would print it: each time its die rolls again in a round, every
+entry on it grows by 10 for the round, damage, shield and venting alike, on every strike; the
+growth resets as the round opens. It rerolls its own die once a round for free.
+
+**The lock, the three-strike shield**: equipment on itself, 10 ×3, no heat, each strike grown
+(after two rolls 30 ×3). It fills to its maximum unless it carries Overshield, which is the
+lever if the cap wastes the growth.
+
+**The die.**
+
+| Entry | Piece | After three rolls |
+|---|---|---|
+| I | the three-strike shield, 10 ×3 | 40 ×3 |
+| II | a multi-strike gun (a flat 5 ×4, the Kestrel one the line review asks for; the Maxigun) | 35 ×4 |
+| III | a big flat gun | +30 |
+| IV | a cold rolled gun | +30 |
+| V | a small Rapid gun, if one is stocked (its roll is a step) | +30 |
+| VI | a vent | +30: a big vent late in a run |
+| VII | a plain shield | +30 |
+
+Guns of every maker; the growth lands on whatever shows, so a shield or a vent late in a run is
+a big one, never a dead entry, only an ill-fitting one.
+
+**The round as played.** Roll; it shows an entry. Lock it and keep what shows, or leave it
+unlocked and ride: each team reroll before its spend is a new entry (never the one showing)
+and +10 on everything; its own free reroll +10; a Rapid piece's roll +10. Spend when the entry
+showing is worth it, and then rerolls touch it no more. The decision at each reroll: stop or
+roll; where the growth should land (a gun for the kill, a shield before a heavy enemy turn, a
+vent when hot); whether to fish for the multi-strike gun.
+
+**The arithmetic** (one spend after n rolls this round, armour 0 / 5): a cold 10 gun after
+four, 50 / 45; a flat 5 ×4 after four, 45 ×4 = 180 / 160; a 15–30 gun after two, 42 / 38; a 5
+Rapid gun after four, 45 / 40; the shield after two, 30 ×3 = 90 (its maximum 80); a vent of 20
+after three, 50. The ceiling: three team rerolls and its own, +40 on every strike; the floor:
+a locked first entry and a plain d7.
+
+**With the team.** It wants the team's rerolls (the maverick's fuel), a Kestrel reroll module
+(its second roll), the weak Rapid pieces (a third chase) and multi-strike pieces. It gives
+nothing to others: the line's ceiling, and the whole team playing its push.
+
+**Engine.** A growth counter on the machine that each reroll of its die raises and the round's
+opening clears, read as an add on every entry's number per strike; the own reroll the
+Clydesdale's effect (`free_reroll`, which the engine runs); the bot's lock-or-ride valuation
+(the entry's expected value after a roll against the one showing); synthetic passives in the
+tests.
+
 
 1. Ryan's call on growth with the own reroll as its engine (the fifth round), the
    three-strike shield as its lock, and the numbers.

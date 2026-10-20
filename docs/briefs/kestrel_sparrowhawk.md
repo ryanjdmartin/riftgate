@@ -203,25 +203,59 @@ stock pass line (the Pinion Driver fixed on the Sparrowhawk, the Goshawk's hardp
 and the bible's stock-pass row, superseded by the reset gun as the lock and the Driver as a
 tier-two or tier-three blueprint.
 
-## The design as it stands (Claude's spec on Ryan's direction, 19 October)
+## The kit, written out (Claude's spec on Ryan's direction, 19 and 20 October)
 
-- **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
-  (the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
-  that killed, its shots run 5 hotter this fight.
-- **Lock**, the reset gun (Claude's lean, 19 October; Ryan's "the reset could be on the locked
-  component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0.
-  If it kills, every weapon comes back and the Sparrowhawk acts again. The Pinion Driver
-  leaves the lock for the pool as a tier-two or tier-three blueprint (Ryan, 19 October).
-- **Numbers.** Hull 30 (Ryan, 19 October), shield 40, field recharge 30, heat 40, cooling 10,
-  armour 0, move 50, a light flyer; two hardpoints beside the lock, a d3; tier two, stocking
-  tier-one pieces and basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters
-  that kill trash doubled and pay the flat heat for it). No shield on kill in the first cut.
-- **Engine.** The cooldown property (not built), granted to every weapon by the passive; a
-  kill trigger (new; the Zoids walker's brief wants it too); act again on a kill through
-  Rapid's path (a free roll onto another entry); the heat tax as a status on the machine, a
-  stack a kill, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
-  multiply on the face's number before the adds, the strafer's halving's mirror); the
-  finisher's reach as a `set_reach` on the lock.
+Every number a placeholder, the name kept, the stock by kind (Ryan, 20 October: the stock
+pieces are placeholders until the stock pass).
+
+**The frame.** A light flyer at move 50. Hull 30 (Ryan, 19 October), shield 40, field
+recharge 30, heat maximum 40, cooling 10, armour 0. Two hardpoints beside the lock, a d3; two
+module slots. Tier two, from one.
+
+**The passive**, Ryan's sketch of 19 October written out: every weapon it fires is doubled
+(the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
+that killed, its shots run 5 hotter this fight.
+
+**The lock, the reset gun** (Claude's lean; Ryan's "the reset could be on the locked
+component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0
+(10 under the passive). If its shot kills, every weapon comes back and the Sparrowhawk acts
+again. The Pinion Driver leaves the lock for the pool as a tier-two or tier-three blueprint
+(Ryan, 19 October); doubled on this machine it is the execute again, by choice.
+
+**The die.**
+
+| Entry | Piece | Doubled |
+|---|---|---|
+| I | the reset gun: Direct, 15, heat 0 | 30 at heat 10; a kill brings everything back and it acts again |
+| II | a cold hard-hitting rolled gun (a 15–30 kinetic) | 30–60 at heat 10 |
+| III | a cold Indirect gun (the back rank), or a second cold gun | doubled at heat 10 |
+
+Tier-one pieces and basics; the cold guns of other makers are its pull by design.
+
+**The round as played.** Trash: the reset gun on a hurt foe, 30 kills most of it, every
+weapon comes back and it acts again; the die rolls onto II or III, a doubled gun at 10 heat
+plus 5 for each attack that killed so far; done, the chain capped at two actions a round
+(the free roll never lands on the lock just spent). Next round the lock is live again (its own
+kill brought it back) and the gun fired is dark. A boss: one doubled shot a round, each gun
+dark for two rounds after, the team's rerolls fishing for a live entry; two escort kills early
+make its shots 20 and it overheats by the third round, so the decision in a boss fight with
+its formation is chain the escorts and be hot for the boss, or save it, the right kind of
+decision for a tier two.
+
+**The arithmetic** (the toy, 19 October): against trash 3.7 to 4.7 kills a fight, a reckless
+pilot buying one more for two thirds of its hull, the accident; against a boss about 35 a
+round into armour 5 at no tax, a boss's 160 hull in five rounds alone, a dead round in six
+with a reroll. Four kills and every shot costs 30 on a gauge of 40.
+
+**With the team.** It wants the Puffin's overshield and vent, a Barrier, a Shock setter (a
+doubled shot on a Shocked foe is four times) and the team's rerolls. It gives kills, the
+fight's last blow, and the accident.
+
+**Engine.** The cooldown property (not built), granted to every weapon by the passive; a kill
+trigger (new; the Zoids walker's brief wants it too); act again on a kill through Rapid's path
+(a free roll onto another entry); the heat tax as a status on the machine, a stack an attack
+that killed, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
+multiply on the face's number before the adds, the strafer's halving's mirror).
 
 ## Open for the session
 

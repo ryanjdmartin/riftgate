@@ -7,6 +7,10 @@ October, after the direction went to main: "revisit all the Kestrel chassis and 
 areas of improvement, and flag any stock holes that need filling." Everything here is
 Claude's proposal for him to move; each chassis's improvement lives in its own brief and is
 only pointed at from here (the interceptor got a brief of its own, `kestrel_interceptor.md`).
+Ryan, 20 October, on reading it: the kits written out whole, not as bullet points, and the
+stock by kind, since most stock pieces are placeholders until the stock pass; so every brief
+now carries "The kit, written out" (the Goshawk's and the Puffin's below), its stock by kind
+and a piece named only where it fits as it is.
 
 **Status**: proposal (Claude, 20 October). **Maker**: Kestrel. **Read first**:
 `docs/briefs/README.md` (the taste lines, the tiers table, the action-economy section); the
@@ -116,7 +120,63 @@ One pointer each; the proposal is in the brief named.
   is a lock or nothing); the own reroll as the passive's clause, and a Kestrel reroll module
   (below) its second, priced. `kestrel_gun_platform.md`, the line review.
 
-## The stock holes (for the stock pass; names Ryan's, numbers placeholders)
+## The Goshawk's and the Puffin's kits, as the stock pass would leave them
+
+The two built Kestrels have no brief; their kits are here, the passives and fixed pieces as
+built and the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the
+stock pass, so a piece is named only where it fits as it is).
+
+**The Goshawk.** Tier two, a medium flyer at move 40. Hull 100, shield 50, field recharge 25,
+heat maximum 100, cooling 5, armour 0; five hardpoints beside the fixed Afterburner Cannon, a
+d6; two module slots. The passive, the Thermal Recoupler, as built: at the start of its turn
+it regains 5 shield for every 10 heat it carries. The fixed piece, the Afterburner Cannon, as
+built: Direct, flat 10, heat 0, fires the whole heat gauge into the shot at +10 per 10 heat
+fired, and the airframe is cold after.
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the Afterburner Cannon | the dump: 70 at 60 heat, then no regen next round |
+| II | a big hot flat gun (the Railgun, if the pass keeps it; its note calls it temporary) | the regen's fuel |
+| III | a mid-heat gun (a stock hole) | the regen's fuel |
+| IV | a warm flat gun, or Kestrel's chain gun | the cool round |
+| V | a shield | |
+| VI | a vent | the second brake, with cooling at 5 |
+
+Today its stock carries about 15 heat a round (a warm gun, the chain gun, a gun of no heat, a
+shield, a vent), 5 shield a round, which is why its solo rows are the weakest of the hitters;
+the Pinion Driver leaves it as a blueprint. The round as played: fire hot; at the next round's
+start cooling takes 5 and the regen reads what is left (40 → 20 shield, 60 → 30); ride hot for
+the regen or dump the Afterburner and be cold next round; the vent when the gauge nears 100
+and the Afterburner is not showing. A hot stock (a 40 and a 20 a round) sits at 60 by round
+two, a tank's regen at tier two under the honest shield rule, with the overheat at 100 the
+ceiling. It wants hot guns of every maker, the Peak's Scorched, the Thrust Overboost (its guns
+twice as hot: twice the regen for twice the risk) and the Boundary-layer Bleed; it gives
+nothing to others, the Kestrel that stays, and the Puffin's vent fights it. Its niche word in
+content ("Ramping damage") is stale; its 5 per 10 is re-read under the honest shield rule by
+the stock pass.
+
+**The Puffin.** Tier two, a light hover at move 40. Hull 50, shield 30, field recharge 30, heat
+maximum 60, cooling 5, armour 0; four hardpoints beside the fixed Backwash Ionizer, a d5; two
+module slots. The passive, the Slipstream Projector, as built: any ally this machine shields
+also sheds 10 heat. The fixed piece, the Backwash Ionizer, as built: shield 30, allies only,
+Overshield (past the ally's maximum; the excess fades at the round's end).
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the Backwash Ionizer | 30 on an ally past its maximum; it sheds 10 |
+| II | the Overcharged buff (the Coil today) | the hitter's round; the strafer counts it twice |
+| III | a shield, self or ally (the Deflector at its new number, or a plain one) | the hurt ally |
+| IV | a vent that shields (the Diffuser as a combined entry: vent 10, shield 10, no Rapid) | the hot ally sheds 20 and gains 10, and it costs the turn |
+| V | a small gun | when nobody needs anything |
+
+The round as played: the Ionizer on the machine the intents name; the Coil on the hitter
+before it fires; the vent-that-shields on the hot one; a gun otherwise. It wants shields of
+every maker (each a vent through its passive) and hot allies; it gives the off-tank its
+magazine, the Sparrowhawk's 30 hull an overshield and its chain's heat vented, the
+interceptor's two spends cooled, the strafer's doubled Coil, and the Goshawk a vent it does
+not want (one pair of seven). Alone it loses, by design. The engine fires its passive once a
+spend, whatever a shield's strikes.
+
 
 Kestrel's pool today: ten components (one fixed, the Afterburner; one locked, the Backwash
 Ionizer; the Pinion Driver leaving for the pool as a blueprint) and three modules. Every
@@ -140,8 +200,9 @@ that the pool does not give:
 4. **The Wake Diffuser re-priced** as a combined entry (a vent of 10 that shields 10, no
    Rapid) and **the Laminar Deflector's number** down (the row's instruction; a shield of 10
    with Rapid, say), both the stock pass's.
-5. **The Overclocked Railgun kept**: temporary by its note since 26 September, it is now the
-   off-tank's and the Goshawk's big hot shot; the Goshawk's stock, not the Sparrowhawk's.
+5. **A big hot flat gun kept in the pool** for the off-tank's and the Goshawk's builds (the
+   Overclocked Railgun, if the pass keeps it: temporary by its note since 26 September), in the
+   Goshawk's stock rather than the Sparrowhawk's.
 6. **Chain in mines**, a rule change, so the Arc Fault Cannon is a bomb (the bomber's brief).
 7. **Seven locked pieces to name**: the spray, the lure that regens itself, the dive, the reset
    gun, the three-strike shield, the pull and the mark.

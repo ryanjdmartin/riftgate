@@ -371,7 +371,79 @@ stock wants a step between the Carbine's 5 heat and the Railgun's 40, a mid-heat
 the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 more and a zap of
 20), and the Railgun kept as its big hot shot. The vent-dead hole stands as a direction refused.
 
-## Open for the session
+## The kit, written out (Claude, 20 October)
+
+Ryan's package of 19 October, whole; every number a placeholder, the name and the look Ryan's,
+the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
+
+**The frame.** A medium hovercraft on big boosters at move 40, the one Kestrel tier one that is
+not a fast jet (or the exposed-rotor helicopter as a flying tank, if Ryan's silhouette is
+one). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
+field recharge 30, heat maximum 60, cooling 5, armour 0. Four hardpoints beside the lock, a
+d5; two module slots.
+
+**The passive**, as the codex would print it (Ryan's words of 15, 17 and 18 October): while
+its shield stands, every blow on it loses 5, and its weapons burn shield in place of heat:
+every point a spend would add comes off the shield (a Scorched machine's extra included), and
+a weapon hotter than the shield left burns what the shield holds and the rest reaches the
+gauge. After the weapon's strikes the target takes a zap of what the shield paid, a plain blow
+with its armour off, lost on a kill.
+
+**The lock, the lure that regens itself** (Ryan, 19 October): a weapon of no damage,
+Indirect, heat 0, spent on one foe. That foe is Lured for the round, and this machine gains
+Regenerating: 10 shield at the start of each round for three rounds, stacking (timed stacks
+keep their own end, so two casts are 20 a round until the first runs out). Self only, never
+Rapid, no cooldown; the die is its brake. Shown as a weapon glyph with the Lure chip and the
+star; the hold reads the self regen.
+
+**The die.**
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the lure that regens itself: Indirect, no damage, heat 0 | the draw and the refill |
+| II | a big hot flat gun | the burn's big shot |
+| III | a mid-heat gun (a stock hole: nothing sits between the warm guns and the big hot one today) | the middle burn |
+| IV | a cold rolled gun | burns nothing: fired when the shield must stand |
+| V | a shield (self) | reload |
+
+No vent: with no weapon heat reaching the gauge a vent is nearly a blank (Burning alone heats
+it), and Ryan agreed (17 October).
+
+**The round as played.** The lure showing, spend it on the foe whose blows you want, and the
+regen starts at the next round's start (the lured blow lands this enemy turn, the first 10
+next round). A hot gun showing, burn its heat off the shield for the same again as a zap, on a
+foe it will not finish, since a kill wastes the zap. The cold gun when the shield must hold
+for the enemy's turn. The shield to reload. On the die the heat slot reads the burn with the
+shield's glyph while the shield covers it, and +N HEAT again for the rest; dragged over a foe,
+two numbers joined ("25+20"), the blow and the zap, each with its armour off.
+
+**The arithmetic** (today's heat prices; the pool 80, the regen 10 a round a stack).
+
+| Weapon | Burns and zaps | The target takes, armour 0 / 5 | Spends of a full pool | A regen stack refills one in |
+|---|---|---|---|---|
+| a warm flat 10, heat 5 | 5 | 15 / 5 | 16 | half a round |
+| a mid-heat flat 25, heat 20 | 20 | 45 / 35 | 4 | two rounds |
+| a big hot flat 50, heat 40 | 40 | 90 / 80 | 2 | four rounds |
+| a cold rolled 5–15, heat 0 | 0 | 10 / 5 | never | - |
+
+The plate: a blow of 5 is nothing, 10 is 5, 20 is 15, 30 is 25, 40 is 35. So with a lure and
+a stack of regen it walls the packs that strike for 10 (wolves, gels, mandragoras, needlers,
+cockatrices, ghosts) and is no wall against a swarm (six goblins strike 30 each with their
+swarm, 150 a round past the plate onto 80) or a big foe. The lever if the wall reads wrong in
+play: the plate's number before the regen's stacking.
+
+**With the team.** It wants every ally shield (the Puffin's overshield is its magazine), hot
+guns of every maker and the Peak's Scorched (5 hotter: 5 more burnt, 5 more zapped). It gives
+the lure, a body from a second maker, and its zaps.
+
+**Engine.** At the spend, the heat the pipeline returns taken from the shield before the gauge
+and the zap a plain blow through the target's damage taken and armour after the strikes; the
+die's heat read becoming a burn while the shield stands; a weapon's rider on its own spender
+(new, small) for the lock; the regen as a status (a round-start shield effect the Goshawk's
+passive already fires); the plate as a damage-taken add while the shield stands (a new
+condition); the bot reading shield spent as a cost and the zap as damage; each tested with
+synthetic passives. Its runner row lies until the honest shield rule is built.
+
 
 1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
    reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and

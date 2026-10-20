@@ -275,7 +275,76 @@ Two items under the action economy's direction (the bible's row, section 5).
   Fault Cannon is then Kestrel's own bomb, the lightning mine, and the bomber's stock carries a
   Kestrel piece beside the other makers' keyword pieces. Lure and Disrupt stay inert.
 
-## Holes already raised
+## The kit, written out (Claude, 20 October)
+
+The design as decided on 15 to 17 October with Ryan's lean on size (18 October) and the line
+review's two items, whole; every number a placeholder, the name and the look Ryan's, the stock
+by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
+
+**The frame.** A heavy flyer on big boosters (Ryan's lean: bigger than medium; the capital
+ship), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
+maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
+tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
+the Goshawk's.
+
+**The passive**, as the codex would print it: its weapons may be spent on an empty slot in
+the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
+a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
+and modified when laid and its keywords, and joins what already waits; whoever steps in takes
+it all, shot by shot in laid order, before it acts. A massive arrival takes both slots'
+shots. Nothing expires.
+
+**The first lock, the pull**: an Indirect weapon of no damage, heat 10 (the number Ryan's),
+never Rapid, no cooldown: every mine on the field is gathered into the slot it is spent on,
+and a foe standing there takes them now, in laid order. Spent on an empty slot it gathers the
+field's mines there and lays nothing of its own, having no shot; with nothing laid it is the
+dead spend Ryan allows.
+
+**The second lock, the mark**: an Indirect weapon of no damage, heat 0: the foe is Marked, a
+chip, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties.
+One mine a mark, it lasts the skirmish, a death by a tick leaves nothing, and Marked is a
+status the team put on the foe (the Paradox counts it; Ryan, 17 October: tuned later). Rapid
+while a mine waits on the field, the line review's gate; a full action before.
+
+**The die.**
+
+| Entry | Piece | In a mine |
+|---|---|---|
+| I | the pull | gathers and sets off |
+| II | the mark | a teammate's kill lays one |
+| III | a Burn piece | napalm: Burning as it arrives |
+| IV | a Spread piece | a cluster: the arrival's neighbours too |
+| V | a Shock piece | a shock mine: Shocked for the team's first blow |
+| VI | a Suppress piece, or Kestrel's chain gun if Chain lives in mines | a stun on arrival (hard control gated by its setup, the stun row); or the lightning mine, a kill that jumps |
+
+Tier-two keyword pieces, so the stock shows the bombs; every keyword rides inside the mine
+and acts as it lands.
+
+**The round as played.** An ally kills a front foe and its slot empties; the bomber lays a
+burn mine there (Direct reaches it); at the round's end the reinforcement steps in and takes
+the shot before it acts, Burning. A quiet round: mark the escort; a teammate's kill leaves its
+shot in the escort's slot; the pull onto the boss's slot cashes everything laid onto the boss,
+in laid order, a Shock mine doubling the mine that follows it. Nothing waiting and nothing
+laid: a plain d6 flyer, the floor.
+
+**With the team.** It wants keyword weapons of every maker, the team's killers (the mark
+copies the best shot) and Minos's turn of the ranks. It gives the Marsh's Reraise returns, the
+Meadow's Gel halves, summons and the elites surfacing from the wait a blow before they act.
+
+**The display.** An empty slot lights as a target when a weapon of the right reach is
+dragged; a mined slot shows its outline and a glyph with the total waiting and a chip per
+keyword, never hue alone; the pull's gather is drawn as the mines sliding into the slot; a
+Marked foe wears its chip; the header's REINF count stands beside it until the formation view
+lands.
+
+**Engine.** A slot as a target (`targets_for_face`); the mine store on the skirmish, a list of
+laid shots a slot, carried by the save; the landing after the reinforcement step, left to
+right, each shot through the arrival's damage taken and armour with its keywords acting; any
+other way into a mined slot setting it off at once; the pull and the mark as printed
+properties, Marked a foe status with a kill hook; the mark's gate as a condition (a mine
+waiting); Chain's repeat out of a mine paying its heat in the reinforcement step; the bot's
+value of a mine (a shot delayed, worth its number times the chance a foe steps in).
+
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
   identity is absent from a fight without reinforcements (the review, Claude, 16 October).

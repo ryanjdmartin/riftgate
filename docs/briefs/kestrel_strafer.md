@@ -168,7 +168,72 @@ question, never an exception on the passive. The line review (`kestrel_line.md`)
 stock pass for a Kestrel multi-strike gun of its own (flat and hot, parted from the Maxigun),
 so one payoff is Kestrel's. Nothing else moves.
 
-## Open for the session
+## The kit, written out (Claude, 20 October)
+
+The design as decided and proposed, whole; every number a placeholder, the name and the look
+Ryan's, the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock
+pass).
+
+**The frame.** A light flyer on big boosters at move 50, the fast jet and the detachment the
+map can read (a hovercraft if Ryan's silhouette is one, which would part it from the
+interceptor on the map). Hull 70, shield 60, field recharge 30, heat maximum 60, cooling 5,
+armour 0. Three hardpoints beside the lock, a d4; two module slots.
+
+**The passive**, as the codex would print it: every weapon it fires strikes twice at half.
+What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
+foe's conditions count on every strike, and so does its armour. The entries show the halved
+number with the strikes mark ("5 ×2", "5–8 ×4"); dragged over a foe, the number one strike
+deals with its armour off.
+
+**The lock, the spray** (Ryan's description, 15 and 16 October): a rolled gun, Direct, 10 to
+15, two strikes, heat 5; under the passive 5 to 8 ×4. The first strike lands where the die is
+dragged; each strike after it draws at random among the foes in reach at that moment, the same
+foe again allowed, reach read again between strikes with a kill clearing its slot at once. A
+printed property with the star; the die shows the first strike's number, as Spread does.
+
+**The die.**
+
+| Entry | Piece | Under the passive |
+|---|---|---|
+| I | the spray: 10–15 ×2, Direct, heat 5 | 5–8 ×4, the first strike aimed |
+| II | a warm flat gun | half, twice |
+| III | a cold rolled gun | half, twice |
+| IV | a shield | unchanged |
+
+No vent: its heat is the base weapon's, paid once a spend, and a d4 has no room for one.
+
+**The round as played.** A gun showing strikes its foe twice, each strike losing the foe's
+armour; the spray plans its first strike and sprays three; a shield is a shield. Against a
+full front the spray is volume (the aimed foe takes 1.75 of its four strikes on average);
+against a lone foe behind a hole it is a plain 5–8 ×4; a hole in the front turns the odds
+toward the foe behind it, the punch Ryan described, planned by what falls first.
+
+**The arithmetic** (mean a spend on one foe, armour 0 / 5; "plain" is the weapon on any other
+machine).
+
+| Weapon | Plain | Strafer | Strafer, two Overcharged stacks |
+|---|---|---|---|
+| a flat 10 | 10 / 5 | 10 / 0 (5 ×2) | 30 / 20 |
+| a rolled 5–15 | 10 / 5 | 11 / 1 (3–8 ×2) | 31 / 21 |
+| a rolled 15–30 | 22.5 / 17.5 | 23 / 13 (8–15 ×2) | 43 / 33 |
+| the spray 10–15 ×2 | 25 / 15 | 26 / 6 (5–8 ×4) | 66 / 46 |
+| a flat 5 ×4 (the Kestrel multi-strike gun the line review asks for) | 20 / 0 | 24 / 0 (3 ×8) | 104 / 64 |
+
+The read: at armour 0 it deals the base weapon's damage for the base heat; its gains are
+riders a blow (Burn lays a stack per 10 rounded up, so two half blows lay two stacks where one
+whole blow laid one; Flak a stack a strike), flat buffs (Overcharged and Primed count per
+strike, so the Puffin's Coil is worth twice on it) and strikes (a four-strike gun becomes eight
+bites); its loss is armour, paid twice a weapon, and a halved basic (5) is today's armour
+exactly, the start's hole (section 12's scales question).
+
+**With the team.** It wants rider pieces, flat buffs and multi-strike pieces, cross-maker by
+design; it gives the team's stacks laid twice as fast, and the detachment.
+
+**Engine.** A passive effect that halves the printed number (rounded up) and doubles the
+strikes on the effective face; the spray as a printed property with its random pick per
+strike and reach re-read between strikes; the bot's value of a spray, its mean over the foes in
+reach; each tested with synthetic passives.
+
 
 1. Ryan's call on the proposal above: its numbers and the lock's, its size and way of moving
    (a light flyer at 50, or a hovercraft if his silhouette is one), matched to Ryan's
