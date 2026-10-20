@@ -348,53 +348,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.207 (20 October: the action
-  economy's row beside the stun row), over v0.206 (19 October: the
-  Prairie Dog's Flak row with the chassis table, the cars row and the leans row, over v0.205's
-  Cassowary, Cottonmouth and Dingo rows, with the chassis, size and
-  maker tables, the Rapid and reroll clauses and Spun Up, Swap and Flak in the generated tables, over
-  the sprite session's v0.204 art rows and the 18 and 19 October Wainwright & Sutler clauses),
-  unpublished: the live page is the sprite session's v0.204 (19 October, main's art rows
-  merged onto another session's v0.202, which carries Armoured and Overcharged in points, Burn
-  numbered and Armoured's duration, with that branch's tables), so the next publish that
-  merges main carries the four rows and the three statuses. Before it, live v0.200 (18 October, evening), main's
-  fix-order row (the foe art row: structure through image to image from the pick, colour
-  through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
-  most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,
-  the Ammit's kept stacks, Silence and Dispel); the branches' rows reach main's file as they merge. Before that, v0.197 (18 October), published from the
-  Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
-  row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
-  principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
-  the Aphelion row; the Minerva branch's two rows, section 7's Minerva row rewritten to the
-  session's shape and section 12's question on Braced in stacks of 5 against the scale) with
-  this session's last rows (Numbed and the stores as buffs, Silence and Dispel decided, Ward
-  turning both away). Before that, v0.196 and v0.195, main's file, over v0.191 (17 October),
-  published
-  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
-  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
-  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
-  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
-  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
-  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying; the bomber's pull and mark). Main's file carried
-  v0.188, the same rows without that branch's, until the branch merged on 17 October and
-  brought the script with it.
-  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
-  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
-  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
-  maker rows pointing at the briefs, the proposal files retired, the
-  Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
-  rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
-  Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
-  in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
-  summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
-  heroes' tropes from beyond Final Fantasy, then of 16 October: balance the series out a
-  little, never purge it (the Lancer stays the dragoon, the Warrior the plain fighter, the Thief
-  Persona 5's Joker under its plain name). The live page also carries rows from two branches,
-  which reach main's file when they merge: `claude/zealous-cori-8xoly7` (its v0.177: the Boar's
-  later strikes spilling, Chain's rework in section 12) and `claude/adoring-planck-q8t63w` (its
-  v0.181: the die's Roman numerals, a reroll's copies, Rapid's limiter, the Nemesis's roll
-  again, the Wake Diffuser's question).
+  `docs/design-bible.html` after every change. Live is v0.212 (20 October): main's v0.207 (the
+  action economy's row beside the stun row; v0.206's Prairie Dog Flak row, chassis table, cars
+  row and leans row; v0.205's Cassowary, Cottonmouth and Dingo rows with the chassis, size and
+  maker tables; v0.204's art rows) merged onto the review session's v0.211 (branch
+  `ccr-ffcf75fa-3gkbz9`: Armoured and Overcharged in points, Burn numbered, Armoured's
+  duration, its dispel in the Armoured row, the funnel-web's built clause, that branch's
+  tables). Main's file is v0.207; the review branch's three rows reach it when that branch
+  merges. Git and the page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
