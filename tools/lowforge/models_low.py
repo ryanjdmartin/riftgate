@@ -1002,6 +1002,37 @@ def armadillo(b):
         "ankle_hl": [(2.8, 0.0), (3.5, 26.0), (4.1, 26.5), (4.4, 0.0)],
     }, body=[(0.9, 0.0, 0.0, 0.5, 0.0, 1.5, 0.0), (1.8, 0.0, 0.0, 0.6, 0.0, 1.7, 0.0), (2.1, 0.0, 0.0, -1.4, 0.0, -0.8, 0.0), (2.6, 0.0, 0.0, 0.0),
              (3.5, 0.0, 0.0, 0.5, 0.0, -1.2, 0.0), (4.1, 0.0, 0.0, 0.6, 0.0, -1.3, 0.0), (4.4, 0.0, 0.0, -1.4, 0.0, 0.6, 0.0), (5.0, 0.0, 0.0, 0.0)])
+    # Coming about (Ryan, 20 October: the funnel-web's planted footwork for the Dillo): with
+    # no head and no waist it turns its whole shell to look, the way it walks, in diagonal
+    # pairs: a pair lifts, the shell turns eight degrees on the other pair, planted, and drops
+    # onto the landing pair (the stamp's dip); three pairs bring it round twenty-four and a
+    # fourth squares the trailing pair up under it, the port guns rise to bear and the cowl
+    # lamps burn while it holds facing the new way; then back the same way. The shell sits
+    # lower through the turn (its legs stand straight in their planes, and a planted foot
+    # under a turning shell needs the slack). Each hip takes the yaw and roll that keep its
+    # foot planted and pointing where it landed (_footwork).
+    YAW, DIP, REST6 = -24.0, -4.5, (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    low = lambda yaw, drop=0.0: (0.0, 0.0, DIP + drop, yaw, 0.0, 0.0)
+
+    def come(t0, y0, y1):
+        """Steps and body keys turning the shell from y0 to y1 in four diagonal pairs from t0,
+        0.75 s a pair: 0.45 in the air while the shell turns a third of the way (the fourth
+        pair steps with the turn done), then the drop onto it."""
+        steps, keys = [], []
+        for k in range(4):
+            ta, tb = round(t0 + k * 0.75, 3), round(t0 + k * 0.75 + 0.45, 3)
+            ya, yb = y0 + (y1 - y0) * min(k, 3) / 3.0, y0 + (y1 - y0) * min(k + 1, 3) / 3.0
+            for leg in (("fl", "hr"), ("fr", "hl"))[k % 2]:
+                steps.append((leg, ta, tb, ("under", tb), 6.5))
+            keys += [(ta, low(ya)), (tb, low(yb)), (round(tb + 0.1, 3), low(yb, -1.6)), (round(tb + 0.3, 3), low(yb))]
+        return steps, keys
+    s1, k1 = come(0.5, 0.0, YAW)
+    s2, k2 = come(5.3, YAW, 0.0)
+    tracks, body = _footwork({leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")},
+                             [(0.2, REST6), (0.5, low(0.0))] + k1 + [(5.3, low(YAW))] + k2 + [(8.8, REST6)], s1 + s2, until=9.0)
+    tracks.update({"elev_l": _dense([(3.2, 0.0), (3.8, 24.0), (5.1, 23.0), (5.8, 0.0)]), "elev_r": _dense([(3.3, 0.0), (3.9, 24.0), (5.1, 23.0), (5.8, 0.0)])})
+    b.act("come_about", 9.4, tracks, body=body, ease="linear", heft=0.12,
+          glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
     # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
@@ -1517,6 +1548,244 @@ def dingo(b):
 dingo.maker = "wainwright_sutler"
 
 
+def funnel_web(b):
+    """Wainwright & Sutler "Funnel-web" (Pattern 19 Ambush Walker): the roster's tank-buster,
+    a four-legged walker that does spider-like things (Ryan, 14 and 17 October: a little
+    spider takes down a big thing with venom). Four cuts on 19 October, each on Ryan's notes:
+    a war machine, not a mechanical spider (the first: the legs under the mass, more leg to
+    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's low
+    quad (the second: the larger boiler spider's likely shape) but the Revenant's and the Doom
+    Arachnotron's legs under a turret, sides as well as a top and a front for the weapons, a
+    diminutive little death machine; the legs going down, up and down so the thighs clear the
+    body (the third; leggy is fine); and this, the fourth: the body in W&S's military camp,
+    the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's funky steam
+    (no boiler, no stack, no hazard stripes), more aggressive; the side guns pitching only,
+    since the torso twist aims them; nothing hanging like a proboscis (the chin gun lay
+    pitched down and read as the web-shooter); and the upper legs in the walk beside the
+    solver, the Ammit's way, so it walks creepy. So: a compact angular turret of a body on a
+    hub, turning and nodding on it (the head joint: the whole body is the turret), its lower
+    hull dark, its upper hull a wedge-browed armoured head with two slit eyes in a dark visor
+    band, appliqué plates in the livery on its flanks, an exhaust grille and a whip antenna at
+    its tail. The Maxigun a bow gun in the snout, level, on a drop joint for the bite (hp_1);
+    an armoured pod on each flank with its gun on an elevation, the Howitzer's on the left
+    (hp_2), the Twin Autoguns' on the right (hp_3); the deflector's dish a low crest on the
+    roof (hp_4); the Web Bomb (fixed, no pin) a box launcher of four tubes on the roof's
+    rear, pitched up on its own elevation, the tubes' floors lit. Four long legs from coxa
+    joints at the hub's corners, each a strut down and out to a low hip, a thigh up to a knee
+    wide and high, a shin down to a flat foot with a toe plate. The rig, the acts and the gait
+    are for Ryan to judge running. His fifth notes, the same day: the fore feet's two short
+    steps to the hind feet's stride hot-stepped, far too busy, and the head's turn toward each
+    foot looked weird, both cut (the feet kept down, the coxae kept lifting each leg through its
+    swing); the body is great; two static forward guns in place of the single centred one, the
+    jaw reworked to carry them, which leaves a single mount on top, and the web launcher one of
+    the side guns. So the stations now: the Maxigun (hp_1) and the Twin Autoguns (hp_3) static
+    in the jaw's two mantlets, the Howitzer (hp_2) alone on the roof on its elevation, the Web
+    Bomb's four-tube launcher in the left pod on its elevation, the deflector's dish (hp_4) on
+    the right pod. His sixth to ninth notes revised the cut part by part (the notes sit at
+    each part: the guns pulled in, the fins, the top mount, the planted pivot, the antenna's
+    base); his tenth, 20 October: the eighth's fins were the shape and size he liked, it was
+    only their base that wanted squaring off, so they are back at that size on a level base;
+    and the scan's first turn is quick. His eleventh, the same day: the antenna a little
+    inboard, clear of the fin, and the model is good to go."""
+    # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
+    # (the third notes: the thighs had no clearance from the body, and every reference resolves
+    # it so): a strut drops from a coxa joint at the hub's corner, down and out, to a low hip
+    # hinge clear of the body's flank; the thigh rises from it to a knee standing wide and
+    # high; the shin falls to the foot. The walk solver drives the thigh and the shin from the
+    # hip; the coxa is the walk's own (below). Nothing hangs below z = 0, the ground.
+    b.box(-12.0, 12.0, -12.0, 12.0, 30.0, 39.5, "steel.dark", "hub")
+    legs, roots = {}, {}
+    for yh, fa in ((10.0, "f"), (-10.0, "h")):
+        f = 1.0 if fa == "f" else -1.0
+        for s in (-1.0, 1.0):
+            leg = fa + ("l" if s < 0 else "r")
+            root = (s * 10.0, yh, 32.0)
+            hip = (s * 22.0, yh + f * 4.0, 22.0)   # the strut near plumb, so a turn of the coxa rows the hip fore and aft (the sixth notes)
+            knee = (s * 38.0, yh + f * 26.0, 56.0)
+            ankle = (s * 46.0, yh + f * 34.0, 7.0)
+            legs[leg], roots[leg] = (hip, knee, ankle), root
+            b.prism("x", root[0], root[1], root[2], 5.0, 6.0, "steel.dark", 6, "coxa_pin")
+            # A yaw at each root (the ninth notes: the shuffle slid), so a leg's plane can turn
+            # about up and a planted foot stays planted while the body pivots (_pivot); at
+            # rest through the walk.
+            yawj = b.joint("yaw_%s" % leg, root, axis="yaw", limits=(-30.0, 30.0))
+            yawj.__enter__()
+            with b.joint("coxa_%s" % leg, root, limits=(-25.0, 25.0)):
+                _beam(b, root, hip, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.dark", "strut")
+                b.prism("x", hip[0], hip[1], hip[2], 5.5, 10.5, "steel.dark", 6, "hip_pin")
+                # Hip, knee and ankle on every leg, the ankle keeping the foot flat through a
+                # stride; the limits hold what the gait and the acts below ask, with a margin.
+                with b.joint("hip_%s" % leg, hip, limits=(-50.0, 50.0)):
+                    _beam(b, hip, knee, _sq(10.0, 11.0), _sq(8.5, 9.5), "steel.plate", "thigh")
+                    b.prism("x", knee[0], knee[1], knee[2], 6.4, 11.5, "steel.dark", 6, "knee")   # a hinge block big enough to own the corner
+                    with b.joint("knee_%s" % leg, knee, limits=(-60.0, 60.0)):
+                        _beam(b, knee, ankle, _sq(8.0, 9.0), _sq(7.0, 8.0), "steel.panel", "shin")
+                        b.prism("x", ankle[0], ankle[1], ankle[2], 3.8, 9.0, "steel.dark", 6, "ankle_pin")
+                        with b.joint("ankle_%s" % leg, ankle, limits=(-50.0, 50.0)):
+                            b.box(ankle[0] - 6.0, ankle[0] + 6.0, ankle[1] - 7.0, ankle[1] + 7.0, 2.0, 7.5, "steel.dark", "foot")
+                            b.box(ankle[0] - 7.5, ankle[0] + 7.5, ankle[1] - 8.5, ankle[1] + 8.5, 0.0, 2.5, "steel.dark", "sole")
+                            b.box(ankle[0] - 6.5, ankle[0] + 6.5, ankle[1] + min(f * 8.5, f * 11.5), ankle[1] + max(f * 8.5, f * 11.5), 0.0, 4.0, "steel.plate", "toe_plate")
+            yawj.__exit__(None, None, None)
+    # The body, a turret on the hub that turns and nods (the joint named head yaws): a dark
+    # lower hull running out into a wide flat jaw under the brow, an armoured upper hull over
+    # it with a wedge brow, its face a dark visor band with two slit eyes (lamps, so they burn:
+    # the rule, lean hotter), a brim over them; appliqué plates in the livery on the flanks, an
+    # exhaust grille and two stubs at the tail, a whip antenna off the left rear corner.
+    with b.joint("head", (0.0, 0.0, 39.5), limits={"yaw": (-40.0, 40.0), "pitch": (-20.0, 15.0)}):   # the pitch wide (the eighth notes): it looks up and down with its legs and its torso
+        b.loft([(-22.0, _case(30.0, 39.0, 47.0, 4.0)), (10.0, _case(32.0, 39.0, 47.0, 4.0)), (22.0, _case(30.0, 40.0, 50.0, 3.0)), (30.0, _case(28.0, 42.0, 52.0, 3.0))], "steel.dark", "lower_hull")
+        b.loft([(-24.0, _case(34.0, 46.0, 64.0, 8.0)), (-4.0, _case(38.0, 44.0, 68.0, 8.0)), (14.0, _case(38.0, 45.0, 68.0, 8.0)), (22.0, _case(32.0, 47.0, 64.0, 6.0)), (26.0, _case(28.0, 49.0, 61.0, 4.0))], "steel.plate", "upper_hull")
+        b.box(-12.0, 12.0, 25.5, 27.5, 55.0, 60.5, "steel.dark", "visor_band")
+        for x0, x1 in ((-11.5, -3.0), (3.0, 11.5)):
+            b.box(x0, x1, 27.0, 28.4, 56.6, 59.8, "amber.light", "lamp")   # wide and proud of the band: a phone must read the eyes
+        b.box(-13.0, 13.0, 24.0, 29.0, 60.5, 62.5, "steel.plate", "brim")
+        # The fins (the eighth notes: the flank plates stood out and said nothing, so they are
+        # embraced): a raked blade in the livery off each flank's rear, rising up and behind,
+        # in the spirit of a samurai's banner but iron, a little flair on a utilitarian maker;
+        # each on a dark bracket.
+        # The blade's bottom squared off (the ninth notes, and the tenth: the shape and size
+        # of the eighth stay; it was the base, cut square to the rake, that read as a turned
+        # bar): a plate in the flank's plane with the eighth's edges, tip and rake, its base
+        # level and sunk in the bracket, so the fin rises out of the bracket and the pod.
+        for s in (-1.0, 1.0):
+            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -19.5, -8.0, 50.0, 56.0, "steel.dark", "fin_bracket")
+            outline = [(-2.5, 52.0), (-18.7, 52.0), (-30.1, 82.4), (-23.9, 85.6)]   # (y, z): base level, the edges raked 27 degrees, the tip cut square to the rake
+            _rings(b, [[(s * 19.7, y, z) for y, z in outline], [(s * 21.3, y, z) for y, z in outline]], "livery.livery2", "fin")
+        b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
+        for s in (-1.0, 1.0):
+            b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
+        b.prism("z", -10.5, -20.0, 75.0, 1.2, 16.0, "steel.dark", 6, "antenna")   # inboard of the fin by a clear margin (the eleventh notes: it sat against it)
+        b.box(-12.0, -9.0, -21.5, -18.5, 56.0, 67.5, "steel.dark", "antenna_base")   # run down into the hull's chamfer (the ninth notes: it floated)
+        # The jaw's two static bow guns (the fifth notes): a mantlet each side of the jaw's
+        # flat face, no joint, the Maxigun's on the left (hp_1), the Twin Autoguns' on the
+        # right (hp_3); the torso twist and the legs aim them. Pulled back in (the seventh
+        # notes): the jaw six shorter and the mantlets near flush with its face, the guns'
+        # receivers sunk into them.
+        for s, k, shape in ((-1.0, 1, "barrel"), (1.0, 3, "twin_barrel")):
+            b.box(min(s * 3.5, s * 12.5), max(s * 3.5, s * 12.5), 28.0, 31.5, 44.0, 51.0, "steel.dark", "mantlet")
+            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75)
+        # The roof's one mount (hp_2): the howitzer on a low pedestal aft of the pods (the
+        # seventh notes: not in line with the side mounts), on its elevation, the torso twist
+        # its traverse.
+        b.box(-5.0, 5.0, -19.0, -9.0, 63.0, 68.0, "steel.dark", "top_mount")   # sunk into the roof (the eighth notes: a gap showed)
+        with b.joint("elev_top", (0.0, -14.0, 68.0), limits=(-8.0, 30.0)):
+            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
+        # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
+        # on its front, what it carries on an elevation and never a traverse (the fourth
+        # notes: the torso twist aims them). The left pod carries the Web Bomb (fixed, no
+        # pin): a box launcher of four tubes out of its front, pitched up a little, each
+        # tube's floor lit, so it glows when it is about to lob. The right pod carries the
+        # deflector's dish (hp_4), facing forward.
+        for s in (-1.0, 1.0):
+            px = s * 23.5
+            b.box(min(s * 18.0, s * 29.0), max(s * 18.0, s * 29.0), -10.0, 8.0, 50.0, 64.0, "steel.plate", "pod")
+            b.box(min(s * 29.0, s * 29.2), max(s * 29.0, s * 29.2), -8.0, 6.0, 52.0, 62.0, "livery.livery2", "pod_panel")   # flush, a painted panel (the eighth notes)
+            b.box(px - 1.5, px + 1.5, 8.0, 9.0, 61.5, 63.5, "amber.light", "sight")
+            if s < 0:
+                D = Vector((0.0, math.cos(math.radians(10.0)), math.sin(math.radians(10.0))))
+                UP = Vector((0.0, -D.z, D.y))
+                P0 = Vector((px, 8.0, 56.5))
+                with b.joint("elev_l", (px, 4.0, 56.5), limits=(-6.0, 25.0)):
+                    _beam(b, tuple(P0 - D * 3.0), tuple(P0 + D * 9.0), _sq(9.5, 8.5), _sq(9.5, 8.5), "steel.plate", "web_rack")
+                    for ux in (-2.6, 2.6):
+                        for uz in (-2.3, 2.3):
+                            off = Vector((ux, 0.0, 0.0)) + UP * uz
+                            _tube(b, tuple(P0 + off), tuple(P0 + off + D * 9.3), 2.1, 1.65, 6, "steel.dark", "web_tube", floor_material="amber.light", floor_depth=7.0)
+            else:
+                with b.joint("elev_r", (px, 4.0, 56.5), limits=(-10.0, 30.0)):
+                    b.stock("hp_4", (s * 25.5, 8.0, 56.5), "dish", scale=0.85)
+
+    # Idle acts (the builder's rules: curves a part runs on through, held poses that drift,
+    # every gun turning slowly and not far with a pause before it turns back). Degrees and
+    # seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a body
+    # key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k
+    # the light added over rest. The feet stay planted while the hub moves (_planted); the
+    # coxae rest through the acts, since the solver plants from the hips. The eighth notes:
+    # the guns clipped the fore legs' shins when the body twisted past twenty-five degrees,
+    # so a twist is the head's twenty and a pivot of the legs for the rest, a little
+    # predatory skittering (the ninth notes: it slid, since the feet were not planted; now
+    # _pivot turns the body in quick steps with every foot not stepping planted, each leg's
+    # yaw joint holding its plane on its foot); and the vertical range is this walker's
+    # own, its legs and its torso mount looking up and down, so it rears, sinks and coils
+    # through the acts.
+    limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
+    limbs = {leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")}
+
+    # The ambush: it sinks low and coils, the eyes burning, the whole body tipped down at
+    # what it watches, holds, and strikes, up and forward; then it draws back up. The strike
+    # on a sharp servo.
+    tracks, body = _planted(list(limbs.values()),
+                            [(0.5, 0.0, 0.0, 0.0), (2.0, 0.0, -10.0, 3.0), (3.6, 0.0, -11.0, 3.5), (3.9, 6.0, -3.0, -3.0), (4.3, 6.0, -3.5, -2.5), (5.6, 0.0, 0.0, 0.0)])
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.0, -16.0, 0.0, 0.0), (3.6, -18.0, 0.0, 0.0), (3.9, 9.0, 0.0, 0.0), (4.3, 7.0, 0.0, 0.0), (5.6, 0.0, 0.0, 0.0)]
+    b.act("stalk", 6.2, tracks, body=body, heft=0.08,
+          glow=[(["lamp"], [(0.8, 0.0), (2.0, 5.0), (3.8, 7.0), (4.9, 0.0)])])
+    # The scan: it rears up on its legs looking up, pivots round to the right in quick
+    # steps and stares, sinks low looking down while it pivots round to the left and
+    # stares, and comes back. Every foot not stepping stays planted through the turn
+    # (_pivot, the ninth notes: the shuffle slid).
+    A, B = ("fl", "hr", "fr", "hl"), ("hl", "fr", "hr", "fl")
+    REAR, LOW, REST = (0.0, 8.0, 3.0), (0.0, -8.0, -3.0), (0.0, 0.0, 0.0)
+    # The first turn in under a second (the tenth notes: it was the slow one, seven degrees
+    # a second against the swing's fifteen), the steps quick enough to want thirty keys a second.
+    tracks, body = _pivot(limbs, roots,
+                          yaw=[(0.5, 0.0), (1.7, 0.0), (2.6, 12.0), (3.9, 12.0), (5.5, -12.0), (6.7, -12.0), (8.1, 0.0), (8.6, 0.0)],
+                          pose=[(0.5, REST), (1.6, REAR), (3.8, REAR), (5.5, LOW), (6.6, LOW), (8.2, REST)],
+                          groups=[(1.7, 2.6, A), (3.9, 5.5, B), (6.7, 8.1, A)], until=8.6, hz=30.0)
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.6, 12.0, 0.0, 0.0), (2.6, 12.0, 20.0, 0.0), (3.8, 13.0, 22.0, 0.0), (5.5, -14.0, -20.0, 0.0), (6.6, -15.0, -22.0, 0.0), (8.2, 0.0, 0.0, 0.0)]
+    b.act("scan", 9.2, tracks, body=body, ease="linear",
+          glow=[(["lamp"], [(1.0, 0.0), (1.8, 6.0), (7.8, 6.0), (8.6, 0.0)])])
+    # Sighting in: it pivots and twists to bring the launcher to bear as it rises lit,
+    # holds, then pivots and twists the other way, rearing as the roof gun elevates.
+    tracks, body = _pivot(limbs, roots,
+                          yaw=[(0.5, 0.0), (0.6, 0.0), (2.0, 8.0), (3.6, 8.0), (5.2, -8.0), (6.5, -8.0), (7.9, 0.0), (8.2, 0.0)],
+                          pose=[(0.5, REST), (3.4, REST), (5.4, (0.0, 6.0, 2.0)), (6.4, (0.0, 6.5, 2.0)), (8.0, REST)],
+                          groups=[(0.6, 2.0, A), (3.6, 5.2, B), (6.5, 7.9, A)], until=8.2)
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.2, 0.0, 20.0, 0.0), (3.4, 0.0, 21.0, 0.0), (5.4, 6.0, -20.0, 0.0), (6.4, 7.0, -21.0, 0.0), (7.9, 0.0, 0.0, 0.0)]
+    tracks["elev_l"] = [(1.3, 0.0), (2.3, 18.0), (3.3, 20.0), (4.4, 0.0)]
+    tracks["elev_top"] = [(4.3, 0.0), (5.3, 22.0), (6.3, 24.0), (7.4, 0.0)]
+    b.act("sight_in", 8.6, tracks, body=body, ease="linear",
+          glow=[(["web_tube_floor"], [(1.6, 0.0), (2.4, 7.0), (3.6, 7.0), (4.4, 0.0)])])
+    # The probe: the fore-left leg lifts and reaches ahead, taps the ground twice, and comes
+    # back to its stance, the body sinking a little and tipping down to look at what it taps
+    # (_steps: the feet in their own planes, the others planted).
+    fl = legs["fl"][2]
+    tracks, body = _steps(limbs, [
+        (0.6, (0.0, 0.0, 0.0), {}),
+        (1.3, (-1.5, -2.5, 1.5), {"fl": (fl[1] + 5.0, fl[2] + 10.0)}),
+        (2.0, (-1.5, -4.0, 2.5), {"fl": (fl[1] + 12.0, fl[2] + 0.0)}),
+        (2.5, (-1.5, -4.0, 2.5), {"fl": (fl[1] + 12.0, fl[2] + 6.0)}),
+        (2.9, (-1.5, -4.5, 2.5), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
+        (3.7, (-1.5, -4.5, 2.5), {"fl": (fl[1] + 13.0, fl[2] + 0.0)}),
+        (4.3, (-0.8, -2.0, 1.0), {"fl": (fl[1] + 5.0, fl[2] + 9.0)}),
+        (4.9, (0.0, 0.0, 0.0), {"fl": (fl[1], fl[2])}),
+    ])
+    tracks["head"] = [(0.8, 0.0, 0.0, 0.0), (2.0, -14.0, 12.0, 0.0), (3.7, -15.0, 14.0, 0.0), (4.9, 0.0, 0.0, 0.0)]
+    b.act("probe", 5.4, tracks, body=body)
+    # Movement, a creep (Ryan, 19 October: walk creepy, the upper legs in the walk beside the
+    # solver, the Ammit's way): every foot takes one step a stride, out of step, hind then
+    # fore on a side and the pairs offset, three or more feet down at any moment, each planted
+    # while the body passes over it, the body level and never rolling. The coxae row (his
+    # choice among the options, the sixth notes): each leg's base swings forward as its foot
+    # lands, smoothly back through the stance and forward again through the swing, the solver
+    # planting the foot under it (a limb's "coxa" in _plant), so the whole leg sweeps as one
+    # and nothing in it is a bump; it had lifted each leg in a hitch through the swing. The
+    # feet flicked forward (the sixth notes): the stride is longer (a sweep of 36, so the
+    # swing lasts longer at the map's pace) and the foot's carry fills nearly the whole swing
+    # (`carry`), the feet still down seven tenths of the time. The fifth notes had cut the
+    # fore feet's two short steps to each hind stride (hot-stepping, far too busy) and the
+    # head's turn toward each foot (weird).
+    DUTY = 0.7
+    walk = [dict(limbs[leg], phase={"hl": 0.0, "hr": 0.5, "fl": 0.2, "fr": 0.7}[leg],
+                 shift=(6.0 if leg[0] == "f" else -6.0), nod=(0.6 if leg[0] == "f" else -0.4),
+                 coxa=("coxa_" + leg, roots[leg], _coxa_row(DUTY, 10.0)))
+            for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
+    tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")   # the row at twenty degrees was an option for a day (the seventh notes); Ryan could not tell the two apart, so it is gone (the eighth)
+    b.move(accel=0.9, heft=0.16)
+
+funnel_web.maker = "wainwright_sutler"
+
+
+
 def goshawk(b):
     """Kestrel "Goshawk" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
     burst. Second pass (Ryan, 29 September): a wider span on a shorter body, a smaller
@@ -1938,17 +2207,26 @@ def nemesis(b):
     # (the turn the waist's, Ryan, 5 October: the feet slid round under it),
     # the right arm flung clear and the left fist thrust at the target, the tubes snapping up
     # and loading hot, then two shots, each one kicking the tubes and the body.
-    tracks, body = _planted(feet, [(0.5, 0.0, -2.6, -4.0), (0.8, 0.0, -2.0, -3.2), (2.4, 0.0, -2.2, -3.5), (2.55, 0.0, -3.4, -2.0), (2.9, 0.0, -2.2, -3.4),
-                                   (3.35, 0.0, -3.4, -2.0), (3.7, 0.0, -2.2, -3.4), (4.4, 0.0, -2.0, -3.0), (5.4, 0.0, 0.0, 0.0)])
+    # The stance is a real one now (Ryan, 20 October: lateral motion for the bipeds, on the
+    # funnel-web's planted footwork): the right foot steps back and out as the whole machine
+    # turns ten degrees toward its mark on its planted left foot, braced, the waist's turn on
+    # top of that; the feet stay through the shots and the right one steps home as it comes
+    # back round (_footwork).
+    feet6 = {sd: feet[i] for i, sd in enumerate(("l", "r"))}
+    brace = lambda dz, pitch, yaw=-10.0: (0.0, 0.0, dz, yaw, pitch, 0.0)
+    tracks, body = _footwork(feet6, [(0.3, (0.0,) * 6), (0.5, brace(-2.6, -4.0, -4.0)), (0.8, brace(-2.0, -3.2)), (2.4, brace(-2.2, -3.5)), (2.55, brace(-3.4, -2.0)),
+                                     (2.9, brace(-2.2, -3.4)), (3.35, brace(-3.4, -2.0)), (3.7, brace(-2.2, -3.4)), (4.4, brace(-2.0, -3.0)), (4.7, brace(-2.0, -3.0, -8.0)),
+                                     (5.4, (0.0,) * 6)],
+                             [("r", 0.35, 0.75, ("under", 0.8, (5.0, -8.0)), 6.0), ("r", 4.6, 5.0, ("under", 5.4), 5.0)], until=5.6)
     tracks.update({
-        "waist": [(0.5, -3.0, -16.0, 0.0), (0.8, -2.0, -15.0, 0.0), (2.4, -2.0, -16.0, 0.0), (2.55, 2.0, -15.0, 0.0), (2.9, -2.0, -16.0, 0.0), (3.35, 2.0, -15.0, 0.0),
-                  (3.7, -2.0, -16.0, 0.0), (4.4, -1.0, -15.0, 0.0), (5.4, 0.0, 0.0, 0.0)],   # turned on its mark on the waist, the feet planted; each shot kicks it back
-        "elev_meteor": [(0.4, 0.0), (0.9, 16.0), (2.4, 15.0), (2.5, 6.0), (2.9, 15.0), (3.35, 6.0), (3.75, 15.0), (4.4, 15.0), (5.1, 0.0)],
-        "shoulder_r": [(0.5, 10.0, -50.0, 0.0), (4.4, 12.0, -52.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
-        "shoulder_l": [(0.6, 58.0, -14.0, 0.0), (2.4, 60.0, -16.0, 0.0), (2.55, 55.0, -14.0, 0.0), (3.35, 55.0, -14.0, 0.0), (4.4, 58.0, -15.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
-        "elbow_l": [(0.6, 10.0), (4.4, 12.0), (5.2, 0.0)],
+        "waist": _dense([(0.5, -3.0, -16.0, 0.0), (0.8, -2.0, -15.0, 0.0), (2.4, -2.0, -16.0, 0.0), (2.55, 2.0, -15.0, 0.0), (2.9, -2.0, -16.0, 0.0), (3.35, 2.0, -15.0, 0.0),
+                         (3.7, -2.0, -16.0, 0.0), (4.4, -1.0, -15.0, 0.0), (5.4, 0.0, 0.0, 0.0)]),   # turned on its mark on the waist too; each shot kicks it back
+        "elev_meteor": _dense([(0.4, 0.0), (0.9, 16.0), (2.4, 15.0), (2.5, 6.0), (2.9, 15.0), (3.35, 6.0), (3.75, 15.0), (4.4, 15.0), (5.1, 0.0)]),
+        "shoulder_r": _dense([(0.5, 10.0, -50.0, 0.0), (4.4, 12.0, -52.0, 0.0), (5.2, 0.0, 0.0, 0.0)]),
+        "shoulder_l": _dense([(0.6, 58.0, -14.0, 0.0), (2.4, 60.0, -16.0, 0.0), (2.55, 55.0, -14.0, 0.0), (3.35, 55.0, -14.0, 0.0), (4.4, 58.0, -15.0, 0.0), (5.2, 0.0, 0.0, 0.0)]),
+        "elbow_l": _dense([(0.6, 10.0), (4.4, 12.0), (5.2, 0.0)]),
     })
-    b.act("raise_meteor", 5.6, tracks, body=body,
+    b.act("raise_meteor", 5.6, tracks, body=body, ease="linear",
           glow=[(["tube_mouth"], [(0.6, 0.0), (1.0, 5.0), (1.3, 2.0), (1.6, 7.0), (1.9, 3.0), (2.2, 9.0), (2.4, 9.0), (2.5, 14.0), (2.8, 5.0), (3.3, 9.0),
                                   (3.35, 14.0), (3.7, 5.0), (4.6, 0.0)]),
                 (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)])])
@@ -1980,6 +2258,25 @@ def nemesis(b):
     })
     b.act("crack_shoulders", 6.4, tracks, body=body, heft=0.07,
           glow=[(["core_fire"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])
+    # Squaring up (Ryan, 20 October: lateral motion for an angry boy on planted footwork; a
+    # sideways pace was built first and looked like dancing, so this instead): something comes
+    # at it from its left and it squares up to it, the left foot stamping out wide and back as
+    # the whole machine turns on its planted right foot and drops into the stance, the fists up
+    # before the chest, the torso leaning in and wound a little further on the waist, the core
+    # burning while it glares; then the left foot stamps back round and it stands as it was.
+    TURN = 26.0
+    sq = lambda yaw, dz, pitch=0.0: (0.0, 0.0, dz, yaw, pitch, 0.0)
+    tracks, body = _footwork(feet6, [(0.3, (0.0,) * 6), (0.5, sq(2.0, -0.5)), (0.95, sq(TURN, -3.0, -2.0)), (1.1, sq(TURN, -4.6, -2.5)), (1.4, sq(TURN, -3.4, -2.0)),
+                                     (3.4, sq(TURN + 1.0, -3.6, -2.2)), (3.6, sq(TURN, -3.0, -1.5)), (4.05, sq(1.0, -1.0)), (4.2, sq(0.0, -2.2)), (4.7, (0.0,) * 6)],
+                             [("l", 0.5, 0.95, ("under", 0.95, (-6.0, -6.0)), 7.0), ("l", 3.6, 4.05, ("under", 4.7), 6.0)], until=4.9)
+    GUARD = (22.0, -50.0, 38.0, -2.0)   # the fists clenched before the chest, apart
+    for side in ("l", "r"):
+        g = GUARD if side == "l" else (GUARD[0], -GUARD[1], -GUARD[2], GUARD[3])
+        tracks["shoulder_" + side] = _dense([(0.5, 0.0, 0.0, 0.0), (1.1, g[0], g[1], g[2]), (3.5, g[0] + 2.0, g[1], g[2]), (4.6, 0.0, 0.0, 0.0)])
+        tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.1, g[3]), (3.5, g[3] - 2.0), (4.6, 0.0)])
+    tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.2, -4.0, 8.0, 0.0), (3.4, -5.0, 11.0, 0.0), (3.7, -3.0, 6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])   # leaning in, wound a little further round than the feet
+    b.act("square_up", 5.2, tracks, body=body, ease="linear", heft=0.06,
+          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
     # the body passes over it, lifted and stamped down; the arms swinging evenly against the
@@ -2320,6 +2617,52 @@ def ammit(b):
                 [(back, shut, 0.0, 0.0), (round(home + 0.15, 3), pitch, yaw, 0.0), (2.9, pitch * 0.9, yaw * 0.9, 0.0), (3.7, 0.0, 0.0, 0.0)]
     b.act("threat", 4.4, tracks, body=body, heft=0.05,
           glow=[(["throat_slot", "eye_strip"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (2.5, 10.0), (2.9, 3.0), (3.7, 0.0)])])
+    # Circling (Ryan, 20 October: lateral motion for a creepy stalker, on the funnel-web's
+    # planted footwork): it circles its prey with the snout kept on it, the body sliding round
+    # an arc about a point ahead and turning to face it, the feet and the hands scuttling
+    # sideways under it, the hands two short steps to a foot's one as in its walk (they stand
+    # near straight and could not take a long one); two moves round to one side, a pause, and
+    # two back (Ryan: one each way, through the centre, read weaker). Low and nose down, the
+    # upper claws at their guard
+    # with the talons spread and slowly working, the eyes lit and the throat breathing at the
+    # pauses (_footwork: every hip and shoulder takes the yaw and roll that keep its end
+    # planted and pointing where it landed).
+    P, DZ, PITCH, SWING = 60.0, -2.5, -3.0, 12.0
+    arc = lambda th: (P * math.sin(math.radians(th)), P * (1.0 - math.cos(math.radians(th))), DZ, th, PITCH, 0.0)
+
+    def quarter(t0, th0, th1):
+        """Steps and body keys sliding round from th0 to th1 over 1.4 s from t0: the feet once
+        each, the hands twice, the side it moves toward leading."""
+        lead = "r" if th1 > th0 else "l"
+        trail = "l" if lead == "r" else "r"
+        steps = [(lead, t0, round(t0 + 0.35, 3), ("under", "mid"), 5.0), (trail, round(t0 + 0.7, 3), round(t0 + 1.05, 3), ("under", "mid"), 5.0)]
+        for k, hand in enumerate(("low_" + lead, "low_" + trail, "low_" + lead, "low_" + trail)):
+            ta = round(t0 + 0.175 + k * 0.35, 3)
+            steps.append((hand, ta, round(ta + 0.26, 3), ("under", "mid"), 4.0))
+        return steps, [(t0, arc(th0)), (round(t0 + 1.4, 3), arc(th1))]
+    steps, keys = [], [(0.4, (0.0,) * 6), (0.7, arc(0.0))]
+    for t0, th0, th1 in ((0.7, 0.0, SWING), (2.3, SWING, 2.0 * SWING), (4.3, 2.0 * SWING, SWING), (5.9, SWING, 0.0)):
+        st, ks = quarter(t0, th0, th1)
+        steps += st
+        keys += ks
+    keys += [(7.6, arc(0.0)), (8.1, (0.0,) * 6)]
+    tracks, body = _footwork({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, keys, steps, until=8.3)
+    tracks["waist"] = _dense([(0.6, 0.0, 0.0, 0.0), (1.0, -4.0, 0.0, 0.0), (7.5, -4.0, 0.0, 0.0), (8.0, 0.0, 0.0, 0.0)])   # nose down, the body's turn keeps the snout on the prey
+    for side, y in (("l", 1.0), ("r", -1.0)):
+        tracks["shoulder_" + side] = _dense([(0.5, 0.0, 0.0, 0.0), (1.0, 30.0, 16.0 * y, 0.0), (7.5, 31.0, 17.0 * y, 0.0), (8.1, 0.0, 0.0, 0.0)])   # the threat's guard
+        tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.0, -22.0), (7.5, -23.0), (8.1, 0.0)])
+        tracks["hand_" + side] = _dense([(0.5, 0.0), (1.0, -8.0), (7.5, -9.0), (8.1, 0.0)])
+        for k, (w, (pitch, yaw)) in enumerate((("out", (44.0, 22.0 * y)), ("mid", (-40.0, 0.0)), ("in", (36.0, -8.8 * y)))):
+            half = pitch + (-12.0 - pitch) * 0.5   # halfway to shut
+            ks = [(0.5, 0.0, 0.0, 0.0), (round(1.0 + 0.2 * k, 3), pitch, yaw, 0.0)]
+            t = 1.0 + 0.2 * k
+            while t + 1.4 < 7.3:
+                ks += [(round(t + 0.7, 3), half, yaw * 0.5, 0.0), (round(t + 1.4, 3), pitch, yaw, 0.0)]
+                t += 1.4
+            ks += [(7.5, pitch, yaw, 0.0), (8.1, 0.0, 0.0, 0.0)]
+            tracks["talon_%s_%s" % (side, w)] = _dense(ks)
+    b.act("circle", 8.6, tracks, body=body, ease="linear", heft=0.08,
+          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a four-limbed gait, every foot and talon planted while the body passes over it,
     # the lower arms reaching from further back under the chest; the upper arms held up out
@@ -3322,7 +3665,7 @@ def _steps(limbs, frames):
     return tracks, body
 
 
-def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0, stomp=False):
+def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0, stomp=False, carry=(0.12, 0.76)):
     """A walk worked out foot by foot (Ryan, 4 October, the third pass: legs too fast, the
     weight shift far too pronounced; stomp and plod, mechanical, MechWarrior or Star Wars, not
     Gundam or Evangelion). Each limb's foot stays planted on the ground through its stance,
@@ -3353,8 +3696,19 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     AT-AT's weight, not a plod) lifts each foot briskly and holds it high, then slams it down
     in the last fifth of its swing, and each landing drops the body hard and lets it shudder,
     a rebound and a settle; a limb's "nod" (1 unless given) signs and scales the body's pitch
-    at its landing, so a fore foot can dip the nose and a hind one lift it. Returns (tracks,
-    body, stride) for b.gait with ease "linear" (dense keys, n a cycle)."""
+    at its landing, so a fore foot can dip the nose and a hind one lift it. `carry` is the
+    share of the swing the foot's forward travel takes, (start, length): the foot lifts
+    straight up until `start` of its swing and sets straight down after start + length, and
+    crosses the sweep between, so a wider carry is a slower flick (the Funnel-web, 19
+    October: its feet flicked forward). A limb's "coxa" is a joint between the body and its
+    hip, turning on the limb's own axle, (joint name, pivot, angle): the angle a function of
+    the limb's step phase (0 landing, `duty` lifting off) giving degrees, the coxa's own
+    cyclic motion, and the solver plants the foot under it: the limb's rest points are turned
+    about the pivot by the angle before each solve, so the hip and knee are relative to the
+    coxa, and the foot stays flat under all three (the Funnel-web's row, Ryan's choice of 19
+    October: the leg's base swings back through the stance and forward through the swing,
+    so the whole leg sweeps as one and nothing in it is a bump). Returns (tracks, body,
+    stride) for b.gait with ease "linear" (dense keys, n a cycle)."""
     stride = sweep / duty
     loop = max(int(l.get("cycles", 1)) for l in limbs)   # the most steps any limb takes in a cycle
     landings = sorted({round(((l["phase"] + j) / int(l.get("cycles", 1))) % 1.0, 4) for l in limbs for j in range(int(l.get("cycles", 1)))})
@@ -3370,7 +3724,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         if q < duty:
             return y0 + sw * 0.5 - sw * (q / duty), e[2], True
         s = (q - duty) / (1.0 - duty)
-        u = min(1.0, max(0.0, (s - 0.12) / 0.76))
+        u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
         y = y0 - sw * 0.5 + sw * u * u * (3.0 - 2.0 * u)
         if stomp:
             if s < 0.25:
@@ -3440,12 +3794,20 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     pose = [(rides[i] - crouch - dip * jolts[i], -nod * pitch_jolts[i]) for i in range(n + 1)]
     tracks = {}
     for l in limbs:
-        rows = {"hip": [], "knee": [], "ankle": []}
+        rows = {"hip": [], "knee": [], "ankle": [], "coxa": []}
+        coxa = l.get("coxa")
+        k = int(l.get("cycles", 1))
         for i in range(n + 1):
             p = i / float(n)
             y, z, _down = foot(l, p)
             dz, pitch = pose[i]
-            a, b, c = _limb_angles(l, _to_body(y, z, 0.0, dz, pitch), pitch)
+            if coxa:
+                th = float(coxa[2]((p * k - l["phase"]) % 1.0))
+                a, b, c = _limb_angles(dict(l, at=_turned(l["at"], coxa[1], th)), _to_body(y, z, 0.0, dz, pitch), pitch)
+                c -= th
+                rows["coxa"].append((p, round(th, 3)))
+            else:
+                a, b, c = _limb_angles(l, _to_body(y, z, 0.0, dz, pitch), pitch)
             rows["hip"].append((p, round(a, 3)))
             rows["knee"].append((p, round(b, 3)))
             rows["ankle"].append((p, round(c, 3)))
@@ -3453,8 +3815,310 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         tracks[l["knee"]] = (rows["knee"], 0.0)
         if l.get("ankle"):
             tracks[l["ankle"]] = (rows["ankle"], 0.0)
+        if coxa:
+            tracks[coxa[0]] = (rows["coxa"], 0.0)
     body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
     return tracks, body, stride
+
+
+def _turned(at, pivot, degrees):
+    """A limb's (hip, knee, end) rest points turned `degrees` about `pivot` on the limb's
+    axle (x; positive raises the forward end, the joints' own sense), for a solve under a
+    coxa that has turned so far."""
+    c, s = math.cos(math.radians(degrees)), math.sin(math.radians(degrees))
+    out = []
+    for px, py, pz in at:
+        dy, dz = py - pivot[1], pz - pivot[2]
+        out.append((px, pivot[1] + dy * c - dz * s, pivot[2] + dy * s + dz * c))
+    return tuple(out)
+
+
+def _pivot(limbs, roots, yaw, pose, groups, until, lift=7.0, hz=20.0):
+    """Leg tracks and body keys for an act that turns a walker on the spot in quick steps
+    (the Funnel-web's skitter, Ryan, 19 and 20 October: a shuffle whose planted feet slid
+    was no shuffle). Each leg has a yaw joint at its root ("yaw_" + its name, about up) over
+    its planar chain, so its plane can turn: for a planted foot the yaw is solved each frame
+    to keep the foot's world position in the leg's plane while the body yaws under it, and
+    the planar solver takes the rest, so nothing slides. `yaw` is the body's yaw over the
+    act as (t, degrees) keys, `pose` its (t, (dy, dz, pitch)) keys, `groups` the rounds of
+    steps as (t0, t1, order): over t0..t1 each foot of `order` steps once in its own slot,
+    lifted `lift` and set down where it stands at rest under the body as it will be at t1,
+    so a round ends with every leg at rest under the turned body; `until` ends the keys.
+    `limbs` maps a leg's name to its limb as _plant takes it, `roots` to its yaw joint's
+    pivot. Dense keys, for ease "linear"."""
+    def at(keys, t):
+        return _lerp_keys(keys, t)
+    def pose_at(t):
+        ks = sorted(pose)
+        if t <= ks[0][0]:
+            return ks[0][1]
+        for (t0, a), (t1, c) in zip(ks, ks[1:]):
+            if t <= t1:
+                u = (t - t0) / max(1e-9, t1 - t0)
+                return tuple(x + (y - x) * u for x, y in zip(a, c))
+        return ks[-1][1]
+    def rot(v, deg):
+        c, s_ = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+        return (v[0] * c - v[1] * s_, v[0] * s_ + v[1] * c)
+    # Where each foot stands in the world (horizontal) at a time, and its leg's own
+    # placement plan: before its step in a round it stands where the round began, after it
+    # where the round ends; between rounds every foot stands at rest under the body.
+    steps = {}   # leg -> [(t_lift, t_land, yaw_before, yaw_after)]
+    for t0, t1, order in groups:
+        dt = (t1 - t0) / len(order)
+        for k, leg in enumerate(order):
+            a = t0 + k * dt
+            steps.setdefault(leg, []).append((a + dt * 0.08, a + dt * 0.92, at(yaw, t0), at(yaw, t1)))
+    def world_foot(leg, t):
+        """The foot's world (x, y) at t, planted; or (old, new, u) while it is in the air."""
+        e = limbs[leg]["at"][2]
+        rest = (e[0], e[1])
+        stood = 0.0
+        for t_lift, t_land, y0, y1 in steps.get(leg, []):
+            if t < t_lift:
+                break
+            if t < t_land:
+                return (rot(rest, stood), rot(rest, y1), (t - t_lift) / (t_land - t_lift))
+            stood = y1
+        return rot(rest, stood)
+    def solve(leg, fw, theta, prev):
+        """The leg's yaw (degrees) and its planar foot target (y) for a world foot `fw`
+        under a body yawed `theta`: the one solution nearest `prev`."""
+        r = roots[leg]
+        e = limbs[leg]["at"][2]
+        ex = e[0] - r[0]
+        rw = rot((r[0], r[1]), theta)
+        v = (fw[0] - rw[0], fw[1] - rw[1])
+        rho = math.hypot(v[0], v[1])
+        beta = math.atan2(v[1], v[0])
+        g = math.acos(max(-1.0, min(1.0, ex / rho)))
+        best = None
+        for alpha in (beta - g, beta + g):
+            phi = math.degrees(alpha) - theta
+            phi = (phi + 180.0) % 360.0 - 180.0
+            if best is None or abs(phi - prev) < abs(best[0] - prev):
+                y_leg = -v[0] * math.sin(alpha) + v[1] * math.cos(alpha)
+                best = (phi, r[1] + y_leg)
+        return best
+    tracks = {}
+    for leg, l in limbs.items():
+        for jn in ("yaw_" + leg, l["hip"], l["knee"], l["ankle"]):
+            tracks[jn] = []
+    body = []
+    n = int(round(until * hz))
+    prev = {leg: 0.0 for leg in limbs}
+    for i in range(n + 1):
+        t = round(i / hz, 3)
+        theta = at(yaw, t)
+        dy, dz, pitch = pose_at(t)
+        for leg, l in limbs.items():
+            e = l["at"][2]
+            fw = world_foot(leg, t)
+            if isinstance(fw[0], tuple):
+                old, new, u = fw
+                p0, p1 = solve(leg, old, theta, prev[leg]), solve(leg, new, theta, prev[leg])
+                w = u * u * (3.0 - 2.0 * u)
+                phi = p0[0] + (p1[0] - p0[0]) * w
+                y = p0[1] + (p1[1] - p0[1]) * w
+                z = e[2] + lift * math.sin(math.pi * u)
+            else:
+                phi, y = solve(leg, fw, theta, prev[leg])
+                z = e[2]
+            prev[leg] = phi
+            a, k, c = _limb_angles(l, _to_body(y, z, dy, dz, pitch), pitch)
+            tracks["yaw_" + leg].append((t, round(phi, 3)))
+            tracks[l["hip"]].append((t, round(a, 3)))
+            tracks[l["knee"]].append((t, round(k, 3)))
+            tracks[l["ankle"]].append((t, round(c, 3)))
+        body.append((t, 0.0, round(dy, 3), round(dz, 3), round(theta, 3), round(pitch, 3), 0.0))
+    return tracks, body
+
+
+
+def _leg_fk6(leg, q, body):
+    """Where a hip-rooted leg puts its ankle (the model's axes), which way its foot's up faces
+    and which way its foot points (Godot's axes): `q` the hip's (pitch, yaw, roll), the knee's
+    pitch and the ankle's (pitch, roll), `body` the body's (dx, dy, dz, yaw, pitch, roll); the
+    engine's own sums, so a foot planted here stays planted there."""
+    h, k, e = (_godot(p) for p in leg)
+    rh, rk, ra = _basis(q[0], q[1], q[2]), _basis(q[3], 0.0, 0.0), _basis(q[4], 0.0, q[5])
+    rb = _basis(body[4], body[3], body[5])
+    ke = _mv(rk, tuple(e[i] - k[i] for i in range(3)))
+    he = _mv(rh, tuple(k[i] - h[i] + ke[i] for i in range(3)))
+    w = _mv(rb, tuple(h[i] + he[i] for i in range(3)))
+    w = (w[0] + body[0], w[1] + body[2], w[2] - body[1])
+    r = _mm(_mm(_mm(rb, rh), rk), ra)
+    return (w[0], -w[2], w[1]), _mv(r, (0.0, 1.0, 0.0)), _mv(r, (0.0, 0.0, -1.0))
+
+
+def _leg_newton6(leg, target, heading, body, q0):
+    """The six angles (_leg_fk6's q) that put a leg's ankle on `target` (the model's axes)
+    with its foot flat and pointing `heading` (degrees about up, positive to the left), under
+    a body posed `body`; Newton's method from `q0`."""
+    d = (-math.sin(math.radians(heading)), math.cos(math.radians(heading)))
+    def res(q):
+        p, up, fw = _leg_fk6(leg, q, body)
+        fm = (fw[0], -fw[2])
+        return [p[0] - target[0], p[1] - target[1], p[2] - target[2], up[0] * 30.0, up[2] * 30.0, (fm[0] * d[1] - fm[1] * d[0]) * 30.0]
+    q = list(q0)
+    for _ in range(60):
+        f = res(q)
+        if max(abs(v) for v in f) < 1e-6:
+            break
+        jac = []
+        for j in range(6):
+            dq = list(q)
+            dq[j] += 1e-4
+            f2 = res(dq)
+            jac.append([(f2[i] - f[i]) / 1e-4 for i in range(6)])
+        m = [[jac[j][i] for j in range(6)] + [-f[i]] for i in range(6)]
+        for c in range(6):
+            r = max(range(c, 6), key=lambda r: abs(m[r][c]))
+            m[c], m[r] = m[r], m[c]
+            if abs(m[c][c]) < 1e-12:
+                raise ValueError("a leg pose with no solution near the last")
+            for r in range(6):
+                if r != c:
+                    k = m[r][c] / m[c][c]
+                    m[r] = [m[r][i] - k * m[c][i] for i in range(7)]
+        step = [m[i][6] / m[i][i] for i in range(6)]
+        q = [q[i] + max(-10.0, min(10.0, step[i])) for i in range(6)]
+    f = res(q)
+    if math.hypot(f[0], f[1], f[2]) > 0.05 or max(abs(v) for v in f[3:]) > 0.03:
+        raise ValueError("a planted foot out of reach at %s" % (tuple(round(v, 1) for v in target),))
+    return q
+
+
+def _leg_ik6(leg, target, heading, body, q0, fold):
+    """_leg_newton6 from `q0`, the knee tried bent each way too and kept on the side it was
+    (or on `fold`, the leg's own side, from straight)."""
+    want = 1.0 if q0[3] > 1.0 else -1.0 if q0[3] < -1.0 else fold
+    first = None
+    for seed in (q0, [q0[0], q0[1], q0[2], q0[3] + 20.0 * want, q0[4] - 10.0 * want, q0[5]],
+                 [q0[0], q0[1], q0[2], q0[3] - 20.0 * want, q0[4] + 10.0 * want, q0[5]]):
+        try:
+            q = _leg_newton6(leg, target, heading, body, seed)
+        except ValueError:
+            continue
+        if abs(q[3]) < 1.0 or q[3] * want > 0.0:
+            return q
+        first = first or q
+    if first is None:
+        raise ValueError("a planted foot out of reach at %s" % (tuple(round(v, 1) for v in target),))
+    return first
+
+
+def _footwork(limbs, body, steps, until, hz=30.0):
+    """Leg tracks and body keys for an act that moves a walker's body about over planted feet
+    and steps some of them (Ryan, 20 October: the funnel-web's planted pivot for the rest of
+    the walkers; the Armadillo comes about, the Nemesis paces and braces, the Ammit circles
+    its prey), the body free in every axis. `body` is its keys as (t, (dx, dy, dz, yaw,
+    pitch, roll)), straight between them; `steps` the steps as (name, t_lift, t_land, where,
+    lift), `where` ("under", t) for the foot's rest point under the body as it stands at t,
+    ("under", t, (ox, oy)) that point moved (ox, oy) in the body's frame, ("under", "mid")
+    the point under the body halfway between this landing and the limb's next lift (or at
+    `until`), so a foot is never further from its rest than half the travel between its
+    steps, or ("world", x, y) a point on the ground; the foot lands pointing the way the
+    body faces there. Every limb is hip-rooted ("hip", "knee", "ankle", "at" as _plant
+    takes it): the hip's own pitch, yaw and roll keep its foot where it stands and pointing
+    where it landed, the knee and the ankle take the rest and the foot stays flat (the
+    engine's own sums, _leg_fk6, so a planted foot stays planted). Dense keys at `hz` a
+    second, for ease "linear". Returns joint -> keys and the body keys."""
+    def pose_at(t):
+        if t <= body[0][0]:
+            return body[0][1]
+        for (t0, a), (t1, c) in zip(body, body[1:]):
+            if t <= t1:
+                u = (t - t0) / max(1e-9, t1 - t0)
+                return tuple(x + (y - x) * u for x, y in zip(a, c))
+        return body[-1][1]
+    def rot(v, deg):
+        c, s_ = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+        return (v[0] * c - v[1] * s_, v[0] * s_ + v[1] * c)
+    def under(name, t, off=(0.0, 0.0)):
+        e = limbs[name]["at"][2]
+        p = pose_at(t)
+        x, y = rot((e[0] + off[0], e[1] + off[1]), p[3])
+        return (x + p[0], y + p[1]), p[3]
+    bylimb = {name: [] for name in limbs}
+    for name, t_lift, t_land, where, lift in steps:
+        bylimb[name].append((t_lift, t_land, where, lift))
+    plan = {}
+    for name, ss in bylimb.items():
+        ss.sort()
+        plan[name] = []
+        for i, (t_lift, t_land, where, lift) in enumerate(ss):
+            if where[0] == "under":
+                at = where[1]
+                if at == "mid":
+                    at = (t_land + ss[i + 1][0]) / 2.0 if i + 1 < len(ss) else until
+                xy, h = under(name, at, where[2] if len(where) > 2 else (0.0, 0.0))
+            else:
+                xy, h = (where[1], where[2]), pose_at(t_land)[3]
+            plan[name].append((t_lift, t_land, xy, h, lift))
+    def foot_at(name, t):
+        e = limbs[name]["at"][2]
+        xy, h = (e[0], e[1]), 0.0
+        for t_lift, t_land, xy1, h1, lift in plan[name]:
+            if t < t_lift:
+                break
+            if t < t_land:
+                u = (t - t_lift) / (t_land - t_lift)
+                w = u * u * (3.0 - 2.0 * u)
+                return (xy[0] + (xy1[0] - xy[0]) * w, xy[1] + (xy1[1] - xy[1]) * w), h + (h1 - h) * w, e[2] + lift * math.sin(math.pi * u)
+            xy, h = xy1, h1
+        return xy, h, e[2]
+    tracks = {}
+    for l in limbs.values():
+        for j in ("hip", "knee", "ankle"):
+            tracks[l[j]] = []
+    fold = {}
+    for name, l in limbs.items():
+        e = l["at"][2]
+        fold[name] = 1.0 if _limb_angles(l, (e[1], e[2] + 3.0), 0.0)[1] > 0.0 else -1.0
+    prev = {name: [0.0] * 6 for name in limbs}
+    out = []
+    n = int(round(until * hz))
+    for i in range(n + 1):
+        t = round(i / hz, 3)
+        p = pose_at(t)
+        for name, l in limbs.items():
+            (x, y), h, z = foot_at(name, t)
+            q = _leg_ik6(l["at"], (x, y, z), h, p, prev[name], fold[name])
+            prev[name] = q
+            tracks[l["hip"]].append((t, round(q[0], 3), round(q[1], 3), round(q[2], 3)))
+            tracks[l["knee"]].append((t, round(q[3], 3)))
+            tracks[l["ankle"]].append((t, round(q[4], 3), 0.0, round(q[5], 3)))
+        out.append((t,) + tuple(round(v, 3) for v in p))
+    return tracks, out
+
+
+def _dense(keys, hz=30.0):
+    """Sparse keys (t, v...) resampled `hz` a second with a smooth step between each pair,
+    for the other tracks of an act keyed linear for its dense planted legs, so they keep the
+    smooth ease they would have had."""
+    out = []
+    t0, t1 = keys[0][0], keys[-1][0]
+    n = int(round((t1 - t0) * hz))
+    for i in range(n + 1):
+        t = round(t0 + i / hz, 3)
+        for a, c in zip(keys, keys[1:]):
+            if a[0] <= t <= c[0]:
+                u = (t - a[0]) / max(1e-9, c[0] - a[0])
+                w = u * u * (3.0 - 2.0 * u)
+                out.append((t,) + tuple(round(x + (y - x) * w, 3) for x, y in zip(a[1:], c[1:])))
+                break
+    return out
+
+def _coxa_row(duty, row):
+    """A coxa's row for _plant: `row` degrees forward as the foot lands, swung smoothly back
+    to `row` degrees behind as it lifts off, and forward again through the swing, each half
+    a cosine so the base never snaps (the Funnel-web, 19 October)."""
+    def angle(q):
+        if q < duty:
+            return row * math.cos(math.pi * q / duty)
+        return -row * math.cos(math.pi * (q - duty) / (1.0 - duty))
+    return angle
 
 
 def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0, reach=0.97, smooth=0.03, n=160, thud=False, airborne=None):

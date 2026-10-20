@@ -377,3 +377,25 @@ the engine has it (the to-do). The maker's trio (the Clydesdale, the Prairie Dog
 of the Repeater, since the 13 October report predates the harpoon's Shock (15 October): the
 Harpoon 9% (17%), the Twin Autoguns 23% (16%), the Ankle Mortar 8% (5%), the Repeater 6%
 (8%), rerolls 1.97 a round (2.30). Bible section 7, the Prairie Dog row.
+
+## 18 October, the funnel-web alone
+
+**The funnel-web's row alone, a diagnostic the day its engine landed.** `tools/balance.gd
+--rows funnel_web --seeds 30`, both rungs, the stock stand-ins (the Web Bomb, the Maxigun, the
+Howitzer, the Twin Autoguns, the Laminar Deflector), the bot valuing a bite by Vitriol's ticks
+on the hull the blow leaves and a web by the blows its burst stops. Thirty seeds: a direction.
+Random / greedy win rates: 0 / 0 against the Goblins, the Revenants, the Salamanders and every
+formation; 7 / 87 the Gels, 80 / 90 the Needlers, 67 / 97 the Antlions, 10 / 13 the Bombs,
+13 / 87 the Treant, 3 / 37 the Sandworm, 13 / 87 the Bone Wyvern, 0 / 3 the Magma Golem; 100 /
+100 against the Dire Wolves, the Mandragoras, the Cockatrices, the Ghosts and the Drakes. Pick
+share, greedy: Web Bomb 30%, Maxigun 30%, Howitzer 21%, Laminar Deflector 11%, Twin Autoguns
+7%; 0.92 rerolls a round.
+
+Read: alone it is a plain d5 with a web and loses where every machine alone loses, which is
+tier two's shape and what the brief said. Alone, every foe aims at it, so the ambush bites
+only through the window its own web opens (the webbed foe held the round after shows no
+intent) and the row cannot read the passive; the web's third of its spends is the die's odds
+(one entry in five, rerolled toward) and the bot's valuation of a stun it can always use, no
+must-pick read, since no team row ran. The reads the bible's funnel-web row asks for (the
+share of its blows that bite, the web's share in formation fights, the Baboon pairing) are
+team rows at 200 seeds, after the stock pass; the runner does not yet count the bites.

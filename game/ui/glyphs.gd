@@ -82,6 +82,27 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# A suppress ring with a bar across it: the stun it shrugs off.
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)
 			ci.draw_line(c + Vector2(-s * 0.55, 0.0), c + Vector2(s * 0.55, 0.0), color, width * 1.4)
+		"web":
+			# A web: three threads through the centre and two rings of silk, drawn as hexagons
+			# (the funnel-web's Web Bomb and the Webbed it leaves, 18 October).
+			for i in range(3):
+				var a := PI / 6.0 + i * PI / 3.0
+				ci.draw_line(c + Vector2(cos(a), sin(a)) * s, c - Vector2(cos(a), sin(a)) * s, color, width * 0.8)
+			for r in [s * 0.42, s * 0.86]:
+				var ring := PackedVector2Array()
+				for i in range(7):
+					var a := PI / 6.0 + i * PI / 3.0
+					ring.append(c + Vector2(cos(a), sin(a)) * r)
+				ci.draw_polyline(ring, color, width * 0.9)
+		"vitriol":
+			# Acid: a drop, point up, over two pits it has eaten into the plate beneath (the
+			# funnel-web's Vitriol, 18 October). The hollow flame stays Burn's.
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(0, -s), c + Vector2(s * 0.55, -s * 0.05), c + Vector2(s * 0.45, s * 0.35),
+				c + Vector2(0, s * 0.55), c + Vector2(-s * 0.45, s * 0.35), c + Vector2(-s * 0.55, -s * 0.05), c + Vector2(0, -s),
+			]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.95, s * 0.9), c + Vector2(-s * 0.35, s * 0.9), color, width * 0.9)
+			ci.draw_line(c + Vector2(s * 0.35, s * 0.9), c + Vector2(s * 0.95, s * 0.9), color, width * 0.9)
 		"self":
 			# One machine, ringed: this component reaches only its own.
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 24, color, width * 0.8)
@@ -271,13 +292,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD
