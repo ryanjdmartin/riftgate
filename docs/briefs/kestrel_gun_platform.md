@@ -225,12 +225,24 @@ Every number a placeholder; the name and the look Ryan's.
   Cassowary on Rapid (steps), the line frame on its combo (blows, if its session takes the
   lever), the platform on rerolls (rolls).
 
+## The line review (Claude, 20 October)
+
+The design stands as the fifth round left it. Two settlements proposed by the review
+(`kestrel_line.md`): no multi-strike vent in the pool, since only the platform wants one (the
+Puffin's passive fires once a spend whatever a shield's strikes, so a multi-hit shield is the
+platform's alone too, and a piece one machine wants is a lock or nothing: the three-strike
+shield is its lock, the vent is nothing); and the own reroll as the passive's clause (its
+floor), with a Kestrel reroll module (one free reroll of this die a round, its stat line paid)
+as its second and the chase, per the row's own-rerolls-as-a-number home, which also serves the
+Sparrowhawk's fishing and the Armadillo's. The stock holes the review names for it: the
+Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
+
 ## Open for the session
 
 1. Ryan's call on growth with the own reroll as its engine (the fifth round), the
    three-strike shield as its lock, and the numbers.
-2. Whether the own reroll is the passive's clause or a Kestrel module's, and what the
-   commander's refit adds once that layer exists.
+2. The own reroll as the passive's clause with a Kestrel reroll module as its second (the
+   line review's lean, 20 October), and what the commander's refit adds once that layer exists.
 2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
 3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
 

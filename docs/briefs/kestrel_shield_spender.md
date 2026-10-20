@@ -355,13 +355,28 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
 - Claude, 19 October: recorded as the reason in the briefs README (a tier-one body from more
   than one maker) and the Aphelion defensive tier one as a line for Aphelion's session.
 
+## The sixth round: the line review (Claude, 20 October)
+
+Under the action economy's direction the off-tank's lock is the model combined entry (two
+effects on one spend, a lure that regens itself) and is never Rapid; the package stands as
+Ryan's. The review read the plate's arithmetic against the foes as they are: a blow of 5 past
+the plate is nothing, of 10 is 5, of 20 is 15, of 30 is 25, so while its shield stands it halves
+the packs that strike for 10 (wolves, gels, mandragoras, needlers, cockatrices, ghosts: six of
+the eighteen wildlife) and shrugs their 5s, which with a lure and a stacking regen of 10 a
+round is a wall against those packs, and a tank's job; against a swarm it is no wall (six
+goblins strike 30 each with their swarm, 25 past the plate, 150 a round onto a lured shield of
+80), nor against the big foes (a Sandworm's 40 is 35). The lever if the wall reads wrong in
+play: the plate's number (3, by the scales question) before the regen's stacking (renew). Its
+stock wants a step between the Carbine's 5 heat and the Railgun's 40, a mid-heat Kestrel gun
+the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 more and a zap of
+20), and the Railgun kept as its big hot shot. The vent-dead hole stands as a direction refused.
+
 ## Open for the session
 
 1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
    reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and
    Ryan's go. The capacitor of the second round stays on the bench (overshield as ammunition).
-2. Whether the interceptor becomes a brief of its own (the Sparrowhawk's rework and the gun
-   platform have theirs since 19 October).
+2. The interceptor has a brief of its own since 20 October (`kestrel_interceptor.md`).
 
 ## Holes already raised
 

@@ -43,27 +43,34 @@ document's job and every command are in `README.md`.
   proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
   Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
   proposed for the go; the shield-spender an off-tank package at tier one on Ryan's word (a
-  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a whole,
-  heavy proposed and the capital ship; two briefs of their own, `kestrel_gun_platform.md` (the
-  capstone, Ryan's shape: every roll of its die grows its entries, lock or ride) and
-  `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat, dark two rounds, a locked
-  reset gun whose kill brings every weapon back; hull 30 decided); the interceptor (its first
-  weapon each round Rapid) in the README's tiers table, no brief yet; Ryan's leans recorded
-  (overlap is fine if the shapes differ, rerolls Kestrel's, a second tier-one lure so the
-  Armadillo is no must-pick, Aphelion to need a defensive tier one, the mode-shifter to
-  Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's direction
-  goes to main before anything else does any work) and kept open for the Kestrel line
-  review. The eighth round (19 October) in the platform's brief: no doubled
-  payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
-  (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
-  chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
-  Ryan's deep-dive ask on the action economy, answered in the briefs README (Rapid sells five
-  wants, four carriers ungated, a home for each want other than more Rapid pieces, the
-  commander layer among them), and the platform's engine moved from Rapid to rerolls (an own
-  reroll a round, the throttle retired, the three-strike shield its lock). Docs only; nothing
-  built, nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To
-  resume: Ryan's calls in the open Kestrel briefs, then on his go the records each brief's
-  "What the session hands back" lists.
+  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a
+  whole, heavy proposed and the capital ship; two briefs of their own,
+  `kestrel_gun_platform.md` (the capstone, Ryan's shape: every roll of its die grows its
+  entries, lock or ride) and `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat,
+  dark two rounds, a locked reset gun whose kill brings every weapon back; hull 30 decided);
+  the interceptor (its first weapon each round Rapid) in the README's tiers table, no brief
+  yet; Ryan's leans recorded (overlap is fine if the shapes differ, rerolls Kestrel's, a second
+  tier-one lure so the Armadillo is no must-pick, Aphelion to need a defensive tier one, the
+  mode-shifter to Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's
+  direction goes to main before anything else does any work) and kept open for the Kestrel line
+  review. The eighth round (19 October) in the platform's brief: no doubled payout, multi-hit
+  pieces its payoffs, the three shapes of the gamble with their arithmetic (growth,
+  half-strikes, whole stacks), and a Rapid census across the branches (four chassis chase Rapid
+  pieces first, in three makers, for five pieces). The ninth round (20 October): Ryan's
+  deep-dive ask on the action economy, answered in the briefs README (Rapid sells five wants,
+  four carriers ungated, a home for each want other than more Rapid pieces, the commander layer
+  among them), and the platform's engine moved from Rapid to rerolls (an own reroll a round,
+  the throttle retired, the three-strike shield its lock). Docs only; nothing built, nothing in
+  content. Main merged in on 19 October (the Wainwright & Sutler goes). To resume: Ryan's calls
+  in the open Kestrel briefs, then on his go the records each brief's "What the session hands
+  back" lists. The tenth round (20 October), after the direction reached main: the Kestrel line
+  review in `docs/briefs/kestrel_line.md` (each of the eight machines read under the direction,
+  the overlap map, the stock holes by kind, the two free slots, the stale records), a brief for
+  the interceptor (`kestrel_interceptor.md`: the dive as its lock, the caster-killer niche
+  moved there from the Sparrowhawk's rework) and a round in each Kestrel brief (the bomber's
+  mark gated and Chain in mines; the Goshawk's cold stock; the Puffin's Diffuser as a combined
+  entry; the platform's settlements). Proposals, waiting on Ryan's calls; on the branch, not on
+  main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

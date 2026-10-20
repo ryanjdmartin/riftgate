@@ -189,6 +189,20 @@ rounds, 8,000 fights, cautious unless marked.
   matter, a steady doubled gun on the boss, and the execute as the blueprint that makes it
   the caster-killer again by choice.
 
+## The line review (Claude, 20 October)
+
+Under the action economy's direction (the bible's row, section 5) the chain is a cooldown
+burst gated by a kill, the row's own shape, and the act-again on a kill runs on Rapid's path
+without being a Rapid piece; the design stands as the section below spells it. Open item 2 is
+answered by the line (`kestrel_line.md`): the caster-killer niche goes to the interceptor's
+dive (`kestrel_interceptor.md`, a Direct gun spent on a back-rank foe through a standing front
+at the front foe's blow), so the Sparrowhawk is the trash chain in the fights that matter and
+the steady doubled gun on the boss, and the dive is a lock, never a stock piece. Its cold hard
+hitters stay other makers' by design (no Kestrel hole). On its go two records move: the to-do's
+stock pass line (the Pinion Driver fixed on the Sparrowhawk, the Goshawk's hardpoint a basic)
+and the bible's stock-pass row, superseded by the reset gun as the lock and the Driver as a
+tier-two or tier-three blueprint.
+
 ## The design as it stands (Claude's spec on Ryan's direction, 19 October)
 
 - **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
@@ -214,8 +228,8 @@ rounds, 8,000 fights, cautious unless marked.
 1. Ryan's call on the reset gun as the lock (the chain capped at two, the Pinion Driver to
    the pool) and the numbers: the flat heat, the tax, the heat maximum, the dark rounds, the
    lock's number; a shield on kill or none.
-2. The niche (the caster-killer) now that the finisher's reach is gone with the lock: the dive
-   as a stock piece, or the chain its whole niche.
+2. The niche: the line review (20 October) sends the caster-killer to the interceptor's dive
+   and leaves this machine the chain; Ryan's call.
 3. When it moves: after a Kestrel tier one lands for the tender.
 
 ## Holes already raised

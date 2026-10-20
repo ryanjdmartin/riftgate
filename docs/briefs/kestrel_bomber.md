@@ -255,6 +255,26 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
   numbers move to hull 110, shield 70, move 40 (a heavy that keeps Kestrel's pace), heat 80,
   cooling 5, recharge 25, armour 0 (shield for plate, as every Kestrel), the d6 kept.
 
+## The line review (Claude, 20 October)
+
+Two items under the action economy's direction (the bible's row, section 5).
+
+- **The mark's gate.** "Rapid, cooldown 1" is the switch-off (the rules: every Rapid piece
+  today carries a cooldown of one, the entry switching off for the round), so the mark as
+  written is one of the ungated Rapid pieces the row re-prices, free every round it shows, and
+  this brief's "a free mark every other round" misread the cooldown (every other round is a
+  cooldown of two). Proposed: the mark Rapid while a mine waits on the field, a setup gate of
+  the Paradox's shape, so marking is free only once the bomber has invested a spend in a slot
+  and is a full action before; its tempo grows with its investment, which is the identity.
+  Bench: the mark as a combined entry, a weapon of 5 that Marks, no Rapid, never a dead spend.
+- **Chain in mines.** The 15 October reading made Lure, Disrupt and Chain inert on a laid shot
+  because the round they work in is over; that is true of the two intents and not of Chain,
+  which repeats a kill. Proposed: a Chain mine that kills its arrival repeats the attack on the
+  next foe in reach, rolling and paying its heat again to the bomber in the reinforcement step
+  (the heat sits on the gauge until the next END TURN, so nothing burns out of turn). The Arc
+  Fault Cannon is then Kestrel's own bomb, the lightning mine, and the bomber's stock carries a
+  Kestrel piece beside the other makers' keyword pieces. Lure and Disrupt stay inert.
+
 ## Holes already raised
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
@@ -276,6 +296,8 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
    the pull Indirect, never Rapid; mines stack and blow in laid order; the mark in its third
    form (the next weapon to kill the marked foe leaves its shot in the slot), the second if it
    proves too strong; Marked feeds the Paradox like any status, tuned later.
+2. The line review's two items (20 October): the mark gated (Rapid while a mine waits on the
+   field) and Chain live in mines.
 
 ## Waits on
 

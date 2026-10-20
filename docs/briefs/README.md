@@ -142,7 +142,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free) | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid, Ryan, 18 October: a great tier-one design; the dive as its lock proposed 20 October) | Goshawk, Puffin, Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor's dive, proposed 20 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (growth on every roll with its own reroll, Ryan's shape, proposed 19 and 20 October) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -171,7 +171,11 @@ Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomb
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
 team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October;
-Kestrel's, Ryan, 19 October: the gun platform proposed in `kestrel_gun_platform.md`).
+Kestrel's, Ryan, 19 October: the gun platform proposed in `kestrel_gun_platform.md`). A priced
+back-rank reach (the interceptor's dive, proposed 20 October: through a standing front at the
+front foe's blow, where the artillery makers' Indirect is free). Kestrel's stock holes by kind
+(a multi-strike gun, a mid-heat gun, a reroll module, the Diffuser and the Deflector re-priced,
+Chain in mines) are in `kestrel_line.md` for the stock pass.
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
 (Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
 if one is ever wanted; a planned chassis is never dealt, so its deal is the Prairie Dog or the
@@ -289,6 +293,8 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
+| `kestrel_interceptor.md` | proposal (the passive Ryan's, 18 October; the kit, 20 October) | Kestrel | 1 | Ryan's call on the dive |
+| `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots | Kestrel | all | Ryan's calls |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
@@ -401,7 +407,7 @@ overrule)
 ## A suggested order
 
 1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
-   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
+   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the interceptor, the bomber,
    the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
    landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.

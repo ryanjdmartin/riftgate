@@ -154,6 +154,20 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   (the bounce); beside the Puffin with the Overcharge Coil (the doubling of a flat buff); the
   spray's pick share against a full front and against a thinned one.
 
+## The line review (Claude, 20 October)
+
+Under the action economy's direction (the bible's row, section 5) the strafer is the home of
+the many-blows want: a design that wants many blows is pointed at strikes, and this is the
+machine whose every weapon strikes. It stands as proposed for the go. The review re-flags the
+start's hole with its root named: with basics alone it gains nothing against bare foes (a
+basic halved and struck twice is the basic) and loses against plate (a halved basic is 5,
+today's armour is 5), so its identity shows on the die (5 ×2, the spray) and its payoff waits
+on riders (Burn and Flak a strike), flat buffs (the Puffin's Coil counted twice) and
+multi-strike pieces, which are cross-maker by design; the root is section 12's scales
+question, never an exception on the passive. The line review (`kestrel_line.md`) asks the
+stock pass for a Kestrel multi-strike gun of its own (flat and hot, parted from the Maxigun),
+so one payoff is Kestrel's. Nothing else moves.
+
 ## Open for the session
 
 1. Ryan's call on the proposal above: its numbers and the lock's, its size and way of moving
