@@ -231,13 +231,52 @@ the passive), the equipment slots (the combat half), three locked pieces (the ma
 resupply, the dock) and two or three plain hardpoints, a die of eight or nine, the capstone's
 complexity; the revive its own brief.
 
+Ryan, 20 October, later: "I like Albatross, even though it doesn't technically fly. I'll take
+other suggestions, though. Explain your point about the manifest slots. You're saying give them
+a build rule that excludes weapons? Why, exactly? Dock all - It certainly can be only not-acted
+allies that fly in. Makes sense. But when the carrier is gaining no additional mitigation and
+luring all, is that not enough of a penalty? Regarding phased, I had been trying to find a way
+to make it fair and not just 'invulnerable.' What I had landed on in my head was 'invulnerable
+this round, and loses its next action.' Which could be this turn, or the next turn. But I
+didn't like how that could make the invulnerability offset from the no-combat clause. The
+alternative is obviously that a unit who has acted cannot be Phased, which is the exact
+argument above. What are our three verbs that preclude including the revive?"
+
+Claude, the same day. The slots: the equipment-only reading withdrawn. Ryan's quotation marks
+meant slots whose entries are hand-overs, not a kind restriction, and a slot that refuses
+weapons would break "any component in any slot" (the chassis file's first line) for one
+machine; the gates the slots carry (the entry must show, once a piece a skirmish, the piece
+leaving the carrier's die) bound a lent gun as well as a lent vent, and a flat gun on the
+Sparrowhawk at die odds once a fight is a pairing for the runner to read, not a chase. The
+dock: both prices stand, and they are one rule of Phased's: Phased is granted only to a unit
+that has not acted this round, so it always costs the action it protects (Ryan's second form;
+his first, invulnerable now and the next action lost, offsets the two halves, as he saw), and
+the lure-all onto an unmitigated carrier is the second price, real against a swarm (it can die
+there) and small against a boss, where the first price, the team's whole turn, is the one that
+holds. Written on Phased, the rule fixes every grant of it (Aphelion's Sublimator too) and the
+dock needs no clause of its own. The revive: the three verbs were the mark, the resupply and
+the dock, beside the carry and the slots, five things to learn already; but a carrier recovers
+what it launches, and the look's crane with its hook is the tell, so the resupply and the
+revive fold into one locked piece, the recovery: an ally regains its shield to the maximum,
+sheds all its heat and is cleansed; a wrecked ally instead returns with full shield and 10%
+hull, once a skirmish for a wreck; one cooldown. It bends "damage sticks" (section 4) at 10%
+hull, the capstone's privilege, the row carrying the exit (if a recovered wreck makes the wipe
+a non-event in the runner, the wreck case moves to the commander's layer or goes). The kit
+then: the carry and the slots as the passive's halves, three locked pieces (the mark, the
+recovery, the dock), two or three plain hardpoints. Names: Albatross works (a lean is never an
+exclusion, and the Mariner's bird carried as a burden is the price of a squad that bunches;
+Kestrel's are raptors first); the maker's working animals as the alternatives: Camel (the ship
+of the desert, carrying the squad over hard ground; lean among them), Mule (the army's pack
+animal), Dray (the wainwright's own wagon).
+
 ## Open for the session
 
-1. Ryan's calls on the reading: the lift's rule (the rider keeps what it had), the equipment
-   slots as equipment only, the mark's rider and the Exposed question to the Kestrel session,
-   the resupply's cooldown, the revive's place, the dock's opening gate; its name; then the
+1. Ryan's calls: the name (Albatross, Camel, Mule, Dray); Phased's rule as the dock's gate;
+   the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
+   component; the mark's rider and the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
-   property, Phased, the lure-all reach the Whip Scorpion also waits on).
+   property, Phased with its rule, the lure-all reach the Whip Scorpion also waits on, a wreck
+   returning mid-fight).
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
    Ryan, 13 October), if any of it names the die.
 
