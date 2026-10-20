@@ -1569,6 +1569,11 @@ def funnel_web(b):
             ankle = (s * 46.0, yh + f * 34.0, 7.0)
             legs[leg], roots[leg] = (hip, knee, ankle), root
             b.prism("x", root[0], root[1], root[2], 5.0, 6.0, "steel.dark", 6, "coxa_pin")
+            # A yaw at each root (the ninth notes: the shuffle slid), so a leg's plane can turn
+            # about up and a planted foot stays planted while the body pivots (_pivot); at
+            # rest through the walk.
+            yawj = b.joint("yaw_%s" % leg, root, axis="yaw", limits=(-30.0, 30.0))
+            yawj.__enter__()
             with b.joint("coxa_%s" % leg, root, limits=(-25.0, 25.0)):
                 _beam(b, root, hip, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.dark", "strut")
                 b.prism("x", hip[0], hip[1], hip[2], 5.5, 10.5, "steel.dark", 6, "hip_pin")
@@ -1584,6 +1589,7 @@ def funnel_web(b):
                             b.box(ankle[0] - 6.0, ankle[0] + 6.0, ankle[1] - 7.0, ankle[1] + 7.0, 2.0, 7.5, "steel.dark", "foot")
                             b.box(ankle[0] - 7.5, ankle[0] + 7.5, ankle[1] - 8.5, ankle[1] + 8.5, 0.0, 2.5, "steel.dark", "sole")
                             b.box(ankle[0] - 6.5, ankle[0] + 6.5, ankle[1] + min(f * 8.5, f * 11.5), ankle[1] + max(f * 8.5, f * 11.5), 0.0, 4.0, "steel.plate", "toe_plate")
+            yawj.__exit__(None, None, None)
     # The body, a turret on the hub that turns and nods (the joint named head yaws): a dark
     # lower hull running out into a wide flat jaw under the brow, an armoured upper hull over
     # it with a wedge brow, its face a dark visor band with two slit eyes (lamps, so they burn:
@@ -1600,14 +1606,17 @@ def funnel_web(b):
         # embraced): a raked blade in the livery off each flank's rear, rising up and behind,
         # in the spirit of a samurai's banner but iron, a little flair on a utilitarian maker;
         # each on a dark bracket.
+        # Toned back and shaped (the ninth notes: flatten the bottom, so it is not a turned
+        # bar): a plate in the flank's plane with a level base, raked back and tapering.
         for s in (-1.0, 1.0):
-            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -16.0, -8.0, 50.0, 58.0, "steel.dark", "fin_bracket")
-            _beam(b, (s * 20.5, -12.0, 54.0), (s * 20.5, -27.0, 84.0), _sq(1.6, 14.0), _sq(1.0, 7.0), "livery.livery2", "fin")
+            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -18.0, -8.0, 50.0, 56.0, "steel.dark", "fin_bracket")
+            outline = [(-7.0, 52.0), (-19.0, 52.0), (-26.0, 74.0), (-20.0, 74.0)]   # (y, z): base level, the trailing edge raked, the top short
+            _rings(b, [[(s * 20.4, y, z) for y, z in outline], [(s * 21.8, y, z) for y, z in outline]], "livery.livery2", "fin")
         b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
         for s in (-1.0, 1.0):
             b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
         b.prism("z", -14.0, -20.0, 75.0, 1.2, 16.0, "steel.dark", 6, "antenna")
-        b.box(-15.5, -12.5, -21.5, -18.5, 64.0, 67.5, "steel.dark", "antenna_base")
+        b.box(-15.5, -12.5, -21.5, -18.5, 56.0, 67.5, "steel.dark", "antenna_base")   # run down into the hull's chamfer (the ninth notes: it floated)
         # The jaw's two static bow guns (the fifth notes): a mantlet each side of the jaw's
         # flat face, no joint, the Maxigun's on the left (hp_1), the Twin Autoguns' on the
         # right (hp_3); the torso twist and the legs aim them. Pulled back in (the seventh
@@ -1654,35 +1663,14 @@ def funnel_web(b):
     # the light added over rest. The feet stay planted while the hub moves (_planted); the
     # coxae rest through the acts, since the solver plants from the hips. The eighth notes:
     # the guns clipped the fore legs' shins when the body twisted past twenty-five degrees,
-    # so a twist is the head's twenty and a shuffle of the legs for the rest, a little
-    # predatory skittering (`shuffle`: the body turns in quick steps, one foot lifted at a
-    # time with the turn advancing while it is up, so three feet slide a hair under each);
-    # and the vertical range is this walker's own, its legs and its torso mount looking up
-    # and down, so it rears, sinks and coils through the acts.
+    # so a twist is the head's twenty and a pivot of the legs for the rest, a little
+    # predatory skittering (the ninth notes: it slid, since the feet were not planted; now
+    # _pivot turns the body in quick steps with every foot not stepping planted, each leg's
+    # yaw joint holding its plane on its foot); and the vertical range is this walker's
+    # own, its legs and its torso mount looking up and down, so it rears, sinks and coils
+    # through the acts.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
     limbs = {leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")}
-
-    def shuffle(t0, t1, yaw0, yaw1, pose, order=("fl", "hr", "fr", "hl")):
-        """Frames for _steps turning the body from yaw0 to yaw1 over t0..t1 in quick steps,
-        one foot of `order` lifted at a time, the turn advancing while it is up; `pose` the
-        (dy, dz, pitch) held meanwhile. Returns [(frame, yaw), ...]."""
-        out, n = [], len(order)
-        dt = (t1 - t0) / n
-        for i, leg in enumerate(order):
-            a = t0 + i * dt
-            e = legs[leg][2]
-            f = 1.0 if leg[0] == "f" else -1.0
-            ya, yb = yaw0 + (yaw1 - yaw0) * i / n, yaw0 + (yaw1 - yaw0) * (i + 1) / n
-            out.append(((round(a + dt * 0.4, 3), pose, {leg: (e[1] + f * 2.0, e[2] + 7.0)}), round(ya + (yb - ya) * 0.5, 3)))
-            out.append(((round(a + dt * 0.95, 3), pose, {leg: (e[1], e[2])}), round(yb, 3)))
-        return out
-
-    def stepped(rows):
-        """Leg tracks and body keys from [(frame, yaw), ...] through _steps, the yaw put back
-        into the body keys (the solver works in each leg's plane and knows no yaw)."""
-        tracks, body = _steps(limbs, [fr for fr, _yaw in rows])
-        body = [(t, dx, dy, dz, yaw, pitch, roll) for (t, dx, dy, dz, _y, pitch, roll), (_fr, yaw) in zip(body, rows)]
-        return tracks, body
 
     # The ambush: it sinks low and coils, the eyes burning, the whole body tipped down at
     # what it watches, holds, and strikes, up and forward; then it draws back up. The strike
@@ -1692,34 +1680,29 @@ def funnel_web(b):
     tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.0, -16.0, 0.0, 0.0), (3.6, -18.0, 0.0, 0.0), (3.9, 9.0, 0.0, 0.0), (4.3, 7.0, 0.0, 0.0), (5.6, 0.0, 0.0, 0.0)]
     b.act("stalk", 6.2, tracks, body=body, heft=0.08,
           glow=[(["lamp"], [(0.8, 0.0), (2.0, 5.0), (3.8, 7.0), (4.9, 0.0)])])
-    # The scan: it rears up on its legs looking up, shuffles round to the right and stares,
-    # sinks low looking down while it shuffles round to the left and stares, and comes back.
-    REAR, LOW = (0.0, 8.0, 3.0), (0.0, -8.0, -3.0)
-    rows = [((0.5, (0.0, 0.0, 0.0), {}), 0.0), ((1.6, REAR, {}), 0.0)]
-    rows += shuffle(1.7, 3.4, 0.0, 12.0, REAR)
-    rows += [((4.6, REAR, {}), 12.0)]
-    rows += shuffle(4.7, 6.3, 12.0, -12.0, LOW, order=("hl", "fr", "hr", "fl"))
-    rows += [((7.4, LOW, {}), -12.0)]
-    rows += shuffle(7.5, 8.9, -12.0, 0.0, (0.0, 0.0, 0.0))
-    rows += [((9.4, (0.0, 0.0, 0.0), {}), 0.0)]
-    tracks, body = stepped(rows)
+    # The scan: it rears up on its legs looking up, pivots round to the right in quick
+    # steps and stares, sinks low looking down while it pivots round to the left and
+    # stares, and comes back. Every foot not stepping stays planted through the turn
+    # (_pivot, the ninth notes: the shuffle slid).
+    A, B = ("fl", "hr", "fr", "hl"), ("hl", "fr", "hr", "fl")
+    REAR, LOW, REST = (0.0, 8.0, 3.0), (0.0, -8.0, -3.0), (0.0, 0.0, 0.0)
+    tracks, body = _pivot(limbs, roots,
+                          yaw=[(0.5, 0.0), (1.7, 0.0), (3.4, 12.0), (4.7, 12.0), (6.3, -12.0), (7.5, -12.0), (8.9, 0.0), (9.4, 0.0)],
+                          pose=[(0.5, REST), (1.6, REAR), (4.6, REAR), (6.3, LOW), (7.4, LOW), (9.0, REST)],
+                          groups=[(1.7, 3.4, A), (4.7, 6.3, B), (7.5, 8.9, A)], until=9.4)
     tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.6, 12.0, 0.0, 0.0), (3.4, 12.0, 20.0, 0.0), (4.6, 13.0, 22.0, 0.0), (6.3, -14.0, -20.0, 0.0), (7.4, -15.0, -22.0, 0.0), (9.0, 0.0, 0.0, 0.0)]
-    b.act("scan", 10.0, tracks, body=body,
+    b.act("scan", 10.0, tracks, body=body, ease="linear",
           glow=[(["lamp"], [(1.0, 0.0), (1.8, 6.0), (8.6, 6.0), (9.4, 0.0)])])
-    # Sighting in: it shuffles and twists to bring the launcher to bear as it rises lit,
-    # holds, then shuffles and twists the other way, rearing as the roof gun elevates.
-    rows = [((0.5, (0.0, 0.0, 0.0), {}), 0.0)]
-    rows += shuffle(0.6, 2.0, 0.0, 8.0, (0.0, 0.0, 0.0))
-    rows += [((3.4, (0.0, 0.0, 0.0), {}), 8.0)]
-    rows += shuffle(3.6, 5.2, 8.0, -8.0, (0.0, 3.0, 1.0), order=("hl", "fr", "hr", "fl"))
-    rows += [((5.4, (0.0, 6.0, 2.0), {}), -8.0), ((6.4, (0.0, 6.5, 2.0), {}), -8.0)]
-    rows += shuffle(6.5, 7.9, -8.0, 0.0, (0.0, 0.0, 0.0))
-    rows += [((8.2, (0.0, 0.0, 0.0), {}), 0.0)]
-    tracks, body = stepped(rows)
+    # Sighting in: it pivots and twists to bring the launcher to bear as it rises lit,
+    # holds, then pivots and twists the other way, rearing as the roof gun elevates.
+    tracks, body = _pivot(limbs, roots,
+                          yaw=[(0.5, 0.0), (0.6, 0.0), (2.0, 8.0), (3.6, 8.0), (5.2, -8.0), (6.5, -8.0), (7.9, 0.0), (8.2, 0.0)],
+                          pose=[(0.5, REST), (3.4, REST), (5.4, (0.0, 6.0, 2.0)), (6.4, (0.0, 6.5, 2.0)), (8.0, REST)],
+                          groups=[(0.6, 2.0, A), (3.6, 5.2, B), (6.5, 7.9, A)], until=8.2)
     tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (2.2, 0.0, 20.0, 0.0), (3.4, 0.0, 21.0, 0.0), (5.4, 6.0, -20.0, 0.0), (6.4, 7.0, -21.0, 0.0), (7.9, 0.0, 0.0, 0.0)]
     tracks["elev_l"] = [(1.3, 0.0), (2.3, 18.0), (3.3, 20.0), (4.4, 0.0)]
     tracks["elev_top"] = [(4.3, 0.0), (5.3, 22.0), (6.3, 24.0), (7.4, 0.0)]
-    b.act("sight_in", 8.6, tracks, body=body,
+    b.act("sight_in", 8.6, tracks, body=body, ease="linear",
           glow=[(["web_tube_floor"], [(1.6, 0.0), (2.4, 7.0), (3.6, 7.0), (4.4, 0.0)])])
     # The probe: the fore-left leg lifts and reaches ahead, taps the ground twice, and comes
     # back to its stance, the body sinking a little and tipping down to look at what it taps
@@ -3734,6 +3717,107 @@ def _turned(at, pivot, degrees):
         dy, dz = py - pivot[1], pz - pivot[2]
         out.append((px, pivot[1] + dy * c - dz * s, pivot[2] + dy * s + dz * c))
     return tuple(out)
+
+
+def _pivot(limbs, roots, yaw, pose, groups, until, lift=7.0, hz=20.0):
+    """Leg tracks and body keys for an act that turns a walker on the spot in quick steps
+    (the Funnel-web's skitter, Ryan, 19 and 20 October: a shuffle whose planted feet slid
+    was no shuffle). Each leg has a yaw joint at its root ("yaw_" + its name, about up) over
+    its planar chain, so its plane can turn: for a planted foot the yaw is solved each frame
+    to keep the foot's world position in the leg's plane while the body yaws under it, and
+    the planar solver takes the rest, so nothing slides. `yaw` is the body's yaw over the
+    act as (t, degrees) keys, `pose` its (t, (dy, dz, pitch)) keys, `groups` the rounds of
+    steps as (t0, t1, order): over t0..t1 each foot of `order` steps once in its own slot,
+    lifted `lift` and set down where it stands at rest under the body as it will be at t1,
+    so a round ends with every leg at rest under the turned body; `until` ends the keys.
+    `limbs` maps a leg's name to its limb as _plant takes it, `roots` to its yaw joint's
+    pivot. Dense keys, for ease "linear"."""
+    def at(keys, t):
+        return _lerp_keys(keys, t)
+    def pose_at(t):
+        ks = sorted(pose)
+        if t <= ks[0][0]:
+            return ks[0][1]
+        for (t0, a), (t1, c) in zip(ks, ks[1:]):
+            if t <= t1:
+                u = (t - t0) / max(1e-9, t1 - t0)
+                return tuple(x + (y - x) * u for x, y in zip(a, c))
+        return ks[-1][1]
+    def rot(v, deg):
+        c, s_ = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+        return (v[0] * c - v[1] * s_, v[0] * s_ + v[1] * c)
+    # Where each foot stands in the world (horizontal) at a time, and its leg's own
+    # placement plan: before its step in a round it stands where the round began, after it
+    # where the round ends; between rounds every foot stands at rest under the body.
+    steps = {}   # leg -> [(t_lift, t_land, yaw_before, yaw_after)]
+    for t0, t1, order in groups:
+        dt = (t1 - t0) / len(order)
+        for k, leg in enumerate(order):
+            a = t0 + k * dt
+            steps.setdefault(leg, []).append((a + dt * 0.08, a + dt * 0.92, at(yaw, t0), at(yaw, t1)))
+    def world_foot(leg, t):
+        """The foot's world (x, y) at t, planted; or (old, new, u) while it is in the air."""
+        e = limbs[leg]["at"][2]
+        rest = (e[0], e[1])
+        stood = 0.0
+        for t_lift, t_land, y0, y1 in steps.get(leg, []):
+            if t < t_lift:
+                break
+            if t < t_land:
+                return (rot(rest, stood), rot(rest, y1), (t - t_lift) / (t_land - t_lift))
+            stood = y1
+        return rot(rest, stood)
+    def solve(leg, fw, theta, prev):
+        """The leg's yaw (degrees) and its planar foot target (y) for a world foot `fw`
+        under a body yawed `theta`: the one solution nearest `prev`."""
+        r = roots[leg]
+        e = limbs[leg]["at"][2]
+        ex = e[0] - r[0]
+        rw = rot((r[0], r[1]), theta)
+        v = (fw[0] - rw[0], fw[1] - rw[1])
+        rho = math.hypot(v[0], v[1])
+        beta = math.atan2(v[1], v[0])
+        g = math.acos(max(-1.0, min(1.0, ex / rho)))
+        best = None
+        for alpha in (beta - g, beta + g):
+            phi = math.degrees(alpha) - theta
+            phi = (phi + 180.0) % 360.0 - 180.0
+            if best is None or abs(phi - prev) < abs(best[0] - prev):
+                y_leg = -v[0] * math.sin(alpha) + v[1] * math.cos(alpha)
+                best = (phi, r[1] + y_leg)
+        return best
+    tracks = {}
+    for leg, l in limbs.items():
+        for jn in ("yaw_" + leg, l["hip"], l["knee"], l["ankle"]):
+            tracks[jn] = []
+    body = []
+    n = int(round(until * hz))
+    prev = {leg: 0.0 for leg in limbs}
+    for i in range(n + 1):
+        t = round(i / hz, 3)
+        theta = at(yaw, t)
+        dy, dz, pitch = pose_at(t)
+        for leg, l in limbs.items():
+            e = l["at"][2]
+            fw = world_foot(leg, t)
+            if isinstance(fw[0], tuple):
+                old, new, u = fw
+                p0, p1 = solve(leg, old, theta, prev[leg]), solve(leg, new, theta, prev[leg])
+                w = u * u * (3.0 - 2.0 * u)
+                phi = p0[0] + (p1[0] - p0[0]) * w
+                y = p0[1] + (p1[1] - p0[1]) * w
+                z = e[2] + lift * math.sin(math.pi * u)
+            else:
+                phi, y = solve(leg, fw, theta, prev[leg])
+                z = e[2]
+            prev[leg] = phi
+            a, k, c = _limb_angles(l, _to_body(y, z, dy, dz, pitch), pitch)
+            tracks["yaw_" + leg].append((t, round(phi, 3)))
+            tracks[l["hip"]].append((t, round(a, 3)))
+            tracks[l["knee"]].append((t, round(k, 3)))
+            tracks[l["ankle"]].append((t, round(c, 3)))
+        body.append((t, 0.0, round(dy, 3), round(dz, 3), round(theta, 3), round(pitch, 3), 0.0))
+    return tracks, body
 
 
 def _coxa_row(duty, row):

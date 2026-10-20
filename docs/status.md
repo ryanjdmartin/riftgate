@@ -14,8 +14,8 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 496 tests, 23,513 checks, green on `ccr-ffcf75fa-3gkbz9` (19 October, the funnel-web's
-  assets, the rig test covering its model's fourth cut; 20,269 after its engine, over main's 481 and 20,153 of
+- Tests: 496 tests, 33,473 checks, green on `ccr-ffcf75fa-3gkbz9` (20 October, the funnel-web's
+  assets, the rig test covering its model's fourth cut and its 24 joints; 20,269 after its engine, over main's 481 and 20,153 of
   the Kestrel session's last merge).
   A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
@@ -26,10 +26,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-- `ccr-ffcf75fa-3gkbz9` (18 and 19 October, the funnel-web's engine and its assets: Vitriol,
+- `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.211): to merge into
+  and page; the to-do's engine and assets lines ticked; the bible at v0.213): to merge into
   main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -110,8 +110,13 @@ document's job and every command are in `README.md`.
   visible difference, so it is gone); the jaw six shorter with the bow guns near flush and the
   roof mount aft of the pods (the seventh), sunk into the roof (the eighth); the flank plates
   are raked fins in the livery (the eighth); the acts on the eighth notes: the scan and the
-  sighting twist the head twenty and turn the rest by a `shuffle` of the legs (quick steps,
-  one foot up at a time, the yaw put back into the body keys since the solver knows none),
+  sighting twist the head twenty and turn the rest by pivoting the legs (quick steps, one
+  foot up at a time; his ninth, 20 October: a shuffle whose planted feet slid was no shuffle,
+  so each leg has a `yaw_` joint at its root and `_pivot` solves the yaw per frame that keeps
+  a planted foot's world position in the leg's plane, the planar solver taking the rest, each
+  stepping foot set down at rest under the body as the round ends; forward kinematics checks
+  no planted foot moves; 24 joints), the fins toned back with a level base and the antenna's
+  base run into the hull (the ninth too),
   and the acts use the vertical range (the stalk coils ten deep and strikes up, the scan rears
   and sinks, the sighting rears, the probe dips; the head's pitch limits -20 to 15); the
   cornering numbers; the rig test covers it; the hangar's renders (front,
@@ -332,9 +337,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.211 (19 October, `ccr-ffcf75fa-3gkbz9`:
+  `docs/design-bible.html` after every change. Live: v0.213 (20 October, `ccr-ffcf75fa-3gkbz9`:
   the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
-  fifth to eighth, the size row and the motion table, merged onto two other sessions' live pages, v0.204 of 19 October, whose foe-sprites
+  fifth to ninth, the size row and the motion table, merged onto three other sessions' live
+  pages: v0.212 of 20 October, whose rows carry the action economy, the Cassowary, the
+  Cottonmouth, the Dingo's Combat Translocator and the Prairie Dog's Flak, all Ryan's calls
+  and now in this branch's file too; v0.204 of 19 October, whose foe-sprites
   row carries the heroes' costumes and the Augur's dark omen-smoke, and v0.200 of 18 October,
   whose foe-art row carries the image-to-image route, both Ryan's calls, now in this branch's
   file too), over v0.199 (18 October,
