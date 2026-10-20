@@ -361,12 +361,40 @@ bar stays on the bench as the carrier's own pacing device if the three cooldowns
 many clocks on one die: a point a round in the fight, three at most, the pieces spending it,
 never the commander's.
 
+What is still missing, after the cut (Claude, 20 October, on Ryan's "What else are we
+missing?"; every item his to settle):
+
+- **The recovery's decision.** As it stands its only decision is who; when is "when it is up",
+  which is no decision (the README's taste). Two ways to give it one: the transfer, the carrier
+  taking the heat it lifts onto its own gauge, so its own cooling is the team's budget and the
+  piece needs no cooldown and reads as the tanker (against it: an ally vented directly, which
+  Ryan marked as the less healthy way on 18 October, softened here because the heat still
+  exists, on a machine that must cool it); or a cooldown long enough that spending it on the
+  rank costs the boss round. Claude's lean: the transfer.
+- **The mark against the front.** A reach grant does nothing on a front-rank foe, so the entry
+  is dead there. Either the rider (the Kestrel session's Exposed, if it lands; a flat on-hit is
+  Flak's) or Lure on the marked foe, which is built: the spotter draws the fire it directs, and
+  the entry works on any foe. Claude's lean: Lure, the rider open.
+- **The dock's real cost** is the allies' actions, not the carrier's hull, since Phased comes
+  only before a unit acts: an emergency piece, right against a gathered blow or an alpha and
+  dead most rounds. Three situational locked pieces on cooldowns make the carrier lean on the
+  team's rerolls as the Cassowary does; the bench's bar is the answer if it reads as dead dice.
+- **The pair with the artillery** is written in the artillery's brief (the recovery a full
+  reload, a Flak shell by the rank); the carrier's side needs nothing new.
+- **The tally.** The carrier's own spends deal no damage, as the Whip Scorpion's vents did: the
+  to-do's Sponsorship line counts an ally's blow landed through the mark, or its hardpoint guns
+  are its share and the rest is a lean.
+- **Its footprint.** Assault, overflowing its hex (the look); the player's side has no massive
+  class in the fight, so where the deck stands in the formation is the screens' question.
+- **The bot** must value a reach grant and a round skipped (the dock) before the runner can read
+  the carrier, so Ryan's play decides its feel first and the bands come late.
+
 1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); the kit after the cut (the carry alone as the passive, the three locked pieces on cooldowns, the bar benched);
    the recovery as one locked piece with the wreck case once a skirmish; the mark's rider and
-   the Exposed question to the Kestrel session; then the
-   numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
-   property, Phased with its rule, the lure-all reach the Whip Scorpion also waits on, a wreck
-   returning mid-fight).
+   the Exposed question to the Kestrel session; the items above; then the
+   numbers and the engine (the carry on the map, the lift and the nearest-standable set-down;
+   the cooldown property; Phased with its rule; a reach grant on a foe, Lure beside it if the
+   mark takes it; a wreck returning mid-fight).
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
    Ryan, 13 October), if any of it names the die.
 
