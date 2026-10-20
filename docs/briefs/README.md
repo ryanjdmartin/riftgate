@@ -184,7 +184,12 @@ versatility comes in three forms (Ryan, 19 October): the Clydesdale's loadout, t
 stats, the Cottonmouth's reach.
 Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
 damaging spends while no chassis was about the blow; the revolver and the boiler are promoted
-to damage class. The old-world artillery of the maker's lean (indirect fire and area) is
+to damage class. Ryan, 20 October: the all-shells machine pitched in the Minerva session for
+the siege battery (its third-round candidate: weapons that add no heat and cost a shell each,
+vents that reload, the heat gauge a magazine; `minerva_siege_battery.md`) reads to him as a
+Wainwright & Sutler tier three; Claude agrees it is this maker's artillery tenth (the cold
+price the heat row asked for, on the maker whose kit is cold, with the carrier's resupply as
+its loader), a brief of its own when he says so. The old-world artillery of the maker's lean (indirect fire and area) is
 nobody's chassis: its second tier three and its tenth, the last (big Indirect blows with area,
 the stock pass's explosives its kit, mobile where Minerva's siege battery sits on the cooldown
 property), undesigned.

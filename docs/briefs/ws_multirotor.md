@@ -297,7 +297,40 @@ under the hull), Bumblebee (the heavy flyer that is not supposed to fly and carr
 home), Rhinoceros Beetle (the lifter, armoured, and it flies), Water Boatman (the bug that
 rows: the ferry), Hoverfly (clear, if the gunship does not take it).
 
-1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); Phased's rule as the dock's gate;
+Ryan, 20 October, later: "Phased: what's your ruling? Recovery - still unsure. Give me pros and
+cons of different options and potential holes or balance issues. I had an idea of introducing
+an additional resource bar, with a slow recharge, that could power these big ultimate-level
+abilities such as revive, repair, and dock. Let me know if that's too much. Obviously that
+would be a three tiered passive, but maybe there's a way to fold it in if it seems worthwhile."
+
+Claude's ruling on Phased: a unit that has not acted this round may be Phased, and one that
+has cannot; Phased, it cannot attack nor be damaged by a blow until the round's end; ticks and
+overheats still land (a docked machine still burns unless the dock cleanses it), and a blow
+aimed at it is lost, never retargeted. One rule, on the status, for every grant.
+
+The recovery's options. A, one die piece (the resupply on its cooldown; a wreck once a
+skirkish): no new resource, the die's odds and the decided cooldown property gate it; against,
+the property is not built, luck times an ultimate (fishing with the team's rerolls makes them
+its resource, which cuts both ways), and a heat reset to zero on a cooldown hands the hottest
+build a valve every few rounds, so heat stops biting on one machine (soften it to 30 shed, or
+price it). B, Ryan's bar: a resource with a slow recharge powering the ultimates (repair, dock,
+recovery): timing by decision rather than luck, fungible (which ultimate), the die kept
+tactical (the mark, the slots), each ultimate priced once a charge so the heat-reset hole
+closes, and it is the commander's layer in miniature, action economy nobody can stack;
+against, a third bar on a phone HUD, a passive of three tiers against one idea, the bot, and
+the scope if it is the commander's layer (section 8). Its hole: recharged within a fight it is
+"once a skirmish" by another name; so battle-level, a point a map turn, three at most, repair
+1, dock 2, recovery 3, usable while the carrier is fielded and alive, which paces the
+ultimates across fights, the strategic piece Ryan asked for. C, the wreck recovered on the map
+only (the crane lifts an adjacent wreck; the machine returns for the next fight at 10% hull):
+visual and strategic, no in-fight swing; against, wrecks must persist as map markers, and a
+10% machine dies again. D, no revive: simplest; the medevac fantasy lost. Common holes: a
+surviving carrier reviving after a wipe keeps the fight going (the bar's cost caps it once a
+battle); the heat reset; the dock's planned turn. Claude's lean: B as the commander's layer
+with the carrier its vessel, the mobile command Ryan named first, if the scope is accepted;
+else A with the heat reset softened.
+
+1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); Phased's rule as the dock's gate (Claude's ruling above); the recovery's form (A to D, the bar B the lean);
    the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
    component; the mark's rider and the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
