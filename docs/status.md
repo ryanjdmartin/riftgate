@@ -109,8 +109,15 @@ document's job and every command are in `README.md`.
   buys nothing; through the next round the lever) and his die kinds answered (Direct, Indirect,
   Debuff, Buff, Shield, Vent; the blank a seventh drawing; the Debuff glyph wears its reach;
   the formation word's one meaning proposed). On his word on the set: the bible's die-entry row
-  and the rules take the kinds and the no-number rule, one republish (the to-do's line).
-  Proposals, waiting on Ryan's calls; on the branch, not on main.
+  and the rules take the kinds and the no-number rule, one republish (the to-do's line). The
+  fifteenth round (20 October, late): Ryan struck the formation word's one meaning (losing its
+  front line doesn't lose its armour; the formation word is rules text, the debuff has its
+  icon) and asked whether the reach frame with the buff's mark inside is the debuff's glyph;
+  answered as the die's grammar (the interceptor's sixth round: a frame carrying a number is a
+  gun, carrying the status mark a debuff, the mark alone a buff; the crosshair's centre opened,
+  the arrow's direction doubling the frame, the phone test), the Translocator an Indirect
+  debuff by its icon, the aim's word explained as the open item. Proposals, waiting on Ryan's
+  calls; on the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

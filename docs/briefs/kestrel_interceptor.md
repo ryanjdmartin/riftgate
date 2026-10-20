@@ -339,6 +339,39 @@ for nothing. The die: I the designator; II a Direct flat gun, the cash; III a bu
 kind), a debuff of another maker, or a cold rolled gun; IV a vent. The frame as the second
 kit. Every number a placeholder; the names Ryan's.
 
+## The sixth round (20 October, late): the glyph's grammar
+
+- Ryan, 20 October, on the formation word's one meaning: "That doesn't make sense. Losing its
+  frontline doesn't lose its armour. The verbiage of an exposed back rank versus Exposed the
+  debuff isn't that complicated, one is rules text and I'm sure there's a synonym to use if it
+  really confuses you. Won't confuse a human, since Exposed the condition comes with its own
+  icon and everything." On the reach: "Good point about the reach. I guess it's the same as
+  having the indirect icon with a number in the middle for a weapon, would it make sense to
+  have the indirect icon with the buff icon in the middle, or is that silly?" On the
+  Translocator: "Translocator makes sense. It's an indirect debuff icon. It's the iconography
+  that matters, not the internal label we apply." And: "What's the open item?"
+- Claude, 20 October: the one meaning is struck, and his reason stands (cover is reach; armour
+  is the foe's own). The formation word stays rules text, the vocabulary's entry as it is, a
+  synonym there only if the rules text wants one at the go; the debuff Exposed has its icon.
+  The composite is not silly: it is the die's grammar, read as he read it. A reach frame (the
+  crosshair, the arc) says "on a foe, reached so"; what it carries says what it delivers: a
+  number beneath, a gun; the status mark inside, a debuff; the status mark alone, a buff. Two
+  frames, three marks (the status, the shield, the vent), the number, and the blank. The
+  drawing notes, his to take or leave: the crosshair's cross is cut at the centre to four
+  ticks so the mark sits inside the ring, and the arc lobs over the mark; the chips already
+  draw a buff as an arrow up and a debuff as the same arrow down, so the down arrow in the
+  frame doubles the frame's meaning (structure twice, the colourblind rule), though the frame
+  does the work and either reads. The one test is the phone: the mark alone against the mark
+  in a frame at the glyph's size, judged on the device, running. The Translocator is settled
+  by the iconography: an Indirect debuff. The passive prints as the framed mark and the bare
+  mark: Rapid, once a round.
+- The open item, explained: the foes' default aim is called "the exposed" on our side. The
+  codex's "aims at the exposed" and the inspect line's "→ Goshawk (aims at the exposed)" name
+  the sense that picks the machine a blow would hurt most. Beside a foe debuff named Exposed,
+  that line reads as "aims at a machine carrying Exposed", which never happens. The fix, if he
+  wants one, is a synonym for the aim's shown word (the id stays): "the vulnerable", "the
+  weak"; or it stays, on his reading that a human is not confused.
+
 ## Holes already raised
 
 - The Paradox counts once a spend, so two spends a round feed a Baboon twice, and Painted is a
@@ -385,17 +418,20 @@ kit. Every number a placeholder; the names Ryan's.
   Flak's kind by the Prairie Dog row, so never a second carrier under a Kestrel name.
 - A clock that waits for the foe to act (a held boss stays Exposed; the fifth round): a new
   decay, one more clock to learn; the control build's reward if the one-turn paint wants help.
+- The formation word's one meaning (an exposed back rank also losing its armour; Claude, the
+  fifth round): struck, Ryan, 20 October: losing its front line doesn't lose its armour; the
+  formation word is rules text, the debuff has its icon.
 - Exposed on the next blow (Shocked's clock) or for the skirmish: the one kills the team-wide
   reach, the other deletes armour from the fight; struck (the fifth round).
 
 ## Open for the session
 
-1. Ryan's word on the die's kinds as answered (the blank the seventh drawing, the Debuff
-   glyph in its reach, the no-damage rule written down), then the bible's die-entry row and
-   the rules take the kinds and the rule.
-2. The duration (the round's, as Expose 1; through the next round the lever) and the
-   formation word's one meaning.
-3. The aim's shown word, and the numbers.
+1. Ryan's word on the glyph's grammar (the status mark in the reach frame; the arrow's
+   direction), then the bible's die-entry row and the rules take the kinds and the no-number
+   rule.
+2. The duration: Expose 1, the round's (the lean); through the next round the lever.
+3. The aim's shown word: a synonym, or it stays.
+4. The numbers.
 
 ## Waits on
 
@@ -404,5 +440,6 @@ Nothing. For the tender, a Kestrel tier one landed.
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, the bible's Kestrel row, Expose in the vocabulary and the
-Exposed entry's new sentence (the aim's word with it), the die-entry row and the rules (the
-kinds, the no-number rule), content planned, and this brief retired.
+Exposed entry's new sentence (the formation entry keeps its word; the aim's word with it only
+if Ryan wants a synonym), the die-entry row and the rules (the kinds, the no-number rule),
+content planned, and this brief retired.

@@ -297,7 +297,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
-| `kestrel_interceptor.md` | proposal (the passive Ryan's, 18 October; the fifth round, 20 October: Exposed as reach and armour on Ryan's call, the die's kinds answered) | Kestrel | 1 | Ryan's word on the die's kinds and the duration; the aim's shown word |
+| `kestrel_interceptor.md` | proposal (the passive Ryan's, 18 October; the sixth round, 20 October: Exposed as reach and armour on Ryan's call, the glyph's grammar) | Kestrel | 1 | Ryan's word on the glyph's grammar and the duration; the aim's shown word |
 | `kestrel_puffin.md` | rework, proposal (20 October, on Ryan's worry: toxic and boring; the third round on its size) | Kestrel | 2 | Ryan's call on the split, the base and the ratio |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots | Kestrel | all | Ryan's calls |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |

@@ -95,7 +95,10 @@ One pointer each; the proposal is in the brief named.
   the duration evaluated (the round's, as Expose 1; a foe's statuses tick at its turn whether
   it acts or skips, so "until it acts" buys nothing) and his die kinds answered (Direct,
   Indirect, Debuff, Buff, Shield, Vent, the blank a drawing; the Debuff glyph wears its reach;
-  a debuff deals nothing under any effect). `kestrel_interceptor.md`.
+  a debuff deals nothing under any effect). The sixth: the one-meaning fix struck on Ryan's
+  reason (cover is reach, armour the foe's own); the glyph's grammar settled in the open, a
+  reach frame carrying a number (a gun) or the status mark (a debuff), the mark alone a buff.
+  `kestrel_interceptor.md`.
 - **The Goshawk** stands; its stock is cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its
