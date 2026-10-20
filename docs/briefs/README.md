@@ -184,6 +184,92 @@ four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit)
 share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward
 on our side.
 
+## The action economy, and why things want Rapid (20 October)
+
+Ryan, 20 October: "Do you think there's a case to be made for trying to expand the ways to
+fill a rapid-type niche? After all, action economy is often a chase in these styles of games.
+Commander actions are one obvious area. Do a deep dive into why certain things want rapid,
+and what we could change or add to help fill that gap other then add a ton more rapid pieces.
+Which we can and will do, but it will feel samey regardless." And: "rapid is turning into the
+new Suppress in terms of build ubiquity." Claude's analysis, the same day, for Ryan to move;
+nothing here is decided.
+
+Rapid sells five different wants in one keyword, and it is the only component-level source of
+any of them, which is the Suppress pattern (one answer, so every design reaches for it):
+
+| The want | Who chases it | What Rapid gives it |
+|---|---|---|
+| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Armadillo (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
+| a second action on one machine, setup then cash | the Armadillo (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act), the siege battery (reload and still act) | act again |
+| spends counted | the line frame's combo (weapons spent), the Cassowary's sixth shot, the Paradox (once a spend) | more spends a round |
+| a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
+| tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
+
+Four of the five carriers in content are ungated (the Deflector, the Diffuser, the Vacillator,
+the Flakshot: the switch-off and nothing else), the Umbra Inducers of tempo; the gated ones
+(the Spin-Up by its cylinder, the interceptor's once a round, the Zoids walker's by a kill)
+are the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
+
+Homes for each want other than more Rapid pieces, with the engine's state:
+
+- **Own rerolls as a number** (another look). The engine runs it: the Clydesdale's Battery
+  Director is one free reroll of its own die a round, a static effect a module may carry
+  today. Give it to the machines whose identity reads its die (the Cassowary, the platform,
+  the Armadillo), as a passive clause or a priced module (its stat line paid elsewhere, so it
+  is no universal must-pick). A look without an action. Hole: the Clydesdale's identity thins;
+  the number is the lever (one on a d9 is not one on a d3).
+- **The team's order instead of self-sequencing** (the second action). A passive that needs
+  Rapid pieces to work wants a second action; ask first whether an ally's action is the better
+  pair (the Dingo's Shock to the Sparrowhawk's cash, the off-tank's lure for the team). Where
+  the self-sequence is the identity, give it a die-order mechanic (stepping, a combo), as the
+  Cassowary has.
+- **Counters that count blows, not spends** (spends counted). A counter per blow makes
+  multi-strike and area pieces its fuel, Wainwright & Sutler's currency, where a counter per
+  spend makes Rapid its fuel. Flak counts blows; the line frame's combo is open (count blows
+  landed, and the Maxigun is a combo piece); the Paradox counts once a spend by decision.
+- **Combined entries** (the cantrip). Two effects on one spend: the off-tank's lock (a lure
+  that regens itself), the Afterburner (damage and vent all), the harpoon (damage and Shock),
+  the Flakshot. The stock pass's cantrips can be combined entries rather than Rapid ones: a
+  vent that shields, a shield that lures, a gun that vents on fire. Density a spend instead of
+  count of spends: no reroll, no chain, nothing to limit, the price each half's number.
+- **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
+  (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
+  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Overcharged,
+  Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
+  by its setup.
+- **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
+  dark: strikes 2 with a cooldown of 2, the broadside, the Sparrowhawk's chain. Paid in the
+  die's reliability; the cooldown property (decided, not built) unlocks the family.
+- **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
+  (arm now, fire twice later), which reads the die's own state.
+- **Reactions** (actions in the enemy's turn). Retaliate, the Barrier, the web's burst; a
+  counter-battery (when a foe acts on an ally, this machine's showing weapon fires at it, once
+  a round) with the thorns row's caution: a reward that scales with enemy actions needs a
+  drawback.
+- **Tempo lent as a status** (tempo lent). A haste buff from a support (the ally's next weapon
+  spend gives its turn back) moves the chase from pieces to supports and prices it in the
+  support's action; Rapid by another name, ranked last.
+- **Commander actions** (the campaign scale). The bible: the commander's tools do what
+  machines cannot (manipulation, mitigation, information, movement, never a fifth gun; a
+  reusable ability deals no direct damage); battlefield abilities belong to the city, on
+  map-turn cooldowns, legible and impossible to hoard, research shortening them; the layer
+  waits for a baseline balance. Action economy fits movement and manipulation: a sortie (a
+  machine that fought moves again), a scramble (every flyer moves), a field refit (one own
+  reroll a round in its next skirmish; "no command die rolls" says the commander has no die,
+  and a granted reroll is a manipulation to confirm against the row), a fire mission (a
+  one-shot with damage on the map, never in a skirmish). Flavoured by the host city's maker:
+  Kestrel's city gives tempo, Minerva's plate, Wainwright & Sutler's the strike, Aphelion's a
+  teleport, the capital's a blood price. Action economy nobody can stack, the opposite of a
+  Rapid pile.
+- **Pricing the Rapid that exists** (the stock pass). The four ungated carriers re-priced (heat
+  on the Vacillator and the Flakshot, the Deflector's number, the Diffuser's question in
+  section 12), and every new Rapid gated like a stun: if it kills, on a cold spend, once a
+  round, by a cylinder.
+
+The three rules of thumb this leaves: a design that wants many blows is pointed at strikes;
+one that wants order is given a die mechanic; one that wants a second action pays for it in
+a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, gated.
+
 ## The briefs
 
 | Brief | Kind | Maker | Proposed tier | Waits on |

@@ -208,12 +208,29 @@ Every number a placeholder; the name and the look Ryan's.
   Ryan's rule; the levers if it crowds: the platform as the home of multi-hit equipment rather
   than the Rapid chaser, or its growth counting team rerolls only.
 
+## The fifth round (20 October)
+
+- Ryan, 20 October: "The growth model works better. It's just the push towards rapid that is
+  holding me back, as rapid is turning into the new Suppress in terms of build ubiquity." His
+  deep-dive ask and Claude's analysis of the action economy are in the briefs README.
+- Claude, 20 October: the growth stays and its engine becomes rerolls, not Rapid. The passive:
+  each time its die rolls again in a round, every entry on it grows by 10 for the round; and
+  it rerolls its own die once a round for free (the Clydesdale's effect, which the engine
+  runs). The own reroll is its push without a Rapid piece, the team's rerolls Kestrel's
+  currency, the commander's refit a third source if that layer takes it. The throttle retires
+  (it was Rapid); the lock is the three-strike shield, the piece only it wants. Its stock's
+  payoffs are multi-hit pieces, since the growth counts on every strike. Rapid's rolls still
+  grow it (a Rapid's reroll is a roll, and Ryan wants weak Rapid pieces to have a home), but
+  they are its third chase, not its first. The tempo machines then part by currency: the
+  Cassowary on Rapid (steps), the line frame on its combo (blows, if its session takes the
+  lever), the platform on rerolls (rolls).
+
 ## Open for the session
 
-1. Ryan's call on the shape (growth a roll, Claude's lean; half-strikes if he wants the
-   double-hitter's big brother literally) and the second lock (a three-strike shield, the piece
-   only it wants), the main battery dropped (Ryan, 19 October: no doubled payout).
-2. Whether the census moves it: the Rapid chaser, or the home of multi-hit equipment.
+1. Ryan's call on growth with the own reroll as its engine (the fifth round), the
+   three-strike shield as its lock, and the numbers.
+2. Whether the own reroll is the passive's clause or a Kestrel module's, and what the
+   commander's refit adds once that layer exists.
 2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
 3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
 

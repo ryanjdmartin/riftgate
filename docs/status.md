@@ -51,10 +51,14 @@ document's job and every command are in `README.md`.
   Aphelion's bench). The eighth round (19 October) in the platform's brief: no doubled
   payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
   (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
-  chase Rapid pieces first, in three makers, for five pieces). Docs only; nothing built,
-  nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To resume:
-  Ryan's calls in the open Kestrel briefs, then on his go the records each brief's "What the
-  session hands back" lists.
+  chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
+  Ryan's deep-dive ask on the action economy, answered in the briefs README (Rapid sells five
+  wants, four carriers ungated, a home for each want other than more Rapid pieces, the
+  commander layer among them), and the platform's engine moved from Rapid to rerolls (an own
+  reroll a round, the throttle retired, the three-strike shield its lock). Docs only; nothing
+  built, nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To
+  resume: Ryan's calls in the open Kestrel briefs, then on his go the records each brief's
+  "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
