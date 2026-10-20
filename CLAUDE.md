@@ -19,6 +19,9 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 ```
 
 Every other command (models, foes, sound, screenshots, the phone, the pages) is in `README.md`.
+On the Windows desk machine (since 19 October) they all run as written from Git Bash; from
+PowerShell, `& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. The README's Running
+section says what is set up there and what cannot run (foeforge's renders need the Mac).
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.
 
@@ -104,7 +107,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   not how it looks. Red against the green HUD and violet against the blue HUD are the
   pairs that fold first.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
-  sampling to see the pixels, reproduce it on the Mac at the phone's layout and density
+  sampling to see the pixels, reproduce it on the desk machine at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and
   `--rendering-method gl_compatibility` for its renderer; the README has them), then fix it
   once for every glass rather than special-casing the phone. Several "phone bugs" have been
@@ -114,7 +117,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 
 Sessions have died mid-flight before. To keep the next one cheap to start:
 
-- One folder per branch (decided 5 October). `~/Code/riftgate` stays on `main`. A session that
+- One folder per branch (decided 5 October). The desk machine's folder stays on `main`:
+  `C:\Users\jam82\Desktop\Code\riftgate` on the Windows PC since 19 October (`~/Code/riftgate`
+  on the Mac before it). A session that
   needs another branch (a cloud session resumed on the Mac for its tools, most often) works in
   its own worktree, `git worktree add .claude/worktrees/<name> <branch>` and EnterWorktree with
   that path, never by switching the main folder's branch under whoever is using it.

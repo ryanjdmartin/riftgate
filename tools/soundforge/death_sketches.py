@@ -953,7 +953,17 @@ def write(name, x):
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes(pcm.tobytes())
-    subprocess.run(["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, os.path.join(OUT, name + ".mp4")], check=True, capture_output=True)
+    m4a = os.path.join(OUT, name + ".mp4")
+    # afconvert on the Mac; ffmpeg at 256 kbps where there is none (fx_sketches.write says why 256).
+    for cmd in (["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a],
+                ["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", m4a]):
+        try:
+            subprocess.run(cmd, check=True, capture_output=True)
+            break
+        except (OSError, subprocess.CalledProcessError) as e:
+            err = e
+    else:
+        print("  (no aac for %s: %s)" % (name, err))
 
 
 def short(fn, keep=0.55, fade=0.25):

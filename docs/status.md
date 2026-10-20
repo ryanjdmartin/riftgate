@@ -14,10 +14,13 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 481 tests, 20,153 checks, green on main (18 October, the Kestrel session's last merge over the Minerva branch's:
-  the Kestrel session's engine of 16 and 17 October with the reroll onto a copy and the die
-  entries' places); before it, 478 and 19,906 on the Kestrel branch with main merged in.
-  A cloud session fetches
+- The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
+  `C:\Users\jam82\Desktop\Code\riftgate`, set up that day; the README's Running section says
+  what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
+  renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
+  `fix` have no machine until a route for the image model is chosen.
+- Tests: 485 tests, 20,291 checks, green on main (19 October, on the Windows desk machine as
+  it was set up: about a minute there). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
