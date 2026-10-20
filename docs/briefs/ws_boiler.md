@@ -279,10 +279,21 @@ word draws), Induced Draught, Thermosiphon, Firebox Intake. The passive, weaponi
 Ports, Blowdown Guns. The Steam Cannon keeps its name in the stock; the Stoker's is for the
 stock pass.
 
+Ryan, 20 October, later: "lets go lure all, and suggest some names that aren't so much
+steampunk on the nose. it doesn't actually use steam to run, its a future-tech machine. it just
+kind of behaves like a steampunk device." So the lure is a lure-all (decided), and the names
+take the maker's future-tech register (the Combat Translocator's, the Adaptive Munitions
+Drum's): the machine behaves like a boiler and is not one. Claude's candidates, the same day:
+the passive (the vents blast a random foe for the heat they shed): **Ballistic Venting**
+(lean), Thermal Ejectors, Discharge Manifold, Exhaust Battery; the lure (every foe turns on
+it, every blow landed is heat): **Kinetic Converter** (lean: the blows become heat, which is
+the mechanic), Threat Siphon, Thermal Intake, Impact Accumulator; the stock gun, if the Steam
+Cannon is too on the nose: Pressure Cannon, Thermal Lance. The steam names (Forced Draught,
+Blast Valves, the Steam Whistle) retire with the register.
+
 ## Open for the session
 
-1. The lure-all against the rank form (Claude's lean: lure-all), and the names: the lure's
-   (Forced Draught, lean), the passive's (Blast Valves, lean); then the go.
+1. The names (the passive's, the lure's, the stock gun's), then the go.
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
