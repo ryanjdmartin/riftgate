@@ -1479,12 +1479,11 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
     "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round.",
-    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The web keyword is planned, so the die builds this entry without it until the engine has it. Numbers are placeholders and the name a working one. Lands on the foe as Webbed, the chip carrying the burst's timer (the to-do)."
+    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). Built 18 October: the web keyword lands Webbed on the foe, whose chip says which neighbour the burst catches (> the right-hand one, which acts after it; < the left-hand one, which has acted), and the web bursts at the end of the foe's action (Skirmish._web_burst). Its blow of nothing lays no Vitriol, so the web never feeds the ambush directly; the window it opens next round does. Numbers are placeholders and the name a working one."
    },
    "face": {
     "kind": "attack",

@@ -18,10 +18,9 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
-  and four planned, the funnel-web, the Cassowary, the Cottonmouth and the Whip Scorpion
-  (`content/chassis.json`).
-  A run has four squad slots and starts with three machines.
+  slots (two; the Clydesdale three) and one passive. Fourteen chassis from five makers
+  and three planned, the Cassowary, the Cottonmouth and the Whip Scorpion
+  (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
   down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
@@ -146,8 +145,9 @@ defeat when every machine is wrecked. There is no round limit.
   Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it into itself.
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
-- **Web** (the funnel-web's Web Bomb, not built): the foe hit is Webbed; at the end of its
-  action the web bursts, Suppressing it and the next foe to act beside it.
+- **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
+  webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
+  beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
   trade places; no damage; a massive foe does not move.
 - **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
@@ -222,11 +222,18 @@ On a foe:
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
   either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
   Suppressed does.
-- **Vitriol** (debuff, not built): at its action it loses 5% of its current hull a stack,
-  past armour, after Burning, rounded down, then a stack fades; it never finishes a foe.
-- **Webbed** (debuff, not built): at the end of its action the web bursts: it and the next
-  foe to act beside it are Suppressed (Numbed may resist, each for itself); killed first, it
-  takes its web with it.
+- **Vitriol** (debuff): at its action it loses 5% of its current hull a stack, past armour,
+  after Burning on what it leaves, the whole share rounded down and never the last hit point,
+  then a stack fades; it never finishes a foe. A passive lays it a stack per strike that lands
+  with a number; a blow of nothing (a web, a lure) lays none.
+- **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
+  Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
+  and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
+  this round's action, or with none standing there its left-hand one, which has acted and
+  loses its next (Numbed may resist, each for itself; a foe already suppressed gains nothing,
+  as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
+  Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
+  the neighbour the burst catches.
 - **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
   halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
@@ -241,7 +248,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked or Paradox (Vitriol, Webbed and Flak once built).
+Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -295,7 +302,9 @@ Burning, Suppressed, Shocked or Paradox (Vitriol, Webbed and Flak once built).
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
   machine showing an intact weapon), focus (its rank shares one pick). A move may carry its
-  own aim. The pick is a commitment; Lure and Disrupt move it.
+  own aim. The pick is a commitment; Lure and Disrupt move it. A special that acts on nobody
+  in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
+  it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders: breach (the blow ignores the shield;
   not built: today only its overflow passes), scorch (a stack of
@@ -319,7 +328,8 @@ Burning, Suppressed, Shocked or Paradox (Vitriol, Webbed and Flak once built).
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
-  included); a suppressed foe does nothing.
+  included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
+  on it bursts at the end of its action, skipped or not.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. A dead Gel
   splits into two Half-Gels in the reinforcements (one deep).
@@ -337,8 +347,14 @@ shields do not refill; a pack keeps its survivors, who return whole.
   gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
-  the target shows no intent on this machine (not built: the funnel-web's); the target's
+  the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
+  arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
+  when aimed at another machine, Suppressed, or on a special that acts on nobody in
+  particular; read at the spend, before the spend's own riders, each foe reached judged
+  alone); the target's
   rank (not built: the Cottonmouth's).
+- A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
+  number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. Not built:
   the Cottonmouth's replaces every weapon's shot whole (Indirect, 15, heat 10, the weapon's
