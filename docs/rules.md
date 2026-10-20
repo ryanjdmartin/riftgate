@@ -19,7 +19,8 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Thirteen chassis from five makers
-  and three planned, the funnel-web, the Cassowary and the Cottonmouth (`content/chassis.json`).
+  and four planned, the funnel-web, the Cassowary, the Cottonmouth and the Whip Scorpion
+  (`content/chassis.json`).
   A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -133,7 +134,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
-- **Lure**: every foe reached and left standing turns on the spender for the round.
+- **Lure**: every foe reached and left standing turns on the spender for the round. (Not
+  built: the Whip Scorpion's Siphon reaches every foe in the fight, and every blow landed on
+  it that round adds 10 heat to it.)
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -339,7 +342,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. Not built:
   the Cottonmouth's replaces every weapon's shot whole (Indirect, 15, heat 10, the weapon's
-  keywords kept), Penetrate at the back rank and Spread at the front.
+  keywords kept), Penetrate at the back rank and Spread at the front; the Whip Scorpion's
+  makes every vent it spends on itself blast a random live foe for the heat it took off, as
+  its own blow (a vent on an ally blasts nothing, an ally's vent on it blasts nothing).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

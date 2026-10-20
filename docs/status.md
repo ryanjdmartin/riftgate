@@ -71,7 +71,8 @@ document's job and every command are in `README.md`.
   two lines); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
   fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
   rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
-  same day (Flak), so the boiler and then the maker's tiers remain. The tender, the campaign
+  same day (Flak), and the boiler as the Whip Scorpion on 20 October, so the maker's tiers
+  remain. The tender, the campaign
   runner and the balance runner skip a chassis whose passive or locked piece is planned
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
@@ -125,10 +126,11 @@ document's job and every command are in `README.md`.
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 13 chassis and three planned (the funnel-web, 18 October, its passive
+- Content: five makers, 13 chassis and four planned (the funnel-web, 18 October, its passive
   and its locked Web Bomb planned; the Cassowary and the Cottonmouth, 19 October, their
-  passives and the Cassowary's locked Spin-Up planned; a planned chassis is never dealt, the
-  campaign's Start rule), 56 components (14 locked, 4 unstocked, among them
+  passives and the Cassowary's locked Spin-Up planned; the Whip Scorpion, 20 October, its
+  passive and its locked Heliographic Siphon planned; a planned chassis is never dealt, the
+  campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -295,6 +297,15 @@ document's job and every command are in `README.md`.
   finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
   Overcharged at a point, read together when the numbers branch merges; the engine is the
   to-do's line, the family the stock pass's.
+- The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
+  sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
+  live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
+  else cools (cooling 0; the passive gain of 10 a round retired as too easy); its locked
+  Heliographic Siphon a lure-all that Armours it and adds 10 heat per blow landed that round
+  (bad against bosses, good against swarms, Ryan's counter-profile; the taste line on rewards
+  for being struck gains its condition); the Thermal Ray its stock gun (flat 30, heat 30);
+  the Stoker the stock pass's; in content as planned entries; the engine and the assets are
+  the to-do's two lines.
 
 ## Next, in order
 
@@ -309,8 +320,8 @@ to-do's Ryan list).
    context, the tiers as proposed, the budgets (decided 15 October), the roster holes and an order. Each
    decision becomes a row; the analysis page retires to git once the last brief that cites it
    lands. The funnel-web landed first (18 October); the Cassowary, the Cottonmouth, the
-   Dingo's Translocator and the Prairie Dog's fight half on 19 October; the boiler is next,
-   then the maker's tiers.
+   Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
+   Scorpion on 20 October; the maker's tiers are next.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -354,7 +365,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   maker tables; v0.204's art rows) merged onto the review session's v0.211 (branch
   `ccr-ffcf75fa-3gkbz9`: Armoured and Overcharged in points, Burn numbered, Armoured's
   duration, its dispel in the Armoured row, the funnel-web's built clause, that branch's
-  tables). Main's file is v0.207; the review branch's three rows reach it when that branch
+  tables). Main's file is v0.208 (20 October: the Whip Scorpion's row with the chassis, size and maker tables, the damage-rider and thorns rows, unpublished, over v0.207); the review branch's three rows reach it when that branch
   merges. Git and the page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.

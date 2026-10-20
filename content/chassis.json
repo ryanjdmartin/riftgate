@@ -804,6 +804,49 @@
     "effects": []
    },
    "flavour": ""
+  },
+  {
+   "id": "whip_scorpion",
+   "name": "Whip Scorpion",
+   "designation": "Pattern 22 Heavy Walker",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "design": {
+    "fantasy": "Ryan's eight-legged spider whose vents blast a random foe for the heat they shed (12 and 13 October): \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device.\" The whip scorpion sprays when provoked. Named by Ryan, 20 October.",
+    "niche": "The maker's sustained damage dealer at tier two (Ryan, 18 October: promoted to damage class; 20 October: \"a sustained dps engine\"): heat is its ammunition and every vent is a gun, blasting a random live foe for the heat it takes off. Nothing cools it but its vents (cooling 0), so every point of heat it earns, from its hot guns, its Siphon's lure-all or the Peak's debuffs, stays until a valve opens on it. A heavy body that can detach; its Siphon makes it a partner.",
+    "notes": "Ryan's go, 20 October, on the design settled in chat from 12 October to 20 October (the brief retired to git: git show 4a8ab1d:docs/briefs/ws_boiler.md; the bible's Whip Scorpion row carries the decisions and their reasons). Ryan's names: the Whip Scorpion, the Thermal Ejection Manifold, the Heliographic Siphon, the Thermal Ray; the designation is Claude's working one. Every number is a placeholder (heavy walker, move 20; hull 150, shield 30, armour 10, heat 100, cooling 0, recharge 15; four hardpoints and the Siphon, a d5). The stock is stand-ins until the stock pass: the Thermal Ray (the hot gun), two Coolant Jackets (two valves on a d5), the Maxigun; the Stoker, a W&S piece that Burns a foe and its own firer, is the stock pass's. The passive is planned: the engine lacks the vent rider (the heat a vent takes off its owner as one blow on a random live foe drawn from the seeded stream, through the damage pipeline, armour and the foe's statuses applying; a vent on an ally blasts nothing, an ally's vent on it blasts nothing), the forecast on the vent entry and the bot's valuation. The passive gain of 10 a round (Ryan, 12 October) went on 20 October (too easy: a free blast a round); the pilot light of 5 is the exit if the row reads cold. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and gait are the asset session's."
+   },
+   "codex": "",
+   "hull": 150,
+   "shield": 30,
+   "movespeed": 20,
+   "heat_max": 100,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 10,
+   "recharge_field": 15,
+   "cooling": 0,
+   "traits": [
+    "walker"
+   ],
+   "size": "heavy",
+   "fixed": [
+    "heliographic_siphon"
+   ],
+   "loadout": [
+    "thermal_ray",
+    "coolant_jacket",
+    "coolant_jacket",
+    "maxigun"
+   ],
+   "passive": {
+    "id": "thermal_ejection_manifold",
+    "name": "Thermal Ejection Manifold",
+    "description": "Its vents blast a random foe for the heat they take off it. Nothing else cools it.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
   }
  ]
 }

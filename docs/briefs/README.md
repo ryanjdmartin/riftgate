@@ -77,7 +77,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   bulk ("giving the team tank stats is just as toxic as taking all the blows").
 - No reward for being struck that scales with the enemy's blows (the old discharge). A thorns
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
-  for doing its job (being struck under a draw) is dangerous.
+  for doing its job (being struck under a draw) is dangerous. The condition that reopens it
+  (Ryan, 20 October, the Whip Scorpion's Siphon): a machine that spends its own turn to be
+  struck, deals nothing that turn and is paid later and at random is not a tank doing its job.
 - Niches can and should overlap across a larger roster so a player finds something that fits;
   mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
   shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
@@ -143,7 +145,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
-| Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
+| Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (the boiler, landed) | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -289,7 +291,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
-| `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
+| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do) |
@@ -407,6 +409,6 @@ overrule)
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the
    stock pass.
-3. After the stock pass: the boiler, the gunship; the multi-rotor once the die has its shown
-   word.
+3. After the stock pass: the gunship; the multi-rotor once the die has its shown word; the
+   boiler landed on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.
