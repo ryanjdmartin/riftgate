@@ -29,7 +29,7 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer (decided; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| one | the interceptor (proposal, its third kit; `kestrel_interceptor.md`) | weapons of no damage | a free setup a round; a foe painted for the team's Direct guns | two spends' heat, glass | the no-damage gate |
+| one | the interceptor (proposal, its fourth round; `kestrel_interceptor.md`) | buffs and weapons of no damage | a free setup a round; a foe Exposed for the team's Direct guns | two spends' heat, glass | the gate: no damage dealt |
 | two | the Goshawk (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Sparrowhawk (rework; `kestrel_sparrowhawk.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
@@ -86,7 +86,11 @@ One pointer each; the proposal is in the brief named.
   overdesigned with a good nugget (20 October). The third: a weapon of no damage is Rapid once
   a round, so every control piece of every maker is a cantrip on it; its lock the designator,
   a weapon of no damage with Indirect reach that paints a foe for the team's Direct guns this
-  round; the dive's price benched; a tilt-jet. `kestrel_interceptor.md`.
+  round; the dive's price benched; a tilt-jet. The fourth round (late that day): the mark is
+  Exposed, the game's own word (the vocabulary's formation entry, the engine's one reach
+  check), reach alone, its on-hit half declined as Flak's kind and the armour clause benched;
+  the gate widened to buffs, the die's glyph deciding (a shield or vent that also buffs wears
+  a chip and is excluded); the foes' aim word flagged for renaming. `kestrel_interceptor.md`.
 - **The Goshawk** stands; its stock is cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its
@@ -101,10 +105,13 @@ One pointer each; the proposal is in the brief named.
   vent of 10 that shields 10 (the shield half with the combined entry's engine), which on the
   Puffin's passive vents twice and costs the turn; and Rapid vents or shields, if any exist,
   never below tier three (his rule of the day). The engine fires its passive once a spend,
-  whatever a shield's strikes (noted for the capital's lock).
+  whatever a shield's strikes (noted for the capital's lock). The third round (late that day),
+  on Ryan's size worry: the Ionizer's base cut (10 the lean) and the growth one for one at the
+  stock pass's heat scale of 1–20 (a fifth of today's heat until then), no cap; heat at 1–20
+  backed as the pass's direction, 1–10 read as a re-pricing.
 - **The Sparrowhawk** stands as its brief left it; the direction reads its chain as a
   cooldown burst gated by a kill, the row's own shape. The caster-killer niche (its open item
-  2) goes to the interceptor's dive if Ryan takes it; the Sparrowhawk is the trash chain and
+  2) goes to the interceptor's designator if Ryan takes it; the Sparrowhawk is the trash chain and
   the steady doubled gun. Its cold hard hitters are other makers' by design (no Kestrel hole).
   The records it moves on its go: the to-do's stock pass line (the Pinion Driver fixed on the
   Sparrowhawk, the Goshawk's hardpoint a basic) and the bible's stock-pass row.

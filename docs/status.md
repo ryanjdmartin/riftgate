@@ -94,8 +94,15 @@ document's job and every command are in `README.md`.
   Puffin on his split (the passive grows every shield it spends on an ally by that ally's heat,
   the Ionizer the overshield through it, the cooling gone; its second round); the interceptor's
   third kit, refined (the control gate and a designator with free reach that paints a foe for
-  the team's Direct guns; the dive benched). Proposals, waiting on Ryan's calls; on the branch,
-  not on main.
+  the team's Direct guns; the dive benched). The thirteenth round (20 October, late), Ryan's
+  three questions answered in the briefs: the Puffin's size (its third round: the Ionizer's
+  base cut, 10 the lean, the growth one for one at the stock pass's heat scale of 1–20, a fifth
+  of today's heat until then, no cap; heat at 1–20 backed as the pass's direction and 1–10 read
+  as a re-pricing); the interceptor's mark named Exposed, the game's own word (its fourth
+  round: reach alone, the on-hit half declined as Flak's kind, the armour clause benched, the
+  foes' aim word flagged for renaming), and its gate widened to buffs by the die's glyph (a
+  shield or vent that also buffs is excluded by its glyph; a weapon of no damage proposed to
+  print no number). Proposals, waiting on Ryan's calls; on the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

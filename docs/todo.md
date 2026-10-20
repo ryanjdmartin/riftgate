@@ -39,9 +39,9 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The bomber (`kestrel_bomber.md`)
 - [ ] The gun platform, Kestrel's capstone (`kestrel_gun_platform.md`), the team's rerolls as its passes
 - [ ] The Sparrowhawk at tier two (`kestrel_sparrowhawk.md`), with the cooldown property
-- [ ] The interceptor (`kestrel_interceptor.md`): Ryan's call on the dive as its lock, then its go
+- [ ] The interceptor (`kestrel_interceptor.md`): Ryan's call on the gate (a buff or a weapon of no damage), Exposed as its mark and the aim's shown word, then its go
 - [ ] The Kestrel line review (`kestrel_line.md`, 20 October): Ryan's calls on each chassis's item and the stock kinds for the stock pass; landed 20 October on his word: the Wake Diffuser (Rapid off), the off-tank a fast hovercraft, the capital the gun platform as a hover, the tilt-jet, the helicopter to Aphelion, the leans row
-- [ ] The Puffin made Kestrel (`kestrel_puffin.md`): Ryan's call on the Ionizer reading heat
+- [ ] The Puffin made Kestrel (`kestrel_puffin.md`): Ryan's call on the split, the Ionizer's base and the ratio (one for one at the pass's heat scale)
 - [ ] An Aphelion defensive tier one (Ryan, 19 October: to balance the tier-one bodies beside Minerva's and Kestrel's off-tank), in Aphelion's session
 - [ ] The boiler (`ws_boiler.md`): a damage dealer at tier two (Ryan, 18 and 19 October), with the stock pass's heat prices
 - [x] The revolver (`ws_revolver.md`): settled in chat 18 and 19 October and landed on Ryan's go (19 October) as the Cassowary: the bible's row, the rules, Spun Up in the vocabulary, the chassis and its Spin-Up planned in content, the tender skipping a planned chassis, the brief retired to git
