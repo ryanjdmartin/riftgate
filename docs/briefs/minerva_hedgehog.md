@@ -4,12 +4,12 @@ The session designs a lighter Minerva tier two that wants to be struck, first as
 Hull's new home, since 15 October around Ryan's Sonic Needle (below, "The Minerva session").
 "The echidna" and "the hedgehog" are working labels from Ryan's own list; the name is his.
 
-**Status**: direction, in session (15 October): Ryan's Sonic Needle passive. **Maker**:
+**Status**: direction, left open for now (Ryan, 20 October); two rounds in session (15 October), Ryan's Sonic Needle passive. **Maker**:
 Minerva. **Proposed tier**: two. **Read first**:
 `docs/briefs/README.md`; `minerva_armadillo.md`; the bible's rows on the Faraday Hull (section
 7) and on retaliation and thorns (section 5); `docs/roster_analysis.md` section 8 (Minerva's
-gaps); `content/components.json` (lockdown_shutters, proximity_klaxon,
-retribution_thurible).
+gaps); `content/components.json` (proximity_klaxon, retribution_thurible; the Lockdown Shutters left
+content with the Armadillo's landing, 20 October).
 
 ## What Ryan said
 
@@ -99,6 +99,10 @@ Knuckles the Echidna; the needle and a built-in lure together read as self-servi
 the spikes or the luring tank, not both; a damaging lure, if kept, is never Rapid; the Thurible
 becomes a tier-three module whose rule pays back a blow that damages its hull, with shield and
 field recharge down and hull up.
+
+Ryan, 20 October: "Echidna I will leave open for now." The Armadillo landed the same day (the
+bible's Armadillo row), so the Faraday Hull and Sealed Live are out of content: the Hull's idea,
+a tank struck by its own choice that Shocks for the team, is this design's if he takes it.
 
 ## Open for the session
 

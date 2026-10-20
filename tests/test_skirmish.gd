@@ -4622,3 +4622,124 @@ func test_a_web_holds_a_gathering_countdown_a_round() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(a.hull, 80, "it lands a round later than it would have")
+
+
+## The form-changing tank (the Armadillo's Lockdown; Ryan's framework of 15 October, his go 20
+## October): a shield spent on itself seals the machine, one chip carrying the passive's armour;
+## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat;
+## a vent or a damaging weapon opens it; a shield on an ally and a weapon of no damage (its
+## lures) leave the form alone.
+func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_damaging_weapon_opens_it() -> void:
+	var sk := Skirmish.new(1)
+	var shield := Face.shield(20)
+	var vent := Face.from_dict({"kind": "vent", "power": 20})
+	var gun := Face.attack(10, L)
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 5, "cryo": 1})
+	var m := _mech("A", Die.of([shield, vent, gun, lure]), 0, 200)
+	m.cooling = 5
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+	var b := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
+	sk.add_mech(m)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 20)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "the passive says what the seal grants")
+	assert_false(Effects.is_sealed(m), "open to begin with")
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.mechs[1]), "a shield on the ally")
+	assert_false(Effects.is_sealed(m), "does not seal it")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	assert_eq(m.armour, 10, "the seal's armour, read through the stat")
+	assert_true("\n".join(sk.log).contains("A seals: armour +10"), "the log says so")
+	assert_eq(sk.forecast(ms, false)["heat_end"], 15, "the forecast reads the seal's heat at the turn's end")
+	sk.end_round()
+	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter at the end of its turn")
+	assert_true(Effects.is_sealed(m), "and stays sealed through the enemy's turn")
+	sk.start_round()
+	assert_eq(ms.heat, 15, "its own cooling stopped: nothing shed at the round's start")
+	ms.face_index = 3
+	assert_true(sk.assign(0, sk.front[0]), "a lure, a weapon of no damage")
+	assert_true(Effects.is_sealed(m), "keeps the seal")
+	assert_eq(Effects.stacks_of(sk.front[0], "cryoed"), 1, "and leaves Cryo on the foe")
+	sk.end_round()
+	assert_eq(ms.heat, 35, "the lure's 5 and another 15 sealed")
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, null), "a vent on itself")
+	assert_false(Effects.is_sealed(m), "opens it")
+	assert_eq(m.armour, 0, "the seal's armour goes with it")
+	assert_eq(ms.heat, 15, "the vent's 20 off")
+	assert_true("\n".join(sk.log).contains("A opens"), "the log says so")
+	sk.end_round()
+	assert_eq(ms.heat, 15, "open, nothing more at the turn's end")
+	sk.start_round()
+	assert_eq(ms.heat, 10, "and its cooling runs again")
+	ms.face_index = 0
+	assert_true(sk.assign(0, null), "sealed again")
+	assert_true(Effects.is_sealed(m), "one seal, renewed")
+	assert_eq(m.modifiers.filter(func(x): return x.id == "sealed").size(), 1, "one modifier however often it seals")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[0]), "a damaging weapon")
+	assert_false(Effects.is_sealed(m), "opens it too")
+
+
+## Cryo (Ryan, 18 and 20 October): the Cryo Flinger's mark pays in cooling. Any machine's
+## damaging hit on a foe carrying Cryo spends every stack and cools the hitter 10 a stack, after
+## the spend's own heat lands; a blow of nothing spends none, and the keyword's number is the
+## stacks each foe reached gains.
+func test_a_damaging_hit_cashes_a_foes_cryo_for_the_hitters_cooling() -> void:
+	var sk := Skirmish.new(1)
+	var flinger := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "rapid", "cryo"], "heat": 5, "cryo": 1})
+	assert_eq(flinger.describe(), "indirect 0 lure rapid cryo 1 (+5 heat)", "the entry says its stacks")
+	assert_eq(Face.from_dict(flinger.to_dict()).cryo, 1, "the number round-trips")
+	var a := _mech("A", Die.of([flinger, Face.shield(20)]), 0, 200)
+	var b := _mech("B", Die.single(Face.attack(10, L, [], 5)), 40, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[1].heat = 30
+	var g: Foe = sk.front[0]
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, g), "the flinger")
+	assert_eq(Effects.stacks_of(g, "cryoed"), 1, "the foe carries Cryo")
+	assert_true(Effects.carries_status(g), "a status the team put on it")
+	assert_eq(sk.mechs[0].heat, 5, "the flinger's heat landed, no cash on a blow of nothing")
+	# Rapid gave the turn back: a second fling lays a second stack and cashes nothing.
+	sk.mechs[0].face_index = 0
+	Effects.remove(a, "disabled_0")
+	sk.mechs[0].assigned = false
+	assert_true(sk.assign(0, g), "flung again")
+	assert_eq(Effects.stacks_of(g, "cryoed"), 2, "two stacks, nothing spent by a weapon of no damage")
+	assert_true(sk.assign(1, g), "B's gun, 10 damage for 5 heat")
+	assert_eq(Effects.stacks_of(g, "cryoed"), 0, "the hit spent every stack")
+	assert_eq(sk.mechs[1].heat, 30 + 5 - 20, "B cooled 10 a stack after its own heat landed")
+	assert_true("\n".join(sk.log).contains("B cashes Cryo ×2: -20 heat"), "the log says so")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[1].heat = 3
+	Effects.stack(g, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_true(sk.assign(1, g), "a cash worth more than the heat held")
+	assert_eq(sk.mechs[1].heat, 0, "cools to zero, the rest wasted")
+	# The bot values the cash as a vent of that much on the hitter.
+	var s2 := Skirmish.new(2)
+	var c := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
+	s2.add_mech(c)
+	s2.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].heat = 50
+	var pol := Policy.make(Policy.GREEDY)
+	var cold := pol.attack_score(s2, s2.mechs[0], c.die.faces[0], s2.front[0])
+	Effects.stack(s2.front[1], Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_true(pol.attack_score(s2, s2.mechs[0], c.die.faces[0], s2.front[1]) > cold, "the hot machine prefers the foe carrying Cryo")

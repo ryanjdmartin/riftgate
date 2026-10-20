@@ -727,6 +727,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: a Burn weapon says its stacks: burn, a positive number" % where)
 	if fd.has("burn") and not Array(fd.get("keywords", [])).has("burn"):
 		errs.append("%s: burn (the stacks) rides with the Burn keyword" % where)
+	# Cryo is numbered the same way (20 October): the stacks each foe reached gains.
+	if Array(fd.get("keywords", [])).has("cryo") and int(fd.get("cryo", 0)) <= 0:
+		errs.append("%s: a Cryo weapon says its stacks: cryo, a positive number" % where)
+	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
+		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -849,6 +854,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
+		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
+			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword":

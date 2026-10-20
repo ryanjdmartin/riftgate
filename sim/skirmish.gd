@@ -28,6 +28,7 @@ const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four p
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
+const CRYO_COOL_PER_STACK := 10    # heat a damaging hit on a Cryo foe sheds for its hitter, a stack (20 October; a placeholder ahead of the heat rework)
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
@@ -395,7 +396,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	# and Burning's tick burn at the end of the player's turn, before the enemy acts (11 and
 	# 13 October). Foes add no heat outright: their fire leaves Burning and Scorched, which
 	# land on later turns.
-	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"])
+	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
 	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"])
@@ -494,7 +495,9 @@ func start_round() -> void:
 		ms.assigned = false
 		if not ms.alive():
 			continue
-		var drop := mini(ms.heat, ms.unit.cooling)
+		# A sealed machine's own cooling stops (the Armadillo's Lockdown, 20 October); an ally's
+		# vent still cools it.
+		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, ms.unit.cooling)
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
@@ -806,6 +809,7 @@ func assign(mech_index: int, target = null) -> bool:
 		var bm := Effects.grant_buff(ms.unit, "braced", f.braces, "brace:" + f.component, round)
 		if bm != null:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
+	_shift_form(ms, f, target)
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
 	# free (never the same entry; a copy of it may come up, so stacked copies chain), and the
@@ -858,6 +862,7 @@ func end_round() -> int:
 func _end_player_turn() -> void:
 	overheats.clear()
 	_burn_mechs()
+	_seal_heat()
 	_settle_heat()
 	_refresh_allies()
 	_check_outcome()
@@ -1037,6 +1042,42 @@ func _tick_mechs() -> void:
 ## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
 ## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
 ## stack and Scorched goes.
+## The heat a sealed machine runs at the end of its turn (the Armadillo's Lockdown): the
+## seal's own number, or nothing.
+func seal_heat(ms: MechState) -> int:
+	if not Effects.is_sealed(ms.unit):
+		return 0
+	return int(Effects.seal_form(ms.unit).get("heat", 0))
+
+
+## Sealed machines run hotter at the end of the player's turn, after Burning and before the
+## overheat (Burning's timing), so the clock bites where a vent can answer it.
+func _seal_heat() -> void:
+	for ms in live_mechs():
+		var h := seal_heat(ms)
+		if h > 0:
+			log.append("%s runs sealed: +%d heat" % [ms.unit.display_name, h])
+			_add_heat(ms, h)
+
+
+## The form change (the Armadillo's Lockdown, Ryan's framework of 15 October, his go 20
+## October): a shield spent on itself seals the machine, a vent or a weapon that deals damage
+## opens it; a shield on an ally, a buff, and a weapon of no damage (its lures) leave the form
+## as it is. The seal is one chip carrying the passive's armour; the heat clock and the
+## stopped cooling read it.
+func _shift_form(ms: MechState, f: Face, target) -> void:
+	var seal := Effects.seal_form(ms.unit)
+	if seal.is_empty() or not ms.alive():
+		return
+	if f.kind == Face.Kind.SHIELD and (not (target is MechState) or target == ms):
+		if not Effects.is_sealed(ms.unit):
+			Effects.stack(ms.unit, Effects.sealed_status(int(seal["armour"]), int(seal["heat"])), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+			log.append("%s seals: armour +%d, its own cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
+	elif f.kind == Face.Kind.VENT or (f.is_attack() and (f.power > 0 or f.power_max > 0)):
+		if Effects.remove(ms.unit, "sealed"):
+			log.append("%s opens" % ms.unit.display_name)
+
+
 func _burn_mechs() -> void:
 	for ms in live_mechs():
 		var t := Effects.turn_tick(ms.unit)
@@ -1113,6 +1154,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			lays[foe] = l
 	var laid := {}
 	var webbed: Array[Foe] = []
+	var thawed := 0   # Cryo stacks this spend's damaging hits spent, cooling the hitter after its heat lands
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
 		if f.is_ranged():
@@ -1192,6 +1234,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 				_note_status(gained, foe, "webbed")
 				webbed.append(foe)
+			# Cryo (20 October): a damaging hit spends every stack the foe carries, and the hitter
+			# cools for them once the spend's own heat has landed (below); a blow of nothing
+			# spends none. Then the blow's own Cryo lands, after the cash, so a damaging Cryo
+			# weapon never eats what it lays.
+			if was_alive and dmg > 0 and Effects.has(foe, "cryoed"):
+				thawed += Effects.stacks_of(foe, "cryoed")
+				Effects.remove(foe, "cryoed")
+			if f.has(Face.Keyword.CRYO) and foe.alive():
+				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo), Effects.DECAY_NONE)
+				_note_status(gained, foe, "cryoed")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		total += landed
@@ -1255,6 +1307,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
+	if thawed > 0:
+		var cooled := mini(ms.heat, thawed * CRYO_COOL_PER_STACK)
+		ms.heat -= cooled
+		log.append("%s cashes Cryo ×%d: -%d heat" % [ms.unit.display_name, thawed, cooled])
 	# Chain: a kill repeats the attack on a new valid target, heat and all (the heat is the
 	# risk, and a laser is telegraphed), until it misses a kill.
 	if f.has(Face.Keyword.CHAIN) and not target.alive():

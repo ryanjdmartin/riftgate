@@ -191,6 +191,16 @@
    }
   },
   {
+   "id": "cryo",
+   "category": "keyword",
+   "name": "Cryo",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 10 a stack.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 18 and 20 October: the Armadillo's Cryo Flinger carries it with Lure and Rapid, and the keyword and the debuff share the word. Marked for reuse: a healthier way to grant ally cooling than venting directly, so other pieces may lay it. A minor rider on the mark (a damage over time parted from Burning by whether it passes armour) is a bench, only if the roster has room. The cooling a stack is a placeholder ahead of the heat rework."
+   }
+  },
+  {
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
@@ -477,6 +487,38 @@
      "on": "machine",
      "stacks": "Yes: a damage point a stack",
      "lasts": "Halves at the end of each round, rounded down, until gone; on the Ammit the battle, nothing fading"
+    }
+   }
+  },
+  {
+   "id": "sealed",
+   "category": "status",
+   "name": "Sealed",
+   "codex": "Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a damaging weapon opens it; a shield on an ally, a buff and a weapon of no damage leave it as it is. An ally's vent still cools it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's framework (15 October) and go (20 October). One chip, renewing, never stacking: the granted armour is tied to the mode (Ryan, 15 October: the braced should not stack). The numbers (armour +10 on base 5, 15 heat a turn) are placeholders ahead of the heat rework; allies cooling the sealed shell is allowed (Ryan, 20 October).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Renews: one seal however many shields",
+     "lasts": "Until a vent or a damaging weapon opens it, or the skirmish ends"
+    }
+   }
+  },
+  {
+   "id": "cryoed",
+   "category": "status",
+   "name": "Cryo",
+   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's damaging hit on it spends every stack and cools the hitter 10 a stack; a blow of nothing spends none. It never fades on its own.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Armadillo's mark (Ryan's go, 20 October). Engine id cryoed, since the keyword holds the id cryo; the player reads Cryo on both. Shared on purpose (Claude's lean, Ryan's go): the tank's output is cooling the team contends for, and never an ally cooling the Armadillo for free.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: the Cryo's number per foe reached; a damaging hit spends every stack",
+     "lasts": "Until a damaging hit spends it, or the skirmish ends"
     }
    }
   },

@@ -31,9 +31,10 @@ END = "<!-- bible-tables:end -->"
 # lands on. A keyword or effect missing here grants no status.
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
-                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")]}
+                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
+                      "cryo": [("cryoed", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper"}
-PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"),
+PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",

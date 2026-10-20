@@ -1016,6 +1016,10 @@ static func status_glyph(id: String) -> String:
 			return "reroll"
 		"hopper":
 			return "hopper"
+		"sealed":
+			return "lock"
+		"cryoed":
+			return "vent"
 	return "star"
 
 

@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -176,6 +176,20 @@ const STATUS := {
 	# decays, and nothing cleanses it.
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
+	# The Armadillo's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
+	# framework): a shield it spends on itself seals it, a vent or a damaging weapon opens it.
+	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
+	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
+	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
+	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A vent or a damaging weapon opens it.", "decay": "none", "stacking": "renew",
+		"tags": ["buff", "form"], "effects": []},
+	# Cryo (Ryan, 20 October: the Armadillo's Cryo Flinger, the debuff called Cryo too, marked
+	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
+	# machine's damaging hit on it spends every stack and cools the hitter so much a stack
+	# (Skirmish.CRYO_COOL_PER_STACK). It never fades on its own: the canister sticks.
+	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter 10 a stack.", "decay": "none",
+		"tags": ["mark"], "effects": []},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "renew",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
@@ -224,7 +238,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
 ## own buffs (Braced, Kindled, Getting Back Up).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -929,6 +943,29 @@ static func keeps(u, status_id: String) -> bool:
 	return false
 
 
+## The form a machine seals into (seal_form, static; the Armadillo's Lockdown, 20 October):
+## {"armour": the armour the seal grants, "heat": what it runs hotter at the end of each turn}
+## when a live passive carries it, else empty.
+static func seal_form(u) -> Dictionary:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "seal_form":
+			return {"armour": int(pair[0].get("value", 0)), "heat": int(pair[0].get("heat", 0))}
+	return {}
+
+
+## The Sealed status with the seal's own numbers in it: the chip the machine wears while
+## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
+static func sealed_status(armour: int, heat: int) -> Dictionary:
+	var d: Dictionary = STATUS["sealed"].duplicate(true)
+	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A vent or a damaging weapon opens it." % [armour, heat]
+	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
+	return d
+
+
+static func is_sealed(u) -> bool:
+	return has(u, "sealed")
+
+
 ## The chance, percent, that an ally slips out under this machine's screen when the team
 ## withdraws (screen_withdraw, static; the Prairie Dog): zero when it has none.
 static func screen_chance(u) -> int:
@@ -1167,6 +1204,7 @@ static func effect_text(eff: Dictionary) -> String:
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"seal_form": body = "a shield spent on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a vent or a damaging weapon opens it" % [vs, str(eff.get("heat", 0))]
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))

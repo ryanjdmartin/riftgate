@@ -261,6 +261,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# October: a numbered keyword, a damage point a stack); the tick is read from the status.
 		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 		score += (1.0 - p_kill) * per * float(f.burn * (f.burn + 1)) / 2.0 * BURN_WEIGHT
+	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
+	# of that much would be on the hitter.
+	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
+		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.CRYO_COOL_PER_STACK)
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
 	if f.braces > 0:

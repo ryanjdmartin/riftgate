@@ -19,8 +19,8 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 502 tests, 61,009 checks, green on `ccr-3259e29d-ydwpom` with main merged in (20
-  October; main alone 500 and 60,987 after the funnel-web and planted-footwork branch merged;
+- Tests: 505 tests, 61,061 checks, green on `ccr-3259e29d-ydwpom` with main merged in and the
+  Armadillo landed (20 October; main alone 500 and 60,987 after the funnel-web and planted-footwork branch merged;
   485 and 20,291 on the Windows desk machine on 19 October, about a minute there). A cloud
   session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
@@ -44,18 +44,21 @@ document's job and every command are in `README.md`.
   word ("make sure main is up to date with any changes you've made"), main merged into it the
   same day; the session went on in a fresh context on `ccr-3259e29d-ydwpom` (below), so this
   branch is safe to delete.
-- `ccr-3259e29d-ydwpom` (18 October, the Minerva session resumed): Ryan's calls on the review
+- `ccr-3259e29d-ydwpom` (18 to 20 October, the Minerva session resumed; main merged in on 20
+  October): the Armadillo landed on Ryan's go (20 October: Lockdown, the Cryo Flinger pair,
+  Cryo, below), the echidna left open, the siege battery parked on his charge brief; before it,
+  Ryan's calls on the review
   built and recorded (the bible's Armoured row and Burn row in section 5, the rules, the
   vocabulary): Armoured on both sides at an armour point a stack, Overcharged a damage point a
   stack halving at each round's end with no rounds, the Quintessence Tap keeping every
   Overcharged on the Ammit and its kill two, Burn a numbered keyword at a damage point a
   stack, "devour" out of the records (the talons' rule says what it does), the numbers' direction
   down (section 11); the Armadillo's Cryo Flinger and Cryo named and the mark shared; the
-  siege battery's fourth round (Ryan's ammo bar, his Wainwright & Sutler worry). To resume,
-  read `docs/briefs/minerva_armadillo.md` (its open list: the numbers, allied cooling, tier
-  one and the texts), `docs/briefs/minerva_siege_battery.md` (its fourth round: Ryan's call on
-  the shells), then the bible's state below. The hangar page waits on a republish (the
-  content moved: Armoured's name and numbers, the Coil, the talons, the Burn numbers).
+  siege battery's fourth round (Ryan's ammo bar, his Wainwright & Sutler worry). To resume:
+  the Minerva roster row (the bible, section 7) says where each machine stands; the open
+  Minerva briefs are the Honey Badger's (its numbers), the echidna's (left open), the siege
+  battery's (parked on Ryan's charge brief) and the battlecruiser's (with the Carrier's
+  session); the Armadillo's model is the to-do's art line.
 - `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
   proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
   Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
@@ -314,6 +317,17 @@ document's job and every command are in `README.md`.
   a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
   chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
   Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
+- Built 20 October, on `ccr-3259e29d-ydwpom` (Ryan's go; the bible's Armadillo row, section 7):
+  the Armadillo is the form-changing tank. Lockdown, its passive (`seal_form`: armour +10 on a
+  base of 5, 15 heat at the end of each sealed turn before the overheat, its own cooling
+  stopped; a shield on itself seals, a vent or a damaging weapon opens; one renewing Sealed
+  chip carrying the armour); the Cryo Flinger pair, fixed (Indirect, no damage, Lure, Rapid,
+  Cryo 1, 5 heat); Cryo, a numbered keyword like Burn and a foe status, any machine's damaging
+  hit spending every stack to cool the hitter 10 a stack after its own heat lands, valued by
+  the bot as a vent; the Lockdown Shutters and the Faraday Hull out of content (the Shoring
+  Jack unstocked, tier one); four hardpoints (rivet gun, slugthrower, Blast Door, Blowout
+  Stack). Every heat number a placeholder ahead of the heat rework (Ryan). The model still
+  has five pins and no racks (the to-do's art line).
 - Built 18 October, on `ccr-3259e29d-ydwpom` (Ryan's calls, 18 October; the bible's section
   5): Braced is Armoured on both sides, an armour point a stack (the Shoring Jack 10, the
   Breaching Plow 10, the Phase Conjugator 3 a shield, a foe's brace its value in stacks, the
@@ -479,11 +493,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.220 (20 October, from
-  `ccr-3259e29d-ydwpom` after main merged in: main's v0.219 with the tables regenerated from
-  the merged content, so Armoured, Overcharged, Burning, Burn and the talons' kill rule read as
-  built on 18 October; the rows themselves had reached the live page through other sessions'
-  merges). Before it, v0.219 (20 October, main's file too, after
+  `docs/design-bible.html` after every change. Live: v0.221 (20 October, from
+  `ccr-3259e29d-ydwpom`: the Armadillo's row, the Minerva roster row, its retaliation row
+  closed, the chassis table, the seal made real, the Sealed and Cryo table rows) over v0.220
+  (the same day, the same branch: main's v0.219 with the tables regenerated from the merged
+  content, so Armoured, Overcharged, Burning, Burn and the talons' kill rule read as built on
+  18 October). Before it, v0.219 (20 October, main's file too, after
   the funnel-web and planted-footwork branch merged): the live v0.218 (the Kestrel session's
   Laminar Deflector calls of 20 October over the v0.217 that carried that branch's rows, the
   funnel-web's model and the walkers' planted footwork, over other sessions' pages of 18 to 20

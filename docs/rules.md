@@ -130,6 +130,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Penetrate**: also hits the other rank of the target's column.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
+- **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
+  machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 10 a
+  stack, after the spend's own heat lands; a blow of nothing spends none.
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
@@ -202,6 +205,10 @@ On a machine:
   decays, and nothing cleanses it.
 - **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
+- **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +10,
+  its own cooling stopped, 15 heat more at the end of each turn before the overheat; a vent or
+  a weapon that deals damage opens it; a shield on an ally, a buff and a weapon of no damage
+  leave the form as it is. An ally's vent still cools it. One seal, however many shields.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
@@ -238,6 +245,8 @@ On a foe:
   as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
+- **Cryo** (debuff): a damaging hit on it spends every stack and cools the hitter 10 a stack;
+  a blow of nothing spends none. It never fades on its own.
 - **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
   halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
@@ -252,7 +261,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed or Cryo (Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
