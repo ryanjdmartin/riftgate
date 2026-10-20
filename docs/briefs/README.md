@@ -82,6 +82,17 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
   shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
   this thing because that already kind of does it,' then you quickly run out of things").
+  Ryan, 18 October: "in a roster of up to 50 units, there's going to be role and mechanic
+  overlap. The trick is making the shape of each different enough that they create a unique
+  enough feeling."
+- Reroll-related effects are Kestrel's (Ryan, 19 October, after sending them to Wainwright &
+  Sutler on 18 October: that maker's ten filled without effort): "it actually fits, and means
+  we can push Kestrel way into the risk-versus-reward space, like a real maverick pilot."
+- A tier-one body from more than one maker takes the pressure off the Armadillo being a
+  must-pick (Ryan, 19 October: Wainwright & Sutler is pure offence and utility, Aphelion to be
+  decided), which is why the Kestrel off-tank takes a tier-one slot with a lure of its own;
+  Aphelion also needs a defensive tier one (Ryan, 19 October), a line in the to-do for its
+  session.
 - Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
   16 October).
 - The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
@@ -95,6 +106,11 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
   stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
+- The action economy (Ryan, 20 October; the bible's row beside the stun row, section 5): Rapid
+  is the new Suppress in build ubiquity, so it is priced by a gate and never rationed, and each
+  of the wants it sells gets a home that is not a Rapid piece (the section below). A design
+  that wants many blows is pointed at strikes; one that wants order is given a die mechanic;
+  one that wants a second action pays in a banked resource, a cooldown or an ally's turn.
 
 ## Tiers
 
@@ -126,7 +142,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel | Sparrowhawk, the strafer, the shield-spender | Goshawk, Puffin | the bomber (Ryan, 15 October) |
+| Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -154,7 +170,8 @@ Amplify for others: the Dingo's Shock, Flak (the Prairie Dog's Flakshot, the mak
 Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomber's clusters.
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
-team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October).
+team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October;
+Kestrel's, Ryan, 19 October: the gun platform proposed in `kestrel_gun_platform.md`).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
 (Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
 if one is ever wanted; a planned chassis is never dealt, so its deal is the Prairie Dog or the
@@ -172,6 +189,92 @@ four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit)
 share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward
 on our side.
 
+## The action economy, and why things want Rapid (20 October)
+
+Ryan, 20 October: "Do you think there's a case to be made for trying to expand the ways to
+fill a rapid-type niche? After all, action economy is often a chase in these styles of games.
+Commander actions are one obvious area. Do a deep dive into why certain things want rapid,
+and what we could change or add to help fill that gap other then add a ton more rapid pieces.
+Which we can and will do, but it will feel samey regardless." And: "rapid is turning into the
+new Suppress in terms of build ubiquity." Claude's analysis, the same day, for Ryan to move;
+nothing here is decided.
+
+Rapid sells five different wants in one keyword, and it is the only component-level source of
+any of them, which is the Suppress pattern (one answer, so every design reaches for it):
+
+| The want | Who chases it | What Rapid gives it |
+|---|---|---|
+| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Armadillo (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
+| a second action on one machine, setup then cash | the Armadillo (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act), the siege battery (reload and still act) | act again |
+| spends counted | the line frame's combo (weapons spent), the Cassowary's sixth shot, the Paradox (once a spend) | more spends a round |
+| a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
+| tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
+
+Four of the five carriers in content are ungated (the Deflector, the Diffuser, the Vacillator,
+the Flakshot: the switch-off and nothing else), the Umbra Inducers of tempo; the gated ones
+(the Spin-Up by its cylinder, the interceptor's once a round, the Zoids walker's by a kill)
+are the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
+
+Homes for each want other than more Rapid pieces, with the engine's state:
+
+- **Own rerolls as a number** (another look). The engine runs it: the Clydesdale's Battery
+  Director is one free reroll of its own die a round, a static effect a module may carry
+  today. Give it to the machines whose identity reads its die (the Cassowary, the platform,
+  the Armadillo), as a passive clause or a priced module (its stat line paid elsewhere, so it
+  is no universal must-pick). A look without an action. Hole: the Clydesdale's identity thins;
+  the number is the lever (one on a d9 is not one on a d3).
+- **The team's order instead of self-sequencing** (the second action). A passive that needs
+  Rapid pieces to work wants a second action; ask first whether an ally's action is the better
+  pair (the Dingo's Shock to the Sparrowhawk's cash, the off-tank's lure for the team). Where
+  the self-sequence is the identity, give it a die-order mechanic (stepping, a combo), as the
+  Cassowary has.
+- **Counters that count blows, not spends** (spends counted). A counter per blow makes
+  multi-strike and area pieces its fuel, Wainwright & Sutler's currency, where a counter per
+  spend makes Rapid its fuel. Flak counts blows; the line frame's combo is open (count blows
+  landed, and the Maxigun is a combo piece); the Paradox counts once a spend by decision.
+- **Combined entries** (the cantrip). Two effects on one spend: the off-tank's lock (a lure
+  that regens itself), the Afterburner (damage and vent all), the harpoon (damage and Shock),
+  the Flakshot. The stock pass's cantrips can be combined entries rather than Rapid ones: a
+  vent that shields, a shield that lures, a gun that vents on fire. Density a spend instead of
+  count of spends: no reroll, no chain, nothing to limit, the price each half's number.
+- **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
+  (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
+  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Overcharged,
+  Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
+  by its setup.
+- **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
+  dark: strikes 2 with a cooldown of 2, the broadside, the Sparrowhawk's chain. Paid in the
+  die's reliability; the cooldown property (decided, not built) unlocks the family.
+- **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
+  (arm now, fire twice later), which reads the die's own state.
+- **Reactions** (actions in the enemy's turn). Retaliate, the Barrier, the web's burst; a
+  counter-battery (when a foe acts on an ally, this machine's showing weapon fires at it, once
+  a round) with the thorns row's caution: a reward that scales with enemy actions needs a
+  drawback.
+- **Tempo lent as a status** (tempo lent). A haste buff from a support (the ally's next weapon
+  spend gives its turn back) moves the chase from pieces to supports and prices it in the
+  support's action; Rapid by another name, ranked last.
+- **Commander actions** (the campaign scale). The bible: the commander's tools do what
+  machines cannot (manipulation, mitigation, information, movement, never a fifth gun; a
+  reusable ability deals no direct damage); battlefield abilities belong to the city, on
+  map-turn cooldowns, legible and impossible to hoard, research shortening them; the layer
+  waits for a baseline balance. Action economy fits movement and manipulation: a sortie (a
+  machine that fought moves again), a scramble (every flyer moves), a field refit (one own
+  reroll a round in its next skirmish; "no command die rolls" says the commander has no die,
+  and a granted reroll is a manipulation to confirm against the row), a fire mission (a
+  one-shot with damage on the map, never in a skirmish). Flavoured by the host city's maker:
+  Kestrel's city gives tempo, Minerva's plate, Wainwright & Sutler's the strike, Aphelion's a
+  teleport, the capital's a blood price. Action economy nobody can stack, the opposite of a
+  Rapid pile.
+- **Pricing the Rapid that exists** (the stock pass). The four ungated carriers re-priced (heat
+  on the Vacillator and the Flakshot, the Deflector's number, the Diffuser's question in
+  section 12), and every new Rapid gated like a stun: if it kills, on a cold spend, once a
+  round, by a cylinder.
+
+The three rules of thumb this leaves: a design that wants many blows is pointed at strikes;
+one that wants order is given a die mechanic; one that wants a second action pays for it in
+a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, gated.
+
 ## The briefs
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
@@ -181,9 +284,11 @@ on our side.
 | `minerva_hedgehog.md` | direction, in session (the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
-| `kestrel_strafer.md` | decided | Kestrel | 1 | nothing |
-| `kestrel_shield_spender.md` | direction | Kestrel | 1 | nothing |
-| `kestrel_bomber.md` | decided | Kestrel | 3 (Ryan, 15 October) | nothing (Ryan, 15 October) |
+| `kestrel_strafer.md` | decided; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal |
+| `kestrel_shield_spender.md` | direction; three kits proposed 18 October, the off-tank package on Ryan's word 19 October | Kestrel | 1 | Ryan's call on the package; its runner row on the shield rule's engine |
+| `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
+| `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
+| `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |
@@ -218,6 +323,10 @@ in its brief; the full rounds are in git (above).
 
 **Aphelion**
 
+- The aura-shifter (Claude, 18 October, proposed for Kestrel as a mode-shifter of its shield,
+  three locked shields each a tuning that holds while it stands; Ryan, 19 October: it reads as
+  an Aphelion tier three, "an all-in aura support, maybe, with shifting auras for the team"):
+  for an Aphelion session, beside the Carrier.
 - The large hovercraft, parked by Ryan (12 October: "Me trying to fill out the hovercraft
   roster, but we can park it for now"): proposed at tier two, heavy, hover. Its holes:
   Aphelion's "high-tech suites over light hulls" against a hover tank, and the Stingray already

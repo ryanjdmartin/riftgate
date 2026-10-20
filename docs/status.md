@@ -39,6 +39,31 @@ document's job and every command are in `README.md`.
   spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
   proposal, its third round), the to-do's review line under the design sessions (Armoured and
   Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+- `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
+  proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
+  Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
+  proposed for the go; the shield-spender an off-tank package at tier one on Ryan's word (a
+  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a whole,
+  heavy proposed and the capital ship; two briefs of their own, `kestrel_gun_platform.md` (the
+  capstone, Ryan's shape: every roll of its die grows its entries, lock or ride) and
+  `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat, dark two rounds, a locked
+  reset gun whose kill brings every weapon back; hull 30 decided); the interceptor (its first
+  weapon each round Rapid) in the README's tiers table, no brief yet; Ryan's leans recorded
+  (overlap is fine if the shapes differ, rerolls Kestrel's, a second tier-one lure so the
+  Armadillo is no must-pick, Aphelion to need a defensive tier one, the mode-shifter to
+  Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's direction
+  goes to main before anything else does any work) and kept open for the Kestrel line
+  review. The eighth round (19 October) in the platform's brief: no doubled
+  payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
+  (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
+  chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
+  Ryan's deep-dive ask on the action economy, answered in the briefs README (Rapid sells five
+  wants, four carriers ungated, a home for each want other than more Rapid pieces, the
+  commander layer among them), and the platform's engine moved from Rapid to rerolls (an own
+  reroll a round, the throttle retired, the three-strike shield its lock). Docs only; nothing
+  built, nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To
+  resume: Ryan's calls in the open Kestrel briefs, then on his go the records each brief's
+  "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -91,6 +116,8 @@ document's job and every command are in `README.md`.
   rounds, the stacking policy (add or renew), Suppressed never stacking nor carrying, the Boar's
   spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
   Dispel decided for the enemy's side with Ward turning both away (not built).
+  Then 18 and 19 October (`ccr-b6da49d3-4ft738`, above): the session's rounds with Ryan in
+  the Kestrel briefs, waiting on his calls.
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
   types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
   `docs/rules.md` states it, Rally included (Kindled at its move's value, live from the next
@@ -204,6 +231,12 @@ document's job and every command are in `README.md`.
 
 ## Decided, not built
 
+- The action economy's direction (the bible's section 5, 20 October, beside the stun row):
+  Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
+  a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
+  combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
+  commander actions on map cooldowns); what the stock pass does with it is in the to-do's
+  stock pass line, the reasoning in the briefs README.
 - Silence and Dispel on the enemy's side (the bible's section 5, 17 and 18 October): a Silenced
   status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
   section 12's.
@@ -315,52 +348,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.206 (19 October: the
-  Prairie Dog's Flak row with the chassis table, the cars row and the leans row, over v0.205's
-  Cassowary, Cottonmouth and Dingo rows, with the chassis, size and
-  maker tables, the Rapid and reroll clauses and Spun Up, Swap and Flak in the generated tables, over
-  the sprite session's v0.204 art rows and the 18 and 19 October Wainwright & Sutler clauses),
-  unpublished: the live page is the sprite session's v0.204 (19 October, main's art rows
-  merged onto another session's v0.202, which carries Armoured and Overcharged in points, Burn
-  numbered and Armoured's duration, with that branch's tables), so the next publish that
-  merges main carries the four rows and the three statuses. Before it, live v0.200 (18 October, evening), main's
-  fix-order row (the foe art row: structure through image to image from the pick, colour
-  through the edit mode, costume by a fresh take; Ryan: image to image is the better outcome
-  most of the time) merged onto another session's v0.199 (Armoured for Braced, Burn numbered,
-  the Ammit's kept stacks, Silence and Dispel); the branches' rows reach main's file as they merge. Before that, v0.197 (18 October), published from the
-  Kestrel session's branch with main merged in: main's v0.196 (the funnel-web's landing, its
-  row, the chassis table, the maker row, Ryan's price-over-scarcity lean and his gate
-  principle in the stun row, his riders note in the Barrier row, the time-shifter parked in
-  the Aphelion row; the Minerva branch's two rows, section 7's Minerva row rewritten to the
-  session's shape and section 12's question on Braced in stacks of 5 against the scale) with
-  this session's last rows (Numbed and the stores as buffs, Silence and Dispel decided, Ward
-  turning both away). Before that, v0.196 and v0.195, main's file, over v0.191 (17 October),
-  published
-  from the Kestrel session's branch with main merged in: main's rows (the Cleric, the White Mage until
-  16 October, with its promoted form's Reraise on its allies; the Augur in the Necromancer's
-  place; the Priest folded in, the Martial Artist kept; the Summoner's Norse names) with the
-  Kestrel session's (the Boar's spill, the keyword budget retired, Ryan's rules on random and
-  on overlap, section 12's Chain rework, section 6's vocabulary: the naming convention, Folded
-  become Braced, every status a chip, the two tables `tools/pages/bible_tables.py` writes from
-  the merged content; 17 October's stacking policy (add or renew) and re-suppress rule, Suppressed never carrying; the bomber's pull and mark). Main's file carried
-  v0.188, the same rows without that branch's, until the branch merged on 17 October and
-  brought the script with it.
-  Before that, v0.184 and v0.183 from the same branch over v0.182 as other sessions left it
-  live (the die's place numeral, rerolls onto a copy, Rapid's limiter, the benches' Norse
-  summons, the Wake Diffuser's question), and v0.175, main's file: the budgets decided, the
-  maker rows pointing at the briefs, the proposal files retired, the
-  Faraday Hull's move, the cooldown cap struck, homage by archetype, the small-work pass's three
-  rows (the Oblation Mantle, the harpoon's Shock, a boss apart from its size), section 12's
-  Numbed question and the boss mechanics (the storms at every machine, the countdown, the boss
-  in parts, the last act, foes helping foes), and Ryan's calls of that evening: the Summoner's
-  summons full Norse (Skaði, Surtr, Fáfnir), the White Mage's three (Dia, Cure, Holy) and the
-  heroes' tropes from beyond Final Fantasy, then of 16 October: balance the series out a
-  little, never purge it (the Lancer stays the dragoon, the Warrior the plain fighter, the Thief
-  Persona 5's Joker under its plain name). The live page also carries rows from two branches,
-  which reach main's file when they merge: `claude/zealous-cori-8xoly7` (its v0.177: the Boar's
-  later strikes spilling, Chain's rework in section 12) and `claude/adoring-planck-q8t63w` (its
-  v0.181: the die's Roman numerals, a reroll's copies, Rapid's limiter, the Nemesis's roll
-  again, the Wake Diffuser's question).
+  `docs/design-bible.html` after every change. Live is v0.212 (20 October): main's v0.207 (the
+  action economy's row beside the stun row; v0.206's Prairie Dog Flak row, chassis table, cars
+  row and leans row; v0.205's Cassowary, Cottonmouth and Dingo rows with the chassis, size and
+  maker tables; v0.204's art rows) merged onto the review session's v0.211 (branch
+  `ccr-ffcf75fa-3gkbz9`: Armoured and Overcharged in points, Burn numbered, Armoured's
+  duration, its dispel in the Armoured row, the funnel-web's built clause, that branch's
+  tables). Main's file is v0.207; the review branch's three rows reach it when that branch
+  merges. Git and the page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

@@ -93,15 +93,86 @@ strafer in its place (14 October). The raider returns as its own direction
 
 - Ryan, 16 October: the reading stands; "Choose first strike, subsequent random."
 
+## The proposal for the go (Claude, 18 October)
+
+Claude's proposal, in chat first; every number a placeholder, the name and the look Ryan's.
+
+- **Shape.** Kestrel, tier one, a light flyer on big boosters, move 50: the fast jet the makers
+  table promises and the detachment the map can read. A hovercraft if Ryan's silhouette is
+  one: hover (water fast, rough and ruins slow) would part the two Kestrel tier ones on the map
+  as the passives part them on the die, where two light flyers at 50 read the same.
+  Hull 70, shield 60, field recharge 30 (fight a small pack, fly off, two map turns refill
+  it), heat maximum 60, cooling 5, armour 0; three hardpoints beside the lock, a d4, the
+  Sparrowhawk's size once the Pinion Driver locks; two module slots. The Sparrowhawk's
+  register with ten more hull, since it fights small packs alone.
+- **The passive**, as the codex would print it: every weapon it fires strikes twice at half.
+  What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
+  foe's conditions count on every strike, and so does its armour. The entries show the halved
+  number with the strikes mark the Maxigun wears ("5 ×2", "5–8 ×4"), dragged over a foe the
+  number one strike deals with its armour off; the hold's line reads the rule.
+- **The lock, the spray** (Ryan's description, 15 and 16 October): rolled, Direct, 10 to 15,
+  two strikes, heat 5; under the passive 5 to 8 ×4. The first strike lands where the die is
+  dragged; each strike after it draws at random among the foes in reach at that moment, the
+  same foe again allowed, reach read again between strikes with a kill clearing its slot at
+  once. A printed property with the star; the die shows the first strike's number, as Spread
+  does (Ryan, 17 October).
+- **Stock**, stand-ins until the stock pass: the Laser Carbine, the Twin Autoguns, the
+  Laminar Deflector. No vent: its heat is the base weapon's, paid once a spend.
+- **The arithmetic**, mean damage a spend (today's numbers; "plain" is the weapon on any
+  other machine): at armour 0 the strafer deals the base weapon's damage for the base heat,
+  so nothing is gained or lost there; its gains are the riders (a Burn strike lays a stack
+  per 10 rounded up, so two half blows lay two stacks where one whole blow laid one or two),
+  flat buffs (Overcharged and Primed count per strike, so the Overcharge Coil is worth twice
+  on it: the Puffin's coil is its route in, Kestrel's locked pieces working together) and
+  multi-strike pieces (the Maxigun's six bites, and Vitriol's stacks if it ever meets the
+  funnel-web's windows); its loss is armour, paid twice a weapon.
+
+  | Weapon | Plain, armour 0 / 5 | Strafer: a strike | Strafer, armour 0 / 5 | Strafer, armour 5, two Overcharged stacks |
+  |---|---|---|---|---|
+  | Laser Carbine 10 flat | 10 / 5 | 5 ×2 | 10 / 0 | 20 |
+  | Twin Autoguns 5–15 | 10 / 5 | 3–8 ×2 | 11 / 1 | 21 |
+  | Slugthrower 15–30 | 22.5 / 17.5 | 8–15 ×2 | 23 / 13 | 33 |
+  | Maxigun 5–10 ×3 | 22.5 / 7.5 | 3–5 ×6 | 24 / 0 | 54 |
+  | the spray 10–15 ×2 | 25 / 15 | 5–8 ×4 | 26 / 6 | 46 |
+
+  The read: a halved basic (5) equals today's armour 5 exactly, so with basics alone the
+  strafer cannot scratch a Zombie Knight, the four big foes or a boss. That is the design's
+  "bounces off a Golem" at its harshest, and a hole for the start (below).
+- **The spray's spread.** With N foes in reach the aimed foe takes 1 + 3/N strikes on
+  average: 1.75 of the four against a full front, all four against a lone foe. So on a lone
+  boss the spray is a plain 5 to 8 ×4 and against a full front it is the volume piece the
+  brief named; a hole in the front turns the odds toward the foe behind it, which is the
+  punch Ryan described, planned by what falls first.
+- **Engine work.** A passive effect that halves the printed number (rounded up) and doubles
+  the strikes on the effective face (`Effects.effective_face` carries the reach, the granted
+  keywords and a raised ceiling today and would carry these two, so the die, the bot and the
+  resolver all read one face); the spray as a printed property with its random pick per strike
+  and reach re-read between strikes (today every strike of a spend lands on the one target's
+  hit list and the dead are cleared after the spend); the bot's value of a spray, its mean over
+  the foes in reach; each tested with synthetic passives.
+- **What the runner reads.** Alone against the packs (the trash claim) and the four big foes
+  (the bounce); beside the Puffin with the Overcharge Coil (the doubling of a flat buff); the
+  spray's pick share against a full front and against a thinned one.
+
 ## Open for the session
 
-1. Its numbers and the lock's, its size and way of moving (Kestrel builds small and mid flyers
-   and hovercraft on big boosters), matched to Ryan's silhouette; then it lands.
+1. Ryan's call on the proposal above: its numbers and the lock's, its size and way of moving
+   (a light flyer at 50, or a hovercraft if his silhouette is one), matched to Ryan's
+   silhouette; then it lands.
+2. The start's hole below (a halved basic against armour 5), if he wants it answered before
+   the go rather than by the scales question in section 12.
 
 ## Holes already raised
 
 - In a long fight it pays two armours a weapon; against heavy plate it is the wrong machine, by
-  design.
+  design. At today's numbers the design's edge is a cliff (Claude, 18 October): a halved
+  basic is 5, today's armour is 5, so with basics alone it deals nothing to a Zombie Knight (a
+  Marsh pack foe) or to any of the four big foes, and a tier one is meant to stand in a start
+  with basics alone. Section 12's scales question (our armour of 2 or 3 first, then the foes')
+  decides whether a halved basic bites or bounces on plate, and the stock pass's basic numbers
+  too; until one moves, its flat buffs are the way through plate (the table above).
+- Two light flyers at 50 (the Sparrowhawk and this) read the same on the map though not on the
+  die; a hovercraft silhouette would part them there too (Claude, 18 October; Ryan's call).
 - Riders double: Burn lays a stack per 10 of a blow, rounded up, so two half blows can lay more
   than one whole blow; Spread and Penetrate fire per strike. The arithmetic per strike is in
   the session above.
