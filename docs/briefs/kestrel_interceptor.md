@@ -4,8 +4,8 @@ The session designs the Kestrel tier one that acts twice a round, Ryan's pick of
 from the shield-spender's alternative kits, and finds the build hook its first kit lacked.
 "The interceptor" is a working label; the name and the look are Ryan's.
 
-**Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October, its second
-form). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
+**Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October, its third
+form, below the second). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
 "agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
 line review that gave it this brief); the second and third rounds of
 `kestrel_shield_spender.md` (where it was kit 2); the bible's rows on the action economy
@@ -128,6 +128,27 @@ in the tests.
 its spends, the hull it costs and the Direct spends it opened; alone against the packs (the
 glass) and the formations (the casters); beside a body; beside the funnel-web.
 
+## The third kit, refined (Claude, 20 October, evening)
+
+- Ryan, 20 October, on the second kit: "Interesting, possibly overdesigned? I feel like some
+  of this can be refined, but there is a good nugget in here, I think."
+- Claude, 20 October: the nugget as read, two things: setups are free on it, and a foe it
+  paints is reachable by the whole team. The overdesign: the dive's price (a foe's blow in the
+  player's turn, with four exceptions to learn) stacked under the gate. So the price goes and
+  the designator is a plain setter with free reach, as the probe and the Klaxon already are.
+  The machine in two sentences:
+  - **The passive**: a weapon it fires that deals no damage is Rapid, once a round.
+  - **The lock, the designator**: a weapon of no damage, Indirect, heat 5. The foe it is spent
+    on is Painted for the round: it stands in reach of Direct weapons, every machine's, as if
+    its column's front were empty.
+  The stock by kind as before: a Direct flat gun to cash the paint, a control piece of another
+  maker or a cold rolled gun, a vent. The round: paint the caster, the die rolls again, shoot
+  it or leave it lit for the team and shoot the front; a stocked setter: lay it, roll again,
+  cash it. The frame as before, a tilt-jet at 50, hull 60, shield 50, a d4. Its risk is now
+  the glass and the heat of two spends; the dive moves to the bench as a priced reach for a
+  smaller Kestrel if one is ever wanted. The levers if the paint is too strong: Painted
+  readable by this machine's Direct weapons only, or its heat.
+
 ## Holes already raised
 
 - The Paradox counts once a spend, so two spends a round feed a Baboon twice, and Painted is a
@@ -147,8 +168,12 @@ glass) and the formations (the casters); beside a body; beside the funnel-web.
 ## Bench, one line each
 
 - The designator (0 damage, Direct, Shock), the first proposal: struck, a Polarity Projector
-  copy; as the dive's state, Shock in place of Painted, the cash is the artillery's and its
-  own Indirect piece's (set aside: Shock is a state the roster has, a lit back-rank foe is not).
+  copy; Shock in place of Painted (set aside: Shock is a state the roster has, a lit back-rank
+  foe is not).
+- The dive (the second kit's price: the designator spent on a back-rank foe through a standing
+  front, the front foe striking it as it passes): Ryan, 20 October, overdesigned; a priced
+  reach for a smaller Kestrel if one is ever wanted, since the artillery makers' reach is free
+  and Kestrel's could be paid.
 - The first kit's passive (the first weapon each round is Rapid) with the dive as a gun of 15:
   Ryan, 20 October: thin, no build hook.
 - The cold gate (a weapon it fires while it carries no heat is Rapid, once a round): vents and
@@ -160,8 +185,8 @@ glass) and the formations (the casters); beside a body; beside the funnel-web.
 
 ## Open for the session
 
-1. Ryan's call on the control gate and the designator dive (Painted's name and reach, the
-   price), and the numbers.
+1. Ryan's call on the third kit (the control gate, the designator with Painted, no dive) and
+   the numbers; Painted's name.
 
 ## Waits on
 

@@ -106,8 +106,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
   stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
-  A Rapid vent or shield, if one is allowed to exist at all, has no place in the early tiers
-  (Ryan, 20 October, taking Rapid off the Wake Diffuser: a vent that shields in its place).
+  A Rapid vent, if one is allowed to exist at all, has no place in the early tiers, never
+  below tier three (Ryan, 20 October, taking Rapid off the Wake Diffuser: a vent that shields
+  in its place); a Rapid shield is never below tier two, "not nearly as toxic as rapid vent".
 - The action economy (Ryan, 20 October; the bible's row beside the stun row, section 5): Rapid
   is the new Suppress in build ubiquity, so it is priced by a gate and never rationed, and each
   of the wants it sells gets a home that is not a Rapid piece (the section below). A design
@@ -144,7 +145,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (a tilt-jet; its second kit: a weapon of no damage Rapid once a round, the designator dive its lock, proposed 20 October) | Goshawk, Puffin (a rework proposed 20 October: its Ionizer reads heat), Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October; its second form: the fleet's reroll bank with growth on every roll) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (a tilt-jet; its third kit: a weapon of no damage Rapid once a round, the designator that paints a foe for the team's Direct guns, proposed 20 October) | Goshawk, Puffin (a rework proposed 20 October on Ryan's split: its shields grow by the ally's heat, the Ionizer the overshield through it), Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October: the reroll economy all the way, the action-economy utility capstone; its third form: a reroll bank, an ally's action bought with three rerolls, a jet's die relaunched) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |

@@ -84,8 +84,18 @@ document's job and every command are in `README.md`.
   `kestrel_gun_platform.md`, the sixth round), the Puffin made Kestrel (its Ionizer reading an
   ally's heat; `kestrel_puffin.md`, new) and the interceptor's second kit (a weapon of no
   damage Rapid once a round, the designator dive that lights a back-rank foe for the team's
-  Direct guns; its brief rewritten). Proposals, waiting on Ryan's calls; on the branch, not on
-  main.
+  Direct guns; its brief rewritten). The twelfth round (20 October, evening), Ryan's four
+  calls: a Rapid shield never below tier two (a Rapid vent never below three), so the Laminar
+  Deflector keeps its Rapid as a tier-two blueprint and leaves the early stocks with the stock
+  pass (the bible's Rapid and Deflector rows, section 12's question gone, the rules, the
+  vocabulary note, the Deflector's notes); the capital leans into the reroll economy all the
+  way, no growth (its seventh round: the bank, an ally's action bought with three rerolls, the
+  launch as a shield that rolls a jet's die, the flare as a vent that brews a reroll); the
+  Puffin on his split (the passive grows every shield it spends on an ally by that ally's heat,
+  the Ionizer the overshield through it, the cooling gone; its second round); the interceptor's
+  third kit, refined (the control gate and a designator with free reach that paints a foe for
+  the team's Direct guns; the dive benched). Proposals, waiting on Ryan's calls; on the branch,
+  not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -370,18 +380,20 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.216 (20 October, evening): the
-  Kestrel branch's v0.208 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
-  Rapid row, the leans row's Kestrel line, the capital in the Kestrel row, section 12's
-  Deflector question in the Diffuser's place; the Rapid row of the generated keyword table
-  set by hand to the Diffuser's change, since the live tables are the review branch's
-  content's) merged onto the live v0.215 (the review session's v0.211 and the three publishes
-  after it: Armoured and Overcharged in points, Burn numbered, Armoured's duration and dispel,
-  the funnel-web's built clause and its model rounds, the walkers' footwork row). Main's file
-  is v0.207 until this branch is merged; the review branch's rows reach main's file when that
-  branch merges, and the next publish from main regenerates the tables. Git and the page's
-  version history carry what each earlier publish brought. Before republishing, read the live
-  page; if another session moved it, publish a three-way merge onto it.
+  `docs/design-bible.html` after every change. Live is v0.218 (20 October, evening): the
+  Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
+  Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the
+  Deflector row's tier-two blueprint; the leans row's Kestrel line; the capital in the Kestrel
+  row; section 12's Diffuser question gone; the Rapid row of the generated keyword table set
+  by hand to the Diffuser's change, since the live tables are the review branch's content's)
+  merged onto the live v0.217 (the review session's v0.211 and its publishes after it:
+  Armoured and Overcharged in points, Burn numbered, Armoured's duration and dispel, the
+  funnel-web's built clause and its model rounds to the eleventh, the walkers' footwork row).
+  Main's file is v0.207 until this branch is merged; the review branch's rows reach main's
+  file when that branch merges, and the next publish from main regenerates the tables. Git
+  and the page's version history carry what each earlier publish brought. Before
+  republishing, read the live page; if another session moved it, publish a three-way merge
+  onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
   only the four content files that had moved since 13 October (chassis, components, foes,

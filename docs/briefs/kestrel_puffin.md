@@ -64,14 +64,42 @@ is the lever, and 30 plus the heat the lever if the floor on a cold ally proves 
   Scorched and Burning heat the allies, so the Puffin's bubble grows in the one domain that
   presses heat: the escort's domain.
 
+## The second round (20 October): the passive reads heat, the lock uses it
+
+- Ryan, 20 October: "reading the teams heat and shielding based on that fits a lot of Kestrel
+  principles, but are you just talking about the one overshield lock and not the passive that
+  cools, the toxic part? Couldn't the passive be increase-shield-by-heat in some fashion, and
+  the locked be overshield, that then uses the passive? Or am i not understanding?"
+- Claude, 20 October: his split is the better one and the first proposal had it the wrong way
+  round (the heat read on the lock, the cooling kept as the passive). As it stands now: the
+  passive is the read, every shield it spends on an ally grows by the heat that ally carries,
+  stocked shields included, so the passive multiplies what shields do (the row's rule); the
+  lock is the Backwash Ionizer as built, shield 30, allies only, Overshield, which is the big
+  one through the passive (30 and the ally's heat, past the maximum). The cooling goes with
+  the old passive: it was the toxic half, and it fought the heat the new passive rewards (an
+  ally shielded for its heat wants to keep it). Cooling becomes a stock choice, the vent that
+  shields (the Diffuser: vent 10, shield 10 and the ally's heat through the passive, and it
+  sheds 10). So the Goshawk wart is gone entirely, and the Puffin cools nobody by rule.
+
+**The design as it stands (the second round).**
+
+- **The passive**, working name Ryan's: a shield it spends on an ally grows by the heat that
+  ally carries (one for one; half the lever).
+- **The lock, the Backwash Ionizer** as built: shield 30, allies only, Overshield; through the
+  passive, 30 plus the ally's heat, past its maximum, fading at the round's end.
+- **The arithmetic.** An ally at 20, 40 or 60 heat: the Ionizer 50, 70 or 90 past its
+  maximum; a plain shield of 20 is 40, 60 or 80 up to its maximum; the Diffuser 30, 50 or 70
+  and the ally sheds 10. An ally at 0 heat (the off-tank) gets the plain numbers, so the
+  stock shield is its magazine as before.
+
 **The die, as the stock pass would leave it.**
 
 | Entry | Piece | What it is for |
 |---|---|---|
-| I | the Backwash Ionizer: shield = the ally's heat, past its maximum | the hot ally |
+| I | the Backwash Ionizer: shield 30 and the ally's heat, past its maximum | the hot ally |
 | II | a plain shield, self or ally | the cold ally; the off-tank's magazine |
 | III | the Overcharged buff | the hitter's round |
-| IV | the vent that shields (the Diffuser: vent 10, shield 10) | the hot ally that must cool: it sheds 20 through the passive and gains 10 |
+| IV | the vent that shields (the Diffuser: vent 10, shield 10) | the hot ally that must cool: it sheds 10 and gains 10 and its heat |
 | V | a small gun | when nobody needs anything |
 
 **The arithmetic.** An ally at 20, 40, 60 or 80 heat is shielded for 20, 40, 60 or 80 past its
@@ -106,8 +134,8 @@ heat; the bot valuing heat as shield in hand; synthetic passives in the tests. S
 
 ## Open for the session
 
-1. Ryan's call on the Ionizer reading heat, the ratio, and whether the passive's shed stays
-   at 10.
+1. Ryan's call on the second round's split (the passive reads heat, the Ionizer the overshield
+   through it, the cooling gone) and the ratio.
 
 ## What the session hands back
 
