@@ -227,12 +227,41 @@ cold: a pilot light of 5 a round.
   Stoker or the Maxigun. The round: fire hot, whistle when the pack's intents point at an ally,
   vent into the crowd.
 
+Ryan, 20 October, on the heat per hit: "I disagree in this instance of rewarding the tank
+for doing it's job only because this isn't a tank, its a sustained dps engine. Random, sure,
+but it will rip through bosses if it can keep its heat up, which is why I wanted to make the
+heat gain intentional. The heat per hit is intentionally bad against bosses, which it already
+excels against, and good against fodder, which it kills unreliably. It makes sense to me, is it
+flawed thinking?"
+
+Claude's answer, the same day: not flawed. The taste line's worry was free offence riding on
+a turn the tank takes anyway (the old discharge struck back on every blow while the Armadillo
+spent its turns as it liked); the Whistle spends the boiler's own turn, deals nothing that
+turn, and its reward comes a round later, at a random foe, through a vent that must show, so
+the offence is paid for in tempo and the counter-profile holds: a swarm's many small blows are
+fuel, a boss's one big blow is not, which is the opposite of where the vents already excel.
+The line's reason and its reopening condition go in its row at the go (a never carries both).
+Two guards and one clarification: the scaling is capped by the lure's reach, since Spread
+turns three foes at most, and by one lure a round (no Rapid, Ryan), so the per-hit number
+decides whether it is fuel at all (5 a hit is 15 a whistle, half a vent; 10 is a full one:
+the lever, 10 the placeholder); where a swarm's blows bounce off armour 10 and the Armoured
+grant the fuel costs no hull and the tempo is the whole price, which is right, since a
+whistle at the brute costs hull and yields nothing (the decision: whistle at the swarm); and
+the heat per hit is the piece's rider for the round it stands, never a passive, or the Peak
+and every formation would feed the boiler without a choice. Timing in the engine: the blows
+land in the enemy's turn, after the overheat settles, so lure-heat is next round's fuel or
+next turn's burn and never a same-turn overheat; the trigger is a blow landing on it (shield,
+armour or hull), the Faraday Hull's two halves as one. Taken: the Whistle as Ryan's shape,
+the flat 30 retired.
+
 ## Open for the session
 
-1. Ryan's call among the three (the Whistle locked, Claude's lean; the Overpressure spike;
-   the Stoker), whether the passive gain goes (Claude's lean: cooling 0, the valves the only
-   cooling), and the names: the passive's, more weaponized than Relief Valves (Blast Valves,
-   lean; Blowdown Guns; Scald Ports; Overpressure Ordnance), the chassis's, the locked piece's.
+1. The Whistle as Ryan's shape (Indirect, no damage, Lure and Spread, Armoured 2 for the
+   round, +10 heat per blow landed on it this round, placeholders) locked; the passive gain
+   gone for cooling 0 (Claude's lean, Ryan's to confirm); the Stoker and the Cannon in stock;
+   the names: the passive's, more weaponized than Relief Valves (Blast Valves, lean; Blowdown
+   Guns; Scald Ports; Overpressure Ordnance), the chassis's, the Whistle's (Steam Whistle,
+   Claude's working name).
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
