@@ -254,14 +254,35 @@ next turn's burn and never a same-turn overheat; the trigger is a blow landing o
 armour or hull), the Faraday Hull's two halves as one. Taken: the Whistle as Ryan's shape,
 the flat 30 retired.
 
+Ryan, 20 October: "Id just call it the Whip Scorpion, unless you think vinegaroon is more
+common. Lose the passive gain for now. Would there be a case to make the lure a lure all?
+Riskier, more rewarding? Names - need suggestions. The lure I think should be more reflecting
+of it pulling in heat than making a noise."
+
+Claude, the same day. The chassis is the Whip Scorpion (both are common names for the one
+animal; vinegaroon is the Southwest's folk name, whip scorpion the general one and the one
+that says what it looks like; his call stands). The passive gain goes: cooling 0, the valves
+its only cooling, the pilot light of 5 the exit if the row reads cold. The lure as a lure-all:
+yes, a case, and the better shape. Every foe in the fight turns on it, both ranks, and every
+blow landed adds 10 heat; the reward is capped by the heat maximum and by one vent a round
+(100 of pressure is three full blasts over three rounds, the sustained engine Ryan wants,
+never one giant one), and the risk is the whole formation's blows, brutes included, plus the
+overflow burning at the next turn's end if the vents cannot keep up. The decision reads
+better than the rank form: whistle at the swarm whose blows bounce, never at the brutes,
+with the intents and the pack's numbers in view. Lure-all needs a reach the engine lacks
+(nothing on the player's side reaches every foe; the foes' scorch-all does), one face
+property; the Spread form stays the bench's fallback if lure-all proves too swingy. Names,
+Claude's candidates for Ryan's pick. The lure, about drawing heat in rather than noise:
+**Forced Draught** (lean: a boiler's forced-draught fan pulls air through the firebox, and the
+word draws), Induced Draught, Thermosiphon, Firebox Intake. The passive, weaponized:
+**Blast Valves** (lean), Live-Steam Battery (battery is the maker's word already), Scald
+Ports, Blowdown Guns. The Steam Cannon keeps its name in the stock; the Stoker's is for the
+stock pass.
+
 ## Open for the session
 
-1. The Whistle as Ryan's shape (Indirect, no damage, Lure and Spread, Armoured 2 for the
-   round, +10 heat per blow landed on it this round, placeholders) locked; the passive gain
-   gone for cooling 0 (Claude's lean, Ryan's to confirm); the Stoker and the Cannon in stock;
-   the names: the passive's, more weaponized than Relief Valves (Blast Valves, lean; Blowdown
-   Guns; Scald Ports; Overpressure Ordnance), the chassis's, the Whistle's (Steam Whistle,
-   Claude's working name).
+1. The lure-all against the rank form (Claude's lean: lure-all), and the names: the lure's
+   (Forced Draught, lean), the passive's (Blast Valves, lean); then the go.
 2. The go: the chassis planned in content (its passive planned, the Steam Cannon built as a
    plain gun), the bible's row, the rules' chassis count and passive line, the README, the
    to-do's engine and asset lines, this brief retired.
