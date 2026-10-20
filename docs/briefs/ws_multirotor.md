@@ -286,7 +286,18 @@ wainwright's own wagon, no animal at all).
 
 ## Open for the session
 
-1. Ryan's calls: the name (Dromedary, Flying Fox, Bullock, Pack Mule, Pack Rat, Dray); Phased's rule as the dock's gate;
+Ryan, 20 October, later: "W&S has frontier animals, threats, and also insects. Dragonfly could
+be one, similar to how hoverfly was proposed for the gunship. Anything in that spirit?"
+Claude: Dragonfly is on the reserved list (BattleTech's, three entries), Mayfly and Cicada
+too; clear, in that spirit: Damselfly (the dragonfly's slender cousin, four wings for four
+rotors), Skimmer (a dragonfly family, and a deck that skims), Water Strider (a flat body held
+on four legs spread wide, which crosses water: the deck on its four rotors and the carry in one
+name; lean), Crane Fly (the gangly flyer whose legs dangle, and the look's crane with its hook
+under the hull), Bumblebee (the heavy flyer that is not supposed to fly and carries its loads
+home), Rhinoceros Beetle (the lifter, armoured, and it flies), Water Boatman (the bug that
+rows: the ferry), Hoverfly (clear, if the gunship does not take it).
+
+1. Ryan's calls: the name (Water Strider, Damselfly, Skimmer, Crane Fly, Bumblebee, Rhinoceros Beetle, Water Boatman; the working animals above); Phased's rule as the dock's gate;
    the recovery as one locked piece with the wreck case once a skirmish; the slots open to any
    component; the mark's rider and the Exposed question to the Kestrel session; then the
    numbers and the engine (the carry, a piece joining another die mid-fight, the cooldown
