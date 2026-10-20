@@ -1550,7 +1550,11 @@ def funnel_web(b):
     the side guns. So the stations now: the Maxigun (hp_1) and the Twin Autoguns (hp_3) static
     in the jaw's two mantlets, the Howitzer (hp_2) alone on the roof on its elevation, the Web
     Bomb's four-tube launcher in the left pod on its elevation, the deflector's dish (hp_4) on
-    the right pod."""
+    the right pod. His sixth to ninth notes revised the cut part by part (the notes sit at
+    each part: the guns pulled in, the fins, the top mount, the planted pivot, the antenna's
+    base); his tenth, 20 October: the eighth's fins were the shape and size he liked, it was
+    only their base that wanted squaring off, so they are back at that size on a level base;
+    and the scan's first turn is quick."""
     # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
     # (the third notes: the thighs had no clearance from the body, and every reference resolves
     # it so): a strut drops from a coxa joint at the hub's corner, down and out, to a low hip
@@ -1606,12 +1610,14 @@ def funnel_web(b):
         # embraced): a raked blade in the livery off each flank's rear, rising up and behind,
         # in the spirit of a samurai's banner but iron, a little flair on a utilitarian maker;
         # each on a dark bracket.
-        # Toned back and shaped (the ninth notes: flatten the bottom, so it is not a turned
-        # bar): a plate in the flank's plane with a level base, raked back and tapering.
+        # The blade's bottom squared off (the ninth notes, and the tenth: the shape and size
+        # of the eighth stay; it was the base, cut square to the rake, that read as a turned
+        # bar): a plate in the flank's plane with the eighth's edges, tip and rake, its base
+        # level and sunk in the bracket, so the fin rises out of the bracket and the pod.
         for s in (-1.0, 1.0):
-            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -18.0, -8.0, 50.0, 56.0, "steel.dark", "fin_bracket")
-            outline = [(-7.0, 52.0), (-19.0, 52.0), (-26.0, 74.0), (-20.0, 74.0)]   # (y, z): base level, the trailing edge raked, the top short
-            _rings(b, [[(s * 20.4, y, z) for y, z in outline], [(s * 21.8, y, z) for y, z in outline]], "livery.livery2", "fin")
+            b.box(min(s * 17.0, s * 21.0), max(s * 17.0, s * 21.0), -19.5, -8.0, 50.0, 56.0, "steel.dark", "fin_bracket")
+            outline = [(-2.5, 52.0), (-18.7, 52.0), (-30.1, 82.4), (-23.9, 85.6)]   # (y, z): base level, the edges raked 27 degrees, the tip cut square to the rake
+            _rings(b, [[(s * 19.7, y, z) for y, z in outline], [(s * 21.3, y, z) for y, z in outline]], "livery.livery2", "fin")
         b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
         for s in (-1.0, 1.0):
             b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
@@ -1686,13 +1692,15 @@ def funnel_web(b):
     # (_pivot, the ninth notes: the shuffle slid).
     A, B = ("fl", "hr", "fr", "hl"), ("hl", "fr", "hr", "fl")
     REAR, LOW, REST = (0.0, 8.0, 3.0), (0.0, -8.0, -3.0), (0.0, 0.0, 0.0)
+    # The first turn in under a second (the tenth notes: it was the slow one, seven degrees
+    # a second against the swing's fifteen), the steps quick enough to want thirty keys a second.
     tracks, body = _pivot(limbs, roots,
-                          yaw=[(0.5, 0.0), (1.7, 0.0), (3.4, 12.0), (4.7, 12.0), (6.3, -12.0), (7.5, -12.0), (8.9, 0.0), (9.4, 0.0)],
-                          pose=[(0.5, REST), (1.6, REAR), (4.6, REAR), (6.3, LOW), (7.4, LOW), (9.0, REST)],
-                          groups=[(1.7, 3.4, A), (4.7, 6.3, B), (7.5, 8.9, A)], until=9.4)
-    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.6, 12.0, 0.0, 0.0), (3.4, 12.0, 20.0, 0.0), (4.6, 13.0, 22.0, 0.0), (6.3, -14.0, -20.0, 0.0), (7.4, -15.0, -22.0, 0.0), (9.0, 0.0, 0.0, 0.0)]
-    b.act("scan", 10.0, tracks, body=body, ease="linear",
-          glow=[(["lamp"], [(1.0, 0.0), (1.8, 6.0), (8.6, 6.0), (9.4, 0.0)])])
+                          yaw=[(0.5, 0.0), (1.7, 0.0), (2.6, 12.0), (3.9, 12.0), (5.5, -12.0), (6.7, -12.0), (8.1, 0.0), (8.6, 0.0)],
+                          pose=[(0.5, REST), (1.6, REAR), (3.8, REAR), (5.5, LOW), (6.6, LOW), (8.2, REST)],
+                          groups=[(1.7, 2.6, A), (3.9, 5.5, B), (6.7, 8.1, A)], until=8.6, hz=30.0)
+    tracks["head"] = [(0.5, 0.0, 0.0, 0.0), (1.6, 12.0, 0.0, 0.0), (2.6, 12.0, 20.0, 0.0), (3.8, 13.0, 22.0, 0.0), (5.5, -14.0, -20.0, 0.0), (6.6, -15.0, -22.0, 0.0), (8.2, 0.0, 0.0, 0.0)]
+    b.act("scan", 9.2, tracks, body=body, ease="linear",
+          glow=[(["lamp"], [(1.0, 0.0), (1.8, 6.0), (7.8, 6.0), (8.6, 0.0)])])
     # Sighting in: it pivots and twists to bring the launcher to bear as it rises lit,
     # holds, then pivots and twists the other way, rearing as the roof gun elevates.
     tracks, body = _pivot(limbs, roots,
