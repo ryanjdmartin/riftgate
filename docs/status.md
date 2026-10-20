@@ -69,8 +69,10 @@ document's job and every command are in `README.md`.
   the interceptor (`kestrel_interceptor.md`: the dive as its lock, the caster-killer niche
   moved there from the Sparrowhawk's rework) and a round in each Kestrel brief (the bomber's
   mark gated and Chain in mines; the Goshawk's cold stock; the Puffin's Diffuser as a combined
-  entry; the platform's settlements). Proposals, waiting on Ryan's calls; on the branch, not on
-  main.
+  entry; the platform's settlements). Then, on Ryan's word (the review read as bullets, the
+  stock pieces placeholders until the stock pass), every Kestrel kit written out whole in its
+  brief, "The kit, written out", the stock by kind (the Goshawk's and the Puffin's in the line
+  brief). Proposals, waiting on Ryan's calls; on the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
