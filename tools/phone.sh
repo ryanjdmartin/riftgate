@@ -13,26 +13,36 @@
 # the LAN, later loads come from the browser cache.
 #
 # Needs the 4.7.2 export templates in ~/Library/Application Support/Godot/export_templates
-# (the README says where to fetch them).
+# on a Mac, %APPDATA%\Godot\export_templates on Windows (the README says where to fetch them).
+# On Windows it runs from Git Bash, and the first serve asks Windows Firewall to let Python
+# take connections on private networks.
 set -e
 cd "$(dirname "$0")/.."
 PORT=${PORT:-8060}
+# Windows' own python3 is a Microsoft Store stub that runs nothing; fall back to python.
+PYTHON=python3
+"$PYTHON" -c '' 2>/dev/null || PYTHON=python
 if [ "$1" != "serve" ]; then
 	mkdir -p build/web
 	perl -e 'alarm 600; exec @ARGV' godot --headless --path . --export-debug Web build/web/index.html 2>&1 | grep -i 'error' || true
 	[ -f build/web/index.wasm ] || { echo "export failed: no build/web/index.wasm" >&2; exit 1; }
 fi
-IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo 127.0.0.1)
+case "$(uname -s)" in
+	Darwin) IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo 127.0.0.1) ;;
+	# Elsewhere, the address of the interface the default route leaves by (a UDP connect sends nothing).
+	*) IP=$("$PYTHON" -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.connect(("192.0.2.1", 9)); print(s.getsockname()[0])' 2>/dev/null || echo 127.0.0.1) ;;
+esac
 CERT=build/phone-cert
 if [ ! -f "$CERT/cert.pem" ]; then
 	mkdir -p "$CERT"
-	openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -keyout "$CERT/key.pem" -out "$CERT/cert.pem" \
+	# MSYS_NO_PATHCONV: Git Bash would otherwise rewrite "/CN=riftgate" as a Windows path.
+	MSYS_NO_PATHCONV=1 openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -keyout "$CERT/key.pem" -out "$CERT/cert.pem" \
 		-subj "/CN=riftgate" -addext "subjectAltName=IP:$IP,DNS:localhost" 2>/dev/null
 fi
 echo
 echo "  On the phone:  https://$IP:$PORT/   (accept the certificate warning once)"
 echo
-exec python3 - "$PORT" "$CERT" <<'PY'
+exec "$PYTHON" - "$PORT" "$CERT" <<'PY'
 import functools, http.server, ssl, sys
 class H(http.server.SimpleHTTPRequestHandler):
 	extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map,
