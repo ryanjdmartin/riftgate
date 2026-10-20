@@ -3,7 +3,8 @@
 The session finishes the large multi-rotor whose die any machine in the fight may spend as its
 own.
 
-**Status**: proposal with a place (the analysis, 14 October). **Maker**: Wainwright & Sutler.
+**Status**: rework (Ryan, 20 October, below: the lending design is abusable and a boring combo
+piece; the helicarrier angle is the direction). **Maker**: Wainwright & Sutler.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md`; `docs/roster_analysis.md`
 section 4; its look below, rendered in `docs/looks/ws_multirotor.png`.
 
@@ -91,12 +92,61 @@ The roster's clearest "only good together" machine and the purest support; alone
 d6 with no passive, the lowest floor in the game, which tier three allows. Under the stun
 budget it multiplies nothing by itself: a lent stun is still one stun.
 
+## Ryan's direction (20 October): the helicarrier
+
+Ryan, 20 October, on the lending design: "It might need a complete rework, the more I think
+about it the more ways I find to abuse it, and really, it's not all that interesting at the end,
+just a boring combo piece." Claude's reading of the abuses: the gate is hollow, since the rotor's
+own turn is the price and its kit is built to be lent and never fired, so what is left is a
+second action every round for whichever machine amplifies it most, an obvious pick (flat guns
+for the Sparrowhawk's double, a lent vent for the Whip Scorpion's blast, Volatile kit for the
+Nemesis's rage, lent spends counting toward the Cassowary's sixth shot); the action-economy
+row's "tempo lent", ranked last.
+
+Ryan, the same day: "I think we need to lean into the helicarrier angle, as it represents the
+apex of steampunk-silly military technology. What does a helicarrier (or aircraft carrier in
+contemporary terms) do? It carries things, obviously, but it also operates as a mobile command,
+and fire support. It doesn't rain death, but it directs units to rain death, offers in-fight
+refueling and support, and gives them a lift when needed. There's an angle there, for sure, and
+leaves the undesigned artillery capstone to fill the raining-death niche completely."
+
+Claude's reading, the same day: the four verbs and their homes in the game. Carry: the map
+(machines ride the deck over any ground at its pace). Command, directing fire: a marked foe
+every ally's weapon reaches this round whatever its rank (the observer calling fire; a reach
+rule bent at tier three, where a rule the player has learned may bend), paid with the carrier's
+own spend. Refuel and support: equipment spent on allies, the row's cantrip (a vent that
+shields). Lift: extraction from a fight is the withdrawal, not built and not encouraged
+(section 4), so the lift lives on the map. Two framings:
+
+- **A, the commander's deck** (Claude's lean): the carrier brings the commander's actions to
+  the battle, the action-economy row's own home for tempo "nobody can stack": map-turn verbs on
+  cooldowns, never a fifth gun (section 8): a sortie (an ally lifted its full move again, the
+  carry), a field refit (an ally sheds heat and regains shield on the map), a scramble (the
+  next fight's allies reach any rank, or a called strike). In the fight it is a plain die of its
+  hardpoints with support stock, nothing locked, so it never enters the fight's tempo at all;
+  the decision is which verb, when, on its cooldown. It makes the commander exist, which the
+  battlefield layer has wanted since section 8. Its hole: the commander's layer is undesigned,
+  so its session designs the first three verbs, and the campaign runner's plain player uses no
+  map verbs until taught.
+- **B, the command deck in the fight**: the carry as the map passive; two locked pieces, Fire
+  Direction (spent on a foe: every ally's weapon reaches it this round) and Resupply (vent 20
+  and shield 20 on an ally, a combined entry); four hardpoints, a d6, so each round it directs,
+  supplies or fires, one spend. Its price is its own turn, which is real here because its guns
+  are worth firing. Its hole: Fire Direction undercuts the Cottonmouth's reach in a team that
+  carries both, and the reach it lends the Cassowary's doubled shot at a back-rank caster is
+  the kind of pairing a capstone is allowed.
+
+Either way the artillery tenth keeps the raining-death niche, the roster row's slot holds (the
+multi-rotor's name retires; the chassis's is Ryan's, a frontier flyer or pest in the maker's
+register), and the look stands because it fits, never because it is built.
+
 ## Open for the session
 
-1. The proposal's questions: is lending its die the right size for a tier three; does the
-   gesture (its die dropped on an ally's) read on a phone.
+1. The framing (A or B, or Ryan's own), its name, then its design in full: the verbs, their
+   costs and cooldowns, the numbers, the engine (the commander's layer for A; a spend that
+   grants reach for the round and the carry for B).
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
-   Ryan, 13 October).
+   Ryan, 13 October), if any of it names the die.
 
 ## What the session hands back
 
