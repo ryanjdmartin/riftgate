@@ -29,12 +29,12 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer (decided; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| one | the interceptor (proposal; `kestrel_interceptor.md`) | the round's order | a second spend a round; the dive's reach | two spends' heat, glass, the dive's price | heat; the once-a-round gate |
+| one | the interceptor (proposal, its second kit; `kestrel_interceptor.md`) | weapons of no damage | a free setup a round; a back-rank foe lit for the team's Direct guns | the front foe's blow, two spends' heat, glass | the no-damage gate; risk |
 | two | the Goshawk (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
-| two | the Puffin (built) | allies' shields | overshield and venting for others | its thin frame | shield lent |
+| two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | an overshield as big as the ally's heat, and venting | its thin frame | heat converted for others |
 | two | the Sparrowhawk (rework; `kestrel_sparrowhawk.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber (decided; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
-| three | the gun platform (proposal; `kestrel_gun_platform.md`) | its own rolls | growth on every strike | lock against ride | rerolls (own, then the team's) |
+| three | the gun platform, the capital (proposal, its second form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank for the fleet; growth on every strike; a jet relaunched | rerolls held, lock against ride | rerolls |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
 Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
@@ -42,11 +42,12 @@ line as it stands reads otherwise: Kestrel's currencies are heat as a resource (
 banks it, the Afterburner and the Sparrowhawk spend it, the off-tank burns shield in its
 place), the die as a gamble (the platform's growth, the Sparrowhawk's d3, the strafer's
 spray), rerolls (Ryan, 19 October: Kestrel's), strikes (the strafer) and speed on the map
-(move 50, field recharge 30: the detachment). Rapid is its gated cantrip (the Deflector),
-not its spine. Proposed for the leans row, Ryan's to move: "Kestrel heat as a resource,
-rerolls and strikes, Overshield and the chain rule, with Rapid its gated cantrip (tempo,
-burst, escort, the gamble)". Overcharged leaves the Kestrel lean: the Coil is its one carrier
-and the Ammit's talons and the Reliquary are the Arsenal's.
+(move 50, field recharge 30: the detachment). Rapid is its gated cantrip, not its spine.
+Ryan, 20 October: "the maker didn't really have an identity before other than the look, and
+now we are indeed looking at heat, rerolls, multi-strikes, and risk". The leans row carries it
+since that day; Overcharged leaves the Kestrel lean (the Coil is its one carrier, and the
+Ammit's talons and the Reliquary are the Arsenal's). Three of the eight hover (the Puffin, the
+off-tank, the capital) and five fly; the capital hovers from irony (Ryan, 20 October).
 
 **The overlap map**, each pair parted by its shape (Ryan's rule of 18 October): the strafer
 and the Sparrowhawk, count against magnitude; the strafer and the platform, strikes doubled
@@ -75,16 +76,18 @@ One pointer each; the proposal is in the brief named.
   (section 12), never an exception; its payoffs are riders, flat buffs and multi-strike
   pieces, cross-maker by design, and the stock holes below give Kestrel one of its own.
   `kestrel_strafer.md`, the line review.
-- **The off-tank** stands as Ryan's package. The plate's arithmetic read against the foes:
-  a wall against the packs that strike for 10 (six of the eighteen wildlife), no wall against
-  a swarm (six goblins strike 30 each with their swarm, 25 past the plate); the lever named.
-  Its lock is the direction's model combined entry; never Rapid. `kestrel_shield_spender.md`,
-  the sixth round.
-- **The interceptor** had no kit. Proposed: the passive as Ryan wrote it (once a round, the
-  gated form the row lists), the dive as its lock (a Direct gun that may be spent on a
-  back-rank foe behind a standing front, the front foe striking it as it passes), the
-  priority-target niche the Sparrowhawk's rework leaves behind, and glass numbers.
-  `kestrel_interceptor.md`.
+- **The off-tank** stands as Ryan's package, a hovercraft at 50 (Ryan, 20 October: fast, so
+  Kestrel is seen to make a fast one; a decent generalist that can zoom off and fight a pack).
+  The plate's arithmetic read against the foes: a wall against the packs that strike for 10
+  (six of the eighteen wildlife), no wall against a swarm (six goblins strike 30 each with
+  their swarm, 25 past the plate); the lever named. Its lock is the direction's model combined
+  entry; never Rapid. `kestrel_shield_spender.md`, the sixth and seventh rounds.
+- **The interceptor** had no kit, and its first (the first weapon Rapid, the dive a gun of
+  15) Ryan read as thin with no build hook (20 October). The second kit: a weapon of no damage
+  is Rapid once a round, so every control piece of every maker is a cantrip on it; its lock the
+  designator dive, a weapon of no damage spent on a back-rank foe through a standing front at
+  the front foe's blow, which lights that foe for the team's Direct guns this round; a
+  tilt-jet (Ryan, 20 October). `kestrel_interceptor.md`.
 - **The Goshawk** stands; its stock is cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its
@@ -92,14 +95,13 @@ One pointer each; the proposal is in the brief named.
   the Pinion Driver out (a blueprint, the Sparrowhawk's rework); its niche word in content
   ("Ramping damage") rewritten to the sustain it is (flagged 18 October). Its thinness as a
   partner (no state given, none needed) is accepted: the Kestrel that stays.
-- **The Puffin** stands. Its stock's Wake Diffuser is one of the row's four ungated Rapid
-  carriers and section 12's question; proposed for the stock pass: the Diffuser as a combined
-  entry, a vent of 10 that shields 10, no Rapid, which on the Puffin's passive vents twice (the
-  shield's 10 through the passive and its own 10) and costs the turn, so it is no free way out
-  of heat. Its pairs in the new line: the off-tank (the overshield its magazine), the
-  Sparrowhawk (an overshield on 30 hull, the vent its brake), the interceptor; the Goshawk wart
-  (its vent against the regen) stands as one pair of seven. The engine fires its passive once
-  a spend, whatever the shield's strikes (noted for the platform's lock).
+- **The Puffin**: Ryan worries it is toxic and boring (20 October) and wants it more Kestrel;
+  its brief (`kestrel_puffin.md`) proposes the Ionizer reading heat, an ally's overshield as
+  big as the heat it carries. The Wake Diffuser landed on Ryan's go the same day: Rapid off, a
+  vent of 10 that shields 10 (the shield half with the combined entry's engine), which on the
+  Puffin's passive vents twice and costs the turn; and Rapid vents or shields, if any exist,
+  never below tier three (his rule of the day). The engine fires its passive once a spend,
+  whatever a shield's strikes (noted for the capital's lock).
 - **The Sparrowhawk** stands as its brief left it; the direction reads its chain as a
   cooldown burst gated by a kill, the row's own shape. The caster-killer niche (its open item
   2) goes to the interceptor's dive if Ryan takes it; the Sparrowhawk is the trash chain and
@@ -114,11 +116,12 @@ One pointer each; the proposal is in the brief named.
   own bomb (the 15 October reading made Lure, Disrupt and Chain inert because the round they
   work in is over, which is true of the two intents and not of a kill's repeat).
   `kestrel_bomber.md`, the line review.
-- **The gun platform** stands as its fifth round left it (growth, its own reroll, the
-  three-strike shield as its lock). Settled here: no multi-strike vent in the pool (only the
-  platform wants one, since the Puffin's passive fires once a spend; a piece one machine wants
-  is a lock or nothing); the own reroll as the passive's clause, and a Kestrel reroll module
-  (below) its second, priced. `kestrel_gun_platform.md`, the line review.
+- **The gun platform** is Kestrel's capital ship, a hover, not a flyer (Ryan, 20 October,
+  from irony: three quarters of the line flies), and Ryan asked what niche it fills other than
+  more guns. Its sixth round answers: the fleet's reroll economy (the team's unspent rerolls
+  banked, up to three; growth on every roll of its die; a second lock that relaunches a jet's
+  die), four hardpoints and two locks, assault, the ekranoplan. Settled here: no multi-strike
+  vent in the pool; the own reroll a Kestrel module's (below). `kestrel_gun_platform.md`.
 
 ## The Goshawk's and the Puffin's kits, as the stock pass would leave them
 
@@ -197,9 +200,13 @@ that the pool does not give:
    paid (heat maximum −20, or shield −20), per the row (own rerolls as a number, priced so no
    module is the universal pick). The platform's second roll, the Sparrowhawk's fishing for
    its live lock, the Armadillo's for its seal or lure.
-4. **The Wake Diffuser re-priced** as a combined entry (a vent of 10 that shields 10, no
-   Rapid) and **the Laminar Deflector's number** down (the row's instruction; a shield of 10
-   with Rapid, say), both the stock pass's.
+4. **The Wake Diffuser**, landed 20 October on Ryan's go: a vent of 10 that shields 10, no
+   Rapid (the shield half with the combined entry's engine, the to-do). **The Laminar
+   Deflector** follows his rule of the same day (a Rapid vent or shield never below tier
+   three): Rapid off at its tier, with a Kestrel twist in its place, the lean a shield that
+   reads heat (20, and 5 more per 10 heat this machine carries: bigger on the hot, the
+   Goshawk's and the Sparrowhawk's, parted from the basic by the clause); or the piece to tier
+   three with its Rapid, found only. Section 12's question.
 5. **A big hot flat gun kept in the pool** for the off-tank's and the Goshawk's builds (the
    Overclocked Railgun, if the pass keeps it: temporary by its note since 26 September), in the
    Goshawk's stock rather than the Sparrowhawk's.
@@ -228,7 +235,7 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 
 ## Records the review found stale or waiting on a go
 
-- The leans row's Kestrel line (above), Ryan's to move.
+- The leans row's Kestrel line: rewritten 20 October on Ryan's word.
 - The Goshawk's niche word in content ("Ramping damage"; its notes already say damage scaling
   was dropped).
 - The to-do's stock pass line and the bible's stock-pass row lock the Pinion Driver on the

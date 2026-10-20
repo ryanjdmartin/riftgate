@@ -1456,20 +1456,17 @@
    "design": {
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "The first rapid equipment: a small vent that gives the machine its turn back, so cooling is never a dead roll.",
-    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop: the escort cools an ally and acts again. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "A combined entry: a vent of 10 that also shields 10, so a support entry is never a dead roll and costs its turn like any other.",
+    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. The vent half runs today; the shield half (a shields field on the face) lands with the combined entry's engine (the to-do), on the Puffin's passive a vent twice. Numbers are placeholders."
    },
    "face": {
     "kind": "vent",
     "power": 10,
-    "keywords": [
-     "rapid"
-    ]
+    "keywords": []
    },
    "passive": null,
    "tags": [
-    "support",
-    "tempo"
+    "support"
    ]
   },
   {

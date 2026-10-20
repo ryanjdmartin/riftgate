@@ -106,6 +106,8 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   the damage it deals (18 October): a condition, a setup, a self-sacrifice or its timing, so a
   stun is planned for rather than reacted with; the Paradox is the model.
 - Rapid pieces stay small; a damage rider on an action the player takes anyway needs a limit.
+  A Rapid vent or shield, if one is allowed to exist at all, has no place in the early tiers
+  (Ryan, 20 October, taking Rapid off the Wake Diffuser: a vent that shields in its place).
 - The action economy (Ryan, 20 October; the bible's row beside the stun row, section 5): Rapid
   is the new Suppress in build ubiquity, so it is priced by a gate and never rationed, and each
   of the wants it sells gets a home that is not a Rapid piece (the section below). A design
@@ -142,7 +144,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free) | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid, Ryan, 18 October: a great tier-one design; the dive as its lock proposed 20 October) | Goshawk, Puffin, Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor's dive, proposed 20 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (growth on every roll with its own reroll, Ryan's shape, proposed 19 and 20 October) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (a tilt-jet; its second kit: a weapon of no damage Rapid once a round, the designator dive its lock, proposed 20 October) | Goshawk, Puffin (a rework proposed 20 October: its Ionizer reads heat), Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October; its second form: the fleet's reroll bank with growth on every roll) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -293,7 +295,8 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
-| `kestrel_interceptor.md` | proposal (the passive Ryan's, 18 October; the kit, 20 October) | Kestrel | 1 | Ryan's call on the dive |
+| `kestrel_interceptor.md` | proposal (the passive Ryan's, 18 October; the second kit, 20 October, after his read of the first as thin) | Kestrel | 1 | Ryan's call on the control gate and the designator dive |
+| `kestrel_puffin.md` | rework, proposal (20 October, on Ryan's worry: toxic and boring) | Kestrel | 2 | Ryan's call on the Ionizer reading heat |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots | Kestrel | all | Ryan's calls |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
@@ -329,6 +332,9 @@ in its brief; the full rounds are in git (above).
 
 **Aphelion**
 
+- The exposed-rotor helicopter (Ryan, 20 October: to Aphelion after all, "they have rotor
+  precedence there"; it was Wainwright & Sutler's on 12 October and offered to Kestrel on 19):
+  a shape for an Aphelion session, no mechanic attached.
 - The aura-shifter (Claude, 18 October, proposed for Kestrel as a mode-shifter of its shield,
   three locked shields each a tuning that holds while it stands; Ryan, 19 October: it reads as
   an Aphelion tier three, "an all-in aura support, maybe, with shifting auras for the team"):

@@ -1,12 +1,13 @@
 # Brief: the interceptor (new chassis, proposal)
 
-The session designs the Kestrel tier one whose first weapon each round is Rapid, Ryan's pick
-of 18 October from the shield-spender's alternative kits, and gives it the kit it never had.
+The session designs the Kestrel tier one that acts twice a round, Ryan's pick of 18 October
+from the shield-spender's alternative kits, and finds the build hook its first kit lacked.
 "The interceptor" is a working label; the name and the look are Ryan's.
 
-**Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October). **Maker**:
-Kestrel. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`; `kestrel_line.md`
-(the line review that gave it this brief); the second and third rounds of
+**Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October, its second
+form). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
+"agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
+line review that gave it this brief); the second and third rounds of
 `kestrel_shield_spender.md` (where it was kit 2); the bible's rows on the action economy
 (section 5), on Rapid's limiter and on rerolls; `docs/rules.md` on reach and the round.
 
@@ -16,127 +17,151 @@ Kestrel. **Proposed tier**: one. **Read first**: `docs/briefs/README.md`; `kestr
   shield-centric design." (The shield-centric design became the off-tank; this is the other
   tier one.)
 - 19 October, on shapes: Kestrel was never given specific shapes, only "things other than
-  dogfighters"; the exposed-rotor helicopter sent to Wainwright & Sutler on 12 October could
-  come to Kestrel. Claude's list for matching (the fourth round of `kestrel_shield_spender.md`)
-  put the tilt-jet with swinging nacelles and the helicopter against this machine.
+  dogfighters"; Claude's list for matching put the tilt-jet with swinging nacelles and the
+  exposed-rotor helicopter against this machine.
+- 20 October, on the first kit: "The unnamed interceptor as a tilt-jet makes sense, agile and
+  omnidirectional. I think the exposed rotor can go to Aphelion after all, they have rotor
+  precedence there. This kit is thin. We should take another look. What's the build hook? How
+  does it open build space?"
 
 ## How it came about
 
 Kit 2 of the shield-spender's second round (Claude, 18 October): its first weapon each round
-is Rapid. The decision is the order of two spends (a setup then a hit, a hit then a shield),
-the second entry the die's; the price two spends' heat a round, so vents are real on it, and a
-small die. It produces an extra skirmish action, which nothing has. Its lock as first
-proposed, a designator (0 damage, Direct, cool, Shock), is struck below as a copy of the
-Polarity Projector. The holes raised then: tempo is the line frame's claim (Ryan, 14 October:
-the most tempo-oriented damage dealer); "twice" is the strafer's word too, strikes there and
-spends here; two spends at tier one wants glass numbers; the Paradox and riders double a
-round.
+is Rapid. The decision is the order of two spends, the second entry the die's; the price two
+spends' heat a round and a small die. The holes raised then: tempo is the line frame's claim;
+"twice" is the strafer's word too, strikes there and spends here; two spends at tier one wants
+glass numbers; the Paradox and riders double a round.
 
-## The direction's read (20 October)
+The first kit (Claude, 20 October, morning): the passive as Ryan wrote it, and the dive as its
+lock, a Direct gun of 15 that may be spent on a back-rank foe behind a standing front, the
+front foe striking it as it passes. Its reasoning holds and moves into the second kit: the
+designator first proposed was the Polarity Projector with a Kestrel name, a copy; Kestrel's
+reach is through the front at a price, where the artillery makers' is Indirect and free; the
+price scales with the front, so "dive past the goblin, not the knight" is read on the die; and
+it takes the priority-target fantasy the Sparrowhawk's codex describes and its rework leaves
+behind. What was thin: "the first weapon is Rapid" chooses no piece, so the three hardpoints
+had nothing to be about, and the dive was one more gun.
 
-The action economy's row (the bible, section 5; Ryan's direction of 20 October) lists this
-passive among the gated Rapid sources, the Paradox's shape: once a round, never a pile. Its
-price is heat, Kestrel's resource (two spends' heat on a tier-one gauge), which is the
-banked-resource price the row asks of a second action. So the passive stands as Ryan wrote
-it; the kit is what the line review found missing.
+## The direction's read
 
-## The kit, written out (Claude, 20 October)
+The action economy's row (the bible, section 5) allows Rapid for the cantrip, gated; the gate
+the second kit takes is the row's "on a cold spend" shape turned to damage: a weapon that
+deals none. Its price is the front foe's blow and two spends' heat, Kestrel's resource.
+
+## The second kit, written out (Claude, 20 October)
 
 Every number a placeholder; the name and the look Ryan's. The stock is by kind (Ryan, 20
 October: the stock pieces are placeholders until the stock pass).
 
-**The frame.** A light flyer or tilt-jet at move 50, Kestrel's pace. Hull 60, shield 50, field
-recharge 30, heat maximum 60, cooling 5, armour 0. Three hardpoints beside the lock, a d4; two
-module slots. Glass on purpose: two spends a round at tier one wants glass numbers, and the
-dive's price lands on this frame.
+**The build hook, first.** Every weapon of no damage in the game is a cantrip on it: the
+Shock setters, the probes, the lures, the mark, the web, whoever makes them. It cashes them
+itself with the second spend, and its lock lights a back-rank foe for the whole team's Direct
+guns. So its hardpoints are about something: one control piece from any maker, one Direct gun
+to cash the paint, one vent for the heat of two spends; and the team's build changes around
+it, since a Direct-heavy team gets a back-rank answer without artillery. It feeds the Baboon's
+Paradox (a free status a round), the Sparrowhawk (a Shocked foe cashed at four times) and the
+roster's thinnest class, soft control, which has no Kestrel piece and no enabler today.
 
-**The passive**, as the codex would print it: the first weapon it fires each round is Rapid:
-the die rolls free onto another entry and the machine acts again. Once a round. Equipment
-first earns nothing (the first weapon, not the first spend), so the order is the decision:
-the hot gun or the cold one first, the dive first or after the team has softened the front.
+**The frame.** A tilt-jet at move 50, Kestrel's pace. Hull 60, shield 50, field recharge 30,
+heat maximum 60, cooling 5, armour 0. Three hardpoints beside the lock, a d4; two module
+slots. Glass on purpose: two spends a round at tier one wants glass numbers, and the paint's
+price lands on this frame.
 
-**The lock, the dive.** A weapon: Direct, flat 15, heat 10, with a printed property (the
-star): it may be spent on a back-rank foe behind a standing front, and as it passes, the front
-foe of that column strikes it: that foe's blow (its base attack with its swarm, no factor, no
-rider), through the shield like any blow, an injury if enough reaches the hull. Dragged over
-the back-rank foe the die shows the blow it deals and the price it pays. A suppressed front
+**The passive**, as the codex would print it: a weapon it fires that deals no damage is Rapid,
+once a round: the die rolls free onto another entry and the machine acts again. A gun first
+earns nothing; a setup first earns the second spend.
+
+**The lock, the designator dive** (working name): a weapon of no damage, Direct, heat 5, with
+two printed properties (the star). It may be spent on a back-rank foe behind a standing front,
+and as it passes, the front foe of that column strikes it: that foe's blow (its base attack
+with its swarm, no factor, no rider), through the shield like any blow, an injury if enough
+reaches the hull. The foe it is spent on is Painted (working name) for the round: it stands in
+reach of Direct weapons, every machine's, as if its column's front were empty. Spent on a
+front foe it paints nothing new and pays nothing, and is still a cantrip. A suppressed front
 foe strikes nothing (the team's setup pays the way in); a Barrier takes the price; a massive
 foe has nothing behind it; a Lured front foe still strikes, since the price is not its aim.
+Painted is a status the team put on the foe (the Paradox counts it; Ward turns it away).
 
 **The die.**
 
 | Entry | Piece | What it is for |
 |---|---|---|
-| I | the dive: Direct, 15, heat 10, the back rank through a standing front | the caster, at the front foe's price |
-| II | a warm flat gun | the plain first weapon |
-| III | a cold rolled gun | the cheap second spend |
+| I | the designator dive: Direct, no damage, heat 5 | a back-rank foe lit for the team, at the front foe's price; a cantrip |
+| II | a Direct flat gun | the cash: the painted caster, or the front |
+| III | a control piece of another maker (a Shock setter, a probe, a lure), or a cold rolled gun with basics alone | a second cantrip, or volume |
 | IV | a vent | two spends a round heat it |
 
-**The round as played.** Roll. A weapon showing: fire it, the die rolls again, spend what
-shows: the dive on the caster, then the gun on what is left; or the gun first and the dive
-after an ally has suppressed or webbed the front. Equipment showing: spend it and the round is
-one spend, or reroll for a weapon. The second spend is the die's, so the first is the choice.
+With basics alone the lock is its one cantrip, so its identity shows on a d4 one round in four
+and after a reroll, the tier-one floor; the stock pass's control pieces are its ceiling.
 
-**The arithmetic.** Two warm 10s a round for 10 heat; the dive and a gun, 25 for 20 heat and
-the price: a lone goblin's 5, six goblins' 30 with their swarm, a Warrior's 30, a Golem's 40.
-Its shield of 50 pays the first dives and its hull the later ones, an injury once 15 reaches
-the hull; the field recharge refills it between fights, which is the detachment's rhythm.
+**The round as played.** The designator showing: paint the caster through the front, pay the
+front foe's blow, the die rolls again, and shoot the caster with the Direct gun, or leave it
+lit for the team's guns and shoot the front. A control piece showing: lay it, roll again,
+cash it. A gun showing: fire it, one spend, or reroll for a setup. The second spend is the
+die's, so the first is the choice, and the choice is always a setup.
+
+**The arithmetic.** A paint and a flat 10 is 10 on the caster for 15 heat and the price: a
+lone goblin's 5, six goblins' 30 with their swarm, a Warrior's 30; its shield of 50 pays the
+first dives and its hull the later ones, an injury once 15 reaches the hull. A paint and the
+team's three Direct guns is a caster of 90 hull dead in a round, which is what an interceptor
+is for. Two cantrips a round (the designator and a stocked setter) are two statuses and one
+cash, the control build.
 
 **With the team.** It wants a front softened or suppressed (the funnel-web's web, the
-Armadillo's seal, a Barrier or an overshield before a dive) and cool guns. It gives the caster
-dead before its special, and a second spend's riders a round (the Baboon's Paradox counts it
-twice).
+Armadillo's seal, a Barrier or an overshield before a dive), control pieces of every maker and
+a Direct-heavy team to cash its paint. It gives the caster dead before its special, soft
+control at no tempo, and a second spend's riders a round.
 
-**Why the dive and not the designator.** The designator was the Polarity Projector with a
-Kestrel name (0 damage, Direct, Shock), a copy the content rule forbids. The dive is a reach
-nobody has: the artillery makers reach the back rank by Indirect, free; Kestrel reaches it by
-flying through the front and paying the front foe's blow, so "dive past the goblin, not the
-knight" is read on the die and the price scales with the front's threat, the risk against
-reward Ryan wants Kestrel pushed into. It takes the priority-target fantasy the Sparrowhawk's
-codex describes and its rework leaves behind (the chain is that machine's niche now;
-`kestrel_sparrowhawk.md`), so the caster-killer lives at tier one, on a lock, by choice. It
-parts from the Pinion Driver's old reach (a free flat finisher that reached any foe) by its
-price, from Indirect by its price and its reach (a back-rank foe behind a standing front,
-never any foe), and from the Cottonmouth's drum (every weapon Indirect by the passive) by
-being one entry.
+**Why it is Kestrel.** The price is risk read on the die (the maverick through the flak), the
+reach is the maker's (through the front, never free), the tempo is Kestrel's lean gated as the
+row asks, and its heat is two spends'. Rerolls and strikes are its siblings' currencies.
 
-**Engine.** Rapid granted by the passive to the first weapon spend of the round (the engine
-grants keywords by passive today; the condition, no weapon spent yet this round, is new and
-small); the dive as a printed property: a reach exception on one face (`targets_for_face`), a
-foe's blow in the player's turn (the path a death blow takes), the bot's valuation (the blow
-less the price, against what the second spend buys); synthetic passives in the tests.
+**Engine.** Rapid granted by the passive to a spend of a weapon with no number, once a round
+(the engine grants keywords by passive today; the condition, a weapon of no damage not yet
+spent this round, is new and small); the dive as a printed property: a reach exception on one
+face (`targets_for_face`), a foe's blow in the player's turn (the path a death blow takes);
+Painted as a foe status in `FOE_STATUSES` that `targets_for_face` reads for Direct; the bot's
+valuation (the paint's worth to the team's Direct spends, less the price); synthetic passives
+in the tests.
 
-**What the runner reads.** Spends a round against the other tier ones; the dive's share of its
-spends and the hull it costs; alone against the packs (the glass) and the four big foes;
-beside a body; beside the funnel-web (a web, then the dive through the suppressed front).
+**What the runner reads.** Spends a round against the other tier ones; the paint's share of
+its spends, the hull it costs and the Direct spends it opened; alone against the packs (the
+glass) and the formations (the casters); beside a body; beside the funnel-web.
 
 ## Holes already raised
 
-- The Paradox counts once a spend, so two spends a round feed a Baboon twice; riders too.
-  Ryan, 17 October, of the Paradox: tuned for the final ecosystem, never dictating the game.
+- The Paradox counts once a spend, so two spends a round feed a Baboon twice, and Painted is a
+  status it counts: a free stack a round beside a Baboon. Ryan, 17 October, of the Paradox:
+  tuned for the final ecosystem, never dictating the game.
 - Rapid pieces on it extend the round to three spends: its own gate is once a round, theirs
-  are theirs, so it is a third chase for the weak Rapid pieces, never a pile.
-- Tempo is the line frame's claim; Ryan's rule (18 October) is that shapes must differ, and
-  they do: a combo climbing with every spend there, one fixed second spend here.
-- Against a front of trash the dive's price is small, which is the point, and against a dense
-  swarm its blow carries the swarm (six goblins strike 30 each), so a packed front is the wall
-  it should be.
+  are theirs, a third chase for the weak Rapid pieces, never a pile.
+- Tempo is the line frame's claim; shapes differ: a combo climbing with every spend there, a
+  setup cashed here.
+- A painted foe opens the back rank to a whole team's Direct fire for one spend and one blow
+  taken; the levers are the paint's reach (the lit foe in reach of this machine alone) and
+  its price (the front foe's blow with a factor).
+- With basics alone the identity rides on the lock showing; the control pieces are other
+  makers' until Kestrel has one (the line review's stock holes).
 - The glass: alone it loses what the Sparrowhawk used to win; its team rows are the read.
 
 ## Bench, one line each
 
-- The designator (0 damage, Direct, cool, Shock): struck, a Polarity Projector copy.
+- The designator (0 damage, Direct, Shock), the first proposal: struck, a Polarity Projector
+  copy; as the dive's state, Shock in place of Painted, the cash is the artillery's and its
+  own Indirect piece's (set aside: Shock is a state the roster has, a lit back-rank foe is not).
+- The first kit's passive (the first weapon each round is Rapid) with the dive as a gun of 15:
+  Ryan, 20 October: thin, no build hook.
+- The cold gate (a weapon it fires while it carries no heat is Rapid, once a round): vents and
+  cold guns as its build, the hit-and-run rhythm; set aside for the control gate, which opens
+  a class the roster lacks where cold guns are the Sparrowhawk's pull.
 - The second-shot gun (a Direct gun that hits 10 harder as the round's second spend): a lock
   feeding only its own passive, the burrow's flaw.
-- A heat price on the passive (the first weapon runs 10 hotter), if once a round proves too
-  free: Kestrel's resource as the gate, the row's banked-resource price.
-- The dive as a keyword, if a second piece ever wants it (one place a property, two a
-  keyword: the Boar's rule).
+- The exposed-rotor helicopter as its shape: to Aphelion (Ryan, 20 October).
 
 ## Open for the session
 
-1. Ryan's call on the dive as the lock (its number, heat and price), and the numbers.
-2. Its shape, matched to Ryan's silhouette (the tilt-jet, the helicopter).
+1. Ryan's call on the control gate and the designator dive (Painted's name and reach, the
+   price), and the numbers.
 
 ## Waits on
 
@@ -144,5 +169,5 @@ Nothing. For the tender, a Kestrel tier one landed.
 
 ## What the session hands back
 
-A proposal in chat; on Ryan's go, the bible's Kestrel row, content planned, and this brief
-retired.
+A proposal in chat; on Ryan's go, the bible's Kestrel row, Painted in the vocabulary, content
+planned, and this brief retired.

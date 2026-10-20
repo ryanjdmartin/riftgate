@@ -141,6 +141,7 @@ defeat when every machine is wrecked. There is no round limit.
   A Rapid component always carries a limiter, a cooldown, heat or Volatile; every Rapid
   component today carries a cooldown of one: the entry switches off for the round. The
   Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it into itself.
+  A Rapid vent or shield, if one exists, is never below tier three (not built: the tiers).
 - **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
   is dark for so many rounds, shown on the entry with the rounds left.
 - **Web** (the funnel-web's Web Bomb, not built): the foe hit is Webbed; at the end of its

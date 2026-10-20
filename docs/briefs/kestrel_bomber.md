@@ -282,7 +282,7 @@ review's two items, whole; every number a placeholder, the name and the look Rya
 by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
 
 **The frame.** A heavy flyer on big boosters (Ryan's lean: bigger than medium; the capital
-ship), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
+ship is the gun platform since 20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
 maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
 tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
 the Goshawk's.

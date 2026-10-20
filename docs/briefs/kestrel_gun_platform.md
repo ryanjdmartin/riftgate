@@ -237,71 +237,119 @@ as its second and the chase, per the row's own-rerolls-as-a-number home, which a
 Sparrowhawk's fishing and the Armadillo's. The stock holes the review names for it: the
 Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
 
-## The kit, written out (Claude, 20 October)
+## The sixth round (20 October): the capital
 
-Ryan's shape of 19 October with the fifth round's engine and the line review's settlements,
-whole; every number a placeholder, the name and the look Ryan's, the stock by kind (Ryan, 20
-October: the stock pieces are placeholders until the stock pass).
+- Ryan, 20 October: "I think, from irony, that the 'capital ship' should be the gun platform,
+  and it should hover, not fly. A flip from the others since 70% of Kestrels lineup already
+  flies. We need to give this one another look, another try. If its the Kestrel capital, what
+  niche does it fill, other than 'more guns?'"
+- Claude, 20 October, the other look. The niche is the fleet's reroll economy, not its guns.
+  Nothing reads the team's rerolls and nothing banks them (the rerolls row: three a round,
+  never banked); a capital should change how the whole team plays, and this one changes what
+  a reroll is: a thing to save, spend or gamble. So the passive becomes two lines, the bank
+  and the growth: rerolls the team has not spent at the round's end are banked, up to three
+  held, and spent like any reroll in a later round; and each time its die rolls again in a
+  round, every entry on it grows by 10 for the round, on every strike. The own free reroll
+  leaves the passive for the Kestrel reroll module (one idea a passive). The second lock, the
+  launch (working name): equipment on an ally, heat 10, and that ally's die rolls again now,
+  a plain roll never onto the entry showing, the mothership relaunching a jet; a spend that
+  gives a look instead of cashing the growth. Four hardpoints, a d6, fewer guns than the
+  bench of six: its guns are bets, and the capital's work is the economy. A hover, assault:
+  the ekranoplan, water fast and rough ground slow, so the river every map guarantees is its
+  road, the irony twice (fast-looking, slow, and fast only on water). Why it is a capital and
+  not more guns: it bends a rule the player has learned (rerolls never bank; the tiers row's
+  sort for a tier three), it reads a resource nobody reads, it changes the team's play more
+  than its own, and its ceiling is the team's nerve, not its stock. Why it is Kestrel: rerolls
+  as the currency (Ryan, 19 October), press your luck, the maverick's fleet. What parts it
+  from the others' capitals: Minerva's battlecruiser bursts its own guns on a cooldown timer,
+  the multi-rotor lends its die, the Carrier is open. Holes: a six-reroll round fixes every
+  die in the team, a burst round for the fleet once in two rounds at best (the bank's cap and
+  the step are the levers; the runner reads rounds with a bank spent against rounds without);
+  the bot must learn to bank, which is the lock-or-ride valuation again; the launch is a lent
+  own-reroll, the Clydesdale's effect given once, which the direction's first home allows
+  and which Ryan refused for Minerva on theme (15 October: it does not fit), not on shape;
+  the growth rides on rerolls the team makes anyway unless the capital is locked; Rapid
+  pieces' rolls still grow it, a third chase. Bench, one line each: the fleet's heat sink
+  (allies' heat flows to it and its entries grow by 10 per 10 heat it takes, Kestrel's heat
+  as the banked resource; set aside because it drops Ryan's roll-based shape and overlaps
+  the Goshawk's and the Afterburner's heat-into-something); the self-bank (held rerolls grow
+  the capital next round rather than banking for the team: a bigger gun, not an economy); the
+  gift (the team gains a reroll a round while it stands: free, the free extra shots Ryan
+  refused in another coat); growth on every team die's roll (the team rerolls together
+  already, so it is the same mechanic with no lock-or-ride decision).
 
-**The frame.** Heavy or assault: the ekranoplan as a hover (a giant ground-effect plane with a
-battery on its back, fast on water and slow on rough ground) or the gunship as a flyer (its
-guns down one side); move 20, fast-looking and slow. Hull 120, shield 80, field recharge 20,
-heat maximum 120, cooling 10, armour 0. Six hardpoints beside the lock, a d7; two module
-slots.
+## The kit, written out (Claude, 20 October, the sixth round's form)
 
-**The passive**, as the codex would print it: each time its die rolls again in a round, every
-entry on it grows by 10 for the round, damage, shield and venting alike, on every strike; the
-growth resets as the round opens. It rerolls its own die once a round for free.
+Ryan's shape of 19 October as the capital, whole; every number a placeholder, the name and
+the look Ryan's, the stock by kind (Ryan, 20 October: the stock pieces are placeholders until
+the stock pass).
 
-**The lock, the three-strike shield**: equipment on itself, 10 ×3, no heat, each strike grown
-(after two rolls 30 ×3). It fills to its maximum unless it carries Overshield, which is the
-lever if the cap wastes the growth.
+**The frame.** Kestrel's capital ship: assault, a hover (Ryan, 20 October: it hovers, not
+flies), the ekranoplan, a giant ground-effect plane with a battery on its back, fast on water
+and slow on rough ground and ruins; move 20, fast-looking and slow. Hull 120, shield 100 (the
+roster's biggest, Kestrel's plate), field recharge 20, heat maximum 120, cooling 10, armour 0.
+Four hardpoints beside two locks, a d6; two module slots (three, the Clydesdale's number, is
+the lever if a capital should read as capacity).
+
+**The passive**, as the codex would print it: rerolls the team has not spent at the round's
+end are banked, up to three held, and spent like any reroll in a later round. Each time its
+die rolls again in a round, every entry on it grows by 10 for the round, damage, shield and
+venting alike, on every strike; the growth resets as the round opens.
+
+**The first lock, the three-strike shield**: equipment on itself, 10 ×3, no heat, each strike
+grown (after two rolls 30 ×3). It fills to its maximum unless it carries Overshield, which is
+the lever if the cap wastes the growth.
+
+**The second lock, the launch** (working name): equipment on an ally, heat 10: that ally's die
+rolls again now, a plain roll, never onto the entry showing, and the ally's turn goes on. A
+look given in place of the growth cashed.
 
 **The die.**
 
 | Entry | Piece | After three rolls |
 |---|---|---|
 | I | the three-strike shield, 10 ×3 | 40 ×3 |
-| II | a multi-strike gun (a flat 5 ×4, the Kestrel one the line review asks for; the Maxigun) | 35 ×4 |
-| III | a big flat gun | +30 |
-| IV | a cold rolled gun | +30 |
-| V | a small Rapid gun, if one is stocked (its roll is a step) | +30 |
-| VI | a vent | +30: a big vent late in a run |
-| VII | a plain shield | +30 |
+| II | the launch: an ally's die rolls again | unchanged |
+| III | a multi-strike gun (a flat 5 ×4, the Kestrel one the line review asks for) | 35 ×4 |
+| IV | a big flat gun | +30 |
+| V | a cold rolled gun | +30 |
+| VI | a vent, or a plain shield | +30: a big one late in a run |
 
-Guns of every maker; the growth lands on whatever shows, so a shield or a vent late in a run is
-a big one, never a dead entry, only an ill-fitting one.
+The growth lands on whatever shows, so a shield or a vent late in a run is a big one, never a
+dead entry, only an ill-fitting one; guns of every maker, since a cold gun is a cheap bet.
 
-**The round as played.** Roll; it shows an entry. Lock it and keep what shows, or leave it
-unlocked and ride: each team reroll before its spend is a new entry (never the one showing)
-and +10 on everything; its own free reroll +10; a Rapid piece's roll +10. Spend when the entry
-showing is worth it, and then rerolls touch it no more. The decision at each reroll: stop or
-roll; where the growth should land (a gun for the kill, a shield before a heavy enemy turn, a
-vent when hot); whether to fish for the multi-strike gun.
+**The round as played.** Roll. The team's dice are fine: hold the rerolls, bank them, and
+the capital shows what it shows (lock it or ride the rerolls that do come). The round that
+matters: three banked and three new, six rolls, every jet's die fixed and the capital grown
+by 60 on every strike. Or spend the rerolls as they come and the capital grows a little every
+round, and the launch gives a jet one more look when the capital's own entry is not worth
+cashing. The decision each reroll: fix a jet, feed the capital, or save it for the round that
+matters.
 
 **The arithmetic** (one spend after n rolls this round, armour 0 / 5): a cold 10 gun after
-four, 50 / 45; a flat 5 ×4 after four, 45 ×4 = 180 / 160; a 15–30 gun after two, 42 / 38; a 5
-Rapid gun after four, 45 / 40; the shield after two, 30 ×3 = 90 (its maximum 80); a vent of 20
-after three, 50. The ceiling: three team rerolls and its own, +40 on every strike; the floor:
-a locked first entry and a plain d7.
+four, 50 / 45; a flat 5 ×4 after four, 45 ×4 = 180 / 160; a 15–30 gun after two, 42 / 38; the
+shield after two, 30 ×3 = 90 (its maximum 100); a vent of 20 after three, 50. A banked round
+of six rolls: +60 on every strike, the ceiling; the floor is a locked first entry and a plain
+d6.
 
-**With the team.** It wants the team's rerolls (the maverick's fuel), a Kestrel reroll module
-(its second roll), the weak Rapid pieces (a third chase) and multi-strike pieces. It gives
-nothing to others: the line's ceiling, and the whole team playing its push.
+**With the team.** It wants the team's rerolls (the fleet's nerve), a Kestrel reroll module,
+the weak Rapid pieces (a third chase) and multi-strike pieces. It gives the bank to every
+machine on the field, a look to the jet that needs one, and the fleet a round to plan for.
 
-**Engine.** A growth counter on the machine that each reroll of its die raises and the round's
-opening clears, read as an add on every entry's number per strike; the own reroll the
-Clydesdale's effect (`free_reroll`, which the engine runs); the bot's lock-or-ride valuation
-(the entry's expected value after a roll against the one showing); synthetic passives in the
-tests.
+**Engine.** The team's rerolls as a bank (`Skirmish.rerolls` reset to three adds what was
+held, capped at three held); a growth counter on the machine that each reroll of its die
+raises and the round's opening clears, read as an add on every entry's number per strike;
+the launch as an own-reroll of another machine's die (`Skirmish.reroll` on one die, the
+rerolls row's skip of the entry showing); the bot's bank-or-spend and lock-or-ride
+valuations; synthetic passives in the tests.
 
+## Open for the session
 
-1. Ryan's call on growth with the own reroll as its engine (the fifth round), the
-   three-strike shield as its lock, and the numbers.
-2. The own reroll as the passive's clause with a Kestrel reroll module as its second (the
-   line review's lean, 20 October), and what the commander's refit adds once that layer exists.
-2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
-3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
+1. Ryan's call on the capital's second form: the bank as the passive's first line, the launch
+   as the second lock, four hardpoints, the numbers.
+2. The own reroll: the Kestrel reroll module's (the line review's lean), and what the
+   commander's refit adds once that layer exists.
+3. Its shape as the ekranoplan, matched to Ryan's silhouette; three module slots or two.
 
 ## Holes already raised
 
@@ -315,10 +363,10 @@ tests.
 
 ## Bench
 
-- A main battery as a second lock (a flat 30 cannon with a cooldown of two), if the throttle
-  alone reads thin for a tier three's locked pieces.
-- Unspent team rerolls at the round's end bank as Overcharged on it: press your luck by
-  holding (the analysis's reroll-maker reversed).
+- A main battery as a second lock (a flat 30 cannon with a cooldown of two): Ryan, 19
+  October, no doubled payout; the launch is the second lock since the sixth round.
+- Unspent team rerolls banking as Overcharged on it (the fourth round's bench): the sixth
+  round banks them as rerolls for the team instead.
 - The chain: Rapid switches nothing off on it and vents do nothing on it, so every maker's
   Rapid pieces chain while its heat lasts (the third round of `kestrel_shield_spender.md`).
 

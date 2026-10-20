@@ -371,14 +371,28 @@ stock wants a step between the Carbine's 5 heat and the Railgun's 40, a mid-heat
 the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 more and a zap of
 20), and the Railgun kept as its big hot shot. The vent-dead hole stands as a direction refused.
 
+## The seventh round (20 October): the frame
+
+- Ryan, 20 October: "I think the off-tank can be a hovercraft, which brings Kestrel's lineup
+  to 3 hovers. That seems right. However, since we made the Puffin slow (it doesn't have to be,
+  really, if its an all-in support), then it seems like the shield-burner should be fast, so as
+  to not give the impression that Kestrel doesn't actually know how to make a fast hovercraft.
+  Also, its kit looks to me like it would be an acceptable solo unit if it needed to zoom off
+  and fight a pack, so that's fine, a decent generalist for tier 1."
+- Claude, 20 October: a hovercraft at move 50, the kit below; the third Kestrel hover with the
+  Puffin and the capital. On the map it is the detachment that can also hold a front: water
+  fast, so it rides the river the jets fly over; alone against a pack it lures, plates and
+  regens, and burns shield only when the kill is worth it, which is the generalist Ryan reads.
+  The exposed-rotor helicopter goes to Aphelion (Ryan, 20 October, in the interceptor's
+  round).
+
 ## The kit, written out (Claude, 20 October)
 
 Ryan's package of 19 October, whole; every number a placeholder, the name and the look Ryan's,
 the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
 
-**The frame.** A medium hovercraft on big boosters at move 40, the one Kestrel tier one that is
-not a fast jet (or the exposed-rotor helicopter as a flying tank, if Ryan's silhouette is
-one). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
+**The frame.** A medium hovercraft on big boosters at move 50 (Ryan, 20 October: a hovercraft,
+and fast, so Kestrel is seen to make a fast one; water fast, rough ground and ruins slow). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
 field recharge 30, heat maximum 60, cooling 5, armour 0. Four hardpoints beside the lock, a
 d5; two module slots.
 
@@ -446,8 +460,7 @@ synthetic passives. Its runner row lies until the honest shield rule is built.
 
 
 1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
-   reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and
-   Ryan's go. The capacitor of the second round stays on the bench (overshield as ammunition).
+   reach) and Ryan's go; its frame is a hovercraft at 50 (Ryan, 20 October). The capacitor of the second round stays on the bench (overshield as ammunition).
 2. The interceptor has a brief of its own since 20 October (`kestrel_interceptor.md`).
 
 ## Holes already raised
