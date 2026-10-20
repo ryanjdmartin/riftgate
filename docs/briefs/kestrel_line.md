@@ -29,7 +29,7 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer (decided; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| one | the interceptor (proposal, its fourth round; `kestrel_interceptor.md`) | buffs and weapons of no damage | a free setup a round; a foe Exposed for the team's Direct guns | two spends' heat, glass | the gate: no damage dealt |
+| one | the interceptor (proposal, its fifth round; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Goshawk (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Sparrowhawk (rework; `kestrel_sparrowhawk.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
@@ -90,7 +90,12 @@ One pointer each; the proposal is in the brief named.
   Exposed, the game's own word (the vocabulary's formation entry, the engine's one reach
   check), reach alone, its on-hit half declined as Flak's kind and the armour clause benched;
   the gate widened to buffs, the die's glyph deciding (a shield or vent that also buffs wears
-  a chip and is excluded); the foes' aim word flagged for renaming. `kestrel_interceptor.md`.
+  a chip and is excluded); the foes' aim word flagged for renaming. The fifth: Ryan took
+  Exposed as reach and armour counting for nothing, and no number on a weapon of no damage;
+  the duration evaluated (the round's, as Expose 1; a foe's statuses tick at its turn whether
+  it acts or skips, so "until it acts" buys nothing) and his die kinds answered (Direct,
+  Indirect, Debuff, Buff, Shield, Vent, the blank a drawing; the Debuff glyph wears its reach;
+  a debuff deals nothing under any effect). `kestrel_interceptor.md`.
 - **The Goshawk** stands; its stock is cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its

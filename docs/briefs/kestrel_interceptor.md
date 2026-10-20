@@ -6,7 +6,8 @@ from the shield-spender's alternative kits, and finds the build hook its first k
 
 **Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October, its third
 form, below the second; the fourth round, late that day, names the mark Exposed and widens the
-gate to buffs). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
+gate to buffs; the fifth takes Ryan's calls, the mark reach and armour and no number on a weapon
+of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
 "agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
 line review that gave it this brief); the second and third rounds of
 `kestrel_shield_spender.md` (where it was kit 2); the bible's rows on the action economy
@@ -246,6 +247,98 @@ kit: a tilt-jet at 50, hull 60, shield 50, field recharge 30, heat maximum 60, c
 d4, two module slots. The round: a setup first (the designator, a buff, a setter), the die
 rolls again, the cash; a gun first is one spend. Every number a placeholder; the names Ryan's.
 
+## The fifth round (20 October, late): the duration, and the die's kinds
+
+- Ryan, 20 October: "Exposed as armour penetration is perfect. The trick now is deciding
+  duration. No damage weapons should show no number, correct. That distinguishes them from a
+  weapon that should do damage, but due to an effect, is not currently. A scanner sweep or
+  lure should not accidentally do damage from an effect either. Should the iconography
+  display it? Then the passive could simply list the icons. Our set would be: Direct,
+  Indirect, Debuff (the non-damaging weapon), Buff, Shield, and Vent. Correct?"
+
+**Exposed, as Ryan took it.** A debuff from an Expose: the foe stands in Direct reach, every
+machine's, as if its column's front were empty, and its armour counts for nothing, its own
+and any brace. Reach bites on the back-rank caster, armour on the massive boss (whose column
+is never exposed, so only the mark opens it) and both on a braced front foe. Binary: a second
+Expose renews it, never adds. The armour clause leaves the bench. The arithmetic on an
+armour-5 foe: five Direct blows in a turn are 25 more, a strafer's two-strike gun 10 more, a
+Flakshot's 5s go from nothing to 5 each; on a Treant braced twice (armour 15) every blow is
+15 more.
+
+**The duration, evaluated (Claude).** The clocks the game already runs, and what each buys:
+
+- *Until the round's end*: Lure's and Disrupt's clock on a foe, Overshield's and the locks'
+  on ours. Everything Exposed does happens in the player's turn (reach is the player's;
+  armour comes off blows, and a burn never pays it), so this is one turn of paint: lay it,
+  cash it, the team's order the decision, since every die shows at the round's start. The
+  lean.
+- *Until it next acts*: the clock a foe's own brace runs on. In the engine it is the same
+  moment: a foe's statuses tick at the start of its turn whether it acts or skips, so a
+  Suppressed foe drops the mark too, and this clock buys nothing the round's end does not. A
+  clock that waits for the foe to act (a held boss stays open, the control build's reward)
+  would be a new one, on the bench with its cost: one more clock to learn.
+- *Through the next round*: the brace_all's clock, two turns of paint; a boss armourless for
+  two turns from one 5-heat spend, and the paint cashable by next round's dice too. The lever
+  if the one-turn paint proves too hard to cash on a d4 (the runner's read: the share of
+  paints an ally's Direct spend cashes).
+- *The next blow*: Shocked's clock; the paint cashed by one gun, which kills the team-wide
+  reach. Struck.
+- *The skirmish*: the interceptor deletes armour from the fight. Struck.
+
+The duration as a number, so the stock pass can tune it without a new rule: Expose N lays
+Exposed for N rounds, losing one at each round's end (the module Overcharged's clock); the
+designator lays 1, so its mark is the round's; a second Expose renews to its own number and
+never adds.
+
+**The formation word.** A foe exposed by its formation (the front slot empty) is in reach; a
+foe carrying the mark is in reach and armourless: one word, two strengths. Two honest fixes:
+the codex says so (a marked foe also loses its armour), or one meaning for both causes (an
+exposed foe, its front gone or marked, is in Direct reach and its armour counts for nothing).
+The second changes nothing today, since no back-rank foe carries armour (the armoured five
+are front rank or massive), and writes a constraint for the foes' content: a back-rank
+armoured foe fights from cover and loses it with its front. Claude's lean is the one meaning;
+Ryan's call.
+
+**The die's kinds (Claude's answer: yes, with three notes).** The set is Ryan's six, Direct,
+Indirect, Debuff, Buff, Shield and Vent, and the blank is the seventh drawing and no kind (an
+empty hardpoint, a disabled entry).
+
+- *A debuff has reach.* It is a weapon (spent on a foe; the two-type rule already says a
+  weapon need not deal damage), and its reach is the first thing the player wants from it:
+  the probe Indirect, the projector Direct, the Klaxon Indirect and Cleave, the designator
+  Indirect. Today the reach is the weapon's glyph (the crosshair, the arc), so the Debuff
+  glyph wears its reach, the status mark inside the crosshair's ring or under the arc: two
+  drawings of one kind, and the plain mark in a list of icons. The drawing is Ryan's (a
+  debuff mark sits among the chips already, a placeholder); the glyphs are placeholders.
+- *The rule, written down.* A debuff prints no number and deals no damage under any effect
+  (Overcharged's flat, Spun Up's, a multiplier, Primed's burn); its heat is still a weapon's
+  (Scorched bites it), and its own keywords are its whole effect. A gun whose blow is nothing
+  right now (its 5 against armour 5) prints "0", which is Ryan's distinction: "0" is a gun
+  that will do nothing here, and no number is not a gun. The bible's die-entry row and the
+  rules take both sentences, with the kinds, on his word on the set.
+- *The passive as icons.* Rapid, once a round, on the Debuff and the Buff glyphs; in words,
+  "a debuff or a buff is Rapid on this machine, once a round". The glyph decides and the rail
+  never counts: a shield wearing a buff chip is a shield.
+- *One edge.* The Dingo's Combat Translocator (a swap, no damage, no status) is a weapon of
+  no damage, so it wears the Debuff glyph; the glyph's name is "debuff", the class is weapons
+  of no damage. If the word jars on it, "control" is the other name.
+
+**Engine.** No new kind: a weapon of no damage is an attack of power 0 today, and `is_attack`
+gates reach in dozens of places; the glyph function reads the zero and draws the debuff in
+its reach, the number functions print nothing for it, and the damage pipeline skips a
+debuff's damage effects (`Effects.attack`, which adds a flat bonus to any attack today). The
+content could say `"kind": "debuff"` and the loader map it, so the content reads as the die
+does. Exposed: `armour_total` returns 0 while the foe carries it (the hover's number follows,
+since it subtracts that total), `is_exposed` gains the clause, the status joins the list the
+Paradox counts, Expose applies on reach as Shock does, and the decay is the round's.
+
+**The machine as it stands (the fifth round).** The passive: a debuff or a buff is Rapid on
+it, once a round. The lock, the designator (working name): a debuff, Indirect, heat 5, Expose
+1: the foe is Exposed for the round, in Direct reach, every machine's, and its armour counts
+for nothing. The die: I the designator; II a Direct flat gun, the cash; III a buff (the Coil's
+kind), a debuff of another maker, or a cold rolled gun; IV a vent. The frame as the second
+kit. Every number a placeholder; the names Ryan's.
+
 ## Holes already raised
 
 - The Paradox counts once a spend, so two spends a round feed a Baboon twice, and Painted is a
@@ -290,14 +383,19 @@ rolls again, the cash; a gun first is one spend. Every number a placeholder; the
   word (the fourth round).
 - The flat on-hit half of Exposed (a point a blow, stacking; Ryan's first shape, 20 October):
   Flak's kind by the Prairie Dog row, so never a second carrier under a Kestrel name.
-- The armour clause (armour counts for nothing against an Exposed foe): the bite if the lock
-  proves a dead spend in the boss fights, the runner's read; a kind of its own, never Flak's.
+- A clock that waits for the foe to act (a held boss stays Exposed; the fifth round): a new
+  decay, one more clock to learn; the control build's reward if the one-turn paint wants help.
+- Exposed on the next blow (Shocked's clock) or for the skirmish: the one kills the team-wide
+  reach, the other deletes armour from the fight; struck (the fifth round).
 
 ## Open for the session
 
-1. Ryan's call on the fourth round: Exposed as the mark, reach alone (the armour clause
-   benched); the gate widened to buffs; a weapon of no damage printing no number; the aim's
-   shown word; and the numbers.
+1. Ryan's word on the die's kinds as answered (the blank the seventh drawing, the Debuff
+   glyph in its reach, the no-damage rule written down), then the bible's die-entry row and
+   the rules take the kinds and the rule.
+2. The duration (the round's, as Expose 1; through the next round the lever) and the
+   formation word's one meaning.
+3. The aim's shown word, and the numbers.
 
 ## Waits on
 
@@ -306,4 +404,5 @@ Nothing. For the tender, a Kestrel tier one landed.
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, the bible's Kestrel row, Expose in the vocabulary and the
-Exposed entry's new sentence (the aim's word with it), content planned, and this brief retired.
+Exposed entry's new sentence (the aim's word with it), the die-entry row and the rules (the
+kinds, the no-number rule), content planned, and this brief retired.

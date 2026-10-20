@@ -102,7 +102,15 @@ document's job and every command are in `README.md`.
   round: reach alone, the on-hit half declined as Flak's kind, the armour clause benched, the
   foes' aim word flagged for renaming), and its gate widened to buffs by the die's glyph (a
   shield or vent that also buffs is excluded by its glyph; a weapon of no damage proposed to
-  print no number). Proposals, waiting on Ryan's calls; on the branch, not on main.
+  print no number). The fourteenth round (20 October, late): Ryan took Exposed as reach and
+  armour counting for nothing, and no number on a weapon of no damage, which deals none under
+  any effect; the duration evaluated in the interceptor's fifth round (the round's, as Expose
+  1, the lean; a foe's statuses tick at its turn whether it acts or skips, so "until it acts"
+  buys nothing; through the next round the lever) and his die kinds answered (Direct, Indirect,
+  Debuff, Buff, Shield, Vent; the blank a seventh drawing; the Debuff glyph wears its reach;
+  the formation word's one meaning proposed). On his word on the set: the bible's die-entry row
+  and the rules take the kinds and the no-number rule, one republish (the to-do's line).
+  Proposals, waiting on Ryan's calls; on the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
