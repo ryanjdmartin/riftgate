@@ -1585,7 +1585,8 @@ def funnel_web(b):
     each part: the guns pulled in, the fins, the top mount, the planted pivot, the antenna's
     base); his tenth, 20 October: the eighth's fins were the shape and size he liked, it was
     only their base that wanted squaring off, so they are back at that size on a level base;
-    and the scan's first turn is quick."""
+    and the scan's first turn is quick. His eleventh, the same day: the antenna a little
+    inboard, clear of the fin, and the model is good to go."""
     # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
     # (the third notes: the thighs had no clearance from the body, and every reference resolves
     # it so): a strut drops from a coxa joint at the hub's corner, down and out, to a low hip
@@ -1652,8 +1653,8 @@ def funnel_web(b):
         b.box(-9.0, 9.0, -25.3, -24.0, 49.0, 58.0, "steel.vent", "exhaust_grille")
         for s in (-1.0, 1.0):
             b.prism("y", s * 13.0, -26.5, 53.0, 2.2, 5.0, "steel.dark", 6, "exhaust_stub")
-        b.prism("z", -14.0, -20.0, 75.0, 1.2, 16.0, "steel.dark", 6, "antenna")
-        b.box(-15.5, -12.5, -21.5, -18.5, 56.0, 67.5, "steel.dark", "antenna_base")   # run down into the hull's chamfer (the ninth notes: it floated)
+        b.prism("z", -10.5, -20.0, 75.0, 1.2, 16.0, "steel.dark", 6, "antenna")   # inboard of the fin by a clear margin (the eleventh notes: it sat against it)
+        b.box(-12.0, -9.0, -21.5, -18.5, 56.0, 67.5, "steel.dark", "antenna_base")   # run down into the hull's chamfer (the ninth notes: it floated)
         # The jaw's two static bow guns (the fifth notes): a mantlet each side of the jaw's
         # flat face, no joint, the Maxigun's on the left (hp_1), the Twin Autoguns' on the
         # right (hp_3); the torso twist and the legs aim them. Pulled back in (the seventh
@@ -2257,38 +2258,25 @@ def nemesis(b):
     })
     b.act("crack_shoulders", 6.4, tracks, body=body, heft=0.07,
           glow=[(["core_fire"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])
-    # Pacing (Ryan, 20 October: lateral motion for an angry boy, on planted footwork): it
-    # paces sideways, caged: a shuffle to its left, a glare at its mark, two shuffles back
-    # across to its right, a glare, and one home; the lead foot steps out, the body follows
-    # and the other foot comes in under it, the fists held clenched before the chest and the
-    # torso turned a little to keep its mark, the core flaring at each glare. It sits a
-    # little lower through it, for the legs' reach.
-    W, SQ6 = 12.0, -3.0
-    low6 = lambda dx: (dx, 0.0, SQ6, 0.0, 0.0, 0.0)
-
-    def shuffle(t0, x0, x1):
-        """Steps and body keys for one shuffle of the body from x0 to x1 from t0: the lead foot
-        out over 0.45 s, then the body across over 0.5 s as the other foot comes under it."""
-        lead, trail = ("l", "r") if x1 < x0 else ("r", "l")
-        t1, t2 = round(t0 + 0.45, 3), round(t0 + 0.95, 3)
-        return ([(lead, t0, t1, ("under", t2), 6.0), (trail, round(t0 + 0.5, 3), t2, ("under", t2), 6.0)],
-                [(t0, low6(x0)), (t1, low6(x0)), (t2, low6(x1))])
-    steps, keys = [], [(0.3, (0.0,) * 6), (0.6, low6(0.0))]
-    for t0, x0, x1 in ((0.7, 0.0, -W), (2.7, -W, 0.0), (3.75, 0.0, W), (5.8, W, 0.0)):
-        st, ks = shuffle(t0, x0, x1)
-        steps += st
-        keys += ks
-    keys += [(7.0, low6(0.0)), (7.5, (0.0,) * 6)]
-    tracks, body = _footwork(feet6, keys, steps, until=7.7)
+    # Squaring up (Ryan, 20 October: lateral motion for an angry boy on planted footwork; a
+    # sideways pace was built first and looked like dancing, so this instead): something comes
+    # at it from its left and it squares up to it, the left foot stamping out wide and back as
+    # the whole machine turns on its planted right foot and drops into the stance, the fists up
+    # before the chest, the torso leaning in and wound a little further on the waist, the core
+    # burning while it glares; then the left foot stamps back round and it stands as it was.
+    TURN = 26.0
+    sq = lambda yaw, dz, pitch=0.0: (0.0, 0.0, dz, yaw, pitch, 0.0)
+    tracks, body = _footwork(feet6, [(0.3, (0.0,) * 6), (0.5, sq(2.0, -0.5)), (0.95, sq(TURN, -3.0, -2.0)), (1.1, sq(TURN, -4.6, -2.5)), (1.4, sq(TURN, -3.4, -2.0)),
+                                     (3.4, sq(TURN + 1.0, -3.6, -2.2)), (3.6, sq(TURN, -3.0, -1.5)), (4.05, sq(1.0, -1.0)), (4.2, sq(0.0, -2.2)), (4.7, (0.0,) * 6)],
+                             [("l", 0.5, 0.95, ("under", 0.95, (-6.0, -6.0)), 7.0), ("l", 3.6, 4.05, ("under", 4.7), 6.0)], until=4.9)
     GUARD = (22.0, -50.0, 38.0, -2.0)   # the fists clenched before the chest, apart
     for side in ("l", "r"):
         g = GUARD if side == "l" else (GUARD[0], -GUARD[1], -GUARD[2], GUARD[3])
-        tracks["shoulder_" + side] = _dense([(0.3, 0.0, 0.0, 0.0), (0.9, g[0], g[1], g[2]), (6.8, g[0] + 1.0, g[1], g[2]), (7.5, 0.0, 0.0, 0.0)])
-        tracks["elbow_" + side] = _dense([(0.3, 0.0), (0.9, g[3]), (6.8, g[3] - 1.0), (7.5, 0.0)])
-    tracks["waist"] = _dense([(0.6, 0.0, 0.0, 0.0), (1.65, -3.0, -8.0, 0.0), (2.6, -3.0, -9.0, 0.0), (3.65, -2.0, 0.0, 0.0), (4.7, -3.0, 8.0, 0.0), (5.7, -3.0, 9.0, 0.0),
-                              (6.75, 0.0, 0.0, 0.0)])   # turned back toward its mark from each side
-    b.act("pace", 7.8, tracks, body=body, ease="linear", heft=0.08,
-          glow=[(["core_fire"], [(1.5, 0.0), (1.9, 7.0), (2.6, 7.0), (3.1, 1.0), (4.6, 1.0), (5.0, 8.0), (5.7, 8.0), (6.3, 0.0)])])
+        tracks["shoulder_" + side] = _dense([(0.5, 0.0, 0.0, 0.0), (1.1, g[0], g[1], g[2]), (3.5, g[0] + 2.0, g[1], g[2]), (4.6, 0.0, 0.0, 0.0)])
+        tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.1, g[3]), (3.5, g[3] - 2.0), (4.6, 0.0)])
+    tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.2, -4.0, 8.0, 0.0), (3.4, -5.0, 11.0, 0.0), (3.7, -3.0, 6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])   # leaning in, wound a little further round than the feet
+    b.act("square_up", 5.2, tracks, body=body, ease="linear", heft=0.06,
+          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
     # the body passes over it, lifted and stamped down; the arms swinging evenly against the
@@ -2633,8 +2621,9 @@ def ammit(b):
     # planted footwork): it circles its prey with the snout kept on it, the body sliding round
     # an arc about a point ahead and turning to face it, the feet and the hands scuttling
     # sideways under it, the hands two short steps to a foot's one as in its walk (they stand
-    # near straight and could not take a long one); round to one side, a pause, back past its
-    # mark to the other, a pause, and home. Low and nose down, the upper claws at their guard
+    # near straight and could not take a long one); two moves round to one side, a pause, and
+    # two back (Ryan: one each way, through the centre, read weaker). Low and nose down, the
+    # upper claws at their guard
     # with the talons spread and slowly working, the eyes lit and the throat breathing at the
     # pauses (_footwork: every hip and shoulder takes the yaw and roll that keep its end
     # planted and pointing where it landed).
@@ -2652,28 +2641,28 @@ def ammit(b):
             steps.append((hand, ta, round(ta + 0.26, 3), ("under", "mid"), 4.0))
         return steps, [(t0, arc(th0)), (round(t0 + 1.4, 3), arc(th1))]
     steps, keys = [], [(0.4, (0.0,) * 6), (0.7, arc(0.0))]
-    for t0, th0, th1 in ((0.7, 0.0, SWING), (2.6, SWING, 0.0), (4.3, 0.0, -SWING), (6.2, -SWING, 0.0)):
+    for t0, th0, th1 in ((0.7, 0.0, SWING), (2.3, SWING, 2.0 * SWING), (4.3, 2.0 * SWING, SWING), (5.9, SWING, 0.0)):
         st, ks = quarter(t0, th0, th1)
         steps += st
         keys += ks
-    keys += [(7.9, arc(0.0)), (8.4, (0.0,) * 6)]
-    tracks, body = _footwork({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, keys, steps, until=8.6)
-    tracks["waist"] = _dense([(0.6, 0.0, 0.0, 0.0), (1.0, -4.0, 0.0, 0.0), (7.8, -4.0, 0.0, 0.0), (8.3, 0.0, 0.0, 0.0)])   # nose down, the body's turn keeps the snout on the prey
+    keys += [(7.6, arc(0.0)), (8.1, (0.0,) * 6)]
+    tracks, body = _footwork({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, keys, steps, until=8.3)
+    tracks["waist"] = _dense([(0.6, 0.0, 0.0, 0.0), (1.0, -4.0, 0.0, 0.0), (7.5, -4.0, 0.0, 0.0), (8.0, 0.0, 0.0, 0.0)])   # nose down, the body's turn keeps the snout on the prey
     for side, y in (("l", 1.0), ("r", -1.0)):
-        tracks["shoulder_" + side] = _dense([(0.5, 0.0, 0.0, 0.0), (1.0, 30.0, 16.0 * y, 0.0), (7.8, 31.0, 17.0 * y, 0.0), (8.4, 0.0, 0.0, 0.0)])   # the threat's guard
-        tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.0, -22.0), (7.8, -23.0), (8.4, 0.0)])
-        tracks["hand_" + side] = _dense([(0.5, 0.0), (1.0, -8.0), (7.8, -9.0), (8.4, 0.0)])
+        tracks["shoulder_" + side] = _dense([(0.5, 0.0, 0.0, 0.0), (1.0, 30.0, 16.0 * y, 0.0), (7.5, 31.0, 17.0 * y, 0.0), (8.1, 0.0, 0.0, 0.0)])   # the threat's guard
+        tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.0, -22.0), (7.5, -23.0), (8.1, 0.0)])
+        tracks["hand_" + side] = _dense([(0.5, 0.0), (1.0, -8.0), (7.5, -9.0), (8.1, 0.0)])
         for k, (w, (pitch, yaw)) in enumerate((("out", (44.0, 22.0 * y)), ("mid", (-40.0, 0.0)), ("in", (36.0, -8.8 * y)))):
             half = pitch + (-12.0 - pitch) * 0.5   # halfway to shut
             ks = [(0.5, 0.0, 0.0, 0.0), (round(1.0 + 0.2 * k, 3), pitch, yaw, 0.0)]
             t = 1.0 + 0.2 * k
-            while t + 1.4 < 7.6:
+            while t + 1.4 < 7.3:
                 ks += [(round(t + 0.7, 3), half, yaw * 0.5, 0.0), (round(t + 1.4, 3), pitch, yaw, 0.0)]
                 t += 1.4
-            ks += [(7.8, pitch, yaw, 0.0), (8.4, 0.0, 0.0, 0.0)]
+            ks += [(7.5, pitch, yaw, 0.0), (8.1, 0.0, 0.0, 0.0)]
             tracks["talon_%s_%s" % (side, w)] = _dense(ks)
-    b.act("circle", 9.0, tracks, body=body, ease="linear", heft=0.08,
-          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (2.1, 5.0), (2.35, 10.0), (2.6, 5.0), (5.7, 5.0), (5.95, 10.0), (6.2, 5.0), (7.8, 5.0), (8.4, 0.0)])])
+    b.act("circle", 8.6, tracks, body=body, ease="linear", heft=0.08,
+          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a four-limbed gait, every foot and talon planted while the body passes over it,
     # the lower arms reaching from further back under the chest; the upper arms held up out

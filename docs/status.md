@@ -14,7 +14,7 @@ document's job and every command are in `README.md`.
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. Local main
   and `origin/main` diverge for a day at a time; merge `origin/main` into local main before a
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
-- Tests: 496 tests, 63,145 checks, green on `ccr-ffcf75fa-3gkbz9` (20 October, the funnel-web's
+- Tests: 496 tests, 60,821 checks, green on `ccr-ffcf75fa-3gkbz9` (20 October, the funnel-web's
   assets and the walkers' planted footwork, the rig test covering the funnel-web's 24 joints and
   the three machines' new acts; 20,269 after its engine, over main's 481 and 20,153 of
   the Kestrel session's last merge).
@@ -30,7 +30,7 @@ document's job and every command are in `README.md`.
 - `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
   the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
   content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.215; and 20 October's
+  and page; the to-do's engine and assets lines ticked; the bible at v0.217; and 20 October's
   planted footwork for the Armadillo, the Nemesis and the Ammit): to merge into main.
 - `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
   briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
@@ -119,7 +119,8 @@ document's job and every command are in `README.md`.
   no planted foot moves; 24 joints), the fins' base squared off and the antenna's base run
   into the hull (the ninth too; his tenth, 20 October: a toned-back cut of the fins was too
   small, so they are the eighth's shape and size on a level base, and the scan's first turn,
-  the slow one, goes in under a second),
+  the slow one, goes in under a second; his eleventh, the same day: the antenna a little
+  inboard, clear of the fin, and the model is good to go),
   and the acts use the vertical range (the stalk coils ten deep and strikes up, the scan rears
   and sinks, the sighting rears, the probe dips; the head's pitch limits -20 to 15); the
   cornering numbers; the rig test covers it; the hangar's renders (front,
@@ -141,11 +142,14 @@ document's job and every command are in `README.md`.
   lamps lit in the hold, and back; it sits four and a half lower through it, its legs straight
   in their planes), the Nemesis's `raise_meteor` braced (its right foot back and out as the
   machine turns ten to its mark, the waist's sixteen on top; it was the waist alone) and
-  `pace` (a shuffle left, a glare, two right, a glare, one home, fists clenched, the torso
-  turned back to its mark), the Ammit's `circle` (an arc about a point ahead, facing it, the
-  hands two steps to a foot's one, to each side and home, nose down, talons working). The
-  hangar's renders carry a frame of each; the bible's row and its motion table; judging them
-  running is Ryan's, the hips' splay in the sidesteps first.
+  `square_up` (the left foot stamps out wide and back as the machine turns twenty-six on its
+  planted right, fists up, the torso wound further on the waist, the core burning, then the
+  stamp back; a sideways `pace` was built first and looked like dancing to Ryan, so it is
+  gone, git keeps it), the Ammit's `circle` (an arc about a point ahead, facing it, the hands
+  two steps to a foot's one, two moves round to one side and two back, nose down, talons
+  working; one each way through the centre read weaker to Ryan). The hangar's renders carry
+  a frame of each; the bible's row and its motion table. Ryan's reads so far: the Dillo good;
+  the square-up and the circle's second cut his to judge running.
 - 18 October, the funnel-web's engine (`ccr-ffcf75fa-3gkbz9`): the chassis is playable, its
   content's planned marks off; its model landed 19 October (above).
   Vitriol is a foe status with a share tick of its own (`tick_hp_share`: after Burning, on
@@ -359,8 +363,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.215 (20 October, `ccr-ffcf75fa-3gkbz9`:
-  the planted-footwork row and three motion table cells; the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
+  `docs/design-bible.html` after every change. Live: v0.217 (20 October, `ccr-ffcf75fa-3gkbz9`:
+  the planted-footwork row and three motion table cells, Ryan's first reads in them, merged
+  onto another session's v0.216 of the same day (its rows carry the Wake Diffuser's and the
+  Laminar Deflector's calls, Kestrel's gun platform and the leans); the funnel-web's model in its row, four cuts on Ryan's notes and the fourth revised on his
   fifth to tenth, the size row and the motion table, merged onto three other sessions' live
   pages: v0.212 of 20 October, whose rows carry the action economy, the Cassowary, the
   Cottonmouth, the Dingo's Combat Translocator and the Prairie Dog's Flak, all Ryan's calls
