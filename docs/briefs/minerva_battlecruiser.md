@@ -1,11 +1,11 @@
 # Brief: the battlecruiser, Minerva's capital ship (new chassis)
 
 The session designs Minerva's flying brick, its second tier three beside the H-tank
-(`minerva_siege_battery.md`), and the foil Ryan named for Aphelion's Carrier. "The
-battlecruiser" is a working label; the name and the look are Ryan's.
+(`minerva_siege_battery.md`), on its own: Aphelion's Carrier is not related to it (Ryan, 20
+October, below). "The battlecruiser" is a working label; the name and the look are Ryan's.
 
 **Status**: direction (Ryan, 15 October). **Maker**: Minerva. **Proposed tier**: three. **Read
-first**: `docs/briefs/README.md`; `aphelion_carrier.md` (the foil); `minerva_siege_battery.md`;
+first**: `docs/briefs/README.md`; `minerva_siege_battery.md`;
 the bible's rows on cooldowns (section 8), the heat row (section 5), the makers table and the
 size classes (section 7).
 
@@ -45,10 +45,13 @@ size classes (section 7).
   the strong second choice); one big locked gun at a cooldown (smaller and safer); the hold-fire
   brace (sustain).
 
-## The foil
+## The Carrier
 
-The Carrier's verb is open (`aphelion_carrier.md`); the foil reads best if the Carrier's verb is
-sustained where the broadside is burst. Run the two sessions together.
+Ryan, 20 October, in the Aphelion session: "The battlecruiser session should never join this
+one, it's not related at all. Joined by homage, perhaps, but even that is not necessarily locked
+in." The 12 October pairing (the Protoss Carrier as a foil to a Terran Battlecruiser) is a
+possible homage, never a design constraint, so the two sessions run apart and neither is
+designed against the other.
 
 ## Open for the session
 
@@ -59,5 +62,4 @@ sustained where the broadside is burst. Run the two sessions together.
 
 ## What the session hands back
 
-A proposal in chat, with the Carrier's session; on Ryan's go, the bible's rows, content planned,
-and this brief retired.
+A proposal in chat; on Ryan's go, the bible's rows, content planned, and this brief retired.

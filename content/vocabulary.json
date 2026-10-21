@@ -284,7 +284,7 @@
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
-   "codex": "Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or dispels it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes.",
+   "codex": "Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or purges it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes.",
    "status": "implemented",
    "design": {
     "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke. A buff with a cannot-be-removed line, not a kind of its own (Ryan, 18 October: \"no reason to have a billion types of objects\").",
@@ -415,11 +415,11 @@
   {
    "id": "dispel",
    "category": "foe",
-   "name": "Dispel",
-   "codex": "Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card tells of a dispeller, so the choice of front knows.",
+   "name": "Purge",
+   "codex": "Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card warns of a purge among the leaders, so the choice of front knows.",
    "status": "planned",
    "design": {
-    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's."
+    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: \"Use Purge for both, for now\"): one word for both sides, the player's keyword when it lands included; the id stays."
    }
   },
   {
@@ -1556,7 +1556,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or dispel touches it; its damage lands. Until the round's end.",
+   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage lands. Until the round's end.",
    "status": "planned",
    "design": {
     "holes": "",

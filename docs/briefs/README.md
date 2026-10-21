@@ -215,7 +215,7 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 |---|---|---|
 | another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Armadillo (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
 | a second action on one machine, setup then cash | the Armadillo (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act), the siege battery (reload and still act) | act again |
-| spends counted | the line frame's combo (weapons spent), the Cassowary's sixth shot, the Paradox (once a spend) | more spends a round |
+| spends counted | the Cassowary's sixth shot, the Paradox (once a spend); the line frame's combo until it counted every blow (Ryan, 20 October) | more spends a round |
 | a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
 
@@ -239,8 +239,9 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   Cassowary has.
 - **Counters that count blows, not spends** (spends counted). A counter per blow makes
   multi-strike and area pieces its fuel, Wainwright & Sutler's currency, where a counter per
-  spend makes Rapid its fuel. Flak counts blows; the line frame's combo is open (count blows
-  landed, and the Maxigun is a combo piece); the Paradox counts once a spend by decision.
+  spend makes Rapid its fuel. Flak counts blows, and so does the line frame's combo (Ryan, 20
+  October: "Every blow counts"), the Maxigun a combo piece; the Paradox counts once a spend by
+  decision.
 - **Combined entries** (the cantrip). Two effects on one spend: the off-tank's lock (a lure
   that regens itself), the Afterburner (damage and vent all), the harpoon (damage and Shock),
   the Flakshot. The stock pass's cantrips can be combined entries rather than Rapid ones: a
@@ -292,7 +293,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
-| `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
+| `minerva_battlecruiser.md` | direction | Minerva | 3 | the cooldown property |
 | `kestrel_strafer.md` | decided; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal |
 | `kestrel_shield_spender.md` | direction; three kits proposed 18 October, the off-tank package on Ryan's word 19 October | Kestrel | 1 | Ryan's call on the package; its runner row on the shield rule's engine |
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
@@ -307,10 +308,10 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | Flak's engine (the to-do) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 (1 in content until its piece's engine) | its engine (the to-do); its stock with the stock pass |
-| `aphelion_line_frame.md` | direction | Aphelion | 1 | nothing |
-| `aphelion_jellyfish.md` | direction | Aphelion | 2 | the foes' fresh start (foes with several moves) |
-| `aphelion_carrier.md` | proposal, open | Aphelion | 3 | the battlecruiser's session (the foil) |
-| `aphelion_baboon.md` | rework | Aphelion | 2 (now 1) | the stock pass |
+| `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
+| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
+| `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
+| `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls; the stock pass |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
 | `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
@@ -354,7 +355,7 @@ in its brief; the full rounds are in git (above).
   round). Holes for its brief: delay alone is tempo and the fight's last blow, so it pairs with
   burst; a redirect onto a chosen ally is an interpose by proxy, which the redirection row
   allows on a locked piece only; our countdown chip on their foe must read as ours; it parts
-  from the jellyfish by pattern (the jellyfish changes the move and dispels; this moves the blow
+  from the jellyfish by pattern (the jellyfish changes the move and purges; this moves the blow
   in time and target).
 - The burrow, grown on the spider and moved here (Claude, 17 October; Ryan: "hilarious", and
   "is this actually a broken ability, shuffling all intents away?"): equipment on itself,
@@ -416,8 +417,8 @@ overrule)
    the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
    landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
-2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the
-   stock pass.
+2. In pairs: the Baboon with the stock pass. The battlecruiser and the Carrier run apart (Ryan,
+   20 October: "not related at all").
 3. After the stock pass: the gunship; the multi-rotor landed on 21 October as the Swallowtail, the
    boiler on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.
