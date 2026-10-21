@@ -21,7 +21,7 @@ The rest of the proposal (12 and 13 October; Claude's unless marked Ryan's):
   stays one sentence and the codex says so in a line. The Sutler's Manifest is the passive's
   working name. The word "die" in shown text waits on another session (Ryan, 13 October: the
   dice look like no dice, the problem that kept "face" out of shown text).
-- **What it opens**: a loadout built for the team: flat guns for the Sparrowhawk's double
+- **What it opens**: a loadout built for the team: flat guns for the Kite's double
   damage, hull-biting kit for the Nemesis's rage, stack appliers for the Stingray, shields for
   the Puffin, status pieces for the Baboon. A sutler supplied an army in the field: the maker's
   own name, in the air. It supplies and never launches, which leaves launching to Aphelion's
@@ -80,7 +80,7 @@ used, WHO gets their turn consumed?"
 
 Claude: the rotor's. A die is spent once a round either way. The ally spends two dice, its own
 and the rotor's, and its own is untouched; the rotor spends none. The ally pays the lent
-entry's heat and any bite, so a Sparrowhawk spending a lent flat gun doubles its own heat, the
+entry's heat and any bite, so a Kite spending a lent flat gun doubles its own heat, the
 natural brake. A lent Rapid entry gives that ally a further lent spend. Each round the rotor
 picks one spender for its one entry. Ryan's simplification holds: from one angle it gives an
 ally two turns in a round, one of them not on its own die.

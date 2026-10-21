@@ -170,7 +170,7 @@ Every number a placeholder; the name and the look Ryan's.
   Vacillator 5 becomes 45, the Maxigun 22 becomes 142), which is "the unit that makes the
   weaker Rapid pieces effective"; whole stacks multiply the biggest single gun (a Railgun 250)
   and break unless heat is paid a use, and then a cold gun four times is still free, the
-  Sparrowhawk's old abuse again; half-strikes sit between, bounded at (n + 2) over 2, paying
+  Kite's old abuse again; half-strikes sit between, bounded at (n + 2) over 2, paying
   the foe's armour on every strike (the Maxigun 8 into plate) and laying riders on every
   strike (Burn, Flak, Vitriol), the tunable form of the big brother if Ryan wants it literally,
   and a cousin of the strafer's passive by design. Claude's lean stays growth, for the pieces it
@@ -193,7 +193,7 @@ Every number a placeholder; the name and the look Ryan's.
   act again). Exploit-shaped: the siege battery (a Rapid vent a free reload, flagged), the
   multi-rotor (a lent Rapid entry a further lent spend). Makers of Rapid rather than chasers:
   the Zoids walker (a kill makes the spend Rapid), the interceptor's passive, the Cassowary's
-  Spin-Up. No interest: the strafer, the shield-spender, the Sparrowhawk, the Goshawk, the
+  Spin-Up. No interest: the strafer, the shield-spender, the Kite, the Buzzard, the
   Badger, the Boar, the Nemesis (it rolls again on rage instead), the Ammit, the Stingray, the
   Baboon, the Clydesdale (free rerolls instead), the Dingo, the funnel-web, the Cottonmouth's
   guns otherwise, Misharu, the Onryō, Mastema, Minos, the jellyfish, the Carrier, the
@@ -234,7 +234,7 @@ platform's alone too, and a piece one machine wants is a lock or nothing: the th
 shield is its lock, the vent is nothing); and the own reroll as the passive's clause (its
 floor), with a Kestrel reroll module (one free reroll of this die a round, its stat line paid)
 as its second and the chase, per the row's own-rerolls-as-a-number home, which also serves the
-Sparrowhawk's fishing and the Armadillo's. The stock holes the review names for it: the
+Kite's fishing and the Armadillo's. The stock holes the review names for it: the
 Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
 
 ## The sixth round (20 October): the capital
@@ -272,7 +272,7 @@ Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
   pieces' rolls still grow it, a third chase. Bench, one line each: the fleet's heat sink
   (allies' heat flows to it and its entries grow by 10 per 10 heat it takes, Kestrel's heat
   as the banked resource; set aside because it drops Ryan's roll-based shape and overlaps
-  the Goshawk's and the Afterburner's heat-into-something); the self-bank (held rerolls grow
+  the Buzzard's and the Afterburner's heat-into-something); the self-bank (held rerolls grow
   the capital next round rather than banking for the team: a bigger gun, not an economy); the
   gift (the team gains a reroll a round while it stands: free, the free extra shots Ryan
   refused in another coat); growth on every team die's roll (the team rerolls together
@@ -306,7 +306,7 @@ Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
   own die is plain (big ordinary guns on an assault frame); a fleet that moves at 20, since
   the four move as one and a capital grounds the jets, the irony's real cost; the conversion
   at the whole budget, so a team that needs its rerolls for its dice (the Clydesdale's d9,
-  the Sparrowhawk fishing on a d3, the Cassowary's steps) gets little and a team of reliable
+  the Kite fishing on a d3, the Cassowary's steps) gets little and a team of reliable
   dice gets most, which is a composition read and not a must-pick; the bank's cap. The
   runner's guard is pick share across compositions, the row on must-picks. Bench, one line
   each: growth per roll (Ryan: enough growers; the fifth and sixth rounds keep its arithmetic);
@@ -349,7 +349,7 @@ Its own guns are ordinary: the capital's work is the economy, not the blow.
 
 **The round as played.** Roll. The dice are fine: hold the rerolls and bank them; the
 capital fires a gun. A jet's die is bad: the launch on it, or a reroll. The round that
-matters: three banked and three fresh, six rerolls; fix three dice and buy the Sparrowhawk a
+matters: three banked and three fresh, six rerolls; fix three dice and buy the Kite a
 second chain, or buy two actions and fix nothing. The flare when it shows: cool and brew a
 reroll for the bank. The decision each round: looks or an action, now or later.
 
@@ -384,7 +384,7 @@ pace with it.
 ## Holes already raised
 
 - A bought action is the ally's die again by Rapid's path, so it never lands on the entry
-  just spent; a Sparrowhawk bought a second action after a kill chain fires a stock gun, not
+  just spent; a Kite bought a second action after a kill chain fires a stock gun, not
   its reset gun again. The Paradox counts a bought action's statuses like any spend.
 - A team that fishes with its rerolls (the Clydesdale's d9, a d3) gets little from the bank;
   the runner reads it across compositions, which is the ubiquity guard.

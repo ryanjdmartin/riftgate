@@ -81,7 +81,7 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   over a hurt foe shows a sure kill); the mine is the killing shot as fired (its number after
   the firer's modifiers, its strikes and its keywords) in the target's slot only, so Spread's
   other kills and Chain's later links leave none. Where it is strong: it copies the team's best
-  killer onto the arrival (a Sparrowhawk's doubled Railgun leaves 100 waiting, and the next foe
+  killer onto the arrival (a Kite's doubled Railgun leaves 100 waiting, and the next foe
   into that slot dies before it acts); its limits are one entry of the bomber's five, Rapid's
   once a round, a kill, and a foe waiting for that rank; the levers if it proves busted: self
   only, the mine at half the shot, a longer cooldown. With nothing waiting the buff does
@@ -170,7 +170,7 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   so a pull with damage lays its shot there and gathers the rest into it, one rule and no
   exception; a pull of no damage gathers alone, and one with nothing laid is the dead spend
   Ryan allows. The mark's Rapid: as a full action a mark costs the spend a laid mine would, for
-  a mine a teammate's kill has to lay (a bigger shot, a Sparrowhawk's doubled Railgun say, and
+  a mine a teammate's kill has to lay (a bigger shot, a Kite's doubled Railgun say, and
   no empty slot needed in advance, but a gamble on the kill), so alone it rarely beats laying
   one; Rapid with a cooldown of 1, as Ryan first wrote it, is what makes it worth carrying, a
   free mark every other round paid for by the die's free reroll, and the pull is the rider
@@ -194,10 +194,10 @@ The design as decided on 15 to 17 October, written out whole with the two leans 
 yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the shape.
 
 - **Shape.** Kestrel, tier three, a medium flyer on big boosters, move 40: Kestrel's biggest
-  frame, the Goshawk's class, since the makers table builds "nothing big". Hull 90, shield 60,
+  frame, the Buzzard's class, since the makers table builds "nothing big". Hull 90, shield 60,
   field recharge 25, heat maximum 80, cooling 5, armour 0; four hardpoints beside the two
   locks, a d6; two module slots. Tier three is a lower floor and a higher ceiling, never more
-  power (the tiers row), so its numbers sit at the Goshawk's.
+  power (the tiers row), so its numbers sit at the Buzzard's.
 - **The passive**, as the codex would print it: its weapons may be spent on an empty slot in
   the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
   a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
@@ -285,7 +285,7 @@ by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pas
 ship is the gun platform since 20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
 maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
 tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
-the Goshawk's.
+the Buzzard's.
 
 **The passive**, as the codex would print it: its weapons may be spent on an empty slot in
 the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or

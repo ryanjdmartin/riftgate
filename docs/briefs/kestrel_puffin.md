@@ -56,12 +56,12 @@ is the lever, and 30 plus the heat the lever if the floor on a cold ally proves 
   wall; it stays one ally a round and fades at the round's end.
 - **Why it is less boring.** The number moves every round with the gauges and the order of
   spends is part of the play; the heat forecast on the die is the shield forecast.
-- **Why it is Kestrel.** Heat as a resource converted for others (the Goshawk converts its own
+- **Why it is Kestrel.** Heat as a resource converted for others (the Buzzard converts its own
   at the round's start; the Puffin converts an ally's at the spend: the shapes differ, Ryan's
-  rule), risk rewarded. The wart dissolves: the Goshawk at 60 heat is shielded for 60 past its
+  rule), risk rewarded. The wart dissolves: the Buzzard at 60 heat is shielded for 60 past its
   maximum and sheds 10, losing 5 of regen for the round.
-- **Pairs.** The Sparrowhawk after a chain (30 heat, a shield of 30 on 30 hull); the
-  interceptor's two spends; the Goshawk; the capital's rolls do not heat it. The off-tank is
+- **Pairs.** The Kite after a chain (30 heat, a shield of 30 on 30 hull); the
+  interceptor's two spends; the Buzzard; the capital's rolls do not heat it. The off-tank is
   cold by design, so its magazine is the Puffin's stock shield, not the Ionizer. The Peak's
   Scorched and Burning heat the allies, so the Puffin's bubble grows in the one domain that
   presses heat: the escort's domain.
@@ -81,7 +81,7 @@ is the lever, and 30 plus the heat the lever if the floor on a cold ally proves 
   the old passive: it was the toxic half, and it fought the heat the new passive rewards (an
   ally shielded for its heat wants to keep it). Cooling becomes a stock choice, the vent that
   shields (the Diffuser: vent 10, shield 10 and the ally's heat through the passive, and it
-  sheds 10). So the Goshawk wart is gone entirely, and the Puffin cools nobody by rule.
+  sheds 10). So the Buzzard wart is gone entirely, and the Puffin cools nobody by rule.
 
 **The design as it stands (the second round).** Its numbers are one for one at today's heat;
 the third round, below, re-reads them as a ratio with the base cut.
@@ -106,7 +106,7 @@ the third round, below, re-reads them as a ratio with the base cut.
 | V | a small gun | when nobody needs anything |
 
 **The arithmetic.** An ally at 20, 40, 60 or 80 heat is shielded for 20, 40, 60 or 80 past its
-maximum and sheds 10; a Sparrowhawk after a two-kill chain (30 heat) gets 30; a Goshawk riding
+maximum and sheds 10; a Kite after a two-kill chain (30 heat) gets 30; a Buzzard riding
 at 60 gets 60; an off-tank at 0 gets nothing from the lock. Against today's 30 flat the hot
 allies gain and the cold ones lose, which is the point.
 
@@ -121,8 +121,8 @@ heat; the bot valuing heat as shield in hand; synthetic passives in the tests. S
   heat might be able to get away with 1-10 or 1-20 in the stock pass. What do you think?"
 - Claude, 20 October: right on the size, and the fix is his as well.
 
-**The size, at today's scale and one for one.** The Ionizer on the Goshawk at its maximum of
-100 heat is 130 past a shield maximum of 50; at 60 heat, 90; a Sparrowhawk after a chain, 60;
+**The size, at today's scale and one for one.** The Ionizer on the Buzzard at its maximum of
+100 heat is 130 past a shield maximum of 50; at 60 heat, 90; a Kite after a chain, 60;
 a jet at 40, 70. The hot ally is the usual ally on a Kestrel team, so that is the shield-bot
 by another road. Today's flat 30 is the ceiling the hot ally should come back under, not pass.
 
@@ -133,7 +133,7 @@ to 20); 1–10 does not (5 and 10 fall on one step), so 1–10 is a re-pricing o
 1–20 a rescale. A rescale alone changes no play (the guns, the vents, the cooling and the
 overheat come down together); what it changes is the read, heat in ones on a phone while hull
 and shield stay at tens (the content's numbers are placeholders at tens, magnitudes not
-steps), and every converter that crosses the axes: the Goshawk's 5 shield a 10 heat, the
+steps), and every converter that crosses the axes: the Buzzard's 5 shield a 10 heat, the
 Afterburner's +10 a 10, Scorched's +5, and this passive. Each is a ratio the stock pass
 re-reads anyway (the to-do: heat re-priced so that it bites), and the honest shield row pulls
 the other way on the same pass (shields may want raising), so the ratio is set once there with
@@ -143,7 +143,7 @@ ratio so it need not wait.
 **The passive as a ratio.** One for one at the pass's heat, a fifth of today's heat until
 then; the base cut. The Ionizer's bubble, past the ally's maximum:
 
-| Base, ratio | Goshawk at 100 heat (20) | at 60 (12) | Sparrowhawk at 30 (6) | a jet at 40 (8) | a cold ally |
+| Base, ratio | Buzzard at 100 heat (20) | at 60 (12) | Kite at 30 (6) | a jet at 40 (8) | a cold ally |
 |---|---|---|---|---|---|
 | 30, one for one at today's heat (the second round) | 130 | 90 | 60 | 70 | 30 |
 | 10, one for one at 1–20 (a fifth today): the lean | 30 | 22 | 16 | 18 | 10 |

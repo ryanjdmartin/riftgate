@@ -46,10 +46,10 @@ document's job and every command are in `README.md`.
   plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a
   whole, heavy proposed and the capital ship; two briefs of their own,
   `kestrel_gun_platform.md` (the capstone, Ryan's shape: every roll of its die grows its
-  entries, lock or ride) and `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat,
-  dark two rounds, a locked reset gun whose kill brings every weapon back; hull 30 decided);
-  the interceptor (its first weapon each round Rapid) in the README's tiers table, no brief
-  yet; Ryan's leans recorded (overlap is fine if the shapes differ, rerolls Kestrel's, a second
+  entries, lock or ride) and `kestrel_kite.md` (to tier two: a d3, doubled, flat heat, dark two
+  rounds, a locked reset gun whose kill brings every weapon back; hull 30 decided); the
+  interceptor (its first weapon each round Rapid) in the README's tiers table, no brief yet;
+  Ryan's leans recorded (overlap is fine if the shapes differ, rerolls Kestrel's, a second
   tier-one lure so the Armadillo is no must-pick, Aphelion to need a defensive tier one, the
   mode-shifter to Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's
   direction goes to main before anything else does any work) and kept open for the Kestrel line
@@ -67,11 +67,11 @@ document's job and every command are in `README.md`.
   review in `docs/briefs/kestrel_line.md` (each of the eight machines read under the direction,
   the overlap map, the stock holes by kind, the two free slots, the stale records), a brief for
   the interceptor (`kestrel_interceptor.md`: the dive as its lock, the caster-killer niche
-  moved there from the Sparrowhawk's rework) and a round in each Kestrel brief (the bomber's
-  mark gated and Chain in mines; the Goshawk's cold stock; the Puffin's Diffuser as a combined
+  moved there from the Kite's rework) and a round in each Kestrel brief (the bomber's mark
+  gated and Chain in mines; the Buzzard's cold stock; the Puffin's Diffuser as a combined
   entry; the platform's settlements). Then, on Ryan's word (the review read as bullets, the
   stock pieces placeholders until the stock pass), every Kestrel kit written out whole in its
-  brief, "The kit, written out", the stock by kind (the Goshawk's and the Puffin's in the line
+  brief, "The kit, written out", the stock by kind (the Buzzard's and the Puffin's in the line
   brief). The eleventh round (20 October), Ryan's reading of the kits: landed on his go, the
   Wake Diffuser's Rapid off (a vent that shields; its shield half with the combined entry's
   engine, the to-do; tests green) and his rule that a Rapid vent or shield is never below tier
@@ -127,8 +127,12 @@ document's job and every command are in `README.md`.
   debuff kind, Expose, Exposed and Direct's clause; its brief decided and kept until the
   content session lands it (the to-do's lines). The strafer's go (21 October): the Butcherbird,
   a swing-wing (the bible's Kestrel row, live v0.225; its brief, the README, the to-do's
-  content-session line). The others wait on his calls, in order: the off-tank, the Puffin, the
-  Sparrowhawk, the capital, the bomber. On the branch, not on main.
+  content-session line). The two names' pass closed (Ryan, 21 October): the Sparrowhawk is the
+  Kite and the Goshawk the Buzzard, the ids kept (content's shown names and notes, every
+  record's mentions, the bible's names row and chassis table, live v0.226; the brief file
+  `kestrel_kite.md`; 485 tests green; the hangar page's republish owed to the next content
+  session). The others wait on his calls, in order: the off-tank, the Puffin, the Kite's
+  rework, the capital, the bomber. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -289,7 +293,7 @@ document's job and every command are in `README.md`.
   together win 92%.
 - `docs/balance.md` at 200 seeds: every team row keeps its 9 October band; alone the machines
   move a few points, the Nemesis most (greedy 61 to 76); the cells that moved follow the rules
-  (the Peak open to nearly everyone and closed to the Goshawk, the bosses harder for the heavy
+  (the Peak open to nearly everyone and closed to the Buzzard, the bosses harder for the heavy
   machines, the Marsh's formation a decision for the Armadillo and a wall for the Boar); flat
   weapons pay about twice the heat per point that rolled ones do. The bands of both are in
   `docs/measurements.md`.
@@ -308,7 +312,7 @@ document's job and every command are in `README.md`.
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
   Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
-  on the Sparrowhawk, the Baboon free to stock a shield, every tier-one chassis on basics beside
+  on the Kite, the Baboon free to stock a shield, every tier-one chassis on basics beside
   its locked piece, each component's tier in its entry and every chassis stocking only below
   its own tier (the Arsenal's tier-one components exist for its tier twos to stock), a bought
   chassis bringing copies of its stock and never the blueprints, heat re-priced by niche so
@@ -413,7 +417,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.225 (21 October: the interceptor's and the strafer's goes, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.226 (21 October: the interceptor's and the strafer's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

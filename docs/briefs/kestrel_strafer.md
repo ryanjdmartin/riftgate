@@ -13,7 +13,7 @@ bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` sec
 
 ## The design as decided
 
-Every weapon it fires strikes twice at half: the Sparrowhawk's bargain in count instead of
+Every weapon it fires strikes twice at half: the Kite's bargain in count instead of
 magnitude. Each strike loses the foe's armour, so it slaughters trash and bounces off a Golem:
 a detachment the map can read ("send it at the goblins, not the knights"). Riders per blow love
 it (a burn per strike lays more stacks than one blow would). It is Kestrel's second tier one,
@@ -34,7 +34,7 @@ strafer in its place (14 October). The raider returns as its own direction
   count whole on every strike, so everything counted per blow counts twice, the armour it
   loses included (Slay the Spire's Strength on a multi-hit card). Per strike: Burn a stack a
   strike (a gain on strikes of 10 or less), Primed doubled, Suppress two tries through Numbed,
-  Shock spent by the first strike at half (the Sparrowhawk's opposite), Paradox once a spend
+  Shock spent by the first strike at half (the Kite's opposite), Paradox once a spend
   as now, Spread and Penetrate on every strike, a multi-strike piece's strikes doubled (the
   Maxigun's three to six). The die shows "8 ×2" with the Maxigun's mark, and dragged over a
   foe the number a strike deals with its armour off. With basics alone the passive gains
@@ -104,7 +104,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   as the passives part them on the die, where two light flyers at 50 read the same.
   Hull 70, shield 60, field recharge 30 (fight a small pack, fly off, two map turns refill
   it), heat maximum 60, cooling 5, armour 0; three hardpoints beside the lock, a d4, the
-  Sparrowhawk's size once the Pinion Driver locks; two module slots. The Sparrowhawk's
+  Kite's size once the Pinion Driver locks; two module slots. The Kite's
   register with ten more hull, since it fights small packs alone.
 - **The passive**, as the codex would print it: every weapon it fires strikes twice at half.
   What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
@@ -249,15 +249,15 @@ reach; each tested with synthetic passives.
   repeatedly?" And, of the Merlin: "Merlin is also battletech."
 - Claude's lean: the swing-wing, the strafing jet by trade (wings spread to loiter, swept for
   the run), its strike act the passive in motion (the wings sweep as it fires twice); it parts
-  this machine from the Sparrowhawk by silhouette, which the hovercraft question was for, so
+  this machine from the Kite by silhouette, which the hovercraft question was for, so
   that question closes either way (both flyers at 50). The exposed-rotor gunship is the other
   classic strafer, sent to Aphelion on 20 October, and still a flyer. Names, birds that strike
   fast and repeatedly: the Shrike (the butcher-bird, strikes and impales again and again; a
-  minor BattleTech name, judged as the Goshawk and the Sparrowhawk were, both BattleTech
+  minor BattleTech name, judged as the Buzzard and the Kite were, both BattleTech
   names too and neither iconic), the Butcherbird (the same family, no collision), the Skua
   (harries other birds until they drop what they carry; clean), the Hobby (the fastest small
   falcon, hawking in passes), the Harrier (too on the nose), the Merlin (BattleTech, Ryan).
-  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Sparrowhawk is a
+  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Kite is a
   battletech aircraft, and goshawk a nickname of an obscure reference, so that's mostly why
   they get a pass." Decided: the Butcherbird, a swing-wing; the numbers with the content
   session.
@@ -271,12 +271,12 @@ reach; each tested with synthetic passives.
   with basics alone. Section 12's scales question (our armour of 2 or 3 first, then the foes')
   decides whether a halved basic bites or bounces on plate, and the stock pass's basic numbers
   too; until one moves, its flat buffs are the way through plate (the table above).
-- Two light flyers at 50 (the Sparrowhawk and this) read the same on the map though not on the
+- Two light flyers at 50 (the Kite and this) read the same on the map though not on the
   die; a hovercraft silhouette would part them there too (Claude, 18 October; Ryan's call).
 - Riders double: Burn lays a stack per 10 of a blow, rounded up, so two half blows can lay more
   than one whole blow; Spread and Penetrate fire per strike. The arithmetic per strike is in
   the session above.
-- Beside the Sparrowhawk, both Kestrel tier ones change every weapon; they part on magnitude
+- Beside the Kite, both Kestrel tier ones change every weapon; they part on magnitude
   against count.
 - The review (Claude, 16 October) found the engine applying Suppress per strike, so a Suppress
   piece on it tried twice a spend, and a landed first strike's second try mostly added Numbed

@@ -9,7 +9,7 @@ Claude's proposal for him to move; each chassis's improvement lives in its own b
 only pointed at from here (the interceptor got a brief of its own, `kestrel_interceptor.md`).
 Ryan, 20 October, on reading it: the kits written out whole, not as bullet points, and the
 stock by kind, since most stock pieces are placeholders until the stock pass; so every brief
-now carries "The kit, written out" (the Goshawk's and the Puffin's below), its stock by kind
+now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
 **Status**: proposal (Claude, 20 October). **Maker**: Kestrel. **Read first**:
@@ -30,17 +30,17 @@ burst, a delayed action, a combined entry, own rerolls).
 | one | the strafer, the Butcherbird (its go 21 October; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
-| two | the Goshawk (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
+| two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
-| two | the Sparrowhawk (rework; `kestrel_sparrowhawk.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
+| two | the Kite (rework; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber (decided; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital (proposal, its third form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
 Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
-line as it stands reads otherwise: Kestrel's currencies are heat as a resource (the Goshawk
-banks it, the Afterburner and the Sparrowhawk spend it, the off-tank burns shield in its
-place), the die as a gamble (the platform's growth, the Sparrowhawk's d3, the strafer's
+line as it stands reads otherwise: Kestrel's currencies are heat as a resource (the Buzzard
+banks it, the Afterburner and the Kite spend it, the off-tank burns shield in its
+place), the die as a gamble (the platform's growth, the Kite's d3, the strafer's
 spray), rerolls (Ryan, 19 October: Kestrel's), strikes (the strafer) and speed on the map
 (move 50, field recharge 30: the detachment). Rapid is its gated cantrip, not its spine.
 Ryan, 20 October: "the maker didn't really have an identity before other than the look, and
@@ -50,12 +50,12 @@ Ammit's talons and the Reliquary are the Arsenal's). Three of the eight hover (t
 off-tank, the capital) and five fly; the capital hovers from irony (Ryan, 20 October).
 
 **The overlap map**, each pair parted by its shape (Ryan's rule of 18 October): the strafer
-and the Sparrowhawk, count against magnitude; the strafer and the platform, strikes doubled
-by a passive against strikes grown by rolls; the off-tank and the Goshawk, shield burnt for
-damage and plate against heat banked for shield; the interceptor and the Sparrowhawk, a
+and the Kite, count against magnitude; the strafer and the platform, strikes doubled
+by a passive against strikes grown by rolls; the off-tank and the Buzzard, shield burnt for
+damage and plate against heat banked for shield; the interceptor and the Kite, a
 second spend every round against a chain on a kill; the interceptor and the Puffin, its own
 second spend against a vent that gives an ally its turn; the bomber and the platform, the
-slots against the rolls; the Goshawk and the Sparrowhawk, hot sustain against hot burst.
+slots against the rolls; the Buzzard and the Kite, hot sustain against hot burst.
 
 **The tender.** Three tier ones (a hitter of volume, a body, a tempo hitter), so Kestrel's
 deal varies by seed and the off-tank holds a front, Ryan's reason of 19 October (a tier-one
@@ -63,7 +63,7 @@ body from more than one maker).
 
 **The data** (13 October, the old line): the Kestrel team loses the Meadow formation (39
 percent greedy, 83 percent of its hull), the Marsh (7) and bleeds on the Peak (72, at 72
-percent of its hull): no body. The Goshawk alone wins only the fights a hitter wins (1 percent
+percent of its hull): no body. The Buzzard alone wins only the fights a hitter wins (1 percent
 against the goblins, 14 against the gels, 41 against the needlers), the weakest of the
 hitters, which the review reads as its stock's verdict (below), not its passive's.
 
@@ -100,11 +100,11 @@ One pointer each; the proposal is in the brief named.
   reach frame carrying a number (a gun) or the status mark (a debuff), the mark alone a buff.
   The seventh (21 October): Exposed lasts two rounds and a second Expose refreshes it (Ryan);
   the aims' shown words to be rewritten plainly (Ryan: cryptic). `kestrel_interceptor.md`.
-- **The Goshawk** stands; its stock is cold for a heat machine (its hottest stocked gun pays
+- **The Buzzard** stands; its stock is cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its
-  stock (off the Sparrowhawk's, as the pass already plans), a mid-heat Kestrel gun (below),
-  the Pinion Driver out (a blueprint, the Sparrowhawk's rework); its niche word in content
+  stock (off the Kite's, as the pass already plans), a mid-heat Kestrel gun (below),
+  the Pinion Driver out (a blueprint, the Kite's rework); its niche word in content
   ("Ramping damage") rewritten to the sustain it is (flagged 18 October). Its thinness as a
   partner (no state given, none needed) is accepted: the Kestrel that stays.
 - **The Puffin**: Ryan worries it is toxic and boring (20 October) and wants it more Kestrel;
@@ -118,13 +118,13 @@ One pointer each; the proposal is in the brief named.
   on Ryan's size worry: the Ionizer's base cut (10 the lean) and the growth one for one at the
   stock pass's heat scale of 1–20 (a fifth of today's heat until then), no cap; heat at 1–20
   backed as the pass's direction, 1–10 read as a re-pricing.
-- **The Sparrowhawk** stands as its brief left it; the direction reads its chain as a
+- **The Kite** stands as its brief left it; the direction reads its chain as a
   cooldown burst gated by a kill, the row's own shape. The caster-killer niche (its open item
-  2) goes to the interceptor's designator if Ryan takes it; the Sparrowhawk is the trash chain and
+  2) goes to the interceptor's designator if Ryan takes it; the Kite is the trash chain and
   the steady doubled gun. Its cold hard hitters are other makers' by design (no Kestrel hole).
   The records it moves on its go: the to-do's stock pass line (the Pinion Driver fixed on the
-  Sparrowhawk, the Goshawk's hardpoint a basic) and the bible's stock-pass row.
-  `kestrel_sparrowhawk.md`, the line review.
+  Kite, the Buzzard's hardpoint a basic) and the bible's stock-pass row.
+  `kestrel_kite.md`, the line review.
 - **The bomber** stands. Two items: the mark's "Rapid, cooldown 1" is the switch-off, the
   ungated form the row re-prices (and the brief's "a free mark every other round" misreads
   the cooldown), so a gate is proposed: Rapid while a mine waits on the field, a setup gate
@@ -140,13 +140,13 @@ One pointer each; the proposal is in the brief named.
   brews the team a reroll; four hardpoints, assault, the ekranoplan. Settled here: no
   multi-strike vent in the pool. `kestrel_gun_platform.md`.
 
-## The Goshawk's and the Puffin's kits, as the stock pass would leave them
+## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 
 The two built Kestrels have no brief; their kits are here, the passives and fixed pieces as
 built and the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the
 stock pass, so a piece is named only where it fits as it is).
 
-**The Goshawk.** Tier two, a medium flyer at move 40. Hull 100, shield 50, field recharge 25,
+**The Buzzard.** Tier two, a medium flyer at move 40. Hull 100, shield 50, field recharge 25,
 heat maximum 100, cooling 5, armour 0; five hardpoints beside the fixed Afterburner Cannon, a
 d6; two module slots. The passive, the Thermal Recoupler, as built: at the start of its turn
 it regains 5 shield for every 10 heat it carries. The fixed piece, the Afterburner Cannon, as
@@ -192,8 +192,8 @@ Overshield (past the ally's maximum; the excess fades at the round's end).
 The round as played: the Ionizer on the machine the intents name; the Coil on the hitter
 before it fires; the vent-that-shields on the hot one; a gun otherwise. It wants shields of
 every maker (each a vent through its passive) and hot allies; it gives the off-tank its
-magazine, the Sparrowhawk's 30 hull an overshield and its chain's heat vented, the
-interceptor's two spends cooled, the strafer's doubled Coil, and the Goshawk a vent it does
+magazine, the Kite's 30 hull an overshield and its chain's heat vented, the
+interceptor's two spends cooled, the strafer's doubled Coil, and the Buzzard a vent it does
 not want (one pair of seven). Alone it loses, by design. The engine fires its passive once a
 spend, whatever a shield's strikes.
 
@@ -206,27 +206,27 @@ note calls temporary) and nothing between it and the Carbine's 5. What the eight
 that the pool does not give:
 
 1. **A Kestrel multi-strike gun**, tier one or two: flat and hot, 5 ×4 at heat 15, a rotary
-   cannon on a jet (the Goshawk's inspiration carries one). The strafer's (×8 under its
+   cannon on a jet (the Buzzard's inspiration carries one). The strafer's (×8 under its
    passive), the platform's payoff (growth on every strike), Flak's partner. Parted from the
    Maxigun (rolled, cool, three strikes). The to-do's stock pass already names multi-strike as
    the blow currency; this is Kestrel's one.
 2. **A mid-heat Kestrel gun**, tier one: flat 25, heat 20, Direct: the step between the
    Carbine and the Railgun. The off-tank's middle burn (20 shield for 20 more and a zap of 20),
-   the Goshawk's regen fuel, the Sparrowhawk's doubled 50 at 30 heat.
+   the Buzzard's regen fuel, the Kite's doubled 50 at 30 heat.
 3. **A Kestrel reroll module**, tier two: one free reroll of this die a round, its stat line
    paid (heat maximum −20, or shield −20), per the row (own rerolls as a number, priced so no
-   module is the universal pick). The platform's second roll, the Sparrowhawk's fishing for
+   module is the universal pick). The platform's second roll, the Kite's fishing for
    its live lock, the Armadillo's for its seal or lure.
 4. **The Wake Diffuser**, landed 20 October on Ryan's go: a vent of 10 that shields 10, no
    Rapid (the shield half with the combined entry's engine, the to-do). **The Laminar
    Deflector** keeps its Rapid as a tier-two blueprint (Ryan, 20 October: a Rapid shield is
    never below tier two, "not nearly as toxic as rapid vent", where a Rapid vent is never
    below tier three), so the stock pass takes it out of the tier-one and tier-two stocks (the
-   Sparrowhawk's, the Goshawk's, the Puffin's, the Prairie Dog's) and it is found; a Kestrel
+   Kite's, the Buzzard's, the Puffin's, the Prairie Dog's) and it is found; a Kestrel
    twist in its place was Claude's lean for the tier-three case and is withdrawn.
-5. **A big hot flat gun kept in the pool** for the off-tank's and the Goshawk's builds (the
+5. **A big hot flat gun kept in the pool** for the off-tank's and the Buzzard's builds (the
    Overclocked Railgun, if the pass keeps it: temporary by its note since 26 September), in the
-   Goshawk's stock rather than the Sparrowhawk's.
+   Buzzard's stock rather than the Kite's.
 6. **Chain in mines**, a rule change, so the Arc Fault Cannon is a bomb (the bomber's brief).
 7. **Seven locked pieces to name**: the spray, the lure that regens itself, the dive, the reset
    gun, the three-strike shield, the pull and the mark.
@@ -234,7 +234,7 @@ that the pool does not give:
    artillery makers' is free) and no Kestrel rolled gun (the Muzzle Velocity Booster serves
    other makers' rolled guns on Kestrel frames, the cross-maker pull); no Kestrel plain shield
    (the basic shield is shared; Overshield is the Puffin's); no Kestrel cold hard hitter (the
-   Sparrowhawk's pull of Minerva's and Wainwright & Sutler's kinetics is its design).
+   Kite's pull of Minerva's and Wainwright & Sutler's kinetics is its design).
 
 ## The two free slots
 
@@ -255,14 +255,14 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 ## Records the review found stale or waiting on a go
 
 - The leans row's Kestrel line: rewritten 20 October on Ryan's word.
-- The Goshawk's niche word in content ("Ramping damage"; its notes already say damage scaling
+- The Buzzard's niche word in content ("Ramping damage"; its notes already say damage scaling
   was dropped).
 - The to-do's stock pass line and the bible's stock-pass row lock the Pinion Driver on the
-  Sparrowhawk and give the Goshawk's hardpoint a basic; the Sparrowhawk's rework supersedes
+  Kite and give the Buzzard's hardpoint a basic; the Kite's rework supersedes
   both on its go (the reset gun its lock, the Driver a tier-two or tier-three blueprint, the
-  Sparrowhawk at tier two stocking tier-one pieces).
+  Kite at tier two stocking tier-one pieces).
 - The tiers row's "every tier-one chassis has a locked piece once the Pinion Driver locks on
-  the Sparrowhawk": the three new tier ones each carry one (the spray, the lure, the dive).
+  the Kite": the three new tier ones each carry one (the spray, the lure, the dive).
 - The bomber brief's "a free mark every other round" (cooldown 1 is the switch-off).
 - The makers table's "nothing big" takes two exceptions, the bomber heavy and the platform
   heavy or assault, a Lean bending as Leans do.
@@ -270,7 +270,7 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 ## Open for Ryan
 
 1. The per-chassis proposals in their briefs: the interceptor's dive, the bomber's gate and
-   Chain in mines, the Goshawk's stock, the Puffin's Diffuser, the platform's settlements.
+   Chain in mines, the Buzzard's stock, the Puffin's Diffuser, the platform's settlements.
 2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
 3. The leans row's Kestrel line.

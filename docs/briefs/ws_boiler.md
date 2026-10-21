@@ -83,7 +83,7 @@ are in the README (4-4-2, the boiler at tier one).
 
 Tier two (Ryan, 19 October, above). The reshuffle (Claude, 14 October) had proposed tier one: a basic vent already blasts, so it is
 itself at once, and it is the heavy body Wainwright & Sutler's tender deal lacks. The hole:
-negative cooling in a new player's hands from the first fight, which the Sparrowhawk's doubled
+negative cooling in a new player's hands from the first fight, which the Kite's doubled
 heat already asks.
 
 ## Claude's recommendations (19 October)

@@ -120,7 +120,7 @@ The bench, the forms set aside:
 
 ## Holes already raised
 
-- It would be the second in-fight shield regen; the Goshawk's was kept safe on one chassis, and
+- It would be the second in-fight shield regen; the Buzzard's was kept safe on one chassis, and
   with the Puffin beside both a team can out-sustain a pack (the runner marks stalls past sixty
   rounds).
 - Once the combo is up, the enemy breaks it: the Waste's Disabled and Scrambled attack the die,

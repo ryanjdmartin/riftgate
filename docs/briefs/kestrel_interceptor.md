@@ -41,7 +41,7 @@ front foe striking it as it passes. Its reasoning holds and moves into the secon
 designator first proposed was the Polarity Projector with a Kestrel name, a copy; Kestrel's
 reach is through the front at a price, where the artillery makers' is Indirect and free; the
 price scales with the front, so "dive past the goblin, not the knight" is read on the die; and
-it takes the priority-target fantasy the Sparrowhawk's codex describes and its rework leaves
+it takes the priority-target fantasy the Kite's codex describes and its rework leaves
 behind. What was thin: "the first weapon is Rapid" chooses no piece, so the three hardpoints
 had nothing to be about, and the dive was one more gun.
 
@@ -62,7 +62,7 @@ itself with the second spend, and its lock lights a back-rank foe for the whole 
 guns. So its hardpoints are about something: one control piece from any maker, one Direct gun
 to cash the paint, one vent for the heat of two spends; and the team's build changes around
 it, since a Direct-heavy team gets a back-rank answer without artillery. It feeds the Baboon's
-Paradox (a free status a round), the Sparrowhawk (a Shocked foe cashed at four times) and the
+Paradox (a free status a round), the Kite (a Shocked foe cashed at four times) and the
 roster's thinnest class, soft control, which has no Kestrel piece and no enabler today.
 
 **The frame.** A tilt-jet at move 50, Kestrel's pace. Hull 60, shield 50, field recharge 30,
@@ -368,7 +368,7 @@ kit. Every number a placeholder; the names Ryan's.
   by the iconography: an Indirect debuff. The passive prints as the framed mark and the bare
   mark: Rapid, once a round.
 - The open item, explained: the foes' default aim is called "the exposed" on our side. The
-  codex's "aims at the exposed" and the inspect line's "→ Goshawk (aims at the exposed)" name
+  codex's "aims at the exposed" and the inspect line's "→ Buzzard (aims at the exposed)" name
   the sense that picks the machine a blow would hurt most. Beside a foe debuff named Exposed,
   that line reads as "aims at a machine carrying Exposed", which never happens. The fix, if he
   wants one, is a synonym for the aim's shown word (the id stays): "the vulnerable", "the
@@ -403,7 +403,7 @@ kit. Every number a placeholder; the names Ryan's.
   its price (the front foe's blow with a factor).
 - With basics alone the identity rides on the lock showing; the control pieces are other
   makers' until Kestrel has one (the line review's stock holes).
-- The glass: alone it loses what the Sparrowhawk used to win; its team rows are the read.
+- The glass: alone it loses what the Kite used to win; its team rows are the read.
 - The aim's word (the fourth round): "the exposed" names the foes' default aim on the player's
   side and the formation state on the foes'; Exposed as a debuff makes the foe-side sense the
   loud one. The aim's shown word is Ryan's to change.
@@ -425,7 +425,7 @@ kit. Every number a placeholder; the names Ryan's.
   Ryan, 20 October: thin, no build hook.
 - The cold gate (a weapon it fires while it carries no heat is Rapid, once a round): vents and
   cold guns as its build, the hit-and-run rhythm; set aside for the control gate, which opens
-  a class the roster lacks where cold guns are the Sparrowhawk's pull.
+  a class the roster lacks where cold guns are the Kite's pull.
 - The second-shot gun (a Direct gun that hits 10 harder as the round's second spend): a lock
   feeding only its own passive, the burrow's flaw.
 - The exposed-rotor helicopter as its shape: to Aphelion (Ryan, 20 October).

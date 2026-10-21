@@ -145,7 +145,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October), the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (decided 21 October: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | Goshawk, Puffin (a rework proposed 20 October on Ryan's split: its shields grow by the ally's heat, the Ionizer the overshield through it; the base cut and the growth one for one at the pass's heat scale, the same evening), Sparrowhawk (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October: the reroll economy all the way, the action-economy utility capstone; its third form: a reroll bank, an ally's action bought with three rerolls, a jet's die relaunched) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October), the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (decided 21 October: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | Buzzard, Puffin (a rework proposed 20 October on Ryan's split: its shields grow by the ally's heat, the Ionizer the overshield through it; the base cut and the growth one for one at the pass's heat scale, the same evening), Kite (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October: the reroll economy all the way, the action-economy utility capstone; its third form: a reroll bank, an ally's action bought with three rerolls, a jet's die relaunched) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -233,7 +233,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   the number is the lever (one on a d9 is not one on a d3).
 - **The team's order instead of self-sequencing** (the second action). A passive that needs
   Rapid pieces to work wants a second action; ask first whether an ally's action is the better
-  pair (the Dingo's Shock to the Sparrowhawk's cash, the off-tank's lure for the team). Where
+  pair (the Dingo's Shock to the Kite's cash, the off-tank's lure for the team). Where
   the self-sequence is the identity, give it a die-order mechanic (stepping, a combo), as the
   Cassowary has.
 - **Counters that count blows, not spends** (spends counted). A counter per blow makes
@@ -251,7 +251,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
-  dark: strikes 2 with a cooldown of 2, the broadside, the Sparrowhawk's chain. Paid in the
+  dark: strikes 2 with a cooldown of 2, the broadside, the Kite's chain. Paid in the
   die's reliability; the cooldown property (decided, not built) unlocks the family.
 - **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
   (arm now, fire twice later), which reads the die's own state.
@@ -296,7 +296,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_shield_spender.md` | direction; three kits proposed 18 October, the off-tank package on Ryan's word 19 October | Kestrel | 1 | Ryan's call on the package; its runner row on the shield rule's engine |
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
-| `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
+| `kestrel_kite.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
 | `kestrel_interceptor.md` | decided (Ryan's go, 21 October: the gate, Exposed as reach and armour for two rounds, the die's grammar; the bible's rows) | Kestrel | 1 | the content session: its content, Expose and Exposed in the vocabulary, the aims' words, its name and look |
 | `kestrel_puffin.md` | rework, proposal (20 October, on Ryan's worry: toxic and boring; the third round on its size) | Kestrel | 2 | Ryan's call on the split, the base and the ratio |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots | Kestrel | all | Ryan's calls |

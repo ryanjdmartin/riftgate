@@ -31,7 +31,7 @@ burners live in its hardpoints.
   to light its ALLIES on fire somehow? Now there's a niche that we don't have - damage the
   whole team. But for what payoff?"
 - Claude: the payoff is already on its kit. Burning on a machine is a heat tick, so lighting
-  the team feeds every hot build (the Goshawk, the Stingray, the boiler, the Nemesis); the
+  the team feeds every hot build (the Buzzard, the Stingray, the boiler, the Nemesis); the
   Screen counts burning bodies on either side; the mover carries the fire off the allies onto a
   chosen foe as hull ticks. Its three pieces become one economy: light the team, shield it by
   the count, scapegoat the fire onto the boss. No entry is blank in any domain, since allies
