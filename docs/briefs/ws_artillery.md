@@ -266,6 +266,10 @@ call on the Muster); an overflow shell (ammo past the cap loads the next shot), 
 than the cap needs; a ranging ramp (the cannon's shots at one target grow), which Flak already
 does for the maker; shell types, too much for a phone.
 
+Ryan, 21 October, the go: "Unrestricted Expenditure is good, go". So the salvo is the
+Unrestricted Expenditure, and the Musk Ox lands: the bible's row, the rules, planned content,
+this brief retired in the go's commit.
+
 ## Holes already raised
 
 - A dry gun is an entry that cannot be spent that turn, so a die of guns and no reload wastes
