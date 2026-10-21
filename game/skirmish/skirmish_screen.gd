@@ -91,6 +91,10 @@ var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
 var _ghost: DieFaceView
+## A spend waiting on its second target (a Swap, the Dingo's Combat Translocator; Ryan, 21
+## October: drag to the first target, drop, the seconds light, tap one): {"mech", "primary"}.
+## The die sits over its first target; dragging it again picks it back up, to move or cancel.
+var _pending: Dictionary = {}
 var _arrows: ArrowLayer
 var _details: HudPanel
 var _details_label: Label
@@ -371,6 +375,7 @@ func _build() -> void:
 			v.held.connect(_on_foe_held.bind(v))
 			v.hold_released.connect(_on_hold_released)
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
+			v.tapped.connect(_on_slot_tapped.bind(rank, col))
 			_slot_views[rank][col] = v
 		var mv := UnitView.new()
 		mv.is_enemy = true
@@ -520,6 +525,12 @@ func _build() -> void:
 	_ghost = DieFaceView.new()
 	_ghost.animate = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ghost.can_tap = false
+	_ghost.drag_started.connect(_on_ghost_drag_started)
+	_ghost.drag_moved.connect(_on_drag_moved)
+	_ghost.drag_ended.connect(_on_drag_ended)
+	_ghost.held.connect(_on_ghost_held)
+	_ghost.hold_released.connect(_on_hold_released)
 	_ghost.modulate = Color.WHITE   # solid: with its slot emptied, this is the die itself
 	_ghost.visible = false
 	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
@@ -738,7 +749,13 @@ func _refresh() -> void:
 
 	var targets: Array[Foe] = []
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged piece of equipment may land on
-	if _drag_from >= 0:
+	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
+	if not _pending.is_empty():
+		seconds = sk.swap_targets(_pending["primary"])
+		for x in seconds:
+			if x is Foe:
+				targets.append(x)
+	elif _drag_from >= 0:
 		var f := sk.mechs[_drag_from].face()
 		if f != null and f.is_attack():
 			targets = sk.targets_for(_drag_from)
@@ -765,11 +782,11 @@ func _refresh() -> void:
 				v.intent = ""
 				v.intent_kind = ""
 				v.statuses = []
-				v.highlight = false
+				v.highlight = seconds.has(Vector2i(rank, col))   # an empty slot a pending Swap may move its foe into
 				v.dead = false
 				v.sprite = null
 				_settle(v)   # a hit still playing on the foe that stood here would end at full brightness
-				v.modulate = Color(1, 1, 1, 0.3)
+				v.modulate = Color(1, 1, 1, 0.75 if v.highlight else 0.3)
 				v.queue_redraw()
 				continue
 			v.modulate = Color.WHITE
@@ -809,11 +826,11 @@ func _refresh() -> void:
 		d.dead = not ms.alive()
 		d.locked = locked[i]
 		d.can_tap = assigning and ms.alive() and not ms.assigned
-		d.can_drag = assigning and ms.alive() and not ms.assigned
+		d.can_drag = assigning and ms.alive() and not ms.assigned and _pending.get("mech", -1) != i
 		# While a die is dragged, the one under the finger is the die: its slot goes empty
 		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
 		# not visible: the view must keep receiving the drag's motion.
-		d.modulate = Color(1, 1, 1, 0.0) if _drag_from == i else Color.WHITE
+		d.modulate = Color(1, 1, 1, 0.0) if _drag_from == i or _pending.get("mech", -1) == i else Color.WHITE
 		d.queue_redraw()
 
 	_refresh_log()
@@ -1471,9 +1488,72 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 		_refresh()
 		return
 	var target = _drop_target_at(global_pos)
+	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
+		_begin_second(i, target)
+		return
 	if target == null or not _use_die(i, target):
 		Sound.play("die_drop")   # set back
 	_refresh()
+
+
+## A Swap dropped on its first target (Ryan, 21 October): the die sits over that foe, the
+## second targets light (every other foe that moves, every empty slot), and a tap on one
+## spends it; dragging the die again picks it back up; a hold reads as ever.
+func _begin_second(i: int, primary: Foe) -> void:
+	_pending = {"mech": i, "primary": primary}
+	var fv := _foe_view_for(primary)
+	if fv != null:
+		var local: Vector2 = get_global_transform().affine_inverse() * fv.get_global_rect().get_center()
+		_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
+	_ghost.visible = true
+	_ghost.can_drag = true
+	_ghost.mouse_filter = Control.MOUSE_FILTER_STOP
+	Sound.play("die_drop")
+	_refresh()
+
+
+## The pending die picked back up off its first target: a drag like any, so it may land on
+## another first target or be set back to cancel.
+func _on_ghost_drag_started() -> void:
+	if _pending.is_empty():
+		return
+	var i: int = _pending["mech"]
+	_pending = {}
+	_drag_from = i
+	Sound.play("die_pick")
+	_refresh()
+
+
+## A hold on the pending die reads its die, as a hold on the die in the tray does.
+func _on_ghost_held() -> void:
+	if not _pending.is_empty():
+		_on_die_held(int(_pending["mech"]))
+
+
+## A tap on a slot while a Swap waits for its second target: the foe there, or the empty slot,
+## if it is one the Swap may take. Any other tap leaves the Swap waiting.
+func _on_slot_tapped(rank: int, col: int) -> void:
+	if _pending.is_empty():
+		return
+	var foe := sk.foe_at(rank, col)
+	var second = foe if foe != null else Vector2i(rank, col)
+	if not sk.swap_targets(_pending["primary"]).has(second):
+		return
+	var i: int = _pending["mech"]
+	var primary: Foe = _pending["primary"]
+	_cancel_second()
+	if not _use_die(i, primary, second):
+		Sound.play("die_drop")
+	_refresh()
+
+
+## The pending Swap put back in the tray, unspent.
+func _cancel_second() -> void:
+	_pending = {}
+	_ghost.visible = false
+	_ghost.can_drag = false
+	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 ## What sits under a global point: a Foe, a MechState, or null.
@@ -1555,7 +1635,7 @@ const VOICE_AFTER_BLOW := 0.4
 
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
-func _use_die(i: int, target) -> bool:
+func _use_die(i: int, target, second = null) -> bool:
 	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
 	# the death has to be played from what was there (the ghost of the sprite).
 	var was: Dictionary = {}
@@ -1567,7 +1647,7 @@ func _use_die(i: int, target) -> bool:
 	var heat_before := _heat_marks()
 	var fuel := spent.rolls_again_on if spent != null else ""
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
-	var ok := sk.assign(i, target)
+	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
 	_refresh()
@@ -1991,6 +2071,8 @@ func _confirm_yes() -> void:
 
 
 func _on_reroll() -> void:
+	if not _pending.is_empty():
+		_cancel_second()   # a reroll takes the waiting die back to the tray first
 	var idx: Array = []
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
@@ -2055,6 +2137,8 @@ func _unspent_count() -> int:
 func _on_end_turn() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
+	if not _pending.is_empty():
+		_cancel_second()
 	var n := _unspent_count()
 	if n > 0:
 		_ask("%d %s still unspent. End the turn anyway?" % [n, "die is" if n == 1 else "dice are"], _end_turn_now)
@@ -2099,6 +2183,8 @@ func _end_turn_now() -> void:
 func _on_withdraw() -> void:
 	if not sk.can_withdraw():
 		return
+	if not _pending.is_empty():
+		_cancel_second()
 	_ask("Withdraw? The enemy strikes once more as you pull out, and the pack keeps marching on the gate.", _withdraw_now)
 
 

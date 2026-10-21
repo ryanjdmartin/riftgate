@@ -373,12 +373,9 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 func test_a_built_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var planned_kw := ""
-	for k in db.vocabulary.keys():
-		if db.vocabulary[k].get("category") == "keyword" and db.vocabulary[k].get("status") == "planned":
-			planned_kw = str(k)
-			break
-	assert_true(not planned_kw.is_empty(), "the vocabulary names a planned keyword to test with")
+	# A synthetic planned keyword (21 October: Swap, the last one the vocabulary held, was built).
+	var planned_kw := "test_planned_kw"
+	db.vocabulary[planned_kw] = {"id": planned_kw, "category": "keyword", "name": "Planned", "codex": "A keyword the engine lacks.", "status": "planned"}
 	var gun: Dictionary = db.components["twin_autoguns"].duplicate(true)
 	gun["face"] = Dictionary(gun["face"]).duplicate(true)
 	gun["face"]["keywords"] = [planned_kw]

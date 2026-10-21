@@ -568,3 +568,22 @@ func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	assert_true(pol.seal_score(sk, ms) > 0.0, "twenty armour against two blows of thirty is worth the forty it keeps off")
 	Effects.stack(u, Effects.sealed_status(20, 5), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 	assert_eq(pol.seal_score(sk, ms), 0.0, "and nothing once sealed")
+
+
+## A Swap's second target (the Dingo's Combat Translocator, a first reading of 21 October): the
+## bot brings a back-rank foe forward, where Direct fire reaches it, rather than sending one back.
+func test_greedy_swaps_a_back_foe_forward() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(0, Face.Reach.INDIRECT, [K.SWAP])), 40, 100))
+	var front := _ghoul(100, 10)
+	var caster := _archer(100, 30)
+	sk.add_foes([front, caster])
+	sk.begin()
+	sk.start_round()
+	var opts := pol.options_for(sk, 0)
+	assert_true(opts.all(func(o: Dictionary) -> bool: return o.has("second")), "every option carries its second target")
+	assert_true(Policy.swap_score(sk, caster, Vector2i(0, caster.column)) > 0.0, "the caster pulled forward is worth something")
+	assert_true(Policy.swap_score(sk, front, Vector2i(1, front.column + 1)) < 0.0, "a front foe sent back is a loss")
+	pol.play_round(sk)
+	assert_eq(caster.rank, 0, "the bot pulls the caster into the front")

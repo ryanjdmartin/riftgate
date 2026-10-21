@@ -158,8 +158,12 @@ defeat when every machine is wrecked. There is no round limit.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
-- **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
-  trade places; no damage; a massive foe does not move.
+- **Swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
+  another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
+  A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
+  front stands exposed to Direct fire). On the screen: drag the die to the first target and
+  drop it; the second targets light; tap one to spend it; a hold reads as ever; drag the die
+  again to move it or set it back.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak after the blow, whatever it dealt (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.

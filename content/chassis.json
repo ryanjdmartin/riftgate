@@ -398,7 +398,7 @@
    "name": "Dingo",
    "designation": "Pattern 12 Support Car",
    "maker": "wainwright_sutler",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
@@ -420,7 +420,8 @@
    ],
    "size": "light",
    "fixed": [
-    "megataser_harpoon"
+    "megataser_harpoon",
+    "combat_translocator"
    ],
    "loadout": [
     "twin_autoguns",

@@ -778,3 +778,47 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
 	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
 	s.free()
+
+
+## A Swap's two targets on the screen (Ryan, 21 October): drop the die on the first target and
+## it waits there, the second targets lit; a tap on one spends it; dragging the die again picks
+## it back up; a reroll or the turn's end sets it back in the tray first.
+func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.die.faces[ms.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+	var first: Foe = s.sk.targets_for(0)[0]
+	s._begin_second(0, first)
+	assert_eq(s._pending["primary"], first, "the die waits on its first target")
+	assert_true(s._ghost.visible and s._ghost.can_drag, "shown there, and it can be picked back up")
+	assert_eq(s._dice[0].modulate.a, 0.0, "its tray slot stands empty")
+	var second = null
+	for x in s.sk.swap_targets(first):
+		if x is Foe:
+			second = x
+			break
+	assert_true(second != null, "a second foe to swap with")
+	var lit := false
+	for v in s._view_foe.keys():
+		if s._view_foe[v] == second:
+			lit = v.highlight
+	assert_true(lit, "the second targets light")
+	var a := Vector2i(first.rank, first.column)
+	var b := Vector2i(second.rank, second.column)
+	s._on_slot_tapped(b.x, b.y)
+	assert_true(s._pending.is_empty(), "a tap on the second spends it")
+	assert_eq(Vector2i(first.rank, first.column), b, "and they trade places")
+	assert_false(s._ghost.visible, "the die is gone from the field")
+	s.free()
+	var t := _screen()
+	var tm: Skirmish.MechState = t.sk.mechs[0]
+	tm.die.faces[tm.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+	t._begin_second(0, t.sk.targets_for(0)[0])
+	t._on_ghost_drag_started()
+	assert_true(t._pending.is_empty() and t._drag_from == 0, "dragging it again picks it back up")
+	t._on_drag_ended(Vector2(-100, -100))
+	assert_false(tm.assigned, "set back in the tray, unspent")
+	t._begin_second(0, t.sk.targets_for(0)[0])
+	t._on_reroll()
+	assert_true(t._pending.is_empty(), "a reroll sets it back first")
+	t.free()

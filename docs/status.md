@@ -114,6 +114,12 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the Dingo's Combat Translocator and the multi-target spend (Ryan's go of 19
+  October; the interaction his of 21 October): Swap takes a second target, another foe or an
+  empty slot, and the two trade places (a massive foe stays); on the screen the die dropped on
+  its first target waits there, the seconds lit, a tap spends it, a hold reads as ever and a
+  drag picks it back up; the Translocator is in content as the Dingo's second locked piece and
+  the Dingo is tier two. Its model mount is the asset session's.
 - 21 October, Silence and Purge on the enemy's side (Ryan, 17 and 18 October; a silence mutes
   keywords too on his word of 21 October): Silenced turns a machine's buffs and stores off and
   mutes its components' keywords through its next round (cleansable, a chip with a struck
@@ -433,12 +439,6 @@ before it. The three design sessions merged that day are paused, each resuming f
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
-- The Dingo's Combat Translocator (Ryan's go, 19 October; its row in section 7): a second
-  locked piece that picks two foes, or a foe and an empty slot, and swaps them (Swap, planned
-  in the vocabulary; a massive foe stays; an empty front slot makes it a pull), tier two with
-  it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
-  dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
-  line); its stock with the stock pass.
 - The Swallowtail (Ryan's go, 21 October; its row in section 7): the helicarrier, the maker's
   first tier three, an assault flyer; the multi-rotor's lending and then its equipment slots
   cut (20 October). Its Muster Deck carries the machines beside it on the map (set down on the

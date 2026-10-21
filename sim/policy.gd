@@ -34,6 +34,7 @@ const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a sha
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
+const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -149,7 +150,7 @@ func play_round(sk: Skirmish) -> void:
 			best = best_rolled
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
-		if sk.assign(best["mech"], best["target"]):
+		if sk.assign(best["mech"], best["target"], best.get("second", null)):
 			_tally(spent)
 		else:
 			held.append(best["mech"])
@@ -190,8 +191,22 @@ func options_for(sk: Skirmish, i: int) -> Array:
 		Face.Kind.BLANK:
 			out.append({"mech": i, "target": null, "score": 0.0})
 		Face.Kind.ATTACK:
+			var swaps := sk.needs_second(ms)
 			for t in sk.targets_for(i):
-				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
+				var score := attack_score(sk, ms, f, t)
+				if not swaps:
+					out.append({"mech": i, "target": t, "score": score})
+					continue
+				# A Swap takes the second target worth the most beside this first.
+				var best_second = null
+				var best := -INF
+				for second in sk.swap_targets(t):
+					var v := swap_score(sk, t, second)
+					if v > best:
+						best = v
+						best_second = second
+				if best_second != null:
+					out.append({"mech": i, "target": t, "second": best_second, "score": score + best})
 		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": equipment_score(sk, ms, who, f)})
@@ -890,6 +905,23 @@ func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
 		if taken >= foe.hp:
 			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT
 	return total / float(live.size())
+
+
+## What a swap is worth (the Dingo's Combat Translocator, a first reading of 21 October): a foe
+## the swap brings into the front rank stands exposed to the team's Direct fire, worth a share
+## of its kill and its threat; one it sends to the back hides by the same. Bunching foes for an
+## area piece and setting the acting order are not read yet.
+static func swap_score(sk: Skirmish, first: Foe, second) -> float:
+	var to := Vector2i(second.rank, second.column) if second is Foe else (second as Vector2i)
+	var score := _front_worth(sk, first) * float(first.rank - to.x)
+	if second is Foe:
+		score += _front_worth(sk, second) * float((second as Foe).rank - first.rank)
+	return score
+
+
+## A foe's worth standing in the front rank, where Direct fire reaches it.
+static func _front_worth(sk: Skirmish, foe: Foe) -> float:
+	return (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * SWAP_WEIGHT
 
 
 ## What sealing is worth (the Armadillo's Lockdown, 20 October; valued 21 October): a shield

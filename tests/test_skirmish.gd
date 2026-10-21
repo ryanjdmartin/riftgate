@@ -5460,3 +5460,57 @@ func test_a_purge_takes_every_buff_and_store_and_aims_at_the_buffed() -> void:
 	s2.end_round()
 	assert_eq(Effects.buff_stacks(stacked), 0, "and takes them")
 	assert_eq(plain.hull, 200, "no blow")
+
+
+## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
+## takes a second target, another foe or an empty slot, and the two trade places, no damage; a
+## foe pulled into the front stands exposed to Direct fire; a massive foe never moves.
+func test_a_swap_trades_two_foes_or_pulls_one_into_an_empty_slot() -> void:
+	var sk := Skirmish.new(1, 3)
+	var swap := Face.attack(0, I, [K.SWAP])
+	var u := _mech("A", Die.of([swap, Face.attack(10, L)]), 40, 100)
+	sk.add_mech(u)
+	var front := _ghoul(100, 1)
+	var caster := _archer(100, 1)
+	sk.add_foes([front, caster])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.needs_second(ms), "a Swap takes a second target")
+	assert_false(sk.assign(0, caster), "and is not spent without one")
+	var seconds := sk.swap_targets(caster)
+	assert_true(seconds.has(front) and seconds.has(Vector2i(0, 1)), "another foe, or an empty slot")
+	assert_false(seconds.has(caster), "never itself")
+	var from := Vector2i(caster.rank, caster.column)
+	var empty_front := -1
+	for col in range(3):
+		if sk.foe_at(0, col) == null:
+			empty_front = col
+			break
+	assert_true(sk.assign(0, caster, Vector2i(0, empty_front)), "the caster pulled into an empty front slot")
+	assert_eq(Vector2i(caster.rank, caster.column), Vector2i(0, empty_front), "it stands in the front now")
+	assert_eq(sk.foe_at(1, from.y), null, "its old slot is empty")
+	assert_eq(caster.hp, 100, "no damage")
+	assert_true(sk.targets_for_face(ms, Face.attack(10, L)).has(caster), "a Direct gun reaches it")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	var a := Vector2i(front.rank, front.column)
+	var b := Vector2i(caster.rank, caster.column)
+	assert_true(sk.assign(0, front, caster), "two foes")
+	assert_eq(Vector2i(front.rank, front.column), b, "trade places")
+	assert_eq(Vector2i(caster.rank, caster.column), a, "both ways")
+	assert_true("\n".join(sk.log).contains("trade places"), "the log says so")
+	# A massive foe stays.
+	var s2 := Skirmish.new(1, 3)
+	var v := _mech("B", Die.single(swap), 40, 100)
+	s2.add_mech(v)
+	var big := Foe.make("titan", 500, 1)
+	big.size = 2   # massive: it fills its column
+	var small := _ghoul(100, 1)
+	s2.add_foes([big, small])
+	s2.begin()
+	s2.start_round()
+	assert_false(s2.targets_for(0).has(big), "a massive foe is no first target")
+	assert_false(s2.swap_targets(small).has(big), "nor a second")

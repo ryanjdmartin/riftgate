@@ -264,10 +264,10 @@
    "id": "swap",
    "category": "keyword",
    "name": "Swap",
-   "codex": "The Dingo's Combat Translocator, locked: pick two foes, or a foe and an empty slot, and they trade places; no damage. A massive foe does not move.",
-   "status": "planned",
+   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 19 October (the bible's Dingo row; the brief retired to git: git show 021f075:docs/briefs/ws_dingo.md). The general swap is the whole rule (Ryan: \"Target two foes/spaces and swap them?\"), distinct from Minos's rank turn by pattern (Minos turns whole ranks over, the Dingo chooses two): it exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, soft control that feeds other makers' pieces. A swap with an empty front slot is a pull; a massive foe fills its column and stays, so bosses are out by rule. Engine: a spend that takes two targets, and a foe moving between slots, which Minos also waits on. No piece carries it in content yet: the Combat Translocator lands with that engine, since a planned locked piece would keep the Dingo out of the tender (the campaign's Start rule) and fix the maker's deal on the Prairie Dog; the keyword and the piece's chip share the word."
+    "holes": "Ryan's go, 19 October (the bible's Dingo row; the brief retired to git: git show 021f075:docs/briefs/ws_dingo.md). The general swap is the whole rule (Ryan: \"Target two foes/spaces and swap them?\"), distinct from Minos's rank turn by pattern (Minos turns whole ranks over, the Dingo chooses two): it exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, soft control that feeds other makers' pieces. A swap with an empty front slot is a pull; a massive foe fills its column and stays, so bosses are out by rule. Engine: a spend that takes two targets, and a foe moving between slots, which Minos also waits on. Built 21 October with the Combat Translocator in content and the Dingo at tier two (the Cassowary and the Cottonmouth beside the Prairie Dog at tier one, so the maker's deal is never fixed on it); the interaction is Ryan's of 21 October (drag to the first, drop, tap the second, a hold reads as ever, a drag picks it back up). The keyword and the piece's chip share the word."
    }
   },
   {

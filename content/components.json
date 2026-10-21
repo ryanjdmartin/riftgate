@@ -701,6 +701,33 @@
    ]
   },
   {
+   "id": "combat_translocator",
+   "name": "Combat Translocator",
+   "maker": "wainwright_sutler",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Not a winch (Ryan, 19 October: a cable cannot swap two things, and the maker cannot go that low-tech) but a teleporter in the maker's register, \"guys this totally isn't just a teleporter\". The name is his working one.",
+    "niche": "The Dingo's second locked piece (Ryan's go, 19 October; the bible's Dingo row): pick two foes, or a foe and an empty slot, and they trade places; no damage. It exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, a cross-maker combo in one locked piece; a massive foe fills its column and stays, so bosses are out by rule; a swap with an empty front slot is a pull.",
+    "notes": "Landed with its engine, 21 October (the Swap keyword, a spend that takes a second target, a foe moving between slots), the Dingo going to tier two with it now that the Cassowary and the Cottonmouth run beside the Prairie Dog at tier one. Indirect so it reaches the back rank; heat 5 a placeholder like every number here. Its model mount on the Dingo is the asset session's."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "swap"
+    ],
+    "heat": 5
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
+  },
+  {
    "id": "afterburner_cannon",
    "name": "Afterburner Cannon",
    "maker": "kestrel",

@@ -490,6 +490,31 @@ func targets_for(mech_index: int) -> Array[Foe]:
 
 ## Foes this mech could spend `f` on, whether or not the die shows it: the same reach rules,
 ## asked about any entry (a player weighing a reroll, or a bot weighing a die).
+## The second targets a Swap entry takes beside its first (the Dingo's Combat Translocator, Ryan's
+## go of 19 October): every other foe on the field and every empty slot, the slot as
+## Vector2i(rank, column); never a massive foe, which fills its column and stays, and nothing
+## for a massive first.
+func swap_targets(first: Foe) -> Array:
+	var out: Array = []
+	if first == null or not first.alive() or first.is_massive():
+		return out
+	for foe in field_foes():
+		if foe != first and foe.alive() and not foe.is_massive():
+			out.append(foe)
+	for col in range(columns):
+		if front[col] == null:
+			out.append(Vector2i(0, col))
+		if back[col] == null:
+			out.append(Vector2i(1, col))
+	return out
+
+
+## Does this entry, spent now, take a second target (a Swap)?
+func needs_second(ms: MechState) -> bool:
+	var f := ms.face()
+	return f != null and Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP)
+
+
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if f == null or not f.is_attack():
@@ -504,6 +529,9 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 			continue
 		if reach_of(ms, f) == Face.Reach.INDIRECT or is_exposed(col):
 			out.append(back[col])
+	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
+	if Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
+		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
 	return out
 
 
@@ -821,7 +849,7 @@ func can_assign(mech_index: int, target) -> bool:
 	return false
 
 
-func assign(mech_index: int, target = null) -> bool:
+func assign(mech_index: int, target = null, second = null) -> bool:
 	if state != State.ASSIGN:
 		return false
 	last_acts.clear()
@@ -833,6 +861,10 @@ func assign(mech_index: int, target = null) -> bool:
 		return false
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
+		return false
+	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
+	# tap the second): another foe or an empty slot, never a massive foe.
+	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second):
 		return false
 	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
@@ -907,6 +939,8 @@ func assign(mech_index: int, target = null) -> bool:
 			if Effects.nth_shot_due(ms.unit):
 				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
 			_resolve_attack(mech_index, ms, f, target)
+			if f.has(Face.Keyword.SWAP) and target.alive():
+				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if Effects.remove(ms.unit, "spun_up"):
@@ -1179,6 +1213,30 @@ static func _rides(f: Foe) -> bool:
 		if f.has_keyword(f.action, kw):
 			return true
 	return false
+
+
+## A Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the
+## first target and the second trade places, a foe for a foe, or the foe into an empty slot (a
+## back foe into an empty front slot is a pull). A foe keeps its pick and its move; the rank it
+## stands in is the swap's, so a caster pulled forward stands exposed to Direct fire.
+func _swap(first: Foe, second) -> void:
+	var from := Vector2i(first.rank, first.column)
+	if second is Foe:
+		var other: Foe = second
+		var to := Vector2i(other.rank, other.column)
+		_place(other, from.x, from.y)
+		_place(first, to.x, to.y)
+		log.append("%s and %s trade places" % [first.display_name, other.display_name])
+	elif second is Vector2i:
+		var slot: Vector2i = second
+		if from.x == 0:
+			front[from.y] = null
+		else:
+			back[from.y] = null
+		_place(first, slot.x, slot.y)
+		log.append("%s is moved to the %s rank" % [first.display_name, "front" if slot.x == 0 else "back"])
+	_refresh_kin()
+	_refresh_guards()
 
 
 ## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs and stores count for nothing
