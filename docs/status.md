@@ -431,9 +431,9 @@ to-do's Ryan list).
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
-   Prairie Dog's pivot and the helicarrier, as the Swallowtail, landed (21 October) and the
-   artillery briefed as the ammo build; next, the artillery's session, the gunship with the
-   stock pass.
+   Prairie Dog's pivot and the helicarrier, as the Swallowtail, landed (21 October), and the
+   artillery in session on Ryan's shape of the same day (its brief); next, the artillery's
+   calls and go, the gunship with the stock pass.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.

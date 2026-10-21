@@ -188,8 +188,8 @@ to damage class. Ryan, 20 October: the all-shells machine pitched in the Minerva
 the siege battery (its third-round candidate: weapons that add no heat and cost a shell each,
 vents that reload, the heat gauge a magazine; `minerva_siege_battery.md`) reads to him as a
 Wainwright & Sutler tier three; Claude agrees it is this maker's artillery tenth (the cold
-price the heat row asked for, on the maker whose kit is cold, with the carrier's resupply as
-its loader): `ws_artillery.md` (20 October). The old-world artillery of the maker's lean (indirect fire and area) is
+price the heat row asked for, on the maker whose kit is cold; no other machine is its loader,
+Ryan, 21 October): `ws_artillery.md` (20 October; Ryan's shape 21 October). The old-world artillery of the maker's lean (indirect fire and area) is
 nobody's chassis: its second tier three and its tenth, the last (big Indirect blows with area,
 the stock pass's explosives its kit, mobile where Minerva's siege battery sits on the cooldown
 property), undesigned.
@@ -301,7 +301,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the mark's rider from the Kestrel session |
-| `ws_artillery.md` | direction (the ammo build, 20 October) | Wainwright & Sutler | 3 | the stock pass's explosives |
+| `ws_artillery.md` | in session (Ryan's shape, 21 October) | Wainwright & Sutler | 3 | the stock pass's explosives and heat scale |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
