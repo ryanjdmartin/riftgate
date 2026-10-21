@@ -342,6 +342,22 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.25 + i * s * 0.25
 				ci.draw_line(c + Vector2(x, s * 0.55), c + Vector2(x, s * 0.9), color, width * 0.8)
+		"mine":
+			# A sea mine (the Lammergeier's, 21 October): a ring and four horned spikes, a shot
+			# waiting in a slot. Unlike Volatile's burst it has a body.
+			ci.draw_arc(c, s * 0.5, 0.0, TAU, 20, color, width)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				var tip: Vector2 = c + d * s * 0.95
+				ci.draw_line(c + d * s * 0.5, tip, color, width)
+				var side := Vector2(-d.y, d.x) * s * 0.22
+				ci.draw_line(tip - side, tip + side, color, width)
+			ci.draw_circle(c, s * 0.16, color)
+		"syrinx_drone", "drone":
+			# The Syrinx Drone (21 October): a small body under two arcs of a call, the voice that
+			# copies the killing shot.
+			ci.draw_circle(c + Vector2(0, s * 0.45), s * 0.28, color)
+			ci.draw_arc(c + Vector2(0, s * 0.45), s * 0.62, PI * 1.2, PI * 1.8, 12, color, width)
+			ci.draw_arc(c + Vector2(0, s * 0.45), s * 1.0, PI * 1.25, PI * 1.75, 14, color, width)
 		"exposed", "expose", "exposure":
 			# A reticle with its top open: nothing in front (the formation's, Exposed's chip and
 			# the Expose keyword's).
@@ -357,7 +373,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile", "silence":
 			return Palette.ENEMY

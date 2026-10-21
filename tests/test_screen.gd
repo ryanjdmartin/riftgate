@@ -824,3 +824,32 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	t._on_reroll()
 	assert_true(t._pending.is_empty(), "a reroll sets it back first")
 	t.free()
+
+
+## The Lammergeier's mines on the screen (21 October), on a synthetic passive: a weapon of the
+## bay dragged lights the empty slots it may be spent on, a drop there lays the shot, and the
+## mined slot shows its dashed outline and the mine chip with the total waiting; a hold reads it.
+func test_a_weapon_of_the_bay_drops_on_an_empty_slot_and_the_slot_shows_its_mine() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
+	ms.die.faces[ms.face_index] = Face.attack(10, Face.Reach.INDIRECT, [Face.Keyword.BURN])
+	ms.die.faces[ms.face_index].burn = 2
+	var slots := s.sk.slot_targets(ms, ms.face())
+	assert_false(slots.is_empty(), "an empty slot to lay in")
+	var slot: Vector2i = slots[0]
+	var sv: UnitView = s._slot_views[slot.x][slot.y]
+	s._drag_from = 0
+	s._refresh()
+	assert_true(sv.highlight, "the empty slot lights while the weapon is dragged")
+	assert_eq(s._drop_target_at(sv.get_global_rect().get_center()), slot, "and is a drop target")
+	s._drag_from = -1
+	assert_true(s._use_die(0, slot), "dropped there, the shot is laid")
+	s._refresh()
+	assert_true(sv.mined, "the slot shows its outline")
+	assert_eq(sv.intent, "MINED", "and says so")
+	assert_eq(sv.statuses[0][0], "mine", "the mine's chip first")
+	assert_eq(sv.statuses[0][1], "10", "with the total waiting")
+	assert_eq(sv.statuses[1][0], "burn", "then a chip per keyword riding in it")
+	s._on_foe_held(sv)
+	s.free()

@@ -361,11 +361,15 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var queue: Array = []
 	for f in sk.reinforcements:
 		queue.append(foes.find(f))
+	# The mines (the Lammergeier's): each slot's shots in laid order, the slot as its rank and column.
+	var mined: Array = []
+	for slot in sk.mines.keys():
+		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
 	return {
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq,
 	}
 
 
@@ -408,6 +412,24 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 		var i := int(qi)
 		if i >= 0 and i < foes.size():
 			sk.reinforcements.append(foes[i])
+	for md in d.get("mines", []):
+		var shots: Array = []
+		for sd in md.get("shots", []):
+			var shot: Dictionary = (sd as Dictionary).duplicate(true)
+			var kws: Array = []
+			for k in shot.get("keywords", []):
+				kws.append(int(k))
+			shot["keywords"] = kws
+			for key in ["damage", "seq", "burn", "cryo", "flak"]:
+				shot[key] = int(shot.get(key, 0))
+			shot["mech"] = int(shot.get("mech", -1))
+			shot["by"] = str(shot.get("by", ""))
+			var fd: Dictionary = shot.get("face", {})
+			shot["face"] = Face.from_dict(fd).to_dict() if not fd.is_empty() else {}
+			shots.append(shot)
+		if not shots.is_empty():
+			sk.mines[Vector2i(int(md.get("rank", 0)), int(md.get("column", 0)))] = shots
+	sk.mine_seq = int(d.get("mine_seq", 0))
 	return sk
 
 

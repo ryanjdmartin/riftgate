@@ -45,6 +45,7 @@ var intent: String = ""           # quiet text for an empty slot, e.g. "EXPOSED"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed)
 var highlight: bool = false       # valid drop target while dragging a die
+var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
 var pixel_snap := false           # a foe's pixel art: scaled by whole device pixels, not design pixels (below)
@@ -388,6 +389,8 @@ func _draw() -> void:
 	if dead:
 		draw_line(vis.position, vis.end, Palette.ENEMY_DIM, 2.0)
 		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.ENEMY_DIM, 2.0)
+	if mined and sprite == null:
+		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:
 		Hud.brackets(self, vis.grow(6.0), 14.0, Palette.TARGET, 2.0)
 	if _shatter >= 0.0:
@@ -476,6 +479,23 @@ func _draw() -> void:
 			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
 		x += widths[i] + 6.0
 	_draw_spend(mono)
+
+
+## A rect drawn in dashes (a mined slot's outline): structure, so it never rests on its hue.
+func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
+	var dash := 9.0
+	var gap := 6.0
+	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
+	for k in range(4):
+		var a: Vector2 = corners[k]
+		var b: Vector2 = corners[(k + 1) % 4]
+		var length := a.distance_to(b)
+		var dir := (b - a) / maxf(1.0, length)
+		var t := 0.0
+		while t < length:
+			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8), width + 2.0)
+			draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
+			t += dash + gap
 
 
 ## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on

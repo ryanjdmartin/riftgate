@@ -5802,3 +5802,233 @@ func test_an_expose_puts_a_back_foe_in_direct_reach_and_zeroes_its_armour() -> v
 	sk.start_round()
 	assert_false(Effects.has(caster, "exposure"), "then gone")
 	assert_false(sk.targets_for(1).has(caster), "behind its wall again")
+
+
+## The Lammergeier's mines (the Fuse-delayed Bay, decided 15 to 17 October, built 21 October),
+## on a synthetic passive: a machine that lays mines may spend a weapon on an empty slot under
+## the reach rules as if a foe stood there; the shot waits with its number as laid and its
+## keywords, joining what waits; the arrival takes every shot in laid order before it acts, a
+## Shock mine doubling the shot after it. A machine without the passive lays nothing.
+const MINER := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]}
+
+
+func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid_order() -> void:
+	var sk := Skirmish.new(1, 1)
+	var shocker := Face.attack(10, I, [K.SHOCK])
+	shocker.heat = 5
+	var a := _mech("Bomber A", Die.single(shocker), 40, 100)
+	a.grant_passive(MINER)
+	var b := _mech("Bomber B", Die.single(Face.attack(10, L)), 40, 100)
+	b.grant_passive(MINER)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+	var first := _ghoul(10, 10)
+	var arrival := _ghoul(100, 10)
+	sk.add_foes([first, arrival])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.slot_targets(sk.mechs[1], sk.mechs[1].face()), [], "a Direct gun reaches no slot behind a standing front")
+	assert_eq(sk.slot_targets(sk.mechs[0], sk.mechs[0].face()), [Vector2i(1, 0)], "an Indirect one the empty back slot")
+	assert_true(sk.assign(2, first), "the killer empties the slot")
+	assert_eq(sk.slot_targets(sk.mechs[2], sk.mechs[2].face()), [], "a machine without the bay lays nothing")
+	assert_false(sk.can_assign(2, Vector2i(0, 0)), "nor may it be spent on the slot")
+	assert_true(sk.slot_targets(sk.mechs[1], sk.mechs[1].face()).has(Vector2i(0, 0)), "a Direct gun of the bay reaches the empty front")
+	assert_true(sk.can_assign(0, Vector2i(0, 0)), "and an Indirect one any")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "the shock mine laid")
+	assert_eq(sk.mechs[0].heat, 5, "its heat paid now")
+	assert_true(sk.assign(1, Vector2i(0, 0)), "and a plain one behind it")
+	var waiting := sk.mines_at(Vector2i(0, 0))
+	assert_eq(waiting.size(), 2, "both wait in the slot, stacked")
+	assert_eq([int(waiting[0]["damage"]), int(waiting[1]["damage"])], [10, 10], "each its number as laid")
+	assert_eq(arrival.hp, 100, "nothing lands with no foe there")
+	sk.end_round()
+	assert_eq(sk.foe_at(0, 0), arrival, "the reinforcement steps in")
+	assert_eq(arrival.hp, 70, "and takes the shock mine's 10, then the next one doubled")
+	assert_false(Effects.has(arrival, "shocked"), "the second shot spent the shock")
+	assert_true(sk.mines.is_empty(), "nothing waits any more")
+	assert_true("\n".join(sk.log).contains("steps onto 2 mines"), "the log says so")
+
+
+## Every keyword rides inside a mine and acts as it lands (Ryan, 21 October): a Spread mine hits
+## the arrival's rank neighbours, a stun takes the arrival's first action (it stepped in after
+## the round's turn), and a massive arrival takes both slots' shots.
+func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and_a_massive_arrival_takes_both() -> void:
+	var sk := Skirmish.new(1, 3)
+	var bay := _mech("Bomber", Die.single(Face.attack(10, L, [K.CLEAVE, K.SUPPRESS])), 40, 100)
+	bay.grant_passive(MINER)
+	sk.add_mech(bay)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var arrival := _ghoul(100, 10)
+	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0), _ghoul(200, 0)])
+	sk.begin()
+	sk.reinforcements.append(arrival)   # it waits, the only one that strikes
+	sk.start_round()
+	var left: Foe = sk.front[0]
+	var right: Foe = sk.front[2]
+	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread stun mine laid there")
+	sk.end_round()
+	assert_eq(sk.foe_at(0, 1), arrival, "the arrival in the middle")
+	assert_eq([left.hp, arrival.hp, right.hp], [190, 90, 190], "the mine hits it and both its neighbours")
+	sk.start_round()
+	var hull := sk.mechs[0].unit.hull + sk.mechs[0].unit.shield + sk.mechs[1].unit.hull + sk.mechs[1].unit.shield
+	sk.end_round()
+	assert_eq(sk.mechs[0].unit.hull + sk.mechs[0].unit.shield + sk.mechs[1].unit.hull + sk.mechs[1].unit.shield, hull, "the stunned arrivals land no blow in their first turn")
+	# A massive arrival fills its column and takes both slots' shots.
+	var s2 := Skirmish.new(1, 1)
+	var x := _mech("X", Die.single(Face.attack(10, L)), 40, 100)
+	x.grant_passive(MINER)
+	var y := _mech("Y", Die.single(Face.attack(20, I)), 40, 100)
+	y.grant_passive(MINER)
+	s2.add_mech(x)
+	s2.add_mech(y)
+	s2.add_mech(_mech("Killer", Die.single(Face.attack(10, I, [K.PENETRATE])), 40, 100))
+	var g := _ghoul(10, 0)
+	var arch := _archer(10, 0)
+	s2.add_foes([g, arch])
+	s2.begin()
+	var big := Foe.make("titan", 500, 0)
+	big.size = 2
+	s2.reinforcements.append(big)
+	s2.start_round()
+	assert_true(s2.assign(2, g), "the column emptied, both ranks")
+	assert_true(s2.slot_targets(s2.mechs[0], s2.mechs[0].face()).has(Vector2i(1, 0)), "Direct reaches the back slot whose front is empty")
+	assert_true(s2.assign(0, Vector2i(0, 0)) and s2.assign(1, Vector2i(1, 0)), "a mine in each slot")
+	s2.end_round()
+	assert_eq(s2.foe_at(0, 0), big, "the massive arrival fills the column")
+	assert_eq(big.hp, 470, "and takes both slots' shots")
+	assert_true(s2.mines.is_empty(), "both spent")
+
+
+## The Lorentz Contractor (the Lammergeier's pull, 17 October): every mine on the field gathers
+## into the slot it is spent on, in laid order, and a foe standing there takes them now; spent
+## on an empty slot it gathers them there and lands nothing; with nothing laid it is a dead spend.
+func test_the_pull_gathers_every_mine_into_its_slot_and_a_foe_there_takes_them_now() -> void:
+	var pull := Face.attack(0, I)
+	pull.pulls_mines = true
+	pull.heat = 10
+	assert_true(pull.has_unique_rule() and pull.describe().contains("gathers every mine into its slot"), "the entry prints its rule")
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("Bomber A", Die.single(Face.attack(10, I, [K.SHOCK])), 40, 100)
+	a.grant_passive(MINER)
+	var b := _mech("Bomber B", Die.single(Face.attack(10, L)), 40, 100)
+	b.grant_passive(MINER)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
+	var weak := _ghoul(10, 0)
+	var boss := _ghoul(300, 0)
+	sk.add_foes([weak, boss])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(3, boss), "the pull with nothing laid: the dead spend allowed")
+	assert_true("\n".join(sk.log).contains("pulls, and nothing waits"), "the log says so")
+	assert_eq(boss.hp, 300, "a pull deals nothing")
+	assert_true(sk.assign(2, weak), "a slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "the shock mine in the front")
+	assert_true(sk.assign(1, Vector2i(1, 0)), "a plain one behind it, its front empty")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.mines.size(), 2, "two slots mined, nothing stepping in")
+	var heat := sk.mechs[3].heat
+	assert_true(sk.assign(3, boss), "the pull on the boss")
+	assert_eq(boss.hp, 270, "both land now in laid order: 10, then 10 doubled by the shock")
+	assert_eq(sk.mechs[3].heat, heat + 10, "the pull's heat")
+	assert_true(sk.mines.is_empty(), "every mine spent")
+	# On an empty slot the pull gathers there and lands nothing.
+	var s2 := Skirmish.new(1, 2)
+	var c := _mech("Bomber", Die.single(Face.attack(10, I)), 40, 100)
+	c.grant_passive(MINER)
+	s2.add_mech(c)
+	s2.add_mech(_mech("Killer", Die.single(Face.attack(10, I, [K.CLEAVE])), 40, 100))
+	s2.add_mech(_mech("Puller", Die.single(pull), 40, 100))
+	s2.add_foes([_ghoul(10, 0), _ghoul(10, 0), _archer(300, 0)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(1, s2.front[0]), "the front cleared")
+	assert_true(s2.assign(0, Vector2i(0, 0)), "a mine in one front slot")
+	assert_true(s2.can_assign(2, Vector2i(0, 1)), "the pull, Indirect, on any empty slot")
+	assert_true(s2.assign(2, Vector2i(0, 1)), "spent on the other")
+	assert_eq(s2.mines.keys(), [Vector2i(0, 1)], "the mine moved there")
+
+
+## The Syrinx Drone (Ryan's go, 21 October): the foe carries it, and the next weapon to kill it,
+## any machine's, leaves its shot in the slot it empties, one mine a drone; it gives the foe
+## Exposed, never refreshing it, and is Rapid on a foe already Exposed; a death by a tick leaves
+## nothing; the drone takes a foe, never a slot.
+func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_exposed() -> void:
+	var drone := Face.attack(0, I)
+	drone.drones = true
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Droner", Die.of([drone, Face.attack(10, L), Face.shield(10)]), 40, 100)
+	m.grant_passive(MINER)
+	sk.add_mech(m)
+	var napalm := Face.attack(30, L, [K.BURN])
+	napalm.burn = 2
+	sk.add_mech(_mech("Gunner", Die.single(napalm), 40, 100))
+	var marked := _ghoul(30, 0)
+	var boss := _ghoul(300, 0)
+	var arrival := _ghoul(100, 0)
+	sk.add_foes([marked, boss, arrival])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.slot_targets(sk.mechs[0], drone), [], "the drone takes a foe, never a slot")
+	assert_true(sk.assign(0, marked), "the drone on a foe not Exposed")
+	assert_true(Effects.has(marked, "syrinx_drone") and Effects.has(marked, "exposure"), "it carries the drone, and Exposed")
+	assert_true(sk.mechs[0].assigned, "not Rapid: it was not Exposed before")
+	assert_true(sk.assign(1, marked), "another machine's weapon kills it")
+	var left := sk.mines_at(Vector2i(0, 0))
+	assert_eq(left.size(), 1, "its killing shot waits in the slot it emptied")
+	assert_eq(int(left[0]["damage"]), 30, "the shot as fired")
+	assert_true(Array(left[0]["keywords"]).has(K.BURN), "its keywords with it")
+	sk.end_round()
+	assert_eq(arrival.hp, 70, "the arrival takes it")
+	assert_true(Effects.has(arrival, "burning"), "napalm")
+	sk.start_round()
+	Effects.grant_for_rounds(boss, Effects.STATUS["exposure"], "test", sk.round + 1)
+	var until := -1
+	for mod in Effects.live(boss):
+		if mod.id == "exposure":
+			until = mod.expires_round
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, boss), "the drone on a foe already Exposed")
+	assert_false(sk.mechs[0].assigned, "is Rapid: the machine acts again")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "the drone dark for the rest of the round")
+	for mod in Effects.live(boss):
+		if mod.id == "exposure":
+			assert_eq(mod.expires_round, until, "Exposed is never refreshed")
+	# A death by a tick leaves nothing.
+	boss.hp = 1
+	Effects.stack(boss, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 3)
+	sk.end_round()
+	assert_false(boss.alive(), "the burn finishes it")
+	assert_false(sk.mines.has(Vector2i(0, 1)), "and leaves no mine")
+
+
+## Chain does what Chain does on a blow (Ryan, 21 October): a Chain mine that kills its arrival
+## repeats its spender's attack on the next foe in reach, rolled and paying its heat again.
+func test_a_chain_mine_that_kills_its_arrival_repeats_the_attack() -> void:
+	var chain := Face.attack(10, L, [K.CHAIN])
+	chain.heat = 5
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Bomber", Die.single(chain), 40, 100)
+	m.grant_passive(MINER)
+	sk.add_mech(m)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+	var weak := _ghoul(10, 0)
+	var other := _ghoul(300, 0)
+	var arrival := _ghoul(10, 0)
+	sk.add_foes([weak, other, arrival])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(1, weak), "a slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "a chain mine laid")
+	var heat_laid := sk.mechs[0].heat
+	sk.end_round()
+	assert_false(arrival.alive(), "the arrival dies on the mine")
+	assert_eq(other.hp, 290, "and the chain repeats the attack on the next foe in reach")
+	assert_true("\n".join(sk.log).contains("chains to"), "the log says so")
+	assert_eq([heat_laid, sk.mechs[0].heat], [5, 10], "the repeat pays its heat again, on the gauge until the next END TURN")

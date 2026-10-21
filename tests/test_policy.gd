@@ -587,3 +587,52 @@ func test_greedy_swaps_a_back_foe_forward() -> void:
 	assert_true(Policy.swap_score(sk, front, Vector2i(1, front.column + 1)) < 0.0, "a front foe sent back is a loss")
 	pol.play_round(sk)
 	assert_eq(caster.rank, 0, "the bot pulls the caster into the front")
+
+
+## The Lammergeier's mines for the bot (21 October), on a synthetic passive: a mine laid on a
+## slot a waiting foe will take is worth its blow there, and nothing with none waiting and no
+## pull on the team; the pull on a foe is worth the pile landing in laid order, a Shock shot
+## doubling the next; the drone is worth more on a foe already Exposed, its Rapid.
+func test_greedy_lays_a_mine_where_a_foe_will_step_in_and_weighs_the_pull_and_the_drone() -> void:
+	var bay := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]}
+	var sk := Skirmish.new(3, 2)
+	var m := _mech("Bomber", Die.single(Face.attack(20, I)), 40, 100)
+	m.grant_passive(bay)
+	sk.add_mech(m)
+	var wall := _ghoul(500, 0)
+	sk.add_foes([wall])
+	sk.begin()
+	var arrival := _ghoul(100, 10)
+	sk.reinforcements.append(arrival)
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var empty := Vector2i(0, 1) if sk.front[1] == null else Vector2i(0, 0)
+	assert_eq(Policy.arrival_odds(sk, empty), 1.0, "the waiting foe takes the empty front slot")
+	assert_eq(Policy.arrival_odds(sk, Vector2i(1, empty.y)), 0.0, "no back foe waits")
+	assert_true(pol.mine_score(sk, ms, ms.face(), empty) > 0.0, "a mine there is worth its blow")
+	var opts := pol.options_for(sk, 0)
+	var slots := opts.filter(func(o) -> bool: return o["target"] is Vector2i)
+	assert_true(not slots.is_empty(), "the slots are options")
+	sk.reinforcements.clear()
+	assert_true(pol.mine_score(sk, ms, ms.face(), empty) <= 0.0, "with none waiting and no pull, a mine is worth nothing")
+	# The pull on a foe: the pile, read as it will land.
+	var pull := Face.attack(0, I)
+	pull.pulls_mines = true
+	sk.reinforcements.append(arrival)
+	assert_true(sk.assign(0, empty), "a mine laid")
+	assert_eq(pol.pull_score(sk, wall), 20.0, "the pull on the wall cashes its 20")
+	var drone := Face.attack(0, I)
+	drone.drones = true
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(_mech("Droner", Die.of([drone, Face.attack(30, L)]), 40, 100))
+	var foe := _ghoul(100, 10)
+	s2.add_foes([foe])
+	s2.begin()
+	s2.reinforcements.append(_ghoul(100, 10))
+	s2.start_round()
+	var d := s2.mechs[0]
+	var plain := pol.attack_score(s2, d, drone, foe)
+	assert_true(plain > 0.0, "the drone is worth its mine and its Exposed")
+	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "test", s2.round + 1)
+	assert_true(pol.attack_score(s2, d, drone, foe) > 0.0, "and on a foe already Exposed, its Rapid")

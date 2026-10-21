@@ -851,6 +851,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
 		errs.append("%s: resets_on_kill (true) is a weapon's: if its spend kills, every dark entry comes back and its machine acts again" % where)
+	if fd.has("pulls_mines") and (kind != "attack" or not (fd["pulls_mines"] is bool)):
+		errs.append("%s: pulls_mines (true) is a weapon's: every mine on the field gathers into the slot it is spent on" % where)
+	if fd.has("drones") and (kind != "attack" or not (fd["drones"] is bool)):
+		errs.append("%s: drones (true) is a weapon's: the foe carries the Syrinx Drone" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
