@@ -43,6 +43,11 @@ var rng := RandomNumberGenerator.new()
 var rounds: int = 0
 var rerolls: int = 0
 var overheat_hull: int = 0
+var overheats: int = 0           # overheat events (a machine over its maximum as a turn ends)
+var heat_peak_pct: float = 0.0   # the hottest any machine stood as a turn ended, percent of its maximum
+var hot_rounds: int = 0          # rounds a machine ended its turn at four fifths of its maximum or more
+var forced_holds: int = 0        # damaging dice held because spending them would cross the maximum (the heat report, 13 October: spikes, not actions)
+var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
 var withdrew: bool = false
@@ -75,12 +80,26 @@ func play(sk: Skirmish) -> int:
 		sk.start_round()
 		rounds += 1
 		play_round(sk)
+		_read_heat(sk)
 		if sk.outcome != Skirmish.Outcome.NONE:
 			break
 		sk.end_round()
 		for o in sk.overheats:
 			overheat_hull += int(o["over"])
+			overheats += 1
 	return sk.outcome
+
+
+## The heat as the player's turn ends, for the runner's heat report: the hottest machine as a
+## share of its maximum, and whether any stood at four fifths of it or more.
+func _read_heat(sk: Skirmish) -> void:
+	var hot := false
+	for ms in sk.live_mechs():
+		var pct := 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
+		heat_peak_pct = maxf(heat_peak_pct, pct)
+		hot = hot or pct >= 80.0
+	if hot:
+		hot_rounds += 1
 
 
 ## One player turn, from the dice showing to every die spent or skipped.
@@ -112,6 +131,7 @@ func play_round(sk: Skirmish) -> void:
 				# A spend that costs more than it gains is not made: the screen lets a die go
 				# unspent at End turn, and so does the bot. A blank costs nothing to discard.
 				if pick["score"] < 0.0:
+					_note_forced(sk, ms)
 					held.append(i)
 					continue
 			if best.is_empty() or pick["score"] > best["score"]:
@@ -133,6 +153,19 @@ func play_round(sk: Skirmish) -> void:
 			_tally(spent)
 		else:
 			held.append(best["mech"])
+
+
+## A damaging die held because its heat would cross the maximum: a forced choice, and the
+## damage it would have dealt at its mean (the heat report's, 13 October).
+func _note_forced(sk: Skirmish, ms: Skirmish.MechState) -> void:
+	var f := ms.face()
+	if f == null or not f.is_attack() or (f.power <= 0 and f.power_max <= 0):
+		return
+	var fc := sk.forecast(ms, false)
+	if int(fc["heat_end"]) + heat_of(ms, f) <= ms.heat_max:
+		return
+	forced_holds += 1
+	forgone += float(Effects.effective_face(ms.unit, f).average() * maxi(1, f.strikes))
 
 
 ## A damaging attack that rolls a range (the gamble), and one that is a single number.
@@ -538,6 +571,8 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	match f.kind:
 		Face.Kind.SHIELD:
 			score = shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms)
+			if who == ms:
+				score += seal_score(sk, ms)
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
 			if who == ms:
@@ -846,6 +881,19 @@ func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
 		if taken >= foe.hp:
 			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT
 	return total / float(live.size())
+
+
+## What sealing is worth (the Armadillo's Lockdown, 20 October; valued 21 October): a shield
+## it spends on itself seals it, and the armour stands behind this round's blows, less the heat
+## the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when it is
+## sealed already or has no seal.
+func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var seal := Effects.seal_form(ms.unit)
+	if seal.is_empty() or Effects.is_sealed(ms.unit):
+		return 0.0
+	var kept := _armour_saved(sk, ms, int(seal["armour"])) * HULL_WEIGHT
+	var cost := float(int(seal["heat"]) + ms.unit.cooling) * BANK_WEIGHT
+	return kept - cost
 
 
 ## What a Siphon is worth to a machine whose vents blast (the Whip Scorpion's, 21 October): the

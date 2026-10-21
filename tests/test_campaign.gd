@@ -500,3 +500,25 @@ func test_a_battle_not_won_pays_no_favour() -> void:
 	assert_eq(r["favour"], 0, "no Favour for a battle not won")
 	assert_eq(c.favour, Campaign.START_FAVOUR, "nothing paid")
 	assert_true(c.salvage > Campaign.START_SALVAGE, "though its kills keep their salvage")
+
+
+## The run's Sponsorship tallies (the bible's row): each battle's measures added at its end,
+## kept through a save, and read for each maker through the measure its content names.
+func test_the_run_tallies_each_makers_sponsorship_measure() -> void:
+	var c := _run(9)
+	var b := _battle(c)
+	b.sponsorship = {"hexes_moved": 12, "guarded": 40, "damaging_spends": 5, "quiet_spends": 2}
+	_end(b, Battle.Outcome.VICTORY)
+	c.finish_battle()
+	assert_eq(int(c.sponsorship["hexes_moved"]), 12, "a battle's hexes")
+	var by_maker := c.sponsorship_by_maker()
+	for id in c.db.makers.keys():
+		var measure := str(c.db.makers[id].get("sponsorship", ""))
+		if measure.is_empty():
+			assert_false(by_maker.has(id), "a maker that names no measure has none")
+		else:
+			assert_eq(int(by_maker[id]), int(b.sponsorship[measure]), "%s reads its own measure, %s" % [id, measure])
+	assert_true(SaveGame.save_campaign(c, TMP), "saved")
+	var c2 := SaveGame.load_campaign(TMP)
+	assert_eq(c2.sponsorship, c.sponsorship, "kept through a save")
+	SaveGame.clear(TMP)

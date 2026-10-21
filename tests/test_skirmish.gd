@@ -5314,3 +5314,58 @@ func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
 	assert_false(Effects.has(u, "siphoning"), "gone at the round's end")
+
+
+## The forecast over a Cryo foe (Ryan, 16 October: the net on the heat bar, never the die): a
+## damaging spend held over a foe carrying Cryo reads its own heat less what the hit cashes,
+## every stack on every foe it reaches; a spend of no damage cashes nothing.
+func test_the_forecast_over_a_cryo_foe_reads_the_net_heat() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(10, L, [K.CLEAVE])
+	gun.heat = 20
+	var u := _mech("A", Die.of([gun, Face.attack(0, I, [K.LURE])]), 40, 100)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1), _ghoul(500, 1), _ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 30
+	ms.face_index = 0
+	Effects.stack(sk.front[0], Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(sk.front[1], Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_eq(int(sk.forecast(ms, true)["heat_after"]), 50, "held over nothing: its own twenty")
+	assert_eq(int(sk.forecast(ms, true, 0, false, sk.front[2])["heat_after"]), 30, "over the right one, Spread reaches the two-stack neighbour: twenty cashed")
+	assert_eq(int(sk.forecast(ms, true, 0, false, sk.front[1])["heat_after"]), 20, "over the middle, three stacks: thirty cashed")
+	ms.face_index = 1
+	assert_eq(int(sk.forecast(ms, true, 0, false, sk.front[1])["heat_after"]), 30, "a lure cashes nothing")
+
+
+## A fight's share of the Sponsorship measures (the bible's row): damage taken on shield and
+## armour, dice spent on entries that deal damage (a vent that blasts among them) and on
+## entries that deal none; a blank is no spend.
+func test_a_fight_tallies_its_sponsorship_measures() -> void:
+	var sk := Skirmish.new(1, 1)
+	var u := _mech("A", Die.of([Face.attack(10, L), Face.vent(10), Face.attack(0, I, [K.LURE]), Face.blank()]), 10, 1000)   # a hull no blow here can injure
+	u.armour = 5
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 30)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	sk.assign(0, sk.front[0])
+	sk.end_round()
+	assert_eq(int(sk.sponsorship["guarded"]), 15, "a blow of thirty: ten on the shield, five off the armour")
+	assert_eq(int(sk.sponsorship["damaging_spends"]), 1, "a gun that deals damage")
+	for k in [1, 2, 3]:
+		sk.start_round()
+		ms.face_index = k
+		sk.assign(0, ms if k == 1 else (sk.front[0] if k == 2 else null))
+		sk.end_round()
+	assert_eq(int(sk.sponsorship["quiet_spends"]), 2, "a vent and a lure deal none; a blank is no spend")
+	u.grant_passive(BLAST_PASSIVE)
+	sk.start_round()
+	ms.heat = 10
+	ms.face_index = 1
+	sk.assign(0, ms)
+	assert_eq(int(sk.sponsorship["damaging_spends"]), 2, "a vent that blasts deals damage")

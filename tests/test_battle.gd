@@ -624,3 +624,18 @@ func test_a_catch_comes_first_through_engage() -> void:
 	for ms in sk.mechs:
 		in_it = in_it or ms.unit == m
 	assert_true(in_it, "with its prey in it")
+
+
+## The hexes a battle's machines move feed the run's Sponsorship (Kestrel's measure, the
+## bible's row); a move taken back is taken off.
+func test_the_hexes_moved_are_tallied_and_an_undo_takes_them_back() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	assert_eq(int(b.sponsorship["hexes_moved"]), 0, "nothing moved yet")
+	var h: Vector2i = b.destinations_for(m).keys()[0]
+	var route := b.move_to(m, h)
+	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "the route's hexes")
+	b.undo_move(m)
+	assert_eq(int(b.sponsorship["hexes_moved"]), 0, "taken back with the move")
+	route = b.move_to(m, h)
+	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "and counted again when it goes")

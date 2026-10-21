@@ -1450,6 +1450,14 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		var over: Foe = target if can and target is Foe else null
 		var sf := sk.shown_face(ms, ms.face(), over)
 		_ghost.set_face(sf, sk.shown_number_text(ms, sf, over))
+		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the
+		# die): the gun's heat less what its damaging hit there cashes.
+		var mv := _mech_views[_drag_from]
+		if mv.bars.size() >= 3:
+			var heat_after := int(sk.forecast(ms, true, 0, false, over)["heat_after"])
+			if mv.bars[2].size() >= 4 and int(mv.bars[2][3]) != heat_after:
+				mv.bars[2][3] = heat_after
+				mv.queue_redraw()
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:

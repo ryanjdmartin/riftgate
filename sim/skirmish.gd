@@ -77,6 +77,11 @@ var log: Array[String] = []
 ## (the tag) is how the screen animates it, a lunge in place of a kick back.
 var last_roll: Dictionary = {}
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
+## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
+## October, never shown live): damage the team took on shield and armour, dice spent on
+## entries that deal damage (a vent that blasts among them) and on entries that deal none.
+## The battle adds them up with the hexes its machines move; each maker's content names its own.
+var sponsorship := {"guarded": 0, "damaging_spends": 0, "quiet_spends": 0}
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
 ## rank, the heat paid and the shield lost to danger close. Never read by the game.
@@ -373,8 +378,10 @@ static func spend_bite(u, f: Face) -> int:
 ## if spent; the screen asks for that only while the die is being dragged. `extra_shield`
 ## asks the same question with that much more shield standing (a shield component about
 ## to be spent here), for whoever weighs one; `overshield` lets it pass the maximum, as a
-## component with that keyword would.
-func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
+## component with that keyword would. `aimed`, the foe a dragged die is held over, folds in
+## what that spend cashes there: a damaging hit on a Cryo foe cools the hitter after its own
+## heat lands (Ryan, 16 October: the net on the heat bar, never the die).
+func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false, aimed: Foe = null) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
 	var bite := pending_bite(ms) if with_face else 0
@@ -401,7 +408,9 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	# and Burning's tick burn at the end of the player's turn, before the enemy acts (11 and
 	# 13 October). Foes add no heat outright: their fire leaves Burning and Scorched, which
 	# land on later turns.
-	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
+	var heat_mid := ms.heat + (pending_heat(ms) if with_face else 0)
+	heat_mid -= mini(heat_mid, cryo_cash(ms, aimed) if with_face else 0)
+	var heat_end := heat_mid + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
 	var blows := 0
@@ -421,6 +430,23 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}
+
+
+## The heat a damaging spend of the entry showing would cash off Cryo foes, aimed at `over`:
+## every stack on every foe it reaches, at the Cryo rate. Nothing for an entry of no damage or
+## without a foe in hand.
+func cryo_cash(ms: MechState, over: Foe) -> int:
+	var f := ms.face()
+	if over == null or f == null or ms.assigned or not f.is_attack():
+		return 0
+	var ef := Effects.effective_face(ms.unit, f, over)
+	if ef.power <= 0 and ef.power_max <= 0:
+		return 0
+	var stacks := 0
+	for foe in reached_by(ef, over):
+		if foe.alive():
+			stacks += Effects.stacks_of(foe, "cryoed")
+	return stacks * CRYO_COOL_PER_STACK
 
 
 ## One foe's blows on a machine as they would land now, in order: each through what the
@@ -835,6 +861,7 @@ func assign(mech_index: int, target = null) -> bool:
 			ms.assigned = true
 			_check_outcome()
 			return true
+	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -855,6 +882,7 @@ func assign(mech_index: int, target = null) -> bool:
 			# blasts nothing, and so does an ally's vent on it.
 			if who == ms and Effects.vent_blast(ms.unit) > 0.0 and before > who.heat:
 				_blast(ms, int(roundf(float(before - who.heat) * Effects.vent_blast(ms.unit))))
+				blasted = true
 			_cleanse_with(ms, who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
@@ -886,6 +914,10 @@ func assign(mech_index: int, target = null) -> bool:
 		if bm != null:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	_shift_form(ms, f, target)
+	if f.kind != Face.Kind.BLANK:
+		var deals := blasted or (f.is_attack() and (f.power > 0 or f.power_max > 0))
+		var measure := "damaging_spends" if deals else "quiet_spends"
+		sponsorship[measure] = int(sponsorship[measure]) + 1
 	# The Siphon (the Whip Scorpion's, 20 October): every blow a foe lands on its owner this
 	# round adds the entry's heat, next round's fuel (Siphoning, until the round's end).
 	if f.heat_per_blow > 0 and ms.alive():
@@ -1965,6 +1997,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	ms.unit.hull -= r["through"]
 	var rk := "back" if source != null and source.rank == 1 else "front"
 	taken_by_rank[rk] = int(taken_by_rank.get(rk, 0)) + int(r["absorbed"]) + int(r["through"])
+	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],

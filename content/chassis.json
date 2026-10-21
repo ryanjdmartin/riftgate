@@ -5,25 +5,29 @@
    "id": "minerva",
    "name": "Minerva Heavy Works",
    "style": "Armour first. Everything is a tank, even the ones with legs.",
-   "voice": "Maintenance manual. Terse, exact, proud of tolerances."
+   "voice": "Maintenance manual. Terse, exact, proud of tolerances.",
+   "sponsorship": "guarded"
   },
   {
    "id": "kestrel",
    "name": "Kestrel Dynamics",
    "style": "Fast, fragile, over-tuned. Airframes and interceptors.",
-   "voice": "Flight-test log. Clipped, numbers first."
+   "voice": "Flight-test log. Clipped, numbers first.",
+   "sponsorship": "hexes_moved"
   },
   {
    "id": "wainwright_sutler",
    "name": "Wainwright & Sutler",
    "style": "Quads and artillery. Old firm, odd designs, everything works.",
-   "voice": "Field notes. Dry and precise."
+   "voice": "Field notes. Dry and precise.",
+   "sponsorship": "damaging_spends"
   },
   {
    "id": "aphelion",
    "name": "Aphelion",
    "style": "Descended from the deep-space programme. Humanoid frames, hover platforms, variable geometry; high-tech suites over light hulls. White with a pearl sheen, red markings.",
-   "voice": "Haughty, elitist, technical, jargon"
+   "voice": "Haughty, elitist, technical, jargon",
+   "sponsorship": "quiet_spends"
   },
   {
    "id": "arsenal",

@@ -14,6 +14,10 @@ const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 Sept
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
 ## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
 const SIZES := ["light", "medium", "heavy", "assault"]
+## The measures a run tallies for Sponsorship (the bible's row; Battle.sponsorship and
+## Skirmish.sponsorship keep them): hexes moved on the map, damage taken on shield and armour,
+## dice spent on entries that deal damage, and on entries that deal none.
+const SPONSORSHIP_MEASURES := ["hexes_moved", "guarded", "damaging_spends", "quiet_spends"]
 const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
 const MAX_MODULE_SLOTS := 4         # a chassis's module slots: two as a rule, three on the Clydesdale (Ryan); room to move
 ## Internal design text lives under `design` and is never shown. These keys at the top level
@@ -1109,6 +1113,11 @@ func _validate_chassis(errs: Array[String]) -> void:
 			capitals += 1
 	if not makers.is_empty() and capitals != 1:
 		errs.append("makers: exactly one maker sits at the capital (\"capital\": true); %d do" % capitals)
+	# Sponsorship (the bible's row): a maker names the measure the run tallies for it, one the
+	# engine keeps (SPONSORSHIP_MEASURES), or none.
+	for id in makers.keys():
+		if makers[id].has("sponsorship") and not SPONSORSHIP_MEASURES.has(str(makers[id]["sponsorship"])):
+			errs.append("maker %s: sponsorship names a measure the run tallies, one of %s" % [id, ", ".join(SPONSORSHIP_MEASURES)])
 	# Tiers (7 October): every chassis 1 to 3; the capital's maker fields no tier one; a
 	# stocked component's tier is derived, so it stores none; an unstocked one that is not
 	# fixed stores its own; no component of the capital's maker is tier one.

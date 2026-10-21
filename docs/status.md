@@ -114,6 +114,12 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die
+  is held over it; the run tallies each maker's Sponsorship measure (hexes moved, damage taken
+  on shield and armour, dice spent on entries that deal damage or none; each maker's content
+  names its own); the balance report gains a heat section (peaks, hot rounds, overheats, dice
+  held for heat) and `--module` twin rows with their differences; the bot values the
+  Armadillo's seal. Welding the machines' meshes waits for a session that can count draw calls.
 - 21 October, the Whip Scorpion's engine (Ryan's go, 20 October; the bible's Whip Scorpion
   row): a vent it spends on itself blasts a random live foe for the heat it took off (a static
   vent_blast, one blow through the pipeline, back rank included); the Heliographic Siphon lures

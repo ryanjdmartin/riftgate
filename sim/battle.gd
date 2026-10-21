@@ -68,6 +68,10 @@ var with_boss := true
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
 ## decides what is kept.
 var foes_killed: int = 0
+## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
+## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
+var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
+var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current action, taken back with an undo
 ## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
 ## still reads their dice (a wreck loses its cracked and destroyed components).
 var wrecks: Array[Unit] = []
@@ -214,6 +218,8 @@ func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
 	u.facing = field._direction_index(before, route[route.size() - 1])
 	u.pos = route[route.size() - 1]
+	sponsorship["hexes_moved"] = int(sponsorship["hexes_moved"]) + route.size()
+	action_hexes[u.id] = int(action_hexes.get(u.id, 0)) + route.size()
 	_prune_orders()
 
 
@@ -234,6 +240,8 @@ func undo_move(u: Unit) -> bool:
 	u.facing = int(a[1])
 	move_left[u.id] = int(a[2])
 	action_from.erase(u.id)
+	sponsorship["hexes_moved"] = maxi(0, int(sponsorship["hexes_moved"]) - int(action_hexes.get(u.id, 0)))
+	action_hexes.erase(u.id)
 	_prune_orders()
 	return true
 
@@ -488,6 +496,7 @@ func _new_turn() -> void:
 	spent.clear()
 	move_left.clear()
 	action_from.clear()
+	action_hexes.clear()
 	fought.clear()
 	orders.clear()
 	forced = []
@@ -558,8 +567,11 @@ func finish_skirmish() -> void:
 		fought[ms.unit.id] = true
 		move_left.erase(ms.unit.id)
 		action_from.erase(ms.unit.id)
+		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		foes_killed += maxi(0, sq.strength - current.survivors_for(sq))
+	for k in current.sponsorship.keys():
+		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)
 	current = null
 	boss_fight = false

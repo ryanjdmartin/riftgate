@@ -14,8 +14,10 @@ extends SceneTree
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
 ## team", "team:badger+sparrowhawk"), --team id,id (repeatable: a row of exactly those machines,
-## any number of them, so pairs and fours can be read beside the trios), --module id (that module fitted to every machine in every row, to read what it is
-## worth beside a run without it; 11 October, the Booster against the Databank),
+## any number of them, so pairs and fours can be read beside the trios), --module id (every row
+## run twice, as it stands and beside it with that module fitted to every machine, both in the
+## one report with a section of their differences; 11 October, the Booster against the
+## Databank; the twin rows since 21 October),
 ## --bump stat:N, repeatable (N more of a stat on every machine: hull, shield, armour, heat
 ## for the maximum, cooling, or damage for N more on every blow; the price of a stat, read
 ## against a run without it), --nopassive (every chassis without its passive, for what the
@@ -87,6 +89,17 @@ func _init() -> void:
 		return
 	if not only_rows.is_empty():
 		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
+	# --module: every row beside its twin wearing the module, in one report (21 October).
+	if not fit_module.is_empty():
+		var twinned: Array = []
+		for r in rows:
+			twinned.append(r)
+			var t: Dictionary = r.duplicate(true)
+			t["id"] = "%s+%s" % [r["id"], fit_module]
+			t["name"] = "%s + %s" % [r["name"], str(db.modules[fit_module].get("name", fit_module))]
+			t["module"] = fit_module
+			twinned.append(t)
+		rows = twinned
 	if not trace.is_empty():
 		quit(_trace_one())
 		return
@@ -260,7 +273,7 @@ static func _whole(v, key: String = ""):
 			out[k] = _whole(v[k], str(k))
 		return out
 	if v is float:
-		return v if key in ["hull_lost_pct", "foes_killed_pct"] else int(roundf(v))
+		return v if key in ["hull_lost_pct", "foes_killed_pct", "heat_peak", "forgone", "end_heat"] else int(roundf(v))
 	return v
 
 
@@ -352,7 +365,8 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	var uid := 0
 	for cid in r["chassis"]:
 		uid += 1
-		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, [] if fit_module.is_empty() else [fit_module])
+		var fitted := str(r.get("module", ""))
+		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, [] if fitted.is_empty() else [fitted])
 		if not is_equal_approx(damage_scale, 1.0):
 			# The scale rides on every blow as a loadout modifier, the way a number is asked
 			# here, so the bot's outcomes and the resolver read the same thing.
@@ -429,7 +443,8 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {}}
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
+		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -465,6 +480,17 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["foes_killed_pct"] += 100.0 * dead / maxi(1, foes.size())
 		agg["overheat_hull"] += pol.overheat_hull
 		agg["rerolls"] += pol.rerolls
+		# The heat report (Ryan, 13 October: spikes, not actions): the peak, the rounds near the
+		# maximum, the overheats, the damaging dice held for heat, and the heat left at the end.
+		agg["overheats"] += pol.overheats
+		agg["heat_peak"] += pol.heat_peak_pct
+		agg["hot_rounds"] += pol.hot_rounds
+		agg["forced"] += pol.forced_holds
+		agg["forgone"] += pol.forgone
+		var end_heat := 0.0
+		for ms in sk.mechs:
+			end_heat += 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
+		agg["end_heat"] += end_heat / float(maxi(1, sk.mechs.size()))
 		for c in pol.spends.keys():
 			agg["spends"][c] = int(agg["spends"].get(c, 0)) + int(pol.spends[c])
 		for pair in [["reach", sk.reach_tally], ["class", sk.class_tally]]:
@@ -523,7 +549,7 @@ func _report(fights: int, secs: float) -> String:
 		Time.get_date_string_from_system(), fights, secs, "" if merge.size() < 2 else " (%d parts side by side)" % merge.size(), seeds, ", ".join(_policy_names()),
 		"" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below,
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
-		+ ("" if fit_module.is_empty() else " Every machine wears the %s." % str(db.modules[fit_module].get("name", fit_module)))
+		+ ("" if fit_module.is_empty() else " Each row runs beside its twin with the %s fitted to every machine." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
 		+ ("" if not no_passive else " No chassis has its passive.")
 		+ ("" if unmeasured.is_empty() else " Not measured, the engine lacking their kit: %s." % ", ".join(unmeasured))
@@ -565,6 +591,9 @@ func _report(fights: int, secs: float) -> String:
 			cell.append("%.1f r, %d%% hull, %.2f lost%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), float(a["destroyed_won"]) / maxi(1, int(a["victory"])), flags])
 		L.append("| " + " | ".join(cell) + " |")
 	L.append("")
+	L.append_array(_heat_report(top))
+	if not fit_module.is_empty():
+		L.append_array(_module_report())
 	L.append("## Targeting rules on the team cells, %s" % " / ".join(_policy_names()))
 	L.append("")
 	L.append("The team against every pack under the shipped rule (every foe picks its own target by its aim, 2 October) and under the rule before it (every foe on the machine with the lowest shield): win rate per policy, then mean rounds and mean hull lost under %s. A single machine cannot see targeting, so this is the only place the rule reads. The matrix above ran under %s." % [Policy.kind_name(top), "the aims" if targeting.is_empty() else "the lowest-shield rule"])
@@ -711,6 +740,76 @@ func _reach_report(top: int) -> Array[String]:
 		L.append("| %s | %d%% | %.1f | %.1f |" % [ck, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n])
 	L.append("")
 	return L
+
+
+## The heat report (Ryan, 13 October: spikes, not actions), a row over every pack: the hottest
+## a machine stood as a turn ended, the rounds a machine ended at four fifths of its maximum
+## or more, the overheats and the hull they burned, the damaging dice held because their heat
+## would have crossed the maximum and the damage held back with them, and the team's heat left
+## at the fight's end beside its length.
+func _heat_report(top: int) -> Array[String]:
+	var L: Array[String] = []
+	L.append("## Heat, %s" % Policy.kind_name(top))
+	L.append("")
+	L.append("A row over every pack, per fight: the peak heat (the hottest machine as a turn ended, percent of its maximum), the rounds a machine ended at four fifths of its maximum or more, the overheats and the hull they burned, the damaging dice held because spending them would cross the maximum and the damage they held back, and the team's heat left at the end (percent) against the rounds fought.")
+	L.append("")
+	L.append("| Row | Peak | Hot rounds | Overheats | Hull burned | Held for heat | Damage held | Heat left / rounds |")
+	L.append("| --- | --- | --- | --- | --- | --- | --- | --- |")
+	for r in rows:
+		var t := {"fights": 0, "heat_peak": 0.0, "hot_rounds": 0, "overheats": 0, "overheat_hull": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0, "rounds": 0}
+		for p in packs:
+			var a: Dictionary = cells[_key(r, p, top)]
+			for k in t.keys():
+				t[k] += a.get(k, 0)
+		var n := float(maxi(1, int(t["fights"])))
+		L.append("| %s | %d%% | %.1f | %.2f | %.1f | %.2f | %.1f | %d%% / %.1f |" % [r["name"], int(roundf(t["heat_peak"] / n)), float(t["hot_rounds"]) / n,
+			float(t["overheats"]) / n, float(t["overheat_hull"]) / n, float(t["forced"]) / n, float(t["forgone"]) / n, int(roundf(t["end_heat"] / n)), float(t["rounds"]) / n])
+	L.append("")
+	return L
+
+
+## The module's worth (--module, 21 October): each row's mean win rate over every pack, as it
+## stands and with the module fitted, per policy, and the difference. Read the band: at 200
+## seeds a row mean's is about 1.5 points (docs/measurements.md).
+func _module_report() -> Array[String]:
+	var L: Array[String] = []
+	L.append("## The %s, fitted against stock" % str(db.modules[fit_module].get("name", fit_module)))
+	L.append("")
+	L.append("Each row's mean win rate over every pack, %s: as it stands, then with the module on every machine, and the difference." % " / ".join(_policy_names()))
+	L.append("")
+	L.append("| Row | Stock | Fitted | Difference |")
+	L.append("| --- | --- | --- | --- |")
+	for r in rows:
+		if r.has("module"):
+			continue
+		var twin_id := "%s+%s" % [r["id"], fit_module]
+		var twin: Dictionary = {}
+		for t in rows:
+			if t["id"] == twin_id:
+				twin = t
+		if twin.is_empty():
+			continue
+		var stock: Array[String] = []
+		var fitted: Array[String] = []
+		var delta: Array[String] = []
+		for k in policies:
+			var a := _row_mean(r, k)
+			var b := _row_mean(twin, k)
+			stock.append("%.1f" % a)
+			fitted.append("%.1f" % b)
+			delta.append("%+.1f" % (b - a))
+		L.append("| %s | %s | %s | %s |" % [r["name"], " / ".join(stock), " / ".join(fitted), " / ".join(delta)])
+	L.append("")
+	return L
+
+
+## A row's mean win rate over every pack under one policy, in percent.
+func _row_mean(r: Dictionary, k: int) -> float:
+	var total := 0.0
+	for p in packs:
+		var a: Dictionary = cells[_key(r, p, k)]
+		total += 100.0 * float(a["victory"]) / float(maxi(1, a["fights"]))
+	return total / float(maxi(1, packs.size()))
 
 
 func _header() -> String:

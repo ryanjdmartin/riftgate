@@ -67,6 +67,8 @@ static func to_dict(b: Battle) -> Dictionary:
 		"faction": b.faction,
 		"guest": b.guest,
 		"foes_killed": b.foes_killed,
+		"sponsorship": b.sponsorship,
+		"action_hexes": _int_keys(b.action_hexes),
 		"wrecks": _units(b.wrecks),
 		"state": b.state,
 		"outcome": b.outcome,
@@ -115,6 +117,12 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.faction = str(d.get("faction", ""))
 	b.guest = str(d.get("guest", ""))
 	b.foes_killed = int(d.get("foes_killed", 0))
+	var tally: Dictionary = d.get("sponsorship", {})
+	for k in tally.keys():
+		b.sponsorship[str(k)] = int(tally[k])
+	var hexes: Dictionary = d.get("action_hexes", {})
+	for uid in hexes.keys():
+		b.action_hexes[int(str(uid))] = int(hexes[uid])
 	for wd in d.get("wrecks", []):
 		b.wrecks.append(_unit_from(wd))
 	b.state = int(d.get("state", Battle.State.PLAN))
@@ -537,6 +545,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"battle": to_dict(c.battle) if c.battle != null else null,
 		"battle_city": c.battle_city, "squad": c.squad,
 		"history": c.history,
+		"sponsorship": c.sponsorship,
 	}
 
 
@@ -592,6 +601,10 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	c.history.clear()
 	for rd in d.get("history", []):
 		c.history.append(_report_from(rd))
+	c.sponsorship.clear()
+	var tally: Dictionary = d.get("sponsorship", {})
+	for k in tally.keys():
+		c.sponsorship[str(k)] = int(tally[k])
 	return c
 
 

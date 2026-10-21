@@ -551,3 +551,20 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 1, "the ten turns to the forty, and the forty holds against a five")
 	assert_eq(sk.rerolls_left, 2, "one reroll spent")
+
+
+## The seal (the Armadillo's Lockdown, valued 21 October): a shield a machine with a seal
+## spends on itself is worth the armour it stands behind this round's blows, less its heat.
+func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([Face.shield(10), Face.attack(10, L)]), 0, 200)
+	u.grant_passive({"id": "test_seal", "name": "Seal", "description": "", "effects": [{"trigger": "static", "effect": "seal_form", "value": 20, "heat": 5}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 30), _ghoul(500, 30)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.seal_score(sk, ms) > 0.0, "twenty armour against two blows of thirty is worth the forty it keeps off")
+	Effects.stack(u, Effects.sealed_status(20, 5), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	assert_eq(pol.seal_score(sk, ms), 0.0, "and nothing once sealed")

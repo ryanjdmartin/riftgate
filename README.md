@@ -158,8 +158,8 @@ python3 tools/pages/bible_tables.py
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
-# any number, so pairs and fours read beside the trios; --module tactical_databank fits that module to every
-# machine (--out elsewhere, then compare against a run without it); for prices, --bump armour:5
+# any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
+# twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only

@@ -100,6 +100,7 @@ var battle: Battle = null
 var battle_city: String = ""
 var squad: Array = []             # roster uids fighting `battle`
 var history: Array = []           # one report a battle (finish_battle's)
+var sponsorship: Dictionary = {}   # measure -> the run's tally (the bible's Sponsorship row; never shown live): each battle's added at its end; sponsorship_by_maker reads it through the makers' content
 var _next_uid: int = 1
 
 
@@ -333,6 +334,8 @@ func finish_battle() -> Dictionary:
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate
+	for k in b.sponsorship.keys():
+		sponsorship[k] = int(sponsorship.get(k, 0)) + int(b.sponsorship[k])
 	history.append(report)
 	var fought := c.id
 	battle = null
@@ -349,6 +352,19 @@ func finish_battle() -> Dictionary:
 	for m in wrecked:
 		m.shop = SHOP_BATTLES
 	return report
+
+
+## Each maker's Sponsorship measure as the run has tallied it (the bible's Sponsorship row):
+## maker id -> the tally of the measure its content names; a maker that names none (the
+## Arsenal, whose notice comes from the Convergence's top tier) is left out. The offer at the
+## run's end, to the makers whose measure the player topped, waits on the catalogues.
+func sponsorship_by_maker() -> Dictionary:
+	var out := {}
+	for id in db.makers.keys():
+		var measure := str(db.makers[id].get("sponsorship", ""))
+		if not measure.is_empty():
+			out[id] = int(sponsorship.get(measure, 0))
+	return out
 
 
 ## A battle's machine as the battle holds it: on the field, or among its wrecks.
