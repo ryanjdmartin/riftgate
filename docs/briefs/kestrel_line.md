@@ -29,7 +29,7 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer, the Butcherbird (its go 21 October; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
+| two | the interceptor (decided 21 October, tier two that day; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
@@ -288,16 +288,18 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
     tender, and Exposed, its Kestrel answer, arrives a tier later; the root stays the scales
     question (section 12) and the stock pass. The Coil is a tier-one piece now (the Puffin's
     stock), which feeds its strikes from the start.
+- Ryan, 21 October: "Put butcher in." Decided: the Butcherbird at tier one, the interceptor at
+  tier two. Kestrel stands 3-3-2: the Butcherbird, the Storm Petrel and the Puffin; the
+  Buzzard, the Kite and the interceptor; the bomber and the capital.
 
 ## Open for Ryan
 
-1. Which fighter at tier one (the section above; Claude's lean the Butcherbird).
-2. The per-chassis proposals in their briefs: the bomber's gate and Chain in mines, the
+1. The per-chassis proposals in their briefs: the bomber's gate and Chain in mines, the
    Buzzard's stock, the platform's settlements (the interceptor's, the Puffin's and the
    Kite's landed 21 October).
-3. The stock kinds above, for the stock pass's list, and which of the seven locks he names
+2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
-4. The leans row's Kestrel line.
+3. The leans row's Kestrel line.
 
 ## What the session hands back
 

@@ -8,8 +8,10 @@ from the shield-spender's alternative kits, and finds the build hook its first k
 session, so this brief holds the rounds until then). The passive Ryan's, 18 October; the kit
 Claude's, 20 October, its third form, below the second; the fourth round, late that day, names the mark Exposed and widens the
 gate to buffs; the fifth takes Ryan's calls, the mark reach and armour and no number on a weapon
-of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Tier**: one or two (Ryan, 21 October: the Storm Petrel, the Puffin and one of
-the two fighters at tier one; `kestrel_line.md`, Claude's lean this machine at two). **Shape**: a tilt-jet (Ryan, 20 October:
+of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Tier**: two (Ryan, 21 October: "Put butcher in": Kestrel's tier ones are the Storm
+Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). At tier two its stock may carry the
+tier-one buffs and setters its gate reads (the Coil is one since the Puffin's move), and the
+glass that two spends a round asked of a tier one is the content session's to keep or drop. **Shape**: a tilt-jet (Ryan, 20 October:
 "agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
 line review that gave it this brief); the second and third rounds of
 `kestrel_shield_spender.md` (where it was kit 2); the bible's rows on the action economy
