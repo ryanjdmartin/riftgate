@@ -34,6 +34,7 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper", "heat_per_blow": "siphoning"}
+FACE_FIELDS_ON_FOES = {"drones": ["syrinx_drone", "exposure"]}   # the Syrinx Drone: its own status, and Exposed on a foe not yet Exposed
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
@@ -54,6 +55,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on"))),
+           ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
+           ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
+           ("drone", "Drone", lambda f: bool(f.get("drones"))),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
@@ -126,6 +130,10 @@ def tally(words):
         for field, status in FACE_FIELDS.items():
             if f.get(field):
                 t.grant(status, "machine", label, how, planned, who=who)
+        for field, statuses in FACE_FIELDS_ON_FOES.items():
+            if f.get(field):
+                for status in statuses:
+                    t.grant(status, "foe", label, how, planned, who=who)
         for eff in ((c.get("passive") or {}).get("effects") or []):
             if eff.get("effect") in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[eff["effect"]]

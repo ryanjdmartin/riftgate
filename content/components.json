@@ -1862,6 +1862,58 @@
     "support",
     "tempo"
    ]
+  },
+  {
+   "id": "lorentz_contractor",
+   "name": "Lorentz Contractor",
+   "maker": "kestrel",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Length contraction shrinks the space between, so every mine on the field ends in one slot (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
+    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows.",
+    "notes": "Built 21 October with the Lammergeier (the face's pulls_mines). Indirect so it reaches any slot; heat 10 a placeholder, the number Ryan's. Its codex and flavour are Ryan's to write; its mount on the model is the asset session's."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [],
+    "heat": 10,
+    "pulls_mines": true
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
+  },
+  {
+   "id": "syrinx_drone",
+   "name": "Syrinx Drone",
+   "maker": "kestrel",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone copies the killing shot into the slot the foe empties.",
+    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in.",
+    "notes": "Built 21 October with the Lammergeier (the face's drones; the status syrinx_drone, a debuff the Paradox counts). Indirect, heat 0, placeholders. The line review's gate (Rapid while a mine waits) is on the bench. Its codex and flavour are Ryan's to write."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [],
+    "heat": 0,
+    "drones": true
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
   }
  ]
 }

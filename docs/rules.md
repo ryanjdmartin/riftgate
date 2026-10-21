@@ -123,12 +123,19 @@ defeat when every machine is wrecked. There is no round limit.
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
   it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive, not built): its weapons may be spent on an empty slot in
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
-  front is empty; Indirect any). The shot waits there, its number as rolled and modified when
-  laid, with its keywords; whoever steps in takes every shot waiting, in laid order, before
-  it acts, and a massive arrival takes both slots'. Every keyword acts as the shot lands; Lure
-  and Disrupt do nothing, their round being over. Nothing expires.
+  front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
+  to move or carry it. The shot waits there, its number as rolled and modified when laid
+  (each strike a shot), with its keywords, behind what already waits; its heat lands now.
+  Whoever steps in takes every shot waiting, in laid order, before it acts, and a massive
+  arrival takes both slots'; shots still waiting when it falls wait on for the next. The
+  reinforcement step places every arrival first, then the mines land left to right; any other
+  way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
+  a stun takes the arrival's first action, and a Chain mine that kills repeats its spender's
+  attack on the next foe in reach, rolling and paying heat again (nothing repeats once the
+  spender is gone); Lure and Disrupt do nothing, their round being over, and Rapid and
+  Volatile acted at the spend. Nothing expires.
 
 ### A blow
 1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
@@ -217,11 +224,11 @@ spending it Armours its owner, the stacks it says, an armour point each, until t
 end (the Wild Boar's Breaching Plow, ten). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The Lorentz Contractor** (the
-Lammergeier's pull, not built): every mine on the field gathers into the slot it is spent on, and a foe
-standing there takes them now, in laid order. **The Syrinx Drone** (the Lammergeier's, not built):
-the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
-the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
+the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
+Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, and a foe
+standing there takes them now, in laid order; spent on an empty slot, it gathers them there. **The drone**
+(the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone; if it already carries Exposed (read
+before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
 spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
 are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
 not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
@@ -303,7 +310,7 @@ On a foe:
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
-- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it, not built): the next weapon to kill it, any
+- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
   machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other

@@ -19,8 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 550 tests, 61,829 checks, green on main (21 October, with the party, its finals and the
-  finale, and the Kestrel branch merged); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 564 tests, 62,013 checks, green on main (21 October, with the Lammergeier's mines); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -90,12 +89,26 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, the Lammergeier (Ryan's go of that day; its brief retired to git): a machine
+  whose passive lays mines may spend a weapon on an empty slot as if a foe stood there; each
+  strike a shot, its number and keywords fixed when laid, the shots stacking in laid order and
+  carried by the save. The reinforcement step places every arrival, then the mines land left
+  to right before anyone acts, every keyword acting as on a blow (a stun its first action, a
+  Chain repeating its spender's attack), shots left when the arrival falls waiting on; a Swap
+  into a mined slot sets it off at once. The Lorentz Contractor's pull gathers every mine
+  into its slot and a foe there takes them now; the Syrinx Drone's foe leaves its killing
+  shot as a mine, the drone Rapid on a foe already Exposed and Exposing it otherwise. The bot
+  values a mine at the odds a waiting foe steps in; the screen lights the slots a dragged
+  weapon may take and marks a mined slot (a dashed outline, the mine with its total, a chip a
+  keyword, a hold listing the shots). The chassis is in content (tier three, K-19 Mk I, the
+  brief's placeholder numbers, a stock by kind, no model yet); its runner rows, its assets
+  and Ryan's play are the to-do's.
 - 21 October, Expose and Exposed (the Kestrel session's): every foe an Expose reaches and leaves
   standing is Exposed through the next round, in Direct reach of every machine and its armour
   counting for nothing, refreshed and never added; it feeds the Paradox and the target-status
-  condition; the foe's card shows it; the bot weighs it. No carrier in content until the
-  Needletail's content session; the Lammergeier's drone and the Swallowtail's Flare lay it
-  when their engines land.
+  condition; the foe's card shows it; the bot weighs it. No Expose keyword in content until the
+  Needletail's content session; the Lammergeier's Syrinx Drone lays Exposed since 21 October,
+  and the Swallowtail's Flare will when its engine lands.
 - 21 October, the Kite's rework (Ryan's go of that day): a passive may double a weapon's
   printed number alone (the buffs once after it) and grant a cooldown to every weapon; a kill
   trigger fires once after an attack that killed (the Kite's tax, Hot Streak a working name,
@@ -492,13 +505,10 @@ before it. The five design sessions merged that day are paused, each resuming fr
 - The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
   die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
   build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
-  tier one), the Kite's rework (its lock the Pinion Driver, tier two), the Needletail (a
-  tilt-jet that Exposes, tier two), the Lammergeier (a tandem-wing minelayer, tier three) and
-  the Giant Petrel (the formation leader, tier three), each the to-do's line; Exposed (Direct
-  reach and no armour, through the next round, refreshed, never added) and Expose; the die's
-  six kinds and their grammar (a weapon of no damage shows no number and deals nothing under
-  any effect, the guard not built); a Rapid shield never below tier two and a Rapid vent never
-  below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
+  tier one), the Needletail's content and its gate (a tilt-jet that Exposes, tier two) and
+  the Giant Petrel (the formation leader, tier three), each the to-do's line (the Kite's
+  rework, Exposed and Expose, the die's kinds and the Lammergeier built 21 October, above); a
+  Rapid shield never below tier two and a Rapid vent never below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
   stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs) with the stock pass; the
   designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
   out of it for now (Ryan, 21 October).

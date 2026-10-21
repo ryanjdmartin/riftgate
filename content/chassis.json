@@ -1015,6 +1015,54 @@
     "effects": []
    },
    "flavour": ""
+  },
+  {
+   "id": "lammergeier",
+   "name": "Lammergeier",
+   "designation": "K-19 Mk I Tandem-Wing Minelayer",
+   "maker": "kestrel",
+   "tier": 3,
+   "design": {
+    "fantasy": "Ryan's bomber (14 and 15 October): soft control that traps a slot so a reinforcement comes in damaged, \"a bomber of some kind\", its bombs taking on the properties of its weapons. The weapon is the bomb: any weapon may be spent on an empty slot and its keywords ride in the mine. The bearded vulture carries bones and tortoises up and drops them to shatter on rock (Ryan named it 21 October): a heavy tandem-wing flyer on big boosters, a pair of wings fore and a pair aft, the mines dropping from the bay between.",
+    "niche": "Kestrel's tier-three minelayer: the lowest floor and the highest ceiling. With reinforcements waiting it is an engine, every arrival paying before it acts (a stun mine takes its first action, a burn mine ticks on it, a shock mine doubles the team's first blow); with nothing waiting a plain d6 flyer whose laid mines the Lorentz Contractor cashes on a chosen foe. It wants keyword weapons of every maker and the team's killers, the Syrinx Drone copying the best killing shot onto the next arrival.",
+    "notes": "Ryan's go, 21 October, on the design settled in chat from 14 to 21 October (the brief retired to git: git show 62192a4:docs/briefs/kestrel_bomber.md; the bible's Kestrel row carries the decisions and their reasons). Ryan's names: the Lammergeier (the Magpie until that evening), the Fuse-delayed Bay, the Lorentz Contractor, the Syrinx Drone; the designation is Claude's on his word. Every number is a placeholder (a heavy flyer at Kestrel's pace, move 40; hull 110, shield 70, armour 0, heat 80, cooling 5, recharge 25; four hardpoints beside the two locks, a d6). The stock is stand-ins by kind until the stock pass, keyword pieces so the stock shows the bombs: the Incendiary Shells (napalm), the Enfilade Beam (a column mine, Penetrate, standing in for the kit's Spread piece, since no Spread weapon is free to stock today), the Polarity Projector (a shock mine), the Arc Fault Cannon (Kestrel's lightning mine, Chain living in mines). The engine was built 21 October: an empty slot as a target, the mine store carried by the save, the landing once the reinforcement step has placed every arrival, left to right, any other way in (a Swap) setting it off at once, every keyword acting as on a blow (Chain repeating its spender's attack, Lure and Disrupt inert), the pull and the drone as printed rules, and the bot's value of a mine. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and the heavy flyer's swell are the asset session's."
+   },
+   "codex": "",
+   "hull": 110,
+   "shield": 70,
+   "movespeed": 40,
+   "heat_max": 80,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 25,
+   "cooling": 5,
+   "traits": [
+    "flyer"
+   ],
+   "size": "heavy",
+   "fixed": [
+    "lorentz_contractor",
+    "syrinx_drone"
+   ],
+   "loadout": [
+    "incendiary_shells",
+    "enfilade_beam",
+    "polarity_projector",
+    "arc_fault_cannon"
+   ],
+   "passive": {
+    "id": "fuse_delayed_bay",
+    "name": "Fuse-delayed Bay",
+    "description": "Its weapons may be spent on an empty slot in the enemy's formation, as if a foe stood there. The shot waits there, and whoever steps in takes every shot waiting, in laid order, before it acts.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "lay_mines"
+     }
+    ]
+   },
+   "flavour": ""
   }
  ]
 }

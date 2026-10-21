@@ -501,6 +501,22 @@
    }
   },
   {
+   "id": "syrinx_drone",
+   "category": "status",
+   "name": "Syrinx Drone",
+   "codex": "Foe status, the Lammergeier's: the next weapon to kill it, any machine's, leaves its shot in the slot it empties, a mine. One mine a drone; it lasts the fight, and a death by a tick leaves nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 21 October: a debuff of the piece's own name, a status the team put on the foe, so the Paradox counts it (tuned for the final ecosystem). Built 21 October.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: one drone at a time",
+     "lasts": "The fight, until a weapon kills it"
+    }
+   }
+  },
+  {
    "id": "overcharged",
    "category": "status",
    "name": "Overcharged",
@@ -820,6 +836,16 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "mine",
+   "category": "formation",
+   "name": "Mine",
+   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation view, showing who waits rather than how many, is the to-do's."
    }
   },
   {
@@ -1260,6 +1286,26 @@
    "status": "implemented",
    "design": {
     "holes": "Built 21 October (the face's resets_on_kill), the Kite's rework: a round chains to two actions at most, since the entry just spent never comes up on the free roll."
+   }
+  },
+  {
+   "id": "pull",
+   "category": "component_property",
+   "name": "Pull",
+   "codex": "A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 17 October; built 21 October (the face's pulls_mines). Never Rapid, so a pull costs the turn and the laying is still chosen."
+   }
+  },
+  {
+   "id": "drone",
+   "category": "component_property",
+   "name": "Drone",
+   "codex": "A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's go, 21 October; built that day (the face's drones). The condition is read before the drone lands, so its own Exposed never makes it Rapid."
    }
   },
   {
