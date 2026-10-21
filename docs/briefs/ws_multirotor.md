@@ -530,6 +530,35 @@ a clock, as the stun row prices a stun. The charged mark's Suppress is gated by 
 and clocked by Numbed. Left for his call: the fill's source, the name, then the go (a row,
 planned content, the brief retired).
 
+Ryan, 21 October, later: "Agree with everything, could use help with naming." So decided: any
+die's roll feeds the bar, about thirty a charge, a kill by its own guns worth five, per fight
+from empty; the dock's plain form a team shield, its charged form Phased on every ally that
+has not acted, no cooldown; the mark's charged form adds Suppressed; the resupply's a full
+reset; the rally's an ally's second action; every number a placeholder.
+
+Names (Claude, 21 October, checked against `content/reserved_names.json`; his pick):
+
+- **The chassis.** Possum: the brushtail carries its young on its back (the carry) and plays
+  possum (the dock), the frontier pest; borderline, since BattleTech has an Opossum, though the
+  Australian possum is another animal and the word a near-coincidence, his case-by-case call.
+  Bellwether: the sheep the flock follows, the working animal whose job is the mobile command;
+  clear. Crane Fly: the gangly flyer whose legs dangle, and the crane under the hull; clear.
+  Water Strider: the deck on four legs that crosses water, the lean until now (Strider alone is
+  BattleTech's class word; the pair reads as the bug). Mud Dauber: the wasp that builds the
+  nest; clear. Bumblebee, Skimmer, Darner, Jacana (a bird that carries its chicks under its
+  wings; he is wary of birds here): clear.
+- **The designation.** Pattern 20 Field Headquarters, or Pattern 20 Aerial Tender.
+- **The passive** (the carry and the bar): Muster Deck. **The bar**: Muster, a charge a muster,
+  the pieces "spend a muster".
+- **The dock**: Mooring Screens (the team shield; charged, the hangar shutters close on the
+  squad), or Hangar Shutters.
+- **The mark**: Spotting Flare (the observer's flare that marks; charged, it blinds), or
+  Signal Lamp.
+- **The resupply**: Sutler's Hoist (the army's provisioner, the maker's own word, a job and a
+  wink; the bible allows a maker naming itself short of advertising), or Tender Winch.
+- **The rally**: Reveille Horn (the bugle that wakes the camp: a reroll, or an ally up and
+  acting again), or Bugle Call.
+
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, content planned (a spend by another machine is engine work,
