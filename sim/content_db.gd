@@ -847,6 +847,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight (on equipment, every ally, a draft's until the engine runs it)" % where)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
+	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
+		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)

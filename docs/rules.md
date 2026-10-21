@@ -101,7 +101,9 @@ defeat when every machine is wrecked. There is no round limit.
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
 - **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
-  number in heat; a buff grants its status, so many stacks, through so many rounds, or with
+  number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
+  that shields, the vent first, then the shield, sized on the heat the vent left, so the
+  Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Overcharged).
 - **A debuff** is a weapon of no damage (a setter, a swap), spent on a foe in reach like any
   weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun

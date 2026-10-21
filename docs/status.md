@@ -90,6 +90,11 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, the combined entry (Ryan's go, 20 October): a vent may carry a shield half
+  (`shields`), spent on the same machine after the vent and sized on the heat the vent leaves,
+  through the spender's passives for an ally (the Puffin's Slipstream); the die prints the
+  half's shield mark and number beside the heat slot, the hold says both, the bot weighs both,
+  the validator keeps it to a vent. The Wake Diffuser shields 10.
 - 21 October, the die's kinds and the no-number rule (Ryan, 20 and 21 October, the Kestrel
   session's grammar): a debuff, a weapon of no damage, deals nothing under any effect (the
   pipeline holds it at nothing, its heat a weapon's), prints no number anywhere, and wears its
@@ -113,8 +118,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
 - 20 and 21 October, the Kestrel session's builds (merged 21 October): the Puffin reworked at
   tier one (the Slipstream Projector: a shield it spends on an ally grows by a fifth of the heat
   that ally carries, read at the spend, by the die dragged over the ally and by the bot alike,
-  `Skirmish.shield_amount`); the Wake Diffuser's Rapid off (a vent of 10; its shield half waits
-  for the combined entry); the old finisher renamed the Coriolis Accelerator (the id with it),
+  `Skirmish.shield_amount`); the Wake Diffuser's Rapid off (a vent of 10 that shields 10 since the combined entry's
+  engine, 21 October); the old finisher renamed the Coriolis Accelerator (the id with it),
   the Pinion Driver's name kept for the Kite's reset gun; the Sparrowhawk and the Goshawk shown
   as the Kite and the Buzzard (the ids kept).
 - 21 October, the Dingo's Combat Translocator and the multi-target spend (Ryan's go of 19

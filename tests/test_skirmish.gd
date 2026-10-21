@@ -5639,3 +5639,53 @@ func test_a_debuff_deals_nothing_under_any_effect_and_prints_no_number() -> void
 	sk2.add_foes([plated])
 	sk2.begin()
 	assert_eq(sk2.shown_number_text(sk2.mechs[0], gun, plated), "0", "whose blow is nothing here prints 0")
+
+
+## The combined entry (Ryan's go, 20 October, the Wake Diffuser): a vent that also shields, the
+## vent first and then the shield on the same machine, through the spender's passives for an
+## ally, sized on the heat the vent left; the die prints both, the hold says both, and the
+## validator holds the shield half to a vent.
+func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void:
+	var slip := {"id": "slip", "name": "Slip", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]}
+	var both := Face.from_dict({"kind": "vent", "power": 10, "shields": 10})
+	assert_eq(both.shields, 10, "the shield half read from content")
+	assert_eq(both.describe(), "vent 10 shield 10", "the hold says both, the vent first")
+	assert_eq(Face.from_dict({"kind": "shield", "power": 10, "shields": 10}).shields, 0, "a shield has no second shield")
+	var sk := Skirmish.new(1)
+	var giver := _mech("Giver", Die.of([both, both.duplicate_face()]), 40, 100)
+	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
+	giver.grant_passive(slip)
+	sk.add_mech(giver)
+	sk.add_mech(taker)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	taker.shield = 20
+	sk.mechs[1].heat = 30
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.shield_amount(sk.mechs[0], both, sk.mechs[1]), 14, "10 and a fifth of the 20 the vent leaves")
+	assert_true(sk.assign(0, sk.mechs[1]), "spent on the hot ally")
+	assert_eq(sk.mechs[1].heat, 20, "the vent first")
+	assert_eq(taker.shield, 34, "then the shield, grown on what was left")
+	var lines := "\n".join(sk.log)
+	assert_true(lines.contains("Giver vents Taker by 10") and lines.contains("Giver shields Taker for 14"), "the log says both halves")
+	sk.end_round()
+	sk.start_round()
+	giver.shield = 0
+	sk.mechs[0].heat = 5
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, sk.mechs[0]), "spent on itself")
+	assert_eq([sk.mechs[0].heat, giver.shield], [0, 10], "its own heat off and the number alone")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	var cold := bot.equipment_score(sk, sk.mechs[0], sk.mechs[1], Face.from_dict({"kind": "vent", "power": 10}))
+	assert_true(bot.equipment_score(sk, sk.mechs[0], sk.mechs[1], both) >= cold, "the bot weighs the shield half on top of the vent")
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var cid := str(db.components.keys()[0])
+	db.components[cid]["face"] = {"kind": "shield", "power": 10, "shields": 5}
+	var refused := false
+	for e in db.validate():
+		if e.contains("shields is a vent's shield half"):
+			refused = true
+	assert_true(refused, "a shield half on anything but a vent is refused")

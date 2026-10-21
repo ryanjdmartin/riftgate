@@ -592,6 +592,8 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 			score = vent_score(sk, who, f.power)
 			if who == ms:
 				score += blast_score(sk, ms, mini(f.power, ms.heat))
+			if f.shields > 0:
+				score += shield_score(sk, who, sk.shield_amount(ms, f, who), false, ms)   # the combined entry's shield half
 		Face.Kind.BUFF:
 			score = buff_score(sk, who, f)
 	if f.has(Face.Keyword.CLEANSE):

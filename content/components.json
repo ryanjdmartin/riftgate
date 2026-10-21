@@ -1485,11 +1485,12 @@
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
     "niche": "A combined entry: a vent of 10 that also shields 10, so a support entry is never a dead roll and costs its turn like any other.",
-    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. The vent half runs today; the shield half (a shields field on the face) lands with the combined entry's engine (the to-do), on the Puffin's passive a vent twice. Numbers are placeholders."
+    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. Both halves run since 21 October (the combined entry's engine: shields on the face), the vent first, then the shield on the same machine, which on the Puffin grows through its Slipstream by the heat the vent left. Numbers are placeholders."
    },
    "face": {
     "kind": "vent",
     "power": 10,
+    "shields": 10,
     "keywords": []
    },
    "passive": null,

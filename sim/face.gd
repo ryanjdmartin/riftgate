@@ -107,6 +107,7 @@ var cooldown: int = -1        # any entry: the rounds it goes dark once spent, t
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
 var reaches_all: bool = false # an attack that reaches every foe in the fight from its target (the Whip Scorpion's Heliographic Siphon, a lure-all, 20 October)
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
+var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -257,6 +258,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.spins = bool(d.get("spins", false))
 	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind == Kind.ATTACK
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
+	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -314,6 +316,8 @@ func to_dict() -> Dictionary:
 		d["reaches_all"] = true
 	if heat_per_blow > 0:
 		d["heat_per_blow"] = heat_per_blow
+	if shields > 0:
+		d["shields"] = shields
 	return d
 
 
@@ -442,6 +446,7 @@ func duplicate_face() -> Face:
 	f.spins = spins
 	f.reaches_all = reaches_all
 	f.heat_per_blow = heat_per_blow
+	f.shields = shields
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -495,6 +500,8 @@ func describe() -> String:
 					s += " for %d rounds" % buff_rounds
 			else:
 				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
+				if shields > 0:
+					s += " shield %d" % shields   # the combined entry: both halves, the vent first
 			for k in keywords:
 				s += " " + keyword_label(k)
 			if braces > 0:

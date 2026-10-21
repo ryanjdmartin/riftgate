@@ -327,16 +327,21 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	return out
 
 
-## The shield an entry gives the machine it is spent on: its number, and on an ally what the
-## spender's passives add from the heat that ally carries at the spend (shield_per_ally_heat;
-## the Puffin's Slipstream Projector, 21 October). The spend, the die dragged over the ally
-## and the bot all read it here.
+## The shield an entry gives the machine it is spent on: its number (a shield's, or a vent's
+## shield half, the combined entry), and on an ally what the spender's passives add from the
+## heat that ally carries at the spend (shield_per_ally_heat; the Puffin's Slipstream
+## Projector, 21 October), after the vent's half for a combined entry (the vent first, the
+## shield reading what is left). The spend, the die dragged over the ally and the bot all
+## read it here.
 func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
-	if f == null or f.kind != Face.Kind.SHIELD:
+	if f == null:
 		return 0
-	var n := f.power
+	var n := f.power if f.kind == Face.Kind.SHIELD else (f.shields if f.kind == Face.Kind.VENT else 0)
+	if n <= 0:
+		return 0
 	if who != null and who != ms:
-		n += Effects.granted_shield(ms.unit, who.heat)
+		var left := who.heat if f.kind == Face.Kind.SHIELD else maxi(0, who.heat - f.power)
+		n += Effects.granted_shield(ms.unit, left)
 	return n
 
 
@@ -963,6 +968,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
+			var shield_half := shield_amount(ms, f, who)   # sized at the spend, on what the vent will leave
 			var before := who.heat
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
@@ -972,6 +978,14 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			if who == ms and Effects.vent_blast(ms.unit) > 0.0 and before > who.heat:
 				_blast(ms, int(roundf(float(before - who.heat) * Effects.vent_blast(ms.unit))))
 				blasted = true
+			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
+			# shield on the same machine, through its shield gain and the spender's passives
+			# for an ally it shields, sized on the heat the vent left.
+			if shield_half > 0 and who.alive():
+				_gain_shield(who, shield_half, false)
+				log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, shield_half, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
+				if who != ms:
+					_shield_granted(ms, who, shield_half)
 			_cleanse_with(ms, who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it

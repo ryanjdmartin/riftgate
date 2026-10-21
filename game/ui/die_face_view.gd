@@ -248,9 +248,18 @@ func _draw() -> void:
 		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.
 		var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x
 		draw_string(mono, Vector2(FACE * 0.5 + w * 0.5 + 2.0, 92.0 + bob), "×%d" % face.strikes, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, ink)
+	var slot_x := 10.0
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
-		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), "+%d HEAT" % face.heat, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
+		var heat_text := "+%d HEAT" % face.heat
+		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
+		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
+	if face.shields > 0 and not (face.disabled and dark > 0):
+		# The combined entry's second half (Ryan's go, 20 October): the shield it also gives, its
+		# own glyph and number beside the heat slot, so the two numbers part by structure.
+		var sc := Color(Palette.SHIELD, alpha)
+		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, sc, 1.6)
+		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), "%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, sc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	# Annotation chips hugging the right edge, one per keyword, star for a unique effect.
