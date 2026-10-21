@@ -385,14 +385,16 @@ document's job and every command are in `README.md`.
 - The Prairie Dog's fight half (Ryan's go, 19 October; its row in section 7): Flak, the
   maker's on-hit, a foe status that adds a point a stack to every blow it takes and halves at
   each round's end (Overcharged's clock), on-hit only; laid by the Flakshot Repeater, now a
-  flat 5 that sprays (Spread, built) and rolls again, Flak 2 (planned); the car is the maker's
+  flat 5 that sprays (Spread, built), Flak 2 (planned), its Rapid gone with the pivot; the car is the maker's
   softener, not a detachment identity; the flat on-hit kind is Flak's, so the Onryō's Grudge
   finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
   Overcharged at a point, read together when the numbers branch merges; the engine is the
   to-do's line, the family the stock pass's.
-  The pivot (Ryan, 20 October): the Repeater loses Rapid for Spread and Flak 3, and the
-  passive gains the fight half, 5 less damage from any foe carrying Flak; its go lands the
-  content and the attacker-status condition.
+  The pivot landed (Ryan's go, 21 October: Flak 2, Spread, no Rapid; the reduction on the
+  passive): the Repeater's Rapid gone, the passive's second effect 5 less damage from any foe
+  carrying Flak, a damage-taken effect conditioned on the striker's status (attacker_status,
+  built, handed the foe at every blow and in the forecast), inert until Flak lands; the car
+  stays dealable.
 - The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
   sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
   live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
@@ -419,7 +421,7 @@ to-do's Ryan list).
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
-   Prairie Dog's pivot settled (its go pending), the multi-rotor reworked toward the helicarrier
+   Prairie Dog's pivot landed (21 October), the multi-rotor reworked toward the helicarrier
    (in session) and the artillery briefed as the ammo build; next, the helicarrier's go and the
    artillery's session, the gunship with the stock pass.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,

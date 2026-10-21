@@ -851,6 +851,14 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
+		if when == "attacker_status" and eff.has("status"):
+			# The status named may be the engine's or one the vocabulary drafts (the Prairie
+			# Dog reads Flak before Flak is built): a drafted status never holds, so the
+			# clause waits inert, and the passive stays built, so the chassis stays dealable.
+			var st := str(eff["status"])
+			var drafted: bool = vocabulary.has(st) and vocabulary[st].get("category") == "status" and vocabulary[st].get("status") != "implemented"
+			if not Effects.STATUS.has(st) and not drafted:
+				errs.append("%s: attacker_status names no status the engine or the vocabulary knows ('%s')" % [where, st])
 		if trig == "static" and when.begins_with("reach_"):
 			errs.append("%s: a static reach change cannot be conditioned on reach (it would chase its own tail)" % where)
 

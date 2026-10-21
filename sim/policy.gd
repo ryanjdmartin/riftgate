@@ -350,7 +350,7 @@ func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	for a in sk.attackers_of(who):
 		if who.unit.shield > 0 and not a.breaches():
 			continue
-		var through := maxi(0, Effects.damage_taken(who.unit, a.damage()) - arm)
+		var through := maxi(0, Effects.damage_taken(who.unit, a.damage(), a) - arm)
 		saved += mini(extra, through) * a.strikes()
 	return float(saved)
 
@@ -462,7 +462,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
 		# armour comes off every blow, so a braced foe is worth less to a volume weapon.
 		var arm := target.armour_total() if target != null else 0
-		var first := maxi(0, (Effects.damage_taken(target, dmg) if target != null else dmg) - arm)
+		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit) if target != null else dmg) - arm)
 		out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
 	return out
 

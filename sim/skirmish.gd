@@ -387,7 +387,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	for f in attackers_of(ms):
 		for s in range(f.strikes()):
 			incoming += f.damage()
-			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, f.damage()), f.breaches())
+			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, f.damage(), f), f.breaches())
 			shield = r["shield"]
 			hull -= r["through"]
 			if r["injures"]:
@@ -1151,7 +1151,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
 			# small blows bounce off a braced foe the way they do off a heavy machine.
-			var taken := Effects.damage_taken(foe, dmg)
+			var taken := Effects.damage_taken(foe, dmg, ms.unit)
 			var foe_armoured := mini(taken, foe.armour_total())
 			taken -= foe_armoured
 			foe.hp -= taken
@@ -1471,7 +1471,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> v
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount) - behind.armour_total())
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit) - behind.armour_total())
 	behind.hp -= behind_taken
 	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
@@ -1747,7 +1747,7 @@ func _settle_heat() -> void:
 ## when what gets through is at least a quarter of max hull. Shield before a telegraphed
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
-	amount = Effects.damage_taken(ms.unit, amount)   # buffs and debuffs on damage taken, before shield and armour
+	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
 	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank), amount, source.breaches())
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
@@ -1923,7 +1923,7 @@ func shield_broken(f: Foe, ms: MechState) -> int:
 		return 0
 	var shield := ms.unit.shield
 	for s in range(f.strikes()):
-		shield = int(_blow(shield, ms.unit.hull_max, 0, Effects.damage_taken(ms.unit, dmg), f.breaches())["shield"])
+		shield = int(_blow(shield, ms.unit.hull_max, 0, Effects.damage_taken(ms.unit, dmg, f), f.breaches())["shield"])
 	return ms.unit.shield if shield <= 0 else 0
 
 
@@ -1936,7 +1936,7 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 	var shield := ms.unit.shield
 	var through := 0
 	for s in range(f.strikes()):
-		var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, dmg), f.breaches())
+		var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, dmg, f), f.breaches())
 		shield = r["shield"]
 		through += int(r["through"])
 	return mini(through, maxi(0, ms.unit.hull))

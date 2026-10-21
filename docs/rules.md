@@ -356,7 +356,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   when aimed at another machine, Suppressed, or on a special that acts on nobody in
   particular; read at the spend, before the spend's own riders, each foe reached judged
   alone); the target's
-  rank (not built: the Cottonmouth's).
+  rank (not built: the Cottonmouth's); the striker carries a status (the Prairie Dog's fight
+  half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
+  hits it 5 lighter, whoever laid the Flak; inert until Flak is built).
 - A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
   number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as

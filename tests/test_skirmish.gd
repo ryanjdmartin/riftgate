@@ -4605,3 +4605,41 @@ func test_a_web_holds_a_gathering_countdown_a_round() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(a.hull, 80, "it lands a round later than it would have")
+
+
+func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
+	# The Prairie Dog's fight half (21 October): a damage-taken effect that reads the striker's
+	# status. Handed the striker, damage_taken honours it; asked without one, it never holds.
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L)), 0, 100)
+	m.grant_passive({"id": "tyres", "name": "Tyres", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "burning"}]})
+	sk.add_mech(m)
+	var clean := _ghoul(200, 20)
+	var lit := _ghoul(200, 20)
+	sk.add_foes([clean, lit])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(lit, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 1)
+	assert_eq(Effects.damage_taken(m, 20, clean), 20, "a clean striker's blow is the plain 20")
+	assert_eq(Effects.damage_taken(m, 20, lit), 15, "a burning striker's blow lands 5 lighter")
+	assert_eq(Effects.damage_taken(m, 20), 20, "asked without a striker, the condition does not hold")
+	assert_eq(Effects.damage_taken(m, 3, lit), 0, "and never below nothing")
+	sk._damage_mech(sk.mechs[0], 20, lit)
+	assert_eq(m.hull, 85, "the blow in the fight reads the striker")
+	sk._damage_mech(sk.mechs[0], 20, clean)
+	assert_eq(m.hull, 65, "a clean foe's blow lands whole")
+	var notes := Effects.explain(m, m.die.faces[0])
+	assert_true(notes.is_empty(), "a passive with no component names no die row")
+	var lead := Effects.effect_text(m.modifiers[0].effects[0])
+	assert_eq(lead, "blows from foes carrying Burning: damage taken -5", "the rule reads with its condition as the lead")
+	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "flakked"}),
+		"blows from foes carrying Flakked: damage taken -5", "a status the engine lacks reads by its id")
+	var other := _mech("B", Die.single(Face.attack(20, L)), 0, 100)
+	other.grant_passive({"id": "tyres2", "name": "Tyres", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status"}]})
+	assert_eq(Effects.damage_taken(other, 20, lit), 15, "named no status, the condition reads any foe status")
+	assert_eq(Effects.damage_taken(other, 20, clean), 20, "and a clean striker is nothing")
+	other.modifiers[0].effects[0]["status"] = "flakked"
+	assert_eq(Effects.damage_taken(other, 20, lit), 20, "a status the engine lacks never holds")
+

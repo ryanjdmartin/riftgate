@@ -1357,3 +1357,32 @@ func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
 	assert_true(refused.has("lay_none"), "a status the engine lacks is refused")
 	assert_true(refused.has("lay_zero"), "and so is a lay of no stacks")
 	assert_true(Effects.supports_when("target_no_intent"), "the ambush condition is one the engine runs")
+
+
+func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() -> void:
+	# The Prairie Dog's fight half (21 October): its clause names Flak before Flak is built,
+	# so the passive stays built and the chassis stays dealable; a status nobody knows is refused.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var drafted := ""
+	for k in db.vocabulary.keys():
+		if db.vocabulary[k].get("category") == "status" and db.vocabulary[k].get("status") != "implemented" \
+				and not Effects.STATUS.has(str(k)):
+			drafted = str(k)
+			break
+	assert_true(not drafted.is_empty(), "the vocabulary drafts a status to test with")
+	var ch: Dictionary = db.chassis["prairie_dog"].duplicate(true)
+	ch["passive"] = {"id": "p", "name": "P", "description": "A rule.", "effects": [
+		{"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": drafted}]}
+	db.chassis["probe_car"] = ch
+	for e in db.validate():
+		assert_false(e.begins_with("chassis probe_car"), "a drafted status on the striker's condition passes: %s" % e)
+	assert_true(db.chassis_runnable("probe_car"), "and the chassis stays dealable")
+	ch["passive"]["effects"][0]["status"] = "nonsense"
+	db.chassis["probe_car"] = ch
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("chassis probe_car") and e.contains("attacker_status"):
+			hit = true
+	assert_true(hit, "a status nobody knows is refused")
+

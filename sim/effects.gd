@@ -226,7 +226,11 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## machine, as the HUD draws its arrow (Foe.intent_on): aimed at another machine, Suppressed, or
 ## on a special that acts on nobody in particular; a gathering countdown and a blow at every
 ## machine count as aimed. Read at the spend before its own riders, each foe reached alone.
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent"]
+## attacker_status (the Prairie Dog's fight half, 21 October): the foe whose blow this machine
+## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
+## none). Read by damage_taken alone, which is handed the striker; every other static query
+## has no striker, so the condition never holds there. A status the engine lacks never holds.
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -586,6 +590,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return target != null and target.get("modifiers") != null and carries_status(target)
 		"target_no_intent":
 			return target != null and target.has_method("intent_on") and not target.intent_on(u)
+		"attacker_status":
+			return target != null and target.get("modifiers") != null and carries_status(target, str(eff.get("status", "")))
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
 	var w := str(eff.get("when", ""))
@@ -697,10 +703,10 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
-static func damage_taken(u, amount: int) -> int:
+static func damage_taken(u, amount: int, source = null) -> int:
 	var add := 0.0
 	var mult := 1.0
-	for pair in _taking_part(u, "static", null):
+	for pair in _taking_part(u, "static", null, source):
 		var eff: Dictionary = pair[0]
 		var n: int = pair[1].stacks
 		match str(eff.get("effect", "")):
@@ -805,9 +811,9 @@ static func effective_face(u, face: Face) -> Face:
 
 ## Does a foe carry a status the team put on it (FOE_STATUSES)? Numbed and its own buffs
 ## never count.
-static func carries_status(f) -> bool:
+static func carries_status(f, which: String = "") -> bool:
 	for m in live(f):
-		if FOE_STATUSES.has(m.id):
+		if (which.is_empty() and FOE_STATUSES.has(m.id)) or (not which.is_empty() and m.id == which):
 			return true
 	return false
 
@@ -1105,13 +1111,14 @@ static func cleanse(u) -> Array[String]:
 static func effect_text(eff: Dictionary) -> String:
 	var v = eff.get("value", 0)
 	var vs := str(v) if not (v is float) else (str(v) if v != floorf(v) else str(int(v)))
+	var signed := vs if vs.begins_with("-") else "+" + vs   # an add reads with its sign, never "+-5"
 	var body := ""
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
-		"add_damage": body = "damage +%s" % vs
+		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs
-		"add_heat": body = "heat +%s" % vs
+		"add_heat": body = "heat %s" % signed
 		"add_burn": body = "+%s burn" % vs
 		"lay_status":
 			var n := int(eff.get("stacks", 1))
@@ -1123,7 +1130,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"set_reach": body = "reach becomes %s" % vs
 		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
 		"multiply_stat": body = "%s ×%s" % [str(eff.get("stat", "")), vs]
-		"add_damage_taken": body = "damage taken +%s" % vs
+		"add_damage_taken": body = "damage taken %s" % signed
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
 		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
@@ -1135,7 +1142,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
 		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
-		"add_attack": body = "attack +%s" % vs
+		"add_attack": body = "attack %s" % signed
 		"never_hunted": body = "no hunter ever picks it as its prey"
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"spares_splash": body = "indirect fire on the front rank never splashes it"
@@ -1177,6 +1184,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
 		"target_no_intent": lead += "foes showing no intent on this machine: "
+		"attacker_status":
+			var st := str(eff.get("status", ""))
+			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
