@@ -62,7 +62,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above)."}
-KIND_ORDER = {"buff": 0, "debuff": 1}
+KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
 
@@ -283,7 +283,7 @@ def main():
     krows = keyword_rows(t, vocab, words)
     block = "\n".join([
         START,
-        "  <h4>Buffs and debuffs</h4>",
+        "  <h4>Buffs, debuffs and stores</h4>",
         '  <div class="tablewrap"><table><thead><tr><th>Status</th><th>Kind</th><th>On</th><th>Effect</th><th>Stacks</th><th>Lasts</th><th>Granted by</th><th>Global or unique</th></tr></thead><tbody>',
         *("  " + r for r in srows),
         "  </tbody></table></div>",

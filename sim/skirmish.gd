@@ -734,8 +734,9 @@ func start_round() -> void:
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
-		# The forge's trickle (the Musk Ox's), from the second round: the first opens at its start.
-		if ms.ammo_max > 0 and round > 1:
+		# The forge's trickle (the Musk Ox's), every round from the first (Ryan, 21 October: "Musk
+		# ox can start round 1"), so the first round holds its start and a round's trickle.
+		if ms.ammo_max > 0:
 			_reload(ms, int(Effects.forge_rule(ms.unit).get("per_round", 0)), "")
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
@@ -1494,15 +1495,16 @@ func _swap(first: Foe, second) -> void:
 	_refresh_guards()
 
 
-## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs and stores count for nothing
-## and its keywords are muted through its next round, as a foe's Disabled lasts: the foe acts
-## as the round ends, so "the round" a silence costs is the machine's next.
+## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs count for nothing and its
+## keywords are muted through its next round, its stores untouched (Ryan, 21 October), as a
+## foe's Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
+## machine's next.
 func _silence(t: MechState, f: Foe) -> void:
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["silenced"], "foe:" + f.content_id, round + 1)
 	log.append("%s silences %s: its buffs sleep and its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
-## A purge: every buff and store the machine carries goes, every stack.
+## A purge: every buff the machine carries goes, every stack; its stores stay (Ryan, 21 October).
 func _purge(t: MechState, f: Foe) -> void:
 	var gone := Effects.purge(t.unit)
 	log.append("%s purges %s%s" % [f.display_name, t.unit.display_name, ": " + ", ".join(gone) + " gone" if not gone.is_empty() else ", and finds nothing to take"])
@@ -1995,7 +1997,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				_silence(t, f)
 		"dispel":
-			# A hero's or a boss's purge (17 October): no blow, every buff and store gone.
+			# A hero's or a boss's purge (17 October): no blow, every buff gone, the stores kept.
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "purges")), t.unit.display_name])
 			else:
@@ -2146,7 +2148,7 @@ func _rolled() -> void:
 		_muster(ms, 1)
 
 
-## Points on a machine's Muster, up to its cap (counted whole, a Silenced store too); a charge
+## Points on a machine's Muster, up to its cap (a store, which no Silence touches); a charge
 ## filled is told.
 func _muster(ms: MechState, points: int) -> void:
 	var rule := Effects.muster_rule(ms.unit)
@@ -2982,7 +2984,7 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 				return _pick_exposed(f, live)
 			return armed[rng.randi_range(0, armed.size() - 1)]
 		"buffed":
-			# The buffed (21 October): the machine carrying the most stacks of buffs and stores,
+			# The buffed (21 October): the machine carrying the most stacks of buffs (never stores),
 			# drawn among the tied; the exposed when none carries any.
 			var most: Array[MechState] = []
 			var top := 0

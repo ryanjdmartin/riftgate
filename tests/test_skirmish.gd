@@ -5417,9 +5417,9 @@ func test_a_fight_tallies_its_sponsorship_measures() -> void:
 
 
 ## Silence (Ryan, 17 and 18 October; built 21 October; its keywords muted on his word of 21
-## October): the machine a silence lands on is Silenced until the round's end, its buffs and
-## stores counting for nothing and its components' keywords muted; a cleanse lifts it, a Ward
-## turns it away.
+## October): the machine a silence lands on is Silenced until the round's end, its buffs
+## counting for nothing and its components' keywords muted, its stores untouched (Ryan, 21
+## October: a store is a resource); a cleanse lifts it, a Ward turns it away.
 func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> void:
 	var sk := Skirmish.new(1, 1)
 	var torch := Face.attack(10, L, [K.BURN, K.RAPID])
@@ -5435,6 +5435,8 @@ func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> v
 	assert_true(str(sk.log).contains("silences A"), "the log says so")
 	assert_false(Effects.has(u, "silenced") and Effects.has(u, "overcharged"), "its Overcharged counts for nothing while it sleeps")
 	assert_true(Effects.buff_stacks(u) > 0, "though the stacks are still there")
+	Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_eq(Effects.stacks_of(u, "rage"), 2, "a store fills and spends as ever under a silence")
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var shown := sk.shown_face(ms, torch)
 	assert_true(shown.keywords.is_empty(), "the die shows the entry without its keywords")
@@ -5470,10 +5472,11 @@ func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> v
 	assert_false(Effects.has(w, "silenced"), "the Ward turned the silence away")
 
 
-## Purge (Ryan, 17 October; built 21 October): every buff and store the machine carries goes,
-## every stack, the banked ones too; passives stay; a Ward turns it away. A purge as a move
-## needs no blow, and a foe that aims at the buffed picks the machine carrying the most.
-func test_a_purge_takes_every_buff_and_store_and_aims_at_the_buffed() -> void:
+## Purge (Ryan, 17 October; built 21 October): every buff the machine carries goes, every
+## stack, the kept ones too; its stores stay (Ryan, 21 October: a store is a resource) and so do
+## its passives; a Ward turns it away. A purge as a move needs no blow, and a foe that aims at
+## the buffed picks the machine carrying the most buffs.
+func test_a_purge_takes_every_buff_keeps_the_stores_and_aims_at_the_buffed() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
 	u.grant_passive({"id": "test_pass", "name": "Pass", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]})
@@ -5485,7 +5488,9 @@ func test_a_purge_takes_every_buff_and_store_and_aims_at_the_buffed() -> void:
 	Effects.stack(u, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["rage"], Effects.BATTLE, "mech", 2, Effects.DECAY_NONE)
 	sk.end_round()
-	assert_eq(Effects.buff_stacks(u), 0, "every buff and store gone, the battle's rage too")
+	assert_eq(Effects.buff_stacks(u), 0, "every buff gone")
+	assert_false(Effects.has(u, "overcharged"), "its Overcharged among them")
+	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "rage")], [3, 2], "the stores stay, the battle's rage too")
 	assert_eq(u.armour, 5, "the passive stays")
 	assert_true("\n".join(sk.log).contains("purges A"), "the log says so")
 	# As a move, aimed at the buffed.
@@ -6236,7 +6241,7 @@ func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_tur
 
 
 ## The Musk Ox's Forge (Ryan's go, 21 October; built that day), on a synthetic passive: the
-## magazine opens at its start and gains a round's trickle from the second round; a damaging gun
+## magazine opens at its start and gains a round's trickle every round, the first included; a damaging gun
 ## pays 1 ammo for every 10 heat its own spend would make, rounded up, at least 1, and heats the
 ## machine only by what a foe's Scorched adds; a debuff heats it as any machine; a dry gun has no
 ## target; a vent it spends on itself reloads 3, a shield 2, and a reload entry its own.
@@ -6257,22 +6262,22 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq([ms.ammo, ms.ammo_max], [3, 10], "the magazine opens at three of ten")
+	assert_eq([ms.ammo, ms.ammo_max], [4, 10], "the magazine opens at three of ten and the first round's trickle adds one")
 	assert_eq([sk.ammo_price_of(ms, ray), sk.ammo_price_of(ms, cold), sk.ammo_price_of(ms, probe)], [3, 1, 0], "30 heat is 3 ammo, a cold gun 1, a debuff none")
 	var shown := sk.shown_face(ms, ray)
 	assert_eq([shown.ammo, shown.heat], [3, 0], "the die shows the price in the heat's place")
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "the ray fired")
-	assert_eq([ms.ammo, ms.heat], [0, 0], "three ammo spent, no heat")
+	assert_eq([ms.ammo, ms.heat], [1, 0], "three ammo spent, no heat")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(ms.ammo, 1, "the round's trickle")
+	assert_eq(ms.ammo, 2, "the round's trickle")
 	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_NONE)
 	assert_false(sk.targets_for_face(ms, ray).size() > 0, "a dry gun has no target")
 	assert_true(sk.shown_face(ms, ray).dry, "and shows so")
 	ms.face_index = 1
 	assert_true(sk.assign(0, sk.front[0]), "the cold gun, scorched")
-	assert_eq([ms.ammo, ms.heat], [0, 5], "its ammo spent, and Scorched's extra on the heat bar")
+	assert_eq([ms.ammo, ms.heat], [1, 5], "its ammo spent, and Scorched's extra on the heat bar")
 	sk.end_round()
 	sk.start_round()
 	Effects.remove(m, "scorched")   # the test's scorch never decays; a foe's goes at the turn's end
@@ -6322,7 +6327,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[1]), "the cannon on the middle front")
-	assert_eq(ms.ammo, 3 - 1 + 4, "one ammo paid, four back: the target, its two neighbours and the foe behind it")
+	assert_eq(ms.ammo, 3 + 1 - 1 + 4, "the first round's four, one ammo paid, four back: the target, its two neighbours and the foe behind it")
 	sk.end_round()
 	sk.start_round()
 	var hp_before := 0

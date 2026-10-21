@@ -110,6 +110,13 @@ Spread and becomes the single-target spend to chase against a boss (two strikes,
 hit, tuned as needed); "never destroyed" becomes a module at tier two or three, with positive
 stats.
 
+**Ryan, 21 October** (another session, on stores): "Badger: boxes up to the cap. Each one grants
+armour, displayed as a buff." With the rule of that day (the bible's row on stores): the hopper
+is a store, a capped resource no Silence or Purge touches, its bar boxes up to the cap under
+the heat; the armour its loads grant is a buff, shown as one, slept by a silence and silenced a
+turn by a purge, never taken. The first store-granted buff, so its engine lands with this
+rework.
+
 ## Open for the session
 
 1. The claw's number a strike, since two strikes pay a boss's armour twice.

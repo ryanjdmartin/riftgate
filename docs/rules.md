@@ -243,6 +243,14 @@ strike of the spend whole; the engine runs it as a keyword the passive
 grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
+A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
+hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
+and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
+it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store
+grants is a buff and shows as one: a Silence sleeps it, and a Purge silences it for a turn
+instead of taking it, since the store would grant it again (not built: no store grants one
+yet). The rage and the hopper have no cap yet, so they show as chips.
+
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
@@ -256,10 +264,10 @@ On a machine:
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
   cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
   this round, whose die stands down as it is granted.
-- **Muster** (buff, the Swallowtail's): a banked charge. Every die that rolls fills
+- **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
-  charges; it starts each fight empty and never decays, and as a store a Silence sleeps it and
-  a Purge takes it. It shows as a gauge under the heat, a notch a charge. Each of its locked
+  charges; it starts each fight empty and never decays. It shows as a smooth bar under the
+  heat, a segment a charge. Each of its locked
   pieces has a plain form and a charged one that spends a muster: tap the machine to arm its
   die, which then shows the charged form, and spend it as ever; a second tap disarms it. The
   Mooring Screens shield every ally (never the carrier), or Phase every ally that has not acted;
@@ -279,10 +287,10 @@ On a machine:
   (breach, burn, scorch, disable, corrupt), so its shield absorbs a breach like any blow,
   and no silence or purge touches it; its damage lands. Until the round's end. Nothing in
   content grants it yet.
-- **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
+- **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
-- **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
+- **Hopper** (store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +10,
   its own cooling stopped, 15 heat more at the end of each turn before the overheat; a vent or
@@ -298,11 +306,11 @@ On a machine:
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
   no armour off it; lasts the skirmish.
-- **Silenced** (debuff, a foe's silence): its buffs and stores (Rage, the hopper, a kept
-  Overcharged) count for nothing and its components' keywords are muted (a Rapid entry acts
-  once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake.
-  Cleansable; a Ward turns the silence away. A foe's purge takes every buff and store, every
-  stack; its passives stay; a Ward turns it away too.
+- **Silenced** (debuff, a foe's silence): its buffs (a kept Overcharged too) count for
+  nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays
+  nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and
+  spend as ever. Cleansable; a Ward turns the silence away. A foe's purge takes every buff,
+  every stack; its stores and its passives stay; a Ward turns it away too.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -381,8 +389,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
   magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
-  reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
-  the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
+  reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round, the
+  first included; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
   live foe with Spread and Penetrate, the magazine its price and no heat; its quick reload,
@@ -421,7 +429,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
   machine showing an intact weapon), focus (its rank shares one pick), buffed (the machine
-  carrying the most stacks of buffs and stores, the exposed when none does). A move may carry its
+  carrying the most stacks of buffs, the exposed when none does). A move may carry its
   own aim. The pick is a commitment; Lure and Disrupt move it. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
@@ -429,7 +437,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
   two): breach (the blow ignores the shield), scorch (a stack of Scorched), burn (a stack of
   Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
-  (Silenced), purge (every buff and store gone; a hero's or a boss's),
+  (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).

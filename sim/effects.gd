@@ -180,8 +180,8 @@ const STATUS := {
 		"tags": ["marker"], "effects": []},
 	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
-	# passive's muster rule), spent by its locked pieces' charged forms; never decays, a store,
-	# so a Silence sleeps it and a Purge takes it. Phased: cannot act, take damage or be
+	# passive's muster rule), spent by its locked pieces' charged forms; never decays, and a
+	# store is a resource, so no Silence or Purge touches it (Ryan, 21 October). Phased: cannot act, take damage or be
 	# targeted until the round's end, granted only to a machine that has not acted. Rallied:
 	# the team has one reroll more this round, given as it is granted.
 	"muster": {"id": "muster", "name": "Muster", "description": "A charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver.", "decay": "none",
@@ -249,13 +249,15 @@ const STATUS := {
 	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
 	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
 	# The enemy's answer to a stacked machine (Ryan, 17 and 18 October; built 21 October): a
-	# foe's silence leaves the machine Silenced through its next round, every buff and every
-	# banked store it carries counting for nothing (the pipeline's suppress turns them off) and
-	# its components' keywords muted (Ryan, 21 October: "Silence mutes keywords, we'll dial it
-	# back in testing if needed"); it costs time, never ability. Cleansable; a Ward turns it away.
+	# foe's silence leaves the machine Silenced through its next round, every buff it carries
+	# counting for nothing (the pipeline's suppress turns them off) and its components' keywords
+	# muted (Ryan, 21 October: "Silence mutes keywords, we'll dial it back in testing if
+	# needed"); its stores fill and spend as ever (Ryan, 21 October: a store is a resource, and
+	# a balance lever if silence does not hurt enough). It costs time, never ability.
+	# Cleansable; a Ward turns it away.
 	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its buffs count for nothing and its components' keywords are muted through its next round.", "stacking": "renew",
 		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "suppress", "value": "buff"},
-		{"trigger": "static", "effect": "suppress", "value": "store"}, {"trigger": "static", "effect": "mute_keywords", "value": 1}]},
+		{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
 	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds 10 heat.", "stacking": "renew",
 		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
@@ -1339,14 +1341,16 @@ static func keywords_muted(u) -> bool:
 	return false
 
 
-## Is this modifier one a silence turns off and a purge takes: a buff or a banked store (Rage,
-## the hopper, a kept Overcharged), never a passive, a module's rule or a count?
+## Is this modifier one a silence turns off and a purge takes: a buff (a kept Overcharged
+## too), never a store (Ryan, 21 October: a store is a capped resource, as heat and the
+## magazine are, so the rage, the hopper and the Muster stay), a passive, a module's rule or a
+## count?
 static func purgeable(m) -> bool:
-	return m.scope != LOADOUT and (m.tags.has("buff") or m.tags.has("store"))
+	return m.scope != LOADOUT and m.tags.has("buff")
 
 
-## The stacks of buffs and stores a machine carries, silenced or not: what a foe that aims at
-## the buffed reads.
+## The stacks of buffs a machine carries, silenced or not: what a foe that aims at the buffed
+## reads.
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
@@ -1356,8 +1360,9 @@ static func buff_stacks(u) -> int:
 
 
 ## A purge (the enemy's Purge, a hero's or a boss's, 17 October; built 21 October): every buff
-## and store on the machine goes, every stack, the banked and the kept ones included (they last
-## the battle and never between battles). Returns the names of what went, once each.
+## on the machine goes, every stack, the kept ones included (they last the battle and never
+## between battles); its stores stay (Ryan, 21 October). Returns the names of what went, once
+## each.
 static func purge(u) -> Array[String]:
 	var gone: Array[String] = []
 	var keep: Array = []

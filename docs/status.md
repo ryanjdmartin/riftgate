@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 576 tests, 62,141 checks, green on main (21 October, with the Lammergeier, the Needletail's gate, the Swallowtail and the Musk Ox); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 576 tests, 62,144 checks, green on main (21 October, with Ryan's calls of that evening: the stores, the Musk Ox's trickle); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -91,7 +91,7 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 - 21 October, the Musk Ox (Ryan's go of that day): its damaging guns pay ammo for the heat their
   own spend would make (1 for every 10, at least 1), a foe's Scorched still heating them; the
-  magazine (10, opening at 3, 1 a round from the second, a vent on itself 3, a shield 2) is a
+  magazine (10, opening at 3, 1 a round from the first, a vent on itself 3, a shield 2) is a
   bar under the heat, never a status; the cluster cannon refunds an ammo a foe reached, the
   salvo fires the magazine at random live foes with Spread and Penetrate, the quick reload adds
   2 for 15 heat (equipment's printed heat now lands); the die prints each gun's price and DRY.
@@ -100,8 +100,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   Maxigun under Scorched heated 20, its die showing 10); heat is paid once a spend.
 - 21 October, the Swallowtail (Ryan's go of that day): its Muster fills a point for every die
   that rolls, any machine's, 30 a charge and 5 a kill by its own guns, three charges its cap,
-  a store a Silence sleeps and a Purge takes, shown as a gauge under the heat with a notch a
-  charge; a tap on the carrier arms its die for the charged form (Claude's gesture, Ryan's to
+  a store no Silence or Purge touches (Ryan, 21 October), shown as a gauge under the heat with
+  a notch a charge; a tap on the carrier arms its die for the charged form (Claude's gesture, Ryan's to
   judge), which the die shows until it is spent. The Mooring Screens shield every ally, or
   Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
   Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
@@ -109,8 +109,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   again. On the map the machines beside it ride with it and are set down beside its stop, a
   stop that cannot seat them refused, an undo taking them back. The bot spends a muster when the
   charged form beats the plain by more than half what the charge would buy banked, and always at
-  the cap. Its content is runnable (no model yet); the Sponsorship clause is a section 12
-  question.
+  the cap. Its content is runnable (no model yet); its Sponsorship is the maker's measure, a
+  damaging weapon entry counting and nothing else (Ryan, 21 October).
 - 21 October, the Needletail's gate: a setup (a debuff or a buff, read as spent) is Rapid on its
   machine once a round, a static grant of Rapid on `setup_once`, the die showing it while the
   gate is open; the machine waits on its content session.
@@ -182,11 +182,13 @@ before it. The five design sessions merged that day are paused, each resuming fr
   drag picks it back up; the Translocator is in content as the Dingo's second locked piece and
   the Dingo is tier two. Its model mount is the asset session's.
 - 21 October, Silence and Purge on the enemy's side (Ryan, 17 and 18 October; a silence mutes
-  keywords too on his word of 21 October): Silenced turns a machine's buffs and stores off and
-  mutes its components' keywords through its next round (cleansable, a chip with a struck
-  voice); Purge takes every buff and store; both ride a blow or come as a move, aimed at the
-  buffed and cast where a machine carries a buff; the Ward turns both away; the bot values a
-  Ward and a cleanse against them. No foe carries either yet (section 12).
+  keywords too on his word of 21 October): Silenced turns a machine's buffs off and mutes its
+  components' keywords through its next round (cleansable, a chip with a struck voice); Purge
+  takes every buff; neither touches a store (Ryan, 21 October: a store is a capped resource
+  with a bar, and an effect it grants is a buff, slept by a silence and silenced a turn by a
+  purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
+  and cast where a machine carries a buff; the Ward turns both away; the bot values a Ward and
+  a cleanse against them. No foe carries either yet (section 12).
 - 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die
   is held over it; the run tallies each maker's Sponsorship measure (hexes moved, damage taken
   on shield and armour, dice spent on entries that deal damage or none; each maker's content
