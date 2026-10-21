@@ -30,32 +30,23 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-One branch is live beside main, its session's; main's account of it stands as of its last
-merge into main, and the branch's own status file has the rest.
+No branch is live beside main. Every branch is merged into main (checked 21 October) and is to
+be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
+refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
+`claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
+`ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`, `claude/zealous-cori-8xoly7`,
+`claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and `ccr-3d9861dc-mp0v3w`, merged
+before it. The five design sessions merged that day are paused, each resuming from its briefs:
 
-- `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
-  landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
-  vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
-  merged into main the same day; its engine and its assets built on `ccr-ffcf75fa-3gkbz9`
-  (18 to 20 October, merged into main on 20 October); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
-  fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
-  rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
-  same day (Flak), the boiler as the Whip Scorpion on 20 October and the maker's tiers
-  confirmed the same day (3-5-2), so of the maker's briefs only the gunship's and the
-  artillery's remain (the multi-rotor landed as the Swallowtail on 21 October). The tender, the campaign
-  runner and the balance runner skip a chassis whose passive or locked piece is planned
-  (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
-  planned at tier one without being dealt; until their engine lands the maker's deal is the
-  Prairie Dog.
-
-Every other branch is merged into main (checked 21 October) and is to be deleted from the desk
-machine or GitHub, since a cloud session's push to delete them is refused: `ccr-b6da49d3-4ft738`,
-`ccr-3259e29d-ydwpom`, `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`,
-merged that day, and `ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`,
-`claude/zealous-cori-8xoly7`, `claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and
-`ccr-3d9861dc-mp0v3w`, merged before it. The four design sessions merged that day are paused,
-each resuming from its briefs:
-
+- Wainwright & Sutler (since 15 October on `claude/festive-cray-i7lvnm`, its commits
+  fast-forwarded into main as they landed; wrapped up 21 October, Ryan: "make sure everything is
+  merged in and wrapped up"): ten machines decided, 3-5-2, the bible's roster row saying where
+  each stands. Built: the Prairie Dog with Flak, the Clydesdale, the funnel-web, the Cassowary,
+  the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. Planned in
+  content, and so never dealt until their engines land: the Swallowtail and the Musk Ox (the
+  to-do's engine lines). The gunship's brief waits for the stock pass's tags and the numbers'
+  rescale (Ryan, 21 October); the five new machines' models and the Translocator's mount are the
+  to-do's art lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
   Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
   bible's Minerva roster row (section 7) says where each machine stands; the open briefs are
