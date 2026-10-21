@@ -752,6 +752,21 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: rolls_again_on names a status, one of %s" % [where, ", ".join(Effects.STATUS.keys())])
 		if Array(fd.get("keywords", [])).has("rapid"):
 			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
+	# The cooldown (Ryan, 14 October): a printed property, the rounds the entry goes dark once
+	# spent, this one included. Rapid's switch-off is a cooldown of one unless the entry prints
+	# its own, and a cooldown of 0 says none, which only a Rapid entry has to lift.
+	var rapid := Array(fd.get("keywords", [])).has("rapid")
+	if fd.has("cooldown"):
+		var cd = fd["cooldown"]
+		if not (cd is int or cd is float) or float(cd) < 0.0 or float(cd) != floorf(float(cd)):
+			errs.append("%s: cooldown is a whole number of rounds, 0 or more" % where)
+		elif int(cd) == 0 and not rapid:
+			errs.append("%s: cooldown 0 lifts Rapid's switch-off, and an entry without Rapid has none to lift" % where)
+	# Every Rapid piece carries a limiter (Ryan, 15 October): a cooldown, heat or Volatile, so
+	# no chain is free; one that prints no cooldown pays heat or hull every spend.
+	if rapid and not planned and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
+			and int(fd.get("heat", 0)) <= 0 and not Array(fd.get("keywords", [])).has("volatile"):
+		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the

@@ -101,6 +101,7 @@ var fires_hopper: int = 0     # an attack: the most loads one shot fires from th
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
+var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October); -1 reads its keywords (Rapid's switch-off, 1), 0 none
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -247,6 +248,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
+	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -296,6 +298,8 @@ func to_dict() -> Dictionary:
 		d["braces"] = braces
 	if not rolls_again_on.is_empty():
 		d["rolls_again_on"] = rolls_again_on
+	if cooldown >= 0:
+		d["cooldown"] = cooldown
 	return d
 
 
@@ -314,11 +318,31 @@ func has(kw: int) -> bool:
 	return keywords.has(kw)
 
 
+## The rounds this entry goes dark once spent, this one included (the cooldown row, 14
+## October): what it prints, or else Rapid's switch-off, a cooldown of one, the rest of this
+## round; none for any other entry. A cracked Rapid entry has lost the keyword and its
+## switch-off with it; a printed cooldown is a price, and a crack keeps it as it keeps heat.
+func cooldown_rounds() -> int:
+	if cooldown >= 0:
+		return cooldown
+	return 1 if has(Keyword.RAPID) else 0
+
+
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
-## again on a status (the Nemesis's rage), or a labelled effect.
+## again on a status (the Nemesis's rage), a printed cooldown (Rapid's own switch-off aside,
+## and a Rapid entry's "no cooldown" with it), or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty()
+	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() \
+		or printed_cooldown()
+
+
+## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
+## Rapid entry's "no cooldown".
+func printed_cooldown() -> bool:
+	if has(Keyword.RAPID):
+		return cooldown == 0 or cooldown > 1
+	return cooldown > 0
 
 
 func is_attack() -> bool:
@@ -390,6 +414,7 @@ func duplicate_face() -> Face:
 	f.power_per_load = power_per_load
 	f.braces = braces
 	f.rolls_again_on = rolls_again_on
+	f.cooldown = cooldown
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -403,6 +428,14 @@ func crack() -> void:
 	cracked = true
 	keywords.clear()
 	label = ""
+
+
+## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid
+## entry that prints none; nothing for Rapid's own switch-off or an entry with no cooldown.
+func cooldown_text() -> String:
+	if not printed_cooldown():
+		return ""
+	return " no cooldown" if cooldown == 0 else " cooldown %d" % cooldown
 
 
 func number_text() -> String:
@@ -434,6 +467,7 @@ func describe() -> String:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+			s += cooldown_text()
 			if targets == Target.SELF:
 				s += " (self only)"
 			elif targets == Target.ALLY:
@@ -465,6 +499,7 @@ func describe() -> String:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+			s += cooldown_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

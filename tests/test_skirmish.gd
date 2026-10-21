@@ -99,9 +99,9 @@ func test_cleave_hits_neighbours() -> void:
 
 func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() -> void:
 	# A blow of 20: the tough machine's shield of 40 holds (weight 1); the weak one's shield of
-	# 10 blocks the blow whole too, this being the shield rule, but it breaks, and a shield
-	# about to fail is exposure (half of it: weight 6), so the weak one is picked six times
-	# in seven.
+	# 10 takes ten and lets ten through (the honest shield), and a shield about to fail is
+	# exposure too (half of it), so the weak one weighs 16 and is picked sixteen times in
+	# seventeen.
 	var weak_picks := 0
 	for seed_value in range(120):
 		var sk := Skirmish.new(seed_value)
@@ -124,7 +124,7 @@ func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() 
 	s0.begin()
 	var g0: Foe = s0.front[0]
 	assert_eq(s0.hull_reached(g0, s0.mechs[0]), 20, "bare: the whole blow reaches hull")
-	assert_eq(s0.hull_reached(g0, s0.mechs[1]), 0, "a standing shield blocks it whole")
+	assert_eq(s0.hull_reached(g0, s0.mechs[1]), 10, "a thin shield takes its ten, and the other ten pass")
 	assert_eq(s0.shield_broken(g0, s0.mechs[1]), 10, "but the thin shield breaks")
 	assert_eq(s0.shield_broken(g0, s0.mechs[2]), 0, "and the thick one holds")
 	# The rule before 2 October, kept for the runner's comparison: every blow on the lowest shield.
@@ -140,7 +140,7 @@ func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() 
 	sk.end_round()
 	assert_eq(tough.shield, 40, "tough untouched")
 	assert_eq(weak.shield, 0, "weak lost its shield")
-	assert_eq(weak.hull, 100, "and no hull: a standing shield blocks the blow whole")
+	assert_eq(weak.hull, 90, "and the ten its shield could not take")
 	# The pick is a commitment: a shield raised on the target does not move the blow.
 	var s2 := Skirmish.new(3)
 	s2.targeting_override = "lowest"
@@ -916,7 +916,7 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
 	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
 	assert_eq(fc["shield_after"], 0, "shield gone")
-	assert_eq(fc["hull_after"], 75, "the thirty stands left, strikes first and is blocked whole; the twenty-five lands on bare hull")
+	assert_eq(fc["hull_after"], 65, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
 	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
 	assert_false(fc["destroyed"], "still standing")
 	sk._suppress(sk.front[0])
@@ -1098,22 +1098,26 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 	assert_eq(m.shield, 40, "at max")
 
 
-func test_a_standing_shield_blocks_the_whole_blow() -> void:
+func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
+	# The honest shield (Ryan, 14 October): a shield is its number, never a whole block.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
-	sk.add_foes([_ghoul(90, 50)])
+	sk.add_foes([_ghoul(900, 50)])
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "ten shield is spent")
-	assert_eq(m.hull, 100, "fifty blocked by a ten-point shield: nothing bleeds")
-	assert_true(sk.turn_events[0]["blocked"] and sk.turn_events[0]["broke_shield"], "the blow is recorded as blocked and shield-breaking")
-	assert_eq(m.damaged_component_count(), 0, "and a shielded blow never injures")
+	assert_eq(m.hull, 60, "fifty on a ten-point shield: forty pass to the hull")
+	assert_true(not sk.turn_events[0]["blocked"] and sk.turn_events[0]["broke_shield"], "the blow broke the shield and was not blocked")
+	assert_eq(m.damaged_component_count(), 1, "and the forty that reached the hull injure: an injury counts what reaches it")
+	assert_true(str(sk.log).contains("shield -10, hull -40"), "the log says what each took")
+	m.shield = 50
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.hull, 50, "bare hull takes the next one")
-	assert_eq(m.damaged_component_count(), 1, "and it injures")
+	assert_eq(m.shield, 0, "a shield the blow's size takes it all")
+	assert_eq(m.hull, 60, "and nothing passes")
+	assert_true(sk.turn_events[0]["blocked"], "the blow is recorded as blocked")
 
 
 func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
@@ -1130,8 +1134,8 @@ func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
 	m.shield = 10
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.shield, 0, "the thirty stands left and strikes first: the ten-point shield takes it whole")
-	assert_eq(m.hull, 180, "then both ghouls bounce off the armour")
+	assert_eq(m.shield, 0, "the thirty stands left and strikes first: the ten-point shield takes ten")
+	assert_eq(m.hull, 170, "the armour ten of the twenty past it, and both ghouls bounce off the armour")
 
 
 func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
@@ -1145,14 +1149,15 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	sk.start_round()
 	var fc := sk.forecast(sk.mechs[0])
 	assert_eq(fc["incoming"], 60, "forecast counts both blows")
-	assert_eq(fc["hull_after"], 70, "and knows the second lands on bare hull")
+	assert_eq(fc["hull_after"], 50, "and knows the first passes twenty and the second lands on bare hull")
 	assert_true(fc["component_risk"], "and that it can injure")
 	sk.end_round()
 	assert_eq(m.shield, 0, "first blow spends the shield")
-	assert_eq(m.hull, 70, "second blow reaches the hull")
+	assert_eq(m.hull, 50, "twenty past it, and the second blow's thirty")
 
 
-func test_breach_overflows_shield_into_hull_and_can_injure() -> void:
+func test_breach_ignores_the_shield_and_can_injure() -> void:
+	# A breach ignores the shield outright, and the shield stands (Ryan, 14 October).
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
@@ -1162,11 +1167,12 @@ func test_breach_overflows_shield_into_hull_and_can_injure() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.shield, 0, "shield gone")
-	assert_eq(m.hull, 60, "forty overflowed")
-	assert_eq(m.damaged_component_count(), 1, "forty of a hundred hull in one blow injures: a breach gets past the shield rule")
-	assert_true(sk.turn_events.size() == 1 and sk.turn_events[0]["broke_shield"] and sk.turn_events[0]["injured"], "the turn event says the shield broke and a component was hit")
-	# Armour comes off the overflow like any blow that reaches the hull (Ryan, 11 October).
+	assert_eq(m.shield, 10, "the shield stands")
+	assert_eq(m.hull, 50, "the whole fifty reached the hull")
+	assert_eq(m.damaged_component_count(), 1, "fifty of a hundred hull in one blow injures")
+	assert_true(sk.turn_events.size() == 1 and not sk.turn_events[0]["broke_shield"] and sk.turn_events[0]["injured"], "the turn event says the shield held and a component was hit")
+	assert_true(str(sk.log).contains("maw breaches A: hull -50"), "the log says it breached")
+	# Armour comes off a breach like any blow that reaches the hull (Ryan, 11 October).
 	var s2 := Skirmish.new(1)
 	var plated := _mech("B", Die.single(Face.shield(10)), 10, 100)
 	plated.armour = 15
@@ -1176,10 +1182,10 @@ func test_breach_overflows_shield_into_hull_and_can_injure() -> void:
 	s2.add_foes([maw])
 	s2.begin()
 	s2.start_round()
-	assert_eq(s2.forecast(s2.mechs[0], false)["hull_after"], 75, "the forecast takes the armour off the overflow")
+	assert_eq(s2.forecast(s2.mechs[0], false)["hull_after"], 65, "the forecast takes the armour off the breach")
 	s2.end_round()
-	assert_eq(plated.shield, 0, "the shield took ten")
-	assert_eq(plated.hull, 75, "forty overflowed, fifteen of it stopped by the armour")
+	assert_eq(plated.shield, 10, "the shield took nothing")
+	assert_eq(plated.hull, 65, "fifty breached, fifteen of it stopped by the armour")
 
 
 func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
@@ -1192,8 +1198,8 @@ func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
 	assert_eq(sk.front[1].display_name, "revenant", "ghouls follow in arrival order")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.shield, 0, "the brute strikes first and the shield takes it")
-	assert_eq(m.hull, 80, "the two ghouls then hit bare hull")
+	assert_eq(m.shield, 0, "the brute strikes first and the shield takes ten of it")
+	assert_eq(m.hull, 40, "forty past the shield, then the two ghouls on bare hull")
 
 
 func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
@@ -1888,7 +1894,7 @@ func test_the_bite_takes_shield_first_and_never_armour() -> void:
 	assert_eq(sk.front[0].hp, 470, "the attack still landed")
 
 
-func test_cleanse_clears_what_foes_did_and_not_the_rapid_switch_off() -> void:
+func test_cleanse_clears_what_foes_did_and_not_a_cooldown() -> void:
 	var sk := Skirmish.new(1)
 	var scrubber := Face.shield(10)
 	scrubber.add_keyword(K.CLEANSE)
@@ -1912,9 +1918,9 @@ func test_cleanse_clears_what_foes_did_and_not_the_rapid_switch_off() -> void:
 	assert_eq(Effects.stacks_of(b, "burning_mech"), 0, "burning gone")
 	assert_eq(Effects.stacks_of(b, "scorched"), 0, "scorched gone")
 	assert_true("\n".join(sk.log).contains("cleanses B: "), "the log says what went")
-	Effects.disable_entry(a, 0, "rapid", sk.round)
+	Effects.disable_entry(a, 0, "cooldown", sk.round)
 	var gone := Effects.cleanse(a)
-	assert_true(gone.is_empty(), "a rapid switch-off is not the cleanse's to lift")
+	assert_true(gone.is_empty(), "a cooldown (Rapid's switch-off among them) is not the cleanse's to lift")
 	assert_true(Effects.is_entry_disabled(a, 0), "and it stays")
 
 
@@ -3460,7 +3466,7 @@ func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void
 
 func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void:
 	var sk := Skirmish.new(1)
-	var ov := Face.shield(30)
+	var ov := Face.shield(40)
 	ov.keywords.append(Face.Keyword.OVERSHIELD)
 	var giver := _mech("Giver", Die.single(ov), 40, 100)
 	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 20, 100)
@@ -3471,16 +3477,16 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	sk.start_round()
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]
-	var fc := sk.forecast(sk.mechs[1], false, 30, true)
-	assert_eq(int(fc["shield_after"]), 0, "the forecast reads the overshield: 50 against three blows of 20 leaves no shield standing")
-	assert_eq(int(fc["hull_after"]), 100, "and no hull lost, where 20 shield alone would have let the third blow through")
+	var fc := sk.forecast(sk.mechs[1], false, 40, true)
+	assert_eq(int(fc["shield_after"]), 0, "the forecast reads the overshield: 60 against three blows of 20 leaves no shield standing")
+	assert_eq(int(fc["hull_after"]), 100, "and no hull lost, where 20 shield alone would have let forty through")
 	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally past its maximum")
-	assert_eq(taker.shield, 50, "20 plus 30, past a maximum of 20")
+	assert_eq(taker.shield, 60, "20 plus 40, past a maximum of 20")
 	assert_true("\n".join(sk.log).contains("past its maximum"), "the log says so")
 	sk.mechs[1].face_index = 0
 	sk.assign(1, sk.front[0])
 	sk.end_round()
-	assert_eq(taker.hull, 100, "three blows of 20 all blocked by the overshield")
+	assert_eq(taker.hull, 100, "three blows of 20 all taken by the overshield")
 	assert_eq(taker.shield, 0, "the shield spent on them")
 	# The excess fades at the round's end when nothing spends it.
 	taker.shield = 20
@@ -3489,12 +3495,12 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	for f in sk.field_foes():
 		f.target = sk.mechs[0]
 	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally again")
-	assert_eq(taker.shield, 50, "past the maximum again")
+	assert_eq(taker.shield, 60, "past the maximum again")
 	sk.mechs[1].face_index = 0
 	sk.assign(1, sk.front[0])
 	sk.end_round()
-	assert_eq(taker.shield, 20, "untouched by the blows this round, the 30 past the maximum faded at the round's end")
-	assert_true("\n".join(sk.log).contains("30 shield past its maximum fades"), "and the log says so")
+	assert_eq(taker.shield, 20, "untouched by the blows this round, the 40 past the maximum faded at the round's end")
+	assert_true("\n".join(sk.log).contains("40 shield past its maximum fades"), "and the log says so")
 	# Without the keyword the same shield is capped, as it always was.
 	var plain := _mech("Plain", Die.single(Face.shield(30)), 40, 100)
 	var sk2 := Skirmish.new(1)
@@ -3878,11 +3884,11 @@ func test_a_blow_at_every_machine_lands_on_each_with_its_riders() -> void:
 	for i in range(3):
 		assert_true(sk.attackers_of(sk.mechs[i]).has(storm), "machine %d is struck, whichever the pick named" % i)
 		assert_eq(sk.incoming_for(sk.mechs[i]), 40, "and each takes both blows")
-	assert_eq(sk.forecast(sk.mechs[1], false)["hull_after"], 80, "a shield stops the first blow on its own machine and no other")
+	assert_eq(sk.forecast(sk.mechs[1], false)["hull_after"], 70, "a shield takes ten of the first blow on its own machine and no other")
 	sk.end_round()
 	assert_eq(bare.hull, 60, "both blows on the bare machine")
-	assert_eq(shielded.shield, 0, "the shield took the first")
-	assert_eq(shielded.hull, 80, "the second reached the hull")
+	assert_eq(shielded.shield, 0, "the shield took ten of the first")
+	assert_eq(shielded.hull, 70, "ten of it passed, and the second reached the hull whole")
 	assert_eq(third.hull, 60, "both on the third")
 	for m in [bare, shielded, third]:
 		assert_eq(Effects.stacks_of(m, "scorched"), 2, "each strike's rider lands on each machine")
@@ -3971,8 +3977,8 @@ func test_a_countdown_blow_at_every_machine_gathers_then_lands_on_each() -> void
 	assert_eq(sk.incoming_for(sk.mechs[1]), 20, "and on the second")
 	sk.end_round()
 	assert_eq(a.hull, 80, "the bare machine took it")
-	assert_eq(b.shield, 0, "the shield took the other's")
-	assert_eq(b.hull, 100, "whole, under today's shield rule")
+	assert_eq(b.shield, 0, "the shield took ten of the other's")
+	assert_eq(b.hull, 90, "and ten passed")
 	assert_true(augur.pending.is_empty(), "spent")
 
 
@@ -4233,8 +4239,8 @@ func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
 	sk.start_round()
 	assert_true(sk.assign(0, beast), "the beast falls")
 	assert_eq(a.hull, 80, "its Meteor lands on the machine that killed it at once")
-	assert_eq(b.shield, 0, "a shield takes it on the other")
-	assert_eq(b.hull, 100, "whole, as a standing shield blocks a blow today")
+	assert_eq(b.shield, 0, "a shield takes ten of it on the other")
+	assert_eq(b.hull, 90, "and ten pass to the hull")
 	assert_eq(sk.last_acts.size(), 1, "the screen is told")
 	assert_eq(sk.last_acts[0]["mechs"], [0, 1], "which machines it struck")
 	assert_true("\n".join(sk.log).contains("its last act lands: Meteor"), "the log says so")
@@ -4859,3 +4865,151 @@ func test_flak_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
 	Effects.stack(ov, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
 	Effects.tick(ov)
 	assert_eq(Effects.stacks_of(ov, "overcharged"), 2, "a machine's tick is the round's end, and halves as before")
+
+
+## The Barrier (Ryan, 14 October; built 21 October): the next blow a foe lands deals nothing,
+## so it never injures, its riders land, and it is spent; a blow of nothing leaves it
+## standing, a second grant renews it, and the round's end takes it.
+func test_a_barrier_takes_the_next_blow_whole_and_its_riders_land() -> void:
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.buff("barrier")), 0, 100)
+	sk.add_mech(m)
+	sk.add_foes([_storm(50, 2, ["scorch"])])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.mechs[0]), "the Barrier goes up")
+	assert_true(Effects.has(m, "barrier"), "a buff grants it")
+	var fc := sk.forecast(sk.mechs[0], false)
+	assert_eq(int(fc["hull_after"]), 50, "the forecast reads it: the first fifty taken whole, the second on bare hull")
+	sk.end_round()
+	assert_eq(m.hull, 50, "the first blow dealt nothing; the second landed")
+	assert_eq(m.damaged_component_count(), 1, "the second injured; the first never could")
+	assert_eq(Effects.stacks_of(m, "scorched"), 2, "both blows' riders landed")
+	assert_false(Effects.has(m, "barrier"), "spent by the blow it took")
+	assert_true(sk.turn_events[0]["barred"] and not sk.turn_events[1]["barred"], "the events say which blow it took")
+	assert_true(str(sk.log).contains("the Barrier takes the blow"), "and so does the log")
+	var s2 := Skirmish.new(1)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	s2.add_mech(b)
+	s2.add_foes([_ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	Effects.grant_buff(b, "barrier", 1, "test", s2.round)
+	s2._damage_mech(s2.mechs[0], 0, s2.front[0])
+	assert_true(Effects.has(b, "barrier"), "a blow of nothing leaves it standing")
+	Effects.grant_buff(b, "barrier", 1, "test", s2.round)
+	assert_eq(Effects.stacks_of(b, "barrier"), 1, "a second grant renews it: one Barrier, never two")
+	s2._suppress(s2.front[0])
+	s2.end_round()
+	assert_false(Effects.has(b, "barrier"), "the round's end takes it unspent")
+	assert_eq(b.hull, 100, "and nothing struck")
+
+
+## The Ward (Ryan, 14 October; built 21 October): every blow a foe lands on the machine that
+## round leaves no rider, a breach included, so the shield absorbs it; the damage lands.
+func test_a_ward_turns_away_every_rider_and_the_breach_for_the_round() -> void:
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.buff("ward")), 30, 100)
+	sk.add_mech(m)
+	sk.add_foes([_storm(20, 2, ["breach", "scorch", "corrupt"])])
+	sk.begin()
+	sk.start_round()
+	assert_eq(int(sk.forecast(sk.mechs[0], false)["hull_after"]), 60, "unwarded, both blows breach past the shield")
+	assert_true(sk.assign(0, sk.mechs[0]), "the Ward goes up")
+	var fc := sk.forecast(sk.mechs[0], false)
+	assert_eq(int(fc["shield_after"]), 0, "warded, the shield takes thirty of the forty")
+	assert_eq(int(fc["hull_after"]), 90, "and ten pass")
+	sk.end_round()
+	assert_eq(m.shield, 0, "the shield absorbed the needle")
+	assert_eq(m.hull, 90, "the damage landed")
+	assert_eq(Effects.stacks_of(m, "scorched"), 0, "no scorch")
+	assert_eq(Effects.corrupt_stacks(m, 0), 0, "no corruption")
+	var said := "\n".join(sk.log)
+	assert_true(said.contains("the Ward turns storm's breach away") and said.contains("the Ward turns storm's riders away"), "the log says so")
+	assert_false(Effects.has(m, "ward"), "the round's end takes it")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 50, "unwarded the next round, both blows breach")
+	assert_eq(Effects.stacks_of(m, "scorched"), 2, "and both riders land")
+
+
+## The cooldown (Ryan, 14 October; built 21 October): a printed property, the entry dark for
+## the rounds it says, this one included, shown with the rounds left; no cleanse lifts it,
+## and a crack keeps it, a price as heat is.
+func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
+	var gun := Face.attack(10, L)
+	gun.cooldown = 2
+	assert_eq(gun.describe(), "10 cooldown 2", "the entry says its cooldown")
+	assert_true(gun.has_unique_rule(), "a printed rule: the star chip")
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([gun, Face.attack(10, L)]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_true(Effects.is_entry_disabled(m, 0), "dark at once")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "two rounds left, this one included")
+	assert_false(Effects.cleansable_disable(m, 0), "and no cleanse lifts it")
+	assert_eq(Effects.dark_rounds(m, 1, sk.round), 0, "the other entry is lit")
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.is_entry_disabled(m, 0), "still dark the next round")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "its last")
+	ms.face_index = 0
+	assert_true(ms.face().disabled, "the die landing on it shows it dark")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.is_entry_disabled(m, 0), "lit again the round after")
+	var cracked := gun.duplicate_face()
+	cracked.crack()
+	assert_eq(cracked.cooldown_rounds(), 2, "a crack keeps a printed cooldown")
+	var round_trip := Face.from_dict(gun.to_dict())
+	assert_eq(round_trip.cooldown_rounds(), 2, "and a save keeps it")
+
+
+## Rapid's switch-off is a cooldown of one, the rest of this round (the cooldown row); a Rapid
+## entry that prints no cooldown chains onto a copy of itself and back, its heat the limiter.
+func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
+	var zap := Face.attack(10, L, [K.RAPID])
+	assert_eq(zap.cooldown_rounds(), 1, "Rapid's own cooldown")
+	assert_eq(zap.describe(), "10 rapid", "unsaid: the keyword says it")
+	assert_false(zap.has_unique_rule(), "and no star for it")
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([zap, Face.attack(10, L)]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "dark for the rest of this round")
+	assert_false(ms.assigned, "and the machine acts again")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.is_entry_disabled(m, 0), "lit the next round")
+	var z := zap.duplicate_face()
+	z.crack()
+	assert_eq(z.cooldown_rounds(), 0, "a cracked Rapid entry lost its switch-off with the keyword")
+	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["rapid"], "heat": 5, "cooldown": 0})
+	assert_eq(hot.cooldown_rounds(), 0, "it prints none")
+	assert_eq(hot.describe(), "10 rapid no cooldown (+5 heat)", "and says so")
+	assert_true(hot.has_unique_rule(), "a printed rule")
+	assert_eq(int(hot.to_dict()["cooldown"]), 0, "kept through a save")
+	var s2 := Skirmish.new(1)
+	var n := _mech("B", Die.of([hot, hot.duplicate_face()]), 40, 100)
+	s2.add_mech(n)
+	s2.add_foes([_ghoul(500, 1)])
+	s2.begin()
+	s2.start_round()
+	var ns: Skirmish.MechState = s2.mechs[0]
+	ns.face_index = 0
+	var heat_before := ns.heat
+	for i in range(3):
+		assert_true(s2.assign(0, s2.front[0]), "spend %d" % i)
+		assert_false(Effects.is_entry_disabled(n, 0) or Effects.is_entry_disabled(n, 1), "nothing dark")
+	assert_eq(ns.heat - heat_before, 15, "three spends at five heat each")
+	assert_eq(ns.face_index, 1, "off the first copy onto the second, back, and onto the second again")

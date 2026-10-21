@@ -145,11 +145,14 @@ defeat when every machine is wrecked. There is no round limit.
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
-  A Rapid component always carries a limiter, a cooldown, heat or Volatile; every Rapid
-  component today carries a cooldown of one: the entry switches off for the round. The
-  Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it into itself.
-- **Cooldown** (a printed property on specific pieces, not built): after the entry fires it
-  is dark for so many rounds, shown on the entry with the rounds left.
+  Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
+  component prints its own; one that prints none pays heat or Volatile every spend (the Cryo
+  Flinger, 5 heat). A Rapid component always carries a limiter, a cooldown, heat or
+  Volatile; the Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it
+  into itself.
+- **Cooldown** (a printed property on specific pieces): once spent, the entry is dark for
+  that many rounds, this one included, shown on the die with the rounds left; the die may
+  land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -161,7 +164,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
-  Scrambled, a foe's Disabled and Corrupted (never a Rapid switch-off).
+  Scrambled, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -207,12 +210,13 @@ On a machine:
 - **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
   spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
-  so it never injures; its riders land. Until the round's end. Never granted to every ally
-  at once.
-- **Ward** (buff, not built): every blow a foe lands on this machine leaves no rider
-  (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage
-  lands. Until the round's end.
+- **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
+  injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
+  the round's end. Never granted to every ally at once. Nothing in content grants it yet.
+- **Ward** (buff): every blow a foe lands on this machine this round leaves no rider
+  (breach, burn, scorch, disable, corrupt), so its shield absorbs a breach like any blow,
+  and no silence or purge touches it; its damage lands. Until the round's end. Nothing in
+  content grants it yet.
 - **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
@@ -280,10 +284,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
   the hull. A **breach** blow ignores the shield: the shield stands and the whole blow
-  reaches the hull. (Not built: today a standing shield blocks a whole blow, however small,
-  and only a breach's overflow passes it.)
-- A machine's armour comes off every blow that reaches its hull, flat, a breach's overflow
-  included; a shield takes no armour off. A foe's armour comes off every blow on it, never
+  reaches the hull.
+- A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
+  and a breach included; a shield takes no armour off. A foe's armour comes off every blow on it, never
   off Burning. Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
@@ -309,9 +312,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
   its hull (a breach's whole blow included) rolls the machine's die: an intact entry cracks, a
   cracked one is destroyed, a blank shrugs it off. A shield absorbs its share first and what
-  reaches the hull counts; a Barrier's blow never does (not built: today a standing shield
-  prevents it, breach excepted). Bites, splash and overheats never injure.
-- **Cracked**: keeps its number, heat, action and passive; loses its keywords.
+  reaches the hull counts; a Barrier's blow never does. Bites, splash and overheats never
+  injure.
+- **Cracked**: keeps its number, heat, cooldown, action and passive; loses its keywords.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
   Badger's components are never destroyed.
 
@@ -333,10 +336,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
-  foe of its type; strikes are separate blows. Riders: breach (the blow ignores the shield;
-  not built: today only its overflow passes), scorch (a stack of
-  Scorched), burn (a stack of Burning), disable (the entry the machine shows), corrupt (a
-  Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
+  foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
+  two): breach (the blow ignores the shield), scorch (a stack of Scorched), burn (a stack of
+  Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it),
+  self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its

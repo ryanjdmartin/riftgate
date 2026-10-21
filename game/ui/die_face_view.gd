@@ -38,6 +38,7 @@ const SLOT_SIZE := 18
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
+var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, drawn as its number
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var spent: bool = false
@@ -228,6 +229,11 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
 	var num := shown_number if not shown_number.is_empty() else face.number_text()
+	if face.disabled and dark > 0:
+		# Dark with the rounds left (the cooldown row, 14 October): the count where the number
+		# sits and what it counts beneath, so it never reads as the component's number.
+		num = str(dark)
+		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "ROUND LEFT" if dark == 1 else "ROUNDS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
 	var num_size := 28 if num.contains("–") else 38
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;

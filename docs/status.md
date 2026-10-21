@@ -114,6 +114,19 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
+  bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
+  excess passes to the hull, a breach ignores the shield and leaves it standing, an injury
+  counts what reaches the hull (one blow walk, `Skirmish.blows_on`, under the hit, the forecast
+  and the foes' aim). Barrier and Ward are machine buffs a buff entry grants one machine: the
+  Barrier takes the next blow that deals anything and never lets it injure, the Ward turns away
+  every rider and the breach that round; their chips are the shield's outline with a bar or a
+  struck ring inside; nothing carries either yet. A cooldown is a number printed on an entry,
+  its rounds counted with the one it is spent in: Rapid's switch-off is a cooldown of one, the
+  Cryo Flinger prints none (cooldown 0, its heat the limiter, Ryan's design of 20 October), the
+  dark entry shows its rounds left on the die, and the validator refuses a Rapid entry with no
+  limiter. The bot values both buffs and prices a cooldown. The balance runner splits across
+  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is owed (the to-do).
 - 21 October, Flak (Ryan's go, 19 October; the bible's Prairie Dog row), built on main once the
   numbers branch merged: Flak N on the Flakshot Repeater (Flak 2, Spread, a flat 5, no Rapid),
   each foe hit gaining the stacks after the blow; every blow on a Flak foe a point more a stack,
@@ -381,10 +394,8 @@ before it. The three design sessions merged that day are paused, each resuming f
   Penetrate, an explosive carries both (the Artillery Rangefinder needs a new rule).
 - Purge, our keyword for the foes' buffs (its carriers and numbers open; Purge on both sides for
   now, Ryan, 20 October).
-- The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): a shield
-  absorbs its number and the excess passes to the hull, a breach ignores the shield, an injury
-  counts what reaches the hull; Barrier and Ward; cooldowns a printed property on specific
-  pieces (Rapid as a cooldown of one); Misharu's payoff Penance; the Votive Screen's name;
+- The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): the shield
+  rule, Barrier and Ward, and cooldowns (built 21 October, above); Misharu's payoff Penance; the Votive Screen's name;
   Kestrel's strafer and bomber (the harpoon's Shock, the Oblation Mantle and the cleared
   intent built 15 October). The engine work is on the to-do. The budgets (15 October): adding
   hard control always carefully considered with other options explored first, no caps; a new

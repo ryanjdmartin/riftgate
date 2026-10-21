@@ -732,3 +732,27 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
 	assert_true(glyphs.has("flak") and glyphs.has("cryo"), "and Flak and Cryo wear theirs: %s" % str(glyphs))
 	s.free()
+
+
+## The Barrier and the Ward wear chips of their own, one colour parted by what sits inside the
+## shield (21 October), and a dark entry shows its rounds left on the die and in the hold.
+func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	Effects.grant_buff(ms.unit, "barrier", 1, "test", s.sk.round)
+	Effects.grant_buff(ms.unit, "ward", 1, "test", s.sk.round)
+	s._refresh()
+	var rows := {}
+	for r in s._mech_rows(0):
+		rows[r[0]] = r
+	assert_true(rows.has("barrier") and rows.has("ward"), "both chips: %s" % str(rows.keys()))
+	assert_eq(rows["barrier"][3], Palette.SHIELD, "the Barrier in the shield's colour")
+	assert_eq(rows["ward"][3], Palette.SHIELD, "and the Ward, parted from it by its glyph")
+	Effects.disable_entry(ms.unit, ms.face_index, "cooldown", s.sk.round + 1)
+	s._refresh()
+	assert_eq(s._dice[0].dark, 2, "the die shows the entry dark with two rounds left")
+	assert_true(s._face_labels(ms, false)[ms.face_index].contains("DARK, 2 ROUNDS LEFT"), "and so does the hold")
+	Effects.disable_entry(ms.unit, ms.face_index, "foe:x", s.sk.round)
+	s._refresh()
+	assert_true(s._face_labels(ms, false)[ms.face_index].contains("DISABLED"), "a foe's switch-off says so, cleansable")
+	s.free()

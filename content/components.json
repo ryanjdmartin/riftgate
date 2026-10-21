@@ -588,7 +588,7 @@
     "stage": "draft",
     "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
     "niche": "The Armadillo's locked pair (Ryan's framework, 15 October; his go, 20 October): an Indirect weapon of no damage with Lure, Rapid and Cryo 1 at 5 heat. The foe it lures carries Cryo; any machine's damaging hit spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal.",
-    "notes": "Two copies on the die (Ryan, 15 October: one or a pair; 16 October: a pair, since one lure on a five-entry die shows a fifth of rounds). Rapid with no cooldown: the heat is its limiter (the bible's Rapid row), 5 a spend, a placeholder like every heat number here until the heat rework (Ryan, 20 October). Cryo is marked for reuse on other pieces as ally cooling through a foe's debuff, and may carry a minor rider later if the roster has room (the Armadillo row)."
+    "notes": "Two copies on the die (Ryan, 15 October: one or a pair; 16 October: a pair, since one lure on a five-entry die shows a fifth of rounds). Rapid with no cooldown (cooldown 0 since the cooldown property landed, 21 October; it took the switch-off until then): the heat is its limiter (the bible's Rapid row), 5 a spend, a placeholder like every heat number here until the heat rework (Ryan, 20 October). Cryo is marked for reuse on other pieces as ally cooling through a foe's debuff, and may carry a minor rider later if the roster has room (the Armadillo row)."
    },
    "face": {
     "kind": "attack",
@@ -600,7 +600,8 @@
      "cryo"
     ],
     "heat": 5,
-    "cryo": 1
+    "cryo": 1,
+    "cooldown": 0
    },
    "passive": null,
    "tags": [

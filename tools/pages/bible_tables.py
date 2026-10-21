@@ -32,7 +32,7 @@ END = "<!-- bible-tables:end -->"
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
-                      "cryo": [("cryoed", "foe")]}
+                      "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper"}
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
@@ -53,7 +53,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("power_per_missing", "Grows with missing hull", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
-           ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on")))]
+           ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on"))),
+           # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
+           ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above)."}
 KIND_ORDER = {"buff": 0, "debuff": 1}

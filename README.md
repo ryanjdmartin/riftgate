@@ -166,6 +166,11 @@ python3 tools/pages/bible_tables.py
 # (repeatable, never validated: knock-outs and what-ifs); compare each against the same seeds without;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+# the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
+# report, and --merge writes the report from the parts (same options on every part and the merge;
+# the merged report reads as a whole run, the time the longest part's)
+for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --part $i/4 --json /tmp/part$i.json & done; wait
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --merge /tmp/part0.json,/tmp/part1.json,/tmp/part2.json,/tmp/part3.json
 
 # the map survey: 200 generated maps at the game's 7x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,

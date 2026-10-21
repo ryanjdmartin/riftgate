@@ -23,7 +23,13 @@ extends SceneTree
 ## run only, e.g. components/enfilade_beam/face/keywords=[]; never validated, for a knock-out
 ## or a what-if, never a way to change content),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
-## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3").
+## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3"),
+## --part i/n (21 October: run only every n-th cell from the i-th, counting from 0, into the
+## --json path and no report, so n processes share the matrix on n cores) and --merge
+## a.json,b.json (the report from those parts' cells, with the same options the parts ran
+## under; the time it prints is the longest part's):
+##   for i in 0 1 2 3; do godot ... -s tools/balance.gd -- --part $i/4 --json part$i.json & done; wait
+##   godot ... -s tools/balance.gd -- --merge part0.json,part1.json,part2.json,part3.json
 ##
 ## Read the bands, not the numbers: a pack random play beats is too easy; a pack greedy
 ## play cannot beat is a wall; a cell where the two rungs land together holds no decision.
@@ -47,6 +53,9 @@ var bumps: Array = []       # --bump: [stat, amount] pairs given to every machin
 var no_passive := false     # --nopassive: every chassis stripped of its passive
 var unmeasured: Array = []  # chassis the engine cannot field yet (a planned passive or locked piece): no row, no trio
 var edits: Array = []       # --set: "path=json" content replacements for this run only
+var part := -1              # --part i/n: this process runs the cells whose place in the matrix is i modulo n
+var parts := 1
+var merge: Array = []       # --merge: the parts' JSON paths to build the report from
 
 var db: ContentDB
 var rows: Array = []      # {id, name, chassis: [ids]}
@@ -83,21 +92,47 @@ func _init() -> void:
 		return
 	var t0 := Time.get_ticks_msec()
 	var fights := 0
-	for r in rows:
-		for p in packs:
-			for k in policies:
-				cells[_key(r, p, k)] = _run_cell(r, p, k)
-				fights += seeds
-	# The team row again under the other targeting rule, for the comparison section.
-	var other := "lowest" if targeting.is_empty() else ""
-	for r in rows:
-		if r["id"] != "team":
-			continue
-		for p in packs:
-			for k in policies:
-				compare[_key(r, p, k)] = _run_cell(r, p, k, other)
-				fights += seeds
-	var secs := (Time.get_ticks_msec() - t0) / 1000.0
+	var secs := 0.0
+	if not merge.is_empty():
+		var got := _merge_parts()
+		if got.is_empty():
+			quit(1)
+			return
+		fights = int(got["fights"])
+		secs = float(got["secs"])
+	else:
+		# Every cell in one order, so a part's share is the same whichever process asks.
+		var at := -1
+		for r in rows:
+			for p in packs:
+				for k in policies:
+					at += 1
+					if part < 0 or at % parts == part:
+						cells[_key(r, p, k)] = _run_cell(r, p, k)
+						fights += seeds
+		# The team row again under the other targeting rule, for the comparison section.
+		var other := "lowest" if targeting.is_empty() else ""
+		for r in rows:
+			if r["id"] != "team":
+				continue
+			for p in packs:
+				for k in policies:
+					at += 1
+					if part < 0 or at % parts == part:
+						compare[_key(r, p, k)] = _run_cell(r, p, k, other)
+						fights += seeds
+		secs = (Time.get_ticks_msec() - t0) / 1000.0
+	if part >= 0:
+		var pj := FileAccess.open(json_path, FileAccess.WRITE)
+		if pj == null:
+			push_error("--part writes its cells to --json, and cannot write '%s'" % json_path)
+			quit(1)
+			return
+		pj.store_string(JSON.stringify({"seeds": seeds, "part": "%d/%d" % [part, parts], "fights": fights, "secs": secs, "cells": cells, "compare": compare}, "  "))
+		pj.close()
+		print("wrote part %d/%d to %s: %d fights in %.1f s" % [part, parts, json_path, fights, secs])
+		quit(0)
+		return
 	var report := _report(fights, secs)
 	print(report)
 	var f := FileAccess.open(out_path, FileAccess.WRITE)
@@ -170,7 +205,60 @@ func _parse_args() -> void:
 			"--trace":
 				trace = v
 				i += 1
+			"--part":
+				var pp := v.split("/")
+				if pp.size() == 2 and int(pp[1]) > 0:
+					parts = int(pp[1])
+					part = clampi(int(pp[0]), 0, parts - 1)
+				i += 1
+			"--merge":
+				merge = Array(v.split(","))
+				i += 1
 		i += 1
+
+
+## The parts' cells into this run's (--merge): each part's JSON read back, its numbers made
+## whole again where the runner counts (JSON reads every number as a float), the fights summed
+## and the time the longest part's. Empty when a part is missing, ran on other seeds, or
+## leaves a cell of the matrix unrun.
+func _merge_parts() -> Dictionary:
+	var fights := 0
+	var secs := 0.0
+	for path in merge:
+		var text := FileAccess.get_file_as_string(str(path))
+		var data = JSON.parse_string(text) if not text.is_empty() else null
+		if not (data is Dictionary):
+			push_error("--merge: cannot read the part '%s'" % path)
+			return {}
+		if int(data.get("seeds", 0)) != seeds:
+			push_error("--merge: '%s' ran %d seeds a cell, this run %d" % [path, int(data.get("seeds", 0)), seeds])
+			return {}
+		for which in [["cells", cells], ["compare", compare]]:
+			var src: Dictionary = data.get(which[0], {})
+			for key in src.keys():
+				which[1][key] = _whole(src[key])
+		fights += int(data.get("fights", 0))
+		secs = maxf(secs, float(data.get("secs", 0.0)))
+	for r in rows:
+		for p in packs:
+			for k in policies:
+				if not cells.has(_key(r, p, k)):
+					push_error("--merge: no part ran %s" % _key(r, p, k))
+					return {}
+	return {"fights": fights, "secs": secs}
+
+
+## A cell read back from JSON with its counts whole again: every number an int but the two
+## running percentages the runner sums as floats.
+static func _whole(v, key: String = ""):
+	if v is Dictionary:
+		var out := {}
+		for k in v.keys():
+			out[k] = _whole(v[k], str(k))
+		return out
+	if v is float:
+		return v if key in ["hull_lost_pct", "foes_killed_pct"] else int(roundf(v))
+	return v
 
 
 ## Rows: each chassis alone, then the starting team, then each maker's team (its first three
@@ -428,8 +516,8 @@ func _report(fights: int, secs: float) -> String:
 	var L: Array[String] = []
 	L.append("# Balance")
 	L.append("")
-	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
-		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_policy_names()),
+	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s%s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
+		Time.get_date_string_from_system(), fights, secs, "" if merge.size() < 2 else " (%d parts side by side)" % merge.size(), seeds, ", ".join(_policy_names()),
 		"" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below,
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
 		+ ("" if fit_module.is_empty() else " Every machine wears the %s." % str(db.modules[fit_module].get("name", fit_module)))
@@ -513,11 +601,12 @@ func _report(fights: int, secs: float) -> String:
 		var named: Array = []
 		var blanks: Array = []
 		for c in spends.keys():
-			if c in ["empty", "destroyed", "disabled"]:
-				blanks.append([c, spends[c]])
-			else:
+			if not c in ["empty", "destroyed", "disabled"]:
 				named.append([db.component_name(c), spends[c], c])
-		named.sort_custom(func(a, b) -> bool: return a[1] > b[1])
+		for c in ["empty", "destroyed", "disabled"]:
+			if spends.has(c):
+				blanks.append([c, spends[c]])
+		named.sort_custom(func(a, b) -> bool: return a[1] > b[1] or (a[1] == b[1] and str(a[0]) < str(b[0])))   # a tie by name, so a merged run reads as a whole one
 		var parts: Array[String] = []
 		for e in named:
 			parts.append("%s %d%%" % [e[0], _pct(e[1], total)])

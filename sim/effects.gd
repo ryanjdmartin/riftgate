@@ -201,10 +201,20 @@ const STATUS := {
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "renew",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
+	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
+	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
+	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
+	# nothing leaves it standing (Skirmish._damage_mech spends it). A Ward turns away every rider
+	# a foe's blows lay on it that round, a breach included, so its shield absorbs the needle; the
+	# damage lands. Neither stacks, and both go at the round's end (a buff's grant).
+	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
+	"ward": {"id": "ward", "name": "Ward", "description": "Every blow a foe lands on it this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -1142,16 +1152,33 @@ static func no_destroy(u, face: Face) -> bool:
 	return false
 
 
-## Switch one die entry off until the end of `until_round`: the entry shows blank, the
+## Switch one die entry off until the end of `until_round`: the entry shows dark, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
-## (through the mech's next turn) and by a mech's own rapid component (this round only).
-## A foe's disable can be cleansed; the rapid switch-off cannot (it only stops an infinite
-## turn, and a cleanse that lifted it would start one).
+## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown":
+## the rounds it prints, this one included, Rapid's switch-off a cooldown of one). A foe's
+## disable can be cleansed; a cooldown cannot (it is the piece's price, and a cleanse that
+## lifted Rapid's would start an infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
-	var status := {"id": "disabled_%d" % index, "name": "Disabled", "description": "This component is switched off.",
-		"tags": [] if source == "rapid" else [CLEANSABLE],
+	var cooldown := source == "cooldown"
+	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Disabled",
+		"description": "This component is dark, cooling down." if cooldown else "This component is switched off.",
+		"tags": [] if cooldown else [CLEANSABLE],
 		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
 	return grant_for_rounds(u, status, source, until_round)
+
+
+## The rounds an entry stays dark, this one included: the latest end of whatever switched it
+## off (a cooldown, a foe's disable) less `round`, plus one; 0 for a lit entry. The die shows
+## it on the dark entry (the cooldown row: dark with the rounds left).
+static func dark_rounds(u, index: int, round: int) -> int:
+	var until := -1
+	for m in live(u):
+		if m.scope != ROUNDS:
+			continue
+		for eff in m.effects:
+			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
+				until = maxi(until, m.expires_round)
+	return maxi(0, until - round + 1) if until >= 0 else 0
 
 
 static func is_entry_disabled(u, index: int) -> bool:

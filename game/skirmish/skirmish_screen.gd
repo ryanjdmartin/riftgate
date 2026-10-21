@@ -798,6 +798,8 @@ func _refresh() -> void:
 		var sf := sk.shown_face(ms, ms.face())   # reach as the passive reads it now
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
+		# A dark entry shows the rounds it has left, this one included (the cooldown row).
+		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
 		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
@@ -1028,6 +1030,10 @@ static func status_glyph(id: String) -> String:
 			return "hopper"
 		"sealed":
 			return "lock"
+		"barrier":
+			return "barrier"
+		"ward":
+			return "ward"
 		"cryoed":
 			return "cryo"
 	return "star"
@@ -1080,7 +1086,7 @@ func _mech_rows(i: int) -> Array:
 	for id in order:
 		var d: Array = first[id]
 		var glyph := status_glyph(id)
-		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
+		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate", "barrier", "ward"] else Palette.HUD))
 		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -1211,7 +1217,9 @@ func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
 			continue
 		var label := db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else "")
 		if Effects.is_entry_disabled(ms.unit, i):
-			label += " // DISABLED"
+			var dark := Effects.dark_rounds(ms.unit, i, sk.round)
+			label += (" // DISABLED" if Effects.cleansable_disable(ms.unit, i) else " // DARK") \
+				+ (", %d ROUND%s LEFT" % [dark, "" if dark == 1 else "S"] if dark > 0 else "")
 		var rot := Effects.corrupt_stacks(ms.unit, i)
 		if rot > 0:
 			label += " // CORRUPTED" + (" ×%d" % rot if rot > 1 else "")

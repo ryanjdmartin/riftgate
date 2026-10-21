@@ -1501,3 +1501,38 @@ func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carr
 			refused["stray"] = true
 	assert_true(refused.has("mute"), "a Flak weapon with no number is refused")
 	assert_true(refused.has("stray"), "a number with no Flak keyword is refused")
+
+
+## The cooldown (Ryan, 14 October) and Rapid's limiter (15 October): a cooldown is a whole
+## number of rounds, 0 lifts Rapid's switch-off and nothing else's, and a Rapid entry that
+## prints no cooldown pays heat or Volatile every spend.
+func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	base["tier"] = 1
+	var cases := {
+		"test_free": [{"keywords": ["rapid"], "cooldown": 0}, "carries another limiter"],
+		"test_hot": [{"keywords": ["rapid"], "cooldown": 0, "heat": 5}, ""],
+		"test_bite": [{"keywords": ["rapid", "volatile"], "cooldown": 0}, ""],
+		"test_switch": [{"keywords": ["rapid"]}, ""],
+		"test_lift": [{"cooldown": 0}, "has none to lift"],
+		"test_negative": [{"cooldown": -1}, "whole number of rounds"],
+		"test_two": [{"cooldown": 2}, ""],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		var fields: Dictionary = cases[id][0]
+		for k in fields:
+			c["face"][k] = fields[k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [id, want, str(mine)])
+	var flinger: Dictionary = db.components["cryo_flinger"]["face"]
+	assert_eq(int(flinger.get("cooldown", -1)), 0, "the Cryo Flinger prints no cooldown, its heat the limiter (Ryan's design, 20 October)")
+	assert_eq(db.build_face(flinger).cooldown_rounds(), 0, "and the engine runs it so")

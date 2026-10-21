@@ -308,7 +308,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score -= DEATH_WEIGHT
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
-	return score - volatile_cost(sk, ms, f, uses)
+	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
 
 
 ## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes
@@ -352,6 +352,16 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	return cost
 
 
+## What a printed cooldown costs an entry (21 October): every round it stays dark after this
+## one, the share of the die's rolls it would have shown, at what it is worth now. Rapid's
+## switch-off ends with this round and costs nothing here.
+static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
+	var later := f.cooldown_rounds() - 1
+	if later <= 0 or worth <= 0.0 or ms.die.faces.is_empty():
+		return 0.0
+	return worth * float(later) / float(ms.die.faces.size())
+
+
 ## The status this machine banks on every hull hit that one of its own entries spends to
 ## roll again (the Nemesis's rage, 12 October), or "" when it has no such pair.
 static func banked_on_hull(ms: Skirmish.MechState) -> String:
@@ -379,19 +389,17 @@ func brace_score(sk: Skirmish, ms: Skirmish.MechState, stacks: int) -> float:
 	return _armour_saved(sk, ms, per * stacks) * HULL_WEIGHT
 
 
-## Hull that `extra` armour keeps this round: every strike of every foe aimed at this
-## machine that reaches its bare hull (no standing shield, or a breach) loses that much more,
-## down to nothing.
+## Hull that `extra` armour keeps this round: every blow aimed at this machine that reaches
+## its hull (past the shield's number, through a breach, or on bare hull) loses that much
+## more, down to nothing, walked blow by blow as the forecast walks them.
 func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	if extra <= 0:
 		return 0.0
 	var saved := 0
-	var arm := Effects.stat(who.unit, "armour")
+	var walk := {"shield": who.unit.shield, "barrier": Effects.has(who.unit, "barrier")}
 	for a in sk.attackers_of(who):
-		if who.unit.shield > 0 and not a.breaches():
-			continue
-		var through := maxi(0, Effects.damage_taken(who.unit, a.damage(), a) - arm)
-		saved += mini(extra, through) * a.strikes()
+		for r in sk.blows_on(who, a, walk):
+			saved += mini(extra, int(r["through"]))
 	return float(saved)
 
 
@@ -548,7 +556,7 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 			score = buff_score(sk, who, f)
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
-	return score - volatile_cost(sk, ms, f)
+	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
 ## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of
@@ -580,8 +588,8 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	return score
 
 
-## A shield on a machine: the hull it keeps this round (a standing shield blocks a whole
-## blow), the death it prevents, and a little for what stands afterwards.
+## A shield on a machine: the hull it keeps this round (each blow costs the shield its number
+## and the excess passes), the death it prevents, and a little for what stands afterwards.
 func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield: bool = false, by: Skirmish.MechState = null) -> float:
 	var before := sk.forecast(who, false)
 	var after := sk.forecast(who, false, power, overshield)
@@ -709,9 +717,78 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				# Every foe about to reach this machine's hull comes out Shocked: the team's
 				# next blow on it lands double, worth about the die's own damage again, capped
 				# at what the foe has left.
+				var walk := {"shield": who.unit.shield, "barrier": Effects.has(who.unit, "barrier")}
 				for a in sk.attackers_of(who):
-					if who.unit.shield <= 0 or a.breaches():
+					var reaches := false
+					for r in sk.blows_on(who, a, walk):
+						reaches = reaches or int(r["through"]) + int(r["armoured"]) > 0
+					if reaches:
 						score += minf(float(a.hp), _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
+	match f.buff_status:
+		"barrier":
+			score += barrier_score(sk, who)
+		"ward":
+			score += ward_score(sk, who)
+	return score
+
+
+## The round's end with and without a status on `who`, read in a what-if: the forecast with
+## it granted for the round, then the grant taken back. Empty when the machine has it already
+## (a second one renews, and changes nothing this round).
+static func _forecast_with(sk: Skirmish, who: Skirmish.MechState, status_id: String) -> Dictionary:
+	if Effects.has(who.unit, status_id):
+		return {}
+	var m := Effects.grant_buff(who.unit, status_id, 1, "what-if", sk.round)
+	var fc := sk.forecast(who, false)
+	who.unit.modifiers.erase(m)
+	return fc
+
+
+## What a Barrier is worth (21 October): the round's end as the forecast reads it with the
+## first blow that deals anything taken whole: the hull kept and the death prevented, and a
+## little for the shield it keeps standing, as a shield's own score reads them.
+func barrier_score(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var after := _forecast_with(sk, who, "barrier")
+	if after.is_empty():
+		return 0.0
+	return _outlook_gain(sk.forecast(who, false), after)
+
+
+## What a Ward is worth (21 October): the breach it turns away, read as the Barrier's is (the
+## blow lands on the shield instead, so the hull kept less the shield it costs), and every
+## rider the blows aimed at it would lay this round, each at what a cleanse would clear of it:
+## a Scorch's and a Burn's heat, a disabled entry's share of the die, a corruption's bites.
+func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var after := _forecast_with(sk, who, "ward")
+	if after.is_empty():
+		return 0.0
+	var score := _outlook_gain(sk.forecast(who, false), after)
+	var n := maxi(1, who.die.faces.size())
+	var scorch := 0
+	for eff in Effects.STATUS["scorched"]["effects"]:
+		if str(eff.get("effect", "")) == "add_heat":
+			scorch += int(eff.get("value", 0))
+	var burn := Effects.status_value("burning_mech", "tick_heat")
+	for a in sk.attackers_of(who):
+		var blows := float(a.strikes())
+		if a.has_keyword(a.action, "scorch"):
+			score += float(scorch) * blows * BANK_WEIGHT
+		if a.has_keyword(a.action, "burn"):
+			score += float(burn) * blows * BANK_WEIGHT
+		if a.has_keyword(a.action, "disable"):
+			score += _raw_attack_mean(who) / float(n)
+		if a.has_keyword(a.action, "corrupt"):
+			score += float(Skirmish.CORRUPT_BITE_PER_STACK) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+	return score
+
+
+## Two forecasts of one machine's round, read as a shield's score reads them: the hull kept,
+## the death prevented, and the shield left standing at the bank's weight.
+static func _outlook_gain(before: Dictionary, after: Dictionary) -> float:
+	var score := (maxf(0.0, float(after["hull_after"])) - maxf(0.0, float(before["hull_after"]))) * HULL_WEIGHT
+	if before["destroyed"] and not after["destroyed"]:
+		score += DEATH_WEIGHT
+	score += float(int(after["shield_after"]) - int(before["shield_after"])) * BANK_WEIGHT
 	return score
 
 

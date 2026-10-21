@@ -34,10 +34,10 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
    "status": "implemented",
    "design": {
-    "holes": "Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis)."
+    "holes": "Rates and shield sizes are placeholders. The honest shield since 21 October (Ryan's rule of 14 October, the bible's shield row): from 18 September a standing shield blocked a blow whole, however small the shield, which made a small shield entry a secret 'negate one blow'; the block is a priced buff now, the Barrier. The in-combat trickle was dropped on 18 September (a passive may bring it back for one chassis). Shield numbers are re-read under the honest rule in the stock pass (the Goshawk's regen and the Puffin's overshield become hit points)."
    }
   },
   {
@@ -376,10 +376,10 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free onto any other component (a second copy of this one included, so copies chain), and the mech may act again. Any component may carry it, a vent or a shield as well as a weapon. The switch-off only stops an infinite turn.",
+   "codex": "After this component is spent the mech acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
    "status": "implemented",
    "design": {
-    "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll."
+    "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll. The switch-off is a cooldown of one since 21 October (the cooldown row, 14 October: nearly every Rapid component is Rapid, cooldown 1), and every Rapid piece carries a limiter, a cooldown, heat or Volatile (Ryan, 15 October), which the validator holds content to."
    }
   },
   {
@@ -702,10 +702,10 @@
    "id": "cracked_component",
    "category": "status",
    "name": "Cracked component",
-   "codex": "Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar.",
+   "codex": "Mech status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, keeps any cooldown it prints, and still provides its passive bonuses and abilities. A shield prevents an injury only by absorbing enough of the blow, and a blow a Barrier takes never injures. A cracked component stays cracked across skirmishes and battles until repaired in the hangar.",
    "status": "implemented",
    "design": {
-    "holes": "Threshold is a placeholder. Repair cost and the hangar screen are not built."
+    "holes": "Threshold is a placeholder. Repair cost and the hangar screen are not built. Since 21 October (the shield rule of 14 October) an injury counts what reaches the hull from any blow; before it a standing shield, however small, prevented one."
    }
   },
   {
@@ -1160,12 +1160,12 @@
   },
   {
    "id": "cooldown",
-   "category": "city",
+   "category": "component_property",
    "name": "Cooldown",
-   "codex": "City abilities only. Counted in battlefield phases. Never used inside a skirmish.",
-   "status": "planned",
+   "codex": "A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the rounds left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown, and a crack keeps it.",
+   "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Ryan, 14 October: a printed property on specific pieces, never a general mechanic, shown on the entry as dark with the rounds left, so it is paid in the die's reliability (the bible's cooldown row); built 21 October. It prices what heat cannot: a price per die, dear on a small die and cheap on a big one. No cap on where a cooldown goes or how many a die carries (Ryan, 15 October). The city's battlefield abilities count their own cooldowns in phases (the city ability's entry); this one lives inside a skirmish. A crack keeps it because it is a price, as heat is."
    }
   },
   {
@@ -1232,7 +1232,7 @@
    "id": "armour",
    "category": "resource",
    "name": "Armour",
-   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage, a breach's overflow included. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull, what passes a shield, and a breach alike. A blow smaller than the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage.",
    "status": "implemented",
    "design": {
     "holes": "Numbers are placeholders. Armour from components is content, not yet written."
@@ -1262,10 +1262,10 @@
    "id": "breach",
    "category": "foe",
    "name": "Breach",
-   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, armour coming off it as off any blow on hull, and if what gets through is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
+   "codex": "A breaching blow ignores the shield outright: the shield stands, and the whole blow reaches the hull, armour coming off it as off any blow on hull; if what gets through is a quarter of maximum hull it injures a component. A dangerous, uncommon attack modifier, the Waste's signature; a Ward turns it away, and the shield then absorbs the blow like any other.",
    "status": "implemented",
    "design": {
-    "holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."
+    "holes": "A property of a foe's attack action, placed by Ryan. Since 21 October (the shield rule of 14 October) it ignores the shield, where before it overflowed one (a standing shield blocked every other blow whole); its answers are the Barrier and the Ward. Name is a placeholder (pierce is taken by the player keyword)."
    }
   },
   {
@@ -1541,9 +1541,9 @@
    "category": "status",
    "name": "Barrier",
    "codex": "Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "",
+    "holes": "Ryan, 14 October, the honest shield's upside; built 21 October as Shocked's mirror (the next blow at zero, a blow of nothing leaving it standing). A buff component grants it to one machine (Face kind buff, status barrier); carriers and numbers are the stock pass's, and the Blast Door's fantasy is a Barrier already. Never granted to every ally at once: four blows negated for one spend is the exploit the shield rule removed.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -1557,9 +1557,9 @@
    "category": "status",
    "name": "Ward",
    "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage lands. Until the round's end.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "",
+    "holes": "Ryan, 14 October; built 21 October. A buff component grants it to one machine (Face kind buff, status ward); carriers and numbers are the stock pass's. The breach, burn, scorch, disable and corrupt on a foe's blows are turned away; a foe's move that lays a debuff without a blow is no rider. Silence and purge on machines land with the enemy's side of them, and the Ward turns both away then.",
     "table": {
      "kind": "buff",
      "on": "machine",

@@ -22,6 +22,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
 			])
 			ci.draw_polyline(pts, color, width)
+		"barrier", "ward":
+			# The block as a buff (21 October): the shield's outline, and inside it a wall for a
+			# Barrier (a solid bar: the next blow stops there) or a ring struck through for a
+			# Ward (no rider gets in). One colour, parted by what sits inside.
+			var pts := PackedVector2Array([
+				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
+				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
+			])
+			ci.draw_polyline(pts, color, width)
+			if id == "barrier":
+				ci.draw_rect(Rect2(c + Vector2(-s * 0.62, -s * 0.38), Vector2(s * 1.24, s * 0.42)), color, true)
+			else:
+				var o := c + Vector2(0, -s * 0.12)
+				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
+				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
 		"vent":
 			for i in range(3):
 				var y := -s * 0.6 + i * s * 0.6
@@ -319,7 +334,7 @@ static func colour_for(id: String) -> Color:
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

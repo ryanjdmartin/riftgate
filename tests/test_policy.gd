@@ -58,7 +58,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")
 	assert_eq(tank.shield, 40, "and the tank kept its own")
 	sk.end_round()
-	assert_eq(weak.hull, 20, "so it lived: a standing shield blocks the whole blow")
+	assert_eq(weak.hull, 10, "so it lived: the shield took twenty of the thirty, and ten reached the hull")
 
 
 func test_greedy_vents_before_it_burns() -> void:
@@ -367,10 +367,10 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	assert_eq(pol.equipment_score(sk, ms, ms, scrub), pol.equipment_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
 	Effects.corrupt_entry(m, 2, "foe:x", 2)
 	assert_true(pol.equipment_score(sk, ms, ms, scrub) > pol.equipment_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
-	Effects.disable_entry(m, 2, "rapid", sk.round)
+	Effects.disable_entry(m, 2, "cooldown", sk.round)
 	var before := pol.cleanse_score(sk, ms)
 	Effects.disable_entry(m, 2, "foe:x", sk.round + 1)
-	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a rapid switch-off is not")
+	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a cooldown is not")
 
 
 func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
@@ -482,3 +482,53 @@ func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
 	sk.mechs[1].assigned = true
 	var spent := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
 	assert_true(spent < with and spent > without, "less once the team has spent, and the halved stacks still count for next round")
+
+
+## A Barrier and a Ward (21 October) are worth what the forecast keeps with them up: the
+## Barrier the one big blow, the Ward a breach's needles and their riders; nothing a second time.
+func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_turns_away() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var wall := Face.buff("barrier")
+	var ward := Face.buff("ward")
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([wall, ward, Face.attack(10, L)]), 20, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 60)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.equipment_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
+	assert_eq(pol.equipment_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
+	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
+	assert_eq(pol.barrier_score(sk, ms), 0.0, "a second Barrier adds nothing")
+	var s2 := Skirmish.new(1)
+	var n := _mech("B", Die.of([wall, ward, Face.attack(10, L)]), 40, 100)
+	s2.add_mech(n)
+	var needler := _ghoul(500, 10)
+	needler.actions[0]["strikes"] = 4
+	needler.actions[0]["keywords"] = ["breach", "scorch"]
+	s2.add_foes([needler])
+	s2.begin()
+	s2.start_round()
+	var ns: Skirmish.MechState = s2.mechs[0]
+	assert_true(pol.equipment_score(s2, ns, ns, ward) > pol.equipment_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
+	assert_true(pol.equipment_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+
+
+## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
+## the share of the die's rolls it would have shown; Rapid's switch-off costs nothing.
+func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var plain := Face.attack(30, L)
+	var slow := Face.attack(30, L)
+	slow.cooldown = 3
+	var zap := Face.attack(30, L, [K.RAPID])
+	sk.add_mech(_mech("A", Die.of([plain, slow, Face.attack(10, L), Face.attack(10, L)]), 40, 100))
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var base := pol.attack_score(sk, ms, plain, sk.front[0])
+	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds dark after this one on a four-entry die: half its worth")
+	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "Rapid's switch-off ends with the round")
