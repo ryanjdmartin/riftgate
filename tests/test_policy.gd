@@ -532,3 +532,22 @@ func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void
 	var base := pol.attack_score(sk, ms, plain, sk.front[0])
 	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds dark after this one on a four-entry die: half its worth")
 	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "Rapid's switch-off ends with the round")
+
+
+## A stepping die's reroll is worth the entry it steps to, known in advance (the Cassowary's
+## dial, 21 October), so the greedy bot turns it only toward a better chamber.
+func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([Face.attack(10, L), Face.attack(40, L), Face.attack(5, L), Face.attack(5, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_eq(pol.reroll_worth(sk, ms), pol.face_value(sk, ms, ms.die.faces[1]), "the next chamber's worth, not the die's mean")
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 1, "the ten turns to the forty, and the forty holds against a five")
+	assert_eq(sk.rerolls_left, 2, "one reroll spent")

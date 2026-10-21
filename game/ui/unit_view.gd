@@ -29,12 +29,14 @@ const FLOAT_BAR_W := 60.0
 const GAP := 10.0          # between the drawing and its gauges above or its chips below
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
+const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
+var pips: Array = []              # [count, of]: a count drawn as pips under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
@@ -82,7 +84,11 @@ func anchor_global() -> Vector2:
 
 
 func _bars_height() -> float:
-	return (bars.size() * BAR_STEP + GAP) if bars_above and not bars.is_empty() else 0.0
+	return (bars.size() * BAR_STEP + _pips_step() + GAP) if bars_above and not bars.is_empty() else 0.0
+
+
+func _pips_step() -> float:
+	return PIP_H + 3.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0
 
 
 func _scale() -> float:
@@ -395,10 +401,12 @@ func _draw() -> void:
 			# Full-width gauges stacked above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - GAP - bars.size() * BAR_STEP
+			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step()
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
+			if _pips_step() > 0.0:
+				_draw_pips(Rect2(bx, y, bw, PIP_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -475,6 +483,35 @@ func _draw() -> void:
 ## to read against any bar colour and for any kind of colour vision. Where it sits says
 ## which way the bar moves: inside the fill, that much is about to go; past the fill, that
 ## much is coming.
+## The count as pips across the gauges' width (the Cassowary's sixth shot, 21 October: six
+## under the heat bar, Ryan's spot): a filled pip a shot, the last a diamond, so it reads as
+## the one that counts by shape as well as colour, lit in the heat's colour when it is next.
+func _draw_pips(rect: Rect2) -> void:
+	var of := int(pips[1])
+	var count := int(pips[0]) % of
+	var step := rect.size.x / float(of)
+	var hud := Palette.HUD
+	for k in range(of):
+		var c := Vector2(rect.position.x + step * (k + 0.5), rect.get_center().y)
+		var r := minf(rect.size.y * 0.5, step * 0.32)
+		var last := k == of - 1
+		var lit := last and count == of - 1
+		var col: Color = Palette.HEAT if lit else hud
+		if last:
+			var pts := PackedVector2Array([c + Vector2(0, -r - 1.5), c + Vector2(r + 1.5, 0), c + Vector2(0, r + 1.5), c + Vector2(-r - 1.5, 0)])
+			draw_colored_polygon(pts, Color(Palette.BG, 0.9))
+			if lit:
+				draw_colored_polygon(pts, col)
+			pts.append(pts[0])
+			draw_polyline(pts, col, 1.5)
+		else:
+			var box := Rect2(c - Vector2(r, r), Vector2(r, r) * 2.0)
+			draw_rect(box.grow(1.0), Color(Palette.BG, 0.9))
+			if k < count:
+				draw_rect(box, col)
+			draw_rect(box, col, false, 1.5)
+
+
 func _gauge(rect: Rect2, b: Array) -> void:
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)

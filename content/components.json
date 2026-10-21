@@ -1508,22 +1508,22 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
     "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up (+5 on the next weapon spend, carried between turns). Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun.",
-    "notes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). The names are his (Spin-Up, Spun Up). The spin landing on itself is his exception to the reroll rule (never onto the entry showing), a design one-off and no balance one; no penalty (Ryan, 19 October: a combo piece, not a typical Rapid one, and the stepped barrel prevents its abuse; Claude's heat-5 limiter set aside). Planned until the die mode exists: the face's rounds are a placeholder, Spun Up having no round count, and the engine does not yet spin. Shape none: the drum is the chassis's own, clicking round on the model."
+    "notes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). The names are his (Spin-Up, Spun Up). The spin landing on itself is his exception to the reroll rule (never onto the entry showing), a design one-off and no balance one; no penalty (Ryan, 19 October: a combo piece, not a typical Rapid one, and the stepped barrel prevents its abuse; Claude's heat-5 limiter set aside). Built 21 October with the die mode: cooldown 0 and spins true on the face, its Rapid's limiter the cylinder (the validator's stepping-die exemption), Spun Up granted with no rounds and spent by the next weapon spend. Shape none: the drum is the chassis's own, clicking round on the model."
    },
    "face": {
     "kind": "buff",
     "status": "spun_up",
     "stacks": 1,
-    "rounds": 1,
     "targets": "self",
     "keywords": [
      "rapid"
-    ]
+    ],
+    "cooldown": 0,
+    "spins": true
    },
    "passive": null,
    "tags": [

@@ -51,9 +51,9 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -201,6 +201,17 @@ const STATUS := {
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "renew",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
+	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, +5
+	# a stack on the next weapon spend, stacking, carried between turns until a weapon spends
+	# it, damage or none (`spent_by`: the skirmish lifts every stack after a weapon spend, and a
+	# buff grants it with no rounds).
+	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "Its next weapon spend deals 5 more a stack, then every stack is spent. Carried between turns until a weapon spends it.", "decay": "none", "spent_by": "weapon",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
+	# A count a rule reads (the Cassowary's sixth shot, 21 October): the machine's weapon
+	# spends this fight, a stack each, kept only where a live effect counts them (nth_shot). A
+	# store with no effect of its own; the screen draws it as pips under the heat bar.
+	"shots": {"id": "shots", "name": "Shots", "description": "Weapon spends this fight, counted for a rule that lands on a number of them.", "decay": "none",
+		"tags": ["store", "count"], "effects": []},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -214,7 +225,7 @@ const STATUS := {
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -270,7 +281,7 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status"]
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -672,6 +683,10 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return target != null and target.get("modifiers") != null and carries_status(target, str(eff.get("status", "")))
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
+		"nth_shot":
+			# Every n-th weapon spend of the fight (the Cassowary's sixth shot): this one, when the
+			# count so far is one short of a multiple of `every`.
+			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -1152,6 +1167,49 @@ static func no_destroy(u, face: Face) -> bool:
 	return false
 
 
+## Does this machine's die step instead of rolling (the Cassowary's Indexed Cylinder, Ryan's
+## wording of 12 October: "Whenever its die rolls, it moves to the next entry instead, in
+## sequence")?
+static func steps_die(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "step_die":
+			return true
+	return false
+
+
+## Every how many weapon spends a live rule of this machine lands (the Cassowary's sixth
+## shot): the `every` of its first nth_shot effect, 0 when nothing counts. The skirmish keeps
+## the count only for a machine that has one, and the screen draws it as that many pips.
+static func counts_shots(u) -> int:
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("when", "")) == "nth_shot":
+				return maxi(1, int(eff.get("every", 6)))
+	return 0
+
+
+## Whether this machine's next weapon spend is the one its count lands on.
+static func nth_shot_due(u) -> bool:
+	var every := counts_shots(u)
+	return every > 0 and (stacks_of(u, "shots") + 1) % every == 0
+
+
+## What the stacks a weapon spend lays are multiplied by (the sixth shot's double), through
+## the on_attack multiply_stacks effects that hold for it: 1 when none does.
+static func stack_multiplier(u, face: Face, target = null) -> int:
+	var mult := 1
+	for pair in _taking_part(u, "on_attack", face, target):
+		if str(pair[0].get("effect", "")) == "multiply_stacks":
+			mult *= int(pow(maxf(1.0, float(pair[0].get("value", 1))), int(pair[1].stacks)))
+	return mult
+
+
+## A count as the rules say it: "sixth".
+static func ordinal(n: int) -> String:
+	var words := {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth"}
+	return str(words.get(n, "%dth" % n))
+
+
 ## Switch one die entry off until the end of `until_round`: the entry shows dark, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
 ## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown":
@@ -1211,6 +1269,9 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 	var def: Dictionary = STATUS[status_id]
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
+	# One a use spends (Spun Up, spent by the next weapon spend) lasts until then, across turns.
+	if def.has("spent_by"):
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_NONE)
 	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
 
 
@@ -1290,6 +1351,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"spares_splash": body = "indirect fire on the front rank never splashes it"
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
+		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
+		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
@@ -1331,6 +1394,7 @@ static func effect_text(eff: Dictionary) -> String:
 			var st := str(eff.get("status", ""))
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
+		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
 	return lead + body

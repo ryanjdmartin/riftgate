@@ -671,14 +671,30 @@
    "category": "status",
    "name": "Spun Up",
    "codex": "Mech status, the Cassowary's. Its next weapon spend deals 5 more a stack, then every stack is spent. Carried between turns until a weapon spends it.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). Granted by the Spin-Up, a stack a spin, stacking, and carried if a turn ends without a shot (Ryan, 19 October: \"a stacking unique buff, so that it could be carried between turns\"). Spent whole by the next weapon spend, damage or none. The chip reads SPUN UP with its count, and the +5 shows on the die's number once the engine has it. Engine: a buff with no round count, spent by the spend rather than fading (every buff today lasts rounds); the bot values it as damage in hand.",
+    "holes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). Granted by the Spin-Up, a stack a spin, stacking, and carried if a turn ends without a shot (Ryan, 19 October: \"a stacking unique buff, so that it could be carried between turns\"). Spent whole by the next weapon spend, damage or none. The chip reads SPUN UP with its count, and the +5 shows on the die's number once the engine has it. Built 21 October: a buff with no round count, spent by the spend rather than fading (spent_by on the status; a buff grants it with no rounds); the bot values it as damage in hand.",
     "table": {
      "kind": "buff",
      "on": "machine",
      "stacks": "Yes: +5 damage a stack, every stack spent by the next weapon spend",
      "lasts": "Until its next weapon spend, across turns"
+    }
+   }
+  },
+  {
+   "id": "shots",
+   "category": "status",
+   "name": "Shots",
+   "codex": "Machine count, the Cassowary's: its weapon spends this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Equipment and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October for the sixth shot (Ryan's kit, 18 October: the pips his, under the heat bar). A store the engine keeps only for a machine whose rule counts (an nth_shot condition), read by the rule through the pipeline. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: one a weapon spend",
+     "lasts": "The skirmish; never decays"
     }
    }
   },

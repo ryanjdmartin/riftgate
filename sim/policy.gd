@@ -703,7 +703,10 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			"multiply_damage":
 				score += (pow(v, n) - 1.0) * (attack_now + attack_later)
 			"add_damage":
-				score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
+				if status.has("spent_by"):
+					score += v * n   # Spun Up: damage on the next weapon spend, whenever it comes
+				else:
+					score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
 			"multiply_damage_taken":
 				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
 			"add_stat":
@@ -878,6 +881,17 @@ func die_mean(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	return total / float(ms.die.faces.size())
 
 
+## What a reroll of this die is worth, the bar a greedy reroll clears: the die's mean, or for
+## a stepping die the entry it steps to, known in advance (the Cassowary's dial, 21 October);
+## a Scrambled reroll is a true roll either way.
+func reroll_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	if Effects.steps_die(ms.unit) and not Effects.is_scrambled(ms.unit):
+		var nf := sk.next_face(ms)
+		if nf != null:
+			return face_value(sk, ms, nf)
+	return die_mean(sk, ms)
+
+
 ## The team's hull as a percentage of its maximum, dead machines included.
 static func hull_percent(sk: Skirmish) -> int:
 	var hull := 0
@@ -890,13 +904,14 @@ static func hull_percent(sk: Skirmish) -> int:
 
 # ---------------------------------------------------------------- private
 
-## Reroll every unspent die showing less than its average, while rerolls last. A reroll
-## never lands on the same entry, so this is a real second chance, not a coin flip.
+## Reroll every unspent die showing less than its average (a stepping die, less than the entry
+## it steps to), while rerolls last. A reroll never lands on the same entry, so this is a real
+## second chance, not a coin flip.
 func _greedy_rerolls(sk: Skirmish) -> void:
 	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
-		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < die_mean(sk, ms):
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
 			if not sk.reroll([i]):
 				break
 			rerolls += 1
@@ -906,7 +921,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned:
 				continue
-			if face_value(sk, ms, ms.face()) + 0.001 < die_mean(sk, ms):
+			if face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
 				idx.append(i)
 		if idx.is_empty():
 			return

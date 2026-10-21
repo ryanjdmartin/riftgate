@@ -114,6 +114,16 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the Cassowary's engine (Ryan's go, 19 October; the bible's Cassowary row): the
+  stepping die (the fight's first roll a spin, then a step on every roll, reroll and Rapid
+  reroll; a lock holds; Scramble a true roll), the sixth weapon spend doubling its damage and
+  the stacks it lays (an nth_shot rule through the pipeline), the Spin-Up's true spin (a
+  printed `spins` on the entry, no cooldown, the validator's stepping-die exemption) and Spun
+  Up (a buff spent by the next weapon spend); six pips under the heat bar, the next-chamber chip
+  on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
+  so the tender and the runner deal it. Open for Ryan (section 12): a weapon of no damage takes
+  the attacker's flat adds (Overcharged's, Spun Up's) and deals them. The hold's ring, the
+  hangar's chambers and the bot's cycle are the to-do's.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
   excess passes to the hull, a breach ignores the shield and leaves it standing, an injury
@@ -242,11 +252,11 @@ before it. The three design sessions merged that day are paused, each resuming f
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 14 chassis and three planned (the funnel-web built, its engine 18
-  October and its model 19 to 20 October, its Web Bomb built; the Cassowary and the Cottonmouth,
-  19 October, their passives and the Cassowary's locked Spin-Up planned; the Whip Scorpion, 20
-  October, its passive and its locked Heliographic Siphon planned; a planned chassis is never
-  dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
+- Content: five makers, 15 chassis and four planned (the funnel-web built, its engine 18
+  October and its model 19 to 20 October, its Web Bomb built; the Cassowary built 21 October;
+  the Cottonmouth, 19 October, its passive planned; the Whip Scorpion, 20 October, its passive
+  and its locked Heliographic Siphon planned; the Swallowtail and the Musk Ox, 21 October; a
+  planned chassis is never dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -401,15 +411,6 @@ before it. The three design sessions merged that day are paused, each resuming f
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
-- The Cassowary (Ryan's go, 19 October; its row in section 7): the revolver, the maker's
-  gunslinger at tier one, a chicken walker whose die never rolls (each fight opens on a random
-  chamber and every roll steps to the next; a lock holds, Scramble a true roll), every sixth
-  weapon spend double, its locked Spin-Up a true spin of the whole cylinder (itself included,
-  his exception to the reroll rule) with no cooldown, no heat and no Volatile (the cylinder
-  is its limiter) granting Spun Up (+5 a stack on the next weapon spend, carried between
-  turns); squishy, so the maker's tender deal holds no front, accepted; the names his, the
-  passive's and the designation Claude's working ones; in content as planned entries; the
-  engine and the assets are the to-do's two lines, the chain's price the stock pass's.
 - The Cottonmouth (Ryan's go, 19 October; its row in section 7): the fan-boat, the maker's
   versatility of reach at tier one, a light hovercraft that locks nothing (a d4); its
   Adaptive Munitions Drum fires every weapon as the drum's Indirect shot (flat 15, heat 10,

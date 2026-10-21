@@ -39,6 +39,7 @@ var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
 var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, drawn as its number
+var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), as a chip at the rail's foot; null for a die that rolls
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var spent: bool = false
@@ -272,8 +273,31 @@ func _draw() -> void:
 		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
 		if tags[i] == "corrupt" and corrupted > 1:
 			draw_string(mono, chip_rect.position + Vector2(CHIP.x + 2.0, CHIP.y - 7.0), "×%d" % corrupted, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
+	if next_face != null:
+		_draw_next(bob, tags.size())
 	if _recalc >= 0.0:
 		_draw_static(rect)
+
+
+## A stepping die's next chamber (21 October): at the rail's foot, an arrow into a chip with
+## that entry's primary glyph, so the dial (a reroll steps it) is read before it is turned. Its
+## frame is dashed, unlike every keyword chip, so it never reads as one of this entry's.
+func _draw_next(bob: float, above: int) -> void:
+	var col := Color(Palette.HUD, (0.45 if spent else 1.0))
+	var y := maxf(FACE - CHIP.y - 6.0, 8.0 + above * TAG_STEP)   # below the keyword chips, however many
+	var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, y + bob * 0.5), CHIP)
+	Hud.fill_poly(self, Hud.cut(chip_rect, 4.0), Color(Palette.BG, 0.94))
+	var corners := [chip_rect.position, Vector2(chip_rect.end.x, chip_rect.position.y), chip_rect.end, Vector2(chip_rect.position.x, chip_rect.end.y)]
+	for k in range(4):
+		var a: Vector2 = corners[k]
+		var b: Vector2 = corners[(k + 1) % 4]
+		var t := 0.0
+		while t < 1.0:
+			draw_line(a.lerp(b, t), a.lerp(b, minf(1.0, t + 0.18)), col, 1.2)
+			t += 0.3
+	var tip := chip_rect.position + Vector2(-3.0, CHIP.y * 0.5)
+	draw_colored_polygon(PackedVector2Array([tip + Vector2(-7.0, -5.0), tip, tip + Vector2(-7.0, 5.0)]), col)
+	Glyphs.draw(self, Glyphs.primary_for(next_face), chip_rect.get_center(), 13, col, 1.8)
 
 
 ## Static over the die's face while it is recomputed: the signal-drop noise a foe gets,

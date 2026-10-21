@@ -1536,3 +1536,29 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 	var flinger: Dictionary = db.components["cryo_flinger"]["face"]
 	assert_eq(int(flinger.get("cooldown", -1)), 0, "the Cryo Flinger prints no cooldown, its heat the limiter (Ryan's design, 20 October)")
 	assert_eq(db.build_face(flinger).cooldown_rounds(), 0, "and the engine runs it so")
+
+
+## A piece locked on a stepping die has the cylinder for its Rapid's limiter (the Cassowary's
+## Spin-Up, Ryan, 19 October); anywhere else the same entry is refused, a spin rides with
+## Rapid, and a status a weapon spends (Spun Up) is granted with no rounds.
+func test_a_stepping_die_is_its_locked_rapid_pieces_limiter() -> void:
+	var db := _fresh()
+	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spin-Up validates where it is locked")
+	var loose: Dictionary = db.components["spin_up"].duplicate(true)
+	loose["tier"] = 1
+	db.components["test_loose_spin"] = loose
+	var plain: Dictionary = db.components["spin_up"].duplicate(true)
+	plain["tier"] = 1
+	plain["face"].erase("spins")
+	plain["face"]["keywords"] = []
+	plain["face"]["spins"] = true
+	db.components["test_spin_alone"] = plain
+	var timed: Dictionary = db.components["spin_up"].duplicate(true)
+	timed["tier"] = 1
+	timed["face"]["rounds"] = 1
+	timed["face"]["cooldown"] = 1
+	db.components["test_timed_spin"] = timed
+	var errs := db.validate()
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_loose_spin") and e.contains("carries another limiter")), "off the cylinder it needs a limiter of its own")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_spin_alone") and e.contains("rides with Rapid")), "a spin rides with Rapid")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_timed_spin") and e.contains("no rounds")), "Spun Up takes no rounds")

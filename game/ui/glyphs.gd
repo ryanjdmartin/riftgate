@@ -37,6 +37,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var o := c + Vector2(0, -s * 0.12)
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
+		"spin":
+			# The drum spun up (Spun Up, the Cassowary's, 21 October): three-quarters of a ring
+			# with an arrowhead where it runs on, and the cylinder's hub at its centre.
+			ci.draw_arc(c, s * 0.78, -PI * 0.35, PI * 1.25, 22, color, width)
+			var head := c + Vector2(cos(-PI * 0.35), sin(-PI * 0.35)) * s * 0.78
+			ci.draw_colored_polygon(PackedVector2Array([head + Vector2(-s * 0.42, -s * 0.12), head + Vector2(s * 0.12, -s * 0.38), head + Vector2(s * 0.1, s * 0.22)]), color)
+			ci.draw_circle(c, s * 0.2, color)
 		"vent":
 			for i in range(3):
 				var y := -s * 0.6 + i * s * 0.6
@@ -328,7 +335,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY

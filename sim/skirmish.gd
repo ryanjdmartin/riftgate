@@ -526,7 +526,7 @@ func start_round() -> void:
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
-		ms.face_index = ms.die.roll(rng)
+		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
@@ -713,14 +713,43 @@ func reroll(mech_indices: Array) -> bool:
 
 
 ## One die rerolled: never the same entry, unless a foe scrambled it, in which case it lands
-## anywhere and the scramble is spent.
+## anywhere and the scramble is spent. A stepping die steps (a reroll is a roll), and a
+## Scramble is a true roll for it too, the sequence running on from where it lands.
 func _reroll_die(ms: MechState) -> void:
 	if Effects.is_scrambled(ms.unit):
 		ms.face_index = ms.die.roll(rng)
 		Effects.remove(ms.unit, "scrambled")
 		log.append("%s's reroll is scrambled" % ms.unit.display_name)
 		return
-	ms.face_index = ms.die.reroll(rng, ms.face_index)
+	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll(rng, ms.face_index)
+
+
+## A die rolling (Ryan's wording for the Cassowary, 12 October: "Whenever its die rolls, it
+## moves to the next entry instead, in sequence"): a stepping die steps, once the fight's
+## first roll has spun it to a random chamber (Ryan, 18 October: "like a revolver spinning");
+## any other die rolls.
+func _roll(ms: MechState) -> int:
+	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
+		return _step(ms)
+	return ms.die.roll(rng)
+
+
+## The entry after the one showing, past the last back to the first.
+func _step(ms: MechState) -> int:
+	var n := ms.die.faces.size()
+	return 0 if n == 0 or ms.face_index < 0 else (ms.face_index + 1) % n
+
+
+## What a stepping die shows after its next step, as the die would show it (a dark entry's
+## stand-in, the passives' reach and heat): the screen's next-chamber chip. Null for a die
+## that rolls.
+func next_face(ms: MechState) -> Face:
+	if ms.face_index < 0 or not Effects.steps_die(ms.unit) or ms.die.faces.is_empty():
+		return null
+	var at := _step(ms)
+	if Effects.is_entry_disabled(ms.unit, at):
+		return Face.disabled_stand_in(ms.die.faces[at])
+	return shown_face(ms, ms.die.faces[at])
 
 
 ## Is any reroll open: the team's, or a machine's own?
@@ -826,7 +855,16 @@ func assign(mech_index: int, target = null) -> bool:
 				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
+			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
+			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
+			# the pipeline); every weapon spend counts, and spends the machine's Spun Up whole.
+			if Effects.nth_shot_due(ms.unit):
+				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
 			_resolve_attack(mech_index, ms, f, target)
+			if Effects.counts_shots(ms.unit) > 0:
+				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
+			if Effects.remove(ms.unit, "spun_up"):
+				log.append("%s: the spin is spent" % ms.unit.display_name)
 	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
 	# entry Braces its owner until the round's end, so the plate stands behind the charge
 	# through the enemy's turn and is gone when the next round opens.
@@ -844,10 +882,17 @@ func assign(mech_index: int, target = null) -> bool:
 		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
 	# stacked copies chain, the cooldown of each copy its own), and the mech may act again.
+	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
+	# over every entry, itself included; a stepping die's free reroll steps it.
 	if f.has(Face.Keyword.RAPID):
-		ms.face_index = ms.die.reroll(rng, ms.face_index)
+		if f.spins:
+			ms.face_index = ms.die.roll(rng)
+		elif Effects.steps_die(ms.unit):
+			ms.face_index = _step(ms)
+		else:
+			ms.face_index = ms.die.reroll(rng, ms.face_index)
 		ms.assigned = false
-		log.append("%s: rapid, rolls again" % ms.unit.display_name)
+		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else "rapid, rolls again"])
 	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
 	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
 	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll
@@ -855,7 +900,7 @@ func assign(mech_index: int, target = null) -> bool:
 	# that shows again punches again. A fight already won rolls nothing.
 	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
 			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
-		ms.face_index = ms.die.roll(rng)
+		ms.face_index = _roll(ms)
 		ms.assigned = false
 		log.append("%s: %s, rolls again (%d left)" % [ms.unit.display_name, str(Effects.STATUS.get(f.rolls_again_on, {}).get("name", f.rolls_again_on)).to_lower(), Effects.stacks_of(ms.unit, f.rolls_again_on)])
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
@@ -1202,6 +1247,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			lays[foe] = l
 	var laid := {}
 	var webbed: Array[Foe] = []
+	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
 	var thawed := 0   # Cryo stacks this spend's damaging hits spent, cooling the hitter after its heat lands
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
@@ -1258,7 +1304,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			if was_alive and dmg > 0 and lays.has(foe):
 				for pair in lays[foe]:
 					var sid := str(pair[0])
-					var n_laid := _stacks_from(ms, sid, int(pair[1]))
+					var n_laid := _stacks_from(ms, sid, int(pair[1])) * doubled
 					Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n_laid, Effects.status_decay(Effects.STATUS[sid]))
 					_note_status(gained, foe, sid)
 					var per: Dictionary = laid.get(foe, {})
@@ -1272,7 +1318,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			if f.has(Face.Keyword.BURN):
 				# Burn is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
-				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", f.burn))
+				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", f.burn) * doubled)
 				_note_status(gained, foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
 				_note_status(gained, foe, "suppressed")
@@ -1290,13 +1336,13 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and foe.alive():
-				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo), Effects.DECAY_NONE)
+				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo) * doubled, Effects.DECAY_NONE)
 				_note_status(gained, foe, "cryoed")
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks, whatever the blow dealt, after the blow, so the blow that lays it
 			# never feeds on it; a later strike of the same spend does.
 			if f.has(Face.Keyword.FLAK) and foe.alive():
-				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak), Effects.DECAY_HALF)
+				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.DECAY_HALF)
 				_note_status(gained, foe, "flakked")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
@@ -1311,7 +1357,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var caught := web_catch(foe)
 		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
 	if extra_burn > 0:
-		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
+		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn) * doubled)
 		_note_status(gained, target, "burning")
 	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
 	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw

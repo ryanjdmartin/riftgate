@@ -18,9 +18,8 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Fourteen chassis from five makers
-  and five planned, the Cassowary, the Cottonmouth, the Whip Scorpion, the Swallowtail and the
-  Musk Ox
+  slots (two; the Clydesdale three) and one passive. Fifteen chassis from five makers
+  and four planned, the Cottonmouth, the Whip Scorpion, the Swallowtail and the Musk Ox
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -87,11 +86,13 @@ defeat when every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
-- **A stepping die** (the Cassowary's, not built): it never rolls. Each fight opens on a
-  random entry, and every roll or reroll steps it to the next entry in order; a lock holds
-  it; a foe's Scramble is a true roll, and the sequence runs on from where it lands. Its
-  Spin-Up spins the whole die, the entry showing included, the one exception to the reroll
-  rule. Every sixth weapon spend counts double, its damage and the stacks it lays.
+- **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
+  and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
+  lock holds it; a foe's Scramble is a true roll, and the sequence runs on from where it
+  lands. The die shows its next entry beside it. Its Spin-Up spins the whole die, the entry
+  showing included, the one exception to the reroll rule. Every sixth weapon spend of the
+  fight counts double, its damage and the stacks it lays; the count shows as six pips under
+  the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -149,8 +150,8 @@ defeat when every machine is wrecked. There is no round limit.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
   component prints its own; one that prints none pays heat or Volatile every spend (the Cryo
   Flinger, 5 heat). A Rapid component always carries a limiter, a cooldown, heat or
-  Volatile; the Cassowary's Spin-Up (not built) carries none: a stepping die cannot chain it
-  into itself.
+  Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: the
+  cylinder cannot chain it into itself.
 - **Cooldown** (a printed property on specific pieces): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
@@ -208,8 +209,8 @@ On a machine:
   Hoist shields and cools an ally, or fills its shield, cools it to zero and cleanses it; the
   Reveille Horn gives the team a reroll, or lets an ally act again.
 - **Rallied** (buff, not built): the team has one reroll more this round.
-- **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
-  spent; carried between turns until a weapon spends it.
+- **Spun Up** (buff): its next weapon spend deals +5 a stack, then every stack is spent, by a
+  weapon of no damage too; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until

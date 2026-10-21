@@ -5013,3 +5013,164 @@ func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 		assert_false(Effects.is_entry_disabled(n, 0) or Effects.is_entry_disabled(n, 1), "nothing dark")
 	assert_eq(ns.heat - heat_before, 15, "three spends at five heat each")
 	assert_eq(ns.face_index, 1, "off the first copy onto the second, back, and onto the second again")
+
+
+const STEP_PASSIVE := {"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]}
+
+
+## A stepping die (the Cassowary's Indexed Cylinder, Ryan's wording of 12 October; built 21
+## October): the fight's first roll spins it to a random entry, then every roll steps it to the
+## next in order: the round's roll, a reroll, Rapid's free reroll; a lock holds it, and a foe's
+## Scramble is a true roll, the sequence running on from where it lands.
+func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
+	var opened := {}
+	for seed_value in range(40):
+		var s0 := Skirmish.new(seed_value)
+		var u0 := _mech("A", Die.of([Face.attack(10, L), Face.attack(20, L), Face.attack(30, L), Face.attack(40, L)]), 40, 100)
+		u0.grant_passive(STEP_PASSIVE)
+		s0.add_mech(u0)
+		s0.add_foes([_ghoul(500, 1)])
+		s0.begin()
+		s0.start_round()
+		opened[s0.mechs[0].face_index] = true
+	assert_eq(opened.size(), 4, "the fight opens on a random chamber: every one, over forty fights")
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([Face.attack(10, L), Face.attack(20, L), Face.attack(30, L), Face.attack(40, L)]), 40, 100)
+	u.grant_passive(STEP_PASSIVE)
+	var other := _mech("B", Die.of([Face.attack(10, L), Face.attack(20, L)]), 40, 100)
+	sk.add_mech(u)
+	sk.add_mech(other)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var at := ms.face_index
+	assert_eq(sk.next_face(ms).power, ms.die.faces[(at + 1) % 4].power, "the screen reads the next chamber before it turns")
+	assert_true(sk.reroll([0]), "a reroll")
+	assert_eq(ms.face_index, (at + 1) % 4, "steps it one")
+	var held := ms.face_index
+	assert_true(sk.reroll([1]), "the other die rerolled, this one locked")
+	assert_eq(ms.face_index, held, "a lock holds it")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(ms.face_index, (held + 1) % 4, "the round's roll steps it too")
+	Effects.grant_for_rounds(u, Effects.STATUS["scrambled"], "foe:x", sk.round + 1)
+	var landed := {}
+	for k in range(30):
+		Effects.grant_for_rounds(u, Effects.STATUS["scrambled"], "foe:x", sk.round + 1)
+		sk.rerolls_left = 3
+		var before := ms.face_index
+		sk.reroll([0])
+		landed[ms.face_index == before] = true
+	assert_true(landed.has(true) and landed.has(false), "a scrambled reroll is a true roll: it may land where it stood")
+	sk.rerolls_left = 3
+	var from := ms.face_index
+	sk.reroll([0])
+	assert_eq(ms.face_index, (from + 1) % 4, "and the sequence runs on from where it lands")
+	var fast := Face.attack(10, L, [K.RAPID])
+	var s2 := Skirmish.new(2)
+	var r := _mech("R", Die.of([fast, Face.attack(20, L), Face.attack(30, L)]), 40, 100)
+	r.grant_passive(STEP_PASSIVE)
+	s2.add_mech(r)
+	s2.add_foes([_ghoul(500, 1)])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].face_index = 0
+	assert_true(s2.assign(0, s2.front[0]), "a Rapid chamber fires")
+	assert_eq(s2.mechs[0].face_index, 1, "and its free reroll steps the die to the next")
+
+
+## A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October): a Rapid entry whose
+## free reroll is a true roll over every entry, itself included, on a stepping die or any.
+func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
+	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "cooldown": 0, "spins": true})
+	assert_true(spin.spins and spin.has_unique_rule(), "a printed rule: the star")
+	assert_eq(spin.describe(), "Spun Up ×1 rapid no cooldown spins the die (self only)", "the entry says what it does")
+	var crack := spin.duplicate_face()
+	crack.crack()
+	assert_false(crack.spins, "a crack takes the spin with Rapid")
+	var landed := {}
+	for seed_value in range(60):
+		var sk := Skirmish.new(seed_value)
+		var u := _mech("A", Die.of([spin, Face.attack(10, L), Face.attack(20, L)]), 40, 100)
+		u.grant_passive(STEP_PASSIVE)
+		sk.add_mech(u)
+		sk.add_foes([_ghoul(500, 1)])
+		sk.begin()
+		sk.start_round()
+		sk.mechs[0].face_index = 0
+		assert_true(sk.assign(0, sk.mechs[0]), "the spin is spent")
+		landed[sk.mechs[0].face_index] = true
+	assert_eq(landed.size(), 3, "it lands anywhere, itself included: %s" % str(landed.keys()))
+
+
+## Spun Up (the Cassowary's, Ryan's go of 19 October; built 21 October): +5 a stack on the next
+## weapon spend, stacking, carried between turns until a weapon spends it, damage or none.
+func test_spun_up_lasts_until_a_weapon_spends_it_and_adds_five_a_stack() -> void:
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([Face.attack(10, L), Face.attack(0, I, [K.LURE])]), 40, 100)
+	sk.add_mech(u)
+	var g := _ghoul(500, 1)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(u, "spun_up", 1, "buff", sk.round)
+	Effects.grant_buff(u, "spun_up", 1, "buff", sk.round)
+	assert_eq(Effects.stacks_of(u, "spun_up"), 2, "it stacks")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(u, "spun_up"), 2, "and carries between turns")
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_eq(sk.shown_number_text(ms, ms.face(), g), "20", "the die shows the ten it adds")
+	assert_true(sk.assign(0, g), "a shot")
+	assert_eq(g.hp, 480, "ten and its two stacks' ten")
+	assert_false(Effects.has(u, "spun_up"), "spent whole")
+	sk.end_round()
+	sk.start_round()
+	Effects.grant_buff(u, "spun_up", 1, "buff", sk.round)
+	ms.face_index = 1
+	assert_true(sk.assign(0, g), "a weapon of no damage")
+	assert_false(Effects.has(u, "spun_up"), "spends it too")
+
+
+## Every n-th shot (the Cassowary's sixth, Ryan's kit of 18 October; built 21 October): the
+## weapon spend the count lands on doubles its damage and the stacks it lays; equipment and
+## spins are no shots, and the count resets each fight.
+func test_every_nth_shot_doubles_its_damage_and_the_stacks_it_lays() -> void:
+	var sk := Skirmish.new(1)
+	var torch := Face.attack(10, L, [K.BURN])
+	var u := _mech("A", Die.of([torch, Face.vent(10)]), 40, 100)
+	u.grant_passive({"id": "test_third", "name": "Third", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 3},
+		{"trigger": "on_attack", "effect": "multiply_stacks", "value": 2, "when": "nth_shot", "every": 3}]})
+	sk.add_mech(u)
+	var g := _ghoul(500, 1)
+	sk.add_foes([g])
+	sk.begin()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(Effects.counts_shots(u), 3, "the machine counts every third")
+	for k in range(2):
+		sk.start_round()
+		ms.face_index = 0
+		sk.assign(0, g)
+		sk.end_round()
+	assert_eq(Effects.stacks_of(u, "shots"), 2, "two shots counted")
+	sk.start_round()
+	ms.face_index = 1
+	sk.assign(0, ms)
+	assert_eq(Effects.stacks_of(u, "shots"), 2, "a vent is no shot")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(Effects.nth_shot_due(u), "the third is next")
+	assert_eq(sk.shown_number_text(ms, ms.face(), g), "20", "and the die shows it doubled")
+	var hp := g.hp
+	var burning := Effects.stacks_of(g, "burning")
+	sk.assign(0, g)
+	assert_eq(hp - g.hp, 20, "its damage doubled")
+	assert_eq(Effects.stacks_of(g, "burning") - burning, 2, "and its Burn's stack laid twice")
+	assert_true("\n".join(sk.log).contains("the third shot counts double"), "the log says so")
+	assert_false(Effects.nth_shot_due(u), "the count runs on")
+	Effects.end_skirmish(u)
+	assert_eq(Effects.stacks_of(u, "shots"), 0, "and resets with the fight")

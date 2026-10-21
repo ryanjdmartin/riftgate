@@ -756,3 +756,25 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 	s._refresh()
 	assert_true(s._face_labels(ms, false)[ms.face_index].contains("DISABLED"), "a foe's switch-off says so, cleansable")
 	s.free()
+
+
+## A stepping die (the Cassowary's, 21 October) shows its next chamber on the die and in the
+## hold, and a machine that counts its shots shows the count as pips under the heat bar.
+func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [
+		{"trigger": "static", "effect": "step_die", "value": 1},
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
+	Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 5, Effects.DECAY_NONE)
+	s._refresh()
+	var n := ms.die.faces.size()
+	assert_true(s._dice[0].next_face != null, "the die carries its next chamber")
+	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
+	assert_true(s._face_labels(ms, false)[(ms.face_index + 1) % n].contains("// NEXT"), "the hold marks it")
+	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
+	for r in s._mech_rows(0):
+		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
+	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
+	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
+	s.free()

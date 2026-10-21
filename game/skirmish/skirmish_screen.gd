@@ -789,6 +789,9 @@ func _refresh() -> void:
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
 		v.dead = not ms.alive()
+		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
+		var every := Effects.counts_shots(ms.unit)
+		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
@@ -800,6 +803,7 @@ func _refresh() -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
+		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
@@ -1034,6 +1038,8 @@ static func status_glyph(id: String) -> String:
 			return "barrier"
 		"ward":
 			return "ward"
+		"spun_up":
+			return "spin"
 		"cryoed":
 			return "cryo"
 	return "star"
@@ -1078,6 +1084,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
+		if id == "shots":
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -1086,7 +1094,7 @@ func _mech_rows(i: int) -> Array:
 	for id in order:
 		var d: Array = first[id]
 		var glyph := status_glyph(id)
-		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate", "barrier", "ward"] else Palette.HUD))
+		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage", "spun_up"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate", "barrier", "ward"] else Palette.HUD))
 		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -1223,6 +1231,8 @@ func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
 		var rot := Effects.corrupt_stacks(ms.unit, i)
 		if rot > 0:
 			label += " // CORRUPTED" + (" ×%d" % rot if rot > 1 else "")
+		if Effects.steps_die(ms.unit) and ms.face_index >= 0 and i == (ms.face_index + 1) % ms.die.faces.size():
+			label += " // NEXT"   # a stepping die's next chamber, in the hold
 		if tags:
 			var notes: Array[String] = Effects.explain(ms.unit, f)
 			if not notes.is_empty():

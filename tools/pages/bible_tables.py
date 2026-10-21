@@ -133,8 +133,12 @@ def tally(words):
 
     def passive(p, label, how, who):
         planned = (p or {}).get("status", "implemented") != "implemented"
+        counted = False
         for eff in ((p or {}).get("effects") or []):
             e = eff.get("effect")
+            if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
+                t.grant("shots", "machine", label, how, planned, who=who)
+                counted = True
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":

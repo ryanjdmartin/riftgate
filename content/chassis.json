@@ -744,7 +744,7 @@
    "design": {
     "fantasy": "Ryan's revolver (12 October): \"Whenever its die rolls, it moves to the next entry instead, in sequence.\" The six-shooter homage on a chicken walker: a squared cab on two long digitigrade legs, no arms, the revolver drum on the cab's flank clicking round a chamber at every roll. Ryan, 18 October: the first chamber randomized, \"like a revolver spinning, the only random factor we're able to inject in an otherwise deterministic chassis\". Named by Ryan, 19 October: the flightless bird that kills.",
     "niche": "The maker's gunslinger, a damage dealer at tier one (Ryan, 18 October: promoted to damage class). Its die never rolls: each fight opens on a random chamber and steps from there, so the plan is adjacency (the shield before the big gun, the Rapid before the chamber it should double) and the team's rerolls are its dial. Every sixth shot counts double; its locked Spin-Up spins the cylinder and primes the next shot. Squishy on purpose (Ryan, 19 October: \"we're packing a lot of firepower in it\"), so the maker's tender deal holds no front, accepted.",
-    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md; the bible's Cassowary row carries the decisions and their reasons). Ryan's names: the Cassowary, the Spin-Up, Spun Up; the passive's name and the designation are Claude's working ones. Every number is a placeholder (medium walker, move 40; hull 80, shield 30, armour 0, heat 60, cooling 5, recharge 20; five hardpoints and the Spin-Up, a six-chamber die). The stock is stand-ins until the stock pass, basics only, in an order that teaches the cycle: the Blast Door and the Coolant Jacket at V and VI, two quiet chambers before the Spin-Up at I and the Howitzer at II. The passive is planned: the engine lacks the die mode (the spin at the fight's start, a step on every roll and reroll, Scramble a true roll, a lock a hold), the sixth-shot count with its six pips under the heat bar, the next-chamber chip, the hold's ring and the hangar's numbered chambers. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and gait are the asset session's. The Rapid chain's price is the stock pass's (Rapid priced in heat), so its balance waits on that pass and its runner row is a verdict on the bot until the bot plans a cycle."
+    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md; the bible's Cassowary row carries the decisions and their reasons). Ryan's names: the Cassowary, the Spin-Up, Spun Up; the passive's name and the designation are Claude's working ones. Every number is a placeholder (medium walker, move 40; hull 80, shield 30, armour 0, heat 60, cooling 5, recharge 20; five hardpoints and the Spin-Up, a six-chamber die). The stock is stand-ins until the stock pass, basics only, in an order that teaches the cycle: the Blast Door and the Coolant Jacket at V and VI, two quiet chambers before the Spin-Up at I and the Howitzer at II. The passive was built 21 October: the die mode (the spin at the fight's start, a step on every roll and reroll, Scramble a true roll, a lock a hold), the sixth-shot count with its six pips under the heat bar, and the next-chamber chip; the hold marks the next chamber in place of a ring, and the hangar's numbered chambers wait on the hangar. No model yet (MechView3D borrows the Badger's); its lowforge model, rig, acts and gait are the asset session's. The Rapid chain's price is the stock pass's (Rapid priced in heat), so its balance waits on that pass and its runner row is a verdict on the bot until the bot plans a cycle."
    },
    "codex": "",
    "hull": 80,
@@ -774,8 +774,27 @@
     "id": "indexed_cylinder",
     "name": "Indexed Cylinder",
     "description": "Its die never rolls: each fight opens on a random chamber, and every roll steps it to the next entry in order. Every sixth shot counts double, its damage and the stacks it lays.",
-    "status": "planned",
-    "effects": []
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "step_die",
+      "value": 1
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_damage",
+      "value": 2,
+      "when": "nth_shot",
+      "every": 6
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_stacks",
+      "value": 2,
+      "when": "nth_shot",
+      "every": 6
+     }
+    ]
    },
    "flavour": ""
   },

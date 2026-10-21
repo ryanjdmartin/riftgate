@@ -687,7 +687,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
 
 
-func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned: bool = false) -> void:
+func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned: bool = false, stepped: bool = false) -> void:
 	var kind := str(fd.get("kind", ""))
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
@@ -763,10 +763,16 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		elif int(cd) == 0 and not rapid:
 			errs.append("%s: cooldown 0 lifts Rapid's switch-off, and an entry without Rapid has none to lift" % where)
 	# Every Rapid piece carries a limiter (Ryan, 15 October): a cooldown, heat or Volatile, so
-	# no chain is free; one that prints no cooldown pays heat or hull every spend.
-	if rapid and not planned and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
+	# no chain is free; one that prints no cooldown pays heat or hull every spend. A piece locked
+	# on a stepping die has the cylinder for its limiter (the Cassowary's Spin-Up, Ryan, 19
+	# October: a stepping die cannot chain it into itself; the exit, a stepping-die piece that
+	# ever makes a free chain gets a limiter of its own).
+	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
 			and int(fd.get("heat", 0)) <= 0 and not Array(fd.get("keywords", [])).has("volatile"):
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
+	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
+	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
+		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
@@ -791,6 +797,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
+		# One a use spends (Spun Up, spent by the next weapon spend) lasts until then.
+		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
+			errs.append("%s: %s lasts until a weapon spends it, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
@@ -1006,12 +1015,27 @@ func _validate_components(errs: Array[String]) -> void:
 		if not ACTION_STATUSES.has(status):
 			errs.append("%s: status must be implemented or planned" % where)
 		if c.get("face", null) is Dictionary:
-			_validate_face("%s face" % where, c["face"], errs, status == "planned")
+			_validate_face("%s face" % where, c["face"], errs, status == "planned", _locked_on_stepping_die(str(id)))
 		else:
 			errs.append("%s: face must be an object" % where)
 		if c.has("maker") and not makers.has(c["maker"]):
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		_validate_passive(where, c.get("passive", null), errs)
+
+
+## Whether a component is locked on a chassis whose die steps (the Cassowary's): its Rapid's
+## limiter is the cylinder, so it needs none of its own (the bible's Rapid row).
+func _locked_on_stepping_die(cid: String) -> bool:
+	for id in chassis.keys():
+		var ch: Dictionary = chassis[id]
+		if not Array(ch.get("fixed", [])).has(cid):
+			continue
+		var p = ch.get("passive", null)
+		if p is Dictionary and str(p.get("status", "implemented")) == "implemented":
+			for eff in p.get("effects", []):
+				if str(eff.get("effect", "")) == "step_die":
+					return true
+	return false
 
 
 ## Modules (built 9 October from the modules row's working rules): stats are any number of
