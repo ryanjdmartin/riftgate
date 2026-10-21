@@ -107,6 +107,7 @@ var turn_specials: Array = []
 ## October): live from the next round, so a foe striking after the rallier hits what it showed.
 var _rallies: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
+var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
 var overheats: Array = []
@@ -955,6 +956,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			_check_outcome()
 			return true
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
+	var killed := 0        # the foes a weapon spend felled, chains and spills included (a kill trigger, the reset gun)
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -1004,7 +1006,13 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			# the pipeline); every weapon spend counts, and spends the machine's Spun Up whole.
 			if Effects.nth_shot_due(ms.unit):
 				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
+			var falls_before := _falls
 			_resolve_attack(mech_index, ms, f, target)
+			killed = _falls - falls_before
+			# A kill trigger (the Kite's heat tax, 21 October): after an attack that killed, once
+			# however many fell.
+			if killed > 0 and ms.alive():
+				_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
 			if f.has(Face.Keyword.SWAP) and target.alive():
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
@@ -1032,21 +1040,23 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	# A cooldown (Ryan, 14 October): the entry goes dark for the rounds it prints, this one
 	# included, shown on the die with the rounds left; Rapid's switch-off is a cooldown of one,
 	# the rest of this round, there to stop an infinite turn (Face.cooldown_rounds).
-	var cd := f.cooldown_rounds()
+	var cd := cooldown_of(ms, f)
 	if cd > 0:
 		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
+	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
+	# from a cooldown comes back, itself included, and the machine acts again through Rapid's
+	# path, the free roll never landing on the entry just spent, so a round chains to two.
+	var reset := f.resets_on_kill and killed > 0 and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty())
+	if reset:
+		var lit := Effects.clear_cooldowns(ms.unit)
+		_act_again(ms, f)
+		log.append("%s: the kill resets it, %d back, and it acts again" % [ms.unit.display_name, lit])
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
 	# stacked copies chain, the cooldown of each copy its own), and the mech may act again.
 	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
 	# over every entry, itself included; a stepping die's free reroll steps it.
-	if f.has(Face.Keyword.RAPID):
-		if f.spins:
-			ms.face_index = ms.die.roll(rng)
-		elif Effects.steps_die(ms.unit):
-			ms.face_index = _step(ms)
-		else:
-			ms.face_index = ms.die.reroll(rng, ms.face_index)
-		ms.assigned = false
+	if f.has(Face.Keyword.RAPID) and not reset:
+		_act_again(ms, f)
 		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else "rapid, rolls again"])
 	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
 	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
@@ -1815,6 +1825,27 @@ func _unready_ally(caster: Foe) -> Foe:
 	return best
 
 
+## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
+## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping.
+func _act_again(ms: MechState, f: Face) -> void:
+	if f.spins:
+		ms.face_index = ms.die.roll(rng)
+	elif Effects.steps_die(ms.unit):
+		ms.face_index = _step(ms)
+	else:
+		ms.face_index = ms.die.reroll(rng, ms.face_index)
+	ms.assigned = false
+
+
+## The rounds an entry goes dark once this machine spends it, this one included: its own
+## cooldown (Rapid's switch-off one) or the one its machine's passives grant every weapon (the
+## Kite's two), the longer.
+func cooldown_of(ms: MechState, f: Face) -> int:
+	if f == null:
+		return 0
+	return maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f))
+
+
 ## The Prairie Dog's screen on a withdrawal (28 September; built 30 September): a machine with
 ## the passive is out before the enemy strikes, every other live machine rolls the screen's
 ## chance on the skirmish's die to slip out with it, and a blow aimed at a covered machine
@@ -2514,6 +2545,7 @@ func _clear_dead_slots() -> void:
 			var f: Foe = rank[col]
 			if f != null and not f.alive():
 				if f.rank >= 0:
+					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
 					# A foe that readied itself to get back up returns to the pool once, whole,
 					# unless it went whole (a Bomb's burst).
 					if Effects.has(f, "risen") and not f.stays_down:

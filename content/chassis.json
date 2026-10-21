@@ -141,49 +141,61 @@
   {
    "id": "sparrowhawk",
    "name": "Kite",
-   "designation": "K-7 Mk III Interceptor",
+   "designation": "K-7 Mk IV Interceptor",
    "maker": "kestrel",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.",
     "niche": "assassin",
-    "name_clash": "The id only, since 21 October: sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Kite, which clashes with nothing."
+    "name_clash": "The id only, since 21 October: sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Kite, which clashes with nothing.",
+    "one_off": "Its passive carries four effects, the cap three (Ryan's sketch of 19 October, his go of 21 October): the double, the flat heat, the dark rounds and the kill's tax are one idea in two lines, the double-edged niche definer the one-idea row names.",
+    "notes": "Reworked 21 October on Ryan's go (the bible's Kite row; the brief retired to git): tier two, a d3 of the Pinion Driver locked and two hardpoints, hull 30, shield 40, heat maximum 40, cooling 10, a light flyer at 50; the passive's name kept, its rules the rework's. Its two hardpoints stock placeholders by kind until the stock pass: a cold rolled gun (the Twin Autoguns, standing in for a 15-30 kinetic) and a cold Indirect gun (the Howitzer). Numbers are placeholders."
    },
    "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
-   "hull": 60,
-   "shield": 60,
+   "hull": 30,
+   "shield": 40,
    "movespeed": 50,
-   "heat_max": 60,
-   "hardpoints": 4,
+   "heat_max": 40,
+   "hardpoints": 2,
    "module_slots": 2,
    "armour": 0,
    "recharge_field": 30,
-   "cooling": 0,
+   "cooling": 10,
    "traits": [
     "flyer"
    ],
    "size": "light",
-   "fixed": [],
+   "fixed": [
+    "pinion_driver"
+   ],
    "loadout": [
-    "overclocked_railgun",
-    "coriolis_accelerator",
-    "arc_fault_cannon",
-    "laminar_deflector"
+    "twin_autoguns",
+    "howitzer"
    ],
    "passive": {
     "id": "disabled_regulators",
     "name": "Disabled Weapon Regulators",
-    "description": "Premium Kestrel \"feature.\" Double damage and double heat for all weapons.",
+    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, 10 hotter, and goes dark for two rounds. Each attack that kills makes its shots 5 hotter for the fight.",
     "effects": [
      {
       "trigger": "on_attack",
-      "effect": "multiply_damage",
+      "effect": "multiply_printed",
       "value": 2
      },
      {
       "trigger": "on_attack",
-      "effect": "multiply_heat",
+      "effect": "add_heat",
+      "value": 10
+     },
+     {
+      "trigger": "static",
+      "effect": "weapon_cooldown",
       "value": 2
+     },
+     {
+      "trigger": "on_kill",
+      "effect": "stack_status",
+      "value": "hot_streak"
      }
     ]
    },

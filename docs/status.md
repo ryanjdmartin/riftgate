@@ -90,6 +90,14 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, the Kite's rework (Ryan's go of that day): a passive may double a weapon's
+  printed number alone (the buffs once after it) and grant a cooldown to every weapon; a kill
+  trigger fires once after an attack that killed (the Kite's tax, Hot Streak a working name,
+  5 heat a stack for the fight); a reset gun's kill lights every dark entry and acts again
+  through Rapid's path. The Kite is tier two (K-7 Mk IV), a d3 of the Pinion Driver locked and
+  two hardpoints stocking placeholders by kind until the stock pass; its passive's four
+  effects its one-off (the validator honours a chassis's design.one_off), the die minimum
+  three; the Railgun carries its own tier two off every stock. Its brief retired.
 - 21 October, the combined entry (Ryan's go, 20 October): a vent may carry a shield half
   (`shields`), spent on the same machine after the vent and sized on the heat the vent leaves,
   through the spender's passives for an ally (the Puffin's Slipstream); the die prints the

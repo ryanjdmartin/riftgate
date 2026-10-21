@@ -63,7 +63,7 @@ func test_chassis_validator_guards_hardpoints() -> void:
 	var twice := false
 	var stuffed := false
 	for e in db.validate():
-		if e.begins_with("chassis over") and e.contains("into 4 hardpoints"):
+		if e.begins_with("chassis over") and e.contains("into %d hardpoints" % int(c["hardpoints"])):
 			over = true
 		if e.begins_with("chassis twice") and e.contains("is fixed"):
 			twice = true
@@ -138,7 +138,8 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
 	var p: Dictionary = db.chassis["sparrowhawk"]["passive"]
-	assert_eq(p["effects"].size(), 2, "two effects, one idea")
+	var one_off := not str(db.chassis["sparrowhawk"].get("design", {}).get("one_off", "")).is_empty()
+	assert_true(p["effects"].size() <= ContentDB.MAX_PASSIVE_EFFECTS + (1 if one_off else 0), "one idea, within the cap and its one-off")
 	assert_true(not p.has("rules"), "no rules text: the description says what it does")
 	assert_true(not db.chassis["sparrowhawk"].has("passives"), "still counts as one passive")
 
@@ -221,6 +222,7 @@ func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	c["design"].erase("one_off")   # the cap as it stands for every passive without one
 	var eff: Dictionary = c["passive"]["effects"][0]
 	c["passive"]["effects"] = [eff, eff, eff, eff]
 	db.chassis["bloated"] = c
@@ -1648,3 +1650,33 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db.foes.erase("test_hero_up")
 	db.factions[fid]["bench"] = Array(db.factions[fid].get("bench", [])) + ["test_hero"]
 	assert_true(refusals.call("bench hero test_hero has no promoted form"), "a hero the run may deal without its class change: refused")
+
+
+## A passive may break a rule as a one-off (the bible's section 7): the chassis's design names
+## it, and the effect cap lifts by one for that passive alone (the Kite's four effects).
+func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var cid := ""
+	for id in db.chassis.keys():
+		if db.chassis[id].get("passive", null) is Dictionary and not str(db.chassis[id].get("design", {}).get("one_off", "")).is_empty():
+			continue
+		cid = str(id)
+		break
+	var four := {"id": "test_four", "name": "Four", "description": "Four effects.", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
+		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
+		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
+		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]}
+	db.chassis[cid]["passive"] = four
+	db.chassis[cid]["design"].erase("one_off")
+	var capped := func() -> bool:
+		for e in db.validate():
+			if e.begins_with("chassis %s" % cid) and e.contains("passive has 4 effects"):
+				return true
+		return false
+	assert_true(capped.call(), "four effects without a one-off: refused")
+	db.chassis[cid]["design"]["one_off"] = "a test's reason"
+	assert_false(capped.call(), "with the one-off named in its design, allowed")
+	four["effects"].append({"trigger": "on_attack", "effect": "add_damage", "value": 1})
+	assert_true(db.validate().any(func(e): return e.begins_with("chassis %s" % cid) and e.contains("passive has 5 effects")), "the lift is one, never more")

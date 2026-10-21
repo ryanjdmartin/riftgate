@@ -5689,3 +5689,79 @@ func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void
 		if e.contains("shields is a vent's shield half"):
 			refused = true
 	assert_true(refused, "a shield half on anything but a vent is refused")
+
+
+## The Kite's rework (Ryan's go, 21 October), on synthetic passives: a multiply on the printed
+## number alone, the buffs added once after it; the cooldown granted to every weapon by a
+## passive; a kill trigger laying a status whose heat rides every later shot.
+func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
+	var regs := {"id": "regs", "name": "Regs", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
+		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
+		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]}
+	var gun := Face.attack(10, L)
+	gun.heat = 5
+	var shield := Face.shield(10)
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Kite", Die.of([gun, gun.duplicate_face(), shield]), 40, 100)
+	m.grant_passive(regs)
+	sk.add_mech(m)
+	var weak := _ghoul(15, 10)
+	sk.add_foes([weak, _ghoul(200, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
+	assert_eq(int(Effects.attack(m, gun, 10, 5, weak)["damage"]), 25, "the printed 10 doubled, then the buff's 5 once")
+	assert_eq(Effects.granted_cooldown(m, gun), 2, "every weapon goes dark two rounds")
+	assert_eq(Effects.granted_cooldown(m, shield), 0, "equipment never")
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, weak), "the doubled gun kills the weak foe")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and goes dark for two rounds, this one included")
+	assert_eq(Effects.stacks_of(m, "hot_streak"), 1, "the kill lays a stack of the tax")
+	assert_eq(int(Effects.attack(m, gun, 0, gun.heat)["heat"]), 10, "every later shot runs 5 hotter")
+	assert_true("\n".join(sk.log).contains("after the kill"), "the log says why")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "one round left the next round")
+
+
+## The reset gun (the Kite's Pinion Driver, 21 October): if its spend kills, every entry dark
+## from a cooldown comes back, itself included, and its machine acts again through Rapid's path,
+## the free roll never landing on it; a spend that kills nothing resets nothing.
+func test_a_reset_gun_that_kills_lights_every_dark_entry_and_acts_again() -> void:
+	var regs := {"id": "regs", "name": "Regs", "description": "", "effects": [
+		{"trigger": "static", "effect": "weapon_cooldown", "value": 2}]}
+	var reset := Face.attack(30, L)
+	reset.resets_on_kill = true
+	var other := Face.attack(10, L)
+	assert_true(reset.has_unique_rule() and reset.describe().contains("a kill brings every weapon back and it acts again"), "the entry prints its rule")
+	var sk := Skirmish.new(3, 2)
+	var m := _mech("Kite", Die.of([reset, other, other.duplicate_face()]), 40, 100)
+	m.grant_passive(regs)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 10), _ghoul(200, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.disable_entry(m, 1, "cooldown", sk.round + 1)   # a gun spent last round, dark
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the reset gun on the weak foe")
+	assert_false(sk.mechs[0].assigned, "the kill lets it act again")
+	assert_ne(sk.mechs[0].face_index, 0, "the free roll never lands on the entry just spent")
+	assert_eq([Effects.dark_rounds(m, 0, sk.round), Effects.dark_rounds(m, 1, sk.round)], [0, 0], "every dark entry back, itself included")
+	assert_true("\n".join(sk.log).contains("the kill resets it, 2 back, and it acts again"), "the log counts them")
+	var target: Foe = null
+	for f in sk.field_foes():
+		if f.alive():
+			target = f
+	assert_true(sk.assign(0, target), "the second action")
+	assert_true(sk.mechs[0].assigned, "a gun with no reset ends it: two actions at most")
+	sk.end_round()
+	sk.start_round()
+	var big: Foe = null
+	for f in sk.field_foes():
+		if f.alive() and f.hp > 30:
+			big = f
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, big), "the reset gun on a foe it cannot kill")
+	assert_true(sk.mechs[0].assigned, "no kill, no reset")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and it goes dark as any weapon")

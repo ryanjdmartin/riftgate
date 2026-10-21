@@ -108,6 +108,7 @@ var spins: bool = false       # a Rapid entry whose free reroll is a true spin o
 var reaches_all: bool = false # an attack that reaches every foe in the fight from its target (the Whip Scorpion's Heliographic Siphon, a lure-all, 20 October)
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
+var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -259,6 +260,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind == Kind.ATTACK
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
+	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -318,6 +320,8 @@ func to_dict() -> Dictionary:
 		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
 		d["shields"] = shields
+	if resets_on_kill:
+		d["resets_on_kill"] = true
 	return d
 
 
@@ -353,7 +357,7 @@ func cooldown_rounds() -> int:
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() \
-		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0
+		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill
 
 
 ## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
@@ -447,6 +451,7 @@ func duplicate_face() -> Face:
 	f.reaches_all = reaches_all
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
+	f.resets_on_kill = resets_on_kill
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -541,6 +546,8 @@ func describe() -> String:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+			if resets_on_kill:
+				s += " a kill brings every weapon back and it acts again"
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat

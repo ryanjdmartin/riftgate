@@ -51,9 +51,9 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -64,6 +64,7 @@ const SUPPORTED_EFFECTS := {
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
+	"on_kill": ["stack_status", "add_shield", "vent_heat"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -237,6 +238,12 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	"ward": {"id": "ward", "name": "Ward", "description": "Every blow a foe lands on it this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
+	# each attack that killed makes its shots 5 hotter for the fight, a stack a killing attack.
+	# The passive's own price, so neither a buff nor a store (no silence or purge lifts it) and no
+	# cleanse takes it; it lasts the fight.
+	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run 5 hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
+		"tags": ["tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 5}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -783,6 +790,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 	var d_floor := 0
 	var h_add := 0.0
 	var h_mult := 1.0
+	var p_mult := 1.0   # a multiply on the entry's own number alone, before the adds (the Kite's double: the printed number, buffs once)
 	var burn := 0
 	var vent := 0
 	var parts: Array = _taking_part(u, "on_attack", face, target)
@@ -799,6 +807,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 				d_add += v * n
 			"multiply_damage":
 				d_mult *= pow(v, n)
+			"multiply_printed":
+				p_mult *= pow(v, n)
 			"min_damage":
 				d_floor = maxi(d_floor, int(v))
 			"add_heat":
@@ -809,7 +819,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 				burn += int(v) * n
 			"vent_heat":
 				vent += int(v) * n
-	var out_dmg := maxi(d_floor, int(roundf((dmg + d_add) * d_mult)))
+	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
 		# A debuff deals nothing under any effect (Ryan's die grammar, 20 and 21 October): no
@@ -1377,6 +1387,31 @@ static func disable_entry(u, index: int, source: String, until_round: int) -> Mo
 	return grant_for_rounds(u, status, source, until_round)
 
 
+## The rounds every weapon this machine spends goes dark, granted by its passives (static
+## weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the cooldown property
+## granted), the longest live one; 0 for none or for equipment. An entry's own cooldown stands
+## beside it and the longer wins (Skirmish.cooldown_of).
+static func granted_cooldown(u, face: Face) -> int:
+	if face == null or not face.is_weapon():
+		return 0
+	var n := 0
+	for pair in _taking_part(u, "static", face):
+		if str(pair[0].get("effect", "")) == "weapon_cooldown":
+			n = maxi(n, int(pair[0].get("value", 0)))
+	return n
+
+
+## Every entry dark from a cooldown comes back at once (the Kite's reset gun, 21 October: a
+## kill brings every weapon back); an entry a foe switched off stays off. Returns how many.
+static func clear_cooldowns(u) -> int:
+	var back := 0
+	for m in u.modifiers.duplicate():
+		if m.source == "cooldown":
+			u.modifiers.erase(m)
+			back += 1
+	return back
+
+
 ## The rounds an entry stays dark, this one included: the latest end of whatever switched it
 ## off (a cooldown, a foe's disable) less `round`, plus one; 0 for a lit entry. The die shows
 ## it on the dark entry (the cooldown row: dark with the rounds left).
@@ -1467,6 +1502,8 @@ static func effect_text(eff: Dictionary) -> String:
 	var body := ""
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
+		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
+		"weapon_cooldown": body = "every weapon it fires goes dark for %s rounds" % vs
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs
@@ -1540,6 +1577,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_shield_granted": lead = "an ally this machine shields: "
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
+		"on_kill": lead = "after an attack that killed: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"rolled": lead += "rolled weapons: "

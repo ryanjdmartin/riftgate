@@ -9,7 +9,7 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
-const MIN_DIE := 4
+const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
 ## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
@@ -849,6 +849,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
+	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
+		errs.append("%s: resets_on_kill (true) is a weapon's: if its spend kills, every dark entry comes back and its machine acts again" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -914,7 +916,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' rides on a shield component only; a %s has nothing to pass" % [where, k, kind])
 
 
-func _validate_passive(where: String, p, errs: Array[String]) -> void:
+## `one_off`: the chassis's design names the rule its passive breaks as a one-off (the bible's
+## section 7: a passive may break a rule, the rule bending for one machine), which lifts the
+## effect cap by one: the Kite's double, its heat, its dark rounds and its tax, two lines.
+func _validate_passive(where: String, p, errs: Array[String], one_off: bool = false) -> void:
 	if p == null:
 		return
 	if not (p is Dictionary):
@@ -939,8 +944,9 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 	var effects: Array = p.get("effects", [])
 	if effects.is_empty():
 		errs.append("%s: passive has no effects" % where)
-	if effects.size() > MAX_PASSIVE_EFFECTS:
-		errs.append("%s: passive has %d effects, cap is %d (one idea per passive)" % [where, effects.size(), MAX_PASSIVE_EFFECTS])
+	var cap := MAX_PASSIVE_EFFECTS + (1 if one_off else 0)
+	if effects.size() > cap:
+		errs.append("%s: passive has %d effects, cap is %d (one idea per passive%s)" % [where, effects.size(), cap, "; its one-off lifts it by one" if one_off else ""])
 	for eff in effects:
 		var trig := str(eff.get("trigger", ""))
 		if not vocabulary.has(trig) or vocabulary[trig].get("category") != "trigger":
@@ -967,6 +973,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 				errs.append("%s: rewrite_weapon fires every weapon as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
 			if str(eff.get("when", "")).begins_with("reach_"):
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
+		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
+			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
@@ -1270,7 +1278,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		if c.has("passives"):
 			errs.append("%s: use 'passive' (zero or one), not 'passives'" % where)
-		_validate_passive(where, c.get("passive", null), errs)
+		var one_off := str(c.get("design", {}).get("one_off", "")) if c.get("design", {}) is Dictionary else ""
+		_validate_passive(where, c.get("passive", null), errs, not one_off.is_empty())
 
 
 ## A chassis nickname (or id) that is a machine's name in BattleTech, Heavy Gear, Warhammer

@@ -83,10 +83,11 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			assert_true(s._use_die(i, null), "blank discarded")
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
-		if f.has(Face.Keyword.RAPID):
-			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October): the
-			# die rolls again and the machine acts again.
-			assert_false(ms.assigned, "a rapid face gives mech %d its turn back" % i)
+		if f.has(Face.Keyword.RAPID) or (f.resets_on_kill and not ms.assigned):
+			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October), and so
+			# does a reset gun whose shot killed (the Kite's Pinion Driver, 21 October): the die
+			# rolls again and the machine acts again.
+			assert_false(ms.assigned, "a rapid face or a reset kill gives mech %d its turn back" % i)
 			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")
@@ -128,9 +129,10 @@ func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 	assert_true(s._details.visible, "details shown")
 	var text := s._details_label.text
 	var title := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("name", "")).to_upper()
-	assert_true(text.begins_with(title + " // D4"), "names the die and its size (from content, never a hardcoded name)")
+	var size := s.sk.mechs[2].die.faces.size()
+	assert_true(text.begins_with(title + " // D%d" % size), "names the die and its size (from content, never a hardcoded name)")
 	assert_true(s._details_faces.visible, "face list shown")
-	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
+	assert_eq(s._details_faces.faces.size(), size, "every face in the column")
 	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", ""))
 	assert_false(text.contains(passive_name), "the passive is not in the heading")
@@ -206,7 +208,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	var first: Label = s._codex._passives.get_child(0)
 	assert_eq(first.get_theme_color("font_color"), CodexBox.passive_colour("chassis"), "the chassis's own passive in its colour, first")
 	assert_true(CodexBox.passive_colour("component") != CodexBox.passive_colour("chassis"), "a component's passive reads in another")
-	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == 4, "faces listed visually")
+	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == s.sk.mechs[2].die.faces.size(), "faces listed visually")
 	s._close_codex()
 	s.free()
 

@@ -35,7 +35,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | two | the interceptor, the Needletail (decided 21 October, tier two and named that day; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
-| two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
+| two | the Kite (reworked and built 21 October; its brief retired) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber, the Lammergeier (its go 21 October; the Magpie until that evening; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 | open | the Magpie (marked 21 October, Ryan: a support engine; to design) | | | | |
@@ -126,9 +126,9 @@ One pointer each; the proposal is in the brief named.
 - **The Kite**'s rework is decided (Ryan's go, 21 October, when he named its lock): the reset
   gun is the Pinion Driver, the old finisher the Coriolis Accelerator, a blueprint once the
   rework lands; the trash chain and the steady doubled gun, the caster-killer the
-  interceptor's Exposed. Its content and its move to tier two wait on its engine (the bible's
-  Kite row; `kestrel_kite.md`). The to-do's stock pass line and the bible's stock-pass row
-  moved with the go.
+  interceptor's Exposed. Built 21 October, its engine and content, tier two (the bible's
+  Kite row; its brief retired to git). The to-do's stock pass line and the bible's
+  stock-pass row moved with the go.
 - **The bomber**'s go (Ryan, 21 October): the Lammergeier since that evening (the Magpie
   before, the name moving to the support engine), a heavy tandem-wing flyer; its mark the
   Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,

@@ -683,6 +683,22 @@
    }
   },
   {
+   "id": "hot_streak",
+   "category": "status",
+   "name": "Hot Streak",
+   "codex": "Machine status, the Kite's: its shots run 5 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name (21 October), the Kite's heat tax.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: one for each attack that killed",
+     "lasts": "The fight"
+    }
+   }
+  },
+  {
    "id": "shots",
    "category": "status",
    "name": "Shots",
@@ -1054,7 +1070,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
+   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1141,6 +1157,16 @@
    }
   },
   {
+   "id": "on_kill",
+   "category": "trigger",
+   "name": "On a kill",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Kite's Hot Streak), a shield or a vent.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October for the Kite's rework; the Zoids walker's brief wants it too."
+   }
+  },
+  {
    "id": "out_of_combat",
    "category": "trigger",
    "name": "Out of combat",
@@ -1198,6 +1224,16 @@
    "status": "implemented",
    "design": {
     "holes": "Ryan, 14 October: a printed property on specific pieces, never a general mechanic, shown on the entry as dark with the rounds left, so it is paid in the die's reliability (the bible's cooldown row); built 21 October. It prices what heat cannot: a price per die, dear on a small die and cheap on a big one. No cap on where a cooldown goes or how many a die carries (Ryan, 15 October). The city's battlefield abilities count their own cooldowns in phases (the city ability's entry); this one lives inside a skirmish. A crack keeps it because it is a price, as heat is."
+   }
+  },
+  {
+   "id": "reset",
+   "category": "component_property",
+   "name": "Reset",
+   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent (the Kite's Pinion Driver).",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October (the face's resets_on_kill), the Kite's rework: a round chains to two actions at most, since the entry just spent never comes up on the free roll."
    }
   },
   {
@@ -1424,7 +1460,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."

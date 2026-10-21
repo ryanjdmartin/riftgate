@@ -318,6 +318,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A stack to spend buys another roll of the die, so the machine acts again: about the
 		# die's own average blow, read plainly so the scorer never asks itself.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if f.resets_on_kill:
+		# The reset gun (the Kite's Pinion Driver): a kill lights every dark entry and the machine
+		# acts again, about the die's own average blow, at the odds of the kill.
+		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.devours > 0:
 		# A kill feeds stacks of Overcharged: what the status adds to the die's own damage, a
 		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
@@ -388,11 +392,12 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	return cost
 
 
-## What a printed cooldown costs an entry (21 October): every round it stays dark after this
-## one, the share of the die's rolls it would have shown, at what it is worth now. Rapid's
-## switch-off ends with this round and costs nothing here.
+## What a cooldown costs an entry (21 October): every round it stays dark after this one, the
+## share of the die's rolls it would have shown, at what it is worth now; its own or the one
+## its machine's passives grant (the Kite's), the longer. Rapid's switch-off ends with this
+## round and costs nothing here.
 static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
-	var later := f.cooldown_rounds() - 1
+	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f)) - 1
 	if later <= 0 or worth <= 0.0 or ms.die.faces.is_empty():
 		return 0.0
 	return worth * float(later) / float(ms.die.faces.size())

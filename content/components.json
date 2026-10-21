@@ -336,7 +336,7 @@
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
     "niche": "",
-    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). A temporary component either way."
+    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). Kept as the pool's big hot flat gun (Ryan, 21 October, the Kestrel line review: its temporary note retired); off the Kite with its rework (21 October), so it carries its own tier, a tier-two blueprint, until the stock pass puts it in the Buzzard's stock."
    },
    "face": {
     "kind": "attack",
@@ -350,7 +350,8 @@
     "energy",
     "single",
     "hot"
-   ]
+   ],
+   "tier": 2
   },
   {
    "id": "coriolis_accelerator",
@@ -363,7 +364,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It leaves the Kite for the pool as a tier-two or tier-three blueprint once the Kite's rework lands; until then it stays in the Kite's and the Buzzard's stock."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It left the Kite with its rework (21 October), a tier-two blueprint in the pool through the Buzzard's stock."
    },
    "face": {
     "kind": "attack",
@@ -380,6 +381,33 @@
     "finisher"
    ],
    "sound": "barrel"
+  },
+  {
+   "id": "pinion_driver",
+   "name": "Pinion Driver",
+   "maker": "kestrel",
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
+    "niche": "The Kite's lock, its reset gun: flat 15, 30 doubled, a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, so a round chains to two actions at most.",
+    "notes": "Ryan's go, 21 October, naming the lock (the name moved here from the old finisher, the Coriolis Accelerator since then). Built 21 October with the Kite's rework: the face's resets_on_kill. Its codex and flavour are Ryan's to write. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 15,
+    "keywords": [],
+    "heat": 0,
+    "resets_on_kill": true
+   },
+   "passive": null,
+   "tags": [
+    "energy",
+    "single"
+   ]
   },
   {
    "id": "arc_fault_cannon",

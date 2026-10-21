@@ -179,9 +179,13 @@ defeat when every machine is wrecked. There is no round limit.
   cylinder cannot chain it into itself.
   A Rapid vent, if one exists, is never below tier three, and a Rapid shield never below
   tier two (not built: the tiers).
-- **Cooldown** (a printed property on specific pieces): once spent, the entry is dark for
+- **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
+  its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
+- **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
+  comes back, itself included, and the machine acts again, the free roll never landing on the
+  entry just spent, so a round chains to two actions at most.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -326,6 +330,8 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
+- **Hot Streak** (the Kite's, its passive's price): its shots run 5 hotter a stack this fight,
+  a stack for each attack that killed; no cleanse, silence or purge lifts it.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
   returns to the reinforcements once, whole, unless it self-destructed.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
@@ -444,7 +450,10 @@ shields do not refill; a pack keeps its survivors, who return whole.
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
-  gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
+  gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
+  this machine's that killed, chains and spills included). No trigger feeds itself.
+- A passive may double a weapon's printed number alone, the buffs added once after it (the
+  Kite's), and may grant a cooldown to every weapon its machine fires.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
