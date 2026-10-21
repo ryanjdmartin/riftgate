@@ -33,7 +33,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
-| three | the bomber (decided; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
+| three | the bomber, the Magpie (its go 21 October; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital (proposal, its third form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
@@ -123,13 +123,10 @@ One pointer each; the proposal is in the brief named.
   interceptor's Exposed. Its content and its move to tier two wait on its engine (the bible's
   Kite row; `kestrel_kite.md`). The to-do's stock pass line and the bible's stock-pass row
   moved with the go.
-- **The bomber** stands. Two items: the mark's "Rapid, cooldown 1" is the switch-off, the
-  ungated form the row re-prices (and the brief's "a free mark every other round" misreads
-  the cooldown), so a gate is proposed: Rapid while a mine waits on the field, a setup gate
-  of the Paradox's shape; and Chain reopened in mines, so the Arc Fault Cannon is Kestrel's
-  own bomb (the 15 October reading made Lure, Disrupt and Chain inert because the round they
-  work in is over, which is true of the two intents and not of a kill's repeat).
-  `kestrel_bomber.md`, the line review.
+- **The bomber**'s go (Ryan, 21 October): the Magpie, a heavy tandem-wing flyer; its mark the
+  Syrinx Drone, which Marks the foe and is Rapid on a foe already Exposed, else gives it
+  Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
+  mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
 - **The gun platform** is Kestrel's capital ship, a hover, not a flyer (Ryan, 20 October,
   from irony: three quarters of the line flies), and the action-economy utility capstone on
   his word: the reroll economy all the way, no growth. Its seventh round: the team's unspent
@@ -294,9 +291,8 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 
 ## Open for Ryan
 
-1. The per-chassis proposals in their briefs: the bomber's gate and Chain in mines, the
-   Buzzard's stock, the platform's settlements (the interceptor's, the Puffin's and the
-   Kite's landed 21 October).
+1. The per-chassis proposals in their briefs: the Buzzard's stock, the platform's settlements
+   (the interceptor's, the Puffin's, the Kite's and the bomber's landed 21 October).
 2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
 3. The leans row's Kestrel line.

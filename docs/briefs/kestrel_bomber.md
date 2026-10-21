@@ -4,7 +4,8 @@ The session designs the decided Kestrel machine whose weapons can be spent on an
 the enemy's formation, the shot waiting there for whoever steps in. "The bomber" is Ryan's
 working word; the name and the look are his.
 
-**Status**: decided (14 and 15 October). **Maker**: Kestrel. **Tier**: three (Ryan, 15
+**Status**: decided (14 and 15 October; the go 21 October: the Magpie, a tandem wing).
+Its engine and content wait, so this brief stays until they land. **Maker**: Kestrel. **Tier**: three (Ryan, 15
 October). **Read first**: `docs/briefs/README.md`; the bible's row on
 Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8 (Kestrel gap two, the
 interceptor it replaced); `docs/rules.md` on reinforcements, reach and the
@@ -281,8 +282,9 @@ The design as decided on 15 to 17 October with Ryan's lean on size (18 October) 
 review's two items, whole; every number a placeholder, the name and the look Ryan's, the stock
 by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
 
-**The frame.** A heavy flyer on big boosters (Ryan's lean: bigger than medium; the capital
-ship is the gun platform since 20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
+**The frame.** The Magpie, a heavy tandem-wing flyer on big boosters (Ryan, 21 October: a
+pair of wings fore and a pair aft, the bay between; the capital ship is the gun platform since
+20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
 maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
 tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
 the Buzzard's.
@@ -300,11 +302,13 @@ and a foe standing there takes them now, in laid order. Spent on an empty slot i
 field's mines there and lays nothing of its own, having no shot; with nothing laid it is the
 dead spend Ryan allows.
 
-**The second lock, the mark**: an Indirect weapon of no damage, heat 0: the foe is Marked, a
-chip, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties.
-One mine a mark, it lasts the skirmish, a death by a tick leaves nothing, and Marked is a
-status the team put on the foe (the Paradox counts it; Ryan, 17 October: tuned later). Rapid
-while a mine waits on the field, the line review's gate; a full action before.
+**The second lock, the Syrinx Drone** (Ryan, 21 October): an Indirect weapon of no damage,
+heat 0: the foe is Marked, a chip, and the next weapon to kill it, any machine's, leaves its
+shot in the slot it empties. One mine a mark, it lasts the skirmish, a death by a tick leaves
+nothing, and Marked is a status the team put on the foe (the Paradox counts it; Ryan, 17
+October: tuned later). If the foe already carries Exposed, the drone is Rapid; otherwise it
+gives the foe Exposed, never refreshing it. The line review's gate (Rapid while a mine waits)
+is on the bench.
 
 **The die.**
 
@@ -408,17 +412,36 @@ value of a mine (a shot delayed, worth its number times the chance a foe steps i
   aft (the weirdest, unlike every other Kestrel from above, the view the player reads, heavy by
   its read, the bomb bay between the pairs). Claude's lean: the tandem wing.
 
-## Open for the session
+## The go (21 October)
 
-1. The mark through Exposed (the round above): Ryan's shape with the read-before rule, the
-   debuff and never the formation word, and the self-loop's lever (Rapid on a foe Exposed
-   and not yet Marked); the mark's name.
-2. Heavy as he leaned, and the look: a flying wing, long straight wings, or a tandem wing.
-   Its name: the Lammergeier is the lean.
-3. Keywords in mines: every keyword acts as the shot lands, Lure and Disrupt doing nothing
-   once their round is over; Chain does from a mine what it does on any blow, in whatever
-   form its rework takes (Claude, 21 October, in place of the line review's special rule,
-   since Chain's rework is section 12's).
+- Ryan, 21 October: "Reword: Mark a foe, if it's Exposed, gain Rapid. Otherwise, give it
+  Exposed. So no refresh. Syrinx Drone? Magpie? And go with tandem wing, and yes to the
+  keywords bit."
+- Claude, 21 October: decided. The mark is the Syrinx Drone (the songbird's voice box, where a
+  mimic copies any sound; in Kestrel's air register too, since it is where air becomes a
+  voice): it Marks the foe, and if the foe already carries Exposed the drone is Rapid,
+  otherwise it gives the foe Exposed, never refreshing it. His wording closes the self-loop
+  without the lean: a second mark on a foe the drone already Marked and Exposed is a free look
+  at the die and nothing else, the cantrip on Kestrel's reroll lean, and Exposed runs out on
+  its own clock. "Exposed" is the debuff, never the formation word, and the condition is read
+  before the drone lands. The machine is the Magpie, the thief of folklore that carries off
+  what is not its own and a mimic besides, as its mines carry other machines' shots: a heavy
+  tandem-wing flyer, a pair of wings fore and a pair aft, the mines dropping from the bay
+  between. Every keyword rides inside a mine and acts as the shot lands; Lure and Disrupt do
+  nothing once their round is over, and Chain does whatever Chain does on a blow. A magpie is
+  no heavy bird; the silhouette carries the weight. The bible's Kestrel row and the rules carry
+  the design; the numbers are the content session's.
+
+## Open for the engine and content sessions
+
+1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look.
+2. A bot that values a mine, before its runner row (the Waits on below).
+3. A word shared with another session (found 21 October, merging the bible): the Swallowtail's
+   Spotting Flare carries a planned keyword named Mark, the foe in every ally's reach until its
+   next action, with Exposed named as its rider. By the convention that a keyword and its chip
+   share a name, its chip would be Marked, the Magpie's mine debuff, and its reach is Exposed's
+   reach half. Claude's lean: the Flare applies Exposed, and Marked stays the Magpie's; or the
+   Magpie's debuff takes the drone's word. Ryan's call, between the two sessions.
 
 ## Waits on
 
@@ -426,7 +449,9 @@ Nothing (Ryan, 15 October): the formation's view of what waits is its own to-do,
 prerequisite, and the foes' fresh start gives it more to trap. A bot that values a mine comes
 before its runner row.
 
-## What the session hands back
+## What the engine and content sessions land
 
-A proposal in chat; on Ryan's go, content planned, the bible's chassis table, and this brief
-retired.
+A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, Marked
+with its kill hook; the content planned (the Magpie, its two locks, Marked in the vocabulary),
+the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry
+the design since 21 October.

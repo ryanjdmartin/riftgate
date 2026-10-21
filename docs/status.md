@@ -153,8 +153,13 @@ document's job and every command are in `README.md`.
   round of 21 October in its brief: Ryan's mark through Exposed (Marked and Exposed, Rapid on a
   foe already Exposed) with its holes and the lean on the self-loop (Rapid only on a foe
   Exposed and not yet Marked), the mark's name (the Echo Drone the lean), birds that carry (the
-  Lammergeier the lean) and the look (the tandem wing the lean); waiting on his calls, then the
-  capital. On the branch, not on main.
+  Lammergeier the lean) and the look (the tandem wing the lean); then the bomber's go the same
+  day: the Magpie, a heavy tandem-wing flyer, its mark the Syrinx Drone (Marked, and Rapid on a
+  foe already Exposed, else Exposed with no refresh; Ryan's wording), keywords acting from a
+  mine as the shot lands (the bible's Kestrel row, live v0.231; the rules' mine, pull, drone
+  and Marked; its brief decided and kept for its engine). A word to settle between sessions:
+  the Swallowtail's planned Mark keyword against the Magpie's Marked (the bomber brief's open
+  list). Next: the capital, Kestrel's last open machine. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -439,7 +444,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.230 (21 October: the Butcherbird at tier one and the interceptor at two; the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.232 (21 October: the bomber's go, the Magpie, merged onto the Wainwright & Sutler
+  session's v0.231, which added the Swallowtail; the Butcherbird at tier one and the interceptor at two; the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

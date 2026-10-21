@@ -112,6 +112,12 @@ defeat when every machine is wrecked. There is no round limit.
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
   it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
+- **A mine** (the Magpie's passive, not built): its weapons may be spent on an empty slot in
+  the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
+  front is empty; Indirect any). The shot waits there, its number as rolled and modified when
+  laid, with its keywords; whoever steps in takes every shot waiting, in laid order, before
+  it acts, and a massive arrival takes both slots'. Every keyword acts as the shot lands; Lure
+  and Disrupt do nothing, their round being over. Nothing expires.
 
 ### A blow
 1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
@@ -180,7 +186,11 @@ spending it Braces its owner, the stacks it says, until the round's end (the Wil
 Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
+the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
+Magpie's, not built): every mine on the field gathers into the slot it is spent on, and a foe
+standing there takes them now, in laid order. **The Syrinx Drone** (the Magpie's, not built):
+the foe is Marked; if it already carries Exposed the drone is Rapid, and otherwise it gives
+the foe Exposed, never refreshing it. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole; the engine runs it as a keyword the passive
@@ -233,6 +243,9 @@ On a foe:
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
+- **Marked** (debuff, the Magpie's Syrinx Drone, not built): the next weapon to kill it, any
+  machine's, leaves its shot in the slot it empties, a mine; one mine a mark; it lasts the
+  skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
