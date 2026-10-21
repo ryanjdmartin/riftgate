@@ -96,9 +96,17 @@ defeat when every machine is wrecked. There is no round limit.
   nothing; an unspent die is lost.
 - **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a buff grants its status, so many stacks, through so many rounds.
+- **A debuff** is a weapon of no damage (a setter, a swap), spent on a foe in reach like any
+  weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
+  Up, Primed's burn), and its heat is a weapon's. The die's kinds: Direct, Indirect, Debuff,
+  Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
+  debuff the frame with the status mark inside and no number, a buff the mark alone; a shield
+  or vent that also buffs is its own glyph with a buff chip (not built: the glyph, the print
+  and the damage guard).
 
 ### Reach
-- **Direct** reaches the front rank, and a back-rank foe whose column's front slot is empty.
+- **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
+  any foe carrying Exposed (not built).
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
   built: today, fired at the front rank, it splashes: the firer loses shield equal to half
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
@@ -115,7 +123,8 @@ defeat when every machine is wrecked. There is no round limit.
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
-- **The die shows the number** one blow will deal after every modifier. Dragged over a foe
+- **The die shows the number** one blow will deal after every modifier; a debuff shows none,
+  and a gun whose blow is nothing here shows 0 (not built). It shows the number Dragged over a foe
   it may strike, it shows that foe's number: its missing hull, conditions on it, its armour
   off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
@@ -134,6 +143,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
+- **Expose** (the interceptor's designator, not built): every foe reached and left standing is
+  Exposed through the next round; a second Expose refreshes it, never adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -216,6 +227,10 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
+- **Exposed** (debuff, not built): it stands in Direct reach of every machine as if its
+  column's front were empty, and its armour counts for nothing, its own and any Armoured.
+  Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
+  is exposed by its formation, in reach only.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears

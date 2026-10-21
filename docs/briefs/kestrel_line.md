@@ -29,7 +29,7 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer (decided; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| one | the interceptor (proposal, its fifth round; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
+| one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Goshawk (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Sparrowhawk (rework; `kestrel_sparrowhawk.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |

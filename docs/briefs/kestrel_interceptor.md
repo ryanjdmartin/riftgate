@@ -4,8 +4,9 @@ The session designs the Kestrel tier one that acts twice a round, Ryan's pick of
 from the shield-spender's alternative kits, and finds the build hook its first kit lacked.
 "The interceptor" is a working label; the name and the look are Ryan's.
 
-**Status**: proposal (the passive Ryan's, 18 October; the kit Claude's, 20 October, its third
-form, below the second; the fourth round, late that day, names the mark Exposed and widens the
+**Status**: decided (Ryan's go, 21 October; the name, look and numbers left to the content
+session, so this brief holds the rounds until then). The passive Ryan's, 18 October; the kit
+Claude's, 20 October, its third form, below the second; the fourth round, late that day, names the mark Exposed and widens the
 gate to buffs; the fifth takes Ryan's calls, the mark reach and armour and no number on a weapon
 of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Proposed tier**: one. **Shape**: a tilt-jet (Ryan, 20 October:
 "agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
@@ -451,6 +452,13 @@ kit. Every number a placeholder; the names Ryan's.
 ## Waits on
 
 Nothing. For the tender, a Kestrel tier one landed.
+
+## What the content session lands
+
+The chassis and the designator in content (planned until the engine: the gate, Expose,
+Exposed, the glyph grammar, the print, the damage guard), Expose and Exposed's sentence in
+the vocabulary, the aims' shown words, its name, look and numbers; then this brief retires.
+The bible's Kestrel row, the die-entry row and the rules carry the design since 21 October.
 
 ## What the session hands back
 
