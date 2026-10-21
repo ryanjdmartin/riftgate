@@ -497,6 +497,39 @@ Claude's holes, the same day, each his to settle:
   carry, the mark's rider (the Kestrel session's), Suppress (built), act again (the gun
   platform's), the resupply's reset.
 
+Ryan, 21 October, later: "Note that I meant it takes MANY rerolls to gain a charge. That's why I
+said slow. Like I dunno, 10 per charge. Each time it rolls a sliver of a charge is granted,
+since these are supposed to be 'ultimate tier.' We could also say, 'any time a die rolls' to
+play up the team player aspect, or add 'whenever it kills something' to force it to engage in
+the fight. Point is, you have to work for it. I think team shield is healthier than team
+armour, isn't it? Since team shield is allowed now, and nothing currently does it? I think per
+fight makes sense in terms of not making the player feel like they need to farm charges, but
+per battle seems easier to tune. We can start per fight. Charge and cooldown on the dock was
+because I thought it was too strong anyway. We can try without if the effect is softened."
+
+So (his calls): the bar fills by slivers, about ten rolls a charge (a placeholder), so a charge
+is a fight's work and the Rapid leak above is nothing (a chain is a quarter of a charge); per
+fight, starting empty like heat, the carry-over section 12's heat question; the dock's plain
+form a team shield; the dock without its cooldown if the charged form is softened. Claude's
+reading of the three: the team shield is the healthier plain form, since under the honest
+shield rule it is priced by its number, bounded by each ally's shield maximum, answered by
+breach and the big blow, and the exploit the Barrier row names was the old whole block, not
+the number; Armoured-all is the dearest stat handed to four machines at once and, repeated
+each round on a team of heavies, the wall the Armoured row guards against, while a team shield
+is a product nobody makes (the identity test's "new product"). On the fill's source: its own
+rolls, about ten a charge, is the simplest count and feeds on nothing; any die's rolls, about
+thirty a charge for the same pace, makes every team reroll, the Clydesdale's free one and the
+gun platform's passes the carrier's fuel, two routes in from other makers and the team-player
+read he wants; a kill by its own guns worth several rolls is the engagement hook on top of
+either. Claude's lean: any die at about thirty, a kill by it worth five, every number a
+placeholder; the bar a filling gauge on its own machine, not pips. On softening the charged
+dock: it is already paid three times, a fight's charge, every docked ally's action and the
+whole enemy turn on the carrier, so no cooldown and no further softening until the runner and
+play read it; if it reads too strong the lever is its price (two charges), a price rather than
+a clock, as the stun row prices a stun. The charged mark's Suppress is gated by the charge
+and clocked by Numbed. Left for his call: the fill's source, the name, then the go (a row,
+planned content, the brief retired).
+
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, content planned (a spend by another machine is engine work,
