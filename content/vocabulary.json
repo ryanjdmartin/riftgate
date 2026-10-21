@@ -231,6 +231,16 @@
    }
   },
   {
+   "id": "expose",
+   "category": "keyword",
+   "name": "Expose",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Exposed through the next round: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 20 and 21 October in the Kestrel session (the Needletail's Fovea Designator; the Swallowtail's Spotting Flare and the Lammergeier's Syrinx Drone lay it too); the engine built 21 October. The formation word exposed stays rules text, so the status's id is exposure."
+   }
+  },
+  {
    "id": "disrupt",
    "category": "keyword",
    "name": "Disrupt",
@@ -471,6 +481,22 @@
      "on": "foe",
      "stacks": "Never",
      "lasts": "Until the next team blow that deals it damage"
+    }
+   }
+  },
+  {
+   "id": "exposure",
+   "category": "status",
+   "name": "Exposed",
+   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. A back-rank foe whose front is empty is exposed by its formation, in reach only.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October (the Kestrel session's debuff); the id is exposure, since exposed names the formation word and the foes' default aim.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: a second Expose refreshes it",
+     "lasts": "Through the next round"
     }
    }
   },

@@ -117,7 +117,7 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
-  any foe carrying Exposed (not built).
+  any foe carrying Exposed.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
   built: today, fired at the front rank, it splashes: the firer loses shield equal to half
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
@@ -166,8 +166,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 10 heat to it (Siphoning), in the enemy's turn, after the overheat.
-- **Expose** (the Needletail's Fovea Designator, not built): every foe reached and left standing is
-  Exposed through the next round; a second Expose refreshes it, never adds.
+- **Expose** (the Needletail's Fovea Designator; no carrier in content yet): every foe reached
+  and left standing is Exposed through the next round; a second Expose refreshes it, never
+  adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -298,7 +299,7 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
-- **Exposed** (debuff, not built): it stands in Direct reach of every machine as if its
+- **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
@@ -341,7 +342,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches

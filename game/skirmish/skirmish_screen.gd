@@ -1019,7 +1019,11 @@ func _foe_rows(foe: Foe) -> Array:
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], Palette.SHIELD, "resist"])
-	if foe.rank == 1 and sk.is_exposed(foe.column):
+	if Effects.has(foe, "exposure"):
+		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed, the
+		# number saying what the debuff adds to the reach the formation gives.
+		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
+	elif foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
 

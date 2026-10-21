@@ -205,6 +205,14 @@ func is_exposed(col: int) -> bool:
 	return front[col] == null
 
 
+## Is this foe in Direct reach: the front rank, a back-rank foe whose column's front is empty
+## (exposed by its formation), or any foe carrying Exposed (the debuff, 21 October).
+func in_direct_reach(foe: Foe) -> bool:
+	if foe == null or foe.rank < 0:
+		return false
+	return foe.rank == 0 or is_exposed(foe.column) or Effects.has(foe, "exposure")
+
+
 func live_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for m in mechs:
@@ -582,7 +590,7 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 			out.append(front[col])
 		if back[col] == null or not back[col].alive() or out.has(back[col]):
 			continue
-		if reach_of(ms, f) == Face.Reach.INDIRECT or is_exposed(col):
+		if reach_of(ms, f) == Face.Reach.INDIRECT or in_direct_reach(back[col]):
 			out.append(back[col])
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
 	if Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
@@ -1581,6 +1589,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	if f.has(Face.Keyword.SHOCK):
 		for foe in touched:
 			_shock(foe, ms)
+	# Expose (the Needletail's Fovea Designator, 21 October): every foe reached and left
+	# standing is Exposed through the next round, a second Expose refreshing it.
+	if f.has(Face.Keyword.EXPOSE):
+		for foe in touched:
+			_expose(foe, ms)
 	# Disrupt first, then lure, so an entry carrying both ends with the foe's new move aimed at
 	# the spender.
 	if f.has(Face.Keyword.DISRUPT):
@@ -1905,6 +1918,16 @@ func _hull_damaged(ms: MechState) -> void:
 ## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
 ## carries one shock, never more, until a blow spends it double. A machine's loop passive
 ## may catch the status like any other.
+## Exposed on a foe through the next round (renewing, never adding): in Direct reach of every
+## machine and its armour counting for nothing.
+func _expose(foe: Foe, by: MechState) -> void:
+	if not foe.alive():
+		return
+	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round + 1)
+	log.append("%s exposes %s" % [by.unit.display_name, foe.display_name])
+	_foe_gained_status(foe, "exposure")
+
+
 func _shock(foe: Foe, by: MechState) -> void:
 	if not foe.alive() or Effects.has(foe, "shocked"):
 		return

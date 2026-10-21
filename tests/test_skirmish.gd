@@ -5765,3 +5765,40 @@ func test_a_reset_gun_that_kills_lights_every_dark_entry_and_acts_again() -> voi
 	assert_true(sk.assign(0, big), "the reset gun on a foe it cannot kill")
 	assert_true(sk.mechs[0].assigned, "no kill, no reset")
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and it goes dark as any weapon")
+
+
+## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and
+## leaves standing is Exposed through the next round, in Direct reach of every machine as if
+## its column's front were empty and its armour counting for nothing, its own and any Armoured;
+## a second Expose refreshes it, never adds; it feeds the Paradox and the bot weighs it.
+func test_an_expose_puts_a_back_foe_in_direct_reach_and_zeroes_its_armour() -> void:
+	var designator := Face.attack(0, I, [K.EXPOSE])
+	var gun := Face.attack(20, L)
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(_mech("Spotter", Die.single(designator), 40, 100))
+	sk.add_mech(_mech("Gunner", Die.single(gun), 40, 100))
+	var wall := _ghoul(200, 10)
+	var caster := _archer(100, 10)
+	caster.armour = 5
+	sk.add_foes([wall, caster])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(caster, Effects.STATUS["braced"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	assert_false(sk.targets_for(1).has(caster), "behind its wall the back rank is out of Direct reach")
+	assert_eq(caster.armour_total(), 8, "its armour and its brace")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	assert_true(bot.expose_score(sk, caster) > 0.0, "the bot weighs exposing it")
+	assert_true(sk.assign(0, caster), "the designator, Indirect, reaches it")
+	assert_true(Effects.has(caster, "exposure"), "it is Exposed")
+	assert_eq(caster.armour_total(), 0, "its armour counts for nothing, its own and the brace")
+	assert_true(sk.targets_for(1).has(caster), "and every machine's Direct gun reaches it")
+	assert_true(sk.assign(1, caster), "the gunner's line gun")
+	assert_eq(caster.hp, 80, "the whole 20 lands")
+	assert_eq(bot.expose_score(sk, caster), 0.0, "exposing it again adds nothing to weigh")
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.has(caster, "exposure"), "through the next round")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.has(caster, "exposure"), "then gone")
+	assert_false(sk.targets_for(1).has(caster), "behind its wall again")

@@ -35,6 +35,7 @@ const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's aci
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
+const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team blow likely before it fades, and a back-rank foe in Direct reach, as a share
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -314,6 +315,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += brace_score(sk, ms, f.braces)
 	if f.heat_per_blow > 0:
 		score += siphon_score(sk, ms, f.heat_per_blow)
+	if f.has(Face.Keyword.EXPOSE):
+		score += (1.0 - p_kill) * expose_score(sk, target)
 	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
 		# A stack to spend buys another roll of the die, so the machine acts again: about the
 		# die's own average blow, read plainly so the scorer never asks itself.
@@ -349,6 +352,19 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
 	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
+
+
+## What Exposed on a foe is worth (21 October): its armour off each team blow likely before it
+## fades (one a live machine, this round's rest and the next), and for a back-rank foe its
+## formation hides, its kill and threat brought into Direct reach, as a share.
+func expose_score(sk: Skirmish, foe: Foe) -> float:
+	if foe == null or not foe.alive() or Effects.has(foe, "exposure"):
+		return 0.0
+	var blows := float(sk.live_mechs().size())
+	var score := float(foe.armour_total()) * blows * HULL_WEIGHT * EXPOSE_WEIGHT
+	if foe.rank == 1 and not sk.is_exposed(foe.column):
+		score += (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * EXPOSE_WEIGHT * 0.5
+	return score
 
 
 ## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes

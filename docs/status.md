@@ -90,6 +90,12 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, Expose and Exposed (the Kestrel session's): every foe an Expose reaches and leaves
+  standing is Exposed through the next round, in Direct reach of every machine and its armour
+  counting for nothing, refreshed and never added; it feeds the Paradox and the target-status
+  condition; the foe's card shows it; the bot weighs it. No carrier in content until the
+  Needletail's content session; the Lammergeier's drone and the Swallowtail's Flare lay it
+  when their engines land.
 - 21 October, the Kite's rework (Ryan's go of that day): a passive may double a weapon's
   printed number alone (the buffs once after it) and grant a cooldown to every weapon; a kill
   trigger fires once after an attack that killed (the Kite's tax, Hot Streak a working name,

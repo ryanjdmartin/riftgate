@@ -110,6 +110,8 @@ func is_massive() -> bool:
 ## Armour right now: the foe's own plus what a defend left on it (a braced Spawn), read
 ## through the pipeline like a machine's.
 func armour_total() -> int:
+	if Effects.has(self, "exposure"):
+		return 0   # Exposed: its armour counts for nothing, its own and any Armoured
 	return maxi(0, armour + Effects.foe_armour_bonus(self))
 
 

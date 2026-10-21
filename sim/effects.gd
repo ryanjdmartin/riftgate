@@ -160,6 +160,13 @@ const STATUS := {
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.", "stacking": "renew",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
+	# Exposed (the Kestrel session, 20 and 21 October; built 21 October), the debuff: the foe
+	# stands in Direct reach of every machine as if its column's front were empty, and its
+	# armour counts for nothing, its own and any Armoured (Foe.armour_total), through the next
+	# round, refreshed and never added. The formation's exposed back rank is reach only, and the
+	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
+	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Through the next round.", "stacking": "renew",
+		"tags": ["expose"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
@@ -290,7 +297,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
 ## own buffs (Braced, Kindled, Getting Back Up).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of

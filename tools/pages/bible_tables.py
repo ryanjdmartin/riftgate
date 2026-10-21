@@ -32,7 +32,7 @@ END = "<!-- bible-tables:end -->"
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
-                      "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")]}
+                      "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper", "heat_per_blow": "siphoning"}
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
