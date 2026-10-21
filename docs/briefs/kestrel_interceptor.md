@@ -1,4 +1,4 @@
-# Brief: the interceptor (new chassis, proposal)
+# Brief: the interceptor (new chassis, decided)
 
 The session designs the Kestrel tier one that acts twice a round, Ryan's pick of 18 October
 from the shield-spender's alternative kits, and finds the build hook its first kit lacked.

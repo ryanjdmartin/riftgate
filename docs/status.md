@@ -167,8 +167,16 @@ document's job and every command are in `README.md`.
   spending three rerolls on a spent ally, the launch the roll, the battery a rolled gun brewing
   two rerolls on a kill. Its ninth round, Ryan's shapes: the formation leader, aggressive where
   the Swallowtail supports; lock 1 Rapid (a team reroll on itself, or an ally's action for
-  three rerolls), lock 2 the battery, lock 3 Overcharged 2 and a roll for an ally; the readings
-  and holes in its brief, waiting on his word. On the branch, not on main.
+  three rerolls), lock 2 the battery, lock 3 Overcharged 2 and a roll for an ally; its go the
+  same day on his answers (the rerolls paid, a spent ally, the buff on any ally, the bank, the
+  hardpoints), with his rule that a locked piece on a tier-three chassis is tier two or three
+  in power (the bible's locked-component row); the bible's Kestrel row and the rules (the bank,
+  the Hot-Pit, the battery, the buff), live v0.235. Every Kestrel machine is now decided: tier
+  one the Butcherbird, the Storm Petrel and the Puffin (built); tier two the Buzzard (built),
+  the Kite and the interceptor; tier three the Magpie and the Giant Petrel; two of Ryan's ten
+  slots free. What is left: the content and engine sessions (the to-do's lines), the Buzzard's
+  stock and the stock kinds for the stock pass, and the merge to main on Ryan's word (main has
+  moved; the hangar page's republish rides with it). On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -453,7 +461,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.233 (21 October: the Syrinx Drone debuff, the Swallowtail's Flare without Mark, the
+  `docs/design-bible.html` after every change. Live is v0.235 (21 October: the Giant Petrel's go and the locked-piece power rule, merged onto the Wainwright & Sutler session's v0.234, which dropped its planned Mark keyword and left the Hoist reloading nothing on the artillery; before it v0.233: the Syrinx Drone debuff, the Swallowtail's Flare without Mark, the
   Giant Petrel; before it v0.232, the bomber's go, the Magpie, merged onto the Wainwright & Sutler
   session's v0.231, which added the Swallowtail; the Butcherbird at tier one and the interceptor at two; the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the

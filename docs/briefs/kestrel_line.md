@@ -34,7 +34,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber, the Magpie (its go 21 October; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
-| three | the gun platform, the capital, the Giant Petrel (its name and shape 21 October; the locks in proposal; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
+| three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
 Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
@@ -139,7 +139,8 @@ One pointer each; the proposal is in the brief named.
   three rerolls on a spent ally (proposal). Its ninth round (21 October), Ryan's: the formation
   leader, aggressive, where the Swallowtail is the supportive HQ; lock 1 Rapid, a team reroll on
   itself or an ally's action for three rerolls; lock 2 the battery; lock 3 Overcharged 2 and a
-  roll for an ally. `kestrel_gun_platform.md`.
+  roll for an ally. Its go the same day, on his answers: three rerolls paid, a spent ally, the
+  bank, the hardpoints. `kestrel_gun_platform.md`.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 
@@ -297,8 +298,7 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 
 ## Open for Ryan
 
-1. The per-chassis proposals in their briefs: the Buzzard's stock, the platform's settlements
-   (the interceptor's, the Puffin's, the Kite's and the bomber's landed 21 October).
+1. The Buzzard's stock, the one per-chassis item left (every other machine landed 21 October).
 2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
 3. The leans row's Kestrel line.

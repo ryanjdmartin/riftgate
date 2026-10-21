@@ -1,11 +1,11 @@
-# Brief: the gun platform, Kestrel's capstone (proposal)
+# Brief: the gun platform, Kestrel's capstone, the Giant Petrel (decided)
 
 The session designs Kestrel's second tier three beside the bomber: a giant, mean-looking,
 fast-looking-but-slow gun platform whose passes are the team's rerolls. "The gun platform" is
 a working label; the name and the look are Ryan's.
 
-**Status**: proposal (Claude, 19 October); the Giant Petrel and the ekranoplan decided 21
-October, its locks in their eighth round. **Maker**: Kestrel.
+**Status**: decided (Ryan's go, 21 October: the Giant Petrel, the formation leader); its engine
+and content wait, so this brief stays until they land. A proposal since 19 October. **Maker**: Kestrel.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (Ryan's taste, the tiers,
 Kestrel's leans as the fourth round of `kestrel_shield_spender.md` left them); the bible's rows
 on rerolls (three a round, never onto the entry showing), on Rapid's limiter and on cooldowns;
@@ -475,11 +475,31 @@ pace with it.
 - Bench: the launch (a shield of 20 and a roll: the supportive shape, the Swallowtail's side of
   the line; its roll lives on in lock 3).
 
-## Open for the session
+## The go (21 October)
 
-1. Ryan's word on the ninth round's readings: lock 1's three rerolls paid, on a spent ally;
-   lock 3 on an unspent ally; the bank kept as the passive; and whatever his message's second
-   "Lock 1:" was to say. Then its go, the names his.
+- Ryan, 21 October: "Lock 1 - Obviously the rolls get paid, yes. And obviously on a spent ally,
+  yes. The hanging lock 1 was a typo. I'm not sure what you mean by generous but bounded,
+  giving the team a reroll and rolling itself again doesn't seem terribly generous, its a
+  tempo boost at best and a passive feed at worst. Lock 3 - On a spent ally they get 1
+  overcharge for next round, that's plenty. It's allowed to be better than the Overcharge coil
+  since its a locked component on a tier 3 chassis, so its either tier 2 or tier 3 in power.
+  Components grow in power as tiers go up, thats the rule. Passive stays the bank yes. Your
+  hardpoints are fine as well."
+- Decided, as the ninth round read it with his answers: the bank as the passive; the Hot-Pit,
+  Rapid, a team reroll on itself or, for three rerolls paid, a spent ally's die rolled again
+  and its action again; the battery; the buff, Overcharged 2 and a roll for any ally (on a
+  spent ally the roll gives nothing and the Overcharged halves to one for next round); three
+  hardpoints, a big flat gun, a cold rolled gun and a vent. Claude's "generous but bounded"
+  on the Hot-Pit's self use withdrawn: a team reroll and its own look are a tempo boost at best.
+  His rule on a locked piece's power goes in the bible's locked-component row. The bible's
+  Kestrel row and the rules carry the design; its numbers, names and model go to the content
+  session.
+
+## Open for the engine and content sessions
+
+1. Its numbers (placeholders), its names (the Hot-Pit, the battery and the buff are working
+   names), its model (the ekranoplan).
+2. The bot's look-or-action valuation, before its runner rows.
 
 ## Holes already raised
 
@@ -503,7 +523,9 @@ pace with it.
 - The chain: Rapid switches nothing off on it and vents do nothing on it, so every maker's
   Rapid pieces chain while its heat lasts (the third round of `kestrel_shield_spender.md`).
 
-## What the session hands back
+## What the engine and content sessions land
 
-A proposal in chat; on Ryan's go, the bible's Kestrel row, content planned, and this brief
-retired.
+The bank (the team's rerolls carried, capped), the Hot-Pit (a Rapid face with a self use and
+an ally use priced in rerolls, a spent ally's die rolled and its action again), the battery's
+kill rider, the buff's roll; the chassis planned in content; then this brief retired. The
+bible's Kestrel row and the rules carry the design since 21 October.

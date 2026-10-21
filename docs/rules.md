@@ -82,7 +82,8 @@ The fight ends the moment it is decided, mid-turn too: victory when no foe stand
 defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
-- **Rerolls**: three a round for the team, never banked. A reroll rerolls every unlocked,
+- **Rerolls**: three a round for the team, never banked (the Giant Petrel's bank, below, the one
+  exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
@@ -91,6 +92,9 @@ defeat when every machine is wrecked. There is no round limit.
   it; a foe's Scramble is a true roll, and the sequence runs on from where it lands. Its
   Spin-Up spins the whole die, the entry showing included, the one exception to the reroll
   rule. Every sixth weapon spend counts double, its damage and the stacks it lays.
+- **The bank** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
+  unspent at the round's end are banked, up to three, and spent in a later round like any
+  reroll.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -190,7 +194,12 @@ the stacks being the limit, and the fight's last blow rolls nothing. **The pull*
 Magpie's, not built): every mine on the field gathers into the slot it is spent on, and a foe
 standing there takes them now, in laid order. **The Syrinx Drone** (the Magpie's, not built):
 the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
-the foe Exposed, never refreshing it. **Spillover** (the Wild
+the foe Exposed, never refreshing it. **The Hot-Pit** (the Giant Petrel's, Rapid, not built):
+spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
+are paid, the ally's die rolls again and it acts again. **The battery** (the Giant Petrel's,
+not built): a kill by its shot gives the team two rerolls. **Its buff** (the Giant Petrel's,
+not built): the ally gains Overcharged 2 and its die rolls again, which does nothing on a
+spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole; the engine runs it as a keyword the passive

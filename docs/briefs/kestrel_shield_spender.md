@@ -1,4 +1,4 @@
-# Brief: the shield-spender (new chassis, direction)
+# Brief: the shield-spender, the Storm Petrel (new chassis, decided)
 
 The session designs a Kestrel tier one whose hits spend its own shield for more damage: a
 sustained hitter with a real decision on every spend. "The shield-spender" is a working label;
