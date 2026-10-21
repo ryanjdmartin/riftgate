@@ -550,11 +550,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.243, and so is the live
-  (21 October): the Kestrel branch merged, so main's file carries the Kestrel session's rows the
-  live had carried since 20 October, and `tools/pages/bible_tables.py` regenerated the tables
-  from the merged content (one cell moved: Rapid's unlocked pieces, 3 to 2, the Wake
-  Diffuser's Rapid off). The version numbers on main's file and the live agree after every
+  `docs/design-bible.html` after every change. Main's file is v0.244, and so is the live
+  (21 October): the live v0.243 (the Kestrel branch merged, its rows and the regenerated
+  tables) with the party's rows on top (the deal, the Cleric's Reraise built, the promoted forms,
+  the finale and the finals, section 12's slate question) and the tables regenerated (the
+  promoted Cleric's Reraise beside the Zombie Knight's). The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
