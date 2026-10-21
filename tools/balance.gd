@@ -101,26 +101,29 @@ func _init() -> void:
 		fights = int(got["fights"])
 		secs = float(got["secs"])
 	else:
-		# Every cell in one order, so a part's share is the same whichever process asks.
+		# Every row and pack in one order, so a part's share is the same whichever process asks;
+		# a part takes both policies of a pair, so the greedy cells, the slow ones, spread evenly.
 		var at := -1
 		for r in rows:
 			for p in packs:
+				at += 1
+				if part >= 0 and at % parts != part:
+					continue
 				for k in policies:
-					at += 1
-					if part < 0 or at % parts == part:
-						cells[_key(r, p, k)] = _run_cell(r, p, k)
-						fights += seeds
+					cells[_key(r, p, k)] = _run_cell(r, p, k)
+					fights += seeds
 		# The team row again under the other targeting rule, for the comparison section.
 		var other := "lowest" if targeting.is_empty() else ""
 		for r in rows:
 			if r["id"] != "team":
 				continue
 			for p in packs:
+				at += 1
+				if part >= 0 and at % parts != part:
+					continue
 				for k in policies:
-					at += 1
-					if part < 0 or at % parts == part:
-						compare[_key(r, p, k)] = _run_cell(r, p, k, other)
-						fights += seeds
+					compare[_key(r, p, k)] = _run_cell(r, p, k, other)
+					fights += seeds
 		secs = (Time.get_ticks_msec() - t0) / 1000.0
 	if part >= 0:
 		var pj := FileAccess.open(json_path, FileAccess.WRITE)

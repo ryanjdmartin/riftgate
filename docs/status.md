@@ -114,6 +114,13 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the Whip Scorpion's engine (Ryan's go, 20 October; the bible's Whip Scorpion
+  row): a vent it spends on itself blasts a random live foe for the heat it took off (a static
+  vent_blast, one blow through the pipeline, back rank included); the Heliographic Siphon lures
+  every foe in the fight (reaches_all), braces, and every blow a foe lands on it that round adds
+  10 heat (Siphoning, after the overheat), which the forecast counts; the bot values the blast
+  and the Siphon's fuel. Fielded now; the vent entry's and the Siphon's forecasts and its
+  runner rows are the to-do's.
 - 21 October, the Cottonmouth's engine (Ryan's go, 19 October; the bible's Cottonmouth row):
   the Adaptive Munitions Drum as a static rewrite read first under every other passive's
   change (every weapon one Indirect shot of a flat 15 at heat 10, Ballistic, its own keywords,
@@ -259,11 +266,10 @@ before it. The three design sessions merged that day are paused, each resuming f
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 16 chassis and three planned (the funnel-web built, its engine 18
-  October and its model 19 to 20 October, its Web Bomb built; the Cassowary and the Cottonmouth
-  built 21 October; the Whip Scorpion, 20 October, its passive and its locked Heliographic
-  Siphon planned; the Swallowtail and the Musk Ox, 21 October; a planned chassis is never
-  dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
+- Content: five makers, 17 chassis and two planned (the funnel-web built, its engine 18
+  October and its model 19 to 20 October, its Web Bomb built; the Cassowary, the Cottonmouth
+  and the Whip Scorpion built 21 October; the Swallowtail and the Musk Ox, 21 October, planned;
+  a planned chassis is never dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
   the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
@@ -424,15 +430,6 @@ before it. The three design sessions merged that day are paused, each resuming f
   it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
   dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
   line); its stock with the stock pass.
-- The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
-  sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
-  live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
-  else cools (cooling 0; the passive gain of 10 a round retired as too easy); its locked
-  Heliographic Siphon a lure-all that Armours it and adds 10 heat per blow landed that round
-  (bad against bosses, good against swarms, Ryan's counter-profile; the taste line on rewards
-  for being struck gains its condition); the Thermal Ray its stock gun (flat 30, heat 30);
-  the Stoker the stock pass's; in content as planned entries; the engine and the assets are
-  the to-do's two lines.
 - The Swallowtail (Ryan's go, 21 October; its row in section 7): the helicarrier, the maker's
   first tier three, an assault flyer; the multi-rotor's lending and then its equipment slots
   cut (20 October). Its Muster Deck carries the machines beside it on the map (set down on the

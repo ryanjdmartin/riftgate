@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -212,6 +212,13 @@ const STATUS := {
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
 	"shots": {"id": "shots", "name": "Shots", "description": "Weapon spends this fight, counted for a rule that lands on a number of them.", "decay": "none",
 		"tags": ["store", "count"], "effects": []},
+	# The Whip Scorpion's Siphon (Ryan's go, 20 October; built 21 October): spending it, every
+	# blow a foe lands on the machine that round adds heat, next round's fuel for its vents; the
+	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
+	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
+	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
+	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds 10 heat.", "stacking": "renew",
+		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -1245,6 +1252,35 @@ static func stack_multiplier(u, face: Face, target = null) -> int:
 	return mult
 
 
+## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
+## Siphon), as kindled() carries a rally's value.
+static func siphon_status(per_blow: int) -> Dictionary:
+	var s: Dictionary = STATUS["siphoning"].duplicate(true)
+	s["description"] = "Every blow a foe lands on it this round adds %d heat." % per_blow
+	s["effects"] = [{"trigger": "static", "effect": "heat_per_blow", "value": per_blow}]
+	return s
+
+
+## The heat every blow a foe lands on this machine adds this round (Siphoning), 0 for none.
+static func heat_per_blow(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "heat_per_blow":
+			n += int(pair[0].get("value", 0))
+	return n
+
+
+## What this machine's vents spent on itself blast a random foe for, as a share of the heat
+## they take off it (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built
+## 21 October): 1 for the whole heat, 0 when nothing blasts.
+static func vent_blast(u) -> float:
+	var share := 0.0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "vent_blast":
+			share += float(pair[0].get("value", 1))
+	return share
+
+
 ## A count as the rules say it: "sixth".
 static func ordinal(n: int) -> String:
 	var words := {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth"}
@@ -1394,6 +1430,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"rewrite_weapon": body = "every weapon fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
+		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
+		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]

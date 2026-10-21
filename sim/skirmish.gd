@@ -76,6 +76,7 @@ var log: Array[String] = []
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, melee}; melee
 ## (the tag) is how the screen animates it, a lunge in place of a kick back.
 var last_roll: Dictionary = {}
+var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
 ## rank, the heat paid and the shield lost to danger close. Never read by the game.
@@ -403,7 +404,10 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
-	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"])
+	var blows := 0
+	for f in attackers_of(ms):
+		blows += f.strikes()
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows   # a Siphon's heat lands with the blows
 	return {
 		"incoming": incoming,
 		"bite": bite,
@@ -515,6 +519,7 @@ func start_round() -> void:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
 	last_roll.clear()
+	last_blast.clear()
 	# The turn begins with passive cooling (Ryan, 22 September: cool at the start, heat at
 	# the end): every machine sheds its chassis's cooling rating, one log line for all.
 	var cooled: Array[String] = []
@@ -842,8 +847,14 @@ func assign(mech_index: int, target = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
+			var before := who.heat
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
+			# The Thermal Ejection Manifold (the Whip Scorpion's, 12 and 13 October): a vent it
+			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
+			# blasts nothing, and so does an ally's vent on it.
+			if who == ms and Effects.vent_blast(ms.unit) > 0.0 and before > who.heat:
+				_blast(ms, int(roundf(float(before - who.heat) * Effects.vent_blast(ms.unit))))
 			_cleanse_with(ms, who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
@@ -875,6 +886,11 @@ func assign(mech_index: int, target = null) -> bool:
 		if bm != null:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	_shift_form(ms, f, target)
+	# The Siphon (the Whip Scorpion's, 20 October): every blow a foe lands on its owner this
+	# round adds the entry's heat, next round's fuel (Siphoning, until the round's end).
+	if f.heat_per_blow > 0 and ms.alive():
+		Effects.grant_for_rounds(ms.unit, Effects.siphon_status(f.heat_per_blow), "siphon:" + f.component, round)
+		log.append("%s siphons: +%d heat for every blow it takes this round" % [ms.unit.display_name, f.heat_per_blow])
 	ms.assigned = true
 	# A cooldown (Ryan, 14 October): the entry goes dark for the rounds it prints, this one
 	# included, shown on the die with the rounds left; Rapid's switch-off is a cooldown of one,
@@ -1426,12 +1442,43 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				break
 
 
+## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
+## one blow of the machine's on a live foe drawn from the seeded stream, back rank included,
+## through the damage pipeline (the machine's adds and multiplies, then the foe's own: its
+## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does.
+func _blast(ms: MechState, amount: int) -> void:
+	var live: Array[Foe] = []
+	for foe in field_foes():
+		if foe.alive():
+			live.append(foe)
+	if live.is_empty() or amount <= 0:
+		return
+	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
+	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
+	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
+	var taken := Effects.damage_taken(foe, dmg, ms.unit)
+	var armoured := mini(taken, foe.armour_total())
+	taken -= armoured
+	foe.hp -= taken
+	if dmg > 0 and Effects.remove(foe, "shocked"):
+		log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
+	log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, foe.display_name, taken, " (armour -%d)" % armoured if armoured > 0 else ""])
+	last_blast = {"mech": mechs.find(ms), "foe": foe, "dealt": taken}
+	_clear_dead()
+
+
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
 ## neighbours in its rank, a Penetrate's other rank of its column; a foe killed this round
 ## still standing in its slot included, as the strikes find it. The resolver and the bot read
 ## the same list.
 func reached_by(f: Face, target: Foe) -> Array[Foe]:
 	var hit: Array[Foe] = [target]
+	# A reach over every foe in the fight (the Whip Scorpion's Siphon, a lure-all), front and back.
+	if f.reaches_all:
+		for foe in field_foes():
+			if not hit.has(foe):
+				hit.append(foe)
+		return hit
 	if f.has(Face.Keyword.CLEAVE):
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
@@ -1939,6 +1986,12 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s hits %s: shield -%d, hull -%d%s" % [source.display_name, ms.unit.display_name, r["absorbed"], r["through"], armoured])
 	else:
 		log.append("%s %s %s: hull -%d%s" % [source.display_name, verb, ms.unit.display_name, r["through"], armoured])
+	# Siphoning: every blow a foe lands adds heat, whatever it dealt, in the enemy's turn, after
+	# the overheat has settled, so it is next round's fuel or next turn's burn.
+	var siphoned := Effects.heat_per_blow(ms.unit)
+	if siphoned > 0 and ms.alive():
+		ms.heat += siphoned
+		log.append("%s siphons the blow: +%d heat" % [ms.unit.display_name, siphoned])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
 	if r["injures"]:

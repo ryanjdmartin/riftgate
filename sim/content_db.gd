@@ -770,6 +770,14 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
 			and int(fd.get("heat", 0)) <= 0 and not Array(fd.get("keywords", [])).has("volatile"):
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
+	# The Siphon's rules (the Whip Scorpion's, 20 October): a reach over every foe in the fight,
+	# an attack's; and a heat every blow taken that round adds, any entry's.
+	# On equipment it is every ally (the Swallowtail's team shield), planned: the engine runs it
+	# on an attack only, so only a draft carries it there.
+	if fd.has("reaches_all") and (not (fd["reaches_all"] is bool) or (kind != "attack" and not planned)):
+		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight (on equipment, every ally, a draft's until the engine runs it)" % where)
+	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
+		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -888,6 +896,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 				errs.append("%s: rewrite_weapon fires every weapon as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
 			if str(eff.get("when", "")).begins_with("reach_"):
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
+		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
+			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):

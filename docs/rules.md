@@ -18,8 +18,8 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Sixteen chassis from five makers
-  and three planned, the Whip Scorpion, the Swallowtail and the Musk Ox
+  slots (two; the Clydesdale three) and one passive. Seventeen chassis from five makers
+  and two planned, the Swallowtail and the Musk Ox
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -140,9 +140,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
-- **Lure**: every foe reached and left standing turns on the spender for the round. (Not
-  built: the Whip Scorpion's Siphon reaches every foe in the fight, and every blow landed on
-  it that round adds 10 heat to it.)
+- **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
+  Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
+  round adds 10 heat to it (Siphoning), in the enemy's turn, after the overheat.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -401,9 +401,10 @@ shields do not refill; a pack keeps its survivors, who return whole.
   Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,
   a flat 15, heat 10, one blow, Ballistic, the weapon's keywords, rules and tags kept),
   Penetrate when aimed at the back rank and Spread at the front, shown on the die over the foe
-  it is dragged to. Not built: the Whip Scorpion's
-  makes every vent it spends on itself blast a random live foe for the heat it took off, as
-  its own blow (a vent on an ally blasts nothing, an ally's vent on it blasts nothing).
+  it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
+  live foe, back rank included, for the heat it took off, as its own blow through the
+  pipeline, the foe's Flak, Shocked and armour applying (a vent on an ally blasts nothing, an
+  ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

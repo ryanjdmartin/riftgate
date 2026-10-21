@@ -699,6 +699,22 @@
    }
   },
   {
+   "id": "siphoning",
+   "category": "status",
+   "name": "Siphoning",
+   "codex": "Machine status, the Whip Scorpion's Siphon: every blow a foe lands on it this round adds heat, 10 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel for its vents, or next turn's burn. Until the round's end; nothing cleanses it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October from the Heliographic Siphon's heat_per_blow (Ryan's go, 20 October: every blow landed on it that round adds 10 heat, next round's fuel). The number is the entry's own; 10 a blow is the lever (5 was half a vent).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: its entry's heat a blow",
+     "lasts": "Until the round's end"
+    }
+   }
+  },
+  {
    "id": "flakked",
    "category": "status",
    "name": "Flak",

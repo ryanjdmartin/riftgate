@@ -33,6 +33,7 @@ const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
+const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -176,32 +177,17 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
-	if f.has(Face.Keyword.CLEAVE):
-		for c in [target.column - 1, target.column + 1]:
-			if c >= 0 and c < sk.columns:
-				var n := sk.foe_at(target.rank, c)
-				if n != null and n != target and n.alive():
-					score += minf(mean, float(n.hp))
-	if f.has(Face.Keyword.PENETRATE):
-		var other := sk.foe_at(1 - target.rank, target.column)
-		if other != null and other != target and other.alive():
-			score += minf(mean, float(other.hp))
+	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, a reach over
+	# every foe), the blow on each capped at what it has left.
+	for n in sk.reached_by(f, target):
+		if n != target and n.alive():
+			score += minf(mean, float(n.hp))
 	score += p_kill * (KILL_BONUS + _threat_now(target, sk) * HULL_WEIGHT)
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
 		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves
 		# and a shock charges.
-		var hit: Array = [target]
-		if f.has(Face.Keyword.CLEAVE):
-			for c in [target.column - 1, target.column + 1]:
-				if c >= 0 and c < sk.columns:
-					var n := sk.foe_at(target.rank, c)
-					if n != null and n.alive() and not hit.has(n):
-						hit.append(n)
-		if f.has(Face.Keyword.PENETRATE):
-			var other := sk.foe_at(1 - target.rank, target.column)
-			if other != null and other.alive() and not hit.has(other):
-				hit.append(other)
+		var hit: Array = sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
 		if f.has(Face.Keyword.DISRUPT):
 			for foe in hit:
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
@@ -278,6 +264,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += hopper_fill_score(sk, ms, f, target)
 	if f.braces > 0:
 		score += brace_score(sk, ms, f.braces)
+	if f.heat_per_blow > 0:
+		score += siphon_score(sk, ms, f.heat_per_blow)
 	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
 		# A stack to spend buys another roll of the die, so the machine acts again: about the
 		# die's own average blow, read plainly so the scorer never asks itself.
@@ -552,6 +540,8 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 			score = shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms)
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
+			if who == ms:
+				score += blast_score(sk, ms, mini(f.power, ms.heat))
 		Face.Kind.BUFF:
 			score = buff_score(sk, who, f)
 	if f.has(Face.Keyword.CLEANSE):
@@ -836,6 +826,42 @@ static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
 		return 0.0
 	var need := maxi(1, at - Effects.stacks_of(target, "paradox"))
 	return minf(1.0, float(apps * adds) / float(need)) * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
+
+
+## What a vent's blast is worth (the Whip Scorpion's, 21 October): the heat it takes off, as
+## one blow on a random live foe, each foe's share of it: what it deals past the foe's own
+## modifiers and armour, capped at what the foe has left, and the kill when it finishes one.
+func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
+	var share := Effects.vent_blast(ms.unit)
+	if share <= 0.0 or vented <= 0:
+		return 0.0
+	var amount := int(roundf(float(vented) * share))
+	var live: Array = sk.field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
+	if live.is_empty():
+		return 0.0
+	var total := 0.0
+	for foe in live:
+		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit) - foe.armour_total())
+		total += minf(float(taken), float(foe.hp))
+		if taken >= foe.hp:
+			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT
+	return total / float(live.size())
+
+
+## What a Siphon is worth to a machine whose vents blast (the Whip Scorpion's, 21 October): the
+## heat every blow this round adds, the formation's blows once the lure has turned it, up to the
+## room left under the maximum, as next round's blast at FUEL_WEIGHT. To a machine whose vents
+## blast nothing the heat is no fuel, and the brace and the lure carry the spend.
+func siphon_score(sk: Skirmish, ms: Skirmish.MechState, per_blow: int) -> float:
+	var share := Effects.vent_blast(ms.unit)
+	if share <= 0.0:
+		return 0.0
+	var blows := 0
+	for foe in sk.field_foes():
+		if foe.alive() and foe.attacks() and not foe.is_suppressed():
+			blows += foe.strikes()
+	var room := maxi(0, ms.heat_max - ms.heat)
+	return float(mini(blows * per_blow, room)) * share * FUEL_WEIGHT
 
 
 ## A vent on a machine: the hull its overheat would burn this round, and a little for the

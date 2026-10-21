@@ -5227,3 +5227,90 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	sk.start_round()
 	ms.face_index = 1
 	assert_eq(sk.shown_face(ms, ms.face()).power, 20, "equipment fires as itself")
+
+
+const BLAST_PASSIVE := {"id": "test_blast", "name": "Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1}]}
+
+
+## The vent blast (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built 21
+## October): a vent it spends on itself blasts a random live foe for the heat it took off, back
+## rank included, through the pipeline (the foe's Flak and armour apply); a vent on an ally
+## blasts nothing, nor an ally's vent on it, nor a vent with nothing to take off.
+func test_a_vent_spent_on_itself_blasts_a_random_foe_for_the_heat_it_took_off() -> void:
+	var struck := {}
+	for seed_value in range(30):
+		var sk := Skirmish.new(seed_value, 1)
+		var u := _mech("A", Die.single(Face.vent(30)), 40, 100)
+		u.grant_passive(BLAST_PASSIVE)
+		sk.add_mech(u)
+		var front := _ghoul(100, 1)
+		var back := _archer(100, 1)
+		sk.add_foes([front, back])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		ms.heat = 20
+		assert_true(sk.assign(0, ms), "the vent is spent on itself")
+		assert_eq(ms.heat, 0, "it vents")
+		assert_eq((100 - front.hp) + (100 - back.hp), 20, "and one foe takes the twenty it took off")
+		struck[front.hp < 100] = true
+	assert_eq(struck.size(), 2, "drawn at random, the back rank included")
+	var s2 := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.vent(30)), 40, 100)
+	a.grant_passive(BLAST_PASSIVE)
+	var b := _mech("B", Die.single(Face.vent(30)), 40, 100)
+	s2.add_mech(a)
+	s2.add_mech(b)
+	var g := _ghoul(100, 1)
+	g.armour = 5
+	s2.add_foes([g])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
+	s2.mechs[0].heat = 10
+	s2.mechs[1].heat = 10
+	assert_true(s2.assign(0, s2.mechs[1]), "a vent on an ally")
+	assert_eq(g.hp, 100, "blasts nothing")
+	assert_true(s2.assign(1, s2.mechs[0]), "an ally's vent on it")
+	assert_eq(g.hp, 100, "blasts nothing either")
+	s2.end_round()
+	s2.start_round()
+	s2.mechs[0].heat = 10
+	assert_true(s2.assign(0, s2.mechs[0]), "its own vent on itself")
+	assert_eq(g.hp, 100 - (10 + 1 - 5), "ten, the Flak's point a stack halved to one, less the armour's five")
+	assert_true("\n".join(s2.log).contains("vent blasts"), "the log says so")
+	s2.end_round()
+	s2.start_round()
+	s2.mechs[0].heat = 0
+	var hp := g.hp
+	assert_true(s2.assign(0, s2.mechs[0]), "a vent with nothing to take off")
+	assert_eq(g.hp, hp, "blasts nothing")
+
+
+## The Siphon (the Whip Scorpion's Heliographic Siphon, 20 October; built 21 October): no
+## damage, every foe in the fight turns on it for the round, it braces, and every blow a foe
+## lands on it that round adds the entry's heat, next round's fuel, after the overheat.
+func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
+	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
+	assert_eq(siphon.describe(), "indirect 0 lure braces ×2 reaches every foe +10 heat a blow taken this round", "the entry says its rules")
+	var sk := Skirmish.new(1, 2)
+	var u := _mech("A", Die.single(siphon), 40, 200)
+	var other := _mech("B", Die.single(Face.attack(10, L)), 40, 200)
+	sk.add_mech(u)
+	sk.add_mech(other)
+	var foes := [_ghoul(100, 10), _ghoul(100, 10), _archer(100, 10)]
+	sk.add_foes(foes)
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	assert_true(sk.assign(0, sk.front[0]), "the Siphon is spent")
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[0], "every foe in the fight turns on it, the back rank too")
+	assert_eq(Effects.stacks_of(u, "braced"), 2, "it braces")
+	assert_true(Effects.has(u, "siphoning"), "and siphons for the round")
+	var fc := sk.forecast(sk.mechs[0], false)
+	assert_eq(int(fc["heat_after"]), 30, "the forecast counts ten a blow, three blows")
+	sk.end_round()
+	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
+	assert_false(Effects.has(u, "siphoning"), "gone at the round's end")
