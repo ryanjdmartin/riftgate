@@ -42,6 +42,7 @@ var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the r
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), as a chip at the rail's foot; null for a die that rolls
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
+var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var spent: bool = false
 var dead: bool = false
 var can_tap: bool = true     # tap locks
@@ -217,6 +218,11 @@ func _draw() -> void:
 	if locked and not spent and not dead:
 		Hud.brackets(self, rect.grow(6.0), 14.0, hud, 1.5)
 		draw_string(Hud.mono(), Vector2(0, FACE + 12.0), "LOCKED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, hud)
+	if charged and not spent and not dead:
+		# Armed (the Swallowtail's muster): a second frame outside the first and the word, so the
+		# charged die reads by its structure as well as the colour.
+		Hud.stroke_poly(self, Hud.cut(rect.grow(4.0), CUT + 2.0), Palette.SELECT, 3.0)
+		draw_string(Hud.mono(), Vector2(0, bob - 6.0), "CHARGED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, Palette.SELECT)
 	if face != null and slot > 0:
 		# Which entry of the die this is, as a grey Roman numeral in the quotes' condensed
 		# italic: quiet by its colour and its face rather than its size, and never a stat

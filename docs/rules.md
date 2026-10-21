@@ -253,18 +253,21 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
-- **Phased** (buff, either side, not built): cannot act, take damage or be targeted until the
+- **Phased** (buff, either side): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
   cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
-  this round.
-- **Muster** (buff, the Swallowtail's, not built): a banked charge. Every die that rolls fills
-  it a sliver, about thirty rolls a charge, a kill by its own guns five rolls' worth, up to its
-  cap; it starts each fight empty and never decays. Each of its locked pieces has a plain form
-  and a charged one that spends a muster: the Mooring Screens shield every ally, or Phase every
-  ally that has not acted; the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's
-  Hoist shields and cools an ally, or fills its shield, cools it to zero and cleanses it; the
-  Reveille Horn gives the team a reroll, or lets an ally act again.
-- **Rallied** (buff, not built): the team has one reroll more this round.
+  this round, whose die stands down as it is granted.
+- **Muster** (buff, the Swallowtail's): a banked charge. Every die that rolls fills
+  it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
+  charges; it starts each fight empty and never decays, and as a store a Silence sleeps it and
+  a Purge takes it. It shows as a gauge under the heat, a notch a charge. Each of its locked
+  pieces has a plain form and a charged one that spends a muster: tap the machine to arm its
+  die, which then shows the charged form, and spend it as ever; a second tap disarms it. The
+  Mooring Screens shield every ally (never the carrier), or Phase every ally that has not acted;
+  the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
+  10 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
+  Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
+- **Rallied** (buff): the team has one reroll more this round.
 - **Spun Up** (buff): its next weapon spend deals +5 a stack, then every stack is spent, by a
   weapon of no damage too; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
@@ -541,10 +544,11 @@ a stat.
   the Prairie Dog) and walk to put it inside their ring. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
-- **The carry** (the Swallowtail's Muster Deck, not built): the machines on the hexes beside
-  it travel with it when it moves and are set down on the nearest standable hexes where it
-  stops, keeping whatever move and action they had; it cannot stop where a rider cannot be set
-  down.
+- **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
+  it travel with it when it moves and are set down on the nearest standable hexes beside where
+  it stops, keeping whatever move and action they had; it cannot stop where a rider cannot be
+  set down beside it. A caught machine does not ride. An undo takes the riders back, until one
+  of them has moved on its own.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,

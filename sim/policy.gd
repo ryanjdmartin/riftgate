@@ -39,6 +39,8 @@ const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team bl
 const MINE_WEIGHT := 0.8         # a laid shot, as a share of its blow on the arrival: delayed, and laid against a count of those waiting, never a foe seen
 const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashed later by a pull on the team's dice
 const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average blow, at the odds an arrival takes the slot its kill empties, as a share
+const MUSTER_BANK := 0.5         # a muster banked, as a share of the best charged form the die could buy with it now (nothing at the cap)
+const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -154,7 +156,7 @@ func play_round(sk: Skirmish) -> void:
 			best = best_rolled
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
-		if sk.assign(best["mech"], best["target"], best.get("second", null)):
+		if sk.assign(best["mech"], best["target"], best.get("second", null), bool(best.get("charged", false))):
 			_tally(spent)
 		else:
 			held.append(best["mech"])
@@ -217,7 +219,38 @@ func options_for(sk: Skirmish, i: int) -> Array:
 		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": equipment_score(sk, ms, who, f)})
+	# The charged form (the Swallowtail's locked pieces): one option a target, worth what it buys
+	# less what the muster would buy banked.
+	if sk.can_charge(ms):
+		var cf := f.charged_form()
+		var cost := charge_cost(sk, ms)
+		if cf.is_attack():
+			for t in sk.targets_for_face(ms, cf):
+				out.append({"mech": i, "target": t, "charged": true, "score": attack_score(sk, ms, cf, t) - cost})
+		elif cf.is_equipment():
+			for who in sk.equipment_targets_for(ms, Effects.effective_face(ms.unit, cf)):
+				out.append({"mech": i, "target": who, "charged": true, "score": equipment_score(sk, ms, who, cf) - cost})
 	return out
+
+
+## What a muster banked is worth (the Swallowtail's): a share of the best charged form the die
+## could buy with it, read now; nothing at the cap, where every further sliver is lost.
+func charge_cost(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var rule := Effects.muster_rule(ms.unit)
+	if rule.is_empty() or Effects.muster_charges(ms.unit) >= int(rule.get("cap", 3)):
+		return 0.0
+	var best := 0.0
+	for face in ms.die.faces:
+		if face.charged.is_empty():
+			continue
+		var cf := face.charged_form()
+		if cf.is_attack():
+			for t in sk.targets_for_face(ms, cf):
+				best = maxf(best, attack_score(sk, ms, cf, t))
+		elif cf.is_equipment():
+			for who in sk.equipment_targets_for(ms, Effects.effective_face(ms.unit, cf)):
+				best = maxf(best, equipment_score(sk, ms, who, cf))
+	return best * MUSTER_BANK
 
 
 # ---------------------------------------------------------------- scoring
@@ -802,9 +835,19 @@ static func _kill_odds(outcomes: Array, hp: int) -> float:
 ## a cleanse clears there, and what a volatile bite costs.
 func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState, f: Face) -> float:
 	var score := 0.0
+	if f.reaches_all and f.is_equipment():
+		# A spend reaching every ally (the Swallowtail's team shield, its Phased): each one's
+		# worth, wherever the die was dropped.
+		var plain := f.duplicate_face()
+		plain.reaches_all = false
+		for w in sk.reached_machines(ms, f):
+			score += equipment_score(sk, ms, w, plain)
+		return score
 	match f.kind:
 		Face.Kind.SHIELD:
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
+			if f.vents > 0 or f.cools_all:
+				score += vent_score(sk, who, who.heat if f.cools_all else f.vents)   # the Hoist's cooling half
 			if who == ms:
 				score += seal_score(sk, ms)
 		Face.Kind.VENT:
@@ -814,7 +857,10 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 			if f.shields > 0:
 				score += shield_score(sk, who, sk.shield_amount(ms, f, who), false, ms)   # the combined entry's shield half
 		Face.Kind.BUFF:
-			score = buff_score(sk, who, f)
+			if f.act_again:
+				score = ROLL_AGAIN_WEIGHT * _raw_attack_mean(who)   # the Horn's charged form: the ally acts again
+			else:
+				score = buff_score(sk, who, f)
 			if Effects.quick_turn_live(ms.unit, f):
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
 	if f.has(Face.Keyword.CLEANSE):
@@ -998,7 +1044,23 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += barrier_score(sk, who)
 		"ward":
 			score += ward_score(sk, who)
+		"phased":
+			score += phased_score(sk, who)
+		"rallied":
+			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
 	return score
+
+
+## What Phased is worth on a machine yet to act (the Swallowtail's charged Screens): the round's
+## end without a blow reaching it, the hull kept and the death prevented, less the action it
+## stands down, its die's entry at its worth now.
+func phased_score(sk: Skirmish, who: Skirmish.MechState) -> float:
+	if who.assigned:
+		return 0.0
+	var after := _forecast_with(sk, who, "phased")
+	if after.is_empty():
+		return 0.0
+	return _outlook_gain(sk.forecast(who, false), after) - face_value(sk, who, who.face())
 
 
 ## The round's end with and without a status on `who`, read in a what-if: the forecast with

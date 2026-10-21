@@ -352,6 +352,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var side := Vector2(-d.y, d.x) * s * 0.22
 				ci.draw_line(tip - side, tip + side, color, width)
 			ci.draw_circle(c, s * 0.16, color)
+		"phased":
+			# Phased (the Swallowtail's Mooring Screens, 21 October): the machine's outline gone to
+			# dashes, out of the fight until the round's end.
+			for i in range(8):
+				var a0 := i * TAU / 8.0
+				ci.draw_arc(c, s * 0.8, a0, a0 + TAU / 16.0, 4, color, width)
+			ci.draw_circle(c, s * 0.18, color)
 		"syrinx_drone", "drone":
 			# The Syrinx Drone (21 October): a small body under two arcs of a call, the voice that
 			# copies the killing shot.

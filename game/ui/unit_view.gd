@@ -556,6 +556,15 @@ func _gauge(rect: Rect2, b: Array) -> void:
 		while hx < ext.end.x:
 			draw_line(Vector2(hx, ext.end.y), Vector2(hx + ext.size.y, ext.position.y), Color(Palette.INK, 0.8), 1.0)
 			hx += 4.0
+	# A banked bar's charges (the Swallowtail's Muster, a fifth element the points a charge): a
+	# notch at each charge across the bar, so its count reads by structure.
+	if b.size() >= 5 and int(b[4]) > 0:
+		var step := float(int(b[4])) / mx
+		var at := step
+		while at < 0.999:
+			var x := rect.position.x + rect.size.x * at
+			draw_line(Vector2(x, rect.position.y - 1.0), Vector2(x, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
+			at += step
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)

@@ -756,6 +756,33 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
 
 
+## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
+## engine reads (Face.charged_form) and nothing else.
+const CHARGED_KEYS := ["muster", "status", "stacks", "rounds", "reaches_all", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
+
+
+func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> void:
+	if not (cd is Dictionary) or (cd as Dictionary).is_empty():
+		errs.append("%s: charged is the form a muster buys, a dictionary of %s" % [where, ", ".join(CHARGED_KEYS)])
+		return
+	for key in cd.keys():
+		if not CHARGED_KEYS.has(str(key)):
+			errs.append("%s: charged has no '%s' (it knows %s)" % [where, key, ", ".join(CHARGED_KEYS)])
+	if int(cd.get("muster", 1)) < 1:
+		errs.append("%s: a charged form costs at least one muster" % where)
+	if cd.has("status") and not Effects.MECH_STATUSES.has(str(cd["status"])):
+		errs.append("%s: a charged status is one of the machines' (%s)" % [where, ", ".join(Effects.MECH_STATUSES)])
+	if cd.has("shield") and (str(cd["shield"]) != "full" or kind != "shield"):
+		errs.append("%s: a charged shield fills it (\"full\"), on a shield" % where)
+	if cd.has("vents") and str(cd["vents"]) != "all":
+		errs.append("%s: a charged cooling takes the heat to nothing (\"all\")" % where)
+	if cd.has("act_again") and str(cd["act_again"]) != "ally":
+		errs.append("%s: a charged act_again is an ally's (\"ally\")" % where)
+	for k in cd.get("keywords", []):
+		if Face.keyword_from_name(str(k)) <= 0:
+			errs.append("%s: charged keyword '%s' is no keyword the engine runs" % [where, k])
+
+
 func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned: bool = false, stepped: bool = false) -> void:
 	var kind := str(fd.get("kind", ""))
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
@@ -841,10 +868,22 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
 	# The Siphon's rules (the Whip Scorpion's, 20 October): a reach over every foe in the fight,
 	# an attack's; and a heat every blow taken that round adds, any entry's.
-	# On equipment it is every ally (the Swallowtail's team shield), planned: the engine runs it
-	# on an attack only, so only a draft carries it there.
-	if fd.has("reaches_all") and (not (fd["reaches_all"] is bool) or (kind != "attack" and not planned)):
-		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight (on equipment, every ally, a draft's until the engine runs it)" % where)
+	# On equipment it is every machine it may land on (the Swallowtail's team shield, built 21
+	# October), never a vent's.
+	if fd.has("reaches_all") and (not (fd["reaches_all"] is bool) or kind == "vent" or kind == "blank"):
+		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight, or a shield's or a buff's over every ally" % where)
+	# The Swallowtail's locked pieces (21 October): a shield's cooling half, a buff on every ally
+	# yet to act, an ally acting again, and the charged form a muster buys.
+	if fd.has("vents") and (kind != "shield" or not (fd["vents"] is float or fd["vents"] is int) or int(fd["vents"]) <= 0):
+		errs.append("%s: vents is a shield's cooling half: the heat it takes off the machine it shields, first, a positive number" % where)
+	if (fd.has("fills_shield") or fd.has("cools_all")) and kind != "shield":
+		errs.append("%s: fills_shield and cools_all are a shield's (the full reset)" % where)
+	if fd.has("not_acted") and (kind != "buff" or not bool(fd.get("reaches_all", false))):
+		errs.append("%s: not_acted narrows a buff reaching every ally to those yet to act" % where)
+	if fd.has("act_again") and kind != "buff":
+		errs.append("%s: act_again is a buff's: an ally whose die is spent acts again" % where)
+	if fd.has("charged"):
+		_validate_charged(where, kind, fd["charged"], errs)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
@@ -979,6 +1018,9 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
 		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
 			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
+		# The Swallowtail's Muster (21 October): points a charge, a cap in charges, points a kill.
+		if effect == "muster" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1 or int(eff.get("kill", 0)) < 0):
+			errs.append("%s: muster needs value (the points a charge, positive), cap (the charges it holds, positive) and kill (the points a kill by its own guns gives, 0 or more)" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):

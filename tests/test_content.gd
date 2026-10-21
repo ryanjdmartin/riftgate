@@ -406,13 +406,11 @@ func test_a_planned_buff_may_grant_a_planned_machine_status() -> void:
 			coil = str(cid)
 			break
 	assert_true(not coil.is_empty(), "the content has a built buff component to copy")
-	var drafted_status := ""
-	for k in db.vocabulary.keys():
-		var e: Dictionary = db.vocabulary[k]
-		if e.get("category") == "status" and e.get("status") != "implemented" and str(e.get("design", {}).get("table", {}).get("on", "")) == "machine":
-			drafted_status = str(k)
-			break
-	assert_true(not drafted_status.is_empty(), "the vocabulary names a planned machine status to test with")
+	# A synthetic planned machine status (the content may have none left to borrow: the
+	# Swallowtail's were the last, built 21 October).
+	var drafted_status := "probe_status"
+	db.vocabulary[drafted_status] = {"id": drafted_status, "category": "status", "name": "Probe", "codex": "A probe.", "status": "planned",
+		"design": {"holes": "", "table": {"kind": "buff", "on": "machine", "stacks": "No", "lasts": "The round"}}}
 	var piece: Dictionary = db.components[coil].duplicate(true)
 	piece["face"] = Dictionary(piece["face"]).duplicate(true)
 	piece["face"]["status"] = drafted_status
@@ -1421,13 +1419,10 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 	# same day), so the passive stayed built and the chassis dealable; a status nobody knows is refused.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var drafted := ""
-	for k in db.vocabulary.keys():
-		if db.vocabulary[k].get("category") == "status" and db.vocabulary[k].get("status") != "implemented" \
-				and not Effects.STATUS.has(str(k)):
-			drafted = str(k)
-			break
-	assert_true(not drafted.is_empty(), "the vocabulary drafts a status to test with")
+	var drafted := "probe_status"   # a synthetic drafted status, none the engine knows
+	db.vocabulary[drafted] = {"id": drafted, "category": "status", "name": "Probe", "codex": "A probe.", "status": "planned",
+		"design": {"holes": "", "table": {"kind": "debuff", "on": "foe", "stacks": "No", "lasts": "The round"}}}
+	assert_false(Effects.STATUS.has(drafted), "the vocabulary drafts a status to test with")
 	var ch: Dictionary = db.chassis["prairie_dog"].duplicate(true)
 	ch["passive"] = {"id": "p", "name": "P", "description": "A rule.", "effects": [
 		{"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": drafted}]}

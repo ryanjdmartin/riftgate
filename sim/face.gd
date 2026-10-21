@@ -112,6 +112,13 @@ var shields: int = 0          # a vent: the shield it also gives the machine it 
 var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
 var pulls_mines: bool = false # an attack: every mine on the field gathers into the slot it is spent on, a foe there taking them now (the Lammergeier's Lorentz Contractor, 21 October)
 var drones: bool = false      # an attack: the foe carries the Syrinx Drone; Rapid on a foe already Exposed, otherwise it Exposes (the Lammergeier's, 21 October)
+# The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
+var vents: int = 0            # a shield: the heat it also takes off the machine it shields, first (the Sutler's Hoist)
+var fills_shield: bool = false   # a shield: it fills the machine's shield to its maximum (the Hoist's charged form)
+var cools_all: bool = false   # a shield: it takes the machine's heat to nothing first (the Hoist's charged form)
+var not_acted: bool = false   # a buff reaching every ally: only those yet to act this round gain it (the Mooring Screens' Phased)
+var act_again: bool = false   # a buff on an ally whose die is spent: it rolls again and the ally acts again (the Reveille Horn's charged form)
+var charged: Dictionary = {}  # a locked piece's charged form, what a muster buys (read by charged_form)
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -260,12 +267,19 @@ static func from_dict(d: Dictionary) -> Face:
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
-	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind == Kind.ATTACK
+	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK   # an attack: every foe; equipment: every machine it may land on
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
 	f.pulls_mines = bool(d.get("pulls_mines", false)) and f.kind == Kind.ATTACK
 	f.drones = bool(d.get("drones", false)) and f.kind == Kind.ATTACK
+	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
+	f.fills_shield = bool(d.get("fills_shield", false)) and f.kind == Kind.SHIELD
+	f.cools_all = bool(d.get("cools_all", false)) and f.kind == Kind.SHIELD
+	f.not_acted = bool(d.get("not_acted", false)) and f.kind == Kind.BUFF
+	f.act_again = bool(d.get("act_again", false)) and f.kind == Kind.BUFF
+	var cd = d.get("charged", {})
+	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -331,6 +345,18 @@ func to_dict() -> Dictionary:
 		d["pulls_mines"] = true
 	if drones:
 		d["drones"] = true
+	if vents > 0:
+		d["vents"] = vents
+	if fills_shield:
+		d["fills_shield"] = true
+	if cools_all:
+		d["cools_all"] = true
+	if not_acted:
+		d["not_acted"] = true
+	if act_again:
+		d["act_again"] = true
+	if not charged.is_empty():
+		d["charged"] = charged.duplicate(true)
 	return d
 
 
@@ -366,7 +392,8 @@ func cooldown_rounds() -> int:
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() \
-		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones
+		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
+		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty()
 
 
 ## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
@@ -463,10 +490,61 @@ func duplicate_face() -> Face:
 	f.resets_on_kill = resets_on_kill
 	f.pulls_mines = pulls_mines
 	f.drones = drones
+	f.vents = vents
+	f.fills_shield = fills_shield
+	f.cools_all = cools_all
+	f.not_acted = not_acted
+	f.act_again = act_again
+	f.charged = charged.duplicate(true)
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
 	return f
+
+
+## The entry's charged form, what a muster buys (the Swallowtail's locked pieces, Ryan's go of
+## 21 October): the plain entry as its `charged` draft rewrites it, a status reaching every ally
+## (the Screens' Phased on those yet to act), keywords added (the Flare's Suppress), the full
+## reset (the Hoist: the shield filled, the heat to nothing, a cleanse) or an ally acting again
+## (the Horn); null for an entry with none.
+func charged_form() -> Face:
+	if charged.is_empty():
+		return null
+	var c := duplicate_face()
+	c.charged = {}
+	if charged.has("status"):
+		c.kind = Kind.BUFF
+		c.reach = Reach.NONE
+		c.buff_status = str(charged["status"])
+		c.buff_stacks = maxi(1, int(charged.get("stacks", 1)))
+		c.buff_rounds = maxi(1, int(charged.get("rounds", 1)))
+		c.power = 0
+		c.power_max = 0
+		c.vents = 0
+		c.reaches_all = bool(charged.get("reaches_all", reaches_all))
+		c.not_acted = bool(charged.get("not_acted", false))
+	if str(charged.get("act_again", "")) == "ally":
+		c.kind = Kind.BUFF
+		c.buff_status = ""
+		c.act_again = true
+		c.targets = Target.ALLY
+	if str(charged.get("shield", "")) == "full":
+		c.fills_shield = true
+	if str(charged.get("vents", "")) == "all":
+		c.cools_all = true
+		c.vents = 0
+	if bool(charged.get("cleanse", false)):
+		c.add_keyword(Keyword.CLEANSE)
+	for name in charged.get("keywords", []):
+		var kw := keyword_from_name(str(name))
+		if kw > 0:
+			c.add_keyword(kw)
+	return c
+
+
+## The musters a charged spend costs (one unless the draft says more).
+func muster_price() -> int:
+	return maxi(1, int(charged.get("muster", 1)))
 
 
 ## An injury: the component keeps its action, its numbers and its heat, and loses
@@ -509,15 +587,25 @@ func describe() -> String:
 				return "disabled"
 			return "empty hardpoint" if empty else "destroyed"
 		Kind.SHIELD, Kind.VENT, Kind.BUFF:
-			if kind == Kind.BUFF:
+			if kind == Kind.BUFF and act_again:
+				s = "an ally whose die is spent acts again"
+			elif kind == Kind.BUFF:
 				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
 				s = "%s ×%d" % [status_name, buff_stacks]
 				if buff_rounds > 1:
 					s += " for %d rounds" % buff_rounds
+			elif fills_shield:
+				s = "shield to its maximum"
 			else:
 				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
 				if shields > 0:
 					s += " shield %d" % shields   # the combined entry: both halves, the vent first
+			if vents > 0:
+				s += " cools %d" % vents
+			if cools_all:
+				s += " cools to nothing"
+			if reaches_all:
+				s += " on every ally yet to act" if not_acted else " on every ally"
 			for k in keywords:
 				s += " " + keyword_label(k)
 			if braces > 0:
@@ -527,7 +615,7 @@ func describe() -> String:
 			s += cooldown_text() + spin_text()
 			if targets == Target.SELF:
 				s += " (self only)"
-			elif targets == Target.ALLY:
+			elif targets == Target.ALLY and not reaches_all and not act_again:
 				s += " (allies only)"
 		_:
 			# Direct is the default and goes unsaid; only indirect reach is called out. A debuff
@@ -566,6 +654,10 @@ func describe() -> String:
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat
+	if not charged.is_empty():
+		# What a muster buys (the Swallowtail's locked pieces): the charged form, after the plain.
+		var cf := charged_form()
+		s += " · %s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), cf.describe()]
 	if cracked:
 		s += " (cracked)"
 	return s.strip_edges()

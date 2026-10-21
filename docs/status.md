@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 565 tests, 62,028 checks, green on main (21 October, with the Lammergeier's mines and the Needletail's gate); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 571 tests, 62,101 checks, green on main (21 October, with the Lammergeier, the Needletail's gate and the Swallowtail); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -42,8 +42,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   merged in and wrapped up"): ten machines decided, 3-5-2, the bible's roster row saying where
   each stands. Built: the Prairie Dog with Flak, the Clydesdale, the funnel-web, the Cassowary,
   the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. Planned in
-  content, and so never dealt until their engines land: the Swallowtail and the Musk Ox (the
-  to-do's engine lines). The gunship's brief waits for the stock pass's tags and the numbers'
+  content, and so never dealt until its engine lands: the Musk Ox (the to-do's engine line);
+  the Swallowtail's engine landed 21 October. The gunship's brief waits for the stock pass's tags and the numbers'
   rescale (Ryan, 21 October); the five new machines' models and the Translocator's mount are the
   to-do's art lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
@@ -89,6 +89,22 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, the Swallowtail (Ryan's go of that day): its Muster fills a point for every die
+  that rolls, any machine's, 30 a charge and 5 a kill by its own guns, three charges its cap,
+  a store a Silence sleeps and a Purge takes, shown as a gauge under the heat with a notch a
+  charge; a tap on the carrier arms its die for the charged form (Claude's gesture, Ryan's to
+  judge), which the die shows until it is spent. The Mooring Screens shield every ally, or
+  Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
+  Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
+  shields it, or the full reset; the Reveille Horn gives the team a reroll, or a spent ally acts
+  again. On the map the machines beside it ride with it and are set down beside its stop, a
+  stop that cannot seat them refused, an undo taking them back. The bot spends a muster when the
+  charged form beats the plain by more than half what the charge would buy banked, and always at
+  the cap. Its content is runnable (no model yet); the Sponsorship clause is a section 12
+  question.
+- 21 October, the Needletail's gate: a setup (a debuff or a buff, read as spent) is Rapid on its
+  machine once a round, a static grant of Rapid on `setup_once`, the die showing it while the
+  gate is open; the machine waits on its content session.
 - 21 October, the Lammergeier (Ryan's go of that day; its brief retired to git): a machine
   whose passive lays mines may spend a weapon on an empty slot as if a foe stood there; each
   strike a shot, its number and keywords fixed when laid, the shots stacking in laid order and

@@ -37,6 +37,7 @@ var outcome: int = Outcome.NONE
 var spent: Dictionary = {}       # mech id -> actions spent this turn (a fight spends one)
 var move_left: Dictionary = {}   # mech id -> move points left in its current action; whole when absent
 var action_from: Dictionary = {} # mech id -> [hex, facing, move left] where its current action's moving began, for an undo
+var carried: Dictionary = {}     # carrier id -> [[rider id, hex, facing, hex set down], ...]: the machines its move this action carried, for an undo
 var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
 ## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
 ## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
@@ -188,11 +189,63 @@ func can_move(u: Unit) -> bool:
 	return state == State.PLAN and actions_left(u) > 0 and moves_left(u) > 0 and not is_pinned(u)
 
 
-## Hexes a machine may move to now, with the move it has left.
+## Hexes a machine may move to now, with the move it has left; a carrier only where every
+## machine riding with it can be set down beside it (the Swallowtail's carry).
 func destinations_for(u: Unit) -> Dictionary:
 	if u == null or not can_move(u):
 		return {}
-	return field.reachable(u, moves_left(u))
+	var out := field.reachable(u, moves_left(u))
+	var riders := riders_of(u)
+	if not riders.is_empty():
+		for h in out.keys():
+			if seats(u, riders, h).size() < riders.size():
+				out.erase(h)
+	return out
+
+
+## The machines that travel with a carrier when it moves (the Swallowtail's Muster Deck, Ryan's
+## go of 21 October): every machine on a hex beside it, a caught one aside (it cannot move first).
+func riders_of(u: Unit) -> Array[Unit]:
+	var out: Array[Unit] = []
+	if u == null or not Effects.carries(u):
+		return out
+	for m in mechs():
+		if m != u and m.alive() and Hex.distance(m.pos, u.pos) == 1 and not is_pinned(m):
+			out.append(m)
+	return out
+
+
+## Where the riders would be set down if the carrier stopped at `at`: the nearest standable hex
+## beside it for each, in turn (Ryan, 21 October: set down on the nearest standable hexes where
+## it stops, so a rider is never left far from it); a rider with none is missing from the
+## answer, and the stop is refused.
+func seats(u: Unit, riders: Array[Unit], at: Vector2i) -> Dictionary:
+	var out := {}
+	var taken := {at: true}
+	for r in riders:
+		var best := Vector2i(-9999, -9999)
+		for n in Hex.neighbors(at):
+			if taken.has(n) or not field.map.has(n):
+				continue
+			var occ := field.unit_at(n)
+			if occ != null and occ != r and not riders.has(occ):
+				continue
+			if not _stands(r, n):
+				continue
+			best = n
+			break
+		if best.x == -9999:
+			continue
+		out[r] = best
+		taken[best] = true
+	return out
+
+
+## Whether `r` could stand on `h`, its own body and the other riders aside (they are lifted).
+func _stands(r: Unit, h: Vector2i) -> bool:
+	if not field.map.has(h) or field.map.is_structure(h):
+		return false
+	return BattleMap.passable(field.map.terrain[h], r.traits)
 
 
 ## Move a machine to `to` by its cheapest route, at once (a machine moves, then fights; bible
@@ -215,6 +268,9 @@ func move_along(u: Unit, route: Array) -> bool:
 		return false
 	if field.route_cost(u, route, moves_left(u)) < 0:
 		return false
+	var riders := riders_of(u)
+	if not riders.is_empty() and seats(u, riders, route[route.size() - 1]).size() < riders.size():
+		return false   # a carrier cannot stop where a rider cannot be set down
 	var typed: Array[Vector2i] = []
 	for s in route:
 		typed.append(s)
@@ -224,21 +280,38 @@ func move_along(u: Unit, route: Array) -> bool:
 
 func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	var cost := field.route_cost(u, route, moves_left(u))
+	var riders := riders_of(u)   # who rides, read where it stood
 	if not action_from.has(u.id):
 		action_from[u.id] = [u.pos, u.facing, moves_left(u)]
 	move_left[u.id] = moves_left(u) - cost
 	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
 	u.facing = field._direction_index(before, route[route.size() - 1])
 	u.pos = route[route.size() - 1]
+	# The carry (the Swallowtail's): every rider set down beside where it stops, its move and
+	# its action as they were (the lift changes where it is, never what it has left).
+	if not riders.is_empty():
+		var placed := seats(u, riders, u.pos)
+		var log_of: Array = carried.get(u.id, [])
+		for r in riders:
+			if not placed.has(r):
+				continue
+			log_of.append([r.id, r.pos, r.facing, placed[r]])
+			r.pos = placed[r]
+		carried[u.id] = log_of
 	sponsorship["hexes_moved"] = int(sponsorship["hexes_moved"]) + route.size()
 	action_hexes[u.id] = int(action_hexes.get(u.id, 0)) + route.size()
 	_prune_orders()
 
 
-## Whether a machine's move this action can be taken back.
+## Whether a machine's move this action can be taken back: its first hex free, and every machine
+## it carried still where it was set down.
 func can_undo(u: Unit) -> bool:
 	if state != State.PLAN or u == null or not action_from.has(u.id):
 		return false
+	for c in carried.get(u.id, []):
+		var r := field.unit_by_id(int(c[0]))
+		if r == null or r.pos != c[3]:
+			return false
 	var a: Array = action_from[u.id]
 	return u.pos == a[0] or field.can_stand(u, a[0])
 
@@ -252,6 +325,14 @@ func undo_move(u: Unit) -> bool:
 	u.facing = int(a[1])
 	move_left[u.id] = int(a[2])
 	action_from.erase(u.id)
+	# Its riders back where they rode from, last carried first.
+	var back: Array = carried.get(u.id, [])
+	for k in range(back.size() - 1, -1, -1):
+		var r := field.unit_by_id(int(back[k][0]))
+		if r != null:
+			r.pos = back[k][1]
+			r.facing = int(back[k][2])
+	carried.erase(u.id)
 	sponsorship["hexes_moved"] = maxi(0, int(sponsorship["hexes_moved"]) - int(action_hexes.get(u.id, 0)))
 	action_hexes.erase(u.id)
 	_prune_orders()
@@ -508,6 +589,7 @@ func _new_turn() -> void:
 	spent.clear()
 	move_left.clear()
 	action_from.clear()
+	carried.clear()
 	action_hexes.clear()
 	fought.clear()
 	orders.clear()
@@ -579,6 +661,7 @@ func finish_skirmish() -> void:
 		fought[ms.unit.id] = true
 		move_left.erase(ms.unit.id)
 		action_from.erase(ms.unit.id)
+		carried.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		foes_killed += current.kills_for(sq)

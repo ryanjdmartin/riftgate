@@ -60,6 +60,12 @@ static func to_dict(b: Battle) -> Dictionary:
 	for uid in b.action_from.keys():
 		var a: Array = b.action_from[uid]
 		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
+	var rode := {}   # the carry's riders this action (the Swallowtail's), for an undo
+	for uid in b.carried.keys():
+		var list: Array = []
+		for c in b.carried[uid]:
+			list.append([int(c[0]), _hex(c[1]), int(c[2]), _hex(c[3])])
+		rode[str(uid)] = list
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -76,6 +82,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"move_left": _int_keys(b.move_left),
 		"fought": _int_keys(b.fought),
 		"action_from": moved,
+		"carried": rode,
 		"forced": forced,
 		"orders": _order_ids(b.orders),
 		"boss_fight": b.boss_fight,
@@ -143,6 +150,11 @@ static func from_dict(d: Dictionary) -> Battle:
 	for uid in d.get("action_from", {}).keys():
 		var a: Array = d["action_from"][uid]
 		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
+	for uid in d.get("carried", {}).keys():
+		var list: Array = []
+		for c in d["carried"][uid]:
+			list.append([int(c[0]), _hex_from(c[1]), int(c[2]), _hex_from(c[3])])
+		b.carried[int(str(uid))] = list
 	for fd in d.get("forced", []):
 		var prey := b.field.unit_by_id(int(fd.get("prey", -1)))
 		var hunters: Array = []

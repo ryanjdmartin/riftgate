@@ -6086,3 +6086,150 @@ func test_a_setup_is_rapid_once_a_round_on_the_gate() -> void:
 	var open := bot.attack_score(s2, s2.mechs[0], probe, s2.front[0])
 	Effects.grant_for_rounds(n, Effects.STATUS["quick_turned"], "test", s2.round)
 	assert_true(open > bot.attack_score(s2, s2.mechs[0], probe, s2.front[0]), "the bot weighs the free action the open gate gives")
+
+
+## The Swallowtail's Muster (Ryan's go, 21 October; built that day), on a synthetic passive at
+## small numbers: every die's roll, any machine's, fills it a point, a kill by its own guns more,
+## a charge every so many, up to its cap; a charged spend costs a charge and spends the entry's
+## charged form (the Flare's Suppress on top of its Expose); none without the charge.
+const MUSTER := {"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]}
+
+
+func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() -> void:
+	var flare := Face.attack(0, I, [K.EXPOSE])
+	flare.charged = {"muster": 1, "keywords": ["suppress"]}
+	assert_true(flare.has_unique_rule() and flare.describe().contains("a muster: indirect expose suppress"), "the entry prints both forms")
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Carrier", Die.of([flare, Face.attack(10, L)]), 40, 100)
+	m.grant_passive(MUSTER)
+	sk.add_mech(m)
+	sk.add_mech(_mech("Ally", Die.single(Face.attack(10, L)), 40, 100))
+	var foe := _ghoul(300, 10)
+	sk.add_foes([foe, _ghoul(10, 0)])
+	sk.begin()
+	var late := _ghoul(10, 0)
+	sk.reinforcements.append(late)
+	sk.start_round()
+	assert_eq(Effects.stacks_of(m, "muster"), 2, "both dice rolled: a point each")
+	assert_eq(Effects.muster_charges(m), 0, "no charge yet")
+	sk.mechs[0].face_index = 0
+	assert_false(sk.can_assign(0, foe, true), "no charged spend without a charge")
+	assert_true(sk.reroll([1]), "a reroll of the ally's die")
+	assert_eq(Effects.muster_charges(m), 1, "a third point: a charge")
+	assert_true(sk.can_charge(sk.mechs[0]), "the Flare may be spent charged")
+	assert_true(sk.assign(0, foe, null, true), "spent charged")
+	assert_true(Effects.has(foe, "exposure") and Effects.has(foe, "suppressed"), "the charged form: Exposed and Suppressed")
+	assert_eq(Effects.stacks_of(m, "muster"), 0, "the charge spent")
+	assert_true("\n".join(sk.log).contains("spends a muster"), "the log says so")
+	var weak: Foe = null
+	for f in sk.field_foes():
+		if f.hp == 10:
+			weak = f
+	sk.mechs[1].face_index = 0
+	assert_true(sk.assign(1, weak), "the ally's kill")
+	assert_eq(Effects.stacks_of(m, "muster"), 0, "another machine's kill fills nothing")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(m, "muster"), 2, "the next round's two rolls")
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, late), "its own gun's kill")
+	assert_eq(Effects.stacks_of(m, "muster"), 4, "a kill by its own guns: two points more")
+	for i in range(6):
+		sk._rolled()
+	assert_eq(Effects.stacks_of(m, "muster"), 6, "capped at two charges")
+
+
+## The Swallowtail's locked pieces (21 October), synthetic: the team shield reaches every ally,
+## never its spender; charged, Phased lands on every ally yet to act, its die standing down and
+## the foes whose pick it was picking again, and nothing reaches it in the enemy's turn; an
+## ally that has acted is never Phased.
+func test_the_team_shield_reaches_every_ally_and_phased_takes_the_yet_to_act_out_of_the_fight() -> void:
+	var screens := Face.shield(10)
+	screens.targets = Face.Target.ALLY
+	screens.reaches_all = true
+	screens.charged = {"muster": 1, "status": "phased", "reaches_all": true, "not_acted": true}
+	var sk := Skirmish.new(1, 2)
+	var c := _mech("Carrier", Die.single(screens), 40, 100)
+	c.grant_passive(MUSTER)
+	sk.add_mech(c)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	a.shield_max = 40
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	b.shield_max = 40
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(300, 20), _ghoul(300, 20)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.mechs[1]), "the team shield, dropped on one ally")
+	assert_eq([a.shield, b.shield, c.shield], [10, 10, 40], "every ally shielded, never its spender")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	assert_true(sk.assign(2, sk.front[0]), "B acts first")
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]   # every foe's pick on A
+	assert_true(sk.assign(0, sk.mechs[1], null, true), "charged: Phased on every ally yet to act")
+	assert_true(Effects.has(a, "phased"), "A, yet to act, is Phased")
+	assert_false(Effects.has(b, "phased"), "B, which acted, is not")
+	assert_true(sk.mechs[1].assigned, "A's die stands down: the action is the price")
+	for f in sk.field_foes():
+		assert_ne(f.target, sk.mechs[1], "a foe whose pick it was picks again")
+	assert_false(sk.equipment_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "an ally cannot shield it")
+	var hull := a.hull + a.shield
+	sk.end_round()
+	assert_eq(a.hull + a.shield, hull, "nothing reaches it in the enemy's turn")
+	sk.start_round()
+	assert_false(Effects.has(a, "phased"), "gone at the round's end")
+
+
+## The Sutler's Hoist and the Reveille Horn (21 October), synthetic: the Hoist cools an ally and
+## shields it, the shield sized on the heat its cooling leaves; charged, the full reset (the
+## shield to its maximum, the heat to nothing, a cleanse). The Horn gives the team a reroll more
+## this round; charged, an ally whose die is spent rolls again and acts again.
+func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_turn_again() -> void:
+	var hoist := Face.shield(15)
+	hoist.targets = Face.Target.ALLY
+	hoist.vents = 10
+	hoist.charged = {"muster": 1, "shield": "full", "vents": "all", "cleanse": true}
+	var horn := Face.buff("rallied", 1)
+	horn.targets = Face.Target.SELF
+	horn.charged = {"muster": 1, "act_again": "ally"}
+	var sk := Skirmish.new(1, 2)
+	var c := _mech("Carrier", Die.of([hoist, horn]), 40, 100)
+	c.grant_passive(MUSTER)
+	sk.add_mech(c)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	a.shield_max = 60
+	sk.add_mech(a)
+	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[1].heat = 30
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.mechs[1]), "the plain Hoist on the ally")
+	assert_eq([sk.mechs[1].heat, a.shield], [20, 15], "cooled 10, then shielded 15")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
+	sk.mechs[1].heat = 30
+	Effects.stack(a, Effects.STATUS["scorched"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.mechs[1], null, true), "the Hoist charged")
+	assert_eq([sk.mechs[1].heat, a.shield], [0, 60], "the full reset: no heat, the shield full")
+	assert_false(Effects.has(a, "scorched"), "and cleansed")
+	sk.end_round()
+	sk.start_round()
+	var before := sk.rerolls_left
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, null), "the plain Horn")
+	assert_eq(sk.rerolls_left, before + 1, "the team has a reroll more")
+	assert_true(Effects.has(c, "rallied"), "Rallied for the round")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(1, sk.front[0]), "the ally acts")
+	sk.mechs[0].face_index = 1
+	assert_false(sk.equipment_targets_for(sk.mechs[0], horn.charged_form()).has(sk.mechs[0]), "never itself")
+	assert_true(sk.assign(0, sk.mechs[1], null, true), "the Horn charged, on the spent ally")
+	assert_false(sk.mechs[1].assigned, "its die rolls again and it acts again")
+	assert_true(sk.assign(1, sk.front[0]), "the second action")

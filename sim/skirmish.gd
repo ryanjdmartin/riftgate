@@ -230,6 +230,21 @@ func live_mechs() -> Array[MechState]:
 	return out
 
 
+## The live machines a foe may pick or a teammate may land equipment on: a Phased one is neither
+## (the Swallowtail's Mooring Screens, 21 October).
+func targetable_mechs() -> Array[MechState]:
+	var out: Array[MechState] = []
+	for m in live_mechs():
+		if not Effects.has(m.unit, "phased"):
+			out.append(m)
+	return out
+
+
+## Is the machine Phased (cannot act, take damage or be targeted until the round's end)?
+static func is_phased(ms: MechState) -> bool:
+	return ms != null and Effects.has(ms.unit, "phased")
+
+
 func survivors_for(sq: Unit) -> int:
 	var n := 0
 	for f in field_foes():
@@ -354,11 +369,15 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
 	if f == null:
 		return 0
+	if f.kind == Face.Kind.SHIELD and f.fills_shield:
+		return maxi(0, who.unit.shield_max - who.unit.shield) if who != null else 0   # the Hoist's full reset
 	var n := f.power if f.kind == Face.Kind.SHIELD else (f.shields if f.kind == Face.Kind.VENT else 0)
 	if n <= 0:
 		return 0
 	if who != null and who != ms:
-		var left := who.heat if f.kind == Face.Kind.SHIELD else maxi(0, who.heat - f.power)
+		var left := maxi(0, who.heat - f.vents) if f.kind == Face.Kind.SHIELD else maxi(0, who.heat - f.power)
+		if f.cools_all:
+			left = 0
 		n += Effects.granted_shield(ms.unit, left)
 	return n
 
@@ -395,6 +414,8 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 ## on nobody in particular shows none: Foe.intent_on), and not about to die to burn first.
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
+	if is_phased(ms):
+		return out   # nothing reaches a Phased machine
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
@@ -549,9 +570,39 @@ func equipment_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	if f == null or not f.is_equipment():
 		return out
 	for who in live_mechs():
+		if who != ms and is_phased(who):
+			continue   # a Phased ally cannot be targeted (Ryan, 20 October)
+		if f.act_again and (who == ms or not who.assigned):
+			continue   # an ally acting again: one whose die is spent (the Reveille Horn's charged form)
 		if (who == ms and f.can_target_self()) or (who != ms and f.can_target_ally()):
 			out.append(who)
 	return out
+
+
+## The machines an entry reaching every ally lands on (the Swallowtail's team shield, its
+## Phased): every one it may target, the yet-to-act alone for a grant that needs it.
+func reached_machines(ms: MechState, f: Face) -> Array[MechState]:
+	var out: Array[MechState] = []
+	for who in equipment_targets_for(ms, f):
+		if f.not_acted and who.assigned:
+			continue
+		out.append(who)
+	return out
+
+
+## Can this machine spend its entry charged (the Swallowtail's locked pieces): the entry has a
+## charged form and the Muster holds its price.
+func can_charge(ms: MechState) -> bool:
+	var f := ms.face() if ms != null else null
+	return f != null and not f.charged.is_empty() and Effects.muster_charges(ms.unit) >= f.muster_price()
+
+
+## The entry as it would be spent: its charged form when asked and paid for, else itself.
+func spend_face(ms: MechState, charged: bool = false) -> Face:
+	var f := ms.face()
+	if charged and can_charge(ms):
+		return f.charged_form()
+	return f
 
 
 ## Foes this mech's current face may be spent on.
@@ -785,7 +836,7 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 ## The live machines showing an intact weapon: what a foe that aims at the armed looks for.
 func _armed_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
-	for ms in live_mechs():
+	for ms in targetable_mechs():
 		var face := ms.face()
 		if face != null and face.is_attack() and not face.cracked:
 			out.append(ms)
@@ -856,6 +907,7 @@ func reroll(mech_indices: Array) -> bool:
 ## anywhere and the scramble is spent. A stepping die steps (a reroll is a roll), and a
 ## Scramble is a true roll for it too, the sequence running on from where it lands.
 func _reroll_die(ms: MechState) -> void:
+	_rolled()
 	if Effects.is_scrambled(ms.unit):
 		ms.face_index = ms.die.roll(rng)
 		Effects.remove(ms.unit, "scrambled")
@@ -869,6 +921,7 @@ func _reroll_die(ms: MechState) -> void:
 ## first roll has spun it to a random chamber (Ryan, 18 October: "like a revolver spinning");
 ## any other die rolls.
 func _roll(ms: MechState) -> int:
+	_rolled()
 	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
 		return _step(ms)
 	return ms.die.roll(rng)
@@ -909,23 +962,27 @@ func can_reroll() -> bool:
 ## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
 ## null for equipment): the checks `assign` makes before it acts, changing nothing. The
 ## screen asks it while a die is dragged, for the hover over a valid target.
-func can_assign(mech_index: int, target) -> bool:
+func can_assign(mech_index: int, target, charged: bool = false) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned or ms.face() == null:
 		return false
-	var f := Effects.effective_face(ms.unit, ms.face())
+	if charged and not can_charge(ms):
+		return false
+	var raw := spend_face(ms, charged)
+	var f := Effects.effective_face(ms.unit, raw)
 	if f.is_attack() and target is Vector2i:
 		return slot_targets(ms, f).has(target)
 	if f.is_attack():
-		return target is Foe and targets_for(mech_index).has(target)
+		return target is Foe and targets_for_face(ms, raw).has(target)
 	if f.is_equipment():
 		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
 	return false
 
 
-func assign(mech_index: int, target = null, second = null) -> bool:
+## `charged`: the entry spent in its charged form for a muster (the Swallowtail's locked pieces).
+func assign(mech_index: int, target = null, second = null, charged: bool = false) -> bool:
 	if state != State.ASSIGN:
 		return false
 	last_acts.clear()
@@ -935,12 +992,17 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
+	if charged and not can_charge(ms):
+		return false
+	var price := f.muster_price()
+	var raw := spend_face(ms, charged)   # the entry as spent, its charged form when a muster pays for it
+	f = raw
 	var quick := Effects.quick_turn_live(ms.unit, f)   # Rapid by a once-a-round gate (the Needletail's), read before the spend
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and target is Vector2i:
 		if not slot_targets(ms, f).has(target):
 			return false   # an empty slot: a mine laid, or the pull's gather (the Lammergeier's)
-	elif f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
+	elif f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
 	# tap the second): another foe or an empty slot, never a massive foe.
@@ -978,6 +1040,10 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			ms.assigned = true
 			_check_outcome()
 			return true
+	if charged:
+		# The muster spent (the Swallowtail's): the charged form's price, a charge a muster.
+		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
+		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
 	var killed := 0        # the foes a weapon spend felled, chains and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
@@ -986,12 +1052,25 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			pass
 		Face.Kind.SHIELD:
 			var who: MechState = target if target is MechState else ms
-			var amount := shield_amount(ms, f, who)
-			_gain_shield(who, amount, f.has(Face.Keyword.OVERSHIELD))
-			log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, amount, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
-			if who != ms:
-				_shield_granted(ms, who, amount)
-			_cleanse_with(ms, who, f)
+			# A team shield reaches every ally (the Swallowtail's Mooring Screens, 21 October).
+			var whom: Array[MechState] = []
+			if f.reaches_all:
+				whom = reached_machines(ms, f)
+			else:
+				whom.append(who)
+			for w in whom:
+				var amount := shield_amount(ms, f, w)   # sized at the spend, on the heat its cooling leaves
+				# The Sutler's Hoist: its cooling first, then the shield; charged, the heat to
+				# nothing and the shield to its maximum.
+				if f.cools_all or f.vents > 0:
+					var cooled := w.heat if f.cools_all else mini(w.heat, f.vents)
+					w.heat -= cooled
+					log.append("%s cools %s by %d" % [ms.unit.display_name, w.unit.display_name, cooled])
+				_gain_shield(w, amount, f.has(Face.Keyword.OVERSHIELD))
+				log.append("%s shields %s for %d%s" % [ms.unit.display_name, w.unit.display_name, amount, " (past its maximum)" if w.unit.shield > w.unit.shield_max else ""])
+				if w != ms:
+					_shield_granted(ms, w, amount)
+				_cleanse_with(ms, w, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			var shield_half := shield_amount(ms, f, who)   # sized at the spend, on what the vent will leave
@@ -1017,12 +1096,33 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
 			# like any modifier, and end_round lets it go.
 			var who: MechState = target if target is MechState else ms
-			var until := round + f.buff_rounds - 1
-			var src := "buff:" + f.component if not f.component.is_empty() else "buff"
-			var stacks := _stacks_from(ms, f.buff_status, f.buff_stacks)
-			var m := Effects.grant_buff(who.unit, f.buff_status, stacks, src, until)
-			if m != null:
-				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+			if f.act_again:
+				# The Reveille Horn's charged form (the gun platform's engine): the ally's spent die
+				# rolls again, and it acts again.
+				who.assigned = false
+				who.face_index = _roll(who)
+				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
+			else:
+				var until := round + f.buff_rounds - 1
+				var src := "buff:" + f.component if not f.component.is_empty() else "buff"
+				# A grant reaching every ally (the Mooring Screens' Phased, on those yet to act).
+				var whom: Array[MechState] = []
+				if f.reaches_all:
+					whom = reached_machines(ms, f)
+				else:
+					whom.append(who)
+				for w in whom:
+					if f.buff_status == "phased" and w.assigned:
+						continue   # Phased only before it acts (Ryan, 20 October)
+					var stacks := _stacks_from(ms, f.buff_status, f.buff_stacks)
+					var m := Effects.grant_buff(w.unit, f.buff_status, stacks, src, until)
+					if m == null:
+						continue
+					log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, w.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+					if f.buff_status == "phased":
+						_phase(w)
+					elif f.buff_status == "rallied":
+						rerolls_left += stacks   # the team's reroll more this round (the Reveille Horn)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
@@ -1048,6 +1148,8 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				if f.drones and target.alive():
 					free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
+			if killed > 0:
+				_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))   # a kill by its own guns (the Swallowtail's)
 			# A kill trigger (the Kite's heat tax, 21 October): after an attack that killed, once
 			# however many fell.
 			if killed > 0 and ms.alive():
@@ -1206,7 +1308,7 @@ func _enemy_turn() -> void:
 ## the turn.
 func _foe_turn(f: Foe) -> bool:
 	var t := f.target as MechState
-	if t == null or not t.alive():
+	if t == null or not t.alive() or is_phased(t):
 		t = _pick_mech_target(f)
 	if t == null:
 		return false
@@ -1231,6 +1333,8 @@ func _foe_turn(f: Foe) -> bool:
 			if _screened.has(m):
 				log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
 				continue
+			if is_phased(m):
+				continue   # out of the fight until the round's end
 			_strike(f, m)
 	else:
 		if _screened.has(t):
@@ -1883,6 +1987,7 @@ func _unready_ally(caster: Foe) -> Foe:
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
 ## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping.
 func _act_again(ms: MechState, f: Face) -> void:
+	_rolled()
 	if f.spins:
 		ms.face_index = ms.die.roll(rng)
 	elif Effects.steps_die(ms.unit):
@@ -1890,6 +1995,45 @@ func _act_again(ms: MechState, f: Face) -> void:
 	else:
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
 	ms.assigned = false
+
+
+# ---------------------------------------------------------------- the Swallowtail's
+
+## Phased (Ryan, 20 October): granted only to a machine yet to act, its action the price, so its
+## die stands down for the round; a foe whose pick it was picks again, so the intent lines move.
+func _phase(w: MechState) -> void:
+	w.assigned = true
+	for foe in field_foes():
+		if foe.alive() and foe.target == w:
+			foe.target = _pick_mech_target(foe)
+	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
+
+
+## A die rolled, any machine's (the Swallowtail's Muster, Ryan's go of 21 October): every machine
+## that musters gains a sliver.
+func _rolled() -> void:
+	for ms in live_mechs():
+		_muster(ms, 1)
+
+
+## Points on a machine's Muster, up to its cap (counted whole, a Silenced store too); a charge
+## filled is told.
+func _muster(ms: MechState, points: int) -> void:
+	var rule := Effects.muster_rule(ms.unit)
+	if rule.is_empty() or points <= 0 or not ms.alive():
+		return
+	var per := maxi(1, int(rule.get("value", 30)))
+	var cap := maxi(1, int(rule.get("cap", 3))) * per
+	var have := 0
+	for m in ms.unit.modifiers:
+		if m.id == "muster":
+			have += m.stacks
+	var add := mini(points, cap - have)
+	if add <= 0:
+		return
+	Effects.stack(ms.unit, Effects.STATUS["muster"], Effects.SKIRMISH, "muster", add, Effects.DECAY_NONE)
+	if (have + add) / per > have / per:
+		log.append("%s: a muster ready (%d)" % [ms.unit.display_name, (have + add) / per])
 
 
 # ---------------------------------------------------------------- mines
@@ -2560,6 +2704,8 @@ func _settle_heat() -> void:
 ## hull. A Barrier takes the next blow whole; a Ward turns a breach away. A shield sized to a
 ## telegraphed blow, or a Barrier, is the counterplay.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
+	if is_phased(ms):
+		return   # a Phased machine takes no damage (ticks and overheats are its own, and land elsewhere)
 	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
 	# A Barrier takes the next blow that deals anything, whole, and is spent; a blow of nothing
 	# leaves it standing (Shocked's mirror). A Ward turns a breach away, so the shield absorbs
@@ -2680,7 +2826,7 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## shields up still swings at it. With the override set, or asked with no foe, the rule
 ## before: the lowest shield, then the lowest hull.
 func _pick_mech_target(f: Foe = null) -> MechState:
-	var live := live_mechs()
+	var live := targetable_mechs()
 	if live.is_empty():
 		return null
 	if f == null or targeting_override == "lowest":
@@ -2718,7 +2864,7 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 			return most[rng.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive():
+			if shared != null and shared.alive() and not is_phased(shared):
 				return shared
 			var pick := _pick_exposed(f, live)
 			_focus[f.rank] = pick

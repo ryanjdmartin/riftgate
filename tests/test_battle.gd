@@ -722,3 +722,42 @@ func _fell(sk: Skirmish, which: Callable, n: int) -> void:
 		if n > 0 and which.call(f):
 			sk.reinforcements.erase(f)
 			n -= 1
+
+
+## The carry (the Swallowtail's Muster Deck, Ryan's go of 21 October; built that day), on a
+## synthetic passive: a machine beside the carrier travels with it and is set down beside where
+## it stops, its move and its action as they were; every destination seats it; an undo puts it
+## back, and is refused once the rider has moved on its own.
+func test_a_carrier_takes_the_machines_beside_it_and_sets_them_down_beside_its_stop() -> void:
+	var b := _battle()
+	var carrier: Unit = b.mechs()[0]
+	var rider: Unit = b.mechs()[1]
+	carrier.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "carry"}]})
+	var beside := Vector2i(-99, -99)
+	for n in Hex.neighbors(carrier.pos):
+		if b.field.can_stand(rider, n):
+			beside = n
+			break
+	assert_true(beside.x != -99, "a hex beside the carrier")
+	rider.pos = beside
+	assert_eq(b.riders_of(carrier), [rider] as Array[Unit], "the machine beside it rides")
+	var start := rider.pos
+	var rider_move := b.moves_left(rider)
+	var dests := b.destinations_for(carrier)
+	assert_false(dests.is_empty(), "somewhere to go")
+	var to: Vector2i = dests.keys()[dests.size() - 1]
+	for h in dests.keys():
+		assert_eq(b.seats(carrier, b.riders_of(carrier), h).size(), 1, "every destination seats the rider")
+	assert_false(b.move_to(carrier, to).is_empty(), "the carrier moves")
+	assert_eq(Hex.distance(rider.pos, carrier.pos), 1, "the rider is set down beside its stop")
+	assert_eq(b.moves_left(rider), rider_move, "its move as it was")
+	assert_eq(b.actions_left(rider), 1, "and its action")
+	assert_true(b.undo_move(carrier), "the carrier's move undone")
+	assert_eq(rider.pos, start, "the rider back where it rode from")
+	b.move_to(carrier, to)
+	var hop := Vector2i(-99, -99)
+	for h in b.destinations_for(rider).keys():
+		hop = h
+		break
+	b.move_to(rider, hop)
+	assert_false(b.can_undo(carrier), "once the rider has moved on its own, the carry stands")

@@ -633,9 +633,9 @@
    "category": "status",
    "name": "Phased",
    "codex": "Player and enemy status. It cannot act, take damage or be targeted until the round's end. Granted only to a unit that has not acted this round.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan, 20 October (the helicarrier's session, the bible's carrier row at its go): the wording his; the gate, a unit that has acted cannot be Phased, so the status always costs the action it protects (his first form, invulnerable now and the next action lost, offset the two halves). Not targetable means allies cannot vent or shield it either, and a foe's intent on it re-picks; it still cools by its own cooling, so an overheated machine phases with its problem intact; ticks and overheats still land. Granted by the helicarrier's dock (every ally that has not acted), and planned for Aphelion's pieces.",
+    "holes": "Ryan, 20 October (the helicarrier's session, the bible's carrier row at its go): the wording his; the gate, a unit that has acted cannot be Phased, so the status always costs the action it protects (his first form, invulnerable now and the next action lost, offset the two halves). Not targetable means allies cannot vent or shield it either, and a foe's intent on it re-picks; it still cools by its own cooling, so an overheated machine phases with its problem intact; ticks and overheats still land. Granted by the helicarrier's dock (every ally that has not acted), and planned for Aphelion's pieces. Built 21 October: its die stands down as it is granted, foes whose pick it was pick again, no blow or foe move reaches it, allies cannot land equipment on it.",
     "table": {
      "kind": "buff",
      "on": "both",
@@ -753,6 +753,22 @@
      "on": "machine",
      "stacks": "Yes: one a weapon spend",
      "lasts": "The skirmish; never decays"
+    }
+   }
+  },
+  {
+   "id": "quick_turned",
+   "category": "status",
+   "name": "Quick turn spent",
+   "codex": "Machine marker, the Needletail's gate: its free setup this round is spent, so its next debuff or buff this round is a full action. Never a chip: the die shows the gate open by the Rapid it grants a setup. Gone at the round's end.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October with the Quick-turn Avionics Relay (a static grant of Rapid on setup_once).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
     }
    }
   },
@@ -926,6 +942,16 @@
    "status": "implemented",
    "design": {
     "holes": "Bible section 4 (8 October)."
+   }
+  },
+  {
+   "id": "carry",
+   "category": "battlefield",
+   "name": "Carry",
+   "codex": "A machine that carries (the Swallowtail's Muster Deck) takes the machines on the hexes beside it when it moves, and sets each down on the nearest standable hex beside where it stops; they keep whatever move and action they had. It cannot stop where a rider cannot be set down. A caught machine does not ride.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row): the lift gives reach, never a reset; a small move on purpose, a bump over a river or a crag. Built that day: \"nearest standable\" read as beside the stop, the ring they rode in, so a rider is never left far from it; an undo takes the riders back, and stands once a rider has moved on its own. The map's animation of the riders is the screen's."
    }
   },
   {
@@ -1722,10 +1748,10 @@
    "id": "muster",
    "category": "status",
    "name": "Muster",
-   "codex": "Mech status, the Swallowtail's, banked: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty; never decays; nothing cleanses it.",
-   "status": "planned",
+   "codex": "Mech status, the Swallowtail's, banked: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so a Silence sleeps it and a Purge takes it. Tap the carrier to arm its die for the charged form.",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly (\"ultimate tier\", \"you have to work for it\"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Engine: a bar that gains on every roll (a trigger the engine lacks), a spend that consumes a charge for its charged effects (a face property), the bot valuing a charge by the best charged form it could buy. Every number is a placeholder.",
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly (\"ultimate tier\", \"you have to work for it\"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Built 21 October: a store of points (static muster: value the points a charge, cap the charges, kill the points a kill), the charged spend a tap on the carrier arms, the bot valuing a charge by the best charged form it could buy. The arming gesture is Claude's, Ryan's to judge. Every number is a placeholder.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -1739,9 +1765,9 @@
    "category": "status",
    "name": "Rallied",
    "codex": "Mech status, the Swallowtail's Reveille Horn: its team has one reroll more this round.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.",
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap. Built 21 October: the reroll is given as the status is granted.",
     "table": {
      "kind": "buff",
      "on": "machine",

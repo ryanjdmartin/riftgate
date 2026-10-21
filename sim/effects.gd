@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -178,6 +178,18 @@ const STATUS := {
 	# gate open by the Rapid it grants a setup.
 	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its free setup this round is spent.", "stacking": "renew",
 		"tags": ["marker"], "effects": []},
+	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
+	# every die's roll a point and a kill by its own guns more, a charge every so many (the
+	# passive's muster rule), spent by its locked pieces' charged forms; never decays, a store,
+	# so a Silence sleeps it and a Purge takes it. Phased: cannot act, take damage or be
+	# targeted until the round's end, granted only to a machine that has not acted. Rallied:
+	# the team has one reroll more this round, given as it is granted.
+	"muster": {"id": "muster", "name": "Muster", "description": "A charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver.", "decay": "none",
+		"tags": ["store"], "effects": []},
+	"phased": {"id": "phased", "name": "Phased", "description": "Cannot act, take damage or be targeted until the round's end.", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
+	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
@@ -265,7 +277,7 @@ const STATUS := {
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up", "phased", "rallied"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -1423,6 +1435,33 @@ static func granted_cooldown(u, face: Face) -> int:
 	return n
 
 
+## The machine's muster rule (static muster, the Swallowtail's Muster Deck, 21 October): its
+## points a charge (`value`), its cap in charges (`cap`), the points a kill by its own guns
+## gives (`kill`); empty for a machine that musters nothing.
+static func muster_rule(u) -> Dictionary:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "muster":
+			return pair[0]
+	return {}
+
+
+## Does this machine carry its neighbours when it moves on the map (static carry, the Swallowtail's
+## Muster Deck, 21 October)?
+static func carries(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "carry":
+			return true
+	return false
+
+
+## The charges the machine's Muster holds right now (a Silenced store holds none it can spend).
+static func muster_charges(u) -> int:
+	var rule := muster_rule(u)
+	if rule.is_empty():
+		return 0
+	return stacks_of(u, "muster") / maxi(1, int(rule.get("value", 30)))
+
+
 ## Is this entry Rapid by a once-a-round gate (a grant_keyword of rapid on setup_once, the
 ## Needletail's Quick-turn Avionics Relay, 21 October), its own Rapid aside? Spent so, the gate
 ## closes for the round (the quick_turned marker).
@@ -1553,6 +1592,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"weapon_cooldown": body = "every weapon it fires goes dark for %s rounds" % vs
 		"lay_mines": body = "its weapons may be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
+		"carry": body = "the machines beside it on the map travel with it when it moves"
+		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

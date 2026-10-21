@@ -636,3 +636,45 @@ func test_greedy_lays_a_mine_where_a_foe_will_step_in_and_weighs_the_pull_and_th
 	assert_true(plain > 0.0, "the drone is worth its mine and its Exposed")
 	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "test", s2.round + 1)
 	assert_true(pol.attack_score(s2, d, drone, foe) > 0.0, "and on a foe already Exposed, its Rapid")
+
+
+## The Swallowtail for the bot (21 October), synthetic: a charged spend is an option a target,
+## worth what it buys less what the muster would buy banked; it Phases an ally about to die
+## before that ally acts, and banks the charge where the charged form adds nothing.
+func test_greedy_spends_a_muster_where_it_saves_a_machine_and_banks_it_otherwise() -> void:
+	var deck := {"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]}
+	var screens := Face.shield(10)
+	screens.targets = Face.Target.ALLY
+	screens.reaches_all = true
+	screens.charged = {"muster": 1, "status": "phased", "reaches_all": true, "not_acted": true}
+	var sk := Skirmish.new(3, 2)
+	var c := _mech("Carrier", Die.single(screens), 40, 100)
+	c.grant_passive(deck)
+	sk.add_mech(c)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 10)
+	sk.add_mech(a)
+	sk.add_foes([_ghoul(300, 40), _ghoul(300, 40)])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	var pol := Policy.make(Policy.GREEDY)
+	var opts := pol.options_for(sk, 0)
+	assert_true(opts.any(func(o) -> bool: return bool(o.get("charged", false))), "the charged form is an option")
+	pol.play_round(sk)
+	assert_true(Effects.has(a, "phased"), "the bot Phases the ally its blows would kill")
+	# Nothing to buy: the Flare's Suppress on a foe that strikes nothing.
+	var flare := Face.attack(0, I, [K.EXPOSE])
+	flare.charged = {"muster": 1, "keywords": ["suppress"]}
+	var s2 := Skirmish.new(3, 2)
+	var d := _mech("Carrier", Die.single(flare), 40, 100)
+	d.grant_passive(deck)
+	s2.add_mech(d)
+	s2.add_foes([_ghoul(300, 0)])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(d, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	var p2 := Policy.make(Policy.GREEDY)
+	p2.play_round(s2)
+	assert_eq(Effects.muster_charges(d), 1, "the charge is banked")
