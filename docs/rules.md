@@ -107,9 +107,11 @@ defeat when every machine is wrecked. There is no round limit.
   weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
   Up, Primed's burn), and its heat is a weapon's. The die's kinds: Direct, Indirect, Debuff,
   Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
-  debuff the frame with the status mark inside and no number, a buff the mark alone; a shield
-  or vent that also buffs is its own glyph with a buff chip (not built: the glyph, the print
-  and the damage guard).
+  debuff the frame with the status mark inside and no number (the crosshair's ring with its
+  cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
+  down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
+  buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  weapon as its shot of 15, so a debuff through the drum is a gun.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and

@@ -16,6 +16,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
 			ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
+		"debuff_line", "debuff_indirect":
+			# A debuff (Ryan, 20 and 21 October, the die's grammar): its reach frame carries the
+			# status mark where a gun carries its number, the debuff chips' down arrow, so the
+			# frame and the mark both say it (structure twice). The crosshair's cross is cut to
+			# four ticks so the mark sits inside the ring; the arc lobs over it.
+			if id == "debuff_line":
+				ci.draw_arc(c, s * 0.68, 0.0, TAU, 28, color, width)
+				for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+					ci.draw_line(c + d * s * 0.68, c + d * s, color, width)
+				draw(ci, "debuff", c, s * 0.82, color, width)
+			else:
+				ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
+				ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
+				ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
+				draw(ci, "debuff", c + Vector2(0, s * 0.12), s * 0.78, color, width)
 		"shield":
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
@@ -379,6 +394,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BUFF:
 			return "buff"
 		_:
+			# A debuff (a weapon of no damage) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
-				return "indirect"
-			return "line"   # direct: the crosshair glyph, whatever its tags
+				return "debuff_indirect" if face.is_debuff() else "indirect"
+			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags

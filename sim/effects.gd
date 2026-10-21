@@ -811,6 +811,13 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 				vent += int(v) * n
 	var out_dmg := maxi(d_floor, int(roundf((dmg + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
+	if face != null and face.is_debuff():
+		# A debuff deals nothing under any effect (Ryan's die grammar, 20 and 21 October): no
+		# flat add (Overcharged, Spun Up), no multiply, no floor, no burn of a Primed machine;
+		# its heat is a weapon's and its keywords its whole effect. Read on the entry as spent,
+		# so a weapon the Cottonmouth's drum fires is its shot of 15, a gun.
+		out_dmg = 0
+		burn = 0
 	return {"damage": out_dmg, "heat": out_heat, "burn": burn, "vent": vent}
 
 

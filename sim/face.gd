@@ -370,6 +370,15 @@ func is_weapon() -> bool:
 	return kind == Kind.ATTACK
 
 
+## A debuff (Ryan, 20 and 21 October, the die's kinds): a weapon of no damage, the setters
+## and the swap, whatever its keywords. It prints no number and deals none under any effect
+## (Effects.attack holds it at nothing), its heat still a weapon's and its keywords its whole
+## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
+## nothing here (its 5 against armour 5) is no debuff: it prints "0".
+func is_debuff() -> bool:
+	return kind == Kind.ATTACK and power_max <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
+
+
 func is_equipment() -> bool:
 	return kind == Kind.SHIELD or kind == Kind.VENT or kind == Kind.BUFF
 
@@ -464,7 +473,7 @@ func cooldown_text() -> String:
 
 
 func number_text() -> String:
-	if kind == Kind.BLANK:
+	if kind == Kind.BLANK or is_debuff():
 		return ""
 	if kind == Kind.BUFF:
 		return "×%d" % buff_stacks
@@ -498,8 +507,9 @@ func describe() -> String:
 			elif targets == Target.ALLY:
 				s += " (allies only)"
 		_:
-			# Direct is the default and goes unsaid; only indirect reach is called out.
-			s = number_text() if reach == Reach.DIRECT else "%s %s" % [REACH_NAMES[reach], number_text()]
+			# Direct is the default and goes unsaid; only indirect reach is called out. A debuff
+			# has no number to say, so its reach and keywords are its whole line.
+			s = " ".join(PackedStringArray([REACH_NAMES[reach] if reach != Reach.DIRECT else "", number_text()])).strip_edges()
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:
@@ -529,4 +539,4 @@ func describe() -> String:
 				s += " (+%d heat)" % heat
 	if cracked:
 		s += " (cracked)"
-	return s
+	return s.strip_edges()

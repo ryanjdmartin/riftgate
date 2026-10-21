@@ -340,9 +340,10 @@ func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
 	return n
 
 
-## The shown number as the die prints it: one number, or the range.
+## The shown number as the die prints it: one number, or the range; a debuff prints none (a
+## gun whose blow is nothing here prints "0").
 func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
-	if f == null or not f.is_attack():
+	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
 	var n := shown_number(ms, f, target)
 	return str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]

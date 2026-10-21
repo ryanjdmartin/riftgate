@@ -2556,7 +2556,7 @@ func test_a_lure_turns_every_foe_the_entry_reaches_on_the_spender_for_the_round(
 	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10), _archer(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(klaxon.describe(), "indirect 0 lure spread", "the keyword reads on the entry")
+	assert_eq(klaxon.describe(), "indirect lure spread", "the keyword reads on the entry")
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]   # every foe on the glass, whatever the dice said
 	# Spent on the middle ghoul: the spread reaches its neighbours, so the whole front turns;
@@ -4789,7 +4789,7 @@ func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_damaging_weapon_o
 func test_a_damaging_hit_cashes_a_foes_cryo_for_the_hitters_cooling() -> void:
 	var sk := Skirmish.new(1)
 	var flinger := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "rapid", "cryo"], "heat": 5, "cryo": 1})
-	assert_eq(flinger.describe(), "indirect 0 lure rapid cryo 1 (+5 heat)", "the entry says its stacks")
+	assert_eq(flinger.describe(), "indirect lure rapid cryo 1 (+5 heat)", "the entry says its stacks")
 	assert_eq(Face.from_dict(flinger.to_dict()).cryo, 1, "the number round-trips")
 	var a := _mech("A", Die.of([flinger, Face.shield(20)]), 0, 200)
 	var b := _mech("B", Die.single(Face.attack(10, L, [], 5)), 40, 100)
@@ -5337,7 +5337,7 @@ func test_a_vent_spent_on_itself_blasts_a_random_foe_for_the_heat_it_took_off() 
 ## lands on it that round adds the entry's heat, next round's fuel, after the overheat.
 func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
-	assert_eq(siphon.describe(), "indirect 0 lure braces ×2 reaches every foe +10 heat a blow taken this round", "the entry says its rules")
+	assert_eq(siphon.describe(), "indirect lure braces ×2 reaches every foe +10 heat a blow taken this round", "the entry says its rules")
 	var sk := Skirmish.new(1, 2)
 	var u := _mech("A", Die.single(siphon), 40, 200)
 	var other := _mech("B", Die.single(Face.attack(10, L)), 40, 200)
@@ -5595,3 +5595,47 @@ func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself
 	knight.hp = 0
 	sk._clear_dead_slots()
 	assert_true(sk.reinforcements.has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up into the pool, whole")
+
+
+## The die's kinds (Ryan, 20 and 21 October): a debuff is a weapon of no damage, and it deals
+## none under any effect (a flat add, a multiply, a floor, a Primed machine's burn), its heat
+## still a weapon's; it prints no number and wears its reach frame with the status mark; a gun
+## whose blow is nothing here prints "0".
+func test_a_debuff_deals_nothing_under_any_effect_and_prints_no_number() -> void:
+	var lure := Face.attack(0, I, [K.LURE])
+	lure.heat = 5
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("A", Die.single(lure), 40, 100)
+	m.grant_passive({"id": "test_hot_hands", "name": "Hot hands", "description": "",
+		"effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 10},
+			{"trigger": "on_attack", "effect": "multiply_damage", "value": 2.0},
+			{"trigger": "on_attack", "effect": "min_damage", "value": 5},
+			{"trigger": "on_attack", "effect": "add_burn", "value": 2},
+			{"trigger": "on_attack", "effect": "add_heat", "value": 5}]}, "test")
+	sk.add_mech(m)
+	var g := _ghoul(100, 10)
+	sk.add_foes([g, _ghoul(100, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(lure.is_debuff(), "a weapon of no damage is a debuff")
+	var modded := Effects.attack(m, lure, 0, lure.heat, g)
+	assert_eq([int(modded["damage"]), int(modded["burn"])], [0, 0], "no add, no multiply, no floor, no burn")
+	assert_eq(int(modded["heat"]), 10, "its heat is a weapon's, the passive's heat in")
+	assert_eq(sk.shown_number_text(sk.mechs[0], lure, g), "", "it prints no number, over a foe or not")
+	assert_eq(lure.number_text(), "", "nor on the die's own entry")
+	assert_eq(lure.describe(), "indirect lure (+5 heat)", "its line is its reach and keywords")
+	assert_eq(Glyphs.primary_for(lure), "debuff_indirect", "an Indirect debuff wears the arc over the mark")
+	assert_eq(Glyphs.primary_for(Face.attack(0, L, [K.SHOCK])), "debuff_line", "a Direct one the ring round it")
+	assert_true(sk.assign(0, g), "spent on a foe in reach")
+	assert_eq(g.hp, 100, "it dealt nothing")
+	assert_eq(Effects.stacks_of(g, "burning"), 0, "and burned nothing")
+	assert_eq(sk.mechs[0].heat, 10, "its heat landed")
+	var gun := Face.attack(5, L)
+	assert_false(gun.is_debuff(), "a gun of 5 is a gun")
+	var plated := _ghoul(100, 10)
+	plated.armour = 5
+	var sk2 := Skirmish.new(1, 1)
+	sk2.add_mech(_mech("B", Die.single(gun), 40, 100))
+	sk2.add_foes([plated])
+	sk2.begin()
+	assert_eq(sk2.shown_number_text(sk2.mechs[0], gun, plated), "0", "whose blow is nothing here prints 0")

@@ -99,6 +99,11 @@ each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 21 October, the die's kinds and the no-number rule (Ryan, 20 and 21 October, the Kestrel
+  session's grammar): a debuff, a weapon of no damage, deals nothing under any effect (the
+  pipeline holds it at nothing, its heat a weapon's), prints no number anywhere, and wears its
+  reach frame with the down arrow inside; read on the entry as it is spent, so the
+  Cottonmouth's drum makes a debuff its 15. Judging it on the phone is Ryan's.
 - 21 October, the party: dealt as the run starts, one hero to each domain from its bench, the
   front and the back even (two and two), by the seed on a stream of its own, kept through a
   save; a domain's final fields its dealt hero in its rank with its domain's first pack in the
@@ -160,10 +165,9 @@ each resuming from its briefs:
   printed `spins` on the entry, no cooldown, the validator's stepping-die exemption) and Spun
   Up (a buff spent by the next weapon spend); six pips under the heat bar, the next-chamber chip
   on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
-  so the tender and the runner deal it. A weapon of no damage still takes the attacker's flat
-  adds (Overcharged's, Spun Up's) and deals them: Ryan's die grammar in the Kestrel session (21
-  October, its section 6 row on the live page) holds it at nothing under any effect, a guard
-  not built yet, so the question went from section 12. The hold's ring, the
+  so the tender and the runner deal it. A weapon of no damage is held at nothing under any
+  effect since 21 October (Ryan's die grammar, built that day, below), so Spun Up spent by a
+  lure is wasted, as its rule says. The hold's ring, the
   hangar's chambers and the bot's cycle are the to-do's.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
