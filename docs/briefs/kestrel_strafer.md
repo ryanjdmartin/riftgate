@@ -241,6 +241,23 @@ reach; each tested with synthetic passives.
 2. The start's hole below (a halved basic against armour 5), if he wants it answered before
    the go rather than by the scales question in section 12.
 
+## The shape and the name (21 October)
+
+- Ryan, 21 October: "I think shape is either a swing-wing or the exposed-rotor copter. Reminds
+  me of a woodpecker or something? Anything more aggressive that strikes fast and
+  repeatedly?" And, of the Merlin: "Merlin is also battletech."
+- Claude's lean: the swing-wing, the strafing jet by trade (wings spread to loiter, swept for
+  the run), its strike act the passive in motion (the wings sweep as it fires twice); it parts
+  this machine from the Sparrowhawk by silhouette, which the hovercraft question was for, so
+  that question closes either way (both flyers at 50). The exposed-rotor gunship is the other
+  classic strafer, sent to Aphelion on 20 October, and still a flyer. Names, birds that strike
+  fast and repeatedly: the Shrike (the butcher-bird, strikes and impales again and again; a
+  minor BattleTech name, judged as the Goshawk and the Sparrowhawk were, both BattleTech
+  names too and neither iconic), the Butcherbird (the same family, no collision), the Skua
+  (harries other birds until they drop what they carry; clean), the Hobby (the fastest small
+  falcon, hawking in passes), the Harrier (too on the nose), the Merlin (BattleTech, Ryan).
+  Ryan's word; the name and the look go to the content session with the numbers.
+
 ## Holes already raised
 
 - In a long fight it pays two armours a weapon; against heavy plate it is the wrong machine, by
