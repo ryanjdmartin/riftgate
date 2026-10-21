@@ -1584,6 +1584,137 @@
     "energy",
     "single"
    ]
+  },
+  {
+   "id": "mooring_screens",
+   "name": "Mooring Screens",
+   "maker": "wainwright_sutler",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The hangar deck's mooring field thrown over the squad; charged, the shutters close and the squad is gone from the fight for a round.",
+    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown.",
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain form is the team shield (Ryan: healthier than team armour; a Barrier on every ally breaks the Barrier row), the charged form Phased on every ally that has not acted (Phased's own rule), paid three times already (the muster, the docked allies' actions, the whole enemy turn on the carrier), so no cooldown; if it reads too strong the lever is its price (two musters), never a clock. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+   },
+   "face": {
+    "kind": "shield",
+    "power": 10,
+    "targets": "ally",
+    "reaches_all": true,
+    "charged": {
+     "muster": 1,
+     "status": "phased",
+     "reaches_all": true,
+     "not_acted": true
+    }
+   },
+   "passive": null,
+   "tags": [
+    "defense",
+    "support"
+   ]
+  },
+  {
+   "id": "spotting_flare",
+   "name": "Spotting Flare",
+   "maker": "wainwright_sutler",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The observer's flare over the target: every gun on the field finds it. Charged, it bursts in the foe's face.",
+    "niche": "The Swallowtail's mark, locked: the foe marked is in every ally's reach, whatever its rank, until its next action, no damage (its rider the Kestrel session's); spending a muster adds Suppressed, a stun gated by the price and clocked by Numbed.",
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain mark's rider is settled in the Kestrel session (Exposed), and joins the keyword when that branch merges. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "mark"
+    ],
+    "heat": 0,
+    "charged": {
+     "muster": 1,
+     "keywords": [
+      "mark",
+      "suppress"
+     ]
+    }
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "control"
+   ]
+  },
+  {
+   "id": "sutlers_hoist",
+   "name": "Sutler's Hoist",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A crane, a hose and a crate of plate lowered onto an ally in the middle of the fight. Charged, the whole tender comes down.",
+    "niche": "The Swallowtail's resupply, locked: a shield and some cooling on an ally; spending a muster instead fills its shield to the maximum, cools it to zero and cleanses it.",
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The sutler is the army's provisioner, the maker's own word (a job, not an advert). The reset is chosen per ally: the hot builds (the Stingray, the Goshawk, the Whip Scorpion) do not want the cooling. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+   },
+   "face": {
+    "kind": "shield",
+    "power": 15,
+    "targets": "ally",
+    "vents": 10,
+    "charged": {
+     "muster": 1,
+     "shield": "full",
+     "vents": "all",
+     "cleanse": true
+    }
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "defense"
+   ]
+  },
+  {
+   "id": "reveille_horn",
+   "name": "Reveille Horn",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The bugle that wakes the camp. Charged, it gets a machine back on its feet and firing.",
+    "niche": "The Swallowtail's rally, locked: the team gains a reroll this round; spending a muster instead lets an ally act again (its die rolled again and spent again, the gun platform's engine).",
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The act-again form is the action-economy row's tempo lent, ranked last there, and passes the row's price: a second action paid in a banked resource (the muster) and the carrier's own action. The reroll it grants counts toward the Muster when spent on the carrier, the intended combo; the cap holds it. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "rallied",
+    "stacks": 1,
+    "rounds": 1,
+    "targets": "self",
+    "charged": {
+     "muster": 1,
+     "act_again": "ally"
+    }
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "tempo"
+   ]
   }
  ]
 }

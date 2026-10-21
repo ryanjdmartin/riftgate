@@ -19,7 +19,7 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Fourteen chassis from five makers
-  and three planned, the Cassowary, the Cottonmouth and the Whip Scorpion
+  and four planned, the Cassowary, the Cottonmouth, the Whip Scorpion and the Swallowtail
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -150,6 +150,9 @@ defeat when every machine is wrecked. There is no round limit.
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
   trade places; no damage; a massive foe does not move.
+- **Mark** (the Swallowtail's Spotting Flare, not built): the foe marked is in every ally's
+  reach, whatever its rank, until its next action; no damage. Spent with a muster it also
+  Suppresses.
 - **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
   Flak, whatever the blow dealt.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
@@ -188,6 +191,14 @@ On a machine:
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
   cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
   this round.
+- **Muster** (buff, the Swallowtail's, not built): a banked charge. Every die that rolls fills
+  it a sliver, about thirty rolls a charge, a kill by its own guns five rolls' worth, up to its
+  cap; it starts each fight empty and never decays. Each of its locked pieces has a plain form
+  and a charged one that spends a muster: the Mooring Screens shield every ally, or Phase every
+  ally that has not acted; the Spotting Flare marks, or marks and Suppresses; the Sutler's
+  Hoist shields and cools an ally, or fills its shield, cools it to zero and cleanses it; the
+  Reveille Horn gives the team a reroll, or lets an ally act again.
+- **Rallied** (buff, not built): the team has one reroll more this round.
 - **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
   spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
@@ -420,6 +431,10 @@ a stat.
   the Prairie Dog) and walk to put it inside their ring. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
+- **The carry** (the Swallowtail's Muster Deck, not built): the machines on the hexes beside
+  it travel with it when it moves and are set down on the nearest standable hexes where it
+  stops, keeping whatever move and action they had; it cannot stop where a rider cannot be set
+  down.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. A withdrawal leaves it standing.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next

@@ -80,8 +80,7 @@ document's job and every command are in `README.md`.
   rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
   same day (Flak), the boiler as the Whip Scorpion on 20 October and the maker's tiers
   confirmed the same day (3-5-2), so of the maker's briefs only the gunship's and the
-  multi-rotor's remain, with the stock pass and the die's shown word; next the Rapid
-  discussion in the maker's context. The tender, the campaign
+  artillery's remain (the multi-rotor landed as the Swallowtail on 21 October). The tender, the campaign
   runner and the balance runner skip a chassis whose passive or locked piece is planned
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
@@ -404,6 +403,17 @@ document's job and every command are in `README.md`.
   for being struck gains its condition); the Thermal Ray its stock gun (flat 30, heat 30);
   the Stoker the stock pass's; in content as planned entries; the engine and the assets are
   the to-do's two lines.
+- The Swallowtail (Ryan's go, 21 October; its row in section 7): the helicarrier, the maker's
+  first tier three, an assault flyer; the multi-rotor's lending and then its equipment slots
+  cut (20 October). Its Muster Deck carries the machines beside it on the map (set down on the
+  nearest standable hexes, their move and action kept) and fills the Muster, a third bar, a
+  sliver on every die's roll (about thirty a charge, a kill by its guns five), per fight; its
+  four locked pieces each have a plain and a charged form (the Mooring Screens: a team shield,
+  or Phased on every ally that has not acted, no cooldown; the Spotting Flare: the mark, or the
+  mark and Suppressed; the Sutler's Hoist: a shield and cooling, or the full reset; the Reveille
+  Horn: a team reroll, or an ally acts again); three hardpoints. The mark's rider is the
+  Kestrel session's Exposed. In content as planned entries (Muster, Rallied and Mark in the
+  vocabulary); the engine and the assets are the to-do's two lines.
 
 ## Next, in order
 
@@ -421,9 +431,9 @@ to-do's Ryan list).
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
-   Prairie Dog's pivot landed (21 October), the multi-rotor reworked toward the helicarrier
-   (in session) and the artillery briefed as the ammo build; next, the helicarrier's go and the
-   artillery's session, the gunship with the stock pass.
+   Prairie Dog's pivot and the helicarrier, as the Swallowtail, landed (21 October) and the
+   artillery briefed as the ammo build; next, the artillery's session, the gunship with the
+   stock pass.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.

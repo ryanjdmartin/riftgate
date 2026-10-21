@@ -647,7 +647,7 @@
    "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
    "status": "planned",
    "design": {
-    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). The chip reads FLAK with its count, the keyword and the chip sharing the word; the id is the participle habit (Burning, Webbed) and Claude's. A flat on-hit, the kind Ryan named missing on 14 October (the Onryō's brief: \"a flat number reads as an on-hit and it's not something we have\"), beside Shocked, the multiplier one blow spends: adds come before multiplies, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The halving clock is Overcharged's (Ryan, 18 October, the numbers branch): a sprayer feeding three a round settles near six, and a boss never ramps. On-hit only (Ryan, 19 October): a tick at the foe's action is Burning with another chip. Numbers are placeholders, and Ryan's note of 19 October stands: the numbers branch has Overcharged at a point a stack, so Flak at a point a stack on every blow may be overpowered beside it; read the two together when that branch merges. Past armour or not is the stock pass's question. Engine: add_damage_taken a stack on the foe and the halving decay at the round's end; the bot valuing it as damage in hand for the team's blows; the Paradox counts it as a debuff and the Tensor reads it. The flat on-hit is one kind, so the Onryō's Grudge finds another shape (its brief).",
+    "holes": "Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md). The chip reads FLAK with its count, the keyword and the chip sharing the word; the id is the participle habit (Burning, Webbed) and Claude's. A flat on-hit, the kind Ryan named missing on 14 October (the Onry\u014d's brief: \"a flat number reads as an on-hit and it's not something we have\"), beside Shocked, the multiplier one blow spends: adds come before multiplies, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The halving clock is Overcharged's (Ryan, 18 October, the numbers branch): a sprayer feeding three a round settles near six, and a boss never ramps. On-hit only (Ryan, 19 October): a tick at the foe's action is Burning with another chip. Numbers are placeholders, and Ryan's note of 19 October stands: the numbers branch has Overcharged at a point a stack, so Flak at a point a stack on every blow may be overpowered beside it; read the two together when that branch merges. Past armour or not is the stock pass's question. Engine: add_damage_taken a stack on the foe and the halving decay at the round's end; the bot valuing it as damage in hand for the team's blows; the Paradox counts it as a debuff and the Tensor reads it. The flat on-hit is one kind, so the Onry\u014d's Grudge finds another shape (its brief).",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -1534,6 +1534,48 @@
    "status": "implemented",
    "design": {
     "holes": "Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine."
+   }
+  },
+  {
+   "id": "muster",
+   "category": "status",
+   "name": "Muster",
+   "codex": "Mech status, the Swallowtail's, banked: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty; never decays; nothing cleanses it.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly (\"ultimate tier\", \"you have to work for it\"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Engine: a bar that gains on every roll (a trigger the engine lacks), a spend that consumes a charge for its charged effects (a face property), the bot valuing a charge by the best charged form it could buy. Every number is a placeholder.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a charge about thirty rolls of any die, five rolls' worth a kill by its guns, up to its cap",
+     "lasts": "The skirmish; never decays"
+    }
+   }
+  },
+  {
+   "id": "rallied",
+   "category": "status",
+   "name": "Rallied",
+   "codex": "Mech status, the Swallowtail's Reveille Horn: its team has one reroll more this round.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
+    }
+   }
+  },
+  {
+   "id": "mark",
+   "category": "keyword",
+   "name": "Mark",
+   "codex": "The Swallowtail's Spotting Flare, locked: the foe marked is in every ally's reach, whatever its rank, until its next action; no damage.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The observer directing fire: its own target choice is the decision, and it changes the enemy's problem (a back-rank caster becomes every Direct gun's). Its rider is settled in the Kestrel session (Exposed) and joins here when that branch merges; a flat on-hit is Flak's kind, so the rider is not that. The charged form adds Suppressed, a stun gated by the muster's price and clocked by Numbed (the stun row). Engine: a reach grant on a foe, read by every ally's die."
    }
   }
  ]

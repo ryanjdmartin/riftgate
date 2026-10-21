@@ -147,7 +147,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
-| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the helicarrier (the multi-rotor reworked, in session), the artillery (the ammo build, briefed) |
+| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the artillery (the ammo build, briefed) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -300,7 +300,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
 | `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
-| `ws_multirotor.md` | rework, in session (the helicarrier, 20 October) | Wainwright & Sutler | 3 | nothing |
+| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the mark's rider from the Kestrel session |
 | `ws_artillery.md` | direction (the ammo build, 20 October) | Wainwright & Sutler | 3 | the stock pass's explosives |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
@@ -417,6 +417,6 @@ overrule)
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the
    stock pass.
-3. After the stock pass: the gunship; the multi-rotor once the die has its shown word; the
-   boiler landed on 20 October as the Whip Scorpion.
+3. After the stock pass: the gunship; the multi-rotor landed on 21 October as the Swallowtail, the
+   boiler on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.
