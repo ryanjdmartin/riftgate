@@ -338,15 +338,15 @@ Meadow's Gel halves, summons and the elites surfacing from the wait a blow befor
 **The display.** An empty slot lights as a target when a weapon of the right reach is
 dragged; a mined slot shows its outline and a glyph with the total waiting and a chip per
 keyword, never hue alone; the pull's gather is drawn as the mines sliding into the slot; a
-Marked foe wears its chip; the header's REINF count stands beside it until the formation view
+foe carrying the Syrinx Drone wears its chip; the header's REINF count stands beside it until the formation view
 lands.
 
 **Engine.** A slot as a target (`targets_for_face`); the mine store on the skirmish, a list of
 laid shots a slot, carried by the save; the landing after the reinforcement step, left to
 right, each shot through the arrival's damage taken and armour with its keywords acting; any
-other way into a mined slot setting it off at once; the pull and the mark as printed
-properties, Marked a foe status with a kill hook; the mark's gate as a condition (a mine
-waiting); Chain's repeat out of a mine paying its heat in the reinforcement step; the bot's
+other way into a mined slot setting it off at once; the pull and the drone as printed
+properties, the Syrinx Drone a foe status with a kill hook; the drone's gate as a condition
+read before it lands (the foe carries Exposed); Chain's repeat out of a mine paying its heat in the reinforcement step; the bot's
 value of a mine (a shot delayed, worth its number times the chance a foe steps in).
 
 
@@ -448,8 +448,8 @@ before its runner row.
 
 ## What the engine and content sessions land
 
-A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, Marked
-with its kill hook; the content planned (the Magpie, its two locks, the Syrinx Drone debuff in
+A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, the
+debuff with its kill hook; the content planned (the Magpie, its two locks, the Syrinx Drone debuff in
 the vocabulary),
 the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry
 the design since 21 October.

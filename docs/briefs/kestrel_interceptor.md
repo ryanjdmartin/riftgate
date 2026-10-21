@@ -410,6 +410,9 @@ kit. Every number a placeholder; the names Ryan's.
 - The aim's word (the fourth round): "the exposed" names the foes' default aim on the player's
   side and the formation state on the foes'; Exposed as a debuff makes the foe-side sense the
   loud one. The aim's shown word is Ryan's to change.
+- The look (Claude, 21 October): the Buzzard's model already tilts its nacelles forward and
+  vectors through turns (the bible's acts table), so the tilt-jet must part from it from
+  above, the view the player reads: the content session's.
 - A flat buff on a weapon of no damage: the engine lifts a probe's blow by Overcharged today
   (no zero guard), and the die would print it; the gate reads the printed entry either way,
   and whether the lift stays is the stock pass's (Claude's lean: a weapon of nothing stays
@@ -444,13 +447,15 @@ kit. Every number a placeholder; the names Ryan's.
 - Exposed on the next blow (Shocked's clock) or for the skirmish: the one kills the team-wide
   reach, the other deletes armour from the fight; struck (the fifth round).
 
-## Open for the session
+## Open for the content session
 
-1. Ryan's word on the glyph's grammar (the status mark in the reach frame; the arrow's
-   direction), then the bible's die-entry row and the rules take the kinds and the no-number
-   rule.
-2. The aims' shown words: Ryan's pick from the seventh round's five, or his own.
-3. The numbers.
+1. The numbers; its name, its designator's and its passive's (Claude's picks in the names
+   round of `kestrel_line.md`, Ryan's to settle); its look, a tilt-jet.
+2. The aims' shown words: Ryan, 21 October, left them to the content session ("the aims
+   don't matter since they're not locked or tuned at all"); the seventh round's five are its
+   start.
+3. Answered 21 October: the glyph's grammar (Ryan: "Yes on the grammar"); the bible's
+   die-entry row and the rules carry the kinds and the no-number rule.
 
 ## Waits on
 

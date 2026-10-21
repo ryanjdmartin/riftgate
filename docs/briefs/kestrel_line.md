@@ -12,7 +12,9 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: proposal (Claude, 20 October). **Maker**: Kestrel. **Read first**:
+**Status**: every chassis decided by 21 October and the Buzzard's stock filled that evening;
+open for Ryan: the names round, the three stock kinds, Expose in the leans row (below); a
+proposal (Claude, 20 October) until then. **Maker**: Kestrel. **Read first**:
 `docs/briefs/README.md` (the taste lines, the tiers table, the action-economy section); the
 bible's action-economy row, its leans row and its Kestrel rows (sections 5 and 7); the five
 Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kestrel`);
@@ -27,7 +29,7 @@ burst, a delayed action, a combined entry, own rerolls).
 
 | Tier | Machine | Reads | Produces | Pays | Currency |
 |---|---|---|---|---|---|
-| one | the strafer, the Butcherbird (its go 21 October; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
+| one | the strafer, the Butcherbird (its go 21 October, its name reopened that evening: a BattleTech 'Mech's; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | two | the interceptor (decided 21 October, tier two that day; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
@@ -102,13 +104,14 @@ One pointer each; the proposal is in the brief named.
   reach frame carrying a number (a gun) or the status mark (a debuff), the mark alone a buff.
   The seventh (21 October): Exposed lasts two rounds and a second Expose refreshes it (Ryan);
   the aims' shown words to be rewritten plainly (Ryan: cryptic). `kestrel_interceptor.md`.
-- **The Buzzard** stands; its stock is cold for a heat machine (its hottest stocked gun pays
+- **The Buzzard** stands; its stock was cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
-  heat carried, 5 shield a round. Proposed for the stock pass: the Overclocked Railgun to its
-  stock (off the Kite's, as the pass already plans), a mid-heat Kestrel gun (below),
-  the Pinion Driver out (a blueprint, the Kite's rework); its niche word in content
-  ("Ramping damage") rewritten to the sustain it is (flagged 18 October). Its thinness as a
-  partner (no state given, none needed) is accepted: the Kestrel that stays.
+  heat carried, 5 shield a round. Its stock filled on Ryan's word (21 October, below): every
+  gun a step of heat, the Railgun off the Kite's, the mid-heat gun, the Arc Fault Cannon, a
+  basic shield and the basic vent, the Coriolis Accelerator out (a blueprint, the Kite's
+  rework); its niche word in content rewritten to the sustain it is (flagged 18 October, done
+  21 October). Its thinness as a partner (no state given, none needed) is accepted: the
+  Kestrel that stays.
 - **The Puffin** was reworked and built on Ryan's go (21 October), after his worry that it was
   toxic and boring (20 October) and his split: the Slipstream Projector grows every shield it
   spends on an ally by a fifth of that ally's heat, the Backwash Ionizer at 10 is the big one
@@ -155,18 +158,28 @@ it regains 5 shield for every 10 heat it carries. The fixed piece, the Afterburn
 built: Direct, flat 10, heat 0, fires the whole heat gauge into the shot at +10 per 10 heat
 fired, and the airframe is cold after.
 
+Its stock, filled by Claude on Ryan's word (21 October: "Fill the buzzards stock with what you
+think"), for the stock pass to land:
+
 | Entry | Piece | What it is for |
 |---|---|---|
-| I | the Afterburner Cannon | the dump: 70 at 60 heat, then no regen next round |
-| II | a big hot flat gun (the Railgun, if the pass keeps it; its note calls it temporary) | the regen's fuel |
-| III | a mid-heat gun (a stock hole) | the regen's fuel |
-| IV | a warm flat gun, or Kestrel's chain gun | the cool round |
-| V | a shield | |
-| VI | a vent | the second brake, with cooling at 5 |
+| I | the Afterburner Cannon (fixed) | the dump: 70 at 60 heat, then no regen next round |
+| II | the Overclocked Railgun: Direct, flat 50, heat 40 (kept in the pool, its note's "temporary" retired) | the big hot shot, the regen's best fuel |
+| III | the mid-heat gun, Kestrel's new tier one (below): Direct, flat 25, heat 20 | the middle step |
+| IV | the Arc Fault Cannon: Direct, 15, Chain, heat 10 | the warm round and the trash; Kestrel's chain gun, whatever Chain becomes |
+| V | the basic self shield (Minerva's; its name the pass's) | the reload when it is cold and hurt |
+| VI | the basic vent (Kestrel's, the Ram-air Scoop until the pass renames it) | the brake near 100, with cooling at 5 |
 
-Today its stock carries about 15 heat a round (a warm gun, the chain gun, a gun of no heat, a
-shield, a vent), 5 shield a round, which is why its solo rows are the weakest of the hitters;
-the Pinion Driver leaves it as a blueprint. The round as played: fire hot; at the next round's
+Why: every gun is a step of heat (40, 20, 10) and the Afterburner the dump, so each roll asks
+how hot to ride, and the regen reads the answer at the next round's start; the shield and the
+vent are its two brakes, one for hull and one for heat. Out with the pass: the Laser Carbine
+(heat 5 feeds no loop), the Coriolis Accelerator (a blueprint
+now) and the Laminar Deflector (a tier-two blueprint, never on a tier-two stock). A tier two
+stocks below its tier, so the pass sets the Railgun, the Arc Fault Cannon and the mid-heat gun
+at tier one; if the mid-heat gun is not taken, entry III is a second warm gun. Until the pass
+its stock carries about 15 heat a round (a warm gun, the chain gun, a gun of no heat, a
+shield, a vent), 5 shield a round, which is why its solo rows are the weakest of the hitters.
+The round as played: fire hot; at the next round's
 start cooling takes 5 and the regen reads what is left (40 → 20 shield, 60 → 30); ride hot for
 the regen or dump the Afterburner and be cold next round; the vent when the gauge nears 100
 and the Afterburner is not showing. A hot stock (a 40 and a 20 a round) sits at 60 by round
@@ -175,69 +188,75 @@ ceiling. It wants hot guns of every maker, the Peak's Scorched, the Thrust Overb
 twice as hot: twice the regen for twice the risk) and the Boundary-layer Bleed; it gives
 nothing to others, the Kestrel that stays, and the Puffin's shields grow on it (its vent fought
 it until 21 October). Its niche word in
-content ("Ramping damage") is stale; its 5 per 10 is re-read under the honest shield rule by
-the stock pass.
+content says the sustain it is since 21 October; its 5 per 10 is re-read under the honest
+shield rule by the stock pass.
 
-**The Puffin** (reworked and built 21 October). Tier two, a light hover at move 40. Hull 50,
+**The Puffin** (reworked and built 21 October). Tier one since that day, a light hover at move 40. Hull 50,
 shield 30, field recharge 30, heat maximum 60, cooling 5, armour 0; four hardpoints beside the
 fixed Backwash Ionizer, a d5; two module slots. The passive, the Slipstream Projector: a shield
 it spends on an ally grows by a fifth of the heat that ally carries. The fixed piece, the
 Backwash Ionizer: shield 10, allies only, Overshield, so on a hot ally it is the big one (the
 Buzzard at the top of its gauge, 30 past its maximum; a jet at 40 heat, 18; a cold ally, 10).
 
+At tier one it stocks basics beside the Ionizer (the tiers row; the to-do's stock pass), so
+the Coil, the Diffuser and the Laser Carbine it carries until the pass become its found
+upgrades. By kind, at tier one:
+
 | Entry | Piece | What it is for |
 |---|---|---|
 | I | the Backwash Ionizer | the hot ally, past its maximum |
-| II | the Overcharged buff (the Coil today) | the hitter's round; the strafer counts it twice |
-| III | a plain shield, self or ally (the Deflector is a tier-two blueprint now) | the hurt ally, grown by its heat |
-| IV | a vent that shields (the Diffuser as a combined entry: vent 10, shield 10, no Rapid) | the ally that must cool: it sheds 10, and the shield reads what is left |
-| V | a small gun | when nobody needs anything |
+| II | the basic shield, self or ally (the Halo Shield today) | the hurt ally, grown by its heat |
+| III | the basic vent, self or ally (the Radiator Sail today) | the ally that must cool |
+| IV | a basic gun | when nobody needs anything |
+| V | a second basic gun, or the self-only basic shield (the pass's call) | |
 
 The round as played: the Ionizer on the hot ally the intents name, after it has fired its hot
-gun, so the team's order is part of the play; a plain shield on the hurt one; the Coil on the
-hitter before it fires; the vent that shields on an ally that must cool; a gun otherwise. It
+gun, so the team's order is part of the play; the basic shield on the hurt one, grown by its
+heat; the vent on an ally that must cool; a gun otherwise. Found, the Coil goes on the hitter
+before it fires and the Diffuser is the vent that shields. It
 wants hot allies and shields of every maker, each grown through its passive; it gives the jets
 a bubble sized to the risk they took, the strafer's doubled Coil and the off-tank its magazine,
 and the Buzzard riding hot is its best ally now. Alone it loses, by design.
 
 
 Kestrel's pool today: ten components (one fixed, the Afterburner; one locked, the Backwash
-Ionizer; the Pinion Driver leaving for the pool as a blueprint) and three modules. Every
-Kestrel weapon is Direct, flat and single-target, Chain aside; no multi-strike piece, no
-rider, no Indirect piece, no rolled gun, one hot gun (the Railgun at 40 heat, which its own
-note calls temporary) and nothing between it and the Carbine's 5. What the eight builds want
-that the pool does not give:
+Ionizer; the Coriolis Accelerator leaving the Kite's and the Buzzard's stocks for the pool as a
+blueprint) and three modules. Every stocked Kestrel weapon is Direct, flat and single-target,
+Chain aside: no multi-strike piece, no rider, one hot gun (the Railgun at 40 heat, which its
+own note calls temporary) and nothing between it and the Carbine's 5. What the builds want
+that the pool does not give, re-read 21 October with every machine decided (the stock pass's
+list once Ryan moves it; the names are in the names round below):
 
-1. **A Kestrel multi-strike gun**, tier one or two: flat and hot, 5 ×4 at heat 15, a rotary
-   cannon on a jet (the Buzzard's inspiration carries one). The strafer's (×8 under its
-   passive), the platform's payoff (growth on every strike), Flak's partner. Parted from the
-   Maxigun (rolled, cool, three strikes). The to-do's stock pass already names multi-strike as
-   the blow currency; this is Kestrel's one.
-2. **A mid-heat Kestrel gun**, tier one: flat 25, heat 20, Direct: the step between the
-   Carbine and the Railgun. The off-tank's middle burn (20 shield for 20 more and a zap of 20),
-   the Buzzard's regen fuel, the Kite's doubled 50 at 30 heat.
-3. **A Kestrel reroll module**, tier two: one free reroll of this die a round, its stat line
-   paid (heat maximum −20, or shield −20), per the row (own rerolls as a number, priced so no
-   module is the universal pick). The platform's second roll, the Kite's fishing for
-   its live lock, the Armadillo's for its seal or lure.
-4. **The Wake Diffuser**, landed 20 October on Ryan's go: a vent of 10 that shields 10, no
-   Rapid (the shield half with the combined entry's engine, the to-do). **The Laminar
-   Deflector** keeps its Rapid as a tier-two blueprint (Ryan, 20 October: a Rapid shield is
-   never below tier two, "not nearly as toxic as rapid vent", where a Rapid vent is never
-   below tier three), so the stock pass takes it out of the tier-one and tier-two stocks (the
-   Kite's, the Buzzard's, the Puffin's, the Prairie Dog's) and it is found; a Kestrel
-   twist in its place was Claude's lean for the tier-three case and is withdrawn.
-5. **A big hot flat gun kept in the pool** for the off-tank's and the Buzzard's builds (the
-   Overclocked Railgun, if the pass keeps it: temporary by its note since 26 September), in the
+1. **A Kestrel multi-strike gun**, tier one or two: Direct, flat and warm, 5 ×4 at heat 15, a
+   rotary cannon on a jet. The strafer's (×8 under its passive), the interceptor's cash (an
+   Exposed foe's armour counts for nothing, the one thing a multi-strike gun fears), Flak's
+   partner. Parted from the Maxigun (rolled, cool, three strikes). The to-do's stock pass
+   already names multi-strike as the blow currency; this is Kestrel's one.
+2. **A mid-heat Kestrel gun**, tier one: Direct, flat 25, heat 20, the step between the
+   Carbine and the Railgun. The Storm Petrel's middle burn (20 shield for 20 more and a zap of
+   20), the Buzzard's regen fuel (its stock above), the Kite's doubled 50 at 30 heat.
+3. **A Kestrel reroll module**, tier two: one free reroll of this machine's die a round, its
+   stat line paid (heat maximum −20, or shield −20), per the action economy's row (own rerolls
+   as a number, priced so no module is the universal pick). The Kite's d3 fishing for its live
+   lock, the strafer's spray, any small die; Kestrel's own reroll beside the Giant Petrel's
+   team bank.
+4. **The Railgun kept**: the pool's big hot flat gun, its "temporary" note retired, in the
    Buzzard's stock rather than the Kite's.
-6. **Chain in mines**, a rule change, so the Arc Fault Cannon is a bomb (the bomber's brief).
-7. **Seven locked pieces to name**: the spray, the lure that regens itself, the dive, the reset
-   gun, the three-strike shield, the pull and the mark.
-8. **Not holes**: no Kestrel Indirect piece (the dive is Kestrel's reach, priced, where the
-   artillery makers' is free) and no Kestrel rolled gun (the Muzzle Velocity Booster serves
-   other makers' rolled guns on Kestrel frames, the cross-maker pull); no Kestrel plain shield
-   (the basic shield is shared; Overshield is the Puffin's); no Kestrel cold hard hitter (the
-   Kite's pull of Minerva's and Wainwright & Sutler's kinetics is its design).
+5. **Settled since**: the Wake Diffuser landed 20 October (a vent of 10 that shields 10, no
+   Rapid), and the Laminar Deflector is a tier-two blueprint with its Rapid, out of the
+   tier-one and tier-two stocks (Ryan, 20 October: a Rapid shield is never below tier two, a
+   Rapid vent never below three); Chain in mines at the Magpie's go (every keyword acts from a
+   mine as the shot lands, Chain whatever Chain becomes); the seven locks to name are the
+   names round's (the spray, the lure that regens itself, the designator, the pull and the
+   Giant Petrel's three), the reset gun the Pinion Driver and the mark the Syrinx Drone since
+   21 October.
+6. **Not holes**: a stocked Kestrel Indirect gun (Kestrel's Indirect pieces are locked: the
+   designator, the lure, the pull, the drone and the Giant Petrel's battery; the artillery
+   makers' reach is theirs) and a stocked Kestrel rolled gun (the spray and the battery are
+   locked; the Muzzle Velocity Booster serves other makers' rolled guns on Kestrel frames, the
+   cross-maker pull); no Kestrel plain shield (the basic shield is shared; Overshield is the
+   Puffin's); no Kestrel cold hard hitter (the Kite's pull of Minerva's and Wainwright &
+   Sutler's kinetics is its design).
 
 ## The two free slots
 
@@ -259,14 +278,17 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 
 - The leans row's Kestrel line: rewritten 20 October on Ryan's word.
 - The Buzzard's niche word in content ("Ramping damage"; its notes already say damage scaling
-  was dropped).
+  was dropped): rewritten 21 October to the sustain it is.
 - The to-do's stock pass line and the bible's stock-pass row lock the Pinion Driver on the
   Kite and give the Buzzard's hardpoint a basic; the Kite's rework supersedes
   both on its go (the reset gun its lock, the Driver a tier-two or tier-three blueprint, the
   Kite at tier two stocking tier-one pieces).
 - The tiers row's "every tier-one chassis has a locked piece once the Pinion Driver locks on
-  the Kite": the three new tier ones each carry one (the spray, the lure, the dive).
-- The bomber brief's "a free mark every other round" (cooldown 1 is the switch-off).
+  the Kite": rewritten 21 October (the Kite leaves tier one with its rework); Kestrel's tier
+  ones each carry one (the strafer's spray, the Storm Petrel's lure, the Puffin's fixed
+  Ionizer).
+- The bomber brief's "a free mark every other round" (cooldown 1 is the switch-off): the
+  gate is the Syrinx Drone's since 21 October (Rapid on a foe already Exposed).
 - The makers table's "nothing big" takes two exceptions, the bomber heavy and the platform
   heavy or assault, a Lean bending as Leans do.
 
@@ -296,15 +318,63 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
   tier two. Kestrel stands 3-3-2: the Butcherbird, the Storm Petrel and the Puffin; the
   Buzzard, the Kite and the interceptor; the bomber and the capital.
 
+## The names round (21 October, evening)
+
+- Ryan, 21 October: "Lets name the remaining items. Fill the buzzards stock with what you
+  think. What are the other questions?"
+- Claude's picks, one each with another, Ryan's to settle. Kestrel's register is flight and
+  aerodynamics, with a bird inside where one fits (the Pinion Driver, the Syrinx Drone).
+  Every chassis name is checked against `content/reserved_names.json` (BattleTech, Heavy Gear,
+  Warhammer 40,000, Halo), which is how the Butcherbird turned out a BattleTech 'Mech
+  (`kestrel_strafer.md`); every name against the names in content on main and the branches.
+
+| Item | What it is | Claude's pick | The other |
+|---|---|---|---|
+| The strafer (the Butcherbird is a BattleTech 'Mech) | the swing-wing; two strikes at half | the Skua: seabirds that harry other birds in repeated dives until they drop what they carry (and a 1930s naval dive-bomber) | the Kingbird: the tyrant flycatchers, which strike hawks again and again |
+| The interceptor | the tilt-jet; a free setup a round; Exposes | the Swift: among the fastest flyers, living on the wing; acting twice a round is its tempo | the Needletail: a swift claimed the fastest in flapping flight, a needle that points the team at the kill |
+| The strafer's lock, the spray | 10–15 ×2, the first strike aimed, the rest at random | the Flechette Pod: fletched darts, sprayed | the Raking Cannon: raking fire, and a falcon that rakes off after other quarry |
+| The Storm Petrel's lock, the lure that regens itself | Lures a foe; Regenerating on itself | the Corposant Lamp: St. Elmo's fire, the storm glow on a ship's mast that every eye turns to | the Squall Lantern |
+| The interceptor's lock, the designator | an Indirect debuff that Exposes | the Fovea Designator: a falcon's eye has two foveae, the deep one for distance | the Schlieren Designator: the photograph that shows invisible air |
+| The Magpie's lock, the pull | every mine gathered into one slot and set off | the Roost Beacon: every mine comes home to roost | the Larder Hook: the hoard gathered into one larder |
+| The Giant Petrel's first lock, the Hot-Pit | Rapid: a team reroll on itself, or for three rerolls a spent ally acts again | the Hot-Pit Boom: hot-pit refuelling turns a jet around with its engines running | the Turnaround Rig |
+| Its second, the battery | a rolled Indirect gun; its kill gives two rerolls | the Wavetop Launcher: the ekranoplan's sea-skimming missiles ("battery" is Wainwright & Sutler's word) | the Spindrift Salvo |
+| Its third, the buff | Overcharged 2 and a roll for an ally | the Reheat Uplink: reheat is the afterburner, sent to an ally | the Throttle Uplink |
+| The strafer's passive | every weapon strikes twice at half | the Interrupter Gear: the gear that let a gun fire between a propeller's blades | the Split-cycle Breech |
+| The Storm Petrel's passive | the plate, the burn and the zap | the Plenum Discharge: the plenum is the hovercraft's cushion chamber | the Skirt Capacitor |
+| The interceptor's passive | a debuff or a buff Rapid once a round | the Handoff Relay: the target handed to the team, the jet free to go again | the Quick-turn Avionics |
+| The Magpie's passive | the mines | the Loiter Bay: loitering munitions wait over a target | the Delay-fuse Bay |
+| The Giant Petrel's passive | the bank | the Holding Pattern: unspent rerolls circle until called down | the Ready Stack |
+| The Kite's passive, reworked | doubled, flat heat, dark two rounds | Disabled Weapon Regulators, kept: the rework still disables them | |
+| The multi-strike gun, if the kind goes | Direct, flat 5 ×4, heat 15 | the Cyclic Cannon: the cyclic rate is a gun's rate of fire | the Rotary Shear |
+| The mid-heat gun, if the kind goes | Direct, flat 25, heat 20 | the Transonic Rifle: transonic is the band between subsonic and supersonic, the middle gun (a stock piece may be a rifle; a locked Kestrel piece never is, Ryan, 11 October) | the Bow-shock Rifle |
+| The reroll module, if the kind goes | a free reroll of its own die a round | Trim Tabs: the small surfaces a pilot adjusts in flight | the Gimbal Reset |
+
+- Designations, in Kestrel's pattern (the codex's stamped tag, so shown text): K-13 Mk I
+  Swing-Wing Strafer, K-15 Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet
+  Spotter (the interceptor), K-19 Mk I Tandem-Wing Minelayer (the Magpie), K-21 Mk I
+  Ground-Effect Flagship (the Giant Petrel, beside the Puffin's Ground-Effect Escort). The
+  Kite keeps K-7 and takes Mk IV with its rework, so its Interceptor parts from the new
+  machine's Spotter.
+- Words left out: Battery (Wainwright & Sutler's lean word, and the Clydesdale's Battery
+  Director), Siphon (main's Heliographic Siphon), Talon (the Arsenal's), Scramble (a foe's
+  action), Vectoring (the Buzzard's nacelles vector in its acts), Pathfinder (a BattleTech
+  'Mech).
+
 ## Open for Ryan
 
-1. The Buzzard's stock, the one per-chassis item left (every other machine landed 21 October).
-2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
-   first.
-3. The leans row's Kestrel line.
+1. The names round above: a pick per item, the other, or his own; the strafer's first, since
+   the validator refuses the Butcherbird without a pass.
+2. The three stock kinds above (a multi-strike gun, a mid-heat gun, a reroll module), for the
+   stock pass's list.
+3. Expose in the leans row's Kestrel line: two of its three carriers are Kestrel's (the
+   designator and the Syrinx Drone; the Swallowtail's Spotting Flare the third). Claude's
+   lean: yes. The row itself was rewritten 20 October; this list kept it open by mistake until
+   21 October.
+
+Done 21 October: the Buzzard's stock, filled on Ryan's word (above).
 
 ## What the session hands back
 
-Ryan's calls, then: each brief's go as its own records (rows, rules, content planned); the
-stock kinds into the to-do's stock pass line; the leans row; this brief retired once the
-line's briefs have landed.
+Ryan's calls, then: the names into each brief, the bible's Kestrel row and the content
+sessions' lines; the stock kinds into the to-do's stock pass line; Expose in the leans row if
+he takes it; this brief retired once the line's briefs have landed.

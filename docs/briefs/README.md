@@ -145,7 +145,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October), the off-tank, the Storm Petrel (its go 21 October: a fast hovercraft at 50; plate and burn on the passive, a lure that regens itself locked), the Puffin (tier one since 21 October, reworked and built that day: its shields grow by the ally's heat, the Ionizer the overshield through it) | Buzzard, Kite (up, decided 21 October: the trash chain, its lock the Pinion Driver, the old finisher the Coriolis Accelerator; the caster-killer niche to the interceptor), the interceptor (tier two, Ryan, 21 October; decided that day: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | the bomber, the Magpie (Ryan, 15 October; its go 21 October: a heavy tandem-wing flyer, its mark the Syrinx Drone, Rapid on a foe already Exposed), the gun platform, Kestrel's capital ship, the Giant Petrel, an ekranoplan hover (Ryan, 20 and 21 October: the reroll economy all the way, the action-economy utility capstone; its go 21 October: the formation leader, aggressive beside the Swallowtail's support; the bank; a Rapid lock giving the team a reroll or, for three rerolls, a spent ally's action; the battery; Overcharged 2 and a roll for an ally) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October; its name reopened that evening, a BattleTech 'Mech's), the off-tank, the Storm Petrel (its go 21 October: a fast hovercraft at 50; plate and burn on the passive, a lure that regens itself locked), the Puffin (tier one since 21 October, reworked and built that day: its shields grow by the ally's heat, the Ionizer the overshield through it) | Buzzard, Kite (up, decided 21 October: the trash chain, its lock the Pinion Driver, the old finisher the Coriolis Accelerator; the caster-killer niche to the interceptor), the interceptor (tier two, Ryan, 21 October; decided that day: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | the bomber, the Magpie (Ryan, 15 October; its go 21 October: a heavy tandem-wing flyer, its mark the Syrinx Drone, Rapid on a foe already Exposed), the gun platform, Kestrel's capital ship, the Giant Petrel, an ekranoplan hover (Ryan, 20 and 21 October: the reroll economy all the way, the action-economy utility capstone; its go 21 October: the formation leader, aggressive beside the Swallowtail's support; the bank; a Rapid lock giving the team a reroll or, for three rerolls, a spent ally's action; the battery; Overcharged 2 and a roll for an ally) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -174,12 +174,12 @@ Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomb
 New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
 the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
 team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October;
-Kestrel's, Ryan, 19 October: the gun platform proposed in `kestrel_gun_platform.md`). A back-rank
-reach given to the whole team (the interceptor's designator, proposed 20 October: a foe Exposed
+Kestrel's, Ryan, 19 October: the Giant Petrel's bank, decided 21 October in `kestrel_gun_platform.md`). A back-rank
+reach given to the whole team (the interceptor's designator, decided 21 October: a foe Exposed
 for every Direct gun; its priced form, the dive through a standing front at the front foe's
 blow, on its bench). Kestrel's stock holes by kind
-(a multi-strike gun, a mid-heat gun, a reroll module, the Diffuser and the Deflector re-priced,
-Chain in mines) are in `kestrel_line.md` for the stock pass.
+(a multi-strike gun, a mid-heat gun, a reroll module; the Diffuser, the Deflector and Chain in
+mines settled since) are in `kestrel_line.md` for the stock pass.
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
 (Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
 if one is ever wanted; a planned chassis is never dealt, so its deal is the Prairie Dog or the
@@ -292,13 +292,13 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_hedgehog.md` | direction, in session (the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
-| `kestrel_strafer.md` | decided; the go 21 October (the Butcherbird, a swing-wing) | Kestrel | 1 | the content session: its numbers, then the brief retires |
+| `kestrel_strafer.md` | decided; the go 21 October (the Butcherbird, a swing-wing; its name reopened that evening, a BattleTech 'Mech's) | Kestrel | 1 | Ryan's word on the name; the content session: its numbers, then the brief retires |
 | `kestrel_shield_spender.md` | decided; the go 21 October (the Storm Petrel, a hovercraft; the off-tank package of 19 October) | Kestrel | 1 | the content session: its numbers and model; its runner row on the shield rule's engine |
 | `kestrel_bomber.md` | decided; the go 21 October (the Magpie, a tandem wing; the Syrinx Drone) | Kestrel | 3 (Ryan, 15 October) | the engine and content sessions: its numbers, the model, a bot that values a mine |
 | `kestrel_gun_platform.md` | decided; the go 21 October (the Giant Petrel, the formation leader, an ekranoplan) | Kestrel | 3 | the engine and content sessions: the bank, the Hot-Pit, its numbers and model |
-| `kestrel_kite.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
-| `kestrel_interceptor.md` | decided (Ryan's go, 21 October: the gate, Exposed as reach and armour for two rounds, the die's grammar; the bible's rows) | Kestrel | 1 | the content session: its content, Expose and Exposed in the vocabulary, the aims' words, its name and look |
-| `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots | Kestrel | all | Ryan's calls |
+| `kestrel_kite.md` | decided; the go 21 October (its lock the Pinion Driver, the old finisher the Coriolis Accelerator) | Kestrel | 2 (from 1) | the engine session: the cooldown property, the kill trigger, the heat tax; then its content |
+| `kestrel_interceptor.md` | decided (Ryan's go, 21 October: the gate, Exposed as reach and armour for two rounds, the die's grammar; the bible's rows) | Kestrel | 2 (Ryan, 21 October) | the content session: its content, Expose and Exposed in the vocabulary, the aims' words, its name and look |
+| `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the free slots; every chassis decided by 21 October, the Buzzard's stock filled that evening, the names round | Kestrel | all | Ryan's calls: the names, the three stock kinds, Expose in the lean |
 | `ws_boiler.md` | proposal | Wainwright & Sutler | 1 (proposed as 2) | the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | proposal | Wainwright & Sutler | 3 | the session on what shown text calls the die |

@@ -5,7 +5,8 @@ mechanic is decided; its numbers, locked piece and shape are open. "The strafer"
 label; the name and the look are Ryan's.
 
 **Status**: decided (Ryan, 14 October), the go given 21 October: the Butcherbird, a swing-wing;
-its numbers with the content session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
+its name reopened that evening (a BattleTech 'Mech's, below); its numbers with the content
+session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
 accordingly"). **Maker**: Kestrel. **Tier**: one (Ryan, 21 October: "Put butcher in": Kestrel's tier ones
 are the Storm Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). **Read first**: `docs/briefs/README.md`; the
 bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8
@@ -239,7 +240,8 @@ reach; each tested with synthetic passives.
 
 ## Open for the content session
 
-1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October).
+1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October); its name, if
+   Ryan renames it (below), and the lock's and the passive's (the line brief's names round).
 2. The start's hole below (a halved basic against armour 5): section 12's scales question and
    the stock pass, with Exposed its Kestrel answer meanwhile.
 
@@ -254,14 +256,29 @@ reach; each tested with synthetic passives.
   that question closes either way (both flyers at 50). The exposed-rotor gunship is the other
   classic strafer, sent to Aphelion on 20 October, and still a flyer. Names, birds that strike
   fast and repeatedly: the Shrike (the butcher-bird, strikes and impales again and again; a
-  minor BattleTech name, judged as the Buzzard and the Kite were, both BattleTech
-  names too and neither iconic), the Butcherbird (the same family, no collision), the Skua
+  minor BattleTech name, judged as the Goshawk and the Sparrowhawk were, both BattleTech
+  names too and neither iconic), the Butcherbird (the same family; called clean, wrongly: it
+  is a BattleTech 'Mech too, below), the Skua
   (harries other birds until they drop what they carry; clean), the Hobby (the fastest small
   falcon, hawking in passes), the Harrier (too on the nose), the Merlin (BattleTech, Ryan).
-  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Kite is a
+  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Sparrowhawk is a
   battletech aircraft, and goshawk a nickname of an obscure reference, so that's mostly why
   they get a pass." Decided: the Butcherbird, a swing-wing; the numbers with the content
-  session.
+  session. The same day Ryan closed those two passes ("I meant as replacement sparrow and
+  goshawk names, to close that exception"): the Sparrowhawk became the Kite and the Goshawk
+  the Buzzard.
+
+## The name reopened (21 October, evening)
+
+- Claude, 21 October, checking the names round against `content/reserved_names.json`: the
+  Butcherbird is a BattleTech 'Mech (the list's birds), so calling it clean above was wrong,
+  and the validator refuses the name until the entry records a pass under
+  `design.name_clash`. With the roster's two BattleTech passes closed that day, the name is
+  Ryan's again: a pass, or a new one. Claude's pick, checked against the list: the Skua
+  (seabirds that harry other birds in repeated dives until they drop what they carry, and dive
+  at an intruder's head; also a 1930s naval dive-bomber, which suits a strafer); the other,
+  the Kingbird (the tyrant flycatchers, which strike hawks and crows again and again). The
+  swing-wing stands either way. The names round for the line is in `kestrel_line.md`.
 
 ## Holes already raised
 

@@ -143,7 +143,7 @@
    "design": {
     "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.",
     "niche": "assassin",
-    "name_clash": "Kept (Ryan, 28 September). Sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, both obscure in their own properties; the name conjures the bird, not their machine. A coincidence, not a lift, and the 'hawk pair with the Goshawk is the point."
+    "name_clash": "The id only, since 21 October: sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Kite, which clashes with nothing."
    },
    "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
    "hull": 60,
@@ -437,9 +437,9 @@
    "tier": 2,
    "design": {
     "fantasy": "The larger cousin of the Sparrowhawk, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
-    "niche": "Ramping damage",
+    "niche": "Hot sustain: shield from its heat, and one blow that fires it all",
     "notes": "Locked weapon(s) should vent heat and deal increased damage proportional to heat vented. Decided 28 September: split, not stacked. The passive is sustain from heat (Thermal Recoupler regains shield per 10 heat at the start of its turn, the game's first in-fight regen, safe on one chassis) and the locked Afterburner Cannon is the burst that spends it: ride hot for regen or dump for the hit. Damage scaling dropped; the Sparrowhawk owns that. Arc Projector is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move. Renamed the Buzzard on 21 October (the Goshawk until then; Ryan: the old name's pass was an obscure nickname's, and it closes with the Sparrowhawk's; the Buzzard is the big broad-winged raptor that soars and stays, which is what this machine does). The id stays.",
-    "name_clash": "Kept (Ryan, 28 September). Goshawk is the Inner Sphere designation of the Clan Vapor Eagle (a 55-ton 'Mech), and there is a Goshawk II. A designation few know, not the name people use; Ryan minds a designation-tier clash less, and the 'hawk pair with the Sparrowhawk stays."
+    "name_clash": "The id only, since 21 October: goshawk is the Inner Sphere designation of the Clan Vapor Eagle (a 55-ton 'Mech), and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Buzzard, which clashes with nothing."
    },
    "codex": "",
    "hull": 100,

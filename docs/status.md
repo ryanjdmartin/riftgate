@@ -39,143 +39,30 @@ document's job and every command are in `README.md`.
   spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
   proposal, its third round), the to-do's review line under the design sessions (Armoured and
   Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
-- `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
-  proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
-  Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
-  proposed for the go; the shield-spender an off-tank package at tier one on Ryan's word (a
-  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a
-  whole, heavy proposed and the capital ship; two briefs of their own,
-  `kestrel_gun_platform.md` (the capstone, Ryan's shape: every roll of its die grows its
-  entries, lock or ride) and `kestrel_kite.md` (to tier two: a d3, doubled, flat heat, dark two
-  rounds, a locked reset gun whose kill brings every weapon back; hull 30 decided); the
-  interceptor (its first weapon each round Rapid) in the README's tiers table, no brief yet;
-  Ryan's leans recorded (overlap is fine if the shapes differ, rerolls Kestrel's, a second
-  tier-one lure so the Armadillo is no must-pick, Aphelion to need a defensive tier one, the
-  mode-shifter to Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's
-  direction goes to main before anything else does any work) and kept open for the Kestrel line
-  review. The eighth round (19 October) in the platform's brief: no doubled payout, multi-hit
-  pieces its payoffs, the three shapes of the gamble with their arithmetic (growth,
-  half-strikes, whole stacks), and a Rapid census across the branches (four chassis chase Rapid
-  pieces first, in three makers, for five pieces). The ninth round (20 October): Ryan's
-  deep-dive ask on the action economy, answered in the briefs README (Rapid sells five wants,
-  four carriers ungated, a home for each want other than more Rapid pieces, the commander layer
-  among them), and the platform's engine moved from Rapid to rerolls (an own reroll a round,
-  the throttle retired, the three-strike shield its lock). Docs only; nothing built, nothing in
-  content. Main merged in on 19 October (the Wainwright & Sutler goes). To resume: Ryan's calls
-  in the open Kestrel briefs, then on his go the records each brief's "What the session hands
-  back" lists. The tenth round (20 October), after the direction reached main: the Kestrel line
-  review in `docs/briefs/kestrel_line.md` (each of the eight machines read under the direction,
-  the overlap map, the stock holes by kind, the two free slots, the stale records), a brief for
-  the interceptor (`kestrel_interceptor.md`: the dive as its lock, the caster-killer niche
-  moved there from the Kite's rework) and a round in each Kestrel brief (the bomber's mark
-  gated and Chain in mines; the Buzzard's cold stock; the Puffin's Diffuser as a combined
-  entry; the platform's settlements). Then, on Ryan's word (the review read as bullets, the
-  stock pieces placeholders until the stock pass), every Kestrel kit written out whole in its
-  brief, "The kit, written out", the stock by kind (the Buzzard's and the Puffin's in the line
-  brief). The eleventh round (20 October), Ryan's reading of the kits: landed on his go, the
-  Wake Diffuser's Rapid off (a vent that shields; its shield half with the combined entry's
-  engine, the to-do; tests green) and his rule that a Rapid vent or shield is never below tier
-  three (the bible's Rapid row, section 12's Deflector question in the Diffuser's place, the
-  rules); recorded as his calls, the capital ship is the gun platform and it hovers (not the
-  bomber), the off-tank a hovercraft at 50 and a tier-one generalist, the interceptor a
-  tilt-jet, the exposed-rotor helicopter Aphelion's, Kestrel's identity heat, rerolls, strikes
-  and risk (the leans row). Re-proposed at his ask: the capital's second form (the fleet's
-  reroll bank with growth on every roll, a lock that relaunches a jet's die, four hardpoints;
-  `kestrel_gun_platform.md`, the sixth round), the Puffin made Kestrel (its Ionizer reading an
-  ally's heat; a brief of its own, retired on its go) and the interceptor's second kit (a
-  weapon of no damage Rapid once a round, the designator dive that lights a back-rank foe for
-  the team's Direct guns; its brief rewritten). The twelfth round (20 October, evening), Ryan's
-  four calls: a Rapid shield never below tier two (a Rapid vent never below three), so the
-  Laminar Deflector keeps its Rapid as a tier-two blueprint and leaves the early stocks with
-  the stock pass (the bible's Rapid and Deflector rows, section 12's question gone, the rules,
-  the vocabulary note, the Deflector's notes); the capital leans into the reroll economy all
-  the way, no growth (its seventh round: the bank, an ally's action bought with three rerolls,
-  the launch as a shield that rolls a jet's die, the flare as a vent that brews a reroll); the
-  Puffin on his split (the passive grows every shield it spends on an ally by that ally's heat,
-  the Ionizer the overshield through it, the cooling gone; its second round); the interceptor's
-  third kit, refined (the control gate and a designator with free reach that paints a foe for
-  the team's Direct guns; the dive benched). The thirteenth round (20 October, late), Ryan's
-  three questions answered in the briefs: the Puffin's size (its third round: the Ionizer's
-  base cut, 10 the lean, the growth one for one at the stock pass's heat scale of 1–20, a fifth
-  of today's heat until then, no cap; heat at 1–20 backed as the pass's direction and 1–10 read
-  as a re-pricing); the interceptor's mark named Exposed, the game's own word (its fourth
-  round: reach alone, the on-hit half declined as Flak's kind, the armour clause benched, the
-  foes' aim word flagged for renaming), and its gate widened to buffs by the die's glyph (a
-  shield or vent that also buffs is excluded by its glyph; a weapon of no damage proposed to
-  print no number). The fourteenth round (20 October, late): Ryan took Exposed as reach and
-  armour counting for nothing, and no number on a weapon of no damage, which deals none under
-  any effect; the duration evaluated in the interceptor's fifth round (the round's, as Expose
-  1, the lean; a foe's statuses tick at its turn whether it acts or skips, so "until it acts"
-  buys nothing; through the next round the lever) and his die kinds answered (Direct, Indirect,
-  Debuff, Buff, Shield, Vent; the blank a seventh drawing; the Debuff glyph wears its reach;
-  the formation word's one meaning proposed). On his word on the set: the bible's die-entry row
-  and the rules take the kinds and the no-number rule, one republish (the to-do's line). The
-  fifteenth round (20 October, late): Ryan struck the formation word's one meaning (losing its
-  front line doesn't lose its armour; the formation word is rules text, the debuff has its
-  icon) and asked whether the reach frame with the buff's mark inside is the debuff's glyph;
-  answered as the die's grammar (the interceptor's sixth round: a frame carrying a number is a
-  gun, carrying the status mark a debuff, the mark alone a buff; the crosshair's centre opened,
-  the arrow's direction doubling the frame, the phone test), the Translocator an Indirect
-  debuff by its icon, the aim's word explained as the open item. The sixteenth round (21
-  October): Exposed lasts two rounds and a second Expose refreshes it (Ryan: go aggressive),
-  and the aims' shown words are to be rewritten plainly (Ryan: cryptic; five proposed in the
-  interceptor's seventh round, the to-do's line); the Kestrel roster's standing read back to
-  him. The interceptor's go (21 October: yes on the grammar, the aims' words to the content
-  session with its name, look and numbers): the bible's Kestrel row carries the design, its
-  die-entry row the kinds, the grammar and the no-number rule, the die-shows row the print
-  (live v0.224, built on the live v0.223; the branch file carries the same rows), the rules the
-  debuff kind, Expose, Exposed and Direct's clause; its brief decided and kept until the
-  content session lands it (the to-do's lines). The strafer's go (21 October): the Butcherbird,
-  a swing-wing (the bible's Kestrel row, live v0.225; its brief, the README, the to-do's
-  content-session line). The two names' pass closed (Ryan, 21 October): the Sparrowhawk is the
-  Kite and the Goshawk the Buzzard, the ids kept (content's shown names and notes, every
-  record's mentions, the bible's names row and chassis table, live v0.226; the brief file
-  `kestrel_kite.md`; 485 tests green; the hangar page's republish owed to the next content
-  session). The off-tank's go (21 October): the Storm Petrel, a hovercraft at 50, the kit as
-  written (the plate and the burn with its zap on the passive, the lure that regens itself its
-  lock); the bible's Kestrel row and its stacking row (the regen stacks), live v0.227, the
-  branch file's Kestrel row synced to the live one; the rules' Regenerating; its brief decided,
-  the strafer's open list and hand-back rewritten for the content session. The Puffin's go (21
-  October), built: the Slipstream Projector grows every shield it spends on an ally by a fifth
-  of that ally's heat (a new on_shield_granted effect read at the spend, by the dragged die and
-  the bot too; a test on a synthetic passive), the cooling gone, the Backwash Ionizer at 10;
-  the bible's Puffin row rewritten in place and its chassis-table line, the Whip Scorpion row's
-  Puffin clause, live v0.228; its brief retired to git; 486 tests green. The Kite's go and the
-  Puffin's tier (21 October): the Kite's rework decided when Ryan named its lock (the bible's
-  new Kite row; its engine and content to come, its tier move with them), the reset gun the
-  Pinion Driver and the old finisher the Coriolis Accelerator (content: the name and the id,
-  the Kite's and the Buzzard's stock, the vocabulary note, the model tool's comments); the
-  Puffin at tier one in content (its stock reads as tier-one pieces and starting blueprints
-  until the stock pass); 486 tests green; live v0.229. Ryan put the Butcherbird at tier one and
-  the interceptor at tier two (21 October; the Kestrel row, live v0.230, the briefs, the
-  README's tiers row), so Kestrel stands 3-3-2: the Butcherbird, the Storm Petrel and the
-  Puffin; the Buzzard, the Kite and the interceptor; the bomber and the capital. The bomber's
-  round of 21 October in its brief: Ryan's mark through Exposed (Marked and Exposed, Rapid on a
-  foe already Exposed) with its holes and the lean on the self-loop (Rapid only on a foe
-  Exposed and not yet Marked), the mark's name (the Echo Drone the lean), birds that carry (the
-  Lammergeier the lean) and the look (the tandem wing the lean); then the bomber's go the same
-  day: the Magpie, a heavy tandem-wing flyer, its mark the Syrinx Drone (Marked, and Rapid on a
-  foe already Exposed, else Exposed with no refresh; Ryan's wording), keywords acting from a
-  mine as the shot lands (the bible's Kestrel row, live v0.231; the rules' mine, pull, drone
-  and Marked; its brief decided and kept for its engine). Ryan's calls of the evening (21
-  October): the Magpie's debuff is the Syrinx Drone, its piece's name (the rules, the bible);
-  the helicarrier has nothing called Mark, its Spotting Flare Exposing and Suppressing if a
-  condition is met (the Swallowtail's row in the live bible; its vocabulary's planned Mark
-  leaves with the Wainwright & Sutler session, the to-do); the capital is the Giant Petrel, an
-  ekranoplan. Its eighth round in its brief: Ryan's frame of three locks and three hardpoints
-  around rolls, rerolls and actions; the cash-in proposed as the Hot-Pit, a Rapid support lock
-  spending three rerolls on a spent ally, the launch the roll, the battery a rolled gun brewing
-  two rerolls on a kill. Its ninth round, Ryan's shapes: the formation leader, aggressive where
-  the Swallowtail supports; lock 1 Rapid (a team reroll on itself, or an ally's action for
-  three rerolls), lock 2 the battery, lock 3 Overcharged 2 and a roll for an ally; its go the
-  same day on his answers (the rerolls paid, a spent ally, the buff on any ally, the bank, the
-  hardpoints), with his rule that a locked piece on a tier-three chassis is tier two or three
-  in power (the bible's locked-component row); the bible's Kestrel row and the rules (the bank,
-  the Hot-Pit, the battery, the buff), live v0.235. Every Kestrel machine is now decided: tier
-  one the Butcherbird, the Storm Petrel and the Puffin (built); tier two the Buzzard (built),
-  the Kite and the interceptor; tier three the Magpie and the Giant Petrel; two of Ryan's ten
-  slots free. What is left: the content and engine sessions (the to-do's lines), the Buzzard's
-  stock and the stock kinds for the stock pass, and the merge to main on Ryan's word (main has
+- `ccr-b6da49d3-4ft738` (the Kestrel session, 18 to 21 October, resumed from main; merged into
+  main on 20 October for the action economy's direction and kept open for the line). Every
+  Kestrel machine is decided, 3-3-2, two of Ryan's ten slots free: tier one the Butcherbird (a
+  swing-wing strafer; its name reopened on 21 October, evening, as a BattleTech 'Mech's), the
+  Storm Petrel (a hovercraft off-tank) and the Puffin (built: its shields grow by the ally's
+  heat); tier two the Buzzard (built), the Kite (its rework decided: the Pinion Driver) and the
+  interceptor (a tilt-jet that Exposes); tier three the Magpie (mines, the pull, the Syrinx
+  Drone) and the Giant Petrel (the formation leader: the bank, the Hot-Pit, the battery, the
+  buff). Decided on the way: Exposed (Direct reach and no armour, two rounds, refreshed), the
+  die's six kinds and their grammar, no number on a weapon of no damage, a Rapid shield never
+  below tier two and a Rapid vent never below three, the Kite and the Buzzard as names (the ids
+  kept), Kestrel's lean (heat, rerolls, strikes, risk), a locked piece's power at its chassis's
+  depth. Built here: the Puffin's rework, the Wake Diffuser's Rapid off, the Coriolis
+  Accelerator's rename; 486 tests green. The design is in the bible's Kestrel, Kite, Puffin,
+  die-entry and locked-component rows and the rules; each machine's rounds stay in its brief
+  until its session lands it (the to-do's lines); the line in `docs/briefs/kestrel_line.md`.
+  As left (21 October, evening), on Ryan's ask to name the remaining items, fill the Buzzard's
+  stock and say what the other questions were: the Buzzard's stock filled for the stock pass
+  (the Railgun, the mid-heat gun, the Arc Fault Cannon, a basic shield and the basic vent
+  beside the Afterburner); the names round in the line brief (the strafer again, the
+  interceptor, seven locks, five passives, three stock pieces, the designations); the Butcherbird's clash, which
+  Claude had missed, in the strafer's brief and the bible's Kestrel row (live v0.236); the
+  stale clash notes and the Buzzard's niche word in content. Open for Ryan: the names, the
+  three stock kinds, Expose in the leans row. Then the merge to main on his word (main has
   moved; the hangar page's republish rides with it). On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
@@ -461,23 +348,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.235 (21 October: the Giant Petrel's go and the locked-piece power rule, merged onto the Wainwright & Sutler session's v0.234, which dropped its planned Mark keyword and left the Hoist reloading nothing on the artillery; before it v0.233: the Syrinx Drone debuff, the Swallowtail's Flare without Mark, the
-  Giant Petrel; before it v0.232, the bomber's go, the Magpie, merged onto the Wainwright & Sutler
-  session's v0.231, which added the Swallowtail; the Butcherbird at tier one and the interceptor at two; the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
-  built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
-  Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
-  Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the
-  Deflector row's tier-two blueprint; the leans row's Kestrel line; the capital in the Kestrel
-  row; section 12's Diffuser question gone; the Rapid row of the generated keyword table set
-  by hand to the Diffuser's change, since the live tables are the review branch's content's)
-  merged onto the live v0.217 (the review session's v0.211 and its publishes after it:
-  Armoured and Overcharged in points, Burn numbered, Armoured's duration and dispel, the
-  funnel-web's built clause and its model rounds to the eleventh, the walkers' footwork row).
-  Main's file is v0.207 until this branch is merged; the review branch's rows reach main's
-  file when that branch merges, and the next publish from main regenerates the tables. Git
-  and the page's version history carry what each earlier publish brought. Before
-  republishing, read the live page; if another session moved it, publish a three-way merge
-  onto it.
+  `docs/design-bible.html` after every change. Live is v0.236 (21 October, the Kestrel
+  session's: the Kestrel row's naming clause corrected, the Butcherbird a BattleTech 'Mech's;
+  on its v0.235, the Giant Petrel's go merged onto the Wainwright & Sutler session's v0.234,
+  which is main's file). This branch's file carries the Kestrel rows (its version line its
+  own); at the merge to main the live page becomes main's file, since it holds every session's
+  rows, and the tables regenerate from the merged content. Git and the page's version history
+  carry what each publish brought. Before republishing, read the live page; if another session
+  moved it, publish a three-way merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
   only the four content files that had moved since 13 October (chassis, components, foes,
