@@ -145,11 +145,13 @@ stock pass's heat scale; Claude's readings and fills marked):
   heat as its own machine makes it; no module adds weapon heat today, so Scorched is the one
   case). Its heat maximum is low: it needs none for its guns, so the quick reload and the foes'
   heat together are a real threat.
-- **The cluster cannon** (locked, name open): Indirect, a low flat number, Spread and Penetrate
-  (up to four foes; Claude's reading of "cluster", the cannon's shape kept), Flak 1 on every foe
-  it hits, 1 ammo back for every foe it hits, heat 2 (1 ammo), no cooldown: a status and ammo
-  piece, which is why it needs none.
-- **The salvo** (locked, name open): fires every ammo in the magazine, a strike an ammo, each
+- **The Shrapnel Recuperator** (locked, the cluster cannon; Ryan's pick of Claude's names):
+  Indirect, a low flat number, Spread and Penetrate (up to four foes; Claude's reading of
+  "cluster", the cannon's shape kept), Flak 1 on every foe it hits, 1 ammo back for every foe it
+  hits, heat 2 (1 ammo), no cooldown: a status and ammo piece, which is why it needs none. Its
+  Flak is the team's, never a setup for its own salvo (Ryan, below).
+- **The salvo** (locked; its name abstract and military, never the hardware's, Ryan, below):
+  fires every ammo in the magazine, a strike an ammo, each
   strike at a random live foe with Spread and Penetrate, a low number a strike. A boss killer
   when the boss stands alone, and area-suppressing fire that obliterates the trash; not a
   precision weapon (Ryan).
@@ -162,8 +164,8 @@ stock pass's heat scale; Claude's readings and fills marked):
 
 - **Flak 1 is gone by the next turn.** Flak halves at the round's end, rounded down, and 1
   halves to 0, so the cannon's Flak serves the blows that land the turn it fires, the team's
-  after it. The Musk Ox's own salvo comes a turn later at the earliest and finds none; Flak 2
-  leaves one stack for it, if the cannon should set up its own salvo.
+  after it; its own salvo a turn later finds none. Ryan, the same day, keeps it so (below): the
+  one-two is too obvious.
 - **The salvo is the biggest per-hit multiplier in the game.** Ten strikes that each reach up to
   four foes is up to forty hits from one spend, and Flak adds its stacks to every one, so a field
   the Prairie Dog has flakked turns its low number into a lot (Ryan's note of 19 October: Flak at
@@ -173,18 +175,30 @@ stock pass's heat scale; Claude's readings and fills marked):
   lands somewhere, and the player steers it by thinning the field first or by firing it at a
   lone boss. The Whip Scorpion's random blast is the precedent.
 
-**Names for the two locks** (Claude's, for Ryan's pick; none in content or on the reserved list):
+Ryan, 21 October, later: "No, I don't want the cannon to set up its own salvo. That's a one-two
+that's way too obvious . The flak is for the team, to mop up anything that the Ox doesn't want
+to waste shots on next turn. Shrapnel Recuperator. I think for the salvo, something abstract and
+military that has nothing to do with the hardware. Like "Battlefield Clearer" but better."
 
-- The cluster cannon: the **Canister Recuperator** (Claude's lean: canister shot is the
-  old-world cluster round, and a recuperator is the real artillery part that returns the barrel
-  after recoil, here returning the shells); the **Flak Canister Gun** (plain, and says what it
-  lays); the **Shrapnel Recuperator** (the same joke on the airburst shell's name).
-- The salvo: the **Pepperbox Launcher** (Claude's lean: the pepperbox was the old-West
-  multi-barrel pistol, and to pepper is to scatter small shots, the random spread); the
-  **Ripple-fire Rack** (ripple fire is the real term for a launcher emptying its tubes in
-  sequence); the **Saturation Battery** (plain, an echo of the Suppression Battery); the
-  **Stonk Rack** (British wartime slang for a concentrated barrage, the dumbest-sounding real
-  word, in the spirit of Heliographic).
+So (decided, 21 October): the cannon's Flak stays 1 and stays the team's (they mop up this turn
+what the Ox will not spend its next turn's shots on); the cannon is the Shrapnel Recuperator.
+Claude's names for it, kept for the record: the Canister Recuperator (Claude's lean then), the
+Flak Canister Gun. The salvo's hardware names (the Pepperbox Launcher, the Ripple-fire Rack, the
+Saturation Battery, the Stonk Rack) went with Ryan's ask for an abstract military name.
+
+**Names for the salvo** (Claude's, 21 October, in Ryan's register: an order or a doctrine, never
+the hardware; none in content or on the reserved list):
+
+- **Fire for Effect** (Claude's lean): the artillery's call once the guns are ranged, when every
+  gun fires for real; the moment the whole magazine goes, and it reads at once.
+- **Mad Minute**: the real term for every weapon on a line emptying at once to clear the ground
+  in front of it; silly-sounding and real, the maker's voice (plain military beside something
+  silly).
+- **Final Protective Fire**: the last-ditch barrage planned to break an assault, everything at
+  once.
+- **Beaten Zone**: the ground a burst of fire falls on, at random within it; the spread named.
+- **Unrestricted Expenditure**: the order to spend every round there is; the mechanic in the
+  maker's dry bureaucratic voice.
 
 **Holes in the numbers** (Claude, 21 October; Ryan's calls answered most): shields crowding
 out vents (vents 3, shields 2), the Rapid reloader (its heat the limiter), hit or kill (every
@@ -268,8 +282,7 @@ does for the maker; shell types, too much for a phone.
 
 ## Open for the session
 
-1. Ryan's calls: the two locks' names; the cannon's Flak (1, or 2 to set up its own salvo); the
-   quick reload kept or cut once tested; then the go.
+1. Ryan's calls: the salvo's name; the quick reload kept or cut once tested; then the go.
 2. The numbers, all placeholders: the heat maximum and cooling, the cannon's and the salvo's
    numbers, the quick reload's ammo and heat.
 3. The engine: a magazine beside heat, the conversion read through the effects (a number is a
