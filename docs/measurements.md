@@ -399,3 +399,27 @@ intent) and the row cannot read the passive; the web's third of its spends is th
 must-pick read, since no team row ran. The reads the bible's funnel-web row asks for (the
 share of its blows that bite, the web's share in formation fights, the Baboon pairing) are
 team rows at 200 seeds, after the stock pass; the runner does not yet count the bites.
+
+## 21 October, Flak on the Prairie Dog
+
+**The Prairie Dog's rows with and without Flak, the day its engine landed.** `tools/balance.gd
+--rows prairie_dog,team,"wainwright_sutler team" --seeds 200`, both rungs, against the same run
+with the Flakshot Repeater's Flak knocked out (`--set
+components/flakshot_repeater/face/keywords=["cleave"]`: its Spread and its flat 5 kept, and the
+Prairie Dog's 5 less from a Flak carrier asleep with it, so the delta is the keyword and its
+clause together). On the Flak commit (`5abc6760`), before the honest shield. At 200 seeds a
+row mean's band is about 1.5 points.
+
+Row means, random / greedy, without and then with Flak: the Prairie Dog alone 12.0 / 22.0 and
+16.2 / 28.6; the Wainwright & Sutler team (Clydesdale, Prairie Dog, Dingo) 77.6 / 91.3 and 79.4
+/ 91.8; the default team, which carries no Prairie Dog, the same both times (96.9 / 100). The
+Prairie Dog's greedy cells that moved: the Gels 0 to 24, the Needlers 0 to 22, the Antlions 2
+to 19, the Bombs 0 to 13, the Drakes 21 to 57, the Dire Wolves 86 to 96; random, the Dire
+Wolves 11 to 38, the Ghosts 33 to 74, the Drakes 1 to 12. The team's: the Goblins and the
+Revenants 80 to 88 random, the Peak's formation 35 to 42 greedy. Pick share, greedy, the
+Flakshot Repeater: 18% to 19% alone, 7% to 10% on the team.
+
+Read: Flak is worth about six points of the Prairie Dog's row alone, outside the band, and a
+point or two on its maker's team, where the row stands near its ceiling and reads a direction
+only. The gain sits where many blows land on one foe (the Gels, the Needlers, the Antlions) and
+against the Drakes. The family's numbers are the stock pass's (the bible's Prairie Dog row).

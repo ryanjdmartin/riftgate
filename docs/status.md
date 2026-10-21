@@ -133,7 +133,7 @@ before it. The three design sessions merged that day are paused, each resuming f
   before Shocked's doubling and the armour, a blow of nothing staying nothing; the stacks halving
   at the round's end; the airburst chip, and Cryo's chip and snowflake with it (it had none); the
   die folding Flak in; the bot's `flak_score`; the Prairie Dog's 5 less from a Flak carrier
-  awake. The car's rows with and without it are in `docs/measurements.md` (21 October). The
+  awake. Its rows with and without it are in `docs/measurements.md` (21 October: about six points of the Prairie Dog's row alone, greedy 22.0 to 28.6, and a point or two on its maker's team). The
   family (an airburst shell, a flak cannon) and past armour or not are the stock pass's.
 - 19 October, the funnel-web's assets (`ccr-ffcf75fa-3gkbz9`): its lowforge model
   (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron), four cuts in the day, each on
