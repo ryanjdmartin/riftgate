@@ -435,6 +435,68 @@ shapes what I give" in a bar and a die that exist, and keeps the hangar question
 plate against guns on the carrier) small. If a hangar-side hook is wanted later, the cheapest
 form is one bay slot, benched, never the two.
 
+Ryan, 21 October, later: "Marks rider is solved in the Kestrel session. I have a better shape.
+It has a third resource bar. It fills slowly, every time its die rolls (kestrels shape - it's a
+flyer), it can store charges, up to max. It's locked components can consume a charge from the
+resource to empower themselves. The dock: goes from giving all allies barrier on a cooldown to
+phasing them all on a cooldown. The mark: goes from marking an enemy to marking and suppressing
+an enemy. The resupply: goes from a basic shield+cool to a full shield+cool. Maybe a fourth
+locked piece that helps it reroll: gives the team a reroll, goes to letting an ally act again.
+That's similar to the Kestrel capital ship, but they can overlap if both make sense. 3-4 open
+hardpoints."
+
+So the shape (adopted; the hull price above goes to the bench, one line): the carry stays the
+passive's map half; its fight half is the charge, a bar of its own that gains a charge each
+time its die rolls, stored up to a cap, the Prairie Dog's two-clause shape; every locked piece
+has a plain form, spent any time, and a charged form that consumes a charge: the dock (the
+allies protected, or every ally that has not acted Phased), the mark (the Kestrel session's
+rider, or that and Suppressed), the resupply (a small shield and cooling, or the full reset),
+and perhaps a fourth, the rally (a team reroll, or an ally acts again); three or four
+hardpoints. A plain form on every piece means no entry is ever dead, which closes the dead-dice
+hole above; the decision each round is spend the charge now or bank it, and which piece gets
+it. The act-again form is the action-economy row's tempo lent, ranked last there, and it
+passes the row's own price: a second action paid in a banked resource (the charge) and the
+carrier's action, never free; its engine is the gun platform's (a die rolled again and acting
+again), so the overlap Ryan allows saves engine work rather than costing it.
+
+Claude's holes, the same day, each his to settle:
+
+- **What fills it.** "Every time its die rolls" counts the round's roll and every reroll spent
+  on it, so the rate is one a round plus the team's rerolls spent on the carrier (up to three
+  more), and a Rapid piece in its hardpoints turns its free reroll into a charge: not slow, and
+  the gun platform's gimmick exactly (the team's rerolls as fuel). Three forms: the opening roll
+  alone (slow, a charge a round, no decision to make); every roll, with a small cap, so the
+  team's rerolls are the fuel and the decision (a reroll on the carrier is a charge, one on the
+  Sparrowhawk is damage), shared with Kestrel by his leave; every roll but Rapid's free one,
+  so no chain farms it. Claude's lean: the third, cap three.
+- **The dock's plain form.** A Barrier on every ally breaks a Decided row (section 5: "A
+  Barrier is never granted to every ally at once: four blows negated for one spend is the
+  exploit the shield rule removed"), and it would not be the weaker form: Barrier-all leaves
+  the allies their actions where Phased costs them, so a player would often prefer the plain
+  spend. Plain forms that keep the row and sit under Phased: Armoured to every ally until the
+  round's end (the Shoring Jack's kind, soft, the swarm's answer), or a Barrier on one ally
+  (the Blast Door's), or a small shield on all. Claude's lean: Armoured-all.
+- **Per fight or per battle.** Charges that reset each fight (heat's shape) bring the
+  ultimates online from round three or so, which paces them and keeps the opening act for the
+  dock honest; charges carried between fights are the strategic save for the boss and the
+  bar's own version of section 12's open question on heat between fights. Claude's lean: per
+  fight, and the carry-over decided with heat's.
+- **The rally feeding the bar.** Spend the rally's plain form, reroll the carrier with the
+  reroll it gave, gain a charge: one action to one charge and a fresh entry, a loop by design
+  or a leak. Either the rally's own reroll never counts, or it is the intended combo in the
+  maker's spirit (the Cassowary's dial). Claude's lean: it counts, and the cap holds it.
+- **Double gates.** A charge and a cooldown on the dock is two clocks on one piece; the charge
+  is the gate, so the cooldown can go, which takes the unbuilt cooldown property off this
+  machine's engine list, and the charged mark's Suppress has Numbed for its cooldown as every
+  stun does (the stun row: a charge is a price paid, so the stun is gated).
+- **Three bars on the maker.** Wainwright & Sutler would carry Spun Up's pips, the artillery's
+  magazine and the carrier's charges: three banked resources, each shown on its machine, a
+  phone read to judge, not a rule (the action-economy row lists more resources than makers).
+- The engine: the charge (a bar that gains on every roll, a trigger the engine lacks), a spend
+  that consumes a charge for its charged effects (a face property), Phased with its rule, the
+  carry, the mark's rider (the Kestrel session's), Suppress (built), act again (the gun
+  platform's), the resupply's reset.
+
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, content planned (a spend by another machine is engine work,
