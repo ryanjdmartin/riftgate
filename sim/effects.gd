@@ -58,7 +58,7 @@ const SUPPORTED_EFFECTS := {
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
-	"on_shield_granted": ["vent_heat", "stack_status"],
+	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
@@ -923,6 +923,20 @@ static func shield_granted(u, ally, amount: int) -> Dictionary:
 	return fire(u, "on_shield_granted", amount, ally)
 
 
+## The shield this machine's spend gives an ally beyond the entry's own number: its passives'
+## shield_per_ally_heat (on_shield_granted; the Puffin's Slipstream Projector, 21 October),
+## `value` for every 10 heat the ally carries, pro rata and rounded down, so a value of 2 is a
+## fifth of the ally's heat. Read at the spend, before the shield lands, from the heat the ally
+## carries then; never on the machine itself, since the trigger is for allies (the caller asks
+## only for an ally). The die dragged over the ally and the bot read the same number.
+static func granted_shield(u, ally_heat: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_shield_granted", null):
+		if str(pair[0].get("effect", "")) == "shield_per_ally_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks) * maxi(0, ally_heat)
+	return maxi(0, int(n / 10))
+
+
 ## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
 ## bot to weigh a shield spend on an ally by.
 static func granted_vent(u) -> int:
@@ -1070,6 +1084,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
+		"shield_per_ally_heat": body = "the shield grows by %s for every 10 heat it carries" % vs
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs

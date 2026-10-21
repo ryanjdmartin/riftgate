@@ -82,15 +82,15 @@ document's job and every command are in `README.md`.
   and risk (the leans row). Re-proposed at his ask: the capital's second form (the fleet's
   reroll bank with growth on every roll, a lock that relaunches a jet's die, four hardpoints;
   `kestrel_gun_platform.md`, the sixth round), the Puffin made Kestrel (its Ionizer reading an
-  ally's heat; `kestrel_puffin.md`, new) and the interceptor's second kit (a weapon of no
-  damage Rapid once a round, the designator dive that lights a back-rank foe for the team's
-  Direct guns; its brief rewritten). The twelfth round (20 October, evening), Ryan's four
-  calls: a Rapid shield never below tier two (a Rapid vent never below three), so the Laminar
-  Deflector keeps its Rapid as a tier-two blueprint and leaves the early stocks with the stock
-  pass (the bible's Rapid and Deflector rows, section 12's question gone, the rules, the
-  vocabulary note, the Deflector's notes); the capital leans into the reroll economy all the
-  way, no growth (its seventh round: the bank, an ally's action bought with three rerolls, the
-  launch as a shield that rolls a jet's die, the flare as a vent that brews a reroll); the
+  ally's heat; a brief of its own, retired on its go) and the interceptor's second kit (a
+  weapon of no damage Rapid once a round, the designator dive that lights a back-rank foe for
+  the team's Direct guns; its brief rewritten). The twelfth round (20 October, evening), Ryan's
+  four calls: a Rapid shield never below tier two (a Rapid vent never below three), so the
+  Laminar Deflector keeps its Rapid as a tier-two blueprint and leaves the early stocks with
+  the stock pass (the bible's Rapid and Deflector rows, section 12's question gone, the rules,
+  the vocabulary note, the Deflector's notes); the capital leans into the reroll economy all
+  the way, no growth (its seventh round: the bank, an ally's action bought with three rerolls,
+  the launch as a shield that rolls a jet's die, the flare as a vent that brews a reroll); the
   Puffin on his split (the passive grows every shield it spends on an ally by that ally's heat,
   the Ionizer the overshield through it, the cooling gone; its second round); the interceptor's
   third kit, refined (the control gate and a designator with free reach that paints a foe for
@@ -135,9 +135,13 @@ document's job and every command are in `README.md`.
   written (the plate and the burn with its zap on the passive, the lure that regens itself its
   lock); the bible's Kestrel row and its stacking row (the regen stacks), live v0.227, the
   branch file's Kestrel row synced to the live one; the rules' Regenerating; its brief decided,
-  the strafer's open list and hand-back rewritten for the content session. The others wait on
-  his calls, in order: the Puffin, the Kite's rework, the capital, the bomber. On the branch,
-  not on main.
+  the strafer's open list and hand-back rewritten for the content session. The Puffin's go (21
+  October), built: the Slipstream Projector grows every shield it spends on an ally by a fifth
+  of that ally's heat (a new on_shield_granted effect read at the spend, by the dragged die and
+  the bot too; a test on a synthetic passive), the cooling gone, the Backwash Ionizer at 10;
+  the bible's Puffin row rewritten in place and its chassis-table line, the Whip Scorpion row's
+  Puffin clause, live v0.228; its brief retired to git; 486 tests green. The others wait on his
+  calls, in order: the Kite's rework, the capital, the bomber. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -422,7 +426,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.227 (21 October: the interceptor's, the strafer's and the off-tank's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.228 (21 October: the interceptor's, the strafer's, the off-tank's and the Puffin's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

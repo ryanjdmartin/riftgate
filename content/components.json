@@ -1194,11 +1194,11 @@
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
     "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first).",
-    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right)."
+    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right). 21 October (the Puffin's rework, Ryan's go): shield 10, down from 30; the Puffin's passive grows it by a fifth of the ally's heat, so it is the big one on a hot ally and 10 on a cold one."
    },
    "face": {
     "kind": "shield",
-    "power": 30,
+    "power": 10,
     "targets": "ally",
     "keywords": [
      "overshield"

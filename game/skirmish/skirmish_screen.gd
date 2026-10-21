@@ -1324,10 +1324,15 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	var can := target != null and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
-	# its missing hull, a status on it, its armour. Anywhere else, the plain number.
+	# its missing hull, a status on it, its armour. A shield over a machine it may land on
+	# shows what it will give there (the Puffin's ally heat, 21 October). Anywhere else, the
+	# plain number.
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
-		_ghost.set_number(sk.shown_number_text(ms, _ghost.face, target if can and target is Foe else null))
+		if can and target is Skirmish.MechState and _ghost.face.kind == Face.Kind.SHIELD:
+			_ghost.set_number(str(sk.shield_amount(ms, _ghost.face, target)))
+		else:
+			_ghost.set_number(sk.shown_number_text(ms, _ghost.face, target if can and target is Foe else null))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:

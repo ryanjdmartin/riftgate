@@ -31,7 +31,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
-| two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
+| two | the Puffin (reworked and built 21 October; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber (decided; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital (proposal, its third form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
@@ -109,17 +109,14 @@ One pointer each; the proposal is in the brief named.
   the Pinion Driver out (a blueprint, the Kite's rework); its niche word in content
   ("Ramping damage") rewritten to the sustain it is (flagged 18 October). Its thinness as a
   partner (no state given, none needed) is accepted: the Kestrel that stays.
-- **The Puffin**: Ryan worries it is toxic and boring (20 October) and wants it more Kestrel;
-  its brief (`kestrel_puffin.md`) proposes, on his split, a passive that grows every shield it
-  spends on an ally by that ally's heat, the Ionizer the overshield through it, and the
-  cooling passive gone. The Wake Diffuser landed on Ryan's go the same day: Rapid off, a
-  vent of 10 that shields 10 (the shield half with the combined entry's engine), which on the
-  Puffin's passive vents twice and costs the turn; and Rapid vents or shields, if any exist,
-  never below tier three (his rule of the day). The engine fires its passive once a spend,
-  whatever a shield's strikes (noted for the capital's lock). The third round (late that day),
-  on Ryan's size worry: the Ionizer's base cut (10 the lean) and the growth one for one at the
-  stock pass's heat scale of 1–20 (a fifth of today's heat until then), no cap; heat at 1–20
-  backed as the pass's direction, 1–10 read as a re-pricing.
+- **The Puffin** was reworked and built on Ryan's go (21 October), after his worry that it was
+  toxic and boring (20 October) and his split: the Slipstream Projector grows every shield it
+  spends on an ally by a fifth of that ally's heat, the Backwash Ionizer at 10 is the big one
+  through it, and the cooling passive is gone (the bible's Puffin row; its brief retired to
+  git). The Wake Diffuser landed on his go of 20 October: Rapid off, a vent of 10 that
+  shields 10 (the shield half with the combined entry's engine), so on the Puffin it is the
+  cooling, the vent first and the shield reading what is left; and Rapid vents or shields, if
+  any exist, never below tier three and two (his rules of the day).
 - **The Kite** stands as its brief left it; the direction reads its chain as a
   cooldown burst gated by a kill, the row's own shape. The caster-killer niche (its open item
   2) goes to the interceptor's designator if Ryan takes it; the Kite is the trash chain and
@@ -173,31 +170,32 @@ and the Afterburner is not showing. A hot stock (a 40 and a 20 a round) sits at 
 two, a tank's regen at tier two under the honest shield rule, with the overheat at 100 the
 ceiling. It wants hot guns of every maker, the Peak's Scorched, the Thrust Overboost (its guns
 twice as hot: twice the regen for twice the risk) and the Boundary-layer Bleed; it gives
-nothing to others, the Kestrel that stays, and the Puffin's vent fights it. Its niche word in
+nothing to others, the Kestrel that stays, and the Puffin's shields grow on it (its vent fought
+it until 21 October). Its niche word in
 content ("Ramping damage") is stale; its 5 per 10 is re-read under the honest shield rule by
 the stock pass.
 
-**The Puffin.** Tier two, a light hover at move 40. Hull 50, shield 30, field recharge 30, heat
-maximum 60, cooling 5, armour 0; four hardpoints beside the fixed Backwash Ionizer, a d5; two
-module slots. The passive, the Slipstream Projector, as built: any ally this machine shields
-also sheds 10 heat. The fixed piece, the Backwash Ionizer, as built: shield 30, allies only,
-Overshield (past the ally's maximum; the excess fades at the round's end).
+**The Puffin** (reworked and built 21 October). Tier two, a light hover at move 40. Hull 50,
+shield 30, field recharge 30, heat maximum 60, cooling 5, armour 0; four hardpoints beside the
+fixed Backwash Ionizer, a d5; two module slots. The passive, the Slipstream Projector: a shield
+it spends on an ally grows by a fifth of the heat that ally carries. The fixed piece, the
+Backwash Ionizer: shield 10, allies only, Overshield, so on a hot ally it is the big one (the
+Buzzard at the top of its gauge, 30 past its maximum; a jet at 40 heat, 18; a cold ally, 10).
 
 | Entry | Piece | What it is for |
 |---|---|---|
-| I | the Backwash Ionizer | 30 on an ally past its maximum; it sheds 10 |
+| I | the Backwash Ionizer | the hot ally, past its maximum |
 | II | the Overcharged buff (the Coil today) | the hitter's round; the strafer counts it twice |
-| III | a shield, self or ally (the Deflector at its new number, or a plain one) | the hurt ally |
-| IV | a vent that shields (the Diffuser as a combined entry: vent 10, shield 10, no Rapid) | the hot ally sheds 20 and gains 10, and it costs the turn |
+| III | a plain shield, self or ally (the Deflector is a tier-two blueprint now) | the hurt ally, grown by its heat |
+| IV | a vent that shields (the Diffuser as a combined entry: vent 10, shield 10, no Rapid) | the ally that must cool: it sheds 10, and the shield reads what is left |
 | V | a small gun | when nobody needs anything |
 
-The round as played: the Ionizer on the machine the intents name; the Coil on the hitter
-before it fires; the vent-that-shields on the hot one; a gun otherwise. It wants shields of
-every maker (each a vent through its passive) and hot allies; it gives the off-tank its
-magazine, the Kite's 30 hull an overshield and its chain's heat vented, the
-interceptor's two spends cooled, the strafer's doubled Coil, and the Buzzard a vent it does
-not want (one pair of seven). Alone it loses, by design. The engine fires its passive once a
-spend, whatever a shield's strikes.
+The round as played: the Ionizer on the hot ally the intents name, after it has fired its hot
+gun, so the team's order is part of the play; a plain shield on the hurt one; the Coil on the
+hitter before it fires; the vent that shields on an ally that must cool; a gun otherwise. It
+wants hot allies and shields of every maker, each grown through its passive; it gives the jets
+a bubble sized to the risk they took, the strafer's doubled Coil and the off-tank its magazine,
+and the Buzzard riding hot is its best ally now. Alone it loses, by design.
 
 
 Kestrel's pool today: ten components (one fixed, the Afterburner; one locked, the Backwash
@@ -272,7 +270,8 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 ## Open for Ryan
 
 1. The per-chassis proposals in their briefs: the interceptor's dive, the bomber's gate and
-   Chain in mines, the Buzzard's stock, the Puffin's Diffuser, the platform's settlements.
+   Chain in mines, the Buzzard's stock, the platform's settlements (the Puffin's landed 21
+   October).
 2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
 3. The leans row's Kestrel line.
