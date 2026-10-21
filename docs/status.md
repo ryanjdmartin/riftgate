@@ -471,15 +471,16 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.223, and so is the live
-  (21 October): main's v0.222 (the Prairie Dog's pivot landed) merged three-way onto the live
-  v0.222 that the Armadillo session published (its rows, the Sealed and Cryo tables) over the
-  live v0.221, itself main's v0.220 rows over the numbers branch's publish of v0.220, whose
-  tables are regenerated from that branch's content (Overcharged a point a stack and halving,
-  Armoured in Braced's place, Burn numbered, the Ammit's rule unnamed), so the live tables run
-  ahead of main's until those branches merge and `tools/pages/bible_tables.py` regenerates them
-  here (a merge conflict in a generated table is resolved by the live's row, corrected by hand
-  for main's content change). Git and the page's version history carry what each earlier
+  `docs/design-bible.html` after every change. Main's file is v0.231, and so is the live
+  (21 October): main's v0.224 (the Swallowtail) merged three-way onto the Kestrel session's
+  live v0.230 (the Kite, the Buzzard, the Butcherbird, the Storm Petrel, the interceptor, the
+  Puffin's rework), which sat on the Armadillo session's v0.222 (the Sealed and Cryo tables)
+  and the numbers branch's v0.220 (Overcharged a point a stack and halving, Armoured in
+  Braced's place, Burn numbered), so the live rows and tables run ahead of main's until those
+  branches merge and `tools/pages/bible_tables.py` regenerates the tables here (a merge
+  conflict in a generated table is resolved by the live's row, corrected by hand for main's
+  content change). The version numbers on main's file and the live agree after every publish;
+  the rows between them are the other branches'. Git and the page's version history carry what each earlier
   publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
