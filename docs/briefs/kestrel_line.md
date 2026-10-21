@@ -12,10 +12,10 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: every chassis decided by 21 October and named that evening, two names still open
-(the pull and the Storm Petrel's passive); the Buzzard's stock filled and the stock holes
-taken; the last two slots marked (the Magpie, a support engine; the Snowy Owl, a stealth
-unit). A proposal (Claude, 20 October) until then. **Maker**: Kestrel. **Read first**:
+**Status**: every chassis decided by 21 October and named that evening; the Buzzard's stock
+filled and the stock holes taken; the last two slots marked (the Magpie, a support engine; the
+Snowy Owl, a stealth unit), each in a brief of its own since that evening. A proposal (Claude,
+20 October) until then. **Maker**: Kestrel. **Read first**:
 `docs/briefs/README.md` (the taste lines, the tiers table, the action-economy section); the
 bible's action-economy row, its leans row and its Kestrel rows (sections 5 and 7); the five
 Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kestrel`);
@@ -253,10 +253,10 @@ evening for the stock pass's list (Ryan: "stock changes as you see fit"), each w
    tier-one and tier-two stocks (Ryan, 20 October: a Rapid shield is never below tier two, a
    Rapid vent never below three); Chain in mines at the bomber's go (every keyword acts from a
    mine as the shot lands, Chain whatever Chain becomes); the seven locks named in the names
-   round (the pull's name still open), the reset gun the Pinion Driver and the mark the
+   round (the pull the Lorentz Contractor), the reset gun the Pinion Driver and the mark the
    Syrinx Drone since 21 October.
 6. **Not holes**: a stocked Kestrel Indirect gun (Kestrel's Indirect pieces are locked: the
-   Fovea Designator, St. Elmo's Regenerator, the pull, the Syrinx Drone and the Spindrift
+   Fovea Designator, St. Elmo's Regenerator, the Lorentz Contractor, the Syrinx Drone and the Spindrift
    Salvo; the artillery makers' reach is theirs) and a stocked Kestrel rolled gun (the
    Flechette Pod and the Spindrift Salvo are locked; the Muzzle Velocity Booster serves other makers' rolled guns on Kestrel frames, the
    cross-maker pull); no Kestrel plain shield (the basic shield is shared; Overshield is the
@@ -271,6 +271,12 @@ evening for the stock pass's list (Ryan: "stock changes as you see fit"), each w
   session of its own (the to-do); a plain Owl is a Heavy Gear machine, so the owl's name keeps
   its species. Their tiers are open: the counts put both at tier two (3-5-2) or the support
   engine at tier one (4-4-2).
+- Ryan, 21 October, later: "Magpie (working name) could lean into the thieving space (myth,
+  but decent gameplay hook), or something to do with its general intelligence. The stealth
+  thing is obviously completely undefined, could be map related or skirmish related, the theme
+  is just silent hunter." Each has its brief since, with a first round:
+  `kestrel_magpie.md` (the thief, Claude's lean; the mimic; the cache) and `kestrel_owl.md`
+  (cold is quiet, Claude's lean; the hunter on the map; Hidden as a status).
 - Holes for those sessions, one line each (Claude, 21 October): a third Kestrel support beside
   the Puffin (shields from an ally's heat) and the Giant Petrel (tempo: rerolls and actions)
   must part from both by its shape, the overlap map's rule; the magpie's folklore is the thief
@@ -434,18 +440,22 @@ Open, with Claude's new picks (21 October):
   word, and main's Phased), Rift (the enemy's), Tesseract (two Warhammer 40,000 machines),
   Slipspace (Halo's).
 
+- Ryan, 21 October, later: "Lorentz Contractor, Riot Field Generator". Decided: the
+  Lammergeier's pull is the Lorentz Contractor, the Storm Petrel's passive the Riot Field
+  Generator (his turn of the Riot Field).
+
 ## Open for Ryan
 
-1. The pull's name and the Storm Petrel's passive's (the table above).
-2. The Spindrift Salvo kept, or the Wavetop Launcher, now that Spindrift shows as a BattleTech
+1. The Spindrift Salvo kept, or the Wavetop Launcher, now that Spindrift shows as a BattleTech
    'Mech.
+2. The last two slots' first rounds, in their briefs (`kestrel_magpie.md`, `kestrel_owl.md`).
 
 Done 21 October: the Buzzard's stock (above); the names, the designations and the stock
-pieces (the picks above); Expose left out of the lean (Ryan); the last two slots marked.
+pieces (the picks above); Expose left out of the lean (Ryan); the last two slots marked and
+briefed.
 
 ## What the session hands back
 
-The two open names, then: the names into each brief, the bible's Kestrel row, the rules and
-the content sessions' lines (done 21 October for every name settled); the stock pieces in the
-to-do's stock pass line and the bible's stock-pass row (done 21 October); this brief retired
-once the line's briefs have landed and the last two slots have briefs of their own.
+The names into each brief, the bible's Kestrel row, the rules and the content sessions' lines
+(done 21 October); the stock pieces in the to-do's stock pass line and the bible's stock-pass
+row (done 21 October); this brief retired once the line's briefs have landed.

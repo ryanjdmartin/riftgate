@@ -5,7 +5,7 @@ sustained hitter with a real decision on every spend. "The shield-spender" is a 
 the name and the look are Ryan's.
 
 **Status**: decided (Ryan's go, 21 October: the Storm Petrel, a hovercraft; its lock named St.
-Elmo's Regenerator that evening, its passive's name open; its numbers with the content
+Elmo's Regenerator that evening, its passive the Riot Field Generator; its numbers with the content
 session, this brief kept until then; a direction since 15 October). **Maker**:
 Kestrel. **Tier**: one. **Read
 first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 8 (Kestrel gap one, the
@@ -405,7 +405,9 @@ the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 mo
   Its passive's name is open on his steer: "Storm petrel should reference the fact that it has
   hard shields, or something, used both for defense and for whacking things with." Claude's
   pick, Birdstrike Plating (a canopy rated for bird strikes is hardened against them, and here
-  the bird does the striking); the others, the Riot Field and Hard-field Bumpers.
+  the bird does the striking); the others, the Riot Field and Hard-field Bumpers. Ryan, 21
+  October: "Riot Field Generator". Decided: the passive is the Riot Field Generator (a riot
+  shield blocks and shoves: the plate and the zap).
 
 ## The kit, written out (Claude, 20 October)
 
@@ -417,7 +419,7 @@ and fast, so Kestrel is seen to make a fast one; water fast, rough ground and ru
 field recharge 30, heat maximum 60, cooling 5, armour 0. Four hardpoints beside the lock, a
 d5; two module slots.
 
-**The passive** (its name open: the go above), as the codex would print it (Ryan's words of 15, 17 and 18 October): while
+**The passive, the Riot Field Generator**, as the codex would print it (Ryan's words of 15, 17 and 18 October): while
 its shield stands, every blow on it loses 5, and its weapons burn shield in place of heat:
 every point a spend would add comes off the shield (a Scorched machine's extra included), and
 a weapon hotter than the shield left burns what the shield holds and the rest reaches the
@@ -482,8 +484,8 @@ synthetic passives. Its runner row lies until the honest shield rule is built.
 ## Open for the content session
 
 1. Its numbers (every one a placeholder) and its model, a medium hovercraft; its names (St.
-   Elmo's Regenerator, the designation K-15 Mk I Air-Cushion Picket, the passive's once Ryan
-   picks it). The capacitor of
+   Elmo's Regenerator, the Riot Field Generator, the designation K-15 Mk I Air-Cushion
+   Picket). The capacitor of
    the second round stays on the bench (overshield as ammunition).
 2. The stock hole it names, a mid-heat gun, is the stock pass's (`kestrel_line.md`).
 

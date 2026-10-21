@@ -41,33 +41,31 @@ document's job and every command are in `README.md`.
   Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
 - `ccr-b6da49d3-4ft738` (the Kestrel session, 18 to 21 October, resumed from main; merged into
   main on 20 October for the action economy's direction and kept open for the line). Every
-  Kestrel machine is decided, 3-3-2, two of Ryan's ten slots free: tier one the Butcherbird (a
-  swing-wing strafer; its name reopened on 21 October, evening, as a BattleTech 'Mech's), the
+  Kestrel machine is decided, 3-3-2, and named: tier one the Skua (a swing-wing strafer), the
   Storm Petrel (a hovercraft off-tank) and the Puffin (built: its shields grow by the ally's
   heat); tier two the Buzzard (built), the Kite (its rework decided: the Pinion Driver) and the
-  interceptor (a tilt-jet that Exposes); tier three the Magpie (mines, the pull, the Syrinx
-  Drone) and the Giant Petrel (the formation leader: the bank, the Hot-Pit, the battery, the
-  buff). Decided on the way: Exposed (Direct reach and no armour, two rounds, refreshed), the
-  die's six kinds and their grammar, no number on a weapon of no damage, a Rapid shield never
-  below tier two and a Rapid vent never below three, the Kite and the Buzzard as names (the ids
-  kept), Kestrel's lean (heat, rerolls, strikes, risk), a locked piece's power at its chassis's
-  depth. Built here: the Puffin's rework, the Wake Diffuser's Rapid off, the Coriolis
+  Needletail (a tilt-jet that Exposes); tier three the Lammergeier (mines, the Lorentz
+  Contractor, the Syrinx Drone) and the Giant Petrel (the formation leader: Maverick's
+  Playbook, the Immelmann Booster, the Spindrift Salvo, the Reheat Uplink). The last two of
+  Ryan's ten are marked: the Magpie (a working name), a support engine, and the Snowy Owl, a
+  stealth unit. Decided on the way: Exposed (Direct reach and no armour, two rounds,
+  refreshed), the die's six kinds and their grammar, no number on a weapon of no damage, a
+  Rapid shield never below tier two and a Rapid vent never below three, the Kite and the
+  Buzzard as names (the ids kept), Kestrel's lean (heat, rerolls, strikes, risk; Expose kept
+  out for now), a locked piece's power at its chassis's depth, the Buzzard's stock and three
+  new stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs), the designations K-13
+  to K-21. Built here: the Puffin's rework, the Wake Diffuser's Rapid off, the Coriolis
   Accelerator's rename; 486 tests green. The design is in the bible's Kestrel, Kite, Puffin,
-  die-entry and locked-component rows and the rules; each machine's rounds stay in its brief
-  until its session lands it (the to-do's lines); the line in `docs/briefs/kestrel_line.md`.
-  As left (21 October, evening): the Buzzard's stock filled for the stock pass and the stock
-  holes taken (the Cyclic Cannon, the Transonic Rifle, Trim Tabs; the Railgun kept), all on
-  Ryan's word; the names settled from the names round in the line brief: the strafer the Skua
-  (the Butcherbird, which Claude had called clean, being a BattleTech 'Mech's), the
-  interceptor the Needletail, the bomber the Lammergeier (the Magpie's name moving on), the
-  locks the Flechette Pod, St. Elmo's Regenerator, the Fovea Designator, the Immelmann
-  Booster, the Spindrift Salvo and the Reheat Uplink, the passives the Split-cycle Breech, the
-  Quick-turn Avionics Relay, the Fuse-delayed Bay and Maverick's Playbook (the Kite's kept),
-  the designations K-13 to K-21 and the Kite's K-7 Mk IV; Expose left out of Kestrel's lean;
-  the last two slots marked, the Magpie a support engine and the Snowy Owl a stealth unit,
-  each a design session on the to-do. Recorded in the briefs, the rules, the to-do and the
-  bible (the Kestrel, names, locked-component and stock-pass rows, live v0.238). Open for
-  Ryan: the pull's name, the Storm Petrel's passive's, and the Spindrift Salvo kept or not
+  die-entry, names, locked-component and stock-pass rows (live v0.239) and the rules; each
+  machine's rounds stay in its brief until its session lands it (the to-do's lines); the line
+  in `docs/briefs/kestrel_line.md`. As left (21 October, evening): Ryan's last names (the
+  Lorentz Contractor, the Riot Field Generator) recorded; his directions for the last two (the
+  Magpie the thief or its intelligence; the Owl the silent hunter, on the map or in the fight)
+  in two new briefs, `kestrel_magpie.md` and `kestrel_owl.md`, each with Claude's first round
+  (the Magpie: the thief, the lean, a lock that robs a foe's blow and a passive that hands the
+  loot to allies as Overcharged; the mimic; the cache. The Owl: cold is quiet, the lean, no foe
+  picking it while it carries no heat and its kills silent; the hunter on the map; Hidden as a
+  status). Open for Ryan: those two directions, and the Spindrift Salvo kept or not
   (Spindrift is also a BattleTech 'Mech). Then the merge to main on his word (main has moved;
   the hangar page's republish rides with it). On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
@@ -354,7 +352,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.238 (21 October, the Kestrel session's: Kestrel's names, designations and stock pieces, merged onto another session's v0.237, which renamed Dispel Purge on both sides; before it v0.236, the Butcherbird's clash, and v0.235, the Giant Petrel's go, onto the Wainwright & Sutler session's v0.234, which is main's file). This branch's file carries the Kestrel rows (its version line its
+  `docs/design-bible.html` after every change. Live is v0.239 (21 October, the Kestrel session's: the Lorentz Contractor, the Riot Field Generator and the last two slots' briefs; before it v0.238, Kestrel's names, designations and stock pieces, merged onto another session's v0.237, which renamed Dispel Purge on both sides; before it v0.236, the Butcherbird's clash, and v0.235, the Giant Petrel's go, onto the Wainwright & Sutler session's v0.234, which is main's file). This branch's file carries the Kestrel rows (its version line its
   own); at the merge to main the live page becomes main's file, since it holds every session's
   rows, and the tables regenerate from the merged content. Git and the page's version history
   carry what each publish brought. Before republishing, read the live page; if another session

@@ -297,7 +297,7 @@ and modified when laid and its keywords, and joins what already waits; whoever s
 it all, shot by shot in laid order, before it acts. A massive arrival takes both slots'
 shots. Nothing expires.
 
-**The first lock, the pull**: an Indirect weapon of no damage, heat 10 (the number Ryan's),
+**The first lock, the Lorentz Contractor**, the pull: an Indirect weapon of no damage, heat 10 (the number Ryan's),
 never Rapid, no cooldown: every mine on the field is gathered into the slot it is spent on,
 and a foe standing there takes them now, in laid order. Spent on an empty slot it gathers the
 field's mines there and lays nothing of its own, having no shot; with nothing laid it is the
@@ -315,7 +315,7 @@ is on the bench.
 
 | Entry | Piece | In a mine |
 |---|---|---|
-| I | the pull | gathers and sets off |
+| I | the Lorentz Contractor, the pull | gathers and sets off |
 | II | the mark | a teammate's kill lays one |
 | III | a Burn piece | napalm: Burning as it arrives |
 | IV | a Spread piece | a cluster: the arrival's neighbours too |
@@ -448,13 +448,14 @@ value of a mine (a shot delayed, worth its number times the chance a foe steps i
   pull names, it can be more technical, something about warping or teleporting"): Claude's
   pick the Lorentz Contractor (length contraction shrinks the space between, so every mine
   ends in one slot), the others the Spatial Shunt and the Fold-space Anchor (the names round
-  in `kestrel_line.md`).
+  in `kestrel_line.md`). Ryan, 21 October: "Lorentz Contractor". Decided: the pull is the
+  Lorentz Contractor.
 
 ## Open for the engine and content sessions
 
 1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look; its
-   names (the Lammergeier, the Fuse-delayed Bay, K-19 Mk I Tandem-Wing Minelayer, the pull's
-   once Ryan picks it).
+   names (the Lammergeier, the Fuse-delayed Bay, the Lorentz Contractor, K-19 Mk I
+   Tandem-Wing Minelayer).
 2. A bot that values a mine, before its runner row (the Waits on below).
 3. Settled 21 October (Ryan): the bomber's debuff is the Syrinx Drone, the piece's own name, and
    the helicarrier has nothing called Mark: its Spotting Flare Exposes, and Suppresses if a
@@ -468,7 +469,7 @@ before its runner row.
 
 ## What the engine and content sessions land
 
-A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, the
+A slot as a target, the mine store, the landing step, the Lorentz Contractor and the Syrinx Drone, the
 debuff with its kill hook; the content planned (the Lammergeier, its two locks, the Syrinx Drone debuff in
 the vocabulary),
 the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry

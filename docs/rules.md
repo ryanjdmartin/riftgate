@@ -190,8 +190,8 @@ spending it Braces its owner, the stacks it says, until the round's end (the Wil
 Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
-Lammergeier's, not built): every mine on the field gathers into the slot it is spent on, and a foe
+the stacks being the limit, and the fight's last blow rolls nothing. **The Lorentz Contractor** (the
+Lammergeier's pull, not built): every mine on the field gathers into the slot it is spent on, and a foe
 standing there takes them now, in laid order. **The Syrinx Drone** (the Lammergeier's, not built):
 the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
 the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
