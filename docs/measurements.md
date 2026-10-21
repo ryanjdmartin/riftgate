@@ -423,3 +423,91 @@ Read: Flak is worth about six points of the Prairie Dog's row alone, outside the
 point or two on its maker's team, where the row stands near its ceiling and reads a direction
 only. The gain sits where many blows land on one foe (the Gels, the Needlers, the Antlions) and
 against the Drakes. The family's numbers are the stock pass's (the bible's Prairie Dog row).
+
+## 21 October, the reports
+
+**The balance report at 200 seeds after the shield rule** (`docs/balance.md`: 255,200 fights,
+four parts side by side, on the Kite's commit `f1b8c663`). Twenty-two rows (the Cassowary, the
+Cottonmouth and the Whip Scorpion runnable that day; the Swallowtail, the Musk Ox and the
+Lammergeier not yet, so their rows wait on the next rerun) against twenty-nine packs: the twenty
+of 13 October and the party's nine (each bench hero's final, the hero with three of its domain's
+first pack, and the finale, the four first heroes promoted). It reads everything landed since 13
+October together, the honest shield, Barrier, Ward and cooldowns among it, so a delta reads the
+week, not one rule. A run on the shield rule's own commit (`b8cf462e`, 152,000 fights, the
+twenty packs) stands between: every row the later commits left alone reads the same in both to
+the decimal (the seeds are the same), so what moved from it to the report is the Kite's rework,
+the Puffin's, the Dingo's Translocator and the bot's seal. Row means over the twenty packs,
+random / greedy:
+
+| Row | 13 October | The shield commit | The report |
+|---|---|---|---|
+| Honey Badger | 50.5 / 74.3 | 50.4 / 73.5 | 50.4 / 73.5 |
+| Clydesdale | 34.9 / 48.0 | 32.1 / 47.5 | 32.1 / 47.5 |
+| Kite (the Sparrowhawk until its rework) | 49.3 / 67.7 | 44.1 / 58.9 | 21.2 / 26.9 |
+| Baboon | 12.7 / 26.5 | 12.2 / 25.4 | 12.2 / 25.4 |
+| Armadillo | 79.0 / 94.7 | 25.9 / 39.0 | 25.9 / 39.3 |
+| Wild Boar | 55.3 / 84.9 | 55.2 / 82.0 | 55.2 / 82.0 |
+| Prairie Dog | 19.2 / 31.1 | 15.8 / 23.4 | 15.8 / 23.4 |
+| Dingo | 4.0 / 11.2 | 4.5 / 10.8 | 2.6 / 10.4 |
+| Buzzard | 19.9 / 36.7 | 17.7 / 33.1 | 17.7 / 33.1 |
+| Nemesis | 48.2 / 76.2 | 47.5 / 73.6 | 47.5 / 73.6 |
+| Ammit | 21.6 / 33.9 | 19.6 / 29.5 | 19.6 / 29.5 |
+| Stingray | 13.8 / 26.6 | 11.8 / 24.3 | 11.8 / 24.3 |
+| Puffin | 0.9 / 11.1 | 0.9 / 10.7 | 0.4 / 9.2 |
+| Funnel-web | | 31.4 / 45.0 | 31.4 / 45.0 |
+| Cassowary | | | 7.5 / 16.8 |
+| Cottonmouth | | | 12.8 / 30.1 |
+| Whip Scorpion | | | 48.5 / 74.0 |
+| The starting team (Honey Badger, Clydesdale, Kite) | 97.0 / 100 | 96.8 / 100 | 92.7 / 100 |
+| Minerva Heavy Works team | 100 / 100 | 99.5 / 100 | 99.5 / 100 |
+| Kestrel Dynamics team (Kite, Buzzard, Puffin) | 81.7 / 90.9 | 80.0 / 90.5 | 67.4 / 84.0 |
+| Wainwright & Sutler team | 80.9 / 94.0 | 74.5 / 91.3 | 73.2 / 91.4 |
+
+Read: the rows the week did not rework move a few points at most (the Badger, the Boar, the
+Nemesis and the Clydesdale three or less, the Ammit and the Buzzard four), under the honest
+shield and the 18 October rules together (Armoured and Overcharged in points, Burn numbered).
+The shield rule alone, read from the Flak entry's rows on its parent (`5abc6760`, the same
+seeds): the Wainwright & Sutler team 79.4 / 91.8 to 74.5 / 91.3, the Prairie Dog 16.2 / 28.6 to
+15.8 / 23.4, the starting team 96.9 / 100 to 96.8 / 100; of the Peak's cells it was to move, the
+Wainwright & Sutler team's formation 42 to 34 greedy and the Prairie Dog's Drakes 57 to 50,
+directions at one cell's band. The Armadillo alone falls from the top of the table to the middle
+with its rework (20 October), a team tank whose team holds: alone it loses every formation,
+every boss (2 greedy at most), the Goblins, the Revenants and the Salamanders (a trace, six
+Goblins at seed 1: open it takes 15 a blow where the old shell took 5, sealing costs the round's
+action, and it falls in five rounds). The Kite's rework halves its row alone and takes the
+starting team's Peak and Marsh formations from 66 and 73 to 30 and 26 random, and the Kestrel
+team's Waste formation from 35 / 99 to 1 / 57. The party's cells: every team row wins every
+final greedy (the Kestrel team's lowest, the Martial Artist's, 37 / 100), the starting team and
+Minerva's in both rungs at 100, so a final against a team is no decision; the finale is a wall
+for three teams (the starting team 0 / 16, Kestrel's and Wainwright & Sutler's 0 / 0) and a
+decision for Minerva's (3 / 71). Alone, the Badger, the Boar, the Nemesis and the Whip Scorpion
+win every final a third of the time or more greedy and the Cleric's, the Augur's and the
+Summoner's nearly always; the Clydesdale, the Armadillo, the Funnel-web, the Buzzard and the
+Cottonmouth take a few; the rest lose nearly all of them. The new rows: the Whip Scorpion in the
+Nemesis's band (the Bombs 91 / 100, the Drakes 100 / 100), the Cassowary among the weakest alone
+(its Spin-Up and its Coolant Jacket never picked: the bot turns the dial and never plans, the
+to-do's line). The heat section, new: the Whip Scorpion peaks at 83% of its maximum, the Kite
+79%, the Armadillo 74% with 0.73 overheats a fight, and the Kestrel team holds back 0.72
+damaging dice a fight for heat; the stock pass's heat re-pricing reads these.
+
+**The campaign's wall, found** (the to-do's line of 21 October; `docs/campaign_run.md`
+regenerated on main, `32c438ab`). A bisect at three runs a probe (`tools/campaign_run.gd --runs
+3`, seeds 1 to 3: 27% of 36 battles won on the 13 October report's commit `b15e2707`, none of 29
+on main) lands on the Armadillo's rework (`fdb8d6c1`, 20 October: 3% of 33), its parent the
+merge of main into the Minerva branch (`63487a9c`: 27% of 36). Forty runs either side: 12 of 40
+runs won and 27% of 459 battles before it, 1 of 40 and 5% of 391 after. Before it the Armadillo
+started 20 runs and won 11, the other 20 won one; after it the Armadillo's won none and the rest
+still one, so the rework took the Armadillo's runs and nothing else. Forty runs on main's line
+after it: 4% of 391 battles on the Minerva merge (`459ada33`), 1% of 374 after Flak and the
+shield rule (`9ac36662`), 1% of 373 with the day's engines and the party (`899a7725`), and 0 of
+40 runs, one battle in 348, from the Kestrel merge on (`eee55775`, and main), where the tender
+the draft deals from has changed under the same seeds (the Puffin at tier one, the Cassowary and
+the Cottonmouth dealt, the Kite and the Dingo gone to tier two). On main, 572 of 734 fights hold
+one machine; one machine against one pack wins 31% (64% on 13 October), two together 64 to 76%.
+
+Read: no bug. The old Armadillo was the one machine that carried a lone fight (alone 79 / 95
+over the twenty packs, the next the Boar at 55 / 85), and the plain player's fights are mostly
+one machine alone; the reworked one is the team tank its bible row decided. The rest of the
+slide is the week's small moves on a run that had no margin left, not a second break. The
+campaign report reads nothing while every run is lost: its number waits on a player that fights
+as a team (the status's fourth item), Ryan's question in the bible's section 12.

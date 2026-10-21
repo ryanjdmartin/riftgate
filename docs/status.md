@@ -165,8 +165,9 @@ before it. The five design sessions merged that day are paused, each resuming fr
   line) and stands while a commander does; a withdrawn boss had walked off as a pack and come
   back with a spawn foe beside it, fixed, and a boss's kill counts toward salvage. The
   campaign runner reports the party and the finals; the balance report carries the party's
-  cells (each bench hero's final, the finale), a 30-seed direction on the team row reading
-  every final won in both rungs and the finale 13 / 73. The party card waits on the mission map.
+  cells (each bench hero's final, the finale): at 200 seeds every team row wins every final
+  greedy, and the finale is a wall but for Minerva's team (3 / 71). The party card waits on the
+  mission map.
 - 20 and 21 October, the Kestrel session's builds (merged 21 October): the Puffin reworked at
   tier one (the Slipstream Projector: a shield it spends on an ally grows by a fifth of the heat
   that ally carries, read at the spend, by the die dragged over the ally and by the bot alike,
@@ -229,8 +230,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   Cryo Flinger prints none (cooldown 0, its heat the limiter, Ryan's design of 20 October), the
   dark entry shows its rounds left on the die, and the validator refuses a Rapid entry with no
   limiter. The bot values both buffs and prices a cooldown. The balance runner splits across
-  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is under way on
-  today's main (a run on the shield commit itself finished, but main's rows have moved since).
+  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is in (Measured,
+  below).
 - 21 October, Flak (Ryan's go, 19 October; the bible's Prairie Dog row), built on main once the
   numbers branch merged: Flak N on the Flakshot Repeater (Flak 2, Spread, a flat 5, no Rapid),
   each foe hit gaining the stacks after the blow; every blow on a Flak foe a point more a stack,
@@ -456,21 +457,24 @@ before it. The five design sessions merged that day are paused, each resuming fr
   screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
-## Measured, 13 October
+## Measured, 21 October
 
-- `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 12 of 40
-  runs with the in-fight Rift Pressure tick gone (3 of 40 with it that morning; 29 of 40 on 9
-  October, before the domains), 24% of battles, 75% wiped, 3.5 cities fallen a run. Not Rally:
-  the commit before the fix gave 0 of 40 with the tick. The bot
-  takes every ready machine to one front, as intended, but fights inside a battle are mostly
-  one machine alone (1,157 of 1,747), wrecks sit out with no spares, and the bot never
-  withdraws from a skirmish. A lone machine wins 64% against a pack and 37% against two; two
-  together win 92%.
-- `docs/balance.md` at 200 seeds: every team row keeps its 9 October band; alone the machines
-  move a few points, the Nemesis most (greedy 61 to 76); the cells that moved follow the rules
-  (the Peak open to nearly everyone and closed to the Buzzard, the bosses harder for the heavy
-  machines, the Marsh's formation a decision for the Armadillo and a wall for the Boar); flat
-  weapons pay about twice the heat per point that rolled ones do. The bands of both are in
+- `docs/balance.md` at 200 seeds on the Kite's commit (`f1b8c663`; the Swallowtail, the Musk
+  Ox and the Lammergeier landed after it, so their rows wait on the next rerun): the rows the
+  week did not rework move a few points at most; the shield rule alone takes up to five points
+  off a row (the Wainwright & Sutler team's random, the Prairie Dog's greedy) and moves the
+  Peak's cells a direction down. The Armadillo alone falls from the top of the table (79 / 95)
+  to the middle (26 / 39) with its rework, its team holding at 100; the Kite's rework halves
+  its row and costs the starting team the Peak's and the Marsh's formations in the random
+  rung. Every team wins every final greedy; the finale is a wall but for Minerva's team (3 /
+  71). The Whip Scorpion reads in the Nemesis's band, the Cassowary among the weakest alone. A
+  heat section reads peaks, hot rounds and dice held for heat.
+- `docs/campaign_run.md` on main: the plain player wins none of 40 runs and one battle of 348
+  (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
+  the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
+  lone fight; the plain player's fights are still mostly one machine (572 of 734), and one
+  machine against one pack now wins 31%. The report reads nothing until a player fights as a
+  team (the fourth item below; section 12 asks whether to bring that forward). Both in
   `docs/measurements.md`.
 
 ## Decided, not built
@@ -599,10 +603,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.245, and so is the live
-  (21 October, the page's version 262): v0.244 (the party's rows) with the day's builds on top
-  (the Lammergeier, the Needletail's gate, the Swallowtail and the Musk Ox in their rows, the
-  Swallowtail's Sponsorship question in section 12) and the tables regenerated. The version numbers on main's file and the live agree after every
+  `docs/design-bible.html` after every change. Main's file is v0.246, and so is the live
+  (21 October, the page's version 263): v0.245 (the day's builds: the Lammergeier, the
+  Needletail's gate, the Swallowtail and the Musk Ox in their rows, the Sponsorship question,
+  the tables; published as the page's version 262 with its header still reading 0.244) with
+  the campaign's wall question in section 12 and the header's number mended. The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
