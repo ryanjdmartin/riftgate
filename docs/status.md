@@ -599,11 +599,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.244, and so is the live
-  (21 October): the live v0.243 (the Kestrel branch merged, its rows and the regenerated
-  tables) with the party's rows on top (the deal, the Cleric's Reraise built, the promoted forms,
-  the finale and the finals, section 12's slate question) and the tables regenerated (the
-  promoted Cleric's Reraise beside the Zombie Knight's). The version numbers on main's file and the live agree after every
+  `docs/design-bible.html` after every change. Main's file is v0.245, and so is the live
+  (21 October, the page's version 262): v0.244 (the party's rows) with the day's builds on top
+  (the Lammergeier, the Needletail's gate, the Swallowtail and the Musk Ox in their rows, the
+  Swallowtail's Sponsorship question in section 12) and the tables regenerated. The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
@@ -616,10 +615,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
-  the content that had moved, and the walkers' planted footwork, the last on 20 October
-  (`ccr-ffcf75fa-3gkbz9`); main's content has moved since (21 October's landings and merges,
-  the Kestrel branch's among them: the Puffin's passive, the Kite's and the Buzzard's names, the
-  Coriolis Accelerator, the Wake Diffuser), so the next content session republishes it. Its database
+  the content that had moved, and the walkers' planted footwork (20 October, `ccr-ffcf75fa-3gkbz9`); and on 21 October with the
+  day's content (the five files that had moved: chassis, components, foes, the reserved names,
+  vocabulary; the Kite's rework, the Lammergeier, the Swallowtail and the Musk Ox runnable, the
+  party's promoted forms) and the pins, which mark the three new machines and the three without
+  models as having none (the page's version 89; `edits` empty before it). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
