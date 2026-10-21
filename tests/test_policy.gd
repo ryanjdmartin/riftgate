@@ -435,7 +435,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 	var f := a.die.faces[0]
 	assert_true(pol.attack_score(sk, sk.mechs[0], f, away) > pol.attack_score(sk, sk.mechs[0], f, looking), "the foe looking away is worth the bite")
 	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), 36, "a Maxigun bite's three stacks on a 160-hull boss that took 22: about 36 over its next three actions")
-	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 30, "Burning's flat ticks: three, two, one stacks of five")
+	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 6, "Burning's flat ticks: three, two, one stacks of a point (18 October)")
 	pol.play_round(sk)
 	assert_eq(Effects.stacks_of(away, "vitriol"), 1, "and the die went there")
 	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")

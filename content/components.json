@@ -264,6 +264,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 3,
     "heat": 0
    },
    "passive": null,
@@ -481,6 +482,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 3,
     "heat": 10
    },
    "passive": null,
@@ -548,41 +550,6 @@
    ]
   },
   {
-   "id": "lockdown_shutters",
-   "name": "Lockdown Shutters",
-   "maker": "minerva",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "The Armadillo's weapon ports seal and the shell goes dark. Everything shoots the shell, because the shell is the only thing there is.",
-    "niche": "The Armadillo's locked shield: while the shutters stand Faraday Hull answers blows on the shield as well as on hull.",
-    "notes": "Sealed Live is shock_on_block, which holds while the component is not destroyed. Was the Faraday Shutters (Claude's fill, 28 September); renamed and re-cut on Ryan's note of 30 September: locking the ports does not electrocute anything, it locks the ports. Carried the taunt keyword from 30 September to 2 October, when taunt went (the bible's targeting row in section 5): the shutters keep the shield and the passive and lose the draw; a lure of the Armadillo's own, if it wants one, is a weapon's to carry."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 20,
-    "targets": "self"
-   },
-   "passive": {
-    "id": "sealed_live",
-    "name": "Sealed Live",
-    "description": "While the shutters stand, Faraday Hull applies to blows on the shield as well.",
-    "effects": [
-     {
-      "trigger": "static",
-      "effect": "shock_on_block",
-      "value": 1
-     }
-    ]
-   },
-   "tags": [
-    "defense",
-    "control"
-   ]
-  },
-  {
    "id": "proximity_klaxon",
    "name": "Proximity Klaxon",
    "maker": "minerva",
@@ -611,6 +578,37 @@
    ]
   },
   {
+   "id": "cryo_flinger",
+   "name": "Cryo Flinger",
+   "maker": "minerva",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
+    "niche": "The Armadillo's locked pair (Ryan's framework, 15 October; his go, 20 October): an Indirect weapon of no damage with Lure, Rapid and Cryo 1 at 5 heat. The foe it lures carries Cryo; any machine's damaging hit spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal.",
+    "notes": "Two copies on the die (Ryan, 15 October: one or a pair; 16 October: a pair, since one lure on a five-entry die shows a fifth of rounds). Rapid with no cooldown: the heat is its limiter (the bible's Rapid row), 5 a spend, a placeholder like every heat number here until the heat rework (Ryan, 20 October). Cryo is marked for reuse on other pieces as ally cooling through a foe's debuff, and may carry a minor rider later if the roster has room (the Armadillo row)."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "lure",
+     "rapid",
+     "cryo"
+    ],
+    "heat": 5,
+    "cryo": 1
+   },
+   "passive": null,
+   "tags": [
+    "control",
+    "support"
+   ]
+  },
+  {
    "id": "breaching_plow",
    "name": "Breaching Plow",
    "maker": "minerva",
@@ -633,7 +631,7 @@
      "cleave"
     ],
     "heat": 0,
-    "braces": 2
+    "braces": 10
    },
    "passive": null,
    "tags": [
@@ -786,6 +784,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 5,
     "heat": 10
    },
    "passive": null,
@@ -806,7 +805,7 @@
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
     "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): devour folded into a rule printed on the talons, its one carrier, so it is no longer a keyword to learn."
+    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): devour folded into a rule printed on the talons, its one carrier, so it is no longer a keyword to learn. 18 October (Ryan): \"devour is not a thing\": the entry says what it does, each kill Overcharged 2 (a point a stack, kept for the battle by the Tap), and nothing in the records names it."
    },
    "face": {
     "kind": "attack",
@@ -814,7 +813,7 @@
     "power": 10,
     "keywords": [],
     "heat": 5,
-    "devours": true
+    "devours": 2
    },
    "passive": null,
    "tags": [
@@ -979,13 +978,12 @@
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
     "niche": "The first buff component: two stacks of Overcharged on a machine for the round.",
-    "notes": "Claude's fill, 29 September, so the buff kind has one entry in the pool; fitted to no chassis. Numbers, name and maker are Ryan's to move."
+    "notes": "Claude's fill, 29 September, so the buff kind has one entry in the pool; fitted to no chassis. Numbers, name and maker are Ryan's to move. 18 October (Ryan): Overcharged 2, a point a stack halving at each round's end, no rounds (a halving status has no duration); the +10 for a round it gave before was \"silly high\" for a support action spent the same turn as a combo."
    },
    "face": {
     "kind": "buff",
     "status": "overcharged",
-    "stacks": 2,
-    "rounds": 1
+    "stacks": 2
    },
    "passive": null,
    "tags": [
@@ -1063,6 +1061,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 3,
     "heat": 10
    },
    "passive": null,
@@ -1091,6 +1090,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 5,
     "heat": 15
    },
    "passive": null,
@@ -1145,6 +1145,7 @@
     "keywords": [
      "burn"
     ],
+    "burn": 3,
     "heat": 20
    },
    "passive": null,
@@ -1291,6 +1292,7 @@
    "id": "shoring_jack",
    "name": "Shoring Jack",
    "maker": "minerva",
+   "tier": 1,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -1298,12 +1300,12 @@
     "stage": "draft",
     "fantasy": "A hydraulic pit prop jammed under a machine's plating. It holds the roof up in the mine; it holds the armour on out here.",
     "niche": "The first Braced carrier: armour +20 for the round on itself or an ally, the answer to volume (swarms, double strikes, a storm of small blows), nothing against a breach.",
-    "notes": "Stocked on the Armadillo in place of its Ablative Plating. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "Stocked on the Armadillo in place of its Ablative Plating. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. 18 October: Armoured 10 (Braced ×2 at +5 a stack before; a stack is an armour point now). 20 October: off the Armadillo's stock (its seal is its armour now), so it carries its own tier, one, until the stock pass finds it a home."
    },
    "face": {
     "kind": "buff",
     "status": "braced",
-    "stacks": 2,
+    "stacks": 10,
     "rounds": 1
    },
    "passive": null,

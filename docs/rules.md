@@ -95,7 +95,8 @@ defeat when every machine is wrecked. There is no round limit.
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
 - **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
-  number in heat; a buff grants its status, so many stacks, through so many rounds.
+  number in heat; a buff grants its status, so many stacks, through so many rounds, or with
+  no rounds when the status runs down on its own (Overcharged).
 
 ### Reach
 - **Direct** reaches the front rank, and a back-rank foe whose column's front slot is empty.
@@ -127,7 +128,11 @@ defeat when every machine is wrecked. There is no round limit.
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
-- **Burn**: each foe hit gains a Burning stack per 10 of the blow, rounded up.
+- **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
+  blow dealt (Burn 3: three stacks).
+- **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
+  machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 10 a
+  stack, after the spend's own heat lands; a blow of nothing spends none.
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
@@ -160,14 +165,14 @@ defeat when every machine is wrecked. There is no round limit.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
-bonus per 10 heat fired, then its own heat lands. **Devour** (the Soulcutter Talons): each
-kill gives the owner a stack of Overcharged. **Missing hull** adds its bonus for every
+bonus per 10 heat fired, then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
+rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing hull** adds its bonus for every
 20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
 Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
-spending it Braces its owner, the stacks it says, until the round's end (the Wild Boar's
-Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+spending it Armours its owner, the stacks it says, an armour point each, until the round's
+end (the Wild Boar's Breaching Plow, ten). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
@@ -178,11 +183,13 @@ grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
 On a machine:
-- **Overcharged** (buff): +5 damage a stack. From buff equipment it lasts the rounds the
-  component says; from a module it lasts the skirmish, losing a stack each round's end; the
-  stacks the Ammit's talons take are kept for the battle and never fade.
-- **Braced** (buff, on either side): armour +5 a stack, every stack at once, whatever granted
-  it: a machine's until the round's end, a foe's (from its brace) until its next action.
+- **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
+  round it halves, rounded down, whatever granted it, until it is gone; a buff component
+  grants it stacks and no rounds. On the Ammit nothing of it fades: its Quintessence Tap
+  keeps every stack for the battle, whatever granted it.
+- **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
+  granted it, so the count is the armour: a machine's until the round's end, a foe's (from
+  its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Phased** (buff, either side, not built): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
@@ -210,6 +217,10 @@ On a machine:
   decays, and nothing cleanses it.
 - **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
+- **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +10,
+  its own cooling stopped, 15 heat more at the end of each turn before the overheat; a vent or
+  a weapon that deals damage opens it; a shield on an ally, a buff and a weapon of no damage
+  leave the form as it is. An ally's vent still cools it. One seal, however many shields.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +5 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
@@ -219,10 +230,10 @@ On a machine:
 - **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
-  never armoured; lasts the skirmish.
+  no armour off it; lasts the skirmish.
 
 On a foe:
-- **Burning** (debuff): 5 damage a stack at the start of its action, past armour, then a
+- **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
   stack fades. It never stops healing.
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
@@ -246,6 +257,8 @@ On a foe:
   as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
+- **Cryo** (debuff): a damaging hit on it spends every stack and cools the hitter 10 a stack;
+  a blow of nothing spends none. It never fades on its own.
 - **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
   halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
@@ -260,7 +273,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed or Cryo (Flak once built).
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -268,8 +281,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
   reaches the hull. (Not built: today a standing shield blocks a whole blow, however small,
   and only a breach's overflow passes it.)
 - A machine's armour comes off every blow that reaches its hull, flat, a breach's overflow
-  included; shields are never armoured. A foe's armour comes off every blow on it, never off
-  Burning. Damage-taken effects apply before armour.
+  included; a shield takes no armour off. A foe's armour comes off every blow on it, never
+  off Burning. Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
   never heals in a battle.
@@ -324,8 +337,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol or Webbed (Flak once built).
   Corrupted stack on it), self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
-- **A special** replaces the blow: brace (Braced, its value in stacks of 5, until its next
-  action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
+- **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
+  next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
   value), brace all (the same on every foe in the fight, through the next round), revive once,
   summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
@@ -383,8 +396,10 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn; a timed one stacks only with a grant
-that ends the same round, so each grant's stacks go when its own rounds run out. A status's
+and a ticking status loses a stack at its owner's turn, a halving one half of them, rounded
+down; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
+when its own rounds run out. A status runs down to zero on its own clock or is timed, never
+both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its
 count the larger (Suppressed, Retaliate), which on an untimed one-stack status (Shocked,
 Getting Back Up, Guarded, Scrambled) means a second grant changes nothing. Nothing writes to

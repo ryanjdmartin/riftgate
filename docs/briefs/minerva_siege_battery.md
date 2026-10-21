@@ -6,7 +6,8 @@ them. The working label "the siege battery" stays; the name is Ryan's. Minerva's
 three, the battlecruiser, has a brief of its own (`minerva_battlecruiser.md`), which also holds
 the broadside first proposed here.
 
-**Status**: direction (Ryan's pitch, 15 October; the charge open, 16 October). **Maker**: Minerva. **Proposed tier**: three.
+**Status**: direction, parked on Ryan's charge brief (20 October) to pick up later; his pitch 15
+October, the shells proposed 17 October and given to Wainwright & Sutler, 20 October. **Maker**: Minerva. **Proposed tier**: three.
 **Read first**: `docs/briefs/README.md`; `minerva_battlecruiser.md`; the bible's rows on
 cooldowns (section 8), the makers table and the size classes (section 7), and the ways of
 moving (section 4).
@@ -130,11 +131,54 @@ and the hot guns lose their home); a locked loader entry in place of vents reloa
 reload becomes die luck, and other makers' vents lose their route in); steady aim and ripe
 target (above).
 
+**Ryan, fourth round** (18 October), in his words: "If we do the ammo version, I would just add a
+new ammo bar under or replacing the heat bar, to make it clear it's a resource and avoid
+interacting with other game effects. The only issue I have with it is that it really feels like a
+W&S design..."
+
+Claude's reading: the ammo bar of its own is better than the third round's "heat gauge shown in
+shells", since the Peak's Burning and Scorched then land on a heat gauge the machine still has
+and the shells touch nothing else; the heat gauge stays, small, for the foes' fire. On the feel:
+what makes a magazine Minervan rather than Wainwright & Sutler's is the register, not the
+mechanic. Wainwright & Sutler count rounds because they are poor (a revolver's six, a boiler's
+pressure); Minerva would count shells because its guns are too big to feed any other way, so the
+text says autoloader, breech and magazine, the reload is the coolant cycle racking a shell (a
+vent spent on it), and the numbers are heavy (a turret shot three shells of eight). If that does
+not carry it for Ryan, the alternatives are to give shells to Wainwright & Sutler's gunship or
+revolver later and find the battery another "when" (the telegraph hunter, or firing drops its
+guard, above), or to run the shells and judge the feel in play, since the look of the bar and the
+words on it are what read as a maker.
+
+**Ryan, fifth round** (20 October, in the Wainwright & Sutler session; the briefs README's damage
+dealers note): the all-shells machine reads to him as a Wainwright & Sutler tier three, and Claude
+agreed there that it is that maker's artillery tenth (the cold price the heat row asked for, on
+the maker whose kit is cold, the carrier's resupply its loader), a brief of its own when he says
+so. So the shells leave this brief, and the battery's charge is open again among the earlier
+candidates: firing drops its guard, the magazine as a per-fight count, the telegraph hunter, or
+none.
+
+**Ryan, sixth round** (20 October), in his words: "The tier 3 tank, brief something like 'using
+components adds one charge, up to a max. Each of the cannons spends charge to gain power, such as
+armour piercing at one charge, penetrate with two charge, and so on, and perhaps the cooldown
+increases with each charge spent as well.' That will be good enough for now so that we can pick
+it up again later."
+
+What it settles: the charge is his, built by spending, any component a charge up to a cap, and
+spent by the turrets for power in steps (armour piercing at one, Penetrate at two, more above),
+perhaps a longer cooldown the more spent; the design is parked here until he picks it up. Notes
+for then, Claude's: a charge a spend accrues at the die's pace, three or four a round with Rapid
+in the kit, so the cap and the steps set how often the top shot comes, and the "when" is which
+step to fire at (a cheap shot now or the Penetrate later); the cooldown rising with the spend is
+the price per die the cooldown row wants; the Armadillo's seal and the Nemesis's rage are the
+stores this resembles, so its chip is a count like theirs; the engine has a count on a machine
+(a store), a cooldown property not yet built, and nothing that reads a store to change a
+weapon's keywords and number by steps, which is the new piece.
+
 ## Open for the session
 
-1. The charge: shells for every gun, vents reloading (Claude's third round), or one of the
-   earlier candidates, or none (Ryan: possibly a non-starter); the magazine's size, the
-   turrets' price and the vent-to-shell rate as placeholders.
+1. The charge, on Ryan's brief above: the cap, the steps and their keywords, whether the cooldown
+   grows with the spend; the earlier candidates (firing drops its guard, the magazine, the
+   telegraph hunter) are the bench.
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
 3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the

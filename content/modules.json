@@ -246,12 +246,13 @@
     "shield": 10
    },
    "text": {
-    "description": "An ally it shields is Braced for the round.",
+    "description": "An ally it shields is Armoured 3 for the round.",
     "effects": [
      {
       "trigger": "on_shield_granted",
       "effect": "stack_status",
-      "value": "braced"
+      "value": "braced",
+      "stacks": 3
      }
     ]
    },
@@ -259,7 +260,7 @@
     "stage": "draft",
     "fantasy": "The field it lends comes back mirrored, and the mirror holds.",
     "niche": "A kit for the support frame: a shield spent on an ally is armour too.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. Needed the on_shield_granted fix, the status on the ally (built 9 October)."
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. Needed the on_shield_granted fix, the status on the ally (built 9 October). 18 October: Armoured 3 a shield (a stack of Braced, +5, before; a stack is an armour point now), a placeholder."
    }
   },
   {
@@ -348,7 +349,7 @@
     "hull": 10
    },
    "text": {
-    "description": "Taking hull damage Overcharges it.",
+    "description": "Taking hull damage Overcharges it, a stack a blow.",
     "effects": [
      {
       "trigger": "on_hull_damage",
@@ -361,7 +362,7 @@
     "stage": "draft",
     "fantasy": "It keeps a record of every wound, and it reads the list aloud.",
     "niche": "A kit: a machine that hits harder the more it is hit.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. 18 October: a stack a blow at a point a stack, halving each round, so a machine struck so often a round settles near twice that; the bench, a stack for every 5 hull lost."
    }
   },
   {

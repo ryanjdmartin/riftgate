@@ -25,7 +25,7 @@ const DEATH_WEIGHT := 60.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
-const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
+const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Overcharged stacks are worth: a halving stack pays about twice itself over the rounds to come; kept for the battle (the Ammit), more
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
@@ -257,7 +257,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
-		score += (1.0 - p_kill) * mean * BURN_WEIGHT
+		# Burn N leaves N stacks that tick N, N-1, ... 1 over the actions to come (Ryan, 18
+		# October: a numbered keyword, a damage point a stack); the tick is read from the status.
+		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
+		score += (1.0 - p_kill) * per * float(f.burn * (f.burn + 1)) / 2.0 * BURN_WEIGHT
+	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
+	# of that much would be on the hitter.
+	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
+		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.CRYO_COOL_PER_STACK)
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
 	if f.braces > 0:
@@ -266,10 +273,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A stack to spend buys another roll of the die, so the machine acts again: about the
 		# die's own average blow, read plainly so the scorer never asks itself.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
-	if f.devours:
-		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
-		# for about the rounds the stack lasts. Read from the status, never hardcoded.
-		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * DEVOUR_ROUNDS
+	if f.devours > 0:
+		# A kill feeds stacks of Overcharged: what the status adds to the die's own damage, a
+		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
+		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * float(f.devours) * DEVOUR_ROUNDS
 	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
 	# link is worth its kill at the odds of reaching it.
 	var uses := 1.0

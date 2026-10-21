@@ -31,9 +31,10 @@ END = "<!-- bible-tables:end -->"
 # lands on. A keyword or effect missing here grants no status.
 COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
-                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")]}
+                      "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
+                      "cryo": [("cryoed", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper"}
-PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"),
+PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
@@ -48,7 +49,7 @@ ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
-           ("devour", "Devour", lambda f: bool(f.get("devours"))),
+           ("kill_overcharge", "Overcharged a kill", lambda f: int(f.get("devours", 0) or 0) > 0),
            ("power_per_missing", "Grows with missing hull", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),

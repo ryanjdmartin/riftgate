@@ -19,9 +19,10 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 500 tests, 60,987 checks, green on main (20 October, after the funnel-web and planted-footwork
-  branch merged; 485 and 20,291 on the Windows desk machine on 19 October, about a minute
-  there). A cloud session fetches
+- Tests: 507 tests, 61,118 checks, green on main (21 October, with the Minerva session's branch
+  merged: the Armadillo, and Armoured, Overcharged and Burn in points; 485 and 20,291 on the
+  Windows desk machine on 19 October, about a minute there). A cloud
+  session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -53,11 +54,23 @@ document's job and every command are in `README.md`.
   Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
   reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
   word ("make sure main is up to date with any changes you've made"), main merged into it the
-  same day, and kept open: the session resumes on it in a fresh context. To resume, read
-  `docs/briefs/minerva_armadillo.md` (its open list and sixth round: the numbers, the mark's
-  spender, allied cooling, the names), `docs/briefs/minerva_siege_battery.md` (the shells
-  proposal, its third round), the to-do's review line under the design sessions (Armoured and
-  Overcharged's halving, Ryan's ask for the next session), then the bible's state below.
+  same day; the session went on in a fresh context on `ccr-3259e29d-ydwpom` (below), so this
+  branch is safe to delete.
+- `ccr-3259e29d-ydwpom` (18 to 20 October, the Minerva session resumed; main merged in on 20
+  October): the Armadillo landed on Ryan's go (20 October: Lockdown, the Cryo Flinger pair,
+  Cryo, below), the echidna left open, the siege battery parked on his charge brief; before it,
+  Ryan's calls on the review
+  built and recorded (the bible's Armoured row and Burn row in section 5, the rules, the
+  vocabulary): Armoured on both sides at an armour point a stack, Overcharged a damage point a
+  stack halving at each round's end with no rounds, the Quintessence Tap keeping every
+  Overcharged on the Ammit and its kill two, Burn a numbered keyword at a damage point a
+  stack, "devour" out of the records (the talons' rule says what it does), the numbers' direction
+  down (section 11); the Armadillo's Cryo Flinger and Cryo named and the mark shared; the
+  siege battery's fourth round (Ryan's ammo bar, his Wainwright & Sutler worry). To resume:
+  the Minerva roster row (the bible, section 7) says where each machine stands; the open
+  Minerva briefs are the Honey Badger's (its numbers), the echidna's (left open), the siege
+  battery's (parked on Ryan's charge brief) and the battlecruiser's (with the Carrier's
+  session); the Armadillo's model is the to-do's art line.
 - `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
   proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
   Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
@@ -315,6 +328,28 @@ document's job and every command are in `README.md`.
   a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
   chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
   Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
+- Built 20 October, on `ccr-3259e29d-ydwpom` (Ryan's go; the bible's Armadillo row, section 7):
+  the Armadillo is the form-changing tank. Lockdown, its passive (`seal_form`: armour +10 on a
+  base of 5, 15 heat at the end of each sealed turn before the overheat, its own cooling
+  stopped; a shield on itself seals, a vent or a damaging weapon opens; one renewing Sealed
+  chip carrying the armour); the Cryo Flinger pair, fixed (Indirect, no damage, Lure, Rapid,
+  Cryo 1, 5 heat); Cryo, a numbered keyword like Burn and a foe status, any machine's damaging
+  hit spending every stack to cool the hitter 10 a stack after its own heat lands, valued by
+  the bot as a vent; the Lockdown Shutters and the Faraday Hull out of content (the Shoring
+  Jack unstocked, tier one); four hardpoints (rivet gun, slugthrower, Blast Door, Blowout
+  Stack). Every heat number a placeholder ahead of the heat rework (Ryan). The model still
+  has five pins and no racks (the to-do's art line).
+- Built 18 October, on `ccr-3259e29d-ydwpom` (Ryan's calls, 18 October; the bible's section
+  5): Braced is Armoured on both sides, an armour point a stack (the Shoring Jack 10, the
+  Breaching Plow 10, the Phase Conjugator 3 a shield, a foe's brace its value in stacks, the
+  engine id `braced` kept); Overcharged a damage point a stack, halving at the end of each
+  round, rounded down, from every source, a buff of it carrying no rounds (the Overcharge
+  Coil 2, the Grievance Reliquary a stack a blow); the Quintessence Tap keeps every
+  Overcharged on the Ammit whatever granted it, the talons giving two a kill; Burn a numbered
+  keyword (`burn` on the face beside the keyword, the validator asking for it: 3 on the
+  10-damage pieces, 5 on the 15s) and a foe's Burning a damage point a stack; the status
+  table's decays gained `half`, the brace validator asks a positive number, and the word
+  "devour" is gone from the records (the vocabulary's entry is "Overcharged a kill").
 - Built 15 October, on the Minerva branch (Ryan: "Roman numerals in the corner? ... grey on
   the black background"): every die entry shows its place on the die, from I, as a grey Roman
   numeral in the quotes' condensed italic, top left on the die and down the hold and the codex

@@ -718,18 +718,28 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
-	if fd.has("devours") and kind != "attack":
-		errs.append("%s: devours belongs to an attack" % where)
+	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
+		errs.append("%s: devours is the stacks of Overcharged a kill gives its owner: a positive number on an attack" % where)
 	if Array(fd.get("keywords", [])).has("devour"):
-		errs.append("%s: devour is a unique rule since 11 October: write devours: true" % where)
+		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
+	# Burn is a numbered keyword (Ryan, 18 October): a weapon says the stacks each blow leaves.
+	if Array(fd.get("keywords", [])).has("burn") and int(fd.get("burn", 0)) <= 0:
+		errs.append("%s: a Burn weapon says its stacks: burn, a positive number" % where)
+	if fd.has("burn") and not Array(fd.get("keywords", [])).has("burn"):
+		errs.append("%s: burn (the stacks) rides with the Burn keyword" % where)
+	# Cryo is numbered the same way (20 October): the stacks each foe reached gains.
+	if Array(fd.get("keywords", [])).has("cryo") and int(fd.get("cryo", 0)) <= 0:
+		errs.append("%s: a Cryo weapon says its stacks: cryo, a positive number" % where)
+	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
+		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
 	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
 		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
-	# The brace (12 October): spending the entry Braces its owner until the round's end.
+	# The brace (12 October): spending the entry Armours its owner until the round's end.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
-		errs.append("%s: braces is a positive number of Braced stacks" % where)
+		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
 	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status it
 	# spends must be one of the engine's, and Rapid already rolls again on its own.
 	if fd.has("rolls_again_on"):
@@ -757,6 +767,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# whole at the round's end is never granted for longer.
 		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
 			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
+		# A status that decays to zero on its own clock (Overcharged halving) has no duration
+		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
+		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
+			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
@@ -840,6 +854,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
+		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
+			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword":
@@ -1183,13 +1199,12 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
-				# A brace is armour in stacks of Braced (16 October), so its value is a positive
-				# multiple of a stack's armour: nothing is lost to the division.
+				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
+				# October, so its value is its stacks: a positive number.
 				if effect == "brace" or effect == "brace_all":
-					var step := maxi(1, Effects.braced_armour())
 					var v := int(a.get("value", 0))
-					if v <= 0 or v % step != 0:
-						errs.append("%s: a brace's value is armour in stacks of Braced, +%d a stack: a positive multiple of %d, got %d" % [aw, step, step, v])
+					if v <= 0:
+						errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 				for key in ["factor", "strikes", "keywords", "countdown"]:

@@ -288,10 +288,10 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
-| `minerva_armadillo.md` | rework, in session | Minerva | 1 | nothing |
-| `minerva_honey_badger.md` | rework, in session | Minerva | 1 | nothing |
-| `minerva_hedgehog.md` | direction, in session (the echidna) | Minerva | 2 | nothing |
-| `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
+| `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
+| `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
+| `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
+| `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
 | `kestrel_strafer.md` | decided; proposed for the go, 18 October | Kestrel | 1 | Ryan's call on the proposal |
 | `kestrel_shield_spender.md` | direction; three kits proposed 18 October, the off-tank package on Ryan's word 19 October | Kestrel | 1 | Ryan's call on the package; its runner row on the shield rule's engine |
@@ -410,8 +410,9 @@ overrule)
 
 ## A suggested order
 
-1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
-   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the bomber,
+1. Nothing to wait on: the Minerva session's open briefs (the Honey Badger's numbers; the
+   echidna left open and the H-tank parked on Ryan's charge brief, 20 October, the day the
+   Armadillo landed); then any of the strafer, the shield-spender, the bomber,
    the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
    landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.

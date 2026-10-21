@@ -1335,6 +1335,58 @@ func test_a_locked_component_is_never_a_blueprint() -> void:
 	assert_true(_has_error(db, "locked on a chassis, so it carries no tier"), "a locked component storing a tier is refused")
 
 
+## Burn is a numbered keyword (Ryan, 18 October): a weapon says the stacks each blow leaves,
+## and the number rides with the keyword.
+func test_a_burn_weapon_says_its_stacks() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var mute: Dictionary = db.components["blazethrower"].duplicate(true)
+	mute["face"].erase("burn")
+	mute["tier"] = 1
+	db.components["mute_torch"] = mute
+	var stray: Dictionary = db.components["slugthrower"].duplicate(true)
+	stray["face"]["burn"] = 2
+	stray["tier"] = 1
+	db.components["stray_number"] = stray
+	var errs := db.validate()
+	var mute_refused := false
+	var stray_refused := false
+	for e in errs:
+		if e.begins_with("component mute_torch") and e.contains("says its stacks"):
+			mute_refused = true
+		if e.begins_with("component stray_number") and e.contains("rides with the Burn keyword"):
+			stray_refused = true
+	assert_true(mute_refused, "a Burn weapon with no number is refused")
+	assert_true(stray_refused, "a number with no Burn keyword is refused")
+	var shipped := ContentDB.new()
+	shipped.load_dir(ContentDB.DIR)
+	for c in shipped.components.values():
+		var fd: Dictionary = c.get("face", {})
+		if Array(fd.get("keywords", [])).has("burn"):
+			assert_true(int(fd.get("burn", 0)) >= 1, "%s carries its Burn number" % c["id"])
+	assert_eq(db.build_face(db.components["blazethrower"]["face"]).burn, int(db.components["blazethrower"]["face"]["burn"]), "the number reaches the entry")
+
+
+## A halving status has no duration (Ryan, 18 October: "Things either decrease to zero, or are
+## timed, not both"): a buff of Overcharged grants stacks and no rounds.
+func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_false(db.components["overcharge_coil"]["face"].has("rounds"), "the Overcharge Coil says its stacks and no rounds")
+	var timed: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	timed["face"]["rounds"] = 2
+	timed["tier"] = 1
+	db.components["timed_coil"] = timed
+	var refused := false
+	for e in db.validate():
+		if e.begins_with("component timed_coil") and e.contains("stacks and no rounds"):
+			refused = true
+	assert_true(refused, "a buff granting Overcharged for rounds is refused")
+	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Overcharged runs down on its own")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
+
+
 ## lay_status (the funnel-web's Ambush, 18 October) names a status the engine has and lays at
 ## least a stack a hit.
 func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
@@ -1386,3 +1438,31 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 			hit = true
 	assert_true(hit, "a status nobody knows is refused")
 
+
+## Cryo is a numbered keyword like Burn (20 October), and the Armadillo's content runs: its
+## Lockdown passive carries the seal, its die the Cryo Flinger pair before four hardpoints.
+func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_seals() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var mute: Dictionary = db.components["cryo_flinger"].duplicate(true)
+	mute["face"].erase("cryo")
+	db.components["mute_flinger"] = mute
+	var stray: Dictionary = db.components["slugthrower"].duplicate(true)
+	stray["face"]["cryo"] = 1
+	stray["tier"] = 1
+	db.components["stray_cryo"] = stray
+	var refused := {}
+	for e in db.validate():
+		if e.begins_with("component mute_flinger") and e.contains("says its stacks"):
+			refused["mute"] = true
+		if e.begins_with("component stray_cryo") and e.contains("rides with the Cryo keyword"):
+			refused["stray"] = true
+	assert_true(refused.has("mute"), "a Cryo weapon with no number is refused")
+	assert_true(refused.has("stray"), "a number with no Cryo keyword is refused")
+	var fresh := ContentDB.load_default()
+	var m := fresh.make_mech("armadillo")
+	assert_eq(m.die.faces.size(), 6, "two flingers and four hardpoints")
+	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[1].has(Face.Keyword.CRYO), "the pair leads the die")
+	assert_true(m.die.faces[0].has(Face.Keyword.LURE) and m.die.faces[0].has(Face.Keyword.RAPID), "each a lure with Rapid")
+	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "Lockdown's seal: armour +10, 15 heat a turn")
+	assert_eq(m.armour, 5, "base armour 5, so sealed it reads 15 in all")

@@ -14,10 +14,11 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT }
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-## Devour folded into a unique rule on its one carrier (Ryan, 11 October): `devours`.
+## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
+## keyword to learn; 18 October: "devour is not a thing"): `devours`, the stacks a kill gives.
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -39,7 +40,7 @@ const KEYWORD_NAMES := {
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
-	Keyword.WEB: "web",
+	Keyword.WEB: "web", Keyword.CRYO: "cryo",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -76,6 +77,8 @@ var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
+var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
+var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -89,7 +92,7 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
-var devours: bool = false     # an attack: each kill gives its owner a stack of Overcharged (the Soulcutter Talons; a keyword until 11 October)
+var devours: int = 0          # an attack: each kill gives its owner this many stacks of Overcharged (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
@@ -229,8 +232,13 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
-		# A save or a draft from before 11 October lists devour as a keyword: it reads as the rule.
-		f.devours = bool(d.get("devours", false)) or Array(d.get("keywords", [])).has("devour")
+		# A save or a draft from before 11 October lists devour as a keyword, and one from before
+		# 18 October says `true`: each reads as the rule, a stack a kill.
+		f.devours = maxi(0, int(d.get("devours", 0)))
+		if Array(d.get("keywords", [])).has("devour"):
+			f.devours = maxi(1, f.devours)
+		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn weapon one stack when it says none
+		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -267,8 +275,12 @@ func to_dict() -> Dictionary:
 			d["power_per_heat"] = power_per_heat
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
-	if devours:
-		d["devours"] = true
+	if devours > 0:
+		d["devours"] = devours
+	if burn > 0 and has(Keyword.BURN):
+		d["burn"] = burn
+	if cryo > 0 and has(Keyword.CRYO):
+		d["cryo"] = cryo
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -284,6 +296,10 @@ func to_dict() -> Dictionary:
 func add_keyword(kw: int) -> void:
 	if kw > Keyword.NONE and not keywords.has(kw):
 		keywords.append(kw)
+	if kw == Keyword.BURN and burn <= 0:
+		burn = 1   # a Burn weapon says its stacks; one when nothing says (a synthetic entry, an old save)
+	if kw == Keyword.CRYO and cryo <= 0:
+		cryo = 1
 
 
 func has(kw: int) -> bool:
@@ -291,10 +307,10 @@ func has(kw: int) -> bool:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, devour, the hopper, the brace, rolling again on a
-## status (the Nemesis's rage), or a labelled effect.
+## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
+## again on a status (the Nemesis's rage), or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or devours or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty()
+	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty()
 
 
 func is_attack() -> bool:
@@ -358,6 +374,8 @@ func duplicate_face() -> Face:
 	f.power_per_heat = power_per_heat
 	f.power_per_missing = power_per_missing
 	f.devours = devours
+	f.burn = burn
+	f.cryo = cryo
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -418,12 +436,16 @@ func describe() -> String:
 				s += " ×%d" % strikes
 			for k in keywords:
 				s += " " + keyword_label(k)
+				if k == Keyword.BURN:
+					s += " %d" % burn   # a numbered keyword: the stacks each blow leaves
+				if k == Keyword.CRYO:
+					s += " %d" % cryo
 			if vents_all:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d hull missing" % [power_per_missing, MISSING_STEP]
-			if devours:
-				s += " devours"
+			if devours > 0:
+				s += " Overcharged ×%d a kill" % devours
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:

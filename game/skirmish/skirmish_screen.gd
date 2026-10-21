@@ -969,10 +969,10 @@ func _foe_rows(foe: Foe) -> Array:
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
 	if Effects.has(foe, "braced"):
-		# Braced, the machines' status (16 October): their chip's glyph, with the armour every
-		# grant adds (its own brace, a Protect).
+		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
+		# glyph, with the armour every grant adds (its own brace, a Protect).
 		var arm := Effects.foe_armour_bonus(foe)
-		rows.append([status_glyph("braced"), "+%d" % arm, "Braced: armour +%d until its next action" % arm, Palette.SHIELD])
+		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):
@@ -1016,6 +1016,10 @@ static func status_glyph(id: String) -> String:
 			return "reroll"
 		"hopper":
 			return "hopper"
+		"sealed":
+			return "lock"
+		"cryoed":
+			return "vent"
 	return "star"
 
 
@@ -1046,7 +1050,7 @@ func _mech_rows(i: int) -> Array:
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions),
 	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
-	# anything that interacts with overcharged needs it displayed"): devour's stacks kept for
+	# anything that interacts with overcharged needs it displayed"): the talons' kills' stacks kept for
 	# the battle are a chip like a buff's for the round. A chassis passive, a module's rule or
 	# a battle reward that is no status stays in the codex.
 	# One chip a status, counting its stacks from every grant: a timed buff spent in two rounds
