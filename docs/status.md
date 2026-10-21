@@ -505,13 +505,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.237, and so is the live
-  (21 October): main's file with the Minerva, Aphelion and Arsenal branches merged (the
-  Armadillo session's and the numbers branch's rows, live since v0.220 and v0.222, and the
-  Aphelion session's, new to the live: Purge on both sides, every blow counting for the line
-  frame's combo, the Carrier apart from the battlecruiser) put onto the Kestrel session's live
-  v0.236 (its rows since 20 October: the Kite, the Buzzard, the Butcherbird, the Storm Petrel,
-  the interceptor, the Puffin's rework, the Magpie, the Giant Petrel's go and the names round),
+  `docs/design-bible.html` after every change. Main's file is v0.240, and so is the live
+  (21 October): main's v0.238 (the Musk Ox) put onto the Kestrel session's live v0.239 (its
+  rows since 20 October: the Kite, the Buzzard, the Skua, the Storm Petrel, the Needletail,
+  the Lammergeier, the Puffin's rework, the Magpie, the Giant Petrel, the names round, the
+  die's grammar, a locked piece's power by its chassis's tier and Kestrel's stock holes),
   so the live rows and tables run ahead of main's by the Kestrel branch's until it merges and
   `tools/pages/bible_tables.py` regenerates the tables here (a merge conflict in a generated
   table is resolved by the live's row, corrected by hand for main's content change). The
