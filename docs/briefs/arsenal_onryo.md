@@ -222,7 +222,7 @@ blow, the overflow landing on the Onryō.
 - Flak (the Prairie Dog's go, 19 October) is the flat on-hit kind: every blow on the foe deals
   a point more a stack, the stacks halving at each round's end. The round's curse is Flak with
   another chip, so its kind is open again (open item 1, updated on main that day). Kestrel's
-  line review (`ccr-b6da49d3-4ft738`, not merged) turned away a stacking Exposed on the same
+  line review (`kestrel_line.md`, on main since 21 October) turned away a stacking Exposed on the same
   ground, "the copy the Grudge was turned away for".
 - Vitriol (the funnel-web's go, 18 October) is the share of current hull the round left to the
   spider, so the foes' damage over time is Burning (stacks at its action) and Vitriol (a share
