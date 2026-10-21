@@ -501,8 +501,8 @@ pace with it.
   Booster (Ryan's: the Immelmann turn reverses a fighter's course and climbs, as a spent ally
   comes round to act again); lock 2, the battery, the Spindrift Salvo (spray blown off the wave
   crests its missiles skim; flagged to Ryan: Spindrift is also a BattleTech 'Mech, which as one
-  word of a component's name passes the reserved list's rule, the Wavetop Launcher the
-  other); lock 3, the buff, the Reheat Uplink (reheat is the afterburner, sent to an ally).
+  word of a component's name passes the reserved list's rule; Ryan, 21 October: "Spindrift is
+  fine"); lock 3, the buff, the Reheat Uplink (reheat is the afterburner, sent to an ally).
   Its designation K-21 Mk I Ground-Effect Flagship, beside the Puffin's Ground-Effect Escort
   (Claude's, on his word).
 

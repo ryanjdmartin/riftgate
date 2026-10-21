@@ -427,7 +427,7 @@ Decided:
 - Flagged to Ryan: Spindrift is also a BattleTech 'Mech. As one word of a component's name it
   passes the reserved list's rule (sharing a word is fine, and the validator reads chassis
   names only), so the Spindrift Salvo stands unless he minds; the Wavetop Launcher is the
-  other.
+  other. Ryan, 21 October: "Spindrift is fine." It stands.
 
 Open, with Claude's new picks (21 October):
 
@@ -446,13 +446,13 @@ Open, with Claude's new picks (21 October):
 
 ## Open for Ryan
 
-1. The Spindrift Salvo kept, or the Wavetop Launcher, now that Spindrift shows as a BattleTech
-   'Mech.
-2. The last two slots' first rounds, in their briefs (`kestrel_magpie.md`, `kestrel_owl.md`).
+Nothing in this brief (21 October). The last two slots are their briefs' (`kestrel_magpie.md`,
+`kestrel_owl.md`), taken up in another session (Ryan, 21 October: "I'll take up the last 2
+chassis in another session").
 
 Done 21 October: the Buzzard's stock (above); the names, the designations and the stock
-pieces (the picks above); Expose left out of the lean (Ryan); the last two slots marked and
-briefed.
+pieces (the picks above), the Spindrift Salvo kept; Expose left out of the lean (Ryan); the
+last two slots marked and briefed.
 
 ## What the session hands back
 

@@ -65,9 +65,9 @@ document's job and every command are in `README.md`.
   (the Magpie: the thief, the lean, a lock that robs a foe's blow and a passive that hands the
   loot to allies as Overcharged; the mimic; the cache. The Owl: cold is quiet, the lean, no foe
   picking it while it carries no heat and its kills silent; the hunter on the map; Hidden as a
-  status). Open for Ryan: those two directions, and the Spindrift Salvo kept or not
-  (Spindrift is also a BattleTech 'Mech). Then the merge to main on his word (main has moved;
-  the hangar page's republish rides with it). On the branch, not on main.
+  status). Ryan, 21 October: the Spindrift Salvo kept; the last two chassis are another
+  session's (his), from those briefs; and the branch merges into main on his word that day
+  (the hangar page's republish rides with it).
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
