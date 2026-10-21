@@ -149,9 +149,12 @@ document's job and every command are in `README.md`.
   until the stock pass); 486 tests green; live v0.229. Ryan put the Butcherbird at tier one and
   the interceptor at tier two (21 October; the Kestrel row, live v0.230, the briefs, the
   README's tiers row), so Kestrel stands 3-3-2: the Butcherbird, the Storm Petrel and the
-  Puffin; the Buzzard, the Kite and the interceptor; the bomber and the capital. Next: the
-  bomber's go (heavy, the mark's gate, Chain in mines), then the capital. On the branch, not on
-  main.
+  Puffin; the Buzzard, the Kite and the interceptor; the bomber and the capital. The bomber's
+  round of 21 October in its brief: Ryan's mark through Exposed (Marked and Exposed, Rapid on a
+  foe already Exposed) with its holes and the lean on the self-loop (Rapid only on a foe
+  Exposed and not yet Marked), the mark's name (the Echo Drone the lean), birds that carry (the
+  Lammergeier the lean) and the look (the tandem wing the lean); waiting on his calls, then the
+  capital. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

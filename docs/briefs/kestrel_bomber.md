@@ -357,16 +357,68 @@ value of a mine (a shot delayed, worth its number times the chance a foe steps i
   slot an ally emptied this turn only if it spends after the ally, and the reinforcement steps
   in at the round's end (Claude, 18 October; the 15 October tempo read, restated for the go).
 
+## The mark through Exposed, the look and the name (21 October)
+
+- Ryan, 21 October, on the look: "I'm not sure the look, could be a traditional bomber shape
+  like a b-2 or b-52, or something weirder like 4 wings, one front, one aft, or any other kind
+  of heavy flyer. What kind of birds carry stuff?" On the mark: "Let's try leveraging our new
+  status: the mark, (name help, maybe like a resonating or copying drone or something?),
+  applies the bomb debuff and Exposed. If it's already exposed, gain Rapid."
+- Claude, 21 October, the mark as read: an Indirect debuff, heat 0. The foe is Marked (the
+  next weapon to kill it, any machine's, leaves its shot in the slot it empties; one mine a
+  mark; it lasts the skirmish) and Exposed (two rounds, refreshed). If the foe already carried
+  Exposed, the mark is Rapid: the die rolls free onto another entry and the mark switches off
+  for the round. It replaces the line review's gate (Rapid while a mine waits), which goes to
+  the bench. The pairing is the point: the interceptor Exposes a foe for free on its own die,
+  and the bomber marks it for free on its; the team's Direct guns reach it and its armour
+  counts for nothing, and the kill leaves its shot for whoever steps in.
+- Its holes, each with a lean:
+  1. The condition is read before the mark lands, or every mark is Rapid on its own Exposed.
+  2. "Already exposed" is the debuff, never a back-rank foe exposed by its formation; that
+     reading would make the mark free on most back-rank foes after any kill (Ryan's "our new
+     status").
+  3. The self-loop: a foe the bomber marked stays Exposed for two rounds, so marking it again
+     is free and refreshes Exposed, and one foe (the boss) stays armourless all fight for no
+     tempo whenever the mark shows; the switch-off keeps it to once a round. Lean: Rapid only
+     on a foe that carries Exposed and is not yet Marked. The re-mark on its own target is then
+     a full action, and the free mark comes from someone else's Expose (the interceptor's),
+     which is the combo asked for.
+  4. Two debuffs a spend: the Paradox counts each once a spend, so the mark feeds a Baboon two
+     stacks (Ryan, 17 October: the Paradox is tuned for the final ecosystem).
+  5. The die cannot show a Rapid chip that depends on the foe until it is dragged: over a foe
+     that qualifies, the chip lights, as the number does for a foe today.
+  6. Expose gains its second carrier, so it is a keyword proper (the vocabulary plans it), and
+     the overlap with the interceptor is in the status, not the shape: a free setter there, a
+     setup that pays this machine's mines here.
+- The mark's name (Ryan's ask): the Echo Drone (the lean: the kill echoes in the slot, and it
+  says copy at a glance), the Resonance Drone (his word), the Doppler Repeater (Kestrel's air
+  and speed: the radar of speed, and a repeater copies). Marked could take the drone's word
+  if he wants one name for the pair.
+- Birds that carry, for its name: the Lammergeier, the bearded vulture, which carries bones and
+  tortoises up and drops them to shatter on rock (its old name the Ossifrage, "bone-breaker"):
+  a bomber by habit, and the lean. The Osprey carries fish in its talons, but it is the V-22's
+  name and, Claude thinks, a BattleTech one too. The Pelican is Halo's dropship, out by the
+  names row. The Stork is the folk courier, but a stork that delivers bombs is the gag the tone
+  row keeps out. Gulls and crows drop shellfish and nuts to crack them, the right habit on small
+  birds; Australia's firehawks carry burning sticks to spread fire, but they are several
+  species and the Kite is one of them already. Ryan to check every name against the four games.
+- The look (Ryan's call): a flying wing (the B-2's boomerang reads "bomber" from above, but it is
+  one real aircraft's shape, close to copying it); long straight wings (the B-52's, and the
+  Lammergeier's own long narrow wings and wedge tail); or a tandem wing, a pair fore and a pair
+  aft (the weirdest, unlike every other Kestrel from above, the view the player reads, heavy by
+  its read, the bomb bay between the pairs). Claude's lean: the tandem wing.
+
 ## Open for the session
 
-1. Ryan's call on heavy (his lean, 18 October: bigger than medium) and its numbers; the pull
-   of no damage and the mark Rapid with a cooldown of one stand with his "happy with the
-   bomber as a whole" (18 October); the stand-in stock. Decided 17 October:
-   the pull Indirect, never Rapid; mines stack and blow in laid order; the mark in its third
-   form (the next weapon to kill the marked foe leaves its shot in the slot), the second if it
-   proves too strong; Marked feeds the Paradox like any status, tuned later.
-2. The line review's two items (20 October): the mark gated (Rapid while a mine waits on the
-   field) and Chain live in mines.
+1. The mark through Exposed (the round above): Ryan's shape with the read-before rule, the
+   debuff and never the formation word, and the self-loop's lever (Rapid on a foe Exposed
+   and not yet Marked); the mark's name.
+2. Heavy as he leaned, and the look: a flying wing, long straight wings, or a tandem wing.
+   Its name: the Lammergeier is the lean.
+3. Keywords in mines: every keyword acts as the shot lands, Lure and Disrupt doing nothing
+   once their round is over; Chain does from a mine what it does on any blow, in whatever
+   form its rework takes (Claude, 21 October, in place of the line review's special rule,
+   since Chain's rework is section 12's).
 
 ## Waits on
 
