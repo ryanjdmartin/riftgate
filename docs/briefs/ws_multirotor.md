@@ -559,6 +559,12 @@ Names (Claude, 21 October, checked against `content/reserved_names.json`; his pi
 - **The rally**: Reveille Horn (the bugle that wakes the camp: a reroll, or an ally up and
   acting again), or Bugle Call.
 
+Ryan, 21 October, the go: "Swallowtail? Everything else I agree with your leans." Swallowtail
+is clear on the reserved list; so the Swallowtail, Pattern 20 Field Headquarters, the Muster
+Deck and its Muster, the Mooring Screens, the Spotting Flare, the Sutler's Hoist and the
+Reveille Horn, three hardpoints. The row, the planned content and this brief's retirement
+follow in the go's commit.
+
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, content planned (a spend by another machine is engine work,
