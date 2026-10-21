@@ -19,10 +19,9 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 507 tests, 61,118 checks, green on main (21 October, with the Minerva session's branch
-  merged: the Armadillo, and Armoured, Overcharged and Burn in points; 485 and 20,291 on the
-  Windows desk machine on 19 October, about a minute there). A cloud
-  session fetches
+- Tests: 507 tests, 61,118 checks, green on main (21 October, with the Minerva, Aphelion and
+  Arsenal branches merged; 485 and 20,291 on the Windows desk machine on 19 October, about a
+  minute there). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -31,46 +30,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-- `claude/busy-carson-hmaz96` (15, 16 and 20 October, the Arsenal design session from the
-  briefs: Misharu, the Onryō, Mastema and Minos, the Zoids walker left out at Ryan's word):
-  Claude's first round in chat (15 October) and Claude's review of it at Ryan's ask (16
-  October), with what main has landed since that bears on each (Flak taking the Onryō's flat
-  on-hit, the retaliation row's reopening condition, the Dingo's swap and the bomber's mines
-  beside Minos), recorded in the four briefs' "The Arsenal session" sections and their open
-  lists rewritten. Ryan has answered none of it, so no rows and nothing in content; docs only,
-  main fast-forwarded in on 20 October. The round's arithmetic is at 16 October's scales, and
-  none of the four reads in the runner until the shield rule's engine and the bot's valuations
-  land (each brief's holes say which). Kept open: to resume, read the four briefs, then put
-  Misharu's two calls to Ryan (Penance's shape, how often it may fire), then the Onryō's kind
-  and trigger, which Flak reopened.
-- `ccr-ffcf75fa-3gkbz9` (18 to 20 October, the funnel-web's engine and its assets: Vitriol,
-  the ambush condition, the Web Bomb and Webbed, the predator sense, the bot's valuations, the
-  content's planned marks off; its lowforge model, rig, acts and walk, the hangar's renders
-  and page; the to-do's engine and assets lines ticked; the bible at v0.219 after the merge; and 20 October's
-  planted footwork for the Armadillo, the Nemesis and the Ammit): merged into main on 20 October (`0e7d6d4`), the
-  worktree on the Mac free to go.
-- `claude/adoring-planck-q8t63w` (15 to 18 October, the Minerva design session from the
-  briefs: the Armadillo, the Honey Badger, the echidna, the H-tank and the battlecruiser,
-  Ryan's calls recorded round by round in their briefs, nothing of the designs built; and the
-  reroll fix and the entries' places, built, below): merged into main on 18 October on Ryan's
-  word ("make sure main is up to date with any changes you've made"), main merged into it the
-  same day; the session went on in a fresh context on `ccr-3259e29d-ydwpom` (below), so this
-  branch is safe to delete.
-- `ccr-3259e29d-ydwpom` (18 to 20 October, the Minerva session resumed; main merged in on 20
-  October): the Armadillo landed on Ryan's go (20 October: Lockdown, the Cryo Flinger pair,
-  Cryo, below), the echidna left open, the siege battery parked on his charge brief; before it,
-  Ryan's calls on the review
-  built and recorded (the bible's Armoured row and Burn row in section 5, the rules, the
-  vocabulary): Armoured on both sides at an armour point a stack, Overcharged a damage point a
-  stack halving at each round's end with no rounds, the Quintessence Tap keeping every
-  Overcharged on the Ammit and its kill two, Burn a numbered keyword at a damage point a
-  stack, "devour" out of the records (the talons' rule says what it does), the numbers' direction
-  down (section 11); the Armadillo's Cryo Flinger and Cryo named and the mark shared; the
-  siege battery's fourth round (Ryan's ammo bar, his Wainwright & Sutler worry). To resume:
-  the Minerva roster row (the bible, section 7) says where each machine stands; the open
-  Minerva briefs are the Honey Badger's (its numbers), the echidna's (left open), the siege
-  battery's (parked on Ryan's charge brief) and the battlecruiser's (with the Carrier's
-  session); the Armadillo's model is the to-do's art line.
+Two branches are live beside main, each its session's; main's account of each stands as of its
+last merge into main, and the branch's own status file has the rest.
+
 - `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
   proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
   Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
@@ -110,41 +72,33 @@ document's job and every command are in `README.md`.
   (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
   planned at tier one without being dealt; until their engine lands the maker's deal is the
   Prairie Dog.
-- `claude/intelligent-planck-uwmbhg` (15 to 20 October, the Aphelion design session from the
-  briefs; Ryan, 15 October: "Not including the Zoid walker question, yet"): Claude's first round
-  in chat on 15 October (the line frame, the Baboon, the jellyfish, the Carrier), its review on
-  16 October at Ryan's ask, and both written down on 20 October in the four briefs' "Aphelion
-  session, first round" sections, each with what moved on main since and its open list
-  rewritten. Ryan's calls of 20 October, recorded in the briefs: every blow counts for the line
-  frame's combo, and the session follows the conventions decided since 15 October when it
-  resumes; Purge is the word on both sides for now (the foes' Dispel renamed with ours: the
-  bible's rows, the rules' Ward line and the vocabulary's entry, its id kept); the shield's
-  Beam tag is the line frame's model session's; the battlecruiser's session never joins this
-  one (not related, joined by homage perhaps). Bible v0.222 on this branch, unpublished (the
-  Pages line). To resume: those four sections
-  and open lists, the line frame and the Baboon first (the pair that keeps Aphelion's tier-one
-  deal varied), then the jellyfish; the Carrier on its own; Aphelion's defensive tier one (the
-  to-do) unproposed. Unmerged then and read for it:
-  `ccr-b6da49d3-4ft738` (Kestrel's evening of 20 October: the stock pass's heat scale of 1 to 20,
-  the exposed-rotor helicopter to Aphelion's bench as a shape) and `ccr-3259e29d-ydwpom`
-  (Armoured and Overcharged in points, built).
-- `claude/pensive-albattani-q73ibs` (15 October, the small-work pass: the Oblation Mantle, the
-  harpoon's Shock, a suppressed foe's hold readout, boss apart from size, the foe's save trip,
-  below) merged into main on 15 October (Ryan: "update and merge into main"): safe to delete.
-- `ccr-777fd46a-32dw2m` (the roster analysis, Ryan's go on it, the design-session briefs and
-  the records' cleanup) merged into main on 15 October, with `ccr-3d9861dc-mp0v3w` (the
-  analysis's brief) beneath it: both safe to delete.
-- `main` holds everything decided and built to 13 October, including all of
-  `claude/focused-ritchie-omn8i5`, `ccr-baf790be-gootfd` and `claude/ws-chassis-designs-wssq2u`
-  (merged and safe to delete); `ccr-1a6d0a75-y2oqy8` (Kestrel) and the Minerva branch are
-  struck and safe to delete. Pushed to `origin/main` on 13 October, evening. New work starts
-  from main.
-- `ccr-550650c0-g0kcbg`, the Aphelion session, stopped on Ryan's word (13 October, evening):
-  its proposal reached main and its bible rows were carried in (the proposal folded into the
-  briefs and retired on 15 October); its other document changes described a pre-refactor state and were not taken. Safe to
-  delete. The local sprite session committed its round five on main (`53a1f26`) and may still
-  be in flight in this folder: anything new and uncommitted under `art/foes/`, `content/foes.json`
-  or `tools/foeforge` is its, left unstaged.
+
+Every other branch is merged into main (checked 21 October) and is to be deleted from the desk
+machine or GitHub, since a cloud session's push to delete them is refused: `ccr-3259e29d-ydwpom`,
+`claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
+`ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`, `claude/zealous-cori-8xoly7`,
+`claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and `ccr-3d9861dc-mp0v3w`, merged
+before it. The three design sessions merged that day are paused, each resuming from its briefs:
+
+- Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
+  Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
+  bible's Minerva roster row (section 7) says where each machine stands; the open briefs are
+  the Honey Badger's (its numbers), the echidna's (left open), the siege battery's (parked on
+  Ryan's charge brief) and the battlecruiser's (never with the Carrier's session, Ryan's call of
+  20 October); the Armadillo's model is the to-do's art line.
+- Aphelion (Claude's first round of 15 October and its review of 16 October in the four briefs'
+  "Aphelion session, first round" sections, with Ryan's calls of 20 October: every blow counts
+  for the line frame's combo, Purge on both sides for now, the shield's Beam tag the line
+  frame's model session's): the line frame and the Baboon first (the pair that keeps Aphelion's
+  tier-one deal varied), then the jellyfish; the Carrier on its own; Aphelion's defensive tier
+  one (the to-do) unproposed; the session follows the conventions decided since 15 October.
+- The Arsenal (Misharu, the Onryō, Mastema and Minos, the Zoids walker left out at Ryan's word:
+  Claude's first round of 15 October and its review of 16 October in the four briefs' "The
+  Arsenal session" sections, none of it answered): Misharu's two calls to Ryan first
+  (Penance's shape, how often it may fire), then the Onryō's kind and trigger, which Flak
+  reopened; the round's arithmetic is at 16 October's scales, and none of the four reads in
+  the runner until the shield rule's engine and the bot's valuations land.
+
 - The chassis proposals: Wainwright & Sutler's, the Arsenal's and Aphelion's reached main as
   proposal files and on 15 October were folded into the design-session briefs (`docs/briefs/`,
   each the design's one home) and retired, the gunship's stand-in table to
@@ -347,7 +301,7 @@ document's job and every command are in `README.md`.
   a Rapid piece with no cooldown (the Armadillo's lure, cantrips) needs a limit that keeps its
   chain finite: Ryan's rule (15 October) is that Rapid always carries one, a cooldown, heat or
   Volatile (the bible's Rapid row; the validator's check waits on the cooldown property).
-- Built 20 October, on `ccr-3259e29d-ydwpom` (Ryan's go; the bible's Armadillo row, section 7):
+- Built 20 October, on the Minerva branch (Ryan's go; the bible's Armadillo row, section 7):
   the Armadillo is the form-changing tank. Lockdown, its passive (`seal_form`: armour +10 on a
   base of 5, 15 heat at the end of each sealed turn before the overheat, its own cooling
   stopped; a shield on itself seals, a vent or a damaging weapon opens; one renewing Sealed
@@ -358,7 +312,7 @@ document's job and every command are in `README.md`.
   Jack unstocked, tier one); four hardpoints (rivet gun, slugthrower, Blast Door, Blowout
   Stack). Every heat number a placeholder ahead of the heat rework (Ryan). The model still
   has five pins and no racks (the to-do's art line).
-- Built 18 October, on `ccr-3259e29d-ydwpom` (Ryan's calls, 18 October; the bible's section
+- Built 18 October, on the Minerva branch (Ryan's calls, 18 October; the bible's section
   5): Braced is Armoured on both sides, an armour point a stack (the Shoring Jack 10, the
   Breaching Plow 10, the Phase Conjugator 3 a shield, a foe's brace its value in stacks, the
   engine id `braced` kept); Overcharged a damage point a stack, halving at the end of each
@@ -455,7 +409,7 @@ document's job and every command are in `README.md`.
   flat 5 that sprays (Spread, built), Flak 2 (planned), its Rapid gone with the pivot; the car is the maker's
   softener, not a detachment identity; the flat on-hit kind is Flak's, so the Onryō's Grudge
   finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
-  Overcharged at a point, read together when the numbers branch merges; the engine is the
+  Overcharged at a point, read together with Flak's engine, the numbers branch merged on 21 October; the engine is the
   to-do's line, the family the stock pass's.
   The pivot landed (Ryan's go, 21 October: Flak 2, Spread, no Rapid; the reduction on the
   passive): the Repeater's Rapid gone, the passive's second effect 5 less damage from any foe
@@ -542,18 +496,18 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.234, and so is the live
-  (21 October): main's Swallowtail row (the Hoist no loader for the artillery; the Flare's
-  Expose, Ryan's call in the Kestrel session) put onto the Kestrel session's live v0.233 (the
-  Magpie, the Giant Petrel), which sat on main's v0.224 (the Swallowtail) and the Kestrel
-  session's v0.230 (the Kite, the Buzzard, the Butcherbird, the Storm Petrel, the interceptor,
-  the Puffin's rework), which sat on the Armadillo session's v0.222 (the Sealed and Cryo tables)
-  and the numbers branch's v0.220 (Overcharged a point a stack and halving, Armoured in
-  Braced's place, Burn numbered), so the live rows and tables run ahead of main's until those
-  branches merge and `tools/pages/bible_tables.py` regenerates the tables here (a merge
-  conflict in a generated table is resolved by the live's row, corrected by hand for main's
-  content change). The version numbers on main's file and the live agree after every publish;
-  the rows between them are the other branches'. Git and the page's version history carry what each earlier
+  `docs/design-bible.html` after every change. Main's file is v0.237, and so is the live
+  (21 October): main's file with the Minerva, Aphelion and Arsenal branches merged (the
+  Armadillo session's and the numbers branch's rows, live since v0.220 and v0.222, and the
+  Aphelion session's, new to the live: Purge on both sides, every blow counting for the line
+  frame's combo, the Carrier apart from the battlecruiser) put onto the Kestrel session's live
+  v0.236 (its rows since 20 October: the Kite, the Buzzard, the Butcherbird, the Storm Petrel,
+  the interceptor, the Puffin's rework, the Magpie, the Giant Petrel's go and the names round),
+  so the live rows and tables run ahead of main's by the Kestrel branch's until it merges and
+  `tools/pages/bible_tables.py` regenerates the tables here (a merge conflict in a generated
+  table is resolved by the live's row, corrected by hand for main's content change). The
+  version numbers on main's file and the live agree after every publish; the rows between them
+  are the other branches'. Git and the page's version history carry what each earlier
   publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
@@ -566,7 +520,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
   the content that had moved, and the walkers' planted footwork, the last on 20 October
-  (`ccr-ffcf75fa-3gkbz9`). Its database
+  (`ccr-ffcf75fa-3gkbz9`); main's content has moved since (21 October's landings and merges),
+  so the next content session republishes it. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
