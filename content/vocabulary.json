@@ -406,20 +406,20 @@
    "id": "silence",
    "category": "foe",
    "name": "Silence",
-   "codex": "Foe keyword. The machine it lands on is Silenced: its buffs count for nothing until the round's end. A Ward turns it away.",
-   "status": "planned",
+   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing and its components' keywords are muted through its next round. A Ward turns it away.",
+   "status": "implemented",
    "design": {
-    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff. Carriers are section 12's."
+    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff (the move's machine_buffed condition, its aim at the buffed). Built 21 October; its keywords muted on Ryan's word of that day (\"Silence mutes keywords, we'll dial it back in testing if needed\"). Carriers are section 12's."
    }
   },
   {
    "id": "dispel",
    "category": "foe",
    "name": "Purge",
-   "codex": "Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card warns of a purge among the leaders, so the choice of front knows.",
-   "status": "planned",
+   "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff and every store it carries (Rage, the hopper, a kept Overcharged), every stack; its passives stay. A Ward turns it away.",
+   "status": "implemented",
    "design": {
-    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: \"Use Purge for both, for now\"): one word for both sides, the player's keyword when it lands included; the id stays."
+    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: \"Use Purge for both, for now\"): one word for both sides, the player's keyword when it lands included; the id stays. Built 21 October (the keyword and the move dispel, aimed at the buffed by the aim of that name); the front's card's warning waits on the mission map."
    }
   },
   {
@@ -1540,15 +1540,15 @@
    "id": "silenced",
    "category": "status",
    "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its buffs sleep this round, counting for nothing, and wake at the round's end. Can be cleansed; a Ward turns the silence away.",
-   "status": "planned",
+   "codex": "Machine status, from a foe's silence: its buffs and stores count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake. Can be cleansed; a Ward turns the silence away.",
+   "status": "implemented",
    "design": {
-    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Whether a silence also mutes keywords is open (Claude's lean: buffs only).",
+    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Built 21 October: the pipeline's suppress turns the buffs and stores off, and the entries are spent, shown and weighed without their keywords; it mutes keywords on Ryan's word of 21 October (Claude's lean had been buffs only). The foe acts as the round ends, so it lasts the machine's next round, as a foe's Disabled does.",
     "table": {
      "kind": "debuff",
      "on": "machine",
      "stacks": "No",
-     "lasts": "The round"
+     "lasts": "Through the machine's next round"
     }
    }
   },

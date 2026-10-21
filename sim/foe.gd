@@ -50,19 +50,20 @@ var regrow_due: Array = []       # [part id, round it returns] for each part on 
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
-const AIMS := ["exposed", "anything", "heat", "armed", "focus"]
+const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
 const AIM_TEXT := {
 	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",
-	"armed": "aims at the armed", "focus": "fires as one",
+	"armed": "aims at the armed", "focus": "fires as one", "buffed": "aims at the buffed",
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt"]
+const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt", "machine_buffed"]
 const WHEN_TEXT := {
 	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
 	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
 	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
+	"machine_buffed": "when a machine carries a buff",
 }
 
 
@@ -242,7 +243,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
 	"buff": ["revive_once", "summon", "rally"],
-	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all"],
+	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -281,7 +282,10 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all"]
+## silence: the machine hit is Silenced, its buffs and stores counting for nothing and its
+## keywords muted until the round's end; dispel (Purge since 20 October, its id kept): the
+## machine hit loses every buff and store (Ryan, 17 and 18 October; built 21 October).
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

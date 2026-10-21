@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 131 implemented, 13 planned, 0 idea.
+Status: 134 implemented, 10 planned, 0 idea.
 
 ## Resource
 
@@ -117,7 +117,7 @@ Status: 131 implemented, 13 planned, 0 idea.
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
 | **Scrambled** | Machine status. The die's next reroll may land anywhere, the same entry included. | implemented |
-| **Silenced** | Machine status, from a foe's silence: its buffs sleep this round, counting for nothing, and wake at the round's end. Can be cleansed; a Ward turns the silence away. | planned |
+| **Silenced** | Machine status, from a foe's silence: its buffs and stores count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake. Can be cleansed; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
 | **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | implemented |
 | **Ward** | Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage lands. Until the round's end. | implemented |
@@ -210,8 +210,8 @@ Status: 131 implemented, 13 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Silence** | Foe keyword. The machine it lands on is Silenced: its buffs count for nothing until the round's end. A Ward turns it away. | planned |
-| **Purge** | Foe keyword, a hero's or a boss's. The machine it lands on loses its buffs, every stack. A Ward turns it away, and the front's card warns of a purge among the leaders, so the choice of front knows. | planned |
+| **Silence** | Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing and its components' keywords are muted through its next round. A Ward turns it away. | implemented |
+| **Purge** | Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff and every store it carries (Rage, the hopper, a kept Overcharged), every stack; its passives stay. A Ward turns it away. | implemented |
 | **Aim** | What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Breach** | A breaching blow ignores the shield outright: the shield stands, and the whole blow reaches the hull, armour coming off it as off any blow on hull; if what gets through is a quarter of maximum hull it injures a component. A dangerous, uncommon attack modifier, the Waste's signature; a Ward turns it away, and the shield then absorbs the blow like any other. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
@@ -255,8 +255,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Rapid** (implemented): On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll. The switch-off is a cooldown of one since 21 October (the cooldown row, 14 October: nearly every Rapid component is Rapid, cooldown 1), and every Rapid piece carries a limiter, a cooldown, heat or Volatile (Ryan, 15 October), which the validator holds content to.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
-- **Silence** (planned): The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff. Carriers are section 12's.
-- **Purge** (planned): Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: "Use Purge for both, for now"): one word for both sides, the player's keyword when it lands included; the id stays.
+- **Silence** (implemented): The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff (the move's machine_buffed condition, its aim at the buffed). Built 21 October; its keywords muted on Ryan's word of that day ("Silence mutes keywords, we'll dial it back in testing if needed"). Carriers are section 12's.
+- **Purge** (implemented): Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: "Use Purge for both, for now"): one word for both sides, the player's keyword when it lands included; the id stays. Built 21 October (the keyword and the move dispel, aimed at the buffed by the aim of that name); the front's card's warning waits on the mission map.
 - **Cleanse** (implemented): Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day.
 - **Overshield** (implemented): Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end.
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
@@ -329,7 +329,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.
 - **Hopper** (implemented): Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.
 - **Scorched** (implemented): Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers.
-- **Silenced** (planned): Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Whether a silence also mutes keywords is open (Claude's lean: buffs only).
+- **Silenced** (implemented): Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Built 21 October: the pipeline's suppress turns the buffs and stores off, and the entries are spent, shown and weighed without their keywords; it mutes keywords on Ryan's word of 21 October (Claude's lean had been buffs only). The foe acts as the round ends, so it lasts the machine's next round, as a foe's Disabled does.
 - **Barrier** (implemented): Ryan, 14 October, the honest shield's upside; built 21 October as Shocked's mirror (the next blow at zero, a blow of nothing leaving it standing). A buff component grants it to one machine (Face kind buff, status barrier); carriers and numbers are the stock pass's, and the Blast Door's fantasy is a Barrier already. Never granted to every ally at once: four blows negated for one spend is the exploit the shield rule removed.
 - **Ward** (implemented): Ryan, 14 October; built 21 October. A buff component grants it to one machine (Face kind buff, status ward); carriers and numbers are the stock pass's. The breach, burn, scorch, disable and corrupt on a foe's blows are turned away; a foe's move that lays a debuff without a blow is no rider. Silence and purge on machines land with the enemy's side of them, and the Ward turns both away then.
 - **Scorch** (implemented): Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine.

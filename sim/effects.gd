@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -217,6 +217,14 @@ const STATUS := {
 	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
 	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
 	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
+	# The enemy's answer to a stacked machine (Ryan, 17 and 18 October; built 21 October): a
+	# foe's silence leaves the machine Silenced through its next round, every buff and every
+	# banked store it carries counting for nothing (the pipeline's suppress turns them off) and
+	# its components' keywords muted (Ryan, 21 October: "Silence mutes keywords, we'll dial it
+	# back in testing if needed"); it costs time, never ability. Cleansable; a Ward turns it away.
+	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its buffs count for nothing and its components' keywords are muted through its next round.", "stacking": "renew",
+		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "suppress", "value": "buff"},
+		{"trigger": "static", "effect": "suppress", "value": "store"}, {"trigger": "static", "effect": "mute_keywords", "value": 1}]},
 	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds 10 heat.", "stacking": "renew",
 		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
@@ -916,12 +924,17 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		return null
 	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
-	var granted := granted_keywords(u, base, target)
+	var muted := keywords_muted(u) and not base.keywords.is_empty()
+	var granted: Array[int] = []
+	if not keywords_muted(u):
+		granted = granted_keywords(u, base, target)
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
-	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0:
+	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0 and not muted:
 		return face
 	var c := base.duplicate_face() if base == face else base
+	if muted:
+		c.keywords.clear()   # Silenced: the entry acts without its keywords this round
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
@@ -1252,6 +1265,47 @@ static func stack_multiplier(u, face: Face, target = null) -> int:
 	return mult
 
 
+## Are this machine's components' keywords muted (Silenced, 21 October)? Its entries are spent,
+## shown and weighed without them, granted ones too, while the die keeps the real ones.
+static func keywords_muted(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "mute_keywords":
+			return true
+	return false
+
+
+## Is this modifier one a silence turns off and a purge takes: a buff or a banked store (Rage,
+## the hopper, a kept Overcharged), never a passive, a module's rule or a count?
+static func purgeable(m) -> bool:
+	return m.scope != LOADOUT and (m.tags.has("buff") or m.tags.has("store"))
+
+
+## The stacks of buffs and stores a machine carries, silenced or not: what a foe that aims at
+## the buffed reads.
+static func buff_stacks(u) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if purgeable(m):
+			n += maxi(1, m.stacks)
+	return n
+
+
+## A purge (the enemy's Purge, a hero's or a boss's, 17 October; built 21 October): every buff
+## and store on the machine goes, every stack, the banked and the kept ones included (they last
+## the battle and never between battles). Returns the names of what went, once each.
+static func purge(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if purgeable(m):
+			if not gone.has(m.name):
+				gone.append(m.name)
+		else:
+			keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
 ## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
 ## Siphon), as kindled() carries a rally's value.
 static func siphon_status(per_blow: int) -> Dictionary:
@@ -1432,6 +1486,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
+		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]

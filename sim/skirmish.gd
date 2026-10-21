@@ -355,7 +355,7 @@ func pending_volatile(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned:
 		return 0
-	return spend_bite(ms.unit, f)
+	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))   # a Silenced entry's Volatile is muted
 
 
 ## The hull a volatile entry costs its owner per spend; zero for any other entry.
@@ -670,6 +670,11 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 		"others_on_field":
 			for o in field_foes():
 				if o != f and o.alive():
+					return true
+			return false
+		"machine_buffed":
+			for ms in live_mechs():
+				if Effects.buff_stacks(ms.unit) > 0:
 					return true
 			return false
 	return true
@@ -1161,15 +1166,33 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "silence") and t.alive():
+			_silence(t, f)
+		if f.has_keyword(f.action, "dispel") and t.alive():
+			_purge(t, f)
 
 
-## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
-## corrupt (the breach is the Ward's too, in _damage_mech).
+## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable, a
+## corrupt, a silence or a purge (the breach is the Ward's too, in _damage_mech).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt"]:
+	for kw in ["scorch", "burn", "disable", "corrupt", "silence", "dispel"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return false
+
+
+## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs and stores count for nothing
+## and its keywords are muted through its next round, as a foe's Disabled lasts: the foe acts
+## as the round ends, so "the round" a silence costs is the machine's next.
+func _silence(t: MechState, f: Foe) -> void:
+	Effects.grant_for_rounds(t.unit, Effects.STATUS["silenced"], "foe:" + f.content_id, round + 1)
+	log.append("%s silences %s: its buffs sleep and its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
+
+
+## A purge: every buff and store the machine carries goes, every stack.
+func _purge(t: MechState, f: Foe) -> void:
+	var gone := Effects.purge(t.unit)
+	log.append("%s purges %s%s" % [f.display_name, t.unit.display_name, ": " + ", ".join(gone) + " gone" if not gone.is_empty() else ", and finds nothing to take"])
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
@@ -1616,6 +1639,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			if t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
+		"silence":
+			# A caster's silence (17 October): no blow, the machine Silenced for the round.
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "silences")), t.unit.display_name])
+			else:
+				_silence(t, f)
+		"dispel":
+			# A hero's or a boss's purge (17 October): no blow, every buff and store gone.
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "purges")), t.unit.display_name])
+			else:
+				_purge(t, f)
 		"scorch_all":
 			var names: Array[String] = []
 			for ms in live_mechs():
@@ -2122,6 +2157,21 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 			if armed.is_empty():
 				return _pick_exposed(f, live)
 			return armed[rng.randi_range(0, armed.size() - 1)]
+		"buffed":
+			# The buffed (21 October): the machine carrying the most stacks of buffs and stores,
+			# drawn among the tied; the exposed when none carries any.
+			var most: Array[MechState] = []
+			var top := 0
+			for ms in live:
+				var n := Effects.buff_stacks(ms.unit)
+				if n > top:
+					top = n
+					most = [ms]
+				elif n == top and n > 0:
+					most.append(ms)
+			if most.is_empty():
+				return _pick_exposed(f, live)
+			return most[rng.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
 			if shared != null and shared.alive():

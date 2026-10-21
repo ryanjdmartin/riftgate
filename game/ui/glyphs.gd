@@ -37,6 +37,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var o := c + Vector2(0, -s * 0.12)
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
+		"silence":
+			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep and its
+			# keywords muted for the round.
+			for k in range(3):
+				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
+			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)
 		"spin":
 			# The drum spun up (Spun Up, the Cassowary's, 21 October): three-quarters of a ring
 			# with an arrowhead where it runs on, and the cylinder's hub at its centre.
@@ -337,7 +343,7 @@ static func colour_for(id: String) -> Color:
 	match id:
 		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin":
 			return Palette.HEAT
-		"skull", "shieldbreak", "corrupt", "volatile":
+		"skull", "shieldbreak", "corrupt", "volatile", "silence":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT

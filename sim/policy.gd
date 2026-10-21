@@ -610,6 +610,9 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 				score += _raw_attack_mean(who) * CLEANSE_ROUNDS / float(n)
 	if Effects.has(who.unit, "scrambled"):
 		score += KILL_BONUS * BANK_WEIGHT
+	# Silenced: the buffs it sleeps wake now, and the keywords it muted come back.
+	if Effects.has(who.unit, "silenced"):
+		score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT + (_raw_attack_mean(who) * 0.5 if not who.assigned else 0.0)
 	return score
 
 
@@ -807,6 +810,12 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
 			score += float(Skirmish.CORRUPT_BITE_PER_STACK) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+		# A silence sleeps the machine's buffs for the round, a purge takes them: the stacks at
+		# stake, a purge's for the rounds they would have run.
+		if a.has_keyword(a.action, "silence"):
+			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
+		if a.has_keyword(a.action, "dispel"):
+			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
 	return score
 
 

@@ -5369,3 +5369,94 @@ func test_a_fight_tallies_its_sponsorship_measures() -> void:
 	ms.face_index = 1
 	sk.assign(0, ms)
 	assert_eq(int(sk.sponsorship["damaging_spends"]), 2, "a vent that blasts deals damage")
+
+
+## Silence (Ryan, 17 and 18 October; built 21 October; its keywords muted on his word of 21
+## October): the machine a silence lands on is Silenced until the round's end, its buffs and
+## stores counting for nothing and its components' keywords muted; a cleanse lifts it, a Ward
+## turns it away.
+func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> void:
+	var sk := Skirmish.new(1, 1)
+	var torch := Face.attack(10, L, [K.BURN, K.RAPID])
+	var u := _mech("A", Die.of([torch, Face.attack(10, L)]), 40, 200)
+	sk.add_mech(u)
+	var hush := _storm(1, 1, ["silence"])
+	sk.add_foes([hush])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
+	sk.end_round()
+	assert_true(Effects.has(u, "silenced"), "Silenced")
+	assert_true(str(sk.log).contains("silences A"), "the log says so")
+	assert_false(Effects.has(u, "silenced") and Effects.has(u, "overcharged"), "its Overcharged counts for nothing while it sleeps")
+	assert_true(Effects.buff_stacks(u) > 0, "though the stacks are still there")
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var shown := sk.shown_face(ms, torch)
+	assert_true(shown.keywords.is_empty(), "the die shows the entry without its keywords")
+	assert_eq(torch.keywords.size(), 2, "and keeps the real one")
+	Effects.end_round(u, sk.round)
+	assert_true(Effects.has(u, "silenced"), "it lasts through the machine's next round: the foe acted as this one ended")
+	Effects.end_round(u, sk.round + 1)
+	assert_false(Effects.has(u, "silenced"), "and that round's end lifts it")
+	assert_true(Effects.has(u, "overcharged"), "and the buffs wake")
+	# Within a round: a muted Rapid acts once, a muted Burn lays nothing.
+	var s2 := Skirmish.new(1, 1)
+	var v := _mech("B", Die.of([torch, Face.attack(10, L)]), 40, 200)
+	s2.add_mech(v)
+	var g := _ghoul(500, 1)
+	s2.add_foes([g])
+	s2.begin()
+	s2.start_round()
+	Effects.grant_for_rounds(v, Effects.STATUS["silenced"], "foe:x", s2.round)
+	s2.mechs[0].face_index = 0
+	assert_true(s2.assign(0, g), "the torch fires")
+	assert_true(s2.mechs[0].assigned, "Rapid muted: no second action")
+	assert_false(Effects.has(g, "burning"), "Burn muted: no stack")
+	assert_true(Effects.cleanse(v).has("Silenced"), "a cleanse lifts it")
+	# A Ward turns it away.
+	var s3 := Skirmish.new(1, 1)
+	var w := _mech("C", Die.single(Face.attack(10, L)), 40, 200)
+	s3.add_mech(w)
+	s3.add_foes([_storm(1, 1, ["silence"])])
+	s3.begin()
+	s3.start_round()
+	Effects.grant_buff(w, "ward", 1, "test", s3.round)
+	s3.end_round()
+	assert_false(Effects.has(w, "silenced"), "the Ward turned the silence away")
+
+
+## Purge (Ryan, 17 October; built 21 October): every buff and store the machine carries goes,
+## every stack, the banked ones too; passives stay; a Ward turns it away. A purge as a move
+## needs no blow, and a foe that aims at the buffed picks the machine carrying the most.
+func test_a_purge_takes_every_buff_and_store_and_aims_at_the_buffed() -> void:
+	var sk := Skirmish.new(1, 1)
+	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
+	u.grant_passive({"id": "test_pass", "name": "Pass", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]})
+	sk.add_mech(u)
+	sk.add_foes([_storm(1, 1, ["dispel"])])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
+	Effects.stack(u, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["rage"], Effects.BATTLE, "mech", 2, Effects.DECAY_NONE)
+	sk.end_round()
+	assert_eq(Effects.buff_stacks(u), 0, "every buff and store gone, the battle's rage too")
+	assert_eq(u.armour, 5, "the passive stays")
+	assert_true("\n".join(sk.log).contains("purges A"), "the log says so")
+	# As a move, aimed at the buffed.
+	var s2 := Skirmish.new(3, 1)
+	var plain := _mech("P", Die.single(Face.attack(10, L)), 40, 200)
+	var stacked := _mech("S", Die.single(Face.attack(10, L)), 40, 200)
+	s2.add_mech(plain)
+	s2.add_mech(stacked)
+	var priest := Foe.make("priest", 500, 10)
+	priest.actions = [{"id": "purge", "name": "Purge", "kind": "debuff", "effect": "dispel", "weight": 1, "aim": "buffed", "when": "machine_buffed", "text": ""}]
+	priest.action = priest.actions[0]
+	s2.add_foes([priest])
+	s2.begin()
+	Effects.stack(stacked, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 2, Effects.DECAY_HALF)
+	s2.start_round()
+	assert_eq(priest.target, s2.mechs[1], "it aims at the machine carrying the most")
+	s2.end_round()
+	assert_eq(Effects.buff_stacks(stacked), 0, "and takes them")
+	assert_eq(plain.hull, 200, "no blow")

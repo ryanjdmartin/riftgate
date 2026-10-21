@@ -238,6 +238,11 @@ On a machine:
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
   no armour off it; lasts the skirmish.
+- **Silenced** (debuff, a foe's silence): its buffs and stores (Rage, the hopper, a kept
+  Overcharged) count for nothing and its components' keywords are muted (a Rapid entry acts
+  once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake.
+  Cleansable; a Ward turns the silence away. A foe's purge takes every buff and store, every
+  stack; its passives stay; a Ward turns it away too.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -335,20 +340,22 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   the same special twice running while anything else is open. Conditions: below half, hurt,
   fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
   machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
-  hurt. A move may
+  hurt, a machine carrying a buff. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field.
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
-  machine showing an intact weapon), focus (its rank shares one pick). A move may carry its
+  machine showing an intact weapon), focus (its rank shares one pick), buffed (the machine
+  carrying the most stacks of buffs and stores, the exposed when none does). A move may carry its
   own aim. The pick is a commitment; Lure and Disrupt move it. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
   two): breach (the blow ignores the shield), scorch (a stack of Scorched), burn (a stack of
-  Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it),
+  Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
+  (Silenced), purge (every buff and store gone; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
@@ -358,7 +365,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
-  disable.
+  disable, silence, purge (each on its target, no blow; a Ward turns both away). No foe in
+  content carries a silence or a purge yet.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.

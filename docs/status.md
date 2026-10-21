@@ -114,6 +114,12 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, Silence and Purge on the enemy's side (Ryan, 17 and 18 October; a silence mutes
+  keywords too on his word of 21 October): Silenced turns a machine's buffs and stores off and
+  mutes its components' keywords through its next round (cleansable, a chip with a struck
+  voice); Purge takes every buff and store; both ride a blow or come as a move, aimed at the
+  buffed and cast where a machine carries a buff; the Ward turns both away; the bot values a
+  Ward and a cleanse against them. No foe carries either yet (section 12).
 - 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die
   is held over it; the run tallies each maker's Sponsorship measure (hexes moved, damage taken
   on shield and armour, dice spent on entries that deal damage or none; each maker's content
@@ -407,10 +413,7 @@ before it. The three design sessions merged that day are paused, each resuming f
   combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
   commander actions on map cooldowns); what the stock pass does with it is in the to-do's
   stock pass line, the reasoning in the briefs README.
-- Silence and Purge on the enemy's side (the bible's section 5, 17 and 18 October; the foes'
-  keyword named Dispel until 20 October): a Silenced
-  status, the two foe keywords, Ward turning both away, the front's card's intel; carriers are
-  section 12's.
+- Silence and Purge's carriers (section 12) and the front's card's intel (with the mission map).
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
   Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
