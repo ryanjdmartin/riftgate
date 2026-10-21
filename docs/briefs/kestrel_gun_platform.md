@@ -435,11 +435,51 @@ pace with it.
   and a tap on a spent die no other machine uses); the flare (vent 20, a team reroll: its
   reroll moves to the battery's kill and its vent to a hardpoint).
 
+## The ninth round (21 October): the formation leader
+
+- Ryan, 21 October: "Role Refinement: the swallowtail is a more supportive machine, this one is
+  Kestrel and more aggressive. It's the formation leader, it wants to push it's allies to
+  action and keep tempo up, that's what differentiates it from the mobile HQ. Lock 1: Rapid.
+  Drag to self to give the team a reroll, or with 3 rerolls available, drag onto an ally to
+  give them another action and reroll their die. Lock 2: your battery shape, works well. Lock
+  3: Buff face, give an ally Overcharged 2 and reroll their die. Lock 1:" (the message ends
+  there; anything more on lock 1 did not come through).
+- Decided: the role, the formation leader, aggressive, pushing its allies to act and keeping
+  the tempo up, where the Swallowtail is the supportive mobile HQ; the battery as the eighth
+  round shaped it.
+- His locks, as read (Claude, 21 October):
+  - **Lock 1** (the Hot-Pit, a working name), Rapid, two uses: dragged onto itself, the team
+    gains a reroll; dragged onto an ally, three rerolls are paid, the ally's die rolls again and
+    it acts again.
+  - **Lock 2, the battery**: a rolled Indirect gun, 10 to 30, heat 20; a kill gives the team two
+    rerolls, banked if unspent.
+  - **Lock 3** (a buff; its name open): an ally gains Overcharged 2 and its die rolls again.
+  - The passive stays the bank (unspent rerolls carried over, up to three): Claude's assumption,
+    since the message names only the locks. Three hardpoints by kind: a big flat gun, a cold
+    rolled gun, a vent (the battery heats 20 a shot).
+- Holes, each with a lean:
+  1. "With 3 rerolls available" read as the price, paid: at a round's start the team always
+     holds three, so as a threshold alone it is a free action every time the face shows.
+  2. Lock 1 on an ally takes a spent ally only: its die comes back rolled and it acts again. On
+     an unspent ally "another action" would be an action owed after its spend, a new state to
+     track and show; the spent ally covers the use without it.
+  3. Lock 3 takes an ally whose die is not yet spent, since rolling a spent die gives nothing;
+     the roll never lands on the entry showing, as every reroll.
+  4. Lock 1 on itself is a free team reroll and a free look of its own die every time it shows
+     (Rapid), so it feeds its own ally use; the switch-off keeps it once a round, and in a swarm
+     the battery's two fill the bank fast, its cap of three holding it.
+  5. Lock 3 is the Overcharge Coil with a look added, on a locked piece: the formation leader's
+     order, buff and go; on the Butcherbird the Overcharged counts on each strike.
+  6. The must-pick guard: two of its locks lend tempo to allies; the runner's team rows with and
+     without it are the read, the levers lock 1's price, the bank's cap and the battery's two.
+- Bench: the launch (a shield of 20 and a roll: the supportive shape, the Swallowtail's side of
+  the line; its roll lives on in lock 3).
+
 ## Open for the session
 
-1. Ryan's call on the eighth round: the Hot-Pit as the cash-in (a Rapid support lock, three
-   rerolls an action), the launch as the roll, the battery as the team rerolls (two on a
-   kill), the three hardpoints; the working names his.
+1. Ryan's word on the ninth round's readings: lock 1's three rerolls paid, on a spent ally;
+   lock 3 on an unspent ally; the bank kept as the passive; and whatever his message's second
+   "Lock 1:" was to say. Then its go, the names his.
 
 ## Holes already raised
 

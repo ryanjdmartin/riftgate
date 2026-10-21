@@ -165,8 +165,10 @@ document's job and every command are in `README.md`.
   ekranoplan. Its eighth round in its brief: Ryan's frame of three locks and three hardpoints
   around rolls, rerolls and actions; the cash-in proposed as the Hot-Pit, a Rapid support lock
   spending three rerolls on a spent ally, the launch the roll, the battery a rolled gun brewing
-  two rerolls on a kill. Waiting on his call: the last open Kestrel machine. On the branch, not
-  on main.
+  two rerolls on a kill. Its ninth round, Ryan's shapes: the formation leader, aggressive where
+  the Swallowtail supports; lock 1 Rapid (a team reroll on itself, or an ally's action for
+  three rerolls), lock 2 the battery, lock 3 Overcharged 2 and a roll for an ally; the readings
+  and holes in its brief, waiting on his word. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

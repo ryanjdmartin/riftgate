@@ -136,7 +136,10 @@ One pointer each; the proposal is in the brief named.
   multi-strike vent in the pool. Its eighth round (21 October): the Giant Petrel and the
   ekranoplan on Ryan's word; three locks and three hardpoints on his frame, two support locks and
   an offensive one around rolls, rerolls and actions, the cash-in a Rapid lock that spends
-  three rerolls on a spent ally (proposal). `kestrel_gun_platform.md`.
+  three rerolls on a spent ally (proposal). Its ninth round (21 October), Ryan's: the formation
+  leader, aggressive, where the Swallowtail is the supportive HQ; lock 1 Rapid, a team reroll on
+  itself or an ally's action for three rerolls; lock 2 the battery; lock 3 Overcharged 2 and a
+  roll for an ally. `kestrel_gun_platform.md`.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 
