@@ -1160,8 +1160,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots":
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), never a chip
+		if id == "shots" or id == "quick_turned":
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d

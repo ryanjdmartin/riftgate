@@ -935,6 +935,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
+	var quick := Effects.quick_turn_live(ms.unit, f)   # Rapid by a once-a-round gate (the Needletail's), read before the spend
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and target is Vector2i:
 		if not slot_targets(ms, f).has(target):
@@ -1096,8 +1097,11 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
 	# over every entry, itself included; a stepping die's free reroll steps it.
 	if (f.has(Face.Keyword.RAPID) or free) and not reset:
+		if quick and f.has(Face.Keyword.RAPID) and not free:
+			# The gate spent (the Needletail's Quick-turn Avionics Relay): once a round.
+			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
 		_act_again(ms, f)
-		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else "rapid, rolls again"])
+		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else ("a quick turn, rolls again" if quick and not free else "rapid, rolls again")])
 	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
 	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
 	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll

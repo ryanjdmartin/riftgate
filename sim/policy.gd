@@ -227,6 +227,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var quick := Effects.quick_turn_live(ms.unit, f)
 	f = Effects.effective_face(ms.unit, f, target)
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
@@ -331,6 +332,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# The reset gun (the Kite's Pinion Driver): a kill lights every dark entry and the machine
 		# acts again, about the die's own average blow, at the odds of the kill.
 		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if quick:
+		# The Needletail's gate: a setup it spends is Rapid once a round, so the machine acts
+		# again, about the die's own average blow.
+		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.pulls_mines:
 		score += pull_score(sk, target)
 	if f.drones:
@@ -810,6 +815,8 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 				score += shield_score(sk, who, sk.shield_amount(ms, f, who), false, ms)   # the combined entry's shield half
 		Face.Kind.BUFF:
 			score = buff_score(sk, who, f)
+			if Effects.quick_turn_live(ms.unit, f):
+				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)

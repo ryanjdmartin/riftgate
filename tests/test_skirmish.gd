@@ -6032,3 +6032,57 @@ func test_a_chain_mine_that_kills_its_arrival_repeats_the_attack() -> void:
 	assert_eq(other.hp, 290, "and the chain repeats the attack on the next foe in reach")
 	assert_true("\n".join(sk.log).contains("chains to"), "the log says so")
 	assert_eq([heat_laid, sk.mechs[0].heat], [5, 10], "the repeat pays its heat again, on the gauge until the next END TURN")
+
+
+## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that
+## day), on a synthetic passive: a setup, a debuff or a buff read on the entry as spent, is
+## Rapid on its machine once a round, the entry switched off for the round as Rapid's is; a
+## gun never; a second setup that round is a full action; a piece Rapid of its own spends no
+## gate; the next round opens it again.
+func test_a_setup_is_rapid_once_a_round_on_the_gate() -> void:
+	var relay := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "rapid", "when": "setup_once"}]}
+	var probe := Face.attack(0, I, [K.EXPOSE])
+	var coil := Face.buff("overcharged", 2)
+	var gun := Face.attack(10, L)
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Spotter", Die.of([probe, coil, gun]), 40, 100)
+	m.grant_passive(relay)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(sk.shown_face(ms, probe).has(K.RAPID), "the die shows the debuff Rapid while the gate is open")
+	assert_false(sk.shown_face(ms, gun).has(K.RAPID), "a gun never")
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the debuff spent")
+	assert_false(ms.assigned, "is Rapid: the machine acts again")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "the entry dark for the rest of the round")
+	assert_true("\n".join(sk.log).contains("a quick turn, rolls again"), "the log says so")
+	assert_false(sk.shown_face(ms, coil).has(K.RAPID), "the gate closed for the round")
+	ms.face_index = 1
+	assert_true(sk.assign(0, ms), "the buff, a second setup this round")
+	assert_true(ms.assigned, "a full action")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.shown_face(ms, coil).has(K.RAPID), "the next round opens it again")
+	ms.face_index = 1
+	assert_true(sk.assign(0, ms), "the buff first this time")
+	assert_false(ms.assigned, "Rapid on the gate")
+	# A piece Rapid of its own spends no gate.
+	var s2 := Skirmish.new(1, 2)
+	var own := Face.attack(0, I, [K.RAPID, K.SHOCK])
+	own.heat = 5
+	var n := _mech("Spotter", Die.of([own, probe.duplicate_face(), gun]), 40, 100)
+	n.grant_passive(relay)
+	s2.add_mech(n)
+	s2.add_foes([_ghoul(300, 0)])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].face_index = 0
+	assert_true(s2.assign(0, s2.front[0]), "its own Rapid")
+	assert_true(sk.shown_face(s2.mechs[0], probe).has(K.RAPID), "the gate still open for the next setup")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	var open := bot.attack_score(s2, s2.mechs[0], probe, s2.front[0])
+	Effects.grant_for_rounds(n, Effects.STATUS["quick_turned"], "test", s2.round)
+	assert_true(open > bot.attack_score(s2, s2.mechs[0], probe, s2.front[0]), "the bot weighs the free action the open gate gives")

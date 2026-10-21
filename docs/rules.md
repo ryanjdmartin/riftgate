@@ -94,6 +94,10 @@ defeat when every machine is wrecked. There is no round limit.
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
+- **The Quick-turn Avionics Relay** (the Needletail's passive; the machine waits on its content
+  session): a setup, a debuff or a buff read on the entry as it is spent, is Rapid on it once
+  a round, the entry dark for the rest of the round as Rapid's is; the die shows the Rapid on
+  every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
   unspent at the round's end are banked, up to three, and spent in a later round like any
   reroll.

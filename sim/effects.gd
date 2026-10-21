@@ -173,6 +173,11 @@ const STATUS := {
 	# tick leaves nothing. A status the team put on the foe, so the Paradox counts it.
 	"syrinx_drone": {"id": "syrinx_drone", "name": "Syrinx Drone", "description": "The next weapon to kill it leaves its shot in the slot it empties, a mine. Lasts the fight.", "stacking": "renew",
 		"tags": ["drone"], "effects": []},
+	# The Needletail's gate spent (the Quick-turn Avionics Relay, Ryan's go of 21 October; built
+	# that day): its free setup this round is used. A marker, never a chip: the die shows the
+	# gate open by the Rapid it grants a setup.
+	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its free setup this round is spent.", "stacking": "renew",
+		"tags": ["marker"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
@@ -726,6 +731,10 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			# Every n-th weapon spend of the fight (the Cassowary's sixth shot): this one, when the
 			# count so far is one short of a multiple of `every`.
 			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
+		"setup_once":
+			# A setup (the Needletail's gate, 21 October): a debuff or a buff, read on the entry
+			# as it is spent, while the machine's free one this round is unspent.
+			return face != null and (face.is_debuff() or face.kind == Face.Kind.BUFF) and not has(u, "quick_turned")
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -1412,6 +1421,22 @@ static func granted_cooldown(u, face: Face) -> int:
 		if str(pair[0].get("effect", "")) == "weapon_cooldown":
 			n = maxi(n, int(pair[0].get("value", 0)))
 	return n
+
+
+## Is this entry Rapid by a once-a-round gate (a grant_keyword of rapid on setup_once, the
+## Needletail's Quick-turn Avionics Relay, 21 October), its own Rapid aside? Spent so, the gate
+## closes for the round (the quick_turned marker).
+static func quick_turn_live(u, face: Face) -> bool:
+	if face == null:
+		return false
+	var base := rewritten(u, face)
+	if base.has(Face.Keyword.RAPID) or keywords_muted(u):
+		return false
+	for pair in _taking_part(u, "static", base, null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "grant_keyword" and str(eff.get("value", "")) == "rapid" and str(eff.get("when", "")) == "setup_once":
+			return true
+	return false
 
 
 ## Does this machine lay mines (static lay_mines; the Lammergeier's Fuse-delayed Bay, 21
