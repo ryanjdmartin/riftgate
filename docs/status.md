@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 576 tests, 62,144 checks, green on main (21 October, with Ryan's calls of that evening: the stores, the Musk Ox's trickle); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 577 tests, 62,150 checks, green on main (21 October, with Ryan's calls of that evening: the stores, the Musk Ox's trickle, the carry as a block); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -106,8 +106,9 @@ before it. The five design sessions merged that day are paused, each resuming fr
   Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
   Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
   shields it, or the full reset; the Reveille Horn gives the team a reroll, or a spent ally acts
-  again. On the map the machines beside it ride with it and are set down beside its stop, a
-  stop that cannot seat them refused, an undo taking them back. The bot spends a muster when the
+  again. On the map the machines beside it are lifted and travel as a ring round it, landing as
+  a block where they rode (Ryan, 21 October): a stop the block does not fit is marked on the
+  drawn route (NO ROOM, the failing hex struck) and refused, an undo taking them back. The bot spends a muster when the
   charged form beats the plain by more than half what the charge would buy banked, and always at
   the cap. Its content is runnable (no model yet); its Sponsorship is the maker's measure, a
   damaging weapon entry counting and nothing else (Ryan, 21 October).

@@ -556,10 +556,12 @@ a stat.
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
-  it travel with it when it moves and are set down on the nearest standable hexes beside where
-  it stops, keeping whatever move and action they had; it cannot stop where a rider cannot be
-  set down beside it. A caught machine does not ride. An undo takes the riders back, until one
-  of them has moved on its own.
+  it are lifted in place when it moves and travel as a ring round it, so they never block its
+  way; it lands them as a block, each where it rode from the carrier, keeping whatever move and
+  action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
+  a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
+  and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
+  undo takes the riders back, until one of them has moved on its own.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,

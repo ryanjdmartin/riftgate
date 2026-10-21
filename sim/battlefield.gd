@@ -46,6 +46,10 @@ var _spawn_index: int = 0
 var phase: int = 0
 var log: Array[String] = []
 var _next_id: int = 1
+## The machines a carrier's move lifts while its route is searched (the Swallowtail's carry,
+## Ryan, 21 October: lifted in place, they travel as a ring round it), so their hexes never
+## block it. Battle sets it for the search and clears it after; empty otherwise.
+var lifted: Array[Unit] = []
 
 
 func _init(battle_map: BattleMap) -> void:
@@ -126,7 +130,7 @@ func can_stand(u: Unit, at: Vector2i, ignore_flyers: bool = false) -> bool:
 		if not BattleMap.passable(map.terrain[h], u.traits):
 			return false
 		var occ := unit_at(h)
-		if occ != null and occ != u:
+		if occ != null and occ != u and not lifted.has(occ):
 			if ignore_flyers and not occ.can_block() and occ.is_player():
 				continue
 			return false

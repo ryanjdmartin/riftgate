@@ -948,10 +948,10 @@
    "id": "carry",
    "category": "battlefield",
    "name": "Carry",
-   "codex": "A machine that carries (the Swallowtail's Muster Deck) takes the machines on the hexes beside it when it moves, and sets each down on the nearest standable hex beside where it stops; they keep whatever move and action they had. It cannot stop where a rider cannot be set down. A caught machine does not ride.",
+   "codex": "A machine that carries (the Swallowtail's Muster Deck) lifts the machines on the hexes beside it when it moves: they travel as a ring round it and land as a block, each where it rode from it, keeping whatever move and action they had. It cannot stop where a rider would land on a hex it cannot stand on (NO ROOM). A caught machine does not ride.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Swallowtail row): the lift gives reach, never a reset; a small move on purpose, a bump over a river or a crag. Built that day: \"nearest standable\" read as beside the stop, the ring they rode in, so a rider is never left far from it; an undo takes the riders back, and stands once a rider has moved on its own. The map's animation of the riders is the screen's."
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row): the lift gives reach, never a reset; a small move on purpose, a bump over a river or a crag. The block, Ryan, 21 October, evening: \"lift all units in place, deposit them at the landing spot, they never actually leave the map, just travel as a ring around the carrier. If the landing spot would leave the unit in an illegal spot, mark the landing spot clearly as an invalid move and the player has to change it before committing the move phase ... They move as a block, if the block doesn't fit, it can't go there\"; a landing animation or a redistribution on landing may come later. Built that day: the riders' hexes lifted off the carrier's way, the block landed at the stop with every rider's offset, a stop it does not fit no destination and refused with the refusal's sound, the drawn route marking the stop and the failing hex (NO ROOM, struck through and dashed), the riders riding the carrier's curve on the map; an undo takes them back, and stands once a rider has moved on its own."
    }
   },
   {

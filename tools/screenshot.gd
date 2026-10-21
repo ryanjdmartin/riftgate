@@ -143,7 +143,8 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
-## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), hold (a
+## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
+## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
@@ -184,6 +185,47 @@ func _apply_battle_pose() -> void:
 					break
 				s._on_route_drag_ended(false)
 				s._map._route_drag = null
+		"carry":
+			# The Swallowtail's block (Ryan, 21 October): the first machine carries, the second
+			# rides beside it, the third holds the hex the rider would land on, and the route is
+			# drawn two hexes on, over the rider: the landing that fails and the stop marked.
+			var ours: Array = [b.mechs()[0], b.mechs()[1], b.mechs()[2]]
+			(ours[0] as Unit).grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "carry"}]})
+			var near: Array = b.field.map.all_hexes()   # nearest the machines first, away from the packs
+			var home: Vector2i = (ours[0] as Unit).pos
+			near.sort_custom(func(x, y): return Hex.distance(x, home) < Hex.distance(y, home))
+			for c in near:
+				var by_pack := false
+				for sq in b.field.packs():
+					if Hex.distance(sq.pos, c) <= 4:
+						by_pack = true
+				if by_pack:
+					continue
+				var done := false
+				for d in Hex.DIRECTIONS:
+					var line: Array = [c, c + d, c + d * 2, c + d * 3]
+					var ok := true
+					for k in range(4):
+						var h: Vector2i = line[k]
+						var o := b.field.unit_at(h) if b.field.map.has(h) else null
+						if not b.field.map.has(h) or b.field.map.is_structure(h) or (o != null and not ours.has(o)) \
+								or not BattleMap.passable(b.field.map.terrain[h], (ours[0] as Unit).traits) \
+								or BattleMap.move_cost(b.field.map.terrain[h], (ours[0] as Unit).traits) == BattleMap.SLOW:
+							ok = false
+							break
+					if ok:
+						(ours[0] as Unit).pos = line[0]
+						(ours[1] as Unit).pos = line[1]
+						(ours[2] as Unit).pos = line[3]
+						s._refresh()
+						s._on_route_drag_started(ours[0])
+						s._map._route_drag = ours[0]
+						s._on_route_drag_to(line[2])
+						s._map.scroll_to_unit(ours[0])
+						done = true
+						break
+				if done:
+					break
 		"north":
 			# The rift end of the map, where the other world bleeds in.
 			s._map.scroll_to_top()

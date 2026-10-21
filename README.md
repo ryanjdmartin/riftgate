@@ -196,7 +196,8 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
 # Battle: select, route, draft and draftslow (a route drawn by hand, its move gauge spent or
-# stopped by a slow hex), hold, north, zoom, zoomlast,
+# stopped by a slow hex), carry (a carrier's route to a stop where its rider cannot land: NO
+# ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
 # ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
 # bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), gate and foe (the gate or a pack tapped).
