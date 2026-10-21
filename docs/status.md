@@ -125,9 +125,10 @@ document's job and every command are in `README.md`.
   die-entry row the kinds, the grammar and the no-number rule, the die-shows row the print
   (live v0.224, built on the live v0.223; the branch file carries the same rows), the rules the
   debuff kind, Expose, Exposed and Direct's clause; its brief decided and kept until the
-  content session lands it (the to-do's lines). The other Kestrel machines wait on his calls,
-  in order: the strafer, the off-tank, the Puffin, the Sparrowhawk, the capital, the bomber. On
-  the branch, not on main.
+  content session lands it (the to-do's lines). The strafer's go (21 October): the Butcherbird,
+  a swing-wing (the bible's Kestrel row, live v0.225; its brief, the README, the to-do's
+  content-session line). The others wait on his calls, in order: the off-tank, the Puffin, the
+  Sparrowhawk, the capital, the bomber. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -412,7 +413,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.224 (21 October: the interceptor's go, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.225 (21 October: the interceptor's and the strafer's goes, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

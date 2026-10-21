@@ -4,7 +4,8 @@ The session designs the decided Kestrel tier one whose every weapon strikes twic
 mechanic is decided; its numbers, locked piece and shape are open. "The strafer" is a working
 label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan, 14 October: "Love the [strafer], lock that in and place it
+**Status**: decided (Ryan, 14 October), the go given 21 October: the Butcherbird, a swing-wing;
+its numbers with the content session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
 accordingly"). **Maker**: Kestrel. **Tier**: one. **Read first**: `docs/briefs/README.md`; the
 bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8
 (Kestrel's gaps, where the raider and the interceptor it replaced are);
@@ -256,7 +257,10 @@ reach; each tested with synthetic passives.
   names too and neither iconic), the Butcherbird (the same family, no collision), the Skua
   (harries other birds until they drop what they carry; clean), the Hobby (the fastest small
   falcon, hawking in passes), the Harrier (too on the nose), the Merlin (BattleTech, Ryan).
-  Ryan's word; the name and the look go to the content session with the numbers.
+  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Sparrowhawk is a
+  battletech aircraft, and goshawk a nickname of an obscure reference, so that's mostly why
+  they get a pass." Decided: the Butcherbird, a swing-wing; the numbers with the content
+  session.
 
 ## Holes already raised
 
