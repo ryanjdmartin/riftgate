@@ -3,10 +3,11 @@
 The session reworks Mastema's tools so its fire never sits blank and never doubles a boss for
 free, around Ryan's idea of setting its own allies alight.
 
-**Status**: direction (14 October). **Maker**: the Arsenal. **Proposed tier**: three. **Read
-first**: `docs/briefs/README.md`; "The design as proposed" and "The Scapegoat Brand" below;
-`docs/roster_analysis.md` section 4; the bible's rows on Burning and Scorched and on buffs and
-debuffs (section 5); `docs/rules.md`, "Heat" and "Buffs, debuffs and resistance".
+**Status**: direction (14 October); in session since 15 October (Claude's first round and its
+review, below; Ryan has answered none of it). **Maker**: the Arsenal. **Proposed tier**: three.
+**Read first**: `docs/briefs/README.md`; "The design as proposed" and "The Scapegoat Brand"
+below; `docs/roster_analysis.md` section 4; the bible's rows on Burning and Scorched and on
+buffs and debuffs (section 5); `docs/rules.md`, "Heat" and "Buffs, debuffs and resistance".
 
 ## The design (the proposal)
 
@@ -214,17 +215,81 @@ already tags what a cleanse may take, and a Rapid switch-off (not a debuff) neve
 - **The sin-eater** (the first pitch, 11 October): took its allies' heat onto itself; the
   cleanse that moves debuffs is its grown-up form.
 
+## The Arsenal session (15 and 16 October)
+
+Nothing here is Ryan's yet. Claude's first round went to chat on 15 October and Claude's review
+of it on 16 October (Ryan's ask: errors in logic, biases, wrong assumptions, gaps in design).
+He has answered none of it.
+
+**Claude's first round (15 October)**, by the open items below:
+
+- **The lighter and the count (items 1 and 2).** The lighter goes on the Votive Screen: its
+  target catches fire (two Burning, a placeholder), then gains 10 shield for each burning body
+  on the field, foes and machines, its target included. A votive is a candle lit as an
+  offering; the Screen is never blank, and it feeds its own count.
+- **The mover and its words (items 3 and 6).** The Chrism Ewer, on one chosen foe: every
+  machine's Burning and Scorched come off and land on that foe as Burning. One target, since
+  the Bellows does the spreading: the scapegoat dies and passes its fire to its neighbours.
+- **The doubling (item 4)** retires, no longer needed as the fallback, so burn is deepened in
+  two places (the Stingray's Exothermic Suite, the Aurora Lattice's Primed), not three; the
+  Bellows as drafted.
+- **The Brand (item 5)** folds into the Ewer and goes to the bench, since a rare doing the same
+  on any machine would repeat the Ewer; it reopens if the buffs-and-debuffs pass gives every
+  debuff one meaning on any body.
+
+The economy it gives: a hot ally keeps the fire as fuel (the Goshawk's shield, the Stingray's
+deeper stacks, the Nemesis's rage through the overheat) and a cold ally hands it to the Ewer;
+deep against wide survives, the Screen wanting many burning bodies and the Ewer gathering them
+onto one. With the lighter on its own kit the mover is never blank in any domain, so Mastema
+would no longer wait on the foes' fresh start.
+
+Its holes: the Screen then the Ewer in one turn, and the ally never pays the heat (Burning
+ticks at the turn's end), at the price of both locked dice that turn, kept; the Bellows passing
+every stack whole to each neighbour after the Ewer has piled the team's fire on one foe
+compounds; in the Peak the Golem's Eruption scorches every machine twice, so the Ewer could land
+eight Burning on the Golem. The runner decides whether either wants a cap.
+
+**Claude's review (16 October)**, correcting the round:
+
+- The Screen lights one target, where Ryan said "what if the Mastema was able to light its
+  ALLIES on fire somehow? Now there's a niche that we don't have - damage the whole team": the
+  round shrank it for decision density without saying so. His version, every ally lit at once
+  with the shield read from the whole count, is the stronger spend and the real team-wide
+  price, and stands beside the round's.
+- The Screen then the Ewer in one turn makes the heat optional, so the 14 October line that the
+  double-burn comes back "paid for, in the team's heat" holds only when the player keeps the
+  fire: a decision, but the argument overclaimed.
+- Three decisions live on one machine (whom to light, whom to scapegoat, the kill order for the
+  Bellows): a tier three earns it, but it is past the one-to-three budget of a round with four
+  machines in it.
+- Moving Mastema off the foes' fresh start is a records change (the README's order, the to-do)
+  the round slid in as an aside: Ryan's call, with the lighter.
+- Unexamined: the Bellows passing fire onto a Guarded core (a boss in parts), whose ticks deal
+  nothing while its parts stand, as the rules read, a stack fading at each action.
+
+**Since then on main (to 20 October)**: the boiler landed as the Whip Scorpion (Ryan's go, 20
+October), cooling 0, its vents blasting a random foe for the heat they take off it, so a lit
+Whip Scorpion turns Mastema's fire into blasts: a fourth hot build for the economy above.
+Section 12 asks whether Burning's 5 heat a stack on a machine flattens with the stock pass's
+re-pricing of heat (18 October), which would move the lighter's price.
+
 ## Open for the session
 
-1. The lighter: what sets an ally alight, and how much.
-2. The Screen's count (burning bodies on both sides) and its numbers; the proposal's per-foe
-   count and its reading of the Screen under the whole-block rule are above.
-3. The mover: focused on one chosen foe (Claude's lean) or spread.
-4. The Bellows kept; a cap on the doubling if the doubling stays as the fallback.
-5. The Brand's fate.
+The first round's answers and the review's corrections are above; Ryan has given none.
+
+1. The lighter: on the Screen and one target (the round), every ally at once (Ryan's words of
+   14 October, the review), or a piece of its own; and how much.
+2. The Screen's count (the round: 10 a burning body, foes and machines, its target included)
+   and its numbers; the proposal's per-foe count and its reading of the Screen under the
+   whole-block rule are above.
+3. The mover: focused on one chosen foe (Claude's lean, and the round's) or spread.
+4. The Bellows kept; the doubling retired (the round) or kept as the fallback with a cap.
+5. The Brand's fate (the round: folded into the Ewer and benched).
 6. The mover's words: which debuffs it takes and what each becomes on the foe (the four shapes
-   above). Claude's line of 14 October lands Scorched as Burning, where the proposal's reading
-   gave Scorched no meaning on a foe.
+   above). Claude's line of 14 October, and the round, land Scorched as Burning, where the
+   proposal's reading gave Scorched no meaning on a foe.
+7. Whether Mastema still waits on the foes' fresh start once its own kit lights the fire (the
+   README's order and the to-do say it does).
 
 ## Holes already raised
 
@@ -241,8 +306,8 @@ already tags what a cleanse may take, and a Rapid switch-off (not a debuff) neve
 
 ## Waits on
 
-The foes' fresh start (riders on machines in every domain) for the fallback; the
-buffs-and-debuffs pass for the Brand.
+The foes' fresh start (riders on machines in every domain) for the fallback, unless its own kit
+lights the fire (open item 7); the buffs-and-debuffs pass for the Brand.
 
 ## What the session hands back
 

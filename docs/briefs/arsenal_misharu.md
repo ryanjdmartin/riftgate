@@ -3,11 +3,12 @@
 The session settles Misharu's Penance, the weaken that replaced its sentence, against Ryan's
 two holes, which fight each other.
 
-**Status**: proposal with a place; the payoff decided as Penance (Ryan, 14 October). **Maker**:
-the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The design as
-proposed" below, with its first Penance; `docs/roster_analysis.md` section 4; the bible's
-shield rule and its Barrier and Ward row (section 5), and its row on the Arsenal's next chassis
-(section 7).
+**Status**: proposal with a place; the payoff decided as Penance (Ryan, 14 October); in session
+since 15 October (Claude's first round and its review, below; Ryan has answered none of it).
+**Maker**: the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The
+design as proposed" below, with its first Penance; `docs/roster_analysis.md` section 4; the
+bible's shield rule and its Barrier and Ward row (section 5), and its row on the Arsenal's next
+chassis (section 7).
 
 ## The design (the proposal)
 
@@ -131,19 +132,87 @@ halberd taller than the machine; its detail is in git. Looks are Ryan's.
 - **Several breaks to a suppress**, a meter in the Paradox's shape: Ryan's second fallback (12
   October), set aside with the suppress.
 
+## The Arsenal session (15 and 16 October)
+
+Nothing here is Ryan's yet. Claude's first round went to chat on 15 October and Claude's review
+of it on 16 October (Ryan's ask: errors in logic, biases, wrong assumptions, gaps in design).
+He has answered none of it. Nothing landed on main since has changed Misharu.
+
+**Found in the content (15 October).** A breach never breaks a shield: under the shield rule
+the shield stands and the whole blow passes it. The breaching blows are the Sandworm's Swallow
+and the Magma Golem's Slag Fist (40 each; the Waste's and the Peak's bosses in content, elites
+once the slate lands), every Needler's, the Black Mage's Flare, the Lancer's Jump and Dragon
+Dive, and the Bomb's self-destruct. As written, Misharu never sentences the heaviest single
+blows of two domains of four, which is Ryan's boss hole from the other side.
+
+**Claude's first round (15 October)**, by the open items below:
+
+1. Penance: *its next attack deals half, then the Penance goes; it never stacks*, Shocked's
+   mirror on the foe's offence. "Its next attack" in place of the 14 October lean's "its next
+   action", so a heal, a rally or a summon drawn next does not waste it; every strike of that
+   attack is halved, an attack at every machine included, and Kindled with it (adds before
+   multiplies).
+2. No once-a-round cap: the honest shield rule did the cap's job, since each Penance now costs
+   a shield that absorbed only its own number, and the overflow on hull.
+3. The Vigil Pavise: its Overshield now works against the bait (30 over a maximum of 40 is a
+   70 wall no blow in content breaks). The lean: it Wards its target, as the Breaching Plow Braces the
+   Boar: shield 20, self or ally, and a Ward, so a breach meets the shield, breaks it and earns
+   the Penance, which closes the breach hole. A pavise covered the crossbowman behind it, so
+   self or ally reads. The Interdict Halberd kept.
+4. The chip: the foe's intent line shows the halved number, so the read is the number itself;
+   the chip's glyph needs structure of its own, never hue alone.
+5. The edges: any foe's attack that takes any machine's shield to zero while Misharu fights,
+   its own included; a breach never, unless its target is Warded; an attack that spends a
+   Penance lays a fresh one if it breaks another shield; the Paradox counts it as a debuff
+   gained, and it joins the Susceptibility Tensor's list; Numbed never touches it, since it is
+   no suppress; splash, bites and Volatile never count, being no foe's blow; a Penance laid
+   stays when Misharu falls.
+6. What it answers: the big single hitter in every domain, wherever the bait is smaller than
+   the blow. Ryan's two holes stop fighting: the bait is worth it only against a blow much
+   bigger than the shield (never a goblin), and a boss is never cut below half.
+
+Its holes: a boss held at half every round, since a halved attack that breaks a second small
+bait renews the Penance (if too strong, the first lever is that the attack a Penance softened
+lays none, so every other attack at most, before the fraction); and Misharu as its own bait,
+armour 10 under a small bait and a lured big hitter at half, with the Proximity Klaxon in its
+stock as the lure (the levers: the stock pass taking the Klaxon out, or armour 5).
+
+**Claude's review (16 October)**, correcting the round:
+
+- Penance's proportion is Claude's lean of 14 October, never Ryan's call: the records hold his
+  "fine like that, but my holes are" on the weaken as first put, and no answer to the
+  proportion. The round presented it as settled.
+- "Misharu takes no hull a round" holds against a 30-hitter only: a halved 40 still puts 5
+  past a bait of 5 and armour 10, and no shield of 5 exists in content.
+- The Pavise with a Ward is worth about a Barrier against a breacher, and the Penance besides:
+  against the Golem it is the best spend every round, the shape Ryan turned the Aspergillum
+  down for (the die's best entry, wanting no upgrades). The levers: its number, or the Ward on
+  self only. It also puts a Ward carrier in content ahead of the stock pass, which the Barrier
+  and Ward row leaves the carriers to; a locked piece is no stock, so no rule breaks, but it is
+  a call to make in the open.
+- Without the cap nothing limits how often: the honest shield rule limits what a shield is
+  worth, not how often the rider fires, and Numbed does not brake Penance. The damage-rider
+  row (section 2: a rider on an action the player takes anyway needs a limit) asks the same of
+  a mitigation rider: the dice are the limit, or the renewal rule is.
+- Unexamined: Penance and a countdown, whether a Penance laid while a blow gathers halves its
+  landing (the Lancer's Jump breaches, so it convicts only when Warded).
+
 ## Open for the session
 
-1. Penance's exact shape: the fraction (half or a third), for its next action or longer,
-   stacking or not.
-2. Once a round, and on which foe.
-3. The locked pieces: the Pavise's self overshield and the Halberd's Penetrate, kept or
-   changed.
-4. Its chip: a new foe debuff kind (a weaken), with structure of its own.
-5. The draft's edges (above), re-read for Penance: the multi-strike breaker, the Paradox, what
-   never counts.
-6. What Misharu answers under the shield rule: the proposal's answer to the Peak rested on the
-   whole block, and the Peak's telegraph now wants a shield sized to it or a Barrier (the
-   bible's shield rule, section 5).
+The first round's answers and the review's corrections are above; Ryan has given none. Put
+items 1 and 2 to him first.
+
+1. Penance's shape: the proportion (half, or a third) or the 12 October form (5 less a stack),
+   on its next attack (the round) or its next action (the 14 October lean), never stacking.
+2. How often: once a round on the biggest shield broken (14 October), no cap (the round), or
+   no renewal off the attack a Penance softened (the review's lever).
+3. The locked pieces: the Pavise with its Overshield, plain, or with a Ward (then its number,
+   and self only or self or ally); the Halberd's Penetrate kept.
+4. Its chip, and the intent line's halved number.
+5. The edges (the round's list above), with Penance and a countdown unexamined.
+6. What Misharu answers: the breach hole closes only by a Ward, the Pavise's or a carrier the
+   stock pass places; without one it answers the blows that do not breach (the Treant's and
+   the Bone Dragon's among the bosses) and never the Waste's or the Peak's biggest.
 
 ## Holes already raised
 
