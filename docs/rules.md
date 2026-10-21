@@ -318,7 +318,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   every round; a vent it spends on itself adds 3, a shield 2; with none left its guns cannot
   be spent. Its Shrapnel Recuperator returns 1 for every foe it hits; its Unrestricted
   Expenditure fires every ammo in the magazine as a strike, each at a random live foe with
-  Spread and Penetrate; its quick reload adds 2, Rapid, for a good chunk of heat.
+  Spread and Penetrate; its quick reload, Rapid, adds 2 for a good chunk of heat, and the Forge
+  counts it as no vent.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
   or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires

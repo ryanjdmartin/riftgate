@@ -1819,7 +1819,7 @@
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October)."
    },
    "face": {
     "kind": "vent",

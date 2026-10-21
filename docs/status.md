@@ -153,8 +153,10 @@ before it. The three design sessions merged that day are paused, each resuming f
   printed `spins` on the entry, no cooldown, the validator's stepping-die exemption) and Spun
   Up (a buff spent by the next weapon spend); six pips under the heat bar, the next-chamber chip
   on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
-  so the tender and the runner deal it. Open for Ryan (section 12): a weapon of no damage takes
-  the attacker's flat adds (Overcharged's, Spun Up's) and deals them. The hold's ring, the
+  so the tender and the runner deal it. A weapon of no damage still takes the attacker's flat
+  adds (Overcharged's, Spun Up's) and deals them: Ryan's die grammar in the Kestrel session (21
+  October, its section 6 row on the live page) holds it at nothing under any effect, a guard
+  not built yet, so the question went from section 12. The hold's ring, the
   hangar's chambers and the bot's cycle are the to-do's.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
@@ -459,7 +461,9 @@ before it. The three design sessions merged that day are paused, each resuming f
   adding 3 and shields 2; everything else keeps heat on a low heat bar. Locked: the Shrapnel
   Recuperator (Flak 1 for the team and 1 ammo back for every foe hit), the Unrestricted
   Expenditure (every ammo as a strike at a random foe, Spread and Penetrate) and the quick
-  reload for testing (Rapid, 2 ammo, heat); four hardpoints. In content as planned entries
+  reload for testing (Rapid, 2 ammo, heat, no vent to the Forge); four hardpoints. Ryan agreed
+  Claude's three calls the same day: ammo a resource no Silence or Purge reaches, the content
+  at today's heat scale until the stock pass, the quick reload's 2 all it adds. In content as planned entries
   (Ammo a planned resource in the vocabulary); the engine and the assets are the to-do's two
   lines.
 
@@ -480,7 +484,9 @@ to-do's Ryan list).
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
    Prairie Dog's pivot, the helicarrier as the Swallowtail and the artillery as the Musk Ox
-   landed (21 October); next, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
+   landed (21 October); the gunship waits for the stock pass's tags and the numbers' rescale
+   (Ryan, 21 October: "since that's its whole deal"), so the maker's design sessions are done
+   until then. The Arsenal's four wait on Ryan: Claude's
    first round and its review are in their briefs, none of it answered, Misharu first.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
@@ -519,12 +525,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.241, and so is the live
-  (21 October), but for main's rows since (the shield rule, Barrier and Ward, the cooldown and
-  Rapid rows built, Flak's carrier in the tables), owed a republish: main's Musk Ox (v0.238, a word fixed in v0.241) put onto the Kestrel session's live v0.239 (its
-  rows since 20 October: the Kite, the Buzzard, the Skua, the Storm Petrel, the Needletail,
-  the Lammergeier, the Puffin's rework, the Magpie, the Giant Petrel, the names round, the
-  die's grammar, a locked piece's power by its chassis's tier and Kestrel's stock holes),
+  `docs/design-bible.html` after every change. Main's file is v0.242, and so is the live
+  (21 October): main's file, with the day's builds on main (Flak, the shield rule, Barrier and
+  Ward, cooldowns, the Cassowary, the Cottonmouth, the Whip Scorpion, Silence and Purge, the
+  Translocator), the Musk Ox and the gunship's wait, put onto the live v0.241, which carries the
+  Kestrel session's rows since 20 October (the Kite, the Buzzard, the Skua, the Storm Petrel,
+  the Needletail, the Lammergeier, the Puffin's rework, the Magpie, the Giant Petrel, the names
+  round, the die's grammar, a locked piece's power by its chassis's tier and Kestrel's stock
+  holes),
   so the live rows and tables run ahead of main's by the Kestrel branch's until it merges and
   `tools/pages/bible_tables.py` regenerates the tables here (a merge conflict in a generated
   table is resolved by the live's row, corrected by hand for main's content change). The

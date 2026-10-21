@@ -147,7 +147,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
-| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the Musk Ox (the artillery, landed 21 October) |
+| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (its Translocator built 21 October), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the Musk Ox (the artillery, landed 21 October) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -178,8 +178,8 @@ team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 O
 Kestrel's, Ryan, 19 October: the gun platform proposed in `kestrel_gun_platform.md`).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
 (Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
-if one is ever wanted; a planned chassis is never dealt, so its deal is the Prairie Dog or the
-Dingo until an engine lands); Aphelion's with the line frame. Wainwright & Sutler's
+if one is ever wanted; its deal is the Prairie Dog, the Cassowary or the Cottonmouth since their
+engines landed, 21 October); Aphelion's with the line frame. Wainwright & Sutler's
 versatility comes in three forms (Ryan, 19 October): the Clydesdale's loadout, the gunship's
 stats, the Cottonmouth's reach.
 Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
@@ -297,15 +297,15 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_sparrowhawk.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
-| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
-| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
-| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the mark's rider from the Kestrel session |
+| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its forecasts, runner rows and assets (the to-do; its engine built 21 October); the stock pass's heat prices |
+| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its last reads and assets (the to-do; its engine built 21 October); the stock pass's Rapid prices, for its balance |
+| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do) |
 | `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the stock pass's heat scale |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
-| `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
-| `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
-| `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | Flak's engine (the to-do) |
-| `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 (1 in content until its piece's engine) | its engine (the to-do); its stock with the stock pass |
+| `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags and the numbers' rescale (Ryan, 21 October) |
+| `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its runner row and assets (the to-do; its engine built 21 October) |
+| `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
+| `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October); its stock with the stock pass |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
@@ -417,6 +417,6 @@ overrule)
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the Baboon with the stock pass. The battlecruiser and the Carrier run apart (Ryan,
    20 October: "not related at all").
-3. After the stock pass: the gunship; the multi-rotor landed on 21 October as the Swallowtail and
+3. After the stock pass and the numbers' rescale: the gunship (Ryan, 21 October); the multi-rotor landed on 21 October as the Swallowtail and
    the artillery as the Musk Ox, the boiler on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.
