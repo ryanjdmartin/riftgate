@@ -12,9 +12,10 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: every chassis decided by 21 October and the Buzzard's stock filled that evening;
-open for Ryan: the names round, the three stock kinds, Expose in the leans row (below); a
-proposal (Claude, 20 October) until then. **Maker**: Kestrel. **Read first**:
+**Status**: every chassis decided by 21 October and named that evening, two names still open
+(the pull and the Storm Petrel's passive); the Buzzard's stock filled and the stock holes
+taken; the last two slots marked (the Magpie, a support engine; the Snowy Owl, a stealth
+unit). A proposal (Claude, 20 October) until then. **Maker**: Kestrel. **Read first**:
 `docs/briefs/README.md` (the taste lines, the tiers table, the action-economy section); the
 bible's action-economy row, its leans row and its Kestrel rows (sections 5 and 7); the five
 Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kestrel`);
@@ -22,21 +23,23 @@ Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kes
 
 ## The line as it stands
 
-Eight machines, 3-3-2 across the tiers, two slots short of Ryan's ten (the counts: 3-5-2 or
-4-4-2). Each with what it reads, what it produces, what it pays, and the currency the
+Eight machines decided, 3-3-2 across the tiers, and the last two of Ryan's ten marked on 21
+October, their tiers open (the counts: 3-5-2 or 4-4-2). Each with what it reads, what it produces, what it pays, and the currency the
 direction gives it (the row's homes: strikes, a die mechanic, a banked resource, a cooldown
 burst, a delayed action, a combined entry, own rerolls).
 
 | Tier | Machine | Reads | Produces | Pays | Currency |
 |---|---|---|---|---|---|
-| one | the strafer, the Butcherbird (its go 21 October, its name reopened that evening: a BattleTech 'Mech's; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
+| one | the strafer, the Skua (its go 21 October, named that evening, the Butcherbird a BattleTech 'Mech's; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| two | the interceptor (decided 21 October, tier two that day; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
+| two | the interceptor, the Needletail (decided 21 October, tier two and named that day; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
-| three | the bomber, the Magpie (its go 21 October; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
+| three | the bomber, the Lammergeier (its go 21 October; the Magpie until that evening; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
+| open | the Magpie (marked 21 October, Ryan: a support engine; to design) | | | | |
+| open | the Snowy Owl (marked 21 October, Ryan: a stealth unit; to design) | | | | |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
 Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
@@ -126,7 +129,8 @@ One pointer each; the proposal is in the brief named.
   interceptor's Exposed. Its content and its move to tier two wait on its engine (the bible's
   Kite row; `kestrel_kite.md`). The to-do's stock pass line and the bible's stock-pass row
   moved with the go.
-- **The bomber**'s go (Ryan, 21 October): the Magpie, a heavy tandem-wing flyer; its mark the
+- **The bomber**'s go (Ryan, 21 October): the Lammergeier since that evening (the Magpie
+  before, the name moving to the support engine), a heavy tandem-wing flyer; its mark the
   Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,
   else gives it Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
   mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
@@ -224,43 +228,58 @@ Ionizer; the Coriolis Accelerator leaving the Kite's and the Buzzard's stocks fo
 blueprint) and three modules. Every stocked Kestrel weapon is Direct, flat and single-target,
 Chain aside: no multi-strike piece, no rider, one hot gun (the Railgun at 40 heat, which its
 own note calls temporary) and nothing between it and the Carbine's 5. What the builds want
-that the pool does not give, re-read 21 October with every machine decided (the stock pass's
-list once Ryan moves it; the names are in the names round below):
+that the pool does not give, re-read 21 October with every machine decided, and taken that
+evening for the stock pass's list (Ryan: "stock changes as you see fit"), each with its name:
 
-1. **A Kestrel multi-strike gun**, tier one or two: Direct, flat and warm, 5 ×4 at heat 15, a
-   rotary cannon on a jet. The strafer's (×8 under its passive), the interceptor's cash (an
+1. **The Cyclic Cannon**, Kestrel's multi-strike gun, tier one or two: Direct, flat and warm,
+   5 ×4 at heat 15, a rotary cannon on a jet (the cyclic rate is a gun's rate of fire). The strafer's (×8 under its passive), the interceptor's cash (an
    Exposed foe's armour counts for nothing, the one thing a multi-strike gun fears), Flak's
    partner. Parted from the Maxigun (rolled, cool, three strikes). The to-do's stock pass
    already names multi-strike as the blow currency; this is Kestrel's one.
-2. **A mid-heat Kestrel gun**, tier one: Direct, flat 25, heat 20, the step between the
-   Carbine and the Railgun. The Storm Petrel's middle burn (20 shield for 20 more and a zap of
+2. **The Transonic Rifle**, Kestrel's mid-heat gun, tier one: Direct, flat 25, heat 20, the
+   step between the Carbine and the Railgun (transonic is the band between subsonic and
+   supersonic; a stock piece may be a rifle, a locked Kestrel piece never is, Ryan, 11
+   October). The Storm Petrel's middle burn (20 shield for 20 more and a zap of
    20), the Buzzard's regen fuel (its stock above), the Kite's doubled 50 at 30 heat.
-3. **A Kestrel reroll module**, tier two: one free reroll of this machine's die a round, its
-   stat line paid (heat maximum −20, or shield −20), per the action economy's row (own rerolls
+3. **Trim Tabs**, Kestrel's reroll module, tier two: one free reroll of this machine's die a
+   round, its stat line paid (heat maximum −20, or shield −20), per the action economy's row (own rerolls
    as a number, priced so no module is the universal pick). The Kite's d3 fishing for its live
-   lock, the strafer's spray, any small die; Kestrel's own reroll beside the Giant Petrel's
-   team bank.
+   lock, the Skua's Flechette Pod, any small die; Kestrel's own reroll beside the Giant
+   Petrel's team bank.
 4. **The Railgun kept**: the pool's big hot flat gun, its "temporary" note retired, in the
    Buzzard's stock rather than the Kite's.
 5. **Settled since**: the Wake Diffuser landed 20 October (a vent of 10 that shields 10, no
    Rapid), and the Laminar Deflector is a tier-two blueprint with its Rapid, out of the
    tier-one and tier-two stocks (Ryan, 20 October: a Rapid shield is never below tier two, a
-   Rapid vent never below three); Chain in mines at the Magpie's go (every keyword acts from a
-   mine as the shot lands, Chain whatever Chain becomes); the seven locks to name are the
-   names round's (the spray, the lure that regens itself, the designator, the pull and the
-   Giant Petrel's three), the reset gun the Pinion Driver and the mark the Syrinx Drone since
-   21 October.
+   Rapid vent never below three); Chain in mines at the bomber's go (every keyword acts from a
+   mine as the shot lands, Chain whatever Chain becomes); the seven locks named in the names
+   round (the pull's name still open), the reset gun the Pinion Driver and the mark the
+   Syrinx Drone since 21 October.
 6. **Not holes**: a stocked Kestrel Indirect gun (Kestrel's Indirect pieces are locked: the
-   designator, the lure, the pull, the drone and the Giant Petrel's battery; the artillery
-   makers' reach is theirs) and a stocked Kestrel rolled gun (the spray and the battery are
-   locked; the Muzzle Velocity Booster serves other makers' rolled guns on Kestrel frames, the
+   Fovea Designator, St. Elmo's Regenerator, the pull, the Syrinx Drone and the Spindrift
+   Salvo; the artillery makers' reach is theirs) and a stocked Kestrel rolled gun (the
+   Flechette Pod and the Spindrift Salvo are locked; the Muzzle Velocity Booster serves other makers' rolled guns on Kestrel frames, the
    cross-maker pull); no Kestrel plain shield (the basic shield is shared; Overshield is the
    Puffin's); no Kestrel cold hard hitter (the Kite's pull of Minerva's and Wainwright &
    Sutler's kinetics is its design).
 
-## The two free slots
+## The last two slots
 
-Two toward Kestrel's ten, later maker sessions'; the bench for them, one line each:
+- Ryan, 21 October, evening: "Mark down Magpie and an Owl (probably snowy owl) as our last two
+  chassis, probably a support engine and stealth unit, respectively."
+- Marked: the Magpie, a support engine, and the Snowy Owl, a stealth unit, each designed in a
+  session of its own (the to-do); a plain Owl is a Heavy Gear machine, so the owl's name keeps
+  its species. Their tiers are open: the counts put both at tier two (3-5-2) or the support
+  engine at tier one (4-4-2).
+- Holes for those sessions, one line each (Claude, 21 October): a third Kestrel support beside
+  the Puffin (shields from an ally's heat) and the Giant Petrel (tempo: rerolls and actions)
+  must part from both by its shape, the overlap map's rule; the magpie's folklore is the thief
+  and the mimic, and the Syrinx Drone, the mimic's voice box, stays on the Lammergeier;
+  stealth is new to the rules, and the nearest state, the Swallowtail's Phased (on main),
+  cannot act, so stealth is a state of its own (hidden until it strikes, say, or never an
+  aim's pick); owls fly silent, which is its look and its sound.
+
+The bench for either, one line each:
 
 - The capacitor (18 October, kit 1): overshield as its ammunition, a bank of safety that pays
   damage; tier two beside the Puffin, which feeds it. Ryan passed over it for kit 2 without
@@ -360,21 +379,73 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
   action), Vectoring (the Buzzard's nacelles vector in its acts), Pathfinder (a BattleTech
   'Mech).
 
+### Ryan's picks (21 October, evening)
+
+> Change the bomber to Lammergeier. Skua is fine too, as is Needletail. Mark down Magpie and
+> an Owl (probably snowy owl) as our last two chassis, probably a support engine and stealth
+> unit, respectively.
+>
+> Flechette Pod / St. Elmo’s Regenerator / Fovea Designator / Don't love either of the bomber
+> pull names, it can be more technical, something about warping or teleporting / Immelmann
+> Booster / Spindrift Salvo / Reheat Uplink
+>
+> Split-cycle Breech / Storm petrel should reference the fact that it has hard shields, or
+> something, used both for defense and for whacking things with. / Quick-turn Avionics Relay /
+> Fuse-delayed Bay / Giant Petrel passive: Maverick's Playbook / Keep Kite passive
+>
+> Designations as you see fit, stock changes as you see fit. I wouldn't lean Expose to
+> Kestrel just yet.
+
+Decided:
+
+- **Machines**: the strafer is the Skua; the interceptor the Needletail; the bomber the
+  Lammergeier (the bearded vulture, which drops bones from a height to break them: a bomber by
+  habit; the English spelling, the German Lämmergeier), the name Magpie moving to the support
+  engine.
+- **Locks**: the Flechette Pod (the Skua's spray); St. Elmo's Regenerator (the Storm Petrel's
+  lure that regens itself; Ryan's); the Fovea Designator (the Needletail's); the Immelmann
+  Booster (the Giant Petrel's Rapid lock; Ryan's: the Immelmann turn reverses a fighter's
+  course and climbs, as a spent ally comes round to act again); the Spindrift Salvo (its gun);
+  the Reheat Uplink (its buff); the Pinion Driver and the Syrinx Drone as named before.
+- **Passives**: the Split-cycle Breech (the Skua); the Quick-turn Avionics Relay (the
+  Needletail; Ryan's joining of the two); the Fuse-delayed Bay (the Lammergeier; Ryan's turn of
+  the delay-fuse); Maverick's Playbook (the Giant Petrel; Ryan's); Disabled Weapon Regulators
+  kept (the Kite).
+- **Designations** (Claude's, on Ryan's word): K-13 Mk I Swing-Wing Strafer (the Skua), K-15
+  Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet Spotter (the Needletail),
+  K-19 Mk I Tandem-Wing Minelayer (the Lammergeier), K-21 Mk I Ground-Effect Flagship (the
+  Giant Petrel); the Kite K-7 Mk IV with its rework.
+- **The stock pieces** (Claude's, on Ryan's word): the Cyclic Cannon, the Transonic Rifle,
+  Trim Tabs (the stock holes above).
+- **Expose** stays out of Kestrel's lean for now; the leans row is unchanged.
+- Flagged to Ryan: Spindrift is also a BattleTech 'Mech. As one word of a component's name it
+  passes the reserved list's rule (sharing a word is fine, and the validator reads chassis
+  names only), so the Spindrift Salvo stands unless he minds; the Wavetop Launcher is the
+  other.
+
+Open, with Claude's new picks (21 October):
+
+| Item | Ryan's steer | Claude's pick | Others |
+|---|---|---|---|
+| The Lammergeier's pull | more technical, about warping or teleporting | the Lorentz Contractor: length contraction shrinks the space between, so every mine ends in one slot (and it contracts them in) | the Spatial Shunt; the Fold-space Anchor |
+| The Storm Petrel's passive | hard shields, used both for defence and for whacking things | Birdstrike Plating: a canopy rated for bird strikes is hardened against them, and here the bird does the striking | the Riot Field (a riot shield blocks and shoves); Hard-field Bumpers |
+
+- Words left out for the pull: Translocator (the Dingo's Combat Translocator), Phase (Aphelion's
+  word, and main's Phased), Rift (the enemy's), Tesseract (two Warhammer 40,000 machines),
+  Slipspace (Halo's).
+
 ## Open for Ryan
 
-1. The names round above: a pick per item, the other, or his own; the strafer's first, since
-   the validator refuses the Butcherbird without a pass.
-2. The three stock kinds above (a multi-strike gun, a mid-heat gun, a reroll module), for the
-   stock pass's list.
-3. Expose in the leans row's Kestrel line: two of its three carriers are Kestrel's (the
-   designator and the Syrinx Drone; the Swallowtail's Spotting Flare the third). Claude's
-   lean: yes. The row itself was rewritten 20 October; this list kept it open by mistake until
-   21 October.
+1. The pull's name and the Storm Petrel's passive's (the table above).
+2. The Spindrift Salvo kept, or the Wavetop Launcher, now that Spindrift shows as a BattleTech
+   'Mech.
 
-Done 21 October: the Buzzard's stock, filled on Ryan's word (above).
+Done 21 October: the Buzzard's stock (above); the names, the designations and the stock
+pieces (the picks above); Expose left out of the lean (Ryan); the last two slots marked.
 
 ## What the session hands back
 
-Ryan's calls, then: the names into each brief, the bible's Kestrel row and the content
-sessions' lines; the stock kinds into the to-do's stock pass line; Expose in the leans row if
-he takes it; this brief retired once the line's briefs have landed.
+The two open names, then: the names into each brief, the bible's Kestrel row, the rules and
+the content sessions' lines (done 21 October for every name settled); the stock pieces in the
+to-do's stock pass line and the bible's stock-pass row (done 21 October); this brief retired
+once the line's briefs have landed and the last two slots have briefs of their own.

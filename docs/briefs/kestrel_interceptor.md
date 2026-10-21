@@ -1,15 +1,15 @@
-# Brief: the interceptor (new chassis, decided)
+# Brief: the interceptor, the Needletail (new chassis, decided)
 
 The session designs the Kestrel tier one that acts twice a round, Ryan's pick of 18 October
 from the shield-spender's alternative kits, and finds the build hook its first kit lacked.
 "The interceptor" is a working label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan's go, 21 October; the name, look and numbers left to the content
-session, so this brief holds the rounds until then). The passive Ryan's, 18 October; the kit
+**Status**: decided (Ryan's go, 21 October; named that evening, the Needletail; the look and
+numbers left to the content session, so this brief holds the rounds until then). The passive Ryan's, 18 October; the kit
 Claude's, 20 October, its third form, below the second; the fourth round, late that day, names the mark Exposed and widens the
 gate to buffs; the fifth takes Ryan's calls, the mark reach and armour and no number on a weapon
 of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Tier**: two (Ryan, 21 October: "Put butcher in": Kestrel's tier ones are the Storm
-Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). At tier two its stock may carry the
+Petrel, the Puffin and the Butcherbird, the Skua since that evening; `kestrel_line.md`). At tier two its stock may carry the
 tier-one buffs and setters its gate reads (the Coil is one since the Puffin's move), and the
 glass that two spends a round asked of a tier one is the content session's to keep or drop. **Shape**: a tilt-jet (Ryan, 20 October:
 "agile and omnidirectional"). **Read first**: `docs/briefs/README.md`; `kestrel_line.md` (the
@@ -338,7 +338,7 @@ since it subtracts that total), `is_exposed` gains the clause, the status joins 
 Paradox counts, Expose applies on reach as Shock does, and the decay is the round's.
 
 **The machine as it stands (the fifth round).** The passive: a debuff or a buff is Rapid on
-it, once a round. The lock, the designator (working name): a debuff, Indirect, heat 5, Expose
+it, once a round (the Quick-turn Avionics Relay since 21 October). The lock, the designator (the Fovea Designator since 21 October): a debuff, Indirect, heat 5, Expose
 (two rounds, refreshed by a second Expose; Ryan, 21 October): the foe is Exposed through the
 next round, in Direct reach, every machine's, and its armour counts for nothing. The die: I the designator; II a Direct flat gun, the cash; III a buff (the Coil's
 kind), a debuff of another maker, or a cold rolled gun; IV a vent. The frame as the second
@@ -391,6 +391,15 @@ kit. Every number a placeholder; the names Ryan's.
   ids stay): "aims where its blow hurts most" (exposed), "aims at anyone" (anything), "aims at
   the hottest" (heat), "aims at a machine showing a weapon" (armed), "fires as one" (focus,
   clear already). The codex's Aim entry and the inspect line carry them; the to-do holds it.
+
+## The names (21 October, evening)
+
+- Ryan, 21 October, from the names round in `kestrel_line.md`: "Skua is fine too, as is
+  Needletail", and "Fovea Designator", "Quick-turn Avionics Relay". Decided: the Needletail (a
+  swift claimed the fastest in flapping flight), its lock the Fovea Designator (a falcon's eye
+  has two foveae, the deep one for distance), its passive the Quick-turn Avionics Relay (his
+  joining of two of Claude's), its designation K-17 Mk I Tilt-Jet Spotter (Claude's, on his
+  word), so the Kite's Interceptor tag stays the Kite's.
 
 ## Holes already raised
 
@@ -449,8 +458,8 @@ kit. Every number a placeholder; the names Ryan's.
 
 ## Open for the content session
 
-1. The numbers; its name, its designator's and its passive's (Claude's picks in the names
-   round of `kestrel_line.md`, Ryan's to settle); its look, a tilt-jet.
+1. The numbers; its look, a tilt-jet; its names as settled 21 October (the Needletail, the
+   Fovea Designator, the Quick-turn Avionics Relay, K-17 Mk I Tilt-Jet Spotter).
 2. The aims' shown words: Ryan, 21 October, left them to the content session ("the aims
    don't matter since they're not locked or tuned at all"); the seventh round's five are its
    start.
@@ -463,7 +472,7 @@ Nothing. For the tender, a Kestrel tier one landed.
 
 ## What the content session lands
 
-The chassis and the designator in content (planned until the engine: the gate, Expose,
+The Needletail and the Fovea Designator in content (planned until the engine: the gate, Expose,
 Exposed, the glyph grammar, the print, the damage guard), Expose and Exposed's sentence in
 the vocabulary, the aims' shown words, its name, look and numbers; then this brief retires.
 The bible's Kestrel row, the die-entry row and the rules carry the design since 21 October.

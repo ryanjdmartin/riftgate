@@ -82,8 +82,8 @@ The fight ends the moment it is decided, mid-turn too: victory when no foe stand
 defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
-- **Rerolls**: three a round for the team, never banked (the Giant Petrel's bank, below, the one
-  exception). A reroll rerolls every unlocked,
+- **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
+  Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
@@ -92,7 +92,7 @@ defeat when every machine is wrecked. There is no round limit.
   it; a foe's Scramble is a true roll, and the sequence runs on from where it lands. Its
   Spin-Up spins the whole die, the entry showing included, the one exception to the reroll
   rule. Every sixth weapon spend counts double, its damage and the stacks it lays.
-- **The bank** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
+- **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
   unspent at the round's end are banked, up to three, and spent in a later round like any
   reroll.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
@@ -116,7 +116,7 @@ defeat when every machine is wrecked. There is no round limit.
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
   it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
-- **A mine** (the Magpie's passive, not built): its weapons may be spent on an empty slot in
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive, not built): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any). The shot waits there, its number as rolled and modified when
   laid, with its keywords; whoever steps in takes every shot waiting, in laid order, before
@@ -153,7 +153,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
   again, until a link fails to kill.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
-- **Expose** (the interceptor's designator, not built): every foe reached and left standing is
+- **Expose** (the Needletail's Fovea Designator, not built): every foe reached and left standing is
   Exposed through the next round; a second Expose refreshes it, never adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
@@ -191,13 +191,13 @@ Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): 
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
-Magpie's, not built): every mine on the field gathers into the slot it is spent on, and a foe
-standing there takes them now, in laid order. **The Syrinx Drone** (the Magpie's, not built):
+Lammergeier's, not built): every mine on the field gathers into the slot it is spent on, and a foe
+standing there takes them now, in laid order. **The Syrinx Drone** (the Lammergeier's, not built):
 the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
-the foe Exposed, never refreshing it. **The Hot-Pit** (the Giant Petrel's, Rapid, not built):
+the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
 spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
-are paid, the ally's die rolls again and it acts again. **The battery** (the Giant Petrel's,
-not built): a kill by its shot gives the team two rerolls. **Its buff** (the Giant Petrel's,
+are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
+not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
 not built): the ally gains Overcharged 2 and its die rolls again, which does nothing on a
 spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
@@ -216,7 +216,7 @@ On a machine:
 - **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
   spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Regenerating** (buff, the Storm Petrel's lure, not built): 10 shield at the start of each
+- **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 10 shield at the start of each
   round for three rounds; it stacks, each grant keeping its own end.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
   so it never injures; its riders land. Until the round's end. Never granted to every ally
@@ -252,7 +252,7 @@ On a foe:
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
-- **Syrinx Drone** (debuff, the name of the Magpie's piece that leaves it, not built): the next weapon to kill it, any
+- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it, not built): the next weapon to kill it, any
   machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other

@@ -1,11 +1,11 @@
-# Brief: the strafer (new chassis, decided)
+# Brief: the strafer, the Skua (new chassis, decided)
 
 The session designs the decided Kestrel tier one whose every weapon strikes twice at half. The
 mechanic is decided; its numbers, locked piece and shape are open. "The strafer" is a working
 label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan, 14 October), the go given 21 October: the Butcherbird, a swing-wing;
-its name reopened that evening (a BattleTech 'Mech's, below); its numbers with the content
+**Status**: decided (Ryan, 14 October), the go given 21 October: a swing-wing, the Skua since
+that evening (the Butcherbird was a BattleTech 'Mech's, below); its numbers with the content
 session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
 accordingly"). **Maker**: Kestrel. **Tier**: one (Ryan, 21 October: "Put butcher in": Kestrel's tier ones
 are the Storm Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). **Read first**: `docs/briefs/README.md`; the
@@ -182,13 +182,13 @@ map can read (a hovercraft if Ryan's silhouette is one, which would part it from
 interceptor on the map). Hull 70, shield 60, field recharge 30, heat maximum 60, cooling 5,
 armour 0. Three hardpoints beside the lock, a d4; two module slots.
 
-**The passive**, as the codex would print it: every weapon it fires strikes twice at half.
+**The passive, the Split-cycle Breech**, as the codex would print it: every weapon it fires strikes twice at half.
 What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
 foe's conditions count on every strike, and so does its armour. The entries show the halved
 number with the strikes mark ("5 ×2", "5–8 ×4"); dragged over a foe, the number one strike
 deals with its armour off.
 
-**The lock, the spray** (Ryan's description, 15 and 16 October): a rolled gun, Direct, 10 to
+**The lock, the Flechette Pod**, the spray (Ryan's description, 15 and 16 October): a rolled gun, Direct, 10 to
 15, two strikes, heat 5; under the passive 5 to 8 ×4. The first strike lands where the die is
 dragged; each strike after it draws at random among the foes in reach at that moment, the same
 foe again allowed, reach read again between strikes with a kill clearing its slot at once. A
@@ -240,8 +240,9 @@ reach; each tested with synthetic passives.
 
 ## Open for the content session
 
-1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October); its name, if
-   Ryan renames it (below), and the lock's and the passive's (the line brief's names round).
+1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October); its names as
+   settled that evening: the Skua, the Flechette Pod, the Split-cycle Breech, and the
+   designation K-13 Mk I Swing-Wing Strafer.
 2. The start's hole below (a halved basic against armour 5): section 12's scales question and
    the stock pass, with Exposed its Kestrel answer meanwhile.
 
@@ -279,6 +280,9 @@ reach; each tested with synthetic passives.
   at an intruder's head; also a 1930s naval dive-bomber, which suits a strafer); the other,
   the Kingbird (the tyrant flycatchers, which strike hawks and crows again and again). The
   swing-wing stands either way. The names round for the line is in `kestrel_line.md`.
+- Ryan, 21 October, evening: "Skua is fine too". Decided: the Skua; its lock the Flechette
+  Pod, its passive the Split-cycle Breech (both his picks from the names round), its
+  designation K-13 Mk I Swing-Wing Strafer (Claude's, on his word).
 
 ## Holes already raised
 
@@ -310,6 +314,6 @@ reach; each tested with synthetic passives.
 
 ## What the content session lands
 
-The chassis and its spray in content (planned until the engine: a passive that halves the
+The Skua and its Flechette Pod in content (planned until the engine: a passive that halves the
 printed number and doubles the strikes, the spray's pick per strike), the bible's chassis
 table, its numbers and model; then this brief retires.

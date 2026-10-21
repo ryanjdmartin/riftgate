@@ -1,10 +1,11 @@
-# Brief: the bomber (new chassis, decided)
+# Brief: the bomber, the Lammergeier (new chassis, decided)
 
 The session designs the decided Kestrel machine whose weapons can be spent on an empty slot in
 the enemy's formation, the shot waiting there for whoever steps in. "The bomber" is Ryan's
 working word; the name and the look are his.
 
-**Status**: decided (14 and 15 October; the go 21 October: the Magpie, a tandem wing).
+**Status**: decided (14 and 15 October; the go 21 October: a tandem wing, the Lammergeier since
+that evening, the Magpie before).
 Its engine and content wait, so this brief stays until they land. **Maker**: Kestrel. **Tier**: three (Ryan, 15
 October). **Read first**: `docs/briefs/README.md`; the bible's row on
 Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8 (Kestrel gap two, the
@@ -282,14 +283,14 @@ The design as decided on 15 to 17 October with Ryan's lean on size (18 October) 
 review's two items, whole; every number a placeholder, the name and the look Ryan's, the stock
 by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
 
-**The frame.** The Magpie, a heavy tandem-wing flyer on big boosters (Ryan, 21 October: a
+**The frame.** The Lammergeier (the Magpie until 21 October, evening), a heavy tandem-wing flyer on big boosters (Ryan, 21 October: a
 pair of wings fore and a pair aft, the bay between; the capital ship is the gun platform since
 20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
 maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
 tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
 the Buzzard's.
 
-**The passive**, as the codex would print it: its weapons may be spent on an empty slot in
+**The passive, the Fuse-delayed Bay**, as the codex would print it: its weapons may be spent on an empty slot in
 the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
 a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
 and modified when laid and its keywords, and joins what already waits; whoever steps in takes
@@ -432,11 +433,30 @@ value of a mine (a shot delayed, worth its number times the chance a foe steps i
   no heavy bird; the silhouette carries the weight. The bible's Kestrel row and the rules carry
   the design; the numbers are the content session's.
 
+## The name and the names (21 October, evening)
+
+- Ryan, 21 October: "Change the bomber to Lammergeier", and, of the line's last two slots,
+  "Mark down Magpie and an Owl (probably snowy owl) as our last two chassis, probably a
+  support engine and stealth unit, respectively." Decided: the bomber is the Lammergeier, the
+  bearded vulture, which carries bones and tortoises up and drops them to shatter on rock: a
+  bomber by habit, the lean of this brief's naming round, and a heavy bird, so the
+  silhouette no longer carries the weight alone. The Magpie's name moves to the support
+  engine. The Syrinx Drone keeps its name: a syrinx is any bird's voice box, and the drone
+  still copies the killing shot.
+- Its passive the Fuse-delayed Bay (Ryan's), its designation K-19 Mk I Tandem-Wing Minelayer
+  (Claude's, on his word). The pull's name is open (Ryan: "Don't love either of the bomber
+  pull names, it can be more technical, something about warping or teleporting"): Claude's
+  pick the Lorentz Contractor (length contraction shrinks the space between, so every mine
+  ends in one slot), the others the Spatial Shunt and the Fold-space Anchor (the names round
+  in `kestrel_line.md`).
+
 ## Open for the engine and content sessions
 
-1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look.
+1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look; its
+   names (the Lammergeier, the Fuse-delayed Bay, K-19 Mk I Tandem-Wing Minelayer, the pull's
+   once Ryan picks it).
 2. A bot that values a mine, before its runner row (the Waits on below).
-3. Settled 21 October (Ryan): the Magpie's debuff is the Syrinx Drone, the piece's own name, and
+3. Settled 21 October (Ryan): the bomber's debuff is the Syrinx Drone, the piece's own name, and
    the helicarrier has nothing called Mark: its Spotting Flare Exposes, and Suppresses if a
    condition is met, so the Flare feeds the drone's free mark like the interceptor's Expose.
 
@@ -449,7 +469,7 @@ before its runner row.
 ## What the engine and content sessions land
 
 A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, the
-debuff with its kill hook; the content planned (the Magpie, its two locks, the Syrinx Drone debuff in
+debuff with its kill hook; the content planned (the Lammergeier, its two locks, the Syrinx Drone debuff in
 the vocabulary),
 the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry
 the design since 21 October.

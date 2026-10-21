@@ -55,15 +55,21 @@ document's job and every command are in `README.md`.
   Accelerator's rename; 486 tests green. The design is in the bible's Kestrel, Kite, Puffin,
   die-entry and locked-component rows and the rules; each machine's rounds stay in its brief
   until its session lands it (the to-do's lines); the line in `docs/briefs/kestrel_line.md`.
-  As left (21 October, evening), on Ryan's ask to name the remaining items, fill the Buzzard's
-  stock and say what the other questions were: the Buzzard's stock filled for the stock pass
-  (the Railgun, the mid-heat gun, the Arc Fault Cannon, a basic shield and the basic vent
-  beside the Afterburner); the names round in the line brief (the strafer again, the
-  interceptor, seven locks, five passives, three stock pieces, the designations); the Butcherbird's clash, which
-  Claude had missed, in the strafer's brief and the bible's Kestrel row (live v0.236); the
-  stale clash notes and the Buzzard's niche word in content. Open for Ryan: the names, the
-  three stock kinds, Expose in the leans row. Then the merge to main on his word (main has
-  moved; the hangar page's republish rides with it). On the branch, not on main.
+  As left (21 October, evening): the Buzzard's stock filled for the stock pass and the stock
+  holes taken (the Cyclic Cannon, the Transonic Rifle, Trim Tabs; the Railgun kept), all on
+  Ryan's word; the names settled from the names round in the line brief: the strafer the Skua
+  (the Butcherbird, which Claude had called clean, being a BattleTech 'Mech's), the
+  interceptor the Needletail, the bomber the Lammergeier (the Magpie's name moving on), the
+  locks the Flechette Pod, St. Elmo's Regenerator, the Fovea Designator, the Immelmann
+  Booster, the Spindrift Salvo and the Reheat Uplink, the passives the Split-cycle Breech, the
+  Quick-turn Avionics Relay, the Fuse-delayed Bay and Maverick's Playbook (the Kite's kept),
+  the designations K-13 to K-21 and the Kite's K-7 Mk IV; Expose left out of Kestrel's lean;
+  the last two slots marked, the Magpie a support engine and the Snowy Owl a stealth unit,
+  each a design session on the to-do. Recorded in the briefs, the rules, the to-do and the
+  bible (the Kestrel, names, locked-component and stock-pass rows, live v0.238). Open for
+  Ryan: the pull's name, the Storm Petrel's passive's, and the Spindrift Salvo kept or not
+  (Spindrift is also a BattleTech 'Mech). Then the merge to main on his word (main has moved;
+  the hangar page's republish rides with it). On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -348,10 +354,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.236 (21 October, the Kestrel
-  session's: the Kestrel row's naming clause corrected, the Butcherbird a BattleTech 'Mech's;
-  on its v0.235, the Giant Petrel's go merged onto the Wainwright & Sutler session's v0.234,
-  which is main's file). This branch's file carries the Kestrel rows (its version line its
+  `docs/design-bible.html` after every change. Live is v0.238 (21 October, the Kestrel session's: Kestrel's names, designations and stock pieces, merged onto another session's v0.237, which renamed Dispel Purge on both sides; before it v0.236, the Butcherbird's clash, and v0.235, the Giant Petrel's go, onto the Wainwright & Sutler session's v0.234, which is main's file). This branch's file carries the Kestrel rows (its version line its
   own); at the merge to main the live page becomes main's file, since it holds every session's
   rows, and the tables regenerate from the merged content. Git and the page's version history
   carry what each publish brought. Before republishing, read the live page; if another session

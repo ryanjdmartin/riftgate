@@ -4,8 +4,8 @@ The session designs Kestrel's second tier three beside the bomber: a giant, mean
 fast-looking-but-slow gun platform whose passes are the team's rerolls. "The gun platform" is
 a working label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan's go, 21 October: the Giant Petrel, the formation leader); its engine
-and content wait, so this brief stays until they land. A proposal since 19 October. **Maker**: Kestrel.
+**Status**: decided (Ryan's go, 21 October: the Giant Petrel, the formation leader; its pieces
+named that evening); its engine and content wait, so this brief stays until they land. A proposal since 19 October. **Maker**: Kestrel.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (Ryan's taste, the tiers,
 Kestrel's leans as the fourth round of `kestrel_shield_spender.md` left them); the bible's rows
 on rerolls (three a round, never onto the entry showing), on Rapid's limiter and on cooldowns;
@@ -494,11 +494,23 @@ pace with it.
   His rule on a locked piece's power goes in the bible's locked-component row. The bible's
   Kestrel row and the rules carry the design; its numbers, names and model go to the content
   session.
+- Named 21 October, evening (the names round in `kestrel_line.md`; Ryan: "Immelmann Booster",
+  "Spindrift Salvo", "Reheat Uplink", "Giant Petrel passive: Maverick's Playbook"): the passive
+  that banks the team's rerolls is Maverick's Playbook (Ryan's; the maverick fantasy he asked
+  of it on 19 October); lock 1, the Hot-Pit until then, is the Immelmann
+  Booster (Ryan's: the Immelmann turn reverses a fighter's course and climbs, as a spent ally
+  comes round to act again); lock 2, the battery, the Spindrift Salvo (spray blown off the wave
+  crests its missiles skim; flagged to Ryan: Spindrift is also a BattleTech 'Mech, which as one
+  word of a component's name passes the reserved list's rule, the Wavetop Launcher the
+  other); lock 3, the buff, the Reheat Uplink (reheat is the afterburner, sent to an ally).
+  Its designation K-21 Mk I Ground-Effect Flagship, beside the Puffin's Ground-Effect Escort
+  (Claude's, on his word).
 
 ## Open for the engine and content sessions
 
-1. Its numbers (placeholders), its names (the Hot-Pit, the battery and the buff are working
-   names), its model (the ekranoplan).
+1. Its numbers (placeholders), its model (the ekranoplan); its names as settled 21 October
+   (Maverick's Playbook, the Immelmann Booster, the Spindrift Salvo, the Reheat Uplink,
+   K-21 Mk I Ground-Effect Flagship).
 2. The bot's look-or-action valuation, before its runner rows.
 
 ## Holes already raised
@@ -525,7 +537,7 @@ pace with it.
 
 ## What the engine and content sessions land
 
-The bank (the team's rerolls carried, capped), the Hot-Pit (a Rapid face with a self use and
-an ally use priced in rerolls, a spent ally's die rolled and its action again), the battery's
-kill rider, the buff's roll; the chassis planned in content; then this brief retired. The
+Maverick's Playbook (the team's rerolls carried, capped), the Immelmann Booster (a Rapid face with a self use and
+an ally use priced in rerolls, a spent ally's die rolled and its action again), the Spindrift
+Salvo's kill rider, the Reheat Uplink's roll; the chassis planned in content; then this brief retired. The
 bible's Kestrel row and the rules carry the design since 21 October.

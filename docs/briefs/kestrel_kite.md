@@ -272,6 +272,11 @@ multiply on the face's number before the adds, the strafer's halving's mirror).
   tender deal holds without the Kite and its tier move rides with its own engine. The numbers
   stand as written (placeholders; no shield on a kill in the first cut). The bible's Kite row
   carries the design.
+- Ryan, 21 October, evening, in the names round (`kestrel_line.md`): "Keep Kite passive".
+  Decided: the passive keeps its name, Disabled Weapon Regulators (the rework still disables
+  them), and with the rework its designation becomes K-7 Mk IV Interceptor (Claude's, on his
+  word "Designations as you see fit"), the new mark for the new passive; the Interceptor tag
+  stays the Kite's, the Needletail being the Tilt-Jet Spotter.
 
 ## Open for the engine session
 
