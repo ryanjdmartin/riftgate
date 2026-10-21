@@ -881,6 +881,15 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
+		# The Cottonmouth's drum (19 October): every weapon fired as one shot of a flat number,
+		# a reach and a heat; never keyed on reach, which reads the rewrite.
+		if effect == "rewrite_weapon":
+			if int(eff.get("value", 0)) <= 0 or not ["direct", "indirect"].has(str(eff.get("reach", ""))) or int(eff.get("heat", -1)) < 0:
+				errs.append("%s: rewrite_weapon fires every weapon as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
+			if str(eff.get("when", "")).begins_with("reach_"):
+				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
+		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
+			errs.append("%s: target_rank needs rank, front or back" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):

@@ -1441,10 +1441,13 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	var can := target != null and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
-	# its missing hull, a status on it, its armour. Anywhere else, the plain number.
+	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
+	# Cottonmouth's drum). Anywhere else, the plain entry and number.
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
-		_ghost.set_number(sk.shown_number_text(ms, _ghost.face, target if can and target is Foe else null))
+		var over: Foe = target if can and target is Foe else null
+		var sf := sk.shown_face(ms, ms.face(), over)
+		_ghost.set_face(sf, sk.shown_number_text(ms, sf, over))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:

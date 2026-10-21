@@ -5174,3 +5174,56 @@ func test_every_nth_shot_doubles_its_damage_and_the_stacks_it_lays() -> void:
 	assert_false(Effects.nth_shot_due(u), "the count runs on")
 	Effects.end_skirmish(u)
 	assert_eq(Effects.stacks_of(u, "shots"), 0, "and resets with the fight")
+
+
+const DRUM_PASSIVE := {"id": "test_drum", "name": "Drum", "description": "", "effects": [
+	{"trigger": "static", "effect": "rewrite_weapon", "value": 15, "reach": "indirect", "heat": 10, "tag": "ballistic"},
+	{"trigger": "static", "effect": "grant_keyword", "value": "penetrate", "when": "target_rank", "rank": "back"},
+	{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "front"}]}
+
+
+## The drum (the Cottonmouth's Adaptive Munitions Drum, Ryan's go of 19 October; built 21
+## October): every weapon leaves as the drum's shot, Indirect, a flat 15, heat 10, one blow,
+## Ballistic, its own keywords kept; aimed at the front rank it sprays (Spread), at the back
+## it punches through (Penetrate); equipment fires as itself, and the die keeps the real entry.
+func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(40, L, [K.BURN])
+	gun.heat = 5
+	gun.strikes = 2
+	var u := _mech("A", Die.of([gun, Face.shield(20)]), 40, 100)
+	u.grant_passive(DRUM_PASSIVE)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(100, 1), _ghoul(100, 1), _ghoul(100, 1), _archer(100, 1), _archer(100, 1), _archer(100, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	var shot := sk.shown_face(ms, ms.face())
+	assert_eq([shot.power, shot.power_max, shot.reach, shot.heat, shot.strikes], [15, 15, I, 10, 1], "the drum's shot: a flat 15, Indirect, heat 10, one blow")
+	assert_true(shot.has(K.BURN) and shot.tags.has("ballistic"), "its own keyword kept, Ballistic added")
+	assert_eq(gun.power, 40, "the die keeps the real entry")
+	assert_false(shot.has(K.CLEAVE) or shot.has(K.PENETRATE), "no rank keyword without a target")
+	var mid: Foe = sk.front[1]
+	assert_true(sk.shown_face(ms, ms.face(), mid).has(K.CLEAVE), "over the front rank it shows Spread")
+	assert_true(sk.shown_face(ms, ms.face(), sk.back[2]).has(K.PENETRATE), "over the back rank, Penetrate")
+	assert_true(sk.assign(0, mid), "fired at the front")
+	for f in sk.front:
+		assert_eq(f.hp, 85, "the spray lands 15 on the target and each neighbour")
+		assert_true(Effects.has(f, "burning"), "with the Burn it kept")
+	assert_eq(ms.heat, 10, "at the drum's heat")
+	assert_true(u.shield < 40, "danger close: the front-rank spray costs shield")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	var back: Foe = sk.back[2]
+	var front_hp: int = sk.front[2].hp
+	var other_hp: int = sk.front[0].hp
+	assert_true(sk.assign(0, back), "fired at the back")
+	assert_eq(back.hp, 85, "the shot lands on the back foe")
+	assert_eq(sk.front[2].hp, front_hp - 15, "and punches through the front foe of its column")
+	assert_eq(sk.front[0].hp, other_hp, "and no other")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_eq(sk.shown_face(ms, ms.face()).power, 20, "equipment fires as itself")

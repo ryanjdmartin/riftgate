@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -281,7 +281,7 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot"]
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -683,6 +683,10 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return target != null and target.get("modifiers") != null and carries_status(target, str(eff.get("status", "")))
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
+		"target_rank":
+			# The rank the spend is aimed at (the Cottonmouth's drum, 19 October): front or back;
+			# nothing without a target in hand, so the keyword it grants waits for the aim.
+			return target != null and target.get("rank") != null and int(target.get("rank")) == (1 if str(eff.get("rank", "front")) == "back" else 0)
 		"nth_shot":
 			# Every n-th weapon spend of the fight (the Cassowary's sixth shot): this one, when the
 			# count so far is one short of a multiple of `every`.
@@ -832,6 +836,7 @@ static func damage_taken_add(u, source = null) -> int:
 static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
+	face = rewritten(u, face)
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":
@@ -849,11 +854,11 @@ static func effective_reach(u, face: Face) -> int:
 ## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on equipment only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-static func granted_keywords(u, face: Face) -> Array[int]:
+static func granted_keywords(u, face: Face, target = null) -> Array[int]:
 	var out: Array[int] = []
 	if face == null or face.kind == Face.Kind.BLANK:
 		return out
-	for pair in _taking_part(u, "static", face):
+	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) != "grant_keyword":
 			continue
 		var kw := Face.keyword_from_name(str(pair[0].get("value", "")))
@@ -899,21 +904,57 @@ static func reads_intent(u) -> bool:
 ## changes its reach, grants it a keyword or pushes its range (a raised ceiling or floor), in
 ## which case a copy carrying all of it. What the resolver spends, the bot weighs and the
 ## screen draws; the die keeps the real one.
-static func effective_face(u, face: Face) -> Face:
+static func effective_face(u, face: Face, target = null) -> Face:
 	if face == null:
 		return null
+	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
-	var granted := granted_keywords(u, face)
-	var ceiling := ceiling_bonus(u, face)
-	var floor_up := floor_bonus(u, face)
-	if r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0:
+	var granted := granted_keywords(u, base, target)
+	var ceiling := ceiling_bonus(u, base)
+	var floor_up := floor_bonus(u, base)
+	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0:
 		return face
-	var c := face.duplicate_face()
+	var c := base.duplicate_face() if base == face else base
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
 	c.power_max += ceiling
 	c.power = mini(c.power + floor_up, c.power_max)
+	return c
+
+
+## A weapon as a live rewrite fires it (the Cottonmouth's Adaptive Munitions Drum, Ryan's go of
+## 19 October): every weapon leaves as the drum's shot, its number flat, its reach and its heat
+## the rewrite's, one blow, its tag added, and its keywords, rules and other tags kept. Any
+## other entry, or none, is the face itself. Read first, under every other passive's change.
+static func rewritten(u, face: Face) -> Face:
+	if face == null or not face.is_attack():
+		return face
+	# Read alone, never through every static effect's gate: a reach condition asks the reach,
+	# and the reach asks this (so a rewrite never keys on reach, as set_reach never does).
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "rewrite_weapon":
+				continue
+			if str(eff.get("when", "")).begins_with("reach_") or not _usable(u, m, "rewrite_weapon") or not _holds(u, eff, face):
+				continue
+			return _rewrite(face, eff)
+	return face
+
+
+## The drum's shot from a weapon and the rewrite that fires it.
+static func _rewrite(face: Face, eff: Dictionary) -> Face:
+	var c := face.duplicate_face()
+	c.power = maxi(0, int(eff.get("value", c.power)))
+	c.power_max = c.power
+	var rr := Face.reach_from_name(str(eff.get("reach", "")))
+	if rr > 0:
+		c.reach = rr
+	c.heat = maxi(0, int(eff.get("heat", c.heat)))
+	c.strikes = 1
+	var tag := str(eff.get("tag", ""))
+	if not tag.is_empty() and not c.tags.has(tag):
+		c.tags.append(tag)
 	return c
 
 
@@ -1352,6 +1393,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"spares_splash": body = "indirect fire on the front rank never splashes it"
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
+		"rewrite_weapon": body = "every weapon fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
@@ -1395,6 +1437,7 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
 		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
+		"target_rank": lead += "aimed at the %s rank: " % str(eff.get("rank", "front"))
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
 	return lead + body

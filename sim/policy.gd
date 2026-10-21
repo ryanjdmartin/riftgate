@@ -171,7 +171,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
-	f = Effects.effective_face(ms.unit, f)
+	f = Effects.effective_face(ms.unit, f, target)
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
@@ -491,7 +491,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## one point. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
 ## resolver applies them; the strikes multiply the blow.
 func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
-	f = Effects.effective_face(ms.unit, f)
+	f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
 		rolls.append(f.power)

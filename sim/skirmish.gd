@@ -490,11 +490,13 @@ func reach_of(ms: MechState, f: Face) -> int:
 ## the effective reach and any keyword a passive grants. The die keeps the real one. An
 ## attack also shows the heat a spend adds through every live source (a Scorched machine's
 ## weapons run hotter, 13 October; the Sparrowhawk's double): the game does the arithmetic.
-func shown_face(ms: MechState, f: Face) -> Face:
-	var sf := Effects.effective_face(ms.unit, f)
+## Over a target, the keywords its rank grants too (the Cottonmouth's drum: Spread at the
+## front, Penetrate at the back), as the spend will carry them.
+func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
+	var sf := Effects.effective_face(ms.unit, f, target)
 	if sf == null or not sf.is_attack():
 		return sf
-	var heat := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
+	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
 	if heat == sf.heat:
 		return sf
 	if sf == f:
@@ -793,7 +795,7 @@ func assign(mech_index: int, target = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
-	f = Effects.effective_face(ms.unit, f)   # the entry as this machine's passives make it
+	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
 		return false
 	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):

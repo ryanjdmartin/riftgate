@@ -1562,3 +1562,18 @@ func test_a_stepping_die_is_its_locked_rapid_pieces_limiter() -> void:
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_loose_spin") and e.contains("carries another limiter")), "off the cylinder it needs a limiter of its own")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_spin_alone") and e.contains("rides with Rapid")), "a spin rides with Rapid")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_timed_spin") and e.contains("no rounds")), "Spun Up takes no rounds")
+
+
+## The drum's rewrite and the rank condition (the Cottonmouth's, 19 October): a rewrite says its
+## number, reach and heat and never keys on reach; a rank condition says front or back.
+func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.chassis["cottonmouth"].duplicate(true)
+	base["passive"]["effects"] = [{"trigger": "static", "effect": "rewrite_weapon", "value": 15, "reach": "sideways", "heat": 10}]
+	db.chassis["test_drum_bad"] = base
+	var side: Dictionary = db.chassis["cottonmouth"].duplicate(true)
+	side["passive"]["effects"] = [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "middle"}]
+	db.chassis["test_rank_bad"] = side
+	var errs := db.validate()
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_drum_bad") and e.contains("rewrite_weapon fires every weapon as one shot")), "a rewrite with no reach is refused")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")

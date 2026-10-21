@@ -807,7 +807,7 @@
    "design": {
     "fantasy": "Ryan, 13 October: a simple hovercraft with a deck gun, and everything it fires goes through the deck gun. Ryan, 19 October: \"I picture it honestly not as a deck gun, but like a big rotating set of barrels with the guns mounted (invisibly) inside, like a multi shot grenade launcher. We call it a fan boat but the profile is more sophisticated than that, it is still future-tech after all.\" Named by Ryan, 19 October: the water moccasin, the bayou's snake.",
     "niche": "The maker's versatility in a third form, of reach (Ryan, 19 October: the Clydesdale's is loadout, the gunship's stats, this one's reach), a tier one that plugs holes in many draft compositions. Every weapon it fires leaves the drum as the drum's Indirect shot with the weapon's own keywords, so a keyword shell of any maker becomes an area shot at any reach; the shape follows the aim (the back rank punched through, the front rank sprayed), so a column or a row is the decision on every shot. It spreads statuses well, which steps on Aphelion's toes and is fine (Ryan: status spread is no monopoly and no complete identity). It locks nothing, as the Clydesdale and the gunship do.",
-    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_fan_boat.md; the bible's Cottonmouth row carries the decisions and their reasons). Ryan's names: the Cottonmouth, the Adaptive Munitions Drum; the designation is Claude's working one. The launcher is the passive's rule, not an entry on the die (Ryan: \"the deck gun isn't actually a locked component\"): Indirect, flat 15 (Ryan: 15 is ok), heat 10 (Claude's lean over 5, taken 19 October: at 5 under cooling 10 the machine never heats, even firing a Rapid shell twice a turn; the stock pass re-prices it), tagged Ballistic. Every number is a placeholder (light hover, move 50; hull 60, shield 30, armour 0, heat 60, cooling 10, recharge 30; four hardpoints and nothing locked, a d4). The stock is stand-ins until the stock pass: the Incendiary Shells (Burn rides the spray, the passive's lesson), the Ankle Mortar (a plain shot, so the number is the drum's), the Blast Door (equipment fires as itself), the Coolant Jacket. The passive is planned: the engine lacks the rewrite of every weapon spent (the drum's number, reach and heat, one blow, the weapon's keywords, rule and tags kept, the die showing the shot as it will fire over the foe it is dragged over), a keyword granted by the target's rank (a new condition), and while danger close stands the front-rank spray costs shield. No model yet (MechView3D borrows the Badger's); for the asset session: a hover hull under a drum, the fitted guns inside the drum, so this is the one machine whose hardpoints show no mounts on the model."
+    "notes": "Ryan's go, 19 October, on the design settled in chat 18 and 19 October (the brief retired to git: git show 021f075:docs/briefs/ws_fan_boat.md; the bible's Cottonmouth row carries the decisions and their reasons). Ryan's names: the Cottonmouth, the Adaptive Munitions Drum; the designation is Claude's working one. The launcher is the passive's rule, not an entry on the die (Ryan: \"the deck gun isn't actually a locked component\"): Indirect, flat 15 (Ryan: 15 is ok), heat 10 (Claude's lean over 5, taken 19 October: at 5 under cooling 10 the machine never heats, even firing a Rapid shell twice a turn; the stock pass re-prices it), tagged Ballistic. Every number is a placeholder (light hover, move 50; hull 60, shield 30, armour 0, heat 60, cooling 10, recharge 30; four hardpoints and nothing locked, a d4). The stock is stand-ins until the stock pass: the Incendiary Shells (Burn rides the spray, the passive's lesson), the Ankle Mortar (a plain shot, so the number is the drum's), the Blast Door (equipment fires as itself), the Coolant Jacket. The passive was built 21 October: the rewrite of every weapon spent (rewrite_weapon: the drum's number, reach and heat, one blow, the weapon's keywords, rules and tags kept, Ballistic added, the die showing the shot as it will fire over the foe it is dragged over) and a keyword granted by the target's rank (the target_rank condition); while danger close stands the front-rank spray costs shield, as any Indirect shot at the front does. No model yet (MechView3D borrows the Badger's); for the asset session: a hover hull under a drum, the fitted guns inside the drum, so this is the one machine whose hardpoints show no mounts on the model."
    },
    "codex": "",
    "hull": 60,
@@ -834,8 +834,30 @@
     "id": "adaptive_munitions_drum",
     "name": "Adaptive Munitions Drum",
     "description": "Every weapon it fires leaves the drum as the drum's shot: Indirect, 15, heat 10, with the weapon's own keywords. Aimed at the back rank the shot punches through (Penetrate); aimed at the front rank it sprays (Spread).",
-    "status": "planned",
-    "effects": []
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "rewrite_weapon",
+      "value": 15,
+      "reach": "indirect",
+      "heat": 10,
+      "tag": "ballistic"
+     },
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "penetrate",
+      "when": "target_rank",
+      "rank": "back"
+     },
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "cleave",
+      "when": "target_rank",
+      "rank": "front"
+     }
+    ]
    },
    "flavour": ""
   },

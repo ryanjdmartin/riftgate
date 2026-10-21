@@ -18,8 +18,8 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Fifteen chassis from five makers
-  and four planned, the Cottonmouth, the Whip Scorpion, the Swallowtail and the Musk Ox
+  slots (two; the Clydesdale three) and one passive. Sixteen chassis from five makers
+  and three planned, the Whip Scorpion, the Swallowtail and the Musk Ox
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -391,16 +391,17 @@ shields do not refill; a pack keeps its survivors, who return whole.
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
   when aimed at another machine, Suppressed, or on a special that acts on nobody in
   particular; read at the spend, before the spend's own riders, each foe reached judged
-  alone); the target's
-  rank (not built: the Cottonmouth's); the striker carries a status (the Prairie Dog's fight
+  alone); the rank the spend is aimed at (the Cottonmouth's); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 5 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
   number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
-  changed is what is spent, shown and weighed, while the die keeps the real one. Not built:
-  the Cottonmouth's replaces every weapon's shot whole (Indirect, 15, heat 10, the weapon's
-  keywords kept), Penetrate at the back rank and Spread at the front; the Whip Scorpion's
+  changed is what is spent, shown and weighed, while the die keeps the real one. The
+  Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,
+  a flat 15, heat 10, one blow, Ballistic, the weapon's keywords, rules and tags kept),
+  Penetrate when aimed at the back rank and Spread at the front, shown on the die over the foe
+  it is dragged to. Not built: the Whip Scorpion's
   makes every vent it spends on itself blast a random live foe for the heat it took off, as
   its own blow (a vent on an ally blasts nothing, an ally's vent on it blasts nothing).
 
