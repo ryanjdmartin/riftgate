@@ -116,8 +116,11 @@ document's job and every command are in `README.md`.
   answered as the die's grammar (the interceptor's sixth round: a frame carrying a number is a
   gun, carrying the status mark a debuff, the mark alone a buff; the crosshair's centre opened,
   the arrow's direction doubling the frame, the phone test), the Translocator an Indirect
-  debuff by its icon, the aim's word explained as the open item. Proposals, waiting on Ryan's
-  calls; on the branch, not on main.
+  debuff by its icon, the aim's word explained as the open item. The sixteenth round (21
+  October): Exposed lasts two rounds and a second Expose refreshes it (Ryan: go aggressive),
+  and the aims' shown words are to be rewritten plainly (Ryan: cryptic; five proposed in the
+  interceptor's seventh round, the to-do's line); the Kestrel roster's standing read back to
+  him. Proposals, waiting on Ryan's calls; on the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and

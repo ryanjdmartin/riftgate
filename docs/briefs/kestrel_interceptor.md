@@ -267,6 +267,7 @@ Flakshot's 5s go from nothing to 5 each; on a Treant braced twice (armour 15) ev
 
 **The duration, evaluated (Claude).** The clocks the game already runs, and what each buys:
 
+- (Ryan, 21 October: two rounds, refreshed; the seventh round.)
 - *Until the round's end*: Lure's and Disrupt's clock on a foe, Overshield's and the locks'
   on ours. Everything Exposed does happens in the player's turn (reach is the player's;
   armour comes off blows, and a burn never pays it), so this is one turn of paint: lay it,
@@ -334,8 +335,8 @@ Paradox counts, Expose applies on reach as Shock does, and the decay is the roun
 
 **The machine as it stands (the fifth round).** The passive: a debuff or a buff is Rapid on
 it, once a round. The lock, the designator (working name): a debuff, Indirect, heat 5, Expose
-1: the foe is Exposed for the round, in Direct reach, every machine's, and its armour counts
-for nothing. The die: I the designator; II a Direct flat gun, the cash; III a buff (the Coil's
+(two rounds, refreshed by a second Expose; Ryan, 21 October): the foe is Exposed through the
+next round, in Direct reach, every machine's, and its armour counts for nothing. The die: I the designator; II a Direct flat gun, the cash; III a buff (the Coil's
 kind), a debuff of another maker, or a cold rolled gun; IV a vent. The frame as the second
 kit. Every number a placeholder; the names Ryan's.
 
@@ -371,6 +372,21 @@ kit. Every number a placeholder; the names Ryan's.
   that line reads as "aims at a machine carrying Exposed", which never happens. The fix, if he
   wants one, is a synonym for the aim's shown word (the id stays): "the vulnerable", "the
   weak"; or it stays, on his reading that a human is not confused.
+
+## The seventh round (21 October): the duration called, the aim's words
+
+- Ryan, 21 October: "Aims at the exposed isn't clear enough anyway. It's cryptic, and needs to
+  be clarified. Let's go aggressive and say Exposed lasts 2 rounds, and applying it again
+  refreshes it."
+- Claude, 21 October: decided, both. Exposed lasts through the next round (the brace_all's
+  clock in the engine, `Effects.ROUNDS` to the round after), and a second Expose refreshes
+  it to two rounds again, never adds; so the designator's paint is cashable by this round's
+  dice and the next's, and a boss is armourless for two turns from one 5-heat spend. The
+  lever if the runner reads it as too much is back to one round, never a shorter clock. The
+  aims' shown words are to be rewritten plainly, all five (a proposal for Ryan's pick; the
+  ids stay): "aims where its blow hurts most" (exposed), "aims at anyone" (anything), "aims at
+  the hottest" (heat), "aims at a machine showing a weapon" (armed), "fires as one" (focus,
+  clear already). The codex's Aim entry and the inspect line carry them; the to-do holds it.
 
 ## Holes already raised
 
@@ -429,9 +445,8 @@ kit. Every number a placeholder; the names Ryan's.
 1. Ryan's word on the glyph's grammar (the status mark in the reach frame; the arrow's
    direction), then the bible's die-entry row and the rules take the kinds and the no-number
    rule.
-2. The duration: Expose 1, the round's (the lean); through the next round the lever.
-3. The aim's shown word: a synonym, or it stays.
-4. The numbers.
+2. The aims' shown words: Ryan's pick from the seventh round's five, or his own.
+3. The numbers.
 
 ## Waits on
 
