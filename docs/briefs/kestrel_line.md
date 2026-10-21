@@ -34,7 +34,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber, the Magpie (its go 21 October; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
-| three | the gun platform, the capital (proposal, its third form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
+| three | the gun platform, the capital, the Giant Petrel (its name and shape 21 October; the locks in proposal; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
 Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
@@ -124,8 +124,8 @@ One pointer each; the proposal is in the brief named.
   Kite row; `kestrel_kite.md`). The to-do's stock pass line and the bible's stock-pass row
   moved with the go.
 - **The bomber**'s go (Ryan, 21 October): the Magpie, a heavy tandem-wing flyer; its mark the
-  Syrinx Drone, which Marks the foe and is Rapid on a foe already Exposed, else gives it
-  Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
+  Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,
+  else gives it Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
   mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
 - **The gun platform** is Kestrel's capital ship, a hover, not a flyer (Ryan, 20 October,
   from irony: three quarters of the line flies), and the action-economy utility capstone on
@@ -133,7 +133,10 @@ One pointer each; the proposal is in the brief named.
   rerolls banked, up to three; an ally's second action bought with three rerolls, never with
   the capital's turn; a lock that shields a jet and rolls its die again; a lock that vents and
   brews the team a reroll; four hardpoints, assault, the ekranoplan. Settled here: no
-  multi-strike vent in the pool. `kestrel_gun_platform.md`.
+  multi-strike vent in the pool. Its eighth round (21 October): the Giant Petrel and the
+  ekranoplan on Ryan's word; three locks and three hardpoints on his frame, two support locks and
+  an offensive one around rolls, rerolls and actions, the cash-in a Rapid lock that spends
+  three rerolls on a spent ally (proposal). `kestrel_gun_platform.md`.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 

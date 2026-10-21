@@ -4,7 +4,8 @@ The session designs Kestrel's second tier three beside the bomber: a giant, mean
 fast-looking-but-slow gun platform whose passes are the team's rerolls. "The gun platform" is
 a working label; the name and the look are Ryan's.
 
-**Status**: proposal (Claude, 19 October), Ryan's gimmick test to pass. **Maker**: Kestrel.
+**Status**: proposal (Claude, 19 October); the Giant Petrel and the ekranoplan decided 21
+October, its locks in their eighth round. **Maker**: Kestrel.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (Ryan's taste, the tiers,
 Kestrel's leans as the fourth round of `kestrel_shield_spender.md` left them); the bible's rows
 on rerolls (three a round, never onto the entry showing), on Rapid's limiter and on cooldowns;
@@ -374,12 +375,71 @@ bot's look-or-action valuation; synthetic passives in the tests.
 the team rows with and without it across compositions (the must-pick guard); the fleet's map
 pace with it.
 
+## The eighth round (21 October): the Giant Petrel, three locks, and the cash-in
+
+- Ryan, 21 October: "Giant petrel is fine, as is the shape. Our hole right now is how to cash
+  in the rerolls for an action. I also think the locked pieces need some work. I think 3
+  locked, 3 hardpoints - 2 support locks and an offensive lock, all circling around granting
+  rolls, team rerolls, or extra actions."
+- Decided: the Giant Petrel (the family's big one, a scavenger-predator the size of a small
+  albatross, the ekranoplan's bird over the same sea), the ekranoplan as written. Ryan's frame:
+  a d6 of three locks and three hardpoints, two support locks and an offensive one, all three
+  around the three currencies: a roll, team rerolls, an action.
+- Claude, 21 October, the proposal. The cash-in moves from the passive onto a lock, which gives
+  it a face, a target and a gate, and the three locks take one currency each.
+  - **The passive, the bank** (as the seventh round): the team's unspent rerolls at the round's
+    end are banked, up to three, and spent later like any reroll; the counter shows the bank
+    beside the round's three.
+  - **The action, the Hot-Pit** (support; a working name: the turnaround where a jet is refuelled
+    and rearmed with its engine running and sent straight back out): spent on an ally whose die
+    is already spent this round, it spends three of the team's rerolls, banked or fresh, and the
+    ally's die rolls again, never onto the entry it showed, and the ally acts again. The Hot-Pit
+    is Rapid, so the Petrel's die rolls again and it acts again too: the Petrel never trades its
+    own turn for the ally's (Ryan, 20 October: an ally going again that is not one turn traded
+    for another). Its gates are the three rerolls in hand and its face showing; the switch-off
+    keeps it once a round. Fishing for its face costs rerolls, the same rerolls it spends, which
+    is the decision: roll for the Hot-Pit, or bank for it. On the screen: drag the Petrel's die
+    onto a spent ally; the ally's spent die lights as the target, the counter drops by three,
+    the ally's die flips and it acts.
+  - **The roll, the launch** (support; as the seventh round): equipment, allies only, a shield of
+    20, and that ally's die rolls again now, never onto the entry showing: a look with a bubble
+    for the ally whose roll is bad, the pool untouched. A full action of the Petrel.
+  - **The team rerolls, the battery** (offensive; a working name: the ekranoplan's launchers on
+    its back): a rolled Indirect gun, 10 to 30, heat 20; if its shot kills, the team gains two
+    rerolls this round, banked at the round's end if unspent. The gamble is Kestrel's: the range
+    against the foe's hull is on the die, and a kill brews most of the Hot-Pit's price.
+  - **Three hardpoints by kind**: a big flat gun, a cold rolled gun, and a vent or a shield
+    (heat 120 and cooling 10 against the battery's 20 a shot).
+- The round as played. A quiet round: fire, spend no rerolls, bank three. The round that
+  matters: the Kite chains, its die is spent; the Hot-Pit shows, three rerolls, the Kite rolls
+  and chains again, and the Petrel's own die rolls on to the battery. A swarm: the battery
+  kills, two rerolls brewed, one fresh with them, and the Hot-Pit is paid inside the round.
+- The arithmetic. Income three a round, the bank three, the Hot-Pit three: a round that spends
+  nothing buys one action the next time the face shows; the battery's kill adds two; the face
+  shows one roll in six, rerolls fishing for it spending its price.
+- Holes:
+  1. The ubiquity Ryan warned of ("rapid embodied in a machine"): its worth rides on one ally
+     whose second action is worth three rerolls (the Kite's chain, the Buzzard's dump, the
+     Magpie's pull); a team that needs every reroll for looks keeps its bank empty; the slot
+     and the fleet's pace (move 20, the squad moving as one) are its price; the lever is the
+     Hot-Pit's price, two at the cheap end.
+  2. The Hot-Pit is a dead face until an ally has spent: the order is the play (spend the ally
+     first), and a round that rolls it first is a reroll or a wait.
+  3. The battery on a lone boss brews nothing: the boss fight runs on the bank built before.
+  4. The Swallowtail's Reveille Horn lends an ally an action too, charged, on Ryan's leave for
+     the overlap; the shapes differ (a muster filled by rolls and the carrier's own action,
+     against banked rerolls and a Rapid lock), and they pull against each other, since rerolls
+     the Petrel banks are rolls the muster never sees.
+- Bench: the seventh round's cash-in by rule (three rerolls on a spent ally from the passive,
+  always on: every round a possible action with no face to find, the ubiquity Ryan warned of,
+  and a tap on a spent die no other machine uses); the flare (vent 20, a team reroll: its
+  reroll moves to the battery's kill and its vent to a hardpoint).
+
 ## Open for the session
 
-1. Ryan's call on the seventh round's form: the bank and the bought action as the passive,
-   the launch and the flare as the locks, the prices (three rerolls an action, the bank's
-   three, the flare's one), four hardpoints.
-2. Its shape as the ekranoplan, matched to Ryan's silhouette.
+1. Ryan's call on the eighth round: the Hot-Pit as the cash-in (a Rapid support lock, three
+   rerolls an action), the launch as the roll, the battery as the team rerolls (two on a
+   kill), the three hardpoints; the working names his.
 
 ## Holes already raised
 

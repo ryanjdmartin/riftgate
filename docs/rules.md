@@ -189,7 +189,7 @@ opens, so the machine acts again and the same entry may show again; nothing swit
 the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
 Magpie's, not built): every mine on the field gathers into the slot it is spent on, and a foe
 standing there takes them now, in laid order. **The Syrinx Drone** (the Magpie's, not built):
-the foe is Marked; if it already carries Exposed the drone is Rapid, and otherwise it gives
+the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
 the foe Exposed, never refreshing it. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
@@ -243,8 +243,8 @@ On a foe:
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
-- **Marked** (debuff, the Magpie's Syrinx Drone, not built): the next weapon to kill it, any
-  machine's, leaves its shot in the slot it empties, a mine; one mine a mark; it lasts the
+- **Syrinx Drone** (debuff, the name of the Magpie's piece that leaves it, not built): the next weapon to kill it, any
+  machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed

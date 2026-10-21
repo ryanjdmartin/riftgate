@@ -157,9 +157,16 @@ document's job and every command are in `README.md`.
   day: the Magpie, a heavy tandem-wing flyer, its mark the Syrinx Drone (Marked, and Rapid on a
   foe already Exposed, else Exposed with no refresh; Ryan's wording), keywords acting from a
   mine as the shot lands (the bible's Kestrel row, live v0.231; the rules' mine, pull, drone
-  and Marked; its brief decided and kept for its engine). A word to settle between sessions:
-  the Swallowtail's planned Mark keyword against the Magpie's Marked (the bomber brief's open
-  list). Next: the capital, Kestrel's last open machine. On the branch, not on main.
+  and Marked; its brief decided and kept for its engine). Ryan's calls of the evening (21
+  October): the Magpie's debuff is the Syrinx Drone, its piece's name (the rules, the bible);
+  the helicarrier has nothing called Mark, its Spotting Flare Exposing and Suppressing if a
+  condition is met (the Swallowtail's row in the live bible; its vocabulary's planned Mark
+  leaves with the Wainwright & Sutler session, the to-do); the capital is the Giant Petrel, an
+  ekranoplan. Its eighth round in its brief: Ryan's frame of three locks and three hardpoints
+  around rolls, rerolls and actions; the cash-in proposed as the Hot-Pit, a Rapid support lock
+  spending three rerolls on a spent ally, the launch the roll, the battery a rolled gun brewing
+  two rerolls on a kill. Waiting on his call: the last open Kestrel machine. On the branch, not
+  on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -444,7 +451,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.232 (21 October: the bomber's go, the Magpie, merged onto the Wainwright & Sutler
+  `docs/design-bible.html` after every change. Live is v0.233 (21 October: the Syrinx Drone debuff, the Swallowtail's Flare without Mark, the
+  Giant Petrel; before it v0.232, the bomber's go, the Magpie, merged onto the Wainwright & Sutler
   session's v0.231, which added the Swallowtail; the Butcherbird at tier one and the interceptor at two; the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the

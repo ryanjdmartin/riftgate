@@ -303,10 +303,10 @@ field's mines there and lays nothing of its own, having no shot; with nothing la
 dead spend Ryan allows.
 
 **The second lock, the Syrinx Drone** (Ryan, 21 October): an Indirect weapon of no damage,
-heat 0: the foe is Marked, a chip, and the next weapon to kill it, any machine's, leaves its
-shot in the slot it empties. One mine a mark, it lasts the skirmish, a death by a tick leaves
-nothing, and Marked is a status the team put on the foe (the Paradox counts it; Ryan, 17
-October: tuned later). If the foe already carries Exposed, the drone is Rapid; otherwise it
+heat 0: the foe carries the Syrinx Drone, a debuff of the piece's own name (Ryan, 21 October),
+and the next weapon to kill it, any machine's, leaves its shot in the slot it empties. One mine
+a drone, it lasts the skirmish, a death by a tick leaves nothing, and it is a status the team
+put on the foe (the Paradox counts it; Ryan, 17 October: tuned later). If the foe already carries Exposed, the drone is Rapid; otherwise it
 gives the foe Exposed, never refreshing it. The line review's gate (Rapid while a mine waits)
 is on the bench.
 
@@ -436,12 +436,9 @@ value of a mine (a shot delayed, worth its number times the chance a foe steps i
 
 1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look.
 2. A bot that values a mine, before its runner row (the Waits on below).
-3. A word shared with another session (found 21 October, merging the bible): the Swallowtail's
-   Spotting Flare carries a planned keyword named Mark, the foe in every ally's reach until its
-   next action, with Exposed named as its rider. By the convention that a keyword and its chip
-   share a name, its chip would be Marked, the Magpie's mine debuff, and its reach is Exposed's
-   reach half. Claude's lean: the Flare applies Exposed, and Marked stays the Magpie's; or the
-   Magpie's debuff takes the drone's word. Ryan's call, between the two sessions.
+3. Settled 21 October (Ryan): the Magpie's debuff is the Syrinx Drone, the piece's own name, and
+   the helicarrier has nothing called Mark: its Spotting Flare Exposes, and Suppresses if a
+   condition is met, so the Flare feeds the drone's free mark like the interceptor's Expose.
 
 ## Waits on
 
@@ -452,6 +449,7 @@ before its runner row.
 ## What the engine and content sessions land
 
 A slot as a target, the mine store, the landing step, the pull and the Syrinx Drone, Marked
-with its kill hook; the content planned (the Magpie, its two locks, Marked in the vocabulary),
+with its kill hook; the content planned (the Magpie, its two locks, the Syrinx Drone debuff in
+the vocabulary),
 the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry
 the design since 21 October.
