@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 120 implemented, 19 planned, 0 idea.
+Status: 120 implemented, 18 planned, 0 idea.
 
 ## Resource
 
@@ -81,7 +81,6 @@ Status: 120 implemented, 19 planned, 0 idea.
 | **Corrupt** | Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent. | implemented |
 | **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
 | **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
-| **Mark** | The Swallowtail's Spotting Flare, locked: the foe marked is in every ally's reach, whatever its rank, until its next action; no damage. | planned |
 
 ## Status
 
@@ -322,4 +321,3 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Scorch** (implemented): Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine.
 - **Muster** (planned): Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly ("ultimate tier", "you have to work for it"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Engine: a bar that gains on every roll (a trigger the engine lacks), a spend that consumes a charge for its charged effects (a face property), the bot valuing a charge by the best charged form it could buy. Every number is a placeholder.
 - **Rallied** (planned): Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
-- **Mark** (planned): Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The observer directing fire: its own target choice is the decision, and it changes the enemy's problem (a back-rank caster becomes every Direct gun's). Its rider is settled in the Kestrel session (Exposed) and joins here when that branch merges; a flat on-hit is Flak's kind, so the rider is not that. The charged form adds Suppressed, a stun gated by the muster's price and clocked by Numbed (the stun row). Engine: a reach grant on a foe, read by every ally's die.

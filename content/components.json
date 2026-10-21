@@ -1628,21 +1628,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "The observer's flare over the target: every gun on the field finds it. Charged, it bursts in the foe's face.",
-    "niche": "The Swallowtail's mark, locked: the foe marked is in every ally's reach, whatever its rank, until its next action, no damage (its rider the Kestrel session's); spending a muster adds Suppressed, a stun gated by the price and clocked by Numbed.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain mark's rider is settled in the Kestrel session (Exposed), and joins the keyword when that branch merges. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "niche": "The Swallowtail's spotter, locked: the foe it lights is Exposed (the Kestrel session's debuff: in every machine's Direct reach and its armour counting for nothing, through the next round), no damage; spending a muster Suppresses it too, a stun gated by the price and clocked by Numbed.",
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Exposed is the Kestrel branch's keyword and joins this face when that branch merges; until then the face carries no keyword. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
-    "keywords": [
-     "mark"
-    ],
+    "keywords": [],
     "heat": 0,
     "charged": {
      "muster": 1,
      "keywords": [
-      "mark",
       "suppress"
      ]
     }

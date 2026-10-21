@@ -409,11 +409,13 @@ document's job and every command are in `README.md`.
   nearest standable hexes, their move and action kept) and fills the Muster, a third bar, a
   sliver on every die's roll (about thirty a charge, a kill by its guns five), per fight; its
   four locked pieces each have a plain and a charged form (the Mooring Screens: a team shield,
-  or Phased on every ally that has not acted, no cooldown; the Spotting Flare: the mark, or the
-  mark and Suppressed; the Sutler's Hoist: a shield and cooling, or the full reset; the Reveille
-  Horn: a team reroll, or an ally acts again); three hardpoints. The mark's rider is the
-  Kestrel session's Exposed. In content as planned entries (Muster, Rallied and Mark in the
-  vocabulary); the engine and the assets are the to-do's two lines.
+  or Phased on every ally that has not acted, no cooldown; the Spotting Flare: it Exposes a
+  foe, or Exposes and Suppresses it; the Sutler's Hoist: a shield and cooling, or the full
+  reset; the Reveille Horn: a team reroll, or an ally acts again); three hardpoints. Nothing on
+  it is called Mark (Ryan, 21 October, in the Kestrel session): the Flare's Exposed joins its
+  face when the Kestrel branch merges. In content as planned entries (Muster and Rallied in the
+  vocabulary); the engine and the assets are the to-do's two lines. The Hoist is no loader for
+  the artillery (Ryan, 21 October).
 
 ## Next, in order
 
@@ -471,10 +473,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.231, and so is the live
-  (21 October): main's v0.224 (the Swallowtail) merged three-way onto the Kestrel session's
-  live v0.230 (the Kite, the Buzzard, the Butcherbird, the Storm Petrel, the interceptor, the
-  Puffin's rework), which sat on the Armadillo session's v0.222 (the Sealed and Cryo tables)
+  `docs/design-bible.html` after every change. Main's file is v0.234, and so is the live
+  (21 October): main's Swallowtail row (the Hoist no loader for the artillery; the Flare's
+  Expose, Ryan's call in the Kestrel session) put onto the Kestrel session's live v0.233 (the
+  Magpie, the Giant Petrel), which sat on main's v0.224 (the Swallowtail) and the Kestrel
+  session's v0.230 (the Kite, the Buzzard, the Butcherbird, the Storm Petrel, the interceptor,
+  the Puffin's rework), which sat on the Armadillo session's v0.222 (the Sealed and Cryo tables)
   and the numbers branch's v0.220 (Overcharged a point a stack and halving, Armoured in
   Braced's place, Burn numbered), so the live rows and tables run ahead of main's until those
   branches merge and `tools/pages/bible_tables.py` regenerates the tables here (a merge

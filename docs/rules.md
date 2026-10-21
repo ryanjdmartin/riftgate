@@ -150,9 +150,6 @@ defeat when every machine is wrecked. There is no round limit.
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
   trade places; no damage; a massive foe does not move.
-- **Mark** (the Swallowtail's Spotting Flare, not built): the foe marked is in every ally's
-  reach, whatever its rank, until its next action; no damage. Spent with a muster it also
-  Suppresses.
 - **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
   Flak, whatever the blow dealt.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
@@ -195,7 +192,7 @@ On a machine:
   it a sliver, about thirty rolls a charge, a kill by its own guns five rolls' worth, up to its
   cap; it starts each fight empty and never decays. Each of its locked pieces has a plain form
   and a charged one that spends a muster: the Mooring Screens shield every ally, or Phase every
-  ally that has not acted; the Spotting Flare marks, or marks and Suppresses; the Sutler's
+  ally that has not acted; the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's
   Hoist shields and cools an ally, or fills its shield, cools it to zero and cleanses it; the
   Reveille Horn gives the team a reroll, or lets an ally act again.
 - **Rallied** (buff, not built): the team has one reroll more this round.
