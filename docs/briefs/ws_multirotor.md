@@ -398,6 +398,43 @@ missing?"; every item his to settle):
 2. Its shown text, which waits on what shown text calls a machine's die (a session of its own;
    Ryan, 13 October), if any of it names the die.
 
+Ryan, 21 October: "Helicarrier - what if it pays for its abilities with its own hull? Is there
+a build hook there? Or did I dismiss the component gifting too early as the build identity?"
+
+Claude, the same day. Hull is the one number a battle never gives back (the rules: hull never
+heals in a battle; the hangar repairs free), so a price in hull is a battle budget, not a
+fight's: a recovery spent on the rank is plate the carrier does not have at the boss, which is
+the strategic piece he asked for, paid in a gauge the player already reads, the bar's idea
+without a third bar. What it fixes: the recovery's "when" (a budget question now, and the
+heat-reset hole closes by price); the revive as a trade rather than a charge (a big slice of
+the carrier to bring a wreck back at a tenth, capped by the carrier's own hull, the medevac that
+cannibalises itself); the cooldowns go with it, so the carrier no longer waits on the cooldown
+property; and the three pieces compete for one pool, since the dock concentrates the enemy on
+the carrier and so drains the recoveries it could pay for later. Two forms. Hull alone, the
+engine's Volatile with a number (past shield and armour, before the piece acts): simplest, a
+pure strategic budget, nothing in a fight feeds it, and three Volatile chips on one die read as
+the Arsenal's self-damaging kit (a Lean, never an exclusion, but a read). The stores, shield
+first and hull when the shield is gone (the Corrupted bite's shape, a printed rule on the
+carrier's pieces): the same budget in a fight is fed by every shield on the carrier, its own
+shield pieces its ammunition, the Puffin's overshield a recovery for free, Armoured and Lure
+elsewhere the plate's guard, so the carrier's hardpoints build its budget and the locked
+pieces spend it, routes in and payoffs both; and it reads as resupply from the ship's stores,
+not pain. Claude's lean: the stores, priced on the recovery and the revive, the mark free (a
+spotter does not bleed), the dock priced by the exposure it already costs. Holes for his
+call: no floor, so a carrier may spend itself dead on its own turn (Volatile's precedent) and
+a low carrier is a carrier that cannot support (Hubris's shape, section 7's bench; the die
+shows the cost, so it is the player's); the boss dump, a full pool saved all battle and spent in
+one fight, capped by the die (one spend an entry a round) and the pool, measured rather than
+guarded; the Puffin loop (overshield, spend, overshield) priced in the Puffin's own die and the
+carrier's spend; a d4 of shields on the carrier, which the Puffin row refuses as a shield-bot,
+held off by every shield on itself being an action before the spend it feeds; the bot weighs
+hull spent as it weighs Volatile. On the gifting: not dismissed too early. Its hook ran one way,
+the carrier feeding allies with nothing feeding the carrier, its hangar form was his own "not
+tenable" and its fight form the most UI of any design here; the pool gives the same "my build
+shapes what I give" in a bar and a die that exist, and keeps the hangar question (shields and
+plate against guns on the carrier) small. If a hangar-side hook is wanted later, the cheapest
+form is one bay slot, benched, never the two.
+
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, content planned (a spend by another machine is engine work,
