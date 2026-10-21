@@ -678,3 +678,37 @@ func test_greedy_spends_a_muster_where_it_saves_a_machine_and_banks_it_otherwise
 	var p2 := Policy.make(Policy.GREEDY)
 	p2.play_round(s2)
 	assert_eq(Effects.muster_charges(d), 1, "the charge is banked")
+
+
+## The Musk Ox for the bot (21 October), synthetic: a forging machine's gun costs its price at
+## what an ammo buys; a dry gun is no option; the salvo is worth its strikes on the field.
+func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
+	var forge := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
+	var ray := Face.attack(30, L)
+	ray.heat = 30
+	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	salvo.spends_magazine = true
+	salvo.random_targets = true
+	var sk := Skirmish.new(3, 2)
+	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
+	m.grant_passive(forge)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.ammo_worth(sk, ms) > 0.0, "an ammo is worth something to a forging machine")
+	var free := Policy.make(Policy.GREEDY)
+	var plain := _mech("Plain", Die.single(ray.duplicate_face()), 40, 200)
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(plain)
+	s2.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	s2.begin()
+	s2.start_round()
+	assert_true(pol.attack_score(sk, ms, ray, sk.front[0]) < free.attack_score(s2, s2.mechs[0], ray, s2.front[0]), "the forged gun is worth its blow less its three ammo")
+	assert_true(pol.salvo_score(sk, ms, salvo) > 0.0, "three strikes on a full field are worth firing")
+	ms.ammo = 0
+	ms.face_index = 0
+	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")
+	assert_eq(pol.salvo_score(sk, ms, salvo), -INF, "nor an empty salvo")

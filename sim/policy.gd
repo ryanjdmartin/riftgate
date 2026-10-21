@@ -41,6 +41,7 @@ const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashe
 const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average blow, at the odds an arrival takes the slot its kill empties, as a share
 const MUSTER_BANK := 0.5         # a muster banked, as a share of the best charged form the die could buy with it now (nothing at the cap)
 const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
+const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -262,6 +263,8 @@ func charge_cost(sk: Skirmish, ms: Skirmish.MechState) -> float:
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	var quick := Effects.quick_turn_live(ms.unit, f)
 	f = Effects.effective_face(ms.unit, f, target)
+	if f.spends_magazine:
+		return salvo_score(sk, ms, f)   # the Musk Ox's salvo: random targets, the magazine its price
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
@@ -369,6 +372,15 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# The Needletail's gate: a setup it spends is Rapid once a round, so the machine acts
 		# again, about the die's own average blow.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	# The Forge (the Musk Ox's): the gun's price in ammo, at what an ammo buys; the cluster
+	# cannon's refund, an ammo for every foe its blows reach, as far as the magazine has room.
+	var price := sk.ammo_price_of(ms, f)
+	if price > 0:
+		var worth := ammo_worth(sk, ms)
+		score -= float(price) * worth
+		if f.ammo_per_foe_hit > 0:
+			var back := f.ammo_per_foe_hit * sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n.alive()).size()
+			score += float(mini(back, ms.ammo_max - ms.ammo + price)) * worth
 	if f.pulls_mines:
 		score += pull_score(sk, target)
 	if f.drones:
@@ -770,6 +782,10 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 ## The heat one use of an attack entry adds, through the pipeline; negative for one that
 ## fires the gauge empty first.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
+	if f != null and not f.is_attack():
+		return f.heat   # equipment's printed heat, landing as it is (the Musk Ox's quick reload)
+	if ms.ammo_max > 0 and f != null and not f.is_debuff():
+		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun: only a foe's debuff heats it
 	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
 	return added - ms.heat if f.vents_all else added
 
@@ -865,7 +881,73 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
+	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
+	# as far as the magazine has room; and a printed heat's price on the low heat bar.
+	if ms.ammo_max > 0:
+		var rule := Effects.forge_rule(ms.unit)
+		var n := f.reloads_ammo
+		if n <= 0 and who == ms and not f.reaches_all:
+			n = int(rule.get("vent", 0)) if f.kind == Face.Kind.VENT else (int(rule.get("shield", 0)) if f.kind == Face.Kind.SHIELD else 0)
+		score += float(mini(n, ms.ammo_max - ms.ammo)) * ammo_worth(sk, ms)
+	if f.heat > 0:
+		score -= heat_cost(sk, ms, f)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## What an ammo is worth to a forging machine (the Musk Ox's): a share of the best damage a gun
+## on its die buys with one, read now (the salvo a strike); nothing for a machine that forges.
+func ammo_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	if ms.ammo_max <= 0:
+		return 0.0
+	var best := 0.0
+	for face in ms.die.faces:
+		if not face.is_attack() or face.is_debuff():
+			continue
+		if face.spends_magazine:
+			best = maxf(best, salvo_per_strike(sk, ms, face))
+			continue
+		var price := Effects.ammo_price(ms.unit, face)
+		if price > 0:
+			best = maxf(best, expected_damage(ms, face, null) / float(price))
+	return best * AMMO_SHARE
+
+
+## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and on
+## every foe its Spread and Penetrate reach there, each capped at what it has left, averaged
+## over the foes it may fall on.
+func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var live: Array[Foe] = []
+	for foe in sk.field_foes():
+		if foe.alive():
+			live.append(foe)
+	if live.is_empty():
+		return 0.0
+	var total := 0.0
+	for t in live:
+		var mean := expected_damage(ms, f, t)
+		for n in sk.reached_by(f, t):
+			if n.alive():
+				total += minf(mean, float(n.hp))
+	return total / float(live.size())
+
+
+## The salvo spent now: every ammo a strike, capped at what the field has left, less what those
+## ammo would buy on the die's other guns.
+func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var n := ms.ammo
+	if n <= 0:
+		return -INF
+	var field_hp := 0.0
+	for foe in sk.field_foes():
+		if foe.alive():
+			field_hp += float(foe.hp)
+	var other := 0.0
+	for face in ms.die.faces:
+		if face.is_attack() and not face.is_debuff() and not face.spends_magazine:
+			var price := Effects.ammo_price(ms.unit, face)
+			if price > 0:
+				other = maxf(other, expected_damage(ms, face, null) / float(price))
+	return minf(float(n) * salvo_per_strike(sk, ms, f), field_hp) - float(n) * other * AMMO_SHARE
 
 
 ## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of

@@ -6233,3 +6233,139 @@ func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_tur
 	assert_true(sk.assign(0, sk.mechs[1], null, true), "the Horn charged, on the spent ally")
 	assert_false(sk.mechs[1].assigned, "its die rolls again and it acts again")
 	assert_true(sk.assign(1, sk.front[0]), "the second action")
+
+
+## The Musk Ox's Forge (Ryan's go, 21 October; built that day), on a synthetic passive: the
+## magazine opens at its start and gains a round's trickle from the second round; a damaging gun
+## pays 1 ammo for every 10 heat its own spend would make, rounded up, at least 1, and heats the
+## machine only by what a foe's Scorched adds; a debuff heats it as any machine; a dry gun has no
+## target; a vent it spends on itself reloads 3, a shield 2, and a reload entry its own.
+const FORGE := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
+
+
+func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them() -> void:
+	var ray := Face.attack(30, L)
+	ray.heat = 30
+	var cold := Face.attack(10, L)
+	var probe := Face.attack(0, I, [K.SHOCK])
+	probe.heat = 5
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Ox", Die.of([ray, cold, probe, Face.vent(10), Face.shield(10)]), 40, 200)
+	m.grant_passive(FORGE)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 0), _ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq([ms.ammo, ms.ammo_max], [3, 10], "the magazine opens at three of ten")
+	assert_eq([sk.ammo_price_of(ms, ray), sk.ammo_price_of(ms, cold), sk.ammo_price_of(ms, probe)], [3, 1, 0], "30 heat is 3 ammo, a cold gun 1, a debuff none")
+	var shown := sk.shown_face(ms, ray)
+	assert_eq([shown.ammo, shown.heat], [3, 0], "the die shows the price in the heat's place")
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the ray fired")
+	assert_eq([ms.ammo, ms.heat], [0, 0], "three ammo spent, no heat")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(ms.ammo, 1, "the round's trickle")
+	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_NONE)
+	assert_false(sk.targets_for_face(ms, ray).size() > 0, "a dry gun has no target")
+	assert_true(sk.shown_face(ms, ray).dry, "and shows so")
+	ms.face_index = 1
+	assert_true(sk.assign(0, sk.front[0]), "the cold gun, scorched")
+	assert_eq([ms.ammo, ms.heat], [0, 5], "its ammo spent, and Scorched's extra on the heat bar")
+	sk.end_round()
+	sk.start_round()
+	Effects.remove(m, "scorched")   # the test's scorch never decays; a foe's goes at the turn's end
+	ms.heat = 0
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[0]), "the debuff")
+	assert_eq(ms.heat, 5, "a debuff heats it as any machine")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 3
+	var before := ms.ammo
+	assert_true(sk.assign(0, ms), "a vent on itself")
+	assert_eq(ms.ammo, before + 3, "reloads three")
+	sk.end_round()
+	sk.start_round()
+	before = ms.ammo
+	ms.face_index = 4
+	assert_true(sk.assign(0, ms), "a shield on itself")
+	assert_eq(ms.ammo, before + 2, "reloads two")
+
+
+## The Musk Ox's pieces (21 October), synthetic: the cluster cannon gives an ammo back for every
+## foe its blows reach; the salvo fires every ammo in the magazine as a strike at random live
+## foes, Spread and Penetrate on each, the magazine its price and no heat; the quick reload,
+## Rapid, adds its 2 for its heat, and the Forge counts it as no vent.
+func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heats() -> void:
+	var cannon := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	cannon.heat = 10
+	cannon.ammo_per_foe_hit = 1
+	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	salvo.spends_magazine = true
+	salvo.random_targets = true
+	var reload := Face.vent(0)
+	reload.targets = Face.Target.SELF
+	reload.add_keyword(K.RAPID)
+	reload.heat = 15
+	reload.reloads_ammo = 2
+	assert_eq(reload.number_text(), "+2", "a reload prints the ammo it adds")
+	assert_eq(Glyphs.primary_for(reload), "ammo", "and is drawn as one")
+	var sk := Skirmish.new(2, 3)
+	var m := _mech("Ox", Die.of([cannon, salvo, reload]), 40, 200)
+	m.grant_passive(FORGE)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0), _ghoul(200, 0), _archer(200, 0), _archer(200, 0), _archer(200, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[1]), "the cannon on the middle front")
+	assert_eq(ms.ammo, 3 - 1 + 4, "one ammo paid, four back: the target, its two neighbours and the foe behind it")
+	sk.end_round()
+	sk.start_round()
+	var hp_before := 0
+	for f in sk.field_foes():
+		hp_before += f.hp
+	var n := ms.ammo
+	ms.face_index = 1
+	assert_true(sk.assign(0, sk.front[0]), "the salvo")
+	assert_eq([ms.ammo, ms.heat], [0, 0], "the whole magazine spent, and no heat")
+	var hp_after := 0
+	for f in sk.field_foes():
+		hp_after += f.hp
+	assert_true(hp_before - hp_after >= n * 5 * 2, "every ammo a strike, each reaching more than its target")
+	assert_true("\n".join(sk.log).contains("empties the magazine: %d strikes" % n), "the log counts them")
+	sk.end_round()
+	sk.start_round()
+	before_heat_check(sk, ms)
+
+
+func before_heat_check(sk: Skirmish, ms: Skirmish.MechState) -> void:
+	var ammo := ms.ammo
+	var heat := ms.heat
+	ms.face_index = 2
+	assert_true(sk.assign(0, ms), "the quick reload")
+	assert_eq(ms.ammo, ammo + 2, "adds its 2, and no vent's 3")
+	assert_eq(ms.heat, heat + 15, "for its heat")
+	assert_false(ms.assigned, "Rapid: the machine acts again")
+
+
+## Heat is paid once a spend (the rules: a blow), every modifier's with it: a three-strike gun
+## under Scorched heats by its own heat and the scorch's once, as the die shows (fixed 21 October:
+## the modifiers' heat had landed on every strike).
+func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
+	var maxi_gun := Face.attack(5, L, [], 5, 10)
+	maxi_gun.strikes = 3
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("Gunner", Die.single(maxi_gun), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_NONE)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(sk.shown_face(ms, maxi_gun).heat, 10, "the die shows 10: its 5 and the scorch's 5")
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_eq(ms.heat, 10, "and the spend adds 10, once")

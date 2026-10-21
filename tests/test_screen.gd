@@ -882,3 +882,25 @@ func test_a_tap_on_a_mustering_machine_arms_its_charged_form() -> void:
 	assert_eq(Effects.muster_charges(ms.unit), 0, "and the muster is spent")
 	assert_false(s.armed[0], "disarmed")
 	s.free()
+
+
+## The Musk Ox's magazine on the screen (21 October), synthetic: a bar under the heat, a notch an
+## ammo; the die prints a gun's price in ammo where its heat would be, DRY when it cannot pay.
+func test_a_forging_machine_shows_its_magazine_and_each_guns_price() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]})
+	ms.ammo_max = 10
+	ms.ammo = 3
+	var ray := Face.attack(30, Face.Reach.INDIRECT)
+	ray.heat = 30
+	ms.die.faces[ms.face_index] = ray
+	s._refresh()
+	var bars: Array = s._mech_views[0].bars
+	assert_eq([int(bars[bars.size() - 1][0]), int(bars[bars.size() - 1][1])], [3, 10], "the magazine's bar")
+	assert_eq(s._dice[0].face.ammo, 3, "the die prints the gun's price")
+	assert_false(s._dice[0].face.dry, "which the magazine can pay")
+	ms.ammo = 2
+	s._refresh()
+	assert_true(s._dice[0].face.dry, "and DRY when it cannot")
+	s.free()

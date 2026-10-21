@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -1445,6 +1445,40 @@ static func muster_rule(u) -> Dictionary:
 	return {}
 
 
+## The machine's forge rule (static forge, the Musk Ox's Desublimation Forge, 21 October): its
+## magazine's size (`value`), the load it opens each fight with (`start`), the round's trickle
+## (`per_round`), the heat an ammo stands for (`per_heat`), and what a vent (`vent`) and a shield
+## (`shield`) it spends on itself reload; empty for a machine that forges nothing.
+static func forge_rule(u) -> Dictionary:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "forge":
+			return pair[0]
+	return {}
+
+
+## The heat a weapon's spend would make that a foe's debuff adds (Scorched's extra, a
+## cleansable status's add_heat): the part a forge leaves on the heat bar.
+static func debuff_heat(u, face: Face) -> int:
+	var add := 0
+	for pair in _taking_part(u, "on_attack", face):
+		var m: Modifier = pair[1]
+		if str(pair[0].get("effect", "")) == "add_heat" and m.tags.has(CLEANSABLE):
+			add += int(pair[0].get("value", 0)) * m.stacks
+	return add
+
+
+## What a damaging gun costs a forging machine in ammo (the Musk Ox's, 21 October): 1 for every
+## `per_heat` of the heat the gun's own spend would make through the pipeline, a foe's debuff's
+## extra aside, rounded up, at least 1 (a gun of no heat pays 1); 0 for anything else, a debuff
+## included, and on any machine that forges nothing.
+static func ammo_price(u, face: Face) -> int:
+	var rule := forge_rule(u)
+	if rule.is_empty() or face == null or not face.is_attack() or face.is_debuff():
+		return 0
+	var own := maxi(0, int(attack(u, face, 0, face.heat)["heat"]) - debuff_heat(u, face))
+	return maxi(1, ceili(float(own) / float(maxi(1, int(rule.get("per_heat", 10))))))
+
+
 ## Does this machine carry its neighbours when it moves on the map (static carry, the Swallowtail's
 ## Muster Deck, 21 October)?
 static func carries(u) -> bool:
@@ -1593,6 +1627,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"weapon_cooldown": body = "every weapon it fires goes dark for %s rounds" % vs
 		"lay_mines": body = "its weapons may be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"
+		"forge": body = "its damaging guns spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs

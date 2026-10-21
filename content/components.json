@@ -1773,12 +1773,11 @@
    "shape": "barrel",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
     "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). No cooldown, since it is a status and ammo piece (Ryan). Its Flak is the team's, to mop up what the Ox will not spend next turn's shots on, never a setup for its own salvo (Ryan: that one-two is way too obvious; Flak 1 halves to nothing by its next turn anyway). Heat 10 at today's scale is 1 ammo (Ryan's 2 heat at the stock pass's scale, a fifth of today's). The ammo it returns is a draft field read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). No cooldown, since it is a status and ammo piece (Ryan). Its Flak is the team's, to mop up what the Ox will not spend next turn's shots on, never a setup for its own salvo (Ryan: that one-two is way too obvious; Flak 1 halves to nothing by its next turn anyway). Heat 10 at today's scale is 1 ammo (Ryan's 2 heat at the stock pass's scale, a fifth of today's). Built 21 October with the Musk Ox's engine."
    },
    "face": {
     "kind": "attack",
@@ -1806,12 +1805,11 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
     "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Up to forty hits from ten strikes, so every per-hit rider on the field, the foes' Flak first, multiplies by it: the strike's number is the lever, read with and without Flak. The random target is random that adds (Ryan, 16 October), steered by thinning the field or firing at a lone boss; the Whip Scorpion's blast is the precedent. Its price is the whole magazine, so it carries no heat. Its draft fields are read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Up to forty hits from ten strikes, so every per-hit rider on the field, the foes' Flak first, multiplies by it: the strike's number is the lever, read with and without Flak. The random target is random that adds (Ryan, 16 October), steered by thinning the field or firing at a lone boss; the Whip Scorpion's blast is the precedent. Its price is the whole magazine, so it carries no heat. Built 21 October with the Musk Ox's engine."
    },
    "face": {
     "kind": "attack",
@@ -1838,12 +1836,11 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October)."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October). Built 21 October with the Musk Ox's engine: a vent of nothing that reloads, drawn as a reload (the shells, its 2 as its number), its printed heat landing as it is spent."
    },
    "face": {
     "kind": "vent",

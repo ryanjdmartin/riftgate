@@ -825,6 +825,13 @@ func _refresh() -> void:
 			var per := maxi(1, int(rule.get("value", 30)))
 			var held := Effects.stacks_of(ms.unit, "muster")
 			v.bars.append([held, per * maxi(1, int(rule.get("cap", 3))), Palette.SELECT, held, per])
+		# The magazine (the Musk Ox's, 21 October): a bar under the heat, a notch an ammo, the
+		# dragged gun's price pending on it.
+		if ms.ammo_max > 0:
+			var after := ms.ammo
+			if _drag_from == i and ms.face() != null:
+				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms, armed[i])))
+			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)

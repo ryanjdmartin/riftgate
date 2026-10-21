@@ -351,7 +351,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var mechs: Array = []
 	for ms in sk.mechs:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
-			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls})
+			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -406,6 +406,8 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 		ms.locked = bool(md.get("locked", false))
 		ms.assigned = bool(md.get("assigned", false))
 		ms.free_rerolls = int(md.get("free_rerolls", 0))
+		ms.ammo_max = int(md.get("ammo_max", ms.ammo_max))
+		ms.ammo = int(md.get("ammo", ms.ammo))
 	for pid in d.get("packs", []):
 		var sq := field.unit_by_id(int(pid))
 		if sq != null:

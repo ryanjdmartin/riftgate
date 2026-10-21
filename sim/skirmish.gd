@@ -44,6 +44,8 @@ class MechState:
 	var locked: bool = false
 	var assigned: bool = false
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
+	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
+	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -91,6 +93,7 @@ var reach_tally: Dictionary = {}
 var class_tally: Dictionary = {}
 var taken_by_rank: Dictionary = {}
 var _chaining := false
+var _salvo_strike := false   # a strike of the Musk Ox's salvo, paid for by the whole magazine at the spend
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -158,6 +161,11 @@ func add_mech(u: Unit, d: Die = null) -> MechState:
 	ms.unit = u
 	ms.die = d if d != null else u.die
 	ms.heat_max = u.heat_max
+	# The magazine opens each fight at its start (the Musk Ox's Forge, Ryan's go of 21 October).
+	var forge := Effects.forge_rule(u)
+	if not forge.is_empty():
+		ms.ammo_max = maxi(1, int(forge.get("value", 10)))
+		ms.ammo = clampi(int(forge.get("start", 0)), 0, ms.ammo_max)
 	mechs.append(ms)
 	return ms
 
@@ -309,8 +317,12 @@ func can_withdraw() -> bool:
 ## fires the gauge empty first.
 func pending_heat(ms: MechState) -> int:
 	var f := ms.face()
-	if f == null or ms.assigned or not f.is_attack():
+	if f == null or ms.assigned:
 		return 0
+	if not f.is_attack():
+		return f.heat if f.is_equipment() else 0   # equipment's printed heat (the Musk Ox's quick reload)
+	if ammo_price_of(ms, f) > 0:
+		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
 	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
 	return added - ms.heat if f.vents_all else added
 
@@ -640,8 +652,8 @@ func needs_second(ms: MechState) -> bool:
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if f == null or not f.is_attack():
-		return out
+	if f == null or not f.is_attack() or not can_fire(ms, f):
+		return out   # a dry gun on a forging machine (the Musk Ox's) has nothing it may be spent on
 	# Reach: direct hits the front and any exposed column's back; indirect hits everyone.
 	# A foe already killed this round still stands until the dead are cleared, but it is
 	# no target: a die spent on it would be wasted.
@@ -678,6 +690,16 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 	if sf == null or not sf.is_attack():
 		return sf
 	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
+	var price := ammo_price_of(ms, sf)
+	if price > 0:
+		# A forging machine's gun (the Musk Ox's): its price in ammo in the heat slot's place, and
+		# on the heat bar only what a foe's debuff adds (Scorched's extra).
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.ammo = price
+		sf.dry = not can_fire(ms, sf)
+		sf.heat = Effects.debuff_heat(ms.unit, sf)
+		return sf
 	if heat == sf.heat:
 		return sf
 	if sf == f:
@@ -712,6 +734,9 @@ func start_round() -> void:
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
+		# The forge's trickle (the Musk Ox's), from the second round: the first opens at its start.
+		if ms.ammo_max > 0 and round > 1:
+			_reload(ms, int(Effects.forge_rule(ms.unit).get("per_round", 0)), "")
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
 	_refresh_allies()
@@ -1141,7 +1166,11 @@ func assign(mech_index: int, target = null, second = null, charged: bool = false
 					_pull(ms, target)
 				else:
 					_lay(ms, f, target)
+			elif f.spends_magazine:
+				_salvo(mech_index, ms, f, raw)
 			else:
+				if f.random_targets:
+					target = _random_foe(target)   # the drop is the gesture; the shot goes where it will
 				_resolve_attack(mech_index, ms, f, target)
 				if f.pulls_mines and target.alive():
 					_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
@@ -1160,6 +1189,8 @@ func assign(mech_index: int, target = null, second = null, charged: bool = false
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
+	if f.is_equipment():
+		_equipment_after(ms, f, target)
 	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
 	# entry Braces its owner until the round's end, so the plate stands behind the charge
 	# through the enemy's turn and is gone when the next round opens.
@@ -1572,6 +1603,16 @@ func withdraw() -> bool:
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real: Face = null) -> void:
 	if real == null:
 		real = ms.face()
+	# A forging machine's damaging gun pays ammo for the heat its own spend would make (the Musk
+	# Ox's Desublimation Forge): a chain link it cannot pay for is never fired. The salvo's
+	# strikes are paid for by the whole magazine, at the spend.
+	var forged := ammo_price_of(ms, f) > 0
+	if forged and not _salvo_strike:
+		var price := ammo_price_of(ms, f)
+		if ms.ammo < price:
+			log.append("%s: the magazine is dry" % ms.unit.display_name)
+			return
+		ms.ammo -= price
 	var reach := reach_of(ms, f)
 	var aimed_back := target.rank == 1
 	var dealt := 0             # hull the blows took off every foe they reached, for the reach tally
@@ -1620,7 +1661,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		# the same blow to the others.
 		var modded := Effects.attack(ms.unit, f, dmg, heat, target)
 		dmg = modded["damage"]
-		heat_total += modded["heat"]
+		if s == 0:
+			heat_total += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
 		extra_burn += modded["burn"]
 		vent += modded["vent"]
 		var landed := dmg
@@ -1772,7 +1814,12 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
+	if forged:
+		heat_total = 0 if _salvo_strike else Effects.debuff_heat(ms.unit, f)   # the forge took the gun's own heat; a foe's debuff still heats it
 	_add_heat(ms, heat_total)
+	# The Shrapnel Recuperator's refund: ammo back for every foe its blows reached.
+	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
+		_reload(ms, f.ammo_per_foe_hit * reached.size(), "its casings")
 	if thawed > 0:
 		var cooled := mini(ms.heat, thawed * CRYO_COOL_PER_STACK)
 		ms.heat -= cooled
@@ -1997,6 +2044,89 @@ func _act_again(ms: MechState, f: Face) -> void:
 	ms.assigned = false
 
 
+# ---------------------------------------------------------------- the Musk Ox's
+
+## What this gun costs its machine in ammo now (the Musk Ox's Desublimation Forge, Ryan's go of
+## 21 October): the whole magazine for the salvo, at least one; the forge's price for any other
+## damaging gun; nothing on a machine that forges nothing, or for anything but a damaging gun.
+func ammo_price_of(ms: MechState, f: Face) -> int:
+	if ms == null or ms.ammo_max <= 0 or f == null or not f.is_attack():
+		return 0
+	if f.spends_magazine:
+		return maxi(1, ms.ammo)
+	return Effects.ammo_price(ms.unit, f)
+
+
+## Can the magazine pay for this entry (a dry gun cannot be spent)?
+func can_fire(ms: MechState, f: Face) -> bool:
+	var price := ammo_price_of(ms, f)
+	return price <= 0 or ms.ammo >= price
+
+
+## Ammo into the magazine, up to its size.
+func _reload(ms: MechState, n: int, why: String) -> void:
+	if ms.ammo_max <= 0 or n <= 0:
+		return
+	var add := mini(n, ms.ammo_max - ms.ammo)
+	if add <= 0:
+		return
+	ms.ammo += add
+	if not why.is_empty():
+		log.append("%s reloads %d from %s: %d of %d" % [ms.unit.display_name, add, why, ms.ammo, ms.ammo_max])
+
+
+## What equipment does beside its kind: a printed heat lands on its spender (the Musk Ox's quick
+## reload, Rapid with heat its limiter); and a forging machine reloads, what the entry says (the
+## quick reload, which the Forge counts as no vent), else the Forge's own for a vent or a shield
+## it spends on itself.
+func _equipment_after(ms: MechState, f: Face, target) -> void:
+	if f.heat > 0 and ms.alive():
+		_add_heat(ms, f.heat)
+	if ms.ammo_max <= 0:
+		return
+	if f.reloads_ammo > 0:
+		_reload(ms, f.reloads_ammo, "a quick reload")
+		return
+	var on_self: bool = not f.reaches_all and (not (target is MechState) or target == ms)
+	var rule := Effects.forge_rule(ms.unit)
+	if on_self and f.kind == Face.Kind.VENT:
+		_reload(ms, int(rule.get("vent", 0)), "the vent")
+	elif on_self and f.kind == Face.Kind.SHIELD:
+		_reload(ms, int(rule.get("shield", 0)), "the shield")
+
+
+## A random live foe from the seeded stream, or `fallback` when none stands.
+func _random_foe(fallback: Foe) -> Foe:
+	var live: Array[Foe] = []
+	for foe in field_foes():
+		if foe.alive():
+			live.append(foe)
+	if live.is_empty():
+		return fallback
+	return live[rng.randi_range(0, live.size() - 1)]
+
+
+## The Unrestricted Expenditure (the Musk Ox's, Ryan's go of 21 October): every ammo in the
+## magazine as a strike, each at a random live foe from the seeded stream, with the entry's
+## keywords (Spread and Penetrate on every strike), the magazine its price and no heat; a kill
+## clears its slot as the strike lands, so the later strikes fall among the foes left.
+func _salvo(mech_index: int, ms: MechState, f: Face, real: Face) -> void:
+	var n := ms.ammo
+	ms.ammo = 0
+	log.append("%s empties the magazine: %d strike%s at random" % [ms.unit.display_name, n, "" if n == 1 else "s"])
+	var was_chaining := _chaining
+	var was_salvo := _salvo_strike
+	_salvo_strike = true
+	for i in range(n):
+		var t := _random_foe(null)
+		if t == null:
+			break
+		_resolve_attack(mech_index, ms, Effects.effective_face(ms.unit, real, t), t, real)
+		_chaining = true   # one spend: the strikes after the first are its blows, not spends
+	_chaining = was_chaining
+	_salvo_strike = was_salvo
+
+
 # ---------------------------------------------------------------- the Swallowtail's
 
 ## Phased (Ryan, 20 October): granted only to a machine yet to act, its action the price, so its
@@ -2044,7 +2174,7 @@ func _muster(ms: MechState, points: int) -> void:
 ## column. A Swap and the Syrinx Drone take a foe: a slot holds none to move or carry it.
 func slot_targets(ms: MechState, f: Face) -> Array:
 	var out: Array = []
-	if f == null or not f.is_attack() or not (f.pulls_mines or Effects.lays_mines(ms.unit)):
+	if f == null or not f.is_attack() or not (f.pulls_mines or Effects.lays_mines(ms.unit)) or not can_fire(ms, f):
 		return out
 	if f.drones or Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
 		return out
@@ -2099,13 +2229,17 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 			rolled = rng.randi_range(f.power, f.power_max)
 		rolled += fired + from_hopper
 		var modded := Effects.attack(ms.unit, f, rolled, f.heat if s == 0 else 0, null)
-		heat_total += int(modded["heat"])
+		if s == 0:
+			heat_total += int(modded["heat"])   # heat once a spend
 		vent += int(modded["vent"])
 		laid.append(_shot(ms, f, int(modded["damage"]), ms.face(), doubled, int(modded["burn"])))
 	var waiting: Array = mines.get(slot, [])
 	waiting.append_array(laid)
 	mines[slot] = waiting
 	mine_tally["laid"] += laid.size()
+	if ammo_price_of(ms, f) > 0:
+		ms.ammo -= mini(ms.ammo, ammo_price_of(ms, f))   # a forging machine's gun pays ammo, laid or fired
+		heat_total = Effects.debuff_heat(ms.unit, f)
 	if loads > 0:
 		Effects.spend_stacks(ms.unit, "hopper", loads)
 	if vent > 0:

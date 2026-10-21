@@ -352,6 +352,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var side := Vector2(-d.y, d.x) * s * 0.22
 				ci.draw_line(tip - side, tip + side, color, width)
 			ci.draw_circle(c, s * 0.16, color)
+		"ammo":
+			# Ammo (the Musk Ox's magazine, 21 October): three shells standing, a reload's mark
+			# and the price slot's.
+			for i in range(3):
+				var x := -s * 0.6 + i * s * 0.6
+				ci.draw_rect(Rect2(c + Vector2(x - s * 0.17, -s * 0.25), Vector2(s * 0.34, s * 1.05)), color, false, width)
+				ci.draw_arc(c + Vector2(x, -s * 0.25), s * 0.17, PI, TAU, 8, color, width)
 		"phased":
 			# Phased (the Swallowtail's Mooring Screens, 21 October): the machine's outline gone to
 			# dashes, out of the fight until the round's end.
@@ -412,7 +419,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.SHIELD:
 			return "shield"
 		Face.Kind.VENT:
-			return "vent"
+			return "ammo" if face.power <= 0 and face.reloads_ammo > 0 else "vent"   # a reload is drawn as one (the Musk Ox's quick reload)
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:

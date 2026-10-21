@@ -119,6 +119,13 @@ var cools_all: bool = false   # a shield: it takes the machine's heat to nothing
 var not_acted: bool = false   # a buff reaching every ally: only those yet to act this round gain it (the Mooring Screens' Phased)
 var act_again: bool = false   # a buff on an ally whose die is spent: it rolls again and the ally acts again (the Reveille Horn's charged form)
 var charged: Dictionary = {}  # a locked piece's charged form, what a muster buys (read by charged_form)
+# The Musk Ox's (Ryan's go, 21 October; built that day):
+var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
+var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
+var random_targets: bool = false    # an attack: each strike at a random live foe, the target the die is dropped on only the gesture
+var reloads_ammo: int = 0     # equipment: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
+var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
+var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -280,6 +287,10 @@ static func from_dict(d: Dictionary) -> Face:
 	f.act_again = bool(d.get("act_again", false)) and f.kind == Kind.BUFF
 	var cd = d.get("charged", {})
 	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
+	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
+	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
+	f.random_targets = bool(d.get("random_targets", false)) and f.kind == Kind.ATTACK
+	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -357,6 +368,14 @@ func to_dict() -> Dictionary:
 		d["act_again"] = true
 	if not charged.is_empty():
 		d["charged"] = charged.duplicate(true)
+	if ammo_per_foe_hit > 0:
+		d["ammo_per_foe_hit"] = ammo_per_foe_hit
+	if spends_magazine:
+		d["spends_magazine"] = true
+	if random_targets:
+		d["random_targets"] = true
+	if reloads_ammo > 0:
+		d["reloads_ammo"] = reloads_ammo
 	return d
 
 
@@ -393,7 +412,8 @@ func cooldown_rounds() -> int:
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
-		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty()
+		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
+		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or reloads_ammo > 0
 
 
 ## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
@@ -496,6 +516,12 @@ func duplicate_face() -> Face:
 	f.not_acted = not_acted
 	f.act_again = act_again
 	f.charged = charged.duplicate(true)
+	f.ammo_per_foe_hit = ammo_per_foe_hit
+	f.spends_magazine = spends_magazine
+	f.random_targets = random_targets
+	f.reloads_ammo = reloads_ammo
+	f.ammo = ammo
+	f.dry = dry
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -576,6 +602,8 @@ func number_text() -> String:
 		return ""
 	if kind == Kind.BUFF:
 		return "×%d" % buff_stacks
+	if power <= 0 and reloads_ammo > 0:
+		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
 	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
 
 
@@ -600,6 +628,8 @@ func describe() -> String:
 				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
 				if shields > 0:
 					s += " shield %d" % shields   # the combined entry: both halves, the vent first
+			if reloads_ammo > 0:
+				s += " reloads %d ammo" % reloads_ammo
 			if vents > 0:
 				s += " cools %d" % vents
 			if cools_all:
@@ -651,6 +681,12 @@ func describe() -> String:
 				s += " gathers every mine into its slot"
 			if drones:
 				s += " leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it"
+			if spends_magazine:
+				s += " a strike for every ammo in the magazine"
+			if random_targets:
+				s += " at random live foes"
+			if ammo_per_foe_hit > 0:
+				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat

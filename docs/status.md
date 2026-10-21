@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 571 tests, 62,101 checks, green on main (21 October, with the Lammergeier, the Needletail's gate and the Swallowtail); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 576 tests, 62,141 checks, green on main (21 October, with the Lammergeier, the Needletail's gate, the Swallowtail and the Musk Ox); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -41,9 +41,9 @@ before it. The five design sessions merged that day are paused, each resuming fr
   fast-forwarded into main as they landed; wrapped up 21 October, Ryan: "make sure everything is
   merged in and wrapped up"): ten machines decided, 3-5-2, the bible's roster row saying where
   each stands. Built: the Prairie Dog with Flak, the Clydesdale, the funnel-web, the Cassowary,
-  the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. Planned in
-  content, and so never dealt until its engine lands: the Musk Ox (the to-do's engine line);
-  the Swallowtail's engine landed 21 October. The gunship's brief waits for the stock pass's tags and the numbers'
+  the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. The
+  Swallowtail's and the Musk Ox's engines landed 21 October, so nothing of the maker's is
+  planned in content. The gunship's brief waits for the stock pass's tags and the numbers'
   rescale (Ryan, 21 October); the five new machines' models and the Translocator's mount are the
   to-do's art lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
@@ -89,6 +89,15 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 21 October, the Musk Ox (Ryan's go of that day): its damaging guns pay ammo for the heat their
+  own spend would make (1 for every 10, at least 1), a foe's Scorched still heating them; the
+  magazine (10, opening at 3, 1 a round from the second, a vent on itself 3, a shield 2) is a
+  bar under the heat, never a status; the cluster cannon refunds an ammo a foe reached, the
+  salvo fires the magazine at random live foes with Spread and Penetrate, the quick reload adds
+  2 for 15 heat (equipment's printed heat now lands); the die prints each gun's price and DRY.
+  The bot prices an ammo at half the best damage one buys. Its content is runnable (no model
+  yet). Fixed on the way: a multi-strike gun had paid its modifiers' heat on every strike (the
+  Maxigun under Scorched heated 20, its die showing 10); heat is paid once a spend.
 - 21 October, the Swallowtail (Ryan's go of that day): its Muster fills a point for every die
   that rolls, any machine's, 30 a charge and 5 a kill by its own guns, three charges its cap,
   a store a Silence sleeps and a Purge takes, shown as a gauge under the heat with a notch a
@@ -337,11 +346,11 @@ before it. The five design sessions merged that day are paused, each resuming fr
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 17 chassis and two planned (the funnel-web built, its engine 18
+- Content: five makers, 20 chassis, every one runnable (the funnel-web built, its engine 18
   October and its model 19 to 20 October, its Web Bomb built; the Cassowary, the Cottonmouth
-  and the Whip Scorpion built 21 October; the Swallowtail and the Musk Ox, 21 October, planned;
-  a planned chassis is never dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
-  the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
+  and the Whip Scorpion built 21 October, and that day the Kite's rework, the Lammergeier, the
+  Swallowtail and the Musk Ox; a planned chassis is never dealt, the campaign's Start rule),
+  69 components (26 locked, 6 unstocked, among them the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
   the old kinetic-and-energy split (every rolled weapon cold, every flat one hot), which the

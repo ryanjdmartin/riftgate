@@ -884,6 +884,14 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: act_again is a buff's: an ally whose die is spent acts again" % where)
 	if fd.has("charged"):
 		_validate_charged(where, kind, fd["charged"], errs)
+	# The Musk Ox's pieces (21 October): a refund, the salvo, random targets, a reload.
+	if fd.has("ammo_per_foe_hit") and (kind != "attack" or int(fd["ammo_per_foe_hit"]) <= 0):
+		errs.append("%s: ammo_per_foe_hit is a weapon's: the ammo back for every foe its blows reach, a positive number" % where)
+	for key in ["spends_magazine", "random_targets"]:
+		if fd.has(key) and (kind != "attack" or not (fd[key] is bool)):
+			errs.append("%s: %s (true) is a weapon's" % [where, key])
+	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
+		errs.append("%s: reloads_ammo is equipment's: the ammo it adds to its forging machine, a positive number" % where)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
@@ -1018,6 +1026,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
 		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
 			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
+		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an
+		# ammo stands for, the reloads of a vent and a shield on itself.
+		if effect == "forge" and (int(eff.get("value", 0)) < 1 or int(eff.get("per_heat", 0)) < 1 \
+				or int(eff.get("start", 0)) < 0 or int(eff.get("per_round", 0)) < 0 or int(eff.get("vent", 0)) < 0 or int(eff.get("shield", 0)) < 0):
+			errs.append("%s: forge needs value (the magazine, positive), per_heat (the heat an ammo stands for, positive), and start, per_round, vent and shield, 0 or more" % where)
 		# The Swallowtail's Muster (21 October): points a charge, a cap in charges, points a kill.
 		if effect == "muster" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1 or int(eff.get("kill", 0)) < 0):
 			errs.append("%s: muster needs value (the points a charge, positive), cap (the charges it holds, positive) and kill (the points a kill by its own guns gives, 0 or more)" % where)
