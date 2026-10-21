@@ -1,10 +1,13 @@
-# Brief: the shield-spender (new chassis, direction)
+# Brief: the shield-spender, the Storm Petrel (new chassis, decided)
 
 The session designs a Kestrel tier one whose hits spend its own shield for more damage: a
 sustained hitter with a real decision on every spend. "The shield-spender" is a working label;
 the name and the look are Ryan's.
 
-**Status**: direction (Ryan, 15 October). **Maker**: Kestrel. **Proposed tier**: one. **Read
+**Status**: decided (Ryan's go, 21 October: the Storm Petrel, a hovercraft; its lock named St.
+Elmo's Regenerator that evening, its passive the Riot Field Generator; its numbers with the content
+session, this brief kept until then; a direction since 15 October). **Maker**:
+Kestrel. **Tier**: one. **Read
 first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 8 (Kestrel gap one, the
 raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
 (puffin, goshawk) and `content/components.json` (backwash_ionizer, laminar_deflector).
@@ -51,8 +54,8 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   on-hit, which the strafer doubles), so change what scales the burn rather than add beside
   it: its weapons take their heat from its shield instead of its gauge and hit harder by as
   much, once a spend as heat is paid, so multi-hit gains nothing. Kestrel's three tier ones
-  then want three kinds of weapon: the Sparrowhawk cold guns (it doubles heat), the strafer
-  many hits, this one hot guns (Aphelion's and the Arsenal's hot pieces, where the Sparrowhawk
+  then want three kinds of weapon: the Kite cold guns (it doubles heat), the strafer
+  many hits, this one hot guns (Aphelion's and the Arsenal's hot pieces, where the Kite
   pulls Minerva's and Wainwright & Sutler's kinetics). The decision moves onto the die with no
   gesture: a hot entry burns shield for a big hit, a cold one burns nothing. Routes in: every
   ally shield, and the Peak's Scorched (a stack makes its weapons 5 hotter: 5 more burnt, 5
@@ -63,8 +66,8 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   which would complete the build; Claude's lean, once the hook is settled, a cold gun whose
   hits regain shield, so the die always carries both halves of the decision, reload or burn.
   Bench: 5 a spend in place of 5 a hit (ends the convergence but adds no appetite); the burn
-  sized by the blow (the Sparrowhawk's bargain at another price); a locked shield dump (the
-  Goshawk's vents-all in shield, and the build would be the dump and shields).
+  sized by the blow (the Kite's bargain at another price); a locked shield dump (the
+  Buzzard's vents-all in shield, and the build would be the dump and shields).
 
 - Ryan, 15 October, the second round: "the multi-hit part doesn't make sense with that
   description. Instead, 'While it has shield, consumes its own shield instead of generating
@@ -78,9 +81,9 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   holds and the rest as heat, the zap being what the shield paid; the zap is a blow of its own
   after the weapon's strikes, plain (no keyword, no buff added), so it loses the target's
   armour; since a kill wastes it, a hot gun wants a foe it will not finish, which makes the
-  target a choice. The regen: at each round's start, as the Goshawk's, up to the maximum;
+  target a choice. The regen: at each round's start, as the Buzzard's, up to the maximum;
   whether a second cast stacks, as every status does, or only renews the count; and it takes
-  in-fight regen past the Goshawk, whose content note calls its regen the game's first, kept
+  in-fight regen past the Buzzard, whose content note calls its regen the game's first, kept
   safe on one chassis (one target at a time, so never shield in bulk).
 
 - Ryan, 16 October: the regen was meant to wear off after a few turns, "so it could just be a
@@ -93,10 +96,10 @@ raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
   target however many cast it, and a recast early only wastes the rounds left. (First argued
   from the engine's old stacking, which pushed every stack to the newest expiry and so ramped
   without end: a bug, fixed the same day.) The zap: Shock on its own target opens the most builds,
-  since it makes a state other pieces read (the Sparrowhawk's four-times blow, any big single
+  since it makes a state other pieces read (the Kite's four-times blow, any big single
   blow, the Paradox meter, the Susceptibility Tensor), keeps the choice in the aim and keeps the
   waste on a kill (no zap, no Shock); to watch, its own next hot shot at that foe lands double,
-  near the Sparrowhawk's bargain, and it is a second Shock setter at tier one beside the
+  near the Kite's bargain, and it is a second Shock setter at tier one beside the
   Dingo. Armour-piercing gives the sharpest identity (the armour-cracker, the strafer's
   opposite) and the fewest new builds. The random ping is the boiler's blast again (a random
   foe hit for the heat spent) and, beside the strafer's spray, a second random-target tier one
@@ -149,7 +152,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   and never stacks (decided 16 October): a recast sets the count back to three, and two
   casters are one regen. On itself 10 a round is a 10-heat gun fired free every round or a
   Railgun's 40 every four; lent to a tank or to the Puffin it is the game's second in-fight
-  regen after the Goshawk's, one target at a time, never shield in bulk.
+  regen after the Buzzard's, one target at a time, never shield in bulk.
 - **Stock**, stand-ins until the stock pass, hot and cold both and no vent (Ryan, 17
   October): the Laser Carbine (a small burn), the Overclocked Railgun (the big hot shot: 40
   shield for 50 and a zap of 40), the Twin Autoguns (cold: burns nothing, the entry to fire
@@ -179,7 +182,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   from the shield before the gauge, the zap a plain blow through the target's damage taken
   and armour after the strikes; the die's heat read (`shown_face`) becoming a burn while the
   shield stands; the regen as a status, likely cheap, since a status may carry the round-start
-  shield effect the Goshawk's passive already runs and the renewing policy exists; the bot
+  shield effect the Buzzard's passive already runs and the renewing policy exists; the bot
   reading shield spent as a cost (its `shield_score` counts hull saved this round) and the
   zap as damage; each tested with synthetic passives. Its runner row lies until the honest
   shield rule is built (the to-do's shield-rule line): under today's whole-block rule a
@@ -194,9 +197,9 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   help give it a unique identity from the other Kestrel damage dealers, and/or if the other
   damage dealers' identities need to be sharpened. Don't mind moving things around, even
   'locked' items like the Sparrow and goshawk, to improve the roster as a whole."
-- Claude, 18 October, the overlap named: the Goshawk turns heat into shield and the burner
+- Claude, 18 October, the overlap named: the Buzzard turns heat into shield and the burner
   shield into damage, two converters on the same two gauges, both pulling hot guns, where the
-  Sparrowhawk pulls cold guns and the strafer rider pieces; the burner also loops alone (Ryan,
+  Kite pulls cold guns and the strafer rider pieces; the burner also loops alone (Ryan,
   14 October), which is the tier-two shape by the sort. Three kits, the capacitor the lean:
   1. **The capacitor: overshield is its ammunition.** Passive: shield it raises on itself may
      pass its maximum, up to its maximum again, and the excess holds from round to round; a
@@ -212,8 +215,8 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
      Corona Shield, the Oblation Ward's 40 for 10 hull) and any gun, cold ones included; it
      works alone with basics (a shield round, a gun round). Holes: a charged Spread blow
      carries the charge to the neighbours, a build at the charge's price; it is a bank-and-
-     spend shape like the Goshawk's heat and the Badger's hopper, with the opposite valence
-     (a bank of safety that pays damage, where the Goshawk's is a danger that pays shield);
+     spend shape like the Buzzard's heat and the Badger's hopper, with the opposite valence
+     (a bank of safety that pays damage, where the Buzzard's is a danger that pays shield);
      Misharu's Vigil Pavise would no longer be the only self overshield, its payoff bait where
      this one's is ammunition; the overshield fade is broken on this chassis as a one-off,
      capped at its maximum; the bot must value a charge as damage.
@@ -226,15 +229,15 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
      word too, strikes there and spends here; two spends at tier one wants glass numbers; the
      Paradox and riders double a round.
   3. **The glass gun**, the design as proposed on 18 October: the sharpest decision of the
-     three (hit points for damage), the Goshawk's axis, and the loop alone; if kept, its
+     three (hit points for damage), the Buzzard's axis, and the loop alone; if kept, its
      better home is tier two beside the Puffin, where the machines only good together belong,
      Kestrel's fourth tier two free in the 4-4-2 count.
-  The other damage dealers hold: the Sparrowhawk (the model of a double-edged niche
-  definer), the Goshawk (the cleanest loop in the roster) and the strafer (count). No lock
-  moves. The one wart, the Puffin's vent fighting the Goshawk's regen, is answered by the
-  capacitor without a move. One content fix: the Goshawk's niche word says ramping damage
+  The other damage dealers hold: the Kite (the model of a double-edged niche
+  definer), the Buzzard (the cleanest loop in the roster) and the strafer (count). No lock
+  moves. The one wart, the Puffin's vent fighting the Buzzard's regen, is answered by the
+  capacitor without a move. One content fix: the Buzzard's niche word says ramping damage
   and its passive is sustain. One stock move: the Laminar Deflector into the capacitor's
-  stand-ins, off the Sparrowhawk's as the stock pass already has it. Bench, one line each: a
+  stand-ins, off the Kite's as the stock pass already has it. Bench, one line each: a
   kill regains shield (devour's pattern on the strafer's ground); a team reroll spent on its
   die doubles its blow (a new price nobody uses, but it taxes the die's steering); a streak
   of rounds fired (a ramp, the easy design).
@@ -255,7 +258,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   18 October, the burn with the zap; no more labels); reroll effects are Wainwright & Sutler's
   to explore, not Kestrel's; a shield-on-kill design he would try with zero or negative field
   recharge and the shield recharging from damage dealt, not kills, unsure what makes it worth
-  the stress; the Sparrowhawk should be riskier and move to tier two ("not sure, but that's how
+  the stress; the Kite should be riskier and move to tier two ("not sure, but that's how
   I interpret the data"); the capital ship need not be assault size, the bomber could be it,
   and what is Kestrel's other tier three?
 - Claude, 18 October, the shield-centric tier one as Ryan framed it, the shield dual-use:
@@ -282,7 +285,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   nothing off on it and vents do nothing on it, so its Rapid pieces of every maker chain while
   its heat lasts, an alpha strike then a hot brick; its hole, the Rapid vent Ryan is wary of,
   answered by the dead vents. The bomber as the capital ship either way, heavy.
-- Claude, 18 October, the Sparrowhawk: moved to `kestrel_sparrowhawk.md` (its brief since 19
+- Claude, 18 October, the Kite: moved to `kestrel_kite.md` (its brief since 19
   October), with Ryan's lean of the day.
 - Claude, 18 October, the shield from damage dealt with no field recharge: its interest is on
   the map, a machine that must fight every turn to stay shielded, which the map cannot yet make
@@ -304,7 +307,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   looking, fast-looking-but-slow mobile gun platform" allowed if the gimmick is Kestrel's.
   Reroll-based effects are back on Kestrel's table, since Wainwright & Sutler's ten filled
   without effort: "it actually fits, and means we can push Kestrel way into the
-  risk-versus-reward space, like a real maverick pilot." The Sparrowhawk at tier two: "the
+  risk-versus-reward space, like a real maverick pilot." The Kite at tier two: "the
   whole gimmick is that its a flying accident waiting to happen, scoring kills by the seat of
   its pants in order to stay alive", pushed past double-damage-double-heat, "which by todays
   standards feels thin and abusable"; kills scoring shield past the cap, decaying a turn, with
@@ -327,7 +330,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   plate, regen and the burn here: the shapes differ, Ryan's rule of the third round); a lure
   onto a plated shield with stacking regen may wall trash, which the runner reads on the
   formation cells; the engine needs a weapon's rider on its own spender (new, small), the regen
-  as a status (a round-start shield effect the Goshawk already fires), and the plate as a
+  as a status (a round-start shield effect the Buzzard already fires), and the plate as a
   damage-taken add while the shield stands (a new condition). Ryan's regen was lent to allies
   on 16 October and renewed for that reason; self only, it stacks as he says.
 - Claude, 19 October, on shapes: "hovercraft on big boosters" is the makers table's own line
@@ -344,24 +347,147 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   Silhouettes are Ryan's; the list is for matching.
 - Claude, 19 October, the capstone: moved to `kestrel_gun_platform.md` (its brief since 19
   October). The mode-shifter goes to Aphelion's bench as an aura support.
-- Claude, 19 October, the Sparrowhawk's niche at tier two: moved to `kestrel_sparrowhawk.md`.
+- Claude, 19 October, the Kite's niche at tier two: moved to `kestrel_kite.md`.
 
 ## The fifth round (19 October)
 
 - Ryan, 19 October: "The point of adding another tier one lure is to take the pressure off of
   making the armadillo a must-pick. Aphelion also will need a defensive tier 1 to balance
   things out even more." His two questions of the day, the platform's kit and the
-  Sparrowhawk's cool guns, are answered in their briefs.
+  Kite's cool guns, are answered in their briefs.
 - Claude, 19 October: recorded as the reason in the briefs README (a tier-one body from more
   than one maker) and the Aphelion defensive tier one as a line for Aphelion's session.
 
-## Open for the session
+## The sixth round: the line review (Claude, 20 October)
 
-1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
-   reach), its frame (a hovercraft, or the exposed-rotor helicopter as a flying tank), and
-   Ryan's go. The capacitor of the second round stays on the bench (overshield as ammunition).
-2. Whether the interceptor becomes a brief of its own (the Sparrowhawk's rework and the gun
-   platform have theirs since 19 October).
+Under the action economy's direction the off-tank's lock is the model combined entry (two
+effects on one spend, a lure that regens itself) and is never Rapid; the package stands as
+Ryan's. The review read the plate's arithmetic against the foes as they are: a blow of 5 past
+the plate is nothing, of 10 is 5, of 20 is 15, of 30 is 25, so while its shield stands it halves
+the packs that strike for 10 (wolves, gels, mandragoras, needlers, cockatrices, ghosts: six of
+the eighteen wildlife) and shrugs their 5s, which with a lure and a stacking regen of 10 a
+round is a wall against those packs, and a tank's job; against a swarm it is no wall (six
+goblins strike 30 each with their swarm, 25 past the plate, 150 a round onto a lured shield of
+80), nor against the big foes (a Sandworm's 40 is 35). The lever if the wall reads wrong in
+play: the plate's number (3, by the scales question) before the regen's stacking (renew). Its
+stock wants a step between the Carbine's 5 heat and the Railgun's 40, a mid-heat Kestrel gun
+the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 more and a zap of
+20), and the Railgun kept as its big hot shot. The vent-dead hole stands as a direction refused.
+
+## The seventh round (20 October): the frame
+
+- Ryan, 20 October: "I think the off-tank can be a hovercraft, which brings Kestrel's lineup
+  to 3 hovers. That seems right. However, since we made the Puffin slow (it doesn't have to be,
+  really, if its an all-in support), then it seems like the shield-burner should be fast, so as
+  to not give the impression that Kestrel doesn't actually know how to make a fast hovercraft.
+  Also, its kit looks to me like it would be an acceptable solo unit if it needed to zoom off
+  and fight a pack, so that's fine, a decent generalist for tier 1."
+- Claude, 20 October: a hovercraft at move 50, the kit below; the third Kestrel hover with the
+  Puffin and the capital. On the map it is the detachment that can also hold a front: water
+  fast, so it rides the river the jets fly over; alone against a pack it lures, plates and
+  regens, and burns shield only when the kill is worth it, which is the generalist Ryan reads.
+  The exposed-rotor helicopter goes to Aphelion (Ryan, 20 October, in the interceptor's
+  round).
+
+## The go (21 October)
+
+- Ryan, 21 October, on the kit read back: "Does the burn need to be on a lock or is it on every
+  shot still?" Claude: every shot; the burn and its zap are the passive's, with the plate, and
+  the lock is the lure that regens itself alone (a debuff under the die's grammar: the frame,
+  the Lure chip, no number, the star for the regen).
+- Ryan, 21 October: "Yes to all, go with the hovercraft and the petrel name you had picked."
+  Decided: the Storm Petrel (the small sea bird that patters across the water, fast and low), a
+  medium hovercraft at move 50; the plate's 5, the regen's 10 a round for three rounds stacking,
+  the lure's Indirect reach, the kit below as written. The bible's Kestrel row carries the
+  design, the rules Regenerating; its numbers and the model go to the content session.
+- Named 21 October, evening (the names round in `kestrel_line.md`): its lock St. Elmo's
+  Regenerator (Ryan's), its designation K-15 Mk I Air-Cushion Picket (Claude's, on his word).
+  Its passive's name is open on his steer: "Storm petrel should reference the fact that it has
+  hard shields, or something, used both for defense and for whacking things with." Claude's
+  pick, Birdstrike Plating (a canopy rated for bird strikes is hardened against them, and here
+  the bird does the striking); the others, the Riot Field and Hard-field Bumpers. Ryan, 21
+  October: "Riot Field Generator". Decided: the passive is the Riot Field Generator (a riot
+  shield blocks and shoves: the plate and the zap).
+
+## The kit, written out (Claude, 20 October)
+
+Ryan's package of 19 October, whole; every number a placeholder, the name and the look Ryan's,
+the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
+
+**The frame.** A medium hovercraft on big boosters at move 50 (Ryan, 20 October: a hovercraft,
+and fast, so Kestrel is seen to make a fast one; water fast, rough ground and ruins slow). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
+field recharge 30, heat maximum 60, cooling 5, armour 0. Four hardpoints beside the lock, a
+d5; two module slots.
+
+**The passive, the Riot Field Generator**, as the codex would print it (Ryan's words of 15, 17 and 18 October): while
+its shield stands, every blow on it loses 5, and its weapons burn shield in place of heat:
+every point a spend would add comes off the shield (a Scorched machine's extra included), and
+a weapon hotter than the shield left burns what the shield holds and the rest reaches the
+gauge. After the weapon's strikes the target takes a zap of what the shield paid, a plain blow
+with its armour off, lost on a kill.
+
+**The lock, St. Elmo's Regenerator**, the lure that regens itself (Ryan, 19 October): a weapon of no damage,
+Indirect, heat 0, spent on one foe. That foe is Lured for the round, and this machine gains
+Regenerating: 10 shield at the start of each round for three rounds, stacking (timed stacks
+keep their own end, so two casts are 20 a round until the first runs out). Self only, never
+Rapid, no cooldown; the die is its brake. Shown as a weapon glyph with the Lure chip and the
+star; the hold reads the self regen.
+
+**The die.**
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the lure that regens itself: Indirect, no damage, heat 0 | the draw and the refill |
+| II | a big hot flat gun | the burn's big shot |
+| III | a mid-heat gun (a stock hole: nothing sits between the warm guns and the big hot one today) | the middle burn |
+| IV | a cold rolled gun | burns nothing: fired when the shield must stand |
+| V | a shield (self) | reload |
+
+No vent: with no weapon heat reaching the gauge a vent is nearly a blank (Burning alone heats
+it), and Ryan agreed (17 October).
+
+**The round as played.** The lure showing, spend it on the foe whose blows you want, and the
+regen starts at the next round's start (the lured blow lands this enemy turn, the first 10
+next round). A hot gun showing, burn its heat off the shield for the same again as a zap, on a
+foe it will not finish, since a kill wastes the zap. The cold gun when the shield must hold
+for the enemy's turn. The shield to reload. On the die the heat slot reads the burn with the
+shield's glyph while the shield covers it, and +N HEAT again for the rest; dragged over a foe,
+two numbers joined ("25+20"), the blow and the zap, each with its armour off.
+
+**The arithmetic** (today's heat prices; the pool 80, the regen 10 a round a stack).
+
+| Weapon | Burns and zaps | The target takes, armour 0 / 5 | Spends of a full pool | A regen stack refills one in |
+|---|---|---|---|---|
+| a warm flat 10, heat 5 | 5 | 15 / 5 | 16 | half a round |
+| a mid-heat flat 25, heat 20 | 20 | 45 / 35 | 4 | two rounds |
+| a big hot flat 50, heat 40 | 40 | 90 / 80 | 2 | four rounds |
+| a cold rolled 5–15, heat 0 | 0 | 10 / 5 | never | - |
+
+The plate: a blow of 5 is nothing, 10 is 5, 20 is 15, 30 is 25, 40 is 35. So with a lure and
+a stack of regen it walls the packs that strike for 10 (wolves, gels, mandragoras, needlers,
+cockatrices, ghosts) and is no wall against a swarm (six goblins strike 30 each with their
+swarm, 150 a round past the plate onto 80) or a big foe. The lever if the wall reads wrong in
+play: the plate's number before the regen's stacking.
+
+**With the team.** It wants every ally shield (the Puffin's overshield is its magazine), hot
+guns of every maker and the Peak's Scorched (5 hotter: 5 more burnt, 5 more zapped). It gives
+the lure, a body from a second maker, and its zaps.
+
+**Engine.** At the spend, the heat the pipeline returns taken from the shield before the gauge
+and the zap a plain blow through the target's damage taken and armour after the strikes; the
+die's heat read becoming a burn while the shield stands; a weapon's rider on its own spender
+(new, small) for the lock; the regen as a status (a round-start shield effect the Buzzard's
+passive already fires); the plate as a damage-taken add while the shield stands (a new
+condition); the bot reading shield spent as a cost and the zap as damage; each tested with
+synthetic passives. Its runner row lies until the honest shield rule is built.
+
+## Open for the content session
+
+1. Its numbers (every one a placeholder) and its model, a medium hovercraft; its names (St.
+   Elmo's Regenerator, the Riot Field Generator, the designation K-15 Mk I Air-Cushion
+   Picket). The capacitor of
+   the second round stays on the bench (overshield as ammunition).
+2. The stock hole it names, a mid-heat gun, is the stock pass's (`kestrel_line.md`).
 
 ## Holes already raised
 
@@ -392,7 +518,8 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   carries no keyword, so it never spills, chains, burns or shocks, and Chain's repeat pays its
   heat again and so burns and zaps again on the new target (Claude, 18 October).
 
-## What the session hands back
+## What the content session lands
 
-A proposal in chat; on Ryan's go, the bible's Kestrel row moved from withdrawn to decided,
-content planned, and this brief retired.
+The Storm Petrel and St. Elmo's Regenerator in content (planned until the engine: the burn and its zap, the plate,
+Regenerating), Regenerating in the vocabulary, its numbers and model; then this brief retires.
+The bible's Kestrel row and the rules carry the design since 21 October.

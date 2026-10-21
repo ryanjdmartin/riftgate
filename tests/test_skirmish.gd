@@ -3553,6 +3553,51 @@ func test_shielding_an_ally_fires_the_escorts_passive_on_the_ally() -> void:
 	assert_eq(sk.mechs[1].heat, 20, "but the escort's vent still fires on the spend")
 
 
+func test_a_shield_on_an_ally_grows_by_the_heat_it_carries() -> void:
+	# The Puffin's Slipstream Projector (Ryan's go, 21 October), on a synthetic passive: a shield
+	# spent on an ally grows by `value` for every 10 heat that ally carries, pro rata and rounded
+	# down, read at the spend; never on the spender itself, and the ally keeps its heat.
+	var slip := {"id": "slip", "name": "Slip", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]}
+	var sk := Skirmish.new(1)
+	var ov := Face.shield(10)
+	ov.keywords.append(Face.Keyword.OVERSHIELD)
+	var giver := _mech("Giver", Die.of([ov, Face.shield(10)]), 40, 100)
+	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
+	giver.grant_passive(slip)
+	sk.add_mech(giver)
+	sk.add_mech(taker)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	taker.shield = taker.shield_max
+	sk.mechs[1].heat = 35
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.shield_amount(sk.mechs[0], ov, sk.mechs[1]), 17, "10 and a fifth of 35, rounded down")
+	assert_eq(sk.shield_amount(sk.mechs[0], ov, sk.mechs[0]), 10, "on itself, the number alone")
+	assert_eq(sk.shield_amount(sk.mechs[1], ov, sk.mechs[0]), 10, "a machine without the passive gives the number alone")
+	assert_true(sk.assign(0, sk.mechs[1]), "overshield the hot ally")
+	assert_eq(taker.shield, taker.shield_max + 17, "past its maximum by the grown number")
+	assert_eq(sk.mechs[1].heat, 35, "the shield reads the heat and never sheds it")
+	assert_true("\n".join(sk.log).contains("Giver shields Taker for 17"), "the log says the grown number")
+	assert_eq(Effects.effect_text(slip["effects"][0]), "an ally this machine shields: the shield grows by 2 for every 10 heat it carries", "reads as a sentence")
+	# A cold ally gets the number alone; on a hot one a plain shield grows too, to the maximum.
+	sk.end_round()
+	sk.start_round()
+	taker.shield = 20
+	sk.mechs[1].heat = 0
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, sk.mechs[1]), "a plain shield on a cold ally")
+	assert_eq(taker.shield, 30, "the number alone")
+	sk.end_round()
+	sk.start_round()
+	taker.shield = 45
+	sk.mechs[1].heat = 60
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, sk.mechs[1]), "a plain shield on a hot ally")
+	assert_eq(taker.shield, 50, "grown to 22 and held at the maximum, since it carries no Overshield")
+
+
 func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
 	var opening := {"id": "opening", "name": "Opening", "description": "", "effects": [
 		{"trigger": "on_skirmish_start", "effect": "add_shield", "value": 15}]}

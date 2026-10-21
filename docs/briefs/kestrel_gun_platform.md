@@ -1,10 +1,11 @@
-# Brief: the gun platform, Kestrel's capstone (proposal)
+# Brief: the gun platform, Kestrel's capstone, the Giant Petrel (decided)
 
 The session designs Kestrel's second tier three beside the bomber: a giant, mean-looking,
 fast-looking-but-slow gun platform whose passes are the team's rerolls. "The gun platform" is
 a working label; the name and the look are Ryan's.
 
-**Status**: proposal (Claude, 19 October), Ryan's gimmick test to pass. **Maker**: Kestrel.
+**Status**: decided (Ryan's go, 21 October: the Giant Petrel, the formation leader; its pieces
+named that evening); its engine and content wait, so this brief stays until they land. A proposal since 19 October. **Maker**: Kestrel.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (Ryan's taste, the tiers,
 Kestrel's leans as the fourth round of `kestrel_shield_spender.md` left them); the bible's rows
 on rerolls (three a round, never onto the entry showing), on Rapid's limiter and on cooldowns;
@@ -170,7 +171,7 @@ Every number a placeholder; the name and the look Ryan's.
   Vacillator 5 becomes 45, the Maxigun 22 becomes 142), which is "the unit that makes the
   weaker Rapid pieces effective"; whole stacks multiply the biggest single gun (a Railgun 250)
   and break unless heat is paid a use, and then a cold gun four times is still free, the
-  Sparrowhawk's old abuse again; half-strikes sit between, bounded at (n + 2) over 2, paying
+  Kite's old abuse again; half-strikes sit between, bounded at (n + 2) over 2, paying
   the foe's armour on every strike (the Maxigun 8 into plate) and laying riders on every
   strike (Burn, Flak, Vitriol), the tunable form of the big brother if Ryan wants it literally,
   and a cousin of the strafer's passive by design. Claude's lean stays growth, for the pieces it
@@ -193,7 +194,7 @@ Every number a placeholder; the name and the look Ryan's.
   act again). Exploit-shaped: the siege battery (a Rapid vent a free reload, flagged), the
   multi-rotor (a lent Rapid entry a further lent spend). Makers of Rapid rather than chasers:
   the Zoids walker (a kill makes the spend Rapid), the interceptor's passive, the Cassowary's
-  Spin-Up. No interest: the strafer, the shield-spender, the Sparrowhawk, the Goshawk, the
+  Spin-Up. No interest: the strafer, the shield-spender, the Kite, the Buzzard, the
   Badger, the Boar, the Nemesis (it rolls again on rage instead), the Ammit, the Stingray, the
   Baboon, the Clydesdale (free rerolls instead), the Dingo, the funnel-web, the Cottonmouth's
   guns otherwise, Misharu, the Onryō, Mastema, Minos, the jellyfish, the Carrier, the
@@ -225,35 +226,318 @@ Every number a placeholder; the name and the look Ryan's.
   Cassowary on Rapid (steps), the line frame on its combo (blows, if its session takes the
   lever), the platform on rerolls (rolls).
 
-## Open for the session
+## The line review (Claude, 20 October)
 
-1. Ryan's call on growth with the own reroll as its engine (the fifth round), the
-   three-strike shield as its lock, and the numbers.
-2. Whether the own reroll is the passive's clause or a Kestrel module's, and what the
-   commander's refit adds once that layer exists.
-2. A cap on passes a round (none, or two) and the throttle's heat, read by the runner.
-3. Its shape, the ekranoplan or the gunship, and its numbers, matched to Ryan's silhouette.
+The design stands as the fifth round left it. Two settlements proposed by the review
+(`kestrel_line.md`): no multi-strike vent in the pool, since only the platform wants one (the
+Puffin's passive fires once a spend whatever a shield's strikes, so a multi-hit shield is the
+platform's alone too, and a piece one machine wants is a lock or nothing: the three-strike
+shield is its lock, the vent is nothing); and the own reroll as the passive's clause (its
+floor), with a Kestrel reroll module (one free reroll of this die a round, its stat line paid)
+as its second and the chase, per the row's own-rerolls-as-a-number home, which also serves the
+Kite's fishing and the Armadillo's. The stock holes the review names for it: the
+Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
+
+## The sixth round (20 October): the capital
+
+- Ryan, 20 October: "I think, from irony, that the 'capital ship' should be the gun platform,
+  and it should hover, not fly. A flip from the others since 70% of Kestrels lineup already
+  flies. We need to give this one another look, another try. If its the Kestrel capital, what
+  niche does it fill, other than 'more guns?'"
+- Claude, 20 October, the other look. The niche is the fleet's reroll economy, not its guns.
+  Nothing reads the team's rerolls and nothing banks them (the rerolls row: three a round,
+  never banked); a capital should change how the whole team plays, and this one changes what
+  a reroll is: a thing to save, spend or gamble. So the passive becomes two lines, the bank
+  and the growth: rerolls the team has not spent at the round's end are banked, up to three
+  held, and spent like any reroll in a later round; and each time its die rolls again in a
+  round, every entry on it grows by 10 for the round, on every strike. The own free reroll
+  leaves the passive for the Kestrel reroll module (one idea a passive). The second lock, the
+  launch (working name): equipment on an ally, heat 10, and that ally's die rolls again now,
+  a plain roll never onto the entry showing, the mothership relaunching a jet; a spend that
+  gives a look instead of cashing the growth. Four hardpoints, a d6, fewer guns than the
+  bench of six: its guns are bets, and the capital's work is the economy. A hover, assault:
+  the ekranoplan, water fast and rough ground slow, so the river every map guarantees is its
+  road, the irony twice (fast-looking, slow, and fast only on water). Why it is a capital and
+  not more guns: it bends a rule the player has learned (rerolls never bank; the tiers row's
+  sort for a tier three), it reads a resource nobody reads, it changes the team's play more
+  than its own, and its ceiling is the team's nerve, not its stock. Why it is Kestrel: rerolls
+  as the currency (Ryan, 19 October), press your luck, the maverick's fleet. What parts it
+  from the others' capitals: Minerva's battlecruiser bursts its own guns on a cooldown timer,
+  the multi-rotor lends its die, the Carrier is open. Holes: a six-reroll round fixes every
+  die in the team, a burst round for the fleet once in two rounds at best (the bank's cap and
+  the step are the levers; the runner reads rounds with a bank spent against rounds without);
+  the bot must learn to bank, which is the lock-or-ride valuation again; the launch is a lent
+  own-reroll, the Clydesdale's effect given once, which the direction's first home allows
+  and which Ryan refused for Minerva on theme (15 October: it does not fit), not on shape;
+  the growth rides on rerolls the team makes anyway unless the capital is locked; Rapid
+  pieces' rolls still grow it, a third chase. Bench, one line each: the fleet's heat sink
+  (allies' heat flows to it and its entries grow by 10 per 10 heat it takes, Kestrel's heat
+  as the banked resource; set aside because it drops Ryan's roll-based shape and overlaps
+  the Buzzard's and the Afterburner's heat-into-something); the self-bank (held rerolls grow
+  the capital next round rather than banking for the team: a bigger gun, not an economy); the
+  gift (the team gains a reroll a round while it stands: free, the free extra shots Ryan
+  refused in another coat); growth on every team die's roll (the team rerolls together
+  already, so it is the same mechanic with no lock-or-ride decision).
+
+## The seventh round (20 October): the reroll economy all the way
+
+- Ryan, 20 October: "I think we lean into reroll economy all the way. Reroll economy and
+  granting actions is its own reward, it needs no additional payoff like growing per roll. We
+  have enough growers, we need to fill the action economy utility niche, and this seems like a
+  great place to put that capstone. The trick is in not making it a ubiquitously good chassis
+  that every team wants, rapid embodied in a machine. Banking rerolls - excellent, rolling
+  another units die - excellent, some mechanism for letting an ally go again that isn't just
+  trading one turn for another - lets work on that."
+- Claude, 20 October: the growth goes (the bench keeps it), and with it the three-strike
+  shield, which was growth's. The capital is the fleet's banker: rerolls are its currency,
+  and it gives them two things to buy, a look and an action. The mechanism for an ally going
+  again that is no trade of turns: the action is bought with rerolls, not with the capital's
+  die. Three rerolls, banked or fresh, spent on an ally whose die is already spent: its die
+  rolls again and it acts again. The price is a whole round's reroll budget, so a round fixes
+  dice or buys one action, never both unless the bank was filled the round before; the
+  capital meanwhile fires its own guns, so no turn is traded. Why it is not Rapid embodied:
+  nothing is free, every action costs three looks, and looks have a competing use every
+  round. The bank (Ryan: excellent) stays as the passive's first line; the launch (rolling
+  another unit's die: excellent) stays as a lock, now a combined entry so the capital's spend
+  is never only a reroll: a shield of 20 on an ally and its die rolls again. A second lock
+  closes the loop, the flare (working name): a vent of 20 on itself and the team gains a
+  reroll this round, never Rapid, a reroll bought with the capital's spend and kept by the
+  bank if unspent; so the capital brews rerolls, banks them and sells them as looks or
+  actions. Ryan's trick, the ubiquity: the prices are a slot of four spent on a machine whose
+  own die is plain (big ordinary guns on an assault frame); a fleet that moves at 20, since
+  the four move as one and a capital grounds the jets, the irony's real cost; the conversion
+  at the whole budget, so a team that needs its rerolls for its dice (the Clydesdale's d9,
+  the Kite fishing on a d3, the Cassowary's steps) gets little and a team of reliable
+  dice gets most, which is a composition read and not a must-pick; the bank's cap. The
+  runner's guard is pick share across compositions, the row on must-picks. Bench, one line
+  each: growth per roll (Ryan: enough growers; the fifth and sixth rounds keep its arithmetic);
+  the three-strike shield (growth's lock); the fleet's heat sink; the self-bank; the gift
+  (a free reroll a round); an ally's second action at the capital's spend alone (the trade of
+  turns Ryan does not want).
+
+## The kit, written out (Claude, 20 October, the seventh round's form)
+
+Every number a placeholder, the name and the look Ryan's, the stock by kind.
+
+**The frame.** Kestrel's capital ship: assault, a hover (Ryan, 20 October), the ekranoplan, a
+giant ground-effect plane with a battery on its back, fast on water and slow on rough ground
+and ruins; move 20, fast-looking and slow. Hull 120, shield 100, field recharge 20, heat
+maximum 120, cooling 10, armour 0. Four hardpoints beside two locks, a d6; two module slots.
+
+**The passive**, as the codex would print it: rerolls the team has not spent at the round's
+end are banked, up to three held, and spent in a later round like any reroll. Three rerolls,
+banked or fresh, may be spent on an ally whose die is spent: its die rolls again and it acts
+again.
+
+**The first lock, the launch** (working name): equipment, allies only: a shield of 20, and
+that ally's die rolls again now, never onto the entry showing. A look with a bubble.
+
+**The second lock, the flare** (working name): a vent of 20 on itself, and the team gains a
+reroll this round. Never Rapid.
+
+**The die.**
+
+| Entry | Piece | What it is for |
+|---|---|---|
+| I | the launch: shield 20 on an ally, its die rolls again | the jet whose roll is bad |
+| II | the flare: vent 20, the team gains a reroll | a reroll brewed, banked if unspent |
+| III | a big flat gun | its own plain blow |
+| IV | a cold rolled gun | |
+| V | a Direct gun of any maker | |
+| VI | a plain shield | |
+
+Its own guns are ordinary: the capital's work is the economy, not the blow.
+
+**The round as played.** Roll. The dice are fine: hold the rerolls and bank them; the
+capital fires a gun. A jet's die is bad: the launch on it, or a reroll. The round that
+matters: three banked and three fresh, six rerolls; fix three dice and buy the Kite a
+second chain, or buy two actions and fix nothing. The flare when it shows: cool and brew a
+reroll for the bank. The decision each round: looks or an action, now or later.
+
+**The arithmetic.** Income three rerolls a round; an action costs three; the bank holds
+three, so a round of six is two actions, or three looks and one action; the flare adds one a
+capital spend. An action bought is the ally's whole die again (a doubled gun, a second dump
+of the Afterburner, a chain), so it is bought for the machine whose action is worth most.
+
+**With the team.** It wants reliable dice that need no fixing (flat guns, small dice, the
+Cassowary's stepping die which turns rerolls to steps) and one machine whose second action
+is worth three looks. It gives the bank to everyone, a look to the jet that needs one, and
+an action to the one that earns it. It parts from the multi-rotor (an ally spends the
+rotor's die, a trade of turns) and from the interceptor's own cantrip.
+
+**Engine.** The team's rerolls as a bank (`Skirmish.rerolls` reset to three plus what was
+held, capped); an action bought with three rerolls on a spent ally die (Rapid's path: a
+reroll never onto the entry showing, then the ally acts again); the launch as a shield face
+with a roll-again rider on its target; the flare as a vent face with a team-reroll rider; the
+bot's look-or-action valuation; synthetic passives in the tests.
+
+**What the runner reads.** Rerolls spent as looks against actions bought; the bank's use;
+the team rows with and without it across compositions (the must-pick guard); the fleet's map
+pace with it.
+
+## The eighth round (21 October): the Giant Petrel, three locks, and the cash-in
+
+- Ryan, 21 October: "Giant petrel is fine, as is the shape. Our hole right now is how to cash
+  in the rerolls for an action. I also think the locked pieces need some work. I think 3
+  locked, 3 hardpoints - 2 support locks and an offensive lock, all circling around granting
+  rolls, team rerolls, or extra actions."
+- Decided: the Giant Petrel (the family's big one, a scavenger-predator the size of a small
+  albatross, the ekranoplan's bird over the same sea), the ekranoplan as written. Ryan's frame:
+  a d6 of three locks and three hardpoints, two support locks and an offensive one, all three
+  around the three currencies: a roll, team rerolls, an action.
+- Claude, 21 October, the proposal. The cash-in moves from the passive onto a lock, which gives
+  it a face, a target and a gate, and the three locks take one currency each.
+  - **The passive, the bank** (as the seventh round): the team's unspent rerolls at the round's
+    end are banked, up to three, and spent later like any reroll; the counter shows the bank
+    beside the round's three.
+  - **The action, the Hot-Pit** (support; a working name: the turnaround where a jet is refuelled
+    and rearmed with its engine running and sent straight back out): spent on an ally whose die
+    is already spent this round, it spends three of the team's rerolls, banked or fresh, and the
+    ally's die rolls again, never onto the entry it showed, and the ally acts again. The Hot-Pit
+    is Rapid, so the Petrel's die rolls again and it acts again too: the Petrel never trades its
+    own turn for the ally's (Ryan, 20 October: an ally going again that is not one turn traded
+    for another). Its gates are the three rerolls in hand and its face showing; the switch-off
+    keeps it once a round. Fishing for its face costs rerolls, the same rerolls it spends, which
+    is the decision: roll for the Hot-Pit, or bank for it. On the screen: drag the Petrel's die
+    onto a spent ally; the ally's spent die lights as the target, the counter drops by three,
+    the ally's die flips and it acts.
+  - **The roll, the launch** (support; as the seventh round): equipment, allies only, a shield of
+    20, and that ally's die rolls again now, never onto the entry showing: a look with a bubble
+    for the ally whose roll is bad, the pool untouched. A full action of the Petrel.
+  - **The team rerolls, the battery** (offensive; a working name: the ekranoplan's launchers on
+    its back): a rolled Indirect gun, 10 to 30, heat 20; if its shot kills, the team gains two
+    rerolls this round, banked at the round's end if unspent. The gamble is Kestrel's: the range
+    against the foe's hull is on the die, and a kill brews most of the Hot-Pit's price.
+  - **Three hardpoints by kind**: a big flat gun, a cold rolled gun, and a vent or a shield
+    (heat 120 and cooling 10 against the battery's 20 a shot).
+- The round as played. A quiet round: fire, spend no rerolls, bank three. The round that
+  matters: the Kite chains, its die is spent; the Hot-Pit shows, three rerolls, the Kite rolls
+  and chains again, and the Petrel's own die rolls on to the battery. A swarm: the battery
+  kills, two rerolls brewed, one fresh with them, and the Hot-Pit is paid inside the round.
+- The arithmetic. Income three a round, the bank three, the Hot-Pit three: a round that spends
+  nothing buys one action the next time the face shows; the battery's kill adds two; the face
+  shows one roll in six, rerolls fishing for it spending its price.
+- Holes:
+  1. The ubiquity Ryan warned of ("rapid embodied in a machine"): its worth rides on one ally
+     whose second action is worth three rerolls (the Kite's chain, the Buzzard's dump, the
+     Magpie's pull); a team that needs every reroll for looks keeps its bank empty; the slot
+     and the fleet's pace (move 20, the squad moving as one) are its price; the lever is the
+     Hot-Pit's price, two at the cheap end.
+  2. The Hot-Pit is a dead face until an ally has spent: the order is the play (spend the ally
+     first), and a round that rolls it first is a reroll or a wait.
+  3. The battery on a lone boss brews nothing: the boss fight runs on the bank built before.
+  4. The Swallowtail's Reveille Horn lends an ally an action too, charged, on Ryan's leave for
+     the overlap; the shapes differ (a muster filled by rolls and the carrier's own action,
+     against banked rerolls and a Rapid lock), and they pull against each other, since rerolls
+     the Petrel banks are rolls the muster never sees.
+- Bench: the seventh round's cash-in by rule (three rerolls on a spent ally from the passive,
+  always on: every round a possible action with no face to find, the ubiquity Ryan warned of,
+  and a tap on a spent die no other machine uses); the flare (vent 20, a team reroll: its
+  reroll moves to the battery's kill and its vent to a hardpoint).
+
+## The ninth round (21 October): the formation leader
+
+- Ryan, 21 October: "Role Refinement: the swallowtail is a more supportive machine, this one is
+  Kestrel and more aggressive. It's the formation leader, it wants to push it's allies to
+  action and keep tempo up, that's what differentiates it from the mobile HQ. Lock 1: Rapid.
+  Drag to self to give the team a reroll, or with 3 rerolls available, drag onto an ally to
+  give them another action and reroll their die. Lock 2: your battery shape, works well. Lock
+  3: Buff face, give an ally Overcharged 2 and reroll their die. Lock 1:" (the message ends
+  there; anything more on lock 1 did not come through).
+- Decided: the role, the formation leader, aggressive, pushing its allies to act and keeping
+  the tempo up, where the Swallowtail is the supportive mobile HQ; the battery as the eighth
+  round shaped it.
+- His locks, as read (Claude, 21 October):
+  - **Lock 1** (the Hot-Pit, a working name), Rapid, two uses: dragged onto itself, the team
+    gains a reroll; dragged onto an ally, three rerolls are paid, the ally's die rolls again and
+    it acts again.
+  - **Lock 2, the battery**: a rolled Indirect gun, 10 to 30, heat 20; a kill gives the team two
+    rerolls, banked if unspent.
+  - **Lock 3** (a buff; its name open): an ally gains Overcharged 2 and its die rolls again.
+  - The passive stays the bank (unspent rerolls carried over, up to three): Claude's assumption,
+    since the message names only the locks. Three hardpoints by kind: a big flat gun, a cold
+    rolled gun, a vent (the battery heats 20 a shot).
+- Holes, each with a lean:
+  1. "With 3 rerolls available" read as the price, paid: at a round's start the team always
+     holds three, so as a threshold alone it is a free action every time the face shows.
+  2. Lock 1 on an ally takes a spent ally only: its die comes back rolled and it acts again. On
+     an unspent ally "another action" would be an action owed after its spend, a new state to
+     track and show; the spent ally covers the use without it.
+  3. Lock 3 takes an ally whose die is not yet spent, since rolling a spent die gives nothing;
+     the roll never lands on the entry showing, as every reroll.
+  4. Lock 1 on itself is a free team reroll and a free look of its own die every time it shows
+     (Rapid), so it feeds its own ally use; the switch-off keeps it once a round, and in a swarm
+     the battery's two fill the bank fast, its cap of three holding it.
+  5. Lock 3 is the Overcharge Coil with a look added, on a locked piece: the formation leader's
+     order, buff and go; on the Butcherbird the Overcharged counts on each strike.
+  6. The must-pick guard: two of its locks lend tempo to allies; the runner's team rows with and
+     without it are the read, the levers lock 1's price, the bank's cap and the battery's two.
+- Bench: the launch (a shield of 20 and a roll: the supportive shape, the Swallowtail's side of
+  the line; its roll lives on in lock 3).
+
+## The go (21 October)
+
+- Ryan, 21 October: "Lock 1 - Obviously the rolls get paid, yes. And obviously on a spent ally,
+  yes. The hanging lock 1 was a typo. I'm not sure what you mean by generous but bounded,
+  giving the team a reroll and rolling itself again doesn't seem terribly generous, its a
+  tempo boost at best and a passive feed at worst. Lock 3 - On a spent ally they get 1
+  overcharge for next round, that's plenty. It's allowed to be better than the Overcharge coil
+  since its a locked component on a tier 3 chassis, so its either tier 2 or tier 3 in power.
+  Components grow in power as tiers go up, thats the rule. Passive stays the bank yes. Your
+  hardpoints are fine as well."
+- Decided, as the ninth round read it with his answers: the bank as the passive; the Hot-Pit,
+  Rapid, a team reroll on itself or, for three rerolls paid, a spent ally's die rolled again
+  and its action again; the battery; the buff, Overcharged 2 and a roll for any ally (on a
+  spent ally the roll gives nothing and the Overcharged halves to one for next round); three
+  hardpoints, a big flat gun, a cold rolled gun and a vent. Claude's "generous but bounded"
+  on the Hot-Pit's self use withdrawn: a team reroll and its own look are a tempo boost at best.
+  His rule on a locked piece's power goes in the bible's locked-component row. The bible's
+  Kestrel row and the rules carry the design; its numbers, names and model go to the content
+  session.
+- Named 21 October, evening (the names round in `kestrel_line.md`; Ryan: "Immelmann Booster",
+  "Spindrift Salvo", "Reheat Uplink", "Giant Petrel passive: Maverick's Playbook"): the passive
+  that banks the team's rerolls is Maverick's Playbook (Ryan's; the maverick fantasy he asked
+  of it on 19 October); lock 1, the Hot-Pit until then, is the Immelmann
+  Booster (Ryan's: the Immelmann turn reverses a fighter's course and climbs, as a spent ally
+  comes round to act again); lock 2, the battery, the Spindrift Salvo (spray blown off the wave
+  crests its missiles skim; flagged to Ryan: Spindrift is also a BattleTech 'Mech, which as one
+  word of a component's name passes the reserved list's rule; Ryan, 21 October: "Spindrift is
+  fine"); lock 3, the buff, the Reheat Uplink (reheat is the afterburner, sent to an ally).
+  Its designation K-21 Mk I Ground-Effect Flagship, beside the Puffin's Ground-Effect Escort
+  (Claude's, on his word).
+
+## Open for the engine and content sessions
+
+1. Its numbers (placeholders), its model (the ekranoplan); its names as settled 21 October
+   (Maverick's Playbook, the Immelmann Booster, the Spindrift Salvo, the Reheat Uplink,
+   K-21 Mk I Ground-Effect Flagship).
+2. The bot's look-or-action valuation, before its runner rows.
 
 ## Holes already raised
 
-- Up to four or five spends a round from one machine: the team's turn becomes its turn. The
-  levers: a cap of two passes a round, the throttle's heat, the stock pass's heat prices.
-- The Paradox counts each pass's statuses; a Rapid gun on it adds passes outside the rerolls,
-  its own cooldown the limit; a Scrambled die's reroll lands anywhere; the Clydesdale's free
-  reroll of its own die does nothing for it.
-- The bot must learn it before a runner row says anything about it (the to-do's valuations
-  line).
+- A bought action is the ally's die again by Rapid's path, so it never lands on the entry
+  just spent; a Kite bought a second action after a kill chain fires a stock gun, not
+  its reset gun again. The Paradox counts a bought action's statuses like any spend.
+- A team that fishes with its rerolls (the Clydesdale's d9, a d3) gets little from the bank;
+  the runner reads it across compositions, which is the ubiquity guard.
+- The bot must learn looks against actions before a runner row says anything about it (the
+  to-do's valuations line).
 
 ## Bench
 
-- A main battery as a second lock (a flat 30 cannon with a cooldown of two), if the throttle
-  alone reads thin for a tier three's locked pieces.
-- Unspent team rerolls at the round's end bank as Overcharged on it: press your luck by
-  holding (the analysis's reroll-maker reversed).
+- A main battery as a second lock (a flat 30 cannon with a cooldown of two): Ryan, 19
+  October, no doubled payout.
+- Unspent team rerolls banking as Overcharged on it (the fourth round's bench): the sixth
+  round banks them as rerolls for the team instead.
+- Growth on every roll (Ryan's shape of 19 October, the fifth and sixth rounds): Ryan, 20
+  October, the economy needs no payoff and the roster has enough growers; its arithmetic
+  stays above for any grower that wants it.
 - The chain: Rapid switches nothing off on it and vents do nothing on it, so every maker's
   Rapid pieces chain while its heat lasts (the third round of `kestrel_shield_spender.md`).
 
-## What the session hands back
+## What the engine and content sessions land
 
-A proposal in chat; on Ryan's go, the bible's Kestrel row, content planned, and this brief
-retired.
+Maverick's Playbook (the team's rerolls carried, capped), the Immelmann Booster (a Rapid face with a self use and
+an ally use priced in rerolls, a spent ally's die rolled and its action again), the Spindrift
+Salvo's kill rider, the Reheat Uplink's roll; the chassis planned in content; then this brief retired. The
+bible's Kestrel row and the rules carry the design since 21 October.

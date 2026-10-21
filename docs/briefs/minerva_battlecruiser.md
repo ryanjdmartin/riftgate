@@ -40,7 +40,7 @@ size classes (section 7).
   against a swarm it is an ordinary gun platform paying a cooldown tax; a gun that cannot reach
   the foe holds and stays live; only the first gun cashes a Shock; a half-dark die eats the
   team's rerolls; the bot has to learn to hold a broadside.
-- **Bench**: strikes twice (the strafer's); double damage at a cooldown (the Sparrowhawk's
+- **Bench**: strikes twice (the strafer's); double damage at a cooldown (the Kite's
   magnitude repriced); every weapon an explosive at a cooldown (area on a hardpoint, a real gap,
   the strong second choice); one big locked gun at a cooldown (smaller and safer); the hold-fire
   brace (sustain).
