@@ -19,8 +19,8 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 507 tests, 61,118 checks, green on main (21 October, with the Minerva, Aphelion and
-  Arsenal branches merged; 485 and 20,291 on the Windows desk machine on 19 October, about a
+- Tests: 520 tests, 61,273 checks, green on main (21 October, with Flak, the shield rule and the
+  Musk Ox's content merged; 485 and 20,291 on the Windows desk machine on 19 October, about a
   minute there). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -444,6 +444,16 @@ before it. The three design sessions merged that day are paused, each resuming f
   face when the Kestrel branch merges. In content as planned entries (Muster and Rallied in the
   vocabulary); the engine and the assets are the to-do's two lines. The Hoist is no loader for
   the artillery (Ryan, 21 October).
+- The Musk Ox (Ryan's go, 21 October; its row in section 7): the artillery, the maker's second
+  tier three, a wide assault battery on big wheels. Its Desublimation Forge fires its damaging
+  guns from ammo instead of heat (1 for every 10 heat at today's scale, 2 at the pass's; at
+  least 1), a magazine of 10 that opens each fight at 3 and gains 1 a round, its own vents
+  adding 3 and shields 2; everything else keeps heat on a low heat bar. Locked: the Shrapnel
+  Recuperator (Flak 1 for the team and 1 ammo back for every foe hit), the Unrestricted
+  Expenditure (every ammo as a strike at a random foe, Spread and Penetrate) and the quick
+  reload for testing (Rapid, 2 ammo, heat); four hardpoints. In content as planned entries
+  (Ammo a planned resource in the vocabulary); the engine and the assets are the to-do's two
+  lines.
 
 ## Next, in order
 
@@ -461,9 +471,8 @@ to-do's Ryan list).
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
-   Prairie Dog's pivot and the helicarrier, as the Swallowtail, landed (21 October), and the
-   artillery in session on Ryan's shape of the same day (its brief); next, the artillery's
-   calls and go, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
+   Prairie Dog's pivot, the helicarrier as the Swallowtail and the artillery as the Musk Ox
+   landed (21 October); next, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
    first round and its review are in their briefs, none of it answered, Misharu first.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
@@ -502,13 +511,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.237, and so is the live
-  (21 October): main's file with the Minerva, Aphelion and Arsenal branches merged (the
-  Armadillo session's and the numbers branch's rows, live since v0.220 and v0.222, and the
-  Aphelion session's, new to the live: Purge on both sides, every blow counting for the line
-  frame's combo, the Carrier apart from the battlecruiser) put onto the Kestrel session's live
-  v0.236 (its rows since 20 October: the Kite, the Buzzard, the Butcherbird, the Storm Petrel,
-  the interceptor, the Puffin's rework, the Magpie, the Giant Petrel's go and the names round),
+  `docs/design-bible.html` after every change. Main's file is v0.241, and so is the live
+  (21 October), but for main's rows since (the shield rule, Barrier and Ward, the cooldown and
+  Rapid rows built, Flak's carrier in the tables), owed a republish: main's Musk Ox (v0.238, a word fixed in v0.241) put onto the Kestrel session's live v0.239 (its
+  rows since 20 October: the Kite, the Buzzard, the Skua, the Storm Petrel, the Needletail,
+  the Lammergeier, the Puffin's rework, the Magpie, the Giant Petrel, the names round, the
+  die's grammar, a locked piece's power by its chassis's tier and Kestrel's stock holes),
   so the live rows and tables run ahead of main's by the Kestrel branch's until it merges and
   `tools/pages/bible_tables.py` regenerates the tables here (a merge conflict in a generated
   table is resolved by the live's row, corrected by hand for main's content change). The

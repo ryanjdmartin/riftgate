@@ -907,6 +907,51 @@
     "effects": []
    },
    "flavour": ""
+  },
+  {
+   "id": "musk_ox",
+   "name": "Musk Ox",
+   "designation": "Pattern 24 Field Battery",
+   "maker": "wainwright_sutler",
+   "tier": 3,
+   "design": {
+    "fantasy": "Ryan's mobile artillery, 21 October: \"a cross between a Big Bertha, a M270 MLRS, and/or a truck-mounted MEADS launcher. Big. Big wheels. Massive launchers and massive artillery cannons\"; the \"high-tech\" Wainwright & Sutler design, \"where they tried to resolve their inherent bias against energy weapons\". Wide (Ryan: \"Wide is good\"): the old cannon on the centreline, the high-tech guns on flank sponsons, a rack of glowing cells feeding them, the musk ox's ring of horns facing out.",
+    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Spread and Penetrate on every strike.",
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). From the Minerva session's all-shells candidate for the siege battery (17 October), which Ryan read on 20 October as this maker's tier three. The shape is Ryan's; Claude's reading found it inverse heat as first written and kept the three rules heat cannot have: a low start that ramps, a gun that earns ammo by hitting, and a salvo that spends savings. Numbers are placeholders at today's heat scale: a gun pays 1 ammo for every 10 heat (Ryan's 2 at the stock pass's scale, a fifth of today's), so the Thermal Ray's 30 is 3 ammo. Its heat maximum is low on purpose (Ryan: it needs none for its guns, so the quick reload and the foes' heat together are a real threat). Planned until the engine has the magazine, the conversion, the refund, the salvo and the reload; a chassis whose passive is planned is never dealt, and a tier three is never a tender's deal anyway."
+   },
+   "codex": "",
+   "hull": 160,
+   "shield": 40,
+   "movespeed": 20,
+   "heat_max": 30,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 10,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "wheeled"
+   ],
+   "size": "assault",
+   "fixed": [
+    "shrapnel_recuperator",
+    "unrestricted_expenditure",
+    "quick_reload"
+   ],
+   "loadout": [
+    "thermal_ray",
+    "enfilade_beam",
+    "coolant_jacket",
+    "blast_door"
+   ],
+   "passive": {
+    "id": "desublimation_forge",
+    "name": "Desublimation Forge",
+    "description": "Its damaging guns fire forged ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1. The forge makes 1 each round; a vent it spends on itself adds 3, a shield 2.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
   }
  ]
 }
