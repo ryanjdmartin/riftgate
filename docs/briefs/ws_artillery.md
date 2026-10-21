@@ -85,77 +85,111 @@ payoff has to come from rules heat cannot have. Three:
 Ryan's locked Rapid reloader closes the loop if it is Rapid only from an empty magazine (the
 speed-loader): the salvo empties it, the loader refills and acts again, the cannon tops it up.
 Three locked pieces that feed each other (the bible's row on locked pieces working together),
-three hardpoints, a d6; or the loader cut for a fourth hardpoint.
+three hardpoints, a d6; or the loader cut for a fourth hardpoint. (Superseded by Ryan's calls of
+the same day: the quick reload's heat is its limiter, four hardpoints either way; the design as
+it stands, below.)
 
 Ryan, 21 October, later: "Musk Ox or Aurochs, probably. Wide is good. The passive could be
 something about forging heat into bullets. Not sure. Deposition/desublimation Munitions Forge?
 List the current passive and locked candidates first so I can see the whole package options."
 
-**The candidates** (21 October, Ryan's ask: "List the current passive and locked candidates
-first so I can see the whole package options"; every number a placeholder, at the stock pass's
-heat scale; each dial's lean marked):
+The candidates and the three packages Claude assembled at Ryan's ask (21 October) are in
+git: `git show 4335f04:docs/briefs/ws_artillery.md`.
 
-- **The passive**, a clause at a time (working name, Ryan's: the Desublimation Munitions Forge):
-  - *The conversion* (Ryan): its weapons cost ammo instead of heat, 1 for every 2 heat, rounded
-    up, at least 1 a shot. Dial: cold guns pay the floor (Claude's reading, which the dichotomy
-    needs) or fire free.
-  - *The magazine* (Ryan): holds 10, a bar under the heat bar.
-  - *The start*: 3 of 10, the ramp (Claude's lean); full, which bursts first like heat; empty,
-    the hardest ramp.
-  - *The trickle* (Ryan's "maybe"): 1 a turn, so a dry magazine is never stuck.
-  - *The reload*: its own vents and shields add 2 (Ryan); its own vents forge half the heat
-    they pull off, so a vent of 4 adds 2, and shields add nothing (Claude's lean, which the
-    forge's name argues for: a shield has no heat to forge); vents 2 and shields 1.
-  - *The heat bar* (both): stays for the foes' Burning and for equipment heat, with a little
-    cooling; Scorched makes its guns cost more ammo.
-  - *Per fight* (as the Muster): every fight from its start number.
-- **The cannon** (locked, the Big Bertha, the old-world gun; Ryan's ramp gun dressed by
-  Claude): Indirect, a big flat number, Spread and Penetrate, so up to four foes. Dials: its
-  cost, 1 (Ryan) or 3 (the 17 October big gun); its refund, 1 for every foe it hits (Claude's
-  lean), 1 a kill (Ryan's other form), 1 a foe past the first (so a lone boss costs it 1), or
-  none (the big gun).
-- **The launcher** (locked, the MLRS; Claude's): the salvo, every ammo left as a strike, all on
-  one target, a small number a strike. Dial: everything (Claude's lean, one tap) or the player's
-  count (a choice on the phone).
-- **The reloader** (locked, Ryan's Rapid piece): adds 2. Dial: Rapid only from an empty magazine
-  (Claude's lean, the speed-loader), Rapid always (as written, ungated: the hole below), a plain
-  reload that takes the turn, or cut for a fourth hardpoint.
-- **The hardpoints**: three beside three locked pieces, or four beside two, a d6 either way (four
-  beside three is a d7). Its stock shows the point: a hot energy gun (the Thermal Ray, the maker's
-  own) and a vent.
+Ryan, 21 October, later: "Desublimation forge is fine, yes. Start at 3, Musk Ox, 0-heat guns
+pay, keep the trickle, Vents 3 and Shields 2 (if ammo is plentiful, we'll dial this or the
+trickle back). Scorched should apply the heat, since it still has a heat bar, not add ammo.
+Scorched and Burn are the only way it really interacts with the heat system unless it opts into
+heat-generating shields, buffs, or debuffs. Only damaging weapons use ammo, not damageless
+debuffs (decision made in Kestrel branch, I think?)
 
-**The packages** (Claude's assembly of the candidates):
+Cannon - good, I think it needs a cooldown if its going to do any amount of noticeable damage
+though. Better shape, maybe: a cluster cannon that does low damage, spreads Flak 1 to all
+targets hit, and returns 1 ammo for each target hit. 2 heat which converts to 1 ammo, assuming
+that's how it will be coded. Since its a status and ammo piece, it probably can be balanced
+without a cooldown.
 
-- **A, the loop** (Claude's lean): the cannon with its refund per hit, the launcher, the
-  reloader gated on empty; three hardpoints. Starts at 3, vents forge. It farms the crowd, cashes
-  on the boss with the energy guns or the salvo, and reloads free when it runs dry, three locked
-  pieces that feed each other.
-- **B, the ramp gun** (closest to Ryan's shape): the cannon with its refund and the reloader;
-  four hardpoints. One sink, the energy guns: the cannon earns, four high-tech guns spend.
-  Simpler, and the build carries more of the identity.
-- **C, the money shot** (the 17 October shape): a dear cannon at 3 with no refund and the
-  reloader; four hardpoints; starts full. The magazine is a budget for one huge shell or several
-  energy shots, the classic artillery, and the closest to inverse heat, so it answers Ryan's
-  question least: the control case.
+Then we have the salvo, which I agree should fire all ammo. I would give it random targeting
+AND spread+penetrate, which means its a decent boss killer but also fulfils the
+area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage.
+Also means that the overall damage can be slightly lower to balance the boss power, and firing
+only a few ammo shots doesn't feel too bad. The artillery piece isn't a precision weapon, in my
+mind.
 
-**Holes in the numbers** (Claude, 21 October):
+The loop of cannon/vents into salvo might be reliable enough, but for testing we can add in the
+quick reloader: Honestly, i'd probably shape it as something that reloads but actually gives
+the machine a good chunk of heat. The max heat on this machine needs to be low, since it
+doesn't need it, so a combo of the quick reload plus any heat effects by the enemy is actually
+a legitimate threat.
 
-- **Shields crowd out vents.** Its weapons make no heat, so a vent's cooling idles on it, and a
-  shield that reloads the same 2 wins every hardpoint. Lean: vents alone reload, by their own
-  number at the passive's rate run backwards (a vent of 4 reloads 2), so one 2:1 rule reads
-  every heat number on its die both ways and the vent has a job only it has here. If the reload
-  turn should be protected, shields reload 1.
-- **The Rapid reloader is a Rapid vent by another name.** Ryan's reason for keeping Rapid vents
-  rare (the Rapid row: a free way out of the resource) holds for ammo, and the action-economy
-  row gates every new Rapid; gated on empty, running dry on purpose becomes a play.
-- **Hit, not kill.** A hit is read at the aim, before the spend; a kill is swingier, and the
-  Kite's and the Ammit's. The refund per foe hit is the Honey Badger's hopper pattern (a crowd as
-  ammunition for the boss); it passes Ryan's rule that a mechanic is its pattern in its context
-  (16 October), since here it prices every gun and is no bonus on one pair, but the kinship is
-  his to weigh.
-- **The floor covers cold guns.** Claude reads "at least one" as every weapon, cold ones
-  included; a free cold gun would field free ballistics and the dichotomy would vanish. His to
-  confirm.
+Don't need to name the reloader right now, just call it "quick reload" for now until we decide
+if its needed. The other two locks need names. I would give it 4 hardpoints either way, so 6 or
+7 sided depending if the loader stays or not."
+
+The debuff kind is the Kestrel branch's, as he thought: a debuff is a weapon of no damage, its
+heat a weapon's (that branch's rules), so his ammo rule reads on the die's kinds: Direct and
+Indirect guns pay ammo, every other kind pays heat.
+
+**The design as it stands** (Ryan's calls of 21 October; every number a placeholder at the
+stock pass's heat scale; Claude's readings and fills marked):
+
+- **The Musk Ox** (Ryan's name; Claude's designation, Pattern 24 Field Battery): Wainwright &
+  Sutler, tier three, assault, wheeled on big wheels, wide (the look below); four hardpoints, a
+  d6 with the two locked guns or a d7 with the quick reload.
+- **The Desublimation Forge** (its passive, Ryan's name): its damaging guns pay ammo instead of
+  heat, 1 for every 2 heat of the gun's own, rounded up, at least 1 a shot, 0-heat guns included.
+  The magazine holds 10, opens each fight at 3 and gains 1 a turn (the trickle). A vent it spends
+  on itself adds 3, a shield 2 (if ammo runs plentiful, this or the trickle comes down). Every
+  other kind keeps heat: debuffs, heat-generating buffs and shields, the foes' Burning, and
+  Scorched, whose extra lands on its heat bar and never on its ammo (the conversion reads a gun's
+  heat as its own machine makes it; no module adds weapon heat today, so Scorched is the one
+  case). Its heat maximum is low: it needs none for its guns, so the quick reload and the foes'
+  heat together are a real threat.
+- **The cluster cannon** (locked, name open): Indirect, a low flat number, Spread and Penetrate
+  (up to four foes; Claude's reading of "cluster", the cannon's shape kept), Flak 1 on every foe
+  it hits, 1 ammo back for every foe it hits, heat 2 (1 ammo), no cooldown: a status and ammo
+  piece, which is why it needs none.
+- **The salvo** (locked, name open): fires every ammo in the magazine, a strike an ammo, each
+  strike at a random live foe with Spread and Penetrate, a low number a strike. A boss killer
+  when the boss stands alone, and area-suppressing fire that obliterates the trash; not a
+  precision weapon (Ryan).
+- **The quick reload** (locked, for testing; its working name until it is kept): Claude's
+  reading, Rapid with its heat as the limiter (the Rapid row's heat, so the empty-magazine gate
+  goes); Claude's fill, 2 ammo and 5 heat against a heat maximum of 10, cooling 1. A vent is its
+  pair: more ammo, cooling, and the turn spent.
+
+**Claude's notes on the calls** (21 October):
+
+- **Flak 1 is gone by the next turn.** Flak halves at the round's end, rounded down, and 1
+  halves to 0, so the cannon's Flak serves the blows that land the turn it fires, the team's
+  after it. The Musk Ox's own salvo comes a turn later at the earliest and finds none; Flak 2
+  leaves one stack for it, if the cannon should set up its own salvo.
+- **The salvo is the biggest per-hit multiplier in the game.** Ten strikes that each reach up to
+  four foes is up to forty hits from one spend, and Flak adds its stacks to every one, so a field
+  the Prairie Dog has flakked turns its low number into a lot (Ryan's note of 19 October: Flak at
+  a point a stack may be overpowered). The strike's number is the lever; the runner reads it with
+  and without Flak.
+- **The random targets pass Ryan's test** (16 October: random that adds feels fine): every strike
+  lands somewhere, and the player steers it by thinning the field first or by firing it at a
+  lone boss. The Whip Scorpion's random blast is the precedent.
+
+**Names for the two locks** (Claude's, for Ryan's pick; none in content or on the reserved list):
+
+- The cluster cannon: the **Canister Recuperator** (Claude's lean: canister shot is the
+  old-world cluster round, and a recuperator is the real artillery part that returns the barrel
+  after recoil, here returning the shells); the **Flak Canister Gun** (plain, and says what it
+  lays); the **Shrapnel Recuperator** (the same joke on the airburst shell's name).
+- The salvo: the **Pepperbox Launcher** (Claude's lean: the pepperbox was the old-West
+  multi-barrel pistol, and to pepper is to scatter small shots, the random spread); the
+  **Ripple-fire Rack** (ripple fire is the real term for a launcher emptying its tubes in
+  sequence); the **Saturation Battery** (plain, an echo of the Suppression Battery); the
+  **Stonk Rack** (British wartime slang for a concentrated barrage, the dumbest-sounding real
+  word, in the spirit of Heliographic).
+
+**Holes in the numbers** (Claude, 21 October; Ryan's calls answered most): shields crowding
+out vents (vents 3, shields 2), the Rapid reloader (its heat the limiter), hit or kill (every
+foe hit), and the floor on cold guns (they pay). Still standing:
+
 - **The siege battery's charge is the kin to watch.** Its input is the same (using components
   adds charge); the line is the output: ammo is the artillery's price, the charge Minerva's
   power. So the artillery's guns keep fixed prices, and spending more for keywords stays the
@@ -164,8 +198,12 @@ heat scale; each dial's lean marked):
   numbers wait on the stock pass's heat scale, where the hottest gun is 3 ammo. A gun whose
   price passes the magazine never fires, so the conversion caps at the magazine or the scale
   guarantees it never arises.
-- **It leaves the heat economy.** The Puffin's growth, Cryo's cooling and the Whip Scorpion's
-  blasts all skip it: the price of firing hot guns without heat, accepted.
+- **The refund repeats the hopper's pattern** (the Honey Badger: a crowd as ammunition for the
+  boss); it passes Ryan's rule that a mechanic is its pattern in its context (16 October),
+  since here it prices every gun.
+- **Its guns leave the heat economy.** The Puffin's growth, Cryo's cooling and the Whip
+  Scorpion's blasts read heat its guns never make; its debuffs, buffs and shields and the foes'
+  heat still reach its bar.
 
 **The look** (Ryan, 21 October: "Wide is good."; Claude's reasons, for the asset session): the wide build. Machines show in a rear
 three-quarter view in the fight and from above on the map; a long truck foreshortens into one
@@ -177,7 +215,7 @@ reactor, so it put the lasers on cartridges). Ryan's long truck (the MEADS and M
 the obvious and effective form; the wide one is his weirder one.
 
 **Names** (Claude's, checked against `content/reserved_names.json`; Ryan, 21 October: "Musk Ox or
-Aurochs, probably"; the rest the bench):
+Aurochs, probably", then the Musk Ox; the rest the bench):
 
 - **Bombardier Beetle**: it stores two reactants apart and fires them boiling hot in pulses,
   stored ammo that fires heat, the passive in one animal; bombardier is also the artillery's rank.
@@ -196,13 +234,15 @@ Aurochs, probably"; the rest the bench):
   battery.
 
 **The passive's name** (Ryan, 21 October: "The passive could be something about forging heat
-into bullets. Not sure. Deposition/desublimation Munitions Forge?"). Claude: desublimation is
+into bullets. Not sure. Deposition/desublimation Munitions Forge?", then "Desublimation forge is
+fine, yes"). Claude: desublimation is
 the word (gas to solid with no liquid between, so the heat a vent pulls off condenses straight
 into shells, 2 heat to 1); deposition means the same and reads as geology or a courtroom; a
 real science word used a little wrong beside plain kit is the maker's voice, as Heliographic
 was. Munitions already names the Cottonmouth's Adaptive Munitions Drum, so the Desublimation
-Forge is the short form if the echo matters. The fiction settles a hole: a forge needs heat, so
-its vents reload and its shields do not. A draft of its shown text: "Its weapons fire forged
+Forge is the short form if the echo matters. The fiction argued that a forge needs heat, so
+its vents reload and its shields do not; Ryan kept both, vents 3 and shields 2 (the design as it
+stands). A draft of its shown text: "Its weapons fire forged
 shells instead of heating it, a shell for every 2 heat, at least one. The forge makes a shell
 each turn, and a vent it spends on itself forges what it pulls off."
 
@@ -228,14 +268,15 @@ does for the maker; shell types, too much for a phone.
 
 ## Open for the session
 
-1. Ryan's calls: a package (A, B, C, or the candidates mixed), and the dials: the start, vents
-   or shields reloading, the reloader's gate, the refund's form, the floor on cold guns.
-2. The name, the Musk Ox or the Aurochs (the look is wide); the passive's name (the
-   Desublimation Munitions Forge, or the short form); the pieces' names after the shape.
+1. Ryan's calls: the two locks' names; the cannon's Flak (1, or 2 to set up its own salvo); the
+   quick reload kept or cut once tested; then the go.
+2. The numbers, all placeholders: the heat maximum and cooling, the cannon's and the salvo's
+   numbers, the quick reload's ammo and heat.
 3. The engine: a magazine beside heat, the conversion read through the effects (a number is a
-   question), a refund per foe hit, a vent's reload, a salvo of strikes by ammo, a Rapid gated
-   on an empty magazine, the die showing the ammo on each gun and a dry gun as unspendable, the
-   bot valuing an ammo.
+   question) on damaging guns only, Scorched's extra kept on the heat bar, a refund per foe hit,
+   a vent's and a shield's reload, a salvo of strikes by ammo at random targets, the quick
+   reload, the die showing the ammo on each gun and a dry gun as unspendable, the bot valuing an
+   ammo.
 
 ## What the session hands back
 

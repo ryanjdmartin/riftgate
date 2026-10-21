@@ -301,7 +301,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the mark's rider from the Kestrel session |
-| `ws_artillery.md` | in session (Ryan's shape, 21 October) | Wainwright & Sutler | 3 | the stock pass's explosives and heat scale |
+| `ws_artillery.md` | in session (the Musk Ox, Ryan's calls of 21 October) | Wainwright & Sutler | 3 | the stock pass's explosives and heat scale |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
