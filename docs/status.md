@@ -140,8 +140,15 @@ document's job and every command are in `README.md`.
   of that ally's heat (a new on_shield_granted effect read at the spend, by the dragged die and
   the bot too; a test on a synthetic passive), the cooling gone, the Backwash Ionizer at 10;
   the bible's Puffin row rewritten in place and its chassis-table line, the Whip Scorpion row's
-  Puffin clause, live v0.228; its brief retired to git; 486 tests green. The others wait on his
-  calls, in order: the Kite's rework, the capital, the bomber. On the branch, not on main.
+  Puffin clause, live v0.228; its brief retired to git; 486 tests green. The Kite's go and the
+  Puffin's tier (21 October): the Kite's rework decided when Ryan named its lock (the bible's
+  new Kite row; its engine and content to come, its tier move with them), the reset gun the
+  Pinion Driver and the old finisher the Coriolis Accelerator (content: the name and the id,
+  the Kite's and the Buzzard's stock, the vocabulary note, the model tool's comments); the
+  Puffin at tier one in content (its stock reads as tier-one pieces and starting blueprints
+  until the stock pass); 486 tests green; live v0.229. Open: which fighter stays at tier one
+  (Ryan's ask; the line brief's section, Claude's lean the Butcherbird). Then the capital and
+  the bomber. On the branch, not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -426,7 +433,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.228 (21 October: the interceptor's, the strafer's, the off-tank's and the Puffin's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.229 (21 October: the interceptor's, the strafer's, the off-tank's, the Puffin's and the Kite's goes, the Puffin at tier one, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

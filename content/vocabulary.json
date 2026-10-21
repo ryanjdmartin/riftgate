@@ -1303,7 +1303,7 @@
    "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder."
+    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). MISSING_STEP is a placeholder."
    }
   },
   {

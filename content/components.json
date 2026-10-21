@@ -352,8 +352,8 @@
    ]
   },
   {
-   "id": "pinion_driver",
-   "name": "Pinion Driver",
+   "id": "coriolis_accelerator",
+   "name": "Coriolis Accelerator",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
@@ -362,7 +362,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It leaves the Kite for the pool as a tier-two or tier-three blueprint once the Kite's rework lands; until then it stays in the Kite's and the Buzzard's stock."
    },
    "face": {
     "kind": "attack",

@@ -31,8 +31,8 @@ burst, a delayed action, a combined entry, own rerolls).
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
-| two | the Puffin (reworked and built 21 October; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
-| two | the Kite (rework; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
+| one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
+| two | the Kite (rework decided 21 October, its engine to come; `kestrel_kite.md`) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber (decided; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
 | three | the gun platform, the capital (proposal, its third form; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 
@@ -117,13 +117,12 @@ One pointer each; the proposal is in the brief named.
   shields 10 (the shield half with the combined entry's engine), so on the Puffin it is the
   cooling, the vent first and the shield reading what is left; and Rapid vents or shields, if
   any exist, never below tier three and two (his rules of the day).
-- **The Kite** stands as its brief left it; the direction reads its chain as a
-  cooldown burst gated by a kill, the row's own shape. The caster-killer niche (its open item
-  2) goes to the interceptor's designator if Ryan takes it; the Kite is the trash chain and
-  the steady doubled gun. Its cold hard hitters are other makers' by design (no Kestrel hole).
-  The records it moves on its go: the to-do's stock pass line (the Pinion Driver fixed on the
-  Kite, the Buzzard's hardpoint a basic) and the bible's stock-pass row.
-  `kestrel_kite.md`, the line review.
+- **The Kite**'s rework is decided (Ryan's go, 21 October, when he named its lock): the reset
+  gun is the Pinion Driver, the old finisher the Coriolis Accelerator, a blueprint once the
+  rework lands; the trash chain and the steady doubled gun, the caster-killer the
+  interceptor's Exposed. Its content and its move to tier two wait on its engine (the bible's
+  Kite row; `kestrel_kite.md`). The to-do's stock pass line and the bible's stock-pass row
+  moved with the go.
 - **The bomber** stands. Two items: the mark's "Rapid, cooldown 1" is the switch-off, the
   ungated form the row re-prices (and the brief's "a free mark every other round" misreads
   the cooldown), so a gate is proposed: Rapid while a mine waits on the field, a setup gate
@@ -267,14 +266,38 @@ Two toward Kestrel's ten, later maker sessions'; the bench for them, one line ea
 - The makers table's "nothing big" takes two exceptions, the bomber heavy and the platform
   heavy or assault, a Lean bending as Leans do.
 
+## Which fighter at tier one (21 October)
+
+- Ryan, 21 October, after moving the Puffin to tier one: "The storm petrel, Puffin, and one of
+  the fighters - not sure which makes sense for t1." So the line stays 3-3-2: the Storm Petrel,
+  the Puffin and a fighter at tier one; the Buzzard, the Kite and the other fighter at tier
+  two; the bomber and the capital at tier three.
+- Claude's lean: the Butcherbird at tier one, the interceptor at tier two.
+  - **With basics alone.** The tier-one test is identity with basics alone. The Butcherbird's
+    two strikes at half show on every gun, basics included. The interceptor's gate fires on a
+    debuff or a buff, and no basic is either, so at tier one it fires on its own lock alone (one
+    round in four, and after a reroll). At tier two its stock may carry tier-one buffs and
+    setters (the Coil, a probe), so its identity shows on the die from the start.
+  - **Complexity.** A chassis's tier is complexity. The interceptor carries a gate, a new status
+    with two halves and two rounds, and it pays off through other makers' pieces: the synergy
+    machine. The Butcherbird is one rule and a spray.
+  - **Tempo.** Two spends a round asked for glass numbers at tier one (its holes); at tier two
+    its numbers can breathe.
+  - **The tender.** A body, a support and a damage dealer, so Kestrel's deal varies by role.
+  - **The cost.** The Butcherbird's start hole (a halved basic against armour 5) sits in the
+    tender, and Exposed, its Kestrel answer, arrives a tier later; the root stays the scales
+    question (section 12) and the stock pass. The Coil is a tier-one piece now (the Puffin's
+    stock), which feeds its strikes from the start.
+
 ## Open for Ryan
 
-1. The per-chassis proposals in their briefs: the interceptor's dive, the bomber's gate and
-   Chain in mines, the Buzzard's stock, the platform's settlements (the Puffin's landed 21
-   October).
-2. The stock kinds above, for the stock pass's list, and which of the seven locks he names
+1. Which fighter at tier one (the section above; Claude's lean the Butcherbird).
+2. The per-chassis proposals in their briefs: the bomber's gate and Chain in mines, the
+   Buzzard's stock, the platform's settlements (the interceptor's, the Puffin's and the
+   Kite's landed 21 October).
+3. The stock kinds above, for the stock pass's list, and which of the seven locks he names
    first.
-3. The leans row's Kestrel line.
+4. The leans row's Kestrel line.
 
 ## What the session hands back
 

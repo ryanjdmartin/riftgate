@@ -4,10 +4,12 @@ The session reworks the Kite from a tier-one glass cannon into a tier-two flying
 accident that scores kills to stay alive, and prices its double so cool hard-hitting guns stop
 being a free lunch on it.
 
-**Status**: direction (Ryan, 18 and 19 October). **Maker**: Kestrel. **Tier**: two, from one.
+**Status**: decided (Ryan's go, 21 October, when he named its lock; the bible's Kite row); its
+engine and content wait, so this brief stays until they land. A direction since 18 and 19
+October. **Maker**: Kestrel. **Tier**: two, from one.
 **Read first**: `docs/briefs/README.md`; the bible's Kite rows and its tiers row
 (section 7 and 10), the cooldown row (section 8); `content/chassis.json` (sparrowhawk) and
-`content/components.json` (pinion_driver); the Kite's rows in `docs/balance.md`.
+`content/components.json` (coriolis_accelerator, the old Pinion Driver); the Kite's rows in `docs/balance.md`.
 
 ## What Ryan said
 
@@ -216,17 +218,17 @@ module slots. Tier two, from one.
 (the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
 that killed, its shots run 5 hotter this fight.
 
-**The lock, the reset gun** (Claude's lean; Ryan's "the reset could be on the locked
+**The lock, the Pinion Driver**, the reset gun (named 21 October; Claude's lean; Ryan's "the reset could be on the locked
 component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0
 (10 under the passive). If its shot kills, every weapon comes back and the Kite acts
-again. The Pinion Driver leaves the lock for the pool as a tier-two or tier-three blueprint
+again. The old finisher (the Coriolis Accelerator since 21 October) leaves the lock for the pool as a tier-two or tier-three blueprint
 (Ryan, 19 October); doubled on this machine it is the execute again, by choice.
 
 **The die.**
 
 | Entry | Piece | Doubled |
 |---|---|---|
-| I | the reset gun: Direct, 15, heat 0 | 30 at heat 10; a kill brings everything back and it acts again |
+| I | the Pinion Driver, the reset gun: Direct, 15, heat 0 | 30 at heat 10; a kill brings everything back and it acts again |
 | II | a cold hard-hitting rolled gun (a 15–30 kinetic) | 30–60 at heat 10 |
 | III | a cold Indirect gun (the back rank), or a second cold gun | doubled at heat 10 |
 
@@ -247,7 +249,7 @@ pilot buying one more for two thirds of its hull, the accident; against a boss a
 round into armour 5 at no tax, a boss's 160 hull in five rounds alone, a dead round in six
 with a reroll. Four kills and every shot costs 30 on a gauge of 40.
 
-**With the team.** It wants the Puffin's overshield and vent, a Barrier, a Shock setter (a
+**With the team.** It wants the Puffin's overshield (its tax heat grows it; the vent went with the Puffin's rework), a Barrier, a Shock setter (a
 doubled shot on a Shocked foe is four times) and the team's rerolls. It gives kills, the
 fight's last blow, and the accident.
 
@@ -257,14 +259,26 @@ trigger (new; the Zoids walker's brief wants it too); act again on a kill throug
 that killed, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
 multiply on the face's number before the adds, the strafer's halving's mirror).
 
-## Open for the session
+## The go (21 October)
 
-1. Ryan's call on the reset gun as the lock (the chain capped at two, the Pinion Driver to
-   the pool) and the numbers: the flat heat, the tax, the heat maximum, the dark rounds, the
-   lock's number; a shield on kill or none.
-2. The niche: the line review (20 October) sends the caster-killer to the interceptor's dive
-   and leaves this machine the chain; Ryan's call.
-3. When it moves: after a Kestrel tier one lands for the tender.
+- Ryan, 21 October: "Name the reset gun the pinion driver, and give the old version something
+  appropriate for a kestrel execute, not too picky. I think I'm comfortable putting the
+  reworked Puffin in tier one, to balance it out. It can go there now."
+- Claude, 21 October: decided as the kit below. The lock is the Pinion Driver, the reset gun;
+  the old finisher takes the name the records had saved for another Kestrel piece since 10
+  October, the Coriolis Accelerator (a sniper's long-shot correction, the shot that finishes
+  what is hurt), the id with it, and leaves for the pool as a tier-two or tier-three blueprint
+  when this rework lands. The Puffin went to tier one in content the same day, so Kestrel's
+  tender deal holds without the Kite and its tier move rides with its own engine. The numbers
+  stand as written (placeholders; no shield on a kill in the first cut). The bible's Kite row
+  carries the design.
+
+## Open for the engine session
+
+1. The numbers as written, placeholders for the runner: the flat heat, the tax, the heat
+   maximum, the dark rounds, the lock's 15.
+2. Answered 21 October: the lock is the Pinion Driver; the caster-killer is the interceptor's
+   Exposed; it moves with its engine, the Puffin carrying Kestrel's tier one meanwhile.
 
 ## Holes already raised
 
@@ -274,7 +288,9 @@ multiply on the face's number before the adds, the strafer's halving's mirror).
   Barrier a kill (the full assassin, immune while farming trash: Ryan's danger).
 - The cooldown property is not built; this rework waits on it with the battlecruiser.
 
-## What the session hands back
+## What the engine session lands
 
-A proposal in chat; on Ryan's go, the bible's Kite rows and tiers row, the content's
-tier and passive, `docs/rules.md`, and this brief retired.
+The cooldown property, the kill trigger and acting again on a kill, the heat tax, the
+printed-only double; then the content (the passive, the Pinion Driver as its lock, the
+Coriolis Accelerator to the pool, the tier move to two), `docs/rules.md` (the cooldown
+property), and this brief retired. The bible's Kite row carries the design since 21 October.
