@@ -1412,8 +1412,8 @@ func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
 
 
 func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() -> void:
-	# The Prairie Dog's fight half (21 October): its clause names Flak before Flak is built,
-	# so the passive stays built and the chassis stays dealable; a status nobody knows is refused.
+	# The Prairie Dog's fight half (21 October): its clause named Flak before Flak was built (the
+	# same day), so the passive stayed built and the chassis dealable; a status nobody knows is refused.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var drafted := ""
@@ -1466,3 +1466,38 @@ func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_seals() -> void:
 	assert_true(m.die.faces[0].has(Face.Keyword.LURE) and m.die.faces[0].has(Face.Keyword.RAPID), "each a lure with Rapid")
 	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "Lockdown's seal: armour +10, 15 heat a turn")
 	assert_eq(m.armour, 5, "base armour 5, so sealed it reads 15 in all")
+
+
+## Flak lands (21 October): the Flakshot Repeater builds with Flak 2 and sprays, the Prairie
+## Dog's clause wakes (a foe carrying Flak hits it 5 lighter), and the validator asks a Flak
+## weapon for its stacks and the stacks for the keyword, as it does Burn's and Cryo's.
+func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carrier() -> void:
+	var fresh := ContentDB.load_default()
+	var m := fresh.make_mech("prairie_dog")
+	var gun: Face = null
+	for f in m.die.faces:
+		if f.component == "flakshot_repeater":
+			gun = f
+	assert_true(gun != null and gun.has(Face.Keyword.FLAK) and gun.flak == 2, "the Repeater carries Flak 2")
+	assert_true(gun.has(Face.Keyword.CLEAVE), "and sprays")
+	var foe := Foe.make("revenant", 100, 20)
+	assert_eq(Effects.damage_taken(m, 20, foe), 20, "a clean striker's blow lands whole")
+	Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	assert_eq(Effects.damage_taken(m, 20, foe), 15, "a foe carrying Flak hits it 5 lighter")
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var mute: Dictionary = db.components["flakshot_repeater"].duplicate(true)
+	mute["face"].erase("flak")
+	db.components["mute_flak"] = mute
+	var stray: Dictionary = db.components["slugthrower"].duplicate(true)
+	stray["face"]["flak"] = 1
+	stray["tier"] = 1
+	db.components["stray_flak"] = stray
+	var refused := {}
+	for e in db.validate():
+		if e.begins_with("component mute_flak") and e.contains("says its stacks"):
+			refused["mute"] = true
+		if e.begins_with("component stray_flak") and e.contains("rides with the Flak keyword"):
+			refused["stray"] = true
+	assert_true(refused.has("mute"), "a Flak weapon with no number is refused")
+	assert_true(refused.has("stray"), "a number with no Flak keyword is refused")

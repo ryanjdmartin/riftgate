@@ -190,6 +190,15 @@ const STATUS := {
 	# (Skirmish.CRYO_COOL_PER_STACK). It never fades on its own: the canister sticks.
 	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter 10 a stack.", "decay": "none",
 		"tags": ["mark"], "effects": []},
+	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
+	# Flak keyword's number. Every blow the foe takes deals a point more a stack, an add before
+	# the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its armour comes off,
+	# and a blow of nothing stays nothing (damage_taken). The stacks halve at the end of each
+	# round, rounded down (Overcharged's clock: Skirmish.end_round halves a foe's), so a sprayer
+	# feeding three a round settles near six and a boss never ramps. Past armour or not is the
+	# stock pass's call; through the plain pipeline, the armour comes off it, until then.
+	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "renew",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
@@ -238,7 +247,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
 ## own buffs (Braced, Kindled, Getting Back Up).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -515,8 +524,11 @@ static func turn_tick(u) -> Dictionary:
 
 
 ## The owner's turn comes: apply this tick (the caller subtracts hp and adds heat), then
-## every tick-decaying status loses a stack and the empty ones go.
-static func tick(u) -> Dictionary:
+## every tick-decaying status loses a stack and the empty ones go. A machine's turn is the
+## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
+## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
+## Overcharged's clock, 21 October).
+static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
 	var keep: Array = []
 	for m in u.modifiers:
@@ -526,7 +538,7 @@ static func tick(u) -> Dictionary:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
-		elif m.decay == DECAY_HALF:
+		elif m.decay == DECAY_HALF and halving:
 			# Rounded down, so it reaches zero on its own (one stack halves to none).
 			m.stacks = int(m.stacks / 2.0)
 			if m.stacks <= 0:
@@ -534,6 +546,20 @@ static func tick(u) -> Dictionary:
 		keep.append(m)
 	u.modifiers = keep
 	return out
+
+
+## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
+## down, Overcharged's clock): every halving status halves and the empty ones go. Its other
+## statuses tick at its action (tick).
+static func halve(u) -> void:
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_HALF:
+			m.stacks = int(m.stacks / 2.0)
+			if m.stacks <= 0:
+				continue
+		keep.append(m)
+	u.modifiers = keep
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -745,7 +771,11 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
+## A blow of nothing (a lure, a web, a probe) stays nothing: an add on what a blow deals
+## (Flak's point a stack) never turns no blow into one.
 static func damage_taken(u, amount: int, source = null) -> int:
+	if amount <= 0:
+		return 0
 	var add := 0.0
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null, source):
@@ -757,6 +787,17 @@ static func damage_taken(u, amount: int, source = null) -> int:
 			"multiply_damage_taken":
 				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((amount + add) * mult)))
+
+
+## What a blow on this unit gains from its flat damage-taken adds alone (a foe's Flak), never
+## its multiplies: the die over a foe folds it in as it does armour, and leaves a Shocked
+## foe's doubling to its chip (Skirmish.shown_number).
+static func damage_taken_add(u, source = null) -> int:
+	var add := 0
+	for pair in _taking_part(u, "static", null, source):
+		if str(pair[0].get("effect", "")) == "add_damage_taken":
+			add += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return add
 
 
 ## A component's reach as it is right now: its own, unless a live set_reach holds. Static

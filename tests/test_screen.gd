@@ -717,11 +717,18 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	var foe: Foe = s.sk.front[0]
 	Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(foe, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
+	Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	s._refresh()
 	var glyphs: Array = []
 	for r in s._foe_rows(foe):
 		glyphs.append(r[0])
 		if r[0] == "web":
 			assert_eq(r[1], ">", "the web's chip points at the neighbour it catches, to its right")
+		if r[0] == "flak":
+			assert_eq(r[1], "3", "Flak's chip counts its stacks, the extra every blow deals")
+		if r[0] == "cryo":
+			assert_eq(r[1], "2", "Cryo's chip counts its stacks (21 October: it had none)")
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
+	assert_true(glyphs.has("flak") and glyphs.has("cryo"), "and Flak and Cryo wear theirs: %s" % str(glyphs))
 	s.free()

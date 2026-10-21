@@ -32,6 +32,7 @@ const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it a
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
+const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -233,6 +234,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
+	# Flak (21 October): a point a stack on every team blow each foe reached takes before the
+	# stacks halve, damage in hand for the team's blows (flak_score).
+	if f.has(Face.Keyword.FLAK):
+		for foe in sk.reached_by(f, target):
+			if not foe.alive():
+				continue
+			var survives_flak := (1.0 - p_kill) if foe == target else 1.0
+			score += survives_flak * flak_score(sk, ms, f, foe, maxf(0.0, float(foe.hp) - mean), foe == target)
 	# What this machine's passives lay on each foe the blow reaches, judged alone (the
 	# funnel-web's Ambush, 18 October): a stack per strike that lands with a number, worth its
 	# ticks over the actions to come on the hull the blow leaves, at the odds the foe outlives
@@ -253,7 +262,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 					laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
-	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS)) + int(f.has(Face.Keyword.WEB)) + laid_apps
+	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS)) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
@@ -300,6 +309,30 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
 	return score - volatile_cost(sk, ms, f, uses)
+
+
+## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes
+## before the stacks halve at the round's end, capped by what the foe will have left. The blows
+## still to come this round are this spend's later strikes and the damaging entries the other
+## machines show unspent, all of them on the spend's target and half on a neighbour it sprays
+## (the team may well pick another); then a round of the team's blows at half the stacks, the
+## halving, a blow a machine on the target and half that elsewhere. Damage in hand, at FLAK_WEIGHT.
+func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: float, is_target: bool) -> float:
+	if f == null or not f.has(Face.Keyword.FLAK) or left <= 0.0:
+		return 0.0
+	var stacks := f.flak + Effects.extra_stacks(ms.unit, "flakked", ms.heat)
+	var now := float(maxi(0, f.strikes - 1))
+	var next := 0.0
+	for other in sk.live_mechs():
+		next += 1.0
+		if other == ms or other.assigned:
+			continue
+		var of := other.face()
+		if of != null and of.is_attack() and (of.power > 0 or of.power_max > 0):
+			now += float(maxi(1, of.strikes))
+	var share := 1.0 if is_target else 0.5
+	var gain := float(stacks) * now * share + float(int(stacks / 2)) * next * share
+	return minf(left, gain) * FLAK_WEIGHT
 
 
 ## What a volatile entry costs its owner in the score: the hull it bites per use, and the

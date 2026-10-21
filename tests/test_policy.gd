@@ -460,3 +460,25 @@ func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	pol.play_round(sk)
 	assert_true(Effects.has(big, "webbed"), "greedy webs the big one")
 	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")
+
+
+## Flak (21 October): the bot values it as damage in hand for the team's blows still to come,
+## so a Flak spray beats the same spray without it while the team has blows to land, and is
+## worth less once the team has spent.
+func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
+	var sk := Skirmish.new(3)
+	var flak := Face.attack(5, L, K.FLAK)
+	flak.flak = 3
+	var plain := Face.attack(5, L)
+	sk.add_mech(_mech("A", Die.single(flak), 0, 200))
+	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
+	sk.add_foes([_ghoul(200)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var with := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	var without := pol.attack_score(sk, sk.mechs[0], plain, sk.front[0])
+	assert_true(with > without, "Flak is worth the team's blows still to come")
+	sk.mechs[1].assigned = true
+	var spent := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	assert_true(spent < with and spent > without, "less once the team has spent, and the halved stacks still count for next round")

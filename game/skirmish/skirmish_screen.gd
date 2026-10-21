@@ -947,6 +947,16 @@ func _foe_rows(foe: Foe) -> Array:
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
 		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current hull a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
+	var flak := Effects.stacks_of(foe, "flakked")
+	if flak > 0:
+		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow it takes
+		# deals, and the round's end halves it.
+		rows.append(["flak", str(flak), "Flak: every blow it takes deals %d more, a point a stack; at the end of the round the stacks halve (%d)" % [flak, int(flak / 2)], Palette.HEAT])
+	var cryo := Effects.stacks_of(foe, "cryoed")
+	if cryo > 0:
+		# The Armadillo's mark (20 October; its chip from 21 October): what a damaging hit on it
+		# cools the hitter, the stacks it spends.
+		rows.append(["cryo", str(cryo), "Cryo: a damaging hit on it spends every stack and cools the hitter %d heat (%d a stack)" % [cryo * Skirmish.CRYO_COOL_PER_STACK, Skirmish.CRYO_COOL_PER_STACK], Palette.HUD])
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
@@ -1019,7 +1029,7 @@ static func status_glyph(id: String) -> String:
 		"sealed":
 			return "lock"
 		"cryoed":
-			return "vent"
+			return "cryo"
 	return "star"
 
 

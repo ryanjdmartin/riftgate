@@ -267,8 +267,9 @@ static func hopper_bonus(u, f: Face) -> int:
 ## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
 ## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
-## to that foe: its missing hull, conditions on it (a status it carries), and its armour off
-## the blow. A shock is left out, the foe's own chip, and spent by the first blow of many.
+## to that foe: its missing hull, conditions on it (a status it carries), its Flak (a point a
+## stack on a blow that deals something) and its armour off the blow. A shock is left out, the
+## foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
@@ -278,6 +279,8 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	for v in [f.power, f.power_max]:
 		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
 		if target != null:
+			if d > 0:
+				d += Effects.damage_taken_add(target, ms.unit)
 			d = maxi(0, d - target.armour_total())
 		out.append(d)
 	return out
@@ -843,6 +846,8 @@ func end_round() -> int:
 		return outcome   # the burn wrecked the last machine: the enemy never acts
 	_enemy_turn()
 	_tick_mechs()
+	for f in field_foes():
+		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Overcharged's clock
 	_trim_overshield()
 	_regrow_parts()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
@@ -884,7 +889,7 @@ func _enemy_turn() -> void:
 	for f in field_foes():
 		if not f.alive():
 			continue   # killed by a die this round; it stands until the dead are cleared, and does nothing
-		var tick := Effects.tick(f)
+		var tick := Effects.tick(f, false)   # a halving status (Flak) waits for the round's end
 		var share := int(tick.get("share", 0))
 		if int(tick["hp"]) - share > 0:
 			log.append("%s burns for %d" % [f.display_name, int(tick["hp"]) - share])
@@ -1244,6 +1249,12 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			if f.has(Face.Keyword.CRYO) and foe.alive():
 				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo), Effects.DECAY_NONE)
 				_note_status(gained, foe, "cryoed")
+			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
+			# number in stacks, whatever the blow dealt, after the blow, so the blow that lays it
+			# never feeds on it; a later strike of the same spend does.
+			if f.has(Face.Keyword.FLAK) and foe.alive():
+				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak), Effects.DECAY_HALF)
+				_note_status(gained, foe, "flakked")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		total += landed

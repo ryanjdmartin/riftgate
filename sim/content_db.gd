@@ -732,6 +732,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: a Cryo weapon says its stacks: cryo, a positive number" % where)
 	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
 		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
+	# And Flak (21 October): the stacks each foe hit gains.
+	if Array(fd.get("keywords", [])).has("flak") and int(fd.get("flak", 0)) <= 0:
+		errs.append("%s: a Flak weapon says its stacks: flak, a positive number" % where)
+	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
+		errs.append("%s: flak (the stacks) rides with the Flak keyword" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -785,7 +790,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
 		# (taunt, corrode once; Web now), and a built component may carry a planned one (the
-		# Flakshot Repeater's Flak, 19 October): Face.from_dict builds the entry without that
+		# Flakshot Repeater's Flak from 19 to 21 October): Face.from_dict builds the entry without that
 		# keyword until it is coded, so content is written ahead of the engine either way,
 		# the keyword never shown and never run. An idea-stage keyword rides only on a draft.
 		var drafted: bool = vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented"
@@ -869,7 +874,7 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
 		if when == "attacker_status" and eff.has("status"):
 			# The status named may be the engine's or one the vocabulary drafts (the Prairie
-			# Dog reads Flak before Flak is built): a drafted status never holds, so the
+			# Dog read Flak from 19 to 21 October, before Flak was built): a drafted status never holds, so the
 			# clause waits inert, and the passive stays built, so the chassis stays dealable.
 			var st := str(eff["status"])
 			var drafted: bool = vocabulary.has(st) and vocabulary[st].get("category") == "status" and vocabulary[st].get("status") != "implemented"

@@ -18,7 +18,9 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## keyword to learn; 18 October: "devour is not a thing"): `devours`, the stacks a kill gives.
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO }
+## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
+## keyword like Burn and Cryo; each foe hit gains that many stacks of Flak.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -40,7 +42,7 @@ const KEYWORD_NAMES := {
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
-	Keyword.WEB: "web", Keyword.CRYO: "cryo",
+	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -79,6 +81,7 @@ var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
+var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -239,6 +242,7 @@ static func from_dict(d: Dictionary) -> Face:
 			f.devours = maxi(1, f.devours)
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn weapon one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
+		f.flak = maxi(0, int(d.get("flak", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -281,6 +285,8 @@ func to_dict() -> Dictionary:
 		d["burn"] = burn
 	if cryo > 0 and has(Keyword.CRYO):
 		d["cryo"] = cryo
+	if flak > 0 and has(Keyword.FLAK):
+		d["flak"] = flak
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -300,6 +306,8 @@ func add_keyword(kw: int) -> void:
 		burn = 1   # a Burn weapon says its stacks; one when nothing says (a synthetic entry, an old save)
 	if kw == Keyword.CRYO and cryo <= 0:
 		cryo = 1
+	if kw == Keyword.FLAK and flak <= 0:
+		flak = 1
 
 
 func has(kw: int) -> bool:
@@ -376,6 +384,7 @@ func duplicate_face() -> Face:
 	f.devours = devours
 	f.burn = burn
 	f.cryo = cryo
+	f.flak = flak
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -440,6 +449,8 @@ func describe() -> String:
 					s += " %d" % burn   # a numbered keyword: the stacks each blow leaves
 				if k == Keyword.CRYO:
 					s += " %d" % cryo
+				if k == Keyword.FLAK:
+					s += " %d" % flak
 			if vents_all:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if power_per_missing > 0:

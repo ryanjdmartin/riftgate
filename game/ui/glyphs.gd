@@ -103,6 +103,27 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.9), c + Vector2(-s * 0.35, s * 0.9), color, width * 0.9)
 			ci.draw_line(c + Vector2(s * 0.35, s * 0.9), c + Vector2(s * 0.95, s * 0.9), color, width * 0.9)
+		"cryo":
+			# A snowflake: six arms, each with a fork near its tip (Cryo, the Armadillo's mark,
+			# 20 October; its glyph from 21 October, the keyword and the foe's chip alike). The web
+			# is rings on three threads; this is forks on six arms.
+			for i in range(6):
+				var a := -PI / 2.0 + i * PI / 3.0
+				var dir := Vector2(cos(a), sin(a))
+				var side := Vector2(-dir.y, dir.x)
+				ci.draw_line(c, c + dir * s, color, width)
+				var fork := c + dir * s * 0.6
+				ci.draw_line(fork, fork + (dir + side) * s * 0.28, color, width * 0.8)
+				ci.draw_line(fork, fork + (dir - side) * s * 0.28, color, width * 0.8)
+		"flak":
+			# An airburst: a small shell ring and the dashes of shrapnel thrown off it (Flak,
+			# 21 October). Burning's flame is a closed shape; this one is open, so the two part
+			# by structure as well as colour.
+			ci.draw_arc(c, s * 0.24, 0.0, TAU, 14, color, width)
+			for i in range(8):
+				var a := PI / 8.0 + i * PI / 4.0
+				var dir := Vector2(cos(a), sin(a))
+				ci.draw_line(c + dir * s * 0.5, c + dir * s, color, width)
 		"self":
 			# One machine, ringed: this component reaches only its own.
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 24, color, width * 0.8)
@@ -292,7 +313,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY

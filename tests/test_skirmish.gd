@@ -4651,13 +4651,15 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	var lead := Effects.effect_text(m.modifiers[0].effects[0])
 	assert_eq(lead, "blows from foes carrying Burning: damage taken -5", "the rule reads with its condition as the lead")
 	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "flakked"}),
-		"blows from foes carrying Flakked: damage taken -5", "a status the engine lacks reads by its id")
+		"blows from foes carrying Flak: damage taken -5", "Flak reads by its name since it was built (21 October)")
+	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "unbuilt"}),
+		"blows from foes carrying Unbuilt: damage taken -5", "a status the engine lacks reads by its id")
 	var other := _mech("B", Die.single(Face.attack(20, L)), 0, 100)
 	other.grant_passive({"id": "tyres2", "name": "Tyres", "description": "", "effects": [
 		{"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status"}]})
 	assert_eq(Effects.damage_taken(other, 20, lit), 15, "named no status, the condition reads any foe status")
 	assert_eq(Effects.damage_taken(other, 20, clean), 20, "and a clean striker is nothing")
-	other.modifiers[0].effects[0]["status"] = "flakked"
+	other.modifiers[0].effects[0]["status"] = "unbuilt"
 	assert_eq(Effects.damage_taken(other, 20, lit), 20, "a status the engine lacks never holds")
 
 
@@ -4780,3 +4782,80 @@ func test_a_damaging_hit_cashes_a_foes_cryo_for_the_hitters_cooling() -> void:
 	var cold := pol.attack_score(s2, s2.mechs[0], c.die.faces[0], s2.front[0])
 	Effects.stack(s2.front[1], Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	assert_true(pol.attack_score(s2, s2.mechs[0], c.die.faces[0], s2.front[1]) > cold, "the hot machine prefers the foe carrying Cryo")
+
+
+## Flak (Ryan's go, 19 October; built 21 October): Flak N lays N stacks on each foe hit, whatever
+## the blow dealt, after the blow, and every blow the foe takes deals a point more a stack: an
+## add before the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its
+## armour, folded into the die's number over it; a blow of nothing stays nothing.
+func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_harder() -> void:
+	var sk := Skirmish.new(1)
+	var spray := Face.attack(5, L, [K.CLEAVE, K.FLAK])
+	spray.flak = 2
+	var gun := Face.attack(10, L)
+	var lure := Face.attack(0, I, K.LURE)
+	sk.add_mech(_mech("A", Die.single(spray), 0, 200))
+	sk.add_mech(_mech("B", Die.single(gun), 0, 200))
+	sk.add_mech(_mech("C", Die.single(lure), 0, 200))
+	sk.add_foes([_ghoul(100), _ghoul(100), _ghoul(100)])
+	sk.begin()
+	sk.start_round()
+	var mid: Foe = sk.front[1]
+	assert_true(sk.assign(0, mid), "spray the middle")
+	assert_eq(mid.hp, 95, "the blow that lays the Flak never feeds on it: a plain 5")
+	assert_eq(sk.front[0].hp, 95, "the spray's neighbour takes its 5")
+	for foe in [sk.front[0], mid, sk.front[2]]:
+		assert_eq(Effects.stacks_of(foe, "flakked"), 2, "each foe hit carries Flak 2")
+	assert_true(Effects.carries_status(mid), "a status the team put on it, for the Tensor")
+	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), [12, 12] as Array[int], "the die over a Flak foe folds in its 2")
+	assert_true(sk.assign(1, mid), "the gun on it")
+	assert_eq(mid.hp, 83, "every blow it takes deals a point more a stack: 10 and 2")
+	assert_true(sk.assign(2, sk.front[2]), "a lure on another")
+	assert_eq(sk.front[2].hp, 95, "a blow of nothing stays nothing, Flak or not")
+	assert_eq(Effects.damage_taken(mid, 0), 0, "nothing in, nothing out")
+	Effects.stack(mid, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(Effects.damage_taken(mid, 10), 24, "adds before multiplies: a Shocked foe takes blow plus Flak, doubled")
+	mid.armour = 5
+	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), [7, 7] as Array[int], "its armour comes off after the Flak, and the shock stays on its chip")
+
+
+## A spend of several strikes lays its Flak a strike at a time, so the later strikes land on
+## what the earlier ones laid.
+func test_a_later_strike_of_a_flak_spend_lands_on_the_flak_the_first_laid() -> void:
+	var sk := Skirmish.new(1)
+	var burst := _strikes(Face.attack(5, L, K.FLAK), 3)
+	burst.flak = 1
+	sk.add_mech(_mech("A", Die.single(burst), 0, 200))
+	var g := _ghoul(100)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, g), "three strikes")
+	assert_eq(g.hp, 100 - 5 - 6 - 7, "5, then 5 and a stack, then 5 and two")
+	assert_eq(Effects.stacks_of(g, "flakked"), 3, "a stack a strike")
+
+
+## Flak halves at the end of each round, rounded down, until gone (Overcharged's clock): a
+## foe's statuses tick at its action, and its Flak waits for the round's end.
+func test_flak_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 500))
+	var g := _ghoul(500, 1)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 5, Effects.DECAY_HALF)
+	Effects.tick(g, false)
+	assert_eq(Effects.stacks_of(g, "flakked"), 5, "a foe's action leaves its Flak alone")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "flakked"), 2, "the round's end halves it, rounded down")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "flakked"), 1, "two to one")
+	sk.start_round()
+	sk.end_round()
+	assert_false(Effects.has(g, "flakked"), "and one halves to none")
+	var ov := _mech("B", Die.single(Face.shield(10)), 0, 100)
+	Effects.stack(ov, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
+	Effects.tick(ov)
+	assert_eq(Effects.stacks_of(ov, "overcharged"), 2, "a machine's tick is the round's end, and halves as before")

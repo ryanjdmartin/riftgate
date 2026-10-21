@@ -75,7 +75,7 @@ skirmish.
    maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
    acts.
 5. The enemy's turn (below). Round-timed effects end.
-6. Machines' statuses tick. Shield past the maximum (overshield) fades.
+6. Machines' statuses tick, and foes' Flak halves. Shield past the maximum (overshield) fades.
 7. Reinforcements step into empty slots. Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands or waits,
@@ -110,15 +110,15 @@ defeat when every machine is wrecked. There is no round limit.
 1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
    the target's missing hull adds.
 2. The attacker's modifiers: adds, then multiplies, then floors.
-3. Each foe hit takes it through its own modifiers (Shocked doubles it), then loses its
-   armour off it.
+3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
+   then loses its armour off it. A blow of nothing stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
 - **The die shows the number** one blow will deal after every modifier. Dragged over a foe
-  it may strike, it shows that foe's number: its missing hull, conditions on it, its armour
-  off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
+  it may strike, it shows that foe's number: its missing hull, conditions on it, its Flak, its
+  armour off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
   tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
@@ -155,8 +155,9 @@ defeat when every machine is wrecked. There is no round limit.
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator, not built): two foes, or a foe and an empty slot,
   trade places; no damage; a massive foe does not move.
-- **Flak** (Wainwright & Sutler's on-hit, not built): Flak N, each foe hit gains N stacks of
-  Flak, whatever the blow dealt.
+- **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
+  of Flak after the blow, whatever it dealt (Flak 2: two stacks), so the blow that lays it never
+  feeds on it and a later strike of the same spend does.
 - **Volatile** (any component): spending it costs its owner 10 hull, past shield and
   armour, before it acts.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
@@ -259,8 +260,9 @@ On a foe:
   the neighbour the burst catches.
 - **Cryo** (debuff): a damaging hit on it spends every stack and cools the hitter 10 a stack;
   a blow of nothing spends none. It never fades on its own.
-- **Flak** (debuff, not built): every blow it takes deals a point more a stack; the stacks
-  halve at the end of each round, rounded down.
+- **Flak** (debuff): every blow it takes deals a point more a stack, before its multiplies and
+  its armour (a Shocked foe takes blow plus Flak, doubled); the stacks halve at the end of each
+  round, rounded down. Past armour or not is the stock pass's call.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -273,7 +275,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed or Cryo (Flak once built).
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -379,7 +381,7 @@ shields do not refill; a pack keeps its survivors, who return whole.
   alone); the target's
   rank (not built: the Cottonmouth's); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
-  hits it 5 lighter, whoever laid the Flak; inert until Flak is built).
+  hits it 5 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
   number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
@@ -396,8 +398,8 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn, a halving one half of them, rounded
-down; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
+and a ticking status loses a stack at its owner's turn, a halving one half of them at the
+round's end, rounded down; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
 when its own rounds run out. A status runs down to zero on its own clock or is timed, never
 both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its

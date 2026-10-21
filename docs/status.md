@@ -114,6 +114,14 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, Flak (Ryan's go, 19 October; the bible's Prairie Dog row), built on main once the
+  numbers branch merged: Flak N on the Flakshot Repeater (Flak 2, Spread, a flat 5, no Rapid),
+  each foe hit gaining the stacks after the blow; every blow on a Flak foe a point more a stack,
+  before Shocked's doubling and the armour, a blow of nothing staying nothing; the stacks halving
+  at the round's end; the airburst chip, and Cryo's chip and snowflake with it (it had none); the
+  die folding Flak in; the bot's `flak_score`; the Prairie Dog's 5 less from a Flak carrier
+  awake. The car's rows with and without it are in `docs/measurements.md` (21 October). The
+  family (an airburst shell, a flak cannon) and past armour or not are the stock pass's.
 - 19 October, the funnel-web's assets (`ccr-ffcf75fa-3gkbz9`): its lowforge model
   (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron), four cuts in the day, each on
   Ryan's notes (the bible's funnel-web row has each and its reasons): a mechanical spider (too
@@ -403,19 +411,6 @@ before it. The three design sessions merged that day are paused, each resuming f
   it; the piece lands in content with its engine and the tier moves then, so the Dingo stays
   dealable until a Wainwright & Sutler tier one beside the Prairie Dog can be (the to-do's
   line); its stock with the stock pass.
-- The Prairie Dog's fight half (Ryan's go, 19 October; its row in section 7): Flak, the
-  maker's on-hit, a foe status that adds a point a stack to every blow it takes and halves at
-  each round's end (Overcharged's clock), on-hit only; laid by the Flakshot Repeater, now a
-  flat 5 that sprays (Spread, built), Flak 2 (planned), its Rapid gone with the pivot; the car is the maker's
-  softener, not a detachment identity; the flat on-hit kind is Flak's, so the Onryō's Grudge
-  finds another shape; Ryan's note: Flak at a point a stack may be overpowered beside
-  Overcharged at a point, read together with Flak's engine, the numbers branch merged on 21 October; the engine is the
-  to-do's line, the family the stock pass's.
-  The pivot landed (Ryan's go, 21 October: Flak 2, Spread, no Rapid; the reduction on the
-  passive): the Repeater's Rapid gone, the passive's second effect 5 less damage from any foe
-  carrying Flak, a damage-taken effect conditioned on the striker's status (attacker_status,
-  built, handed the foe at every blow and in the forecast), inert until Flak lands; the car
-  stays dealable.
 - The Whip Scorpion (Ryan's go, 20 October; its row in section 7): the boiler, the maker's
   sustained damage dealer at tier two, a heavy eight-legged walker whose vents blast a random
   live foe for the heat they take off it (the Thermal Ejection Manifold) and which nothing
