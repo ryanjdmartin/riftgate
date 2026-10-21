@@ -438,6 +438,16 @@ before it. The three design sessions merged that day are paused, each resuming f
   face when the Kestrel branch merges. In content as planned entries (Muster and Rallied in the
   vocabulary); the engine and the assets are the to-do's two lines. The Hoist is no loader for
   the artillery (Ryan, 21 October).
+- The Musk Ox (Ryan's go, 21 October; its row in section 7): the artillery, the maker's second
+  tier three, a wide assault battery on big wheels. Its Desublimation Forge fires its damaging
+  guns from ammo instead of heat (1 for every 10 heat at today's scale, 2 at the pass's; at
+  least 1), a magazine of 10 that opens each fight at 3 and gains 1 a round, its own vents
+  adding 3 and shields 2; everything else keeps heat on a low heat bar. Locked: the Shrapnel
+  Recuperator (Flak 1 for the team and 1 ammo back for every foe hit), the Unrestricted
+  Expenditure (every ammo as a strike at a random foe, Spread and Penetrate) and the quick
+  reload for testing (Rapid, 2 ammo, heat); four hardpoints. In content as planned entries
+  (Ammo a planned resource in the vocabulary); the engine and the assets are the to-do's two
+  lines.
 
 ## Next, in order
 
@@ -455,9 +465,8 @@ to-do's Ryan list).
    Dingo's Translocator and the Prairie Dog's fight half on 19 October, the boiler as the Whip
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
-   Prairie Dog's pivot and the helicarrier, as the Swallowtail, landed (21 October), and the
-   artillery in session on Ryan's shape of the same day (its brief); next, the artillery's
-   calls and go, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
+   Prairie Dog's pivot, the helicarrier as the Swallowtail and the artillery as the Musk Ox
+   landed (21 October); next, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
    first round and its review are in their briefs, none of it answered, Misharu first.
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the

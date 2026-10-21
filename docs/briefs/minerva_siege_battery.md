@@ -74,7 +74,8 @@ Claude's candidates (16 October), each against Ryan's test (when, never how ofte
   hole: against a pack that never aims at it (it is the hardest hull to reach) it fires every
   round, which is a big gun with no limit; its heat is the second price.
 - **A magazine** (Ryan, 20 October: the all-shells form of the third round reads as a Wainwright
-  & Sutler tier three, and has its brief, `ws_artillery.md`; the charge stays this brief's):
+  & Sutler tier three, landed 21 October as the Musk Ox, `git show bc97727:docs/briefs/ws_artillery.md`;
+  the charge stays this brief's):
   each turret holds so many shells a fight (two, say), restocked between
   fights, nothing reloads them in one. The "when" is which moments of the fight: the Antlion
   now or the Sandworm later. The one pure "which moments" shape; its risks are hoarding (shells

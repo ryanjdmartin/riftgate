@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 123 implemented, 18 planned, 0 idea.
+Status: 123 implemented, 19 planned, 0 idea.
 
 ## Resource
 
@@ -15,6 +15,7 @@ Status: 123 implemented, 18 planned, 0 idea.
 | **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. When full it resets and a fresh pack emerges at the rift. | implemented |
 | **Gate Integrity** | A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
 | **Armour** | A chassis number taken off every blow that reaches the hull, flat, never a percentage, a breach's overflow included. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
+| **Ammo** | The Musk Ox's magazine, a bar under its heat bar. Its damaging guns spend ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round; a vent the Musk Ox spends on itself adds 3, a shield 2. With none left, its guns cannot be spent. | planned |
 
 ## Equipment
 
@@ -327,3 +328,4 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Scorch** (implemented): Scorched since 13 October; it left Overheating, the tick, which is now Burning on a machine.
 - **Muster** (planned): Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly ("ultimate tier", "you have to work for it"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Engine: a bar that gains on every roll (a trigger the engine lacks), a spend that consumes a charge for its charged effects (a face property), the bot valuing a charge by the best charged form it could buy. Every number is a placeholder.
 - **Rallied** (planned): Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
+- **Ammo** (planned): Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: "another bar under the heat bar"), never a buff, so no Silence or Dispel reaches it (Claude's reading of his bar, his to overrule). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Engine: the bar, the conversion read through the effects, the refund, the reloads, the salvo, the quick reload, the die showing each gun's price and a dry gun unspendable, the bot valuing an ammo.

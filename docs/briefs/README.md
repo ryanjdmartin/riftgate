@@ -147,7 +147,7 @@ tier three, the Arsenal none, three and three):
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel | the strafer, the shield-spender (the off-tank package: plate, burn, a lure that regens itself; Ryan, 19 October), the interceptor (its first weapon each round Rapid; Ryan, 18 October: a great tier-one design) | Goshawk, Puffin, Sparrowhawk (up, the caster-killer proposed 19 October) | the bomber (Ryan, 15 October; heavy and the capital ship proposed), the gun platform (the team's rerolls as its passes, proposed 19 October) |
-| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the artillery (the ammo build, briefed) |
+| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (tier one in content until its Translocator's engine), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the Musk Ox (the artillery, landed 21 October) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -189,10 +189,8 @@ the siege battery (its third-round candidate: weapons that add no heat and cost 
 vents that reload, the heat gauge a magazine; `minerva_siege_battery.md`) reads to him as a
 Wainwright & Sutler tier three; Claude agrees it is this maker's artillery tenth (the cold
 price the heat row asked for, on the maker whose kit is cold; no other machine is its loader,
-Ryan, 21 October): `ws_artillery.md` (20 October; Ryan's shape 21 October). The old-world artillery of the maker's lean (indirect fire and area) is
-nobody's chassis: its second tier three and its tenth, the last (big Indirect blows with area,
-the stock pass's explosives its kit, mobile where Minerva's siege battery sits on the cooldown
-property), undesigned.
+Ryan, 21 October): landed on 21 October as the Musk Ox (the bible's row; `git show bc97727:docs/briefs/ws_artillery.md`),
+the old-world artillery of the maker's lean, its second tier three and its tenth, the last.
 Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from
 four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit), Venom (a
 share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward
@@ -302,7 +300,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its engine and assets (the to-do); the stock pass's heat prices |
 | `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do); the stock pass's Rapid prices, for its balance |
 | `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the mark's rider from the Kestrel session |
-| `ws_artillery.md` | in session (the Musk Ox, Ryan's calls of 21 October) | Wainwright & Sutler | 3 | the stock pass's explosives and heat scale |
+| `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the stock pass's heat scale |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
 | `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its engine and assets (the to-do) |
@@ -419,6 +417,6 @@ overrule)
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the Baboon with the stock pass. The battlecruiser and the Carrier run apart (Ryan,
    20 October: "not related at all").
-3. After the stock pass: the gunship; the multi-rotor landed on 21 October as the Swallowtail, the
-   boiler on 20 October as the Whip Scorpion.
+3. After the stock pass: the gunship; the multi-rotor landed on 21 October as the Swallowtail and
+   the artillery as the Musk Ox, the boiler on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.

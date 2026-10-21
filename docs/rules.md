@@ -19,7 +19,8 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Fourteen chassis from five makers
-  and four planned, the Cassowary, the Cottonmouth, the Whip Scorpion and the Swallowtail
+  and five planned, the Cassowary, the Cottonmouth, the Whip Scorpion, the Swallowtail and the
+  Musk Ox
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -295,6 +296,14 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed or Cryo (Flak once built)
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
+- **Ammo** (the Musk Ox's Desublimation Forge, not built): its damaging guns spend ammo instead
+  of heating it, 1 for every 10 heat a gun would make, rounded up, at least 1; its debuffs,
+  buffs and shields and the foes' heat land on its heat bar as on any machine's, Scorched's
+  extra included. The magazine holds 10, opens each fight at 3 and gains 1 at the start of
+  every round; a vent it spends on itself adds 3, a shield 2; with none left its guns cannot
+  be spent. Its Shrapnel Recuperator returns 1 for every foe it hits; its Unrestricted
+  Expenditure fires every ammo in the magazine as a strike, each at a random live foe with
+  Spread and Penetrate; its quick reload adds 2, Rapid, for a good chunk of heat.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
   or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
