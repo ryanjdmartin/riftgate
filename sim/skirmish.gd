@@ -223,6 +223,41 @@ func survivors_for(sq: Unit) -> int:
 	return n
 
 
+## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
+## hero, the finale's line), alive on the field or waiting in the pool, a readied one that got
+## back up among them: their content ids, field first. The unit stands while one does.
+func commanders_left(sq: Unit) -> Array:
+	var out: Array = []
+	for f in field_foes():
+		if f.pack_id == sq.id and f.commands and f.alive():
+			out.append(f.content_id)
+	for f in reinforcements:
+		if f.pack_id == sq.id and f.commands:
+			out.append(f.content_id)
+	return out
+
+
+## A boss unit's escort left after this fight (Foe.escorts): its strength on the map.
+func escort_left(sq: Unit) -> int:
+	var n := 0
+	for f in field_foes():
+		if f.pack_id == sq.id and f.escorts and f.alive():
+			n += 1
+	for f in reinforcements:
+		if f.pack_id == sq.id and f.escorts:
+			n += 1
+	return n
+
+
+## The foes of a pack this fight killed, for the salvage the battle tallies: a pack's strength
+## less its survivors; a boss unit's fallen commanders and escort (read before the map takes
+## the result, while its lineup and strength are still the ones it came with).
+func kills_for(sq: Unit) -> int:
+	if sq.is_boss:
+		return maxi(0, maxi(1, sq.lineup.size()) - commanders_left(sq).size()) + maxi(0, sq.strength - escort_left(sq))
+	return maxi(0, sq.strength - survivors_for(sq))
+
+
 func any_assigned() -> bool:
 	for m in mechs:
 		if m.assigned:
@@ -700,6 +735,8 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 				if o != f and o.alive():
 					return true
 			return false
+		"ally_unready":
+			return _unready_ally(f) != null
 		"machine_buffed":
 			for ms in live_mechs():
 				if Effects.buff_stacks(ms.unit) > 0:
@@ -1656,6 +1693,15 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
+		"revive_once_ally":
+			# Reraise on an ally (Ryan, 16 October: the promoted Cleric's, cast on the other
+			# party members, never itself): Getting Back Up on one of its own.
+			var ally := _unready_ally(f)
+			if ally == null:
+				log.append("%s: %s, and none of its own needs readying" % [f.display_name, str(a.get("name", "readies"))])
+			else:
+				Effects.stack(ally, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
+				log.append("%s: %s, %s will return once" % [f.display_name, str(a.get("name", "readies")), ally.display_name])
 		"summon":
 			var count := maxi(1, int(a.get("count", 1)))
 			var who := str(a.get("foe", ""))
@@ -1724,6 +1770,20 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			log.append("%s: %s, the showing component of %s is corrupted" % [f.display_name, str(a.get("name", "unravels")), ", ".join(hit_names) if not hit_names.is_empty() else "nobody"])
 		_:
 			log.append("%s: %s" % [f.display_name, str(a.get("name", "acts"))])
+
+
+## The one a Reraise on an ally readies: a live foe on the field other than the caster, not
+## readied already and able to get back up (one gone whole cannot); a party member before the
+## rest of its own, the heaviest hitter first (Foe.threat), then the order they stand. Null
+## when there is none.
+func _unready_ally(caster: Foe) -> Foe:
+	var best: Foe = null
+	for o in field_foes():
+		if o == caster or not o.alive() or o.stays_down or Effects.has(o, "risen"):
+			continue
+		if best == null or (o.hero and not best.hero) or (o.hero == best.hero and o.threat() > best.threat()):
+			best = o
+	return best
 
 
 ## The Prairie Dog's screen on a withdrawal (28 September; built 30 September): a machine with

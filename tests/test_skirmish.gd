@@ -5514,3 +5514,39 @@ func test_a_swap_trades_two_foes_or_pulls_one_into_an_empty_slot() -> void:
 	s2.start_round()
 	assert_false(s2.targets_for(0).has(big), "a massive foe is no first target")
 	assert_false(s2.swap_targets(small).has(big), "nor a second")
+
+
+## Reraise on an ally (Ryan, 16 October: the promoted Cleric's, cast on the other party
+## members, never itself): Getting Back Up on one of its own not yet readied, a party member
+## before the rest, the heaviest hitter among them first; with every one readied the move
+## has no case to cast, and a readied ally gets back up once, whole.
+func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 400, 400))
+	var cleric := Foe.make("cleric", 90, 10, true)
+	cleric.hero = true
+	cleric.actions = [_special("buff", "revive_once_ally", {"when": ["ally_unready"]}), Foe.basic_action()]
+	var brute := _ghoul(100, 40)   # the heaviest hitter, and no party member
+	var squire := _ghoul(100, 10)
+	squire.hero = true
+	var knight := _ghoul(100, 20)
+	knight.hero = true
+	sk.add_foes([brute, squire, knight, cleric])
+	sk.begin()
+	var reraise: Dictionary = cleric.actions[0]
+	assert_true(sk.legal_actions(cleric).has(reraise), "one of its own is not readied, so it may cast")
+	var readied: Array = []
+	for i in range(3):
+		sk.start_round()
+		cleric.action = reraise
+		sk.end_round()
+		for f in [brute, squire, knight]:
+			if Effects.has(f, "risen") and not readied.has(f):
+				readied.append(f)
+	assert_eq(readied, [knight, squire, brute], "the party first, the heavier hitter of it first, then the rest")
+	assert_false(Effects.has(cleric, "risen"), "never itself")
+	assert_false(sk.legal_actions(cleric).has(reraise), "with every one readied it has nothing to cast")
+	assert_true("\n".join(sk.log).contains("revenant will return once"), "the log names the one readied")
+	knight.hp = 0
+	sk._clear_dead_slots()
+	assert_true(sk.reinforcements.has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up into the pool, whole")

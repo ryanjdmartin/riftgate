@@ -38,7 +38,9 @@ var die = null                   # foes have no die; the pipeline asks, so the f
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
 var last_special: String = ""    # the special it announced last round, so none fires twice running
 var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
-var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
+var hero: bool = false           # one of the party: a hero (content `hero`, human-sized, a domain's final, dealt from its bench) or its promoted form at the finale (content `promotes`)
+var commands: bool = false       # a commander of its boss unit (the faction's boss, a final's hero, one of the finale's line), marked as the unit unpacks: the unit stands while one does
+var escorts: bool = false        # the wildlife beside a boss unit's commanders (a final's), marked as the unit unpacks: the unit's strength counts them
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
 var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
@@ -57,13 +59,13 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt", "machine_buffed"]
+const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
 const WHEN_TEXT := {
 	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
 	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
 	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
-	"machine_buffed": "when a machine carries a buff",
+	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
 }
 
 
@@ -229,6 +231,9 @@ func strikes() -> int:
 ##           round (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
+##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
+##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
+##           member first, the heaviest hitter among them, then the rest of its own the same way
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
@@ -242,13 +247,13 @@ func strikes() -> int:
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
-	"buff": ["revive_once", "summon", "rally"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally"],
 	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "revive_once_ally", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick

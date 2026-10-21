@@ -358,14 +358,14 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 	return best
 
 
-## One pack's walk. A boss patrols. A hunter heads for the nearest hex it can reach that puts
+## One pack's walk. A boss patrols, its escort with it. A hunter heads for the nearest hex it can reach that puts
 ## its prey inside its ring, or as near as it gets; a pusher for the nearest hex of the gate's
 ## apron. It walks as far as its move goes, round machines and the other packs, never ending
 ## under a flyer. A pusher with no way to the gate waits, and the map says so.
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
 	w.end = sq.pos
-	if sq.is_boss and sq.strength == 0:
+	if sq.is_boss:
 		var step := _patrol_step(sq, blocked)
 		if step != sq.pos:
 			w.path.append(step)
@@ -479,7 +479,7 @@ func forced_fights() -> Array:
 	var order: Array = []
 	var by_prey: Dictionary = {}
 	for sq in packs():
-		if sq.behaviour != "hunt" or (sq.is_boss and sq.strength == 0):
+		if sq.behaviour != "hunt" or sq.is_boss:
 			continue
 		var prey := pick_prey(sq)
 		if prey == null or not in_ring(sq, prey):
@@ -567,6 +567,19 @@ func apply_skirmish_result(sk: Skirmish) -> void:
 			log.append("%s is wrecked" % ms.unit.display_name)
 			units.erase(ms.unit)
 	for sq in sk.packs:
+		if sq.is_boss:
+			# A boss unit stands while one of its commanders does, holding the rift: its lineup
+			# the commanders still standing, its strength the escort left (found 21 October: a
+			# withdrawal counted the boss among its strength, so it walked as a pack and came back
+			# with a foe of the spawn list beside it).
+			var standing := sk.commanders_left(sq)
+			if standing.is_empty():
+				log.append("%s destroyed" % sq.display_name)
+				units.erase(sq)
+			else:
+				sq.lineup = standing
+				sq.strength = sk.escort_left(sq)
+			continue
 		var left := sk.survivors_for(sq)
 		if left <= 0:
 			log.append("%s destroyed" % sq.display_name)

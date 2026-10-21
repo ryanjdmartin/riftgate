@@ -40,7 +40,7 @@ FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", 
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "scramble": "scrambled", "silence": "silenced"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
-                       "rally": "kindled", "revive_once": "risen"}
+                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen"}
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt"}
 VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
@@ -156,9 +156,15 @@ def tally(words):
         if m.get("text"):
             passive(m["text"], "%s (module)" % m["name"], "module", None)
 
-    for foe in load("foes.json")["entries"]:
+    raw = {e["id"]: e for e in load("foes.json")["entries"]}
+    for foe in raw.values():
         name = foe.get("name", foe["id"])
         whom = the(name)
+        if foe.get("promotes") in raw:
+            # A promoted form keeps its hero's name (the content takes it as it loads); only its
+            # own moves are its entry's, the rest counted on its hero.
+            name = foe.get("name", raw[foe["promotes"]].get("name", foe["id"]))
+            whom = "the promoted " + (name[4:] if name.startswith("The ") else name)
         for a in foe.get("actions", []):
             planned = a.get("status", "implemented") != "implemented"
             move = "%s's %s" % (whom, a.get("name", a.get("id")))

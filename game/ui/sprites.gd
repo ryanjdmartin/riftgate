@@ -14,11 +14,22 @@ static var _cache: Dictionary = {}
 
 
 static func combat_foe(foe_id: String) -> Texture2D:
-	return _load("res://art/foes/%s_combat.png" % foe_id)
+	return _foe("res://art/foes/%s_combat.png", foe_id)
 
 
 static func map_foe(foe_id: String) -> Texture2D:
-	return _load("res://art/foes/%s_map.png" % foe_id)
+	return _foe("res://art/foes/%s_map.png", foe_id)
+
+
+## A foe's art, or a promoted form's hero's while it has none of its own (its boss register
+## waits on Ryan's picks).
+static func _foe(pattern: String, foe_id: String) -> Texture2D:
+	var tex := _load(pattern % foe_id)
+	if tex == null:
+		var base := str(ContentDB.load_default().foes.get(foe_id, {}).get("promotes", ""))
+		if not base.is_empty():
+			tex = _load(pattern % base)
+	return tex
 
 
 ## The rift on the map: a strip of three frames (tools/foeforge `cut-rift`), or null.

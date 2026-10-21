@@ -281,8 +281,8 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
-- **Getting Back Up** (buff, Reraise): after it falls it returns to the reinforcements once,
-  whole, unless it self-destructed.
+- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
+  returns to the reinforcements once, whole, unless it self-destructed.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
@@ -344,7 +344,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   the same special twice running while anything else is open. Conditions: below half, hurt,
   fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
   machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
-  hurt, a machine carrying a buff. A move may
+  hurt, a machine carrying a buff, one of its own not readied. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field.
@@ -366,6 +366,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
   next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
   value), brace all (the same on every foe in the fight, through the next round), revive once,
+  revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
+  party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
@@ -477,10 +479,15 @@ a stat.
   stops, keeping whatever move and action they had; it cannot stop where a rider cannot be set
   down.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
-  be attacked from the first turn; its death wins the battle. A withdrawal leaves it standing.
+  be attacked from the first turn; its death wins the battle. The unit at the rift commands
+  it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
+  one for each other column), or the finale's line; it stands while one of its commanders
+  does and holds the rift whatever its escort, and a withdrawal leaves it standing with the
+  commanders and the escort that survived, whole.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
-- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies.
+- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
+  (every commander of the unit at the rift).
 - Not built: city defences, the Rupture meter and its Fractures, the sealed boss, rift tiles.
 
 ## The campaign
@@ -499,7 +506,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   to its end and a team wipe is the graded loss; a withdrawal from a battle is not built (open:
   the bible's section 4).
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
-  10 salvage a kill (to be weighted by the foe's threat, not built); 100 Favour less 1 per gate
+  10 salvage a kill, the boss's included (to be weighted by the foe's threat, not built); 100 Favour less 1 per gate
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (unpacking and offers
   not built).
@@ -515,10 +522,18 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   2 + tier (tier = the Convergence ÷ 4).
 - **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a thinned one)
   and from tier 1 a guest, whose packs alternate with the lead's in the spawn cycle.
-- **Finals and finale**: three bosses of one domain beaten make its next rift a final; a won
-  final thins the domain. The finale is due at Convergence 12, one sooner per fallen city; the
-  capital is then the only front. Winning it wins the run. (Not built: the party dealt from
-  the benches, heroes in finals, the promoted finale.)
+- **The party**: dealt as the run starts, one hero to each domain from its bench, the front
+  jobs and the back as even as the benches allow (two and two), by the seed; no job changes
+  after.
+- **Finals and finale**: three bosses of one domain beaten make its next rift a final, fought
+  against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
+  when the hero falls, and a won final thins the domain. The finale is due at Convergence 12,
+  one sooner per fallen city; the capital is then the only front. It is fought against the
+  party promoted, a column a domain in the content's order: each hero's promoted form (its
+  hero's kit, massive, armour 5, one move more), and for a domain whose final was won a
+  standing domain's boss, each standing boss drawn in turn before any comes twice. Winning
+  it wins the run. (Not built: the party card, the reserve of elites and bosses behind the
+  line.)
 - **Between runs**: a finished run adds its blueprints to the pool and its chassis and beaten
   domains to the codex; a win clears a difficulty tier (`sim/profile.gd`, run by tests only so
   far).

@@ -103,7 +103,8 @@ DRAFTS = ROOT / "tools" / "foeforge" / "drafts.json"
 def load_foes():
     """Every foe in content, then the art subjects ahead of content (drafts.json: the bosses,
     elites and summons marked in chat, 15 October), content winning on an id both hold."""
-    foes = {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
+    # A promoted form draws as its hero's boss register, on its hero's row, so it is no subject.
+    foes = {e["id"]: e for e in json.loads(FOES.read_text())["entries"] if not e.get("promotes")}
     if DRAFTS.exists():
         for e in json.loads(DRAFTS.read_text())["entries"]:
             foes.setdefault(e["id"], e)

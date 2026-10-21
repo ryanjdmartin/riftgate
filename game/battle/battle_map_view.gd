@@ -328,9 +328,12 @@ func _tag_at(local: Vector2) -> Unit:
 	return null
 
 
-## Map sprite id for an enemy: its foe type, or the faction's boss for a boss pack.
+## Map sprite id for an enemy: its foe type, or for a boss unit its first commander (a final's
+## hero, the finale's line) or the faction's boss.
 static func foe_sprite_id(u: Unit) -> String:
 	if u.is_boss:
+		if not u.lineup.is_empty():
+			return str(u.lineup[0])
 		return str(ContentDB.load_default().factions.get(u.faction, {}).get("boss", ""))
 	return u.foe_id
 
@@ -827,7 +830,7 @@ func _draw_tags() -> void:
 			var r := 12.0
 			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)]), border)
 			draw_string(Hud.mono(), c + Vector2(-4.0, 5.0), sq.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Palette.BG)
-		var label := ("×%d" % sq.strength) if sq.strength > 0 else "BOSS"
+		var label := "BOSS" if sq.is_boss else "×%d" % sq.strength
 		draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y - 6.0), label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, Palette.INK)
 		# A chevron on the outer edge, pointing the way to the pack.
 		var mid := rect.position.x + rect.size.x * 0.5

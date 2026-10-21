@@ -639,3 +639,86 @@ func test_the_hexes_moved_are_tallied_and_an_undo_takes_them_back() -> void:
 	assert_eq(int(b.sponsorship["hexes_moved"]), 0, "taken back with the move")
 	route = b.move_to(m, h)
 	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "and counted again when it goes")
+
+
+## A boss withdrawn from holds the rift still (found 21 October: the withdrawal counted the
+## boss among its strength, so it walked as a pack and came back with a foe of the spawn list
+## beside it), and its death counts among the battle's kills.
+func test_a_boss_withdrawn_from_holds_the_rift_and_its_kill_counts() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	_engage(b, b.boss, m)
+	var sk := b.attack(b.boss, [m])
+	sk.begin()
+	sk.start_round()
+	sk.withdraw()
+	b.finish_skirmish()
+	assert_true(b.field.units.has(b.boss) and b.boss.is_boss, "still on the map, still the boss")
+	assert_eq(b.boss.strength, 0, "no escort grew out of it")
+	assert_eq(b.db.foes_for(b.boss).size(), 1, "it comes back alone")
+	var before := b.foes_killed
+	b.spent.clear()   # a fresh turn's actions, without the enemy's turn between
+	var sk2 := b.attack(b.boss, [m])
+	_win(sk2)
+	b.finish_skirmish()
+	assert_eq(b.foes_killed, before + 1, "the boss's death is a kill")
+	assert_eq(b.outcome, Battle.Outcome.VICTORY, "and the rift is sealed")
+
+
+## A final (the bible's section 9): the dealt hero commands the rift, in its rank, with its
+## domain's wildlife beside it; the unit stands while its hero does, its escort counted as
+## its strength, and the battle is won when the hero falls, whatever is left of the escort.
+func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
+	var db := ContentDB.load_default()
+	var fid := ""
+	for f in db.factions.keys():
+		if not db.bench_of(str(f)).is_empty():
+			fid = str(f)
+			break
+	var hero := str(db.bench_of(fid)[0])
+	var escort := str(db.spawn_table(fid)[0][0])
+	var b := Battle.new(3)
+	b.lineup = [hero]
+	b.escort = [escort, 3]
+	b.setup(_team(), fid)
+	assert_eq(b.boss.lineup, [hero], "the hero commands the rift")
+	assert_eq([b.boss.foe_id, b.boss.strength], [escort, 3], "its wildlife with it")
+	var m: Unit = b.mechs()[0]
+	_engage(b, b.boss, m)
+	var sk := b.attack(b.boss, [m])
+	assert_true(b.boss_fight, "the commander's fight")
+	var commanders := 0
+	var escorts := 0
+	for f in sk.reinforcements:
+		commanders += 1 if f.commands else 0
+		escorts += 1 if f.escorts else 0
+	assert_eq([commanders, escorts], [1, 3], "it unpacks into its hero and its escort")
+	sk.begin()
+	sk.start_round()
+	_fell(sk, func(f: Foe) -> bool: return f.escorts, 1)
+	sk.withdraw()
+	b.finish_skirmish()
+	assert_true(b.field.units.has(b.boss), "the hero stands, so its unit does")
+	assert_eq([b.boss.lineup, b.boss.strength], [[hero], 2], "its escort a foe short")
+	b.spent.clear()   # a fresh turn's actions, without the enemy's turn between
+	var sk2 := b.attack(b.boss, [m])
+	sk2.begin()
+	sk2.start_round()
+	_fell(sk2, func(f: Foe) -> bool: return f.commands, 1)
+	sk2.withdraw()
+	b.finish_skirmish()
+	assert_false(b.field.units.has(b.boss), "the hero fell, and its unit with it")
+	assert_eq(b.outcome, Battle.Outcome.VICTORY, "the final is won with the escort still standing")
+
+
+## Fell `n` of a fight's foes that `which` picks, on the field or still waiting.
+func _fell(sk: Skirmish, which: Callable, n: int) -> void:
+	for f in sk.field_foes():
+		if n > 0 and which.call(f):
+			f.hp = 0
+			n -= 1
+	sk._clear_dead_slots()
+	for f in sk.reinforcements.duplicate():
+		if n > 0 and which.call(f):
+			sk.reinforcements.erase(f)
+			n -= 1

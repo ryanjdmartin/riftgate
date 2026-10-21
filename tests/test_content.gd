@@ -1019,6 +1019,12 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
 			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
+		elif f.hero and db.foes[id].has("promotes"):
+			# A promoted form (the bible's section 9): its hero's moves and one more, massive and
+			# armoured.
+			var base := db.make_foe(str(db.foes[id]["promotes"]))
+			assert_true(f.actions.size() >= base.actions.size() and f.actions.size() <= base.actions.size() + 1, "%s, a promoted form, runs its hero's moves and at most one more" % id)
+			assert_true(f.is_massive() and f.armour > 0, "%s, a promoted form, is massive and armoured" % id)
 		elif f.hero:
 			# A hero has three moves (decided 9 October); one may still be planned, so two run.
 			assert_true(f.actions.size() >= 2 and f.actions.size() <= 3, "%s, a hero, has two or three moves running" % id)
@@ -1592,3 +1598,53 @@ func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("reaches_all")), "a vent never reaches every foe")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")
+
+
+## A promoted form (the bible's section 9): its entry holds what the class change adds and
+## takes the rest from its hero as the content loads, a move of its own with one of its hero's
+## ids taking that move's place; the validator holds it massive, a hero's, one to a hero, and
+## a hero the run may deal needs one.
+func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var fid := str(db.factions.keys()[0])
+	db.foes["test_hero"] = {"id": "test_hero", "name": "The Tester", "faction": fid, "hero": true,
+		"design": {"fantasy": "a test"}, "codex": "c", "flavour": "f", "hp": 70, "attack": 15, "rank": "back", "aim": "focus",
+		"actions": [{"id": "jab", "name": "Jab", "kind": "attack", "weight": 2, "text": "", "status": "implemented"},
+			{"id": "guard", "name": "Guard", "kind": "defend", "effect": "brace", "value": 5, "weight": 1, "text": "", "status": "implemented"}]}
+	db.foes["test_hero_up"] = {"id": "test_hero_up", "promotes": "test_hero", "size": 2, "rank": "front", "armour": 5,
+		"design": {"fantasy": "its class change"},
+		"actions": [{"id": "guard", "name": "Guard", "kind": "defend", "effect": "brace", "value": 10, "weight": 1, "text": "", "status": "implemented"},
+			{"id": "ready", "name": "Ready", "kind": "buff", "effect": "revive_once_ally", "weight": 1, "when": "ally_unready", "text": "", "status": "implemented"}]}
+	db._resolve_promotions()
+	var whole: Dictionary = db.foes["test_hero_up"]
+	assert_eq(str(whole["name"]), "The Tester", "the same name, its hero's")
+	assert_eq([int(whole["hp"]), int(whole["attack"]), str(whole["aim"]), str(whole["faction"])], [70, 15, "focus", fid], "its hero's numbers, sense and domain")
+	assert_eq([int(whole["size"]), str(whole["rank"]), int(whole["armour"])], [2, "front", 5], "massive, front, armour 5: its own")
+	assert_eq(whole["actions"].map(func(a): return str(a["id"])), ["jab", "guard", "ready"], "its hero's moves, then its own")
+	assert_eq(int(whole["actions"][1]["value"]), 10, "a move of its own with a hero's id takes that move's place")
+	assert_false(whole.has("hero"), "it is no hero itself")
+	assert_eq(str(whole["design"]["fantasy"]), "its class change", "its design is its own")
+	assert_eq(db.foes["test_hero"]["actions"].size(), 2, "the hero's own kit is untouched")
+	assert_eq(db.promoted_form("test_hero"), "test_hero_up", "the hero finds its promoted form")
+	var f := db.make_foe("test_hero_up")
+	assert_true(f.hero and f.is_massive() and f.armour == 5, "made, it is one of the party, massive and armoured")
+	assert_true(db.validate().is_empty(), "it validates: %s" % str(db.validate()))
+	var refusals := func(word: String) -> bool:
+		for e in db.validate():
+			if e.contains(word):
+				return true
+		return false
+	whole["size"] = 1
+	assert_true(refusals.call("a promoted form is massive"), "a promoted form stands one slot high: refused")
+	whole["size"] = 2
+	db.foes["test_hero_up2"] = whole.duplicate(true)
+	db.foes["test_hero_up2"]["id"] = "test_hero_up2"
+	assert_true(refusals.call("a hero has one promoted form"), "a second class change for one hero: refused")
+	db.foes.erase("test_hero_up2")
+	whole["promotes"] = str(db.spawn_table(fid)[0][0])
+	assert_true(refusals.call("which is no hero"), "a class change of the rank and file: refused")
+	whole["promotes"] = "test_hero"
+	db.foes.erase("test_hero_up")
+	db.factions[fid]["bench"] = Array(db.factions[fid].get("bench", [])) + ["test_hero"]
+	assert_true(refusals.call("bench hero test_hero has no promoted form"), "a hero the run may deal without its class change: refused")

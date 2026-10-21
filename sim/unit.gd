@@ -75,14 +75,16 @@ var footprint: Array[Vector2i] = [Vector2i.ZERO]
 var facing: int = 0
 
 # Enemy packs only. A pack is one foe type times a strength; a boss is a pack with `is_boss`
-# set, which unpacks into the faction's boss (whatever its size: big is apart from boss).
+# set, which holds the rift and unpacks into its commanders (its lineup, or the faction's boss
+# whatever its size: big is apart from boss), then its escort, its foe type times its strength.
 var faction: String = ""
-var foe_id: String = ""      # content id of the foe this pack is made of
-var strength: int = 6        # how many foes the pack holds
+var foe_id: String = ""      # content id of the foe this pack is made of (a boss's escort)
+var strength: int = 6        # how many foes the pack holds (a boss: its escort, none for a boss alone)
+var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
-var is_boss: bool = false    # this unit is the faction's boss (`elite` until 15 October, the word now the elites')
+var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
 var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
 var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
 

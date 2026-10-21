@@ -152,9 +152,11 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
 
-# the balance report: every chassis alone and the starting team against every pack and against
-# each faction's whole formation in one fight, played by random and by greedy over 200 seeds a
-# cell, written to docs/balance.md (about half an hour); the team cells run under both targeting
+# the balance report: every chassis alone and the starting team against every pack, against
+# each faction's whole formation in one fight and against the party (each bench hero's final with
+# its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
+# and by greedy over 200 seeds a cell, written to docs/balance.md (about an hour on one core, a
+# quarter of that in four parts); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,

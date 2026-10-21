@@ -422,7 +422,8 @@ func _fill_packs() -> void:
 		var ob := _picker()
 		for fid in foes:
 			var f: Dictionary = db.foes[fid]
-			ob.add_item("%s  (%s, %s)" % [f["name"], f.get("faction", ""), f.get("rank", "front")])
+			# A promoted form shares its hero's name (Ryan, 21 October), so the picker says which.
+			ob.add_item("%s  (%s, %s)" % [f["name"], f.get("faction", ""), "promoted" if f.has("promotes") else f.get("rank", "front")])
 			ob.set_item_metadata(ob.item_count - 1, fid)
 		ob.select(_index_of(ob, str(setup.packs[i][0])))
 		ob.item_selected.connect(func(k: int) -> void:

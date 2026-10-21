@@ -61,6 +61,7 @@ func load_dir(dir: String) -> void:
 	categories = v.get("categories", [])
 	factions = _index(_read(dir + "factions.json"))
 	foes = _index(_read(dir + "foes.json"))
+	_resolve_promotions()
 	var c := _read(dir + "chassis.json")
 	chassis = _index(c)
 	makers = {}
@@ -101,6 +102,44 @@ func _read(path: String) -> Dictionary:
 		load_errors.append("%s is not valid JSON" % path)
 		return {}
 	return parsed
+
+
+## A promoted form's entry holds what its class change adds (the bible's section 9: massive,
+## armour 5, one move more) and takes the rest from its hero as the content loads, so every
+## reader sees a whole entry: each field it does not set, and the hero's moves before its own
+## (a move of its own with a hero's move's id takes that move's place). `hero` and `design`
+## stay its own. An entry naming no hero is left as written, for the validator to refuse.
+func _resolve_promotions() -> void:
+	for id in foes.keys():
+		var e: Dictionary = foes[id]
+		var base_id := str(e.get("promotes", ""))
+		if base_id.is_empty() or not foes.has(base_id) or foes[base_id].has("promotes"):
+			continue
+		var whole: Dictionary = foes[base_id].duplicate(true)
+		whole.erase("hero")
+		whole.erase("design")
+		for k in e.keys():
+			if k != "actions":
+				whole[k] = e[k]
+		var own: Array = e.get("actions", []) if e.get("actions", []) is Array else []
+		var by_id := {}
+		for o in own:
+			if o is Dictionary:
+				by_id[str(o.get("id", ""))] = o
+		var acts: Array = []
+		var taken := {}
+		for a in foes[base_id].get("actions", []):
+			var aid := str(a.get("id", "")) if a is Dictionary else ""
+			if by_id.has(aid):
+				acts.append(by_id[aid].duplicate(true))
+				taken[aid] = true
+			else:
+				acts.append(a.duplicate(true) if a is Dictionary else a)
+		for o in own:
+			if not (o is Dictionary and taken.has(str(o.get("id", "")))):
+				acts.append(o.duplicate(true) if o is Dictionary else o)
+		whole["actions"] = acts
+		foes[id] = whole
 
 
 func _index(d: Dictionary) -> Dictionary:
@@ -234,7 +273,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
-	f.hero = bool(d.get("hero", false))
+	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
 	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
 	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
@@ -446,16 +485,23 @@ func pack_profiles() -> Dictionary:
 
 
 ## Unpack a battlefield pack into skirmish foes: its foe type times its strength. A boss
-## pack (`is_boss`) unpacks into the faction's boss first. A pack with no foe type falls back
-## to the first entry of its faction's spawn list.
+## pack (`is_boss`) unpacks into its commanders first, each marked `commands`: its lineup (a
+## final's hero, the finale's line), or the faction's boss without one; then its escort, its
+## foe type times its strength, each marked `escorts`. A pack with no foe type falls back to
+## the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
-	if sq.is_boss and fac.has("boss") and foes.has(fac["boss"]):
-		var b := make_foe(str(fac["boss"]))
-		b.pack_id = sq.id
-		out.append(b)
-		out.append_array(parts_for(b))
+	if sq.is_boss:
+		var lead: Array = sq.lineup if not sq.lineup.is_empty() else ([str(fac["boss"])] if fac.has("boss") else [])
+		for cid in lead:
+			if not foes.has(str(cid)):
+				continue
+			var b := make_foe(str(cid))
+			b.pack_id = sq.id
+			b.commands = true
+			out.append(b)
+			out.append_array(parts_for(b))
 	var fid := sq.foe_id
 	if fid.is_empty():
 		var spawn: Array = fac.get("spawn", [])
@@ -465,8 +511,27 @@ func foes_for(sq: Unit) -> Array[Foe]:
 		for i in range(sq.strength):
 			var f := make_foe(fid)
 			f.pack_id = sq.id
+			f.escorts = sq.is_boss
 			out.append(f)
 			out.append_array(parts_for(f))
+	return out
+
+
+## A hero's promoted form (the bible's section 9: the class change, its own entry, fought at
+## the finale): the entry whose `promotes` names it, or "" when it has none.
+func promoted_form(hero_id: String) -> String:
+	for id in foes.keys():
+		if str(foes[id].get("promotes", "")) == hero_id:
+			return str(id)
+	return ""
+
+
+## The heroes the run's start may deal a domain (its `bench`), in content order.
+func bench_of(faction_id: String) -> Array:
+	var out: Array = []
+	for h in factions.get(faction_id, {}).get("bench", []):
+		if foes.has(str(h)):
+			out.append(str(h))
 	return out
 
 
@@ -1348,6 +1413,23 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 		if f.has("hero") and bool(f["hero"]) and sz != 1:
 			errs.append("%s: a hero is human-sized (size 1); the massive thing it commands is its own foe" % where)
+		if f.has("promotes"):
+			# A hero's promoted form (the bible's section 9): its own entry, massive, in its hero's
+			# domain, one to a hero, never a hero itself (a hero is human-sized) nor a boss.
+			var base := str(f["promotes"])
+			if not foes.has(base) or not bool(foes[base].get("hero", false)):
+				errs.append("%s: promotes names %s, which is no hero" % [where, base])
+			elif str(foes[base].get("faction", "")) != str(f.get("faction", "")):
+				errs.append("%s: a promoted form stands in its hero's domain (%s)" % [where, str(foes[base].get("faction", ""))])
+			if sz != 2:
+				errs.append("%s: a promoted form is massive (size 2)" % where)
+			if bool(f.get("hero", false)):
+				errs.append("%s: a promoted form is no hero itself; promotes says whose it is" % where)
+			if is_boss(str(id)):
+				errs.append("%s: a promoted form is a hero's, never a domain's boss" % where)
+			for other in foes.keys():
+				if str(other) < str(id) and str(foes[other].get("promotes", "")) == base:
+					errs.append("%s: %s already promotes %s; a hero has one promoted form" % [where, str(other), base])
 		if f.has("parts"):
 			# A boss in parts (15 October): known foes, one deep, with a guard the engine runs.
 			if not (f["parts"] is Array) or Array(f["parts"]).is_empty():
@@ -1424,3 +1506,7 @@ func _validate_factions(errs: Array[String]) -> void:
 				errs.append("%s: bench names unknown foe %s" % [where, str(h)])
 			elif not bool(foes[str(h)].get("hero", false)):
 				errs.append("%s: bench entry %s is not a hero" % [where, str(h)])
+			elif promoted_form(str(h)).is_empty():
+				# The finale fields the dealt party promoted (the bible's section 9: a job costs
+				# two drawings), so a hero the run may deal needs its class change.
+				errs.append("%s: bench hero %s has no promoted form (an entry whose promotes names it)" % [where, str(h)])

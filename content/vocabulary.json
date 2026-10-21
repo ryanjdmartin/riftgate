@@ -1508,7 +1508,7 @@
    "id": "risen",
    "category": "status",
    "name": "Getting Back Up",
-   "codex": "Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed.",
+   "codex": "Foe status, from a Reraise, its own or an ally's. After it falls it returns to the reinforcements once, whole, unless it self-destructed.",
    "status": "implemented",
    "design": {
     "holes": "",

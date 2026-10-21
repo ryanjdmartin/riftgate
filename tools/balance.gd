@@ -24,6 +24,9 @@ extends SceneTree
 ## passives are worth), --set path=json, repeatable (one content value replaced for this
 ## run only, e.g. components/enfilade_beam/face/keywords=[]; never validated, for a knock-out
 ## or a what-if, never a way to change content),
+## --noparty (the matrix without the party's cells, 21 October: each bench hero's final, the
+## hero with its domain's first pack in the other columns as the campaign fields it, and the
+## finale's line of each domain's first bench hero promoted, beside the packs by default),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
 ## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3"),
 ## --part i/n (21 October: run only every n-th cell from the i-th, counting from 0, into the
@@ -53,6 +56,7 @@ var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
 var no_passive := false     # --nopassive: every chassis stripped of its passive
+var party := true           # the party's cells (each bench hero's final, the finale's line); --noparty drops them
 var unmeasured: Array = []  # chassis the engine cannot field yet (a planned passive or locked piece): no row, no trio
 var edits: Array = []       # --set: "path=json" content replacements for this run only
 var part := -1              # --part i/n: this process runs the cells whose place in the matrix is i modulo n
@@ -215,6 +219,8 @@ func _parse_args() -> void:
 				i += 1
 			"--nopassive":
 				no_passive = true
+			"--noparty":
+				party = false
 			"--set":
 				edits.append(v)
 				i += 1
@@ -336,6 +342,28 @@ func _build_matrix() -> void:
 		if mix.size() < 2:
 			continue
 		packs.append({"id": fac + " formation", "name": "%s formation (%s)" % [str(db.factions[fac].get("name", fac)), ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
+	# The party's cells (21 October, the bible's section 9; --noparty drops them): each bench hero's final as
+	# the campaign fields it, the hero with its domain's first pack in the other columns, and
+	# the finale's line, a column a domain, each domain's first bench hero promoted.
+	if party:
+		var line: Array = []
+		var called: Array[String] = []
+		for fac in db.factions.keys():
+			var spawn := db.spawn_table(fac)
+			var bench := db.bench_of(str(fac))
+			for h in bench:
+				var mix: Array = [[h, 1]]
+				var beside := ""
+				if not spawn.is_empty():
+					mix.append([str(spawn[0][0]), Skirmish.DEFAULT_COLUMNS - 1])
+					beside = " (with %s x%d)" % [str(db.foes[spawn[0][0]].get("name", spawn[0][0])), Skirmish.DEFAULT_COLUMNS - 1]
+				packs.append({"id": h + " final", "name": "%s's final%s" % [str(db.foes[h].get("name", h)), beside], "foe": "", "strength": 0, "mix": mix})
+			var up := db.promoted_form(str(bench[0])) if not bench.is_empty() else ""
+			if not up.is_empty():
+				line.append([up, 1])
+				called.append(str(db.foes[up].get("name", up)))
+		if not line.is_empty():
+			packs.append({"id": "finale", "name": "The finale (%s, promoted)" % ", ".join(called), "foe": "", "strength": 0, "mix": line})
 
 
 func _names(ids: Array) -> Array[String]:

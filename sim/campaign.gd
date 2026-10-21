@@ -30,6 +30,11 @@ extends RefCounted
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
 ##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
+##   the party      dealt as the run starts, one hero to each domain from its bench, the front
+##                  jobs and the back as even as the benches allow; a domain's final is fought
+##                  against its hero with its wildlife and counts when the hero falls; the
+##                  finale against the party promoted, a beaten hero's column held by a
+##                  standing domain's boss
 
 const PICK := 0     # between battles: choose a front, refit, rush, repair the capital, or pass
 const BATTLE := 1   # a battle is under way (`battle`, at `battle_city`)
@@ -57,7 +62,7 @@ const RIFTS_BASE := 2         # rifts open at tier 0; one more a tier
 const GUEST_TIER := 1         # from this tier a rift carries a guest faction
 const QUIET_TURNS := 1        # a city whose rift was closed opens no new one for this many turns
 const SHOP_BATTLES := 1       # a wreck sits out this many battles
-const FINAL_AFTER := 3        # bosses of one faction beaten before its next rift is its final (track B; no final boss exists yet, so a final is a battle flagged as one)
+const FINAL_AFTER := 3        # bosses of one faction beaten before its next rift is its final, fought against the domain's dealt hero
 
 
 ## One city. `id` is its host maker's id; the capital's is the capital maker's.
@@ -96,6 +101,7 @@ var tokens: Array = []            # research tokens, by the faction whose boss d
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
 var finals_won: Array = []        # factions thinned: they lead no new rift
+var party: Dictionary = {}        # faction id -> the hero dealt it at the run's start (its final; promoted, its column at the finale)
 var battle: Battle = null
 var battle_city: String = ""
 var squad: Array = []             # roster uids fighting `battle`
@@ -125,6 +131,7 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 	salvage = START_SALVAGE
 	favour = START_FAVOUR
 	blueprints = db.starting_blueprints()
+	party = deal_party(db, seed_arg)
 	_open_rifts()
 
 
@@ -146,6 +153,50 @@ static func tender(content: ContentDB, seed_arg: int) -> Array:
 				pool.append(str(id))
 		if not pool.is_empty():
 			out.append(pool[r.randi_range(0, pool.size() - 1)])
+	return out
+
+
+## The party (the bible's section 9, decided 9 October): one hero to each domain from its
+## bench, drawn by the run's seed on a stream of its own, so the rest of the run rolls as it
+## would without it. The deal keeps the front jobs and the back as even as the benches allow
+## (two and two over four domains): every deal of one hero a domain is weighed, and one of the
+## evenest is drawn. A domain with an empty bench is dealt nobody. Faction id -> hero id.
+static func deal_party(content: ContentDB, seed_arg: int) -> Dictionary:
+	var r := RandomNumberGenerator.new()
+	r.seed = seed_arg * 7919 + 17
+	var domains: Array = []
+	var benches: Array = []
+	for fid in content.factions.keys():
+		var bench := content.bench_of(str(fid))
+		if not bench.is_empty():
+			domains.append(str(fid))
+			benches.append(bench)
+	var deals: Array = [[]]
+	for bench in benches:
+		var grown: Array = []
+		for d in deals:
+			for h in bench:
+				grown.append(d + [h])
+		deals = grown
+	var best: Array = []
+	var best_gap := 1 << 30
+	for d in deals:
+		var back := 0
+		for h in d:
+			if str(content.foes[h].get("rank", "front")) == "back":
+				back += 1
+		var gap := absi(d.size() - 2 * back)
+		if gap < best_gap:
+			best = [d]
+			best_gap = gap
+		elif gap == best_gap:
+			best.append(d)
+	var out := {}
+	if best.is_empty() or domains.is_empty():
+		return out
+	var pick: Array = best[r.randi_range(0, best.size() - 1)]
+	for i in range(domains.size()):
+		out[domains[i]] = str(pick[i])
 	return out
 
 
@@ -257,7 +308,18 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 	var c: City = cities[city_id]
 	var b := Battle.new(rng.randi_range(1, 1 << 30))
 	b.guest = str(c.rift.get("guest", ""))
-	b.setup(team, str(c.rift.get("faction", "")))
+	var lead := str(c.rift.get("faction", ""))
+	if c.capital:
+		# The finale (the bible's section 9): the dealt party, promoted, at the capital.
+		b.lineup = finale_line()
+	elif bool(c.rift.get("final", false)) and db.foes.has(str(party.get(lead, ""))):
+		# A domain's final: its dealt hero commands the rift, in its rank, the domain's wildlife
+		# in the other columns (its first pack's foe), and the final counts when the hero falls.
+		b.lineup = [str(party[lead])]
+		var spawn := db.spawn_table(lead)
+		if not spawn.is_empty():
+			b.escort = [str(spawn[0][0]), b.columns - 1]
+	b.setup(team, lead)
 	b.field.gate_hp_max = c.gate_max
 	b.field.gate_hp = c.gate
 	battle = b
@@ -285,7 +347,8 @@ func finish_battle() -> Dictionary:
 			b.field.enemy_turn()
 			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
-		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0}
+		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
+		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital}
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
 	# battle's end and never shown while it is fought, 7 October: one less number on the
 	# screen, and no visible count to farm against.)
@@ -323,7 +386,9 @@ func finish_battle() -> Dictionary:
 		tokens.append(faction)
 		offers.append(c.id)
 		bosses_beaten[faction] = int(bosses_beaten.get(faction, 0)) + 1
-		if final and not finals_won.has(faction):
+		# A final counts when its hero falls (the bible's section 9): its hero commands the rift,
+		# so the battle is won when it does (the Thief's Flee, when it lands, is the exception).
+		if final and not c.capital and not finals_won.has(faction):
 			finals_won.append(faction)
 	elif c.gate <= 0:
 		report["result"] = "fell"
@@ -352,6 +417,31 @@ func finish_battle() -> Dictionary:
 	for m in wrecked:
 		m.shop = SHOP_BATTLES
 	return report
+
+
+## The finale's line (the bible's section 9): a column for each domain, in content order, the
+## dealt hero's promoted form while its domain stands; a domain whose final was won leaves its
+## column to boss-tier wildlife of a domain still standing, each standing domain's boss drawn
+## in turn by the run's seed before any comes twice. The reserve behind the line (elites and
+## bosses) waits on the elites and the bosses' slate.
+func finale_line() -> Array:
+	var standing: Array = []
+	for fid in db.factions.keys():
+		if not finals_won.has(fid) and db.foes.has(str(db.factions[fid].get("boss", ""))):
+			standing.append(str(db.factions[fid]["boss"]))
+	var bag: Array = []
+	var out: Array = []
+	for fid in db.factions.keys():
+		var promoted := db.promoted_form(str(party.get(fid, "")))
+		if not finals_won.has(fid) and not promoted.is_empty():
+			out.append(promoted)
+			continue
+		if standing.is_empty():
+			continue
+		if bag.is_empty():
+			bag = standing.duplicate()
+		out.append(str(bag.pop_at(rng.randi_range(0, bag.size() - 1))))
+	return out
 
 
 ## Each maker's Sponsorship measure as the run has tallied it (the bible's Sponsorship row):
@@ -447,6 +537,7 @@ func _open_rifts() -> void:
 	var cap := capital()
 	if finale_due() and cap != null and cap.rift.is_empty():
 		cap.rift = _roll_rift()
+		cap.rift["final"] = false   # the capital's is the finale, never a domain's final
 	var open := 0
 	var free: Array = []
 	for c in cities.values():

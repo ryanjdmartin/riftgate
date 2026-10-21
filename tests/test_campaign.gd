@@ -522,3 +522,89 @@ func test_the_run_tallies_each_makers_sponsorship_measure() -> void:
 	var c2 := SaveGame.load_campaign(TMP)
 	assert_eq(c2.sponsorship, c.sponsorship, "kept through a save")
 	SaveGame.clear(TMP)
+
+
+## The party (the bible's section 9): dealt as the run starts, one hero to each domain from its
+## bench, the front jobs and the back as even as the benches allow, the same for the same
+## seed, and kept through a save.
+func test_the_party_is_dealt_from_the_benches_front_and_back_evenly() -> void:
+	var db := ContentDB.load_default()
+	var domains: Array = []
+	for fid in db.factions.keys():
+		if not db.bench_of(str(fid)).is_empty():
+			domains.append(str(fid))
+	var seen := {}
+	for s in range(1, 13):
+		var c := _run(s)
+		assert_eq(c.party.keys().size(), domains.size(), "a hero for every domain with a bench")
+		var back := 0
+		for fid in c.party.keys():
+			var h := str(c.party[fid])
+			assert_true(db.bench_of(str(fid)).has(h), "%s is from its domain's bench" % h)
+			back += 1 if str(db.foes[h].get("rank", "front")) == "back" else 0
+			seen[h] = true
+		assert_true(absi(c.party.size() - 2 * back) <= _evenest_gap(db, domains), "front and back as even as the benches allow")
+		assert_eq(c.party, _run(s).party, "the same seed deals the same party")
+	assert_true(seen.size() > domains.size(), "the deal varies with the seed")
+	var c := _run(9)
+	assert_true(SaveGame.save_campaign(c, TMP), "saved")
+	assert_eq(SaveGame.load_campaign(TMP).party, c.party, "the deal kept through a save")
+	SaveGame.clear(TMP)
+
+
+## The least front-back gap any deal of one hero a domain allows.
+func _evenest_gap(db: ContentDB, domains: Array) -> int:
+	var gaps := [0]
+	for fid in domains:
+		var grown := []
+		for g in gaps:
+			for h in db.bench_of(fid):
+				grown.append(int(g) + (-1 if str(db.foes[h].get("rank", "front")) == "back" else 1))
+		gaps = grown
+	var best := 1 << 30
+	for g in gaps:
+		best = mini(best, absi(int(g)))
+	return best
+
+
+## A domain's final (the bible's section 9): fought against its dealt hero with its wildlife in
+## the other columns, won when the hero falls, and then the domain is thinned.
+func test_a_final_is_fought_against_the_dealt_hero_with_its_wildlife() -> void:
+	var c := _run()
+	var front := str(c.fronts()[0])
+	var fid := str(c.party.keys()[0])
+	c.cities[front].rift = {"faction": fid, "guest": "", "final": true}
+	var b := _battle(c, front)
+	assert_eq(b.boss.lineup, [str(c.party[fid])], "the dealt hero commands the rift")
+	assert_eq(b.boss.foe_id, str(c.db.spawn_table(fid)[0][0]), "the domain's first pack beside it")
+	assert_eq(b.boss.strength, b.columns - 1, "in the other columns")
+	_end(b, Battle.Outcome.VICTORY)
+	var r := c.finish_battle()
+	assert_true(r["final"], "the report says it was the final")
+	assert_true(c.finals_won.has(fid), "won: the domain is thinned")
+
+
+## The finale (the bible's section 9): the dealt party promoted, a column a domain, and a domain
+## whose final was won leaves its column to a standing domain's boss.
+func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_boss() -> void:
+	var c := _run()
+	var line := c.finale_line()
+	var want: Array = []
+	for fid in c.db.factions.keys():
+		want.append(c.db.promoted_form(str(c.party.get(fid, ""))))
+	assert_eq(line, want, "every domain standing: the party, promoted")
+	var beaten := str(c.db.factions.keys()[0])
+	c.finals_won = [beaten]
+	line = c.finale_line()
+	var bosses: Array = []
+	for fid in c.db.factions.keys():
+		if str(fid) != beaten:
+			bosses.append(str(c.db.factions[fid]["boss"]))
+	assert_true(bosses.has(str(line[0])), "the beaten hero's column goes to a standing domain's boss")
+	assert_eq(line.slice(1), want.slice(1), "the rest of the party stands in line")
+	c.convergence = Campaign.FINALE_AT - 1
+	c.pass_turn()
+	var b := _battle(c)
+	assert_eq(b.boss.lineup.size(), c.db.factions.size(), "the line at the capital: a column a domain")
+	assert_eq(b.boss.display_name, "the party", "and it goes by the party")
+	assert_false(bool(c.capital().rift.get("final", true)), "the capital's is the finale, never a final")

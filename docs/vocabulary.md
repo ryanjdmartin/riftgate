@@ -115,7 +115,7 @@ Status: 135 implemented, 9 planned, 0 idea.
 | **Hopper** | Machine buff, the Honey Badger's, banked: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it. | implemented |
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
-| **Getting Back Up** | Foe status, from a Reraise. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
+| **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
 | **Scrambled** | Machine status. The die's next reroll may land anywhere, the same entry included. | implemented |
 | **Silenced** | Machine status, from a foe's silence: its buffs and stores count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake. Can be cleansed; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |

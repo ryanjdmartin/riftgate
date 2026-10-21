@@ -225,7 +225,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "lineup": u.lineup, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged,
 	}
@@ -261,6 +261,7 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.zone = int(d.get("zone", 1))
 	u.attack_range = int(d.get("attack_range", 2))
 	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
+	u.lineup = _strings(d.get("lineup", []))
 	var faces = d.get("die", null)
 	if faces is Array:
 		var list: Array = []
@@ -422,7 +423,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
-		"boss": f.boss, "on_death": f.on_death, "stays_down": f.stays_down,
+		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 	}
@@ -443,6 +444,9 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.last_special = str(d.get("last_special", ""))
 	f.kin = int(d.get("kin", 0))
 	f.boss = bool(d.get("boss", f.size >= 2))   # a save from before 15 October read a massive foe as the boss
+	f.hero = bool(d.get("hero", false))
+	f.commands = bool(d.get("commands", f.boss))   # a save from before 21 October: a boss commanded its unit
+	f.escorts = bool(d.get("escorts", false))
 	var od = d.get("on_death", {})
 	if od is Dictionary and od.has("summon"):
 		f.on_death = {"summon": str(od["summon"]), "count": maxi(1, int(od.get("count", 1)))}
@@ -541,7 +545,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"state": c.state, "won": c.won, "turn": c.turn, "convergence": c.convergence,
 		"cities": cities, "roster": roster, "next_uid": c._next_uid,
 		"components": c.components, "salvage": c.salvage, "favour": c.favour, "blueprints": c.blueprints,
-		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won,
+		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won, "party": c.party,
 		"battle": to_dict(c.battle) if c.battle != null else null,
 		"battle_city": c.battle_city, "squad": c.squad,
 		"history": c.history,
@@ -592,6 +596,12 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	for f in beaten.keys():
 		c.bosses_beaten[str(f)] = int(beaten[f])
 	c.finals_won = _strings(d.get("finals_won", []))
+	var dealt = d.get("party", null)
+	if dealt is Dictionary:
+		# A save from before 21 October keeps the deal its seed makes (Campaign.deal_party).
+		c.party.clear()
+		for fid in dealt.keys():
+			c.party[str(fid)] = str(dealt[fid])
 	var bd = d.get("battle", null)
 	c.battle = from_dict(bd) if bd is Dictionary else null
 	c.battle_city = str(d.get("battle_city", ""))

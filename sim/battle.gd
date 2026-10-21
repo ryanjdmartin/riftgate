@@ -63,6 +63,12 @@ var formation: Array = []
 ## Whether the lead faction's boss takes the field. Without one the battle has no victory,
 ## only the gate's fall or the team's (the harness, to watch the packs alone).
 var with_boss := true
+## The rift's commanders composed by the campaign, set before setup (the party, bible section
+## 9): the foes its boss unit unpacks into, in order (a final's dealt hero; the finale's line),
+## and the escort beside them, [foe_id, count] (a final's wildlife). The battle is won when
+## every commander has fallen. Empty keeps the lead faction's boss alone.
+var lineup: Array = []
+var escort: Array = []
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -132,9 +138,15 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
 		field.add_unit(field.dress_pack(sq))
 	var fac: Dictionary = db.factions.get(faction, {})
-	var boss_id := str(fac.get("boss", ""))
+	var boss_id := str(lineup[0]) if not lineup.is_empty() else str(fac.get("boss", ""))
 	if with_boss and db.foes.has(boss_id):
-		boss = Unit.boss(0, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, faction, Unit.BOSS_MOVE)
+		# The finale's line goes by the party's name; a final's hero and a boss by its own.
+		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()
+		boss = Unit.boss(0, named, Vector2i.ZERO, faction, Unit.BOSS_MOVE)
+		boss.lineup = lineup.duplicate()
+		if escort.size() >= 2 and db.foes.has(str(escort[0])):
+			boss.foe_id = str(escort[0])
+			boss.strength = maxi(0, int(escort[1]))
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	state = State.PLAN
@@ -569,7 +581,7 @@ func finish_skirmish() -> void:
 		action_from.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
-		foes_killed += maxi(0, sq.strength - current.survivors_for(sq))
+		foes_killed += current.kills_for(sq)
 	for k in current.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)

@@ -190,8 +190,45 @@ The unbuilt heroes, by domain, and the trope each homages:
   Quest's and Octopath's. The **Blue Mage** is Final Fantasy's own job (it learns the moves used
   against it): a trope from beyond the series for that idea, or it goes.
 
+## The promoted forms' one move more (21 October)
+
+The promoted forms are entries since 21 October (the bible's section 9): massive, armour 5,
+their heroes' kits, numbers and names (Ryan, 21 October: the same names; flag it if they feel
+thin), and one move more, chosen for two of eight: the Cleric's Reraise on its allies (built)
+and the Summoner's Fáfnir (named, its mechanics open). For the other six, one move each, from
+the class change's fantasy and on the engine as it stands, so each can land the day it is
+marked:
+
+| Promoted form | Its one move more | What it is |
+|---|---|---|
+| The Warrior (the Knight) | **Sentinel** | Armoured on every one of its own through the next round, cast when one of its own is hurt (the brace on every foe Protect carried): the plain fighter grown into the party's wall. |
+| The Martial Artist (the Master) | **Pressure Point** | One blow that switches off the entry the machine shows, aimed at the armed: a nerve struck. |
+| The Thief (the Ninja) | **Calling Card** | Named at one machine, it lands two rounds on for twice its blow and corrupts the entry the machine shows: the heist announced before it lands, the countdown the conversion gave Joker. |
+| The Lancer | **High Jump** | Leaves the ground for two rounds and lands on every machine for its blow, through the shield: the Jump grown to the whole field. |
+| The Augur | **Dispel** | Every buff and store the buffed machine carries unmade (the purge), cast where a machine carries a buff: the reader of fate unwriting it. It would answer section 12's question of a purge's carriers too (a hero's promoted form, by Ryan's reservation of 18 October). |
+| The Black Mage (the Black Wizard) | **Meteor** | Gathers a round, then lands on every machine for twice its blow: the genre's last spell. The bosses' slate gives the Behemoth's last act the same name; if both land, one is renamed (Comet is the genre's other word). |
+| The Summoner, Fáfnir's mechanics | **Venom** | Fáfnir answers the circle: its breath gathers a round, then lands on every machine for its blow and lays a stack of Burning on each, the wyrm's venom in the Peak's own language, a telegraph and heat. |
+
+A question beside them: the promoted Thief inherits its hero's planned Flee. At the finale a
+flee has nowhere to go; a move of its own with Flee's id would take its place, or the promoted
+form drops it, or it flees and the finale waits on its return. Ryan's call when Flee is built.
+
+Set aside (each with what set it aside):
+
+- Cover for the Knight: the Warrior's own planned move, which its promoted form inherits the day
+  it lands.
+- Protect back on the Cleric: Reraise took the place (Ryan, 16 October); it went to the Knight
+  here instead, as Sentinel.
+- A machine-side poison for Fáfnir: a new status for one move, while Burning already says damage
+  over time on our side.
+- A venom that switches off the entry every machine shows: the hardest control in the game on
+  every machine at once (the same reason Skaði's frost bites rather than freezes).
+- Bigger numbers on a promoted form: section 3's rule, a new foe and never an old one with a
+  bigger number.
+
 ## Questions for Ryan
 
+- The promoted forms' one move more for six of them, and Fáfnir's mechanics (the slate above).
 - The Augur's second-round picks on the picker (no coat or hood, the blades bigger), then the cut.
 - Maelle as the Duelist on the Peak, in the Mage's place, or not; and the Blue Mage.
 

@@ -19,8 +19,8 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 520 tests, 61,273 checks, green on main (21 October, with Flak, the shield rule and the
-  Musk Ox's content merged; 485 and 20,291 on the Windows desk machine on 19 October, about a
+- Tests: 549 tests, 61,811 checks, green on main (21 October, with the party, its finals and
+  the finale; 485 and 20,291 on the Windows desk machine on 19 October, about a
   minute there). A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -114,6 +114,21 @@ before it. The three design sessions merged that day are paused, each resuming f
 
 ## The game as left (18 October)
 
+- 21 October, the party: dealt as the run starts, one hero to each domain from its bench, the
+  front and the back even (two and two), by the seed on a stream of its own, kept through a
+  save; a domain's final fields its dealt hero in its rank with its domain's first pack in the
+  other columns and is won when the hero falls; the finale fields the party promoted, a column a
+  domain, a beaten hero's column held by a standing domain's boss drawn in turn. The promoted
+  forms are entries holding what the class change adds (massive, armour 5, one move more), the
+  rest their heroes' as the content loads, the same names (Ryan, 21 October; flag it if they
+  feel thin); the Cleric's Reraise readies one of its own (a party member first), and the other
+  six moves and Fáfnir's mechanics are a slate in `docs/heroes_proposal.md` (section 12). The
+  unit at the rift now commands it (the boss, a final's hero with its escort, the finale's
+  line) and stands while a commander does; a withdrawn boss had walked off as a pack and come
+  back with a spawn foe beside it, fixed, and a boss's kill counts toward salvage. The
+  campaign runner reports the party and the finals; the balance report carries the party's
+  cells (each bench hero's final, the finale), a 30-seed direction on the team row reading
+  every final won in both rungs and the finale 13 / 73. The party card waits on the mission map.
 - 21 October, the Dingo's Combat Translocator and the multi-target spend (Ryan's go of 19
   October; the interaction his of 21 October): Swap takes a second target, another foe or an
   empty slot, and the two trade places (a massive foe stays); on the screen the die dropped on
@@ -168,7 +183,8 @@ before it. The three design sessions merged that day are paused, each resuming f
   Cryo Flinger prints none (cooldown 0, its heat the limiter, Ryan's design of 20 October), the
   dark entry shows its rounds left on the die, and the validator refuses a Rapid entry with no
   limiter. The bot values both buffs and prices a cooldown. The balance runner splits across
-  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is owed (the to-do).
+  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is under way on
+  today's main (a run on the shield commit itself finished, but main's rows have moved since).
 - 21 October, Flak (Ryan's go, 19 October; the bible's Prairie Dog row), built on main once the
   numbers branch merged: Flak N on the Flakshot Repeater (Flak 2, Spread, a flat 5, no Rapid),
   each foe hit gaining the stacks after the blow; every blow on a Flak foe a point more a stack,

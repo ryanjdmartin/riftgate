@@ -64,7 +64,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 	for m in c.roster:
 		team.append(m.chassis)
 	var out := {"team": team, "won": false, "turns": 0, "reports": [], "passes": 0, "rushes": 0, "stalled": 0,
-		"first_fall": -1, "finale": false, "fights": 0, "spends": {}, "fight_sizes": []}
+		"first_fall": -1, "finale": false, "fights": 0, "spends": {}, "fight_sizes": [], "party": c.party.duplicate()}
 	var guard := 0
 	while c.state != Campaign.OVER and guard < 200:
 		guard += 1
@@ -109,8 +109,10 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 				print("turn %d: the battle at %s stalled after %d phases; the run is abandoned" % [c.turn, city, bot.phases])
 			break
 		var tier := c.tier()
+		var hero := str(c.party.get(b.faction, "")) if bool(c.cities[city].rift.get("final", false)) else ""
 		var r := c.finish_battle()
 		r["tier"] = tier
+		r["hero"] = hero
 		r["squad"] = uids.size()
 		out["reports"].append(r)
 		if r["result"] == "fell" and int(out["first_fall"]) < 0:
@@ -235,6 +237,29 @@ func report() -> String:
 		if started > 0:
 			L.append("| %s | %d | %d%% |" % [str(db.chassis[id].get("name", id)), started, roundi(100.0 * won_with / started)])
 	L.append("")
+	# The party (the bible's section 9): who was dealt, and how its final and the finale went.
+	var dealt := {}
+	for r in results:
+		for fid in r["party"].keys():
+			var h := str(r["party"][fid])
+			if not dealt.has(h):
+				dealt[h] = {"runs": 0, "finals": 0, "won": 0}
+			dealt[h]["runs"] += 1
+		for b in r["reports"]:
+			var h := str(b.get("hero", ""))
+			if not h.is_empty() and dealt.has(h):
+				dealt[h]["finals"] += 1
+				dealt[h]["won"] += 1 if b["result"] == "won" else 0
+	L.append("The party: each hero, the runs it was dealt in, the finals fought against it and how many were won (a final counts when its hero falls):")
+	L.append("")
+	L.append("| Hero | Dealt | Finals | Won |")
+	L.append("|---|---|---|---|")
+	for fid in db.factions.keys():
+		for h in db.bench_of(str(fid)):
+			var e: Dictionary = dealt.get(h, {"runs": 0, "finals": 0, "won": 0})
+			L.append("| %s (%s) | %d | %d | %s |" % [str(db.foes[h].get("name", h)), str(db.factions[fid].get("name", fid)), int(e["runs"]), int(e["finals"]),
+				("%d%%" % roundi(100.0 * int(e["won"]) / int(e["finals"]))) if int(e["finals"]) > 0 else "none"])
+	L.append("")
 	# The battles.
 	var battles: Array = []
 	for r in results:
@@ -274,7 +299,7 @@ func report() -> String:
 	L.append("| Phases a battle | %s |" % _band(phases_all))
 	L.append("")
 	# By tier and by faction.
-	L.append("## By tier of the Convergence, lead faction, squad size and guest")
+	L.append("## By kind, tier of the Convergence, lead faction, squad size and guest")
 	L.append("")
 	L.append("| | Battles | Won | Fell | Wiped | Destroyed per battle |")
 	L.append("|---|---|---|---|---|---|")
@@ -295,6 +320,17 @@ func report() -> String:
 			e["lost"] += b["lost"].size()
 	var squads := {}
 	var guests := {}
+	var kinds := {}
+	for b in battles:
+		var kk := "the finale" if bool(b.get("finale", false)) else ("a final" if bool(b.get("final", false)) else "a battle")
+		if not kinds.has(kk):
+			kinds[kk] = {"n": 0, "won": 0, "fell": 0, "wiped": 0, "lost": 0}
+		var ke: Dictionary = kinds[kk]
+		ke["n"] += 1
+		ke["won"] += 1 if b["result"] == "won" else 0
+		ke["fell"] += 1 if b["result"] == "fell" else 0
+		ke["wiped"] += 1 if b["wiped"] else 0
+		ke["lost"] += b["lost"].size()
 	for b in battles:
 		var sk := "%d machines" % int(b["squad"])
 		var gk := "with a guest" if str(b["guest"]) != "" else "lead alone"
@@ -308,7 +344,7 @@ func report() -> String:
 			e["fell"] += 1 if b["result"] == "fell" else 0
 			e["wiped"] += 1 if b["wiped"] else 0
 			e["lost"] += b["lost"].size()
-	for bucket in [tiers, facs, squads, guests]:
+	for bucket in [kinds, tiers, facs, squads, guests]:
 		var ks: Array = bucket.keys()
 		ks.sort()
 		for k in ks:
