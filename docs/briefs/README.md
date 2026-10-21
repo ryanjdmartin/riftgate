@@ -145,7 +145,7 @@ tier three, the Arsenal none, three and three):
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October), the shield-spender (the off-tank package: plate, burn, a lure that regens itself, Ryan, 19 October; a fast hovercraft, 20 October), the interceptor (decided 21 October: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | Buzzard, Puffin (a rework proposed 20 October on Ryan's split: its shields grow by the ally's heat, the Ionizer the overshield through it; the base cut and the growth one for one at the pass's heat scale, the same evening), Kite (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October: the reroll economy all the way, the action-economy utility capstone; its third form: a reroll bank, an ally's action bought with three rerolls, a jet's die relaunched) |
+| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2, two slots free; three hovers, five flyers) | the strafer (the Butcherbird, a swing-wing, its go 21 October), the off-tank, the Storm Petrel (its go 21 October: a fast hovercraft at 50; plate and burn on the passive, a lure that regens itself locked), the interceptor (decided 21 October: a tilt-jet; a debuff or a buff Rapid once a round, the designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | Buzzard, Puffin (a rework proposed 20 October on Ryan's split: its shields grow by the ally's heat, the Ionizer the overshield through it; the base cut and the growth one for one at the pass's heat scale, the same evening), Kite (up, the trash chain; the caster-killer niche to the interceptor) | the bomber (Ryan, 15 October; heavy), the gun platform, Kestrel's capital ship and a hover (Ryan, 20 October: the reroll economy all the way, the action-economy utility capstone; its third form: a reroll bank, an ally's action bought with three rerolls, a jet's die relaunched) |
 | Wainwright & Sutler (Ryan, 19 October; if 4-4-2 works better, the Dingo is his move down) | Prairie Dog, the Cassowary (the revolver, landed), the Cottonmouth (the fan-boat, landed) | the Dingo (with its Combat Translocator, landed; tier one in content until its piece's engine), the Clydesdale, the funnel-web (landed), the gunship, the boiler | the multi-rotor, the old-world artillery (the tenth, undesigned) |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
@@ -293,7 +293,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_siege_battery.md` | direction, in session (Ryan's H-tank) | Minerva | 3 | nothing |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the Carrier's session (the foil); the cooldown property |
 | `kestrel_strafer.md` | decided; the go 21 October (the Butcherbird, a swing-wing) | Kestrel | 1 | the content session: its numbers, then the brief retires |
-| `kestrel_shield_spender.md` | direction; three kits proposed 18 October, the off-tank package on Ryan's word 19 October | Kestrel | 1 | Ryan's call on the package; its runner row on the shield rule's engine |
+| `kestrel_shield_spender.md` | decided; the go 21 October (the Storm Petrel, a hovercraft; the off-tank package of 19 October) | Kestrel | 1 | the content session: its numbers and model; its runner row on the shield rule's engine |
 | `kestrel_bomber.md` | decided; proposed for the go, 18 October (Ryan happy with the whole; heavy proposed) | Kestrel | 3 (Ryan, 15 October) | Ryan's call on heavy and the numbers |
 | `kestrel_gun_platform.md` | proposal (19 October) | Kestrel | 3 | Ryan's call on the gimmick |
 | `kestrel_kite.md` | rework, direction (Ryan, 18 and 19 October) | Kestrel | 2 (from 1) | the cooldown property; a Kestrel tier one landed for the tender |
@@ -415,8 +415,8 @@ overrule)
 ## A suggested order
 
 1. Nothing to wait on: the Minerva session (the Armadillo, the Honey Badger, the echidna, the
-   H-tank; in session since 15 October); then any of the strafer, the shield-spender, the interceptor, the bomber,
-   the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
+   H-tank; in session since 15 October); then the content sessions of Kestrel's three tier ones (the interceptor,
+   the Butcherbird and the Storm Petrel, decided 21 October), and any of the bomber, the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
    landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
    Dingo's Translocator and the Prairie Dog's fight half on 19 October.
 2. In pairs: the battlecruiser and the Carrier together (Ryan's foil); the Baboon with the

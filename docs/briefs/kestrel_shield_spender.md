@@ -4,7 +4,9 @@ The session designs a Kestrel tier one whose hits spend its own shield for more 
 sustained hitter with a real decision on every spend. "The shield-spender" is a working label;
 the name and the look are Ryan's.
 
-**Status**: direction (Ryan, 15 October). **Maker**: Kestrel. **Proposed tier**: one. **Read
+**Status**: decided (Ryan's go, 21 October: the Storm Petrel, a hovercraft; its numbers with
+the content session, this brief kept until then; a direction since 15 October). **Maker**:
+Kestrel. **Tier**: one. **Read
 first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 8 (Kestrel gap one, the
 raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
 (puffin, goshawk) and `content/components.json` (backwash_ionizer, laminar_deflector).
@@ -386,6 +388,18 @@ the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 mo
   The exposed-rotor helicopter goes to Aphelion (Ryan, 20 October, in the interceptor's
   round).
 
+## The go (21 October)
+
+- Ryan, 21 October, on the kit read back: "Does the burn need to be on a lock or is it on every
+  shot still?" Claude: every shot; the burn and its zap are the passive's, with the plate, and
+  the lock is the lure that regens itself alone (a debuff under the die's grammar: the frame,
+  the Lure chip, no number, the star for the regen).
+- Ryan, 21 October: "Yes to all, go with the hovercraft and the petrel name you had picked."
+  Decided: the Storm Petrel (the small sea bird that patters across the water, fast and low), a
+  medium hovercraft at move 50; the plate's 5, the regen's 10 a round for three rounds stacking,
+  the lure's Indirect reach, the kit below as written. The bible's Kestrel row carries the
+  design, the rules Regenerating; its numbers and the model go to the content session.
+
 ## The kit, written out (Claude, 20 October)
 
 Ryan's package of 19 October, whole; every number a placeholder, the name and the look Ryan's,
@@ -458,10 +472,11 @@ passive already fires); the plate as a damage-taken add while the shield stands 
 condition); the bot reading shield spent as a cost and the zap as damage; each tested with
 synthetic passives. Its runner row lies until the honest shield rule is built.
 
+## Open for the content session
 
-1. The package's numbers (the plate, the regen's 10 for three rounds stacking, the lure's
-   reach) and Ryan's go; its frame is a hovercraft at 50 (Ryan, 20 October). The capacitor of the second round stays on the bench (overshield as ammunition).
-2. The interceptor has a brief of its own since 20 October (`kestrel_interceptor.md`).
+1. Its numbers (every one a placeholder) and its model, a medium hovercraft. The capacitor of
+   the second round stays on the bench (overshield as ammunition).
+2. The stock hole it names, a mid-heat gun, is the stock pass's (`kestrel_line.md`).
 
 ## Holes already raised
 
@@ -492,7 +507,8 @@ synthetic passives. Its runner row lies until the honest shield rule is built.
   carries no keyword, so it never spills, chains, burns or shocks, and Chain's repeat pays its
   heat again and so burns and zaps again on the new target (Claude, 18 October).
 
-## What the session hands back
+## What the content session lands
 
-A proposal in chat; on Ryan's go, the bible's Kestrel row moved from withdrawn to decided,
-content planned, and this brief retired.
+The chassis and its lure in content (planned until the engine: the burn and its zap, the plate,
+Regenerating), Regenerating in the vocabulary, its numbers and model; then this brief retires.
+The bible's Kestrel row and the rules carry the design since 21 October.

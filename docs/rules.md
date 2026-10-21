@@ -197,6 +197,8 @@ On a machine:
 - **Spun Up** (buff, not built): its next weapon spend deals +5 a stack, then every stack is
   spent; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
+- **Regenerating** (buff, the Storm Petrel's lure, not built): 10 shield at the start of each
+  round for three rounds; it stacks, each grant keeping its own end.
 - **Barrier** (buff, not built): the next blow a foe lands on this machine deals no damage,
   so it never injures; its riders land. Until the round's end. Never granted to every ally
   at once.

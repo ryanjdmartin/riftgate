@@ -236,11 +236,11 @@ strike and reach re-read between strikes; the bot's value of a spray, its mean o
 reach; each tested with synthetic passives.
 
 
-1. Ryan's call on the proposal above: its numbers and the lock's, its size and way of moving
-   (a light flyer at 50, or a hovercraft if his silhouette is one), matched to Ryan's
-   silhouette; then it lands.
-2. The start's hole below (a halved basic against armour 5), if he wants it answered before
-   the go rather than by the scales question in section 12.
+## Open for the content session
+
+1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October).
+2. The start's hole below (a halved basic against armour 5): section 12's scales question and
+   the stock pass, with Exposed its Kestrel answer meanwhile.
 
 ## The shape and the name (21 October)
 
@@ -290,8 +290,8 @@ reach; each tested with synthetic passives.
   you still hit that guy for normal damage", and sometimes the result hoped for; showing the
   first strike's number is correct, "exactly the same as spread". Both stand as designed.
 
-## What the session hands back
+## What the content session lands
 
-A proposal in chat for its shape and numbers; on Ryan's go, content planned (the engine needs a
-passive that doubles strikes and halves them), the bible's chassis table, and this brief
-retired.
+The chassis and its spray in content (planned until the engine: a passive that halves the
+printed number and doubles the strikes, the spray's pick per strike), the bible's chassis
+table, its numbers and model; then this brief retires.

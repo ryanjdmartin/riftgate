@@ -35,7 +35,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] Review for Ryan (his ask, 17 October, left for the next session; his words in the bible's section 12, the scale question): Braced as Armoured on either side, a stack an armour point; Overcharged a damage point a stack, halving each round rounded up, the Ammit's kept stacks apart; and what carries Overcharged today (the Overcharge Coil, the Grievance Reliquary, devour), with what the halving does to each
 - [ ] The battlecruiser, Minerva's capital ship, with the Carrier's session (`minerva_battlecruiser.md`)
 - [ ] The strafer's content session (the Butcherbird, a swing-wing; Ryan's go 21 October, `kestrel_strafer.md`): the chassis and its spray in content as planned, the numbers, the model; then the brief retires
-- [ ] The shield-spender (`kestrel_shield_spender.md`)
+- [ ] The off-tank's content session (the Storm Petrel, a hovercraft at 50; Ryan's go 21 October, `kestrel_shield_spender.md`): the chassis and its lure in content as planned, Regenerating in the vocabulary, its numbers and model; then the engine (the burn and its zap, the plate, the regen) and the brief retires
 - [ ] The bomber (`kestrel_bomber.md`)
 - [ ] The gun platform, Kestrel's capstone (`kestrel_gun_platform.md`), the team's rerolls as its passes
 - [ ] The Kite at tier two (`kestrel_kite.md`), with the cooldown property

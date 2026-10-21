@@ -131,8 +131,13 @@ document's job and every command are in `README.md`.
   Kite and the Goshawk the Buzzard, the ids kept (content's shown names and notes, every
   record's mentions, the bible's names row and chassis table, live v0.226; the brief file
   `kestrel_kite.md`; 485 tests green; the hangar page's republish owed to the next content
-  session). The others wait on his calls, in order: the off-tank, the Puffin, the Kite's
-  rework, the capital, the bomber. On the branch, not on main.
+  session). The off-tank's go (21 October): the Storm Petrel, a hovercraft at 50, the kit as
+  written (the plate and the burn with its zap on the passive, the lure that regens itself its
+  lock); the bible's Kestrel row and its stacking row (the regen stacks), live v0.227, the
+  branch file's Kestrel row synced to the live one; the rules' Regenerating; its brief decided,
+  the strafer's open list and hand-back rewritten for the content session. The others wait on
+  his calls, in order: the Puffin, the Kite's rework, the capital, the bomber. On the branch,
+  not on main.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -417,7 +422,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live is v0.226 (21 October: the interceptor's and the strafer's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
+  `docs/design-bible.html` after every change. Live is v0.227 (21 October: the interceptor's, the strafer's and the off-tank's goes, the Kite and the Buzzard, the die's grammar and the no-number rule,
   built on the live v0.223 of another session; before it v0.218, 20 October, evening): the
   Kestrel branch's v0.209 (the Wake Diffuser's go and Ryan's rule on Rapid equipment in the
   Rapid row, a Rapid vent never below tier three and a Rapid shield never below tier two; the

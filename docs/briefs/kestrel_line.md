@@ -28,7 +28,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | Tier | Machine | Reads | Produces | Pays | Currency |
 |---|---|---|---|---|---|
 | one | the strafer, the Butcherbird (its go 21 October; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
-| one | the shield-spender, the off-tank (direction; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
+| one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | one | the interceptor (decided 21 October; content with the content session; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | two | the Puffin (built; rework proposed, `kestrel_puffin.md`) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
@@ -81,7 +81,9 @@ One pointer each; the proposal is in the brief named.
   The plate's arithmetic read against the foes: a wall against the packs that strike for 10
   (six of the eighteen wildlife), no wall against a swarm (six goblins strike 30 each with
   their swarm, 25 past the plate); the lever named. Its lock is the direction's model combined
-  entry; never Rapid. `kestrel_shield_spender.md`, the sixth and seventh rounds.
+  entry; never Rapid. `kestrel_shield_spender.md`, the sixth and seventh rounds. Its go (Ryan,
+  21 October): the Storm Petrel, a hovercraft at 50, the kit as written; the burn is every
+  shot's, through the passive, and the lock the lure alone.
 - **The interceptor** had no kit; its first Ryan read as thin and its second as possibly
   overdesigned with a good nugget (20 October). The third: a weapon of no damage is Rapid once
   a round, so every control piece of every maker is a cantrip on it; its lock the designator,
