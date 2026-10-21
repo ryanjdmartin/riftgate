@@ -123,7 +123,7 @@ a tank struck by its own choice that Shocks for the team, is this design's if he
 
 ## Pairs
 
-The Sparrowhawk cashes a Shocked foe at four times; the Dingo's harpoon now Shocks too (an
+The Kite cashes a Shocked foe at four times; the Dingo's harpoon now Shocks too (an
 overlap of niche, which is fine).
 
 ## What the session hands back

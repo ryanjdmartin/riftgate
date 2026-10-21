@@ -195,8 +195,8 @@ section is Claude's, for him to move, and every number is a placeholder.
 - The Arsenal's Minos is drawn as a corrupted Gundam (Ryan, 12 October: "Two Gundams are fine,
   since this is the stereotypical dark one and not the hero frame"), so the two silhouettes
   must part (Ryan's).
-- The heat numbers here re-scale with the stock pass's heat scale (1 to 20, proposed on the
-  Kestrel branch on 20 October, not on main yet).
+- The heat numbers here re-scale with the stock pass's heat scale (1 to 20, proposed in the
+  Kestrel session on 20 October, on main since that branch merged on 21 October).
 
 **Ryan's calls on the first round** (20 October), in his words:
 
@@ -240,7 +240,7 @@ to the model session; what stays open:
 
 ## Holes already raised
 
-- It would be the second in-fight shield regen; the Goshawk's was kept safe on one chassis, and
+- It would be the second in-fight shield regen; the Buzzard's was kept safe on one chassis, and
   with the Puffin beside both a team can out-sustain a pack (the runner marks stalls past sixty
   rounds).
 - Once the combo is up, the enemy breaks it: the Waste's Disabled and Scrambled attack the die,

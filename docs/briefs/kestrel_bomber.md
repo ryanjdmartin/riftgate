@@ -1,10 +1,12 @@
-# Brief: the bomber (new chassis, decided)
+# Brief: the bomber, the Lammergeier (new chassis, decided)
 
 The session designs the decided Kestrel machine whose weapons can be spent on an empty slot in
 the enemy's formation, the shot waiting there for whoever steps in. "The bomber" is Ryan's
 working word; the name and the look are his.
 
-**Status**: decided (14 and 15 October). **Maker**: Kestrel. **Tier**: three (Ryan, 15
+**Status**: decided (14 and 15 October; the go 21 October: a tandem wing, the Lammergeier since
+that evening, the Magpie before).
+Its engine and content wait, so this brief stays until they land. **Maker**: Kestrel. **Tier**: three (Ryan, 15
 October). **Read first**: `docs/briefs/README.md`; the bible's row on
 Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8 (Kestrel gap two, the
 interceptor it replaced); `docs/rules.md` on reinforcements, reach and the
@@ -81,7 +83,7 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   over a hurt foe shows a sure kill); the mine is the killing shot as fired (its number after
   the firer's modifiers, its strikes and its keywords) in the target's slot only, so Spread's
   other kills and Chain's later links leave none. Where it is strong: it copies the team's best
-  killer onto the arrival (a Sparrowhawk's doubled Railgun leaves 100 waiting, and the next foe
+  killer onto the arrival (a Kite's doubled Railgun leaves 100 waiting, and the next foe
   into that slot dies before it acts); its limits are one entry of the bomber's five, Rapid's
   once a round, a kill, and a foe waiting for that rank; the levers if it proves busted: self
   only, the mine at half the shot, a longer cooldown. With nothing waiting the buff does
@@ -170,7 +172,7 @@ floor for its tier. Levers if weak: a laid shot striking twice.
   so a pull with damage lays its shot there and gathers the rest into it, one rule and no
   exception; a pull of no damage gathers alone, and one with nothing laid is the dead spend
   Ryan allows. The mark's Rapid: as a full action a mark costs the spend a laid mine would, for
-  a mine a teammate's kill has to lay (a bigger shot, a Sparrowhawk's doubled Railgun say, and
+  a mine a teammate's kill has to lay (a bigger shot, a Kite's doubled Railgun say, and
   no empty slot needed in advance, but a gamble on the kill), so alone it rarely beats laying
   one; Rapid with a cooldown of 1, as Ryan first wrote it, is what makes it worth carrying, a
   free mark every other round paid for by the die's free reroll, and the pull is the rider
@@ -194,10 +196,10 @@ The design as decided on 15 to 17 October, written out whole with the two leans 
 yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the shape.
 
 - **Shape.** Kestrel, tier three, a medium flyer on big boosters, move 40: Kestrel's biggest
-  frame, the Goshawk's class, since the makers table builds "nothing big". Hull 90, shield 60,
+  frame, the Buzzard's class, since the makers table builds "nothing big". Hull 90, shield 60,
   field recharge 25, heat maximum 80, cooling 5, armour 0; four hardpoints beside the two
   locks, a d6; two module slots. Tier three is a lower floor and a higher ceiling, never more
-  power (the tiers row), so its numbers sit at the Goshawk's.
+  power (the tiers row), so its numbers sit at the Buzzard's.
 - **The passive**, as the codex would print it: its weapons may be spent on an empty slot in
   the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
   a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
@@ -255,7 +257,99 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
   numbers move to hull 110, shield 70, move 40 (a heavy that keeps Kestrel's pace), heat 80,
   cooling 5, recharge 25, armour 0 (shield for plate, as every Kestrel), the d6 kept.
 
-## Holes already raised
+## The line review (Claude, 20 October)
+
+Two items under the action economy's direction (the bible's row, section 5).
+
+- **The mark's gate.** "Rapid, cooldown 1" is the switch-off (the rules: every Rapid piece
+  today carries a cooldown of one, the entry switching off for the round), so the mark as
+  written is one of the ungated Rapid pieces the row re-prices, free every round it shows, and
+  this brief's "a free mark every other round" misread the cooldown (every other round is a
+  cooldown of two). Proposed: the mark Rapid while a mine waits on the field, a setup gate of
+  the Paradox's shape, so marking is free only once the bomber has invested a spend in a slot
+  and is a full action before; its tempo grows with its investment, which is the identity.
+  Bench: the mark as a combined entry, a weapon of 5 that Marks, no Rapid, never a dead spend.
+- **Chain in mines.** The 15 October reading made Lure, Disrupt and Chain inert on a laid shot
+  because the round they work in is over; that is true of the two intents and not of Chain,
+  which repeats a kill. Proposed: a Chain mine that kills its arrival repeats the attack on the
+  next foe in reach, rolling and paying its heat again to the bomber in the reinforcement step
+  (the heat sits on the gauge until the next END TURN, so nothing burns out of turn). The Arc
+  Fault Cannon is then Kestrel's own bomb, the lightning mine, and the bomber's stock carries a
+  Kestrel piece beside the other makers' keyword pieces. Lure and Disrupt stay inert.
+
+## The kit, written out (Claude, 20 October)
+
+The design as decided on 15 to 17 October with Ryan's lean on size (18 October) and the line
+review's two items, whole; every number a placeholder, the name and the look Ryan's, the stock
+by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
+
+**The frame.** The Lammergeier (the Magpie until 21 October, evening), a heavy tandem-wing flyer on big boosters (Ryan, 21 October: a
+pair of wings fore and a pair aft, the bay between; the capital ship is the gun platform since
+20 October, a hover), move 40, a heavy that keeps Kestrel's pace. Hull 110, shield 70, field recharge 25, heat
+maximum 80, cooling 5, armour 0. Four hardpoints beside two locks, a d6; two module slots. A
+tier three is a lower floor and a higher ceiling, never more power, so its numbers sit near
+the Buzzard's.
+
+**The passive, the Fuse-delayed Bay**, as the codex would print it: its weapons may be spent on an empty slot in
+the enemy's formation, under the reach rules as if a foe stood there (Direct a front slot or
+a back slot whose front is empty, Indirect any). The shot waits there, its number as rolled
+and modified when laid and its keywords, and joins what already waits; whoever steps in takes
+it all, shot by shot in laid order, before it acts. A massive arrival takes both slots'
+shots. Nothing expires.
+
+**The first lock, the Lorentz Contractor**, the pull: an Indirect weapon of no damage, heat 10 (the number Ryan's),
+never Rapid, no cooldown: every mine on the field is gathered into the slot it is spent on,
+and a foe standing there takes them now, in laid order. Spent on an empty slot it gathers the
+field's mines there and lays nothing of its own, having no shot; with nothing laid it is the
+dead spend Ryan allows.
+
+**The second lock, the Syrinx Drone** (Ryan, 21 October): an Indirect weapon of no damage,
+heat 0: the foe carries the Syrinx Drone, a debuff of the piece's own name (Ryan, 21 October),
+and the next weapon to kill it, any machine's, leaves its shot in the slot it empties. One mine
+a drone, it lasts the skirmish, a death by a tick leaves nothing, and it is a status the team
+put on the foe (the Paradox counts it; Ryan, 17 October: tuned later). If the foe already carries Exposed, the drone is Rapid; otherwise it
+gives the foe Exposed, never refreshing it. The line review's gate (Rapid while a mine waits)
+is on the bench.
+
+**The die.**
+
+| Entry | Piece | In a mine |
+|---|---|---|
+| I | the Lorentz Contractor, the pull | gathers and sets off |
+| II | the mark | a teammate's kill lays one |
+| III | a Burn piece | napalm: Burning as it arrives |
+| IV | a Spread piece | a cluster: the arrival's neighbours too |
+| V | a Shock piece | a shock mine: Shocked for the team's first blow |
+| VI | a Suppress piece, or Kestrel's chain gun if Chain lives in mines | a stun on arrival (hard control gated by its setup, the stun row); or the lightning mine, a kill that jumps |
+
+Tier-two keyword pieces, so the stock shows the bombs; every keyword rides inside the mine
+and acts as it lands.
+
+**The round as played.** An ally kills a front foe and its slot empties; the bomber lays a
+burn mine there (Direct reaches it); at the round's end the reinforcement steps in and takes
+the shot before it acts, Burning. A quiet round: mark the escort; a teammate's kill leaves its
+shot in the escort's slot; the pull onto the boss's slot cashes everything laid onto the boss,
+in laid order, a Shock mine doubling the mine that follows it. Nothing waiting and nothing
+laid: a plain d6 flyer, the floor.
+
+**With the team.** It wants keyword weapons of every maker, the team's killers (the mark
+copies the best shot) and Minos's turn of the ranks. It gives the Marsh's Reraise returns, the
+Meadow's Gel halves, summons and the elites surfacing from the wait a blow before they act.
+
+**The display.** An empty slot lights as a target when a weapon of the right reach is
+dragged; a mined slot shows its outline and a glyph with the total waiting and a chip per
+keyword, never hue alone; the pull's gather is drawn as the mines sliding into the slot; a
+foe carrying the Syrinx Drone wears its chip; the header's REINF count stands beside it until the formation view
+lands.
+
+**Engine.** A slot as a target (`targets_for_face`); the mine store on the skirmish, a list of
+laid shots a slot, carried by the save; the landing after the reinforcement step, left to
+right, each shot through the arrival's damage taken and armour with its keywords acting; any
+other way into a mined slot setting it off at once; the pull and the drone as printed
+properties, the Syrinx Drone a foe status with a kill hook; the drone's gate as a condition
+read before it lands (the foe carries Exposed); Chain's repeat out of a mine paying its heat in the reinforcement step; the bot's
+value of a mine (a shot delayed, worth its number times the chance a foe steps in).
+
 
 - With nothing waiting, the passive does nothing and the lock does nothing: a tier three whose
   identity is absent from a fight without reinforcements (the review, Claude, 16 October).
@@ -268,14 +362,104 @@ yet moved (the pull of no damage, the mark Rapid with a cooldown of one) and the
   slot an ally emptied this turn only if it spends after the ally, and the reinforcement steps
   in at the round's end (Claude, 18 October; the 15 October tempo read, restated for the go).
 
-## Open for the session
+## The mark through Exposed, the look and the name (21 October)
 
-1. Ryan's call on heavy (his lean, 18 October: bigger than medium) and its numbers; the pull
-   of no damage and the mark Rapid with a cooldown of one stand with his "happy with the
-   bomber as a whole" (18 October); the stand-in stock. Decided 17 October:
-   the pull Indirect, never Rapid; mines stack and blow in laid order; the mark in its third
-   form (the next weapon to kill the marked foe leaves its shot in the slot), the second if it
-   proves too strong; Marked feeds the Paradox like any status, tuned later.
+- Ryan, 21 October, on the look: "I'm not sure the look, could be a traditional bomber shape
+  like a b-2 or b-52, or something weirder like 4 wings, one front, one aft, or any other kind
+  of heavy flyer. What kind of birds carry stuff?" On the mark: "Let's try leveraging our new
+  status: the mark, (name help, maybe like a resonating or copying drone or something?),
+  applies the bomb debuff and Exposed. If it's already exposed, gain Rapid."
+- Claude, 21 October, the mark as read: an Indirect debuff, heat 0. The foe is Marked (the
+  next weapon to kill it, any machine's, leaves its shot in the slot it empties; one mine a
+  mark; it lasts the skirmish) and Exposed (two rounds, refreshed). If the foe already carried
+  Exposed, the mark is Rapid: the die rolls free onto another entry and the mark switches off
+  for the round. It replaces the line review's gate (Rapid while a mine waits), which goes to
+  the bench. The pairing is the point: the interceptor Exposes a foe for free on its own die,
+  and the bomber marks it for free on its; the team's Direct guns reach it and its armour
+  counts for nothing, and the kill leaves its shot for whoever steps in.
+- Its holes, each with a lean:
+  1. The condition is read before the mark lands, or every mark is Rapid on its own Exposed.
+  2. "Already exposed" is the debuff, never a back-rank foe exposed by its formation; that
+     reading would make the mark free on most back-rank foes after any kill (Ryan's "our new
+     status").
+  3. The self-loop: a foe the bomber marked stays Exposed for two rounds, so marking it again
+     is free and refreshes Exposed, and one foe (the boss) stays armourless all fight for no
+     tempo whenever the mark shows; the switch-off keeps it to once a round. Lean: Rapid only
+     on a foe that carries Exposed and is not yet Marked. The re-mark on its own target is then
+     a full action, and the free mark comes from someone else's Expose (the interceptor's),
+     which is the combo asked for.
+  4. Two debuffs a spend: the Paradox counts each once a spend, so the mark feeds a Baboon two
+     stacks (Ryan, 17 October: the Paradox is tuned for the final ecosystem).
+  5. The die cannot show a Rapid chip that depends on the foe until it is dragged: over a foe
+     that qualifies, the chip lights, as the number does for a foe today.
+  6. Expose gains its second carrier, so it is a keyword proper (the vocabulary plans it), and
+     the overlap with the interceptor is in the status, not the shape: a free setter there, a
+     setup that pays this machine's mines here.
+- The mark's name (Ryan's ask): the Echo Drone (the lean: the kill echoes in the slot, and it
+  says copy at a glance), the Resonance Drone (his word), the Doppler Repeater (Kestrel's air
+  and speed: the radar of speed, and a repeater copies). Marked could take the drone's word
+  if he wants one name for the pair.
+- Birds that carry, for its name: the Lammergeier, the bearded vulture, which carries bones and
+  tortoises up and drops them to shatter on rock (its old name the Ossifrage, "bone-breaker"):
+  a bomber by habit, and the lean. The Osprey carries fish in its talons, but it is the V-22's
+  name and, Claude thinks, a BattleTech one too. The Pelican is Halo's dropship, out by the
+  names row. The Stork is the folk courier, but a stork that delivers bombs is the gag the tone
+  row keeps out. Gulls and crows drop shellfish and nuts to crack them, the right habit on small
+  birds; Australia's firehawks carry burning sticks to spread fire, but they are several
+  species and the Kite is one of them already. Ryan to check every name against the four games.
+- The look (Ryan's call): a flying wing (the B-2's boomerang reads "bomber" from above, but it is
+  one real aircraft's shape, close to copying it); long straight wings (the B-52's, and the
+  Lammergeier's own long narrow wings and wedge tail); or a tandem wing, a pair fore and a pair
+  aft (the weirdest, unlike every other Kestrel from above, the view the player reads, heavy by
+  its read, the bomb bay between the pairs). Claude's lean: the tandem wing.
+
+## The go (21 October)
+
+- Ryan, 21 October: "Reword: Mark a foe, if it's Exposed, gain Rapid. Otherwise, give it
+  Exposed. So no refresh. Syrinx Drone? Magpie? And go with tandem wing, and yes to the
+  keywords bit."
+- Claude, 21 October: decided. The mark is the Syrinx Drone (the songbird's voice box, where a
+  mimic copies any sound; in Kestrel's air register too, since it is where air becomes a
+  voice): it Marks the foe, and if the foe already carries Exposed the drone is Rapid,
+  otherwise it gives the foe Exposed, never refreshing it. His wording closes the self-loop
+  without the lean: a second mark on a foe the drone already Marked and Exposed is a free look
+  at the die and nothing else, the cantrip on Kestrel's reroll lean, and Exposed runs out on
+  its own clock. "Exposed" is the debuff, never the formation word, and the condition is read
+  before the drone lands. The machine is the Magpie, the thief of folklore that carries off
+  what is not its own and a mimic besides, as its mines carry other machines' shots: a heavy
+  tandem-wing flyer, a pair of wings fore and a pair aft, the mines dropping from the bay
+  between. Every keyword rides inside a mine and acts as the shot lands; Lure and Disrupt do
+  nothing once their round is over, and Chain does whatever Chain does on a blow. A magpie is
+  no heavy bird; the silhouette carries the weight. The bible's Kestrel row and the rules carry
+  the design; the numbers are the content session's.
+
+## The name and the names (21 October, evening)
+
+- Ryan, 21 October: "Change the bomber to Lammergeier", and, of the line's last two slots,
+  "Mark down Magpie and an Owl (probably snowy owl) as our last two chassis, probably a
+  support engine and stealth unit, respectively." Decided: the bomber is the Lammergeier, the
+  bearded vulture, which carries bones and tortoises up and drops them to shatter on rock: a
+  bomber by habit, the lean of this brief's naming round, and a heavy bird, so the
+  silhouette no longer carries the weight alone. The Magpie's name moves to the support
+  engine. The Syrinx Drone keeps its name: a syrinx is any bird's voice box, and the drone
+  still copies the killing shot.
+- Its passive the Fuse-delayed Bay (Ryan's), its designation K-19 Mk I Tandem-Wing Minelayer
+  (Claude's, on his word). The pull's name is open (Ryan: "Don't love either of the bomber
+  pull names, it can be more technical, something about warping or teleporting"): Claude's
+  pick the Lorentz Contractor (length contraction shrinks the space between, so every mine
+  ends in one slot), the others the Spatial Shunt and the Fold-space Anchor (the names round
+  in `kestrel_line.md`). Ryan, 21 October: "Lorentz Contractor". Decided: the pull is the
+  Lorentz Contractor.
+
+## Open for the engine and content sessions
+
+1. Its numbers (placeholders), the model (the tandem wing) and the Syrinx Drone's look; its
+   names (the Lammergeier, the Fuse-delayed Bay, the Lorentz Contractor, K-19 Mk I
+   Tandem-Wing Minelayer).
+2. A bot that values a mine, before its runner row (the Waits on below).
+3. Settled 21 October (Ryan): the bomber's debuff is the Syrinx Drone, the piece's own name, and
+   the helicarrier has nothing called Mark: its Spotting Flare Exposes, and Suppresses if a
+   condition is met, so the Flare feeds the drone's free mark like the interceptor's Expose.
 
 ## Waits on
 
@@ -283,7 +467,10 @@ Nothing (Ryan, 15 October): the formation's view of what waits is its own to-do,
 prerequisite, and the foes' fresh start gives it more to trap. A bot that values a mine comes
 before its runner row.
 
-## What the session hands back
+## What the engine and content sessions land
 
-A proposal in chat; on Ryan's go, content planned, the bible's chassis table, and this brief
-retired.
+A slot as a target, the mine store, the landing step, the Lorentz Contractor and the Syrinx Drone, the
+debuff with its kill hook; the content planned (the Lammergeier, its two locks, the Syrinx Drone debuff in
+the vocabulary),
+the bible's chassis table, and this brief retired. The bible's Kestrel row and the rules carry
+the design since 21 October.

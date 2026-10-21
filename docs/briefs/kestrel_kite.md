@@ -1,13 +1,15 @@
-# Brief: the Sparrowhawk at tier two (rework)
+# Brief: the Kite at tier two (rework)
 
-The session reworks the Sparrowhawk from a tier-one glass cannon into a tier-two flying
+The session reworks the Kite from a tier-one glass cannon into a tier-two flying
 accident that scores kills to stay alive, and prices its double so cool hard-hitting guns stop
 being a free lunch on it.
 
-**Status**: direction (Ryan, 18 and 19 October). **Maker**: Kestrel. **Tier**: two, from one.
-**Read first**: `docs/briefs/README.md`; the bible's Sparrowhawk rows and its tiers row
+**Status**: decided (Ryan's go, 21 October, when he named its lock; the bible's Kite row); its
+engine and content wait, so this brief stays until they land. A direction since 18 and 19
+October. **Maker**: Kestrel. **Tier**: two, from one.
+**Read first**: `docs/briefs/README.md`; the bible's Kite rows and its tiers row
 (section 7 and 10), the cooldown row (section 8); `content/chassis.json` (sparrowhawk) and
-`content/components.json` (pinion_driver); the Sparrowhawk's rows in `docs/balance.md`.
+`content/components.json` (coriolis_accelerator, the old Pinion Driver); the Kite's rows in `docs/balance.md`.
 
 ## What Ryan said
 
@@ -47,7 +49,7 @@ against every formation with all its hull lost. A glass that is not glass enough
   kills a caster before it acts except a hole in the front or the artillery makers' pieces.
   The assassin's job is that kill, and the kill is what keeps it alive. The shape: the Pinion
   Driver reaches any foe (the finisher is the dive, so the team's artillery, Penetrate and
-  Vitriol hurt the caster and the Sparrowhawk finishes it; the reach lives on the lock); the
+  Vitriol hurt the caster and the Kite finishes it; the reach lives on the lock); the
   double counts only what is printed on the entry, number and heat, buffs once (the mirror of
   the strafer's halving); a kill shields it 30 past its maximum, fading 15 a round (a slower
   fade than Overshield's, a one-off on this chassis); hull 30, shield 60, recharge 30. Alone it
@@ -61,7 +63,7 @@ against every formation with all its hull lost. A glass that is not glass enough
   is the free lunch. The printed-only double fixes the buffs (Overcharged 5 a stack, not 10),
   not the cold guns. Ryan's cooldown does: everything doubled, and a weapon it fires goes dark
   for two rounds. The price moves from heat to the die's reliability, which the cooldown row
-  calls dear on a small die, and the Sparrowhawk's d4 is the smallest. On a d4: round one
+  calls dear on a small die, and the Kite's d4 is the smallest. On a d4: round one
   fires A; round two has three live entries of four; round three two, a dead roll one in two;
   round four A returns. It fires about two rounds in three from the third round on, never the
   same cold gun two rounds running, and the team's rerolls fix its dead rolls, which is
@@ -100,7 +102,7 @@ against every formation with all its hull lost. A glass that is not glass enough
 
 ## A toy of the chain (19 October)
 
-A toy of the Sparrowhawk alone, not the game's runner (cooldowns and the kill trigger are not
+A toy of the Kite alone, not the game's runner (cooldowns and the kill trigger are not
 built): a d3 of the Pinion Driver and two cold guns, every shot paying the flat heat F plus
 the fight's tax (X a kill), guns dark for the rounds shown after firing, a kill resetting
 every cooldown and giving another action, heat over the maximum H burning hull one for one
@@ -189,34 +191,99 @@ rounds, 8,000 fights, cautious unless marked.
   matter, a steady doubled gun on the boss, and the execute as the blueprint that makes it
   the caster-killer again by choice.
 
-## The design as it stands (Claude's spec on Ryan's direction, 19 October)
+## The line review (Claude, 20 October)
 
-- **Passive**, Ryan's sketch of 19 October written out. Every weapon it fires is doubled
-  (the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
-  that killed, its shots run 5 hotter this fight.
-- **Lock**, the reset gun (Claude's lean, 19 October; Ryan's "the reset could be on the locked
-  component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0.
-  If it kills, every weapon comes back and the Sparrowhawk acts again. The Pinion Driver
-  leaves the lock for the pool as a tier-two or tier-three blueprint (Ryan, 19 October).
-- **Numbers.** Hull 30 (Ryan, 19 October), shield 40, field recharge 30, heat 40, cooling 10,
-  armour 0, move 50, a light flyer; two hardpoints beside the lock, a d3; tier two, stocking
-  tier-one pieces and basics (stand-ins: the Slugthrower and the Howitzer, cold hard hitters
-  that kill trash doubled and pay the flat heat for it). No shield on kill in the first cut.
-- **Engine.** The cooldown property (not built), granted to every weapon by the passive; a
-  kill trigger (new; the Zoids walker's brief wants it too); act again on a kill through
-  Rapid's path (a free roll onto another entry); the heat tax as a status on the machine, a
-  stack a kill, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
-  multiply on the face's number before the adds, the strafer's halving's mirror); the
-  finisher's reach as a `set_reach` on the lock.
+Under the action economy's direction (the bible's row, section 5) the chain is a cooldown
+burst gated by a kill, the row's own shape, and the act-again on a kill runs on Rapid's path
+without being a Rapid piece; the design stands as the section below spells it. Open item 2 is
+answered by the line (`kestrel_line.md`): the caster-killer niche goes to the interceptor's
+dive (`kestrel_interceptor.md`, a Direct gun spent on a back-rank foe through a standing front
+at the front foe's blow), so the Kite is the trash chain in the fights that matter and
+the steady doubled gun on the boss, and the dive is a lock, never a stock piece. Its cold hard
+hitters stay other makers' by design (no Kestrel hole). On its go two records move: the to-do's
+stock pass line (the Pinion Driver fixed on the Kite, the Buzzard's hardpoint a basic)
+and the bible's stock-pass row, superseded by the reset gun as the lock and the Driver as a
+tier-two or tier-three blueprint.
 
-## Open for the session
+## The kit, written out (Claude's spec on Ryan's direction, 19 and 20 October)
 
-1. Ryan's call on the reset gun as the lock (the chain capped at two, the Pinion Driver to
-   the pool) and the numbers: the flat heat, the tax, the heat maximum, the dark rounds, the
-   lock's number; a shield on kill or none.
-2. The niche (the caster-killer) now that the finisher's reach is gone with the lock: the dive
-   as a stock piece, or the chain its whole niche.
-3. When it moves: after a Kestrel tier one lands for the tender.
+Every number a placeholder, the name kept, the stock by kind (Ryan, 20 October: the stock
+pieces are placeholders until the stock pass).
+
+**The frame.** A light flyer at move 50. Hull 30 (Ryan, 19 October), shield 40, field
+recharge 30, heat maximum 40, cooling 10, armour 0. Two hardpoints beside the lock, a d3; two
+module slots. Tier two, from one.
+
+**The passive**, Ryan's sketch of 19 October written out: every weapon it fires is doubled
+(the printed number, buffs once), adds 10 heat and goes dark for two rounds. After an attack
+that killed, its shots run 5 hotter this fight.
+
+**The lock, the Pinion Driver**, the reset gun (named 21 October; Claude's lean; Ryan's "the reset could be on the locked
+component"): Direct, flat 15 (30 doubled, a sure kill the drag shows on most trash), heat 0
+(10 under the passive). If its shot kills, every weapon comes back and the Kite acts
+again. The old finisher (the Coriolis Accelerator since 21 October) leaves the lock for the pool as a tier-two or tier-three blueprint
+(Ryan, 19 October); doubled on this machine it is the execute again, by choice.
+
+**The die.**
+
+| Entry | Piece | Doubled |
+|---|---|---|
+| I | the Pinion Driver, the reset gun: Direct, 15, heat 0 | 30 at heat 10; a kill brings everything back and it acts again |
+| II | a cold hard-hitting rolled gun (a 15–30 kinetic) | 30–60 at heat 10 |
+| III | a cold Indirect gun (the back rank), or a second cold gun | doubled at heat 10 |
+
+Tier-one pieces and basics; the cold guns of other makers are its pull by design.
+
+**The round as played.** Trash: the reset gun on a hurt foe, 30 kills most of it, every
+weapon comes back and it acts again; the die rolls onto II or III, a doubled gun at 10 heat
+plus 5 for each attack that killed so far; done, the chain capped at two actions a round
+(the free roll never lands on the lock just spent). Next round the lock is live again (its own
+kill brought it back) and the gun fired is dark. A boss: one doubled shot a round, each gun
+dark for two rounds after, the team's rerolls fishing for a live entry; two escort kills early
+make its shots 20 and it overheats by the third round, so the decision in a boss fight with
+its formation is chain the escorts and be hot for the boss, or save it, the right kind of
+decision for a tier two.
+
+**The arithmetic** (the toy, 19 October): against trash 3.7 to 4.7 kills a fight, a reckless
+pilot buying one more for two thirds of its hull, the accident; against a boss about 35 a
+round into armour 5 at no tax, a boss's 160 hull in five rounds alone, a dead round in six
+with a reroll. Four kills and every shot costs 30 on a gauge of 40.
+
+**With the team.** It wants the Puffin's overshield (its tax heat grows it; the vent went with the Puffin's rework), a Barrier, a Shock setter (a
+doubled shot on a Shocked foe is four times) and the team's rerolls. It gives kills, the
+fight's last blow, and the accident.
+
+**Engine.** The cooldown property (not built), granted to every weapon by the passive; a kill
+trigger (new; the Zoids walker's brief wants it too); act again on a kill through Rapid's path
+(a free roll onto another entry); the heat tax as a status on the machine, a stack an attack
+that killed, each stack 5 heat on attack (the pipeline has it); the printed-only double (a
+multiply on the face's number before the adds, the strafer's halving's mirror).
+
+## The go (21 October)
+
+- Ryan, 21 October: "Name the reset gun the pinion driver, and give the old version something
+  appropriate for a kestrel execute, not too picky. I think I'm comfortable putting the
+  reworked Puffin in tier one, to balance it out. It can go there now."
+- Claude, 21 October: decided as the kit below. The lock is the Pinion Driver, the reset gun;
+  the old finisher takes the name the records had saved for another Kestrel piece since 10
+  October, the Coriolis Accelerator (a sniper's long-shot correction, the shot that finishes
+  what is hurt), the id with it, and leaves for the pool as a tier-two or tier-three blueprint
+  when this rework lands. The Puffin went to tier one in content the same day, so Kestrel's
+  tender deal holds without the Kite and its tier move rides with its own engine. The numbers
+  stand as written (placeholders; no shield on a kill in the first cut). The bible's Kite row
+  carries the design.
+- Ryan, 21 October, evening, in the names round (`kestrel_line.md`): "Keep Kite passive".
+  Decided: the passive keeps its name, Disabled Weapon Regulators (the rework still disables
+  them), and with the rework its designation becomes K-7 Mk IV Interceptor (Claude's, on his
+  word "Designations as you see fit"), the new mark for the new passive; the Interceptor tag
+  stays the Kite's, the Needletail being the Tilt-Jet Spotter.
+
+## Open for the engine session
+
+1. The numbers as written, placeholders for the runner: the flat heat, the tax, the heat
+   maximum, the dark rounds, the lock's 15.
+2. Answered 21 October: the lock is the Pinion Driver; the caster-killer is the interceptor's
+   Exposed; it moves with its engine, the Puffin carrying Kestrel's tier one meanwhile.
 
 ## Holes already raised
 
@@ -226,7 +293,9 @@ rounds, 8,000 fights, cautious unless marked.
   Barrier a kill (the full assassin, immune while farming trash: Ryan's danger).
 - The cooldown property is not built; this rework waits on it with the battlecruiser.
 
-## What the session hands back
+## What the engine session lands
 
-A proposal in chat; on Ryan's go, the bible's Sparrowhawk rows and tiers row, the content's
-tier and passive, `docs/rules.md`, and this brief retired.
+The cooldown property, the kill trigger and acting again on a kill, the heat tax, the
+printed-only double; then the content (the passive, the Pinion Driver as its lock, the
+Coriolis Accelerator to the pool, the tier move to two), `docs/rules.md` (the cooldown
+property), and this brief retired. The bible's Kite row carries the design since 21 October.

@@ -327,6 +327,19 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	return out
 
 
+## The shield an entry gives the machine it is spent on: its number, and on an ally what the
+## spender's passives add from the heat that ally carries at the spend (shield_per_ally_heat;
+## the Puffin's Slipstream Projector, 21 October). The spend, the die dragged over the ally
+## and the bot all read it here.
+func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
+	if f == null or f.kind != Face.Kind.SHIELD:
+		return 0
+	var n := f.power
+	if who != null and who != ms:
+		n += Effects.granted_shield(ms.unit, who.heat)
+	return n
+
+
 ## The shown number as the die prints it: one number, or the range.
 func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack():
@@ -941,10 +954,11 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			pass
 		Face.Kind.SHIELD:
 			var who: MechState = target if target is MechState else ms
-			_gain_shield(who, f.power, f.has(Face.Keyword.OVERSHIELD))
-			log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, f.power, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
+			var amount := shield_amount(ms, f, who)
+			_gain_shield(who, amount, f.has(Face.Keyword.OVERSHIELD))
+			log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, amount, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
 			if who != ms:
-				_shield_granted(ms, who, f.power)
+				_shield_granted(ms, who, amount)
 			_cleanse_with(ms, who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms

@@ -379,7 +379,7 @@
    "codex": "After this component is spent the mech acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
    "status": "implemented",
    "design": {
-    "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll. The switch-off is a cooldown of one since 21 October (the cooldown row, 14 October: nearly every Rapid component is Rapid, cooldown 1), and every Rapid piece carries a limiter, a cooldown, heat or Volatile (Ryan, 15 October), which the validator holds content to."
+    "holes": "Any component may carry it, equipment included, since 9 October (the Wake Diffuser first). Ryan, 20 October: a Rapid vent, if one exists at all, has no place in the early tiers (never below tier three), since a vent that gives the turn back is a free way out of the heat system, and a Rapid shield is never below tier two (not nearly as toxic); the Wake Diffuser, the first Rapid equipment, lost it that day and became a vent that shields, and the Laminar Deflector becomes a tier-two blueprint with the stock pass. The switch-off is a cooldown of one since 21 October (the cooldown row, 14 October: nearly every Rapid component is Rapid, cooldown 1), and every Rapid piece carries a limiter, a cooldown, heat or Volatile (Ryan, 15 October), which the validator holds content to."
    }
   },
   {
@@ -1377,7 +1377,7 @@
    "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder."
+    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). MISSING_STEP is a placeholder."
    }
   },
   {
@@ -1649,7 +1649,7 @@
    "codex": "The Musk Ox's magazine, a bar under its heat bar. Its damaging guns spend ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round; a vent the Musk Ox spends on itself adds 3, a shield 2. With none left, its guns cannot be spent.",
    "status": "planned",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: \"another bar under the heat bar\"), never a buff, so no Silence or Purge reaches it (Claude's reading of his bar, his to overrule). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Engine: the bar, the conversion read through the effects, the refund, the reloads, the salvo, the quick reload, the die showing each gun's price and a dry gun unspendable, the bot valuing an ammo."
+    "holes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: \"another bar under the heat bar\"), never a buff, so no Silence or Purge reaches it (Claude's reading of his bar; Ryan agreed, 21 October). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Engine: the bar, the conversion read through the effects, the refund, the reloads, the salvo, the quick reload, the die showing each gun's price and a dry gun unspendable, the bot valuing an ammo."
    }
   }
  ]

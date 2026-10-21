@@ -221,7 +221,7 @@ def sparrowhawk(b):
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
     bone body predated the palettes). Mounts (30 September, the loadout's order): hp_1 and
-    hp_2 the nose guns (Overclocked Railgun, Pinion Driver), hp_3 the left wing pod (Arc
+    hp_2 the nose guns (Overclocked Railgun, Coriolis Accelerator), hp_3 the left wing pod (Arc
     Projector, two prongs), hp_4 the right wing pod (Deflector, a projector's dish); every
     socket at half scale, the machine being small."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
@@ -232,7 +232,7 @@ def sparrowhawk(b):
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
     # Twin nose guns, one either side of the nosecone, the first two mounts (Ryan, 30
     # September: two nose hardpoints, sleeker than one): hp_1 the left, the Overclocked
-    # Railgun; hp_2 the right, the Pinion Driver.
+    # Railgun; hp_2 the right, the Coriolis Accelerator.
     for s in (-1.0, 1.0):
         with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 4.5, 24.0, -1.0), scale=0.5):
             b.prism("y", s * 4.5, 36.0, -1.0, 1.3, 26.0, "steel.dark", 6, "nose_gun")
@@ -1793,7 +1793,7 @@ def goshawk(b):
     fuselage's shoulders as nacelles, each carrying a fin canted outward, and the cannon is
     a wide short bore tucked under the nose in a fairing that runs back along the belly to
     the engines it draws heat from (the Afterburner Cannon, fixed, no pin). Pins under the
-    wings: hp_1 left inner (Laser Carbine), hp_2 right inner (Pinion Driver), hp_3 left
+    wings: hp_1 left inner (Laser Carbine), hp_2 right inner (Coriolis Accelerator), hp_3 left
     outer (Arc Projector, two prongs), hp_4 right outer (Deflector, a projector's dish);
     hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
     detail, no mount). Ryan, 30 September: the cannon recessed behind the nose, a wide low

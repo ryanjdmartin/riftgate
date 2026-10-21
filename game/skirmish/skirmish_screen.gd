@@ -1463,12 +1463,16 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	Sound.hover(can)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
 	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
-	# Cottonmouth's drum). Anywhere else, the plain entry and number.
+	# Cottonmouth's drum). A shield over a machine it may land on shows what it will give
+	# there (the Puffin's ally heat, 21 October). Anywhere else, the plain entry and number.
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
 		var over: Foe = target if can and target is Foe else null
 		var sf := sk.shown_face(ms, ms.face(), over)
-		_ghost.set_face(sf, sk.shown_number_text(ms, sf, over))
+		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
+			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
+		else:
+			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over))
 		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the
 		# die): the gun's heat less what its damaging hit there cashes.
 		var mv := _mech_views[_drag_from]

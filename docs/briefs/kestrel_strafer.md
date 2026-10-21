@@ -1,18 +1,21 @@
-# Brief: the strafer (new chassis, decided)
+# Brief: the strafer, the Skua (new chassis, decided)
 
 The session designs the decided Kestrel tier one whose every weapon strikes twice at half. The
 mechanic is decided; its numbers, locked piece and shape are open. "The strafer" is a working
 label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan, 14 October: "Love the [strafer], lock that in and place it
-accordingly"). **Maker**: Kestrel. **Tier**: one. **Read first**: `docs/briefs/README.md`; the
+**Status**: decided (Ryan, 14 October), the go given 21 October: a swing-wing, the Skua since
+that evening (the Butcherbird was a BattleTech 'Mech's, below); its numbers with the content
+session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
+accordingly"). **Maker**: Kestrel. **Tier**: one (Ryan, 21 October: "Put butcher in": Kestrel's tier ones
+are the Storm Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). **Read first**: `docs/briefs/README.md`; the
 bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8
 (Kestrel's gaps, where the raider and the interceptor it replaced are);
 `content/chassis.json` (sparrowhawk); `docs/rules.md` on strikes and armour.
 
 ## The design as decided
 
-Every weapon it fires strikes twice at half: the Sparrowhawk's bargain in count instead of
+Every weapon it fires strikes twice at half: the Kite's bargain in count instead of
 magnitude. Each strike loses the foe's armour, so it slaughters trash and bounces off a Golem:
 a detachment the map can read ("send it at the goblins, not the knights"). Riders per blow love
 it (a burn per strike lays more stacks than one blow would). It is Kestrel's second tier one,
@@ -33,7 +36,7 @@ strafer in its place (14 October). The raider returns as its own direction
   count whole on every strike, so everything counted per blow counts twice, the armour it
   loses included (Slay the Spire's Strength on a multi-hit card). Per strike: Burn a stack a
   strike (a gain on strikes of 10 or less), Primed doubled, Suppress two tries through Numbed,
-  Shock spent by the first strike at half (the Sparrowhawk's opposite), Paradox once a spend
+  Shock spent by the first strike at half (the Kite's opposite), Paradox once a spend
   as now, Spread and Penetrate on every strike, a multi-strike piece's strikes doubled (the
   Maxigun's three to six). The die shows "8 ×2" with the Maxigun's mark, and dragged over a
   foe the number a strike deals with its armour off. With basics alone the passive gains
@@ -103,7 +106,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   as the passives part them on the die, where two light flyers at 50 read the same.
   Hull 70, shield 60, field recharge 30 (fight a small pack, fly off, two map turns refill
   it), heat maximum 60, cooling 5, armour 0; three hardpoints beside the lock, a d4, the
-  Sparrowhawk's size once the Pinion Driver locks; two module slots. The Sparrowhawk's
+  Kite's size once the Pinion Driver locks; two module slots. The Kite's
   register with ten more hull, since it fights small packs alone.
 - **The passive**, as the codex would print it: every weapon it fires strikes twice at half.
   What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
@@ -154,13 +157,132 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   (the bounce); beside the Puffin with the Overcharge Coil (the doubling of a flat buff); the
   spray's pick share against a full front and against a thinned one.
 
-## Open for the session
+## The line review (Claude, 20 October)
 
-1. Ryan's call on the proposal above: its numbers and the lock's, its size and way of moving
-   (a light flyer at 50, or a hovercraft if his silhouette is one), matched to Ryan's
-   silhouette; then it lands.
-2. The start's hole below (a halved basic against armour 5), if he wants it answered before
-   the go rather than by the scales question in section 12.
+Under the action economy's direction (the bible's row, section 5) the strafer is the home of
+the many-blows want: a design that wants many blows is pointed at strikes, and this is the
+machine whose every weapon strikes. It stands as proposed for the go. The review re-flags the
+start's hole with its root named: with basics alone it gains nothing against bare foes (a
+basic halved and struck twice is the basic) and loses against plate (a halved basic is 5,
+today's armour is 5), so its identity shows on the die (5 ×2, the spray) and its payoff waits
+on riders (Burn and Flak a strike), flat buffs (the Puffin's Coil counted twice) and
+multi-strike pieces, which are cross-maker by design; the root is section 12's scales
+question, never an exception on the passive. The line review (`kestrel_line.md`) asks the
+stock pass for a Kestrel multi-strike gun of its own (flat and hot, parted from the Maxigun),
+so one payoff is Kestrel's. Nothing else moves.
+
+## The kit, written out (Claude, 20 October)
+
+The design as decided and proposed, whole; every number a placeholder, the name and the look
+Ryan's, the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock
+pass).
+
+**The frame.** A light flyer on big boosters at move 50, the fast jet and the detachment the
+map can read (a hovercraft if Ryan's silhouette is one, which would part it from the
+interceptor on the map). Hull 70, shield 60, field recharge 30, heat maximum 60, cooling 5,
+armour 0. Three hardpoints beside the lock, a d4; two module slots.
+
+**The passive, the Split-cycle Breech**, as the codex would print it: every weapon it fires strikes twice at half.
+What is printed on the entry halves, rounded up, and strikes twice; buffs, passives and the
+foe's conditions count on every strike, and so does its armour. The entries show the halved
+number with the strikes mark ("5 ×2", "5–8 ×4"); dragged over a foe, the number one strike
+deals with its armour off.
+
+**The lock, the Flechette Pod**, the spray (Ryan's description, 15 and 16 October): a rolled gun, Direct, 10 to
+15, two strikes, heat 5; under the passive 5 to 8 ×4. The first strike lands where the die is
+dragged; each strike after it draws at random among the foes in reach at that moment, the same
+foe again allowed, reach read again between strikes with a kill clearing its slot at once. A
+printed property with the star; the die shows the first strike's number, as Spread does.
+
+**The die.**
+
+| Entry | Piece | Under the passive |
+|---|---|---|
+| I | the spray: 10–15 ×2, Direct, heat 5 | 5–8 ×4, the first strike aimed |
+| II | a warm flat gun | half, twice |
+| III | a cold rolled gun | half, twice |
+| IV | a shield | unchanged |
+
+No vent: its heat is the base weapon's, paid once a spend, and a d4 has no room for one.
+
+**The round as played.** A gun showing strikes its foe twice, each strike losing the foe's
+armour; the spray plans its first strike and sprays three; a shield is a shield. Against a
+full front the spray is volume (the aimed foe takes 1.75 of its four strikes on average);
+against a lone foe behind a hole it is a plain 5–8 ×4; a hole in the front turns the odds
+toward the foe behind it, the punch Ryan described, planned by what falls first.
+
+**The arithmetic** (mean a spend on one foe, armour 0 / 5; "plain" is the weapon on any other
+machine).
+
+| Weapon | Plain | Strafer | Strafer, two Overcharged stacks |
+|---|---|---|---|
+| a flat 10 | 10 / 5 | 10 / 0 (5 ×2) | 30 / 20 |
+| a rolled 5–15 | 10 / 5 | 11 / 1 (3–8 ×2) | 31 / 21 |
+| a rolled 15–30 | 22.5 / 17.5 | 23 / 13 (8–15 ×2) | 43 / 33 |
+| the spray 10–15 ×2 | 25 / 15 | 26 / 6 (5–8 ×4) | 66 / 46 |
+| a flat 5 ×4 (the Kestrel multi-strike gun the line review asks for) | 20 / 0 | 24 / 0 (3 ×8) | 104 / 64 |
+
+The read: at armour 0 it deals the base weapon's damage for the base heat; its gains are
+riders a blow (Burn lays a stack per 10 rounded up, so two half blows lay two stacks where one
+whole blow laid one; Flak a stack a strike), flat buffs (Overcharged and Primed count per
+strike, so the Puffin's Coil is worth twice on it) and strikes (a four-strike gun becomes eight
+bites); its loss is armour, paid twice a weapon, and a halved basic (5) is today's armour
+exactly, the start's hole (section 12's scales question).
+
+**With the team.** It wants rider pieces, flat buffs and multi-strike pieces, cross-maker by
+design; it gives the team's stacks laid twice as fast, and the detachment.
+
+**Engine.** A passive effect that halves the printed number (rounded up) and doubles the
+strikes on the effective face; the spray as a printed property with its random pick per
+strike and reach re-read between strikes; the bot's value of a spray, its mean over the foes in
+reach; each tested with synthetic passives.
+
+
+## Open for the content session
+
+1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October); its names as
+   settled that evening: the Skua, the Flechette Pod, the Split-cycle Breech, and the
+   designation K-13 Mk I Swing-Wing Strafer.
+2. The start's hole below (a halved basic against armour 5): section 12's scales question and
+   the stock pass, with Exposed its Kestrel answer meanwhile.
+
+## The shape and the name (21 October)
+
+- Ryan, 21 October: "I think shape is either a swing-wing or the exposed-rotor copter. Reminds
+  me of a woodpecker or something? Anything more aggressive that strikes fast and
+  repeatedly?" And, of the Merlin: "Merlin is also battletech."
+- Claude's lean: the swing-wing, the strafing jet by trade (wings spread to loiter, swept for
+  the run), its strike act the passive in motion (the wings sweep as it fires twice); it parts
+  this machine from the Kite by silhouette, which the hovercraft question was for, so
+  that question closes either way (both flyers at 50). The exposed-rotor gunship is the other
+  classic strafer, sent to Aphelion on 20 October, and still a flyer. Names, birds that strike
+  fast and repeatedly: the Shrike (the butcher-bird, strikes and impales again and again; a
+  minor BattleTech name, judged as the Goshawk and the Sparrowhawk were, both BattleTech
+  names too and neither iconic), the Butcherbird (the same family; called clean, wrongly: it
+  is a BattleTech 'Mech too, below), the Skua
+  (harries other birds until they drop what they carry; clean), the Hobby (the fastest small
+  falcon, hawking in passes), the Harrier (too on the nose), the Merlin (BattleTech, Ryan).
+  Ryan, 21 October: "Butcherbird is fine, as a swing wing. Just noting that Sparrowhawk is a
+  battletech aircraft, and goshawk a nickname of an obscure reference, so that's mostly why
+  they get a pass." Decided: the Butcherbird, a swing-wing; the numbers with the content
+  session. The same day Ryan closed those two passes ("I meant as replacement sparrow and
+  goshawk names, to close that exception"): the Sparrowhawk became the Kite and the Goshawk
+  the Buzzard.
+
+## The name reopened (21 October, evening)
+
+- Claude, 21 October, checking the names round against `content/reserved_names.json`: the
+  Butcherbird is a BattleTech 'Mech (the list's birds), so calling it clean above was wrong,
+  and the validator refuses the name until the entry records a pass under
+  `design.name_clash`. With the roster's two BattleTech passes closed that day, the name is
+  Ryan's again: a pass, or a new one. Claude's pick, checked against the list: the Skua
+  (seabirds that harry other birds in repeated dives until they drop what they carry, and dive
+  at an intruder's head; also a 1930s naval dive-bomber, which suits a strafer); the other,
+  the Kingbird (the tyrant flycatchers, which strike hawks and crows again and again). The
+  swing-wing stands either way. The names round for the line is in `kestrel_line.md`.
+- Ryan, 21 October, evening: "Skua is fine too". Decided: the Skua; its lock the Flechette
+  Pod, its passive the Split-cycle Breech (both his picks from the names round), its
+  designation K-13 Mk I Swing-Wing Strafer (Claude's, on his word).
 
 ## Holes already raised
 
@@ -171,12 +293,12 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   with basics alone. Section 12's scales question (our armour of 2 or 3 first, then the foes')
   decides whether a halved basic bites or bounces on plate, and the stock pass's basic numbers
   too; until one moves, its flat buffs are the way through plate (the table above).
-- Two light flyers at 50 (the Sparrowhawk and this) read the same on the map though not on the
+- Two light flyers at 50 (the Kite and this) read the same on the map though not on the
   die; a hovercraft silhouette would part them there too (Claude, 18 October; Ryan's call).
 - Riders double: Burn lays a stack per 10 of a blow, rounded up, so two half blows can lay more
   than one whole blow; Spread and Penetrate fire per strike. The arithmetic per strike is in
   the session above.
-- Beside the Sparrowhawk, both Kestrel tier ones change every weapon; they part on magnitude
+- Beside the Kite, both Kestrel tier ones change every weapon; they part on magnitude
   against count.
 - The review (Claude, 16 October) found the engine applying Suppress per strike, so a Suppress
   piece on it tried twice a spend, and a landed first strike's second try mostly added Numbed
@@ -190,8 +312,8 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   you still hit that guy for normal damage", and sometimes the result hoped for; showing the
   first strike's number is correct, "exactly the same as spread". Both stand as designed.
 
-## What the session hands back
+## What the content session lands
 
-A proposal in chat for its shape and numbers; on Ryan's go, content planned (the engine needs a
-passive that doubles strikes and halves them), the bible's chassis table, and this brief
-retired.
+The Skua and its Flechette Pod in content (planned until the engine: a passive that halves the
+printed number and doubles the strikes, the spray's pick per strike), the bible's chassis
+table, its numbers and model; then this brief retires.

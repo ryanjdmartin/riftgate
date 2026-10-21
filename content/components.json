@@ -353,8 +353,8 @@
    ]
   },
   {
-   "id": "pinion_driver",
-   "name": "Pinion Driver",
+   "id": "coriolis_accelerator",
+   "name": "Coriolis Accelerator",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
@@ -363,7 +363,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It leaves the Kite for the pool as a tier-two or tier-three blueprint once the Kite's rework lands; until then it stays in the Kite's and the Buzzard's stock."
    },
    "face": {
     "kind": "attack",
@@ -420,7 +420,7 @@
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
     "niche": "",
-    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act."
+    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act. 20 October (Ryan): a Rapid shield is never below tier two (a Rapid vent never below tier three), so with the stock pass it leaves the tier-one and tier-two stocks that carry it today and becomes a tier-two blueprint, found; its Rapid stays."
    },
    "face": {
     "kind": "shield",
@@ -1221,11 +1221,11 @@
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
     "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first).",
-    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right)."
+    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right). 21 October (the Puffin's rework, Ryan's go): shield 10, down from 30; the Puffin's passive grows it by a fifth of the ally's heat, so it is the big one on a hot ally and 10 on a cold one."
    },
    "face": {
     "kind": "shield",
-    "power": 30,
+    "power": 10,
     "targets": "ally",
     "keywords": [
      "overshield"
@@ -1484,20 +1484,17 @@
    "design": {
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "The first rapid equipment: a small vent that gives the machine its turn back, so cooling is never a dead roll.",
-    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop: the escort cools an ally and acts again. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "A combined entry: a vent of 10 that also shields 10, so a support entry is never a dead roll and costs its turn like any other.",
+    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. The vent half runs today; the shield half (a shields field on the face) lands with the combined entry's engine (the to-do), on the Puffin's passive a vent twice. Numbers are placeholders."
    },
    "face": {
     "kind": "vent",
     "power": 10,
-    "keywords": [
-     "rapid"
-    ]
+    "keywords": []
    },
    "passive": null,
    "tags": [
-    "support",
-    "tempo"
+    "support"
    ]
   },
   {
@@ -1658,7 +1655,7 @@
     "stage": "draft",
     "fantasy": "The observer's flare over the target: every gun on the field finds it. Charged, it bursts in the foe's face.",
     "niche": "The Swallowtail's spotter, locked: the foe it lights is Exposed (the Kestrel session's debuff: in every machine's Direct reach and its armour counting for nothing, through the next round), no damage; spending a muster Suppresses it too, a stun gated by the price and clocked by Numbed.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Exposed is the Kestrel branch's keyword and joins this face when that branch merges; until then the face carries no keyword. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Exposed is the Kestrel session's debuff (in the rules since its branch merged, 21 October), and Expose joins this face when it enters the vocabulary (the Needletail's content session, or the Swallowtail's engine if that comes first); until then the face carries no keyword. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
    },
    "face": {
     "kind": "attack",
@@ -1819,7 +1816,7 @@
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October)."
    },
    "face": {
     "kind": "vent",

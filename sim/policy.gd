@@ -585,7 +585,7 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	var score := 0.0
 	match f.kind:
 		Face.Kind.SHIELD:
-			score = shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms)
+			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
 			if who == ms:
 				score += seal_score(sk, ms)
 		Face.Kind.VENT:

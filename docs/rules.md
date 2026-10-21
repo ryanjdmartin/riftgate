@@ -82,7 +82,8 @@ The fight ends the moment it is decided, mid-turn too: victory when no foe stand
 defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
-- **Rerolls**: three a round for the team, never banked. A reroll rerolls every unlocked,
+- **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
+  Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
   spending unlocks it; locks clear each round.
@@ -93,20 +94,37 @@ defeat when every machine is wrecked. There is no round limit.
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
+- **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
+  unspent at the round's end are banked, up to three, and spent in a later round like any
+  reroll.
 - **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
 - **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Overcharged).
+- **A debuff** is a weapon of no damage (a setter, a swap), spent on a foe in reach like any
+  weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
+  Up, Primed's burn), and its heat is a weapon's. The die's kinds: Direct, Indirect, Debuff,
+  Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
+  debuff the frame with the status mark inside and no number, a buff the mark alone; a shield
+  or vent that also buffs is its own glyph with a buff chip (not built: the glyph, the print
+  and the damage guard).
 
 ### Reach
-- **Direct** reaches the front rank, and a back-rank foe whose column's front slot is empty.
+- **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
+  any foe carrying Exposed (not built).
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
   built: today, fired at the front rank, it splashes: the firer loses shield equal to half
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
   it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive, not built): its weapons may be spent on an empty slot in
+  the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
+  front is empty; Indirect any). The shot waits there, its number as rolled and modified when
+  laid, with its keywords; whoever steps in takes every shot waiting, in laid order, before
+  it acts, and a massive arrival takes both slots'. Every keyword acts as the shot lands; Lure
+  and Disrupt do nothing, their round being over. Nothing expires.
 
 ### A blow
 1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
@@ -118,9 +136,10 @@ defeat when every machine is wrecked. There is no round limit.
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
-- **The die shows the number** one blow will deal after every modifier. Dragged over a foe
-  it may strike, it shows that foe's number: its missing hull, conditions on it, its Flak, its
-  armour off. A Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
+- **The die shows the number** one blow will deal after every modifier; a debuff shows none,
+  and a gun whose blow is nothing here shows 0 (not built). Dragged over a foe it may strike,
+  it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
+  Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
   tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
@@ -143,6 +162,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 10 heat to it (Siphoning), in the enemy's turn, after the overheat.
+- **Expose** (the Needletail's Fovea Designator, not built): every foe reached and left standing is
+  Exposed through the next round; a second Expose refreshes it, never adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -152,6 +173,8 @@ defeat when every machine is wrecked. There is no round limit.
   Flinger, 5 heat). A Rapid component always carries a limiter, a cooldown, heat or
   Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: the
   cylinder cannot chain it into itself.
+  A Rapid vent, if one exists, is never below tier three, and a Rapid shield never below
+  tier two (not built: the tiers).
 - **Cooldown** (a printed property on specific pieces): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
@@ -185,7 +208,16 @@ spending it Armours its owner, the stacks it says, an armour point each, until t
 end (the Wild Boar's Breaching Plow, ten). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **Spillover** (the Wild
+the stacks being the limit, and the fight's last blow rolls nothing. **The Lorentz Contractor** (the
+Lammergeier's pull, not built): every mine on the field gathers into the slot it is spent on, and a foe
+standing there takes them now, in laid order. **The Syrinx Drone** (the Lammergeier's, not built):
+the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
+the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
+spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
+are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
+not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
+not built): the ally gains Overcharged 2 and its die rolls again, which does nothing on a
+spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole; the engine runs it as a keyword the passive
@@ -216,6 +248,8 @@ On a machine:
 - **Spun Up** (buff): its next weapon spend deals +5 a stack, then every stack is spent, by a
   weapon of no damage too; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
+- **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 10 shield at the start of each
+  round for three rounds; it stacks, each grant keeping its own end.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. Nothing in content grants it yet.
@@ -256,6 +290,13 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
+- **Exposed** (debuff, not built): it stands in Direct reach of every machine as if its
+  column's front were empty, and its armour counts for nothing, its own and any Armoured.
+  Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
+  is exposed by its formation, in reach only.
+- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it, not built): the next weapon to kill it, any
+  machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
+  skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
@@ -318,7 +359,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   every round; a vent it spends on itself adds 3, a shield 2; with none left its guns cannot
   be spent. Its Shrapnel Recuperator returns 1 for every foe it hits; its Unrestricted
   Expenditure fires every ammo in the magazine as a strike, each at a random live foe with
-  Spread and Penetrate; its quick reload adds 2, Rapid, for a good chunk of heat.
+  Spread and Penetrate; its quick reload, Rapid, adds 2 for a good chunk of heat, and the Forge
+  counts it as no vent.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
   or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires

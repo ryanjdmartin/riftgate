@@ -19,9 +19,9 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 549 tests, 61,811 checks, green on main (21 October, with the party, its finals and
-  the finale; 485 and 20,291 on the Windows desk machine on 19 October, about a
-  minute there). A cloud session fetches
+- Tests: 550 tests, 61,829 checks, green on main (21 October, with the party, its finals and the
+  finale, and the Kestrel branch merged); 485 and 20,291 on the Windows desk machine on 19
+  October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
@@ -30,34 +30,9 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-Two branches are live beside main, each its session's; main's account of each stands as of its
-last merge into main, and the branch's own status file has the rest.
+One branch is live beside main, its session's; main's account of it stands as of its last
+merge into main, and the branch's own status file has the rest.
 
-- `ccr-b6da49d3-4ft738` (18 and 19 October, the Kestrel session resumed from main): Claude's
-  proposal for the go on the three Kestrel machines in their briefs, then seven rounds with
-  Ryan recorded there (the shield-spender's brief the session's log). As left: the strafer
-  proposed for the go; the shield-spender an off-tank package at tier one on Ryan's word (a
-  plated shield, the burn with its zap, a lure that regens itself); the bomber happy as a whole,
-  heavy proposed and the capital ship; two briefs of their own, `kestrel_gun_platform.md` (the
-  capstone, Ryan's shape: every roll of its die grows its entries, lock or ride) and
-  `kestrel_sparrowhawk.md` (to tier two: a d3, doubled, flat heat, dark two rounds, a locked
-  reset gun whose kill brings every weapon back; hull 30 decided); the interceptor (its first
-  weapon each round Rapid) in the README's tiers table, no brief yet; Ryan's leans recorded
-  (overlap is fine if the shapes differ, rerolls Kestrel's, a second tier-one lure so the
-  Armadillo is no must-pick, Aphelion to need a defensive tier one, the mode-shifter to
-  Aphelion's bench). Merged into main on 20 October (Ryan: the action economy's direction
-  goes to main before anything else does any work) and kept open for the Kestrel line
-  review. The eighth round (19 October) in the platform's brief: no doubled
-  payout, multi-hit pieces its payoffs, the three shapes of the gamble with their arithmetic
-  (growth, half-strikes, whole stacks), and a Rapid census across the branches (four chassis
-  chase Rapid pieces first, in three makers, for five pieces). The ninth round (20 October):
-  Ryan's deep-dive ask on the action economy, answered in the briefs README (Rapid sells five
-  wants, four carriers ungated, a home for each want other than more Rapid pieces, the
-  commander layer among them), and the platform's engine moved from Rapid to rerolls (an own
-  reroll a round, the throttle retired, the three-strike shield its lock). Docs only; nothing
-  built, nothing in content. Main merged in on 19 October (the Wainwright & Sutler goes). To
-  resume: Ryan's calls in the open Kestrel briefs, then on his go the records each brief's
-  "What the session hands back" lists.
 - `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
   landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
   vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
@@ -74,11 +49,12 @@ last merge into main, and the branch's own status file has the rest.
   Prairie Dog.
 
 Every other branch is merged into main (checked 21 October) and is to be deleted from the desk
-machine or GitHub, since a cloud session's push to delete them is refused: `ccr-3259e29d-ydwpom`,
-`claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
-`ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`, `claude/zealous-cori-8xoly7`,
-`claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and `ccr-3d9861dc-mp0v3w`, merged
-before it. The three design sessions merged that day are paused, each resuming from its briefs:
+machine or GitHub, since a cloud session's push to delete them is refused: `ccr-b6da49d3-4ft738`,
+`ccr-3259e29d-ydwpom`, `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`,
+merged that day, and `ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`,
+`claude/zealous-cori-8xoly7`, `claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and
+`ccr-3d9861dc-mp0v3w`, merged before it. The four design sessions merged that day are paused,
+each resuming from its briefs:
 
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
   Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
@@ -98,6 +74,15 @@ before it. The three design sessions merged that day are paused, each resuming f
   (Penance's shape, how often it may fire), then the Onryō's kind and trigger, which Flak
   reopened; the round's arithmetic is at 16 October's scales, and none of the four reads in
   the runner until the shield rule's engine and the bot's valuations land.
+- Kestrel (the line, 18 to 21 October; merged on Ryan's word of 21 October: "I'd like to wrap
+  this up and merge into main, and I'll take up the last 2 chassis in another session"): eight
+  machines decided and named, 3-3-2, the bible's Kestrel row saying where each stands and
+  `docs/briefs/kestrel_line.md` the line's hub; each decided machine's brief stays until its
+  content and engine session lands it (the to-do's lines; the design under Decided, not built).
+  The last two, the Magpie (a working name, a support engine) and the Snowy Owl (a stealth
+  unit), are Ryan's next session, from `kestrel_magpie.md` and `kestrel_owl.md`: his
+  directions and Claude's first round in each, unanswered (the Magpie the thief, the mimic or
+  the cache; the Owl cold and so unseen, a hunter on the map, or Hidden as a status).
 
 - The chassis proposals: Wainwright & Sutler's, the Arsenal's and Aphelion's reached main as
   proposal files and on 15 October were folded into the design-session briefs (`docs/briefs/`,
@@ -129,6 +114,13 @@ before it. The three design sessions merged that day are paused, each resuming f
   campaign runner reports the party and the finals; the balance report carries the party's
   cells (each bench hero's final, the finale), a 30-seed direction on the team row reading
   every final won in both rungs and the finale 13 / 73. The party card waits on the mission map.
+- 20 and 21 October, the Kestrel session's builds (merged 21 October): the Puffin reworked at
+  tier one (the Slipstream Projector: a shield it spends on an ally grows by a fifth of the heat
+  that ally carries, read at the spend, by the die dragged over the ally and by the bot alike,
+  `Skirmish.shield_amount`); the Wake Diffuser's Rapid off (a vent of 10; its shield half waits
+  for the combined entry); the old finisher renamed the Coriolis Accelerator (the id with it),
+  the Pinion Driver's name kept for the Kite's reset gun; the Sparrowhawk and the Goshawk shown
+  as the Kite and the Buzzard (the ids kept).
 - 21 October, the Dingo's Combat Translocator and the multi-target spend (Ryan's go of 19
   October; the interaction his of 21 October): Swap takes a second target, another foe or an
   empty slot, and the two trade places (a massive foe stays); on the screen the die dropped on
@@ -168,8 +160,10 @@ before it. The three design sessions merged that day are paused, each resuming f
   printed `spins` on the entry, no cooldown, the validator's stepping-die exemption) and Spun
   Up (a buff spent by the next weapon spend); six pips under the heat bar, the next-chamber chip
   on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
-  so the tender and the runner deal it. Open for Ryan (section 12): a weapon of no damage takes
-  the attacker's flat adds (Overcharged's, Spun Up's) and deals them. The hold's ring, the
+  so the tender and the runner deal it. A weapon of no damage still takes the attacker's flat
+  adds (Overcharged's, Spun Up's) and deals them: Ryan's die grammar in the Kestrel session (21
+  October, its section 6 row on the live page) holds it at nothing under any effect, a guard
+  not built yet, so the question went from section 12. The hold's ring, the
   hangar's chambers and the bot's cycle are the to-do's.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
@@ -291,8 +285,8 @@ before it. The three design sessions merged that day are paused, each resuming f
   spill; records: Numbed and the banked stores are buffs (two kinds, no third), Silence and
   Dispel (Purge since 20 October) decided for the enemy's side with Ward turning both away (not
   built).
-  Then 18 and 19 October (`ccr-b6da49d3-4ft738`, above): the session's rounds with Ryan in
-  the Kestrel briefs, waiting on his calls.
+  Then 18 to 21 October (`ccr-b6da49d3-4ft738`, merged 21 October): the line decided and
+  named in the Kestrel briefs (above, and under Decided, not built).
 - Built and tested: the battle (the round, orders, fights by ring and range, hunters, five map
   types, Rift Pressure without escalation, the boss after its reveal); the skirmish as
   `docs/rules.md` states it, Rally included (Kindled at its move's value, live from the next
@@ -422,7 +416,7 @@ before it. The three design sessions merged that day are paused, each resuming f
   together win 92%.
 - `docs/balance.md` at 200 seeds: every team row keeps its 9 October band; alone the machines
   move a few points, the Nemesis most (greedy 61 to 76); the cells that moved follow the rules
-  (the Peak open to nearly everyone and closed to the Goshawk, the bosses harder for the heavy
+  (the Peak open to nearly everyone and closed to the Buzzard, the bosses harder for the heavy
   machines, the Marsh's formation a decision for the Armadillo and a wall for the Boar); flat
   weapons pay about twice the heat per point that rolled ones do. The bands of both are in
   `docs/measurements.md`.
@@ -439,7 +433,7 @@ before it. The three design sessions merged that day are paused, each resuming f
 - The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
   Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
   from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
-  on the Sparrowhawk, the Baboon free to stock a shield, every tier-one chassis on basics beside
+  on the Kite, the Baboon free to stock a shield, every tier-one chassis on basics beside
   its locked piece, each component's tier in its entry and every chassis stocking only below
   its own tier (the Arsenal's tier-one components exist for its tier twos to stock), a bought
   chassis bringing copies of its stock and never the blueprints, heat re-priced by niche so
@@ -464,8 +458,9 @@ before it. The three design sessions merged that day are paused, each resuming f
   or Phased on every ally that has not acted, no cooldown; the Spotting Flare: it Exposes a
   foe, or Exposes and Suppresses it; the Sutler's Hoist: a shield and cooling, or the full
   reset; the Reveille Horn: a team reroll, or an ally acts again); three hardpoints. Nothing on
-  it is called Mark (Ryan, 21 October, in the Kestrel session): the Flare's Exposed joins its
-  face when the Kestrel branch merges. In content as planned entries (Muster and Rallied in the
+  it is called Mark (Ryan, 21 October, in the Kestrel session): the Flare's face takes Expose
+  when Expose enters the vocabulary (the Needletail's content session, or the Swallowtail's
+  engine if it comes first). In content as planned entries (Muster and Rallied in the
   vocabulary); the engine and the assets are the to-do's two lines. The Hoist is no loader for
   the artillery (Ryan, 21 October).
 - The Musk Ox (Ryan's go, 21 October; its row in section 7): the artillery, the maker's second
@@ -475,9 +470,24 @@ before it. The three design sessions merged that day are paused, each resuming f
   adding 3 and shields 2; everything else keeps heat on a low heat bar. Locked: the Shrapnel
   Recuperator (Flak 1 for the team and 1 ammo back for every foe hit), the Unrestricted
   Expenditure (every ammo as a strike at a random foe, Spread and Penetrate) and the quick
-  reload for testing (Rapid, 2 ammo, heat); four hardpoints. In content as planned entries
+  reload for testing (Rapid, 2 ammo, heat, no vent to the Forge); four hardpoints. Ryan agreed
+  Claude's three calls the same day: ammo a resource no Silence or Purge reaches, the content
+  at today's heat scale until the stock pass, the quick reload's 2 all it adds. In content as planned entries
   (Ammo a planned resource in the vocabulary); the engine and the assets are the to-do's two
   lines.
+- The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
+  die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
+  build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
+  tier one), the Kite's rework (its lock the Pinion Driver, tier two), the Needletail (a
+  tilt-jet that Exposes, tier two), the Lammergeier (a tandem-wing minelayer, tier three) and
+  the Giant Petrel (the formation leader, tier three), each the to-do's line; Exposed (Direct
+  reach and no armour, through the next round, refreshed, never added) and Expose; the die's
+  six kinds and their grammar (a weapon of no damage shows no number and deals nothing under
+  any effect, the guard not built); a Rapid shield never below tier two and a Rapid vent never
+  below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
+  stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs) with the stock pass; the
+  designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
+  out of it for now (Ryan, 21 October).
 
 ## Next, in order
 
@@ -496,8 +506,13 @@ to-do's Ryan list).
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
    Prairie Dog's pivot, the helicarrier as the Swallowtail and the artillery as the Musk Ox
-   landed (21 October); next, the gunship with the stock pass. The Arsenal's four wait on Ryan: Claude's
+   landed (21 October); the gunship waits for the stock pass's tags and the numbers' rescale
+   (Ryan, 21 October: "since that's its whole deal"), so the maker's design sessions are done
+   until then. The Arsenal's four wait on Ryan: Claude's
    first round and its review are in their briefs, none of it answered, Misharu first.
+   Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
+   the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
+   machine's content and engine session follows from its brief (the to-do's lines).
 2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
    heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
    area keywords on the explosives.
@@ -535,18 +550,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.241, and so is the live
-  (21 October), but for main's rows since (the shield rule, Barrier and Ward, the cooldown and
-  Rapid rows built, Flak's carrier in the tables), owed a republish: main's Musk Ox (v0.238, a word fixed in v0.241) put onto the Kestrel session's live v0.239 (its
-  rows since 20 October: the Kite, the Buzzard, the Skua, the Storm Petrel, the Needletail,
-  the Lammergeier, the Puffin's rework, the Magpie, the Giant Petrel, the names round, the
-  die's grammar, a locked piece's power by its chassis's tier and Kestrel's stock holes),
-  so the live rows and tables run ahead of main's by the Kestrel branch's until it merges and
-  `tools/pages/bible_tables.py` regenerates the tables here (a merge conflict in a generated
-  table is resolved by the live's row, corrected by hand for main's content change). The
-  version numbers on main's file and the live agree after every publish; the rows between them
-  are the other branches'. Git and the page's version history carry what each earlier
-  publish brought.
+  `docs/design-bible.html` after every change. Main's file is v0.243, and so is the live
+  (21 October): the Kestrel branch merged, so main's file carries the Kestrel session's rows the
+  live had carried since 20 October, and `tools/pages/bible_tables.py` regenerated the tables
+  from the merged content (one cell moved: Rapid's unlocked pieces, 3 to 2, the Wake
+  Diffuser's Rapid off). The version numbers on main's file and the live agree after every
+  publish; the rows between them are the other branches'. Git and the page's version history
+  carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).
@@ -558,8 +568,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
   the content that had moved, and the walkers' planted footwork, the last on 20 October
-  (`ccr-ffcf75fa-3gkbz9`); main's content has moved since (21 October's landings and merges),
-  so the next content session republishes it. Its database
+  (`ccr-ffcf75fa-3gkbz9`); main's content has moved since (21 October's landings and merges,
+  the Kestrel branch's among them: the Puffin's passive, the Kite's and the Buzzard's names, the
+  Coriolis Accelerator, the Wake Diffuser), so the next content session republishes it. Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
