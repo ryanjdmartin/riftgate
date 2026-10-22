@@ -710,8 +710,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
   the direction run in the scales row, section 12's content item) and the stun calls of the
   same day (the stun row, section 12), then the Battery's Flak gate, the Backdraft as a consumer
-  and the two questions reopened that evening (the stun row, section 12). The hangar (the page's version 92 since main's republish
-  of its Names board) waits on the stock pass's HP and Breach vocabulary at its next republish.
+  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 93 since the stock
+  pass's republish (below).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -733,7 +733,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   with the chassis and the vocabulary (the stores', the carry's, the magazine's and the rage's
   codex) and every die's entries numbered by their place, the Cassowary's die a cylinder with
   its order printed (the page's version 91; `edits` empty before it), then the Names board's
-  rules and makers' tabs brought to the bible's naming rows (the page's version 92). Its database
+  rules and makers' tabs brought to the bible's naming rows (the page's version 92); and on 22
+  October from the stock pass's branch with the landed content at the loops' numbers (chassis,
+  components, foes, modules, vocabulary: the new pieces, the tiers, HP and Breach, the foes'
+  blows, the maxima) and the page's face line showing strikes, gates, consumers and own fire
+  (the page's version 93; `edits` empty before it, the five files checked identical to main's
+  before they were replaced). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
