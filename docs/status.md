@@ -509,6 +509,11 @@ before it. The five design sessions merged that day are paused, each resuming fr
   an efficiency edge, not the gap the tests ask for (about 2 on the big fights, none on trash).
   The 21 October report's reads stand beside it (the shield rule's few points, the Armadillo's
   and the Kite's reworks): `docs/measurements.md` has both.
+- The stock pass's fills as a direction (30 seeds, every row against every pack, the brief's
+  sections 1 to 5 applied to a scratch checkout; `docs/measurements.md`): trash dies to a die or
+  two, a massive foe takes a team three to twelve rounds, the gap stays at one and a half
+  everywhere, every team wins every pack but the finale on both rungs, heat bites on five kits.
+  The fills divided the old numbers unevenly; the entry names the levers for Ryan's marks.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a

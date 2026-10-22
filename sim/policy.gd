@@ -19,7 +19,6 @@ const KIND_NAMES := {RANDOM: "random", GREEDY: "greedy"}
 
 const MAX_ROUNDS := 60           # a fight nobody can finish (armour holds, dice all blank) is stalled
 const HULL_WEIGHT := 1.5         # a point of mech hull, in foe hit points: hull is the resource that persists
-const SHIELD_WEIGHT := 0.3       # a point of shield lost to splash
 const KILL_BONUS := 10.0         # a slot cleared: the back rank opens, the horde shrinks
 const DEATH_WEIGHT := 60.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round

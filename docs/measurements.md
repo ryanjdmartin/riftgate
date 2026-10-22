@@ -567,3 +567,54 @@ gap, and the big foes' HP span open theirs. A direction at the cells' count, rea
 **The campaign report** (`docs/campaign_run.md`, 40 runs) rerun on the same commit reads line
 for line as 21 October's, its header's date aside: the day's main changed nothing the plain
 player's runs touch.
+
+## 22 October, the stock pass's fills as a direction
+
+**The brief's first fills, run before Ryan's marks** (sections 1 to 5 of
+`docs/briefs/stock_pass.md`, applied by script to a scratch checkout of the branch: every
+chassis's, component's, foe's and module's numbers, the status values and the engine constants
+of section 1's tables; today's stocks, since the new pieces do not exist; no module fitted;
+the goblins' and revenants' swarm, the Prairie Dog's Flak clause, the Lammergeier's, the
+Pinion Driver's and the Lorentz Contractor's numbers filled by scale, since the brief had
+none). Every row against the twenty-nine packs at 30 seeds (43,500 fights) with the branch's
+Rounds to win, and the campaign report at 40 runs. A direction, read as bands against the
+design tests (the bible's section 2):
+
+| Test | At the fills | At the baseline |
+|---|---|---|
+| Rank and file die to a die or two | a team wins a wildlife pack in 1.0 to 3.1 rounds greedy, 1.3 to 4.0 random; one machine in 2.4 to 10 | passes |
+| A massive foe, a round or two of focus | a team of three takes 3.4 to 6.2 rounds greedy on the Treant and the Wyvern, 4.7 to 11.5 on the Sandworm, 5.2 to 10.4 on the Golem; alone, the Armadillo, the Boar, the Swallowtail and the Musk Ox stall past sixty rounds on the Treant and the Wyvern, whose regrow of 5 outpaces what their blows leave past armour 1 | fails by two to five times |
+| The coordination gap, about 2 on the big foes, none on the rank and file | the teams 1.39 to 1.56 on the big fights and 1.23 to 1.55 on the rank and file | 1.40 to 1.63 and 1.35 to 1.60: unchanged, and the same on both kinds |
+| Wear, about four hard fights unwithdrawn | a team loses 0.2 to 1.5% of its hull on a wildlife pack, 8 to 22% on a massive foe, 2.5 to 12% on a formation, 0.2 to 1.8% on a final | 0.2 to 4.8%, 8 to 42%, 7 to 84%, 1.5 to 11% |
+| A hot kit overheats by its third round | the Kite peaks at 101% and overheats 0.88 a fight, the Baboon 83% and 0.82, the Nemesis 90% and 0.46, the Stingray 72%, the Whip Scorpion 70%; the other fifteen rows peak at 11 to 49% and hold no die for heat | the Scorpion 81%, the Kite 79%, the Armadillo 74%, the Nemesis 71%, the rest cold |
+
+Win rates, row means over the twenty packs, random / greedy: every team 95 to 100 / 100 (the
+baseline 67 to 99 / 84 to 100); alone, every machine rose, most by fifteen to thirty points on
+the random rung (the Kite 21 to 48, the Baboon 12 to 36, the Cottonmouth 13 to 48, the Buzzard
+18 to 49, the Ammit 20 to 49, the Lammergeier 3 to 28; the Badger 50 to 58, the Boar 55 to 61);
+the finale is a wall for all four teams (0 / 0; Minerva's 3 / 74 at the baseline). The
+campaign's plain player wins 7% of battles (0% at the baseline), 36% of its three-machine
+battles (2%) and 48% of its lone fights (31%), and 36 of 40 runs reach the finale (16); no run
+is won.
+
+Read: the fills are not derived from the tests; they are the old numbers divided, unevenly.
+Our hull is divided by about four and a half and our shields by four, the foes' blows by five
+to six, our damage by five, and the rank and file's HP by eight to ten (the Goblin 30 to 3, the
+Needler 20 to 2, the Antlion 50 to 6). Two tilts toward the machines follow: trash dies about
+twice as fast relative to our blows, which the first test asked for, and the machines take
+about a quarter less relative to the foes' blows, which nothing asked for; so every pack but
+the finale is a free win for a team, on the random rung too. The massive foes divided by four
+and a half kept their ratio, and their armour bites steeper at single digits (2 off blows of 1
+to 3 is a wall where 5 off 10 to 20 was half), so the rounds a team takes on them rose while
+the rank and file fell: the gap between smashing and playing did not open, because the greedy
+rung is a one-round bot that sets up only where the setup pays within the round, and on a
+braced worm it does not, so the runner's two rungs cannot read the third test as written. The
+heat classes keep today's ratios (a cool gun's 1 or 2 against a maximum of 16 and cooling 1),
+so heat bites on the five kits that ran hot before and is decoration on the rest. What moves,
+for the marks: the foes' blows up by half to double (the rank and file 2 to 3, the elites 6 to
+8, the bosses 8 to 12) or our hull and shield down a quarter; cooling 0 on most chassis with
+the typical gun at 2 to 4, or the maxima 10 to 14; the massive elites' armour 1 rather than 2
+if basics are to touch them, else Flak, Shock and Exposed are the only way in; the regrow of
+the Treant and the Wyvern at 3; and a rung that sets up over two rounds before the gap can be
+read. The bot's valuations under the new constants are a first reading (the Musk Ox's greedy
+rung wins slower than its random one, its ammo pricing holding fire).

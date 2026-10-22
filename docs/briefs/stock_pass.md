@@ -62,6 +62,18 @@ At a Sandworm of 24 the gap read 3 against 2, no room, which is why the massive 
 30 to 40. The runner reads the same gap as rounds to win, random against greedy (section 6
 below).
 
+**The fills measured** (22 October, a direction at 30 seeds, every row against every pack,
+`docs/measurements.md`): the rank and file die to a die or two; a massive foe takes a team
+three to twelve rounds, not one or two, and four machines alone stall on the Treant's regrow;
+the gap stays at the baseline's one and a half everywhere, the one-round bot unable to show
+it; a team loses a per cent of its hull to trash and a tenth to a fifth to a massive foe; heat
+bites on five kits and not the rest. Every team wins every pack but the finale, the random
+rung included, since the old numbers were divided unevenly (our durability by four, the foes'
+blows by five to six, the rank and file's HP by eight to ten). The levers the marks should
+move are in the entry: the foes' blows up by half to double or our hull and shield down a
+quarter, cooling 0 with the typical gun at 2 to 4, the massive elites' armour 1, the regrows
+at 3.
+
 ### Every converter on its own
 
 Each is a first fill for the reason given, never a ratio carried over.
