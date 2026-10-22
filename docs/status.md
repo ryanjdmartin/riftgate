@@ -607,13 +607,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.248, and so is the live
-  (22 October, the page's version 265): v0.247 (Ryan's calls of 21 October, evening: the row
-  on stores, Silence and Purge passing the stores by, the carry as a block, the mine readings
-  agreed, the Swallowtail's Sponsorship answered, the promoted forms' session; the tables with
-  a Store kind) with his calls of 22 October on top (the Muster never primed, the Musk Ox's 3
-  at the first round, the Whip Scorpion's blasting vents counting). The hangar's vocabulary (the stores', the carry's and the magazine's codex) waits on
-  its next republish. The version numbers on main's file and the live agree after every
+  `docs/design-bible.html` after every change. Main's file is v0.250, and so is the live
+  (22 October, the page's version 267): Ryan's calls of 21 October, evening, and 22 October
+  (the stores, Silence and Purge passing them by, the carry as a block, the Muster never
+  primed, the Musk Ox's 3 at the first round, the blasting vents counting, the rage capped at
+  5 as boxes, the charged Screens for the whole team only), three-way merged onto the
+  numbers-rescale session's own v0.249, whose rows are its branch's (the single-digit scale,
+  rank and file dying to a die or two, armour by role, one breach, a foe's HP and a machine's
+  hull, the stock pass's question). The hangar's vocabulary (the stores', the carry's, the
+  magazine's and the rage's codex) waits on its next republish. The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
