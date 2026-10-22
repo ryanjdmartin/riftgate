@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 586 tests, 62,234 checks, green on main (22 October, with the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and the reserve's plaques); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 587 tests, 62,248 checks, green on main (22 October, with the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, and the reserve's plaques); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
