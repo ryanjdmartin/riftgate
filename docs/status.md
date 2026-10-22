@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 583 tests, 62,240 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk); 577 and 62,160 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 585 tests, 62,250 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk, with main's rage cap and whole-team Screens merged in); 579 and 62,170 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -138,7 +138,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   a store no Silence or Purge touches (Ryan, 21 October), shown as a gauge under the heat with
   a notch a charge; with a charge up its locked pieces go out charged unasked (Ryan, 22 October: never
   primed), the die showing the charged form, and a charged form with nowhere to land leaves the
-  plain one, the charge waiting. The Mooring Screens shield every ally, or
+  plain one, the charge waiting; the charged Screens Phase the whole team or nobody, only
+  while no ally has acted (Ryan, 22 October: never a selective protection). The Mooring Screens shield every ally, or
   Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
   Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
   shields it, or the full reset; the Reveille Horn gives the team a reroll, or a spent ally acts
@@ -221,8 +222,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   keywords too on his word of 21 October): Silenced turns a machine's buffs off and mutes its
   components' keywords through its next round (cleansable, a chip with a struck voice); Purge
   takes every buff; neither touches a store (Ryan, 21 October: a store is a capped resource
-  with a bar, and an effect it grants is a buff, slept by a silence and silenced a turn by a
-  purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
+  with a bar, the Nemesis's rage five boxes since 22 October, and an effect it grants is a
+  buff, slept by a silence and silenced a turn by a purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
   and cast where a machine carries a buff; the Ward turns both away; the bot values a Ward and
   a cleanse against them. No foe carries either yet (section 12).
 - 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die
@@ -653,18 +654,21 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.249, and so is the
-  live (22 October, the page's version 266): main's v0.248 (the page's version 265: v0.247,
-  Ryan's calls of 21 October, evening, the row on stores, Silence and Purge passing the stores
-  by, the carry as a block, the mine readings agreed, the Swallowtail's Sponsorship answered,
-  the promoted forms' session, the tables with a Store kind; his calls of 22 October on top, the
-  Muster never primed, the Musk Ox's 3 at the first round, the Whip Scorpion's blasting vents
-  counting) with the stock pass's rows on top (section 2's kill-time, gap and wear tests, armour
-  by role, one breach, HP as the foes' word, the rewritten scales row, section 12's Overcharged
-  clock and the proposal pointer). The hangar's vocabulary (the stores', the carry's and the
-  magazine's codex) waits on its next republish. The version numbers on main's file and the
-  live agree after every publish; the rows between them are the other branches'. Git and the
-  page's version history carry what each earlier publish brought.
+  `docs/design-bible.html` after every change. This branch's file is v0.252, and so is the
+  live (22 October, the page's version PAGE_HERE): main's v0.251 (the page's version 268: Ryan's
+  calls of 21 October, evening, and 22 October, the stores, Silence and Purge passing them by,
+  the carry as a block, the Muster never primed, the Musk Ox's 3 at the first round, the
+  blasting vents counting, the rage capped at 5 as boxes, the charged Screens for the whole team
+  only, the turn's order keeping a charge banked left as a note, three-way merged onto this
+  branch's v0.249, the single-digit scale, rank and file dying to a die or two, armour by role,
+  one breach, a foe's HP and a machine's hull, the stock pass's question) with the engine
+  chunk's rows on top (the tags row, the tier row and the Indirect and area rows built, the
+  breach and HP rows built, section 2's runner sentence, the Boar's row without its stale
+  Breach clause, the regenerated tables). The hangar's vocabulary (the stores', the carry's, the
+  magazine's and the rage's codex, the stock pass's HP and Breach) waits on its next republish.
+  The version numbers on main's file and the live agree after every publish; the rows between
+  them are the other branches'. Git and the page's version history carry what each earlier
+  publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).

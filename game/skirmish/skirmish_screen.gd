@@ -832,6 +832,14 @@ func _refresh() -> void:
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
+		# A capped store as boxes under the heat (Ryan, 21 and 22 October: every store a bar, the
+		# rage boxes up to its cap), in its chip's colour and place.
+		v.boxes = []
+		for id in Effects.STATUS.keys():
+			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
+			if cap > 0:
+				v.boxes = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
+				break
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
@@ -1145,6 +1153,18 @@ static func status_glyph(id: String) -> String:
 
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour]. Warnings come
 ## from the forecast: what the end of the round does if nothing changes.
+## A machine status's colour on its chip, or on a capped store's boxes: the heat's for what heats
+## or hits harder, the enemy's for what a foe did to it, the shield's for armour and wards.
+static func _chip_colour(id: String) -> Color:
+	if id in ["burning_mech", "scorched", "overcharged", "primed", "rage", "spun_up", "siphoning"]:
+		return Palette.HEAT
+	if id.begins_with("corrupted") or id == "scrambled" or id == "silenced":
+		return Palette.ENEMY
+	if id in ["braced", "retaliate", "barrier", "ward"]:
+		return Palette.SHIELD
+	return Palette.HUD
+
+
 func _mech_rows(i: int) -> Array:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var rows: Array = []
@@ -1182,8 +1202,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "quick_turned" or id == "muster":
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), and the gate by the Rapid it grants, never a chip
+		if id == "shots" or id == "quick_turned" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its boxes, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -1192,7 +1212,7 @@ func _mech_rows(i: int) -> Array:
 	for id in order:
 		var d: Array = first[id]
 		var glyph := status_glyph(id)
-		var colour: Color = Palette.HEAT if id in ["burning_mech", "scorched", "overcharged", "primed", "rage", "spun_up", "siphoning"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" or id == "silenced" else (Palette.SHIELD if id in ["braced", "retaliate", "barrier", "ward"] else Palette.HUD))
+		var colour := _chip_colour(id)
 		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -2220,7 +2240,8 @@ func _rage_debug() -> void:
 		return
 	if Effects.stacks_of(sk.mechs[at].unit, "rage") < 3:
 		Effects.stack(sk.mechs[at].unit, Effects.STATUS["rage"], Effects.SKIRMISH, "debug", 3, Effects.DECAY_NONE)
-		_refresh()
+	Effects.spend_stacks(sk.mechs[at].unit, "rage", 1)   # spent as a fist spends it, so the burst is on the stack that went
+	_refresh()
 	_roll_again(at, "rage")
 
 

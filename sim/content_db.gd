@@ -1017,6 +1017,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
+		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
+			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# The Cottonmouth's drum (19 October): every weapon fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":

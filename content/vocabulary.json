@@ -1578,14 +1578,14 @@
    "id": "rage",
    "category": "resource",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), up to 5, kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Its bar is boxes up to its cap (Ryan); it has no cap yet, so it shows as a chip until one is set.",
+    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Its bar is boxes up to its cap (Ryan); designed uncapped (12 October: the rage the limit), capped at 5 on 22 October (Ryan: \"5 for the nemesis is fine\"; the passive's stack_status cap), its five boxes under the heat in the chip's place, a roll again bursting from the box that empties.",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: one a hull hit, one spent a fist",
+     "stacks": "Yes: one a hull hit, up to 5; one spent a fist",
      "lasts": "The skirmish; never decays"
     }
    }

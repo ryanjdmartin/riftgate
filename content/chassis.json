@@ -544,12 +544,13 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "Taking hull damage banks a rage for the duration of the skirmish.",
+    "description": "Taking hull damage banks a rage, up to 5, for the duration of the skirmish.",
     "effects": [
      {
       "trigger": "on_hull_damage",
       "effect": "stack_status",
-      "value": "rage"
+      "value": "rage",
+      "cap": 5
      }
     ]
    },

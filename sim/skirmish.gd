@@ -611,9 +611,11 @@ func can_charge(ms: MechState) -> bool:
 
 ## Whether the entry goes out charged now (Ryan, 22 October: never primed, "it just gets used
 ## if it's up"): a muster pays for it and its charged form has somewhere to land, a foe or a slot
-## in its reach or a machine it may be spent on (the Mooring Screens' Phased an ally yet to act,
-## the Horn's act again an ally whose die is spent). A charged form with nothing to land on
-## leaves the plain one, and the muster waits.
+## in its reach or a machine it may be spent on (the Horn's act again an ally whose die is
+## spent). A grant reaching every ally yet to act (the Mooring Screens' Phased) lands only while
+## no ally has acted this round (Ryan, 22 October: else "it can be used as a selective
+## protection which is not the intent"). A charged form with nothing to land on leaves the plain
+## one, and the muster waits.
 func charge_lands(ms: MechState) -> bool:
 	if not can_charge(ms):
 		return false
@@ -623,6 +625,10 @@ func charge_lands(ms: MechState) -> bool:
 	if cf.is_equipment():
 		var eff := Effects.effective_face(ms.unit, cf)
 		if cf.reaches_all:
+			if cf.not_acted:
+				for who in equipment_targets_for(ms, eff):
+					if who != ms and who.assigned:
+						return false   # an ally has acted: the whole team or nobody
 			return not reached_machines(ms, eff).is_empty()
 		return not equipment_targets_for(ms, eff).is_empty()
 	return false
