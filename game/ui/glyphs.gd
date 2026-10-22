@@ -84,6 +84,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.7 + i * s * 0.7
 				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, s), color, width)
+		"breach":
+			# One breach (22 October): the blow through the plate, so neither shield nor armour
+			# takes any of it. The plate is two bars with the gap an arrow drives down through,
+			# its structure apart from Penetrate's sideways arrow and the shield's crack.
+			ci.draw_line(c + Vector2(-s, s * 0.05), c + Vector2(-s * 0.32, s * 0.05), color, width)
+			ci.draw_line(c + Vector2(s * 0.32, s * 0.05), c + Vector2(s, s * 0.05), color, width)
+			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
+			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
+			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)

@@ -166,6 +166,8 @@ defeat when every machine is wrecked. There is no round limit.
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
+- **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
+  foes' rider below. No weapon carries it yet; the stock pass places it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
@@ -373,13 +375,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
   the hull. A **breach** blow ignores the shield and the armour: the shield stands, the
-  armour counts for nothing, and the whole blow reaches the hull (not built: today the
-  armour still comes off a breach).
+  armour counts for nothing, and the whole blow reaches the hull.
 - A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
-  included, never a breach (not built: today a breach loses armour too); a blow at or under the
-  armour is nothing; a shield takes no armour off. A foe's armour comes off every blow on it the
-  same way, never off Burning or Vitriol. Base armour is set by role (a tank 2, a heavy
-  worker 1, the rest 0), and a brace, a seal or a charge adds to it for a round.
+  included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
+  off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
+  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0), and a
+  brace, a seal or a charge adds to it for a round (not built: the content's armour stands at
+  the old scale until the stock pass lands).
   Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
@@ -443,8 +445,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
-  two): breach (the blow ignores the shield and the armour; not built: today the armour still
-  comes off it), scorch (a stack of Scorched), burn (a stack of
+  two): breach (the blow ignores the shield and the armour), scorch (a stack of Scorched), burn (a stack of
   Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
   (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine

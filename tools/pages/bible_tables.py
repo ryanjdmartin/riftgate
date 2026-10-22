@@ -61,7 +61,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
-FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above)."}
+FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above).",
+                 "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away."}
+SHARED = ["burn", "breach"]   # our keyword and the foes' rider share the word, each with a row
 KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
@@ -250,8 +252,8 @@ def keyword_rows(t, vocab, words):
     empty = {"unlocked": [0, 0], "locked": [0, 0], "passive": [0, 0], "foe": [0, 0], "moves": [0, 0], "foes": set()}
     line = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
     rows = ['<tr><td colspan="6"><em>On our components</em></td></tr>']
-    # Our Burn shares its word with the foes' rider, which has a row of its own below.
-    ours = [e for e in vocab if e["category"] == "keyword" and (e["id"] == "burn" or e["id"] not in FOE_ONLY)]
+    # Our Burn and Breach share their words with the foes' riders, which have rows of their own below.
+    ours = [e for e in vocab if e["category"] == "keyword" and (e["id"] in SHARED or e["id"] not in FOE_ONLY)]
     for e in sorted(ours, key=lambda e: e["name"]):
         c = t.keywords.get(e["id"], empty)
         name = e["name"] + (" (planned)" if e.get("status") != "implemented" else "")
@@ -264,7 +266,7 @@ def keyword_rows(t, vocab, words):
     for key in FOE_ONLY:
         c = t.keywords.get(key, empty)
         word = words.get(key, {})
-        name = {"burn": "Burn (a foe's)"}.get(key, word.get("name", key))
+        name = {"burn": "Burn (a foe's)", "breach": "Breach (a foe's)"}.get(key, word.get("name", key))
         if word.get("status", "implemented") != "implemented":
             name += " (planned)"
         who = ", ".join(sorted(the(n) for n in c["foes"]))

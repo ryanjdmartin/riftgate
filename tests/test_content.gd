@@ -593,6 +593,29 @@ func test_a_component_wears_only_the_working_set_of_tags() -> void:
 	assert_true(Array(db.components["chainsaw_claw"]["tags"]).has("melee"), "the claw keeps its melee")
 
 
+## Breach is one word on both sides (22 October): a keyword our weapons may carry, the foes'
+## rider sharing it, and an attack's alone, so a shield carrying it is refused.
+func test_breach_is_a_weapon_keyword_the_foes_share() -> void:
+	var db := _fresh()
+	assert_eq(str(db.vocabulary["breach"]["category"]), "keyword", "one vocabulary word, a keyword")
+	assert_true(Foe.ATTACK_KEYWORDS.has("breach"), "and still a foe's rider")
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	gun["tier"] = 1
+	gun["face"]["keywords"] = ["breach"]
+	db.components["breacher"] = gun
+	var plate: Dictionary = db.components["halo_shield"].duplicate(true)
+	plate["tier"] = 1
+	plate["face"]["keywords"] = ["breach"]
+	db.components["breach_plate"] = plate
+	var refused := false
+	for e in db.validate():
+		assert_false(e.begins_with("component breacher"), "a breaching weapon validates clean: %s" % e)
+		if e.begins_with("component breach_plate") and e.contains("attack keyword"):
+			refused = true
+	assert_true(refused, "a breaching shield is refused")
+	assert_true(db.build_face(gun["face"]).has(Face.Keyword.BREACH), "and the weapon builds with it")
+
+
 func _refused(db: ContentDB, prefix: String, word: String) -> bool:
 	for e in db.validate():
 		if e.begins_with(prefix) and e.contains(word):

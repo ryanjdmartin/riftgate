@@ -1416,12 +1416,12 @@
   },
   {
    "id": "breach",
-   "category": "foe",
+   "category": "keyword",
    "name": "Breach",
-   "codex": "A breaching blow ignores the shield outright: the shield stands, and the whole blow reaches the hull, armour coming off it as off any blow on hull; if what gets through is a quarter of maximum hull it injures a component. A dangerous, uncommon attack modifier, the Waste's signature; a Ward turns it away, and the shield then absorbs the blow like any other.",
+   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
    "status": "implemented",
    "design": {
-    "holes": "A property of a foe's attack action, placed by Ryan. Since 21 October (the shield rule of 14 October) it ignores the shield, where before it overflowed one (a standing shield blocked every other blow whole); its answers are the Barrier and the Ward. Name is a placeholder (pierce is taken by the player keyword)."
+    "holes": "One rider for both sides since 22 October (the bible's breach row): breach and the pierce that was never built merged, the anti-tank threat by move, the Barrier and the Ward its answers. Placed on foe moves by Ryan; our guns taking it is the stock pass's call (the lean: the Railgun). Since 21 October (the shield rule of 14 October) it ignores the shield, where before it overflowed one; until 22 October armour still came off it."
    }
   },
   {

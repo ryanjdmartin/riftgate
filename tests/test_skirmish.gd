@@ -1174,7 +1174,8 @@ func test_breach_ignores_the_shield_and_can_injure() -> void:
 	assert_eq(m.damaged_component_count(), 1, "fifty of a hundred hull in one blow injures")
 	assert_true(sk.turn_events.size() == 1 and not sk.turn_events[0]["broke_shield"] and sk.turn_events[0]["injured"], "the turn event says the shield held and a component was hit")
 	assert_true(str(sk.log).contains("maw breaches A: hull -50"), "the log says it breached")
-	# Armour comes off a breach like any blow that reaches the hull (Ryan, 11 October).
+	# One breach (22 October): the breach ignores the armour as well as the shield, so the whole
+	# blow reaches the hull of a plated machine too; until then armour came off it (11 October).
 	var s2 := Skirmish.new(1)
 	var plated := _mech("B", Die.single(Face.shield(10)), 10, 100)
 	plated.armour = 15
@@ -1184,10 +1185,73 @@ func test_breach_ignores_the_shield_and_can_injure() -> void:
 	s2.add_foes([maw])
 	s2.begin()
 	s2.start_round()
-	assert_eq(s2.forecast(s2.mechs[0], false)["hull_after"], 65, "the forecast takes the armour off the breach")
+	assert_eq(s2.forecast(s2.mechs[0], false)["hull_after"], 50, "the forecast takes no armour off the breach")
+	assert_eq(int(s2.hull_reached(maw, s2.mechs[0])), 50, "and the foes' aim reads the whole blow reaching the hull")
 	s2.end_round()
 	assert_eq(plated.shield, 10, "the shield took nothing")
-	assert_eq(plated.hull, 65, "fifty breached, fifteen of it stopped by the armour")
+	assert_eq(plated.hull, 50, "the whole fifty breached, the armour taking none")
+	# The same blow without the breach: the shield takes ten and the armour fifteen of the rest.
+	var s3 := Skirmish.new(1)
+	var plain := _mech("C", Die.single(Face.shield(10)), 10, 100)
+	plain.armour = 15
+	s3.add_mech(plain)
+	s3.add_foes([Foe.make("maw", 200, 50)])
+	s3.begin()
+	s3.start_round()
+	s3.end_round()
+	assert_eq(plain.hull, 75, "unbreached, ten on the shield and fifteen off the armour")
+
+
+## Our side of one breach (22 October): a breaching weapon ignores a foe's armour, in the blow,
+## the forecast and the bot's read; the same gun without it loses the armour. A spill stays
+## plain damage and meets the armour behind.
+func test_a_breaching_weapon_ignores_a_foes_armour() -> void:
+	var gun := Face.attack(20, L, [K.BREACH])
+	assert_true(gun.has(K.BREACH) and Face.keyword_from_name("breach") == K.BREACH, "Breach is a weapon keyword")
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
+	var plate := _ghoul(100, 1)
+	plate.armour = 10
+	sk.add_foes([plate])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(sk.shown_number(ms, gun, plate), [20, 20] as Array[int], "the forecast shows the whole blow")
+	var outcomes := Policy.make(Policy.GREEDY).damage_outcomes(ms, gun, plate)
+	assert_eq(int(outcomes[0][0]), 20, "and the bot reads it whole")
+	assert_true(sk.assign(0, plate), "fired")
+	assert_eq(plate.hp, 80, "the armour took none of it")
+	var sk2 := Skirmish.new(1)
+	var plain := Face.attack(20, L)
+	sk2.add_mech(_mech("A", Die.single(plain), 40, 100))
+	var plate2 := _ghoul(100, 1)
+	plate2.armour = 10
+	sk2.add_foes([plate2])
+	sk2.begin()
+	sk2.start_round()
+	assert_eq(sk2.shown_number(sk2.mechs[0], plain, plate2), [10, 10] as Array[int], "without it the forecast takes the armour off")
+	assert_true(sk2.assign(0, plate2), "fired")
+	assert_eq(plate2.hp, 90, "and so does the blow")
+
+
+## Armour bought against a breach keeps nothing of it (one breach, 22 October): the bot's
+## value of extra armour counts only the blows the armour meets.
+func test_extra_armour_keeps_nothing_of_a_breach() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 100))
+	var maw := Foe.make("maw", 200, 30)
+	maw.actions[0]["keywords"] = ["breach"]
+	sk.add_foes([maw])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol._armour_saved(sk, sk.mechs[0], 10), 0.0, "against a breach the armour keeps nothing")
+	var sk2 := Skirmish.new(1)
+	sk2.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 100))
+	sk2.add_foes([Foe.make("maw", 200, 30)])
+	sk2.begin()
+	sk2.start_round()
+	assert_eq(pol._armour_saved(sk2, sk2.mechs[0], 10), 10.0, "against a plain blow on bare hull it keeps its ten")
 
 
 func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
@@ -4978,6 +5042,17 @@ func test_a_ward_turns_away_every_rider_and_the_breach_for_the_round() -> void:
 	sk.end_round()
 	assert_eq(m.hull, 50, "unwarded the next round, both blows breach")
 	assert_eq(Effects.stacks_of(m, "scorched"), 2, "and both riders land")
+	# A warded machine's armour takes the turned breach like any blow (one breach, 22 October).
+	var sk2 := Skirmish.new(1, 1)
+	var plated := _mech("B", Die.single(Face.buff("ward")), 0, 100)
+	plated.armour = 5
+	sk2.add_mech(plated)
+	sk2.add_foes([_storm(20, 1, ["breach"])])
+	sk2.begin()
+	sk2.start_round()
+	assert_eq(int(sk2.forecast(sk2.mechs[0], false)["hull_after"]), 80, "unwarded, the breach ignores the plate")
+	assert_true(sk2.assign(0, sk2.mechs[0]), "the Ward goes up")
+	assert_eq(int(sk2.forecast(sk2.mechs[0], false)["hull_after"]), 85, "warded, the armour takes its five")
 
 
 ## The cooldown (Ryan, 14 October; built 21 October): a printed property, the entry dark for

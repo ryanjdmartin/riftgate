@@ -366,7 +366,7 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 		if target != null:
 			if d > 0:
 				d += Effects.damage_taken_add(target, ms.unit)
-			d = maxi(0, d - target.armour_total())
+			d = maxi(0, d - target.armour_for(f))
 		out.append(d)
 	return out
 
@@ -1704,9 +1704,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				continue
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
-			# small blows bounce off a braced foe the way they do off a heavy machine.
+			# small blows bounce off a braced foe the way they do off a heavy machine; a
+			# breaching blow meets none (one breach, 22 October).
 			var taken := Effects.damage_taken(foe, dmg, ms.unit)
-			var foe_armoured := mini(taken, foe.armour_total())
+			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
 			if was_alive:
@@ -2349,7 +2350,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	var thawed := 0
 	for t in hit:
 		var hp_before := t.hp
-		var taken := maxi(0, Effects.damage_taken(t, dmg, source) - t.armour_total())
+		var taken := maxi(0, Effects.damage_taken(t, dmg, source) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
 		if dmg > 0 and Effects.remove(t, "shocked"):
@@ -2840,10 +2841,11 @@ func _settle_heat() -> void:
 
 
 ## One blow. The honest shield (Ryan, 14 October; built 21 October): the shield absorbs its
-## number and the excess reaches the hull; a breach ignores the shield, which stands. A blow
-## that reaches the hull loses the chassis's armour first, so small hits bounce off a heavy
-## machine, and it injures a component when what gets through is at least a quarter of max
-## hull. A Barrier takes the next blow whole; a Ward turns a breach away. A shield sized to a
+## number and the excess reaches the hull. A blow that reaches the hull loses the chassis's
+## armour first, so small hits bounce off a heavy machine, and it injures a component when
+## what gets through is at least a quarter of max hull. One breach (22 October): a breach
+## ignores the shield, which stands, and the armour, so the whole blow reaches the hull. A
+## Barrier takes the next blow whole; a Ward turns a breach away. A shield sized to a
 ## telegraphed blow, or a Barrier, is the counterplay.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if is_phased(ms):
@@ -2902,21 +2904,24 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 
 ## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
 ## and the forecast. The honest shield (Ryan, 14 October): a shield absorbs its number and the
-## excess passes to the hull; a breach ignores the shield outright and the shield stands.
+## excess passes to the hull. One breach (22 October): a breach ignores the shield outright,
+## which stands, and the armour, so the whole blow reaches the hull.
 ## Returns shield after, absorbed, through (to hull), armoured (taken off by armour), blocked
-## (the shield took the whole blow), injures (what reached the hull, over the threshold).
+## (the shield took the whole blow), injures (what reached the hull, over the threshold) and
+## breach (the blow ignored shield and armour).
 static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: bool) -> Dictionary:
 	var absorbed := 0 if breach else mini(maxi(0, shield), maxi(0, amount))
 	var through := maxi(0, amount) - absorbed
-	# Armour comes off every blow that reaches the hull, a shield's overflow and a breach too
-	# (Ryan, 11 October): a breach beats the shield, never the plate under it. A blow on the
-	# shield costs it its full damage: shield is not armoured.
-	var armoured := mini(armour, through) if through > 0 else 0
+	# Armour comes off every blow that reaches the hull, a shield's overflow included, and never
+	# off a breach (one breach, 22 October: the anti-tank threat, by move, the Ward its answer;
+	# until then a breach beat the shield and never the plate). A blow on the shield costs it
+	# its full damage: shield is not armoured.
+	var armoured := mini(armour, through) if through > 0 and not breach else 0
 	through -= armoured
 	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield,
 	# past a breach, on bare hull (the shield row: a quarter of the hull in one blow injures).
 	var injures := through > 0 and through * 100 >= hull_max * CRACK_MIN_HULL_PCT
-	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures}
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach}
 
 
 ## The injury rolls the die and hits the component it lands on. An intact component cracks:

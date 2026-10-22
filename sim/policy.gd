@@ -457,7 +457,7 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 			if shocked:
 				d *= 2.0
 				shocked = false
-		d = maxf(0.0, d - arm)
+		d = maxf(0.0, d - (0.0 if Array(shot["keywords"]).has(Face.Keyword.BREACH) else arm))
 		dealt += minf(d, hp)
 		hp -= d
 		if Array(shot["keywords"]).has(Face.Keyword.SHOCK) and hp > 0.0:
@@ -656,8 +656,9 @@ func brace_score(sk: Skirmish, ms: Skirmish.MechState, stacks: int) -> float:
 
 
 ## Hull that `extra` armour keeps this round: every blow aimed at this machine that reaches
-## its hull (past the shield's number, through a breach, or on bare hull) loses that much
-## more, down to nothing, walked blow by blow as the forecast walks them.
+## its hull (past the shield's number or on bare hull) loses that much more, down to nothing,
+## walked blow by blow as the forecast walks them; a breach meets no armour, so extra keeps
+## none of it (one breach, 22 October).
 func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	if extra <= 0:
 		return 0.0
@@ -665,7 +666,8 @@ func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	var walk := {"shield": who.unit.shield, "barrier": Effects.has(who.unit, "barrier")}
 	for a in sk.attackers_of(who):
 		for r in sk.blows_on(who, a, walk):
-			saved += mini(extra, int(r["through"]))
+			if not bool(r.get("breach", false)):
+				saved += mini(extra, int(r["through"]))
 	return float(saved)
 
 
@@ -779,7 +781,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
 		# armour comes off every blow, so a braced foe is worth less to a volume weapon.
-		var arm := target.armour_total() if target != null else 0
+		var arm := target.armour_for(f) if target != null else 0
 		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit) if target != null else dmg) - arm)
 		out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
 	return out
