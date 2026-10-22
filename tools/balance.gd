@@ -16,7 +16,10 @@ extends SceneTree
 ## --damage F (every machine's blows scaled by F through a loadout modifier, to read a
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
-## team", "team:badger+sparrowhawk"), --team id,id (repeatable: a row of exactly those machines,
+## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
+## names, "treant x1", "meadow formation", "finale", or "big" for every big fight and
+## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
+## --team id,id (repeatable: a row of exactly those machines,
 ## any number of them, so pairs and fours can be read beside the trios), --module id (every row
 ## run twice, as it stands and beside it with that module fitted to every machine, both in the
 ## one report with a section of their differences; 11 October, the Booster against the
@@ -56,6 +59,7 @@ var trace := ""
 var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
+var only_packs: Array = []  # --packs: the pack ids to run ("big" and "rank_and_file" for the two kinds), all when empty
 var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
@@ -97,6 +101,8 @@ func _init() -> void:
 		return
 	if not only_rows.is_empty():
 		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
+	if not only_packs.is_empty():
+		packs = packs.filter(func(p) -> bool: return only_packs.has(p["id"]) or (only_packs.has("big") and _is_big(p)) or (only_packs.has("rank_and_file") and not _is_big(p)))
 	# --module: every row beside its twin wearing the module, in one report (21 October).
 	if not fit_module.is_empty():
 		var twinned: Array = []
@@ -209,6 +215,9 @@ func _parse_args() -> void:
 				i += 1
 			"--rows":
 				only_rows = Array(v.split(","))
+				i += 1
+			"--packs":
+				only_packs = Array(v.split(","))
 				i += 1
 			"--team":
 				custom_teams.append(Array(v.split(",")))

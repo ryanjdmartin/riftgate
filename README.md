@@ -170,7 +170,8 @@ python3 tools/pages/bible_tables.py
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
-# so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner.
+# so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner;
+# --packs big (or rank_and_file, or pack ids such as "treant x1,finale") runs only those packs.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
