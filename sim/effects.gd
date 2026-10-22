@@ -1195,8 +1195,8 @@ static func hull_damaged(u) -> Dictionary:
 ## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted
 ## (stack_status: its `stacks`, one by default, for the skirmish, decaying as the status
-## says), on `onto` when it is given (the ally an on_shield_granted passive shields) and on
-## the machine itself otherwise.
+## says, never past its `cap` when it names one, a store's), on `onto` when it is given (the
+## ally an on_shield_granted passive shields) and on the machine itself otherwise.
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
@@ -1214,11 +1214,37 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
-					var decay := status_decay(STATUS[id])
-					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), decay)
-					if m != null and not (out["statuses"] as Array).has(m.name):
-						(out["statuses"] as Array).append(m.name)
+					var who = u if onto == null else onto
+					var n := maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)
+					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
+					if int(eff.get("cap", 0)) > 0:
+						n = mini(n, int(eff["cap"]) - banked(who, id))
+					if n > 0:
+						var decay := status_decay(STATUS[id])
+						var m := stack(who, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), n, decay)
+						if m != null and not (out["statuses"] as Array).has(m.name):
+							(out["statuses"] as Array).append(m.name)
 	return out
+
+
+## Every stack of a status the machine carries, live or asleep: what a cap counts.
+static func banked(u, id: String) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if m.id == id:
+			n += m.stacks
+	return n
+
+
+## The most stacks of a store a live passive lets this machine bank (stack_status's cap, any
+## trigger; the Nemesis's rage, five, Ryan, 22 October), 0 when nothing caps it: the boxes of
+## its bar under the heat.
+static func store_cap(u, id: String) -> int:
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])
+	return 0
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -1665,6 +1691,8 @@ static func effect_text(eff: Dictionary) -> String:
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))
 			body = ("gains a stack of %s" % nm) if k == 1 else ("gains %s ×%d" % [nm, k])
+			if int(eff.get("cap", 0)) > 0:
+				body += ", up to %d" % int(eff["cap"])
 		"add_attack": body = "attack %s" % signed
 		"never_hunted": body = "no hunter ever picks it as its prey"
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]

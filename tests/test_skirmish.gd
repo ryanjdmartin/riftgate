@@ -3025,6 +3025,29 @@ func test_rage_banks_on_every_hull_hit_for_the_skirmish() -> void:
 	assert_eq(Effects.stacks_of(n, "rage"), 1, "the bite fed it")
 
 
+## A store's cap (Ryan, 22 October: the Nemesis's rage, five): a passive's stack_status that
+## names a cap banks no stack past it, the rule text says so, and the cap reads back for the
+## store's boxes; a cap below one is refused by the validator.
+func test_a_capped_store_banks_no_more_than_its_cap() -> void:
+	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "cap": 3}]}
+	var m := _mech("A", Die.single(Face.attack(30)), 0, 200)
+	m.grant_passive(core)
+	for k in range(5):
+		Effects.fire(m, "on_hull_damage", 10)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "five hull hits, three rage: the cap")
+	assert_eq(Effects.store_cap(m, "rage"), 3, "the cap reads back for its boxes")
+	assert_eq(Effects.store_cap(m, "hopper"), 0, "an uncapped store has none")
+	assert_true(Effects.effect_text(core["effects"][0]).contains("up to 3"), "the rule text names the cap")
+	Effects.spend_stacks(m, "rage", 1)
+	Effects.fire(m, "on_hull_damage", 10)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "a spent one banks again, up to the cap")
+	var db := ContentDB.load_default()
+	var errs: Array[String] = []
+	db._validate_passive("probe", {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "cap": 0}]}, errs)
+	assert_true(errs.any(func(e) -> bool: return e.contains("cap")), "a cap below one is refused")
+
+
 ## The Nemesis's fists (Ryan, 12 October: "you just get rapid", without the switch-off): an
 ## entry that rolls again on a status spends a stack as it is spent, and the die rolls again,
 ## a plain roll that may show the same entry; with no stack left it is spent like any other.
@@ -6147,11 +6170,11 @@ func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() ->
 
 
 ## The Swallowtail's locked pieces (21 October), synthetic: the team shield reaches every ally,
-## never its spender; charged, Phased lands on every ally yet to act, its die standing down and
-## the foes whose pick it was picking again, and nothing reaches it in the enemy's turn; an
-## ally that has acted is never Phased. With a charge up and every ally done, the charged form
-## has nowhere to land: the plain shield goes out and the charge waits (Ryan, 22 October).
-func test_the_team_shield_reaches_every_ally_and_phased_takes_the_yet_to_act_out_of_the_fight() -> void:
+## never its spender; charged, Phased lands on every ally, only while none has acted this round
+## (Ryan, 22 October: never a selective protection), their dice standing down and the foes whose
+## pick they were picking again, and nothing reaches them in the enemy's turn. Once any ally has
+## acted the charged form has nowhere to land: the plain shield goes out and the charge waits.
+func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_the_fight() -> void:
 	var screens := Face.shield(10)
 	screens.targets = Face.Target.ALLY
 	screens.reaches_all = true
@@ -6174,15 +6197,14 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_yet_to_act_out
 	assert_eq([a.shield, b.shield, c.shield], [10, 10, 40], "every ally shielded, never its spender")
 	sk.end_round()
 	sk.start_round()
+	Effects.remove(c, "muster")
 	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
-	assert_true(sk.assign(2, sk.front[0]), "B acts first")
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]   # every foe's pick on A
-	assert_true(sk.charge_lands(sk.mechs[0]), "a charge up, an ally yet to act: it goes out charged")
-	assert_true(sk.assign(0, sk.mechs[1]), "charged: Phased on every ally yet to act")
-	assert_true(Effects.has(a, "phased"), "A, yet to act, is Phased")
-	assert_false(Effects.has(b, "phased"), "B, which acted, is not")
-	assert_true(sk.mechs[1].assigned, "A's die stands down: the action is the price")
+	assert_true(sk.charge_lands(sk.mechs[0]), "a charge up and no ally has acted: it goes out charged")
+	assert_true(sk.assign(0, sk.mechs[1]), "charged: Phased on every ally")
+	assert_true(Effects.has(a, "phased") and Effects.has(b, "phased"), "A and B both Phased")
+	assert_true(sk.mechs[1].assigned and sk.mechs[2].assigned, "their dice stand down: the actions are the price")
 	for f in sk.field_foes():
 		assert_ne(f.target, sk.mechs[1], "a foe whose pick it was picks again")
 	assert_false(sk.equipment_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "an ally cannot shield it")
@@ -6191,15 +6213,16 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_yet_to_act_out
 	assert_eq(a.hull + a.shield, hull, "nothing reaches it in the enemy's turn")
 	sk.start_round()
 	assert_false(Effects.has(a, "phased"), "gone at the round's end")
-	# Every ally done before the Screens: nowhere for Phased, so the plain shield, the charge kept.
+	# One ally acted first: never a selective protection, so the plain shield, the charge kept.
 	Effects.remove(c, "muster")
 	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
-	assert_true(sk.assign(1, sk.front[0]) and sk.assign(2, sk.front[0]), "both allies act first")
-	assert_false(sk.charge_lands(sk.mechs[0]), "nowhere for the charged form to land")
+	assert_true(sk.assign(2, sk.front[0]), "B acts first")
+	assert_false(sk.charge_lands(sk.mechs[0]), "an ally has acted: no charged form")
 	var shields := [a.shield, b.shield]
 	assert_true(sk.assign(0, sk.mechs[1]), "the Screens")
-	assert_eq([a.shield, b.shield], [mini(40, int(shields[0]) + 10), mini(40, int(shields[1]) + 10)], "the plain team shield")
-	assert_eq(Effects.muster_charges(c), 1, "and the charge waits")
+	assert_eq([a.shield, b.shield], [mini(40, int(shields[0]) + 10), mini(40, int(shields[1]) + 10)], "the plain team shield on both")
+	assert_false(Effects.has(a, "phased"), "and A, yet to act, is not Phased")
+	assert_eq(Effects.muster_charges(c), 1, "the charge waits")
 
 
 ## The Sutler's Hoist and the Reveille Horn (21 October), synthetic: the Hoist cools an ally and

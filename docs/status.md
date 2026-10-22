@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 577 tests, 62,160 checks, green on main (22 October, with the Muster never primed and the Musk Ox's 3 at the first round); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 579 tests, 62,170 checks, green on main (22 October, with the Muster never primed, the Musk Ox's 3 at the first round, the rage capped at 5 and the whole-team Screens); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -103,7 +103,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   a store no Silence or Purge touches (Ryan, 21 October), shown as a gauge under the heat with
   a notch a charge; with a charge up its locked pieces go out charged unasked (Ryan, 22 October: never
   primed), the die showing the charged form, and a charged form with nowhere to land leaves the
-  plain one, the charge waiting. The Mooring Screens shield every ally, or
+  plain one, the charge waiting; the charged Screens Phase the whole team or nobody, only
+  while no ally has acted (Ryan, 22 October: never a selective protection). The Mooring Screens shield every ally, or
   Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
   Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
   shields it, or the full reset; the Reveille Horn gives the team a reroll, or a spent ally acts
@@ -186,8 +187,8 @@ before it. The five design sessions merged that day are paused, each resuming fr
   keywords too on his word of 21 October): Silenced turns a machine's buffs off and mutes its
   components' keywords through its next round (cleansable, a chip with a struck voice); Purge
   takes every buff; neither touches a store (Ryan, 21 October: a store is a capped resource
-  with a bar, and an effect it grants is a buff, slept by a silence and silenced a turn by a
-  purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
+  with a bar, the Nemesis's rage five boxes since 22 October, and an effect it grants is a
+  buff, slept by a silence and silenced a turn by a purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
   and cast where a machine carries a buff; the Ward turns both away; the bot values a Ward and
   a cleanse against them. No foe carries either yet (section 12).
 - 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die

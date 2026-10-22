@@ -249,7 +249,7 @@ and never a buff: each shows as a bar under the heat, boxes or a smooth fill in 
 it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store
 grants is a buff and shows as one: a Silence sleeps it, and a Purge silences it for a turn
 instead of taking it, since the store would grant it again (not built: no store grants one
-yet). The rage and the hopper have no cap yet, so they show as chips.
+yet). The hopper has no cap yet, so it shows as a chip.
 
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -270,9 +270,10 @@ On a machine:
   heat, a segment a charge. Each of its locked
   pieces has a plain form and a charged one that spends a muster. With a charge up, a locked
   piece goes out charged, unasked, and its die shows the charged form under a double frame;
-  when the charged form has nowhere to land (Phased with every ally done, the act again with
-  no ally spent), the plain form goes out and the charge waits. The
-  Mooring Screens shield every ally (never the carrier), or Phase every ally that has not acted;
+  when the charged form has nowhere to land (Phased once any ally has acted, the act again
+  with no ally spent), the plain form goes out and the charge waits. The
+  Mooring Screens shield every ally (never the carrier), or Phase every ally, only while none
+  has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   10 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
@@ -290,8 +291,9 @@ On a machine:
   and no silence or purge touches it; its damage lands. Until the round's end. Nothing in
   content grants it yet.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
-  of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
-  decays, and nothing cleanses it.
+  of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
+  never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
+  stack.
 - **Hopper** (store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +10,

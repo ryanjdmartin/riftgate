@@ -437,6 +437,35 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	s.free()
 
 
+## A capped store on the screen (Ryan, 22 October: the rage, individual boxes up to the cap):
+## boxes under the heat lit to its count, in its chip's colour, and no chip; a rage spent from
+## them bursts there as it did from the chip.
+func test_a_capped_store_shows_as_boxes_under_the_heat_in_its_chips_place() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.grant_passive({"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "cap": 5}]})
+	var fist := Face.attack(10)
+	fist.rolls_again_on = "rage"
+	m.die = Die.single(fist)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	s._refresh()
+	var v: UnitView = s._mech_views[0]
+	assert_eq([int(v.boxes[0]), int(v.boxes[1])], [2, 5], "two of five boxes lit")
+	assert_eq(str(v.boxes[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	for r in s._mech_rows(0):
+		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
+	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
+	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent rage bursts")
+	assert_eq(int(v.boxes[0]), 1, "one box left lit")
+	s.free()
+
+
 ## A timed buff spent in two rounds is two grants, each going when its own rounds run out
 ## (16 October), and one status on the machine: one chip, counting every stack.
 func test_a_status_granted_in_two_rounds_is_one_chip_with_every_stack() -> void:
