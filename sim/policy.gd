@@ -36,6 +36,9 @@ const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
+const COUNTDOWN_DISCOUNT := 0.75 # a gathering blow's worth now, for each round it still gathers: it lands later, and the fight may end first
+const OPEN_CORE_WEIGHT := 0.5    # a part's kill that opens its core, as a share of the core's kill and threat: the core still has to be hit
+const SHIELD_LOSS_WEIGHT := 0.5  # a point of shield a last act takes, in foe hit points: it recharges out of fights, where hull does not
 const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team blow likely before it fades, and a back-rank foe in Direct reach, as a share
 const MINE_WEIGHT := 0.8         # a laid shot, as a share of its blow on the arrival: delayed, and laid against a count of those waiting, never a foe seen
 const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashed later by a pull on the team's dice
@@ -243,7 +246,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
 			score += minf(mean, float(n.hp))
-	score += p_kill * (KILL_BONUS + _threat_now(target, sk) * HULL_WEIGHT)
+	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
+	# last act (the boss mechanics of 15 October; valued 22 October).
+	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
 		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves
@@ -277,7 +282,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.SUPPRESS):
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
-		score += (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT * maxf(0.0, lands)
+		score += (1.0 - p_kill) * suppress_worth(sk, target) * HULL_WEIGHT * maxf(0.0, lands)
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
@@ -990,15 +995,91 @@ func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
 	return (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
 
 
-## A disrupt on a foe about to strike: the blow it will not land, when it has a quieter move
-## open to switch to (a disrupt into another blow is worth nothing here).
+## A disrupt on a foe about to strike, or gathering a countdown it breaks off (15 October;
+## valued 22 October): the blow it will not land, this round's or the countdown's at its
+## discount, less the blow of the move the disrupt turns it to (Skirmish.disrupt_next), when that
+## lands this round.
 static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
-	if not foe.attacks() or foe.is_suppressed() or foe.target == null:
+	if foe.is_suppressed() or not foe.alive():
 		return 0.0
-	for a in sk.legal_actions(foe):
-		if a != foe.action and not Foe.is_attack_action(a):
-			return _threat_now(foe, sk) * HULL_WEIGHT
+	var now := countdown_threat(foe, sk) if foe.gathering() else _threat_now(foe, sk)
+	if now <= 0.0:
+		return 0.0
+	var next := sk.disrupt_next(foe)
+	if next.is_empty():
+		return 0.0
+	var instead := 0.0
+	if Foe.is_attack_action(next) and Foe.countdown_of(next) == 0:
+		var machines: int = sk.live_mechs().size() if foe.has_keyword(next, "all") else 1
+		instead = float(foe.damage_of(next) * maxi(1, int(next.get("strikes", 1))) * machines)
+	return maxf(0.0, now - instead) * HULL_WEIGHT
+
+
+## A gathering countdown's blow as a threat now (the boss mechanics of 15 October): the blow it
+## will land when its count runs out, on every machine for a blow at every machine, at
+## COUNTDOWN_DISCOUNT for each round it still gathers, one more while it is held this round.
+## Nothing for a foe gathering nothing.
+static func countdown_threat(f: Foe, sk: Skirmish = null) -> float:
+	if not f.gathering() or not f.alive():
+		return 0.0
+	var machines: int = sk.live_mechs().size() if sk != null and f.reaches_every_machine() else 1
+	var rounds := f.charge + (1 if f.is_suppressed() else 0)
+	return float(f.damage() * f.strikes() * machines) * pow(COUNTDOWN_DISCOUNT, float(rounds))
+
+
+## What stopping a foe's next action is worth (a Suppress): this round's blow, and on a gathering
+## countdown the round it is held, its blow landing a round later. Nothing on a foe already held.
+static func suppress_worth(sk: Skirmish, f: Foe) -> float:
+	if f.is_suppressed():
+		return 0.0
+	return _threat_now(f, sk) + countdown_threat(f, sk) * (1.0 - COUNTDOWN_DISCOUNT)
+
+
+## What a foe's fall opens (a boss in parts, 15 October; valued 22 October): the core it leaves
+## unguarded, a share of the core's kill and threat; nothing for a foe that guards no core, one
+## whose fall leaves its core guarded (another part standing under "any"), or a core open already.
+static func core_opening(sk: Skirmish, part: Foe) -> float:
+	for core in sk.field_foes():
+		if core == part or not core.alive() or not core.has_parts() or core.guard.is_empty():
+			continue
+		if core.pack_id != part.pack_id or not core.part_ids.has(part.content_id) or not Effects.has(core, "guarded"):
+			continue
+		var standing := sk.parts_of(core)
+		if not standing.has(part):
+			continue
+		if core.guard != "any" or standing.size() == 1:
+			return (KILL_BONUS + _threat_now(core, sk) * HULL_WEIGHT) * OPEN_CORE_WEIGHT
 	return 0.0
+
+
+## What a foe's last act costs the team when it falls (15 October, the Behemoth's Meteor; valued
+## 22 October): its blow the moment it falls, on the machine it aims at or every machine for a
+## blow at every machine, through each one's shield and armour as they stand: hull at
+## HULL_WEIGHT, shield at SHIELD_LOSS_WEIGHT, a wreck at DEATH_WEIGHT.
+static func last_act_cost(sk: Skirmish, f: Foe) -> float:
+	var blow := f.last_act()
+	if blow.is_empty():
+		return 0.0
+	var amount := f.damage_of(blow)
+	var whom: Array = []
+	if f.has_keyword(blow, "all"):
+		whom = sk.live_mechs()
+	elif f.target != null and (f.target as Skirmish.MechState).alive():
+		whom = [f.target]
+	elif not sk.live_mechs().is_empty():
+		whom = [sk.live_mechs()[0]]
+	var cost := 0.0
+	for m in whom:
+		var shield: int = m.unit.shield
+		var hull: int = m.unit.hull
+		for s in range(maxi(1, int(blow.get("strikes", 1)))):
+			var r := Skirmish._blow(shield, m.unit.hull_max, m.unit.armour, Effects.damage_taken(m.unit, amount, f), false)
+			cost += float(int(r["absorbed"])) * SHIELD_LOSS_WEIGHT + float(int(r["through"])) * HULL_WEIGHT
+			shield = int(r["shield"])
+			hull -= int(r["through"])
+		if hull <= 0:
+			cost += DEATH_WEIGHT
+	return cost
 
 
 ## A web on a foe (the funnel-web's Web Bomb, 18 October): the blow the foe it catches beside

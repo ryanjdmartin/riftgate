@@ -2852,22 +2852,10 @@ func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive():
 			continue
-		var legal := legal_actions(foe)
-		var others: Array = []
-		for a in legal:
-			if a != foe.action:
-				others.append(a)
-		if others.is_empty():
+		var next := disrupt_next(foe)
+		if next.is_empty():
 			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
 			continue
-		# The next in its pattern: the first legal move after the current one, wrapping.
-		var start: int = foe.actions.find(foe.action)
-		var next: Dictionary = others[0]
-		for k in range(1, foe.actions.size() + 1):
-			var cand: Dictionary = foe.actions[(start + k) % foe.actions.size()]
-			if others.has(cand):
-				next = cand
-				break
 		var was := str(foe.action.get("name", ""))
 		foe.pending = {}   # a gathered move is broken off
 		foe.charge = 0
@@ -2876,6 +2864,25 @@ func _disrupt(foes: Array) -> void:
 		_begin_countdown(foe)
 		foe.target = _pick_mech_target(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
+
+
+## The move a disrupt turns this foe to: the next in its pattern, the first legal move after its
+## current one, wrapping; empty when it has nothing else open. The spend and the bot read it here.
+func disrupt_next(foe: Foe) -> Dictionary:
+	var others: Array = []
+	for a in legal_actions(foe):
+		if a != foe.action:
+			others.append(a)
+	if others.is_empty():
+		return {}
+	var start: int = foe.actions.find(foe.action)
+	var next: Dictionary = others[0]
+	for k in range(1, foe.actions.size() + 1):
+		var cand: Dictionary = foe.actions[(start + k) % foe.actions.size()]
+		if others.has(cand):
+			next = cand
+			break
+	return next
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
