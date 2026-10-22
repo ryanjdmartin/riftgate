@@ -96,7 +96,8 @@ var buff_status: String = ""  # a buff: the engine status it grants (Effects.STA
 var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
-var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
+var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
+var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
 var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
 var devours: int = 0          # an attack: each kill gives its owner this many stacks of Overcharged (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
@@ -258,6 +259,7 @@ static func from_dict(d: Dictionary) -> Face:
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
+		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		# A save or a draft from before 11 October lists devour as a keyword, and one from before
@@ -321,6 +323,7 @@ func to_dict() -> Dictionary:
 		d["vents_all"] = true
 		if power_per_heat > 0:
 			d["power_per_heat"] = power_per_heat
+			d["per_heat"] = per_heat
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
 	if devours > 0:
@@ -492,6 +495,7 @@ func duplicate_face() -> Face:
 	f.buff_rounds = buff_rounds
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
+	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
 	f.devours = devours
 	f.burn = burn
@@ -662,7 +666,7 @@ func describe() -> String:
 				if k == Keyword.FLAK:
 					s += " %d" % flak
 			if vents_all:
-				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
+				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, MISSING_STEP]
 			if devours > 0:

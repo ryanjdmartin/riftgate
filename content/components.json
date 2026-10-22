@@ -711,7 +711,8 @@
     "keywords": [],
     "heat": 0,
     "vents_all": true,
-    "power_per_heat": 10
+    "power_per_heat": 10,
+    "per_heat": 10
    },
    "passive": null,
    "tags": []

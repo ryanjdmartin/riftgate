@@ -1206,7 +1206,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
 		match str(eff.get("effect", "")):
 			"shield_per_heat":
-				out["shield"] += v * int(amount / 10)
+				out["shield"] += v * int(amount / maxi(1, int(eff.get("per_heat", 10))))
 			"add_shield":
 				out["shield"] += v
 			"vent_heat":
@@ -1247,16 +1247,17 @@ static func shield_granted(u, ally, amount: int) -> Dictionary:
 
 ## The shield this machine's spend gives an ally beyond the entry's own number: its passives'
 ## shield_per_ally_heat (on_shield_granted; the Puffin's Slipstream Projector, 21 October),
-## `value` for every 10 heat the ally carries, pro rata and rounded down, so a value of 2 is a
-## fifth of the ally's heat. Read at the spend, before the shield lands, from the heat the ally
+## `value` for every `per_heat` (10 until the stock pass's landing) the ally carries, pro rata
+## and rounded down, so a value of 2 per 10 is a fifth of the ally's heat. Read at the spend,
+## before the shield lands, from the heat the ally
 ## carries then; never on the machine itself, since the trigger is for allies (the caller asks
 ## only for an ally). The die dragged over the ally and the bot read the same number.
 static func granted_shield(u, ally_heat: int) -> int:
-	var n := 0
+	var n := 0.0
 	for pair in _taking_part(u, "on_shield_granted", null):
 		if str(pair[0].get("effect", "")) == "shield_per_ally_heat":
-			n += int(pair[0].get("value", 0)) * int(pair[1].stacks) * maxi(0, ally_heat)
-	return maxi(0, int(n / 10))
+			n += float(int(pair[0].get("value", 0)) * int(pair[1].stacks) * maxi(0, ally_heat)) / float(maxi(1, int(pair[0].get("per_heat", 10))))
+	return maxi(0, floori(n + 0.000001))
 
 
 ## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
@@ -1669,8 +1670,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
-		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
-		"shield_per_ally_heat": body = "the shield grows by %s for every 10 heat it carries" % vs
+		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
+		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs

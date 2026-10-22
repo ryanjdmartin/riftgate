@@ -498,7 +498,8 @@
      {
       "trigger": "on_round_start",
       "effect": "shield_per_heat",
-      "value": 5
+      "value": 5,
+      "per_heat": 10
      }
     ]
    },
@@ -696,7 +697,8 @@
      {
       "trigger": "on_shield_granted",
       "effect": "shield_per_ally_heat",
-      "value": 2
+      "value": 2,
+      "per_heat": 10
      }
     ]
    },

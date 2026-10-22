@@ -808,6 +808,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat needs vents_all (the heat it adds for is the heat it fires)" % where)
 	if int(fd.get("power_per_heat", 0)) < 0:
 		errs.append("%s: power_per_heat cannot be negative" % where)
+	if fd.has("per_heat") and (not fd.has("power_per_heat") or int(fd["per_heat"]) <= 0):
+		errs.append("%s: per_heat is the heat a step of power_per_heat stands for: positive, and only beside power_per_heat" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few

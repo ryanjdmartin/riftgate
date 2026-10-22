@@ -411,7 +411,12 @@ in the second.
 7. **Converters as fields.** `per_heat` on `shield_per_heat` and on the Afterburner's face
    (`power_per_heat`), the Puffin's `shield_per_ally_heat` with a `per_heat`; the engine's
    constants of the table above moved where they can be content, kept where they are code, at
-   today's values until the landing.
+   today's values until the landing. Built 22 October: the three steps are fields, written
+   into the content at 10 (the landing sets the brief's 2, 4 and 2); Kindled and Siphoning
+   already carried their content's number; the engine-wide rules (`CRYO_COOL_PER_STACK`,
+   `HOT_HEAT`, `VOLATILE_BITE`, `MISSING_STEP`, Burning's and Scorched's heat, Vitriol's
+   share) are a keyword's or a status's rule, so they stay named constants in code for the
+   landing to re-set, as do the bot's absolute weights.
 8. **The Spillover star.** The Boar's granted Spillover shown as the star, the printed-rule
    chip, in place of a keyword chip on every entry (`game/ui/die_face_view.gd`, `glyphs.gd`);
    the hold reads the passive's line.

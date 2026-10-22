@@ -771,7 +771,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 		var span := f.power_max - f.power
 		for q in [0.0, 0.25, 0.5, 0.75, 1.0]:
 			rolls.append(f.power + int(roundf(span * q)))
-	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
+	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
 	fired += f.missing_bonus(target)   # and what the target's lost hull adds
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var out: Array = []

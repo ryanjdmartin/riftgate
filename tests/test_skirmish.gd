@@ -2965,6 +2965,40 @@ func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gau
 	assert_eq(s2.mechs[0].heat, 15, "emptied, then the shot's own heat")
 
 
+## The converters' steps are fields (the stock pass, 22 October), at today's ten until the
+## content landing: the vent-on-fire face's per_heat, the shield-per-heat passive's and the
+## ally-heat shield's.
+func test_a_heat_converter_reads_its_step_from_its_field() -> void:
+	var cannon := Face.attack(10, L)
+	cannon.vents_all = true
+	cannon.power_per_heat = 1
+	cannon.per_heat = 2
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(cannon), 40, 100))
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].heat = 9
+	assert_eq(Skirmish.heat_bonus(sk.mechs[0], cannon), 4, "+1 for every 2 heat: four steps in nine")
+	assert_eq(Face.from_dict(cannon.to_dict()).per_heat, 2, "the step survives the save")
+	var u := _mech("B", Die.single(Face.shield(10)), 0, 100)
+	u.grant_passive({"id": "recoup", "name": "Recoup", "description": "", "effects": [
+		{"trigger": "on_round_start", "effect": "shield_per_heat", "value": 1, "per_heat": 4}]})
+	assert_eq(int(Effects.fire(u, "on_round_start", 9)["shield"]), 2, "1 shield for every 4 heat: two in nine")
+	var bare := _mech("C", Die.single(Face.shield(10)), 0, 100)
+	bare.grant_passive({"id": "recoup10", "name": "Recoup", "description": "", "effects": [
+		{"trigger": "on_round_start", "effect": "shield_per_heat", "value": 5}]})
+	assert_eq(int(Effects.fire(bare, "on_round_start", 25)["shield"]), 10, "without the field, today's ten: 5 for each 10")
+	var puff := _mech("D", Die.single(Face.shield(10)), 0, 100)
+	puff.grant_passive({"id": "slip", "name": "Slip", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 1, "per_heat": 2}]})
+	assert_eq(Effects.granted_shield(puff, 7), 3, "1 for every 2 heat the ally carries, rounded down")
+	var puff10 := _mech("E", Die.single(Face.shield(10)), 0, 100)
+	puff10.grant_passive({"id": "slip10", "name": "Slip", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]})
+	assert_eq(Effects.granted_shield(puff10, 25), 5, "without the field, 2 for each 10: a fifth")
+
+
 func test_a_round_start_passive_regains_shield_from_heat() -> void:
 	var recoupler := {"id": "recoupler", "name": "Thermal Recoupler", "description": "", "effects": [
 		{"trigger": "on_round_start", "effect": "shield_per_heat", "value": 5}]}

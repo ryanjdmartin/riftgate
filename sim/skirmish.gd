@@ -327,11 +327,12 @@ func pending_heat(ms: MechState) -> int:
 
 
 ## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
-## for each 10 heat the machine carries right now (the Afterburner Cannon, 28 September).
-func heat_bonus(ms: MechState, f: Face) -> int:
+## for each `per_heat` the machine carries right now (the Afterburner Cannon, 28 September;
+## the step a field since the stock pass, 22 October).
+static func heat_bonus(ms: MechState, f: Face) -> int:
 	if f == null or not f.vents_all:
 		return 0
-	return f.power_per_heat * int(ms.heat / 10)
+	return f.power_per_heat * int(ms.heat / maxi(1, f.per_heat))
 
 
 ## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
