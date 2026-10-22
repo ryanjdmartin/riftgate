@@ -84,6 +84,7 @@ var route_drawing := false          # the screen allows a route to be drawn from
 var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
 var draft_spend := Vector2i(-1, 0)  # what it has spent and what a slow last step took (Battle.draft_spend), for the gauge at its end; x -1 shows none
 var draft_move: int = 0             # the move the draft spends from: what the machine has left this action
+var draft_land: Dictionary = {}     # a carrier's block at the draft's end (Battle.draft_landing): {"to": rider -> hex, "bad": [hexes]}; empty when it carries nobody
 var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
 var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
 var _draft_hex := Vector2i(-9999, -9999)   # the last hex the finger reported, so a hex is announced once
@@ -475,7 +476,26 @@ func _draw() -> void:
 			draw_line(prev, p, hud, 5.0)
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
-		if draft_spend.x >= 0:
+		# A carrier's block where it would land (the Swallowtail's carry, Ryan, 21 October): each
+		# rider's hex outlined; one it cannot land on dashed and struck through, and the stop
+		# itself crossed and tagged, so the player changes it before letting go. By structure,
+		# never by hue alone (Ryan is colourblind), and heavy, for the phone.
+		var bad: Array = draft_land.get("bad", [])
+		var lands: Dictionary = draft_land.get("to", {})
+		for r in lands.keys():
+			var lh: Vector2i = lands[r]
+			var pts := Hex.corners(center(lh), HEX_SIZE - 6.0)
+			if bad.has(lh):
+				for i in range(6):
+					_dashed_line(pts[i], pts[(i + 1) % 6], Palette.ENEMY, HEX_SIZE * 0.16)
+				_strike(center(lh), HEX_SIZE * 0.42, Palette.ENEMY)
+			else:
+				Hud.stroke_poly(self, pts, hud, 3.0)
+		if not bad.is_empty():
+			# In the move gauge's place: the stop is no move, so what it would spend is moot.
+			_strike(prev, HEX_SIZE * 0.42, Palette.ENEMY)
+			_plaque(prev + Vector2(0.0, -HEX_SIZE * 1.0), "NO ROOM", Palette.ENEMY, 2.5)
+		elif draft_spend.x >= 0:
 			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(draft_move if draft_move > 0 else _route_drag.movespeed, draft_spend), hud)
 
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
@@ -719,6 +739,15 @@ func _draw_rift(map: BattleMap) -> void:
 
 ## A number on a dark plaque with a coloured border: legible on any tile, and the colour
 ## carries the side without asking coloured text to survive the ground.
+## A cross through a hex's middle, on its own dark ground so it reads on any terrain: a stop
+## or a landing that cannot be taken.
+func _strike(c: Vector2, r: float, col: Color) -> void:
+	for d in [Vector2(1, 1), Vector2(1, -1)]:
+		var v: Vector2 = d.normalized() * r
+		draw_line(c - v, c + v, Color(Palette.BG, 0.9), 9.0)
+		draw_line(c - v, c + v, col, 5.0)
+
+
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
 	var rect := _plaque_rect(at, Vector2(w, 18.0))
@@ -1337,6 +1366,9 @@ func is_playing() -> bool:
 
 ## Play the phase's moves: the mechs along their routes, then the packs along their
 ## intents, then `done`. Each move is [unit id, Array of hexes from start to end].
+## A machine's move may carry riders, [uid, path, [[rider id, the hex it rode from], ...]]: the
+## Swallowtail's ring (Ryan, 21 October), each rider riding the carrier's curve at the offset it
+## stood at, so the block travels as one and lands where the engine set it down.
 func play_moves(mech_moves: Array, pack_moves: Array, done: Callable) -> void:
 	_anim_queue = [mech_moves, pack_moves]
 	_anim_done = done
@@ -1350,6 +1382,11 @@ func play_moves(mech_moves: Array, pack_moves: Array, done: Callable) -> void:
 				_anim_px[mv[0]] = px
 				if _map3d != null:
 					_map3d.set_anim(mv[0], px, Vector2.ZERO)
+				for rd in (mv[2] if mv.size() >= 3 else []):
+					var rpx: Vector2 = Hex.to_pixel(rd[1], HEX_SIZE)
+					_anim_px[rd[0]] = rpx
+					if _map3d != null:
+						_map3d.set_anim(rd[0], rpx, Vector2.ZERO)
 	_next_anim_phase()
 
 
@@ -1359,7 +1396,10 @@ func _next_anim_phase() -> void:
 		var moves: Array = _anim_queue.pop_front()
 		for mv in moves:
 			if (mv[1] as Array).size() >= 2:
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0}
+				var riders: Array = []
+				for rd in (mv[2] if mv.size() >= 3 else []):
+					riders.append([rd[0], Hex.to_pixel(rd[1], HEX_SIZE) - Hex.to_pixel(mv[1][0], HEX_SIZE)])
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0, "riders": riders}
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
@@ -1415,7 +1455,17 @@ func _advance_anim(delta: float) -> void:
 			var ah := Map3D.oversteer_ahead(over)
 			var tp := Map3D.oversteer_ease(over)   # its stretch tapered, the middle counting most (the fourteenth notes)
 			_map3d.set_anim(uid, px, here[1], curve.chord_tapered(t + ah, w, tp), curve.chord_tapered(t, w, tp))
+		# Its riders ride the same curve at their offsets, facing its way.
+		for rd in a.get("riders", []):
+			var rpx: Vector2 = px + (rd[1] as Vector2)
+			_anim_px[rd[0]] = rpx
+			if _map3d != null:
+				_map3d.set_anim(rd[0], rpx, here[1])
 	for uid in finished:
+		for rd in (_anim[uid] as Dictionary).get("riders", []):
+			_anim_px.erase(rd[0])
+			if _map3d != null:
+				_map3d.clear_anim(rd[0])
 		_anim.erase(uid)
 		_anim_px.erase(uid)
 		if _map3d != null:

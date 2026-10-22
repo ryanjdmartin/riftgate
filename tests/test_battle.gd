@@ -722,3 +722,87 @@ func _fell(sk: Skirmish, which: Callable, n: int) -> void:
 		if n > 0 and which.call(f):
 			sk.reinforcements.erase(f)
 			n -= 1
+
+
+## The carry (the Swallowtail's Muster Deck, Ryan's go of 21 October; the block on his word of
+## that evening), on a synthetic passive: the machines beside the carrier are lifted in place and
+## land as a block round its stop, each where it rode from it, their move and action as they
+## were; their hexes never block its way; a stop the block does not fit is no destination and no
+## move, and the map is told which hex fails; an undo puts them back, and is refused once a
+## rider has moved on its own.
+func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> void:
+	var b := _battle()
+	var carrier: Unit = b.mechs()[0]
+	var rider: Unit = b.mechs()[1]
+	var third: Unit = b.mechs()[2]
+	carrier.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "carry"}]})
+	# A line of four open hexes: the carrier, the rider beside it, the carrier's stop two on (its
+	# shortest way over the rider) and the rider's landing beyond.
+	var line := _carry_line(b, carrier, rider, third)
+	assert_false(line.is_empty(), "a line of four open hexes")
+	third.pos = Vector2i(-50, -50)   # off the map, so nobody else rides or blocks
+	carrier.pos = line[0]
+	rider.pos = line[1]
+	var d: Vector2i = line[1] - line[0]
+	assert_eq(b.riders_of(carrier), [rider] as Array[Unit], "the machine beside it rides")
+	var rider_move := b.moves_left(rider)
+	var dests := b.destinations_for(carrier)
+	assert_true(dests.has(line[2]), "its riders' hexes never block its way")
+	for h in dests.keys():
+		assert_true(b.block_fits(carrier, b.riders_of(carrier), h), "every destination takes the block")
+	var route := b.move_to(carrier, line[2])
+	assert_eq(route, [line[1], line[2]] as Array[Vector2i], "the shortest way, over the rider")
+	assert_eq(rider.pos, line[2] + d, "the rider lands where it rode from the carrier")
+	assert_eq(b.last_carry, [[rider.id, line[1], line[3]]], "the map is told the ring's move")
+	assert_eq(b.moves_left(rider), rider_move, "its move as it was")
+	assert_eq(b.actions_left(rider), 1, "and its action")
+	assert_true(b.undo_move(carrier), "the carrier's move undone")
+	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "the block back where it stood")
+	# A stop the block does not fit: the rider's landing held by another machine.
+	third.pos = line[3]
+	assert_false(b.destinations_for(carrier).has(line[2]), "no destination where the block does not fit")
+	assert_eq(b.draft_landing(carrier, [line[1], line[2]])["bad"], [line[3]] as Array[Vector2i], "the map is told which hex fails")
+	assert_false(b.move_along(carrier, [line[1], line[2]]), "and the move is refused")
+	assert_eq(carrier.pos, line[0], "nothing moved")
+	third.pos = Vector2i(-50, -50)
+	b.move_to(carrier, line[2])
+	var hop := Vector2i(-99, -99)
+	for h in b.destinations_for(rider).keys():
+		hop = h
+		break
+	b.move_to(rider, hop)
+	assert_false(b.can_undo(carrier), "once the rider has moved on its own, the carry stands")
+
+
+## Four hexes in a line from a machine's own side of the map, every one open ground for the
+## carrier's way and for the rider, none beside another unit; empty when the map has none.
+func _carry_line(b: Battle, carrier: Unit, rider: Unit, third: Unit) -> Array:
+	for c in b.field.map.all_hexes():
+		for d in Hex.DIRECTIONS:
+			var line: Array = [c, c + d, c + d * 2, c + d * 3]
+			var ok := true
+			for k in range(4):
+				var h: Vector2i = line[k]
+				var o := b.field.unit_at(h) if b.field.map.has(h) else null
+				if not b.field.map.has(h) or b.field.map.is_structure(h) or (o != null and o != carrier and o != rider and o != third):
+					ok = false
+					break
+				# The carrier stands on the first and the third and passes over the second, on
+				# open ground; the rider stands on the second and the fourth.
+				if k <= 2 and (not BattleMap.passable(b.field.map.terrain[h], carrier.traits) or BattleMap.move_cost(b.field.map.terrain[h], carrier.traits) == BattleMap.SLOW):
+					ok = false
+					break
+				if (k == 1 or k == 3) and not BattleMap.passable(b.field.map.terrain[h], rider.traits):
+					ok = false
+					break
+			if not ok:
+				continue
+			var crowded := false
+			for k in range(4):
+				for n in Hex.neighbors(line[k]):
+					var o := b.field.unit_at(n)
+					if o != null and o != carrier and o != rider and o != third:
+						crowded = true
+			if not crowded:
+				return line
+	return []

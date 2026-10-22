@@ -42,6 +42,7 @@ var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the r
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), as a chip at the rail's foot; null for a die that rolls
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
+var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var spent: bool = false
 var dead: bool = false
 var can_tap: bool = true     # tap locks
@@ -217,6 +218,11 @@ func _draw() -> void:
 	if locked and not spent and not dead:
 		Hud.brackets(self, rect.grow(6.0), 14.0, hud, 1.5)
 		draw_string(Hud.mono(), Vector2(0, FACE + 12.0), "LOCKED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, hud)
+	if charged and not spent and not dead:
+		# Armed (the Swallowtail's muster): a second frame outside the first and the word, so the
+		# charged die reads by its structure as well as the colour.
+		Hud.stroke_poly(self, Hud.cut(rect.grow(4.0), CUT + 2.0), Palette.SELECT, 3.0)
+		draw_string(Hud.mono(), Vector2(0, bob - 6.0), "CHARGED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, Palette.SELECT)
 	if face != null and slot > 0:
 		# Which entry of the die this is, as a grey Roman numeral in the quotes' condensed
 		# italic: quiet by its colour and its face rather than its size, and never a stat
@@ -248,9 +254,29 @@ func _draw() -> void:
 		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.
 		var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x
 		draw_string(mono, Vector2(FACE * 0.5 + w * 0.5 + 2.0, 92.0 + bob), "×%d" % face.strikes, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, ink)
+	var slot_x := 10.0
+	if face.ammo > 0:
+		# A forging machine's gun (the Musk Ox's, 21 October): its price in ammo where the heat
+		# sits, the shells' mark beside it; struck through and DRY when the magazine cannot pay.
+		var ac := Color(Palette.ENEMY if face.dry else Palette.SELECT, alpha)
+		Glyphs.draw(self, "ammo", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, ac, 1.6)
+		var ammo_text := ("%d DRY" if face.dry else "%d AMMO") % face.ammo
+		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, ac)
+		var aw := mono.get_string_size(ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+		if face.dry:
+			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + 16.0 + aw, FACE - 13.0 + bob), ac, 2.0)
+		slot_x += aw + 22.0
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
-		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), "+%d HEAT" % face.heat, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
+		var heat_text := "+%d HEAT" % face.heat
+		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
+		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
+	if face.shields > 0 and not (face.disabled and dark > 0):
+		# The combined entry's second half (Ryan's go, 20 October): the shield it also gives, its
+		# own glyph and number beside the heat slot, so the two numbers part by structure.
+		var sc := Color(Palette.SHIELD, alpha)
+		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, sc, 1.6)
+		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), "%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, sc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	# Annotation chips hugging the right edge, one per keyword, star for a unique effect.

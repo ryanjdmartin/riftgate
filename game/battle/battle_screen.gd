@@ -557,6 +557,7 @@ func _on_route_drag_to(h: Vector2i) -> void:
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
 	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
+	_map.draft_land = battle.draft_landing(_draft_unit, _map.draft)   # a carrier's block at the end, marked where it does not fit
 	_map.queue_redraw()   # silent while it grows (the console's rule: no clicky ticks with no story)
 
 
@@ -568,6 +569,7 @@ func _on_route_drag_ended(commit: bool) -> void:
 	_drag_target = null
 	_map.draft = []
 	_map.draft_spend = Vector2i(-1, 0)
+	_map.draft_land = {}
 	if u != null and commit and target != null:
 		_order_attack(u, target, draft)
 		return
@@ -776,7 +778,11 @@ func _play_move(u: Unit, from: Vector2i, route: Array, keep: bool = true) -> voi
 		_refresh()
 		_autosave()
 		return
-	_map.play_moves([[u.id, [from] + route]], [], func() -> void:
+	# A carrier's riders ride with it as a ring (the Swallowtail's carry): the hexes they rode from.
+	var riders: Array = []
+	for c in battle.last_carry:
+		riders.append([int(c[0]), c[1]])
+	_map.play_moves([[u.id, [from] + route, riders]], [], func() -> void:
 		_refresh()
 		_autosave())
 	_refresh()
@@ -928,7 +934,11 @@ func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
 	var route: Array = []
 	if not draft.is_empty():
 		if not battle.move_along(m, draft):
-			Sound.play("ui_back")
+			# A carrier's block that does not fit where the route ends is a move refused.
+			if not (battle.draft_landing(m, draft).get("bad", []) as Array).is_empty():
+				_refuse()
+			else:
+				Sound.play("ui_back")
 			_select(null)
 			_refresh()
 			return

@@ -35,6 +35,12 @@ const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's aci
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
+const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team blow likely before it fades, and a back-rank foe in Direct reach, as a share
+const MINE_WEIGHT := 0.8         # a laid shot, as a share of its blow on the arrival: delayed, and laid against a count of those waiting, never a foe seen
+const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashed later by a pull on the team's dice
+const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average blow, at the odds an arrival takes the slot its kill empties, as a share
+const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
+const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -184,15 +190,15 @@ static func _sure_damage(f: Face) -> bool:
 func options_for(sk: Skirmish, i: int) -> Array:
 	var out: Array = []
 	var ms: Skirmish.MechState = sk.mechs[i]
-	var f := ms.face()
-	if f == null:
+	if ms.face() == null:
 		return out
+	var f := sk.spend_face(ms)   # the charged form when it goes out charged (the Swallowtail's muster)
 	match f.kind:
 		Face.Kind.BLANK:
 			out.append({"mech": i, "target": null, "score": 0.0})
 		Face.Kind.ATTACK:
 			var swaps := sk.needs_second(ms)
-			for t in sk.targets_for(i):
+			for t in sk.targets_for_face(ms, f):
 				var score := attack_score(sk, ms, f, t)
 				if not swaps:
 					out.append({"mech": i, "target": t, "score": score})
@@ -207,6 +213,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 						best_second = second
 				if best_second != null:
 					out.append({"mech": i, "target": t, "second": best_second, "score": score + best})
+			# An empty slot (the Lammergeier's): a mine laid there, or the pull's gather.
+			for slot in sk.slot_targets(ms, f):
+				out.append({"mech": i, "target": slot, "score": slot_score(sk, ms, f, slot)})
 		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": equipment_score(sk, ms, who, f)})
@@ -220,7 +229,10 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var quick := Effects.quick_turn_live(ms.unit, f)
 	f = Effects.effective_face(ms.unit, f, target)
+	if f.spends_magazine:
+		return salvo_score(sk, ms, f)   # the Musk Ox's salvo: random targets, the magazine its price
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
@@ -314,10 +326,42 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += brace_score(sk, ms, f.braces)
 	if f.heat_per_blow > 0:
 		score += siphon_score(sk, ms, f.heat_per_blow)
+	if f.has(Face.Keyword.EXPOSE):
+		score += (1.0 - p_kill) * expose_score(sk, target)
 	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
 		# A stack to spend buys another roll of the die, so the machine acts again: about the
 		# die's own average blow, read plainly so the scorer never asks itself.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if f.resets_on_kill:
+		# The reset gun (the Kite's Pinion Driver): a kill lights every dark entry and the machine
+		# acts again, about the die's own average blow, at the odds of the kill.
+		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if quick:
+		# The Needletail's gate: a setup it spends is Rapid once a round, so the machine acts
+		# again, about the die's own average blow.
+		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	# The Forge (the Musk Ox's): the gun's price in ammo, at what an ammo buys; the cluster
+	# cannon's refund, an ammo for every foe its blows reach, as far as the magazine has room.
+	var price := sk.ammo_price_of(ms, f)
+	if price > 0:
+		var worth := ammo_worth(sk, ms)
+		score -= float(price) * worth
+		if f.ammo_per_foe_hit > 0:
+			var back := f.ammo_per_foe_hit * sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n.alive()).size()
+			score += float(mini(back, ms.ammo_max - ms.ammo + price)) * worth
+	if f.pulls_mines:
+		score += pull_score(sk, target)
+	if f.drones:
+		# The Syrinx Drone (the Lammergeier's): Rapid on a foe already Exposed, the machine acting
+		# again, or else its Exposed; and the mine its killing shot leaves, at the odds a foe
+		# steps into the slot it empties or a pull on the team's dice cashes it.
+		if Effects.has(target, "exposure"):
+			score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+		else:
+			score += expose_score(sk, target)
+		if not Effects.has(target, "syrinx_drone"):
+			var waits := 1.0 if waiting_for(sk, 0 if target.is_massive() else target.rank) > 0 else 0.0
+			score += DRONE_WEIGHT * _team_raw_attack_mean(sk) * maxf(waits, pull_on_team(sk) * MINE_PULL_SHARE)
 	if f.devours > 0:
 		# A kill feeds stacks of Overcharged: what the status adds to the die's own damage, a
 		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
@@ -334,17 +378,204 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			var link := damage_outcomes(ms, f, n)
 			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n, sk) * HULL_WEIGHT))
 			p *= _kill_odds(link, n.hp)
-	# The heat this entry adds, on top of what the gauge already holds: whatever ends the
-	# turn over the cap burns hull, and a machine burnt out is the worst trade there is. Asked
-	# of the entry itself, not the one showing, so a reroll can weigh every entry the same way.
-	var fc := sk.forecast(ms, false)
-	var over := maxi(0, int(fc["heat_end"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
-	score -= float(over - int(fc["overheat"])) * HULL_WEIGHT
-	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
-		score -= DEATH_WEIGHT
+	score -= heat_cost(sk, ms, f, uses)
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
 	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
+
+
+## The heat this entry adds, on top of what the gauge already holds: whatever ends the turn
+## over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of the
+## entry itself, not the one showing, so a reroll can weigh every entry the same way.
+func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	var fc := sk.forecast(ms, false)
+	var over := maxi(0, int(fc["heat_end"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
+	var cost := float(over - int(fc["overheat"])) * HULL_WEIGHT
+	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
+		cost += DEATH_WEIGHT
+	return cost
+
+
+# ---------------------------------------------------------------- mines
+
+## An empty slot as a target (the Lammergeier's): the pull's gather there, or a mine laid.
+func slot_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -> float:
+	if f.pulls_mines:
+		return gather_score(sk, slot) - heat_cost(sk, ms, f)
+	return mine_score(sk, ms, f, slot)
+
+
+## A weapon laid as a mine: a shot delayed, worth its blow on the arrival at the odds one steps
+## in (the arrival pays before it acts, so a stun, a burn, a shock and a Spread's neighbours
+## count as on a blow), or a share of it when only a pull on the team's dice will cash it, on a
+## foe of the field; less the heat, a volatile bite and a cooldown, as a blow's.
+func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -> float:
+	f = Effects.effective_face(ms.unit, f)
+	var p := arrival_odds(sk, slot)
+	var hp := _waiting_hp(sk, slot.x)
+	var threat := _waiting_threat(sk, slot.x)
+	if p <= 0.0:
+		p = pull_on_team(sk) * MINE_PULL_SHARE
+		hp = _field_hp(sk)
+		threat = 0.0   # a pull cashes it on a foe that may well have acted already
+	var mean := expected_damage(ms, f, null)
+	var score := minf(mean, hp) * p
+	if f.has(Face.Keyword.SUPPRESS):
+		score += p * threat * HULL_WEIGHT
+	if f.has(Face.Keyword.BURN):
+		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
+		score += p * per * float(f.burn * (f.burn + 1)) / 2.0 * BURN_WEIGHT
+	if f.has(Face.Keyword.SHOCK):
+		score += p * minf(maxf(0.0, hp - mean), _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
+	if f.has(Face.Keyword.CLEAVE):
+		for dc in [-1, 1]:
+			var c: int = slot.y + dc
+			if c >= 0 and c < sk.columns:
+				var n := sk.foe_at(slot.x, c)
+				if n != null and n.alive():
+					score += p * minf(mean, float(n.hp))
+	score *= MINE_WEIGHT
+	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## The pull on a foe: every mine on the field lands on it now, shot by shot in laid order, read
+## as they will land (its flat damage-taken adds, a Shocked doubling once and a Shock shot
+## charging the next, its armour off each), capped at what it has left, with the kill.
+func pull_score(sk: Skirmish, target: Foe) -> float:
+	var shots := _all_mines(sk)
+	if shots.is_empty() or target == null or not target.alive():
+		return 0.0
+	var hp := float(target.hp)
+	var shocked := Effects.has(target, "shocked")
+	var add := float(Effects.damage_taken_add(target))
+	var arm := float(target.armour_total())
+	var dealt := 0.0
+	for shot in shots:
+		if hp <= 0.0:
+			break
+		var d := float(int(shot["damage"]))
+		if d > 0.0:
+			d += add
+			if shocked:
+				d *= 2.0
+				shocked = false
+		d = maxf(0.0, d - arm)
+		dealt += minf(d, hp)
+		hp -= d
+		if Array(shot["keywords"]).has(Face.Keyword.SHOCK) and hp > 0.0:
+			shocked = true
+	var score := dealt
+	if hp <= 0.0:
+		score += KILL_BONUS + _threat_now(target, sk) * HULL_WEIGHT
+	return score
+
+
+## The pull on an empty slot: every mine gathers there, worth the pile at the odds a foe steps
+## in, less what the mines were worth where they lay.
+func gather_score(sk: Skirmish, slot: Vector2i) -> float:
+	var total := 0.0
+	var where := 0.0
+	for s in sk.mines.keys():
+		var v := 0.0
+		for shot in sk.mines[s]:
+			v += float(int(shot["damage"]))
+		total += v
+		where += arrival_odds(sk, s) * v
+	return (arrival_odds(sk, slot) * minf(total, _waiting_hp(sk, slot.x)) - where) * MINE_WEIGHT
+
+
+static func _all_mines(sk: Skirmish) -> Array:
+	var shots: Array = []
+	for slot in sk.mines.keys():
+		shots.append_array(sk.mines[slot])
+	shots.sort_custom(func(a, b) -> bool: return int(a["seq"]) < int(b["seq"]))
+	return shots
+
+
+## The odds a waiting foe steps into this empty slot at the round's end, in the reinforcement
+## step's order (a massive foe takes a whole empty column first, then the slots fill left to
+## right, each from those waiting of its rank): one when enough wait for it, else none.
+static func arrival_odds(sk: Skirmish, slot: Vector2i) -> float:
+	var massive := 0
+	for f in sk.reinforcements:
+		if f.is_massive():
+			massive += 1
+	var filled := {}
+	for col in range(sk.columns):
+		if massive > 0 and sk.front[col] == null and sk.back[col] == null:
+			filled[col] = true
+			massive -= 1
+	if filled.has(slot.y):
+		return 1.0
+	var ahead := 0
+	for col in range(sk.columns):
+		if filled.has(col) or sk.foe_at(slot.x, col) != null:
+			continue
+		if col == slot.y:
+			return 1.0 if waiting_for(sk, slot.x) > ahead else 0.0
+		ahead += 1
+	return 0.0
+
+
+## The foes waiting for a rank (massive ones fill either).
+static func waiting_for(sk: Skirmish, rank: int) -> int:
+	var n := 0
+	for f in sk.reinforcements:
+		if f.is_massive() or f.prefers_back == (rank == 1):
+			n += 1
+	return n
+
+
+## Does a live machine of the team carry the pull?
+static func pull_on_team(sk: Skirmish) -> float:
+	for ms in sk.live_mechs():
+		for f in ms.die.faces:
+			if f.pulls_mines:
+				return 1.0
+	return 0.0
+
+
+static func _waiting_hp(sk: Skirmish, rank: int) -> float:
+	var total := 0.0
+	var n := 0
+	for f in sk.reinforcements:
+		if f.is_massive() or f.prefers_back == (rank == 1):
+			total += float(f.hp)
+			n += 1
+	return total / float(n) if n > 0 else 0.0
+
+
+static func _waiting_threat(sk: Skirmish, rank: int) -> float:
+	var total := 0.0
+	var n := 0
+	for f in sk.reinforcements:
+		if f.is_massive() or f.prefers_back == (rank == 1):
+			total += float(f.attack)   # its move is not chosen until it stands: its base blow
+			n += 1
+	return total / float(n) if n > 0 else 0.0
+
+
+static func _field_hp(sk: Skirmish) -> float:
+	var total := 0.0
+	var n := 0
+	for f in sk.field_foes():
+		if f.alive():
+			total += float(f.hp)
+			n += 1
+	return total / float(n) if n > 0 else 0.0
+
+
+## What Exposed on a foe is worth (21 October): its armour off each team blow likely before it
+## fades (one a live machine, this round's rest and the next), and for a back-rank foe its
+## formation hides, its kill and threat brought into Direct reach, as a share.
+func expose_score(sk: Skirmish, foe: Foe) -> float:
+	if foe == null or not foe.alive() or Effects.has(foe, "exposure"):
+		return 0.0
+	var blows := float(sk.live_mechs().size())
+	var score := float(foe.armour_total()) * blows * HULL_WEIGHT * EXPOSE_WEIGHT
+	if foe.rank == 1 and not sk.is_exposed(foe.column):
+		score += (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * EXPOSE_WEIGHT * 0.5
+	return score
 
 
 ## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes
@@ -388,11 +619,12 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	return cost
 
 
-## What a printed cooldown costs an entry (21 October): every round it stays dark after this
-## one, the share of the die's rolls it would have shown, at what it is worth now. Rapid's
-## switch-off ends with this round and costs nothing here.
+## What a cooldown costs an entry (21 October): every round it stays dark after this one, the
+## share of the die's rolls it would have shown, at what it is worth now; its own or the one
+## its machine's passives grant (the Kite's), the longer. Rapid's switch-off ends with this
+## round and costs nothing here.
 static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
-	var later := f.cooldown_rounds() - 1
+	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f)) - 1
 	if later <= 0 or worth <= 0.0 or ms.die.faces.is_empty():
 		return 0.0
 	return worth * float(later) / float(ms.die.faces.size())
@@ -518,6 +750,10 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 ## The heat one use of an attack entry adds, through the pipeline; negative for one that
 ## fires the gauge empty first.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
+	if f != null and not f.is_attack():
+		return f.heat   # equipment's printed heat, landing as it is (the Musk Ox's quick reload)
+	if ms.ammo_max > 0 and f != null and not f.is_debuff():
+		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun: only a foe's debuff heats it
 	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
 	return added - ms.heat if f.vents_all else added
 
@@ -583,20 +819,103 @@ static func _kill_odds(outcomes: Array, hp: int) -> float:
 ## a cleanse clears there, and what a volatile bite costs.
 func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState, f: Face) -> float:
 	var score := 0.0
+	if f.reaches_all and f.is_equipment():
+		# A spend reaching every ally (the Swallowtail's team shield, its Phased): each one's
+		# worth, wherever the die was dropped.
+		var plain := f.duplicate_face()
+		plain.reaches_all = false
+		for w in sk.reached_machines(ms, f):
+			score += equipment_score(sk, ms, w, plain)
+		return score
 	match f.kind:
 		Face.Kind.SHIELD:
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
+			if f.vents > 0 or f.cools_all:
+				score += vent_score(sk, who, who.heat if f.cools_all else f.vents)   # the Hoist's cooling half
 			if who == ms:
 				score += seal_score(sk, ms)
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
 			if who == ms:
 				score += blast_score(sk, ms, mini(f.power, ms.heat))
+			if f.shields > 0:
+				score += shield_score(sk, who, sk.shield_amount(ms, f, who), false, ms)   # the combined entry's shield half
 		Face.Kind.BUFF:
-			score = buff_score(sk, who, f)
+			if f.act_again:
+				score = ROLL_AGAIN_WEIGHT * _raw_attack_mean(who)   # the Horn's charged form: the ally acts again
+			else:
+				score = buff_score(sk, who, f)
+			if Effects.quick_turn_live(ms.unit, f):
+				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
+	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
+	# as far as the magazine has room; and a printed heat's price on the low heat bar.
+	if ms.ammo_max > 0:
+		var rule := Effects.forge_rule(ms.unit)
+		var n := f.reloads_ammo
+		if n <= 0 and who == ms and not f.reaches_all:
+			n = int(rule.get("vent", 0)) if f.kind == Face.Kind.VENT else (int(rule.get("shield", 0)) if f.kind == Face.Kind.SHIELD else 0)
+		score += float(mini(n, ms.ammo_max - ms.ammo)) * ammo_worth(sk, ms)
+	if f.heat > 0:
+		score -= heat_cost(sk, ms, f)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## What an ammo is worth to a forging machine (the Musk Ox's): a share of the best damage a gun
+## on its die buys with one, read now (the salvo a strike); nothing for a machine that forges.
+func ammo_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	if ms.ammo_max <= 0:
+		return 0.0
+	var best := 0.0
+	for face in ms.die.faces:
+		if not face.is_attack() or face.is_debuff():
+			continue
+		if face.spends_magazine:
+			best = maxf(best, salvo_per_strike(sk, ms, face))
+			continue
+		var price := Effects.ammo_price(ms.unit, face)
+		if price > 0:
+			best = maxf(best, expected_damage(ms, face, null) / float(price))
+	return best * AMMO_SHARE
+
+
+## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and on
+## every foe its Spread and Penetrate reach there, each capped at what it has left, averaged
+## over the foes it may fall on.
+func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var live: Array[Foe] = []
+	for foe in sk.field_foes():
+		if foe.alive():
+			live.append(foe)
+	if live.is_empty():
+		return 0.0
+	var total := 0.0
+	for t in live:
+		var mean := expected_damage(ms, f, t)
+		for n in sk.reached_by(f, t):
+			if n.alive():
+				total += minf(mean, float(n.hp))
+	return total / float(live.size())
+
+
+## The salvo spent now: every ammo a strike, capped at what the field has left, less what those
+## ammo would buy on the die's other guns.
+func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var n := ms.ammo
+	if n <= 0:
+		return -INF
+	var field_hp := 0.0
+	for foe in sk.field_foes():
+		if foe.alive():
+			field_hp += float(foe.hp)
+	var other := 0.0
+	for face in ms.die.faces:
+		if face.is_attack() and not face.is_debuff() and not face.spends_magazine:
+			var price := Effects.ammo_price(ms.unit, face)
+			if price > 0:
+				other = maxf(other, expected_damage(ms, face, null) / float(price))
+	return minf(float(n) * salvo_per_strike(sk, ms, f), field_hp) - float(n) * other * AMMO_SHARE
 
 
 ## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of
@@ -775,7 +1094,23 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += barrier_score(sk, who)
 		"ward":
 			score += ward_score(sk, who)
+		"phased":
+			score += phased_score(sk, who)
+		"rallied":
+			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
 	return score
+
+
+## What Phased is worth on a machine yet to act (the Swallowtail's charged Screens): the round's
+## end without a blow reaching it, the hull kept and the death prevented, less the action it
+## stands down, its die's entry at its worth now.
+func phased_score(sk: Skirmish, who: Skirmish.MechState) -> float:
+	if who.assigned:
+		return 0.0
+	var after := _forecast_with(sk, who, "phased")
+	if after.is_empty():
+		return 0.0
+	return _outlook_gain(sk.forecast(who, false), after) - face_value(sk, who, who.face())
 
 
 ## The round's end with and without a status on `who`, read in a what-if: the forecast with
@@ -975,6 +1310,8 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			var best := 0.0
 			for t in sk.targets_for_face(ms, f):
 				best = maxf(best, attack_score(sk, ms, f, t))
+			for slot in sk.slot_targets(ms, f):
+				best = maxf(best, slot_score(sk, ms, f, slot))
 			return best
 		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			var best := 0.0
@@ -1026,7 +1363,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
-		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):
 			if not sk.reroll([i]):
 				break
 			rerolls += 1
@@ -1036,7 +1373,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned:
 				continue
-			if face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
+			if face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):   # a charged form as it will go out
 				idx.append(i)
 		if idx.is_empty():
 			return

@@ -37,6 +37,8 @@ var outcome: int = Outcome.NONE
 var spent: Dictionary = {}       # mech id -> actions spent this turn (a fight spends one)
 var move_left: Dictionary = {}   # mech id -> move points left in its current action; whole when absent
 var action_from: Dictionary = {} # mech id -> [hex, facing, move left] where its current action's moving began, for an undo
+var carried: Dictionary = {}     # carrier id -> [[rider id, hex, facing, hex set down], ...]: the machines its move this action carried, for an undo
+var last_carry: Array = []       # the last move's riders, [[rider id, hex, hex set down], ...], for the map's ring; never saved
 var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
 ## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
 ## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
@@ -188,11 +190,87 @@ func can_move(u: Unit) -> bool:
 	return state == State.PLAN and actions_left(u) > 0 and moves_left(u) > 0 and not is_pinned(u)
 
 
-## Hexes a machine may move to now, with the move it has left.
+## Hexes a machine may move to now, with the move it has left; a carrier only where the block
+## it carries fits (the Swallowtail's carry), its riders lifted off its way.
 func destinations_for(u: Unit) -> Dictionary:
 	if u == null or not can_move(u):
 		return {}
-	return field.reachable(u, moves_left(u))
+	var riders := _lift(u)
+	var out := field.reachable(u, moves_left(u))
+	_set_down()
+	if not riders.is_empty():
+		for h in out.keys():
+			if not block_fits(u, riders, h):
+				out.erase(h)
+	return out
+
+
+## The machines that travel with a carrier when it moves (the Swallowtail's Muster Deck, Ryan's
+## go of 21 October): every machine on a hex beside it, a caught one aside (it cannot move first).
+func riders_of(u: Unit) -> Array[Unit]:
+	var out: Array[Unit] = []
+	if u == null or not Effects.carries(u):
+		return out
+	for m in mechs():
+		if m != u and m.alive() and Hex.distance(m.pos, u.pos) == 1 and not is_pinned(m):
+			out.append(m)
+	return out
+
+
+## Where the riders would land if the carrier stopped at `at` (Ryan, 21 October: lifted in
+## place, they travel as a ring round the carrier and land as a block, each where it rode from
+## it): {"to": rider -> hex, "bad": the hexes a rider could not stand on}. The block fits only
+## when nothing is bad, and a stop it does not fit is no move: the map marks it and the player
+## changes it.
+func landing(u: Unit, riders: Array[Unit], at: Vector2i) -> Dictionary:
+	var to := {}
+	var bad: Array[Vector2i] = []
+	for r in riders:
+		var h: Vector2i = at + (r.pos - u.pos)
+		to[r] = h
+		if not _lands_on(r, h, u, riders):
+			bad.append(h)
+	return {"to": to, "bad": bad}
+
+
+func block_fits(u: Unit, riders: Array[Unit], at: Vector2i) -> bool:
+	return (landing(u, riders, at)["bad"] as Array).is_empty()
+
+
+## Whether a drafted route's end would take the carrier's block (empty for a machine that
+## carries nobody): the map's mark on a stop the riders cannot land round.
+func draft_landing(u: Unit, draft: Array) -> Dictionary:
+	var riders := riders_of(u)
+	if riders.is_empty() or draft.is_empty():
+		return {}
+	return landing(u, riders, draft[draft.size() - 1])
+
+
+## Whether rider `r` could land on `h`: on the map, no structure, ground it stands on, and no
+## unit there but the block itself (the carrier and the riders are lifted).
+func _lands_on(r: Unit, h: Vector2i, u: Unit, riders: Array[Unit]) -> bool:
+	for o in r.footprint:
+		var at: Vector2i = h + o
+		if not field.map.has(at) or field.map.is_structure(at):
+			return false
+		if not BattleMap.passable(field.map.terrain[at], r.traits):
+			return false
+		var occ := field.unit_at(at)
+		if occ != null and occ != r and occ != u and not riders.has(occ):
+			return false
+	return true
+
+
+## A carrier's riders lifted off the field's blockers for its route (they travel with it);
+## `_set_down` puts them back. Returns the riders.
+func _lift(u: Unit) -> Array[Unit]:
+	var riders := riders_of(u)
+	field.lifted = riders
+	return riders
+
+
+func _set_down() -> void:
+	field.lifted = []
 
 
 ## Move a machine to `to` by its cheapest route, at once (a machine moves, then fights; bible
@@ -201,7 +279,9 @@ func move_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
 	var none: Array[Vector2i] = []
 	if not destinations_for(u).has(to):
 		return none
+	_lift(u)
 	var route := field.route_to(u, to, moves_left(u))
+	_set_down()
 	if route.is_empty():
 		return none
 	_walk_machine(u, route)
@@ -213,8 +293,13 @@ func move_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
 func move_along(u: Unit, route: Array) -> bool:
 	if not can_move(u) or route.is_empty():
 		return false
-	if field.route_cost(u, route, moves_left(u)) < 0:
+	var riders := _lift(u)
+	var cost := field.route_cost(u, route, moves_left(u))
+	_set_down()
+	if cost < 0:
 		return false
+	if not riders.is_empty() and not block_fits(u, riders, route[route.size() - 1]):
+		return false   # a carrier cannot stop where its block does not fit
 	var typed: Array[Vector2i] = []
 	for s in route:
 		typed.append(s)
@@ -223,24 +308,51 @@ func move_along(u: Unit, route: Array) -> bool:
 
 
 func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
+	var riders := _lift(u)   # who rides, read where it stood
 	var cost := field.route_cost(u, route, moves_left(u))
+	_set_down()
+	var lands: Dictionary = landing(u, riders, route[route.size() - 1])["to"] if not riders.is_empty() else {}
 	if not action_from.has(u.id):
 		action_from[u.id] = [u.pos, u.facing, moves_left(u)]
 	move_left[u.id] = moves_left(u) - cost
 	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
 	u.facing = field._direction_index(before, route[route.size() - 1])
 	u.pos = route[route.size() - 1]
+	# The carry (the Swallowtail's): the block lands round where it stops, every rider where it
+	# rode from the carrier, its move and its action as they were (the lift changes where it
+	# is, never what it has left).
+	last_carry = []
+	if not riders.is_empty():
+		var log_of: Array = carried.get(u.id, [])
+		for r in riders:
+			log_of.append([r.id, r.pos, r.facing, lands[r]])
+			last_carry.append([r.id, r.pos, lands[r]])
+		for r in riders:
+			r.pos = lands[r]
+		carried[u.id] = log_of
 	sponsorship["hexes_moved"] = int(sponsorship["hexes_moved"]) + route.size()
 	action_hexes[u.id] = int(action_hexes.get(u.id, 0)) + route.size()
 	_prune_orders()
 
 
-## Whether a machine's move this action can be taken back.
+## Whether a machine's move this action can be taken back: its first hex free, and every machine
+## it carried still where it was set down.
 func can_undo(u: Unit) -> bool:
 	if state != State.PLAN or u == null or not action_from.has(u.id):
 		return false
+	for c in carried.get(u.id, []):
+		var r := field.unit_by_id(int(c[0]))
+		if r == null or r.pos != c[3]:
+			return false
 	var a: Array = action_from[u.id]
-	return u.pos == a[0] or field.can_stand(u, a[0])
+	if u.pos == a[0] or field.can_stand(u, a[0]):
+		return true
+	# A rider it set down on the hex it left goes back too (the block's 1-hex move).
+	var occ := field.unit_at(a[0])
+	for c in carried.get(u.id, []):
+		if occ != null and int(c[0]) == occ.id:
+			return true
+	return false
 
 
 ## Put a machine back where its current action's moving began, its move whole again.
@@ -252,6 +364,14 @@ func undo_move(u: Unit) -> bool:
 	u.facing = int(a[1])
 	move_left[u.id] = int(a[2])
 	action_from.erase(u.id)
+	# Its riders back where they rode from, last carried first.
+	var back: Array = carried.get(u.id, [])
+	for k in range(back.size() - 1, -1, -1):
+		var r := field.unit_by_id(int(back[k][0]))
+		if r != null:
+			r.pos = back[k][1]
+			r.facing = int(back[k][2])
+	carried.erase(u.id)
 	sponsorship["hexes_moved"] = maxi(0, int(sponsorship["hexes_moved"]) - int(action_hexes.get(u.id, 0)))
 	action_hexes.erase(u.id)
 	_prune_orders()
@@ -270,11 +390,13 @@ func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 	if at >= 0:
 		return draft.slice(0, at + 1)
 	var end: Vector2i = draft[draft.size() - 1] if not draft.is_empty() else u.pos
+	_lift(u)
 	var spent_move := field.route_cost(u, draft, moves_left(u))
-	if spent_move < 0:
-		return draft
-	var ext := field.route_from(u, end, moves_left(u) - spent_move, h)
-	if ext.is_empty():
+	var ext: Array[Vector2i] = []
+	if spent_move >= 0:
+		ext = field.route_from(u, end, moves_left(u) - spent_move, h)
+	_set_down()
+	if spent_move < 0 or ext.is_empty():
 		return draft
 	var out: Array = draft.duplicate()
 	out.append_array(ext)
@@ -283,7 +405,10 @@ func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 
 ## What a draft costs so far out of the move left; -1 when it cannot be walked.
 func draft_cost(u: Unit, draft: Array) -> int:
-	return field.route_cost(u, draft, moves_left(u))
+	_lift(u)
+	var cost := field.route_cost(u, draft, moves_left(u))
+	_set_down()
+	return cost
 
 
 ## The move gauge's reading of a draft (decided 3 October, bible section 4): the move its
@@ -508,6 +633,7 @@ func _new_turn() -> void:
 	spent.clear()
 	move_left.clear()
 	action_from.clear()
+	carried.clear()
 	action_hexes.clear()
 	fought.clear()
 	orders.clear()
@@ -579,6 +705,7 @@ func finish_skirmish() -> void:
 		fought[ms.unit.id] = true
 		move_left.erase(ms.unit.id)
 		action_from.erase(ms.unit.id)
+		carried.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		foes_killed += current.kills_for(sq)

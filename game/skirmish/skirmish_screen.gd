@@ -750,17 +750,20 @@ func _refresh() -> void:
 	var targets: Array[Foe] = []
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged piece of equipment may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
+	var slots: Array = []     # the empty slots a dragged weapon may be spent on (the Lammergeier's mines, its pull)
 	if not _pending.is_empty():
 		seconds = sk.swap_targets(_pending["primary"])
 		for x in seconds:
 			if x is Foe:
 				targets.append(x)
 	elif _drag_from >= 0:
-		var f := sk.mechs[_drag_from].face()
+		var dm: Skirmish.MechState = sk.mechs[_drag_from]
+		var f := sk.spend_face(dm)   # the charged form when it goes out charged
 		if f != null and f.is_attack():
-			targets = sk.targets_for(_drag_from)
+			targets = sk.targets_for_face(dm, f)
+			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
 		elif f != null and f.is_equipment():
-			support = sk.equipment_targets_for(sk.mechs[_drag_from], f)
+			support = sk.equipment_targets_for(dm, Effects.effective_face(dm.unit, f))
 
 	for col in range(sk.columns):
 		var front_foe := sk.foe_at(0, col)
@@ -777,18 +780,24 @@ func _refresh() -> void:
 				continue
 			var foe := sk.foe_at(rank, col)
 			if foe == null:
+				# An empty slot; with mines waiting (the Lammergeier's) its dashed outline, the
+				# mine's glyph with the total waiting and a chip per keyword riding in them.
+				var shots := sk.mines_at(Vector2i(rank, col))
 				v.display_name = ""
 				v.bars = []
-				v.intent = ""
+				v.intent = "MINED" if not shots.is_empty() else ""
 				v.intent_kind = ""
-				v.statuses = []
-				v.highlight = seconds.has(Vector2i(rank, col))   # an empty slot a pending Swap may move its foe into
+				v.statuses = _mine_chips(shots)
+				v.mined = not shots.is_empty()
+				# A slot a pending Swap may move its foe into, or one a dragged weapon may be spent on.
+				v.highlight = seconds.has(Vector2i(rank, col)) or slots.has(Vector2i(rank, col))
 				v.dead = false
 				v.sprite = null
 				_settle(v)   # a hit still playing on the foe that stood here would end at full brightness
-				v.modulate = Color(1, 1, 1, 0.75 if v.highlight else 0.3)
+				v.modulate = Color(1, 1, 1, 0.75 if v.highlight else (0.95 if v.mined else 0.3))
 				v.queue_redraw()
 				continue
+			v.mined = false
 			v.modulate = Color.WHITE
 			_fill_foe_view(v, foe, targets, rank * sk.columns + col)
 			_view_foe[v] = foe
@@ -805,6 +814,20 @@ func _refresh() -> void:
 			[ms.unit.hull, ms.unit.hull_max, Palette.HULL, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
+		# The Muster (the Swallowtail's, 21 October): a filling gauge under the heat, a notch a
+		# charge, the points it holds against its cap.
+		var rule := Effects.muster_rule(ms.unit)
+		if not rule.is_empty():
+			var per := maxi(1, int(rule.get("value", 30)))
+			var held := Effects.stacks_of(ms.unit, "muster")
+			v.bars.append([held, per * maxi(1, int(rule.get("cap", 3))), Palette.SELECT, held, per])
+		# The magazine (the Musk Ox's, 21 October): a bar under the heat, a notch an ammo, the
+		# dragged gun's price pending on it.
+		if ms.ammo_max > 0:
+			var after := ms.ammo
+			if _drag_from == i and ms.face() != null:
+				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
+			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
@@ -815,7 +838,10 @@ func _refresh() -> void:
 			v.statuses.append([r[0], r[1], r[3]])
 		v.queue_refresh()
 		var d := _dice[i]
-		var sf := sk.shown_face(ms, ms.face())   # reach as the passive reads it now
+		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
+		# (the Swallowtail's, Ryan, 22 October): the die shows the form that will happen.
+		d.charged = not ms.assigned and sk.charge_lands(ms)
+		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
@@ -959,6 +985,45 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.queue_redraw()
 
 
+## A mined slot's chips (the Lammergeier's): the mine with the total its shots deal as laid,
+## then each keyword riding in them, a numbered one with its stacks.
+func _mine_chips(shots: Array) -> Array:
+	if shots.is_empty():
+		return []
+	var total := 0
+	var kws: Array = []
+	var stacks := {}
+	for shot in shots:
+		total += int(shot.get("damage", 0))
+		for k in shot.get("keywords", []):
+			if not kws.has(int(k)):
+				kws.append(int(k))
+		for key in ["burn", "cryo", "flak"]:
+			stacks[key] = int(stacks.get(key, 0)) + int(shot.get(key, 0))
+	var chips: Array = [["mine", str(total) if shots.size() == 1 else "%d·%d" % [total, shots.size()], Palette.HEAT]]
+	for k in kws:
+		var id := str(Face.KEYWORD_NAMES.get(k, ""))
+		if id.is_empty():
+			continue
+		var n := int(stacks.get(id, 0))
+		chips.append([id, str(n) if n > 0 else "", Glyphs.colour_for(id)])
+	return chips
+
+
+## What waits in a mined slot, for its hold: each shot in laid order, its number, its keywords
+## and who laid it.
+func _mine_text(rank: int, col: int, shots: Array) -> String:
+	var text := "Mines: the %s rank's slot %d" % ["front" if rank == 0 else "back", col + 1]
+	var n := 0
+	for shot in shots:
+		n += 1
+		var bits: Array[String] = [str(int(shot.get("damage", 0)))]
+		for k in shot.get("keywords", []):
+			bits.append(Face.keyword_label(int(k)))
+		text += "\n%d. %s (%s)" % [n, " ".join(bits), str(shot.get("by", ""))]
+	return text + "\nwhoever steps in takes them all in laid order, before it acts"
+
+
 ## Statuses on a foe as [glyph, chip text, readout text, colour], and a fifth "resist" for a
 ## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
 func _foe_rows(foe: Foe) -> Array:
@@ -1019,7 +1084,15 @@ func _foe_rows(foe: Foe) -> Array:
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], Palette.SHIELD, "resist"])
-	if foe.rank == 1 and sk.is_exposed(foe.column):
+	if Effects.has(foe, "syrinx_drone"):
+		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
+		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
+		rows.append(["syrinx_drone", "", "%s: %s" % [drone["name"], drone["description"]], Palette.HUD])
+	if Effects.has(foe, "exposure"):
+		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed, the
+		# number saying what the debuff adds to the reach the formation gives.
+		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
+	elif foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
 
@@ -1051,6 +1124,10 @@ static func status_glyph(id: String) -> String:
 			return "hopper"
 		"sealed":
 			return "lock"
+		"phased":
+			return "phased"
+		"rallied":
+			return "reroll"
 		"barrier":
 			return "barrier"
 		"ward":
@@ -1105,8 +1182,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots":
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), never a chip
+		if id == "shots" or id == "quick_turned" or id == "muster":
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -1283,6 +1360,12 @@ func _on_die_held(i: int) -> void:
 func _on_foe_held(v: UnitView) -> void:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe == null:
+		# A mined empty slot (the Lammergeier's): what waits there.
+		for rank in range(2):
+			var col: int = _slot_views[rank].find(v)
+			if col >= 0 and not sk.mines_at(Vector2i(rank, col)).is_empty():
+				_show_details(_mine_text(rank, col, sk.mines_at(Vector2i(rank, col))), v, [], -1, [])
+				Sound.play("hold")
 		return
 	_hold_foe = foe
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
@@ -1444,8 +1527,9 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
 	Sound.play("die_pick")
-	var sf := sk.shown_face(sk.mechs[i], sk.mechs[i].face())
+	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
+	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
 	_ghost.visible = true
@@ -1459,7 +1543,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
-	var can := target != null and sk.can_assign(_drag_from, target)
+	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
 	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
@@ -1468,7 +1552,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
 		var over: Foe = target if can and target is Foe else null
-		var sf := sk.shown_face(ms, ms.face(), over)
+		var sf := sk.shown_face(ms, sk.spend_face(ms), over)
 		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
@@ -1560,11 +1644,17 @@ func _cancel_second() -> void:
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-## What sits under a global point: a Foe, a MechState, or null.
+## What sits under a global point: a Foe, an empty slot as Vector2i(rank, column) (the
+## Lammergeier's mines), a MechState, or null.
 func _drop_target_at(global_pos: Vector2):
 	for v in _view_foe.keys():
 		if v.visible and v.get_global_rect().has_point(global_pos):
 			return _view_foe[v]
+	for rank in range(2):
+		for col in range(sk.columns):
+			var sv: UnitView = _slot_views[rank][col]
+			if sv != null and sv.visible and sk.foe_at(rank, col) == null and sv.get_global_rect().has_point(global_pos):
+				return Vector2i(rank, col)
 	for j in range(_mech_views.size()):
 		if _mech_views[j].get_global_rect().has_point(global_pos):
 			return sk.mechs[j]
@@ -1710,6 +1800,12 @@ func _use_die(i: int, target, second = null) -> bool:
 				for mi in act["mechs"]:
 					if int(mi) >= 0 and int(mi) < _mech_views.size():
 						tw2.tween_callback(_animate_hit.bind(_mech_views[int(mi)], 0.1))
+	elif ok and target is Vector2i:
+		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
+		# weapon fires and the machine kicks back, nothing struck.
+		var slot: Vector2i = target
+		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed)
+		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow

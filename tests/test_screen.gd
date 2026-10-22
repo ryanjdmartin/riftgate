@@ -83,10 +83,11 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			assert_true(s._use_die(i, null), "blank discarded")
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
-		if f.has(Face.Keyword.RAPID):
-			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October): the
-			# die rolls again and the machine acts again.
-			assert_false(ms.assigned, "a rapid face gives mech %d its turn back" % i)
+		if f.has(Face.Keyword.RAPID) or (f.resets_on_kill and not ms.assigned):
+			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October), and so
+			# does a reset gun whose shot killed (the Kite's Pinion Driver, 21 October): the die
+			# rolls again and the machine acts again.
+			assert_false(ms.assigned, "a rapid face or a reset kill gives mech %d its turn back" % i)
 			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")
@@ -128,9 +129,10 @@ func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 	assert_true(s._details.visible, "details shown")
 	var text := s._details_label.text
 	var title := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("name", "")).to_upper()
-	assert_true(text.begins_with(title + " // D4"), "names the die and its size (from content, never a hardcoded name)")
+	var size := s.sk.mechs[2].die.faces.size()
+	assert_true(text.begins_with(title + " // D%d" % size), "names the die and its size (from content, never a hardcoded name)")
 	assert_true(s._details_faces.visible, "face list shown")
-	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
+	assert_eq(s._details_faces.faces.size(), size, "every face in the column")
 	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", ""))
 	assert_false(text.contains(passive_name), "the passive is not in the heading")
@@ -206,7 +208,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	var first: Label = s._codex._passives.get_child(0)
 	assert_eq(first.get_theme_color("font_color"), CodexBox.passive_colour("chassis"), "the chassis's own passive in its colour, first")
 	assert_true(CodexBox.passive_colour("component") != CodexBox.passive_colour("chassis"), "a component's passive reads in another")
-	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == 4, "faces listed visually")
+	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == s.sk.mechs[2].die.faces.size(), "faces listed visually")
 	s._close_codex()
 	s.free()
 
@@ -822,3 +824,83 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	t._on_reroll()
 	assert_true(t._pending.is_empty(), "a reroll sets it back first")
 	t.free()
+
+
+## The Lammergeier's mines on the screen (21 October), on a synthetic passive: a weapon of the
+## bay dragged lights the empty slots it may be spent on, a drop there lays the shot, and the
+## mined slot shows its dashed outline and the mine chip with the total waiting; a hold reads it.
+func test_a_weapon_of_the_bay_drops_on_an_empty_slot_and_the_slot_shows_its_mine() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
+	ms.die.faces[ms.face_index] = Face.attack(10, Face.Reach.INDIRECT, [Face.Keyword.BURN])
+	ms.die.faces[ms.face_index].burn = 2
+	var slots := s.sk.slot_targets(ms, ms.face())
+	assert_false(slots.is_empty(), "an empty slot to lay in")
+	var slot: Vector2i = slots[0]
+	var sv: UnitView = s._slot_views[slot.x][slot.y]
+	s._drag_from = 0
+	s._refresh()
+	assert_true(sv.highlight, "the empty slot lights while the weapon is dragged")
+	assert_eq(s._drop_target_at(sv.get_global_rect().get_center()), slot, "and is a drop target")
+	s._drag_from = -1
+	assert_true(s._use_die(0, slot), "dropped there, the shot is laid")
+	s._refresh()
+	assert_true(sv.mined, "the slot shows its outline")
+	assert_eq(sv.intent, "MINED", "and says so")
+	assert_eq(sv.statuses[0][0], "mine", "the mine's chip first")
+	assert_eq(sv.statuses[0][1], "10", "with the total waiting")
+	assert_eq(sv.statuses[1][0], "burn", "then a chip per keyword riding in it")
+	s._on_foe_held(sv)
+	s.free()
+
+
+## The Swallowtail's muster on the screen (21 October; never primed since 22 October), synthetic:
+## the gauge under the heat with a notch a charge; with a charge up the die shows the charged
+## form under its double frame, unasked, and a drop spends it and the muster; with none, the
+## plain form.
+func test_a_mustering_machines_die_shows_its_charged_form_when_a_charge_is_up() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]})
+	var flare := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.EXPOSE])
+	flare.charged = {"muster": 1, "keywords": ["suppress"]}
+	ms.die.faces[ms.face_index] = flare
+	Effects.remove(ms.unit, "muster")
+	s._refresh()
+	var bars: Array = s._mech_views[0].bars
+	assert_eq(bars.size(), 4, "the Muster's gauge under the heat")
+	assert_eq(int(bars[3][4]), 3, "a notch a charge")
+	assert_false(s._dice[0].charged, "no charge: the plain form")
+	assert_false(s._dice[0].face.has(Face.Keyword.SUPPRESS), "without its Suppress")
+	Effects.stack(ms.unit, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	s._refresh()
+	assert_true(s._dice[0].charged, "a charge up: the die says so")
+	assert_true(s._dice[0].face.has(Face.Keyword.SUPPRESS), "and shows the charged form")
+	var foe: Foe = s.sk.targets_for(0)[0]
+	assert_true(s._use_die(0, foe), "dropped on a foe")
+	assert_true(Effects.has(foe, "suppressed"), "the charged form lands")
+	assert_eq(Effects.muster_charges(ms.unit), 0, "and the muster is spent")
+	s.free()
+
+
+## The Musk Ox's magazine on the screen (21 October), synthetic: a bar under the heat, a notch an
+## ammo; the die prints a gun's price in ammo where its heat would be, DRY when it cannot pay.
+func test_a_forging_machine_shows_its_magazine_and_each_guns_price() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]})
+	ms.ammo_max = 10
+	ms.ammo = 3
+	var ray := Face.attack(30, Face.Reach.INDIRECT)
+	ray.heat = 30
+	ms.die.faces[ms.face_index] = ray
+	s._refresh()
+	var bars: Array = s._mech_views[0].bars
+	assert_eq([int(bars[bars.size() - 1][0]), int(bars[bars.size() - 1][1])], [3, 10], "the magazine's bar")
+	assert_eq(s._dice[0].face.ammo, 3, "the die prints the gun's price")
+	assert_false(s._dice[0].face.dry, "which the magazine can pay")
+	ms.ammo = 2
+	s._refresh()
+	assert_true(s._dice[0].face.dry, "and DRY when it cannot")
+	s.free()

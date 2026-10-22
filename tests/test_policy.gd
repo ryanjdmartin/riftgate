@@ -587,3 +587,116 @@ func test_greedy_swaps_a_back_foe_forward() -> void:
 	assert_true(Policy.swap_score(sk, front, Vector2i(1, front.column + 1)) < 0.0, "a front foe sent back is a loss")
 	pol.play_round(sk)
 	assert_eq(caster.rank, 0, "the bot pulls the caster into the front")
+
+
+## The Lammergeier's mines for the bot (21 October), on a synthetic passive: a mine laid on a
+## slot a waiting foe will take is worth its blow there, and nothing with none waiting and no
+## pull on the team; the pull on a foe is worth the pile landing in laid order, a Shock shot
+## doubling the next; the drone is worth more on a foe already Exposed, its Rapid.
+func test_greedy_lays_a_mine_where_a_foe_will_step_in_and_weighs_the_pull_and_the_drone() -> void:
+	var bay := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]}
+	var sk := Skirmish.new(3, 2)
+	var m := _mech("Bomber", Die.single(Face.attack(20, I)), 40, 100)
+	m.grant_passive(bay)
+	sk.add_mech(m)
+	var wall := _ghoul(500, 0)
+	sk.add_foes([wall])
+	sk.begin()
+	var arrival := _ghoul(100, 10)
+	sk.reinforcements.append(arrival)
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var empty := Vector2i(0, 1) if sk.front[1] == null else Vector2i(0, 0)
+	assert_eq(Policy.arrival_odds(sk, empty), 1.0, "the waiting foe takes the empty front slot")
+	assert_eq(Policy.arrival_odds(sk, Vector2i(1, empty.y)), 0.0, "no back foe waits")
+	assert_true(pol.mine_score(sk, ms, ms.face(), empty) > 0.0, "a mine there is worth its blow")
+	var opts := pol.options_for(sk, 0)
+	var slots := opts.filter(func(o) -> bool: return o["target"] is Vector2i)
+	assert_true(not slots.is_empty(), "the slots are options")
+	sk.reinforcements.clear()
+	assert_true(pol.mine_score(sk, ms, ms.face(), empty) <= 0.0, "with none waiting and no pull, a mine is worth nothing")
+	# The pull on a foe: the pile, read as it will land.
+	var pull := Face.attack(0, I)
+	pull.pulls_mines = true
+	sk.reinforcements.append(arrival)
+	assert_true(sk.assign(0, empty), "a mine laid")
+	assert_eq(pol.pull_score(sk, wall), 20.0, "the pull on the wall cashes its 20")
+	var drone := Face.attack(0, I)
+	drone.drones = true
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(_mech("Droner", Die.of([drone, Face.attack(30, L)]), 40, 100))
+	var foe := _ghoul(100, 10)
+	s2.add_foes([foe])
+	s2.begin()
+	s2.reinforcements.append(_ghoul(100, 10))
+	s2.start_round()
+	var d := s2.mechs[0]
+	var plain := pol.attack_score(s2, d, drone, foe)
+	assert_true(plain > 0.0, "the drone is worth its mine and its Exposed")
+	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "test", s2.round + 1)
+	assert_true(pol.attack_score(s2, d, drone, foe) > 0.0, "and on a foe already Exposed, its Rapid")
+
+
+## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:
+## the bot weighs the die as it will go out, so with a charge up and an ally yet to act the
+## Screens' options are Phased's, and it Phases the ally its blows would kill.
+func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
+	var deck := {"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]}
+	var screens := Face.shield(10)
+	screens.targets = Face.Target.ALLY
+	screens.reaches_all = true
+	screens.charged = {"muster": 1, "status": "phased", "reaches_all": true, "not_acted": true}
+	var sk := Skirmish.new(3, 2)
+	var c := _mech("Carrier", Die.single(screens), 40, 100)
+	c.grant_passive(deck)
+	sk.add_mech(c)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 10)
+	sk.add_mech(a)
+	sk.add_foes([_ghoul(300, 40), _ghoul(300, 40)])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	var pol := Policy.make(Policy.GREEDY)
+	var opts := pol.options_for(sk, 0)
+	assert_false(opts.is_empty(), "the Screens have options")
+	assert_eq(sk.spend_face(sk.mechs[0]).buff_status, "phased", "and they are the charged form's")
+	pol.play_round(sk)
+	assert_true(Effects.has(a, "phased"), "the bot Phases the ally its blows would kill")
+	assert_eq(Effects.muster_charges(c), 0, "the charge went with it")
+
+
+## The Musk Ox for the bot (21 October), synthetic: a forging machine's gun costs its price at
+## what an ammo buys; a dry gun is no option; the salvo is worth its strikes on the field.
+func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
+	var forge := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
+	var ray := Face.attack(30, L)
+	ray.heat = 30
+	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	salvo.spends_magazine = true
+	salvo.random_targets = true
+	var sk := Skirmish.new(3, 2)
+	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
+	m.grant_passive(forge)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.ammo_worth(sk, ms) > 0.0, "an ammo is worth something to a forging machine")
+	var free := Policy.make(Policy.GREEDY)
+	var plain := _mech("Plain", Die.single(ray.duplicate_face()), 40, 200)
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(plain)
+	s2.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+	s2.begin()
+	s2.start_round()
+	assert_true(pol.attack_score(sk, ms, ray, sk.front[0]) < free.attack_score(s2, s2.mechs[0], ray, s2.front[0]), "the forged gun is worth its blow less its three ammo")
+	assert_true(pol.salvo_score(sk, ms, salvo) > 0.0, "three strikes on a full field are worth firing")
+	ms.ammo = 0
+	ms.face_index = 0
+	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")
+	assert_eq(pol.salvo_score(sk, ms, salvo), -INF, "nor an empty salvo")

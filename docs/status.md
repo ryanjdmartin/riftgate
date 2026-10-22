@@ -19,8 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 550 tests, 61,829 checks, green on main (21 October, with the party, its finals and the
-  finale, and the Kestrel branch merged); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 577 tests, 62,160 checks, green on main (22 October, with the Muster never primed and the Musk Ox's 3 at the first round); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -30,32 +29,23 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-One branch is live beside main, its session's; main's account of it stands as of its last
-merge into main, and the branch's own status file has the rest.
+No branch is live beside main. Every branch is merged into main (checked 21 October) and is to
+be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
+refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
+`claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
+`ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`, `claude/zealous-cori-8xoly7`,
+`claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and `ccr-3d9861dc-mp0v3w`, merged
+before it. The five design sessions merged that day are paused, each resuming from its briefs:
 
-- `claude/festive-cray-i7lvnm` (the Wainwright & Sutler design sessions, since 15 October): the spider
-  landed on Ryan's go (18 October: the bible's row, the rules, Vitriol, Web and Webbed in the
-  vocabulary, the chassis and its Web Bomb planned in content, the brief retired to git) and
-  merged into main the same day; its engine and its assets built on `ccr-ffcf75fa-3gkbz9`
-  (18 to 20 October, merged into main on 20 October); kept open for the next Wainwright & Sutler briefs; the revolver (the Cassowary), the
-  fan-boat (the Cottonmouth) and the Dingo's Combat Translocator landed on 19 October (their
-  rows, the rules, planned content, the briefs retired), and the Prairie Dog's fight half the
-  same day (Flak), the boiler as the Whip Scorpion on 20 October and the maker's tiers
-  confirmed the same day (3-5-2), so of the maker's briefs only the gunship's and the
-  artillery's remain (the multi-rotor landed as the Swallowtail on 21 October). The tender, the campaign
-  runner and the balance runner skip a chassis whose passive or locked piece is planned
-  (`ContentDB.chassis_runnable`, 19 October), so the revolver and the Cottonmouth can land
-  planned at tier one without being dealt; until their engine lands the maker's deal is the
-  Prairie Dog.
-
-Every other branch is merged into main (checked 21 October) and is to be deleted from the desk
-machine or GitHub, since a cloud session's push to delete them is refused: `ccr-b6da49d3-4ft738`,
-`ccr-3259e29d-ydwpom`, `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`,
-merged that day, and `ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`,
-`claude/zealous-cori-8xoly7`, `claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and
-`ccr-3d9861dc-mp0v3w`, merged before it. The four design sessions merged that day are paused,
-each resuming from its briefs:
-
+- Wainwright & Sutler (since 15 October on `claude/festive-cray-i7lvnm`, its commits
+  fast-forwarded into main as they landed; wrapped up 21 October, Ryan: "make sure everything is
+  merged in and wrapped up"): ten machines decided, 3-5-2, the bible's roster row saying where
+  each stands. Built: the Prairie Dog with Flak, the Clydesdale, the funnel-web, the Cassowary,
+  the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. The
+  Swallowtail's and the Musk Ox's engines landed 21 October, so nothing of the maker's is
+  planned in content. The gunship's brief waits for the stock pass's tags and the numbers'
+  rescale (Ryan, 21 October); the five new machines' models and the Translocator's mount are the
+  to-do's art lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
   Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
   bible's Minerva roster row (section 7) says where each machine stands; the open briefs are
@@ -115,6 +105,70 @@ each resuming from its briefs:
   content landing follows them; Ryan switches to Opus for the implementation, the thinking being
   done here (his ask). Open with it (section 12): Overcharged's and Flak's halving clock, kept or
   unified; whether our guns take Breach.
+- 21 October, the Musk Ox (Ryan's go of that day): its damaging guns pay ammo for the heat their
+  own spend would make (1 for every 10, at least 1), a foe's Scorched still heating them; the
+  magazine (10, opening at 3, 1 a round from the second, a vent on itself 3, a shield 2) is a
+  bar under the heat, never a status; the cluster cannon refunds an ammo a foe reached, the
+  salvo fires the magazine at random live foes with Spread and Penetrate, the quick reload adds
+  2 for 15 heat (equipment's printed heat now lands); the die prints each gun's price and DRY.
+  The bot prices an ammo at half the best damage one buys. Its content is runnable (no model
+  yet). Fixed on the way: a multi-strike gun had paid its modifiers' heat on every strike (the
+  Maxigun under Scorched heated 20, its die showing 10); heat is paid once a spend.
+- 21 October, the Swallowtail (Ryan's go of that day): its Muster fills a point for every die
+  that rolls, any machine's, 30 a charge and 5 a kill by its own guns, three charges its cap,
+  a store no Silence or Purge touches (Ryan, 21 October), shown as a gauge under the heat with
+  a notch a charge; with a charge up its locked pieces go out charged unasked (Ryan, 22 October: never
+  primed), the die showing the charged form, and a charged form with nowhere to land leaves the
+  plain one, the charge waiting. The Mooring Screens shield every ally, or
+  Phase every ally yet to act (its die stands down, foes pick again, nothing reaches it); the
+  Spotting Flare Exposes, or Exposes and Suppresses; the Sutler's Hoist cools an ally 10 then
+  shields it, or the full reset; the Reveille Horn gives the team a reroll, or a spent ally acts
+  again. On the map the machines beside it are lifted and travel as a ring round it, landing as
+  a block where they rode (Ryan, 21 October): a stop the block does not fit is marked on the
+  drawn route (NO ROOM, the failing hex struck) and refused, an undo taking them back. The bot weighs the die as it will
+  go out. Its content is runnable (no model yet); its Sponsorship is the maker's measure, a
+  damaging weapon entry counting and nothing else (Ryan, 21 October).
+- 21 October, the Needletail's gate: a setup (a debuff or a buff, read as spent) is Rapid on its
+  machine once a round, a static grant of Rapid on `setup_once`, the die showing it while the
+  gate is open; the machine waits on its content session.
+- 21 October, the Lammergeier (Ryan's go of that day; its brief retired to git): a machine
+  whose passive lays mines may spend a weapon on an empty slot as if a foe stood there; each
+  strike a shot, its number and keywords fixed when laid, the shots stacking in laid order and
+  carried by the save. The reinforcement step places every arrival, then the mines land left
+  to right before anyone acts, every keyword acting as on a blow (a stun its first action, a
+  Chain repeating its spender's attack), shots left when the arrival falls waiting on; a Swap
+  into a mined slot sets it off at once. The Lorentz Contractor's pull gathers every mine
+  into its slot and a foe there takes them now; the Syrinx Drone's foe leaves its killing
+  shot as a mine, the drone Rapid on a foe already Exposed and Exposing it otherwise. The bot
+  values a mine at the odds a waiting foe steps in; the screen lights the slots a dragged
+  weapon may take and marks a mined slot (a dashed outline, the mine with its total, a chip a
+  keyword, a hold listing the shots). The chassis is in content (tier three, K-19 Mk I, the
+  brief's placeholder numbers, a stock by kind, no model yet); its runner rows, its assets
+  and Ryan's play are the to-do's.
+- 21 October, Expose and Exposed (the Kestrel session's): every foe an Expose reaches and leaves
+  standing is Exposed through the next round, in Direct reach of every machine and its armour
+  counting for nothing, refreshed and never added; it feeds the Paradox and the target-status
+  condition; the foe's card shows it; the bot weighs it. No Expose keyword in content until the
+  Needletail's content session; the Lammergeier's Syrinx Drone lays Exposed since 21 October,
+  and the Swallowtail's Flare will when its engine lands.
+- 21 October, the Kite's rework (Ryan's go of that day): a passive may double a weapon's
+  printed number alone (the buffs once after it) and grant a cooldown to every weapon; a kill
+  trigger fires once after an attack that killed (the Kite's tax, Hot Streak a working name,
+  5 heat a stack for the fight); a reset gun's kill lights every dark entry and acts again
+  through Rapid's path. The Kite is tier two (K-7 Mk IV), a d3 of the Pinion Driver locked and
+  two hardpoints stocking placeholders by kind until the stock pass; its passive's four
+  effects its one-off (the validator honours a chassis's design.one_off), the die minimum
+  three; the Railgun carries its own tier two off every stock. Its brief retired.
+- 21 October, the combined entry (Ryan's go, 20 October): a vent may carry a shield half
+  (`shields`), spent on the same machine after the vent and sized on the heat the vent leaves,
+  through the spender's passives for an ally (the Puffin's Slipstream); the die prints the
+  half's shield mark and number beside the heat slot, the hold says both, the bot weighs both,
+  the validator keeps it to a vent. The Wake Diffuser shields 10.
+- 21 October, the die's kinds and the no-number rule (Ryan, 20 and 21 October, the Kestrel
+  session's grammar): a debuff, a weapon of no damage, deals nothing under any effect (the
+  pipeline holds it at nothing, its heat a weapon's), prints no number anywhere, and wears its
+  reach frame with the down arrow inside; read on the entry as it is spent, so the
+  Cottonmouth's drum makes a debuff its 15. Judging it on the phone is Ryan's.
 - 21 October, the party: dealt as the run starts, one hero to each domain from its bench, the
   front and the back even (two and two), by the seed on a stream of its own, kept through a
   save; a domain's final fields its dealt hero in its rank with its domain's first pack in the
@@ -128,13 +182,14 @@ each resuming from its briefs:
   line) and stands while a commander does; a withdrawn boss had walked off as a pack and come
   back with a spawn foe beside it, fixed, and a boss's kill counts toward salvage. The
   campaign runner reports the party and the finals; the balance report carries the party's
-  cells (each bench hero's final, the finale), a 30-seed direction on the team row reading
-  every final won in both rungs and the finale 13 / 73. The party card waits on the mission map.
+  cells (each bench hero's final, the finale): at 200 seeds every team row wins every final
+  greedy, and the finale is a wall but for Minerva's team (3 / 71). The party card waits on the
+  mission map.
 - 20 and 21 October, the Kestrel session's builds (merged 21 October): the Puffin reworked at
   tier one (the Slipstream Projector: a shield it spends on an ally grows by a fifth of the heat
   that ally carries, read at the spend, by the die dragged over the ally and by the bot alike,
-  `Skirmish.shield_amount`); the Wake Diffuser's Rapid off (a vent of 10; its shield half waits
-  for the combined entry); the old finisher renamed the Coriolis Accelerator (the id with it),
+  `Skirmish.shield_amount`); the Wake Diffuser's Rapid off (a vent of 10 that shields 10 since the combined entry's
+  engine, 21 October); the old finisher renamed the Coriolis Accelerator (the id with it),
   the Pinion Driver's name kept for the Kite's reset gun; the Sparrowhawk and the Goshawk shown
   as the Kite and the Buzzard (the ids kept).
 - 21 October, the Dingo's Combat Translocator and the multi-target spend (Ryan's go of 19
@@ -144,11 +199,13 @@ each resuming from its briefs:
   drag picks it back up; the Translocator is in content as the Dingo's second locked piece and
   the Dingo is tier two. Its model mount is the asset session's.
 - 21 October, Silence and Purge on the enemy's side (Ryan, 17 and 18 October; a silence mutes
-  keywords too on his word of 21 October): Silenced turns a machine's buffs and stores off and
-  mutes its components' keywords through its next round (cleansable, a chip with a struck
-  voice); Purge takes every buff and store; both ride a blow or come as a move, aimed at the
-  buffed and cast where a machine carries a buff; the Ward turns both away; the bot values a
-  Ward and a cleanse against them. No foe carries either yet (section 12).
+  keywords too on his word of 21 October): Silenced turns a machine's buffs off and mutes its
+  components' keywords through its next round (cleansable, a chip with a struck voice); Purge
+  takes every buff; neither touches a store (Ryan, 21 October: a store is a capped resource
+  with a bar, and an effect it grants is a buff, slept by a silence and silenced a turn by a
+  purge, built with its first carrier); both ride a blow or come as a move, aimed at the buffed
+  and cast where a machine carries a buff; the Ward turns both away; the bot values a Ward and
+  a cleanse against them. No foe carries either yet (section 12).
 - 21 October, the small items: the heat bar reads the net over a Cryo foe while a damaging die
   is held over it; the run tallies each maker's Sponsorship measure (hexes moved, damage taken
   on shield and armour, dice spent on entries that deal damage or none; each maker's content
@@ -176,10 +233,9 @@ each resuming from its briefs:
   printed `spins` on the entry, no cooldown, the validator's stepping-die exemption) and Spun
   Up (a buff spent by the next weapon spend); six pips under the heat bar, the next-chamber chip
   on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
-  so the tender and the runner deal it. A weapon of no damage still takes the attacker's flat
-  adds (Overcharged's, Spun Up's) and deals them: Ryan's die grammar in the Kestrel session (21
-  October, its section 6 row on the live page) holds it at nothing under any effect, a guard
-  not built yet, so the question went from section 12. The hold's ring, the
+  so the tender and the runner deal it. A weapon of no damage is held at nothing under any
+  effect since 21 October (Ryan's die grammar, built that day, below), so Spun Up spent by a
+  lure is wasted, as its rule says. The hold's ring, the
   hangar's chambers and the bot's cycle are the to-do's.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
@@ -193,8 +249,8 @@ each resuming from its briefs:
   Cryo Flinger prints none (cooldown 0, its heat the limiter, Ryan's design of 20 October), the
   dark entry shows its rounds left on the die, and the validator refuses a Rapid entry with no
   limiter. The bot values both buffs and prices a cooldown. The balance runner splits across
-  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is under way on
-  today's main (a run on the shield commit itself finished, but main's rows have moved since).
+  cores (`--part i/n`, `--merge`); the report's rerun under the new rule is in (Measured,
+  below).
 - 21 October, Flak (Ryan's go, 19 October; the bible's Prairie Dog row), built on main once the
   numbers branch merged: Flak N on the Flakshot Repeater (Flak 2, Spread, a flat 5, no Rapid),
   each foe hit gaining the stacks after the blow; every blow on a Flak foe a point more a stack,
@@ -310,11 +366,11 @@ each resuming from its briefs:
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 17 chassis and two planned (the funnel-web built, its engine 18
+- Content: five makers, 20 chassis, every one runnable (the funnel-web built, its engine 18
   October and its model 19 to 20 October, its Web Bomb built; the Cassowary, the Cottonmouth
-  and the Whip Scorpion built 21 October; the Swallowtail and the Musk Ox, 21 October, planned;
-  a planned chassis is never dealt, the campaign's Start rule), 58 components (15 locked, 4 unstocked, among them
-  the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
+  and the Whip Scorpion built 21 October, and that day the Kite's rework, the Lammergeier, the
+  Swallowtail and the Musk Ox; a planned chassis is never dealt, the campaign's Start rule),
+  69 components (26 locked, 6 unstocked, among them the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
   the old kinetic-and-energy split (every rolled weapon cold, every flat one hot), which the
@@ -420,21 +476,24 @@ each resuming from its briefs:
   screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
-## Measured, 13 October
+## Measured, 21 October
 
-- `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 12 of 40
-  runs with the in-fight Rift Pressure tick gone (3 of 40 with it that morning; 29 of 40 on 9
-  October, before the domains), 24% of battles, 75% wiped, 3.5 cities fallen a run. Not Rally:
-  the commit before the fix gave 0 of 40 with the tick. The bot
-  takes every ready machine to one front, as intended, but fights inside a battle are mostly
-  one machine alone (1,157 of 1,747), wrecks sit out with no spares, and the bot never
-  withdraws from a skirmish. A lone machine wins 64% against a pack and 37% against two; two
-  together win 92%.
-- `docs/balance.md` at 200 seeds: every team row keeps its 9 October band; alone the machines
-  move a few points, the Nemesis most (greedy 61 to 76); the cells that moved follow the rules
-  (the Peak open to nearly everyone and closed to the Buzzard, the bosses harder for the heavy
-  machines, the Marsh's formation a decision for the Armadillo and a wall for the Boar); flat
-  weapons pay about twice the heat per point that rolled ones do. The bands of both are in
+- `docs/balance.md` at 200 seeds on the Kite's commit (`f1b8c663`; the Swallowtail, the Musk
+  Ox and the Lammergeier landed after it, so their rows wait on the next rerun): the rows the
+  week did not rework move a few points at most; the shield rule alone takes up to five points
+  off a row (the Wainwright & Sutler team's random, the Prairie Dog's greedy) and moves the
+  Peak's cells a direction down. The Armadillo alone falls from the top of the table (79 / 95)
+  to the middle (26 / 39) with its rework, its team holding at 100; the Kite's rework halves
+  its row and costs the starting team the Peak's and the Marsh's formations in the random
+  rung. Every team wins every final greedy; the finale is a wall but for Minerva's team (3 /
+  71). The Whip Scorpion reads in the Nemesis's band, the Cassowary among the weakest alone. A
+  heat section reads peaks, hot rounds and dice held for heat.
+- `docs/campaign_run.md` on main: the plain player wins none of 40 runs and one battle of 348
+  (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
+  the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
+  lone fight; the plain player's fights are still mostly one machine (572 of 734), and one
+  machine against one pack now wins 31%. The report reads nothing until a player fights as a
+  team (the fourth item below; section 12 asks whether to bring that forward). Both in
   `docs/measurements.md`.
 
 ## Decided, not built
@@ -506,13 +565,10 @@ each resuming from its briefs:
 - The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
   die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
   build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
-  tier one), the Kite's rework (its lock the Pinion Driver, tier two), the Needletail (a
-  tilt-jet that Exposes, tier two), the Lammergeier (a tandem-wing minelayer, tier three) and
-  the Giant Petrel (the formation leader, tier three), each the to-do's line; Exposed (Direct
-  reach and no armour, through the next round, refreshed, never added) and Expose; the die's
-  six kinds and their grammar (a weapon of no damage shows no number and deals nothing under
-  any effect, the guard not built); a Rapid shield never below tier two and a Rapid vent never
-  below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
+  tier one), the Needletail's content and its gate (a tilt-jet that Exposes, tier two) and
+  the Giant Petrel (the formation leader, tier three), each the to-do's line (the Kite's
+  rework, Exposed and Expose, the die's kinds and the Lammergeier built 21 October, above); a
+  Rapid shield never below tier two and a Rapid vent never below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
   stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs) with the stock pass; the
   designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
   out of it for now (Ryan, 21 October).
@@ -582,13 +638,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This branch's file is v0.249, and so is the
-  live (22 October): the live v0.248 (another session's publish of the same day: the Kite
-  rework, the store row, the Swallowtail, Musk Ox and Sponsorship changes, the regenerated
-  tables) with the stock pass's rows on top (section 2's kill-time, gap and wear tests, armour
+  live (22 October, the page's version 266): main's v0.248 (the page's version 265: v0.247,
+  Ryan's calls of 21 October, evening, the row on stores, Silence and Purge passing the stores
+  by, the carry as a block, the mine readings agreed, the Swallowtail's Sponsorship answered,
+  the promoted forms' session, the tables with a Store kind; his calls of 22 October on top, the
+  Muster never primed, the Musk Ox's 3 at the first round, the Whip Scorpion's blasting vents
+  counting) with the stock pass's rows on top (section 2's kill-time, gap and wear tests, armour
   by role, one breach, HP as the foes' word, the rewritten scales row, section 12's Overcharged
-  clock and the proposal pointer). The version numbers on main's file and the live agree after
-  every publish; the rows between them are the other branches'. Git and the page's version
-  history carry what each earlier publish brought.
+  clock and the proposal pointer). The hangar's vocabulary (the stores', the carry's and the
+  magazine's codex) waits on its next republish. The version numbers on main's file and the
+  live agree after every publish; the rows between them are the other branches'. Git and the
+  page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).
@@ -599,10 +659,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
   and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
   Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
-  the content that had moved, and the walkers' planted footwork, the last on 20 October
-  (`ccr-ffcf75fa-3gkbz9`); main's content has moved since (21 October's landings and merges,
-  the Kestrel branch's among them: the Puffin's passive, the Kite's and the Buzzard's names, the
-  Coriolis Accelerator, the Wake Diffuser), so the next content session republishes it. Its database
+  the content that had moved, and the walkers' planted footwork (20 October, `ccr-ffcf75fa-3gkbz9`); and on 21 October with the
+  day's content (the five files that had moved: chassis, components, foes, the reserved names,
+  vocabulary; the Kite's rework, the Lammergeier, the Swallowtail and the Musk Ox runnable, the
+  party's promoted forms) and the pins, which mark the three new machines and the three without
+  models as having none (the page's version 89; `edits` empty before it). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

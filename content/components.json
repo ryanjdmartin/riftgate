@@ -336,7 +336,7 @@
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
     "niche": "",
-    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). A temporary component either way."
+    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). Kept as the pool's big hot flat gun (Ryan, 21 October, the Kestrel line review: its temporary note retired); off the Kite with its rework (21 October), so it carries its own tier, a tier-two blueprint, until the stock pass puts it in the Buzzard's stock."
    },
    "face": {
     "kind": "attack",
@@ -350,7 +350,8 @@
     "energy",
     "single",
     "hot"
-   ]
+   ],
+   "tier": 2
   },
   {
    "id": "coriolis_accelerator",
@@ -363,7 +364,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It leaves the Kite for the pool as a tier-two or tier-three blueprint once the Kite's rework lands; until then it stays in the Kite's and the Buzzard's stock."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It left the Kite with its rework (21 October), a tier-two blueprint in the pool through the Buzzard's stock."
    },
    "face": {
     "kind": "attack",
@@ -380,6 +381,33 @@
     "finisher"
    ],
    "sound": "barrel"
+  },
+  {
+   "id": "pinion_driver",
+   "name": "Pinion Driver",
+   "maker": "kestrel",
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
+    "niche": "The Kite's lock, its reset gun: flat 15, 30 doubled, a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, so a round chains to two actions at most.",
+    "notes": "Ryan's go, 21 October, naming the lock (the name moved here from the old finisher, the Coriolis Accelerator since then). Built 21 October with the Kite's rework: the face's resets_on_kill. Its codex and flavour are Ryan's to write. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 15,
+    "keywords": [],
+    "heat": 0,
+    "resets_on_kill": true
+   },
+   "passive": null,
+   "tags": [
+    "energy",
+    "single"
+   ]
   },
   {
    "id": "arc_fault_cannon",
@@ -1485,11 +1513,12 @@
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
     "niche": "A combined entry: a vent of 10 that also shields 10, so a support entry is never a dead roll and costs its turn like any other.",
-    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. The vent half runs today; the shield half (a shields field on the face) lands with the combined entry's engine (the to-do), on the Puffin's passive a vent twice. Numbers are placeholders."
+    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. Both halves run since 21 October (the combined entry's engine: shields on the face), the vent first, then the shield on the same machine, which on the Puffin grows through its Slipstream by the heat the vent left. Numbers are placeholders."
    },
    "face": {
     "kind": "vent",
     "power": 10,
+    "shields": 10,
     "keywords": []
    },
    "passive": null,
@@ -1618,12 +1647,11 @@
    "shape": "dish",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The hangar deck's mooring field thrown over the squad; charged, the shutters close and the squad is gone from the fight for a round.",
     "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain form is the team shield (Ryan: healthier than team armour; a Barrier on every ally breaks the Barrier row), the charged form Phased on every ally that has not acted (Phased's own rule), paid three times already (the muster, the docked allies' actions, the whole enemy turn on the carrier), so no cooldown; if it reads too strong the lever is its price (two musters), never a clock. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain form is the team shield (Ryan: healthier than team armour; a Barrier on every ally breaks the Barrier row), the charged form Phased on every ally that has not acted (Phased's own rule), paid three times already (the muster, the docked allies' actions, the whole enemy turn on the carrier), so no cooldown; if it reads too strong the lever is its price (two musters), never a clock. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
    },
    "face": {
     "kind": "shield",
@@ -1650,18 +1678,19 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The observer's flare over the target: every gun on the field finds it. Charged, it bursts in the foe's face.",
     "niche": "The Swallowtail's spotter, locked: the foe it lights is Exposed (the Kestrel session's debuff: in every machine's Direct reach and its armour counting for nothing, through the next round), no damage; spending a muster Suppresses it too, a stun gated by the price and clocked by Numbed.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Exposed is the Kestrel session's debuff (in the rules since its branch merged, 21 October), and Expose joins this face when it enters the vocabulary (the Needletail's content session, or the Swallowtail's engine if that comes first); until then the face carries no keyword. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Expose on its face since the Swallowtail's engine (21 October), the keyword built that day. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
-    "keywords": [],
+    "keywords": [
+     "expose"
+    ],
     "heat": 0,
     "charged": {
      "muster": 1,
@@ -1683,12 +1712,11 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A crane, a hose and a crate of plate lowered onto an ally in the middle of the fight. Charged, the whole tender comes down.",
     "niche": "The Swallowtail's resupply, locked: a shield and some cooling on an ally; spending a muster instead fills its shield to the maximum, cools it to zero and cleanses it.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The sutler is the army's provisioner, the maker's own word (a job, not an advert). The reset is chosen per ally: the hot builds (the Stingray, the Goshawk, the Whip Scorpion) do not want the cooling. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The sutler is the army's provisioner, the maker's own word (a job, not an advert). The reset is chosen per ally: the hot builds (the Stingray, the Goshawk, the Whip Scorpion) do not want the cooling. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
    },
    "face": {
     "kind": "shield",
@@ -1715,12 +1743,11 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The bugle that wakes the camp. Charged, it gets a machine back on its feet and firing.",
     "niche": "The Swallowtail's rally, locked: the team gains a reroll this round; spending a muster instead lets an ally act again (its die rolled again and spent again, the gun platform's engine).",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The act-again form is the action-economy row's tempo lent, ranked last there, and passes the row's price: a second action paid in a banked resource (the muster) and the carrier's own action. The reroll it grants counts toward the Muster when spent on the carrier, the intended combo; the cap holds it. Every number is a placeholder. Planned until the engine has the Muster (a bar that gains on every roll) and a spend that consumes a charge for its charged form (the charged object on the face is the draft of that form, read by nothing yet)."
+    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The act-again form is the action-economy row's tempo lent, ranked last there, and passes the row's price: a second action paid in a banked resource (the muster) and the carrier's own action. The reroll it grants counts toward the Muster when spent on the carrier, the intended combo; the cap holds it. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
    },
    "face": {
     "kind": "buff",
@@ -1746,12 +1773,11 @@
    "shape": "barrel",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
     "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). No cooldown, since it is a status and ammo piece (Ryan). Its Flak is the team's, to mop up what the Ox will not spend next turn's shots on, never a setup for its own salvo (Ryan: that one-two is way too obvious; Flak 1 halves to nothing by its next turn anyway). Heat 10 at today's scale is 1 ammo (Ryan's 2 heat at the stock pass's scale, a fifth of today's). The ammo it returns is a draft field read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). No cooldown, since it is a status and ammo piece (Ryan). Its Flak is the team's, to mop up what the Ox will not spend next turn's shots on, never a setup for its own salvo (Ryan: that one-two is way too obvious; Flak 1 halves to nothing by its next turn anyway). Heat 10 at today's scale is 1 ammo (Ryan's 2 heat at the stock pass's scale, a fifth of today's). Built 21 October with the Musk Ox's engine."
    },
    "face": {
     "kind": "attack",
@@ -1779,12 +1805,11 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
     "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Up to forty hits from ten strikes, so every per-hit rider on the field, the foes' Flak first, multiplies by it: the strike's number is the lever, read with and without Flak. The random target is random that adds (Ryan, 16 October), steered by thinning the field or firing at a lone boss; the Whip Scorpion's blast is the precedent. Its price is the whole magazine, so it carries no heat. Its draft fields are read by nothing until the engine has the magazine."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Up to forty hits from ten strikes, so every per-hit rider on the field, the foes' Flak first, multiplies by it: the strike's number is the lever, read with and without Flak. The random target is random that adds (Ryan, 16 October), steered by thinning the field or firing at a lone boss; the Whip Scorpion's blast is the precedent. Its price is the whole magazine, so it carries no heat. Built 21 October with the Musk Ox's engine."
    },
    "face": {
     "kind": "attack",
@@ -1811,12 +1836,11 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. Drafted as a vent of nothing that reloads, since the die has no reload kind yet; the reload is a draft field read by nothing until the engine has the magazine. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October)."
+    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October). Built 21 October with the Musk Ox's engine: a vent of nothing that reloads, drawn as a reload (the shells, its 2 as its number), its printed heat landing as it is spent."
    },
    "face": {
     "kind": "vent",
@@ -1832,6 +1856,58 @@
    "tags": [
     "support",
     "tempo"
+   ]
+  },
+  {
+   "id": "lorentz_contractor",
+   "name": "Lorentz Contractor",
+   "maker": "kestrel",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Length contraction shrinks the space between, so every mine on the field ends in one slot (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
+    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows.",
+    "notes": "Built 21 October with the Lammergeier (the face's pulls_mines). Indirect so it reaches any slot; heat 10 a placeholder, the number Ryan's. Its codex and flavour are Ryan's to write; its mount on the model is the asset session's."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [],
+    "heat": 10,
+    "pulls_mines": true
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
+  },
+  {
+   "id": "syrinx_drone",
+   "name": "Syrinx Drone",
+   "maker": "kestrel",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone copies the killing shot into the slot the foe empties.",
+    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in.",
+    "notes": "Built 21 October with the Lammergeier (the face's drones; the status syrinx_drone, a debuff the Paradox counts). Indirect, heat 0, placeholders. The line review's gate (Rapid while a mine waits) is on the bench. Its codex and flavour are Ryan's to write."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [],
+    "heat": 0,
+    "drones": true
+   },
+   "passive": null,
+   "tags": [
+    "control"
    ]
   }
  ]

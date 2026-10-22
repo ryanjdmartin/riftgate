@@ -231,6 +231,16 @@
    }
   },
   {
+   "id": "expose",
+   "category": "keyword",
+   "name": "Expose",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Exposed through the next round: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 20 and 21 October in the Kestrel session (the Needletail's Fovea Designator; the Swallowtail's Spotting Flare and the Lammergeier's Syrinx Drone lay it too); the engine built 21 October. The formation word exposed stays rules text, so the status's id is exposure."
+   }
+  },
+  {
    "id": "disrupt",
    "category": "keyword",
    "name": "Disrupt",
@@ -409,17 +419,17 @@
    "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing and its components' keywords are muted through its next round. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff (the move's machine_buffed condition, its aim at the buffed). Built 21 October; its keywords muted on Ryan's word of that day (\"Silence mutes keywords, we'll dial it back in testing if needed\"). Carriers are section 12's."
+    "holes": "The common form (Ryan, 17 October); by lean on casters and elites, one a pack, cast only where a machine carries a buff (the move's machine_buffed condition, its aim at the buffed). Built 21 October; its keywords muted on Ryan's word of that day (\"Silence mutes keywords, we'll dial it back in testing if needed\"). Carriers are section 12's. It touches no store (Ryan, 21 October)."
    }
   },
   {
    "id": "dispel",
    "category": "foe",
    "name": "Purge",
-   "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff and every store it carries (Rage, the hopper, a kept Overcharged), every stack; its passives stay. A Ward turns it away.",
+   "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: \"Use Purge for both, for now\"): one word for both sides, the player's keyword when it lands included; the id stays. Built 21 October (the keyword and the move dispel, aimed at the buffed by the aim of that name); the front's card's warning waits on the mission map."
+    "holes": "Reserved for high-level units (Ryan, 17 October); its carriers are section 12's. Named Dispel until 20 October (Ryan: \"Use Purge for both, for now\"): one word for both sides, the player's keyword when it lands included; the id stays. Built 21 October (the keyword and the move dispel, aimed at the buffed by the aim of that name); the front's card's warning waits on the mission map. Since Ryan's call of 21 October it takes no store (a store is a capped resource), and a store's active effect, when one exists, is silenced for a turn instead of taken, since the store would grant it again."
    }
   },
   {
@@ -471,6 +481,38 @@
      "on": "foe",
      "stacks": "Never",
      "lasts": "Until the next team blow that deals it damage"
+    }
+   }
+  },
+  {
+   "id": "exposure",
+   "category": "status",
+   "name": "Exposed",
+   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. A back-rank foe whose front is empty is exposed by its formation, in reach only.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October (the Kestrel session's debuff); the id is exposure, since exposed names the formation word and the foes' default aim.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: a second Expose refreshes it",
+     "lasts": "Through the next round"
+    }
+   }
+  },
+  {
+   "id": "syrinx_drone",
+   "category": "status",
+   "name": "Syrinx Drone",
+   "codex": "Foe status, the Lammergeier's: the next weapon to kill it, any machine's, leaves its shot in the slot it empties, a mine. One mine a drone; it lasts the fight, and a death by a tick leaves nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 21 October: a debuff of the piece's own name, a status the team put on the foe, so the Paradox counts it (tuned for the final ecosystem). Built 21 October.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: one drone at a time",
+     "lasts": "The fight, until a weapon kills it"
     }
    }
   },
@@ -591,9 +633,9 @@
    "category": "status",
    "name": "Phased",
    "codex": "Player and enemy status. It cannot act, take damage or be targeted until the round's end. Granted only to a unit that has not acted this round.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan, 20 October (the helicarrier's session, the bible's carrier row at its go): the wording his; the gate, a unit that has acted cannot be Phased, so the status always costs the action it protects (his first form, invulnerable now and the next action lost, offset the two halves). Not targetable means allies cannot vent or shield it either, and a foe's intent on it re-picks; it still cools by its own cooling, so an overheated machine phases with its problem intact; ticks and overheats still land. Granted by the helicarrier's dock (every ally that has not acted), and planned for Aphelion's pieces.",
+    "holes": "Ryan, 20 October (the helicarrier's session, the bible's carrier row at its go): the wording his; the gate, a unit that has acted cannot be Phased, so the status always costs the action it protects (his first form, invulnerable now and the next action lost, offset the two halves). Not targetable means allies cannot vent or shield it either, and a foe's intent on it re-picks; it still cools by its own cooling, so an overheated machine phases with its problem intact; ticks and overheats still land. Granted by the helicarrier's dock (every ally that has not acted), and planned for Aphelion's pieces. Built 21 October: its die stands down as it is granted, foes whose pick it was pick again, no blow or foe move reaches it, allies cannot land equipment on it.",
     "table": {
      "kind": "buff",
      "on": "both",
@@ -683,18 +725,50 @@
    }
   },
   {
-   "id": "shots",
+   "id": "hot_streak",
    "category": "status",
+   "name": "Hot Streak",
+   "codex": "Machine status, the Kite's: its shots run 5 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name (21 October), the Kite's heat tax.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: one for each attack that killed",
+     "lasts": "The fight"
+    }
+   }
+  },
+  {
+   "id": "shots",
+   "category": "resource",
    "name": "Shots",
    "codex": "Machine count, the Cassowary's: its weapon spends this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Equipment and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
    "status": "implemented",
    "design": {
-    "holes": "Built 21 October for the sixth shot (Ryan's kit, 18 October: the pips his, under the heat bar). A store the engine keeps only for a machine whose rule counts (an nth_shot condition), read by the rule through the pipeline. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "holes": "Built 21 October for the sixth shot (Ryan's kit, 18 October: the pips his, under the heat bar). A store the engine keeps only for a machine whose rule counts (an nth_shot condition), read by the rule through the pipeline. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Its bar is the six pips.",
     "table": {
-     "kind": "buff",
+     "kind": "store",
      "on": "machine",
      "stacks": "Yes: one a weapon spend",
      "lasts": "The skirmish; never decays"
+    }
+   }
+  },
+  {
+   "id": "quick_turned",
+   "category": "status",
+   "name": "Quick turn spent",
+   "codex": "Machine marker, the Needletail's gate: its free setup this round is spent, so its next debuff or buff this round is a full action. Never a chip: the die shows the gate open by the Rapid it grants a setup. Gone at the round's end.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October with the Quick-turn Avionics Relay (a static grant of Rapid on setup_once).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The round"
     }
    }
   },
@@ -781,6 +855,16 @@
    }
   },
   {
+   "id": "mine",
+   "category": "formation",
+   "name": "Mine",
+   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation view, showing who waits rather than how many, is the to-do's."
+   }
+  },
+  {
    "id": "pool",
    "category": "formation",
    "name": "Reinforcements",
@@ -858,6 +942,16 @@
    "status": "implemented",
    "design": {
     "holes": "Bible section 4 (8 October)."
+   }
+  },
+  {
+   "id": "carry",
+   "category": "battlefield",
+   "name": "Carry",
+   "codex": "A machine that carries (the Swallowtail's Muster Deck) lifts the machines on the hexes beside it when it moves: they travel as a ring round it and land as a block, each where it rode from it, keeping whatever move and action they had. It cannot stop where a rider would land on a hex it cannot stand on (NO ROOM). A caught machine does not ride.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row): the lift gives reach, never a reset; a small move on purpose, a bump over a river or a crag. The block, Ryan, 21 October, evening: \"lift all units in place, deposit them at the landing spot, they never actually leave the map, just travel as a ring around the carrier. If the landing spot would leave the unit in an illegal spot, mark the landing spot clearly as an invalid move and the player has to change it before committing the move phase ... They move as a block, if the block doesn't fit, it can't go there\"; a landing animation or a redistribution on landing may come later. Built that day: the riders' hexes lifted off the carrier's way, the block landed at the stop with every rider's offset, a stop it does not fit no destination and refused with the refusal's sound, the drawn route marking the stop and the failing hex (NO ROOM, struck through and dashed), the riders riding the carrier's curve on the map; an undo takes them back, and stands once a rider has moved on its own."
    }
   },
   {
@@ -1054,7 +1148,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
+   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1141,6 +1235,16 @@
    }
   },
   {
+   "id": "on_kill",
+   "category": "trigger",
+   "name": "On a kill",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Kite's Hot Streak), a shield or a vent.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October for the Kite's rework; the Zoids walker's brief wants it too."
+   }
+  },
+  {
    "id": "out_of_combat",
    "category": "trigger",
    "name": "Out of combat",
@@ -1198,6 +1302,36 @@
    "status": "implemented",
    "design": {
     "holes": "Ryan, 14 October: a printed property on specific pieces, never a general mechanic, shown on the entry as dark with the rounds left, so it is paid in the die's reliability (the bible's cooldown row); built 21 October. It prices what heat cannot: a price per die, dear on a small die and cheap on a big one. No cap on where a cooldown goes or how many a die carries (Ryan, 15 October). The city's battlefield abilities count their own cooldowns in phases (the city ability's entry); this one lives inside a skirmish. A crack keeps it because it is a price, as heat is."
+   }
+  },
+  {
+   "id": "reset",
+   "category": "component_property",
+   "name": "Reset",
+   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent (the Kite's Pinion Driver).",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 21 October (the face's resets_on_kill), the Kite's rework: a round chains to two actions at most, since the entry just spent never comes up on the free roll."
+   }
+  },
+  {
+   "id": "pull",
+   "category": "component_property",
+   "name": "Pull",
+   "codex": "A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 17 October; built 21 October (the face's pulls_mines). Never Rapid, so a pull costs the turn and the laying is still chosen."
+   }
+  },
+  {
+   "id": "drone",
+   "category": "component_property",
+   "name": "Drone",
+   "codex": "A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's go, 21 October; built that day (the face's drones). The condition is read before the drone lands, so its own Exposed never makes it Rapid."
    }
   },
   {
@@ -1424,7 +1558,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."
@@ -1442,14 +1576,14 @@
   },
   {
    "id": "rage",
-   "category": "status",
+   "category": "resource",
    "name": "Rage",
-   "codex": "Machine buff, the Nemesis's, banked: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
+   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Its bar is boxes up to its cap (Ryan); it has no cap yet, so it shows as a chip until one is set.",
     "table": {
-     "kind": "buff",
+     "kind": "store",
      "on": "machine",
      "stacks": "Yes: one a hull hit, one spent a fist",
      "lasts": "The skirmish; never decays"
@@ -1458,14 +1592,14 @@
   },
   {
    "id": "hopper",
-   "category": "status",
+   "category": "resource",
    "name": "Hopper",
-   "codex": "Machine buff, the Honey Badger's, banked: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
+   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.",
+    "holes": "Built 11 October. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Its bar is boxes up to its cap, each load's armour shown as a buff (Ryan, 21 October, of the Badger's rework in session: ten loads, an armour a load); today it has no cap, grants nothing and shows as a chip.",
     "table": {
-     "kind": "buff",
+     "kind": "store",
      "on": "machine",
      "stacks": "Yes: a load a foe the claw reaches, up to three spent a shot",
      "lasts": "The skirmish; never decays"
@@ -1540,10 +1674,10 @@
    "id": "silenced",
    "category": "status",
    "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its buffs and stores count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake. Can be cleansed; a Ward turns the silence away.",
+   "codex": "Machine status, from a foe's silence: its buffs count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Built 21 October: the pipeline's suppress turns the buffs and stores off, and the entries are spent, shown and weighed without their keywords; it mutes keywords on Ryan's word of 21 October (Claude's lean had been buffs only). The foe acts as the round ends, so it lasts the machine's next round, as a foe's Disabled does.",
+    "holes": "Decided 17 and 18 October (the bible's section 5), the common form of the enemy's answer to a stacked machine: it costs time, never ability. Built 21 October: the pipeline's suppress turns the buffs off, and the entries are spent, shown and weighed without their keywords; it mutes keywords on Ryan's word of 21 October (Claude's lean had been buffs only). The foe acts as the round ends, so it lasts the machine's next round, as a foe's Disabled does. Its stores untouched since Ryan's call of 21 October (a store is a capped resource; a balance lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them.",
     "table": {
      "kind": "debuff",
      "on": "machine",
@@ -1612,14 +1746,14 @@
   },
   {
    "id": "muster",
-   "category": "status",
+   "category": "resource",
    "name": "Muster",
-   "codex": "Mech status, the Swallowtail's, banked: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty; never decays; nothing cleanses it.",
-   "status": "planned",
+   "codex": "Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Silence or Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly (\"ultimate tier\", \"you have to work for it\"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Engine: a bar that gains on every roll (a trigger the engine lacks), a spend that consumes a charge for its charged effects (a face property), the bot valuing a charge by the best charged form it could buy. Every number is a placeholder.",
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan's third bar, filled slowly (\"ultimate tier\", \"you have to work for it\"): any die's roll, to play up the team player (every team reroll, the Clydesdale's free one and the gun platform's passes feed it, two routes in from other makers), a kill by its own guns on top, to make it engage. Per fight to start (Ryan: per battle is easier to tune but per fight does not make the player farm charges); the carry-over between fights is section 12's heat question. Shown as a filling gauge on its own machine, not pips. Built 21 October: a store of points (static muster: value the points a charge, cap the charges, kill the points a kill), the charged spend unasked whenever a charge is up and the charged form can land (Ryan, 22 October: \"Don't prime the muster charge. It just gets used if it's up\"; a toggle would let the player optimise a turn without the die; a charged form that is always a bad call is a change to its effect, never a toggle), the plain form and the charge waiting when it cannot, the bot weighing the die as it will go out. Every number is a placeholder. A store is its own kind, a capped resource and never a buff (Ryan, 21 October): no Silence or Purge touches it, its filling or its use, and it shows as a bar under the heat. Shown as a smooth bar, a distinct segment a charge, no tick a roll (Ryan).",
     "table": {
-     "kind": "buff",
+     "kind": "store",
      "on": "machine",
      "stacks": "Yes: a charge about thirty rolls of any die, five rolls' worth a kill by its guns, up to its cap",
      "lasts": "The skirmish; never decays"
@@ -1631,9 +1765,9 @@
    "category": "status",
    "name": "Rallied",
    "codex": "Mech status, the Swallowtail's Reveille Horn: its team has one reroll more this round.",
-   "status": "planned",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.",
+    "holes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The rally's plain form, a reroll for the carrier's action, a cheap cantrip; its charged form (an ally acts again) is the gun platform's engine. The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap. Built 21 October: the reroll is given as the status is granted.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -1646,10 +1780,10 @@
    "id": "ammo",
    "category": "resource",
    "name": "Ammo",
-   "codex": "The Musk Ox's magazine, a bar under its heat bar. Its damaging guns spend ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round; a vent the Musk Ox spends on itself adds 3, a shield 2. With none left, its guns cannot be spent.",
-   "status": "planned",
+   "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its damaging guns spend ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
+   "status": "implemented",
    "design": {
-    "holes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: \"another bar under the heat bar\"), never a buff, so no Silence or Purge reaches it (Claude's reading of his bar; Ryan agreed, 21 October). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Engine: the bar, the conversion read through the effects, the refund, the reloads, the salvo, the quick reload, the die showing each gun's price and a dry gun unspendable, the bot valuing an ammo."
+    "holes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: \"another bar under the heat bar\"), never a buff, so no Silence or Purge reaches it (Claude's reading of his bar; Ryan agreed, 21 October). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Built 21 October: the magazine on the machine, the conversion read through the pipeline (the gun's own heat, a debuff's extra aside), the refund, the reloads, the salvo, the quick reload, the die's price and DRY, the bot valuing an ammo at half the best damage one buys. The trickle starts with the second round, so the first holds 3 in all (Ryan, 22 October: \"make it a total of 3\")."
    }
   }
  ]

@@ -60,6 +60,12 @@ static func to_dict(b: Battle) -> Dictionary:
 	for uid in b.action_from.keys():
 		var a: Array = b.action_from[uid]
 		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
+	var rode := {}   # the carry's riders this action (the Swallowtail's), for an undo
+	for uid in b.carried.keys():
+		var list: Array = []
+		for c in b.carried[uid]:
+			list.append([int(c[0]), _hex(c[1]), int(c[2]), _hex(c[3])])
+		rode[str(uid)] = list
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -76,6 +82,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"move_left": _int_keys(b.move_left),
 		"fought": _int_keys(b.fought),
 		"action_from": moved,
+		"carried": rode,
 		"forced": forced,
 		"orders": _order_ids(b.orders),
 		"boss_fight": b.boss_fight,
@@ -143,6 +150,11 @@ static func from_dict(d: Dictionary) -> Battle:
 	for uid in d.get("action_from", {}).keys():
 		var a: Array = d["action_from"][uid]
 		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
+	for uid in d.get("carried", {}).keys():
+		var list: Array = []
+		for c in d["carried"][uid]:
+			list.append([int(c[0]), _hex_from(c[1]), int(c[2]), _hex_from(c[3])])
+		b.carried[int(str(uid))] = list
 	for fd in d.get("forced", []):
 		var prey := b.field.unit_by_id(int(fd.get("prey", -1)))
 		var hunters: Array = []
@@ -339,7 +351,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var mechs: Array = []
 	for ms in sk.mechs:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
-			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls})
+			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -361,11 +373,15 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var queue: Array = []
 	for f in sk.reinforcements:
 		queue.append(foes.find(f))
+	# The mines (the Lammergeier's): each slot's shots in laid order, the slot as its rank and column.
+	var mined: Array = []
+	for slot in sk.mines.keys():
+		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
 	return {
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq,
 	}
 
 
@@ -390,6 +406,8 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 		ms.locked = bool(md.get("locked", false))
 		ms.assigned = bool(md.get("assigned", false))
 		ms.free_rerolls = int(md.get("free_rerolls", 0))
+		ms.ammo_max = int(md.get("ammo_max", ms.ammo_max))
+		ms.ammo = int(md.get("ammo", ms.ammo))
 	for pid in d.get("packs", []):
 		var sq := field.unit_by_id(int(pid))
 		if sq != null:
@@ -408,6 +426,24 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 		var i := int(qi)
 		if i >= 0 and i < foes.size():
 			sk.reinforcements.append(foes[i])
+	for md in d.get("mines", []):
+		var shots: Array = []
+		for sd in md.get("shots", []):
+			var shot: Dictionary = (sd as Dictionary).duplicate(true)
+			var kws: Array = []
+			for k in shot.get("keywords", []):
+				kws.append(int(k))
+			shot["keywords"] = kws
+			for key in ["damage", "seq", "burn", "cryo", "flak"]:
+				shot[key] = int(shot.get(key, 0))
+			shot["mech"] = int(shot.get("mech", -1))
+			shot["by"] = str(shot.get("by", ""))
+			var fd: Dictionary = shot.get("face", {})
+			shot["face"] = Face.from_dict(fd).to_dict() if not fd.is_empty() else {}
+			shots.append(shot)
+		if not shots.is_empty():
+			sk.mines[Vector2i(int(md.get("rank", 0)), int(md.get("column", 0)))] = shots
+	sk.mine_seq = int(d.get("mine_seq", 0))
 	return sk
 
 

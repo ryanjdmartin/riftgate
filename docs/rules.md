@@ -18,8 +18,7 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Seventeen chassis from five makers
-  and two planned, the Swallowtail and the Musk Ox
+  slots (two; the Clydesdale three) and one passive. Twenty chassis from five makers
   (`content/chassis.json`). A run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -94,6 +93,10 @@ defeat when every machine is wrecked. There is no round limit.
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
+- **The Quick-turn Avionics Relay** (the Needletail's passive; the machine waits on its content
+  session): a setup, a debuff or a buff read on the entry as it is spent, is Rapid on it once
+  a round, the entry dark for the rest of the round as Rapid's is; the die shows the Rapid on
+  every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
   unspent at the round's end are banked, up to three, and spent in a later round like any
   reroll.
@@ -101,30 +104,41 @@ defeat when every machine is wrecked. There is no round limit.
   machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
 - **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
-  number in heat; a buff grants its status, so many stacks, through so many rounds, or with
+  number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
+  that shields, the vent first, then the shield, sized on the heat the vent left, so the
+  Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Overcharged).
 - **A debuff** is a weapon of no damage (a setter, a swap), spent on a foe in reach like any
   weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
   Up, Primed's burn), and its heat is a weapon's. The die's kinds: Direct, Indirect, Debuff,
   Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
-  debuff the frame with the status mark inside and no number, a buff the mark alone; a shield
-  or vent that also buffs is its own glyph with a buff chip (not built: the glyph, the print
-  and the damage guard).
+  debuff the frame with the status mark inside and no number (the crosshair's ring with its
+  cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
+  down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
+  buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  weapon as its shot of 15, so a debuff through the drum is a gun.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
-  any foe carrying Exposed (not built).
+  any foe carrying Exposed.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
   built: today, fired at the front rank, it splashes: the firer loses shield equal to half
   the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
   it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive, not built): its weapons may be spent on an empty slot in
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
-  front is empty; Indirect any). The shot waits there, its number as rolled and modified when
-  laid, with its keywords; whoever steps in takes every shot waiting, in laid order, before
-  it acts, and a massive arrival takes both slots'. Every keyword acts as the shot lands; Lure
-  and Disrupt do nothing, their round being over. Nothing expires.
+  front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
+  to move or carry it. The shot waits there, its number as rolled and modified when laid
+  (each strike a shot), with its keywords, behind what already waits; its heat lands now.
+  Whoever steps in takes every shot waiting, in laid order, before it acts, and a massive
+  arrival takes both slots'; shots still waiting when it falls wait on for the next. The
+  reinforcement step places every arrival first, then the mines land left to right; any other
+  way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
+  a stun takes the arrival's first action, and a Chain mine that kills repeats its spender's
+  attack on the next foe in reach, rolling and paying heat again (nothing repeats once the
+  spender is gone); Lure and Disrupt do nothing, their round being over, and Rapid and
+  Volatile acted at the spend. Nothing expires.
 
 ### A blow
 1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
@@ -166,8 +180,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 10 heat to it (Siphoning), in the enemy's turn, after the overheat.
-- **Expose** (the Needletail's Fovea Designator, not built): every foe reached and left standing is
-  Exposed through the next round; a second Expose refreshes it, never adds.
+- **Expose** (the Needletail's Fovea Designator; no carrier in content yet): every foe reached
+  and left standing is Exposed through the next round; a second Expose refreshes it, never
+  adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
@@ -179,9 +194,13 @@ defeat when every machine is wrecked. There is no round limit.
   cylinder cannot chain it into itself.
   A Rapid vent, if one exists, is never below tier three, and a Rapid shield never below
   tier two (not built: the tiers).
-- **Cooldown** (a printed property on specific pieces): once spent, the entry is dark for
+- **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
+  its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
+- **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
+  comes back, itself included, and the machine acts again, the free roll never landing on the
+  entry just spent, so a round chains to two actions at most.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -212,11 +231,11 @@ spending it Armours its owner, the stacks it says, an armour point each, until t
 end (the Wild Boar's Breaching Plow, ten). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The Lorentz Contractor** (the
-Lammergeier's pull, not built): every mine on the field gathers into the slot it is spent on, and a foe
-standing there takes them now, in laid order. **The Syrinx Drone** (the Lammergeier's, not built):
-the foe carries the Syrinx Drone; if it already carries Exposed the drone is Rapid, and otherwise it gives
-the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
+the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
+Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, and a foe
+standing there takes them now, in laid order; spent on an empty slot, it gathers them there. **The drone**
+(the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone; if it already carries Exposed (read
+before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
 spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
 are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
 not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
@@ -228,6 +247,14 @@ strike of the spend whole; the engine runs it as a keyword the passive
 grants, so the Boar's entries wear its chip today (the star proposed).
 
 ### Buffs, debuffs and resistance
+A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
+hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
+and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
+it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store
+grants is a buff and shows as one: a Silence sleeps it, and a Purge silences it for a turn
+instead of taking it, since the store would grant it again (not built: no store grants one
+yet). The rage and the hopper have no cap yet, so they show as chips.
+
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
@@ -237,18 +264,23 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
-- **Phased** (buff, either side, not built): cannot act, take damage or be targeted until the
+- **Phased** (buff, either side): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
   cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
-  this round.
-- **Muster** (buff, the Swallowtail's, not built): a banked charge. Every die that rolls fills
-  it a sliver, about thirty rolls a charge, a kill by its own guns five rolls' worth, up to its
-  cap; it starts each fight empty and never decays. Each of its locked pieces has a plain form
-  and a charged one that spends a muster: the Mooring Screens shield every ally, or Phase every
-  ally that has not acted; the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's
-  Hoist shields and cools an ally, or fills its shield, cools it to zero and cleanses it; the
-  Reveille Horn gives the team a reroll, or lets an ally act again.
-- **Rallied** (buff, not built): the team has one reroll more this round.
+  this round, whose die stands down as it is granted.
+- **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
+  it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
+  charges; it starts each fight empty and never decays. It shows as a smooth bar under the
+  heat, a segment a charge. Each of its locked
+  pieces has a plain form and a charged one that spends a muster. With a charge up, a locked
+  piece goes out charged, unasked, and its die shows the charged form under a double frame;
+  when the charged form has nowhere to land (Phased with every ally done, the act again with
+  no ally spent), the plain form goes out and the charge waits. The
+  Mooring Screens shield every ally (never the carrier), or Phase every ally that has not acted;
+  the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
+  10 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
+  Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
+- **Rallied** (buff): the team has one reroll more this round.
 - **Spun Up** (buff): its next weapon spend deals +5 a stack, then every stack is spent, by a
   weapon of no damage too; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
@@ -261,10 +293,10 @@ On a machine:
   (breach, burn, scorch, disable, corrupt), so its shield absorbs a breach like any blow,
   and no silence or purge touches it; its damage lands. Until the round's end. Nothing in
   content grants it yet.
-- **Rage** (buff, the Nemesis's, banked): a stack each time it takes hull damage (a blow, a bite
+- **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
   decays, and nothing cleanses it.
-- **Hopper** (buff, the Honey Badger's, banked): loads for a weapon that fires the hopper; lasts
+- **Hopper** (store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +10,
   its own cooling stopped, 15 heat more at the end of each turn before the overheat; a vent or
@@ -280,11 +312,11 @@ On a machine:
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
   no armour off it; lasts the skirmish.
-- **Silenced** (debuff, a foe's silence): its buffs and stores (Rage, the hopper, a kept
-  Overcharged) count for nothing and its components' keywords are muted (a Rapid entry acts
-  once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake.
-  Cleansable; a Ward turns the silence away. A foe's purge takes every buff and store, every
-  stack; its passives stay; a Ward turns it away too.
+- **Silenced** (debuff, a foe's silence): its buffs (a kept Overcharged too) count for
+  nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays
+  nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and
+  spend as ever. Cleansable; a Ward turns the silence away. A foe's purge takes every buff,
+  every stack; its stores and its passives stay; a Ward turns it away too.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -294,11 +326,11 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
   shock; it never stacks.
-- **Exposed** (debuff, not built): it stands in Direct reach of every machine as if its
+- **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
   is exposed by its formation, in reach only.
-- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it, not built): the next weapon to kill it, any
+- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
   machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
@@ -326,6 +358,8 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
+- **Hot Streak** (the Kite's, its passive's price): its shots run 5 hotter a stack this fight,
+  a stack for each attack that killed; no cleanse, silence or purge lifts it.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
   returns to the reinforcements once, whole, unless it self-destructed.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
@@ -335,7 +369,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -360,15 +394,19 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
-- **Ammo** (the Musk Ox's Desublimation Forge, not built): its damaging guns spend ammo instead
-  of heating it, 1 for every 10 heat a gun would make, rounded up, at least 1; its debuffs,
-  buffs and shields and the foes' heat land on its heat bar as on any machine's, Scorched's
-  extra included. The magazine holds 10, opens each fight at 3 and gains 1 at the start of
-  every round; a vent it spends on itself adds 3, a shield 2; with none left its guns cannot
-  be spent. Its Shrapnel Recuperator returns 1 for every foe it hits; its Unrestricted
-  Expenditure fires every ammo in the magazine as a strike, each at a random live foe with
-  Spread and Penetrate; its quick reload, Rapid, adds 2 for a good chunk of heat, and the Forge
-  counts it as no vent.
+- **Ammo** (the Musk Ox's Desublimation Forge): its damaging guns spend ammo instead
+  of heating it, 1 for every 10 heat a gun's own spend would make, rounded up, at least 1, the
+  price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
+  the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
+  magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
+  reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
+  the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
+  spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
+  its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
+  live foe with Spread and Penetrate, the magazine its price and no heat; its quick reload,
+  Rapid, adds 2 for 15 heat, and the Forge counts it as no vent.
+- A piece of equipment that prints heat (the quick reload) adds it to its spender as it is
+  spent.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
   or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
@@ -401,7 +439,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 - **Its target**, by aim: exposed (the default: weighted by the hull its blows would reach
   plus half the shield they would break), anything, heat (the hottest machine), armed (a
   machine showing an intact weapon), focus (its rank shares one pick), buffed (the machine
-  carrying the most stacks of buffs and stores, the exposed when none does). A move may carry its
+  carrying the most stacks of buffs, the exposed when none does). A move may carry its
   own aim. The pick is a commitment; Lure and Disrupt move it. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
@@ -410,7 +448,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   two): breach (the blow ignores the shield and the armour; not built: today the armour still
   comes off it), scorch (a stack of Scorched), burn (a stack of
   Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
-  (Silenced), purge (every buff and store gone; a hero's or a boss's),
+  (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it).
@@ -449,7 +487,10 @@ shields do not refill; a pack keeps its survivors, who return whole.
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
-  gains a debuff), on stack (this machine applies stacks). No trigger feeds itself.
+  gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
+  this machine's that killed, chains and spills included). No trigger feeds itself.
+- A passive may double a weapon's printed number alone, the buffs added once after it (the
+  Kite's), and may grant a cooldown to every weapon its machine fires.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
@@ -525,10 +566,13 @@ a stat.
   the Prairie Dog) and walk to put it inside their ring. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
-- **The carry** (the Swallowtail's Muster Deck, not built): the machines on the hexes beside
-  it travel with it when it moves and are set down on the nearest standable hexes where it
-  stops, keeping whatever move and action they had; it cannot stop where a rider cannot be set
-  down.
+- **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
+  it are lifted in place when it moves and travel as a ring round it, so they never block its
+  way; it lands them as a block, each where it rode from the carrier, keeping whatever move and
+  action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
+  a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
+  and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
+  undo takes the riders back, until one of them has moved on its own.
 - **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,

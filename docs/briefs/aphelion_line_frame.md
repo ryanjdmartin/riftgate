@@ -224,6 +224,12 @@ takes away); and the shield's tag waits on the line frame's model session, not t
   point in its favour.
 - Chain on the saber: Chain's rework.
 
+**Ryan, 21 October** (another session, on stores): "Combo (for line frame): design is unfinished,
+but I suspect it will be a smooth bar with ticks for each power boost. The powers it grants will
+be one or more active buff effects." So the combo is a store (the bible's row on stores): a
+capped resource no Silence or Purge touches, its bar a smooth fill with a tick a power boost,
+and what it grants buffs, slept by a silence and silenced a turn by a purge.
+
 ## Open for the session
 
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag

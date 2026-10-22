@@ -246,3 +246,38 @@ func test_the_file_is_written_read_and_cleared() -> void:
 	f.close()
 	assert_true(SaveGame.load(TMP) == null, "an unknown version loads nothing")
 	SaveGame.clear(TMP)
+
+
+## The mines (the Lammergeier's) ride the save: each slot's shots in laid order, their
+## keywords and spender, and the order count, so a resumed fight lands them alike.
+func test_the_mines_survive_the_trip() -> void:
+	var b := _battle(9)
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var gun := -1
+	for i in range(ms.die.faces.size()):
+		if ms.die.faces[i].is_attack() and ms.die.faces[i].power > 0:
+			gun = i
+	assert_true(gun >= 0, "the machine carries a gun")
+	ms.face_index = gun
+	var slot := Vector2i(-1, -1)
+	for col in range(sk.columns):
+		if sk.front[col] == null:
+			slot = Vector2i(0, col)
+	if slot.x < 0:
+		sk.front[0].hp = 0
+		sk._clear_dead()
+		slot = Vector2i(0, 0)
+	assert_true(sk.assign(0, slot), "a mine laid")
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	var sk2: Skirmish = back.current
+	assert_eq(sk2.mines.keys(), sk.mines.keys(), "the mined slots")
+	assert_eq(JSON.stringify(sk2.mines_at(slot)), JSON.stringify(sk.mines_at(slot)), "their shots")
+	assert_eq(typeof(sk2.mines_at(slot)[0]["keywords"]), TYPE_ARRAY, "keywords as a list")
+	assert_eq(sk2.mine_seq, sk.mine_seq, "the order count")

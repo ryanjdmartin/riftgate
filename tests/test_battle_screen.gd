@@ -147,6 +147,73 @@ func test_a_drag_onto_a_pack_orders_the_machine_into_range() -> void:
 	s.free()
 
 
+## The carry's block on the map (the Swallowtail's, Ryan, 21 October): a route drawn to a stop
+## where a rider cannot land shows the riders' landing hexes and the one that fails, and letting
+## go there moves nothing; with room, the block lands where it rode.
+func test_a_carriers_route_marks_a_stop_with_no_room_and_lets_go_only_where_the_block_fits() -> void:
+	var s := _screen()
+	var b := s.battle
+	var carrier: Unit = b.mechs()[0]
+	var rider: Unit = b.mechs()[1]
+	var third: Unit = b.mechs()[2]
+	carrier.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "carry"}]})
+	var line := _open_line(b, [carrier, rider, third])
+	assert_false(line.is_empty(), "a line of four open hexes")
+	carrier.pos = line[0]
+	rider.pos = line[1]
+	third.pos = line[3]   # where the rider would land if the carrier stopped at the third hex
+	s._refresh()
+	s._on_route_drag_started(carrier)
+	s._on_route_drag_to(line[2])
+	assert_eq(s._map.draft, [line[1], line[2]], "the route over the rider")
+	assert_eq(s._map.draft_land.get("bad", []), [line[3]] as Array[Vector2i], "the map marks the landing that fails")
+	s._on_route_drag_ended(true)
+	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "letting go there moves nothing")
+	assert_true(s._map.draft_land.is_empty(), "and the mark goes with the route")
+	third.pos = Vector2i(-50, -50)
+	s._refresh()
+	s._on_route_drag_started(carrier)
+	s._on_route_drag_to(line[2])
+	assert_true((s._map.draft_land.get("bad", []) as Array).is_empty(), "with room, nothing marked")
+	s._on_route_drag_ended(true)
+	assert_eq([carrier.pos, rider.pos], [line[2], line[3]], "the block lands where it rode")
+	s.free()
+
+
+## Four hexes in a line, open ground for the machines given (the first stands on the first and
+## the third and crosses the second; the second on the second and the fourth), away from every
+## other unit; empty when the map has none.
+func _open_line(b: Battle, ours: Array) -> Array:
+	var carrier: Unit = ours[0]
+	var rider: Unit = ours[1]
+	for c in b.field.map.all_hexes():
+		for d in Hex.DIRECTIONS:
+			var line: Array = [c, c + d, c + d * 2, c + d * 3]
+			var ok := true
+			for k in range(4):
+				var h: Vector2i = line[k]
+				if not b.field.map.has(h) or b.field.map.is_structure(h):
+					ok = false
+					break
+				var o := b.field.unit_at(h)
+				if o != null and not ours.has(o):
+					ok = false
+					break
+				if k <= 2 and (not BattleMap.passable(b.field.map.terrain[h], carrier.traits) or BattleMap.move_cost(b.field.map.terrain[h], carrier.traits) == BattleMap.SLOW):
+					ok = false
+					break
+				if (k == 1 or k == 3) and not BattleMap.passable(b.field.map.terrain[h], rider.traits):
+					ok = false
+					break
+				for n in Hex.neighbors(h):
+					var near := b.field.unit_at(n)
+					if near != null and not ours.has(near):
+						ok = false
+			if ok:
+				return line
+	return []
+
+
 func test_a_pack_tapped_with_nothing_in_hand_shows_its_fight() -> void:
 	var s := _screen()
 	var sq: Unit = s.battle.field.packs()[0]

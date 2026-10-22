@@ -16,6 +16,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
 			ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
+		"debuff_line", "debuff_indirect":
+			# A debuff (Ryan, 20 and 21 October, the die's grammar): its reach frame carries the
+			# status mark where a gun carries its number, the debuff chips' down arrow, so the
+			# frame and the mark both say it (structure twice). The crosshair's cross is cut to
+			# four ticks so the mark sits inside the ring; the arc lobs over it.
+			if id == "debuff_line":
+				ci.draw_arc(c, s * 0.68, 0.0, TAU, 28, color, width)
+				for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+					ci.draw_line(c + d * s * 0.68, c + d * s, color, width)
+				draw(ci, "debuff", c, s * 0.82, color, width)
+			else:
+				ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
+				ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
+				ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
+				draw(ci, "debuff", c + Vector2(0, s * 0.12), s * 0.78, color, width)
 		"shield":
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
@@ -327,8 +342,39 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.25 + i * s * 0.25
 				ci.draw_line(c + Vector2(x, s * 0.55), c + Vector2(x, s * 0.9), color, width * 0.8)
-		"exposed":
-			# A reticle with its top open: nothing in front.
+		"mine":
+			# A sea mine (the Lammergeier's, 21 October): a ring and four horned spikes, a shot
+			# waiting in a slot. Unlike Volatile's burst it has a body.
+			ci.draw_arc(c, s * 0.5, 0.0, TAU, 20, color, width)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				var tip: Vector2 = c + d * s * 0.95
+				ci.draw_line(c + d * s * 0.5, tip, color, width)
+				var side := Vector2(-d.y, d.x) * s * 0.22
+				ci.draw_line(tip - side, tip + side, color, width)
+			ci.draw_circle(c, s * 0.16, color)
+		"ammo":
+			# Ammo (the Musk Ox's magazine, 21 October): three shells standing, a reload's mark
+			# and the price slot's.
+			for i in range(3):
+				var x := -s * 0.6 + i * s * 0.6
+				ci.draw_rect(Rect2(c + Vector2(x - s * 0.17, -s * 0.25), Vector2(s * 0.34, s * 1.05)), color, false, width)
+				ci.draw_arc(c + Vector2(x, -s * 0.25), s * 0.17, PI, TAU, 8, color, width)
+		"phased":
+			# Phased (the Swallowtail's Mooring Screens, 21 October): the machine's outline gone to
+			# dashes, out of the fight until the round's end.
+			for i in range(8):
+				var a0 := i * TAU / 8.0
+				ci.draw_arc(c, s * 0.8, a0, a0 + TAU / 16.0, 4, color, width)
+			ci.draw_circle(c, s * 0.18, color)
+		"syrinx_drone", "drone":
+			# The Syrinx Drone (21 October): a small body under two arcs of a call, the voice that
+			# copies the killing shot.
+			ci.draw_circle(c + Vector2(0, s * 0.45), s * 0.28, color)
+			ci.draw_arc(c + Vector2(0, s * 0.45), s * 0.62, PI * 1.2, PI * 1.8, 12, color, width)
+			ci.draw_arc(c + Vector2(0, s * 0.45), s * 1.0, PI * 1.25, PI * 1.75, 14, color, width)
+		"exposed", "expose", "exposure":
+			# A reticle with its top open: nothing in front (the formation's, Exposed's chip and
+			# the Expose keyword's).
 			ci.draw_arc(c, s * 0.8, PI * 0.15, PI * 1.85 + PI, 24, color, width)
 			ci.draw_line(c + Vector2(-s * 0.35, 0), c + Vector2(s * 0.35, 0), color, width)
 			ci.draw_line(c + Vector2(0, s * 0.35), c + Vector2(0, s * 0.8), color, width)
@@ -341,7 +387,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile", "silence":
 			return Palette.ENEMY
@@ -373,12 +419,13 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.SHIELD:
 			return "shield"
 		Face.Kind.VENT:
-			return "vent"
+			return "ammo" if face.power <= 0 and face.reloads_ammo > 0 else "vent"   # a reload is drawn as one (the Musk Ox's quick reload)
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:
 			return "buff"
 		_:
+			# A debuff (a weapon of no damage) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
-				return "indirect"
-			return "line"   # direct: the crosshair glyph, whatever its tags
+				return "debuff_indirect" if face.is_debuff() else "indirect"
+			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
