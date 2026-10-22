@@ -387,7 +387,11 @@ in the second.
    written but held behind a flag until the content landing re-stocks the chassis, since
    today's stocks violate it everywhere. Tests: `test_a_components_tier_follows_the_lowest_chassis_that_stocks_it`
    flips; the synthetic components in `tests/test_content.gd` that carry `tier` stay valid;
-   `fins_pack` (line 721) gains one.
+   `fins_pack` (line 721) gains one. Built 22 October, one step past this plan: the migration
+   wrote today's tier one as zero and every other stocked piece a tier below the lowest chassis
+   that stocks it (the unstocked pieces kept their stored tier), so today's stocks already
+   stock below their tier and the check runs now, no flag needed; the landing's re-tiering
+   must keep it.
 3. **Danger close out.** The splash block in `Skirmish` (`DANGER_CLOSE_DIVISOR`, lines 1579 to
    1587), `Effects.spares_splash` and the Rangefinder's `spares_splash` effect (its module keeps
    its stats, its rule open), the reach tally's splash column and the report's "Splash a front

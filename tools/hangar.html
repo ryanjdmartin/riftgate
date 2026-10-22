@@ -407,24 +407,22 @@ let CTX = null;
 function ctx() {
   if (CTX) return CTX;
   const byId = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x.entry]));
-  const fitted = new Map(), byMaker = new Map(), stockTier = new Map();
+  const fitted = new Map(), byMaker = new Map(), locked = new Set();
   for (const {entry: e} of liveEntries("chassis.entries")) {
     for (const cid of new Set(dieIds(e))) fitted.set(cid, (fitted.get(cid) || 0) + 1);
     byMaker.set(e.maker, (byMaker.get(e.maker) || 0) + 1);
-    // A stocked component's tier is the lowest tier of chassis stocking it (as ContentDB.component_tier).
-    const t = Number(e.tier || 0);
-    if (t > 0) for (const cid of (e.loadout || [])) if (!stockTier.has(cid) || t < stockTier.get(cid)) stockTier.set(cid, t);
+    for (const cid of (e.fixed || [])) locked.add(cid);
   }
-  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker, stockTier};
+  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker, locked};
 }
 // The components on a chassis's die: fixed first, then one per hardpoint.
 function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, Number(e.hardpoints || 0))]; }
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
 const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
 const kindOf = (c) => ((c && c.face) || {}).kind || "";
-// A component's blueprint tier: derived from the chassis stocking it, else the tier it stores
-// (an unstocked one), else none (fixed-only components are never a blueprint).
-const compTier = (c) => (c && (ctx().stockTier.get(c.id) || Number(c.tier || 0))) || 0;
+// A component's blueprint tier, as ContentDB.component_tier: the tier it stores, 0 the basics
+// (a run starts with their blueprints) to 3; null for a locked one, never a blueprint.
+const compTier = (c) => (!c || ctx().locked.has(c.id) || c.tier === undefined || c.tier === null) ? null : Number(c.tier);
 function makerShort(id) { const t = NAME_TABS.find(t => t.id === MAKER_TAB[id]); return t ? t.label : ((ctx().makers.get(id) || {}).name || id || ""); }
 const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
 const plain = (s) => String(s ?? "").replace(/_/g, " ");
@@ -472,14 +470,14 @@ const FILTER_SPECS = {
       {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
       {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
       {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
-      {id: "tier", label: "Tier", of: e => [compTier(e) ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
+      {id: "tier", label: "Tier", of: e => [compTier(e) !== null ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v === "T0" ? "T0 (basic)" : v, order: ["T0", "T1", "T2", "T3", "none"]},
       {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER,
       stat("power", "Power", e => (e.face || {}).power), stat("power_max", "Top power", e => (e.face || {}).power_max ?? (e.face || {}).power),
-      stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", compTier),
+      stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", e => compTier(e) ?? -1),
       stat("fitted", "Dice carrying it", e => ctx().fitted.get(e.id) || 0)],
     line: e => {
       const n = ctx().fitted.get(e.id) || 0;
@@ -732,7 +730,7 @@ function componentEntry(cid, slot, comps, makers) {
   for (const k of (f.keywords || [])) kws.append(kwChip(k));
   const name = el("div", {class: "cname"}, comp.name || cid);
   const tier = compTier(comp);
-  if (tier) name.append(el("span", {class: "tier", title: comp.tier ? "Blueprint tier (stored: no chassis stocks it)" : "Blueprint tier: the lowest tier of chassis stocking it"}, "T" + tier));
+  if (tier !== null) name.append(el("span", {class: "tier", title: tier === 0 ? "Blueprint tier 0: a basic, whose blueprint a run starts with" : "Blueprint tier: found, or brought by a bought chassis of a higher tier"}, "T" + tier));
   if (planned) name.append(" ", el("span", {class: "tag planned"}, "planned"));
   if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
   const row = el("div", {class: "entry" + (planned ? " planned" : ""), tabindex: "0", role: "button", title: "Open in the editor",
@@ -767,7 +765,7 @@ function renderCodex(main) {
     if (r && r.images && r.images.length) head.append(el("img", {class: "thumb", src: "hangar/renders/" + r.images[0].file, alt: r.images[0].alt, title: "The model", onclick: () => { MOTION.id = e.id; rememberMotion(); setSection("models"); }}));
     head.append(el("p", {class: "desig"}, e.designation || ""));
     const h2 = el("h2", {}, el("span", {role: "button", tabindex: "0", title: "Open in the editor", style: "cursor:pointer", onclick: () => openFromCodex("chassis.entries", e.id), onkeydown: (ev) => { if (ev.key === "Enter") openFromCodex("chassis.entries", e.id); }}, e.name || e.id));
-    if (e.tier) h2.append(el("span", {class: "tier", title: "Chassis tier: power and complexity (1 to 3); tier 1 is the starting stock"}, "T" + e.tier));
+    if (e.tier) h2.append(el("span", {class: "tier", title: "Chassis tier: power and complexity (1 to 3); a chassis stocks only components below its own tier"}, "T" + e.tier));
     if (st) h2.append(el("span", {class: "tag " + st}, st));
     head.append(h2);
     const sub = el("p", {class: "sub"}, mk.name || "");

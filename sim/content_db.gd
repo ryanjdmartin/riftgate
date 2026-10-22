@@ -560,25 +560,23 @@ func city_makers() -> Array:
 	return out
 
 
-## Tiers (bible section 10, the ledger, 7 October). A chassis carries its tier; a component
-## stocked by any chassis takes the lowest tier of the chassis that stock it; one no chassis
-## stocks carries its own; a fixed-only component has none (0).
+## Tiers (bible section 10, the ledger, 7 October; stored since the stock pass, 22 October). A
+## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 0 to
+## 3: 0 the basics, whose blueprints a run starts with, 1 to 3 found or brought by a bought
+## chassis, and a chassis stocks only components below its own tier. A locked component has
+## none (NO_TIER).
+const NO_TIER := -1
+
+
 func chassis_tier(chassis_id: String) -> int:
 	return int(chassis.get(chassis_id, {}).get("tier", 0))
 
 
 func component_tier(component_id: String) -> int:
 	if is_fixed(component_id):
-		return 0   # locked: powerful and unique, never a blueprint (Ryan, 9 October)
-	var best := 0
-	for id in chassis.keys():
-		if chassis[id].get("loadout", []).has(component_id):
-			var t := int(chassis[id].get("tier", 0))
-			if t > 0 and (best == 0 or t < best):
-				best = t
-	if best > 0:
-		return best
-	return int(components.get(component_id, {}).get("tier", 0))
+		return NO_TIER   # locked: powerful and unique, never a blueprint (Ryan, 9 October)
+	var t = components.get(component_id, {}).get("tier", null)
+	return int(t) if (t is float or t is int) else NO_TIER
 
 
 ## Is this component locked on some chassis (its `fixed` list)? A locked component is the
@@ -616,12 +614,12 @@ func chassis_runnable(chassis_id: String) -> bool:
 	return true
 
 
-## The blueprints a run starts with: every tier-one component (Ryan, 7 October: each
-## maker's basic defaults, which are the tier-one chassis's stock).
+## The blueprints a run starts with: every basic, a component of tier zero (Ryan, 7 October:
+## each maker's basic defaults; the basics tier zero since the stock pass, 22 October).
 func starting_blueprints() -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == 1:
+		if component_tier(str(cid)) == 0:
 			out.append(str(cid))
 	return out
 
@@ -1274,9 +1272,10 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in makers.keys():
 		if makers[id].has("sponsorship") and not SPONSORSHIP_MEASURES.has(str(makers[id]["sponsorship"])):
 			errs.append("maker %s: sponsorship names a measure the run tallies, one of %s" % [id, ", ".join(SPONSORSHIP_MEASURES)])
-	# Tiers (7 October): every chassis 1 to 3; the capital's maker fields no tier one; a
-	# stocked component's tier is derived, so it stores none; an unstocked one that is not
-	# fixed stores its own; no component of the capital's maker is tier one.
+	# Tiers (7 October; stored since the stock pass, 22 October): every chassis 1 to 3, and the
+	# capital's maker fields no tier one; every component that is not locked stores its tier, 0
+	# to 3, and a locked one none; the capital's maker makes no basics (tier zero); a chassis
+	# stocks only components below its own tier.
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}
@@ -1299,12 +1298,19 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("component %s: locked on a chassis, so it carries no tier" % cid)
 	for cid in components.keys():
 		var c: Dictionary = components[cid]
-		if stocked_ids.has(cid) and c.has("tier"):
-			errs.append("component %s: stocked by a chassis, so its tier is derived and stores none" % cid)
-		elif not stocked_ids.has(cid) and not fixed_ids.has(cid) and not c.has("tier"):
-			errs.append("component %s: no chassis stocks it, so it carries its own tier" % cid)
-		if not capital.is_empty() and str(c.get("maker", "")) == capital and component_tier(str(cid)) == 1:
-			errs.append("component %s: the capital's maker has no tier-one component" % cid)
+		if fixed_ids.has(cid):
+			continue
+		var ct = c.get("tier", null)
+		if not (ct is float or ct is int) or float(ct) != floorf(float(ct)) or int(ct) < 0 or int(ct) > 3:
+			errs.append("component %s: tier must be 0, 1, 2 or 3 (0 the basics, whose blueprints a run starts with)" % cid)
+		elif not capital.is_empty() and str(c.get("maker", "")) == capital and int(ct) == 0:
+			errs.append("component %s: the capital's maker makes no basics (tier zero)" % cid)
+	for id in chassis.keys():
+		var own := int(chassis[id].get("tier", 0))
+		for cid in chassis[id].get("loadout", []):
+			var ct := component_tier(str(cid))
+			if components.has(cid) and not fixed_ids.has(cid) and ct >= own:
+				errs.append("chassis %s: stocks %s at tier %d, and a chassis stocks only below its own tier (%d)" % [id, cid, ct, own])
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id

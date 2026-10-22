@@ -50,9 +50,9 @@ skirmish.
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
-  and its tier-two chassis stock them. (Not built: today a stocked component takes the
-  lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
-  with every tier-one blueprint, and the stocks wait on the stock pass.)
+  and its tier-two chassis stock them. (The basic kit is not built: until the stock pass
+  lands, tier zero holds the old tier-one stock, twenty-four pieces, and the stocks are the
+  old ones.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
 
 ## The skirmish

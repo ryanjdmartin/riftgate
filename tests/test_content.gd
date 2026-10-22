@@ -765,7 +765,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins   # stocked by the chassis below, so its tier is derived
+	db.components["fins_pack"] = fins   # the jacket's own tier, a basic, below the chassis that stocks it
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["loadout"] = ["fins_pack"]
 	c["passive"] = null
@@ -1129,29 +1129,27 @@ func _has_error(db: ContentDB, word: String) -> bool:
 	return false
 
 
-func test_a_components_tier_follows_the_lowest_chassis_that_stocks_it() -> void:
-	# 7 October: tier is power and complexity, never the maker; a stocked component's tier is
-	# derived from the chassis that carry it, so moving a chassis moves its stock.
+func test_a_component_stores_its_tier_and_the_basics_are_the_starting_blueprints() -> void:
+	# 7 October: tier is power and complexity, never the maker. Stored since the stock pass (22
+	# October): a component carries its tier whatever stocks it, and moving a chassis moves
+	# nothing; the basics, tier zero, are the blueprints a run starts with.
 	var db := _fresh()
-	var low := ""
-	var high := ""
+	var stocked := ""
+	var host := ""
 	for id in db.chassis.keys():
-		if not db.chassis[id].get("loadout", []).is_empty():
-			if low.is_empty():
-				low = str(id)
-			elif high.is_empty():
-				high = str(id)
-	var cid := str(db.chassis[high]["loadout"][0])
-	db.chassis[low]["tier"] = 3
-	db.chassis[high]["tier"] = 2
-	for id in db.chassis.keys():
-		if id != low and id != high and db.chassis[id].get("loadout", []).has(cid):
-			db.chassis[id]["tier"] = 3
-	assert_eq(db.component_tier(cid), 2, "the lowest chassis stocking it")
-	db.chassis[low]["loadout"].append(cid)
-	db.chassis[low]["tier"] = 1
-	assert_eq(db.component_tier(cid), 1, "a tier-one chassis stocking it makes it tier one")
-	assert_true(db.starting_blueprints().has(cid), "and a starting blueprint")
+		for cid in db.chassis[id].get("loadout", []):
+			if stocked.is_empty() and db.component_tier(str(cid)) == 0:
+				stocked = str(cid)
+				host = str(id)
+	assert_true(not stocked.is_empty(), "the content stocks a basic")
+	assert_true(db.starting_blueprints().has(stocked), "a basic is a starting blueprint")
+	db.chassis[host]["tier"] = 3
+	assert_eq(db.component_tier(stocked), 0, "a chassis moving tier moves none of its stock")
+	db.components[stocked]["tier"] = 1
+	assert_eq(db.component_tier(stocked), 1, "the tier is the component's own")
+	assert_false(db.starting_blueprints().has(stocked), "and above zero it is found, never started with")
+	for cid in db.starting_blueprints():
+		assert_eq(db.component_tier(str(cid)), 0, "%s starts the run as a basic" % cid)
 
 
 func test_the_tier_rules_are_validated() -> void:
@@ -1172,11 +1170,24 @@ func test_the_tier_rules_are_validated() -> void:
 	assert_true(_has_error(db, "tier must be 1, 2 or 3"), "a chassis needs a tier")
 	db = _fresh()
 	var stocked := str(db.chassis[plain]["loadout"][0])
-	db.components[stocked]["tier"] = 2
-	assert_true(_has_error(db, "its tier is derived"), "a stocked component stores no tier")
+	db.components[stocked].erase("tier")
+	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "a component that is not locked stores its tier")
 	db = _fresh()
-	db.components["test_loose"] = db.components[stocked].duplicate(true)
-	assert_true(_has_error(db, "carries its own tier"), "an unstocked component needs its own")
+	db.components[stocked]["tier"] = 4
+	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "and only 0 to 3")
+	db = _fresh()
+	db.components[stocked]["tier"] = int(db.chassis[plain]["tier"])
+	assert_true(_has_error(db, "chassis %s: stocks %s at tier" % [plain, stocked]), "a chassis stocks only below its own tier")
+	db = _fresh()
+	var cap_piece := ""
+	for cid in db.components.keys():
+		if cap_piece.is_empty() and str(db.components[cid].get("maker", "")) == capital and not db.is_fixed(str(cid)):
+			cap_piece = str(cid)
+	assert_true(not cap_piece.is_empty(), "the capital's maker makes a component")
+	db.components[cap_piece]["tier"] = 0
+	assert_true(_has_error(db, "the capital's maker makes no basics"), "the capital's maker has no tier zero")
+	for e in _fresh().validate():
+		assert_false(e.contains("tier"), "today's content keeps every tier rule: %s" % e)
 
 
 func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
@@ -1374,12 +1385,13 @@ func test_a_locked_component_is_never_a_blueprint() -> void:
 		if plain.is_empty() and int(db.chassis[id].get("tier", 0)) == 1 and not db.chassis[id].get("loadout", []).is_empty():
 			plain = str(id)
 	assert_true(not locked.is_empty() and not plain.is_empty(), "the content has a locked component and a tier-one stock")
-	assert_eq(db.component_tier(locked), 0, "a locked component has no tier")
+	assert_eq(db.component_tier(locked), ContentDB.NO_TIER, "a locked component has no tier")
 	for bp in db.starting_blueprints():
 		assert_false(db.is_fixed(str(bp)), "no starting blueprint is locked anywhere: %s" % bp)
 	db.chassis[plain]["loadout"][0] = locked
 	assert_true(_has_error(db, "locked on a chassis, so no hardpoint stocks it"), "a hardpoint stocking a locked component is refused")
-	assert_eq(db.component_tier(locked), 0, "and even then it is never a blueprint")
+	assert_eq(db.component_tier(locked), ContentDB.NO_TIER, "and even then it is never a blueprint")
+	assert_false(db.starting_blueprints().has(locked), "nor started with")
 	db = _fresh()
 	db.components[locked]["tier"] = 2
 	assert_true(_has_error(db, "locked on a chassis, so it carries no tier"), "a locked component storing a tier is refused")

@@ -319,7 +319,7 @@ func _component_picker(selected: String) -> OptionButton:
 		var list: Array = by_maker[m]
 		list.sort_custom(func(a, b) -> bool: return db.component_name(a) < db.component_name(b))
 		for cid in list:
-			ob.add_item(db.component_name(cid) + ("  (built-in)" if db.component_tier(cid) == 0 else ""))
+			ob.add_item(db.component_name(cid) + ("  (built-in)" if db.is_fixed(cid) else ""))
 			ob.set_item_metadata(ob.item_count - 1, cid)
 	ob.select(_index_of(ob, selected))
 	return ob
