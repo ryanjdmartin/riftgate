@@ -623,6 +623,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
   jobs and the back as even as the benches allow (two and two), by the seed; no job changes
   after.
+- **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
+  ended on this run, drawn by the seed; once every one has been, any of them.
 - **Finals and finale**: three bosses of one domain beaten make its next rift a final, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
   when the hero falls, and a won final thins the domain. The finale is due at Convergence 12,

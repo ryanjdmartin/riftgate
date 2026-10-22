@@ -335,7 +335,8 @@ static func foe_sprite_id(u: Unit) -> String:
 	if u.is_boss:
 		if not u.lineup.is_empty():
 			return str(u.lineup[0])
-		return str(ContentDB.load_default().factions.get(u.faction, {}).get("boss", ""))
+		var all := ContentDB.load_default().bosses_of(u.faction)
+		return all[0] if not all.is_empty() else ""
 	return u.foe_id
 
 

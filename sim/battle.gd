@@ -140,7 +140,8 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
 		field.add_unit(field.dress_pack(sq))
 	var fac: Dictionary = db.factions.get(faction, {})
-	var boss_id := str(lineup[0]) if not lineup.is_empty() else str(fac.get("boss", ""))
+	var firsts := db.bosses_of(faction)
+	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
 		# The finale's line goes by the party's name; a final's hero and a boss by its own.
 		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()

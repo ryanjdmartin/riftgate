@@ -45,17 +45,17 @@ func use_faction(faction_id: String) -> void:
 	packs = []
 	for e in db.spawn_table(faction_id):
 		packs.append([str(e[0]), int(e[1])])
-	var b := str(db.factions.get(faction_id, {}).get("boss", ""))
-	boss = b if db.foes.has(b) else ""
+	var all := db.bosses_of(faction_id)
+	boss = all[0] if not all.is_empty() else ""
 
 
 ## Every faction's boss, in content order: the boss picker's choices.
 func bosses() -> Array:
 	var out: Array = []
 	for fid in db.factions.keys():
-		var b := str(db.factions[fid].get("boss", ""))
-		if db.foes.has(b) and not out.has(b):
-			out.append(b)
+		for b in db.bosses_of(str(fid)):
+			if not out.has(b):
+				out.append(b)
 	return out
 
 
