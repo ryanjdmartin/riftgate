@@ -45,7 +45,7 @@ const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it a
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
-const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
+const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take while it lasts
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
@@ -478,8 +478,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
-	# Flak (21 October): a point a stack on every team blow each foe reached takes before the
-	# stacks halve, damage in hand for the team's blows (flak_score).
+	# Flak (21 October): a point a stack on every team blow each foe reached takes while the
+	# stacks last on their clock, damage in hand for the team's blows (flak_score).
 	if f.has(Face.Keyword.FLAK):
 		for foe in sk.reached_by(f, target):
 			if not foe.alive():
@@ -775,11 +775,12 @@ func expose_score(sk: Skirmish, foe: Foe) -> float:
 
 
 ## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes
-## before the stacks halve at the round's end, capped by what the foe will have left. The blows
-## still to come this round are this spend's later strikes and the damaging entries the other
-## machines show unspent, all of them on the spend's target and half on a neighbour it sprays
-## (the team may well pick another); then a round of the team's blows at half the stacks, the
-## halving, a blow a machine on the target and half that elsewhere. Damage in hand, at FLAK_WEIGHT.
+## this round, capped by what the foe will have left. The blows still to come this round are
+## this spend's later strikes and the damaging entries the other machines show unspent, all of
+## them on the spend's target and half on a neighbour it sprays (the team may well pick
+## another); then a round of the team's blows at the stacks its clock keeps (the status names
+## it: half, or a stack less), a blow a machine on the target and half that elsewhere. Damage
+## in hand, at FLAK_WEIGHT.
 func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: float, is_target: bool) -> float:
 	if f == null or not f.has(Face.Keyword.FLAK) or left <= 0.0:
 		return 0.0
@@ -794,7 +795,7 @@ func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: f
 		if of != null and of.is_attack() and (of.power > 0 or of.power_max > 0):
 			now += float(maxi(1, of.strikes))
 	var share := 1.0 if is_target else 0.5
-	var gain := float(stacks) * now * share + float(int(stacks / 2)) * next * share
+	var gain := float(stacks) * now * share + float(Effects.stacks_next_round(Effects.STATUS["flakked"], stacks)) * next * share
 	return minf(left, gain) * FLAK_WEIGHT
 
 

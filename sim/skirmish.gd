@@ -1867,7 +1867,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			# number in stacks, whatever the blow dealt, after the blow, so the blow that lays it
 			# never feeds on it; a later strike of the same spend does.
 			if f.has(Face.Keyword.FLAK) and foe.alive():
-				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.DECAY_HALF)
+				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.status_decay(Effects.STATUS["flakked"]))
 				_note_status(gained, foe, "flakked")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
@@ -2580,7 +2580,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			Effects.stack(t, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", int(shot["cryo"]), Effects.DECAY_NONE)
 			_note_status(gained, t, "cryoed")
 		if int(shot.get("flak", 0)) > 0:
-			Effects.stack(t, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", int(shot["flak"]), Effects.DECAY_HALF)
+			Effects.stack(t, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", int(shot["flak"]), Effects.status_decay(Effects.STATUS["flakked"]))
 			_note_status(gained, t, "flakked")
 		touched.append(t)
 	for t in webbed:

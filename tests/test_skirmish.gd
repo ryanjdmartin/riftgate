@@ -5250,6 +5250,31 @@ func test_flak_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
 	assert_eq(Effects.stacks_of(ov, "overcharged"), 2, "a machine's tick is the round's end, and halves as before")
 
 
+## Flak runs on the clock its status names (the stock pass's loop reads a stack a round against
+## the halving, 22 October): a spend lays stacks carrying the definition's decay, and what a
+## clock keeps into the next round reads from a definition alone.
+func test_flak_laid_carries_the_clock_its_status_names() -> void:
+	var sk := Skirmish.new(1)
+	var spray := Face.attack(1, L, K.FLAK)
+	spray.flak = 3
+	sk.add_mech(_mech("A", Die.single(spray), 0, 200))
+	var g := _ghoul(100)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, g), "Flak laid")
+	var clocks: Array = []
+	for m in g.modifiers:
+		if m.id == "flakked":
+			clocks.append(m.decay)
+	assert_eq(clocks, [Effects.status_decay(Effects.STATUS["flakked"])], "one stack of Flak on the status's own clock")
+	assert_eq(Effects.stacks_next_round({"decay": "half"}, 5), 2, "a halving clock keeps half, rounded down")
+	assert_eq(Effects.stacks_next_round({}, 5), 4, "a clock that names none loses a stack")
+	assert_eq(Effects.stacks_next_round({"decay": "round"}, 5), 0, "a round's clock keeps nothing")
+	assert_eq(Effects.stacks_next_round({"decay": "none"}, 5), 5, "and none keeps it all")
+	assert_eq(Effects.stacks_next_round({}, 0), 0, "never below none")
+
+
 ## The Barrier (Ryan, 14 October; built 21 October): the next blow a foe lands deals nothing,
 ## so it never injures, its riders land, and it is spent; a blow of nothing leaves it
 ## standing, a second grant renews it, and the round's end takes it.

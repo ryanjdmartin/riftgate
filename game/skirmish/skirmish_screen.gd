@@ -1103,8 +1103,9 @@ func _foe_rows(foe: Foe) -> Array:
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow it takes
-		# deals, and the round's end halves it.
-		rows.append(["flak", str(flak), "Flak: every blow it takes deals %d more, a point a stack; at the end of the round the stacks halve (%d)" % [flak, int(flak / 2)], Palette.HEAT])
+		# deals, and what its clock keeps into the next round (the status names the clock).
+		var halves := Effects.status_decay(Effects.STATUS["flakked"]) == Effects.DECAY_HALF
+		rows.append(["flak", str(flak), "Flak: every blow it takes deals %d more, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
 		# The Armadillo's mark (20 October; its chip from 21 October): what a damaging hit on it

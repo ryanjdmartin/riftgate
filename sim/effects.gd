@@ -233,7 +233,9 @@ const STATUS := {
 	# the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its armour comes off,
 	# and a blow of nothing stays nothing (damage_taken). The stacks halve at the end of each
 	# round, rounded down (Overcharged's clock: Skirmish.end_round halves a foe's), so a sprayer
-	# feeding three a round settles near six and a boss never ramps. Past armour or not is the
+	# feeding three a round settles near six and a boss never ramps. The clock is this entry's
+	# decay, read where Flak is laid, by the bot and by the hold (stacks_next_round), so the
+	# stock pass's loop can read a stack a round against it (Ryan's question, 22 October). Past armour or not is the
 	# stock pass's call; through the plain pipeline, the armour comes off it, until then.
 	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
@@ -589,6 +591,20 @@ static func ends_with_turn(m) -> bool:
 ## a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
 	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF}.get(str(def.get("decay", "")), DECAY_TICK)
+
+
+## What a foe's status keeps into the next round on the clock its definition names (the bot's
+## look a round on, the hold's line): half, rounded down, on a halving clock; a stack less on a
+## stack a tick (a foe's statuses tick at its action); nothing on a round's; all of it on none.
+static func stacks_next_round(def: Dictionary, n: int) -> int:
+	match status_decay(def):
+		DECAY_HALF:
+			return int(n / 2.0)
+		DECAY_TICK, DECAY_TURN:
+			return maxi(0, n - 1)
+		DECAY_ROUND, DECAY_TURN_ALL:
+			return 0
+	return n
 
 
 ## Does the status run down to zero on its own clock (halving each tick), rather than end
