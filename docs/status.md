@@ -677,9 +677,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.256, and so is the
-  live (22 October, the page's version 273; v0.254 and v0.255 the page's versions 271 and
-  272): main's v0.253 (the page's version 270: the
+  `docs/design-bible.html` after every change. This branch's file is v0.257, and so is the
+  live (22 October, the page's version 274, the second chunk's engine items; v0.254 to v0.256
+  the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
   three-way merged onto this branch's v0.252 of 03:42, the page's version 269, whose rows stay
