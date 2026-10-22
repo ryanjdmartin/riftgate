@@ -1034,7 +1034,7 @@ func _foe_rows(foe: Foe) -> Array:
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
-		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current hull a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
+		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current HP a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow it takes

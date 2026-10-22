@@ -223,7 +223,7 @@ defeat when every machine is wrecked. There is no round limit.
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per 10 heat fired, then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing HP** (printed Missing hull until the stock pass renames it) adds its bonus for every
+rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing HP** adds its bonus for every
 20 HP the target is missing. **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey

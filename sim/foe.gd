@@ -14,7 +14,7 @@ extends RefCounted
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
 ## Damage is base attack times the action's factor; strikes are separate blows; keywords are
-## tags on the blow (breach: overflows shield into hull).
+## tags on the blow (breach: ignores the shield and the armour, the whole blow to hull).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -287,7 +287,7 @@ func intent_on(u) -> bool:
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
-## breach: overflows shield into hull. scorch: a stack of Scorched on the machine it hits, its
+## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
 ## weapons running hotter for the turn; burn: a stack of Burning, heat at the end of the
 ## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
@@ -322,7 +322,7 @@ func reaches_every_machine() -> bool:
 
 
 ## The action's text with {damage} and {value} filled in, so "Jaw Rend for {damage}" and
-## "Regrows {value} hull" read as numbers.
+## "Regrows {value} HP" read as numbers.
 func text_of(a: Dictionary) -> String:
 	return str(a.get("text", "")).replace("{damage}", str(damage_of(a))).replace("{value}", str(int(a.get("value", 0))))
 

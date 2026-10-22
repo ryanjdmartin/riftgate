@@ -1046,7 +1046,7 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
 	var entry := db.codex_for_foe(db.make_foe("bone_dragon"))
 	assert_true(entry["actions"].contains("REGEN // DEFEND"), "the codex lists the defend")
-	assert_true(entry["actions"].contains("Regrows 20 hull"), "with its number filled in")
+	assert_true(entry["actions"].contains("Regrows 20 HP"), "with its number filled in")
 
 
 func test_every_component_names_a_silhouette_class() -> void:

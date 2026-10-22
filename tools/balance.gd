@@ -700,7 +700,7 @@ func _reach_report(top: int) -> Array[String]:
 	var L: Array[String] = []
 	L.append("## Reach, %s" % Policy.kind_name(top))
 	L.append("")
-	L.append("What a spend of each reach did (lures and probes, which deal nothing, left out): its share of attack spends, the hull it took off foes a spend (every foe the blows reached, overkill not counted), the heat it paid a spend, and the spends aimed at the back rank. Over every row and pack, then over the packs that field a back rank.")
+	L.append("What a spend of each reach did (lures and probes, which deal nothing, left out): its share of attack spends, the HP it took off foes a spend (every foe the blows reached, overkill not counted), the heat it paid a spend, and the spends aimed at the back rank. Over every row and pack, then over the packs that field a back rank.")
 	L.append("")
 	for only_back in [false, true]:
 		var tot := {}
@@ -719,7 +719,7 @@ func _reach_report(top: int) -> Array[String]:
 			all_spends += int(tot[rk].get("spends", 0))
 		L.append("**%s**" % ("Packs with a back rank" if only_back else "Every pack"))
 		L.append("")
-		L.append("| Reach | Share of attack spends | Hull a spend | Heat a spend | Aimed at the back |")
+		L.append("| Reach | Share of attack spends | HP a spend | Heat a spend | Aimed at the back |")
 		L.append("|---|---|---|---|---|")
 		for rk in ["direct", "indirect"]:
 			if not tot.has(rk):
@@ -757,7 +757,7 @@ func _reach_report(top: int) -> Array[String]:
 	var all_spends := 0
 	for ck in tot.keys():
 		all_spends += int(tot[ck].get("spends", 0))
-	L.append("| Shape | Share of damaging spends | Hull a spend | Heat a spend |")
+	L.append("| Shape | Share of damaging spends | HP a spend | Heat a spend |")
 	L.append("|---|---|---|---|")
 	for ck in ["rolled", "flat"]:
 		if not tot.has(ck):

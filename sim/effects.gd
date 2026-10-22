@@ -121,7 +121,7 @@ const STATUS := {
 	# and never the last hit point, then a stack fades (Burning's shape, stacking add): it
 	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
-	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses 5% of its current hull per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses 5% of its current HP per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 5}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves. The skirmish bursts it at
 	# the end of the foe's action (Skirmish._web_burst): a Suppress on it and on the next foe
@@ -1673,7 +1673,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_per_ally_heat": body = "the shield grows by %s for every 10 heat it carries" % vs
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
-		"tick_hp_share": body = "loses %s%% of its current hull per stack each turn" % vs
+		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs

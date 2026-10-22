@@ -51,7 +51,7 @@ ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
            ("kill_overcharge", "Overcharged a kill", lambda f: int(f.get("devours", 0) or 0) > 0),
-           ("power_per_missing", "Grows with missing hull", lambda f: int(f.get("power_per_missing", 0)) > 0),
+           ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on"))),

@@ -664,7 +664,7 @@ func describe() -> String:
 			if vents_all:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if power_per_missing > 0:
-				s += " +%d per %d hull missing" % [power_per_missing, MISSING_STEP]
+				s += " +%d per %d HP missing" % [power_per_missing, MISSING_STEP]
 			if devours > 0:
 				s += " Overcharged ×%d a kill" % devours
 			if fills_hopper > 0:

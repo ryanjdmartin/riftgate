@@ -2,13 +2,14 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 149 implemented, 5 planned, 0 idea.
+Status: 150 implemented, 5 planned, 0 idea.
 
 ## Resource
 
 | Term | Codex | Status |
 |---|---|---|
 | **Hull** | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
+| **HP** | A foe's health. What gets past its armour takes HP off, and at zero the foe falls. A machine's health is its hull. | implemented |
 | **Shield** | Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
 | **Heat** | Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons run hotter. | implemented |
 | **Reroll** | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
@@ -55,7 +56,7 @@ Status: 149 implemented, 5 planned, 0 idea.
 | **Pull** | A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there. | implemented |
 | **Drone** | A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
-| **Grows with missing hull** | A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
+| **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every 20 HP the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
 | **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
 | **Braces** | A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until the round's end: the armour stands behind the blow through the enemy's turn. | implemented |
 | **Rolls again** | A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit. | implemented |
@@ -242,6 +243,7 @@ Status: 149 implemented, 5 planned, 0 idea.
 
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
+- **HP** (implemented): The foes' word since 22 October (Ryan: hull is the label for a machine, not for a goblin); the content field was already hp. Internally the engine may say either.
 - **Shield** (implemented): Rates and shield sizes are placeholders. The honest shield since 21 October (Ryan's rule of 14 October, the bible's shield row): from 18 September a standing shield blocked a blow whole, however small the shield, which made a small shield entry a secret 'negate one blow'; the block is a priced buff now, the Barrier. The in-combat trickle was dropped on 18 September (a passive may bring it back for one chassis). Shield numbers are re-read under the honest rule in the stock pass (the Goshawk's regen and the Puffin's overshield become hit points).
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning).
 - **Rift Pressure** (implemented): Spawns a fixed pack. Should draw from the battle's faction(s) and escalate.
@@ -340,7 +342,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Countdown** (implemented): Built 15 October for the Lancer's Jump and the bosses' countdowns (a Tonberry's walk, a Tyrano's five to zero). The foe stays on the field while it gathers (Ryan's go, 15 October: the Lancer mid-Jump stays reachable). Its pick holds while the machine stands; a Lure moves it. The greedy bot reads one round, so it never values breaking off a blow that lands next round.
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
-- **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). MISSING_STEP is a placeholder.
+- **Grows with missing HP** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). MISSING_STEP is a placeholder.
 - **The hopper** (implemented): Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat.
 - **Braces** (implemented): Built 12 October in place of the Glacis, a flat armour +5 on the plow that was meant for front-rank blows only and measured no different that way (Ryan: "Give the plow braced. It fits."). Ten stacks (two of 5 until 18 October) are a placeholder. A rule on one carrier, not a keyword, until another piece wants it.
 - **Rolls again** (implemented): Built 12 October for the Nemesis's rage (Ryan: "it's not a choice, you just get rapid", without the switch-off). A rule on one carrier, not a keyword, until another piece wants it.
