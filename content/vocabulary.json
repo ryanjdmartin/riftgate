@@ -44,7 +44,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. The honest shield since 21 October (Ryan's rule of 14 October, the bible's shield row): from 18 September a standing shield blocked a blow whole, however small the shield, which made a small shield entry a secret 'negate one blow'; the block is a priced buff now, the Barrier. The in-combat trickle was dropped on 18 September (a passive may bring it back for one chassis). Shield numbers are re-read under the honest rule in the stock pass (the Goshawk's regen and the Puffin's overshield become hit points)."
@@ -690,7 +690,7 @@
    "id": "vitriol",
    "category": "status",
    "name": "Vitriol",
-   "codex": "Foe status, the funnel-web's acid. At its action it loses 5% of its current hull a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
+   "codex": "Foe status, the funnel-web's acid. At its action it loses 5% of its current HP a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The planned Corrode keyword (1% of HP a stack) renamed and re-stepped; Corroded is kept for the foes' damage over time on machines (Ryan, 17 October). Laid by the funnel-web's passive on a foe showing no intent on it, a stack per hit, so a multi-strike piece bites several times; nothing else lays it yet, and the keyword, if a piece ever carries it, shares the word. Engine (built 18 October): a status effect of its own, tick_hp_share, read after the flat ticks on the hull they leave, the whole share rounded down and never the last hit point (Effects.tick_preview); stacking add, a stack fading at the foe's action; laid by lay_status on the funnel-web's passive, a stack per strike that lands with a number, so a blow of nothing (the web, a lure) is no hit. Whether a tick passes Guarded is the parts' question, as Burning's is. The bot values it by its ticks on the hull the blow leaves (Policy.dot_payout).",
@@ -1398,7 +1398,7 @@
    "id": "armour",
    "category": "resource",
    "name": "Armour",
-   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull, what passes a shield, and a breach alike. A blow smaller than the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike, never a breach, which ignores it. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage.",
    "status": "implemented",
    "design": {
     "holes": "Numbers are placeholders. Armour from components is content, not yet written."

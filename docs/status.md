@@ -655,7 +655,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This branch's file is v0.252, and so is the
-  live (22 October, the page's version PAGE_HERE): main's v0.251 (the page's version 268: Ryan's
+  live (22 October, the page's version 269): main's v0.251 (the page's version 268: Ryan's
   calls of 21 October, evening, and 22 October, the stores, Silence and Purge passing them by,
   the carry as a block, the Muster never primed, the Musk Ox's 3 at the first round, the
   blasting vents counting, the rage capped at 5 as boxes, the charged Screens for the whole team
