@@ -327,7 +327,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
 | `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
-| `stock_pass.md` | plan and proposal (22 October): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method and the chunks | all | 0 to 3 | Ryan's marks on the proposal; its engine chunk runs meanwhile |
+| `stock_pass.md` | plan and proposal (22 October): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method and the chunks | all | 0 to 3 | Ryan's marks on the proposal; its engine chunk built 22 October (on its branch) |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no

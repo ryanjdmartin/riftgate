@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 577 tests, 62,160 checks, green on main (22 October, with the Muster never primed and the Musk Ox's 3 at the first round); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 583 tests, 62,240 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk); 577 and 62,160 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -29,7 +29,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. Every branch is merged into main (checked 21 October) and is to
+One branch is live beside main: `claude/eager-newton-sf947u`, the stock pass (22 October): the
+decisions of 21 and 22 October as rows, its brief, and the engine chunk built on main's head of
+that morning (merged in), each item a commit; it merges into main when Ryan says, before or
+with the content landing on his marks. Every other branch is merged into main (checked 21 October) and is to
 be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
 refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
 `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
@@ -89,6 +92,22 @@ before it. The five design sessions merged that day are paused, each resuming fr
 
 ## The game as left (18 October)
 
+- 22 October, the stock pass's engine chunk (the brief's section 6, on Opus at Ryan's word; on
+  `claude/eager-newton-sf947u`, main merged in first): the tags' working set is the validator's
+  list and the filing tags are gone (melee kept on its seven); every component stores its tier,
+  0 to 3, a run starting with the tier-zero blueprints (today's tier one, so nothing changed in
+  play) and the validator holding each chassis to stocking below its own tier, which today's
+  stocks already obey after the migration (the brief had held that check behind a flag);
+  danger close is gone, the Artillery Rangefinder a planned draft with its rule open; one breach
+  is built on both sides (a foe's breach takes no armour off a machine; Breach a keyword our
+  weapons may carry, ignoring a foe's armour, its chip a plate split by an arrow; no weapon
+  carries it yet); the shown text says HP of a foe and the vocabulary has HP; the balance report
+  has a Rounds to win section with the coordination gap read on the big fights; the three heat
+  converters' steps are content fields at today's 10; the Boar's Spillover is a grant written
+  out, the star on each weapon with the hold reading the passive's line; the content files'
+  field guides are rewritten. The baseline reports ran on main's head of the morning
+  (`a1585a9`) in a worktree (below, Measured). Ryan's marks on the brief's sections 1 to 5 are
+  next; the content landing (section 7) follows them on Opus.
 - 22 October, the numbers, armour and breach, decided in chat on 21 and 22 October (the bible's
   scales row in section 11, the kill-time, gap and wear tests in section 2, the armour and breach
   rows in section 5, the HP row in section 6; the rules edited to match, not built): every number
@@ -503,13 +522,9 @@ before it. The five design sessions merged that day are paused, each resuming fr
   class; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to 50, shield 6 to 16, base
   armour 0 to 2 by role; heat 1 to 20; every converter re-read on its own (the brief's table).
   The content stands at the old scale until the stock pass lands the fills.
-- One breach (22 October, section 5): a breaching blow ignores the shield and the armour, both
-  sides, by move; the Ward turns it away; the carriers' first fill in the brief; our guns taking
-  the word is Ryan's.
-- Foes have HP, machines hull (22 October, section 6): the shown text, the report's wording, the
-  vocabulary's entry with the content landing.
-- A rounds-to-win figure per cell in the balance report (22 October, section 2's row): the
-  coordination gap read as random against greedy.
+- One breach's carriers (22 October, section 5; the engine built that day): the foes' moves
+  that carry it, from the brief's first fill on Ryan's marks, and Breach on our guns if he takes
+  it (the lean: the Railgun).
 - The action economy's direction (the bible's section 5, 20 October, beside the stun row):
   Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
   a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
@@ -600,10 +615,10 @@ to-do's Ryan list).
    machine's content and engine session follows from its brief (the to-do's lines).
 2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): Ryan marks the
    proposal (every fill, the names, the stocks, the breach's carriers, Breach on our guns, the
-   clock); the engine chunk runs meanwhile and needs no marks (the brief's section 6, the baseline
-   balance run first); the content landing at the new scale follows his marks (section 7), then
-   the bands read fresh, the heat section and the wear. Ryan switches to Opus for the
-   implementation chunks; a mark that reopens a design comes back up for a round.
+   clock); the engine chunk is built (22 October, on its branch, the baseline reports beside it);
+   the content landing at the new scale follows his marks (section 7), on Opus, then the bands
+   read fresh against the baseline, the heat section and the wear. A mark that reopens a design
+   comes back up for a round.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders

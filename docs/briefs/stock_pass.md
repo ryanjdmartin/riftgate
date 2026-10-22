@@ -460,7 +460,10 @@ design call:
 
 - **Chunk one, no marks needed**: section 6 in order, the baseline run first, each item a
   commit with tests green, records with each (the rules' not-built marks, the to-do, the
-  status).
+  status). Built 22 October on `claude/eager-newton-sf947u` (main merged in first), the
+  baseline reports run on main's head in a worktree beside it; items 2 and 7 say where the
+  build went past this plan, and the Boar's row lost its stale "Breach is the foes' word" on
+  the way.
 - **Ryan marks sections 1 to 5** meanwhile. Plain marks go straight on; a mark that reopens a
   design (a converter's shape, a basic's maker, a stock's identity) comes back up for a round.
 - **Chunk two, on the marks**: section 7's landing and reads.
