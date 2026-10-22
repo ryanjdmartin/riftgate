@@ -517,7 +517,12 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    the Musk Ox's 8 standing); our hull and shield down a quarter and cooling 0 were read beside
    them and set aside; Flak's clock read alike under both on today's feeds and stays halving.
    The kill time on the massive foes (3 to 8 rounds) and the gap (1.0 to 1.2) stand where they
-   were: Ryan's reads, with the bands (the bible's section 12).
+   were: Ryan's reads, with the bands (the bible's section 12). The review of the same evening
+   (Ryan's go) raised the four light machines' hull from 16 to the scales row's floor of 20
+   (the Prairie Dog, the Dingo, the Puffin, the Cottonmouth; the Kite's paper hull 12 stands),
+   confirmed by a 30-seed loop (`docs/measurements.md`), and widened the row to the fills'
+   field recharge (4 to 8) and the Condenser's capstone vent; `tools/stock_loop.py` is the
+   loop driver, in the repository since.
 3. **The content landing.** The stocks, the renames and retirements, the new pieces, the
    tags and tiers, the stock-below-tier check kept green; the rules' numbers and not-built
    marks; the bible's stock-pass row to built, its tables regenerated

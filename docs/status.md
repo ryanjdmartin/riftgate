@@ -29,13 +29,13 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-One branch is live beside main: `claude/eager-newton-sf947u`, the stock pass (22 October): the
+No branch is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
-marks and the stun calls, the second chunk's engine items, the content landed at the
-brief's fills and the loops' numbers, each item a commit; main was merged into it four times that day,
-the last with main's status of the evening (the merged branches deleted from GitHub), so it stands ahead of main and never behind, and the
-code merged clean each time (the records by hand); it merges into main when Ryan says, after
-the bands. Its baseline (`ace3c3c`, 200 seeds) ran on
+marks and the stun calls, the second chunk's engine items, the content landed at the brief's
+fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
+same evening on Ryan's go, a fast-forward, main having been merged into it four times that day
+and never ahead of it; the branch is to be deleted from the desk machine or GitHub, since a
+cloud session's push to delete one is refused. Its baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
 Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
 swap (the Dingo) and its boss reads (the Disrupt carriers, and the fights with a countdown,
@@ -109,7 +109,10 @@ merged on 21 October are paused, each resuming from its briefs:
   `tools/stock_fills.py`. Flak's clock is a field in its status (it halves still; the loops read
   a stack a round alike), and the balance runner reads `--packs`. Wear, the free wins and heat
   moved toward their tests; a massive foe still takes a team of three 3 to 8 rounds and the gap
-  reads 1.0 to 1.2 (section 12's question for Ryan).
+  reads 1.0 to 1.2 (section 12's question for Ryan). The review of the same evening (Ryan's go)
+  raised the four light machines' hull from 16 to the scales row's floor of 20 (the Kite's paper
+  hull 12 stands), widened the row to the fills' field recharge and the Condenser's capstone
+  vent, and put the loop driver in the repository (`tools/stock_loop.py`).
 - 22 October, the stock pass's engine chunk (the brief's section 6, on Opus at Ryan's word; on
   `claude/eager-newton-sf947u`, main merged in first): the tags' working set is the validator's
   list and the filing tags are gone (melee kept on its seven); every component stores its tier,
@@ -627,9 +630,10 @@ to-do's Ryan list).
    content before the loops, section 7's third step brought forward, since the gap is read on
    the new stocks' setups); the loops set its numbers the same day (six at 30 seeds, one lever
    a loop, `docs/measurements.md`), the bands at 200 seeds read them (the reports regenerated)
-   and the hangar was republished with them. Next Ryan's reads (section 12: the massive kill
-   time and the gap the loops did not move, the teams' free wins against the lone machine's
-   walls, the finale's wall, Wainwright & Sutler's light machines), then the branch merges. Two content questions went to section 12 with the landing: which
+   and the hangar was republished with them; the branch merged into main the same evening on
+   Ryan's go. Next Ryan's reads (section 12: the massive kill time and the gap the loops did
+   not move, the teams' free wins against the lone machine's walls, the finale's wall,
+   Wainwright & Sutler's light machines, a hero's finisher), then the pricing run. Two content questions went to section 12 with the landing: which
    explosives carry Spread and Penetrate, and a flat Indirect basic.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
@@ -665,8 +669,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.260, and so is the
-  live (22 October, the page's version 277, the review's holes: the fills under the floors, a hero's finisher against a light machine; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
+  `docs/design-bible.html` after every change. This branch's file is v0.261, and so is the
+  live (22 October, the page's version 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
   second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
@@ -676,7 +680,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
   the direction run in the scales row, section 12's content item) and the stun calls of the
   same day (the stun row, section 12), then the Battery's Flak gate, the Backdraft as a consumer
-  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 94 since the stock
+  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 95 since the stock
   pass's republishes (below).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
@@ -705,7 +709,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   blows, the maxima) and the page's face line showing strikes, gates, consumers and own fire
   (the page's version 93; `edits` empty before it, the five files checked identical to main's
   before they were replaced), then the vocabulary again with its three internal table cells at
-  the scale (the page's version 94). Its database
+  the scale (the page's version 94), and the chassis with the four light hulls at 20 (the page's
+  version 95). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

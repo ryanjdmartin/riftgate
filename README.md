@@ -194,9 +194,17 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd
 # run battle by battle instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 
-# the stock pass's fills onto a scratch worktree for a direction run (22 October): the brief's numbers and
-# the engine's constants, one lever moved a loop, then --import there and the balance runner at 30 seeds
-python3 tools/stock_fills.py .claude/worktrees/fills
+# the stock pass's fills (22 October): the brief's numbers as the loops moved them, onto a checkout's content
+# and the engine's rule numbers; idempotent on the branch, so a kept lever lands by editing its tables and running it
+python3 tools/stock_fills.py .
+# a balance loop (the stock pass's method): a copy of the project under build/loops/<name> with one lever moved in
+# its content (`levers` lists them: the foes' blows, our durability, cooling, the maxima, a foe's armour, HP or move,
+# Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
+# (--policies, --packs big, --rows cut it down), every chassis alone with --alone, the campaign report unless
+# --no-campaign, and a summary against the bible's section 2 tests; `compare` lays finished loops side by side.
+# About half an hour on four cores; a direction, never a band (docs/measurements.md). GODOT names the binary if needed.
+python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=2 --policies random,greedy
+python3 tools/stock_loop.py compare base blows
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,

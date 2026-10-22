@@ -834,3 +834,33 @@ twenty-nine packs a team, so outside the formations a team of three meets no dec
 finale is a wall; and the campaign's plain player, fighting alone most of the time, wins 1% of
 battles. The lone machine and the team of three stand far apart (walls on 6 to 24 packs alone,
 free wins on 19 to 28 as three).
+
+## 22 October, the light hulls at the floor
+
+**The review's one content change, confirmed** (Ryan's go, the evening of the bands): the four
+light machines' hull from 16 to 20, the scales row's floor (the Prairie Dog, the Dingo, the
+Puffin, the Cottonmouth; the Kite's paper hull 12 stands, its row's one-off), so a hero's
+finisher at the doubled blow (the Black Mage's Flare at 16 through the shield, the Lancer's Dive
+at 15) no longer takes one from full. Run with `tools/stock_loop.py` on the content as landed:
+the two teams that field them, every rung at 30 seeds against the twenty-nine packs; the five
+light machines alone, greedy, without the party; the campaign at 40 runs. A direction, read
+against the bands at 200 seeds (above, at hull 16):
+
+| Read | Kestrel's team, bands then now | Wainwright & Sutler's, bands then now |
+|---|---|---|
+| A formation: random's wins / greedy's hull lost | 60% / 14% then 59% / 12% | 22% / 37% then 29% / 31% |
+| A massive foe: greedy rounds / hull lost | 2.9 / 13% then 2.9 / 12% | 7.8 / 32% then 7.4 / 25% |
+| A final: greedy hull lost | 5% then 5% | 11% then 10% |
+| The gap, big fights | 1.16 then 1.17 | 1.17 then 1.15 |
+
+The rank and file still die in under two rounds for both; the finale stays a wall; the hot
+kits' heat does not move. Alone, greedy, the four read as before (walls on most packs: the
+Prairie Dog wins 35% of the wildlife packs, the Dingo 38%, the Puffin 39%, the Cottonmouth 91%,
+none a massive foe). The campaign reads as the bands' (0 of 40 runs, 1% of battles, the lone
+fight 24%).
+
+Read: the floor costs no band. Wainwright & Sutler's formations keep their decision (random
+losing where greedy wins) and shed about a sixth of their wear, which stays three to five times
+the heavy teams' since the trio is light and the heavies' armour 2 walls the rank and file's
+blows outright; the finisher's one-shot is gone. The 200-seed reports (`docs/balance.md`,
+`docs/campaign_run.md`) predate the four hulls' rise and are rerun with the pricing run.

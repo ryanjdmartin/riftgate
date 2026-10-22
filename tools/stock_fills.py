@@ -9,7 +9,9 @@ Every edit is in place: the foes' file keeps its hand layout.
 The loops (22 October, docs/measurements.md) moved: the foes' blows up by half on the rank and
 file, a third on the massive foes and double on the heroes; the Sandworm's and the Golem's armour
 2 to 1; the Treant's and the Wyvern's regrow 5 to 3; the heat maxima 16 to 12 and 20 to 14 (the
-Kite's 10 and the Musk Ox's 8 stand)."""
+Kite's 10 and the Musk Ox's 8 stand). The review of the same day (Ryan's go) raised the four
+light machines' hull to the scales row's floor of 20 (the Prairie Dog, the Dingo, the Puffin, the
+Cottonmouth; the Kite's paper hull 12 stands, its row's one-off)."""
 import json, re, sys
 R = sys.argv[1].rstrip('/') + '/'
 
@@ -28,10 +30,10 @@ def edit(p, reps):
 C = {
  'badger': (36, 8, 4, 12, 1, 2), 'clydesdale': (40, 10, 5, 12, 1, 1), 'sparrowhawk': (12, 16, 8, 10, 2, 0),
  'baboon': (28, 10, 5, 14, 1, 0), 'armadillo': (40, 8, 4, 12, 1, 2), 'wild_boar': (36, 8, 5, 12, 1, 2),
- 'prairie_dog': (16, 10, 8, 12, 1, 0), 'dingo': (16, 10, 6, 12, 1, 0), 'goshawk': (28, 12, 6, 14, 1, 0),
+ 'prairie_dog': (20, 10, 8, 12, 1, 0), 'dingo': (20, 10, 6, 12, 1, 0), 'goshawk': (28, 12, 6, 14, 1, 0),
  'nemesis': (36, 6, 4, 14, 1, 2), 'ammit': (32, 10, 5, 14, 1, 1), 'stingray': (24, 12, 6, 14, 0, 0),
- 'puffin': (16, 8, 8, 12, 1, 0), 'funnel_web': (30, 10, 5, 12, 1, 1), 'cassowary': (24, 8, 5, 12, 1, 0),
- 'cottonmouth': (16, 8, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 4, 14, 0, 1), 'swallowtail': (48, 14, 5, 14, 2, 1),
+ 'puffin': (20, 8, 8, 12, 1, 0), 'funnel_web': (30, 10, 5, 12, 1, 1), 'cassowary': (24, 8, 5, 12, 1, 0),
+ 'cottonmouth': (20, 8, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 4, 14, 0, 1), 'swallowtail': (48, 14, 5, 14, 2, 1),
  'musk_ox': (44, 10, 5, 8, 1, 1),
  'lammergeier': (28, 16, 6, 14, 1, 0),   # not in the brief: today's numbers over four
 }
