@@ -634,8 +634,9 @@ to-do's Ryan list).
    chunk is built (22 October, on its branch, the baseline reports beside it); Ryan's marks are
    made the same day, the structure not the numbers (the brief's section 3 and its tables),
    and the stun calls of the same day are the stun row's (no stock holds a Suppress piece; the
-   Inducer the Arsenal's, tier three on Volatile; a tier-two fire stun; the Battery's gate and
-   the fire stun's spend open, Claude's leans in the brief); the landing (section 7, on Opus)
+   Inducer the Arsenal's, tier three on Volatile; the Backdraft Charge consuming the fire for a
+   point a stack and a stun at a threshold; the Battery gated by Flak; Flak's clock reopened for
+   Flak alone, section 12); the landing (section 7, on Opus)
    builds the engine items first, sets the numbers by measured loops with `tools/stock_fills.py`
    against section 2's tests, then
    lands the content and reads the bands fresh against the baseline.
@@ -673,8 +674,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.254, and so is the
-  live (22 October, the page's version 271): main's v0.253 (the page's version 270: the
+  `docs/design-bible.html` after every change. This branch's file is v0.255, and so is the
+  live (22 October, the page's version 272; v0.254 the page's version 271): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
   three-way merged onto this branch's v0.252 of 03:42, the page's version 269, whose rows stay
@@ -682,7 +683,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   carried on top: Ryan's marks of 22 October (the clock kept for every event-fed status, Breach
   on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
   the direction run in the scales row, section 12's content item) and the stun calls of the
-  same day (the stun row, section 12). The hangar (the page's version 92 since main's republish
+  same day (the stun row, section 12), then the Battery's Flak gate, the Backdraft as a consumer
+  and the two questions reopened that evening (the stun row, section 12). The hangar (the page's version 92 since main's republish
   of its Names board) waits on the stock pass's HP and Breach vocabulary at its next republish.
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
