@@ -655,8 +655,9 @@ content.
 
 ## 22 October, the stock pass's loops
 
-**The loops on the landed content** (`docs/briefs/stock_pass.md`, section 7, step 2; the branch
-at `d4e009a`, Flak's clock a field since `9c32ecf`). Each loop is a copy of the branch with its
+**The loops on the landed content** (`docs/briefs/stock_pass.md`, section 7, step 2; copies of
+the branch between `dd3037c` and `d4e009a`, the same in play; Flak's clock a field since
+`9c32ecf`, which the Flak loops' copies carry). Each loop is a copy of the branch with its
 levers moved in the copy's content, the balance runner at 30 seeds a cell on the four team rows
 (the default team as a `--team` row, so the targeting comparison is skipped; Minerva Heavy
 Works', Kestrel Dynamics' and Wainwright & Sutler's) against the twenty-nine packs, and the
@@ -702,7 +703,7 @@ the rest 5 to 47%. The campaign: 7% of battles won, 92% ended in a team wipe, a 
 | Random's wins on the formations | 96 / 100 / 58 / 23% | 99 / 100 / 78 / 48% |
 | The campaign's battles won | 1% | 2% |
 
-A single wildlife pack costs no team anything under either. Kept: the blows (the brief's first
+A single wildlife pack costs no team more than 2% of its hull under either. Kept: the blows (the brief's first
 lever; the formations gain a decision band, random losing where greedy wins, and the finals a
 cost). Wainwright & Sutler's team, with two machines of 16 hull, takes three to five times the
 others' wear.
@@ -807,7 +808,8 @@ baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Armadillo 74% a
 
 Pick share, greedy: the Ammit's Entropy Condenser 0%, the Dingo's Combat Translocator 1%, the
 Lammergeier's Syrinx Drone, Lorentz Contractor and Polarity Projector 2 to 3%; the Coolant
-Jacket 1 to 4% wherever it is not the Whip Scorpion's gun (33%), the Kite's Bleed Valve 18%.
+Jacket 1 to 6% on ten kits, 14% on the Musk Ox (whose forge turns a vent into ammo) and 33% on
+the Whip Scorpion (whose vents are its guns); the Kite's Bleed Valve 18%.
 
 **The gap at 200 seeds**, blind play's rounds over the planner's on the big fights both win a
 quarter of (sixteen a team; neither wins the finale): the default team 1.16, Minerva's 1.05,

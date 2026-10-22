@@ -53,8 +53,8 @@ merged on 21 October are paused, each resuming from its briefs:
   each stands. Built: the Prairie Dog with Flak, the Clydesdale, the funnel-web, the Cassowary,
   the Cottonmouth, the Whip Scorpion and the Dingo with its Combat Translocator. The
   Swallowtail's and the Musk Ox's engines landed 21 October, so nothing of the maker's is
-  planned in content. The gunship's brief waits for the stock pass's tags and the numbers'
-  rescale (Ryan, 21 October); the five new machines' models and the Translocator's mount are the
+  planned in content. The gunship's brief waited for the stock pass's tags and the numbers'
+  rescale (Ryan, 21 October), which landed 22 October, so its session is free to run; the five new machines' models and the Translocator's mount are the
   to-do's art lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
   Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
@@ -194,7 +194,7 @@ merged on 21 October are paused, each resuming from its briefs:
   trigger fires once after an attack that killed (the Kite's tax, Hot Streak a working name,
   5 heat a stack for the fight); a reset gun's kill lights every dark entry and acts again
   through Rapid's path. The Kite is tier two (K-7 Mk IV), a d3 of the Pinion Driver locked and
-  two hardpoints stocking placeholders by kind until the stock pass; its passive's four
+  two hardpoints stocking placeholders by kind until the stock pass (the Transonic Rifle and the Bleed Valve since 22 October); its passive's four
   effects its one-off (the validator honours a chassis's design.one_off), the die minimum
   three; the Railgun carries its own tier two off every stock. Its brief retired.
 - 21 October, the combined entry (Ryan's go, 20 October): a vent may carry a shield half
@@ -296,7 +296,8 @@ merged on 21 October are paused, each resuming from its briefs:
   at the round's end; the airburst chip, and Cryo's chip and snowflake with it (it had none); the
   die folding Flak in; the bot's `flak_score`; the Prairie Dog's 5 less from a Flak carrier
   awake. Its rows with and without it are in `docs/measurements.md` (21 October: about six points of the Prairie Dog's row alone, greedy 22.0 to 28.6, and a point or two on its maker's team). The
-  family (an airburst shell, a flak cannon) and past armour or not are the stock pass's.
+  family landed with the stock pass (the Airburst Shell, the Flak Cannon, 22 October); the plain
+  pipeline stands, armour coming off after the Flak.
 - 19 October, the funnel-web's assets (`ccr-ffcf75fa-3gkbz9`): its lowforge model
   (`models_low.py`'s `funnel_web`, Wainwright & Sutler's iron), four cuts in the day, each on
   Ryan's notes (the bible's funnel-web row has each and its reasons): a mechanical spider (too
@@ -556,14 +557,6 @@ merged on 21 October are paused, each resuming from its briefs:
 
 ## Decided, not built
 
-- The scale (22 October, section 11's scales row and section 2's tests): a blow 1 to 6, big guns
-  to 10, a capstone 12; an amp a point a stack; foe HP 2 to 6, 30 to 40, 12 to 24, 80 to 100 by
-  class; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to 50, shield 6 to 16, base
-  armour 0 to 2 by role; heat 1 to 20; every converter re-read on its own (the brief's table).
-  The content stands at the old scale until the stock pass lands the fills.
-- One breach's carriers (22 October, section 5; the engine built that day): the foes' moves
-  that carry it, from the brief's first fill on Ryan's marks, and Breach on our guns if he takes
-  it (the lean: the Railgun).
 - The action economy's direction (the bible's section 5, 20 October, beside the stun row):
   Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
   a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
@@ -571,17 +564,9 @@ merged on 21 October are paused, each resuming from its briefs:
   commander actions on map cooldowns); what the stock pass does with it is in the to-do's
   stock pass line, the reasoning in the briefs README.
 - Silence and Purge's carriers (section 12) and the front's card's intel (with the mission map).
-- The stock pass's content: tags on every component (the working set Ballistic, Missile,
-  Beam, Plasma, Flame, Arc, Blade, Melee; the validator holds them to it since 22 October), the
-  shared basic kit at tier zero (the tiers stored and checked since 22 October, today's tier one
-  standing in), the old close weapons brought to Direct's band, the Baboon free to stock a
-  shield, every tier-one chassis on basics beside its locked piece (the Arsenal's tier-one
-  components exist for its tier twos to stock), a bought chassis bringing copies of its stock
-  and never the blueprints, heat re-priced by niche so that it bites (section 5's heat row: a
-  machine firing every round overheats by its third).
 - Area belongs to keywords on any reach: Splash folds into Spread and Penetrate, and an
-  explosive carries both (with the stock pass's content; danger close retired 22 October, the
-  Artillery Rangefinder's rule open).
+  explosive carries both; which explosives is Ryan's (section 12), none landed with the stock
+  pass (danger close retired 22 October; the Artillery Rangefinder's new rule built the same day).
 - Purge, our keyword for the foes' buffs (its carriers and numbers open; Purge on both sides for
   now, Ryan, 20 October).
 - The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): the shield
@@ -591,41 +576,17 @@ merged on 21 October are paused, each resuming from its briefs:
   hard control always carefully considered with other options explored first, no caps; a new
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
-- The Swallowtail (Ryan's go, 21 October; its row in section 7): the helicarrier, the maker's
-  first tier three, an assault flyer; the multi-rotor's lending and then its equipment slots
-  cut (20 October). Its Muster Deck carries the machines beside it on the map (set down on the
-  nearest standable hexes, their move and action kept) and fills the Muster, a third bar, a
-  sliver on every die's roll (about thirty a charge, a kill by its guns five), per fight; its
-  four locked pieces each have a plain and a charged form (the Mooring Screens: a team shield,
-  or Phased on every ally that has not acted, no cooldown; the Spotting Flare: it Exposes a
-  foe, or Exposes and Suppresses it; the Sutler's Hoist: a shield and cooling, or the full
-  reset; the Reveille Horn: a team reroll, or an ally acts again); three hardpoints. Nothing on
-  it is called Mark (Ryan, 21 October, in the Kestrel session): the Flare's face takes Expose
-  when Expose enters the vocabulary (the Needletail's content session, or the Swallowtail's
-  engine if it comes first). In content as planned entries (Muster and Rallied in the
-  vocabulary); the engine and the assets are the to-do's two lines. The Hoist is no loader for
-  the artillery (Ryan, 21 October).
-- The Musk Ox (Ryan's go, 21 October; its row in section 7): the artillery, the maker's second
-  tier three, a wide assault battery on big wheels. Its Desublimation Forge fires its damaging
-  guns from ammo instead of heat (1 for every 10 heat at today's scale, 2 at the pass's; at
-  least 1), a magazine of 10 that opens each fight at 3 and gains 1 a round, its own vents
-  adding 3 and shields 2; everything else keeps heat on a low heat bar. Locked: the Shrapnel
-  Recuperator (Flak 1 for the team and 1 ammo back for every foe hit), the Unrestricted
-  Expenditure (every ammo as a strike at a random foe, Spread and Penetrate) and the quick
-  reload for testing (Rapid, 2 ammo, heat, no vent to the Forge); four hardpoints. Ryan agreed
-  Claude's three calls the same day: ammo a resource no Silence or Purge reaches, the content
-  at today's heat scale until the stock pass, the quick reload's 2 all it adds. In content as planned entries
-  (Ammo a planned resource in the vocabulary); the engine and the assets are the to-do's two
-  lines.
+- The Swallowtail's and the Musk Ox's models (their engines and content landed 21 October,
+  the bible's rows in section 7; the to-do's art lines).
 - The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
   die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
   build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
   tier one), the Needletail's content and its gate (a tilt-jet that Exposes, tier two) and
   the Giant Petrel (the formation leader, tier three), each the to-do's line (the Kite's
   rework, Exposed and Expose, the die's kinds and the Lammergeier built 21 October, above); a
-  Rapid shield never below tier two and a Rapid vent never below three; a locked piece's power at its chassis's depth; the Buzzard's stock and three
-  stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs) with the stock pass; the
-  designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
+  Rapid shield never below tier two and a Rapid vent never below three; a locked piece's power at its chassis's depth; the Buzzard's stock and the three
+  stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs), landed with the stock
+  pass on 22 October; the designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
   out of it for now (Ryan, 21 October).
 
 ## Next, in order
@@ -645,9 +606,9 @@ to-do's Ryan list).
    Scorpion on 20 October, and the maker's tiers confirmed the same day (3-5-2, the bible's
    roster row). The Rapid discussion in the maker's context followed (20 October): the
    Prairie Dog's pivot, the helicarrier as the Swallowtail and the artillery as the Musk Ox
-   landed (21 October); the gunship waits for the stock pass's tags and the numbers' rescale
-   (Ryan, 21 October: "since that's its whole deal"), so the maker's design sessions are done
-   until then. The Arsenal's four wait on Ryan: Claude's
+   landed (21 October); the gunship waited for the stock pass's tags and the numbers' rescale
+   (Ryan, 21 October: "since that's its whole deal"), which landed 22 October, so its session
+   is the maker's next. The Arsenal's four wait on Ryan: Claude's
    first round and its review are in their briefs, none of it answered, Misharu first.
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
@@ -704,8 +665,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.259, and so is the
-  live (22 October, the page's version 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
+  `docs/design-bible.html` after every change. This branch's file is v0.260, and so is the
+  live (22 October, the page's version 277, the review's holes: the fills under the floors, a hero's finisher against a light machine; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
   second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
@@ -715,8 +676,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
   the direction run in the scales row, section 12's content item) and the stun calls of the
   same day (the stun row, section 12), then the Battery's Flak gate, the Backdraft as a consumer
-  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 93 since the stock
-  pass's republish (below).
+  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 94 since the stock
+  pass's republishes (below).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -743,7 +704,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   components, foes, modules, vocabulary: the new pieces, the tiers, HP and Breach, the foes'
   blows, the maxima) and the page's face line showing strikes, gates, consumers and own fire
   (the page's version 93; `edits` empty before it, the five files checked identical to main's
-  before they were replaced). Its database
+  before they were replaced), then the vocabulary again with its three internal table cells at
+  the scale (the page's version 94). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

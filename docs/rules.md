@@ -170,7 +170,9 @@ defeat when every machine is wrecked. There is no round limit.
   to 24 heroes, 80 to 100 bosses; a foe's blow 2 to 8 (the rank and file's mostly 2 or 3), a
   massive foe's 7 or 8, a hero's 4 to 10, a boss's 6 to 10; machine hull 20 to 50 by size,
   shield 6 to 16, base armour 0 to 2 by role, timed armour to 4 or 5; heat 1 to 20 (1 to 30
-  if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8). The scales are magnitudes,
+  if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8). Three fills sit under
+  those floors (the light machines' hull 12 to 16, most chassis' field recharge 4 or 5, the
+  Entropy Condenser's vent 10): the bible's section 12. The scales are magnitudes,
   not steps: any whole number may be used. Move alone keeps steps of 5, since a hex costs 5
   or 10. The content's numbers are the stock pass's fills as its loops moved them
   (`docs/briefs/stock_pass.md`, `docs/measurements.md`; set by `tools/stock_fills.py`),

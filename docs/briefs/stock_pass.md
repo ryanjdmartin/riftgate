@@ -6,7 +6,7 @@ method and the chunks. Ryan marks the proposal; the engine chunk runs meanwhile;
 lands on his marks. Decisions are the bible's rows (sections 2, 5, 6 and 11, 22 October); this
 brief holds the fills and the plan, and retires to git when the pass lands.
 
-**Status**: plan and proposal (Claude, 22 October), on the decisions of 21 and 22 October.
+**Status**: landed 22 October (the content, the loops' numbers, the bands at 200 seeds; the plan and proposal of the same day beneath); open for Ryan's reads (the bible's section 12), the name pass and the pricing run, then it retires to git.
 **Maker**: all. **Read first**: `docs/briefs/README.md`; the bible's scales row (section 11),
 its kill-time row (section 2), its armour, breach and heat rows (section 5), its HP row
 (section 6), its stock-pass and tiers rows (sections 7 and 10); `docs/rules.md`;
