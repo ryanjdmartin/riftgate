@@ -2934,6 +2934,40 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	assert_false(Effects.effective_face(m, plate).has(K.SPILLOVER), "spillover stays off the shield")
 
 
+## A grant written out (the Boar's spill; the stock pass, 22 October): the entry carries the
+## keyword for the engine, the die draws it as the star rather than a chip on every entry, and
+## the hold reads the passive's own line; a plain grant keeps its chip and its effect text.
+func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
+	var drive := {"id": "drive", "name": "Juggernaut Drive", "description": "Damage past a kill spills into the rank behind, from any weapon.", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]}
+	var sk := Skirmish.new(1, 1)
+	var gun := Face.attack(50, L)
+	var m := _mech("A", Die.single(gun), 40, 100)
+	m.grant_passive(drive)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 10), _archer(500, 10)])
+	sk.begin()
+	sk.start_round()
+	var shown := sk.shown_face(sk.mechs[0], gun)
+	assert_true(shown.has(K.SPILLOVER), "the engine still spends it with the keyword")
+	assert_eq(shown.printed, [K.SPILLOVER] as Array[int], "written out: the die draws no chip for it")
+	assert_true(shown.has_unique_rule(), "but the star")
+	assert_false(shown.describe().contains("spillover"), "and its line names no keyword: %s" % shown.describe())
+	assert_false(gun.has_unique_rule(), "which the bare entry does not wear")
+	assert_eq(Effects.explain(m, gun), ["Damage past a kill spills into the rank behind, from any weapon. (Juggernaut Drive)"], "the hold reads the passive's line")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.back[0].hp, 470, "and the spill lands as before")
+	var plain := {"id": "plain", "name": "Plain", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "penetrate"}]}
+	var u := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
+	u.grant_passive(plain)
+	var f := Effects.effective_face(u, u.die.faces[0])
+	assert_true(f.has(K.PENETRATE) and f.printed.is_empty(), "a plain grant is a keyword chip")
+	var db := ContentDB.load_default()
+	var boar_grant: Dictionary = db.chassis["wild_boar"]["passive"]["effects"][0]
+	assert_true(bool(boar_grant.get("printed", false)), "the Boar's spill is written out in content")
+
+
 func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:
 	var sk := Skirmish.new(1)
 	var cannon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "heat": 0, "vents_all": true, "power_per_heat": 10})

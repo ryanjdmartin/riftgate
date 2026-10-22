@@ -244,8 +244,9 @@ not built): the ally gains Overcharged 2 and its die rolls again, which does not
 spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
-strike of the spend whole; the engine runs it as a keyword the passive
-grants, so the Boar's entries wear its chip today (the star proposed).
+strike of the spend whole; the engine runs it as a keyword the passive grants written out,
+so each of the Boar's weapons wears the star, the hold reading the passive's line, and no
+keyword chip.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the

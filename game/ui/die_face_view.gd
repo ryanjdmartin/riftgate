@@ -279,10 +279,12 @@ func _draw() -> void:
 		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), "%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, sc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
-	# Annotation chips hugging the right edge, one per keyword, star for a unique effect.
+	# Annotation chips hugging the right edge, one per keyword, star for a unique effect. A
+	# keyword a passive grants written out (the Boar's spill) is the star, never its own chip.
 	var tags: Array[String] = []
 	for k in face.keywords:
-		tags.append(Face.KEYWORD_NAMES[k])
+		if not face.printed.has(k):
+			tags.append(Face.KEYWORD_NAMES[k])
 	if face.has_unique_rule():
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if face.targets == Face.Target.SELF:

@@ -922,12 +922,16 @@ static func effective_reach(u, face: Face) -> int:
 ## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on equipment only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-static func granted_keywords(u, face: Face, target = null) -> Array[int]:
+## `printed_only`: just the grants written out (`printed`, the Boar's spill), which the die
+## draws as the star with the hold reading the passive's line, never a keyword chip.
+static func granted_keywords(u, face: Face, target = null, printed_only: bool = false) -> Array[int]:
 	var out: Array[int] = []
 	if face == null or face.kind == Face.Kind.BLANK:
 		return out
 	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) != "grant_keyword":
+			continue
+		if printed_only and not bool(pair[0].get("printed", false)):
 			continue
 		var kw := Face.keyword_from_name(str(pair[0].get("value", "")))
 		if kw <= 0 or face.has(kw) or out.has(kw):
@@ -979,8 +983,10 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var r := effective_reach(u, face)
 	var muted := keywords_muted(u) and not base.keywords.is_empty()
 	var granted: Array[int] = []
+	var printed: Array[int] = []
 	if not keywords_muted(u):
 		granted = granted_keywords(u, base, target)
+		printed = granted_keywords(u, base, target, true)
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
 	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0 and not muted:
@@ -991,6 +997,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
+		if printed.has(kw) and not c.printed.has(kw):
+			c.printed.append(kw)
 	c.power_max += ceiling
 	c.power = mini(c.power + floor_up, c.power_max)
 	return c
@@ -1747,7 +1755,9 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
-					out.append("%s (%s)" % [effect_text(eff), m.name])
+					# A grant written out (the Boar's spill) reads the passive's own line, the
+					# star's text, since the player learns no keyword for it.
+					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand. A raised ceiling means nothing to a flat face.

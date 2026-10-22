@@ -345,7 +345,8 @@
      {
       "trigger": "static",
       "effect": "grant_keyword",
-      "value": "spillover"
+      "value": "spillover",
+      "printed": true
      }
     ]
    },

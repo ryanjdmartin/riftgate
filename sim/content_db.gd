@@ -1046,6 +1046,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
+		if effect == "grant_keyword" and eff.has("printed") and not (eff["printed"] is bool):
+			errs.append("%s: grant_keyword's printed is true or false (a grant written out, drawn as the star)" % where)
 		if effect == "grant_keyword":
 			var kw := str(eff.get("value", ""))
 			if Face.keyword_from_name(kw) <= 0:

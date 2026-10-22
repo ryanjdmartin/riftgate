@@ -80,6 +80,7 @@ var reach: int = Reach.DIRECT
 var power: int = 20
 var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
+var printed: Array[int] = []  # of those, the ones a passive grants written out (the Boar's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
@@ -413,7 +414,7 @@ func cooldown_rounds() -> int:
 ## and a Rapid entry's "no cooldown" with it), a spin (the Spin-Up's), the Siphon's reach over
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() \
+	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or reloads_ammo > 0
@@ -483,6 +484,7 @@ func duplicate_face() -> Face:
 	f.power_max = power_max
 	f.heat = heat
 	f.strikes = strikes
+	f.printed = printed.duplicate()
 	f.label = label
 	f.cracked = cracked
 	f.component = component
@@ -641,7 +643,8 @@ func describe() -> String:
 			if reaches_all:
 				s += " on every ally yet to act" if not_acted else " on every ally"
 			for k in keywords:
-				s += " " + keyword_label(k)
+				if not printed.has(k):
+					s += " " + keyword_label(k)
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
@@ -658,6 +661,8 @@ func describe() -> String:
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:
+				if printed.has(k):
+					continue   # a grant written out says itself in its passive's line (the star), never as a keyword
 				s += " " + keyword_label(k)
 				if k == Keyword.BURN:
 					s += " %d" % burn   # a numbered keyword: the stacks each blow leaves
