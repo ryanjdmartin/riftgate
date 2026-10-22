@@ -623,9 +623,11 @@ to-do's Ryan list).
 2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): the engine
    chunk is built (22 October, on its branch, the baseline reports beside it); Ryan's marks are
    made the same day, the structure not the numbers (the brief's section 3 and its tables),
-   with two of his own suggestions in discussion (the Inducer's maker and price, a Suppress
-   piece's lowest tier); the landing (section 7, on Opus) builds the engine items first, sets
-   the numbers by measured loops with `tools/stock_fills.py` against section 2's tests, then
+   and the stun calls of the same day are the stun row's (no stock holds a Suppress piece; the
+   Inducer the Arsenal's, tier three on Volatile; a tier-two fire stun; the Battery's gate and
+   the fire stun's spend open, Claude's leans in the brief); the landing (section 7, on Opus)
+   builds the engine items first, sets the numbers by measured loops with `tools/stock_fills.py`
+   against section 2's tests, then
    lands the content and reads the bands fresh against the baseline.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the

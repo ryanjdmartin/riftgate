@@ -231,11 +231,10 @@ which collides with the Ram Frame module) becomes the **Bleed Valve**.
 | Piece | Maker | Tier | Today | First fill | Keywords and rules | Tags | Note |
 |---|---|---|---|---|---|---|---|
 | Pulse Vacillator | Aphelion | 2 | 5, heat 5 | rapid | 2, heat 2 | Rapid | Beam | heat the Rapid's price (the action-economy row): a chain of two costs 4 |
-| Umbra Inducer | Aphelion | 2 | 10, heat 10 | suppress | 3, heat 4 | Suppress, gated | Beam | the gate: a foe carrying a debuff other than the Paradox (the Baboon brief's lean, its hole closed) |
 | Differentiation Probe | Aphelion | 2 | 0, heat 5 | disrupt | 0, heat 2 | Disrupt | Beam |  |
 | Tesla Gauntlets | Minerva | 2 | 15, heat 10 | shock | 4, heat 3 | Shock | Arc, Melee |  |
 | Meteor Artillery | the Arsenal | 2 | 15, heat 15 | burn | 5, heat 6 | Burn 3 | Plasma, Missile | Burn 5 today |
-| Suppression Battery | Wainwright & Sutler | 2 | 15 to 25, heat 20 | suppress | 3 to 5, heat 4 | Suppress, cooldown 2 | Ballistic | the stun gated by a printed cooldown, the stun row's price; out of the Clydesdale's stock (a tier two stocks below its tier) |
+| Suppression Battery | Wainwright & Sutler | 2 | 15 to 25, heat 20 | suppress | 3 to 5, heat 4 | Suppress, gated; the gate open: Claude's lean a foe carrying Flak, the stun row's back-rank read the alternative | Ballistic | the cooldown gone (a cooldown is no price for a Suppress: the stun row, Ryan, 17 October); out of the Clydesdale's stock, since no stock holds a Suppress piece (Ryan, 22 October) |
 | Coriolis Accelerator | Kestrel | 2 | 10, heat 0 | 3, +1 per 5 HP missing, heat 1 |  | Arc | to the pool from the Kite's and the Buzzard's stocks (the stock-pass row) |
 | Laminar Deflector | Kestrel | 2 | 20 | rapid | 6 | Rapid; self or ally | none | a tier-two blueprint, out of the tier-one and tier-two stocks (Ryan, 20 October) |
 | Corona Shield | Aphelion | 2 | 20 | cleanse | 6 | Cleanse; self or ally | none |  |
@@ -244,6 +243,7 @@ which collides with the Ram Frame module) becomes the **Bleed Valve**.
 | Cyclic Cannon | Kestrel | 2 | new | 2 ×4, heat 3 |  | Ballistic | new (the Kestrel line): the multi-strike gun, Flak's partner, the strafer's ×8 |
 | Flak Cannon (a working name) | Wainwright & Sutler | 2 | new | 3, heat 2 | Flak 2 | Ballistic | new, the Flak family: the single-target layer for the Maxigun to chew |
 | the Stoker (Ryan's word) | Wainwright & Sutler | 2 | new | 3, heat 1 | Burn 2; Burning 1 on its own firer | Flame, Ballistic | new (Ryan, 19 October): slow fuel for the Whip Scorpion by decision; the firer's stack is 1 heat at the turn's end |
+| Backdraft Charge (a working name) | the Arsenal | 2 | new | 3, heat 0 | Suppress, gated: a Burning foe (Claude's lean: and its Burning goes out) | Plasma, Flame | new (Ryan, 22 October): the fire-synergy stun, its gate its price; in no stock, like every Suppress piece |
 
 ### Tier three
 
@@ -251,6 +251,7 @@ which collides with the Ram Frame module) becomes the **Bleed Valve**.
 | Piece | Maker | Tier | Today | First fill | Keywords and rules | Tags | Note |
 |---|---|---|---|---|---|---|---|
 | Gravity Knuckles | the Arsenal | 3 | 15, heat 10 | burn | 5, heat 4 | Burn 3 | Plasma, Melee | shelved (section 12) |
+| Umbra Inducer | the Arsenal | 3 | Aphelion's; 10, heat 10 | suppress | 3, Volatile, heat 0 | Suppress, Volatile; no condition | Plasma | Ryan, 22 October: the Arsenal's (it reads as Arsenal tech), priced in Volatile in place of heat, tier three for its power; found and never stocked, since no chassis stocks tier three; Volatile bites 3 |
 
 ### Fixed pieces, by chassis
 
@@ -308,15 +309,28 @@ whose fantasy is armour piercing, so a Golem has an answer beside the biggest bl
 Transonic Rifle stays a plain step in the 3, 5, 10 ladder. Foes carry no shield, so on our
 side Breach ignores a foe's armour and nothing else, the same rule.
 
-### The Umbra Inducer, the Ram Frame and the Rangefinder
+### The stuns, the Ram Frame and the Rangefinder
 
-The Inducer suppresses only a foe carrying a debuff other than the Paradox (the Baboon brief's
-lean, its hole closed: the Paradox counts as a debuff elsewhere, which would open the gate on
-the Baboon's own targets nearly always); tier two. In discussion (Ryan, 22 October): it reads
-as the Arsenal's, priced in Volatile rather than heat, and no Suppress piece sits in any
-stock or below tier two, the Baboon's least of all ("a suppress that powers a suppress ...
-should be a build choice"); Claude's holes are in the chat of that day and the bible's section
-12 until Ryan settles it. Decided (Ryan, 22 October): the Ram Frame and the Rangefinder are
+Decided (Ryan, 22 October; the bible's stun row): no Suppress piece sits in any chassis's
+stock, the Baboon's least of all ("no reason for it to be able to stock a suppress that powers
+a suppress, that should be a build choice the player has to make"), and none below tier two,
+both by reason rather than cap. The slottable stuns split by gate, a Volatile stun and a fire
+stun being two pieces. The Umbra Inducer is the Arsenal's (it reads as Arsenal tech to him), a
+Suppress with no condition priced in Volatile in place of heat, at tier three for its power
+("probably"), so it is found and never stocked. The Backdraft Charge (a working name) is the
+tier-two fire-synergy stun: a Suppress that lands only on a Burning foe, heat 0, the gate its
+price; Claude's lean, for Ryan to weigh, that the stun puts the fire out, so each stun trades
+the fire's ticks for the turn of safety and a lit boss is relit between stuns (without it one
+Burn 3 holds the gate open three rounds and Numbed is the only brake on a lit boss, the ungated
+Inducer with one spend up front). The Suppression Battery stays Wainwright & Sutler's at tier
+two, out of the Clydesdale's stock, its printed cooldown gone (no price for a Suppress by
+Ryan's rule of 17 October) and its gate open: Claude's lean a foe carrying Flak, the maker's
+own status, laid and cashed inside a round since Flak halves at the round's end, the mirror of
+the Burning gate; the stun row's back-rank read the alternative, shut in every fight under
+five foes and against every massive foe. The engine item for all three is one, a condition on
+a weapon's keyword (section 7); the stuns left are the locked ones (the funnel-web's web, the
+Baboon's Paradox, the Swallowtail's charged Flare), each gated as its row says, and Aphelion
+keeps no slottable stun. Decided (Ryan, 22 October): the Ram Frame and the Rangefinder are
 mirrors, each a reach read, the Frame +1 on Direct blows aimed at the front rank and the
 Rangefinder +1 on Indirect blows aimed at the back, the Frame's armour line gone and both
 stat lines from the pricing run after the landing (the bible's catalogue row).
@@ -457,8 +471,12 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    rollout rung); the seven constants still in code as fields on their keyword or status
    (Cryo's cooling, the hot threshold, Volatile's and Corrupted's bites, Missing HP's step,
    Burning's and Scorched's heat on a machine, Vitriol's share); the Breach keyword on the
-   Railgun; the Ram Frame's and the Rangefinder's reach reads; a Volatile price on a weapon
-   if the Inducer takes one.
+   Railgun; the Ram Frame's and the Rangefinder's reach reads; a condition on a weapon's
+   keyword for the gated stuns (the face names when its Suppress lands, a Burning foe, a Flak
+   one or a back-rank one, read through the effects' conditions; the bot values it only where
+   it holds and the die over a foe shows the chip struck where it does not; a flag for a stun
+   that spends the status it reads, if Ryan takes Claude's lean). The Inducer's Volatile needs
+   nothing new: any component may carry it.
 2. **The loop.** `tools/stock_fills.py` applies a fill set to a checkout; the balance runner
    at 30 seeds reads it against section 2's tests (rounds to win on the rank and file and the
    massive foes, the gap, hull lost, the heat section), the campaign report the wear. Start
@@ -496,9 +514,9 @@ design call:
 
 ## Open for Ryan
 
-1. His own suggestions of 22 October, with Claude's holes (the chat of that day): no
-   Suppress piece in any stock and none below tier two; the Umbra Inducer as the Arsenal's,
-   priced in Volatile rather than heat, its condition kept or not.
+1. From the stun calls of 22 October (section 3's stuns): the Suppression Battery's gate
+   (Claude's lean a foe carrying Flak; the back-rank read the alternative), and whether the
+   Backdraft Charge's stun puts the fire out (Claude's lean: yes).
 2. The content name pass, later (the working names: Canopy, Bleed Valve, Decoherence Veil,
    Airburst Shell, Flak Cannon, the Stoker).
 

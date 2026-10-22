@@ -63,12 +63,18 @@ leave the Baboon's open; everything here is Claude's, for him to move.
 - Ryan, 19 October: Aphelion needs a defensive tier one (the to-do's line for this session);
   with the Baboon gone up, its tier ones as proposed (the Stingray, the line frame) hold no
   body.
+- Ryan, 22 October (the stock pass's stun calls, the bible's stun row): no Suppress piece sits
+  in any chassis's stock, the Baboon's least of all ("no reason for it to be able to stock a
+  suppress that powers a suppress, that should be a build choice the player has to make"), and
+  the Umbra Inducer leaves Aphelion for the Arsenal, tier three, priced in Volatile with no
+  condition. The proposal's "no Umbra Inducer" stands by rule, item 3 below is closed, and two
+  Inducers on a Baboon is a tier-three find twice over, the player's build.
 
 ## Open for the session
 
 1. Tier two confirmed.
 2. Its stock at tier two (the stock pass: the Baboon may stock a shield again).
-3. The Umbra Inducer's gate under the stun row, and how it meets the Paradox (the hole above).
+3. The Umbra Inducer's gate: closed 22 October (above), the Inducer the Arsenal's and gated by Volatile.
 4. The Paradox's threshold, if the move changes it.
 5. When it moves: with the line frame, or another Aphelion tier one, landing beside it.
 

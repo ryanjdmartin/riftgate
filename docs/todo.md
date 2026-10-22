@@ -10,7 +10,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 - [ ] Read `docs/rules.md` once and the bible's first row; answer section 12's questions as they come up, the foe roster after the picks and the mechanic budgets first
 - [ ] Finish the go on the roster analysis (`docs/roster_analysis.md`, the page under the status's Pages): what it left open is in `docs/briefs/README.md`, the tiers the briefs propose (the reshuffle, the ten-a-maker counts; the tier row's locked-piece clause reworded and Wainwright & Sutler's tiers decided, 20 October); each design question is its brief's session (the lines below)
 - [x] Mark the stock pass's proposal (`docs/briefs/stock_pass.md`): marked 22 October, the structure not the numbers (Breach on the Railgun alone, the halving kept, Flak 1 on the Flakshot, the Ram Frame and the Rangefinder as reach-read mirrors, the Shoring Jack 2, the Coil 2, the Halo on the Prairie Dog, the working names); the numbers by measured loops at the landing
-- [ ] Settle the two suggestions of 22 October after Claude's holes: no Suppress piece in any stock and none below tier two; the Umbra Inducer as the Arsenal's, priced in Volatile (its condition kept or not)
+- [ ] Settle the Suppression Battery's gate (Claude's lean: a foe carrying Flak; the stun row's back-rank read the alternative) and whether the Backdraft Charge's stun puts the fire out (Claude's lean: yes); the rest of 22 October's stun calls are the stun row's
 - [ ] Text: codex and flavour for the nine new machines, the Baboon's flavour, the components without a codex; each maker's Sponsorship notice in its voice; the mitigation discussion for the bible
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
 - [ ] Play the 11 October builds: the Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5), the overheat at the end of the turn, armour off a breach's overflow
@@ -65,7 +65,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`), its first round in the brief and waiting on Ryan
 - [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), its first round in the brief and waiting on Ryan; its Disrupt read again after the foes' fresh start
 - [ ] The Carrier (`aphelion_carrier.md`), on its own, its first round in the brief and waiting on Ryan
-- [ ] The Baboon to tier two and its Umbra Inducer's gate (`aphelion_baboon.md`), with the stock pass, its first round in the brief and waiting on Ryan
+- [ ] The Baboon to tier two (`aphelion_baboon.md`), with the stock pass, its first round in the brief and waiting on Ryan; its Inducer question closed 22 October (the Inducer is the Arsenal's, tier three, and no stock holds a Suppress piece)
 - [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
 - [ ] Misharu with Penance (`arsenal_misharu.md`), its first round in the brief and waiting on Ryan
 - [ ] The Onryō's Grudge, its kind open again since Flak (`arsenal_onryo.md`), its first round in the brief and waiting on Ryan

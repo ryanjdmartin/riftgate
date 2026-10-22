@@ -59,8 +59,8 @@ P = {
  'polarity_projector': A(0, heat=2), 'proximity_klaxon': A(0, heat=1), 'phased_sublimator': E(4), 'radiator_sail': E(5),
  'wake_diffuser': E(3, shields=3), 'overcharge_coil': dict(stacks=2), 'shoring_jack': dict(stacks=2), 'thermal_ray': A(6, heat=6),
  'retribution_thurible': {}, 'oblation_ward': E(10),
- 'pulse_vacillator': A(2, heat=2), 'umbra_inducer': A(3, heat=4), 'differentiation_probe': A(0, heat=2), 'tesla_gauntlets': A(4, heat=3),
- 'meteor_artillery': A(5, heat=6, burn=3), 'suppression_battery': A(3, 5, 4, cooldown=2), 'coriolis_accelerator': A(3, heat=1, power_per_missing=1),
+ 'pulse_vacillator': A(2, heat=2), 'umbra_inducer': A(3, heat=0, keywords=['suppress', 'volatile']), 'differentiation_probe': A(0, heat=2), 'tesla_gauntlets': A(4, heat=3),
+ 'meteor_artillery': A(5, heat=6, burn=3), 'suppression_battery': A(3, 5, 4), 'coriolis_accelerator': A(3, heat=1, power_per_missing=1),
  'laminar_deflector': E(6), 'corona_shield': E(6), 'aurora_lattice': {}, 'entropy_condenser': E(10), 'gravity_knuckles': A(5, heat=4, burn=3),
  'chainsaw_claw': A(2, 4, 0), 'bullion_fragmenter': A(4, heat=2, power_per_load=1), 'breaching_plow': A(2, 5, 0, braces=2),
  'cryo_flinger': A(0, heat=1), 'flakshot_repeater': A(1, heat=0, flak=1), 'megataser_harpoon': A(1, 2, 2), 'combat_translocator': A(0, heat=1),
@@ -72,10 +72,15 @@ P = {
  'zenith_emitter': A(3, heat=2), 'coolant_dump': E(6), 'blowout_stack': E(5),
  'pinion_driver': A(4, heat=0), 'lorentz_contractor': A(0, heat=2), 'syrinx_drone': A(0, heat=0),   # not in the brief: today's over four
 }
+# The stun calls (Ryan, 22 October): the Inducer is the Arsenal's at tier three, Volatile in place of heat;
+# the Battery's cooldown goes (no price for a Suppress). Their gates wait on the engine's face condition.
+MOVED = {'umbra_inducer': dict(maker='arsenal', tier=3)}
 raw, d = jload(R + 'content/components.json')
 seen = set()
 for e in d['entries']:
     f = e['face']; fill = P[e['id']]; seen.add(e['id'])
+    for k, v in MOVED.get(e['id'], {}).items():
+        e[k] = v
     for k, v in fill.items():
         if k == 'power_max' and 'power_max' not in f and v == fill.get('power'):
             continue
