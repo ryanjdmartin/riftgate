@@ -589,6 +589,40 @@ func test_greedy_swaps_a_back_foe_forward() -> void:
 	assert_eq(caster.rank, 0, "the bot pulls the caster into the front")
 
 
+## A Swap that bunches (the Dingo's Translocator, 22 October): a foe moved beside another in the
+## row an ally's Spread will hit is worth what that Spread then deals past its target; read in a
+## what-if, the foes put back; nothing sent off alone, and nothing once the ally has acted.
+func test_greedy_swaps_to_bunch_foes_under_an_allys_spread() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("Dingo", Die.single(Face.attack(0, I, [K.SWAP])), 40, 100))
+	sk.add_mech(_mech("Sprayer", Die.single(Face.attack(10, L, [K.CLEAVE])), 40, 100))
+	var a := _ghoul(100, 10)
+	var b := _ghoul(100, 10)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	sk.front[b.column] = null
+	sk._place(b, 0, 3)
+	sk._place(a, 0, 0)
+	var dingo: Skirmish.MechState = sk.mechs[0]
+	assert_true(Policy.bunching_score(sk, dingo, b, Vector2i(0, 1)) > 0.0, "b moved beside a: the Spread reaches both")
+	assert_eq([b.rank, b.column, sk.front[3] == b, sk.front[1] == null], [0, 3, true, true], "read in a what-if, the foes put back")
+	assert_eq(Policy.bunching_score(sk, dingo, b, Vector2i(1, 3)), 0.0, "sent back alone it bunches nothing")
+	var best: Dictionary = {}
+	for o in pol.options_for(sk, 0):
+		if best.is_empty() or float(o["score"]) > float(best["score"]):
+			best = o
+	assert_true(sk.assign(0, best["target"], best["second"]), "the bot's best swap is spent")
+	assert_true(a.rank == 0 and b.rank == 0 and absi(a.column - b.column) == 1, "and leaves the two side by side under the Spread")
+	sk.end_round()
+	sk.start_round()
+	sk.front[b.column] = null
+	sk._place(b, 0, 3)
+	assert_true(sk.assign(1, a), "the Sprayer spends first")
+	assert_eq(Policy.bunching_score(sk, sk.mechs[0], b, Vector2i(0, 1)), 0.0, "and a swap after it bunches for nobody")
+
+
 ## The Lammergeier's mines for the bot (21 October), on a synthetic passive: a mine laid on a
 ## slot a waiting foe will take is worth its blow there, and nothing with none waiting and no
 ## pull on the team; the pull on a foe is worth the pile landing in laid order, a Shock shot

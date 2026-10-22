@@ -1534,6 +1534,37 @@ func _swap(first: Foe, second) -> void:
 	_refresh_guards()
 
 
+## A swap read without making it (the bot's bunching, 22 October): the two foes, or the foe and
+## the empty slot, trade places while `read` runs, then stand where they stood; no log, no kin or
+## guard refreshed, no mine set off.
+func swap_what_if(first: Foe, second, read: Callable) -> void:
+	var from := Vector2i(first.rank, first.column)
+	var other: Foe = second if second is Foe else null
+	var to: Vector2i = Vector2i(other.rank, other.column) if other != null else second
+	_set_slot(from, other)
+	_set_slot(to, first)
+	first.rank = to.x
+	first.column = to.y
+	if other != null:
+		other.rank = from.x
+		other.column = from.y
+	read.call()
+	_set_slot(from, first)
+	_set_slot(to, other)
+	first.rank = from.x
+	first.column = from.y
+	if other != null:
+		other.rank = to.x
+		other.column = to.y
+
+
+func _set_slot(at: Vector2i, f: Foe) -> void:
+	if at.x == 0:
+		front[at.y] = f
+	else:
+		back[at.y] = f
+
+
 ## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs count for nothing and its
 ## keywords are muted through its next round, its stores untouched (Ryan, 21 October), as a
 ## foe's Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the

@@ -35,6 +35,7 @@ const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's aci
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take before it halves
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
+const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
 const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team blow likely before it fades, and a back-rank foe in Direct reach, as a share
 const MINE_WEIGHT := 0.8         # a laid shot, as a share of its blow on the arrival: delayed, and laid against a count of those waiting, never a foe seen
 const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashed later by a pull on the team's dice
@@ -207,7 +208,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				var best_second = null
 				var best := -INF
 				for second in sk.swap_targets(t):
-					var v := swap_score(sk, t, second)
+					var v := swap_score(sk, t, second) + bunching_score(sk, ms, t, second)
 					if v > best:
 						best = v
 						best_second = second
@@ -1245,13 +1246,65 @@ func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
 ## What a swap is worth (the Dingo's Combat Translocator, a first reading of 21 October): a foe
 ## the swap brings into the front rank stands exposed to the team's Direct fire, worth a share
 ## of its kill and its threat; one it sends to the back hides by the same. Bunching foes for an
-## area piece and setting the acting order are not read yet.
+## area piece is bunching_score's; the acting order is not read yet.
 static func swap_score(sk: Skirmish, first: Foe, second) -> float:
 	var to := Vector2i(second.rank, second.column) if second is Foe else (second as Vector2i)
 	var score := _front_worth(sk, first) * float(first.rank - to.x)
 	if second is Foe:
 		score += _front_worth(sk, second) * float((second as Foe).rank - first.rank)
 	return score
+
+
+## What a swap is worth to the team's area pieces this round (the Dingo's Combat Translocator;
+## bunching, 22 October): for every other machine yet to act whose entry showing reaches more
+## than its target (a Spread's row, a Penetrate's column, the drum's shape by the aim), the most
+## its widest spend would deal past its target after the swap against before it, read by trading
+## the two places in a what-if. The greedy still spends one die at a time, so the swap goes first
+## only when its whole worth tops the ally's own spend.
+static func bunching_score(sk: Skirmish, ms: Skirmish.MechState, first: Foe, second) -> float:
+	var areas: Array = []
+	for m in sk.live_mechs():
+		if m == ms or m.assigned or m.face() == null:
+			continue
+		var f := sk.spend_face(m)
+		if f == null or not f.is_attack() or f.reaches_all or f.spends_magazine or (f.power <= 0 and f.power_max <= 0):
+			continue
+		areas.append([m, f, _mean_blow(m, f)])
+	if areas.is_empty():
+		return 0.0
+	var before := _widest(sk, areas)
+	var after := [0.0]
+	sk.swap_what_if(first, second, func() -> void: after[0] = _widest(sk, areas))
+	return maxf(0.0, float(after[0]) - before) * BUNCH_WEIGHT
+
+
+## The team's area entries at their widest: for each, over its targets, the most its spend would
+## deal to the live foes it reaches past its target (its mean blow less each foe's armour, capped
+## at what the foe has left); an entry that reaches only its target adds nothing.
+static func _widest(sk: Skirmish, areas: Array) -> float:
+	var total := 0.0
+	for a in areas:
+		var m: Skirmish.MechState = a[0]
+		var f: Face = a[1]
+		var blow: float = a[2]
+		var most := 0.0
+		for t in sk.targets_for_face(m, f):
+			var ef := Effects.effective_face(m.unit, f, t)
+			if not ef.has(Face.Keyword.CLEAVE) and not ef.has(Face.Keyword.PENETRATE):
+				continue
+			var past := 0.0
+			for foe in sk.reached_by(ef, t):
+				if foe != t and foe.alive():
+					past += minf(maxf(0.0, blow - float(foe.armour_total())), float(foe.hp))
+			most = maxf(most, past)
+		total += most
+	return total
+
+
+## An attack entry's mean blow from its machine, every strike, before any foe.
+static func _mean_blow(m: Skirmish.MechState, f: Face) -> float:
+	var mean := int(roundf(float(f.power + f.power_max) * 0.5))
+	return float(Effects.attack(m.unit, f, mean, 0)["damage"]) * float(maxi(1, f.strikes))
 
 
 ## A foe's worth standing in the front rank, where Direct fire reaches it.
