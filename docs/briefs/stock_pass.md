@@ -191,10 +191,11 @@ renamed pieces are Ryan's; working names below.
 | Coolant Jacket | Wainwright & Sutler | 0, a basic | 20 | 4 | self or ally | none | the basic vent; keeps its name |
 | Ram-air Scoop | Kestrel | 0, a basic | 20 | 6 | self only | none | renamed; Kestrel's basic self vent, the jet's brake |
 
-Renames proposed: the Minerva self shield (today the Blast Door) becomes the **Shutter Plate**
-or the **Bulwark Plate**, so that "Blast Door" is free for the Barrier piece whose fantasy it
-already is (the Barrier row); the Kestrel self vent (today the Ram-air Scoop, which collides
-with the Ram Frame module) becomes the **Bleed Valve** or the **Intake Louvre**.
+Renames (working names, Ryan, 22 October: "go with your name suggestions, I'll do a content
+name pass later"): the Minerva self shield (today the Blast Door) becomes the **Canopy**, the
+falling-object guard on a mining machine, so that "Blast Door" is free for the Barrier piece
+whose fantasy it already is (the Barrier row); the Kestrel self vent (today the Ram-air Scoop,
+which collides with the Ram Frame module) becomes the **Bleed Valve**.
 
 ### Tier one
 
@@ -208,7 +209,7 @@ with the Ram Frame module) becomes the **Bleed Valve** or the **Intake Louvre**.
 | Maxigun | Wainwright & Sutler | 1 | 5 to 10 ×3, heat 5 | 1 to 2 ×3, heat 1 |  | Ballistic | the multi-strike basic; strikes of 1 bounce off any plate, Flak lifts them |
 | Enfilade Beam | Wainwright & Sutler | 1 | 15, heat 10 | penetrate | 4, heat 2 | Penetrate | Beam | the column gun |
 | Arc Fault Cannon | Kestrel | 1 | 15, heat 10 | chain | 4, heat 2 | Chain | Arc | Chain whatever Chain becomes (section 12) |
-| Overclocked Railgun | Kestrel | 1 | 50, heat 40 | 10, heat 8 | Breach, if our guns take it | Ballistic, Arc | the big hot flat gun, kept (the Kestrel line); a whole gauge a shot |
+| Overclocked Railgun | Kestrel | 1 | 50, heat 40 | 10, heat 8 | Breach (Ryan, 22 October) | Ballistic, Arc | the big hot flat gun, kept (the Kestrel line); a whole gauge a shot; the one gun that breaches |
 | Plasma Arquebus | the Arsenal | 1 | 5 to 15, heat 5 | 2 to 4, heat 2 |  | Plasma | the Arsenal's tier one |
 | Blazethrower | the Arsenal | 1 | 10, heat 10 | burn | 3, heat 3 | Burn 2 | Flame, Plasma |  |
 | Polarity Projector | Aphelion | 1 | 0, heat 5 | shock | 0, heat 2 | Shock | Arc | the tier-one Shock, a brace's answer |
@@ -216,8 +217,8 @@ with the Ram Frame module) becomes the **Bleed Valve** or the **Intake Louvre**.
 | Phased Sublimator | Aphelion | 1 | 20 | cleanse | 4 | Cleanse; self or ally | none | the cleanse vent |
 | Radiator Sail | Aphelion | 1 | 20 | 5 | ally only | none | from a basic to Aphelion's ally vent, so three basic vents become two |
 | Wake Diffuser | Kestrel | 1 | 10 | 3, shields 3 | self or ally | none | the combined entry; its shield half waits on its engine (the to-do) |
-| Overcharge Coil | Kestrel | 1 |  | Overcharged 1 | self or ally | none | 2 today; a point is a fifth to a half of a blow now |
-| Shoring Jack | Minerva | 1 |  | Armoured 3, the round | self or ally | none | 10 today; a brace to 4 or 5 on a tank, the wall Ryan allows conditionally |
+| Overcharge Coil | Kestrel | 1 |  | Overcharged 2 | self or ally | none | 2 (Ryan, 22 October): at 1 the halving leaves +1 on one ally's blow this round and nothing after |
+| Shoring Jack | Minerva | 1 |  | Armoured 2, the round | self or ally | none | 2 at tier one (Ryan, 22 October): a tank to 4 for the round; 3 would wall everything but a boss from a tier-one piece |
 | Thermal Ray | Wainwright & Sutler | 1 | 30, heat 30 | 6, heat 6 |  | Beam | the hot flat gun; tier one so the Whip Scorpion and the Musk Ox may stock it ("the Thermal Ray's heat price") |
 | Transonic Rifle | Kestrel | 1 | new | 5, heat 4 |  | Ballistic | new (the Kestrel line): the step between the Carbine and the Railgun |
 | Airburst Shell (a working name) | Wainwright & Sutler | 1 | new | 1 to 2, heat 1 | Spread, Flak 1 | Ballistic | new, the Flak family (Ryan, 19 October): the slot-in above the basics |
@@ -262,7 +263,7 @@ No tier, never a blueprint. Their numbers move with the scale like any other.
 | Bullion Fragmenter | Minerva | fixed | 20, heat 10 | 4, +1 a load, three loads, heat 2 | fires the hopper | Ballistic, Melee | the Badger |
 | Breaching Plow | Minerva | fixed | 15 to 30, heat 0 | cleave | 2 to 5, heat 0 | Spread; braces 2 | Blade, Melee | the Boar: Armoured 2 for the round, a tank at 4; the first wall to measure |
 | Cryo Flinger | Minerva | fixed | 0, heat 5 | lure, rapid, cryo | 0, heat 1 | Lure, Rapid, Cryo 1 | Missile | the Armadillo |
-| Flakshot Repeater | Wainwright & Sutler | fixed | 5, heat 0 | cleave, flak | 1, heat 0 | Spread, Flak 2 | Ballistic | the Prairie Dog: the gun is the amp, not the damage; Flak 2 kept and watched, 1 the lever |
+| Flakshot Repeater | Wainwright & Sutler | fixed | 5, heat 0 | cleave, flak | 1, heat 0 | Spread, Flak 1 | Ballistic | the Prairie Dog: the gun is the amp, not the damage; Flak 1 (Ryan, 22 October: 2 laid every round settles at a steady 3), 2 the lever |
 | Megataser Harpoon | Wainwright & Sutler | fixed | 5 to 10, heat 10 | shock | 1 to 2, heat 2 | Shock | Ballistic, Arc | the Dingo |
 | Combat Translocator | Wainwright & Sutler | fixed | 0, heat 5 | swap | 0, heat 1 | Swap | Arc | the Dingo |
 | Afterburner Cannon | Kestrel | fixed | 10, heat 0 | 2, +1 per 2 heat fired, heat 0 | vents all | Plasma | the Buzzard: a full gauge adds 8 to 10 |
@@ -296,25 +297,29 @@ No tier, never a blueprint. Their numbers move with the scale like any other.
 The Flak family and the Stoker are Wainwright & Sutler's (Ryan, 19 October, proposed here for
 his marks); the Cyclic Cannon, the Transonic Rifle and Trim Tabs are Kestrel's, taken in the
 line review (21 October, `kestrel_line.md`). Barrier and Ward carriers: **Blast Door**
-(Minerva, tier one, a buff: Barrier on one machine, self or ally) and a Ward piece of
-Aphelion's at tier one (a buff: Ward on one machine; its name Ryan's, the Votive Screen being
-Misharu's). Neither is ever a team buff (the Barrier row).
+(Minerva, tier one, a buff: Barrier on one machine, self or ally) and the **Decoherence
+Veil**, Aphelion's, at tier one (a buff: Ward on one machine; a working name, the Votive Screen
+being Misharu's). Neither is ever a team buff (the Barrier row).
 
 ### Our guns and Breach
 
-If our guns take the word (Claude's lean: yes), the Overclocked Railgun carries it, the one
-big flat gun whose fantasy is armour piercing, so a Golem has an answer beside the biggest
-blow; the Transonic Rifle is the second candidate if one mid gun should too. Foes carry no
-shield, so on our side Breach ignores a foe's armour and nothing else, the same rule.
+Decided (Ryan, 22 October): the Overclocked Railgun carries Breach, alone, the one big flat gun
+whose fantasy is armour piercing, so a Golem has an answer beside the biggest blow; the
+Transonic Rifle stays a plain step in the 3, 5, 10 ladder. Foes carry no shield, so on our
+side Breach ignores a foe's armour and nothing else, the same rule.
 
-### The Umbra Inducer's gate, the Ram Frame and the Rangefinder
+### The Umbra Inducer, the Ram Frame and the Rangefinder
 
 The Inducer suppresses only a foe carrying a debuff other than the Paradox (the Baboon brief's
 lean, its hole closed: the Paradox counts as a debuff elsewhere, which would open the gate on
-the Baboon's own targets nearly always); heat 4; tier two. The Ram Frame loses its armour
-line and takes a tag read, +1 on Melee-tagged blows, with smaller stats; the Artillery
-Rangefinder loses its spared splash with danger close and takes a reach read, +1 on Indirect
-blows aimed at the back rank. Both are section 7's catalogue row, Ryan's to pick.
+the Baboon's own targets nearly always); tier two. In discussion (Ryan, 22 October): it reads
+as the Arsenal's, priced in Volatile rather than heat, and no Suppress piece sits in any
+stock or below tier two, the Baboon's least of all ("a suppress that powers a suppress ...
+should be a build choice"); Claude's holes are in the chat of that day and the bible's section
+12 until Ryan settles it. Decided (Ryan, 22 October): the Ram Frame and the Rangefinder are
+mirrors, each a reach read, the Frame +1 on Direct blows aimed at the front rank and the
+Rangefinder +1 on Indirect blows aimed at the back, the Frame's armour line gone and both
+stat lines from the pricing run after the landing (the bible's catalogue row).
 
 ## 4. The foes
 
@@ -363,7 +368,7 @@ two modules keep one, +1 each, paid in move or in tier. Numbers at the new scale
 | Module | Maker | Tier | Today | First fill | Note |
 |---|---|---|---|---|---|
 | Ablative Plating | Minerva | 1 | hull +30, armour +5 | hull +8, armour +1, move −10 | the one tier-one armour line, paid in move |
-| Ram Frame | Minerva | 2 | hull +60, armour +10 | hull +24; its rule open (section 7's catalogue row) | no armour line: a standing point is the dear one; proposed rule: +1 on Melee-tagged blows (a tag read) |
+| Ram Frame | Minerva | 2 | hull +60, armour +10 | a hull line from the pricing run; +1 on Direct blows aimed at the front rank | no armour line: a standing point is the dear one; the Rangefinder's mirror (Ryan, 22 October) |
 | Spall Liner | Minerva | 2 | move -10, heat -20; [{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}] | move −10, heat max −4; +2 shield on hull damage |  |
 | Boundary-layer Bleed | Kestrel | 1 | cooling +5; [{"trigger": "on_heat_gain", "effect": "add_shield", "value": 5}] | cooling +1; +1 shield on heat gain |  |
 | Muzzle Velocity Booster | Kestrel | 2 | ; [{"trigger": "on_attack", "effect": "add_ceiling", "value": 5}] | ceiling +1 |  |
@@ -371,7 +376,7 @@ two modules keep one, +1 each, paid in move or in tier. Numbers at the new scale
 | Flak Skirt | Wainwright & Sutler | 1 | hull +10, armour +5 | hull +6 | its armour line goes; a skirt is hull |
 | Field Radiators | Wainwright & Sutler | 1 | heat +20, cooling +5 | heat max +4, cooling +1 |  |
 | Tactical Databank | Wainwright & Sutler | 2 | ; [{"trigger": "on_attack", "effect": "add_floor", "value": 5}] | floor +1 |  |
-| Artillery Rangefinder | Wainwright & Sutler | 2 | ; [{"trigger": "static", "effect": "spares_splash", "value": 1}] | its rule open with danger close retired (section 7's catalogue row) | proposed rule: +1 on Indirect blows aimed at the back rank (a reach read) |
+| Artillery Rangefinder | Wainwright & Sutler | 2 | ; [{"trigger": "static", "effect": "spares_splash", "value": 1}] | +1 on Indirect blows aimed at the back rank | the Ram Frame's mirror (Ryan, 22 October); a planned draft until the reach read lands |
 | Phase Conjugator | Aphelion | 2 | shield +10; [{"trigger": "on_shield_granted", "effect": "stack_status", "value": "braced", "stacks": 3}] | shield +4; Armoured 1 on an ally it shields | 3 today |
 | Susceptibility Tensor | Aphelion | 1 | shield +10; [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "target_status"}] | shield +4; +1 against a foe carrying a debuff |  |
 | Exotic-matter Shell | Aphelion | 3 | shield +40, heat +30; [{"trigger": "static", "effect": "add_damage_taken", "value": 10}] | shield +16, heat max +6; takes 2 more a blow | 10 today |
@@ -443,28 +448,35 @@ in the second.
 
 ## 7. The method (the second chunk, on Ryan's marks)
 
-1. **The content landing.** Every chassis, component, foe and module at the fills above as
-   marked; the stocks; the renames and retirements; the new pieces; the tags and tiers; the
-   stock-below-tier check switched on; the HP word in the vocabulary; the rules' numbers and
-   not-built marks; the bible's stock-pass row to built, its tables regenerated
+Ryan's marks of 22 October are structural (the calls below and in the tables); the numbers
+are set by measured loops, never marked one by one (Ryan, agreeing with the direction run's
+read: the first fills were the old numbers divided unevenly, `docs/measurements.md`).
+
+1. **The engine first.** A rung that plans two rounds, so the coordination gap can be read
+   (the greedy rung sets up only where the setup pays within the round; the bible pinned a
+   rollout rung); the seven constants still in code as fields on their keyword or status
+   (Cryo's cooling, the hot threshold, Volatile's and Corrupted's bites, Missing HP's step,
+   Burning's and Scorched's heat on a machine, Vitriol's share); the Breach keyword on the
+   Railgun; the Ram Frame's and the Rangefinder's reach reads; a Volatile price on a weapon
+   if the Inducer takes one.
+2. **The loop.** `tools/stock_fills.py` applies a fill set to a checkout; the balance runner
+   at 30 seeds reads it against section 2's tests (rounds to win on the rank and file and the
+   massive foes, the gap, hull lost, the heat section), the campaign report the wear. Start
+   from the brief's fills with the levers moved: the foes' blows up by half to double (the
+   rank and file 2 to 3, the elites 6 to 8, the bosses 8 to 12) or our hull and shield down a
+   quarter; cooling 0 on most chassis with the typical gun at 2 to 4, or maxima of 10 to 14;
+   the massive elites' armour 1; the Treant's and the Wyvern's regrow 3. Move one lever a
+   loop, read the bands, keep what passes; the module stat lines wait for the pricing run.
+3. **The content landing.** The stocks, the renames and retirements, the new pieces, the
+   tags and tiers, the stock-below-tier check kept green; the rules' numbers and not-built
+   marks; the bible's stock-pass row to built, its tables regenerated
    (`python3 tools/pages/bible_tables.py`), the vocabulary exported
-   (`tools/export_vocabulary.gd`), the hangar page republished; the Stingray's and the Baboon's
-   models rebuilt with their stock, or that line left to the asset session.
-2. **Read the bands fresh.** The balance report at 200 seeds beside the 13 October report:
-   which cells were walls or free wins and are now, read as bands never as deltas, since every
-   number moved at once. For rank-and-file packs the win rate says little (one blow kills); read
-   rounds to win and hull lost, random against greedy. For the massive foes, the formations and
-   the heroes read the win-rate bands and the rounds gap, about two to one the target.
-3. **Heat.** The report's heat section: the hot kits (the Buzzard, the Stingray, the Whip
-   Scorpion, the Nemesis, the Kite) show forced holds and overheats, the cold kits none; a hot
-   kit's peak crosses its maximum about its third round of firing.
-4. **Wear.** The campaign report: hull lost a battle and wrecks a run on the bot that never
-   withdraws, about four hard fights to wear a machine down.
-5. **The loop.** Move numbers inside their bands; every run a decision cites goes in
-   `docs/measurements.md`; never chase a decimal. The levers in order: foe HP on the big foes
-   for the gap, the guns' heat and the vents for the bite, shield against hull for the wear,
-   armour by role last and least.
-6. **Then** prices and tier ladders (the to-do's engine line) and Ryan's play for feel.
+   (`tools/export_vocabulary.gd`), the hangar page republished; the Stingray's and the
+   Baboon's models rebuilt with their stock, or that line left to the asset session.
+4. **Read the bands fresh** at 200 seeds beside the baseline (`docs/balance.md` as the
+   branch left it): walls and free wins as bands, rounds to win and hull lost on the rank and
+   file, the gap on the big foes; every run a decision cites in `docs/measurements.md`.
+5. **Then** prices and tier ladders (the to-do's engine line) and Ryan's play for feel.
 
 ## 8. The chunks and the switch
 
@@ -472,26 +484,23 @@ Planning was this model's (21 and 22 October): the decisions are rows, the fills
 spec are here. The implementation runs on Opus, in Ryan's words, so nothing below needs a
 design call:
 
-- **Chunk one, no marks needed**: section 6 in order, the baseline run first, each item a
-  commit with tests green, records with each (the rules' not-built marks, the to-do, the
-  status). Built 22 October on `claude/eager-newton-sf947u` (main merged in first), the
-  baseline reports run on main's head in a worktree beside it; items 2 and 7 say where the
-  build went past this plan, and the Boar's row lost its stale "Breach is the foes' word" on
-  the way.
-- **Ryan marks sections 1 to 5** meanwhile. Plain marks go straight on; a mark that reopens a
-  design (a converter's shape, a basic's maker, a stock's identity) comes back up for a round.
-- **Chunk two, on the marks**: section 7's landing and reads.
+- **Chunk one**: section 6, built 22 October on `claude/eager-newton-sf947u` (main merged in
+  first), the baseline reports run on main's head in a worktree beside it; items 2 and 7 say
+  where the build went past this plan, and the Boar's row lost its stale "Breach is the foes'
+  word" on the way.
+- **The marks** (Ryan, 22 October): made, in the tables and section 3; two of his own
+  suggestions in discussion (the Inducer's maker and price, a Suppress piece's lowest tier).
+- **Chunk two, on Opus**: section 7 in order, the engine items first, each a commit with
+  tests green, every loop's run in `docs/measurements.md`.
 - **Back up** for the reads that are judgment: what the bands say, prices and tier ladders.
 
 ## Open for Ryan
 
-1. The marks on sections 1 to 5: every fill, the names of the two renamed basics, the Barrier
-   and Ward pieces' names, the Flak family's and the Stoker's names and shapes, the Prairie
-   Dog's basic shield, each chassis's armour by role.
-2. Whether our guns take Breach, and on which (the Railgun; the Transonic Rifle too?).
-3. Overcharged's and Flak's clock, kept or unified (section 12).
-4. The Ram Frame's and the Rangefinder's rules, from the proposals above or his own.
-5. The Shoring Jack at Armoured 3: a one-ally wall for the round at tier one, or lower.
+1. His own suggestions of 22 October, with Claude's holes (the chat of that day): no
+   Suppress piece in any stock and none below tier two; the Umbra Inducer as the Arsenal's,
+   priced in Volatile rather than heat, its condition kept or not.
+2. The content name pass, later (the working names: Canopy, Bleed Valve, Decoherence Veil,
+   Airburst Shell, Flak Cannon, the Stoker).
 
 ## What the session hands back
 

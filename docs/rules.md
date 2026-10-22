@@ -167,7 +167,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
-  foes' rider below. No weapon carries it yet; the stock pass places it.
+  foes' rider below. The Overclocked Railgun carries it (not built: with the stock pass's
+  content).
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any

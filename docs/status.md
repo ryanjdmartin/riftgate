@@ -620,12 +620,13 @@ to-do's Ryan list).
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
    machine's content and engine session follows from its brief (the to-do's lines).
-2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): Ryan marks the
-   proposal (every fill, the names, the stocks, the breach's carriers, Breach on our guns, the
-   clock); the engine chunk is built (22 October, on its branch, the baseline reports beside it);
-   the content landing at the new scale follows his marks (section 7), on Opus, then the bands
-   read fresh against the baseline, the heat section and the wear. A mark that reopens a design
-   comes back up for a round.
+2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): the engine
+   chunk is built (22 October, on its branch, the baseline reports beside it); Ryan's marks are
+   made the same day, the structure not the numbers (the brief's section 3 and its tables),
+   with two of his own suggestions in discussion (the Inducer's maker and price, a Suppress
+   piece's lowest tier); the landing (section 7, on Opus) builds the engine items first, sets
+   the numbers by measured loops with `tools/stock_fills.py` against section 2's tests, then
+   lands the content and reads the bands fresh against the baseline.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders
