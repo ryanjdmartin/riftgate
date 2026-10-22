@@ -553,6 +553,53 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
 
 
+## The working set is the validator's list (the stock pass, 22 October): a component wears only
+## its tags, each once; a tag condition and the drum's added tag read only the set; the filing
+## tags are gone from content, melee kept where the content had it.
+func test_a_component_wears_only_the_working_set_of_tags() -> void:
+	var db := _fresh()
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
+	db.components["tagged"] = gun
+	gun["tags"] = ["kinetic"]
+	assert_true(_refused(db, "component tagged", "not in the working set"), "a filing tag is refused")
+	gun["tags"] = ["beam", "beam"]
+	assert_true(_refused(db, "component tagged", "twice"), "a tag listed twice is refused")
+	gun["tags"] = ["beam", "melee"]
+	for e in db.validate():
+		assert_false(e.begins_with("component tagged"), "tags of the working set validate clean: %s" % e)
+	var side: Dictionary = db.chassis["badger"].duplicate(true)
+	side["id"] = "tag_reader"
+	side["name"] = "Tag Reader"
+	side["passive"] = {"id": "p_tag_reader", "name": "P", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "tag_kinetic"}]}
+	db.chassis["tag_reader"] = side
+	assert_true(_refused(db, "chassis tag_reader", "outside the working set"), "a condition on a retired tag is refused")
+	side["passive"]["effects"][0]["when"] = "tag_melee"
+	assert_false(_refused(db, "chassis tag_reader", "working set"), "a condition on a tag of the set is clean")
+	var drum: Dictionary = db.chassis["cottonmouth"].duplicate(true)
+	drum["id"] = "drum_reader"
+	drum["name"] = "Drum Reader"
+	for eff in drum["passive"]["effects"]:
+		if str(eff.get("effect", "")) == "rewrite_weapon":
+			eff["tag"] = "kinetic"
+	db.chassis["drum_reader"] = drum
+	assert_true(_refused(db, "chassis drum_reader", "rewrite_weapon's tag"), "the drum adds only a tag of the set")
+	for id in db.components.keys():
+		if id == "tagged":
+			continue
+		for t in db.components[id].get("tags", []):
+			assert_true(ContentDB.TAGS.has(str(t)), "%s wears only the working set (%s)" % [id, t])
+	assert_true(Array(db.components["chainsaw_claw"]["tags"]).has("melee"), "the claw keeps its melee")
+
+
+func _refused(db: ContentDB, prefix: String, word: String) -> bool:
+	for e in db.validate():
+		if e.begins_with(prefix) and e.contains(word):
+			return true
+	return false
+
+
 ## No weapon classes since 10 October (bible section 5): a weapon is rolled or flat by its
 ## niche, whatever its filing tags say, so the content holds sane numbers and both shapes.
 func test_content_dice_are_sane_and_both_shapes_are_present() -> void:

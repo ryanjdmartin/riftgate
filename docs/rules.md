@@ -33,10 +33,11 @@ skirmish.
   is one number with no roll, however many things feed it (heat fired, missing hull, buffs,
   armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
   its reach. There are no crits and no weapon classes.
-- **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set,
-  not yet assigned to components) are build flavour shown in the codex only (not built).
-  A tag carries no rule of its own; a module or passive may read one. Components still carry
-  the old internal filing tags; only `melee` is read today (which blows lunge on screen).
+- **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
+  the only tags a component may wear) are build flavour shown in the codex only (not built).
+  A tag carries no rule of its own; a module or passive may read one. Only `melee` is assigned
+  so far, on seven components, and read today (which blows lunge on screen); the stock pass
+  assigns the rest.
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1

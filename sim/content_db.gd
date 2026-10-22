@@ -1024,6 +1024,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: rewrite_weapon fires every weapon as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
 			if str(eff.get("when", "")).begins_with("reach_"):
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
+			if eff.has("tag") and not TAGS.has(str(eff["tag"])):
+				errs.append("%s: rewrite_weapon's tag '%s' is not in the working set (%s)" % [where, eff["tag"], ", ".join(TAGS)])
 		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
 			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
 		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an
@@ -1053,6 +1055,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
+		elif when.begins_with("tag_") and not TAGS.has(when.substr(4)):
+			errs.append("%s: condition '%s' reads a tag outside the working set (%s)" % [where, when, ", ".join(TAGS)])
 		if when == "attacker_status" and eff.has("status"):
 			# The status named may be the engine's or one the vocabulary drafts (the Prairie
 			# Dog read Flak from 19 to 21 October, before Flak was built): a drafted status never holds, so the
@@ -1090,6 +1094,14 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 ## panels and vents take a die entry and no mount.
 const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
 const SHAPE_NONE := "none"
+
+## The tags a component may wear (the working set, decided 10 and 12 October; the stock pass's
+## validator list, 22 October): build flavour shown in the codex, never a rule of their own. A
+## module or a passive reads one through a `tag_<tag>` condition, the screen's lunge reads
+## `melee`, and the Cottonmouth's drum adds `ballistic` to the shot it fires. The old internal
+## filing tags (kinetic, energy, single, support and the rest) are retired; the stock pass's
+## landing assigns these by each piece's fantasy.
+const TAGS := ["ballistic", "missile", "beam", "plasma", "flame", "arc", "blade", "melee"]
 
 ## The sound a component's blow plays, where its shape and face are not enough to say
 ## (decided 2 October: content carries a label for the effects): `sound`, a word from SOUNDS
@@ -1165,6 +1177,16 @@ func _validate_components(errs: Array[String]) -> void:
 		for key in ["hardpoints", "slots", "faces"]:
 			if c.has(key):
 				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])
+		var tags = c.get("tags", [])
+		if not (tags is Array):
+			errs.append("%s: tags must be a list" % where)
+		else:
+			for k in range((tags as Array).size()):
+				var t := str(tags[k])
+				if not TAGS.has(t):
+					errs.append("%s: tag '%s' is not in the working set (%s)" % [where, t, ", ".join(TAGS)])
+				elif (tags as Array).find(tags[k]) != k:
+					errs.append("%s: tags list '%s' twice" % [where, t])
 		_validate_design(where, c, errs)
 		# A component the engine cannot run yet carries "status": "planned" (like a passive or a
 		# foe action): kept, its face checked for shape, its unbuilt keywords allowed.

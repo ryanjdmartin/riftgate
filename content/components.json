@@ -27,9 +27,7 @@
    },
    "passive": null,
    "tags": [
-    "kinetic",
-    "melee",
-    "horde"
+    "melee"
    ]
   },
   {
@@ -54,10 +52,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery"
-   ]
+   "tags": []
   },
   {
    "id": "bullion_fragmenter",
@@ -83,9 +78,7 @@
    },
    "passive": null,
    "tags": [
-    "kinetic",
-    "melee",
-    "single"
+    "melee"
    ]
   },
   {
@@ -110,10 +103,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "twin_autoguns",
@@ -136,10 +126,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "enfilade_beam",
@@ -164,10 +151,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "column"
-   ]
+   "tags": []
   },
   {
    "id": "ankle_mortar",
@@ -191,10 +175,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery"
-   ]
+   "tags": []
   },
   {
    "id": "coolant_jacket",
@@ -214,9 +195,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "howitzer",
@@ -239,10 +218,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery"
-   ]
+   "tags": []
   },
   {
    "id": "incendiary_shells",
@@ -268,11 +244,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery",
-    "burn"
-   ]
+   "tags": []
   },
   {
    "id": "suppression_battery",
@@ -298,11 +270,7 @@
     "heat": 20
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "coolant_dump",
@@ -321,9 +289,7 @@
     "power": 30
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "overclocked_railgun",
@@ -346,11 +312,7 @@
     "heat": 40
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single",
-    "hot"
-   ],
+   "tags": [],
    "tier": 2
   },
   {
@@ -375,11 +337,7 @@
     "power_per_missing": 5
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single",
-    "finisher"
-   ],
+   "tags": [],
    "sound": "barrel"
   },
   {
@@ -404,10 +362,7 @@
     "resets_on_kill": true
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "arc_fault_cannon",
@@ -432,10 +387,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "multi"
-   ]
+   "tags": []
   },
   {
    "id": "laminar_deflector",
@@ -458,9 +410,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "umbra_inducer",
@@ -485,10 +435,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "solar_flare_array",
@@ -514,11 +461,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "artillery",
-    "burn"
-   ]
+   "tags": []
   },
   {
    "id": "corona_shield",
@@ -542,10 +485,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "defense",
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "pulse_vacillator",
@@ -571,11 +511,7 @@
     "heat": 5
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single",
-    "tempo"
-   ]
+   "tags": []
   },
   {
    "id": "proximity_klaxon",
@@ -601,9 +537,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "cryo_flinger",
@@ -632,10 +566,7 @@
     "cooldown": 0
    },
    "passive": null,
-   "tags": [
-    "control",
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "breaching_plow",
@@ -664,9 +595,7 @@
    },
    "passive": null,
    "tags": [
-    "kinetic",
-    "melee",
-    "horde"
+    "melee"
    ]
   },
   {
@@ -694,10 +623,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "horde"
-   ]
+   "tags": []
   },
   {
    "id": "megataser_harpoon",
@@ -723,10 +649,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "combat_translocator",
@@ -751,9 +674,7 @@
     "heat": 5
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "afterburner_cannon",
@@ -778,11 +699,7 @@
     "power_per_heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single",
-    "hot"
-   ]
+   "tags": []
   },
   {
    "id": "knuckle_of_fury",
@@ -811,7 +728,6 @@
    },
    "passive": null,
    "tags": [
-    "energy",
     "melee"
    ]
   },
@@ -845,9 +761,7 @@
    },
    "passive": null,
    "tags": [
-    "energy",
-    "melee",
-    "burn"
+    "melee"
    ]
   },
   {
@@ -873,9 +787,7 @@
    },
    "passive": null,
    "tags": [
-    "energy",
-    "melee",
-    "finisher"
+    "melee"
    ]
   },
   {
@@ -900,10 +812,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "blowout_stack",
@@ -923,9 +832,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "laser_carbine",
@@ -948,10 +855,7 @@
     "heat": 5
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "ram_air_scoop",
@@ -971,9 +875,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "zenith_emitter",
@@ -996,10 +898,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "halo_shield",
@@ -1019,9 +918,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "overcharge_coil",
@@ -1042,10 +939,7 @@
     "stacks": 2
    },
    "passive": null,
-   "tags": [
-    "support",
-    "buff"
-   ]
+   "tags": []
   },
   {
    "id": "radiator_sail",
@@ -1065,9 +959,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "plasma_arquebus",
@@ -1091,10 +983,7 @@
     "power_max": 15
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "single"
-   ],
+   "tags": [],
    "sound": "plasma"
   },
   {
@@ -1121,10 +1010,7 @@
     "heat": 10
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "burn"
-   ]
+   "tags": []
   },
   {
    "id": "meteor_artillery",
@@ -1150,11 +1036,7 @@
     "heat": 15
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "artillery",
-    "burn"
-   ]
+   "tags": []
   },
   {
    "id": "entropy_condenser",
@@ -1177,9 +1059,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "photosphere_lance",
@@ -1205,12 +1085,7 @@
     "heat": 20
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single",
-    "burn",
-    "hot"
-   ]
+   "tags": []
   },
   {
    "id": "aurora_lattice",
@@ -1232,11 +1107,7 @@
     "rounds": 1
    },
    "passive": null,
-   "tags": [
-    "support",
-    "buff",
-    "burn"
-   ]
+   "tags": []
   },
   {
    "id": "backwash_ionizer",
@@ -1260,10 +1131,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "defense",
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "differentiation_probe",
@@ -1288,9 +1156,7 @@
     "heat": 5
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "phased_sublimator",
@@ -1313,9 +1179,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "polarity_projector",
@@ -1340,9 +1204,7 @@
     "heat": 5
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "shoring_jack",
@@ -1365,10 +1227,7 @@
     "rounds": 1
    },
    "passive": null,
-   "tags": [
-    "support",
-    "buff"
-   ]
+   "tags": []
   },
   {
    "id": "blast_door",
@@ -1388,9 +1247,7 @@
     "power": 20
    },
    "passive": null,
-   "tags": [
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "tesla_gauntlets",
@@ -1417,9 +1274,7 @@
    },
    "passive": null,
    "tags": [
-    "energy",
-    "melee",
-    "control"
+    "melee"
    ]
   },
   {
@@ -1443,9 +1298,7 @@
     ]
    },
    "passive": null,
-   "tags": [
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "retribution_thurible",
@@ -1467,11 +1320,7 @@
     "rounds": 2
    },
    "passive": null,
-   "tags": [
-    "support",
-    "buff",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "maxigun",
@@ -1496,11 +1345,7 @@
     "power_max": 10
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "single",
-    "volume"
-   ]
+   "tags": []
   },
   {
    "id": "wake_diffuser",
@@ -1522,9 +1367,7 @@
     "keywords": []
    },
    "passive": null,
-   "tags": [
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "web_bomb",
@@ -1549,10 +1392,7 @@
     "heat": 0
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "spin_up",
@@ -1579,9 +1419,7 @@
     "spins": true
    },
    "passive": null,
-   "tags": [
-    "tempo"
-   ]
+   "tags": []
   },
   {
    "id": "heliographic_siphon",
@@ -1609,10 +1447,7 @@
     "heat_per_blow": 10
    },
    "passive": null,
-   "tags": [
-    "control",
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "thermal_ray",
@@ -1635,10 +1470,7 @@
     "heat": 30
    },
    "passive": null,
-   "tags": [
-    "energy",
-    "single"
-   ]
+   "tags": []
   },
   {
    "id": "mooring_screens",
@@ -1666,10 +1498,7 @@
     }
    },
    "passive": null,
-   "tags": [
-    "defense",
-    "support"
-   ]
+   "tags": []
   },
   {
    "id": "spotting_flare",
@@ -1700,10 +1529,7 @@
     }
    },
    "passive": null,
-   "tags": [
-    "support",
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "sutlers_hoist",
@@ -1731,10 +1557,7 @@
     }
    },
    "passive": null,
-   "tags": [
-    "support",
-    "defense"
-   ]
+   "tags": []
   },
   {
    "id": "reveille_horn",
@@ -1761,10 +1584,7 @@
     }
    },
    "passive": null,
-   "tags": [
-    "support",
-    "tempo"
-   ]
+   "tags": []
   },
   {
    "id": "shrapnel_recuperator",
@@ -1793,10 +1613,7 @@
     "ammo_per_foe_hit": 1
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery"
-   ]
+   "tags": []
   },
   {
    "id": "unrestricted_expenditure",
@@ -1824,10 +1641,7 @@
     "random_targets": true
    },
    "passive": null,
-   "tags": [
-    "kinetic",
-    "artillery"
-   ]
+   "tags": []
   },
   {
    "id": "quick_reload",
@@ -1853,10 +1667,7 @@
     "reloads_ammo": 2
    },
    "passive": null,
-   "tags": [
-    "support",
-    "tempo"
-   ]
+   "tags": []
   },
   {
    "id": "lorentz_contractor",
@@ -1880,9 +1691,7 @@
     "pulls_mines": true
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   },
   {
    "id": "syrinx_drone",
@@ -1906,9 +1715,7 @@
     "drones": true
    },
    "passive": null,
-   "tags": [
-    "control"
-   ]
+   "tags": []
   }
  ]
 }
