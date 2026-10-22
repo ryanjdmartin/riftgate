@@ -43,6 +43,7 @@ extends SceneTree
 
 const OUT := "res://docs/balance.md"
 
+const GAP_MIN_WIN := 25   # the coordination gap reads a big fight only where both rungs win this percent or more
 var seeds := 200
 var policies: Array[int] = [Policy.RANDOM, Policy.GREEDY]
 var out_path := OUT
@@ -470,7 +471,7 @@ static func _ids(list: Array) -> String:
 ## One cell: `seeds` fights of a row against a pack under one policy, summed.
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
-		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
+		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0}
 	for s in range(seeds):
@@ -485,6 +486,7 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 			agg["stalled"] += 1
 		elif outcome == Skirmish.Outcome.VICTORY:
 			agg["victory"] += 1
+			agg["rounds_won"] += pol.rounds
 		elif outcome == Skirmish.Outcome.WITHDRAWN:
 			agg["withdrawn"] += 1
 		else:
@@ -600,6 +602,7 @@ func _report(fights: int, secs: float) -> String:
 			cell.append(" / ".join(parts))
 		L.append("| " + " | ".join(cell) + " |")
 	L.append("")
+	L.append_array(_rounds_report())
 	var top := policies[policies.size() - 1]
 	L.append("## Cost of a win, %s" % Policy.kind_name(top))
 	L.append("")
@@ -691,6 +694,64 @@ func _has_back_rank(p: Dictionary) -> bool:
 		if str(db.foes.get(fid, {}).get("rank", "front")) == "back":
 			return true
 	return false
+
+
+## Rounds to win (the stock pass, 22 October; the bible's section 2 tests): the mean rounds of
+## the fights each policy won, a cell a figure each, then the coordination gap: the lowest
+## rung's rounds over the top's on the big fights, where both win often enough to read.
+func _rounds_report() -> Array[String]:
+	var L: Array[String] = []
+	L.append("## Rounds to win, %s" % " / ".join(_policy_names()))
+	L.append("")
+	L.append("Mean rounds of the fights won, one figure per policy, a dash where none was won. The tests (the bible's section 2): the rank and file die to a die or two, so both rungs land together there; on the big fights (a massive foe, a boss, a formation, a final) play that works the team together wins in about half the rounds blind play takes. A rung that wins a cell rarely reads its quickest fights, so the gap below counts only the cells both rungs win at least %d%% of." % GAP_MIN_WIN)
+	L.append("")
+	L.append(_header())
+	for r in rows:
+		var cell: Array[String] = ["**%s**" % r["name"]]
+		for p in packs:
+			var parts: Array[String] = []
+			for k in policies:
+				var a: Dictionary = cells[_key(r, p, k)]
+				var won := int(a["victory"])
+				parts.append("-" if won == 0 else "%.1f" % (float(a.get("rounds_won", 0)) / won))
+			cell.append(" / ".join(parts))
+		L.append("| " + " | ".join(cell) + " |")
+	L.append("")
+	if policies.size() >= 2:
+		var low: int = policies[0]
+		var top: int = policies[policies.size() - 1]
+		L.append("The coordination gap, %s rounds over %s rounds on the big fights both win at least %d%% of (the mean of the cells, and how many):" % [Policy.kind_name(low), Policy.kind_name(top), GAP_MIN_WIN])
+		L.append("")
+		for r in rows:
+			var ratios: Array[float] = []
+			for p in packs:
+				if not _is_big(p):
+					continue
+				var a: Dictionary = cells[_key(r, p, low)]
+				var b: Dictionary = cells[_key(r, p, top)]
+				if _pct(a["victory"], a["fights"]) < GAP_MIN_WIN or _pct(b["victory"], b["fights"]) < GAP_MIN_WIN:
+					continue
+				var ra := float(a.get("rounds_won", 0)) / maxi(1, int(a["victory"]))
+				var rb := float(b.get("rounds_won", 0)) / maxi(1, int(b["victory"]))
+				if rb > 0.0:
+					ratios.append(ra / rb)
+			if ratios.is_empty():
+				L.append("- %s: no big fight both rungs win often enough" % r["name"])
+			else:
+				var sum := 0.0
+				for x in ratios:
+					sum += x
+				L.append("- %s: %.2f over %d" % [r["name"], sum / ratios.size(), ratios.size()])
+		L.append("")
+	return L
+
+
+## A big fight, for the coordination gap: a formation, a final or the finale (a mix), or a
+## massive foe, bosses included.
+func _is_big(p: Dictionary) -> bool:
+	if p.has("mix"):
+		return true
+	return int(db.foes.get(str(p.get("foe", "")), {}).get("size", 1)) >= 2
 
 
 ## The reach table: what a spend of each reach did, over every row and pack under the top
