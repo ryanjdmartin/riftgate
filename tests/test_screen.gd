@@ -886,6 +886,24 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
 	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
+	# The hold's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
+	# the arrow to the next; a die that rolls has none.
+	s._on_die_held(0)
+	assert_true(s._details_ring.visible, "the stepping die's hold shows its cylinder")
+	assert_eq(s._details_ring.faces.size(), n, "every chamber on it")
+	assert_eq([s._details_ring.current, s._details_ring.next], [ms.face_index, (ms.face_index + 1) % n], "the one showing lit, the arrow to the next")
+	s._on_hold_released()
+	s._on_die_held(1)
+	assert_false(s._details_ring.visible, "a die that rolls shows no cylinder")
+	s._on_hold_released()
+	# The codex prints the order: its cylinder, no chamber lit and every gap's arrow, between fights.
+	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
+	assert_true(bool(entry["steps"]), "the codex knows the die steps")
+	assert_false(bool(ContentDB.load_default().codex_for_unit(s.sk.mechs[1].unit)["steps"]), "and that a die that rolls does not")
+	var box := CodexBox.new()
+	box.open(entry)
+	assert_true(box._ring.visible and box._ring.faces.size() == n and box._ring.next == -1, "its cylinder, every gap's arrow")
+	box.free()
 	s.free()
 
 

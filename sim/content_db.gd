@@ -464,6 +464,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis" | "component" | "reward"]
 		"faces": faces,
 		"current": -1,
+		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
 		"flavour": str(c.get("flavour", "")),
 		"sprite_id": u.chassis_id,
 		"paint": u.paint,

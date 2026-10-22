@@ -992,6 +992,14 @@ func _step(ms: MechState) -> int:
 	return 0 if n == 0 or ms.face_index < 0 else (ms.face_index + 1) % n
 
 
+## The entry a stepping die's next step turns to (the Cassowary's), its place on the die; -1 for
+## a die that rolls. The hold's cylinder points its arrow at it.
+func next_index(ms: MechState) -> int:
+	if ms == null or ms.face_index < 0 or not Effects.steps_die(ms.unit) or ms.die.faces.is_empty():
+		return -1
+	return _step(ms)
+
+
 ## What a stepping die shows after its next step, as the die would show it (a dark entry's
 ## stand-in, the passives' reach and heat): the screen's next-chamber chip. Null for a die
 ## that rolls.

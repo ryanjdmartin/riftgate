@@ -89,7 +89,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it; a foe's Scramble is a true roll, and the sequence runs on from where it
-  lands. The die shows its next entry beside it. Its Spin-Up spins the whole die, the entry
+  lands. The die shows its next entry beside it, and its hold and codex show its entries as a
+  cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.

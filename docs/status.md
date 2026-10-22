@@ -607,16 +607,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.251, and so is the live
-  (22 October, the page's version 268): Ryan's calls of 21 October, evening, and 22 October
+  `docs/design-bible.html` after every change. Main's file is v0.252; the live is this session's
+  v0.251 (22 October, the page's version 268) under the numbers-rescale session's publish of
+  03:42 that morning, the Whip Scorpion's forecasts and the Cassowary's cylinder (v0.252's
+  two rows) waiting on the next merge onto it. v0.251: Ryan's calls of 21 October, evening, and 22 October
   (the stores, Silence and Purge passing them by, the carry as a block, the Muster never
   primed, the Musk Ox's 3 at the first round, the blasting vents counting, the rage capped at
   5 as boxes, the charged Screens for the whole team only, the turn's order keeping a charge
   banked left as a note for later balancing), three-way merged onto the
   numbers-rescale session's own v0.249, whose rows are its branch's (the single-digit scale,
   rank and file dying to a die or two, armour by role, one breach, a foe's HP and a machine's
-  hull, the stock pass's question). The hangar's vocabulary (the stores', the carry's, the
-  magazine's and the rage's codex) waits on its next republish. The version numbers on main's file and the live agree after every
+  hull, the stock pass's question). The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
@@ -633,7 +634,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   day's content (the five files that had moved: chassis, components, foes, the reserved names,
   vocabulary; the Kite's rework, the Lammergeier, the Swallowtail and the Musk Ox runnable, the
   party's promoted forms) and the pins, which mark the three new machines and the three without
-  models as having none (the page's version 89; `edits` empty before it). Its database
+  models as having none (the page's version 89; `edits` empty before it); and on 22 October
+  with the chassis and the vocabulary (the stores', the carry's, the magazine's and the rage's
+  codex) and every die's entries numbered by their place, the Cassowary's die a cylinder with
+  its order printed (the page's version 91; `edits` empty before it). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

@@ -93,8 +93,9 @@ nav.anchors a:hover{border-color:var(--acc);color:var(--ink)}
 .entry{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"slot kind name maker" "slot kind nums nums" "slot kind kws kws" "pas pas pas pas";gap:1px 10px;align-items:baseline;background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:7px 10px;cursor:pointer}
 .entry:hover,.entry:focus-visible{border-color:var(--acc)}
 .entry.blank,.entry.missing{opacity:.6;cursor:default}
-.slot{grid-area:slot;font:600 10px/1.4 var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);min-width:64px}
+.slot{grid-area:slot;font:600 10px/1.4 var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);min-width:108px}
 .pinnote{margin:0 0 6px;font-size:13px;color:var(--atk)}
+.order{margin:0 0 6px;font-size:13px;color:var(--ink-2)}
 .kind{grid-area:kind;font:600 10px/1.4 var(--mono);letter-spacing:.06em;padding:1px 5px;border:1px solid currentColor;border-radius:2px;color:var(--ink-3)}
 .kind.attack{color:var(--atk)} .kind.shield{color:var(--shd)} .kind.vent{color:var(--vent)}
 .cname{grid-area:name;font-weight:600}
@@ -723,6 +724,15 @@ function faceLine(f) {
   return bits.join(" · ");
 }
 function kwChip(k, cls = "kw") { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k)); }
+// An entry's place on its die as the game prints it: a Roman numeral, from one.
+function roman(n) {
+  const marks = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = "";
+  for (const [v, s] of marks) while (n >= v) { out += s; n -= v; }
+  return out;
+}
+// A chassis whose passive makes its die step instead of roll (the Cassowary's Indexed Cylinder).
+const stepsDie = (e) => ((e.passive || {}).effects || []).some(x => x.effect === "step_die");
 function componentEntry(cid, slot, comps, makers) {
   const c = comps.get(cid);
   if (!c) return el("div", {class: "entry missing"}, el("div", {class: "slot"}, slot), el("div", {class: "cname"}, `unknown component ${cid}`));
@@ -751,7 +761,7 @@ function renderCodex(main) {
   const {comps, makers} = ctx();
   const view = runFilter("chassis", liveEntries("chassis.entries"));
   const compact = !!view.f.compact, sorted = view.sort.stat;
-  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for the machine on the Models tab. The filter is shared with the editor's chassis list. Numbers are placeholders."));
+  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry, each numbered by its place on the die as the game prints it: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for the machine on the Models tab. The filter is shared with the editor's chassis list. Numbers are placeholders."));
   main.append(filterBar(view, {compact: true}));
   const nav = el("nav", {class: "anchors"});
   for (const {entry} of view.shown) nav.append(el("a", {href: "#cx-" + entry.id}, entry.name || entry.id));
@@ -785,15 +795,19 @@ function renderCodex(main) {
     } else card.append(el("div", {class: "passive none"}, el("h4", {}, "No passive"), el("p", {}, "Unwritten.")));
     const clash = (e.design || {}).name_clash;
     if (clash) card.append(el("p", {class: "clash"}, el("b", {}, "Name: "), clash));
-    card.append(el("h3", {}, `The die · ${die} entries`));
+    const steps = stepsDie(e);
+    card.append(el("h3", {}, steps ? `The cylinder · ${die} chambers, in order` : `The die · ${die} entries`));
+    // Its die steps (the Cassowary's): the order the chambers turn in, numbered as the game numbers them.
+    if (steps && die > 0) card.append(el("p", {class: "order"}, "Its die steps instead of rolling, each fight opening on a random chamber: " + Array.from({length: die}, (_, i) => roman(i + 1)).join(" → ") + " → I."));
     if (pins === null) card.append(el("p", {class: "pinnote"}, "No model built yet."));
     else if (Array.isArray(pins) && (pins.length !== hp || pins.some((n, i) => n !== i + 1)))
       card.append(el("p", {class: "pinnote"}, `The model carries ${pins.length} mount${pins.length === 1 ? "" : "s"} (${pins.map(n => "hp_" + n).join(", ") || "none"}) for ${hp} hardpoint${hp === 1 ? "" : "s"}: the rule wants one per hardpoint.`));
+    // Every entry opens on its place on the die, the numeral the game prints on it.
     const dieBox = el("div", {class: "die"});
-    for (const cid of fixed) dieBox.append(componentEntry(cid, "fixed", comps, makers));
+    fixed.forEach((cid, i) => dieBox.append(componentEntry(cid, roman(i + 1) + " · fixed", comps, makers)));
     for (let i = 0; i < hp; i++) {
-      const cid = i < loadout.length ? loadout[i] : null;
-      dieBox.append(cid ? componentEntry(cid, "hardpoint", comps, makers) : el("div", {class: "entry blank"}, el("div", {class: "slot"}, "hardpoint"), el("div", {class: "cname"}, "empty")));
+      const cid = i < loadout.length ? loadout[i] : null, place = roman(fixed.length + i + 1) + " · hardpoint";
+      dieBox.append(cid ? componentEntry(cid, place, comps, makers) : el("div", {class: "entry blank"}, el("div", {class: "slot"}, place), el("div", {class: "cname"}, "empty")));
     }
     card.append(dieBox);
     if (e.codex) card.append(el("p", {class: "codex"}, e.codex));

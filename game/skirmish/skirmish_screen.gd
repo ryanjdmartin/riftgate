@@ -102,6 +102,7 @@ var _arrows: ArrowLayer
 var _details: HudPanel
 var _details_label: Label
 var _details_faces: FaceListView
+var _details_ring: CylinderView      # a stepping die's chambers in its hold (the Cassowary's)
 var _details_status: StatusListView
 var _roll_label: Label
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
@@ -556,6 +557,10 @@ func _build() -> void:
 	_details.add_child(dv)
 	_details_label = Hud.label("", 16, Palette.INK)
 	dv.add_child(_details_label)
+	_details_ring = CylinderView.new()
+	_details_ring.visible = false
+	_details_ring.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	dv.add_child(_details_ring)
 	_details_faces = FaceListView.new()
 	_details_faces.visible = false
 	_details_faces.custom_minimum_size = Vector2(400, 0)
@@ -1324,8 +1329,12 @@ func _refresh_arrows() -> void:
 
 ## Hold readout beside a control: a text block, then for a die every face in a column, or
 ## for a unit its statuses and warnings as icon-and-text rows.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = []) -> void:
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = [], ring: Array = []) -> void:
 	_details_label.text = text
+	# A stepping die's cylinder above its entries: [faces, the chamber showing, the next].
+	_details_ring.visible = not ring.is_empty()
+	if not ring.is_empty():
+		_details_ring.set_cylinder(ring[0], int(ring[1]), int(ring[2]))
 	_details_faces.visible = not faces.is_empty()
 	_details_faces.labels = labels
 	if not faces.is_empty():
@@ -1423,7 +1432,10 @@ func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	# Every entry with what applies to it right now (a disabled entry, a passive's change,
 	# a cracked component): the hold is the die's whole readout since the die codex went.
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
+	# A die that steps (the Cassowary's) shows its chambers as a cylinder above the list: the one
+	# showing lit, an arrow round to the next (Ryan's ring, 19 October).
+	var ring: Array = [_shown_faces(ms), ms.face_index, sk.next_index(ms)] if Effects.steps_die(ms.unit) else []
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true), ring)
 	Sound.play("hold")
 	_hold_die = i
 	_refresh(false)   # the marks and a lure's preview read the held die
