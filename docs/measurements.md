@@ -730,12 +730,19 @@ the gap 1.20 under both; the default team's cells read identically. Today's feed
 two a spend, where the two clocks are the same, so the call is readability (the bible's section
 12). Not moved.
 
+**A diagnostic on the landed set**, every rung at 30 seeds: the default team beside the same
+team with the Dingo added, a fourth die and the only Shock it would carry (its harpoon). The four
+take a massive foe in 2.5 rounds where the three take 3.4 (the planner; blind play 3.1 and 3.4),
+and the gap on the massive foes opens from 1.01 to 1.25 (the big fights 1.16 to 1.26, the rank
+and file 1.04 to 1.08); the finale stays a wall for both.
+
 **Read**: the landed set (the blows, the elites' armour, the regrows, the maxima) moves the wear,
 the free wins and the heat toward their tests and leaves two tests where they stood. The kill
 time on a massive foe stays at 3 to 8 rounds against the test's one or two: a team of three
 lands 5 to 10 a round past armour against 32 to 40 HP, so a round or two needs about half
 the HP or more blows. The gap stays at 1.0 to 1.2 on the big fights: it opens only where a stock
 carries a setup (Wainwright & Sutler's Shock and Flak, 1.2), and three of the four teams carry no
-Shock. The finale stays a wall, and the campaign's plain player, who fights alone most of the
+Shock; a fourth machine with a Shock takes the default team to 2.5 rounds and 1.25. The finale
+stays a wall, and the campaign's plain player, who fights alone most of the
 time, wins 1% of battles. Those reads are Ryan's (the bible's section 12), with the bands at 200
 seeds.
