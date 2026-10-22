@@ -607,11 +607,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.250, and so is the live
-  (22 October, the page's version 267): Ryan's calls of 21 October, evening, and 22 October
+  `docs/design-bible.html` after every change. Main's file is v0.251, and so is the live
+  (22 October, the page's version 268): Ryan's calls of 21 October, evening, and 22 October
   (the stores, Silence and Purge passing them by, the carry as a block, the Muster never
   primed, the Musk Ox's 3 at the first round, the blasting vents counting, the rage capped at
-  5 as boxes, the charged Screens for the whole team only), three-way merged onto the
+  5 as boxes, the charged Screens for the whole team only, the turn's order keeping a charge
+  banked left as a note for later balancing), three-way merged onto the
   numbers-rescale session's own v0.249, whose rows are its branch's (the single-digit scale,
   rank and file dying to a die or two, armour by role, one breach, a foe's HP and a machine's
   hull, the stock pass's question). The hangar's vocabulary (the stores', the carry's, the
