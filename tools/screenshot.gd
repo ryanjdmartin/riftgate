@@ -130,6 +130,16 @@ func _apply_pose() -> void:
 					var at := over.get_global_rect().get_center()
 					s._on_drag_moved(at)
 					return
+		"reserve":
+			# The reinforcements waiting by rank in the formation's gutter: two for the front, one
+			# for the back, one massive (its tall plaque between the ranks).
+			var archer := Foe.make("skeleton_archer", 30, 10)
+			archer.prefers_back = true
+			var big := Foe.make("revenant", 300, 10)
+			big.size = 2
+			s.sk.reinforcements.clear()
+			s.sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
+			s._refresh()
 		"rage":
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).

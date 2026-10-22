@@ -3411,6 +3411,21 @@ func _reinforce(random: bool = true) -> void:
 	_refresh_kin()
 
 
+## The reinforcements waiting, by the rank each will step into (the formation's reserve view, 22
+## October): the front rank's, the back rank's (a foe that prefers the back), and the massive
+## ones that take a whole empty column.
+func reserve_counts() -> Dictionary:
+	var out := {"front": 0, "back": 0, "massive": 0}
+	for f in reinforcements:
+		if f.is_massive():
+			out["massive"] += 1
+		elif f.prefers_back:
+			out["back"] += 1
+		else:
+			out["front"] += 1
+	return out
+
+
 func _reinforcement_index_massive() -> int:
 	for i in range(reinforcements.size()):
 		if reinforcements[i].is_massive():

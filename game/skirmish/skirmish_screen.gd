@@ -111,6 +111,7 @@ var _bg: HudBackdrop = null
 var _plaque: Plaque = null           # the other world's window: a foe's named move, announced
 var _plaque_debug_at := 0.0
 var _prey: PreyLayer = null          # the predator sense: the foes' ground dimmed, eyes on the foes looking away
+var _reserve: ReserveView = null     # the reinforcements waiting, by rank, in the formation's right gutter
 var _hold_die: int = -1              # the die being held, for the sense
 
 
@@ -393,6 +394,14 @@ func _build() -> void:
 		mv.hold_released.connect(_on_hold_released)
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
 		_massive_views[col] = mv
+	# The reinforcements waiting, by rank (Ryan, 15 October), in the gutter right of the formation:
+	# a plaque at each rank's height, a tall one between them for a massive foe.
+	_reserve = ReserveView.new()
+	var right := _col_x(sk.columns - 1) + SLOT_SIZE.x * 0.5 + 2.0
+	var gutter := minf(W - right - 1.0, 44.0)
+	_place(_reserve, Vector2(W - 1.0 - gutter, BACK_Y), Vector2(gutter, FRONT_Y + SLOT_SIZE.y - BACK_Y))
+	_reserve.back_y = Vector2(0.0, SLOT_SIZE.y)
+	_reserve.front_y = Vector2(FRONT_Y - BACK_Y, FRONT_Y - BACK_Y + SLOT_SIZE.y)
 	# The corrupted side's tear, over the foes and their ground alike (Ryan, 23 September:
 	# under the sprites it was lost): a screen-reading layer the size of the foes' ground.
 	var tear := TearLayer.new()
@@ -756,6 +765,8 @@ func _refresh(save: bool = true) -> void:
 	_update_preview()
 	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
 	_header.queue_redraw()
+	if _reserve != null:
+		_reserve.set_counts(sk.reserve_counts())
 	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
 	_view_foe.clear()
 

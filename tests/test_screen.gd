@@ -843,6 +843,27 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	s.free()
 
 
+## The reinforcements waiting, by rank (Ryan, 15 October; built 22 October): the formation's
+## gutter counts the foes waiting for the front, for the back, and the massive ones that take a
+## whole column; with the reserve empty it shows nothing.
+func test_the_formation_counts_the_reinforcements_waiting_for_each_rank() -> void:
+	var s := _screen()
+	var sk := s.sk
+	sk.reinforcements.clear()
+	var archer := Foe.make("skeleton_archer", 30, 10)
+	archer.prefers_back = true
+	var big := Foe.make("revenant", 300, 10)
+	big.size = 2
+	sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
+	s._refresh()
+	assert_true(big.is_massive(), "a foe of size two is massive")
+	assert_eq(s._reserve.counts, {"front": 2, "back": 1, "massive": 1}, "two for the front, one for the back, one massive")
+	sk.reinforcements.clear()
+	s._refresh()
+	assert_eq(s._reserve.counts, {"front": 0, "back": 0, "massive": 0}, "the reserve empty: nothing to show")
+	s.free()
+
+
 ## The Barrier and the Ward wear chips of their own, one colour parted by what sits inside the
 ## shield (21 October), and a dark entry shows its rounds left on the die and in the hold.
 func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds() -> void:

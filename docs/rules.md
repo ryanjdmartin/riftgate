@@ -477,7 +477,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   on it bursts at the end of its action, skipped or not.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. A dead Gel
-  splits into two Half-Gels in the reinforcements (one deep).
+  splits into two Half-Gels in the reinforcements (one deep). The formation shows how many
+  wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
 Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
