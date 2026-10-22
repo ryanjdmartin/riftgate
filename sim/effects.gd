@@ -88,7 +88,7 @@ const CLEANSABLE := "cleansable"
 const STATUS := {
 	# A damage point a stack since 18 October (Ryan, in the spirit of flattening the numbers;
 	# 5 before), the stacks the Burn keyword's own number.
-	"burning": {"id": "burning", "name": "Burning", "description": "Loses 1 HP per stack at the start of its action, then loses a stack.",
+	"burning": {"id": "burning", "name": "Burning", "description": "Loses {value} HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
@@ -102,15 +102,15 @@ const STATUS := {
 	# or a cleanse took it off, then loses a stack. Scorched is the softer: every weapon fired
 	# runs hotter until the turn's end, when every stack goes, so it never piles up under several
 	# scorchers, and spending equipment or a cool weapon plays round it.
-	"burning_mech": {"id": "burning_mech", "name": "Burning", "description": "Gains 5 heat per stack at the end of the player's turn, before the overheat, then loses a stack.", "decay": "turn",
-		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
-	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
-		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 5}]},
+	"burning_mech": {"id": "burning_mech", "name": "Burning", "description": "Gains {value} heat per stack at the end of the player's turn, before the overheat, then loses a stack.", "decay": "turn",
+		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 1}]},
+	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon it fires runs {value} hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
 	# modifier for the pipeline's arithmetic, and nothing reads it but suppress (FOE_STATUSES).
-	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, the only resistance a foe has; loses a stack each turn.",
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, {value}% per stack, the only resistance a foe has; loses a stack each turn.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
@@ -121,8 +121,8 @@ const STATUS := {
 	# and never the last hit point, then a stack fades (Burning's shape, stacking add): it
 	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
-	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses 5% of its current HP per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
-		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 5}]},
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
+		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves. The skirmish bursts it at
 	# the end of the foe's action (Skirmish._web_burst): a Suppress on it and on the next foe
 	# to act beside it, each for itself. One web on a foe, however often it is webbed.
@@ -197,8 +197,8 @@ const STATUS := {
 	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
 	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
 	# enemy's turn is over. The 10 here is only the default a bare grant would carry.
-	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
+	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits {value} harder this round.",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
@@ -220,14 +220,14 @@ const STATUS := {
 	# machine's damaging hit on it spends every stack and cools the hitter so much a stack,
 	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
 	# October). It never fades on its own: the canister sticks.
-	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter 10 a stack.", "decay": "none",
-		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 10}]},
+	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter {value} a stack.", "decay": "none",
+		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 2}]},
 	# Corrupted (the foes' Corrupt, 25 September): the definition each entry's own status is built
 	# from (corrupt_entry, one an entry), and the bite a stack takes from its owner each time the
 	# entry is spent, shield first (Skirmish.corrupt_bite; a field since the stock pass's engine,
 	# 22 October). Cleansable.
-	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner 10 a stack when spent.",
-		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 10}]},
+	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner {value} a stack when spent.",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 3}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
 	# Flak keyword's number. Every blow the foe takes deals a point more a stack, an add before
 	# the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its armour comes off,
@@ -243,8 +243,8 @@ const STATUS := {
 	# a stack on the next weapon spend, stacking, carried between turns until a weapon spends
 	# it, damage or none (`spent_by`: the skirmish lifts every stack after a weapon spend, and a
 	# buff grants it with no rounds).
-	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "Its next weapon spend deals 5 more a stack, then every stack is spent. Carried between turns until a weapon spends it.", "decay": "none", "spent_by": "weapon",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
+	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "Its next weapon spend deals {value} more a stack, then every stack is spent. Carried between turns until a weapon spends it.", "decay": "none", "spent_by": "weapon",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
 	# A count a rule reads (the Cassowary's sixth shot, 21 October): the machine's weapon
 	# spends this fight, a stack each, kept only where a live effect counts them (nth_shot). A
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
@@ -265,8 +265,8 @@ const STATUS := {
 	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its buffs count for nothing and its components' keywords are muted through its next round.", "stacking": "renew",
 		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "suppress", "value": "buff"},
 		{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
-	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds 10 heat.", "stacking": "renew",
-		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]},
+	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
+		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -281,8 +281,8 @@ const STATUS := {
 	# each attack that killed makes its shots 5 hotter for the fight, a stack a killing attack.
 	# The passive's own price, so neither a buff nor a store (no silence or purge lifts it) and no
 	# cleanse takes it; it lasts the fight.
-	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run 5 hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
-		"tags": ["tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 5}]},
+	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run {value} hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
+		"tags": ["tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -370,6 +370,18 @@ class Modifier:
 		return id == key or tags.has(key)
 
 
+## A description's {value} filled from the number its first effect carries (the stock pass,
+## 22 October: a status's numbers are fields the loops move, so its text reads them, never a
+## copy). A text without the mark is returned as it stands.
+static func filled(text: String, effects) -> String:
+	if not text.contains("{value}") or not (effects is Array):
+		return text
+	for eff in effects:
+		if eff is Dictionary and (eff.get("value") is int or eff.get("value") is float):
+			return text.replace("{value}", str(int(eff["value"])))
+	return text
+
+
 ## A modifier from a content passive. A draft ("status": "planned") or an empty passive
 ## grants nothing.
 static func make(passive: Dictionary, scope: int, source: String, component: String = "") -> Modifier:
@@ -378,7 +390,7 @@ static func make(passive: Dictionary, scope: int, source: String, component: Str
 	var m := Modifier.new()
 	m.id = str(passive.get("id", source))
 	m.name = str(passive.get("name", ""))
-	m.description = str(passive.get("description", ""))
+	m.description = filled(str(passive.get("description", "")), passive.get("effects", []))
 	m.source = source
 	m.component = component
 	m.scope = scope
@@ -1673,7 +1685,7 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 ## the same entry corrupted again stacks up. Cleansable.
 static func corrupt_entry(u, index: int, source: String, n: int = 1) -> Modifier:
 	var def: Dictionary = STATUS["corrupted"]
-	var status := {"id": "corrupted_%d" % index, "name": def["name"], "description": def["description"],
+	var status := {"id": "corrupted_%d" % index, "name": def["name"], "description": filled(str(def["description"]), def["effects"]),
 		"tags": (def["tags"] as Array).duplicate(), "effects": [{"trigger": "status", "effect": "corrupt_entry", "value": index}]}
 	return stack(u, status, SKIRMISH, source, n, DECAY_NONE)
 

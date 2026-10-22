@@ -231,15 +231,25 @@ func test_end_turn_asks_only_when_dice_would_be_wasted() -> void:
 	assert_eq(s.sk.round, 1, "nothing happened yet")
 	s._hide_confirm()
 	assert_false(s._confirm.visible, "no keeps the turn")
-	for i in range(3):
-		var ms: Skirmish.MechState = s.sk.mechs[i]
-		var f := ms.face()
-		if f.is_attack():
-			s._use_die(i, s.sk.targets_for(i)[0])
-		elif f.kind == Face.Kind.BLANK:
-			s._use_die(i, null)
-		else:
-			s._use_die(i, s.sk.mechs[(i + 1) % 3])
+	# Every die spent where the screen lets it go: a self-only piece on its own machine, and a
+	# die that comes back (a reset gun's kill) spent again.
+	for sweep in range(12):
+		var left := false
+		for i in range(3):
+			var ms: Skirmish.MechState = s.sk.mechs[i]
+			if ms.assigned or not ms.alive() or ms.face() == null:
+				continue
+			left = true
+			var f := ms.face()
+			if f.is_attack():
+				s._use_die(i, s.sk.targets_for(i)[0])
+			elif f.kind == Face.Kind.BLANK:
+				s._use_die(i, null)
+			else:
+				s._use_die(i, s.sk.equipment_targets_for(ms, f)[0])
+		if not left:
+			break
+	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "the fight is still on")
 	s._on_end_turn()
 	assert_false(s._confirm.visible, "no question when every die is spent")
 	assert_eq(s.sk.round, 2, "the turn ended at once")

@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 605 tests, 62,455 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk and the second chunk's engine items, the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 607 tests, 62,509 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs) and the content landed at the brief's fills, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -31,10 +31,11 @@ document's job and every command are in `README.md`.
 
 One branch is live beside main: `claude/eager-newton-sf947u`, the stock pass (22 October): the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
-marks and the stun calls, each item a commit; main was merged into it three times that day,
+marks and the stun calls, the second chunk's engine items and the content landed at the
+brief's fills, each item a commit; main was merged into it three times that day,
 the last with main's rows of the day, so it stands ahead of main and never behind, and the
-code merged clean each time (the records by hand); it merges into main when Ryan says, before
-or with the content landing on his marks. Its baseline (`ace3c3c`, 200 seeds) ran on
+code merged clean each time (the records by hand); it merges into main when Ryan says, after
+the loops and the bands. Its baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
 Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
 swap (the Dingo) and its boss reads (the Disrupt carriers, and the fights with a countdown,
@@ -638,11 +639,15 @@ to-do's Ryan list).
    point a stack and a stun at a threshold; the Battery gated by Flak; Flak's clock reopened for
    Flak alone, section 12); the landing (section 7, on Opus) built its engine items first (22
    October: the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the
-   gates and the consumer, the planner and blind rungs that read the gap); next the content
-   lands at the brief's fills, then the loops set its numbers against section 2's tests (the
-   gap blind over the planner on the team rows), then the bands fresh against the baseline. The
-   content goes before the loops (section 7's third step brought forward, 22 October): the
-   applier fills numbers on today's stocks, and the gap is read on the new stocks' setups.
+   gates and the consumer, the planner and blind rungs that read the gap), then landed the
+   content at the brief's fills the same day (the stocks, the renames and retirements, the
+   eight new pieces and Trim Tabs, the tiers and tags, the Stoker's own fire a face field; the
+   content before the loops, section 7's third step brought forward, since the gap is read on
+   the new stocks' setups). Next the loops set its numbers against section 2's tests on a
+   worktree (`tools/stock_fills.py`, one lever a loop, the gap blind over the planner on the
+   team rows), then the bands at 200 seeds against the baseline and the hangar republished
+   once with the landed numbers. Two content questions went to section 12 with the landing:
+   which explosives carry Spread and Penetrate, and a flat Indirect basic.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders

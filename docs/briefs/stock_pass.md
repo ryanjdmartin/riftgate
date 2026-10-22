@@ -516,7 +516,15 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    marks; the bible's stock-pass row to built, its tables regenerated
    (`python3 tools/pages/bible_tables.py`), the vocabulary exported
    (`tools/export_vocabulary.gd`), the hangar page republished; the Stingray's and the
-   Baboon's models rebuilt with their stock, or that line left to the asset session.
+   Baboon's models rebuilt with their stock, or that line left to the asset session. Landed
+   22 October, before the loops (step 2's note): the stocks, renames, retirements, new pieces,
+   tiers and tags of sections 2, 3 and 5 as written; the Stoker's own fire a face field
+   (`self_burn`, the one engine piece the stock needed); the numbers at the fills through the
+   applier, in place; the shown text and the status descriptions at the landed numbers (the
+   engine's descriptions read their own numbers since, `{value}`); the tests that copied a
+   content or status number now read it. Not done: the explosives' area keywords (the tables
+   give no shell both; Open for Ryan, 3), the three locked pieces the tables did not tag, the
+   hangar's republish (with the loops' numbers, once) and the two models (the asset session).
 4. **Read the bands fresh** at 200 seeds beside the baseline (`docs/balance.md` as the
    branch left it): walls and free wins as bands, rounds to win and hull lost on the rank and
    file, the gap on the big foes; every run a decision cites in `docs/measurements.md`.
@@ -544,7 +552,10 @@ design call:
    base 2, heat 2) and the Battery's (1 to 3, heat 2): his to move before the loops, or left to
    them.
 2. The content name pass, later (the working names: Canopy, Bleed Valve, Decoherence Veil,
-   Airburst Shell, Flak Cannon, the Stoker; the Backdraft Charge's name stands).
+   Airburst Shell, Flak Cannon, the Stoker; the Backdraft Charge's name stands; the printed
+   rule's Burns its firer).
+3. Which explosives carry Spread and Penetrate, and whether the basic kit wants a flat
+   Indirect gun: both in the bible's section 12 since the landing (22 October).
 
 ## What the session hands back
 

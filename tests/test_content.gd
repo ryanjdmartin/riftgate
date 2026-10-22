@@ -351,7 +351,12 @@ func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 30, "power 30 became 60")
-	assert_eq(sk.mechs[0].heat, 20, "heat 10 became 20")
+	var tax := 0   # the passive's flat heat a shot, read from its content (the numbers are placeholders)
+	for eff in db.chassis["sparrowhawk"]["passive"]["effects"]:
+		if str(eff.get("effect", "")) == "add_heat":
+			tax += int(eff["value"])
+	assert_true(tax > 0, "it taxes every shot in heat")
+	assert_eq(sk.mechs[0].heat, 10 + tax, "heat 10 plus the tax, the double printed-only")
 
 
 func test_min_damage_passive_raises_the_floor() -> void:
@@ -682,8 +687,9 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
 	var foe := db.make_foe("revenant")
 	var entry := db.codex_for_foe(foe)
-	assert_true(entry["actions"].contains("CLAW // ATTACK 5"), "codex lists the implemented action with the resulting number (alone on the field: no kin)")
-	assert_true(entry["actions"].contains("for 5:"), "and fills {damage} into the text")
+	var atk := int(db.foes["revenant"]["attack"])
+	assert_true(entry["actions"].contains("CLAW // ATTACK %d" % atk), "codex lists the implemented action with the resulting number (alone on the field: no kin)")
+	assert_true(entry["actions"].contains("for %d:" % atk), "and fills {damage} into the text")
 	var caster := db.codex_for_foe(db.make_foe("ghost"))
 	assert_true(caster["actions"].contains("RAISE // BUFF"), "and lists a buff, live since 30 September")
 	var planned: Dictionary = db.foes["revenant"].duplicate(true)
@@ -915,6 +921,36 @@ func test_gates_and_consumers_validate() -> void:
 	assert_eq(int(f.gates["suppress"]["stacks"]), 2, "and its gate")
 	var back := Face.from_dict(f.to_dict())
 	assert_true(back.consumes == "burning" and back.gates.has("suppress"), "and survives the round trip a save makes")
+
+
+## Its own fire (the Stoker's, the stock pass's landing, 22 October): self_burn is a positive
+## number of stacks of Burning on an attack's own machine, kept through a save.
+func test_a_weapon_that_burns_its_firer_validates() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	base["tier"] = 1
+	base["face"]["keywords"] = []
+	var cases := {
+		"test_stoker": [{"keywords": ["burn"], "burn": 2, "self_burn": 1}, ""],
+		"test_fire_none": [{"self_burn": 0}, "a positive number of stacks"],
+		"test_fire_vent": [{"kind": "vent", "self_burn": 1}, "on an attack"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var f := db.build_face(db.components["test_stoker"]["face"])
+	assert_eq(f.self_burn, 1, "its own fire builds onto the entry")
+	assert_eq(Face.from_dict(f.to_dict()).self_burn, 1, "and survives the round trip a save makes")
 
 
 ## The rank condition's reach (the Ram Frame's and the Rangefinder's reads, 22 October) reads an
@@ -1179,7 +1215,11 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
 	var entry := db.codex_for_foe(db.make_foe("bone_dragon"))
 	assert_true(entry["actions"].contains("REGEN // DEFEND"), "the codex lists the defend")
-	assert_true(entry["actions"].contains("Regrows 20 HP"), "with its number filled in")
+	var regrow := 0
+	for a in db.foes["bone_dragon"]["actions"]:
+		if str(a["id"]) == "regen":
+			regrow = int(a["value"])
+	assert_true(entry["actions"].contains("Regrows %d HP" % regrow), "with its number filled in")
 
 
 func test_every_component_names_a_silhouette_class() -> void:
@@ -1239,15 +1279,16 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 				assert_false(Foe.whens_of(a).is_empty(), "%s's %s carries a condition" % [id, a["id"]])
 	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
-	assert_eq(int(g.actions[0].get("swarm", 0)), 5, "and it swarms")
+	var swarm := int(g.actions[0].get("swarm", 0))
+	assert_true(swarm > 0, "and it swarms")
 	g.kin = 3
-	assert_eq(g.damage(), 20, "four on the field hit for 20 each")
+	assert_eq(g.damage(), int(db.foes["revenant"]["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
 	var entry := db.codex_for_foe(g)
-	assert_true(entry["actions"].contains("+5 A KIN"), "the codex says the swarm: %s" % entry["actions"])
+	assert_true(entry["actions"].contains("+%d A KIN" % swarm), "the codex says the swarm: %s" % entry["actions"])
 	assert_true(entry["stats"].contains("ARM") or true, "stats read")
 	var maw := db.codex_for_foe(db.make_foe("sandworm"))
 	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
-	assert_true(str(maw["stats"]).contains("ARM 5"), "and the boss's armour")
+	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes["sandworm"]["armour"])), "and the boss's armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then
@@ -1679,12 +1720,16 @@ func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_seals() -> void:
 	assert_eq(m.die.faces.size(), 6, "two flingers and four hardpoints")
 	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[1].has(Face.Keyword.CRYO), "the pair leads the die")
 	assert_true(m.die.faces[0].has(Face.Keyword.LURE) and m.die.faces[0].has(Face.Keyword.RAPID), "each a lure with Rapid")
-	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "Lockdown's seal: armour +10, 15 heat a turn")
-	assert_eq(m.armour, 5, "base armour 5, so sealed it reads 15 in all")
+	var seal := {}
+	for eff in fresh.chassis["armadillo"]["passive"]["effects"]:
+		if str(eff.get("effect", "")) == "seal_form":
+			seal = {"armour": int(eff["value"]), "heat": int(eff["heat"])}
+	assert_eq(Effects.seal_form(m), seal, "Lockdown's seal: its armour and its heat a turn, as the content says")
+	assert_eq(m.armour, int(fresh.chassis["armadillo"]["armour"]), "its base armour, which the seal adds to")
 
 
-## Flak lands (21 October): the Flakshot Repeater builds with Flak 2 and sprays, the Prairie
-## Dog's clause wakes (a foe carrying Flak hits it 5 lighter), and the validator asks a Flak
+## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, the Prairie
+## Dog's clause wakes (a foe carrying Flak hits it lighter), and the validator asks a Flak
 ## weapon for its stacks and the stacks for the keyword, as it does Burn's and Cryo's.
 func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carrier() -> void:
 	var fresh := ContentDB.load_default()
@@ -1693,12 +1738,18 @@ func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carr
 	for f in m.die.faces:
 		if f.component == "flakshot_repeater":
 			gun = f
-	assert_true(gun != null and gun.has(Face.Keyword.FLAK) and gun.flak == 2, "the Repeater carries Flak 2")
+	var stacks := int(fresh.components["flakshot_repeater"]["face"]["flak"])
+	assert_true(gun != null and gun.has(Face.Keyword.FLAK) and gun.flak == stacks and stacks > 0, "the Repeater carries its Flak")
 	assert_true(gun.has(Face.Keyword.CLEAVE), "and sprays")
+	var lighter := 0   # the passive's clause, read from its content
+	for eff in fresh.chassis["prairie_dog"]["passive"]["effects"]:
+		if str(eff.get("effect", "")) == "add_damage_taken":
+			lighter = -int(eff["value"])
+	assert_true(lighter > 0, "the clause takes something off")
 	var foe := Foe.make("revenant", 100, 20)
 	assert_eq(Effects.damage_taken(m, 20, foe), 20, "a clean striker's blow lands whole")
 	Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
-	assert_eq(Effects.damage_taken(m, 20, foe), 15, "a foe carrying Flak hits it 5 lighter")
+	assert_eq(Effects.damage_taken(m, 20, foe), 20 - lighter, "a foe carrying Flak hits it lighter")
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["flakshot_repeater"].duplicate(true)

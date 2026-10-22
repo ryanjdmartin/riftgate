@@ -892,6 +892,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: a consumer is one blow on one foe: no strikes past one, no Spread, Penetrate or reach over every foe" % where)
 	if fd.has("per_consumed") and (not fd.has("consumes") or int(fd["per_consumed"]) <= 0):
 		errs.append("%s: per_consumed is the damage a stack consumed adds: positive, and only beside consumes" % where)
+	# Its own fire (the Stoker's, the stock pass's landing, 22 October): an attack that sets its
+	# machine Burning as it is spent, a positive number of stacks.
+	if fd.has("self_burn") and (kind != "attack" or int(fd["self_burn"]) <= 0):
+		errs.append("%s: self_burn is a positive number of stacks of Burning on its own machine, on an attack" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])

@@ -710,7 +710,7 @@ function faceLine(f) {
   const kind = f.kind || "", bits = [];
   const p = f.power, pmax = f.power_max;
   if (kind === "attack") {
-    bits.push(pmax && pmax !== p ? `${p}–${pmax}` : String(p));
+    bits.push((pmax && pmax !== p ? `${p}–${pmax}` : String(p)) + (Number(f.strikes || 1) > 1 ? ` ×${f.strikes}` : ""));
     const r = REACH[f.reach] || f.reach; if (r) bits.push(r);
   } else if (kind === "buff") {
     bits.push(`${vocabName(f.status || "")} ×${Number(f.stacks || 1)}`);
@@ -719,6 +719,10 @@ function faceLine(f) {
   if (f.power_per_heat) bits.push(`+${f.power_per_heat} per ${f.per_heat || 10} heat`);
   if (f.power_per_missing) bits.push(`+${f.power_per_missing} per ${f.per_missing || 20} HP missing`);
   if (f.vents_all) bits.push("vents all");
+  // The stock pass's printed rules (22 October): a gated keyword, a consumer, a weapon that burns its firer.
+  for (const [k, g] of Object.entries(f.gates || {})) bits.push(g.status ? `${vocabName(k)} only on a foe carrying ${vocabName(g.status)}${g.stacks ? " ×" + g.stacks : ""}` : `${vocabName(k)} gated`);
+  if (f.consumes) bits.push(`consumes ${vocabName(f.consumes)}, +${f.per_consumed || 1} a stack`);
+  if (f.self_burn) bits.push(`Burning ${f.self_burn} on itself`);
   if (f.heat) bits.push(`${f.heat} heat`);
   return bits.join(" · ");
 }

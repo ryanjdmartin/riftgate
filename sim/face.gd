@@ -86,6 +86,7 @@ var volatile: int = 0         # any entry with Volatile: the hull a spend bites 
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
+var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -277,6 +278,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
+		f.self_burn = maxi(0, int(d.get("self_burn", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -350,6 +352,8 @@ func to_dict() -> Dictionary:
 	if not consumes.is_empty():
 		d["consumes"] = consumes
 		d["per_consumed"] = per_consumed
+	if self_burn > 0:
+		d["self_burn"] = self_burn
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -431,7 +435,7 @@ func cooldown_rounds() -> int:
 ## and a Rapid entry's "no cooldown" with it), a spin (the Spin-Up's), the Siphon's reach over
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or reloads_ammo > 0
@@ -534,6 +538,7 @@ func duplicate_face() -> Face:
 	f.gates = gates.duplicate(true)
 	f.consumes = consumes
 	f.per_consumed = per_consumed
+	f.self_burn = self_burn
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -713,6 +718,8 @@ func describe() -> String:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
 			if not consumes.is_empty():
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
+			if self_burn > 0:
+				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
 			if devours > 0:
 				s += " Overcharged ×%d a kill" % devours
 			if fills_hopper > 0:

@@ -33,8 +33,8 @@ const PLAN_SAMPLES := 2      # futures each candidate is rolled out over, the sa
 
 const MAX_ROUNDS := 60           # a fight nobody can finish (armour holds, dice all blank) is stalled
 const HULL_WEIGHT := 1.5         # a point of mech hull, in foe hit points: hull is the resource that persists
-const KILL_BONUS := 10.0         # a slot cleared: the back rank opens, the horde shrinks
-const DEATH_WEIGHT := 60.0       # a machine kept alive through the round
+const KILL_BONUS := 3.0         # a slot cleared: the back rank opens, the horde shrinks
+const DEATH_WEIGHT := 20.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
@@ -950,9 +950,11 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 	if f != null and not f.is_attack():
 		return f.heat   # equipment's printed heat, landing as it is (the Musk Ox's quick reload)
+	# The Stoker's fire on its own firer: its first tick lands at this turn's end with the rest.
+	var own_fire := f.self_burn * Effects.status_value("burning_mech", "tick_heat") if f != null else 0
 	if ms.ammo_max > 0 and f != null and not f.is_debuff():
-		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun: only a foe's debuff heats it
-	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
+		return Effects.debuff_heat(ms.unit, f) + own_fire   # a forging machine's gun: only a foe's debuff and its own fire heat it
+	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]) + own_fire
 	return added - ms.heat if f.vents_all else added
 
 

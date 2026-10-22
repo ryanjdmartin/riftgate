@@ -186,11 +186,13 @@ func test_shield_only_die_is_spent_on_the_one_machine() -> void:
 
 
 func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
+	# At the single-digit scale the bot's weights are set to (the stock pass, 22 October): a
+	# blow of 3 kills a foe of 3 HP that hits for 1, and the bite is 3.
 	var sk := Skirmish.new(3)
-	var bomb := Face.attack(30, L, K.VOLATILE)
-	bomb.volatile = 10
-	sk.add_mech(_mech("A", Die.single(bomb), 40, 10))
-	sk.add_foes([_ghoul(30, 10)])
+	var bomb := Face.attack(3, L, K.VOLATILE)
+	bomb.volatile = 3
+	sk.add_mech(_mech("A", Die.single(bomb), 8, 3))
+	sk.add_foes([_ghoul(3, 1)])
 	sk.begin()
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
@@ -198,17 +200,17 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_true(Policy.volatile_cost(sk, ms, ms.face()) > Policy.DEATH_WEIGHT, "the bite would finish the machine, and the bot knows the price")
 	pol.play_round(sk)
 	assert_true(sk.front[0] != null and sk.front[0].alive(), "the kill is not taken")
-	assert_eq(sk.mechs[0].unit.hull, 10, "the machine stands")
+	assert_eq(sk.mechs[0].unit.hull, 3, "the machine stands")
 	var s2 := Skirmish.new(3)
-	var bomb2 := Face.attack(30, L, K.VOLATILE)
-	bomb2.volatile = 10
-	s2.add_mech(_mech("B", Die.single(bomb2), 40, 100))
-	s2.add_foes([_ghoul(30, 10)])
+	var bomb2 := Face.attack(3, L, K.VOLATILE)
+	bomb2.volatile = 3
+	s2.add_mech(_mech("B", Die.single(bomb2), 8, 30))
+	s2.add_foes([_ghoul(3, 1)])
 	s2.begin()
 	s2.start_round()
 	Policy.make(Policy.GREEDY).play_round(s2)
 	assert_eq(s2.front[0], null, "with hull to spare the kill is worth the bite")
-	assert_eq(s2.mechs[0].unit.hull, 90, "paid for")
+	assert_eq(s2.mechs[0].unit.hull, 27, "paid for")
 
 
 ## The gated stuns (22 October): the bot values a gated Suppress only where its gate is open,
@@ -470,7 +472,14 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var f := a.die.faces[0]
 	assert_true(pol.attack_score(sk, sk.mechs[0], f, away) > pol.attack_score(sk, sk.mechs[0], f, looking), "the foe looking away is worth the bite")
-	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), 36, "a Maxigun bite's three stacks on a 160-hull boss that took 22: about 36 over its next three actions")
+	var share := Effects.status_value("vitriol", "tick_hp_share")   # the status's number, a field the loops move
+	var hp := 138
+	var due := 0
+	for stacks in [3, 2, 1]:
+		var tick: int = hp * share * int(stacks) / 100
+		due += tick
+		hp -= tick
+	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), due, "a bite's three stacks on 138 HP: the share a stack, three ticks, each on what the last left")
 	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 6, "Burning's flat ticks: three, two, one stacks of a point (18 October)")
 	pol.play_round(sk)
 	assert_eq(Effects.stacks_of(away, "vitriol"), 1, "and the die went there")

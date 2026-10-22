@@ -1,11 +1,11 @@
-"""The stock pass's fills onto a scratch checkout, for a direction run (22 October):
+"""The stock pass's fills (22 October): the brief's numbers (docs/briefs/stock_pass.md,
+sections 1 to 5, with Ryan's marks of 22 October) onto a checkout's content and the engine's
+rule numbers, so the balance runner reads them against the design tests:
   python3 tools/stock_fills.py <checkout>
-Applies the brief's numbers (docs/briefs/stock_pass.md, sections 1 to 5, with Ryan's marks of
-22 October) to the checkout's content and the engine's constants, so the balance runner can
-read them against the design tests; a fill set is the dictionaries below, one lever moved a
-loop. Stocks stay today's (the new pieces do not exist); modules are filled but the runner
-fits none by default. The checkout is a worktree, never the main folder; run its --import
-after this and its tests will fail on the numbers they assert, as expected."""
+A fill set is the dictionaries below, one lever moved a loop. The content landed on these on
+22 October (the stocks, the new pieces, the renames and retirements were the landing's), so
+the script is idempotent on the branch and a loop runs it on a worktree with a lever moved.
+Every edit is in place: the foes' file keeps its hand layout."""
 import json, re, sys
 R = sys.argv[1].rstrip('/') + '/'
 
@@ -52,7 +52,7 @@ def A(p, pm=None, heat=0, **k): return dict(power=p, power_max=pm if pm is not N
 def E(p, **k): return dict(power=p, **k)   # equipment: its number
 P = {
  'twin_autoguns': A(1, 3, 0), 'rivet_gun': A(2, heat=0), 'ankle_mortar': A(1, 3, 1), 'laser_carbine': A(3, heat=2),
- 'halo_shield': E(6), 'blast_door': E(8), 'coolant_jacket': E(4), 'ram_air_scoop': E(6),
+ 'halo_shield': E(6), 'canopy': E(8), 'coolant_jacket': E(4), 'bleed_valve': E(6),
  'howitzer': A(2, 5, 1), 'incendiary_shells': A(1, 3, 1, burn=2), 'slugthrower': A(2, 5, 1), 'shotfire_rack': A(2, 4, 2),
  'maxigun': A(1, 2, 1, strikes=3), 'enfilade_beam': A(4, heat=2), 'arc_fault_cannon': A(4, heat=2),
  'overclocked_railgun': A(10, heat=8, keywords=['breach']), 'plasma_arquebus': A(2, 4, 2), 'blazethrower': A(3, heat=3, burn=2),
@@ -69,28 +69,24 @@ P = {
  'knuckle_of_fury': A(5, heat=3), 'soulcutter_talons': A(3, heat=1, devours=1), 'spin_up': {},
  'mooring_screens': E(2), 'spotting_flare': A(0, heat=1), 'sutlers_hoist': E(3, vents=2), 'reveille_horn': {},
  'shrapnel_recuperator': A(1, heat=2, flak=1), 'unrestricted_expenditure': A(2, heat=0), 'quick_reload': dict(heat=3),
- 'zenith_emitter': A(3, heat=2), 'coolant_dump': E(6), 'blowout_stack': E(5),
+ 'blast_door': {}, 'decoherence_veil': {},   # the Barrier and the Ward: no numbers
+ 'transonic_rifle': A(5, heat=4), 'airburst_shell': A(1, 2, 1, flak=1), 'cyclic_cannon': A(2, heat=3, strikes=4),
+ 'flak_cannon': A(3, heat=2, flak=2), 'stoker': A(3, heat=1, burn=2, self_burn=1), 'backdraft_charge': A(2, heat=2),
  'pinion_driver': A(4, heat=0), 'lorentz_contractor': A(0, heat=2), 'syrinx_drone': A(0, heat=0),   # not in the brief: today's over four
 }
-# The stun calls (Ryan, 22 October): the Inducer is the Arsenal's at tier three, Volatile in place of heat;
-# the Battery's cooldown goes (no price for a Suppress). Their gates wait on the engine's face condition.
-MOVED = {'umbra_inducer': dict(maker='arsenal', tier=3)}
 raw, d = jload(R + 'content/components.json')
 seen = set()
 for e in d['entries']:
     f = e['face']; fill = P[e['id']]; seen.add(e['id'])
-    for k, v in MOVED.get(e['id'], {}).items():
-        e[k] = v
     for k, v in fill.items():
-        if k == 'power_max' and 'power_max' not in f and v == fill.get('power'):
+        if k == 'power_max' and v == fill.get('power'):
+            f.pop('power_max', None)   # a flat fill: one number, no roll
             continue
         f[k] = v
     if 'volatile' in f.get('keywords', []):
         f['volatile'] = 3          # Volatile bites 3 (a numbered keyword since 22 October)
     if f.get('power_per_missing'):
         f['per_missing'] = 5       # the missing-HP step (a field since 22 October)
-    if 'power_max' in f and f['power_max'] == f.get('power') and e['face']['kind'] == 'attack' and 'power_max' not in fill:
-        pass
 assert seen == set(P), set(P) - seen
 jsave(R + 'content/components.json', d, True)
 
@@ -108,23 +104,72 @@ PROMO = {'warrior_promoted': 48, 'martial_artist_promoted': 40, 'thief_promoted'
 VALUES = {('wolf', 'howl'): 1, ('antlion', 'burrow'): 2, ('sandworm', 'burrow'): 3, ('treant', 'regen'): 5, ('bone_dragon', 'regen'): 5,
           ('magma_golem', 'stoke_the_forge'): 2, ('martial_artist', 'chakra'): 4, ('white_mage', 'cure'): 4}
 BREACH = {('gel', 'engulf'), ('zombie_knight', 'cleaver'), ('warrior', 'cleave')}
+# The foes' file is laid out by hand (an entry's fields on a few lines, a move a line), so it is
+# edited in place, line by line, and checked against what the edits mean.
 raw = open(R + 'content/foes.json', encoding='utf-8').read()
-d = json.loads(raw)
-for f in d['entries']:
+want = json.loads(raw)
+for f in want['entries']:
     i = f['id']
     if i in F:
-        f['hp'], f['attack'], f['armour'] = F[i]
+        f['hp'], f['attack'] = F[i][0], F[i][1]
+        if 'armour' in f or F[i][2] > 0:
+            f['armour'] = F[i][2]
     elif i in PROMO:
         f['hp'] = PROMO[i]; f['armour'] = 2
     for a in f.get('actions', []):
         if 'swarm' in a: a['swarm'] = 1   # not in the brief: 5 over five
         if (i, a['id']) in VALUES: a['value'] = VALUES[(i, a['id'])]
-        if (i, a['id']) in BREACH:
-            a['keywords'] = sorted(set(a.get('keywords', [])) | {'breach'})
-        if a.get('when') == 'machine_hot' or 'machine_hot' in (a.get('when') if isinstance(a.get('when'), list) else []):
+        if (i, a['id']) in BREACH and 'breach' not in a.get('keywords', []):
+            a['keywords'] = a.get('keywords', []) + ['breach']
+        if a.get('when') == 'machine_hot':
             a['hot'] = 5               # the hot threshold (a field on the move since 22 October)
-# foes.json does not round-trip through json.dumps; write it back with the same indent as a best effort
-open(R + 'content/foes.json', 'w', encoding='utf-8').write(json.dumps(d, indent=1, ensure_ascii=False) + '\n')
+
+
+def setnum(line, key, value, after=None):
+    """The number under `key` on this line set to `value`; added after `after` when absent."""
+    pat = r'("%s": )-?\d+' % key
+    if re.search(pat, line):
+        return re.sub(pat, r'\g<1>%d' % value, line, count=1)
+    assert after is not None and after in line, (key, line[:80])
+    return line.replace(after, after + ' "%s": %d,' % (key, value), 1)
+
+
+out, cur = [], None
+for line in raw.split('\n'):
+    m = re.match(r'^      "id": "([^"]+)"', line)
+    if m:
+        cur = m.group(1)
+        if cur in PROMO:
+            line = setnum(line, 'armour', 2)
+            if '"hp":' not in line:
+                line = line.replace('"armour":', '"hp": %d, "armour":' % PROMO[cur], 1)
+            else:
+                line = setnum(line, 'hp', PROMO[cur])
+    if cur in F and re.search(r'^\s*"hp": \d+, "attack": \d+', line):
+        hp, atk, arm = F[cur]
+        line = setnum(line, 'hp', hp)
+        line = setnum(line, 'attack', atk)
+        if '"armour":' in line or arm > 0:
+            line = setnum(line, 'armour', arm, after='"attack": %d,' % atk)
+    a = re.match(r'^\s*\{\s*"id": "([^"]+)"', line)
+    if a and cur is not None:
+        aid = a.group(1)
+        obj = json.loads(line.strip().rstrip(','))
+        if 'swarm' in obj:
+            line = setnum(line, 'swarm', 1)
+        if (cur, aid) in VALUES:
+            line = setnum(line, 'value', VALUES[(cur, aid)])
+        if (cur, aid) in BREACH and 'breach' not in obj.get('keywords', []):
+            if '"keywords": [' in line:
+                line = re.sub(r'"keywords": \[([^\]]*)\]', lambda k: '"keywords": [%s]' % ', '.join([x for x in [k.group(1).strip()] if x] + ['"breach"']), line, count=1)
+            else:
+                line = line.replace('"kind": "attack",', '"kind": "attack", "keywords": ["breach"],', 1)
+        if obj.get('when') == 'machine_hot':
+            line = setnum(line, 'hot', 5, after='"when": "machine_hot",')
+    out.append(line)
+text = '\n'.join(out)
+assert json.loads(text) == want, 'the in-place edits and the data disagree'
+open(R + 'content/foes.json', 'w', encoding='utf-8').write(text)
 
 # ---- modules (section 5)
 M = {
@@ -134,6 +179,7 @@ M = {
  'tactical_databank': ({}, [1]), 'artillery_rangefinder': ({}, None), 'phase_conjugator': ({'shield': 4}, ['stacks', 1]),
  'susceptibility_tensor': ({'shield': 4}, [1]), 'exotic_matter_shell': ({'shield': 16, 'heat': 6}, [2]), 'ward_plate': ({'shield': 8, 'armour': 1}, None),
  'grievance_reliquary': ({'hull': 4}, None), 'tithe_coupling': ({'hull': 20, 'shield': 12}, [3]),
+ 'trim_tabs': ({'heat': -4}, None),
 }
 raw, d = jload(R + 'content/modules.json')
 for m in d['entries']:
@@ -164,5 +210,10 @@ s = status_value(s, 'hot_streak', 'add_heat', 1)
 s = status_value(s, 'cryoed', 'cool_hitter', 2)       # Cryo's cooling, a field on its status since 22 October
 s = status_value(s, 'corrupted', 'corrupt_bite', 3)   # Corrupted's bite, likewise
 open(R + 'sim/effects.gd', 'w', encoding='utf-8').write(s)
-edit(R + 'sim/policy.gd', [('const KILL_BONUS := 10.0', 'const KILL_BONUS := 3.0'), ('const DEATH_WEIGHT := 60.0', 'const DEATH_WEIGHT := 20.0')])
+# The bot's weights in foe HP, at the new scale.
+s = open(R + 'sim/policy.gd', encoding='utf-8').read()
+for name, value in (('KILL_BONUS', '3.0'), ('DEATH_WEIGHT', '20.0')):
+    s, n = re.subn(r'(const %s := )[0-9.]+' % name, r'\g<1>' + value, s)
+    assert n == 1, name
+open(R + 'sim/policy.gd', 'w', encoding='utf-8').write(s)
 print('fills applied')

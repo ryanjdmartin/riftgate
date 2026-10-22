@@ -9,8 +9,9 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 30,
-    "armour": 5
+    "hull": 8,
+    "armour": 1,
+    "move": -10
    },
    "text": null,
    "design": {
@@ -28,7 +29,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 60
+    "hull": 24
    },
    "text": {
     "description": "Its Direct blows aimed at the front rank deal 1 more.",
@@ -59,15 +60,15 @@
    "flavour": "",
    "stats": {
     "move": -10,
-    "heat": -20
+    "heat": -4
    },
    "text": {
-    "description": "Taking hull damage stands up 10 shield, which blocks the next blow whole.",
+    "description": "Taking hull damage stands up 2 shield.",
     "effects": [
      {
       "trigger": "on_hull_damage",
       "effect": "add_shield",
-      "value": 10
+      "value": 2
      }
     ]
    },
@@ -86,15 +87,15 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "cooling": 5
+    "cooling": 1
    },
    "text": {
-    "description": "Each time its heat climbs, it stands up 5 shield.",
+    "description": "Each time its heat climbs, it stands up 1 shield.",
     "effects": [
      {
       "trigger": "on_heat_gain",
       "effect": "add_shield",
-      "value": 5
+      "value": 1
      }
     ]
    },
@@ -114,12 +115,12 @@
    "flavour": "",
    "stats": {},
    "text": {
-    "description": "Its rolled weapons reach 5 higher.",
+    "description": "Its rolled weapons reach 1 higher.",
     "effects": [
      {
       "trigger": "on_attack",
       "effect": "add_ceiling",
-      "value": 5
+      "value": 1
      }
     ]
    },
@@ -139,7 +140,7 @@
    "flavour": "",
    "stats": {
     "move": 20,
-    "shield": 30
+    "shield": 12
    },
    "text": {
     "description": "Its weapons run twice as hot.",
@@ -166,8 +167,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 10,
-    "armour": 5
+    "hull": 6
    },
    "text": null,
    "design": {
@@ -185,8 +185,8 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "heat": 20,
-    "cooling": 5
+    "heat": 4,
+    "cooling": 1
    },
    "text": null,
    "design": {
@@ -205,12 +205,12 @@
    "flavour": "",
    "stats": {},
    "text": {
-    "description": "Its rolled weapons' lowest roll is 5 higher.",
+    "description": "Its rolled weapons' lowest roll is 1 higher.",
     "effects": [
      {
       "trigger": "on_attack",
       "effect": "add_floor",
-      "value": 5
+      "value": 1
      }
     ]
    },
@@ -257,16 +257,16 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "shield": 10
+    "shield": 4
    },
    "text": {
-    "description": "An ally it shields is Armoured 3 for the round.",
+    "description": "An ally it shields is Armoured 1 for the round.",
     "effects": [
      {
       "trigger": "on_shield_granted",
       "effect": "stack_status",
       "value": "braced",
-      "stacks": 3
+      "stacks": 1
      }
     ]
    },
@@ -285,15 +285,15 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "shield": 10
+    "shield": 4
    },
    "text": {
-    "description": "Its blows deal 5 more to a foe carrying any status.",
+    "description": "Its blows deal 1 more to a foe carrying any status.",
     "effects": [
      {
       "trigger": "on_attack",
       "effect": "add_damage",
-      "value": 5,
+      "value": 1,
       "when": "target_status"
      }
     ]
@@ -313,16 +313,16 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "shield": 40,
-    "heat": 30
+    "shield": 16,
+    "heat": 6
    },
    "text": {
-    "description": "Every blow on it lands 10 harder.",
+    "description": "Every blow on it lands 2 harder.",
     "effects": [
      {
       "trigger": "static",
       "effect": "add_damage_taken",
-      "value": 10
+      "value": 2
      }
     ]
    },
@@ -341,8 +341,8 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "shield": 20,
-    "armour": 5
+    "shield": 8,
+    "armour": 1
    },
    "text": null,
    "design": {
@@ -360,7 +360,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 10
+    "hull": 4
    },
    "text": {
     "description": "Taking hull damage Overcharges it, a stack a blow.",
@@ -387,16 +387,16 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 50,
-    "shield": 30
+    "hull": 20,
+    "shield": 12
    },
    "text": {
-    "description": "Every component it spends costs 10 hull.",
+    "description": "Every component it spends costs 3 hull.",
     "effects": [
      {
       "trigger": "static",
       "effect": "hull_per_spend",
-      "value": 10
+      "value": 3
      }
     ]
    },
@@ -405,6 +405,33 @@
     "fantasy": "The machine takes its due before it does anything you ask.",
     "niche": "An overload: a great deal of hull and shield with a price on every action; a perk where the hull is already being spent (the Nemesis).",
     "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "trim_tabs",
+   "name": "Trim Tabs",
+   "maker": "kestrel",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "heat": -4
+   },
+   "text": {
+    "description": "Rerolling only its own die is free once a round.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "free_reroll",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "Small hinged tabs on every control surface, trimmed in flight: the airframe settles onto whatever it was aiming for.",
+    "niche": "The Kestrel line's reroll module: another look at its own die, a free reroll a round, paid in heat maximum so no module is the universal pick.",
+    "notes": "Taken in the Kestrel line review (21 October, docs/briefs/kestrel_line.md); landed with the stock pass (22 October), the stat line its price. Numbers are placeholders."
    }
   }
  ]

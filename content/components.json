@@ -1,5 +1,5 @@
 {
- "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Numbers stand at the old scale, damage at fives and the rest at tens, until the stock pass's landing brings every number inside a fight to single digits or low tens (a blow 1 to 6, big guns to 10; docs/rules.md, the first fills in docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, and the stock pass assigns them by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger; stored since the stock pass, 22 October): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills in docs/briefs/stock_pass.md, set by tools/stock_fills.py): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, and the stock pass assigns them by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger; stored since the stock pass, 22 October): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -17,8 +17,8 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
-    "power_max": 20,
+    "power": 2,
+    "power_max": 4,
     "keywords": [
      "cleave"
     ],
@@ -27,6 +27,7 @@
    },
    "passive": null,
    "tags": [
+    "blade",
     "melee"
    ]
   },
@@ -34,7 +35,7 @@
    "id": "shotfire_rack",
    "name": "Shotfire Rack",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -47,13 +48,15 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 20,
+    "power": 2,
+    "power_max": 4,
     "keywords": [],
-    "heat": 10
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "missile"
+   ]
   },
   {
    "id": "bullion_fragmenter",
@@ -71,14 +74,15 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 20,
+    "power": 4,
     "keywords": [],
-    "heat": 10,
+    "heat": 2,
     "fires_hopper": 3,
-    "power_per_load": 5
+    "power_per_load": 1
    },
    "passive": null,
    "tags": [
+    "ballistic",
     "melee"
    ]
   },
@@ -86,7 +90,7 @@
    "id": "slugthrower",
    "name": "Slugthrower",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
    "shape": "barrel",
    "codex": "Minerva's standard gun. It throws a slug.",
    "flavour": "",
@@ -99,13 +103,15 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
-    "power_max": 30,
+    "power": 2,
+    "power_max": 5,
     "keywords": [],
-    "heat": 10
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "twin_autoguns",
@@ -123,13 +129,15 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
-    "power_max": 15,
+    "power": 1,
+    "power_max": 3,
     "keywords": [],
     "heat": 0
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "enfilade_beam",
@@ -148,14 +156,16 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 4,
     "keywords": [
      "penetrate"
     ],
-    "heat": 10
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
    "id": "ankle_mortar",
@@ -174,13 +184,15 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 5,
-    "power_max": 15,
+    "power": 1,
+    "power_max": 3,
     "keywords": [],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "coolant_jacket",
@@ -198,7 +210,7 @@
    },
    "face": {
     "kind": "vent",
-    "power": 20
+    "power": 4
    },
    "passive": null,
    "tags": []
@@ -207,7 +219,7 @@
    "id": "howitzer",
    "name": "Howitzer",
    "maker": "wainwright_sutler",
-   "tier": 0,
+   "tier": 1,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -219,19 +231,21 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 25,
+    "power": 2,
+    "power_max": 5,
     "keywords": [],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "incendiary_shells",
    "name": "Incendiary Shells",
    "maker": "wainwright_sutler",
-   "tier": 0,
+   "tier": 1,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -243,22 +257,25 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 5,
-    "power_max": 15,
+    "power": 1,
+    "power_max": 3,
     "keywords": [
      "burn"
     ],
-    "burn": 3,
-    "heat": 0
+    "burn": 2,
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic",
+    "flame"
+   ]
   },
   {
    "id": "suppression_battery",
    "name": "Suppression Battery",
    "maker": "wainwright_sutler",
-   "tier": 1,
+   "tier": 2,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -266,46 +283,34 @@
     "stage": "draft",
     "fantasy": "Whatever it was about to do, it is not doing it now.",
     "niche": "",
-    "notes": "Renamed from the Shock Barrage 9 October (Ryan, the name audit): Shock is a keyword and a status since the content revision, and this one suppresses."
+    "notes": "Renamed from the Shock Barrage 9 October (Ryan, the name audit): Shock is a keyword and a status since the content revision, and this one suppresses. 22 October, the stock pass's landing: its Suppress lands only on a foe carrying Flak (Ryan's call: the maker's condition, no back-rank clause), out of the Clydesdale's stock, tier two."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 15,
-    "power_max": 25,
+    "power": 1,
+    "power_max": 3,
     "keywords": [
      "suppress"
     ],
-    "heat": 20
+    "heat": 2,
+    "gates": {
+     "suppress": {
+      "when": "target_status",
+      "status": "flakked"
+     }
+    }
    },
    "passive": null,
-   "tags": []
-  },
-  {
-   "id": "coolant_dump",
-   "name": "Coolant Dump",
-   "maker": "wainwright_sutler",
-   "tier": 1,
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Empties the reactor jacket onto the ground. Or onto a friend.",
-    "niche": ""
-   },
-   "face": {
-    "kind": "vent",
-    "power": 30
-   },
-   "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "overclocked_railgun",
    "name": "Overclocked Railgun",
    "maker": "kestrel",
-   "tier": 2,
+   "tier": 1,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -318,20 +323,23 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 50,
+    "power": 10,
     "keywords": [
      "breach"
     ],
-    "heat": 40
+    "heat": 8
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic",
+    "arc"
+   ]
   },
   {
    "id": "coriolis_accelerator",
    "name": "Coriolis Accelerator",
    "maker": "kestrel",
-   "tier": 1,
+   "tier": 2,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -344,14 +352,16 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 3,
     "keywords": [],
-    "heat": 0,
-    "power_per_missing": 5,
-    "per_missing": 20
+    "heat": 1,
+    "power_per_missing": 1,
+    "per_missing": 5
    },
    "passive": null,
-   "tags": [],
+   "tags": [
+    "arc"
+   ],
    "sound": "barrel"
   },
   {
@@ -370,7 +380,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 4,
     "keywords": [],
     "heat": 0,
     "resets_on_kill": true
@@ -395,20 +405,22 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 4,
     "keywords": [
      "chain"
     ],
-    "heat": 10
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "arc"
+   ]
   },
   {
    "id": "laminar_deflector",
    "name": "Laminar Deflector",
    "maker": "kestrel",
-   "tier": 0,
+   "tier": 2,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -416,11 +428,11 @@
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
     "niche": "",
-    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act. 20 October (Ryan): a Rapid shield is never below tier two (a Rapid vent never below tier three), so with the stock pass it leaves the tier-one and tier-two stocks that carry it today and becomes a tier-two blueprint, found; its Rapid stays."
+    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act. 20 October (Ryan): a Rapid shield is never below tier two (a Rapid vent never below tier three), so with the stock pass it leaves the tier-one and tier-two stocks that carry it today and becomes a tier-two blueprint, found; its Rapid stays. 22 October, the stock pass's landing: a tier-two blueprint with its Rapid, out of every stock (Ryan's rule of 20 October: a Rapid shield is never below tier two)."
    },
    "face": {
     "kind": "shield",
-    "power": 20,
+    "power": 6,
     "keywords": [
      "rapid"
     ]
@@ -431,8 +443,8 @@
   {
    "id": "umbra_inducer",
    "name": "Umbra Inducer",
-   "maker": "aphelion",
-   "tier": 0,
+   "maker": "arsenal",
+   "tier": 3,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -440,19 +452,23 @@
     "stage": "draft",
     "fantasy": "A shadow falls across the target and it forgets what it was about to do.",
     "niche": "Aphelion's suppress: a flat energy number on a line, so the control lands every time it comes up.",
-    "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move. Renamed from the Umbra Projector 6 October (Ryan: more slick)."
+    "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move. Renamed from the Umbra Projector 6 October (Ryan: more slick). 22 October, the stock pass's landing: the Arsenal's at tier three (Ryan, 22 October: it reads as Arsenal tech), a Suppress with no condition priced in Volatile in place of heat, out of the Baboon's stock, found and never stocked."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 3,
     "keywords": [
-     "suppress"
+     "suppress",
+     "volatile"
     ],
-    "heat": 10
+    "heat": 0,
+    "volatile": 3
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "plasma"
+   ]
   },
   {
    "id": "solar_flare_array",
@@ -470,15 +486,18 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
+    "power": 3,
     "keywords": [
      "burn"
     ],
-    "burn": 3,
-    "heat": 10
+    "burn": 2,
+    "heat": 3
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "plasma",
+    "flame"
+   ]
   },
   {
    "id": "corona_shield",
@@ -496,7 +515,7 @@
    },
    "face": {
     "kind": "shield",
-    "power": 20,
+    "power": 6,
     "keywords": [
      "cleanse"
     ]
@@ -521,20 +540,22 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
+    "power": 2,
     "keywords": [
      "rapid"
     ],
-    "heat": 5
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
    "id": "proximity_klaxon",
    "name": "Proximity Klaxon",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -552,10 +573,12 @@
      "lure",
      "cleave"
     ],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "arc"
+   ]
   },
   {
    "id": "cryo_flinger",
@@ -579,12 +602,14 @@
      "rapid",
      "cryo"
     ],
-    "heat": 5,
+    "heat": 1,
     "cryo": 1,
     "cooldown": 0
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "missile"
+   ]
   },
   {
    "id": "breaching_plow",
@@ -603,16 +628,17 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
-    "power_max": 30,
+    "power": 2,
+    "power_max": 5,
     "keywords": [
      "cleave"
     ],
     "heat": 0,
-    "braces": 10
+    "braces": 2
    },
    "passive": null,
    "tags": [
+    "blade",
     "melee"
    ]
   },
@@ -632,16 +658,18 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
+    "power": 1,
     "keywords": [
      "cleave",
      "flak"
     ],
-    "flak": 2,
+    "flak": 1,
     "heat": 0
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "megataser_harpoon",
@@ -659,15 +687,18 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
-    "power_max": 10,
+    "power": 1,
+    "power_max": 2,
     "keywords": [
      "shock"
     ],
-    "heat": 10
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic",
+    "arc"
+   ]
   },
   {
    "id": "combat_translocator",
@@ -689,10 +720,12 @@
     "keywords": [
      "swap"
     ],
-    "heat": 5
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "arc"
+   ]
   },
   {
    "id": "afterburner_cannon",
@@ -710,15 +743,17 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 2,
     "keywords": [],
     "heat": 0,
     "vents_all": true,
-    "power_per_heat": 10,
-    "per_heat": 10
+    "power_per_heat": 1,
+    "per_heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "plasma"
+   ]
   },
   {
    "id": "knuckle_of_fury",
@@ -740,14 +775,15 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 5,
     "keywords": [],
-    "heat": 10,
+    "heat": 3,
     "rolls_again_on": "rage"
    },
    "passive": null,
    "tags": [
-    "melee"
+    "melee",
+    "plasma"
    ]
   },
   {
@@ -771,15 +807,16 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 5,
     "keywords": [
      "burn"
     ],
-    "burn": 5,
-    "heat": 10
+    "burn": 3,
+    "heat": 4
    },
    "passive": null,
    "tags": [
+    "plasma",
     "melee"
    ]
   },
@@ -799,13 +836,14 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 3,
     "keywords": [],
-    "heat": 5,
-    "devours": 2
+    "heat": 1,
+    "devours": 1
    },
    "passive": null,
    "tags": [
+    "blade",
     "melee"
    ]
   },
@@ -826,34 +864,14 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
-    "power_max": 15,
+    "power": 2,
     "keywords": [],
     "heat": 0
    },
    "passive": null,
-   "tags": []
-  },
-  {
-   "id": "blowout_stack",
-   "name": "Blowout Stack",
-   "maker": "minerva",
-   "tier": 0,
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A chimney that opens. Minerva's answer to heat is a bigger pipe.",
-    "niche": "Minerva's starter vent.",
-    "notes": "Claude's fill, 28 September."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 20
-   },
-   "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "laser_carbine",
@@ -872,54 +890,33 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 3,
     "keywords": [],
-    "heat": 5
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
-   "id": "ram_air_scoop",
-   "name": "Ram-air Scoop",
+   "id": "bleed_valve",
+   "name": "Bleed Valve",
    "maker": "kestrel",
-   "tier": 1,
+   "tier": 0,
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "An intake that opens to the slipstream. Cooling by going fast.",
-    "niche": "Kestrel's starter vent.",
-    "notes": "Claude's fill, 28 September."
+    "fantasy": "A jet's bleed-air valve thrown wide open: the engine dumps its own heat overboard. The jet's brake.",
+    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only.",
+    "notes": "Claude's fill, 28 September. 22 October, the stock pass's landing: renamed the Bleed Valve (a working name, Ryan's go on the brief's suggestion), the Ram-air Scoop colliding with the Ram Frame module; self only, tier zero, a basic."
    },
    "face": {
     "kind": "vent",
-    "power": 20
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
-   "id": "zenith_emitter",
-   "name": "Zenith Emitter",
-   "maker": "aphelion",
-   "tier": 0,
-   "shape": "barrel",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A plain coherent beam, the one Aphelion gun that does exactly what it says.",
-    "niche": "Aphelion's generic line weapon: a flat number, no keyword.",
-    "notes": "Claude's fill, 28 September, so Aphelion's stock has a plain gun."
-   },
-   "face": {
-    "kind": "attack",
-    "reach": "direct",
-    "power": 15,
-    "keywords": [],
-    "heat": 10
+    "power": 6,
+    "targets": "self"
    },
    "passive": null,
    "tags": []
@@ -940,7 +937,7 @@
    },
    "face": {
     "kind": "shield",
-    "power": 20
+    "power": 6
    },
    "passive": null,
    "tags": []
@@ -949,7 +946,7 @@
    "id": "overcharge_coil",
    "name": "Overcharge Coil",
    "maker": "kestrel",
-   "tier": 0,
+   "tier": 1,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -971,7 +968,7 @@
    "id": "radiator_sail",
    "name": "Radiator Sail",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 1,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -979,11 +976,12 @@
     "stage": "draft",
     "fantasy": "A deep-space radiator, unfolded. Heat goes where it always went: out.",
     "niche": "Aphelion's starter vent, so the Mandrill need not borrow one.",
-    "notes": "Claude's fill, 28 September."
+    "notes": "Claude's fill, 28 September. 22 October, the stock pass's landing: Aphelion's ally vent at tier one, allies only, so the basic vents are two."
    },
    "face": {
     "kind": "vent",
-    "power": 20
+    "power": 5,
+    "targets": "ally"
    },
    "passive": null,
    "tags": []
@@ -992,7 +990,7 @@
    "id": "plasma_arquebus",
    "name": "Plasma Arquebus",
    "maker": "arsenal",
-   "tier": 2,
+   "tier": 1,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -1005,20 +1003,22 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
+    "power": 2,
     "keywords": [],
-    "heat": 5,
-    "power_max": 15
+    "heat": 2,
+    "power_max": 4
    },
    "passive": null,
-   "tags": [],
+   "tags": [
+    "plasma"
+   ],
    "sound": "plasma"
   },
   {
    "id": "blazethrower",
    "name": "Blazethrower",
    "maker": "arsenal",
-   "tier": 2,
+   "tier": 1,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -1031,21 +1031,24 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 3,
     "keywords": [
      "burn"
     ],
-    "burn": 3,
-    "heat": 10
+    "burn": 2,
+    "heat": 3
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "flame",
+    "plasma"
+   ]
   },
   {
    "id": "meteor_artillery",
    "name": "Meteor Artillery",
    "maker": "arsenal",
-   "tier": 1,
+   "tier": 2,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -1058,21 +1061,24 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 15,
+    "power": 5,
     "keywords": [
      "burn"
     ],
-    "burn": 5,
-    "heat": 15
+    "burn": 3,
+    "heat": 6
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "plasma",
+    "missile"
+   ]
   },
   {
    "id": "entropy_condenser",
    "name": "Entropy Condenser",
    "maker": "arsenal",
-   "tier": 1,
+   "tier": 2,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -1084,11 +1090,11 @@
    },
    "face": {
     "kind": "vent",
-    "power": 40,
+    "power": 10,
     "keywords": [
      "volatile"
     ],
-    "volatile": 10
+    "volatile": 3
    },
    "passive": null,
    "tags": []
@@ -1109,21 +1115,24 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 4,
     "keywords": [
      "burn"
     ],
-    "burn": 3,
-    "heat": 20
+    "burn": 2,
+    "heat": 6
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam",
+    "flame"
+   ]
   },
   {
    "id": "aurora_lattice",
    "name": "Aurora Lattice",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 2,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -1157,7 +1166,7 @@
    },
    "face": {
     "kind": "shield",
-    "power": 10,
+    "power": 3,
     "targets": "ally",
     "keywords": [
      "overshield"
@@ -1170,7 +1179,7 @@
    "id": "differentiation_probe",
    "name": "Differentiation Probe",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 2,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -1187,16 +1196,18 @@
     "keywords": [
      "disrupt"
     ],
-    "heat": 5
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
    "id": "phased_sublimator",
    "name": "Phased Sublimator",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 1,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -1208,7 +1219,7 @@
    },
    "face": {
     "kind": "vent",
-    "power": 20,
+    "power": 4,
     "keywords": [
      "cleanse"
     ]
@@ -1220,7 +1231,7 @@
    "id": "polarity_projector",
    "name": "Polarity Projector",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 1,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -1237,16 +1248,18 @@
     "keywords": [
      "shock"
     ],
-    "heat": 5
+    "heat": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "arc"
+   ]
   },
   {
    "id": "shoring_jack",
    "name": "Shoring Jack",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -1259,15 +1272,15 @@
    "face": {
     "kind": "buff",
     "status": "braced",
-    "stacks": 10,
+    "stacks": 2,
     "rounds": 1
    },
    "passive": null,
    "tags": []
   },
   {
-   "id": "blast_door",
-   "name": "Blast Door",
+   "id": "canopy",
+   "name": "Canopy",
    "maker": "minerva",
    "tier": 0,
    "shape": "none",
@@ -1275,13 +1288,14 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it.",
-    "niche": "Minerva's hardpoint shield: a slab on an arm, raised on itself or an ally. The platings left the dice for modules on 9 October, so a shield on a hardpoint wants to be something mounted.",
-    "notes": "Built 9 October in the content revision as Minerva's intercept, with the Guard keyword (allies only, the foes aimed at the ally turning on the spender, its shield going up on the door); Guard taken out the same day (Ryan: until we feel we need it), so it is a plain shield, self or ally. On the Wild Boar and the Clydesdale in place of their Ablative Plating."
+    "fantasy": "The falling-object guard over a mining machine's cab, swung down to cover the frame: what keeps a cave-in off the pilot keeps a blow off the hull.",
+    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only.",
+    "notes": "Built 9 October in the content revision as Minerva's intercept, with the Guard keyword (allies only, the foes aimed at the ally turning on the spender, its shield going up on the door); Guard taken out the same day (Ryan: until we feel we need it), so it is a plain shield, self or ally. On the Wild Boar and the Clydesdale in place of their Ablative Plating. 22 October, the stock pass's landing: renamed the Canopy (a working name, Ryan's go on the brief's suggestion), so that the Blast Door's name goes to the Barrier piece whose fantasy it already was; self only, tier zero, a basic."
    },
    "face": {
     "kind": "shield",
-    "power": 20
+    "power": 8,
+    "targets": "self"
    },
    "passive": null,
    "tags": []
@@ -1303,14 +1317,15 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
+    "power": 4,
     "keywords": [
      "shock"
     ],
-    "heat": 10
+    "heat": 3
    },
    "passive": null,
    "tags": [
+    "arc",
     "melee"
    ]
   },
@@ -1330,11 +1345,11 @@
    },
    "face": {
     "kind": "shield",
-    "power": 40,
+    "power": 10,
     "keywords": [
      "volatile"
     ],
-    "volatile": 10
+    "volatile": 3
    },
    "passive": null,
    "tags": []
@@ -1379,20 +1394,22 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 5,
+    "power": 1,
     "strikes": 3,
     "keywords": [],
-    "heat": 5,
-    "power_max": 10
+    "heat": 1,
+    "power_max": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "wake_diffuser",
    "name": "Wake Diffuser",
    "maker": "kestrel",
-   "tier": 0,
+   "tier": 1,
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -1404,8 +1421,8 @@
    },
    "face": {
     "kind": "vent",
-    "power": 10,
-    "shields": 10,
+    "power": 3,
+    "shields": 3,
     "keywords": []
    },
    "passive": null,
@@ -1431,10 +1448,12 @@
     "keywords": [
      "web"
     ],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "missile"
+   ]
   },
   {
    "id": "spin_up",
@@ -1484,12 +1503,14 @@
      "lure"
     ],
     "heat": 0,
-    "braces": 2,
+    "braces": 1,
     "reaches_all": true,
-    "heat_per_blow": 10
+    "heat_per_blow": 2
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
    "id": "thermal_ray",
@@ -1508,12 +1529,14 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 30,
+    "power": 6,
     "keywords": [],
-    "heat": 30
+    "heat": 6
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "beam"
+   ]
   },
   {
    "id": "mooring_screens",
@@ -1530,7 +1553,7 @@
    },
    "face": {
     "kind": "shield",
-    "power": 10,
+    "power": 2,
     "targets": "ally",
     "reaches_all": true,
     "charged": {
@@ -1563,7 +1586,7 @@
     "keywords": [
      "expose"
     ],
-    "heat": 0,
+    "heat": 1,
     "charged": {
      "muster": 1,
      "keywords": [
@@ -1572,7 +1595,9 @@
     }
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "missile"
+   ]
   },
   {
    "id": "sutlers_hoist",
@@ -1589,9 +1614,9 @@
    },
    "face": {
     "kind": "shield",
-    "power": 15,
+    "power": 3,
     "targets": "ally",
-    "vents": 10,
+    "vents": 2,
     "charged": {
      "muster": 1,
      "shield": "full",
@@ -1645,18 +1670,20 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 5,
+    "power": 1,
     "keywords": [
      "cleave",
      "penetrate",
      "flak"
     ],
     "flak": 1,
-    "heat": 10,
+    "heat": 2,
     "ammo_per_foe_hit": 1
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic"
+   ]
   },
   {
    "id": "unrestricted_expenditure",
@@ -1674,7 +1701,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 5,
+    "power": 2,
     "keywords": [
      "cleave",
      "penetrate"
@@ -1684,7 +1711,10 @@
     "random_targets": true
    },
    "passive": null,
-   "tags": []
+   "tags": [
+    "ballistic",
+    "missile"
+   ]
   },
   {
    "id": "quick_reload",
@@ -1706,7 +1736,7 @@
     "keywords": [
      "rapid"
     ],
-    "heat": 15,
+    "heat": 3,
     "reloads_ammo": 2
    },
    "passive": null,
@@ -1730,7 +1760,7 @@
     "reach": "indirect",
     "power": 0,
     "keywords": [],
-    "heat": 10,
+    "heat": 2,
     "pulls_mines": true
    },
    "passive": null,
@@ -1756,6 +1786,234 @@
     "keywords": [],
     "heat": 0,
     "drones": true
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "transonic_rifle",
+   "name": "Transonic Rifle",
+   "maker": "kestrel",
+   "tier": 1,
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A long rifle whose rounds leave the barrel just past the speed of sound.",
+    "niche": "The step between the Laser Carbine and the Overclocked Railgun, Kestrel's 3, 5 and 10: flat, warm and plain.",
+    "notes": "Taken in the Kestrel line review (Ryan, 21 October: \"stock changes as you see fit\"; docs/briefs/kestrel_line.md); landed with the stock pass (22 October), in the Kite's and the Buzzard's stocks, Breach staying the Railgun's alone (Ryan, 22 October). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 5,
+    "keywords": [],
+    "heat": 4
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
+   ]
+  },
+  {
+   "id": "airburst_shell",
+   "name": "Airburst Shell",
+   "maker": "wainwright_sutler",
+   "tier": 1,
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A shell fused to burst over a rank, peppering every foe under it with fragments that leave each one easier to hit.",
+    "niche": "The Flak family's slot-in above the basics: a rolled Indirect spray laying Flak 1 on a foe and its neighbours, for the team's many small blows to cash.",
+    "notes": "Ryan, 19 October: an airburst shell and a flak cannon as Wainwright & Sutler slot-ins, the Flak family; landed with the stock pass (22 October; a working name), in the Clydesdale's stock in the Suppression Battery's slot and the Dingo's beside its harpoon. Indirect as a shell: Claude's reading, the brief naming no reach. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 1,
+    "power_max": 2,
+    "keywords": [
+     "cleave",
+     "flak"
+    ],
+    "flak": 1,
+    "heat": 1
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
+   ]
+  },
+  {
+   "id": "cyclic_cannon",
+   "name": "Cyclic Cannon",
+   "maker": "kestrel",
+   "tier": 2,
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A rotary cannon run at its full cyclic rate: four rounds where a rifle fires one.",
+    "niche": "The multi-strike gun (Ryan, 14 October: badly needed), Flak's partner and the strafer's eight: every strike carries the foe's Flak and loses its armour.",
+    "notes": "Taken in the Kestrel line review (21 October, docs/briefs/kestrel_line.md); landed with the stock pass (22 October), in no stock. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 2,
+    "strikes": 4,
+    "keywords": [],
+    "heat": 3
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
+   ]
+  },
+  {
+   "id": "flak_cannon",
+   "name": "Flak Cannon",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "An anti-aircraft gun levelled at the ground: one heavy burst that leaves its target ringing for everything after it.",
+    "niche": "The Flak family's single-target layer: Flak 2 on one foe for the Maxigun to chew.",
+    "notes": "Ryan, 19 October, the Flak family; landed with the stock pass (22 October; a working name), in no stock. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 3,
+    "keywords": [
+     "flak"
+    ],
+    "flak": 2,
+    "heat": 2
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
+   ]
+  },
+  {
+   "id": "stoker",
+   "name": "Stoker",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A firebox gun that throws its own coals: the target catches, and so does the machine that fed it.",
+    "niche": "Slow fuel by decision: Burn on the foe and Burning on its own firer, a price on most machines and fuel for the Whip Scorpion's vents.",
+    "notes": "Ryan, 19 October (his word, the self-cost class: a Wainwright & Sutler piece that Burns a foe and its own firer); landed with the stock pass (22 October), its own fire the face's self_burn, in no stock. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 3,
+    "keywords": [
+     "burn"
+    ],
+    "burn": 2,
+    "heat": 1,
+    "self_burn": 1
+   },
+   "passive": null,
+   "tags": [
+    "flame",
+    "ballistic"
+   ]
+  },
+  {
+   "id": "backdraft_charge",
+   "name": "Backdraft Charge",
+   "maker": "arsenal",
+   "tier": 2,
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A charge that pulls the fire out of whatever it strikes and turns it inward: the flames go out, and the foe goes down with them.",
+    "niche": "The fire-synergy stun: it consumes every stack of Burning on its target for a point a stack, and Suppresses it if it consumed two or more, so one Burn 2 piece opens it and no all-in burn team is needed.",
+    "notes": "Ryan, 22 October (the stun row): the name stands, it consumes the fire, a point of damage a stack consumed and the Suppress at a threshold on one piece, one burn consumer in the pool; the threshold at two and the numbers Claude's fills. Landed with the stock pass (22 October), in no stock, like every Suppress piece. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 2,
+    "keywords": [
+     "suppress"
+    ],
+    "heat": 2,
+    "gates": {
+     "suppress": {
+      "when": "target_status",
+      "status": "burning",
+      "stacks": 2
+     }
+    },
+    "consumes": "burning",
+    "per_consumed": 1
+   },
+   "passive": null,
+   "tags": [
+    "plasma",
+    "flame"
+   ]
+  },
+  {
+   "id": "blast_door",
+   "name": "Blast Door",
+   "maker": "minerva",
+   "tier": 1,
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it for the one blow that matters.",
+    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, so it never injures, until the round's end; self or ally, never a team buff (the Barrier row).",
+    "notes": "Ryan, 14 October: the Blast Door's fantasy is a Barrier; landed with the stock pass (22 October), the name moved from the old self shield (the Canopy), in no stock. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "barrier",
+    "stacks": 1,
+    "rounds": 1
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "decoherence_veil",
+   "name": "Decoherence Veil",
+   "maker": "aphelion",
+   "tier": 1,
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A field that smears a machine's state across the round: whatever strikes it lands, but nothing it carries finds a hold.",
+    "niche": "The Ward carrier: every blow a foe lands on the machine this round leaves no rider, and no silence or purge touches it; self or ally, never a team buff.",
+    "notes": "Landed with the stock pass (22 October) as the brief's Ward carrier (a working name, the Votive Screen being Misharu's), in no stock. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "ward",
+    "stacks": 1,
+    "rounds": 1
    },
    "passive": null,
    "tags": []

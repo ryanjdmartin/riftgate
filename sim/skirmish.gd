@@ -543,6 +543,8 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	var heat_mid := ms.heat + (pending_heat(ms) if with_face else 0)
 	heat_mid -= mini(heat_mid, cryo_cash(ms, aimed) if with_face else 0)
 	var heat_end := heat_mid + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
+	if spent != null and spent.self_burn > 0:
+		heat_end += spent.self_burn * Effects.status_value("burning_mech", "tick_heat")   # the Stoker's own fire ticks with the rest
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
 	var blows := 0
@@ -1260,6 +1262,13 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		var bm := Effects.grant_buff(ms.unit, "braced", f.braces, "brace:" + f.component, round)
 		if bm != null:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
+	# The Stoker's fire on its own firer (the stock pass's landing, 22 October): spending it
+	# sets its machine Burning, the stacks it prints, after the blow: slow fuel by decision, the
+	# machine's Burning heating it at the turn's end before the overheat, then fading a stack,
+	# so a vent makes room for it and a cleanse lifts it.
+	if f.self_burn > 0 and ms.alive():
+		Effects.stack(ms.unit, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "self:" + f.component, f.self_burn, Effects.status_decay(Effects.STATUS["burning_mech"]))
+		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["burning_mech"]["name"], f.self_burn])
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
 		var deals := blasted or (f.is_attack() and (f.power > 0 or f.power_max > 0))

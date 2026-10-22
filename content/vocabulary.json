@@ -204,7 +204,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 10 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 18 and 20 October: the Armadillo's Cryo Flinger carries it with Lure and Rapid, and the keyword and the debuff share the word. Marked for reuse: a healthier way to grant ally cooling than venting directly, so other pieces may lay it. A minor rider on the mark (a damage over time parted from Burning by whether it passes armour) is a bench, only if the roster has room. The cooling a stack is a placeholder ahead of the heat rework."
@@ -562,7 +562,7 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's damaging hit on it spends every stack and cools the hitter 10 a stack; a blow of nothing spends none. It never fades on its own.",
+   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's damaging hit on it spends every stack and cools the hitter 2 a stack; a blow of nothing spends none. It never fades on its own.",
    "status": "implemented",
    "design": {
     "holes": "The Armadillo's mark (Ryan's go, 20 October). Engine id cryoed, since the keyword holds the id cryo; the player reads Cryo on both. Shared on purpose (Claude's lean, Ryan's go): the tank's output is cooling the team contends for, and never an ally cooling the Armadillo for free.",
@@ -626,7 +626,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
+   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the corrupted status's own number in the engine's table (a field since the stock pass's engine, 22 October), a placeholder.",
@@ -658,7 +658,7 @@
    "id": "burning",
    "category": "status",
    "name": "Burning",
-   "codex": "Status. On a foe: loses 1 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 5 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats.",
+   "codex": "Status. On a foe: loses 1 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 1 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats.",
    "status": "implemented",
    "design": {
     "holes": "One word, two effects by body (Ryan, 13 October): the machine side replaced Overheating, whose name the real overheat already had. Engine ids burning (a foe's) and burning_mech (a machine's). A damage point a stack on a foe since 18 October (Ryan, in the spirit of flattening the numbers; 5 before), the stacks now the keyword's number; the machine side's 5 heat a stack stands until heat is re-priced (section 12).",
@@ -690,7 +690,7 @@
    "id": "vitriol",
    "category": "status",
    "name": "Vitriol",
-   "codex": "Foe status, the funnel-web's acid. At its action it loses 5% of its current HP a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
+   "codex": "Foe status, the funnel-web's acid. At its action it loses 10% of its current HP a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). The planned Corrode keyword (1% of HP a stack) renamed and re-stepped; Corroded is kept for the foes' damage over time on machines (Ryan, 17 October). Laid by the funnel-web's passive on a foe showing no intent on it, a stack per hit, so a multi-strike piece bites several times; nothing else lays it yet, and the keyword, if a piece ever carries it, shares the word. Engine (built 18 October): a status effect of its own, tick_hp_share, read after the flat ticks on the hull they leave, the whole share rounded down and never the last hit point (Effects.tick_preview); stacking add, a stack fading at the foe's action; laid by lay_status on the funnel-web's passive, a stack per strike that lands with a number, so a blow of nothing (the web, a lure) is no hit. Whether a tick passes Guarded is the parts' question, as Burning's is. The bot values it by its ticks on the hull the blow leaves (Policy.dot_payout).",
@@ -722,7 +722,7 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Mech status, the Cassowary's. Its next weapon spend deals 5 more a stack, then every stack is spent. Carried between turns until a weapon spends it.",
+   "codex": "Mech status, the Cassowary's. Its next weapon spend deals 2 more a stack, then every stack is spent. Carried between turns until a weapon spends it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). Granted by the Spin-Up, a stack a spin, stacking, and carried if a turn ends without a shot (Ryan, 19 October: \"a stacking unique buff, so that it could be carried between turns\"). Spent whole by the next weapon spend, damage or none. The chip reads SPUN UP with its count, and the +5 shows on the die's number once the engine has it. Built 21 October: a buff with no round count, spent by the spend rather than fading (spent_by on the status; a buff grants it with no rounds); the bot values it as damage in hand.",
@@ -738,7 +738,7 @@
    "id": "hot_streak",
    "category": "status",
    "name": "Hot Streak",
-   "codex": "Machine status, the Kite's: its shots run 5 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
+   "codex": "Machine status, the Kite's: its shots run 1 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
    "status": "implemented",
    "design": {
     "holes": "A working name (21 October), the Kite's heat tax.",
@@ -786,7 +786,7 @@
    "id": "siphoning",
    "category": "status",
    "name": "Siphoning",
-   "codex": "Machine status, the Whip Scorpion's Siphon: every blow a foe lands on it this round adds heat, 10 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel for its vents, or next turn's burn. Until the round's end; nothing cleanses it.",
+   "codex": "Machine status, the Whip Scorpion's Siphon: every blow a foe lands on it this round adds heat, 2 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel for its vents, or next turn's burn. Until the round's end; nothing cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Built 21 October from the Heliographic Siphon's heat_per_blow (Ryan's go, 20 October: every blow landed on it that round adds 10 heat, next round's fuel). The number is the entry's own; 10 a blow is the lever (5 was half a vent).",
@@ -1498,7 +1498,7 @@
    "id": "vents_all",
    "category": "component_property",
    "name": "Vents all",
-   "codex": "An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands.",
+   "codex": "An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands.",
    "status": "implemented",
    "design": {
     "holes": "Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat."
@@ -1532,6 +1532,16 @@
    "status": "implemented",
    "design": {
     "holes": "The Backdraft Charge's (Ryan, 22 October: it consumes the fire, a point of damage a stack of Burning consumed, and Suppresses at a threshold, one burn consumer in the pool). Built 22 October, the stock pass's engine: consumes and per_consumed on the face, one blow on one foe, the stacks read at the spend and gone as the blow lands; the bot weighs the ticks given up. A mine laid from it eats its arrival's stacks."
+   }
+  },
+  {
+   "id": "self_burn",
+   "category": "component_property",
+   "name": "Burns its firer",
+   "codex": "A rule printed on a weapon: spending it sets its own machine Burning, the stacks it says, after the blow. The machine's Burning heats it at the end of the player's turn, before the overheat, then loses a stack, so a vent makes room for it and a cleanse takes it off. Fuel for a machine that wants heat, a price for one that does not.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Stoker's (Ryan, 19 October: a Wainwright & Sutler piece that Burns a foe and its own firer, slow fuel for the Whip Scorpion by decision, the self-cost class). Built 22 October with the stock pass's landing: self_burn on the face, the stacks laid after the blow, the forecast and the bot counting the first tick with the turn's heat. Burns its firer is a plain working name for Ryan's name pass."
    }
   },
   {
@@ -1630,7 +1640,7 @@
    "id": "scorched",
    "category": "status",
    "name": "Scorched",
-   "codex": "Machine status, from a foe's scorch: every weapon it fires runs 5 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
+   "codex": "Machine status, from a foe's scorch: every weapon it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "Built 13 October, the softer of the two heat debuffs (Ryan: Burn and Scorch). Every stack goes at the turn's end, like Braced: losing one a turn piled up under several scorchers (four Bombs on one machine), the spiral direct heat had. Placeholder numbers.",
@@ -1800,7 +1810,7 @@
    "id": "ammo",
    "category": "resource",
    "name": "Ammo",
-   "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its damaging guns spend ammo instead of heating it: 1 for every 10 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
+   "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its damaging guns spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
    "status": "implemented",
    "design": {
     "holes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). A resource beside heat (Ryan: \"another bar under the heat bar\"), never a buff, so no Silence or Purge reaches it (Claude's reading of his bar; Ryan agreed, 21 October). Only damaging guns pay it: debuffs, buffs, shields and the foes' heat stay on the heat bar, Scorched's extra included (Ryan). The rate is at today's heat scale, Ryan's 2 at the stock pass's. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down (Ryan). Built 21 October: the magazine on the machine, the conversion read through the pipeline (the gun's own heat, a debuff's extra aside), the refund, the reloads, the salvo, the quick reload, the die's price and DRY, the bot valuing an ammo at half the best damage one buys. The trickle starts with the second round, so the first holds 3 in all (Ryan, 22 October: \"make it a total of 3\")."
