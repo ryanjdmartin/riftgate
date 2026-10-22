@@ -511,3 +511,59 @@ one machine alone; the reworked one is the team tank its bible row decided. The 
 slide is the week's small moves on a run that had no margin left, not a second break. The
 campaign report reads nothing while every run is lost: its number waits on a player that fights
 as a team (the status's fourth item), Ryan's question in the bible's section 12.
+
+## 22 October, the baseline before the stock pass
+
+**The balance report at 200 seeds on main's head of the morning** (`a1585a9`, before the stock
+pass's engine chunk: `docs/balance.md`, 290,000 fights, four parts side by side in a worktree
+while the chunk was built beside it; the report as that commit's runner writes it, so it has
+the reach table's splash column and no rounds-to-win section). The before for every band the
+stock pass's landing reads. Every row the day's main left alone reads as on 21 October to the
+decimal (the seeds are the same), so what moved is the commits between the two: the Clydesdale
+32.1 / 47.5 to 33.0 / 49.1, the Funnel-web 31.4 / 45.0 to 32.6 / 47.8, the Whip Scorpion 48.5 /
+74.0 to 48.9 / 74.8 and the Wainwright & Sutler team's greedy 91.4 to 91.7, which fits the fix
+of 21 October that made a multi-strike gun pay its heat once a spend. The new rows, alone, row
+means over the twenty packs, random / greedy:
+
+| Row | The baseline |
+|---|---|
+| Swallowtail | 16.4 / 42.0 |
+| Musk Ox | 56.4 / 67.5 |
+| Lammergeier | 3.0 / 27.1 |
+
+Read: the Musk Ox alone stands with the Boar and the Badger at the top of the random rung and
+lower on the greedy (its salvo is random by design and the bot's ammo pricing a first reading);
+the Swallowtail is a carrier whose pieces work on allies, so alone it is a diagnostic; the
+Lammergeier's mines wait on reinforcements, which most packs do not field. The party's cells
+read as on 21 October (every team wins every final greedy; the finale 0 / 16 for the starting
+team, 3 / 74 for Minerva's, 0 / 0 for Kestrel's and Wainwright & Sutler's). Heat, greedy, the
+before for the heat test (a hot kit overheats by its third round of firing): the hottest rows
+peak at 70 to 80% of their maximum as a turn ends (the Whip Scorpion 81%, the Kite 79%, the
+Armadillo 74%, the Nemesis 71%), overheat under once a fight (the Armadillo 0.73, the rest under
+0.45) and hold back a damaging die for heat almost never (the Kite 0.28 a fight, the Kestrel
+team 0.72, everything else under 0.11); the Buzzard, whose passive turns heat to shield, peaks
+at 20%. So heat barely bites today, the stock pass's heat row's premise.
+
+**The coordination gap today** (the stock pass's Rounds to win, on main's engine at `a1585a9`
+with the branch's report code alone: the team rows against the twenty-nine packs at 200 seeds,
+58,000 fights, four parts beside the baseline). Random's rounds over greedy's, a mean over the
+cells both rungs win at least a quarter of:
+
+| Team | The big fights | The rank and file |
+|---|---|---|
+| The starting team (Honey Badger, Clydesdale, Kite) | 1.63 over 16 | 1.56 over 12 |
+| Minerva Heavy Works team | 1.62 over 16 | 1.60 over 12 |
+| Kestrel Dynamics team | 1.57 over 11 | 1.57 over 12 |
+| Wainwright & Sutler team | 1.40 over 12 | 1.35 over 12 |
+
+The big fights are the massive foes, the bosses, the formations and the finals; the rank and
+file the twelve packs of wildlife. Read: greedy wins about half again as fast everywhere, the
+big fights no more than the rank and file, so today's gap is an efficiency edge (the better
+target, no die wasted), not the coordination gap the tests ask for (the bible's section 2: about
+2 on the big fights and none on the rank and file, which at today's scale take several blows
+each). The landing reads it again: the rank and file dying to a die or two should close their
+gap, and the big foes' HP span open theirs. A direction at the cells' count, read as a band.
+
+**The campaign report** (`docs/campaign_run.md`, 40 runs) rerun on the same commit reads line
+for line as 21 October's, its header's date aside: the day's main changed nothing the plain
+player's runs touch.

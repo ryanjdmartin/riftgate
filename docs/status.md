@@ -496,19 +496,20 @@ before it. The five design sessions merged that day are paused, each resuming fr
   screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
-## Measured, 21 October
+## Measured, 22 October
 
-- `docs/balance.md` at 200 seeds on the Kite's commit (`f1b8c663`; the Swallowtail, the Musk
-  Ox and the Lammergeier landed after it, so their rows wait on the next rerun): the rows the
-  week did not rework move a few points at most; the shield rule alone takes up to five points
-  off a row (the Wainwright & Sutler team's random, the Prairie Dog's greedy) and moves the
-  Peak's cells a direction down. The Armadillo alone falls from the top of the table (79 / 95)
-  to the middle (26 / 39) with its rework, its team holding at 100; the Kite's rework halves
-  its row and costs the starting team the Peak's and the Marsh's formations in the random
-  rung. Every team wins every final greedy; the finale is a wall but for Minerva's team (3 /
-  71). The Whip Scorpion reads in the Nemesis's band, the Cassowary among the weakest alone. A
-  heat section reads peaks, hot rounds and dice held for heat.
-- `docs/campaign_run.md` on main: the plain player wins none of 40 runs and one battle of 348
+- `docs/balance.md` at 200 seeds on main's head of the morning (`a1585a9`), the baseline before
+  the stock pass: every row the day's main left alone reads as on 21 October to the decimal;
+  the Clydesdale, the Funnel-web, the Whip Scorpion and the Wainwright & Sutler team rise a
+  point or two (the heat paid once a spend); the new rows alone read the Musk Ox 56.4 / 67.5,
+  the Swallowtail 16.4 / 42.0, the Lammergeier 3.0 / 27.1; the party's cells as on 21 October.
+  Heat barely bites: the hottest rows peak at 70 to 80% and overheat under once a fight. The
+  coordination gap today (the team rows, the same commit, the branch's Rounds to win): greedy
+  wins about half again as fast on the big fights and on the rank and file alike (1.35 to 1.63),
+  an efficiency edge, not the gap the tests ask for (about 2 on the big fights, none on trash).
+  The 21 October report's reads stand beside it (the shield rule's few points, the Armadillo's
+  and the Kite's reworks): `docs/measurements.md` has both.
+- `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
   lone fight; the plain player's fights are still mostly one machine (572 of 734), and one

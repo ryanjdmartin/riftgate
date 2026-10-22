@@ -425,7 +425,9 @@ in the second.
 10. **The baseline run** before any of this lands: `tools/balance.gd --seeds 200` on today's
     main into `docs/balance.md` (about 45 minutes, split with `--part i/n` and `--merge`), the
     heat section's first publication and the before for every band read later; the campaign
-    report rerun with it.
+    report rerun with it. Done 22 October on main's head of that morning (`a1585a9`; the heat
+    section had first been published on 21 October), with the coordination gap read today on
+    the team rows beside it (`docs/measurements.md`).
 
 ## 7. The method (the second chunk, on Ryan's marks)
 
