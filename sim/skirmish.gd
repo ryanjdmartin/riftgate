@@ -314,9 +314,9 @@ func can_withdraw() -> bool:
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that
-## fires the gauge empty first.
+## fires the gauge empty first. A charged form's own when it goes out charged.
 func pending_heat(ms: MechState) -> int:
-	var f := ms.face()
+	var f := spend_face(ms) if ms.face() != null else null
 	if f == null or ms.assigned:
 		return 0
 	if not f.is_attack():
@@ -609,10 +609,29 @@ func can_charge(ms: MechState) -> bool:
 	return f != null and not f.charged.is_empty() and Effects.muster_charges(ms.unit) >= f.muster_price()
 
 
-## The entry as it would be spent: its charged form when asked and paid for, else itself.
-func spend_face(ms: MechState, charged: bool = false) -> Face:
+## Whether the entry goes out charged now (Ryan, 22 October: never primed, "it just gets used
+## if it's up"): a muster pays for it and its charged form has somewhere to land, a foe or a slot
+## in its reach or a machine it may be spent on (the Mooring Screens' Phased an ally yet to act,
+## the Horn's act again an ally whose die is spent). A charged form with nothing to land on
+## leaves the plain one, and the muster waits.
+func charge_lands(ms: MechState) -> bool:
+	if not can_charge(ms):
+		return false
+	var cf := ms.face().charged_form()
+	if cf.is_attack():
+		return not targets_for_face(ms, cf).is_empty() or not slot_targets(ms, Effects.effective_face(ms.unit, cf)).is_empty()
+	if cf.is_equipment():
+		var eff := Effects.effective_face(ms.unit, cf)
+		if cf.reaches_all:
+			return not reached_machines(ms, eff).is_empty()
+		return not equipment_targets_for(ms, eff).is_empty()
+	return false
+
+
+## The entry as it would be spent: its charged form whenever it goes out charged, else itself.
+func spend_face(ms: MechState) -> Face:
 	var f := ms.face()
-	if charged and can_charge(ms):
+	if charge_lands(ms):
 		return f.charged_form()
 	return f
 
@@ -734,9 +753,9 @@ func start_round() -> void:
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
-		# The forge's trickle (the Musk Ox's), every round from the first (Ryan, 21 October: "Musk
-		# ox can start round 1"), so the first round holds its start and a round's trickle.
-		if ms.ammo_max > 0:
+		# The forge's trickle (the Musk Ox's), from the second round: the first holds its start, 3
+		# in all (Ryan, 22 October: "make it a total of 3").
+		if ms.ammo_max > 0 and round > 1:
 			_reload(ms, int(Effects.forge_rule(ms.unit).get("per_round", 0)), "")
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
@@ -988,15 +1007,13 @@ func can_reroll() -> bool:
 ## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
 ## null for equipment): the checks `assign` makes before it acts, changing nothing. The
 ## screen asks it while a die is dragged, for the hover over a valid target.
-func can_assign(mech_index: int, target, charged: bool = false) -> bool:
+func can_assign(mech_index: int, target) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned or ms.face() == null:
 		return false
-	if charged and not can_charge(ms):
-		return false
-	var raw := spend_face(ms, charged)
+	var raw := spend_face(ms)
 	var f := Effects.effective_face(ms.unit, raw)
 	if f.is_attack() and target is Vector2i:
 		return slot_targets(ms, f).has(target)
@@ -1007,8 +1024,9 @@ func can_assign(mech_index: int, target, charged: bool = false) -> bool:
 	return false
 
 
-## `charged`: the entry spent in its charged form for a muster (the Swallowtail's locked pieces).
-func assign(mech_index: int, target = null, second = null, charged: bool = false) -> bool:
+## A locked piece of the Swallowtail's goes out in its charged form whenever a muster pays for it
+## and it has somewhere to land (charge_lands), the muster spent with it.
+func assign(mech_index: int, target = null, second = null) -> bool:
 	if state != State.ASSIGN:
 		return false
 	last_acts.clear()
@@ -1018,10 +1036,9 @@ func assign(mech_index: int, target = null, second = null, charged: bool = false
 	var f := ms.face()
 	if f == null:
 		return false
-	if charged and not can_charge(ms):
-		return false
 	var price := f.muster_price()
-	var raw := spend_face(ms, charged)   # the entry as spent, its charged form when a muster pays for it
+	var charged := charge_lands(ms)
+	var raw := spend_face(ms)   # the entry as spent, its charged form when a muster pays for it
 	f = raw
 	var quick := Effects.quick_turn_live(ms.unit, f)   # Rapid by a once-a-round gate (the Needletail's), read before the spend
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at

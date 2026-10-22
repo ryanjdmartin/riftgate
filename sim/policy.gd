@@ -39,7 +39,6 @@ const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team bl
 const MINE_WEIGHT := 0.8         # a laid shot, as a share of its blow on the arrival: delayed, and laid against a count of those waiting, never a foe seen
 const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashed later by a pull on the team's dice
 const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average blow, at the odds an arrival takes the slot its kill empties, as a share
-const MUSTER_BANK := 0.5         # a muster banked, as a share of the best charged form the die could buy with it now (nothing at the cap)
 const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
 const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
 
@@ -157,7 +156,7 @@ func play_round(sk: Skirmish) -> void:
 			best = best_rolled
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
-		if sk.assign(best["mech"], best["target"], best.get("second", null), bool(best.get("charged", false))):
+		if sk.assign(best["mech"], best["target"], best.get("second", null)):
 			_tally(spent)
 		else:
 			held.append(best["mech"])
@@ -191,15 +190,15 @@ static func _sure_damage(f: Face) -> bool:
 func options_for(sk: Skirmish, i: int) -> Array:
 	var out: Array = []
 	var ms: Skirmish.MechState = sk.mechs[i]
-	var f := ms.face()
-	if f == null:
+	if ms.face() == null:
 		return out
+	var f := sk.spend_face(ms)   # the charged form when it goes out charged (the Swallowtail's muster)
 	match f.kind:
 		Face.Kind.BLANK:
 			out.append({"mech": i, "target": null, "score": 0.0})
 		Face.Kind.ATTACK:
 			var swaps := sk.needs_second(ms)
-			for t in sk.targets_for(i):
+			for t in sk.targets_for_face(ms, f):
 				var score := attack_score(sk, ms, f, t)
 				if not swaps:
 					out.append({"mech": i, "target": t, "score": score})
@@ -220,38 +219,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": equipment_score(sk, ms, who, f)})
-	# The charged form (the Swallowtail's locked pieces): one option a target, worth what it buys
-	# less what the muster would buy banked.
-	if sk.can_charge(ms):
-		var cf := f.charged_form()
-		var cost := charge_cost(sk, ms)
-		if cf.is_attack():
-			for t in sk.targets_for_face(ms, cf):
-				out.append({"mech": i, "target": t, "charged": true, "score": attack_score(sk, ms, cf, t) - cost})
-		elif cf.is_equipment():
-			for who in sk.equipment_targets_for(ms, Effects.effective_face(ms.unit, cf)):
-				out.append({"mech": i, "target": who, "charged": true, "score": equipment_score(sk, ms, who, cf) - cost})
 	return out
-
-
-## What a muster banked is worth (the Swallowtail's): a share of the best charged form the die
-## could buy with it, read now; nothing at the cap, where every further sliver is lost.
-func charge_cost(sk: Skirmish, ms: Skirmish.MechState) -> float:
-	var rule := Effects.muster_rule(ms.unit)
-	if rule.is_empty() or Effects.muster_charges(ms.unit) >= int(rule.get("cap", 3)):
-		return 0.0
-	var best := 0.0
-	for face in ms.die.faces:
-		if face.charged.is_empty():
-			continue
-		var cf := face.charged_form()
-		if cf.is_attack():
-			for t in sk.targets_for_face(ms, cf):
-				best = maxf(best, attack_score(sk, ms, cf, t))
-		elif cf.is_equipment():
-			for who in sk.equipment_targets_for(ms, Effects.effective_face(ms.unit, cf)):
-				best = maxf(best, equipment_score(sk, ms, who, cf))
-	return best * MUSTER_BANK
 
 
 # ---------------------------------------------------------------- scoring
@@ -1395,7 +1363,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
-		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):
 			if not sk.reroll([i]):
 				break
 			rerolls += 1
@@ -1405,7 +1373,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned:
 				continue
-			if face_value(sk, ms, ms.face()) + 0.001 < reroll_worth(sk, ms):
+			if face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):   # a charged form as it will go out
 				idx.append(i)
 		if idx.is_empty():
 			return

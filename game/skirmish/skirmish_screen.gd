@@ -72,7 +72,6 @@ var _rage_debug_at := -10.0
 
 var sk: Skirmish
 var locked: Array[bool] = []
-var armed: Array[bool] = []   # a die armed for its charged form (the Swallowtail's muster): a tap on its machine
 var show_all_arrows: bool = false
 
 var _header: HudButton
@@ -223,10 +222,8 @@ var _hold_mech: int = -1
 func setup(skirmish: Skirmish) -> void:
 	sk = skirmish
 	locked.clear()
-	armed.clear()
 	for m in sk.mechs:
 		locked.append(false)
-		armed.append(false)
 	if sk.state == Skirmish.State.SETUP:
 		sk.begin()
 	if sk.state == Skirmish.State.ROUND_START:
@@ -488,7 +485,6 @@ func _build() -> void:
 		v.held.connect(_on_mech_held.bind(i))
 		v.hold_released.connect(_on_hold_released)
 		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
-		v.tapped.connect(_on_mech_tapped.bind(i))
 		_mech_views.append(v)
 
 	# Bottom row: End turn bottom-left, Withdraw bottom-right.
@@ -762,7 +758,7 @@ func _refresh() -> void:
 				targets.append(x)
 	elif _drag_from >= 0:
 		var dm: Skirmish.MechState = sk.mechs[_drag_from]
-		var f := sk.spend_face(dm, armed[_drag_from])   # the charged form while armed
+		var f := sk.spend_face(dm)   # the charged form when it goes out charged
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
 			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
@@ -830,7 +826,7 @@ func _refresh() -> void:
 		if ms.ammo_max > 0:
 			var after := ms.ammo
 			if _drag_from == i and ms.face() != null:
-				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms, armed[i])))
+				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
@@ -842,10 +838,10 @@ func _refresh() -> void:
 			v.statuses.append([r[0], r[1], r[3]])
 		v.queue_refresh()
 		var d := _dice[i]
-		if armed[i] and (ms.assigned or not sk.can_charge(ms)):
-			armed[i] = false   # spent, rerolled off its charged entry, or the muster gone
-		d.charged = armed[i]
-		var sf := sk.shown_face(ms, sk.spend_face(ms, armed[i]))   # reach as the passive reads it now, the charged form while armed
+		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
+		# (the Swallowtail's, Ryan, 22 October): the die shows the form that will happen.
+		d.charged = not ms.assigned and sk.charge_lands(ms)
+		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
@@ -1421,24 +1417,6 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 		_open_codex(ContentDB.load_default().codex_for_foe(foe))
 
 
-## A tap on a machine that musters (the Swallowtail's) arms its die for the charged form, a
-## muster paid at the spend, and a second tap disarms it: the die shows the charged form while
-## armed. A machine with no charge to spend, or no charged entry showing, ignores it.
-func _on_mech_tapped(i: int) -> void:
-	if i < 0 or i >= sk.mechs.size() or sk.state != Skirmish.State.ASSIGN:
-		return
-	var ms: Skirmish.MechState = sk.mechs[i]
-	if armed[i]:
-		armed[i] = false
-		Sound.play("die_unlock")
-	elif sk.can_charge(ms) and not ms.assigned:
-		armed[i] = true
-		Sound.play("die_lock")
-	else:
-		return
-	_refresh()
-
-
 func _on_mech_double_tapped(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
@@ -1549,9 +1527,9 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
 	Sound.play("die_pick")
-	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i], armed[i]))
+	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
-	_ghost.charged = armed[i]
+	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
 	_ghost.visible = true
@@ -1565,7 +1543,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
-	var can := target != null and sk.can_assign(_drag_from, target, armed[_drag_from] if _drag_from >= 0 else false)
+	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
 	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
@@ -1574,7 +1552,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
 		var over: Foe = target if can and target is Foe else null
-		var sf := sk.shown_face(ms, sk.spend_face(ms, armed[_drag_from]), over)
+		var sf := sk.shown_face(ms, sk.spend_face(ms), over)
 		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
@@ -1599,7 +1577,7 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 		return
 	var target = _drop_target_at(global_pos)
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target, armed[i]):
+	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
 		_begin_second(i, target)
 		return
 	if target == null or not _use_die(i, target):
@@ -1763,10 +1741,9 @@ func _use_die(i: int, target, second = null) -> bool:
 	var heat_before := _heat_marks()
 	var fuel := spent.rolls_again_on if spent != null else ""
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
-	var ok := sk.assign(i, target, second, armed[i])
+	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
-		armed[i] = false
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
@@ -2286,7 +2263,6 @@ func _end_turn_now() -> void:
 		sk.start_round()
 		for i in range(locked.size()):
 			locked[i] = false
-			armed[i] = false
 	_refresh_log()   # the blows type into the log as they play
 	_play_enemy_turn(before, func() -> void:
 		if outcome != Skirmish.Outcome.NONE:

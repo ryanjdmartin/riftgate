@@ -855,32 +855,32 @@ func test_a_weapon_of_the_bay_drops_on_an_empty_slot_and_the_slot_shows_its_mine
 	s.free()
 
 
-## The Swallowtail's muster on the screen (21 October), synthetic: the gauge under the heat with a
-## notch a charge; a tap on the machine arms its die for the charged form, which the die then
-## shows, and a drop spends it and the muster; with no charge a tap does nothing.
-func test_a_tap_on_a_mustering_machine_arms_its_charged_form() -> void:
+## The Swallowtail's muster on the screen (21 October; never primed since 22 October), synthetic:
+## the gauge under the heat with a notch a charge; with a charge up the die shows the charged
+## form under its double frame, unasked, and a drop spends it and the muster; with none, the
+## plain form.
+func test_a_mustering_machines_die_shows_its_charged_form_when_a_charge_is_up() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]})
 	var flare := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.EXPOSE])
 	flare.charged = {"muster": 1, "keywords": ["suppress"]}
 	ms.die.faces[ms.face_index] = flare
+	Effects.remove(ms.unit, "muster")
 	s._refresh()
 	var bars: Array = s._mech_views[0].bars
 	assert_eq(bars.size(), 4, "the Muster's gauge under the heat")
 	assert_eq(int(bars[3][4]), 3, "a notch a charge")
-	s._on_mech_tapped(0)
-	assert_false(s.armed[0], "no charge: the tap does nothing")
+	assert_false(s._dice[0].charged, "no charge: the plain form")
+	assert_false(s._dice[0].face.has(Face.Keyword.SUPPRESS), "without its Suppress")
 	Effects.stack(ms.unit, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
-	s._on_mech_tapped(0)
-	assert_true(s.armed[0], "a charge: the tap arms it")
-	assert_true(s._dice[0].charged, "the die says so")
+	s._refresh()
+	assert_true(s._dice[0].charged, "a charge up: the die says so")
 	assert_true(s._dice[0].face.has(Face.Keyword.SUPPRESS), "and shows the charged form")
 	var foe: Foe = s.sk.targets_for(0)[0]
 	assert_true(s._use_die(0, foe), "dropped on a foe")
 	assert_true(Effects.has(foe, "suppressed"), "the charged form lands")
 	assert_eq(Effects.muster_charges(ms.unit), 0, "and the muster is spent")
-	assert_false(s.armed[0], "disarmed")
 	s.free()
 
 

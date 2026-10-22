@@ -268,8 +268,10 @@ On a machine:
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
   charges; it starts each fight empty and never decays. It shows as a smooth bar under the
   heat, a segment a charge. Each of its locked
-  pieces has a plain form and a charged one that spends a muster: tap the machine to arm its
-  die, which then shows the charged form, and spend it as ever; a second tap disarms it. The
+  pieces has a plain form and a charged one that spends a muster. With a charge up, a locked
+  piece goes out charged, unasked, and its die shows the charged form under a double frame;
+  when the charged form has nowhere to land (Phased with every ally done, the act again with
+  no ally spent), the plain form goes out and the charge waits. The
   Mooring Screens shield every ally (never the carrier), or Phase every ally that has not acted;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   10 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
@@ -389,8 +391,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
   magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
-  reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round, the
-  first included; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
+  reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
+  the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
   live foe with Spread and Penetrate, the magazine its price and no heat; its quick reload,
