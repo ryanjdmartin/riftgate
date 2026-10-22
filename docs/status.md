@@ -540,6 +540,12 @@ merged on 21 October are paused, each resuming from its briefs:
   losing some where greedy wins; heat bites the hot kits alone (78 to 107% at the peak). Not
   moved: a massive foe at 3 to 8 rounds against one or two, the gap at 1.0 to 1.2 (opening only
   where a stock holds a Shock), the finale a wall, the campaign's plain player at 1% of battles.
+- The stock pass's bands at 200 seeds on the landed numbers (`docs/balance.md`, the gap on the
+  team rows' big fights, `docs/campaign_run.md`; `docs/measurements.md`): the loops' reads hold.
+  The teams win a wildlife pack in 1.6 to 2.2 rounds, a massive foe in 2.9 to 7.8, a formation for
+  7 to 37% of their hull; the gap 1.05 to 1.17; random play still wins 19 to 28 of the 29 packs a
+  team while a machine alone meets walls on 6 to 24; the hot kits peak at 74 to 94%, the cold
+  ones under 45; the campaign 0 of 40 runs, 1% of battles.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
@@ -659,11 +665,10 @@ to-do's Ryan list).
    eight new pieces and Trim Tabs, the tiers and tags, the Stoker's own fire a face field; the
    content before the loops, section 7's third step brought forward, since the gap is read on
    the new stocks' setups); the loops set its numbers the same day (six at 30 seeds, one lever
-   a loop, `docs/measurements.md`). Next the bands at 200 seeds against the baseline (every row
-   random and greedy, the gap on the big fights blind over the planner, the campaign report)
-   and the hangar republished once with the landed numbers; then Ryan's reads (section 12: the
-   massive kill time and the gap the loops did not move, the finale's wall, Wainwright &
-   Sutler's light machines). Two content questions went to section 12 with the landing: which
+   a loop, `docs/measurements.md`), the bands at 200 seeds read them (the reports regenerated)
+   and the hangar was republished with them. Next Ryan's reads (section 12: the massive kill
+   time and the gap the loops did not move, the teams' free wins against the lone machine's
+   walls, the finale's wall, Wainwright & Sutler's light machines), then the branch merges. Two content questions went to section 12 with the landing: which
    explosives carry Spread and Penetrate, and a flat Indirect basic.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the

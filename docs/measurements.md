@@ -746,3 +746,89 @@ Shock; a fourth machine with a Shock takes the default team to 2.5 rounds and 1.
 stays a wall, and the campaign's plain player, who fights alone most of the
 time, wins 1% of battles. Those reads are Ryan's (the bible's section 12), with the bands at 200
 seeds.
+
+## 22 October, the stock pass's bands at 200 seeds
+
+**The balance report at 200 seeds on the landed numbers** (`docs/balance.md`, on `cf7d283`:
+290,000 fights in four parts, 6,462 s), read beside the baseline of the morning (`ace3c3c`, run
+on `a1585a9`: the old scale and the old stocks, so a row's change is the whole stock pass, never
+one lever); the coordination gap at 200 seeds, blind play and the planner on the team rows'
+seventeen big fights (`--packs big`, the default team as a `--team` row, 27,200 fights); the
+campaign report at 40 runs (`docs/campaign_run.md`). Bands, not directions.
+
+Row means over the twenty packs, random / greedy:
+
+| Row | The baseline | Landed |
+|---|---|---|
+| Honey Badger | 50.4 / 73.5 | 43.9 / 66.8 |
+| Clydesdale | 33.0 / 49.1 | 39.9 / 60.1 |
+| Kite | 21.2 / 26.9 | 34.8 / 50.5 |
+| Baboon | 12.2 / 25.4 | 24.2 / 39.6 |
+| Armadillo | 25.9 / 39.3 | 28.2 / 37.4 |
+| Wild Boar | 55.2 / 82.0 | 47.9 / 69.8 |
+| Prairie Dog | 15.8 / 23.4 | 8.0 / 19.1 |
+| Dingo | 2.6 / 10.4 | 7.7 / 21.4 |
+| Buzzard | 17.7 / 33.1 | 46.9 / 74.8 |
+| Nemesis | 47.5 / 73.6 | 59.8 / 73.2 |
+| Ammit | 19.6 / 29.5 | 36.2 / 55.5 |
+| Stingray | 11.8 / 24.3 | 23.2 / 30.3 |
+| Puffin | 0.4 / 9.2 | 4.7 / 20.0 |
+| Funnel-web | 32.6 / 47.8 | 34.2 / 47.8 |
+| Cassowary | 7.5 / 16.8 | 16.1 / 23.4 |
+| Cottonmouth | 12.8 / 30.1 | 34.0 / 54.3 |
+| Whip Scorpion | 48.9 / 74.8 | 40.7 / 64.3 |
+| Swallowtail | 16.4 / 42.0 | 19.5 / 41.7 |
+| Musk Ox | 56.4 / 67.5 | 56.9 / 49.2 |
+| Lammergeier | 3.0 / 27.1 | 19.5 / 56.0 |
+| The default team | 92.8 / 100 | 98.5 / 100 |
+| Minerva Heavy Works team | 99.5 / 100 | 99.3 / 100 |
+| Kestrel Dynamics team | 67.4 / 84.0 | 91.0 / 100 |
+| Wainwright & Sutler team | 73.2 / 91.7 | 75.3 / 98.0 |
+
+The team rows by kind of fight, greedy (random's wins in brackets):
+
+| Team | A wildlife pack | A massive foe | A formation | A hero's final |
+|---|---|---|---|---|
+| The default team | 1.6 rounds, 1% hull (100) | 3.3 rounds, 10% (98) | 4.2 rounds, 7% (94) | 2.4 rounds, 2% (100) |
+| Minerva's | 1.8, 1% (100) | 7.2, 19% (97) | 5.1, 7% (99) | 3.8, 4% (100) |
+| Kestrel's | 1.6, 1% (100) | 2.9, 13% (95) | 3.9, 14% (60) | 2.5, 5% (97) |
+| Wainwright & Sutler's | 2.2, 2% (100) | 7.8, 32% (54) | 7.4, 37% (22) | 4.4, 11% (90) |
+
+The finale stays a wall: no rung wins it on any team row. Free wins (random winning 90% or more)
+are 28, 27, 22 and 19 of the twenty-nine packs on the four teams; walls (greedy under 25%) one
+each, the finale. Alone, a machine meets walls on 6 to 24 of the twenty-nine and free wins on 0
+to 11.
+
+Heat, greedy, the hottest machine as a turn ends: the Nemesis 94% of its maximum (0.50 overheats
+and 0.17 dice held for heat a fight), the Kite 92% (0.29, 0.18), the Buzzard 87%, the Whip
+Scorpion 78%, the Stingray 74% (0.16 held), the Lammergeier 56%; every other kit 6 to 44%. The
+baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Armadillo 74% and the Nemesis
+71%, with everything else cold.
+
+Pick share, greedy: the Ammit's Entropy Condenser 0%, the Dingo's Combat Translocator 1%, the
+Lammergeier's Syrinx Drone, Lorentz Contractor and Polarity Projector 2 to 3%; the Coolant
+Jacket 1 to 4% wherever it is not the Whip Scorpion's gun (33%), the Kite's Bleed Valve 18%.
+
+**The gap at 200 seeds**, blind play's rounds over the planner's on the big fights both win a
+quarter of (sixteen a team; neither wins the finale): the default team 1.16, Minerva's 1.05,
+Kestrel's 1.16, Wainwright & Sutler's 1.17. On a lone massive foe it reads 1.00 to 1.03 for the
+three teams that carry no Shock and 1.21 for Wainwright & Sutler's (8.0 rounds against 6.6); the
+formations read 1.14 to 1.26 and the finals 1.03 to 1.21. The planner spent otherwise than the
+greedy on 19 to 36% of the decisions it weighed (7 to 12 a fight).
+
+**The campaign** (40 runs, the plain player): no run won, 25 of 40 reaching the finale (32 at
+loop 0, 36 at the first fills), 1% of 368 battles won and 98% ending in a team wipe, a lone
+machine winning 23% of its fights (40% at loop 0); a battle the squad fields three for is won 9%
+of the time.
+
+**Read**: the landed set holds at 200 seeds what the loops read at 30. Met: the rank and file
+die in under two rounds for every team and cost it nothing; a formation costs a team 7 to 37% of
+its hull and a final 2 to 11%, and the two lighter teams' formations hold a decision band (random
+winning 60 and 22% where greedy wins 100 and 95); heat bites the hot kits and leaves the cold
+ones cold. Not met, Ryan's reads (the bible's section 12): a massive foe takes a team of three
+2.9 to 7.8 rounds against one or two; the gap reads 1.05 to 1.17 against about 2, opening on a
+massive foe only where a team carries a Shock; random play still wins 19 to 28 of the
+twenty-nine packs a team, so outside the formations a team of three meets no decision; the
+finale is a wall; and the campaign's plain player, fighting alone most of the time, wins 1% of
+battles. The lone machine and the team of three stand far apart (walls on 6 to 24 packs alone,
+free wins on 19 to 28 as three).

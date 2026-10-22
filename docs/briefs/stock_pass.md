@@ -535,6 +535,11 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
 4. **Read the bands fresh** at 200 seeds beside the baseline (`docs/balance.md` as the
    branch left it): walls and free wins as bands, rounds to win and hull lost on the rank and
    file, the gap on the big foes; every run a decision cites in `docs/measurements.md`.
+   Run 22 October (`docs/measurements.md`; `docs/balance.md` and `docs/campaign_run.md`
+   regenerated): the loops' reads hold at 200 seeds. The rank and file in under two rounds,
+   the formations' wear and decision bands, heat on the hot kits; not met, the massive foes'
+   2.9 to 7.8 rounds, the gap's 1.05 to 1.17, the teams' free wins on 19 to 28 of 29 packs,
+   the finale's wall and the campaign's 1% of battles: the bible's section 12.
 5. **Then** prices and tier ladders (the to-do's engine line) and Ryan's play for feel.
 
 ## 8. The chunks and the switch
