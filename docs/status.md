@@ -32,8 +32,8 @@ document's job and every command are in `README.md`.
 One branch is live beside main: `claude/eager-newton-sf947u`, the stock pass (22 October): the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
 marks and the stun calls, the second chunk's engine items, the content landed at the
-brief's fills and the loops' numbers, each item a commit; main was merged into it three times that day,
-the last with main's rows of the day, so it stands ahead of main and never behind, and the
+brief's fills and the loops' numbers, each item a commit; main was merged into it four times that day,
+the last with main's status of the evening (the merged branches deleted from GitHub), so it stands ahead of main and never behind, and the
 code merged clean each time (the records by hand); it merges into main when Ryan says, after
 the bands. Its baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
@@ -43,13 +43,9 @@ parts or a last act: the Lancer's, the Augur's). Those rows re-baseline on merge
 the stock pass is read against them; the rest stand (the forecast's reads with a die in hand
 move no bot, which forecasts with none).
 
-Every other branch is merged into main (checked 21 October) and is to
-be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
-refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
-`claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
-`ccr-ffcf75fa-3gkbz9`, `claude/adoring-planck-q8t63w`, `claude/zealous-cori-8xoly7`,
-`claude/pensive-albattani-q73ibs`, `ccr-777fd46a-32dw2m` and `ccr-3d9861dc-mp0v3w`, merged
-before it. The five design sessions merged that day are paused, each resuming from its briefs:
+Every other branch was merged into main and deleted from GitHub (22 October, by Ryan from the
+desk machine; a cloud session's push to delete one is refused). The five design sessions
+merged on 21 October are paused, each resuming from its briefs:
 
 - Wainwright & Sutler (since 15 October on `claude/festive-cray-i7lvnm`, its commits
   fast-forwarded into main as they landed; wrapped up 21 October, Ryan: "make sure everything is
