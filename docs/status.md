@@ -606,13 +606,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.247, and so is the live
-  (21 October, the page's version 264): v0.246 (the campaign's wall question; the header's
-  number mended, v0.245 having gone out reading 0.244) with Ryan's calls of that evening on
-  top (the row on stores, Silence and Purge passing the stores by, the carry as a block, the
-  mine readings agreed, the Swallowtail's Sponsorship answered and its question gone, the Musk
-  Ox's trickle from the first round, the promoted forms' session) and the tables (a Store
-  kind). The hangar's vocabulary (the stores', the carry's and the magazine's codex) waits on
+  `docs/design-bible.html` after every change. Main's file is v0.248, and so is the live
+  (22 October, the page's version 265): v0.247 (Ryan's calls of 21 October, evening: the row
+  on stores, Silence and Purge passing the stores by, the carry as a block, the mine readings
+  agreed, the Swallowtail's Sponsorship answered, the promoted forms' session; the tables with
+  a Store kind) with his calls of 22 October on top (the Muster never primed, the Musk Ox's 3
+  at the first round, the Whip Scorpion's blasting vents counting). The hangar's vocabulary (the stores', the carry's and the magazine's codex) waits on
   its next republish. The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
