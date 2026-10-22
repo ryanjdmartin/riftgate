@@ -637,7 +637,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   models as having none (the page's version 89; `edits` empty before it); and on 22 October
   with the chassis and the vocabulary (the stores', the carry's, the magazine's and the rage's
   codex) and every die's entries numbered by their place, the Cassowary's die a cylinder with
-  its order printed (the page's version 91; `edits` empty before it). Its database
+  its order printed (the page's version 91; `edits` empty before it), then the Names board's
+  rules and makers' tabs brought to the bible's naming rows (the page's version 92). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

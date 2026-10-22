@@ -1043,14 +1043,14 @@ const NAME_TABS = [
   {id: "minerva", label: "Minerva", name: "Minerva Heavy Works", voice: "Maintenance manual. Terse, exact, proud of tolerances.",
    builds: "Tracked vehicles (the monopoly on treads), heavy wheeled vehicles, quad walkers, perhaps heavy plantigrade bipeds, perhaps one heavy flyer in the battlecruiser register. Heavy machinery is the root, not mining alone.",
    names: "Rugged terrestrial mammals: Honey Badger, Armadillo, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
-   avoid: "Digitigrade legs read too flimsy. Muskox goes to Wainwright & Sutler first."},
+   avoid: "Digitigrade legs read too flimsy. The Musk Ox is Wainwright & Sutler's (21 October)."},
   {id: "kestrel", label: "Kestrel", name: "Kestrel Dynamics", voice: "Flight-test log. Clipped, numbers first.",
    builds: "Small and mid-sized flyers and hovercraft. Nothing that touches the ground, nothing big. The monopoly on fast jets.",
-   names: "Birds. Raptors first (Sparrowhawk, Goshawk), any bird with character after. A Puffin is wanted for the irony of what pilots called a hovercraft Kestrel thought was very cool.",
-   avoid: "BattleTech has eaten most raptors: Falcon, Gyrfalcon, Peregrine, Osprey, Shrike, Raven, Eagle, Vulture, Kingfisher."},
+   names: "Birds. Raptors first (the Kite, the Buzzard), any bird with character after (the Puffin, the Skua, the Storm Petrel, the Needletail, the Lammergeier, the Giant Petrel, the Snowy Owl). The Puffin was wanted for the irony of what pilots called a hovercraft Kestrel thought was very cool.",
+   avoid: "BattleTech has eaten most raptors: Falcon, Gyrfalcon, Peregrine, Merlin, Osprey, Shrike, Raven, Eagle, Vulture, Kingfisher, and the Butcherbird; the Albatross is BattleTech's and Halo's, the Condor Halo's, a plain Owl Heavy Gear's. A bird too specific to picture (the Hobby, the Saker) is out too."},
   {id: "ws", label: "W&S", name: "Wainwright & Sutler", voice: "Field notes. Dry and precise.",
    builds: "Wheeled vehicles and quads (the primary source of both), perhaps a large helicopter or VTOL. No bipeds, no fast flyers.",
-   names: "The frontier's working animals and beasts of burden (Clydesdale, Prairie Dog, Muskox), and the frontier's threats: insects, arachnids, reptiles.",
+   names: "The frontier's working animals and beasts of burden (Clydesdale, Prairie Dog, Musk Ox), and the frontier's threats: insects, arachnids, reptiles (Cottonmouth, Funnel-web, Whip Scorpion).",
    avoid: "Nothing as generic as Tarantula or Desert Scorpion. BattleTech and Heavy Gear own most snakes and spiders: Rattlesnake, Sidewinder, Copperhead, Cobra, Viper, Adder, Gila, Scorpion, Spider."},
   {id: "aphelion", label: "Aphelion", name: "Aphelion", voice: "Haughty, elitist, technical, jargon.",
    builds: "Hovercraft, bipeds of every kind, perhaps large aircraft. Transforming designs undecided. No wheels, no quads.",
@@ -1185,26 +1185,28 @@ function renderCandidate(d) {
 function renderRules() {
   return el("div", {class: "rules", html: `
   <h3>What a nickname is</h3>
-  <p>A real Earth animal, living or extinct, whose silhouette the player can picture without looking it up. The name works because the picture rhymes with the machine: a Clydesdale is a big quad, a Sparrowhawk small and fast. Anomalocaris is real and fails the test; Aurochs passes.</p>
+  <p>A real Earth animal, living or extinct, whose silhouette the player can picture without looking it up. The name works because the picture rhymes with the machine: a Clydesdale is a big quad, a Kite the light raptor that twists on its forked tail. Anomalocaris is real and fails the test; Aurochs passes; a name too specific to picture (the Hobby, the Saker) fails too. No vehicle has an open cockpit.</p>
   <h3>Fossil over trope</h3>
   <p>The fossil record is on the table when it dodges the common trope. Dunkleosteus over Megalodon. Aurochs over Mammoth (which is also a Heavy Gear strider). Smilodon over Sabre-toothed Tiger. A Dodo because it is a funny thing for pilots to call a strange-looking machine. Dinosaurs sparingly: they pull toward the toy register.</p>
-  <h3>Myth is the Arsenal's alone</h3>
-  <p>The foes are all myth and religion (Ghoul, Necromancer, Pit Lord, the Maw). The line between Earth's creatures and the horrors is the game's cleanest, so allies do not take mythical names. The Arsenal is the deliberate exception: figures of divine justice, vengeance and retribution, never war, spread across cultures.</p>
+  <h3>Figures who punish are the Arsenal's alone</h3>
+  <p>The Arsenal names its machines for figures who punish, from any culture (justice, vengeance and retribution, Hell's wardens and avenging spirits among them; never war), never animals, so a name tells the player which side of the makers built it: a mythic name on a city maker's machine would blur that read, which is the reason and the whole of it. The invasion brings the genre's high fantasy, and the occult is the Council's.</p>
   <h3>Reading a clash</h3>
+  <p>No chassis takes a machine name from BattleTech, Heavy Gear, Warhammer 40,000 or Halo; names are ours, or a knowing homage.</p>
   <ul>
     <li><b>Iconic:</b> the name alone conjures their machine. Warthog, Timber Wolf, Rhino for a wargamer. Never.</li>
-    <li><b>Known:</b> a hobbyist recognises it, mostly a Clan or Inner Sphere designation rather than the name people use. Goshawk (the Vapor Eagle's IS name) and Baboon (the Howler's Clan name) are kept this way. Dingo (a Heavy Gear gear) is still open.</li>
-    <li><b>Coincidence:</b> a name every military reaches for, obscure in theirs. Sparrowhawk is a Halo Wars gunship and a BattleTech fighter, and it conjures a bird. Kept.</li>
+    <li><b>Known:</b> a hobbyist recognises it, mostly a Clan or Inner Sphere designation rather than the name people use. Judged case by case: Baboon (the Howler's Clan name) is kept this way. Dingo (a Heavy Gear gear) is still open.</li>
+    <li><b>Coincidence:</b> a name every military reaches for, obscure in theirs. Kept.</li>
   </ul>
+  <p>The roster's two passes closed on 21 October: the Sparrowhawk (a BattleTech aircraft, a coincidence) became the Kite and the Goshawk (an obscure nickname's) the Buzzard, their ids kept since nothing the player sees reads one; out with them the Shrike, the Merlin, the Gyrfalcon and the Peregrine (BattleTech's), the Albatross (BattleTech's and Halo's) and the Condor (Halo's). The Butcherbird turned out a BattleTech 'Mech's, so the strafer is the Skua; a plain Owl is Heavy Gear's, so Kestrel's owl is the Snowy Owl.</p>
   <p>The validator flags every exact match regardless of tier and the entry records why a kept one stays. The chips here go one step softer: <span class="chip warn">shares a word</span> is only a nudge.</p>
   <h3>Makers by shape</h3>
   <ul>
     <li><b>Treads:</b> Minerva only. <b>Fast jets:</b> Kestrel only. <b>Quads and wheels:</b> W&amp;S first; Minerva may have both, Aphelion neither.</li>
     <li><b>Bipeds:</b> Aphelion every kind, Minerva heavy plantigrade, the Arsenal bipedal-ish and creepy.</li>
-    <li><b>Hovercraft:</b> Kestrel small and fast, Aphelion platforms, the Arsenal legs on hoverjets. <b>Large aircraft:</b> Minerva a flying brick, Aphelion a deep-space thing, the Arsenal a creepy one; Kestrel never.</li>
+    <li><b>Hovercraft:</b> Kestrel small and fast, Aphelion platforms, the Arsenal legs on hoverjets. <b>Large aircraft:</b> Minerva a flying brick, Aphelion a deep-space thing, the Arsenal a creepy one; Kestrel one, the Lammergeier, its lean bending as leans do (21 October).</li>
   </ul>
   <h3>Component names</h3>
-  <p>The makers' vocabularies are guidelines, not claims (6 October): general words belong to no maker, a word may cross makers by its meanings, and the Components tab lists each maker's register. A passive names a piece of machinery or a part of the chassis that does the thing, never an ability, and the pseudo-tech may contradict itself on purpose; that contradiction is the joke.</p>
+  <p>Each maker's vocabulary is a guideline, never a claim: Minerva blunt, Kestrel air and speed, Wainwright &amp; Sutler plain military beside something silly, Aphelion physics nonsense, the Arsenal medieval and occult, sanctified on the face and sinister on reflection. General words (cannon, laser) belong to no maker, a word may cross makers by its meanings, and the Components tab holds the maker-free names and lists each maker's register. A name is equipment, never an ability; a passive names a piece of machinery or a part of the chassis that does the thing; the pseudo-tech may contradict itself on purpose (that contradiction is the joke); a name approaches a real thing without copying it (Trench, never Trench Gun); and the codex never explains the joke.</p>
   <h3>Designations</h3>
   <p>Minerva an industrial catalogue code (EX-45XLE Combat Miner). Kestrel a type and mark (K-7 Mk III Interceptor). W&amp;S a pattern number (Pattern 1 Combat Walker). Aphelion a programme and flight (Perihelion Flight 7 Support Frame). The Arsenal a decree (Arsenal Instrument IV). Frame is Aphelion's word alone.</p>`});
 }

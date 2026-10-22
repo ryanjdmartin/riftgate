@@ -142,7 +142,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The 3D at 30 while planning, once the acts and movement are judged
 - [ ] Hooks the game cannot fire yet: the flattening's spread, the loss by the city; the buff hook per keyword once the vocabulary is locked
 - [ ] Onboarding: the gesture tutorial and the cheat sheet, the reroll rule and the round first
-- [ ] The hangar page's Names board follows the naming guidelines (a maker-free parts tab, the rules text)
+- [x] The hangar page's Names board follows the naming guidelines (a maker-free parts tab, the rules text): the Components tab was maker-free already; the rules and the makers' tabs brought to the bible's naming rows on 22 October (the two passes of 21 October, the Arsenal's reason, the component names), the page's version 92
 
 ## Map and screens
 

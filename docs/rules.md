@@ -152,7 +152,7 @@ defeat when every machine is wrecked. There is no round limit.
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
-  and a gun whose blow is nothing here shows 0 (not built). Dragged over a foe it may strike,
+  and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
