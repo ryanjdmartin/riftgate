@@ -99,6 +99,22 @@ each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 22 October, the numbers, armour and breach, decided in chat on 21 and 22 October (the bible's
+  scales row in section 11, the kill-time, gap and wear tests in section 2, the armour and breach
+  rows in section 5, the HP row in section 6; the rules edited to match, not built): every number
+  inside a fight is single digits or low tens, derived from the tests and not from the old
+  content (a blow 1 to 6, big guns to 10; foe HP 2 to 6 rank and file, 30 to 40 massive, 80 to
+  100 bosses; machine hull 20 to 50, shield 6 to 16; heat 1 to 20, 1 to 30 the fallback); every
+  converter crossing heat into another axis re-read on its own; armour stays flat with complete
+  blocks, priced by role not size (a tank 2, a heavy worker 1, the rest 0), timed to 4 or 5 from
+  braces, seals and charges, module armour scarce; breach and the pierce that was never built are
+  one rider that ignores shield and armour, by move, the Ward its answer; foes have HP, machines
+  hull. The plan and every first fill are `docs/briefs/stock_pass.md`: Ryan marks the proposal,
+  the engine chunk (tags, stored tiers, basics, danger close out, the merged breach, HP wording,
+  a rounds-to-win column, the converters as fields, the baseline run) needs no marks, the
+  content landing follows them; Ryan switches to Opus for the implementation, the thinking being
+  done here (his ask). Open with it (section 12): Overcharged's and Flak's halving clock, kept or
+  unified; whether our guns take Breach.
 - 21 October, the party: dealt as the run starts, one hero to each domain from its bench, the
   front and the back even (two and two), by the seed on a stream of its own, kept through a
   save; a domain's final fields its dealt hero in its rank with its domain's first pack in the
@@ -423,6 +439,18 @@ each resuming from its briefs:
 
 ## Decided, not built
 
+- The scale (22 October, section 11's scales row and section 2's tests): a blow 1 to 6, big guns
+  to 10, a capstone 12; an amp a point a stack; foe HP 2 to 6, 30 to 40, 12 to 24, 80 to 100 by
+  class; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to 50, shield 6 to 16, base
+  armour 0 to 2 by role; heat 1 to 20; every converter re-read on its own (the brief's table).
+  The content stands at the old scale until the stock pass lands the fills.
+- One breach (22 October, section 5): a breaching blow ignores the shield and the armour, both
+  sides, by move; the Ward turns it away; the carriers' first fill in the brief; our guns taking
+  the word is Ryan's.
+- Foes have HP, machines hull (22 October, section 6): the shown text, the report's wording, the
+  vocabulary's entry with the content landing.
+- A rounds-to-win figure per cell in the balance report (22 October, section 2's row): the
+  coordination gap read as random against greedy.
 - The action economy's direction (the bible's section 5, 20 October, beside the stun row):
   Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
   a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
@@ -513,9 +541,12 @@ to-do's Ryan list).
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
    machine's content and engine session follows from its brief (the to-do's lines).
-2. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
-   heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
-   area keywords on the explosives.
+2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): Ryan marks the
+   proposal (every fill, the names, the stocks, the breach's carriers, Breach on our guns, the
+   clock); the engine chunk runs meanwhile and needs no marks (the brief's section 6, the baseline
+   balance run first); the content landing at the new scale follows his marks (section 7), then
+   the bands read fresh, the heat section and the wear. Ryan switches to Opus for the
+   implementation chunks; a mark that reopens a design comes back up for a round.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders
@@ -550,13 +581,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.244, and so is the live
-  (21 October): the live v0.243 (the Kestrel branch merged, its rows and the regenerated
-  tables) with the party's rows on top (the deal, the Cleric's Reraise built, the promoted forms,
-  the finale and the finals, section 12's slate question) and the tables regenerated (the
-  promoted Cleric's Reraise beside the Zombie Knight's). The version numbers on main's file and the live agree after every
-  publish; the rows between them are the other branches'. Git and the page's version history
-  carry what each earlier publish brought.
+  `docs/design-bible.html` after every change. This branch's file is v0.249, and so is the
+  live (22 October): the live v0.248 (another session's publish of the same day: the Kite
+  rework, the store row, the Swallowtail, Musk Ox and Sponsorship changes, the regenerated
+  tables) with the stock pass's rows on top (section 2's kill-time, gap and wear tests, armour
+  by role, one breach, HP as the foes' word, the rewritten scales row, section 12's Overcharged
+  clock and the proposal pointer). The version numbers on main's file and the live agree after
+  every publish; the rows between them are the other branches'. Git and the page's version
+  history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).

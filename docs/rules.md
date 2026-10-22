@@ -141,10 +141,14 @@ defeat when every machine is wrecked. There is no round limit.
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
-- Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
-  tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
-  blow of 12), and the numbers between the round ones are the room for balancing and upgrades.
-  Move alone keeps steps of 5, since a hex costs 5 or 10.
+- Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
+  capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
+  to 24 heroes, 80 to 100 bosses; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to
+  50 by size, shield 6 to 16, base armour 0 to 2 by role, timed armour to 4 or 5; heat 1 to
+  20 (1 to 30 if the pricing needs it). The scales are magnitudes, not steps: any whole
+  number may be used. Move alone keeps steps of 5, since a hex costs 5 or 10. (Not built: the
+  content stands at the old scale, damage at fives and the rest at tens, until the stock pass
+  lands the new numbers; the first fills are in `docs/briefs/stock_pass.md`.)
 
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
@@ -199,8 +203,8 @@ defeat when every machine is wrecked. There is no round limit.
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per 10 heat fired, then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing hull** adds its bonus for every
-20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
+rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing HP** (printed Missing hull until the stock pass renames it) adds its bonus for every
+20 HP the target is missing. **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
 Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
@@ -302,7 +306,7 @@ On a foe:
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
   either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
   Suppressed does.
-- **Vitriol** (debuff): at its action it loses 5% of its current hull a stack, past armour,
+- **Vitriol** (debuff): at its action it loses 5% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
   then a stack fades; it never finishes a foe. A passive lays it a stack per strike that lands
   with a number; a blow of nothing (a web, a lure) lays none.
@@ -335,11 +339,15 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
-  the hull. A **breach** blow ignores the shield: the shield stands and the whole blow
-  reaches the hull.
+  the hull. A **breach** blow ignores the shield and the armour: the shield stands, the
+  armour counts for nothing, and the whole blow reaches the hull (not built: today the
+  armour still comes off a breach).
 - A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
-  and a breach included; a shield takes no armour off. A foe's armour comes off every blow on it, never
-  off Burning. Damage-taken effects apply before armour.
+  included, never a breach (not built: today a breach loses armour too); a blow at or under the
+  armour is nothing; a shield takes no armour off. A foe's armour comes off every blow on it the
+  same way, never off Burning or Vitriol. Base armour is set by role (a tank 2, a heavy
+  worker 1, the rest 0), and a brace, a seal or a charge adds to it for a round.
+  Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
   never heals in a battle.
@@ -380,8 +388,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   Badger's components are never destroyed.
 
 ### Foes
-- A foe has hull, a base attack, a rank it holds, a size, flat armour (bosses 5) and an
-  aim. Its damage never rolls.
+- A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
+  flat armour (bosses 5) and an aim. Its damage never rolls.
 - **Its move**: from the moves whose conditions hold, weighted (attacks 2, specials 1), never
   the same special twice running while anything else is open. Conditions: below half, hurt,
   fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
@@ -399,7 +407,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo or Flak.
   it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
-  two): breach (the blow ignores the shield), scorch (a stack of Scorched), burn (a stack of
+  two): breach (the blow ignores the shield and the armour; not built: today the armour still
+  comes off it), scorch (a stack of Scorched), burn (a stack of
   Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
   (Silenced), purge (every buff and store gone; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine
