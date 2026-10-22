@@ -355,7 +355,7 @@ static func hopper_bonus(u, f: Face) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
 		return [0, 0]
-	var add := heat_bonus(ms, f) + f.missing_bonus(target) + hopper_bonus(ms.unit, f)
+	var add := heat_bonus(ms, f) + f.missing_bonus(target) + f.consume_bonus(target) + hopper_bonus(ms.unit, f)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
 		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
@@ -391,6 +391,18 @@ func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
 
 ## The shown number as the die prints it: one number, or the range; a debuff prints none (a
 ## gun whose blow is nothing here prints "0").
+## The keywords a gate shuts on this foe (the gated stuns, 22 October): the die held over it
+## strikes their chips. None without a foe in hand.
+func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
+	var out: Array[int] = []
+	if f == null or foe == null:
+		return out
+	for k in f.keywords:
+		if not Effects.gate_holds(ms.unit, f, k, foe):
+			out.append(k)
+	return out
+
+
 func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
@@ -1710,6 +1722,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
 	var missing := f.missing_bonus(target)   # what the target's lost hull adds, read once as the die is spent
+	# A consumer (the Backdraft Charge's, 22 October): every stack of the status it names on its
+	# target, read now, its point a stack on the blow; the stacks go as the blow lands.
+	var eaten := Effects.stacks_of(target, f.consumes) if not f.consumes.is_empty() else 0
 	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
 	var from_hopper := loads * f.power_per_load
 	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
@@ -1730,12 +1745,21 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var laid := {}
 	var webbed: Array[Foe] = []
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
+	# A gated keyword (the stock pass's engine, 22 October: the Suppression Battery's Suppress
+	# on a foe carrying Flak): each foe reached judged at the spend, before any strike's riders,
+	# so the spend never opens its own gate.
+	var shut := {}
+	for foe in hit:
+		if f.has(Face.Keyword.SUPPRESS) and not Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, foe):
+			shut[foe] = [Face.Keyword.SUPPRESS]
 	var thawed := 0   # Cryo stacks this spend's damaging hits spent, cooling the hitter after its heat lands
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
 		if f.is_ranged():
 			rolled = rng.randi_range(f.power, f.power_max)
 		rolled += fired + missing + from_hopper
+		if s == 0:
+			rolled += eaten * f.per_consumed   # a consumer's point a stack, on its one blow
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
@@ -1774,6 +1798,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
+			if eaten > 0 and s == 0 and foe == target:
+				Effects.remove(foe, f.consumes)
+				log.append("%s consumes %s ×%d on %s, +%d" % [ms.unit.display_name, str(Effects.STATUS.get(f.consumes, {}).get("name", f.consumes)), eaten, foe.display_name, eaten * f.per_consumed])
 			if was_alive:
 				dealt += clampi(taken, 0, maxi(0, hp_before))
 			if foe == target:
@@ -1806,7 +1833,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", f.burn) * doubled)
 				_note_status(gained, foe, "burning")
-			if f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
+			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
+				if s == 0 and foe.alive():
+					log.append("%s's suppress does not land on %s (%s)" % [ms.unit.display_name, foe.display_name, Effects.gate_text(f.gates.get("suppress", {}))])
+			elif f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
 				_note_status(gained, foe, "suppressed")
 			# Web (18 October): the foe is Webbed, one web however often it is webbed, and the
 			# skirmish bursts it at the end of the foe's action (_web_burst).
@@ -2492,13 +2522,29 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	var touched: Array[Foe] = []
 	var webbed: Array[Foe] = []
 	var thawed := 0
+	# The shot's gate and its consumer travel with it (the face it was laid from): each foe it
+	# reaches judged as the shot lands, before its own riders; the arrival's stacks eaten.
+	var laid_face: Dictionary = shot.get("face", {}) if shot.get("face", {}) is Dictionary else {}
+	var gate = (laid_face.get("gates", {}) as Dictionary).get("suppress", null) if laid_face.get("gates", {}) is Dictionary else null
+	var eat := str(laid_face.get("consumes", ""))
+	var shut: Array[Foe] = []
+	if gate is Dictionary:
+		for t in hit:
+			if not Effects._holds(source, gate, null, t):
+				shut.append(t)
 	for t in hit:
 		var hp_before := t.hp
-		var taken := maxi(0, Effects.damage_taken(t, dmg, source) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
+		var blow := dmg
+		var eaten := Effects.stacks_of(t, eat) if not eat.is_empty() and t == foe else 0
+		if eaten > 0:
+			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
+			Effects.remove(t, eat)
+			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
+		var taken := maxi(0, Effects.damage_taken(t, blow, source) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		if dmg > 0 and Effects.remove(t, "shocked"):
-			log.append("%s: the shock lands, %d doubled" % [t.display_name, dmg])
+		if blow > 0 and Effects.remove(t, "shocked"):
+			log.append("%s: the shock lands, %d doubled" % [t.display_name, blow])
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive():
 			if Effects.has(t, "syrinx_drone"):
@@ -2515,7 +2561,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if int(shot.get("burn", 0)) > 0:
 			Effects.stack(t, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", int(shot["burn"]))
 			_note_status(gained, t, "burning")
-		if kws.has(Face.Keyword.SUPPRESS) and _suppress(t):
+		if kws.has(Face.Keyword.SUPPRESS) and not shut.has(t) and _suppress(t):
 			_note_status(gained, t, "suppressed")
 		if kws.has(Face.Keyword.WEB) and not Effects.has(t, "webbed"):
 			Effects.stack(t, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)

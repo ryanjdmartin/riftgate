@@ -1671,6 +1671,7 @@ func _on_drag_started(i: int) -> void:
 	_drag_over = null
 	Sound.play("die_pick")
 	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
+	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
@@ -1703,6 +1704,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
 		var over_foe: Foe = target if can and target is Foe else null
 		var sf := sk.shown_face(ms, sk.spend_face(ms), over_foe)
+		_ghost.shut = sk.shut_gates(ms, sf, over_foe)   # a gated keyword's chip struck where it will not land
 		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:

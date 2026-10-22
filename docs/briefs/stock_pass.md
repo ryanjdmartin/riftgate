@@ -490,7 +490,10 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    star: the blow consumes every stack of a status the face names on the foe it hits, adds a
    point a stack consumed before the multiplies, and Suppresses at the threshold it prints; the
    die over a Burning foe shows the number with the stacks in and the chip lit only at the
-   threshold; the bot weighs the ticks it gives up against the blow and the stun). The
+   threshold; the bot weighs the ticks it gives up against the blow and the stun; built 22
+   October: the face's gates and its consumes, the Battery's gate written `{"suppress":
+   {"when": "target_status", "status": "flakked"}}` and the Backdraft's `{"suppress": {"when":
+   "target_status", "status": "burning", "stacks": 2}}` beside `"consumes": "burning"`). The
    Inducer's Volatile needs nothing new: any component may carry it.
 2. **The loop.** `tools/stock_fills.py` applies a fill set to a checkout; the balance runner
    at 30 seeds reads it against section 2's tests (rounds to win on the rank and file and the

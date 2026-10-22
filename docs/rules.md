@@ -234,7 +234,16 @@ them with a star): **Vents all** fires the whole heat gauge into the shot, addin
 bonus per 10 heat fired, then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
 rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing HP** adds its bonus for every
 step of HP the target is missing, both numbers on the entry (the Coriolis Accelerator: +5 per
-20). **The hopper**: a weapon that fills it puts a load in its
+20). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
+Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as the
+die is spent and before the spend's own riders, so a spend never opens its own gate; the die
+held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
+lands. Suppress alone carries a gate. **Consumes**: the blow eats every stack of the status the
+entry names on its target and deals a point more a stack eaten, before the multiplies, the
+die over the foe showing the number with the stacks in; one blow on one foe (no strikes past
+one, no area); a mine laid from it eats its arrival's. The Suppression Battery's gate on Flak
+and the Backdraft Charge (a consumer of Burning, its Suppress gated at two) land with the stock
+pass's content (not built). **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
 Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:

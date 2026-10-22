@@ -738,7 +738,14 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 		"reach_indirect":
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
-			return target != null and target.get("modifiers") != null and carries_status(target)
+			# Any status the team put on it, or the one named, at least so many stacks (a gate's:
+			# the Suppression Battery's on Flak, the Backdraft Charge's on 2 Burning; 22 October).
+			if target == null or target.get("modifiers") == null:
+				return false
+			var want := str(eff.get("status", ""))
+			if want.is_empty():
+				return carries_status(target)
+			return stacks_of(target, want) >= maxi(1, int(eff.get("stacks", 1)))
 		"target_no_intent":
 			return target != null and target.has_method("intent_on") and not target.intent_on(u)
 		"attacker_status":
@@ -1051,6 +1058,38 @@ static func _rewrite(face: Face, eff: Dictionary) -> Face:
 	if not tag.is_empty() and not c.tags.has(tag):
 		c.tags.append(tag)
 	return c
+
+
+## Does a gated keyword land on this foe (the stock pass's engine, 22 October)? A keyword with
+## no gate always does; a gated one (the face's `gates`, keyword name to condition) where the
+## condition holds on the foe, read through the effects' conditions with the foe in hand. The
+## spend reads it before its own riders, so a gate never opens on what the same spend lays.
+static func gate_holds(u, f: Face, kw: int, foe) -> bool:
+	if f == null or f.gates.is_empty():
+		return true
+	var g = f.gates.get(Face.KEYWORD_NAMES.get(kw, ""), null)
+	if not (g is Dictionary):
+		return true
+	return _holds(u, g, f, foe)
+
+
+## A gate in words, for the hold's line ("on a foe carrying Flak").
+static func gate_text(g) -> String:
+	if not (g is Dictionary):
+		return ""
+	match str(g.get("when", "")):
+		"target_status":
+			var st := str(g.get("status", ""))
+			if st.is_empty():
+				return "on a foe carrying a status"
+			var nm := str(STATUS.get(st, {}).get("name", st))
+			var n := maxi(1, int(g.get("stacks", 1)))
+			return ("on a foe carrying %s" % nm) if n == 1 else ("on a foe carrying %d %s or more" % [n, nm])
+		"target_rank":
+			return "aimed at the %s rank" % str(g.get("rank", "front"))
+		"target_no_intent":
+			return "on a foe showing no intent on it"
+	return str(g.get("when", ""))
 
 
 ## Does a foe carry a status the team put on it (FOE_STATUSES)? Numbed and its own buffs

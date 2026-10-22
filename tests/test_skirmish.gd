@@ -1235,6 +1235,97 @@ func test_a_breaching_weapon_ignores_a_foes_armour() -> void:
 	assert_eq(plate2.hp, 90, "and so does the blow")
 
 
+## A gated keyword (the stun row's gated stuns, Ryan, 22 October): the Suppression Battery's
+## Suppress lands only on a foe carrying Flak, read at the spend before its own riders, so a
+## spend that lays Flak never opens its own gate; the die over a foe strikes the chip where it
+## will not land, and the hold's line says where it does.
+func test_a_gated_suppress_lands_only_where_its_gate_holds() -> void:
+	var gun := Face.attack(3, I, [K.SUPPRESS])
+	gun.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	var spray := Face.attack(3, I, [K.SUPPRESS, K.FLAK])
+	spray.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
+	sk.add_mech(_mech("B", Die.single(gun.duplicate_face()), 40, 100))
+	sk.add_mech(_mech("C", Die.single(spray), 40, 100))
+	var plain := _ghoul(100, 1)
+	var marked := _ghoul(100, 1)
+	var fresh := _ghoul(100, 1)
+	sk.add_foes([plain, marked, fresh])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	assert_true(gun.describe().contains("(on a foe carrying Flak)"), "the hold's line says where it lands: %s" % gun.describe())
+	assert_true(gun.has_unique_rule(), "a gate is a printed rule, the star")
+	assert_eq(sk.shut_gates(sk.mechs[0], gun, plain), [K.SUPPRESS] as Array[int], "over a foe with no Flak the chip is struck")
+	assert_true(sk.shut_gates(sk.mechs[0], gun, marked).is_empty(), "over a foe carrying Flak it is lit")
+	assert_true(sk.shut_gates(sk.mechs[0], gun, null).is_empty(), "with no foe in hand, as printed")
+	assert_true(sk.assign(0, plain), "spent on the plain foe")
+	assert_false(Effects.has(plain, "suppressed"), "the gate is shut: no stun")
+	assert_eq(plain.hp, 97, "the blow lands all the same")
+	assert_true("\n".join(sk.log).contains("suppress does not land"), "the log says so")
+	assert_true(sk.assign(1, marked), "spent on the foe carrying Flak")
+	assert_true(Effects.has(marked, "suppressed"), "the gate is open: stunned")
+	assert_true(sk.assign(2, fresh), "a spend that lays Flak itself")
+	assert_true(Effects.has(fresh, "flakked"), "lays its Flak")
+	assert_false(Effects.has(fresh, "suppressed"), "and never opens its own gate")
+
+
+## A consumer (the Backdraft Charge's, Ryan, 22 October): its blow eats every stack of Burning on
+## its target for a point each, the die over the foe showing the number with the stacks in, and
+## its Suppress, gated at two stacks, lands only where it ate two or more.
+func test_a_consumer_eats_its_targets_stacks_and_stuns_at_its_threshold() -> void:
+	var charge := Face.attack(2, L, [K.SUPPRESS])
+	charge.gates = {"suppress": {"when": "target_status", "status": "burning", "stacks": 2}}
+	charge.consumes = "burning"
+	charge.per_consumed = 1
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(charge), 40, 100))
+	sk.add_mech(_mech("B", Die.single(charge.duplicate_face()), 40, 100))
+	var hot := _ghoul(100, 1)
+	var warm := _ghoul(100, 1)
+	sk.add_foes([hot, warm])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(hot, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(warm, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 1)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(charge.describe().contains("consumes Burning, +1 a stack"), "the hold says what it eats: %s" % charge.describe())
+	assert_eq(sk.shown_number(ms, charge, hot), [5, 5] as Array[int], "over three stacks the die shows 2 and 3")
+	assert_eq(sk.shown_number(ms, charge, warm), [3, 3] as Array[int], "over one, 2 and 1")
+	assert_eq(sk.shut_gates(ms, charge, warm), [K.SUPPRESS] as Array[int], "one stack is under the threshold: the chip struck")
+	assert_true(sk.shut_gates(ms, charge, hot).is_empty(), "three is over it: lit")
+	assert_true(sk.assign(0, hot), "spent on the burning foe")
+	assert_eq(hot.hp, 95, "the blow carries its stacks")
+	assert_false(Effects.has(hot, "burning"), "and the fire is out")
+	assert_true(Effects.has(hot, "suppressed"), "two or more eaten: stunned")
+	assert_true(sk.assign(1, warm), "spent on the foe with one stack")
+	assert_eq(warm.hp, 97, "its one stack on the blow")
+	assert_false(Effects.has(warm, "burning"), "eaten all the same")
+	assert_false(Effects.has(warm, "suppressed"), "under the threshold: no stun")
+
+
+## A mine carries the gate and the consumer from the face it was laid from: each foe it reaches
+## judged as the shot lands, the arrival's stacks eaten.
+func test_a_mine_carries_its_gate_and_its_consumer() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(2, I)), 40, 100))
+	var cold := _ghoul(100, 1)
+	var marked := _ghoul(100, 1)
+	sk.add_foes([cold, marked])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(cold, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	var face := {"gates": {"suppress": {"when": "target_status", "status": "flakked"}}, "consumes": "burning", "per_consumed": 1}
+	sk._mine_hit(cold, {"damage": 2, "keywords": [K.SUPPRESS], "face": face, "by": "A", "mech": 0})
+	assert_eq(cold.hp, 96, "the shot eats the arrival's two stacks for two more")
+	assert_false(Effects.has(cold, "burning"), "the fire is out")
+	assert_false(Effects.has(cold, "suppressed"), "no Flak on it: the gate is shut")
+	sk._mine_hit(marked, {"damage": 2, "keywords": [K.SUPPRESS], "face": face, "by": "A", "mech": 0})
+	assert_true(Effects.has(marked, "suppressed"), "Flak on it: the gate is open")
+
+
 ## A reach read on the rank (the Ram Frame and the Artillery Rangefinder, mirrors: Ryan, 22
 ## October): the point lands only on blows of its reach aimed at its rank, the die shows it
 ## over the foe, and the hold lists each rule on the entries of its reach alone.

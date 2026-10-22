@@ -278,10 +278,18 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += float(o[1]) * minf(float(spill), float(behind.hp))
 				if spill >= behind.hp:
 					score += float(o[1]) * (KILL_BONUS + _threat_now(behind, sk) * HULL_WEIGHT)
-	if f.has(Face.Keyword.SUPPRESS):
-		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
+	var suppress_open := f.has(Face.Keyword.SUPPRESS) and Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, target)
+	if suppress_open:
+		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds. A
+		# gated Suppress (the Battery's on Flak) is worth nothing where its gate is shut.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * suppress_worth(sk, target) * HULL_WEIGHT * maxf(0.0, lands)
+	if not f.consumes.is_empty():
+		# A consumer gives up the ticks the stacks it eats would have dealt (the Backdraft
+		# Charge's Burning), at the odds the foe would have lived to take them.
+		var eaten := Effects.stacks_of(target, f.consumes)
+		if eaten > 0:
+			score -= (1.0 - p_kill) * dot_payout(f.consumes, eaten, int(maxf(0.0, float(target.hp) - mean))) * BURN_WEIGHT
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
@@ -313,7 +321,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 					laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
-	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS)) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
+	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
@@ -778,6 +786,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			rolls.append(f.power + int(roundf(span * q)))
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
 	fired += f.missing_bonus(target)   # and what the target's lost hull adds
+	fired += f.consume_bonus(target)   # and the stacks a consumer eats (the Backdraft Charge's)
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var out: Array = []
 	var w := 1.0 / rolls.size()

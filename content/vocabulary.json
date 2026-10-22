@@ -1515,6 +1515,26 @@
    }
   },
   {
+   "id": "gated",
+   "category": "component_property",
+   "name": "Gated",
+   "codex": "A keyword printed with a condition, such as a Suppress on a foe carrying Flak or on a foe carrying two Burning or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through.",
+   "status": "implemented",
+   "design": {
+    "holes": "The stun row's gated stuns (Ryan, 22 October): the Suppression Battery's Suppress on a foe carrying Flak, the maker's condition, and the Backdraft Charge's at two Burning consumed. Built 22 October, the stock pass's engine: a face's gates, keyword name to a condition on the foe in hand (target_status with a status and a count, target_rank, target_no_intent), read through the effects' conditions; Suppress alone today. Gated is a working name for Ryan's name pass."
+   }
+  },
+  {
+   "id": "consumes",
+   "category": "component_property",
+   "name": "Consumes",
+   "codex": "A rule printed on a weapon: its blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies. The die held over the foe shows the number with the stacks in.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Backdraft Charge's (Ryan, 22 October: it consumes the fire, a point of damage a stack of Burning consumed, and Suppresses at a threshold, one burn consumer in the pool). Built 22 October, the stock pass's engine: consumes and per_consumed on the face, one blow on one foe, the stacks read at the spend and gone as the blow lands; the bot weighs the ticks given up. A mine laid from it eats its arrival's stacks."
+   }
+  },
+  {
    "id": "hopper_property",
    "category": "component_property",
    "name": "The hopper",

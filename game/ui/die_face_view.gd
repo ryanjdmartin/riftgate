@@ -44,6 +44,7 @@ var slot: int = 0            # the entry's place on its die, from one; 0 draws n
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the bottom row
+var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
 var dead: bool = false
 var can_tap: bool = true     # tap locks
@@ -291,8 +292,11 @@ func _draw() -> void:
 	# Annotation chips hugging the right edge, one per keyword, star for a unique effect. A
 	# keyword a passive grants written out (the Boar's spill) is the star, never its own chip.
 	var tags: Array[String] = []
+	var struck: Array[int] = []   # the chips a shut gate strikes, by their place on the rail
 	for k in face.keywords:
 		if not face.printed.has(k):
+			if shut.has(k):
+				struck.append(tags.size())
 			tags.append(Face.KEYWORD_NAMES[k])
 	if face.has_unique_rule():
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
@@ -306,8 +310,14 @@ func _draw() -> void:
 		var col := Glyphs.colour_for(tags[i])
 		col.a = (_flicker(i) if animate else 1.0) * (0.45 if spent else 1.0)
 		var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, 8.0 + i * TAG_STEP + bob * 0.5), CHIP)
+		if struck.has(i):
+			col.a *= 0.45   # a shut gate: the keyword will not land on this foe
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)
 		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
+		if struck.has(i):
+			# Struck through corner to corner, structure as well as the dimming (Ryan reads by
+			# structure: never a mark parted by hue alone).
+			draw_line(chip_rect.position + Vector2(2.0, CHIP.y - 2.0), chip_rect.position + Vector2(CHIP.x - 2.0, 2.0), Color(Palette.INK, 0.9), 2.5)
 		if tags[i] == "corrupt" and corrupted > 1:
 			draw_string(mono, chip_rect.position + Vector2(CHIP.x + 2.0, CHIP.y - 7.0), "×%d" % corrupted, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
 	if next_face != null:

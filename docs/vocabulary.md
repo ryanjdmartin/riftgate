@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 150 implemented, 5 planned, 0 idea.
+Status: 152 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -57,6 +57,8 @@ Status: 150 implemented, 5 planned, 0 idea.
 | **Drone** | A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
+| **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Flak or on a foe carrying two Burning or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
+| **Consumes** | A rule printed on a weapon: its blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies. The die held over the foe shows the number with the stacks in. | implemented |
 | **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
 | **Braces** | A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until the round's end: the armour stands behind the blow through the enemy's turn. | implemented |
 | **Rolls again** | A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit. | implemented |
@@ -343,6 +345,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Grows with missing HP** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). The step is the entry's own (per_missing, beside power_per_missing, since the stock pass's engine of 22 October; a constant of 20 before); both numbers are placeholders.
+- **Gated** (implemented): The stun row's gated stuns (Ryan, 22 October): the Suppression Battery's Suppress on a foe carrying Flak, the maker's condition, and the Backdraft Charge's at two Burning consumed. Built 22 October, the stock pass's engine: a face's gates, keyword name to a condition on the foe in hand (target_status with a status and a count, target_rank, target_no_intent), read through the effects' conditions; Suppress alone today. Gated is a working name for Ryan's name pass.
+- **Consumes** (implemented): The Backdraft Charge's (Ryan, 22 October: it consumes the fire, a point of damage a stack of Burning consumed, and Suppresses at a threshold, one burn consumer in the pool). Built 22 October, the stock pass's engine: consumes and per_consumed on the face, one blow on one foe, the stacks read at the spend and gone as the blow lands; the bot weighs the ticks given up. A mine laid from it eats its arrival's stacks.
 - **The hopper** (implemented): Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat.
 - **Braces** (implemented): Built 12 October in place of the Glacis, a flat armour +5 on the plow that was meant for front-rank blows only and measured no different that way (Ryan: "Give the plow braced. It fits."). Ten stacks (two of 5 until 18 October) are a placeholder. A rule on one carrier, not a keyword, until another piece wants it.
 - **Rolls again** (implemented): Built 12 October for the Nemesis's rage (Ryan: "it's not a choice, you just get rapid", without the switch-off). A rule on one carrier, not a keyword, until another piece wants it.

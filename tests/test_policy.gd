@@ -211,6 +211,37 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_eq(s2.mechs[0].unit.hull, 90, "paid for")
 
 
+## The gated stuns (22 October): the bot values a gated Suppress only where its gate is open,
+## reads a consumer's blow with the stacks in, and gives up the ticks it eats.
+func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_eats() -> void:
+	var gun := Face.attack(3, I, [K.SUPPRESS])
+	gun.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
+	var plain := _ghoul(100, 20)
+	var marked := _ghoul(100, 20)
+	sk.add_foes([plain, marked])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var on_marked := pol.attack_score(sk, ms, gun, marked)
+	var on_plain := pol.attack_score(sk, ms, gun, plain)
+	var open_part := on_marked - pol.expected_damage(ms, gun, marked)
+	var shut_part := on_plain - pol.expected_damage(ms, gun, plain)
+	assert_true(open_part > shut_part + 1.0, "the stun counts only where the gate is open (%s against %s)" % [open_part, shut_part])
+	var charge := Face.attack(2, L)
+	charge.consumes = "burning"
+	charge.per_consumed = 1
+	var plain_charge := Face.attack(2, L)
+	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	assert_eq(int(pol.damage_outcomes(ms, charge, plain)[0][0]), 5, "the bot reads the blow with the three stacks in")
+	var eat := pol.attack_score(sk, ms, charge, plain) - pol.expected_damage(ms, charge, plain)
+	var keep := pol.attack_score(sk, ms, plain_charge, plain) - pol.expected_damage(ms, plain_charge, plain)
+	assert_true(eat < keep, "and gives up the ticks the stacks would have dealt (%s against %s)" % [eat, keep])
+
+
 ## The Nemesis's rage (12 October): a stack to spend is another roll of the die, worth about
 ## the die's own average blow, and a bite of its own costs less when the hull it takes banks
 ## a stack the die can spend.

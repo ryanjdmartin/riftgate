@@ -83,6 +83,9 @@ var burn: int = 0             # an attack with Burn: the stacks of Burning each 
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
 var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
 var volatile: int = 0         # any entry with Volatile: the hull a spend bites its owner, past shield and armour (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
+var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
+var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
+var per_consumed: int = 1     # ...the damage a stack consumed adds
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -270,6 +273,10 @@ static func from_dict(d: Dictionary) -> Face:
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn weapon one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
+		var g = d.get("gates", {})
+		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
+		f.consumes = str(d.get("consumes", ""))
+		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -338,6 +345,11 @@ func to_dict() -> Dictionary:
 		d["flak"] = flak
 	if volatile > 0 and has(Keyword.VOLATILE):
 		d["volatile"] = volatile
+	if not gates.is_empty():
+		d["gates"] = gates.duplicate(true)
+	if not consumes.is_empty():
+		d["consumes"] = consumes
+		d["per_consumed"] = per_consumed
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -419,7 +431,7 @@ func cooldown_rounds() -> int:
 ## and a Rapid entry's "no cooldown" with it), a spin (the Spin-Up's), the Siphon's reach over
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or reloads_ammo > 0
@@ -477,6 +489,15 @@ func missing_bonus(target) -> int:
 	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / maxi(1, per_missing))
 
 
+## What this blow adds against `target` for the stacks it consumes (the Backdraft Charge's
+## Burning, 22 October): a point a stack, per_consumed each, read as the die is spent and
+## added before the multiplies; nothing without a target or a status to eat.
+func consume_bonus(target) -> int:
+	if consumes.is_empty() or target == null:
+		return 0
+	return per_consumed * Effects.stacks_of(target, consumes)
+
+
 func average() -> int:
 	return ceili((power + power_max) / 2.0)
 
@@ -510,6 +531,9 @@ func duplicate_face() -> Face:
 	f.cryo = cryo
 	f.flak = flak
 	f.volatile = volatile
+	f.gates = gates.duplicate(true)
+	f.consumes = consumes
+	f.per_consumed = per_consumed
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -681,10 +705,14 @@ func describe() -> String:
 					s += " %d" % flak
 				if k == Keyword.VOLATILE:
 					s += " %d" % volatile
+				if gates.has(KEYWORD_NAMES[k]):
+					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
+			if not consumes.is_empty():
+				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if devours > 0:
 				s += " Overcharged ×%d a kill" % devours
 			if fills_hopper > 0:

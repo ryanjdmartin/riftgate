@@ -858,6 +858,40 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: a Flak weapon says its stacks: flak, a positive number" % where)
 	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
 		errs.append("%s: flak (the stacks) rides with the Flak keyword" % where)
+	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
+	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
+	# alone today (the stun row's gated stuns); another keyword's gate waits for its first piece.
+	if fd.has("gates"):
+		var gates = fd["gates"]
+		if not (gates is Dictionary) or (gates as Dictionary).is_empty():
+			errs.append("%s: gates maps a keyword it carries to the condition it lands under" % where)
+		else:
+			for kname in gates.keys():
+				var g = gates[kname]
+				if str(kname) != "suppress":
+					errs.append("%s: a gate rides on Suppress today (gates.%s); another keyword's gate waits for its first piece" % [where, kname])
+				elif not Array(fd.get("keywords", [])).has(str(kname)):
+					errs.append("%s: gates.%s gates a keyword the entry does not carry" % [where, kname])
+				if not (g is Dictionary) or not ["target_status", "target_rank", "target_no_intent"].has(str(g.get("when", ""))):
+					errs.append("%s: gates.%s is a condition on the foe in hand: target_status, target_rank or target_no_intent" % [where, kname])
+					continue
+				if str(g["when"]) == "target_status" and g.has("status") and not Effects.FOE_STATUSES.has(str(g["status"])):
+					errs.append("%s: gates.%s reads a status the team puts on a foe (%s), not '%s'" % [where, kname, ", ".join(Effects.FOE_STATUSES), str(g["status"])])
+				if g.has("stacks") and (int(g["stacks"]) <= 0 or not g.has("status")):
+					errs.append("%s: gates.%s's stacks are a positive count of the status it names" % [where, kname])
+				if str(g["when"]) == "target_rank" and not ["front", "back"].has(str(g.get("rank", ""))):
+					errs.append("%s: gates.%s's target_rank needs rank, front or back" % [where, kname])
+		if kind != "attack":
+			errs.append("%s: gates belong to an attack, spent on a foe" % where)
+	# A consumer (the Backdraft Charge's, 22 October): one blow on one foe, eating every stack of
+	# a status the team puts on foes, a point more a stack (per_consumed).
+	if fd.has("consumes"):
+		if kind != "attack" or not Effects.FOE_STATUSES.has(str(fd["consumes"])):
+			errs.append("%s: consumes names a status the team puts on a foe (%s), on an attack" % [where, ", ".join(Effects.FOE_STATUSES)])
+		if int(fd.get("strikes", 1)) > 1 or Array(fd.get("keywords", [])).has("cleave") or Array(fd.get("keywords", [])).has("penetrate") or bool(fd.get("reaches_all", false)):
+			errs.append("%s: a consumer is one blow on one foe: no strikes past one, no Spread, Penetrate or reach over every foe" % where)
+	if fd.has("per_consumed") and (not fd.has("consumes") or int(fd["per_consumed"]) <= 0):
+		errs.append("%s: per_consumed is the damage a stack consumed adds: positive, and only beside consumes" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])

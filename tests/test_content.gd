@@ -875,6 +875,48 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	assert_eq(f.volatile, 3, "with the bite it says")
 
 
+## The gated stuns' fields (22 October): a gate maps a keyword the entry carries (Suppress
+## today) to a condition on the foe in hand; a consumer eats a foe status on one blow.
+func test_gates_and_consumers_validate() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	base["tier"] = 1
+	base["face"].erase("keywords")
+	var flak_gate := {"suppress": {"when": "target_status", "status": "flakked"}}
+	var cases := {
+		"test_battery": [{"keywords": ["suppress"], "gates": flak_gate}, ""],
+		"test_backdraft": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "burning", "stacks": 2}}, "consumes": "burning", "per_consumed": 1}, ""],
+		"test_gate_absent": [{"keywords": [], "gates": flak_gate}, "does not carry"],
+		"test_gate_burn": [{"keywords": ["burn"], "burn": 2, "gates": {"burn": {"when": "target_status"}}}, "rides on Suppress today"],
+		"test_gate_when": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "rolled"}}}, "a condition on the foe in hand"],
+		"test_gate_status": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "numbed"}}}, "a status the team puts on a foe"],
+		"test_gate_count": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "stacks": 2}}}, "a positive count of the status it names"],
+		"test_eat_odd": [{"consumes": "numbed"}, "names a status the team puts on a foe"],
+		"test_eat_wide": [{"keywords": ["cleave"], "consumes": "burning"}, "one blow on one foe"],
+		"test_eat_stray": [{"per_consumed": 2}, "only beside consumes"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		if not c["face"].has("keywords"):
+			c["face"]["keywords"] = []
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var f := db.build_face(db.components["test_backdraft"]["face"])
+	assert_eq(f.consumes, "burning", "the consumer builds onto the entry")
+	assert_eq(int(f.gates["suppress"]["stacks"]), 2, "and its gate")
+	var back := Face.from_dict(f.to_dict())
+	assert_true(back.consumes == "burning" and back.gates.has("suppress"), "and survives the round trip a save makes")
+
+
 ## The rank condition's reach (the Ram Frame's and the Rangefinder's reads, 22 October) reads an
 ## attack's own spend: direct or indirect, on an on_attack effect only.
 func test_a_reach_beside_the_rank_is_an_attacks_and_a_real_reach() -> void:
