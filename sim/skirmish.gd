@@ -501,7 +501,14 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	var incoming := 0
 	var component_risk := false
 	var standing := shield
-	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
+	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
+	# Breaching Plow, the Siphon) and a Siphon's heat a blow, a second Siphon renewing the first.
+	var spent := spend_face(ms) if with_face and not ms.assigned and ms.face() != null else null
+	var braced := spent.braces * Effects.braced_armour() if spent != null else 0
+	var per_blow := Effects.heat_per_blow(ms.unit)
+	if spent != null and spent.heat_per_blow > 0 and not Effects.has(ms.unit, "siphoning"):
+		per_blow += spent.heat_per_blow
+	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier"), "armour": braced}
 	for f in attackers_of(ms):
 		incoming += f.damage() * f.strikes()
 		for r in blows_on(ms, f, walk):
@@ -521,7 +528,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	var blows := 0
 	for f in attackers_of(ms):
 		blows += f.strikes()
-	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows   # a Siphon's heat lands with the blows
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + per_blow * blows   # a Siphon's heat lands with the blows
 	return {
 		"incoming": incoming,
 		"bite": bite,
@@ -558,12 +565,13 @@ func cryo_cash(ms: MechState, over: Foe) -> int:
 ## machine takes (damage_taken), a Barrier that stands taking the first that deals anything,
 ## a breach unless a Ward turns it away, each against the shield the one before left. `walk`
 ## carries the shield and the Barrier from blow to blow, and from foe to foe for a caller
-## walking every attacker: {"shield": int, "barrier": bool}, updated. Returns each blow's
-## arithmetic (_blow's).
+## walking every attacker: {"shield": int, "barrier": bool, "armour": int}, updated; its armour
+## is a grant not yet made (the die in hand's brace), on top of the machine's own.
+## Returns each blow's arithmetic (_blow's).
 func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var out: Array = []
 	var breach := f.breaches() and not Effects.has(ms.unit, "ward")
-	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank)
+	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank) + int(walk.get("armour", 0))
 	for s in range(f.strikes()):
 		var amount := Effects.damage_taken(ms.unit, f.damage(), f)
 		if amount > 0 and bool(walk.get("barrier", false)):
@@ -1123,14 +1131,14 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			var shield_half := shield_amount(ms, f, who)   # sized at the spend, on what the vent will leave
-			var before := who.heat
+			var blast := blast_amount(ms, f, who)            # read before the heat it fires comes off
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			# The Thermal Ejection Manifold (the Whip Scorpion's, 12 and 13 October): a vent it
 			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
 			# blasts nothing, and so does an ally's vent on it.
-			if who == ms and Effects.vent_blast(ms.unit) > 0.0 and before > who.heat:
-				_blast(ms, int(roundf(float(before - who.heat) * Effects.vent_blast(ms.unit))))
+			if blast > 0:
+				_blast(ms, blast)
 				blasted = true
 			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
 			# shield on the same machine, through its shield gain and the spender's passives
@@ -1867,10 +1875,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 ## through the damage pipeline (the machine's adds and multiplies, then the foe's own: its
 ## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does.
 func _blast(ms: MechState, amount: int) -> void:
-	var live: Array[Foe] = []
-	for foe in field_foes():
-		if foe.alive():
-			live.append(foe)
+	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
 		return
 	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
@@ -1885,6 +1890,89 @@ func _blast(ms: MechState, amount: int) -> void:
 	log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, foe.display_name, taken, " (armour -%d)" % armoured if armoured > 0 else ""])
 	last_blast = {"mech": mechs.find(ms), "foe": foe, "dealt": taken}
 	_clear_dead()
+
+
+## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13
+## October): the heat it would take off its own machine, at the passive's share, rounded;
+## nothing for a vent on an ally, an ally's vent, or a machine whose vents blast nothing. The
+## spend, the die and the forecast's marks read it here.
+func blast_amount(ms: MechState, f: Face, who: MechState = null) -> int:
+	if ms == null or f == null or f.kind != Face.Kind.VENT or (who != null and who != ms):
+		return 0
+	var share := Effects.vent_blast(ms.unit)
+	if share <= 0.0:
+		return 0
+	return int(roundf(float(mini(ms.heat, f.power)) * share))
+
+
+## The foes a blast may land on: every live foe on the field, the draw being over them all.
+func blast_targets() -> Array[Foe]:
+	var live: Array[Foe] = []
+	for foe in field_foes():
+		if foe.alive():
+			live.append(foe)
+	return live
+
+
+## A blast's number as the die prints a blow (shown_number's convention): through the machine's
+## pipeline, then on `foe` its flat adds and its armour, a Shocked foe's doubling left to its
+## chip; before any foe with none. The die over its own machine and the foes' marks read it.
+func blast_number(ms: MechState, amount: int, foe: Foe = null) -> int:
+	if amount <= 0:
+		return 0
+	return shown_number(ms, Face.attack(amount, Face.Reach.INDIRECT), foe)[0]
+
+
+## The foes a Lure entry spent on `aimed` would turn on this machine, as the arrows show them:
+## every foe it reaches, alive, not suppressed, with an arrow to move (a blow at every machine
+## and a special that acts on nobody keep theirs), and not on it already. A reach over every
+## foe (the Whip Scorpion's Siphon) needs no aim. Empty for an entry without Lure.
+func lure_turns(ms: MechState, aimed: Foe = null) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for foe in _lured(ms, aimed):
+		if foe.alive() and not foe.is_suppressed() and foe.target != ms and not foe.reaches_every_machine() and not foe.acts_on_nobody():
+			out.append(foe)
+	return out
+
+
+## The round as it would stand once this machine's Lure entry, spent on `aimed`, turns what it
+## reaches (the Whip Scorpion's Siphon over every foe): every live machine's forecast with those
+## foes on the spender, the spender's with its die in hand (its brace, its Siphon's heat a
+## blow), then the foes put back as they were. Empty when there is nothing to turn.
+func lure_preview(ms: MechState, aimed: Foe = null) -> Dictionary:
+	var out := {}
+	var saved := {}
+	for foe in _lured(ms, aimed):
+		if foe.alive() and foe.target != ms:
+			saved[foe] = foe.target
+			foe.target = ms
+	if saved.is_empty():
+		return out
+	for m in live_mechs():
+		out[m] = forecast(m, m == ms, 0, false, aimed if m == ms else null)
+	for foe in saved.keys():
+		foe.target = saved[foe]
+	return out
+
+
+## Every foe a Lure entry reaches from `aimed` as _lure would turn them (a reach over every foe
+## from any of them); nothing for a spent die, an entry without Lure, or an aim it cannot take.
+func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if ms == null or ms.assigned or ms.face() == null:
+		return out
+	var f := spend_face(ms)
+	if f == null or not f.is_attack():
+		return out
+	var targets := targets_for_face(ms, f)
+	if aimed == null and f.reaches_all and not targets.is_empty():
+		aimed = targets[0]
+	if aimed == null or not targets.has(aimed):
+		return out
+	var ef := Effects.effective_face(ms.unit, f, aimed)
+	if not ef.has(Face.Keyword.LURE):
+		return out
+	return reached_by(ef, aimed)
 
 
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's

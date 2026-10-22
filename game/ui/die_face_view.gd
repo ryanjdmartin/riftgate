@@ -43,6 +43,7 @@ var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), 
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
+var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the bottom row
 var spent: bool = false
 var dead: bool = false
 var can_tap: bool = true     # tap locks
@@ -277,6 +278,14 @@ func _draw() -> void:
 		var sc := Color(Palette.SHIELD, alpha)
 		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, sc, 1.6)
 		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), "%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, sc)
+		slot_x += 14.0 + mono.get_string_size("%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 8.0
+	if blast > 0 and face.kind == Face.Kind.VENT and not (face.disabled and dark > 0):
+		# A vent's blast (the Whip Scorpion's Thermal Ejection Manifold, 22 October): spent on its
+		# own machine it fires the heat it takes off at a random foe, so the die prints that blow
+		# by its own mark, an arc landing in a burst, apart from the heat slot's word.
+		var bc := Color(Palette.HEAT, alpha)
+		Glyphs.draw(self, "blast", Vector2(slot_x + 7.0, FACE - 13.0 + bob), 13, bc, 1.8)
+		draw_string(mono, Vector2(slot_x + 16.0, FACE - 9.0 + bob), "%d" % blast, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, bc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	# Annotation chips hugging the right edge, one per keyword, star for a unique effect.

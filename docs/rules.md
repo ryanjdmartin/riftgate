@@ -155,6 +155,14 @@ defeat when every machine is wrecked. There is no round limit.
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
+  A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
+  heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
+  blast may land on wears a turning dashed ring with the number it would deal there.
+- **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in
+  hand (its own heat, its bite, its brace) will leave. A Lure in hand shows its turn before it
+  is spent: the foes it would turn draw dashed arrows to its machine, those on it already
+  solid, and every machine's gauges read the round as the lure would leave it (the Siphon's
+  heat a blow included).
 - Player damage sits at the scale of fives; hull, shield, heat and foe numbers at the scale of
   tens. The scales are magnitudes, not steps: any whole number may be used (an armour of 2, a
   blow of 12), and the numbers between the round ones are the room for balancing and upgrades.

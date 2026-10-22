@@ -67,6 +67,9 @@ static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
 ## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
 ## judge it running.
 static var PREY_DEBUG := OS.get_environment("RIFTGATE_PREY_DEBUG") == "1"
+## RIFTGATE_BLAST_DEBUG=1: the blast's marks stay on, over every foe the first machine whose vents
+## blast would fire at with its die's vent (its heat raised to fire it), to judge them running.
+static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 var _rage_debug_at := -10.0
 
@@ -217,6 +220,9 @@ var _drag_from: int = -1
 var _log_seen: int = 0
 var _hold_foe: Foe = null
 var _hold_mech: int = -1
+var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
+var _preview: Dictionary = {}         # the lure preview (Skirmish.lure_preview): each machine's forecast with the lured foes turned
+var _turns: Array[Foe] = []           # the foes that preview turns, their arrows drawn dashed to the die's machine
 
 
 func setup(skirmish: Skirmish) -> void:
@@ -740,8 +746,9 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 # ---------------------------------------------------------------- refresh
 
-func _refresh() -> void:
+func _refresh(save: bool = true) -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
+	_update_preview()
 	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
 	_header.queue_redraw()
 	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
@@ -807,7 +814,7 @@ func _refresh() -> void:
 		var v := _mech_views[i]
 		# The forecast counts this die's own heat only while it is being dragged: shown
 		# unasked, it read as something done to the mech rather than by the player.
-		var fc: Dictionary = sk.forecast(ms, _drag_from == i) if assigning and ms.alive() else {}
+		var fc: Dictionary = _forecast_for(i) if assigning and ms.alive() else {}
 		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
 			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield)],
@@ -851,6 +858,7 @@ func _refresh() -> void:
 		d.charged = not ms.assigned and sk.charge_lands(ms)
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
+		d.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, ms)) if not ms.assigned and ms.alive() else 0   # a vent's blast on its own machine
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
@@ -874,8 +882,41 @@ func _refresh() -> void:
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
 	_refresh_prey()
-	if autosave.is_valid():
+	if save and autosave.is_valid():
 		autosave.call()
+
+
+## The forecast a machine's gauges and warnings read now: the lure preview's while a die in hand
+## would turn foes, else the round as it stands, the dragged die's own spend counted over the foe
+## under the finger (a Cryo cash). Empty for a wreck or outside the player's turn.
+func _forecast_for(i: int) -> Dictionary:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if not ms.alive() or sk.state != Skirmish.State.ASSIGN:
+		return {}
+	if _preview.has(ms):
+		return _preview[ms]
+	var over: Foe = _drag_over if _drag_from == i and _drag_over is Foe else null
+	return sk.forecast(ms, _drag_from == i, 0, false, over)
+
+
+## The lure preview (the Whip Scorpion's Siphon, 22 October): while a die whose entry Lures is
+## dragged over a foe it may be spent on, or held or dragged anywhere when it reaches every foe,
+## the foes it would turn draw their arrows dashed to its machine and every machine's gauges and
+## warnings read the round as the lure would leave it: the lured blows, the brace, the heat a
+## Siphon drinks from them.
+func _update_preview() -> void:
+	_preview = {}
+	_turns = []
+	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
+		return
+	var i := _drag_from if _drag_from >= 0 else _hold_die
+	if i < 0 or i >= sk.mechs.size():
+		return
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var aimed: Foe = _drag_over if _drag_from >= 0 and _drag_over is Foe else null
+	_turns = sk.lure_turns(ms, aimed)
+	if not _turns.is_empty():
+		_preview = sk.lure_preview(ms, aimed)
 
 
 func _refresh_log() -> void:
@@ -1216,7 +1257,7 @@ func _mech_rows(i: int) -> Array:
 		var stacks := int(total[id])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
-		var fc := sk.forecast(ms, _drag_from == i)
+		var fc := _forecast_for(i)
 		if int(fc["overheat"]) > 0:
 			# The heat burns as the turn ends, so there is still time to vent.
 			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT])
@@ -1241,11 +1282,16 @@ func _foe_view_for(foe: Foe) -> UnitView:
 func _refresh_arrows() -> void:
 	var list: Array = []
 	var inv := _arrows.get_global_transform().affine_inverse()
+	# During a lure preview every blow its machine would take shows: the foes on it already
+	# solid, the ones the lure would turn dashed (below).
+	var lurer := (_drag_from if _drag_from >= 0 else _hold_die) if not _turns.is_empty() else -1
 	for foe in sk.field_foes():
 		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
 		# its pick means nothing, and the ambush read says so too (Foe.intent_on, 18 October).
 		if foe.target == null or foe.is_suppressed() or not foe.alive() or foe.acts_on_nobody():
 			continue
+		if _turns.has(foe):
+			continue   # its arrow is the lure preview's, below
 		# A blow at every machine (`all`) draws an arrow to each live machine.
 		var targets: Array[int] = []
 		if foe.reaches_every_machine():
@@ -1261,12 +1307,18 @@ func _refresh_arrows() -> void:
 		if fv == null:
 			continue
 		for target_index in targets:
-			var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech
+			var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech or target_index == lurer
 			if not wanted:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
 			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
 			list.append([from, to, Palette.ENEMY])
+	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked.
+	if lurer >= 0 and lurer < _mech_views.size():
+		for foe in _turns:
+			var fv := _foe_view_for(foe)
+			if fv != null:
+				list.append([inv * fv.anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY, true])
 	_arrows.set_arrows(list)
 
 
@@ -1374,7 +1426,7 @@ func _on_die_held(i: int) -> void:
 	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
 	Sound.play("hold")
 	_hold_die = i
-	_refresh_prey()
+	_refresh(false)   # the marks and a lure's preview read the held die
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -1485,9 +1537,13 @@ func _on_hold_released() -> void:
 	_details.visible = false
 	_hold_foe = null
 	_hold_mech = -1
+	var was_die := _hold_die >= 0
 	_hold_die = -1
-	_refresh_arrows()
-	_refresh_prey()
+	if was_die:
+		_refresh(false)   # a held die's preview lets go of the gauges too
+	else:
+		_refresh_arrows()
+		_refresh_prey()
 
 
 ## The predator sense (Ryan, 17 October; the funnel-web's row, 18 October): while a die is held
@@ -1496,6 +1552,10 @@ func _on_hold_released() -> void:
 ## machine get their eyes. RIFTGATE_PREY_DEBUG=1 keeps it on.
 func _refresh_prey() -> void:
 	if _prey == null:
+		return
+	var blast := _blast_marks()
+	if not blast.is_empty():
+		_prey.show_marks(blast["rects"], "blast", blast["labels"])
 		return
 	var i := _drag_from if _drag_from >= 0 else _hold_die
 	var force := false
@@ -1525,6 +1585,45 @@ func _refresh_prey() -> void:
 	_prey.show_marks(rects)
 
 
+## The blast's marks (the Whip Scorpion's, 22 October): while a vent die on a machine whose vents
+## blast is held, or dragged anywhere but over an ally, every foe the blast may land on (the draw
+## is over every live foe) is marked with what it would deal there. Nothing for any other die,
+## or a vent with nothing to fire. RIFTGATE_BLAST_DEBUG=1 keeps them on.
+func _blast_marks() -> Dictionary:
+	var i := _drag_from if _drag_from >= 0 else _hold_die
+	var forced := false
+	if i < 0 and BLAST_DEBUG:
+		for j in range(sk.mechs.size()):
+			var dm: Skirmish.MechState = sk.mechs[j]
+			if dm.alive() and not dm.assigned and Effects.vent_blast(dm.unit) > 0.0 and dm.face() != null and dm.face().kind == Face.Kind.VENT:
+				i = j
+				forced = true
+				break
+	if i < 0 or i >= sk.mechs.size() or sk.state != Skirmish.State.ASSIGN:
+		return {}
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if not ms.alive() or ms.assigned or ms.face() == null:
+		return {}
+	var who: Skirmish.MechState = _drag_over if _drag_from == i and _drag_over is Skirmish.MechState else null
+	var vent := sk.shown_face(ms, sk.spend_face(ms))
+	var amount := sk.blast_amount(ms, vent, who)
+	if amount <= 0 and forced:
+		amount = int(roundf(float(vent.power) * Effects.vent_blast(ms.unit)))   # the switch fires a full vent, cold or not
+	if amount <= 0:
+		return {}
+	var rects: Array = []
+	var labels: Array = []
+	for foe in sk.blast_targets():
+		var fv := _foe_view_for(foe)
+		if fv == null or not fv.visible:
+			continue
+		var r := fv.drawing_rect()
+		var xf := fv.get_global_transform()
+		rects.append(Rect2(xf * r.position, xf.get_scale() * r.size))
+		labels.append(str(sk.blast_number(ms, amount, foe)))
+	return {"rects": rects, "labels": labels}
+
+
 ## The foes an ambusher's entry showing marks: those it can reach that show no intent on the
 ## machine, when the machine's passives read that (`force` reads it for any machine, the debug
 ## switch's); nothing for another machine, an entry that is no weapon, or a spent die.
@@ -1546,9 +1645,11 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
+	_drag_over = null
 	Sound.play("die_pick")
 	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
+	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
@@ -1565,31 +1666,34 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
+	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash) and where
+	# the blast's marks go: read again only when it changes, never saved mid-drag.
+	var over = target if can else null
+	if not _same_target(over, _drag_over):
+		_drag_over = over
+		_refresh(false)
 	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
 	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
 	# Cottonmouth's drum). A shield over a machine it may land on shows what it will give
 	# there (the Puffin's ally heat, 21 October). Anywhere else, the plain entry and number.
 	if _drag_from >= 0:
 		var ms: Skirmish.MechState = sk.mechs[_drag_from]
-		var over: Foe = target if can and target is Foe else null
-		var sf := sk.shown_face(ms, sk.spend_face(ms), over)
+		var over_foe: Foe = target if can and target is Foe else null
+		var sf := sk.shown_face(ms, sk.spend_face(ms), over_foe)
 		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
-			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over))
-		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the
-		# die): the gun's heat less what its damaging hit there cashes.
-		var mv := _mech_views[_drag_from]
-		if mv.bars.size() >= 3:
-			var heat_after := int(sk.forecast(ms, true, 0, false, over)["heat_after"])
-			if mv.bars[2].size() >= 4 and int(mv.bars[2][3]) != heat_after:
-				mv.bars[2][3] = heat_after
-				mv.queue_redraw()
+			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over_foe))
+		# A vent's blast fires only on its own machine: over an ally the die prints none. The heat
+		# bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die) through
+		# the forecast the refresh above reads (_forecast_for).
+		_ghost.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, target if can and target is Skirmish.MechState else null))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
 	var i := _drag_from
 	_drag_from = -1
+	_drag_over = null
 	_ghost.visible = false
 	Sound.hover(false)
 	if i < 0:
@@ -1629,6 +1733,7 @@ func _on_ghost_drag_started() -> void:
 	var i: int = _pending["mech"]
 	_pending = {}
 	_drag_from = i
+	_drag_over = null
 	Sound.play("die_pick")
 	_refresh()
 
@@ -1662,6 +1767,14 @@ func _cancel_second() -> void:
 	_ghost.visible = false
 	_ghost.can_drag = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+## Two drop targets the same (a Foe, a MechState, an empty slot's Vector2i, or null), compared by
+## type first, since GDScript refuses == across an object and a vector.
+static func _same_target(a, b) -> bool:
+	if typeof(a) != typeof(b):
+		return false
+	return typeof(a) == TYPE_NIL or a == b
 
 
 ## What sits under a global point: a Foe, an empty slot as Vector2i(rank, column) (the
