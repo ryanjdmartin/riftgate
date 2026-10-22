@@ -9,13 +9,27 @@ extends RefCounted
 ##   GREEDY  reads the same forecast the screen shows and takes the best one-round trade,
 ##           rerolling dice that came up under their die's average. A competent new player.
 ##           It cannot see anything the player cannot.
+##   BLIND   the tests' blind play (the bible's section 2: "a team that spends each die on the
+##           nearest foe"): the greedy's rerolls, then every weapon on the nearest foe in reach
+##           and every piece of equipment on its own machine, holding only what would overheat
+##           or wreck it. The floor the coordination gap is read from (22 October).
+##   PLANNER plans two rounds (the stock pass's second chunk, 22 October): at every spend it
+##           rolls out the greedy's best few candidates (a copy of the fight, the spend made,
+##           the rest of the turn, the enemy's turn and the next round played by the greedy
+##           rung, the future dice and picks drawn from a seed of its own, never the real
+##           fight's) and keeps the one whose fight is worth most. A team that sets up and
+##           cashes across rounds: the top the gap is read against.
 ## A persona is a habit on top: `withdraw_below` pulls out when the team's hull is under a
 ## percentage. The weights here trade mech hull against foe hit points and are knobs for
 ## the tool, not the game. Nothing here is shown to the player.
 
 const RANDOM := 0
 const GREEDY := 1
-const KIND_NAMES := {RANDOM: "random", GREEDY: "greedy"}
+const BLIND := 2
+const PLANNER := 3
+const KIND_NAMES := {RANDOM: "random", GREEDY: "greedy", BLIND: "blind", PLANNER: "planner"}
+const PLAN_CANDIDATES := 4   # the spends the planner rolls out at a decision: the greedy's pick and the next best, each machine's best among them
+const PLAN_SAMPLES := 2      # futures each candidate is rolled out over, the same seeds for every candidate (common random numbers)
 
 const MAX_ROUNDS := 60           # a fight nobody can finish (armour holds, dice all blank) is stalled
 const HULL_WEIGHT := 1.5         # a point of mech hull, in foe hit points: hull is the resource that persists
@@ -61,6 +75,8 @@ var forgone: float = 0.0         # the damage those dice would have dealt, at th
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
 var withdrew: bool = false
+var plans: int = 0               # the planner's decisions that weighed more than one candidate
+var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
 
 
 static func make(kind_arg: int, seed_value: int = 0) -> Policy:
@@ -112,16 +128,21 @@ func _read_heat(sk: Skirmish) -> void:
 		hot_rounds += 1
 
 
-## One player turn, from the dice showing to every die spent or skipped.
-func play_round(sk: Skirmish) -> void:
-	if kind == GREEDY:
+## One player turn, from the dice showing to every die spent or skipped. `rerolls` false skips
+## the turn's opening rerolls (a rollout picking up a turn already under way).
+func play_round(sk: Skirmish, rerolls: bool = true) -> void:
+	if rerolls and kind != RANDOM:
 		_greedy_rerolls(sk)
+	if kind == BLIND:
+		_blind_round(sk)
+		return
 	var held: Array[int] = []   # dice left unspent this round: nothing in reach, or every spend a loss
 	var guard := 0
 	while sk.state == Skirmish.State.ASSIGN and guard < OPTION_GUARD:
 		guard += 1
 		var best: Dictionary = {}
 		var best_rolled: Dictionary = {}   # the best damaging spend that rolls, to go before a sure one
+		var alternatives: Array = []       # the planner's: each machine's best two spends worth making
 		for i in range(sk.mechs.size()):
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned or held.has(i):
@@ -144,6 +165,8 @@ func play_round(sk: Skirmish) -> void:
 					_note_forced(sk, ms)
 					held.append(i)
 					continue
+				if kind == PLANNER:
+					alternatives.append_array(_top_two(opts))
 			if best.is_empty() or pick["score"] > best["score"]:
 				best = pick
 			if _rolls_damage(ms.face()) and pick["score"] > 0.0 and (best_rolled.is_empty() or pick["score"] > best_rolled["score"]):
@@ -155,8 +178,10 @@ func play_round(sk: Skirmish) -> void:
 		# Rolled before sure (Ryan, 9 October): a sure number is worth most after the rolls
 		# have landed, when it can finish what they left, so a damaging flat spend waits while
 		# a damaging rolled one is there to make. Setup (buffs, shock, lure) keeps its order.
-		if kind == GREEDY and not best_rolled.is_empty() and _sure_damage(sk.mechs[best["mech"]].face()):
+		if kind != RANDOM and not best_rolled.is_empty() and _sure_damage(sk.mechs[best["mech"]].face()):
 			best = best_rolled
+		if kind == PLANNER:
+			best = _plan(sk, best, alternatives)
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
 		if sk.assign(best["mech"], best["target"], best.get("second", null)):
@@ -176,6 +201,166 @@ func _note_forced(sk: Skirmish, ms: Skirmish.MechState) -> void:
 		return
 	forced_holds += 1
 	forgone += float(Effects.effective_face(ms.unit, f).average() * maxi(1, f.strikes))
+
+
+## A machine's two best spends worth making (a score of nought or more), for the planner's list.
+static func _top_two(opts: Array) -> Array:
+	var sorted := opts.filter(func(o: Dictionary) -> bool: return float(o["score"]) >= 0.0)
+	sorted.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a["score"]) > float(b["score"]))
+	return sorted.slice(0, 2)
+
+
+static func _same_option(a: Dictionary, b: Dictionary) -> bool:
+	return int(a["mech"]) == int(b["mech"]) and a.get("target") == b.get("target") and a.get("second") == b.get("second")
+
+
+## The planner's choice at one decision: the greedy's pick and the best few alternatives, each
+## rolled out over PLAN_SAMPLES futures with the same seeds for every candidate, the best worth
+## kept, the greedy's pick on a tie.
+func _plan(sk: Skirmish, default: Dictionary, alternatives: Array) -> Dictionary:
+	var list: Array = [default]
+	alternatives.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a["score"]) > float(b["score"]))
+	for c in alternatives:
+		if list.size() >= PLAN_CANDIDATES:
+			break
+		if not list.any(func(x: Dictionary) -> bool: return _same_option(x, c)):
+			list.append(c)
+	if list.size() <= 1:
+		return default
+	plans += 1
+	var seeds: Array[int] = []
+	for s in range(PLAN_SAMPLES):
+		seeds.append(absi(hash([rng.seed, plans, s])) % 2147483647)
+	var best := default
+	var best_v := -INF
+	for c in list:
+		var v := 0.0
+		for sd in seeds:
+			v += rollout(sk, c, sd)
+		v /= float(seeds.size())
+		if v > best_v + 0.001:
+			best_v = v
+			best = c
+	if not _same_option(best, default):
+		plan_changes += 1
+	return best
+
+
+## One candidate spend rolled out over two rounds: a copy of the fight, the spend made, the rest
+## of this turn played by the greedy rung, the enemy's turn, the next round (its dice and the
+## foes' picks drawn from the copy's own seed, the dice spent as they fall: the greedy's rerolls
+## are most of a round's cost, and a future without them is the same for every candidate) and
+## its enemy turn, then the fight's worth (state_value). The real fight is never touched.
+func rollout(sk: Skirmish, c: Dictionary, seed_value: int) -> float:
+	var copy := SaveGame.clone_skirmish(sk)
+	copy.rng.seed = seed_value
+	var g := Policy.make(GREEDY, seed_value)
+	if not copy.assign(int(c["mech"]), _mirror(copy, sk, c.get("target")), _mirror(copy, sk, c.get("second"))):
+		return -INF
+	g.play_round(copy, false)
+	if copy.outcome == Skirmish.Outcome.NONE:
+		copy.end_round()
+	if copy.outcome == Skirmish.Outcome.NONE:
+		copy.start_round()
+		g.play_round(copy, false)
+		if copy.outcome == Skirmish.Outcome.NONE:
+			copy.end_round()
+	return state_value(copy)
+
+
+## A target in the real fight, as the copy has it: the foe in the same slot, the machine in the
+## same place, a slot as it is.
+static func _mirror(copy: Skirmish, sk: Skirmish, t):
+	if t == null or t is Vector2i:
+		return t
+	if t is Foe:
+		return copy.foe_at(t.rank, t.column)
+	if t is Skirmish.MechState:
+		var i := sk.mechs.find(t)
+		return copy.mechs[i] if i >= 0 and i < copy.mechs.size() else null
+	return t
+
+
+## A fight's worth to the team at the planner's horizon, in foe hit points as the greedy rung
+## weighs them: every machine standing (DEATH_WEIGHT) with its hull at HULL_WEIGHT and its
+## shield at SHIELD_LOSS_WEIGHT, less every foe left on the field or waiting (its hit points
+## less what its Burning and Vitriol will still tick, a slot's worth, and its next blow at the
+## hull's weight).
+static func state_value(sk: Skirmish) -> float:
+	var v := 0.0
+	for ms in sk.mechs:
+		if ms.alive():
+			v += DEATH_WEIGHT + HULL_WEIGHT * float(maxi(0, ms.unit.hull)) + SHIELD_LOSS_WEIGHT * float(maxi(0, ms.unit.shield))
+	var foes: Array = sk.field_foes()
+	for f in sk.reinforcements:
+		if not foes.has(f):
+			foes.append(f)
+	for f in foes:
+		if not f.alive():
+			continue
+		var ticks := dot_payout("burning", Effects.stacks_of(f, "burning"), f.hp) * BURN_WEIGHT \
+			+ dot_payout("vitriol", Effects.stacks_of(f, "vitriol"), f.hp) * VITRIOL_WEIGHT
+		v -= float(f.hp) - ticks + KILL_BONUS + _threat_next(f, sk) * HULL_WEIGHT
+	return v
+
+
+## The blind rung's turn: left to right, each die spent as _blind_pick says, a Rapid entry's
+## fresh roll read from the left again, a die held only where _blind_pick finds nothing.
+func _blind_round(sk: Skirmish) -> void:
+	var held: Array[int] = []
+	var guard := 0
+	while sk.state == Skirmish.State.ASSIGN and guard < OPTION_GUARD:
+		guard += 1
+		var spent_one := false
+		for i in range(sk.mechs.size()):
+			var ms: Skirmish.MechState = sk.mechs[i]
+			if not ms.alive() or ms.assigned or held.has(i):
+				continue
+			var pick := _blind_pick(sk, i)
+			var face := ms.face()
+			if pick.is_empty() or not sk.assign(i, pick.get("target"), pick.get("second")):
+				held.append(i)
+				continue
+			_tally(face)
+			spent_one = true
+			break
+		if not spent_one:
+			break
+
+
+## Where blind play spends a die: a weapon on the nearest foe in reach (the front rank before the
+## back, left before right), a swap's second on the first it may take; a shield, a vent or a buff
+## on its own machine where it may land there, else the first ally; a blank discarded. Nothing
+## where a weapon's heat would cross the maximum or its bite wreck the machine, the gauge being
+## in view.
+func _blind_pick(sk: Skirmish, i: int) -> Dictionary:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if ms.face() == null:
+		return {}
+	var f := sk.spend_face(ms)
+	match f.kind:
+		Face.Kind.BLANK:
+			return {"target": null}
+		Face.Kind.ATTACK:
+			if heat_cost(sk, ms, f) > 0.0 or volatile_cost(sk, ms, f) >= DEATH_WEIGHT:
+				return {}
+			var foes: Array = sk.targets_for_face(ms, f)
+			if foes.is_empty():
+				return {}
+			var t: Foe = foes[0]
+			for n in foes:
+				if n.rank < t.rank or (n.rank == t.rank and n.column < t.column):
+					t = n
+			if sk.needs_second(ms):
+				var seconds: Array = sk.swap_targets(t)
+				return {} if seconds.is_empty() else {"target": t, "second": seconds[0]}
+			return {"target": t}
+		_:
+			var who: Array = sk.equipment_targets_for(ms, f)
+			if who.is_empty():
+				return {}
+			return {"target": ms if who.has(ms) else who[0]}
+	return {}
 
 
 ## A damaging attack that rolls a range (the gamble), and one that is a single number.

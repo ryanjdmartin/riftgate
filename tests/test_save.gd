@@ -281,3 +281,73 @@ func test_the_mines_survive_the_trip() -> void:
 	assert_eq(JSON.stringify(sk2.mines_at(slot)), JSON.stringify(sk.mines_at(slot)), "their shots")
 	assert_eq(typeof(sk2.mines_at(slot)[0]["keywords"]), TYPE_ARRAY, "keywords as a list")
 	assert_eq(sk2.mine_seq, sk.mine_seq, "the order count")
+
+
+## The planner's copy (SaveGame.clone_skirmish, 22 October): every unit its own, the fight under
+## way carried whole, so the copy plays on blow for blow as the original would, and playing it
+## to its end touches nothing of the original's.
+func test_a_clone_plays_on_alike_and_leaves_the_original_alone() -> void:
+	var b := _battle(9)
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	var first := Policy.make(Policy.GREEDY, 3)
+	first.play_round(sk)
+	if sk.outcome == Skirmish.Outcome.NONE:
+		sk.end_round()
+	if sk.outcome == Skirmish.Outcome.NONE:
+		sk.start_round()
+	var c := SaveGame.clone_skirmish(sk)
+	assert_eq(c.mechs.size(), sk.mechs.size(), "the machines")
+	for i in range(sk.mechs.size()):
+		assert_true(c.mechs[i].unit != sk.mechs[i].unit, "each machine the copy's own")
+		assert_eq(c.mechs[i].unit.id, sk.mechs[i].unit.id, "of the same unit")
+		assert_eq(c.mechs[i].face_index, sk.mechs[i].face_index, "the die showing")
+	assert_eq(c.rng.state, sk.rng.state, "the random stream where it stood")
+	assert_eq(c.field_foes().size(), sk.field_foes().size(), "the foes on the field")
+	assert_eq(c.log.size(), 0, "and no log")
+	var mark := sk.log.size()
+	var stream := sk.rng.state
+	var hull: Array = []
+	for ms in sk.mechs:
+		hull.append(ms.unit.hull)
+	var hp: Array = []
+	for f in sk.field_foes():
+		hp.append(f.hp)
+	var copy_pol := Policy.make(Policy.GREEDY, 11)
+	if c.state == Skirmish.State.ASSIGN:
+		copy_pol.play_round(c)
+		if c.outcome == Skirmish.Outcome.NONE:
+			c.end_round()
+	if c.outcome == Skirmish.Outcome.NONE:
+		copy_pol.play(c)
+	assert_true(c.outcome != Skirmish.Outcome.NONE, "the copy was played to its end")
+	assert_eq(sk.log.size(), mark, "the original's log untouched")
+	assert_eq(sk.rng.state, stream, "its random stream")
+	for i in range(sk.mechs.size()):
+		assert_eq(sk.mechs[i].unit.hull, hull[i], "its machines' hull")
+	var now: Array = []
+	for f in sk.field_foes():
+		now.append(f.hp)
+	assert_eq(now, hp, "its foes' hit points")
+	var pol := Policy.make(Policy.GREEDY, 11)
+	if sk.state == Skirmish.State.ASSIGN:
+		pol.play_round(sk)
+		if sk.outcome == Skirmish.Outcome.NONE:
+			sk.end_round()
+	if sk.outcome == Skirmish.Outcome.NONE:
+		pol.play(sk)
+	assert_eq(sk.outcome, c.outcome, "the same outcome")
+	assert_eq(sk.round, c.round, "in the same round")
+	var tail := sk.log.slice(mark)
+	assert_eq(tail.size(), c.log.size(), "the same log from the copy's start")
+	for i in range(mini(tail.size(), c.log.size())):
+		if tail[i] != c.log[i]:
+			assert_eq(tail[i], c.log[i], "the logs agree at line %d" % i)
+			break
+	for i in range(sk.mechs.size()):
+		assert_eq(c.mechs[i].unit.hull, sk.mechs[i].unit.hull, "%s's hull" % sk.mechs[i].unit.display_name)
+		assert_eq(c.mechs[i].heat, sk.mechs[i].heat, "%s's heat" % sk.mechs[i].unit.display_name)

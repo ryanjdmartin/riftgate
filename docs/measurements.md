@@ -19,8 +19,9 @@ cell is about:
 
 So a row mean (one machine over every pack, or every machine over every pack) is readable at
 30 seeds; a single cell is a direction until it is run at 200 seeds or its delta is far outside
-the band. "Alone" is one machine against one pack; "random/greedy" are the ladder's two rungs
-(bible section 11). The greedy bot values only what it knows: a verdict on a mechanic it cannot
+the band. "Alone" is one machine against one pack; "random/greedy" are the ladder's first two
+rungs, and blind play and the planner the two the coordination gap is read between since 22
+October (bible section 11). The greedy bot values only what it knows: a verdict on a mechanic it cannot
 value (a sentence, a doubling, a turn of the ranks, a wound) is a verdict on the bot.
 
 ## 11 October
@@ -618,3 +619,36 @@ if basics are to touch them, else Flak, Shock and Exposed are the only way in; t
 the Treant and the Wyvern at 3; and a rung that sets up over two rounds before the gap can be
 read. The bot's valuations under the new constants are a first reading (the Musk Ox's greedy
 rung wins slower than its random one, its ammo pricing holding fire).
+
+## 22 October, the planner and blind rungs on today's content
+
+**The two rungs the coordination gap is read between, first run** (the stock pass's second
+chunk; the bible's row on the two rungs): the default team (the Honey Badger, the Clydesdale,
+the Kite) against the twenty packs, `--rows team --noparty`, 10 seeds a cell, each rung alone
+(`--policies greedy`, `blind`, `planner`), on today's content at the old scale and today's
+stocks. A direction, and a check that the rungs run; the gap the tests ask for is read on the
+landed content.
+
+| Read | Big fights (the four massive foes and the four formations) | The rank and file (twelve packs) |
+|---|---|---|
+| Blind play's rounds over the planner's | 1.20 over 8 cells (0.92 to 1.55) | 1.11 over 12 (1.00 to 1.28) |
+| Blind over the greedy | 1.20 (1.00 to 1.43) | 1.11 (1.00 to 1.26) |
+| The greedy's over the planner's | 0.99 (0.92 to 1.09) | 1.00 (0.95 to 1.03) |
+
+Every rung wins every cell but blind play's 80% on the Peak's formation. Mean hull lost over
+the twenty packs: blind 10.7%, greedy 5.5%, the planner 4.9%. The planner weighed 2.6 to 8.6
+decisions a fight on the rank and file and 7 to 23 on the big fights, and spent otherwise than
+the greedy at 22 to 32% of them on the massive foes and 40 to 45% on the formations. Its cost:
+548 s against the greedy's 156 and blind play's 176 for the same 400 fights (the team row and
+its comparison row), about three and a half greedy fights a fight, after the rollouts stopped
+rerolling the next round's dice (five times cheaper; 15 greedy fights a fight before).
+
+Read: blind play removes most of the random rung's waste on trash (1.11 where random over
+greedy read 1.35 to 1.60 at the baseline), so the trash test reads near its "no gap" on it. The
+planner plays the greedy's game in rounds on this content: the stocks hold few setups that pay
+a round later, and its fight's worth counts hull as well as kills, so where it parts from the
+greedy it buys hull (4.9% against 5.5%) more often than rounds. The gap on the big fights is
+the greedy's 1.2 over blind play. What follows: the read waits for the landed stocks (the Flak
+family, the Backdraft Charge, the Shock pieces beside the hitters); if the planner still plays
+the greedy's rounds there, its worth or its horizon is the next thing to read, never the
+content.

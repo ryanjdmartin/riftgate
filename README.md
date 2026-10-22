@@ -22,8 +22,9 @@ records every decision, recommendation and open question, and why; section 12 is
   - `loadouts.gd` sample dice and packs for prototypes and tests
   - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
     type), built into a battle or a skirmish, kept between launches
-  - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
-    personas on top, so balance can be measured over thousands of fights
+  - `policy.gd` a player for the headless skirmish, a ladder of skill (random, blind, greedy,
+    and a planner that rolls each decision out two rounds) with personas on top, so balance can
+    be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
   - `effects.gd` the one pipeline every number is read through: base plus every live modifier
     (passives, rewards, buffs, statuses) with a scope and a source
@@ -167,6 +168,9 @@ python3 tools/pages/bible_tables.py
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
 # (repeatable, never validated: knock-outs and what-ifs); compare each against the same seeds without;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
+# --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
+# the big fights and on the rank and file); the planner costs about four greedy fights a fight,
+# so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;

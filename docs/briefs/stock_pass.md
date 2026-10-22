@@ -59,8 +59,8 @@ the foe's armour; a coordinated round spends one die on a Shock cashed by the hi
 on Flak the rest fire through. Rounds to kill: six goblins 2 and 2; a Treant at 30 and armour
 1, 3 and 2; a Sandworm at 36 and armour 2, 6 and 3; a boss at 90 and armour 2, 15 and 5 to 7.
 At a Sandworm of 24 the gap read 3 against 2, no room, which is why the massive fills sit at
-30 to 40. The runner reads the same gap as rounds to win, random against greedy (section 6
-below).
+30 to 40. The runner reads the same gap as rounds to win, blind play against the planner
+(section 7).
 
 **The fills measured** (22 October, a direction at 30 seeds, every row against every pack,
 `docs/measurements.md`): the rank and file die to a die or two; a massive foe takes a team
@@ -474,7 +474,11 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
 
 1. **The engine first.** A rung that plans two rounds, so the coordination gap can be read
    (the greedy rung sets up only where the setup pays within the round; the bible pinned a
-   rollout rung); the seven constants still in code as fields on their keyword or status
+   rollout rung; built 22 October: the planner rolls out the greedy's best few spends at each
+   decision over the rest of the turn, the enemy's turn and the next round on copies of the
+   fight, and a blind rung plays the tests' blind team, each die on the nearest foe; the gap
+   reads blind over the planner on the big fights and on the rank and file, the planner at
+   about four greedy fights a fight, so on the team rows); the seven constants still in code as fields on their keyword or status
    (Cryo's cooling, the hot threshold, Volatile's and Corrupted's bites, Missing HP's step,
    Burning's and Scorched's heat on a machine, Vitriol's share; built 22 October: Volatile a
    numbered keyword whose bite each entry says, the missing-HP step the entry's `per_missing`,
@@ -495,7 +499,9 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    {"when": "target_status", "status": "flakked"}}` and the Backdraft's `{"suppress": {"when":
    "target_status", "status": "burning", "stacks": 2}}` beside `"consumes": "burning"`). The
    Inducer's Volatile needs nothing new: any component may carry it.
-2. **The loop.** `tools/stock_fills.py` applies a fill set to a checkout; the balance runner
+2. **The loop**, on the landed content (step 3 brought before it, 22 October: the applier
+   fills numbers on today's stocks, and the gap is read on the new stocks' setups).
+   `tools/stock_fills.py` applies a fill set to a checkout; the balance runner
    at 30 seeds reads it against section 2's tests (rounds to win on the rank and file and the
    massive foes, the gap, hull lost, the heat section), the campaign report the wear. Start
    from the brief's fills with the levers moved: the foes' blows up by half to double (the

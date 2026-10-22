@@ -386,6 +386,38 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 
 
 static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
+	return _skirmish_build(d, func(uid: int) -> Unit: return field.unit_by_id(uid))
+
+
+## A deep copy of a skirmish and its machines through the save's own round trip (the planner's
+## rollouts, the stock pass's second chunk, 22 October): every unit and live modifier, the dice,
+## the foes and their intents, the ranks, the queue, the mines and the random stream's state,
+## so the copy plays on exactly as the original would. What the save leaves to the battle (the
+## runner's targeting rule, the summoning factory, a roar's reroll debt) is carried across;
+## the log is not. The copy finds its units by place, the machines first and the packs after,
+## never by id: a test's machines may share one.
+static func clone_skirmish(sk: Skirmish) -> Skirmish:
+	var d := _skirmish_dict(sk, null)
+	d["log"] = []
+	var units: Array[Unit] = []
+	for i in range(sk.mechs.size()):
+		units.append(_unit_from(_unit_dict(sk.mechs[i].unit)))
+		d["mechs"][i]["unit"] = units.size() - 1
+	var packs: Array = []
+	for sq in sk.packs:
+		units.append(_unit_from(_unit_dict(sq)))
+		packs.append(units.size() - 1)
+	d["packs"] = packs
+	var c := _skirmish_build(d, func(at: int) -> Unit: return units[at] if at >= 0 and at < units.size() else null)
+	c.targeting_override = sk.targeting_override
+	c.foe_factory = sk.foe_factory
+	c.reroll_debt = sk.reroll_debt
+	return c
+
+
+## A skirmish from its dictionary, its units found by id through `lookup` (the battlefield's on
+## a resume, a copy's own on a clone).
+static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	var sk := Skirmish.new(0, int(d.get("columns", Skirmish.DEFAULT_COLUMNS)))
 	sk.rng.state = str(d.get("rng", "0")).to_int()
 	sk.terrain = int(d.get("terrain", BattleMap.Terrain.PLAIN))
@@ -396,7 +428,7 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 	for line in d.get("log", []):
 		sk.log.append(str(line))
 	for md in d.get("mechs", []):
-		var u := field.unit_by_id(int(md.get("unit", 0)))
+		var u: Unit = lookup.call(int(md.get("unit", 0)))
 		if u == null:
 			continue
 		var ms := sk.add_mech(u)
@@ -409,7 +441,7 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 		ms.ammo_max = int(md.get("ammo_max", ms.ammo_max))
 		ms.ammo = int(md.get("ammo", ms.ammo))
 	for pid in d.get("packs", []):
-		var sq := field.unit_by_id(int(pid))
+		var sq: Unit = lookup.call(int(pid))
 		if sq != null:
 			sk.packs.append(sq)
 	var foes: Array[Foe] = []

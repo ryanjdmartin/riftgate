@@ -5,7 +5,10 @@ extends SceneTree
 ## every pack a faction sends through the rift, played by each rung of the policy ladder
 ## over many seeds. Writes docs/balance.md (and a JSON of every cell with --json) and prints it.
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
-## Options: --seeds N (200), --policies random,greedy (both), --out path (docs/balance.md),
+## Options: --seeds N (200), --policies random,greedy (those two by default; blind and planner
+## are the rungs the coordination gap is read between, the planner at about four greedy
+## fights' time each, so it is run on the team rows: --rows team,... --policies blind,planner),
+## --out path (docs/balance.md),
 ## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
 ## the lowest-shield rule from before 2 October; the team cells are always run under both
@@ -454,8 +457,9 @@ func _trace_one() -> int:
 	for line in sk.log:
 		print("  " + line)
 	var pol: Policy = f["pol"]
-	print("outcome %s after %d rounds%s; rerolls %d; overheat hull %d; spends %s" % [
-		Skirmish.Outcome.keys()[f["outcome"]], pol.rounds, " (stalled)" if pol.stalled else "", pol.rerolls, pol.overheat_hull, str(pol.spends)])
+	print("outcome %s after %d rounds%s; rerolls %d; overheat hull %d; spends %s%s" % [
+		Skirmish.Outcome.keys()[f["outcome"]], pol.rounds, " (stalled)" if pol.stalled else "", pol.rerolls, pol.overheat_hull, str(pol.spends),
+		"" if pol.kind != Policy.PLANNER else "; %d decisions weighed, %d spent otherwise than the greedy would" % [pol.plans, pol.plan_changes]])
 	for ms in sk.mechs:
 		print("  %s: hull %d/%d, shield %d, heat %d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.heat])
 	return 0
@@ -473,7 +477,8 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
-		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0}
+		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
+		"plans": 0, "plan_changes": 0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -517,6 +522,8 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["hot_rounds"] += pol.hot_rounds
 		agg["forced"] += pol.forced_holds
 		agg["forgone"] += pol.forgone
+		agg["plans"] += pol.plans
+		agg["plan_changes"] += pol.plan_changes
 		var end_heat := 0.0
 		for ms in sk.mechs:
 			end_heat += 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
@@ -697,8 +704,10 @@ func _has_back_rank(p: Dictionary) -> bool:
 
 
 ## Rounds to win (the stock pass, 22 October; the bible's section 2 tests): the mean rounds of
-## the fights each policy won, a cell a figure each, then the coordination gap: the lowest
-## rung's rounds over the top's on the big fights, where both win often enough to read.
+## the fights each policy won, a cell a figure each, then the coordination gap: blind play's
+## rounds over the planner's where both ran (the rungs the tests name, 22 October), else the
+## lowest rung's over the top's, on the big fights and on the rank and file, where both win
+## often enough to read; then how often the planner spent otherwise than the greedy would.
 func _rounds_report() -> Array[String]:
 	var L: Array[String] = []
 	L.append("## Rounds to win, %s" % " / ".join(_policy_names()))
@@ -720,30 +729,63 @@ func _rounds_report() -> Array[String]:
 	if policies.size() >= 2:
 		var low: int = policies[0]
 		var top: int = policies[policies.size() - 1]
-		L.append("The coordination gap, %s rounds over %s rounds on the big fights both win at least %d%% of (the mean of the cells, and how many):" % [Policy.kind_name(low), Policy.kind_name(top), GAP_MIN_WIN])
+		if policies.has(Policy.BLIND) and policies.has(Policy.PLANNER):
+			low = Policy.BLIND
+			top = Policy.PLANNER
+		L.append("The coordination gap, %s rounds over %s rounds on the cells both win at least %d%% of (the mean of the cells, and how many): the big fights should read about 2, the rank and file about 1." % [Policy.kind_name(low), Policy.kind_name(top), GAP_MIN_WIN])
 		L.append("")
 		for r in rows:
-			var ratios: Array[float] = []
-			for p in packs:
-				if not _is_big(p):
-					continue
-				var a: Dictionary = cells[_key(r, p, low)]
-				var b: Dictionary = cells[_key(r, p, top)]
-				if _pct(a["victory"], a["fights"]) < GAP_MIN_WIN or _pct(b["victory"], b["fights"]) < GAP_MIN_WIN:
-					continue
-				var ra := float(a.get("rounds_won", 0)) / maxi(1, int(a["victory"]))
-				var rb := float(b.get("rounds_won", 0)) / maxi(1, int(b["victory"]))
-				if rb > 0.0:
-					ratios.append(ra / rb)
-			if ratios.is_empty():
-				L.append("- %s: no big fight both rungs win often enough" % r["name"])
-			else:
-				var sum := 0.0
-				for x in ratios:
-					sum += x
-				L.append("- %s: %.2f over %d" % [r["name"], sum / ratios.size(), ratios.size()])
+			var parts: Array[String] = []
+			for which in [["big fights", true], ["rank and file", false]]:
+				var ratios := _gap_ratios(r, low, top, which[1])
+				if ratios.is_empty():
+					parts.append("%s none both win often enough" % which[0])
+				else:
+					var sum := 0.0
+					for x in ratios:
+						sum += x
+					parts.append("%s %.2f over %d" % [which[0], sum / ratios.size(), ratios.size()])
+			L.append("- %s: %s" % [r["name"], "; ".join(parts)])
+		L.append("")
+	if policies.has(Policy.PLANNER):
+		L.append("The planner's decisions: how many a fight it weighed (more than one spend worth rolling out) and the share where it spent otherwise than the greedy rung would, over every pack, then over the big fights alone. A share near nothing says the planner played the greedy's game there.")
+		L.append("")
+		for r in rows:
+			var parts: Array[String] = []
+			for which in [["every pack", false], ["big fights", true]]:
+				var plans := 0
+				var changes := 0
+				var fights := 0
+				for p in packs:
+					if which[1] and not _is_big(p):
+						continue
+					var a: Dictionary = cells[_key(r, p, Policy.PLANNER)]
+					plans += int(a.get("plans", 0))
+					changes += int(a.get("plan_changes", 0))
+					fights += int(a["fights"])
+				if fights > 0:
+					parts.append("%s %.1f a fight, %d%% changed" % [which[0], float(plans) / fights, _pct(changes, plans)])
+			L.append("- %s: %s" % [r["name"], "; ".join(parts)])
 		L.append("")
 	return L
+
+
+## The gap's cells for one row: the low rung's rounds over the top's on each pack of the kind
+## asked (a big fight or the rank and file) that both win at least GAP_MIN_WIN percent of.
+func _gap_ratios(r: Dictionary, low: int, top: int, big: bool) -> Array[float]:
+	var ratios: Array[float] = []
+	for p in packs:
+		if _is_big(p) != big:
+			continue
+		var a: Dictionary = cells[_key(r, p, low)]
+		var b: Dictionary = cells[_key(r, p, top)]
+		if _pct(a["victory"], a["fights"]) < GAP_MIN_WIN or _pct(b["victory"], b["fights"]) < GAP_MIN_WIN:
+			continue
+		var ra := float(a.get("rounds_won", 0)) / maxi(1, int(a["victory"]))
+		var rb := float(b.get("rounds_won", 0)) / maxi(1, int(b["victory"]))
+		if rb > 0.0:
+			ratios.append(ra / rb)
+	return ratios
 
 
 ## A big fight, for the coordination gap: a formation, a final or the finale (a mix), or a

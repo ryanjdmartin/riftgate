@@ -842,3 +842,67 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	ms.face_index = 0
 	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")
 	assert_eq(pol.salvo_score(sk, ms, salvo), -INF, "nor an empty salvo")
+
+
+## The planner (the stock pass's second chunk, 22 October) rolls a decision out over two rounds
+## on copies of the fight. A Shock on either of two foes nobody can hurt again this round is a
+## tie on the greedy's one-round read, and the greedy takes the first; the planner places it on
+## the foe the next round's blow of thirty kills, doubled, and its rollouts leave the real fight
+## as it stood.
+func test_the_planner_places_a_setup_where_the_next_round_cashes_it() -> void:
+	var shocked := {}
+	var lines := {}
+	for kind in [Policy.GREEDY, Policy.PLANNER]:
+		var sk := Skirmish.new(4, 2)
+		sk.add_mech(_mech("A", Die.single(Face.attack(0, L, K.SHOCK)), 40, 300))
+		sk.add_mech(_mech("B", Die.single(Face.attack(30, L)), 40, 300))
+		sk.add_foes([_ghoul(60, 1), _ghoul(500, 10)])
+		sk.begin()
+		sk.start_round()
+		sk.mechs[1].assigned = true   # B has spent: A's Shock is the round's last die
+		var big: Foe = sk.front[0]
+		var small: Foe = sk.front[1]
+		assert_eq(big.hp, 500, "the heavier hitter stands left, first on the greedy's list")
+		var pol := Policy.make(kind, 4)
+		var ms: Skirmish.MechState = sk.mechs[0]
+		assert_eq(pol.attack_score(sk, ms, ms.face(), big), pol.attack_score(sk, ms, ms.face(), small), "the one-round read ties the two")
+		var mark := sk.log.size()
+		pol.play_round(sk)
+		shocked[kind] = "small" if Effects.has(small, "shocked") else ("big" if Effects.has(big, "shocked") else "none")
+		lines[kind] = sk.log.size() - mark
+		assert_eq(big.hp + small.hp, 560, "%s: no foe's hit points moved" % Policy.kind_name(kind))
+		if kind == Policy.PLANNER:
+			assert_eq(pol.plans, 1, "the planner weighed the one decision")
+			assert_eq(pol.plan_changes, 1, "and spent otherwise than the greedy")
+	assert_eq(shocked[Policy.GREEDY], "big", "the greedy takes the first of the tie")
+	assert_eq(shocked[Policy.PLANNER], "small", "the planner shocks the foe the next round kills")
+	assert_eq(lines[Policy.PLANNER], lines[Policy.GREEDY], "and the real fight's log holds its one spend, nothing of the rollouts'")
+
+
+## Blind play (the bible's section 2: "a team that spends each die on the nearest foe"; the rung
+## since 22 October): every weapon on the nearest foe, the front rank before the back and left
+## before right, whatever a kill elsewhere would give; every piece of equipment on its own
+## machine; a die held only where its heat would burn the machine.
+func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
+	var sk := Skirmish.new(2, 2)
+	var gun := _mech("Gun", Die.single(Face.attack(10, L)), 40, 100)
+	var wall := _mech("Wall", Die.single(Face.shield(20)), 40, 100)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, K.NONE, 80)), 40, 100)   # eighty heat on a cap of sixty
+	gun.shield = 0
+	wall.shield = 0
+	for u in [gun, wall, hot]:
+		sk.add_mech(u)
+	sk.add_foes([_ghoul(300, 1), _ghoul(10, 1)])
+	sk.begin()
+	sk.start_round()
+	var near: Foe = sk.front[0]
+	var weak: Foe = sk.front[1]
+	var pol := Policy.make(Policy.BLIND, 2)
+	pol.play_round(sk)
+	assert_eq(near.hp, 290, "the gun hit the nearest foe")
+	assert_eq(weak.hp, 10, "not the one it could kill")
+	assert_eq(wall.shield, 20, "the shield went on its own machine")
+	assert_eq(gun.shield, 0, "not on the bare gun beside it")
+	assert_false(sk.mechs[2].assigned, "the hot gun was held")
+	assert_eq(Policy.kind_name(Policy.BLIND), "blind", "the rung's name, as the runner reads it")
+	assert_eq(Policy.kind_name(Policy.PLANNER), "planner", "and the planner's")

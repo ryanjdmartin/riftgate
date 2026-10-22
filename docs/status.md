@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 602 tests, 62,420 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk and the second chunk's first items, the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 605 tests, 62,455 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk and the second chunk's engine items, the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -636,10 +636,13 @@ to-do's Ryan list).
    and the stun calls of the same day are the stun row's (no stock holds a Suppress piece; the
    Inducer the Arsenal's, tier three on Volatile; the Backdraft Charge consuming the fire for a
    point a stack and a stun at a threshold; the Battery gated by Flak; Flak's clock reopened for
-   Flak alone, section 12); the landing (section 7, on Opus)
-   builds the engine items first, sets the numbers by measured loops with `tools/stock_fills.py`
-   against section 2's tests, then
-   lands the content and reads the bands fresh against the baseline.
+   Flak alone, section 12); the landing (section 7, on Opus) built its engine items first (22
+   October: the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the
+   gates and the consumer, the planner and blind rungs that read the gap); next the content
+   lands at the brief's fills, then the loops set its numbers against section 2's tests (the
+   gap blind over the planner on the team rows), then the bands fresh against the baseline. The
+   content goes before the loops (section 7's third step brought forward, 22 October): the
+   applier fills numbers on today's stocks, and the gap is read on the new stocks' setups.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders
