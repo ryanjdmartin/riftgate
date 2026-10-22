@@ -652,3 +652,90 @@ the greedy's 1.2 over blind play. What follows: the read waits for the landed st
 family, the Backdraft Charge, the Shock pieces beside the hitters); if the planner still plays
 the greedy's rounds there, its worth or its horizon is the next thing to read, never the
 content.
+
+## 22 October, the stock pass's loops
+
+**The loops on the landed content** (`docs/briefs/stock_pass.md`, section 7, step 2; the branch
+at `d4e009a`, Flak's clock a field since `9c32ecf`). Each loop is a copy of the branch with its
+levers moved in the copy's content, the balance runner at 30 seeds a cell on the four team rows
+(the default team as a `--team` row, so the targeting comparison is skipped; Minerva Heavy
+Works', Kestrel Dynamics' and Wainwright & Sutler's) against the twenty-nine packs, and the
+campaign report at 40 runs where the lever reaches the campaign. Each loop carries the levers
+kept before it, and a lever that touches only its own foes is read on their packs alone
+(`--packs`; the bosses fight in no other cell). The kept levers are `tools/stock_fills.py`'s
+fills since. Directions, read as bands against the tests (the bible's section 2).
+
+**Loop 0, the landed fills**, every rung, and every chassis alone, greedy, without the party:
+
+| Read | The default team | Minerva's | Kestrel's | Wainwright & Sutler's |
+|---|---|---|---|---|
+| A wildlife pack, greedy rounds | 1.6 | 1.7 | 1.6 | 2.2 |
+| A massive foe, greedy / planner rounds | 3.9 / 3.9 | 9.8 / 10.0 | 3.1 / 3.1 | 9.8 / 7.9 |
+| The gap, big fights / rank and file | 1.18 / 1.04 | 1.03 / 1.09 | 1.13 / 1.03 | 1.15 / 1.15 |
+| Hull lost, greedy: massive / formation / final | 10 / 5 / 0.5% | 24 / 3 / 0.8% | 12 / 7 / 1.5% | 35 / 12 / 2.6% |
+| Random's wins: massive / formation / final | 87 / 100 / 100% | 71 / 100 / 100% | 94 / 89 / 100% | 52 / 72 / 100% |
+
+Every rung wins every wildlife pack, and the finale is a wall (no rung wins it; Kestrel's
+greedy 3%). Blind play takes the greedy's rounds on a lone massive foe, whose nearest foe is the
+only one. Heat bites one kit alone: the Kite peaks at 96% of its maximum and holds a die for heat
+a quarter of fights; the Nemesis 76%, the Buzzard, the Stingray and the Whip Scorpion 67 to 70%,
+the rest 5 to 47%. The campaign: 7% of battles won, 92% ended in a team wipe, a lone machine wins
+40% of its fights.
+
+**Loops 1 and 2, the bosses' own cells**, every rung:
+
+- **Armour 1 on the Sandworm and the Golem.** Minerva's and Wainwright & Sutler's 11.6 to 12.9
+  greedy rounds on them become 7.2 to 7.6, and their hull lost there, 40 to 81%, becomes 23 to
+  47% (Wainwright & Sutler's Golem from 67% won to all); the default team's and Kestrel's 3.4 to
+  5.0 rounds become 3.2 to 3.8. The gap stands (1.00 for three teams; Wainwright & Sutler's 1.22
+  becomes 1.15), and random play now beats both with Minerva's team (63 and 20% before). Kept.
+- **Regrow 3 on the Treant and the Wyvern.** Minerva's 7.0 rounds become 6.7 and Wainwright &
+  Sutler's 7.9 become 7.2; the other two teams read the same. Neither foe costs any team more
+  than 1% of its hull: the shields recharge their blows. Kept (no cost, and the lone stall).
+
+**Loop 3, the wear**, random and greedy, with the campaign, the two alternatives side by side:
+
+| Read | The foes' blows up (rank and file ×1.5, massive ×1.33, heroes ×2) | Our hull and shield ×0.75 |
+|---|---|---|
+| Hull lost on the formations, greedy (default / Minerva / Kestrel / W&S) | 8 / 7 / 10 / 36% | 7 / 4 / 9 / 20% |
+| On the finals | 2 / 4 / 5 / 12% | 1 / 2 / 3 / 4% |
+| Random's wins on the formations | 96 / 100 / 58 / 23% | 99 / 100 / 78 / 48% |
+| The campaign's battles won | 1% | 2% |
+
+A single wildlife pack costs no team anything under either. Kept: the blows (the brief's first
+lever; the formations gain a decision band, random losing where greedy wins, and the finals a
+cost). Wainwright & Sutler's team, with two machines of 16 hull, takes three to five times the
+others' wear.
+
+**Loop 4, the heat**, random and greedy on the team rows and every chassis alone, greedy, the two
+alternatives side by side (peak heat a fight, alone):
+
+| Kit | Loop 0 | Cooling 0 | Maxima 20 to 14, 16 to 12, 10 to 8, 8 to 6 |
+|---|---|---|---|
+| The Kite / the Nemesis / the Buzzard | 96 / 76 / 70% | 102 / 81 / 67% | 107 / 89 / 85% |
+| The Stingray / the Whip Scorpion | 70 / 67% | 60 / 62% | 78 / 78% |
+| The Badger / the Boar / the Clydesdale | 24 / 22 / 26% | 35 / 37 / 48% | 27 / 26 / 30% |
+
+The team rows' wins and rounds do not move under either. Kept: the maxima, which heat the hot
+kits (the Nemesis overheats half a fight, the Stingray holds a die for heat a sixth of fights)
+and leave the cold ones cold, where cooling 0 warms every kit a little; the Kite's 10 and the
+Musk Ox's 8 stand (the Kite peaked at 96% at 10; the Musk Ox's forge keeps it cold at any
+maximum).
+
+**Loop 5, Flak's clock**, every rung on the big fights of the two teams that lay Flak (Wainwright
+& Sutler's and the default team, whose Clydesdale fires the Airburst Shell), the halving against
+a stack a round: alike. Wainwright & Sutler's planner takes 6.3 and 6.4 rounds on the Treant,
+7.2 and 6.9 on the Sandworm, 7.8 and 7.4 on the Golem; the massive foes' mean 7.6 and 7.7 greedy,
+the gap 1.20 under both; the default team's cells read identically. Today's feeds lay a stack or
+two a spend, where the two clocks are the same, so the call is readability (the bible's section
+12). Not moved.
+
+**Read**: the landed set (the blows, the elites' armour, the regrows, the maxima) moves the wear,
+the free wins and the heat toward their tests and leaves two tests where they stood. The kill
+time on a massive foe stays at 3 to 8 rounds against the test's one or two: a team of three
+lands 5 to 10 a round past armour against 32 to 40 HP, so a round or two needs about half
+the HP or more blows. The gap stays at 1.0 to 1.2 on the big fights: it opens only where a stock
+carries a setup (Wainwright & Sutler's Shock and Flak, 1.2), and three of the four teams carry no
+Shock. The finale stays a wall, and the campaign's plain player, who fights alone most of the
+time, wins 1% of battles. Those reads are Ryan's (the bible's section 12), with the bands at 200
+seeds.

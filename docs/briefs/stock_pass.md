@@ -511,6 +511,13 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    a round against the halving, read on the Flak team's massive-foe cells (section 12's
    question, Ryan's of 22 October). Move one lever a
    loop, read the bands, keep what passes; the module stat lines wait for the pricing run.
+   Run 22 October (`docs/measurements.md`, six loops): kept the foes' blows up by half on the
+   rank and file, a third on the massive foes and double on the heroes, the Sandworm's and the
+   Golem's armour 1, the regrows 3, and the maxima 16 to 12 and 20 to 14 (the Kite's 10 and
+   the Musk Ox's 8 standing); our hull and shield down a quarter and cooling 0 were read beside
+   them and set aside; Flak's clock read alike under both on today's feeds and stays halving.
+   The kill time on the massive foes (3 to 8 rounds) and the gap (1.0 to 1.2) stand where they
+   were: Ryan's reads, with the bands (the bible's section 12).
 3. **The content landing.** The stocks, the renames and retirements, the new pieces, the
    tags and tiers, the stock-below-tier check kept green; the rules' numbers and not-built
    marks; the bible's stock-pass row to built, its tables regenerated

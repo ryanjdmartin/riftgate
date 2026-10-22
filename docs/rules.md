@@ -167,12 +167,14 @@ defeat when every machine is wrecked. There is no round limit.
   heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
-  to 24 heroes, 80 to 100 bosses; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to
-  50 by size, shield 6 to 16, base armour 0 to 2 by role, timed armour to 4 or 5; heat 1 to
-  20 (1 to 30 if the pricing needs it). The scales are magnitudes, not steps: any whole
-  number may be used. Move alone keeps steps of 5, since a hex costs 5 or 10. The content's
-  numbers are the stock pass's fills (`docs/briefs/stock_pass.md`, set by
-  `tools/stock_fills.py`), placeholders for the runner's loops.
+  to 24 heroes, 80 to 100 bosses; a foe's blow 2 to 8 (the rank and file's mostly 2 or 3), a
+  massive foe's 7 or 8, a hero's 4 to 10, a boss's 6 to 10; machine hull 20 to 50 by size,
+  shield 6 to 16, base armour 0 to 2 by role, timed armour to 4 or 5; heat 1 to 20 (1 to 30
+  if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8). The scales are magnitudes,
+  not steps: any whole number may be used. Move alone keeps steps of 5, since a hex costs 5
+  or 10. The content's numbers are the stock pass's fills as its loops moved them
+  (`docs/briefs/stock_pass.md`, `docs/measurements.md`; set by `tools/stock_fills.py`),
+  placeholders until the bands at 200 seeds and play.
 
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.

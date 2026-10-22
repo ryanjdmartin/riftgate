@@ -5,7 +5,11 @@ rule numbers, so the balance runner reads them against the design tests:
 A fill set is the dictionaries below, one lever moved a loop. The content landed on these on
 22 October (the stocks, the new pieces, the renames and retirements were the landing's), so
 the script is idempotent on the branch and a loop runs it on a worktree with a lever moved.
-Every edit is in place: the foes' file keeps its hand layout."""
+Every edit is in place: the foes' file keeps its hand layout.
+The loops (22 October, docs/measurements.md) moved: the foes' blows up by half on the rank and
+file, a third on the massive foes and double on the heroes; the Sandworm's and the Golem's armour
+2 to 1; the Treant's and the Wyvern's regrow 5 to 3; the heat maxima 16 to 12 and 20 to 14 (the
+Kite's 10 and the Musk Ox's 8 stand)."""
 import json, re, sys
 R = sys.argv[1].rstrip('/') + '/'
 
@@ -22,14 +26,14 @@ def edit(p, reps):
 
 # ---- chassis: hull, shield, recharge, heat max, cooling, armour (the brief's section 2)
 C = {
- 'badger': (36, 8, 4, 16, 1, 2), 'clydesdale': (40, 10, 5, 16, 1, 1), 'sparrowhawk': (12, 16, 8, 10, 2, 0),
- 'baboon': (28, 10, 5, 20, 1, 0), 'armadillo': (40, 8, 4, 16, 1, 2), 'wild_boar': (36, 8, 5, 16, 1, 2),
- 'prairie_dog': (16, 10, 8, 16, 1, 0), 'dingo': (16, 10, 6, 16, 1, 0), 'goshawk': (28, 12, 6, 20, 1, 0),
- 'nemesis': (36, 6, 4, 20, 1, 2), 'ammit': (32, 10, 5, 20, 1, 1), 'stingray': (24, 12, 6, 20, 0, 0),
- 'puffin': (16, 8, 8, 16, 1, 0), 'funnel_web': (30, 10, 5, 16, 1, 1), 'cassowary': (24, 8, 5, 16, 1, 0),
- 'cottonmouth': (16, 8, 8, 16, 2, 0), 'whip_scorpion': (40, 8, 4, 20, 0, 1), 'swallowtail': (48, 14, 5, 20, 2, 1),
+ 'badger': (36, 8, 4, 12, 1, 2), 'clydesdale': (40, 10, 5, 12, 1, 1), 'sparrowhawk': (12, 16, 8, 10, 2, 0),
+ 'baboon': (28, 10, 5, 14, 1, 0), 'armadillo': (40, 8, 4, 12, 1, 2), 'wild_boar': (36, 8, 5, 12, 1, 2),
+ 'prairie_dog': (16, 10, 8, 12, 1, 0), 'dingo': (16, 10, 6, 12, 1, 0), 'goshawk': (28, 12, 6, 14, 1, 0),
+ 'nemesis': (36, 6, 4, 14, 1, 2), 'ammit': (32, 10, 5, 14, 1, 1), 'stingray': (24, 12, 6, 14, 0, 0),
+ 'puffin': (16, 8, 8, 12, 1, 0), 'funnel_web': (30, 10, 5, 12, 1, 1), 'cassowary': (24, 8, 5, 12, 1, 0),
+ 'cottonmouth': (16, 8, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 4, 14, 0, 1), 'swallowtail': (48, 14, 5, 14, 2, 1),
  'musk_ox': (44, 10, 5, 8, 1, 1),
- 'lammergeier': (28, 16, 6, 20, 1, 0),   # not in the brief: today's numbers over four
+ 'lammergeier': (28, 16, 6, 14, 1, 0),   # not in the brief: today's numbers over four
 }
 raw, d = jload(R + 'content/chassis.json')
 for c in d['entries']:
@@ -92,16 +96,16 @@ jsave(R + 'content/components.json', d, True)
 
 # ---- foes: hp, blow, armour; the moves' values; the new breaches (section 4)
 F = {
- 'goblin': (3, 1, 0), 'wolf': (4, 2, 0), 'gel': (5, 2, 0), 'gel_half': (2, 1, 0), 'mandragora': (4, 2, 0), 'treant': (32, 5, 1),
- 'needler': (2, 2, 0), 'antlion': (6, 4, 0), 'cockatrice': (4, 2, 0), 'sandworm': (36, 6, 2),
- 'revenant': (3, 1, 0), 'ghost': (4, 2, 0), 'zombie_knight': (8, 4, 1), 'bone_dragon': (32, 5, 1),
- 'bomb': (4, 5, 0), 'salamander': (6, 3, 0), 'drake': (4, 3, 0), 'magma_golem': (40, 6, 2),
- 'warrior': (24, 5, 0), 'martial_artist': (20, 4, 0), 'thief': (18, 4, 0), 'lancer': (22, 5, 0),
- 'white_mage': (18, 2, 0), 'augur': (18, 3, 0), 'black_mage': (18, 4, 0), 'summoner': (16, 2, 0),
+ 'goblin': (3, 2, 0), 'wolf': (4, 3, 0), 'gel': (5, 3, 0), 'gel_half': (2, 2, 0), 'mandragora': (4, 3, 0), 'treant': (32, 7, 1),
+ 'needler': (2, 3, 0), 'antlion': (6, 6, 0), 'cockatrice': (4, 3, 0), 'sandworm': (36, 8, 1),
+ 'revenant': (3, 2, 0), 'ghost': (4, 3, 0), 'zombie_knight': (8, 6, 1), 'bone_dragon': (32, 7, 1),
+ 'bomb': (4, 8, 0), 'salamander': (6, 5, 0), 'drake': (4, 5, 0), 'magma_golem': (40, 8, 1),
+ 'warrior': (24, 10, 0), 'martial_artist': (20, 8, 0), 'thief': (18, 8, 0), 'lancer': (22, 10, 0),
+ 'white_mage': (18, 4, 0), 'augur': (18, 6, 0), 'black_mage': (18, 8, 0), 'summoner': (16, 4, 0),
 }
 PROMO = {'warrior_promoted': 48, 'martial_artist_promoted': 40, 'thief_promoted': 36, 'lancer_promoted': 44,
          'white_mage_promoted': 36, 'augur_promoted': 36, 'black_mage_promoted': 36, 'summoner_promoted': 32}
-VALUES = {('wolf', 'howl'): 1, ('antlion', 'burrow'): 2, ('sandworm', 'burrow'): 3, ('treant', 'regen'): 5, ('bone_dragon', 'regen'): 5,
+VALUES = {('wolf', 'howl'): 1, ('antlion', 'burrow'): 2, ('sandworm', 'burrow'): 3, ('treant', 'regen'): 3, ('bone_dragon', 'regen'): 3,
           ('magma_golem', 'stoke_the_forge'): 2, ('martial_artist', 'chakra'): 4, ('white_mage', 'cure'): 4}
 BREACH = {('gel', 'engulf'), ('zombie_knight', 'cleaver'), ('warrior', 'cleave')}
 # The foes' file is laid out by hand (an entry's fields on a few lines, a move a line), so it is
