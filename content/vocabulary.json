@@ -633,7 +633,7 @@
     "table": {
      "kind": "debuff",
      "on": "machine",
-     "stacks": "Yes: a bite of 10 a stack",
+     "stacks": "Yes: its bite a stack",
      "lasts": "The skirmish"
     }
    }
@@ -729,7 +729,7 @@
     "table": {
      "kind": "buff",
      "on": "machine",
-     "stacks": "Yes: +5 damage a stack, every stack spent by the next weapon spend",
+     "stacks": "Yes: its bonus a stack, every stack spent by the next weapon spend",
      "lasts": "Until its next weapon spend, across turns"
     }
    }
@@ -1647,7 +1647,7 @@
     "table": {
      "kind": "debuff",
      "on": "machine",
-     "stacks": "Yes: 5 hotter a stack",
+     "stacks": "Yes: its heat a stack",
      "lasts": "Until the end of the player's turn, every stack at once"
     }
    }
