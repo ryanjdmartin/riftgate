@@ -492,7 +492,9 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    from the brief's fills with the levers moved: the foes' blows up by half to double (the
    rank and file 2 to 3, the elites 6 to 8, the bosses 8 to 12) or our hull and shield down a
    quarter; cooling 0 on most chassis with the typical gun at 2 to 4, or maxima of 10 to 14;
-   the massive elites' armour 1; the Treant's and the Wyvern's regrow 3. Move one lever a
+   the massive elites' armour 1; the Treant's and the Wyvern's regrow 3; Flak's clock, a stack
+   a round against the halving, read on the Flak team's massive-foe cells (section 12's
+   question, Ryan's of 22 October). Move one lever a
    loop, read the bands, keep what passes; the module stat lines wait for the pricing run.
 3. **The content landing.** The stocks, the renames and retirements, the new pieces, the
    tags and tiers, the stock-below-tier check kept green; the rules' numbers and not-built

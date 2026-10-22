@@ -377,6 +377,17 @@ in its brief; the full rounds are in git (above).
   limit, a locked piece feeding only its own passive; alone, blows lost would be a free stun)
   and a reverse Lure without the choice for the ally; sound as the time-shifter's shift with the
   two fixes above.
+- Three slot-in ideas for Aphelion's control once the Umbra Inducer went to the Arsenal
+  (Claude, 22 October, in the stock pass's stun discussion; Ryan, the same day: logged as
+  possibilities, and none gets a brief until the Aphelion roster's powers are read, "or we'll
+  end up with an OP umbra inducer all over again"): a status spreader in the jellyfish's
+  register (Indirect, no damage; every status the target carries is laid a stack on the foes
+  beside it, so the Paradox counts each and every maker's status build feeds it); a stasis
+  piece in the time-shifter's register (the target's statuses do not fade through the next
+  round, its Numbed included, so stun teams pay for it); the Zenith Emitter's promised
+  tier-three return as a status reader (a flat beam adding for each kind of status the foe
+  carries, the Tensor's read as a gun), which would give Aphelion a tier three and draw the
+  line that the Arsenal consumes statuses where Aphelion reads them.
 
 **The Arsenal** (Claude's, 11 and 12 October)
 

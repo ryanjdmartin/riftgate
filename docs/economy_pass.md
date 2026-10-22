@@ -106,17 +106,18 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
 
 ## From the roster analysis's go (14 and 15 October)
 
-Raised in Ryan's go on the roster analysis and left for this pass; none is decided.
+Raised in Ryan's go on the roster analysis and left for this pass; the offer's and the token's
+kinds are settled (22 October), the rest is not.
 
 - **The host maker's offer after a win** (Ryan's latest shape): a module, a component one tier
   above the shelf's and a chassis, all from its catalogue, the guaranteed chassis being the
-  rebound after a bad battle. The bible's offer row says a blueprint where this says a
-  component copy, to settle here; Claude's lean is the copy, since the boss's token already
-  yields a blueprint a win. If the chassis is guaranteed, the Recommended chassis offer rate
+  rebound after a bad battle. Settled (Ryan, 22 October): the component is a copy, never a
+  blueprint, since the boss's token already yields a blueprint a win; the bible's offer row and
+  the rules say so. If the chassis is guaranteed, the Recommended chassis offer rate
   (one every two or three battles, bible section 3) retires.
 - **The boss's research token** unpacks into a choice of three blueprints of the domain's
   theme at the Convergence's tier, so tier-three blueprints come only from late bosses (Claude's
-  proposal).
+  proposal; Ryan's reading too, 22 October: settled).
 - **Procurement**: tier ones early (Ryan asked whether the shelf and the offer should deal tier
   ones early in a run, 14 October); Claude's proposal around it: a shelf slot for each standing
   maker, the Arsenal's at the capital by the Convergence, the tier gated by the Convergence, a

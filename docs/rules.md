@@ -616,7 +616,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
   10 salvage a kill, the boss's included (to be weighted by the foe's threat, not built); 100 Favour less 1 per gate
   point the city lost, never below 0; a research
-  token of the lead domain and an offer from the host maker are owed (unpacking and offers
+  token of the lead domain and an offer from the host maker are owed (the token a choice of
+  three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
+  component copy and a module from the maker's catalogue, one taken free; unpacking and offers
   not built).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
