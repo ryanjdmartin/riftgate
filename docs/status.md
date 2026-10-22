@@ -29,7 +29,19 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. Every branch is merged into main (checked 21 October) and is to
+One branch is live beside main: the numbers-rescale session's `claude/eager-newton-sf947u`
+(the stock pass's engine chunk and its baseline, 22 October; the session waits on Ryan's marks
+on its brief's items 5 and 6). It stands 15 commits ahead of main and 8 behind (checked 22
+October); a trial merge conflicts only in the records (the bible, the rules, this file) and
+the code merges clean, so landing it is a records pass and the full suite. Its baseline
+(`ace3c3c`, 200 seeds) ran on `a1585a9`, before main's rule and bot changes of that morning:
+the rage capped at 5 (the Nemesis), the charged Screens for the whole team only (the
+Swallowtail), the bot's bunching swap (the Dingo) and its boss reads (the Disrupt carriers, and
+the fights with a countdown, parts or a last act: the Lancer's, the Augur's). Those rows
+re-baseline on merged main before the stock pass is read against them; the rest stand (the
+forecast's reads with a die in hand move no bot, which forecasts with none).
+
+Every other branch is merged into main (checked 21 October) and is to
 be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
 refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
 `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
@@ -590,8 +602,8 @@ to-do's Ryan list).
 6. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
-7. The rest in the roadmap's standing order: Ryan's text; the domains' engine (the planned
-   moves, the party dealt from the benches, three bosses a domain); the pacing session's
+7. The rest in the roadmap's standing order: Ryan's text; the domains' last engine (the planned
+   moves; the party and three bosses a domain built, the bosses' slate content alone); the pacing session's
    remaining pieces; battery; audio; art; the commander layer after a balance baseline;
    onboarding before a phone leaves the desk.
 
@@ -607,17 +619,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Main's file is v0.252; the live is this session's
-  v0.251 (22 October, the page's version 268) under the numbers-rescale session's publish of
-  03:42 that morning, the Whip Scorpion's forecasts and the Cassowary's cylinder (v0.252's
-  two rows) waiting on the next merge onto it. v0.251: Ryan's calls of 21 October, evening, and 22 October
-  (the stores, Silence and Purge passing them by, the carry as a block, the Muster never
-  primed, the Musk Ox's 3 at the first round, the blasting vents counting, the rage capped at
-  5 as boxes, the charged Screens for the whole team only, the turn's order keeping a charge
-  banked left as a note for later balancing), three-way merged onto the
-  numbers-rescale session's own v0.249, whose rows are its branch's (the single-digit scale,
-  rank and file dying to a die or two, armour by role, one breach, a foe's HP and a machine's
-  hull, the stock pass's question). The version numbers on main's file and the live agree after every
+  `docs/design-bible.html` after every change. Main's file and the live are v0.253 (22 October,
+  the page's version 270): this session's rows of that day (the Whip Scorpion's forecasts, the
+  Cassowary's cylinder, the Dingo's bunching swap, the reinforcements by rank, the bot's boss
+  reads, a domain's boss list) three-way merged onto the numbers-rescale session's own v0.252
+  of 03:42 (the page's version 269), whose rows are its branch's (the kill-time tests, armour by
+  role, one breach, danger close gone, the explosives' keywords, Spillover as the star, a foe's
+  HP and a machine's hull, the stock pass's question). The version numbers on main's file and the live agree after every
   publish; the rows between them are the other branches'. Git and the page's version history
   carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
