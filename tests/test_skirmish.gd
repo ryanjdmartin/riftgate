@@ -1235,6 +1235,36 @@ func test_a_breaching_weapon_ignores_a_foes_armour() -> void:
 	assert_eq(plate2.hp, 90, "and so does the blow")
 
 
+## A reach read on the rank (the Ram Frame and the Artillery Rangefinder, mirrors: Ryan, 22
+## October): the point lands only on blows of its reach aimed at its rank, the die shows it
+## over the foe, and the hold lists each rule on the entries of its reach alone.
+func test_a_reach_read_on_the_rank_adds_only_on_its_reach_and_its_rank() -> void:
+	var direct := Face.attack(10, L)
+	var lob := Face.attack(10, I)
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.of([direct, lob]), 40, 100)
+	m.grant_passive({"id": "mirrors", "name": "Mirrors", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_rank", "rank": "front", "reach": "direct"},
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_rank", "rank": "back", "reach": "indirect"}]})
+	sk.add_mech(m)
+	var front := _ghoul(100, 1)
+	var back := _archer(100, 1)
+	sk.add_foes([front, back])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(front.rank == 0 and back.rank == 1, "one column: a front and a back")
+	assert_eq(sk.shown_number(ms, direct, front), [11, 11] as Array[int], "a Direct blow at the front rank takes the front's point")
+	assert_eq(sk.shown_number(ms, lob, front), [10, 10] as Array[int], "an Indirect blow at the front takes neither")
+	assert_eq(sk.shown_number(ms, lob, back), [11, 11] as Array[int], "an Indirect blow at the back takes the back's point")
+	var on_direct := Effects.explain(m, direct)
+	var on_lob := Effects.explain(m, lob)
+	assert_true(on_direct.any(func(t: String) -> bool: return t.contains("direct blows aimed at the front rank")), "the Direct entry lists the front's rule: %s" % str(on_direct))
+	assert_false(on_direct.any(func(t: String) -> bool: return t.contains("indirect blows")), "and not the back's")
+	assert_true(on_lob.any(func(t: String) -> bool: return t.contains("indirect blows aimed at the back rank")), "the Indirect entry lists the back's: %s" % str(on_lob))
+	assert_false(on_lob.any(func(t: String) -> bool: return t.contains("direct blows aimed at the front")), "and not the front's")
+
+
 ## Armour bought against a breach keeps nothing of it (one breach, 22 October): the bot's
 ## value of extra armour counts only the blows the armour meets.
 func test_extra_armour_keeps_nothing_of_a_breach() -> void:

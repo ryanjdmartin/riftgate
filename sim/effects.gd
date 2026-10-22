@@ -747,8 +747,14 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return u.get("allies") != null and int(u.allies) > 0
 		"target_rank":
 			# The rank the spend is aimed at (the Cottonmouth's drum, 19 October): front or back;
-			# nothing without a target in hand, so the keyword it grants waits for the aim.
-			return target != null and target.get("rank") != null and int(target.get("rank")) == (1 if str(eff.get("rank", "front")) == "back" else 0)
+			# nothing without a target in hand, so the keyword it grants waits for the aim. A
+			# reach named beside it reads the spend's too (the Ram Frame and the Artillery
+			# Rangefinder, mirrors: Direct at the front, Indirect at the back; Ryan, 22 October),
+			# on an attack's own effects only, never a static one the reach itself reads.
+			if target == null or target.get("rank") == null or int(target.get("rank")) != (1 if str(eff.get("rank", "front")) == "back" else 0):
+				return false
+			var need := str(eff.get("reach", ""))
+			return need.is_empty() or (face != null and effective_reach(u, face) == Face.reach_from_name(need))
 		"nth_shot":
 			# Every n-th weapon spend of the fight (the Cassowary's sixth shot): this one, when the
 			# count so far is one short of a multiple of `every`.
@@ -1759,7 +1765,9 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
 		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
-		"target_rank": lead += "aimed at the %s rank: " % str(eff.get("rank", "front"))
+		"target_rank":
+			var by := str(eff.get("reach", ""))
+			lead += ("%s blows aimed at the %s rank: " % [by, str(eff.get("rank", "front"))]) if not by.is_empty() else ("aimed at the %s rank: " % str(eff.get("rank", "front")))
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
 	return lead + body
@@ -1802,7 +1810,11 @@ static func explain(u, face: Face) -> Array[String]:
 				# the row has no target in hand. A raised ceiling means nothing to a flat face.
 				if (name == "add_ceiling" or name == "add_floor") and not face.is_ranged():
 					continue
-				if _usable(u, m, name) and (str(eff.get("when", "")) in ["target_status", "target_no_intent"] or _holds(u, eff, face)):
+				var w := str(eff.get("when", ""))
+				var on_target := w in ["target_status", "target_no_intent", "target_rank"]
+				if w == "target_rank" and not str(eff.get("reach", "")).is_empty():
+					on_target = effective_reach(u, face) == Face.reach_from_name(str(eff["reach"]))   # the Ram Frame's read: Direct entries only
+				if _usable(u, m, name) and (on_target or _holds(u, eff, face)):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 	return out
 

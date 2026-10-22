@@ -875,6 +875,30 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	assert_eq(f.volatile, 3, "with the bite it says")
 
 
+## The rank condition's reach (the Ram Frame's and the Rangefinder's reads, 22 October) reads an
+## attack's own spend: direct or indirect, on an on_attack effect only.
+func test_a_reach_beside_the_rank_is_an_attacks_and_a_real_reach() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.modules["ram_frame"].duplicate(true)
+	var cases := {
+		"test_rank_reach": [{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_rank", "rank": "back", "reach": "indirect"}, ""],
+		"test_rank_odd": [{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_rank", "rank": "front", "reach": "close"}, "direct or indirect"],
+		"test_rank_static": [{"trigger": "static", "effect": "grant_keyword", "value": "penetrate", "when": "target_rank", "rank": "back", "reach": "indirect"}, "on an attack's own effects only"],
+	}
+	for id in cases:
+		var m: Dictionary = base.duplicate(true)
+		m["text"] = {"description": "A test.", "effects": [cases[id][0]]}
+		db.modules[id] = m
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.contains(id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+
+
 ## The stock pass's engine (22 October): the rule numbers that were constants in code ride as
 ## fields on their keyword, their face or their status, so the content and the landing set them.
 func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_status() -> void:

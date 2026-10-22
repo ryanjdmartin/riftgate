@@ -28,15 +28,26 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 60,
-    "armour": 10
+    "hull": 60
    },
-   "text": null,
+   "text": {
+    "description": "Its Direct blows aimed at the front rank deal 1 more.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 1,
+      "when": "target_rank",
+      "rank": "front",
+      "reach": "direct"
+     }
+    ]
+   },
    "design": {
     "stage": "draft",
     "fantasy": "A reinforced prow and a driver who stopped asking.",
-    "niche": "To rework: its rule gave every weapon melee reach, an overload for a machine that must close, and Close is removed (10 October). Until then a plain heavy plating.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+    "niche": "A reach read (Ryan, 22 October): +1 on Direct blows aimed at the front rank, the Artillery Rangefinder its mirror at the back for Indirect blows. Without a rule it measured the best module on every machine (the bible's catalogue row); its armour line went with the rule, and its stat line comes from the pricing run after the landing.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; its old rule gave every weapon melee reach, gone with Close (10 October). Ryan's call of 22 October, on Claude's second proposal: the mirrors; built 22 October (target_rank with a reach). Numbers are placeholders."
    }
   },
   {
@@ -219,15 +230,23 @@
    "flavour": "",
    "stats": {},
    "text": {
-    "status": "planned",
-    "description": "",
-    "effects": []
+    "description": "Its Indirect blows aimed at the back rank deal 1 more.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 1,
+      "when": "target_rank",
+      "rank": "back",
+      "reach": "indirect"
+     }
+    ]
    },
    "design": {
     "stage": "draft",
     "fantasy": "A man with a theodolite who has never once been wrong about where a shell lands.",
-    "niche": "Its rule is open: danger close, which it spared, retired with the stock pass (22 October), and the module keeps its stats until Ryan picks a rule.",
-    "notes": "Ryan, 9 October: the Rangefinder as named fits a splash-damage eliminator (Claude's earlier versions rolled indirect weapons high, too near the Databank). 22 October (the stock pass's engine): danger close retired, so its rule went with it; the text is a planned draft with no effects until the rule is picked (the stock pass's brief proposes +1 on Indirect blows aimed at the back rank, a reach read; Ryan's call)."
+    "niche": "The Ram Frame's mirror (Ryan, 22 October): a reach read, +1 on Indirect blows aimed at the back rank, where the Frame reads Direct blows at the front; its stat line comes from the pricing run after the landing.",
+    "notes": "Ryan, 9 October: the Rangefinder as named fits a splash-damage eliminator (Claude's earlier versions rolled indirect weapons high, too near the Databank). 22 October (the stock pass's engine): danger close retired, so its rule went with it. Ryan's call the same day, on Claude's second proposal: the Ram Frame and the Rangefinder are mirrors, each a reach read; built 22 October (target_rank with a reach). The number is a placeholder."
    }
   },
   {

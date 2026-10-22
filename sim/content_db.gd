@@ -1067,6 +1067,14 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
+		# A reach beside the rank (the Ram Frame's and the Rangefinder's reads, 22 October) reads
+		# the spend's reach, so only on an attack's own effects: a static one the reach reads would
+		# read itself.
+		if str(eff.get("when", "")) == "target_rank" and eff.has("reach"):
+			if not ["direct", "indirect"].has(str(eff["reach"])):
+				errs.append("%s: target_rank's reach is direct or indirect" % where)
+			if str(eff.get("trigger", "")) != "on_attack":
+				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):

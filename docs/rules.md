@@ -176,8 +176,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
 - **Penetrate**: also hits the other rank of the target's column.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
-  foes' rider below. The Overclocked Railgun carries it (not built: with the stock pass's
-  content).
+  foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
@@ -512,7 +511,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
   when aimed at another machine, Suppressed, or on a special that acts on nobody in
   particular; read at the spend, before the spend's own riders, each foe reached judged
-  alone); the rank the spend is aimed at (the Cottonmouth's); the striker carries a status (the Prairie Dog's fight
+  alone); the rank the spend is aimed at (the Cottonmouth's), and on an attack's own effects its
+  reach with it (the Ram Frame's Direct blows at the front rank, the Artillery Rangefinder's
+  Indirect blows at the back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 5 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit (a stack per strike that lands with a

@@ -313,13 +313,15 @@
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
     "niche": "",
-    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). Kept as the pool's big hot flat gun (Ryan, 21 October, the Kestrel line review: its temporary note retired); off the Kite with its rework (21 October), so it carries its own tier, a tier-two blueprint, until the stock pass puts it in the Buzzard's stock."
+    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). Kept as the pool's big hot flat gun (Ryan, 21 October, the Kestrel line review: its temporary note retired); off the Kite with its rework (21 October), so it carries its own tier, a tier-two blueprint, until the stock pass puts it in the Buzzard's stock. Breach since 22 October (Ryan, on the direction run that read four machines stalling on the Treant's plate): the one big flat gun that breaches, its fantasy armour piercing, so a plated foe has an answer beside the biggest blow."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 50,
-    "keywords": [],
+    "keywords": [
+     "breach"
+    ],
     "heat": 40
    },
    "passive": null,

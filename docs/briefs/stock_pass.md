@@ -481,7 +481,9 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    the hot threshold the move's `hot` beside `machine_hot`, Cryo's cooling and Corrupted's bite
    their statuses' numbers in the engine's table, where Burning's, Scorched's and Vitriol's
    already were, each at today's value; the applier sets the fields); the Breach keyword on the
-   Railgun; the Ram Frame's and the Rangefinder's reach reads; a condition on a weapon's
+   Railgun; the Ram Frame's and the Rangefinder's reach reads (built 22 October: Breach on the
+   Railgun in content; the rank condition reads a reach beside it on an attack's own effects,
+   and the two modules carry their rules, the Frame's armour line gone); a condition on a weapon's
    keyword for the Battery (the face names when its Suppress lands, a foe carrying Flak, read
    through the effects' conditions; the bot values it only where it holds and the die over a
    foe shows the chip struck where it does not); the Backdraft's rule (a printed rule, the
