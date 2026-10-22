@@ -8,7 +8,8 @@ extends Control
 ##
 ## Entry keys (see `ContentDB.codex_for_unit` / `codex_for_foe`): title, designation,
 ## subtitle, body, stat_items, actions, passive, faces (Array of Face), face_columns,
-## face_labels, current (index), modifiers, flavour, sprite_id (a chassis or foe id), paint,
+## face_labels, current (index), steps (a die that steps: its chambers as a cylinder above
+## them), modifiers, flavour, sprite_id (a chassis or foe id), paint,
 ## passive_rows ([text, source] pairs, coloured by source) and unit (the machine, so the
 ## model can wear its fitted loadout).
 
@@ -27,6 +28,7 @@ var _view: MechView3D = null   # the spinning model, when mechs are 3D
 var _actions: Label
 var _passives: VBoxContainer   # one label a passive, coloured by its source: the chassis's own, a component's, a reward
 var _faces: FaceListView
+var _ring: CylinderView          # a die that steps (the Cassowary's): its order as a cylinder
 var _modifiers: Label            # every live effect on the mech, on the die screen
 var _flavour: Label
 
@@ -117,6 +119,9 @@ func _init() -> void:
 	_body = Hud.label("", 19, Palette.INK)
 	_faces = FaceListView.new()
 	_faces.columns = 2
+	_ring = CylinderView.new()
+	_ring.visible = false
+	_ring.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_modifiers = Hud.label("", 14, Palette.INK, Hud.mono())
 	_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
 	var spacer := Control.new()
@@ -127,6 +132,7 @@ func _init() -> void:
 		_wrap(l)
 	cv.add_child(_passives)
 	cv.add_child(_actions)
+	cv.add_child(_ring)
 	cv.add_child(_faces)
 	cv.add_child(_modifiers)
 	var rule := ColorRect.new()
@@ -202,6 +208,11 @@ func open(entry: Dictionary) -> void:
 	_faces.labels = entry.get("face_labels", [])
 	if not faces.is_empty():
 		_faces.set_faces(faces, int(entry.get("current", -1)))
+	# A die that steps prints its order (the Cassowary's): its chambers round a cylinder, every gap
+	# a faint arrow, the way the die turns.
+	_ring.visible = bool(entry.get("steps", false)) and not faces.is_empty()
+	if _ring.visible:
+		_ring.set_cylinder(faces, int(entry.get("current", -1)), -1)
 	_modifiers.text = str(entry.get("modifiers", ""))
 	_modifiers.visible = not _modifiers.text.is_empty()
 	var quote := str(entry.get("flavour", ""))

@@ -100,6 +100,7 @@ var blueprints: Array = []        # component ids the run can build without limi
 var tokens: Array = []            # research tokens, by the faction whose boss dropped them (unpacked in the hangar, not built)
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
+var bosses_ended: Dictionary = {}    # faction id -> the bosses its battles ended on this run, by foe id, so the next draws another
 var finals_won: Array = []        # factions thinned: they lead no new rift
 var party: Dictionary = {}        # faction id -> the hero dealt it at the run's start (its final; promoted, its column at the finale)
 var battle: Battle = null
@@ -319,6 +320,12 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		var spawn := db.spawn_table(lead)
 		if not spawn.is_empty():
 			b.escort = [str(spawn[0][0]), b.columns - 1]
+	else:
+		# A boss its domain has not ended on this run (the bible's section 9: three a domain
+		# before its hero, drawn without repeats).
+		var boss_id := draw_boss(lead)
+		if not boss_id.is_empty():
+			b.lineup = [boss_id]
 	b.setup(team, lead)
 	b.field.gate_hp_max = c.gate_max
 	b.field.gate_hp = c.gate
@@ -386,6 +393,10 @@ func finish_battle() -> Dictionary:
 		tokens.append(faction)
 		offers.append(c.id)
 		bosses_beaten[faction] = int(bosses_beaten.get(faction, 0)) + 1
+		if not final and not c.capital and b.lineup.size() == 1:
+			var ended: Array = bosses_ended.get(faction, [])
+			ended.append(str(b.lineup[0]))
+			bosses_ended[faction] = ended
 		# A final counts when its hero falls (the bible's section 9): its hero commands the rift,
 		# so the battle is won when it does (the Thief's Flee, when it lands, is the exception).
 		if final and not c.capital and not finals_won.has(faction):
@@ -419,6 +430,21 @@ func finish_battle() -> Dictionary:
 	return report
 
 
+## The boss a domain's next battle brings (the bible's section 9, decided 15 October; built 22
+## October): one of its bosses its battles have not ended on this run, by the run's seed; once
+## every one has been, any of them. A domain with one boss draws nothing from the seed, so a run
+## plays as it did before the slate. Empty for a domain without one.
+func draw_boss(faction_id: String) -> String:
+	var all := db.bosses_of(faction_id)
+	if all.size() <= 1:
+		return all[0] if not all.is_empty() else ""
+	var ended: Array = bosses_ended.get(faction_id, [])
+	var open: Array = all.filter(func(id: String) -> bool: return not ended.has(id))
+	if open.is_empty():
+		open = all
+	return str(open[rng.randi_range(0, open.size() - 1)])
+
+
 ## The finale's line (the bible's section 9): a column for each domain, in content order, the
 ## dealt hero's promoted form while its domain stands; a domain whose final was won leaves its
 ## column to boss-tier wildlife of a domain still standing, each standing domain's boss drawn
@@ -427,8 +453,8 @@ func finish_battle() -> Dictionary:
 func finale_line() -> Array:
 	var standing: Array = []
 	for fid in db.factions.keys():
-		if not finals_won.has(fid) and db.foes.has(str(db.factions[fid].get("boss", ""))):
-			standing.append(str(db.factions[fid]["boss"]))
+		if not finals_won.has(fid):
+			standing.append_array(db.bosses_of(str(fid)))
 	var bag: Array = []
 	var out: Array = []
 	for fid in db.factions.keys():

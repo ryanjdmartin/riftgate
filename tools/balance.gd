@@ -326,10 +326,10 @@ func _build_matrix() -> void:
 				continue
 			packs.append({"id": pid, "name": "%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), entry[1]], "foe": str(entry[0]), "strength": int(entry[1])})
 	for fac in db.factions.keys():
-		var boss := str(db.factions[fac].get("boss", ""))
-		if boss.is_empty() or not db.foes.has(boss) or _has_pack(boss + " x1"):
-			continue
-		packs.append({"id": boss + " x1", "name": str(db.foes[boss].get("name", boss)), "foe": boss, "strength": 1})
+		for boss in db.bosses_of(str(fac)):
+			if _has_pack(boss + " x1"):
+				continue
+			packs.append({"id": boss + " x1", "name": str(db.foes[boss].get("name", boss)), "foe": boss, "strength": 1})
 	# The mixed cells (the to-do, 2 October): every pack a faction sends through the rift in
 	# one fight, a front and a back together, which is where targeting, spillover and the
 	# Databank can be read at all.

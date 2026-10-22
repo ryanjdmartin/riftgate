@@ -259,6 +259,17 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 		if e.begins_with("faction %s" % fid) and e.contains("is a hero"):
 			refused = true
 	assert_true(refused, "a hero named the boss is refused")
+	# A list of bosses (three a domain once the slate lands, 22 October): each once, none a hero.
+	var boss_id := str(db.spawn_table(fid)[0][0])
+	db.factions[fid]["boss"] = ["small_boss", boss_id]
+	assert_true(db.validate().is_empty(), "a list of bosses validates: %s" % str(db.validate()))
+	assert_eq(Array(db.bosses_of(fid)), ["small_boss", boss_id], "read in content order")
+	db.factions[fid]["boss"] = ["small_boss", "small_boss"]
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("comes twice")), "a boss listed twice is refused")
+	db.factions[fid]["boss"] = []
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("names no foe")), "and an empty list")
+	db.factions[fid]["boss"] = ["small_boss", hero_id]
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("is a hero")), "and a hero among them")
 
 
 func test_internal_text_cannot_sit_at_the_top_level() -> void:

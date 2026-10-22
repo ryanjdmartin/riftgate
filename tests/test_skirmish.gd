@@ -5529,6 +5529,100 @@ func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 	assert_false(Effects.has(u, "siphoning"), "gone at the round's end")
 
 
+## The blast read in one place (the Whip Scorpion's forecast, 22 October): the heat a vent would
+## take off its own machine at the passive's share, nothing spent on an ally or from a machine
+## whose vents blast nothing; every live foe a target; and the number on a foe, its Flak and
+## armour in, is what the spend deals there.
+func test_the_blast_is_read_in_one_place_and_its_number_is_what_lands() -> void:
+	var sk := Skirmish.new(1, 1)
+	var vent := Face.vent(30)
+	var a := _mech("A", Die.single(vent), 40, 100)
+	a.grant_passive(BLAST_PASSIVE)
+	sk.add_mech(a)
+	sk.add_mech(_mech("B", Die.single(Face.vent(30)), 40, 100))
+	var g := _ghoul(100, 1)
+	g.armour = 5
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 50
+	assert_eq(sk.blast_amount(ms, vent, ms), 30, "a full vent's worth when it runs hotter than the vent takes")
+	ms.heat = 10
+	assert_eq(sk.blast_amount(ms, vent), 10, "what it carries when it runs cooler; on itself unless told")
+	assert_eq(sk.blast_amount(ms, vent, sk.mechs[1]), 0, "nothing spent on an ally")
+	sk.mechs[1].heat = 20
+	assert_eq(sk.blast_amount(sk.mechs[1], sk.mechs[1].face(), sk.mechs[1]), 0, "nothing from a machine whose vents blast nothing")
+	assert_eq(sk.blast_targets().size(), 1, "every live foe a target")
+	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
+	assert_eq(sk.blast_number(ms, 10), 10, "before any foe, the machine's pipeline alone")
+	assert_eq(sk.blast_number(ms, 10, g), 10 + 2 - 5, "on the ghoul: its two Flak in, its armour off")
+	assert_true(sk.assign(0, ms), "the vent spent on itself")
+	assert_eq(g.hp, 100 - (10 + 2 - 5), "and that is what the blast deals there")
+	var s2 := Skirmish.new(1, 1)
+	var half := _mech("H", Die.single(Face.vent(30)), 40, 100)
+	half.grant_passive({"id": "test_half_blast", "name": "Half", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 0.5}]})
+	s2.add_mech(half)
+	s2.add_foes([_ghoul(100, 1)])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].heat = 15
+	assert_eq(s2.blast_amount(s2.mechs[0], s2.mechs[0].face()), 8, "half of fifteen, rounded")
+
+
+## The lure preview (the Siphon's forecast, 22 October): a Lure entry's turn read before it is
+## spent, every foe it reaches turned on its machine in a what-if and put back; the spender's
+## forecast takes the lured blows behind its brace and drinks their heat, the machine they left
+## takes nothing; a targeted lure needs its aim, and an entry without Lure turns nobody.
+func test_the_lure_preview_reads_the_turned_round_and_puts_the_foes_back() -> void:
+	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(siphon), 0, 200))
+	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
+	sk.add_foes([_ghoul(100, 10), _ghoul(100, 10), _archer(100, 10)])
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	assert_eq(sk.lure_turns(sk.mechs[0]).size(), 3, "a reach over every foe needs no aim: all three would turn")
+	var pv := sk.lure_preview(sk.mechs[0])
+	assert_eq(int(pv[sk.mechs[0]]["incoming"]), 30, "the three blows come at it")
+	assert_eq(int(pv[sk.mechs[0]]["hull_after"]), 200 - 3 * (10 - 2), "behind the brace's two a blow")
+	assert_eq(int(pv[sk.mechs[0]]["heat_after"]), 30, "and each adds ten heat")
+	assert_eq(int(pv[sk.mechs[1]]["incoming"]), 0, "the machine they left takes nothing")
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[1], "every foe put back")
+	assert_eq(int(sk.forecast(sk.mechs[1], false)["incoming"]), 30, "so the round as it stands is untouched")
+	assert_true(sk.lure_turns(sk.mechs[1], sk.front[0]).is_empty(), "a gun without Lure turns nobody")
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("A", Die.single(Face.attack(0, I, [K.LURE])), 0, 200))
+	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
+	s2.add_foes([_ghoul(100, 10), _ghoul(100, 10)])
+	s2.begin()
+	s2.start_round()
+	for f in s2.field_foes():
+		f.target = s2.mechs[1]
+	assert_true(s2.lure_turns(s2.mechs[0]).is_empty(), "a targeted lure needs its aim")
+	var aimed := s2.lure_turns(s2.mechs[0], s2.front[0])
+	assert_true(aimed.size() == 1 and aimed[0] == s2.front[0], "aimed, it turns the foe it reaches and no other")
+
+
+## The forecast counts the die in hand's brace (22 October): its armour stands behind this
+## round's blows while the die is dragged, and not otherwise.
+func test_the_forecast_counts_the_brace_in_hand() -> void:
+	var plow := Face.attack(10, L)
+	plow.braces = 2
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(_mech("A", Die.single(plow), 0, 100))
+	var g := _ghoul(100, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[0]
+	assert_eq(int(sk.forecast(sk.mechs[0], false)["hull_after"]), 90, "the blow as it stands")
+	assert_eq(int(sk.forecast(sk.mechs[0], true)["hull_after"]), 92, "the brace's two off it while the die is in hand")
+
+
 ## The forecast over a Cryo foe (Ryan, 16 October: the net on the heat bar, never the die): a
 ## damaging spend held over a foe carrying Cryo reads its own heat less what the hit cashes,
 ## every stack on every foe it reaches; a spend of no damage cashes nothing.

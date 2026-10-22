@@ -765,6 +765,105 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	s.free()
 
 
+## The blast's marks (the Whip Scorpion's forecast, 22 October): a vent die on a machine whose
+## vents blast prints its blast and, held or dragged, rings every live foe with what it would
+## deal there; over an ally the vent blasts nothing, so the print and the rings go.
+func test_a_blasting_vent_rings_every_foe_with_its_number_until_it_is_over_an_ally() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var a := db.make_mech("badger")
+	a.grant_passive({"id": "blast_t", "name": "Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1}]})
+	a.die = Die.single(Face.vent(20))
+	sk.add_mech(a)
+	sk.add_mech(db.make_mech("clydesdale"))
+	var plated := Foe.make("revenant", 300, 10)
+	plated.armour = 5
+	sk.add_foes([Foe.make("revenant", 300, 10), plated])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	sk.mechs[0].heat = 30
+	s._refresh()
+	assert_eq(s._dice[0].blast, 20, "the die prints the blow its vent would fire")
+	assert_false(s._prey.on, "no rings until the die is in hand")
+	s._on_die_held(0)
+	assert_true(s._prey.on and s._prey.style == "blast", "held: the blast's rings")
+	assert_eq(s._prey.marks.size(), 2, "on every live foe")
+	assert_true(s._prey.labels.has("20") and s._prey.labels.has("15"), "each with what it would deal there, armour off: %s" % str(s._prey.labels))
+	s._on_hold_released()
+	assert_false(s._prey.on, "gone when let go")
+	s._on_drag_started(0)
+	assert_true(s._prey.on, "dragged: the rings")
+	assert_eq(s._ghost.blast, 20, "and the die under the finger prints it")
+	s._on_drag_moved(s._mech_views[1].get_global_rect().get_center())
+	assert_false(s._prey.on, "over an ally the vent blasts nothing: no rings")
+	assert_eq(s._ghost.blast, 0, "and no print")
+	s._on_drag_moved(s._mech_views[0].get_global_rect().get_center())
+	assert_true(s._prey.on, "back over itself, the rings return")
+	s._on_drag_ended(Vector2(-100, -100))
+	assert_false(s._prey.on, "gone when the drag ends")
+	s.free()
+
+
+## The lure preview (the Siphon's forecast, 22 October): while a die whose entry Lures every foe
+## is held or dragged, the foes it would turn draw dashed arrows to its machine, its gauges read
+## the lured blows and their heat, and the machine they left reads none; let go, all goes back.
+func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var a := db.make_mech("badger")
+	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10}))
+	sk.add_mech(a)
+	sk.add_mech(db.make_mech("clydesdale"))
+	sk.add_foes([Foe.make("revenant", 300, 10), Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	s._refresh()
+	var heat_before := int(s._mech_views[0].bars[2][3])
+	assert_eq(heat_before, sk.mechs[0].heat, "the heat as it stands")
+	s._on_die_held(0)
+	var dashed := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3]))
+	assert_eq(dashed.size(), 2, "both foes' arrows dashed to the lure, unasked")
+	assert_eq(int(s._mech_views[0].bars[2][3]), sk.mechs[0].heat + 20, "its heat gauge drinks ten a lured blow")
+	assert_eq(int(s._mech_views[1].bars[1][3]), sk.mechs[1].unit.hull, "the machine they left keeps its hull")
+	s._on_hold_released()
+	assert_eq(int(s._mech_views[0].bars[2][3]), heat_before, "let go, the gauge goes back")
+	assert_true(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).is_empty(), "and the dashed arrows with it")
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[1], "nothing turned for real")
+	s._on_drag_started(0)
+	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).size(), 2, "dragged anywhere, the same preview")
+	s._on_drag_ended(Vector2(-100, -100))
+	sk.front[0].target = sk.mechs[0]
+	s._on_die_held(0)
+	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).size(), 1, "the one it would turn dashed")
+	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() <= 3 or not bool(x[3])).size(), 1, "and the one on it already solid, every blow it would take shown")
+	s._on_hold_released()
+	s.free()
+
+
+## The reinforcements waiting, by rank (Ryan, 15 October; built 22 October): the formation's
+## gutter counts the foes waiting for the front, for the back, and the massive ones that take a
+## whole column; with the reserve empty it shows nothing.
+func test_the_formation_counts_the_reinforcements_waiting_for_each_rank() -> void:
+	var s := _screen()
+	var sk := s.sk
+	sk.reinforcements.clear()
+	var archer := Foe.make("skeleton_archer", 30, 10)
+	archer.prefers_back = true
+	var big := Foe.make("revenant", 300, 10)
+	big.size = 2
+	sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
+	s._refresh()
+	assert_true(big.is_massive(), "a foe of size two is massive")
+	assert_eq(s._reserve.counts, {"front": 2, "back": 1, "massive": 1}, "two for the front, one for the back, one massive")
+	sk.reinforcements.clear()
+	s._refresh()
+	assert_eq(s._reserve.counts, {"front": 0, "back": 0, "massive": 0}, "the reserve empty: nothing to show")
+	s.free()
+
+
 ## The Barrier and the Ward wear chips of their own, one colour parted by what sits inside the
 ## shield (21 October), and a dark entry shows its rounds left on the die and in the hold.
 func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds() -> void:
@@ -808,6 +907,24 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
 	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
+	# The hold's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
+	# the arrow to the next; a die that rolls has none.
+	s._on_die_held(0)
+	assert_true(s._details_ring.visible, "the stepping die's hold shows its cylinder")
+	assert_eq(s._details_ring.faces.size(), n, "every chamber on it")
+	assert_eq([s._details_ring.current, s._details_ring.next], [ms.face_index, (ms.face_index + 1) % n], "the one showing lit, the arrow to the next")
+	s._on_hold_released()
+	s._on_die_held(1)
+	assert_false(s._details_ring.visible, "a die that rolls shows no cylinder")
+	s._on_hold_released()
+	# The codex prints the order: its cylinder, no chamber lit and every gap's arrow, between fights.
+	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
+	assert_true(bool(entry["steps"]), "the codex knows the die steps")
+	assert_false(bool(ContentDB.load_default().codex_for_unit(s.sk.mechs[1].unit)["steps"]), "and that a die that rolls does not")
+	var box := CodexBox.new()
+	box.open(entry)
+	assert_true(box._ring.visible and box._ring.faces.size() == n and box._ring.next == -1, "its cylinder, every gap's arrow")
+	box.free()
 	s.free()
 
 

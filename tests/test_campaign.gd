@@ -413,6 +413,54 @@ func test_fit_and_strip_move_components_through_the_stock() -> void:
 	assert_false(c.fit(m.uid, first), "nothing left to fit")
 
 
+## Three bosses a domain before its hero (the bible's section 9, decided 15 October; built 22
+## October): a faction's `boss` may be a list, each battle drawing one its domain has not ended on
+## this run, any of them once every one has been; a domain with one boss draws nothing from the
+## seed; a won battle records its boss, and the save keeps what each domain has ended.
+func test_each_battle_draws_a_boss_its_domain_has_not_ended_on_this_run() -> void:
+	var c := _run(9)
+	var front := str(c.fronts()[0])
+	var fid := str(c.cities[front].rift["faction"])
+	var one := c.db.bosses_of(fid)
+	assert_eq(one.size(), 1, "the content gives each domain one boss today")
+	var state := c.rng.state
+	assert_eq(c.draw_boss(fid), one[0], "one boss: drawn as itself")
+	assert_eq(c.rng.state, state, "and the seed untouched, so a run plays as it did")
+	# Three built bosses stand in as one domain's slate, on a copy of the content.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var three: Array = []
+	for f in db.factions.keys():
+		for b in db.bosses_of(str(f)):
+			if three.size() < 3 and not three.has(b):
+				three.append(b)
+	assert_eq(three.size(), 3, "three built bosses to stand in")
+	db.factions[fid]["boss"] = three
+	assert_true(db.validate().is_empty(), "a list of bosses validates: %s" % str(db.validate()))
+	assert_eq(Array(db.bosses_of(fid)), three, "in content order")
+	c.db = db
+	var drawn: Array = []
+	for k in range(3):
+		var id := c.draw_boss(fid)
+		assert_false(drawn.has(id), "never one the domain has ended: %s" % id)
+		drawn.append(id)
+		c.bosses_ended[fid] = drawn.duplicate()
+	assert_true(three.has(c.draw_boss(fid)), "every one ended: any of them")
+	c.bosses_ended.clear()
+	var b := _battle(c, front)
+	assert_eq(b.lineup.size(), 1, "the battle brings one boss")
+	assert_true(three.has(str(b.lineup[0])), "one of the domain's")
+	var boss := str(b.lineup[0])
+	assert_eq(b.boss.display_name, str(db.foes[boss]["name"]).to_lower(), "named after it")
+	_end(b, Battle.Outcome.VICTORY)
+	c.finish_battle()
+	assert_eq(c.bosses_ended.get(fid, []), [boss], "its domain has ended it")
+	assert_true(SaveGame.save_campaign(c, TMP), "saved")
+	var c2 := SaveGame.load_campaign(TMP)
+	assert_eq(c2.bosses_ended.get(fid, []), [boss], "and the save keeps it")
+	SaveGame.clear(TMP)
+
+
 func test_the_run_saves_and_resumes_between_battles_and_mid_battle() -> void:
 	var c := _run(9)
 	var b := _battle(c)

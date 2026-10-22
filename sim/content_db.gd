@@ -464,6 +464,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis" | "component" | "reward"]
 		"faces": faces,
 		"current": -1,
+		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
 		"flavour": str(c.get("flavour", "")),
 		"sprite_id": u.chassis_id,
 		"paint": u.paint,
@@ -493,7 +494,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
 	if sq.is_boss:
-		var lead: Array = sq.lineup if not sq.lineup.is_empty() else ([str(fac["boss"])] if fac.has("boss") else [])
+		var lead: Array = sq.lineup if not sq.lineup.is_empty() else bosses_of(sq.faction).slice(0, 1)
 		for cid in lead:
 			if not foes.has(str(cid)):
 				continue
@@ -652,14 +653,29 @@ func parts_for(core: Foe) -> Array[Foe]:
 ## its size (the bible's tiers row, 15 October: big is an attribute, apart from boss and elite).
 func is_boss(foe_id: String) -> bool:
 	for fid in factions.keys():
-		if str(factions[fid].get("boss", "")) == foe_id:
+		if bosses_of(str(fid)).has(foe_id):
 			return true
 	return false
 
 
-## A boss pack for a faction, named after its boss.
-func make_boss(uid: int, faction_id: String) -> Unit:
-	var boss_id := str(factions.get(faction_id, {}).get("boss", ""))
+## A faction's bosses, in content order (its `boss`: one foe id, or a list of them; three a
+## domain once the slate lands, each battle drawing one its domain has not ended on this run:
+## decided 15 October, built 22 October). Known foes only, each once.
+func bosses_of(faction_id: String) -> Array[String]:
+	var out: Array[String] = []
+	var b = factions.get(faction_id, {}).get("boss", null)
+	var ids: Array = b if b is Array else ([b] if b != null else [])
+	for id in ids:
+		if foes.has(str(id)) and not out.has(str(id)):
+			out.append(str(id))
+	return out
+
+
+## A boss pack for a faction, named after its boss: `boss_id`, or its first.
+func make_boss(uid: int, faction_id: String, boss_id: String = "") -> Unit:
+	if boss_id.is_empty():
+		var all := bosses_of(faction_id)
+		boss_id = all[0] if not all.is_empty() else ""
 	var boss_name := str(foes.get(boss_id, {}).get("name", "boss")).to_lower()
 	return Unit.boss(uid, boss_name, Vector2i.ZERO, faction_id)
 
@@ -1597,10 +1613,21 @@ func _validate_factions(errs: Array[String]) -> void:
 			if e is Dictionary and foes.has(str(e.get("foe", ""))) and bool(foes[str(e["foe"])].get("hero", false)):
 				errs.append("%s: hero %s is never in a spawn list; it is dealt from the bench" % [where, e["foe"]])
 		if f.has("boss"):
-			if not foes.has(f["boss"]):
-				errs.append("%s: boss names unknown foe %s" % [where, f["boss"]])
-			elif bool(foes[f["boss"]].get("hero", false)):
-				errs.append("%s: boss %s is a hero; a hero is a domain's final, dealt from the bench" % [where, f["boss"]])
+			# One foe id, or a list of them (three a domain once the slate lands), each once.
+			var ids: Array = f["boss"] if f["boss"] is Array else [f["boss"]]
+			if ids.is_empty():
+				errs.append("%s: boss names no foe; leave it out for a domain without one" % where)
+			var seen: Array = []
+			for bid in ids:
+				if not (bid is String):
+					errs.append("%s: boss is a foe id or a list of them" % where)
+				elif seen.has(bid):
+					errs.append("%s: boss %s comes twice" % [where, bid])
+				elif not foes.has(bid):
+					errs.append("%s: boss names unknown foe %s" % [where, bid])
+				elif bool(foes[bid].get("hero", false)):
+					errs.append("%s: boss %s is a hero; a hero is a domain's final, dealt from the bench" % [where, bid])
+				seen.append(bid)
 		# The bench (decided 9 October): the heroes the campaign's start may deal to this domain.
 		var bench: Array = f.get("bench", [])
 		if not (f.get("bench", []) is Array):

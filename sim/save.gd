@@ -581,7 +581,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"state": c.state, "won": c.won, "turn": c.turn, "convergence": c.convergence,
 		"cities": cities, "roster": roster, "next_uid": c._next_uid,
 		"components": c.components, "salvage": c.salvage, "favour": c.favour, "blueprints": c.blueprints,
-		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won, "party": c.party,
+		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "bosses_ended": c.bosses_ended, "finals_won": c.finals_won, "party": c.party,
 		"battle": to_dict(c.battle) if c.battle != null else null,
 		"battle_city": c.battle_city, "squad": c.squad,
 		"history": c.history,
@@ -631,6 +631,10 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	var beaten: Dictionary = d.get("bosses_beaten", {})
 	for f in beaten.keys():
 		c.bosses_beaten[str(f)] = int(beaten[f])
+	c.bosses_ended.clear()
+	var ended: Dictionary = d.get("bosses_ended", {})   # a save from before 22 October has none: every boss open
+	for f in ended.keys():
+		c.bosses_ended[str(f)] = _strings(ended[f])
 	c.finals_won = _strings(d.get("finals_won", []))
 	var dealt = d.get("party", null)
 	if dealt is Dictionary:

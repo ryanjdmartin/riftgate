@@ -589,6 +589,112 @@ func test_greedy_swaps_a_back_foe_forward() -> void:
 	assert_eq(caster.rank, 0, "the bot pulls the caster into the front")
 
 
+## A Swap that bunches (the Dingo's Translocator, 22 October): a foe moved beside another in the
+## row an ally's Spread will hit is worth what that Spread then deals past its target; read in a
+## what-if, the foes put back; nothing sent off alone, and nothing once the ally has acted.
+func test_greedy_swaps_to_bunch_foes_under_an_allys_spread() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("Dingo", Die.single(Face.attack(0, I, [K.SWAP])), 40, 100))
+	sk.add_mech(_mech("Sprayer", Die.single(Face.attack(10, L, [K.CLEAVE])), 40, 100))
+	var a := _ghoul(100, 10)
+	var b := _ghoul(100, 10)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	sk.front[b.column] = null
+	sk._place(b, 0, 3)
+	sk._place(a, 0, 0)
+	var dingo: Skirmish.MechState = sk.mechs[0]
+	assert_true(Policy.bunching_score(sk, dingo, b, Vector2i(0, 1)) > 0.0, "b moved beside a: the Spread reaches both")
+	assert_eq([b.rank, b.column, sk.front[3] == b, sk.front[1] == null], [0, 3, true, true], "read in a what-if, the foes put back")
+	assert_eq(Policy.bunching_score(sk, dingo, b, Vector2i(1, 3)), 0.0, "sent back alone it bunches nothing")
+	var best: Dictionary = {}
+	for o in pol.options_for(sk, 0):
+		if best.is_empty() or float(o["score"]) > float(best["score"]):
+			best = o
+	assert_true(sk.assign(0, best["target"], best["second"]), "the bot's best swap is spent")
+	assert_true(a.rank == 0 and b.rank == 0 and absi(a.column - b.column) == 1, "and leaves the two side by side under the Spread")
+	sk.end_round()
+	sk.start_round()
+	sk.front[b.column] = null
+	sk._place(b, 0, 3)
+	assert_true(sk.assign(1, a), "the Sprayer spends first")
+	assert_eq(Policy.bunching_score(sk, sk.mechs[0], b, Vector2i(0, 1)), 0.0, "and a swap after it bunches for nobody")
+
+
+## The boss mechanics for the bot (15 October; valued 22 October): a gathering countdown's blow
+## is worth breaking off with a Disrupt, holding a round with a Suppress and ending with a kill,
+## at its discount a round still to gather; a part whose fall opens its core is worth a share of
+## the core, and nothing once the core is open or while another part keeps it guarded; a last
+## act costs its blow on the machines it lands on, so the kill that sets it off is worth less.
+func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, I)), 40, 100))
+	var lancer := Foe.make("lancer_t", 100, 40)
+	var jump := {"id": "jump", "name": "Jump", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "countdown": 2, "text": ""}
+	lancer.actions = [jump, {"id": "brace", "name": "Brace", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": ""}]
+	var plain := _ghoul(100, 10)
+	sk.add_foes([lancer, plain])
+	sk.begin()
+	sk.start_round()
+	lancer.action = jump
+	lancer.pending = jump
+	lancer.charge = 2
+	lancer.target = sk.mechs[0]
+	lancer.last_special = ""   # whatever the round drew, the brace is open to a disrupt
+	assert_true(lancer.gathering() and not lancer.attacks(), "gathering two rounds, no blow this one")
+	var gathered := Policy.countdown_threat(lancer, sk)
+	assert_true(is_equal_approx(gathered, 40.0 * 0.75 * 0.75), "its blow at the discount of two rounds: %s" % gathered)
+	assert_true(is_equal_approx(Policy.disrupt_score(sk, lancer), gathered * Policy.HULL_WEIGHT), "a Disrupt breaks it off, into a brace")
+	assert_true(Policy.suppress_worth(sk, lancer) > 0.0 and Policy.suppress_worth(sk, lancer) < gathered, "a Suppress holds it a round, worth the delay")
+	assert_eq(Policy.countdown_threat(plain, sk), 0.0, "a foe gathering nothing")
+	var kill := Face.attack(200, I)
+	var gun := Face.attack(200, I)
+	var with_count := pol.attack_score(sk, sk.mechs[0], kill, lancer)
+	lancer.pending = {}
+	lancer.charge = 0
+	lancer.action = lancer.actions[1]
+	assert_true(with_count > pol.attack_score(sk, sk.mechs[0], gun, lancer), "and a kill ends it, worth more than the same kill on a foe gathering nothing")
+	# The core: guarded while all its parts stand, any one's fall opens it.
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("A", Die.single(Face.attack(10, I)), 40, 100))
+	var core := Foe.make("hilt", 200, 10)
+	core.content_id = "hilt"
+	core.part_ids = ["eye", "eye"]
+	core.guard = "all"
+	var e1 := Foe.make("eye", 20, 5)
+	e1.content_id = "eye"
+	var e2 := Foe.make("eye", 20, 5)
+	e2.content_id = "eye"
+	s2.add_foes([core, e1, e2])
+	s2.begin()
+	s2.start_round()
+	assert_true(Effects.has(core, "guarded"), "the core guarded while both stand")
+	assert_true(Policy.core_opening(s2, e1) > 0.0, "either part's fall opens it")
+	assert_eq(Policy.core_opening(s2, core), 0.0, "the core opens nothing")
+	core.guard = "any"
+	assert_eq(Policy.core_opening(s2, e1), 0.0, "under any, the other part keeps it guarded")
+	e2.hp = 0
+	assert_true(Policy.core_opening(s2, e1) > 0.0, "and the last part standing opens it")
+	# The last act.
+	var s3 := Skirmish.new(1, 3)
+	s3.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
+	var beast := Foe.make("behemoth", 30, 20)
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	var calm := Foe.make("behemoth", 30, 20)
+	s3.add_foes([beast, calm])
+	s3.begin()
+	s3.start_round()
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT), "its Meteor's twenty on the bare machine")
+	assert_eq(Policy.last_act_cost(s3, calm), 0.0, "a foe without one costs nothing")
+	beast.target = s3.mechs[0]
+	calm.target = s3.mechs[0]
+	var f40 := Face.attack(40, I)
+	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "the kill that sets off a Meteor is worth less")
+
+
 ## The Lammergeier's mines for the bot (21 October), on a synthetic passive: a mine laid on a
 ## slot a waiting foe will take is worth its blow there, and nothing with none waiting and no
 ## pull on the team; the pull on a foe is worth the pile landing in laid order, a Shock shot

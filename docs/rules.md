@@ -90,7 +90,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it; a foe's Scramble is a true roll, and the sequence runs on from where it
-  lands. The die shows its next entry beside it. Its Spin-Up spins the whole die, the entry
+  lands. The die shows its next entry beside it, and its hold and codex show its entries as a
+  cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
@@ -150,10 +151,18 @@ defeat when every machine is wrecked. There is no round limit.
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
-  and a gun whose blow is nothing here shows 0 (not built). Dragged over a foe it may strike,
+  and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
+  A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
+  heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
+  blast may land on wears a turning dashed ring with the number it would deal there.
+- **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in
+  hand (its own heat, its bite, its brace) will leave. A Lure in hand shows its turn before it
+  is spent: the foes it would turn draw dashed arrows to its machine, those on it already
+  solid, and every machine's gauges read the round as the lure would leave it (the Siphon's
+  heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
   to 24 heroes, 80 to 100 bosses; a foe's blow 1 to 6, a boss's 6 to 10; machine hull 20 to
@@ -478,7 +487,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   on it bursts at the end of its action, skipped or not.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. A dead Gel
-  splits into two Half-Gels in the reinforcements (one deep).
+  splits into two Half-Gels in the reinforcements (one deep). The formation shows how many
+  wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
 Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
@@ -623,6 +633,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
   jobs and the back as even as the benches allow (two and two), by the seed; no job changes
   after.
+- **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
+  ended on this run, drawn by the seed; once every one has been, any of them.
 - **Finals and finale**: three bosses of one domain beaten make its next rift a final, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
   when the hero falls, and a won final thins the domain. The finale is due at Convergence 12,

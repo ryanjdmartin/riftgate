@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 585 tests, 62,250 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk, with main's rage cap and whole-team Screens merged in); 579 and 62,170 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 594 tests, 62,349 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -30,9 +30,19 @@ document's job and every command are in `README.md`.
 ## Branches
 
 One branch is live beside main: `claude/eager-newton-sf947u`, the stock pass (22 October): the
-decisions of 21 and 22 October as rows, its brief, and the engine chunk built on main's head of
-that morning (merged in), each item a commit; it merges into main when Ryan says, before or
-with the content landing on his marks. Every other branch is merged into main (checked 21 October) and is to
+decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
+marks and the stun calls, each item a commit; main was merged into it three times that day,
+the last with main's rows of the day, so it stands ahead of main and never behind, and the
+code merged clean each time (the records by hand); it merges into main when Ryan says, before
+or with the content landing on his marks. Its baseline (`ace3c3c`, 200 seeds) ran on
+`a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
+Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
+swap (the Dingo) and its boss reads (the Disrupt carriers, and the fights with a countdown,
+parts or a last act: the Lancer's, the Augur's). Those rows re-baseline on merged main before
+the stock pass is read against them; the rest stand (the forecast's reads with a die in hand
+move no bot, which forecasts with none).
+
+Every other branch is merged into main (checked 21 October) and is to
 be deleted from the desk machine or GitHub, since a cloud session's push to delete them is
 refused: `claude/festive-cray-i7lvnm`, `ccr-b6da49d3-4ft738`, `ccr-3259e29d-ydwpom`,
 `claude/intelligent-planck-uwmbhg` and `claude/busy-carson-hmaz96`, merged that day, and
@@ -646,8 +656,8 @@ to-do's Ryan list).
 6. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
-7. The rest in the roadmap's standing order: Ryan's text; the domains' engine (the planned
-   moves, the party dealt from the benches, three bosses a domain); the pacing session's
+7. The rest in the roadmap's standing order: Ryan's text; the domains' last engine (the planned
+   moves; the party and three bosses a domain built, the bosses' slate content alone); the pacing session's
    remaining pieces; battery; audio; art; the commander layer after a balance baseline;
    onboarding before a phone leaves the desk.
 
@@ -663,21 +673,20 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.252, and so is the
-  live (22 October, the page's version 269): main's v0.251 (the page's version 268: Ryan's
-  calls of 21 October, evening, and 22 October, the stores, Silence and Purge passing them by,
-  the carry as a block, the Muster never primed, the Musk Ox's 3 at the first round, the
-  blasting vents counting, the rage capped at 5 as boxes, the charged Screens for the whole team
-  only, the turn's order keeping a charge banked left as a note, three-way merged onto this
-  branch's v0.249, the single-digit scale, rank and file dying to a die or two, armour by role,
-  one breach, a foe's HP and a machine's hull, the stock pass's question) with the engine
-  chunk's rows on top (the tags row, the tier row and the Indirect and area rows built, the
-  breach and HP rows built, section 2's runner sentence, the Boar's row without its stale
-  Breach clause, the regenerated tables). The hangar's vocabulary (the stores', the carry's, the
-  magazine's and the rage's codex, the stock pass's HP and Breach) waits on its next republish.
-  The version numbers on main's file and the live agree after every publish; the rows between
-  them are the other branches'. Git and the page's version history carry what each earlier
-  publish brought.
+  `docs/design-bible.html` after every change. This branch's file is v0.254, and so is the
+  live (22 October, the page's version 271): main's v0.253 (the page's version 270: the
+  other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
+  Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
+  three-way merged onto this branch's v0.252 of 03:42, the page's version 269, whose rows stay
+  this branch's in git until it merges) with the rows of this branch the page had not yet
+  carried on top: Ryan's marks of 22 October (the clock kept for every event-fed status, Breach
+  on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
+  the direction run in the scales row, section 12's content item) and the stun calls of the
+  same day (the stun row, section 12). The hangar (the page's version 92 since main's republish
+  of its Names board) waits on the stock pass's HP and Breach vocabulary at its next republish.
+  The version numbers on the publishing branch's file and the live agree after every publish,
+  main's catching up at the merge; the rows between them are the other branches'. Git and the
+  page's version history carry what each earlier publish brought.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).
@@ -692,7 +701,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   day's content (the five files that had moved: chassis, components, foes, the reserved names,
   vocabulary; the Kite's rework, the Lammergeier, the Swallowtail and the Musk Ox runnable, the
   party's promoted forms) and the pins, which mark the three new machines and the three without
-  models as having none (the page's version 89; `edits` empty before it). Its database
+  models as having none (the page's version 89; `edits` empty before it); and on 22 October
+  with the chassis and the vocabulary (the stores', the carry's, the magazine's and the rage's
+  codex) and every die's entries numbered by their place, the Cassowary's die a cylinder with
+  its order printed (the page's version 91; `edits` empty before it), then the Names board's
+  rules and makers' tabs brought to the bible's naming rows (the page's version 92). Its database
   (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
   personal account; `edits` was empty on 15 October, after the second republish too.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
