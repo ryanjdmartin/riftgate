@@ -324,7 +324,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
 	# of that much would be on the hitter.
 	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
-		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.CRYO_COOL_PER_STACK)
+		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.cryo_cool())
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
 	if f.braces > 0:
@@ -943,7 +943,7 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):
-			var bite := Effects.corrupt_stacks(who.unit, i) * Skirmish.CORRUPT_BITE_PER_STACK
+			var bite := Effects.corrupt_stacks(who.unit, i) * Skirmish.corrupt_bite()
 			score += float(bite) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 			if Effects.is_entry_disabled(who.unit, i) and Effects.cleansable_disable(who.unit, i):
 				score += _raw_attack_mean(who) * CLEANSE_ROUNDS / float(n)
@@ -1240,7 +1240,7 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 		if a.has_keyword(a.action, "disable"):
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
-			score += float(Skirmish.CORRUPT_BITE_PER_STACK) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+			score += float(Skirmish.corrupt_bite()) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 		# A silence sleeps the machine's buffs for the round, a purge takes them: the stacks at
 		# stake, a purge's for the rounds they would have run.
 		if a.has_keyword(a.action, "silence"):

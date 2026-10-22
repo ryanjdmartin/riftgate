@@ -855,20 +855,76 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["volatile"]
+	plate["face"]["volatile"] = 3
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["volatile"]
+	gun["face"]["volatile"] = 3
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
 	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	fins["face"]["keywords"] = ["volatile"]
+	fins["face"]["volatile"] = 3
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
 	for e in db.validate():
 		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
 	var f := db.build_face(plate["face"])
 	assert_true(f.has(Face.Keyword.VOLATILE), "and builds onto the entry")
+	assert_eq(f.volatile, 3, "with the bite it says")
+
+
+## The stock pass's engine (22 October): the rule numbers that were constants in code ride as
+## fields on their keyword, their face or their status, so the content and the landing set them.
+func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_status() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	base["tier"] = 1
+	var cases := {
+		"test_nobite": [{"keywords": ["volatile"]}, "says its bite"],
+		"test_stray_bite": [{"volatile": 3}, "rides with the Volatile keyword"],
+		"test_bite_ok": [{"keywords": ["volatile"], "volatile": 3}, ""],
+	}
+	var gun: Dictionary = db.components["coriolis_accelerator"].duplicate(true)
+	gun["tier"] = 1
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var stray: Dictionary = base.duplicate(true)
+	stray["face"]["per_missing"] = 5
+	db.components["test_stray_step"] = stray
+	cases["test_stray_step"] = [{}, "only beside power_per_missing"]
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	# The missing-HP step reads from the entry, and so does its line.
+	var f := db.build_face(gun["face"])
+	f.per_missing = 5
+	var foe := Foe.new()
+	foe.hp_max = 30
+	foe.hp = 19
+	assert_eq(f.missing_bonus(foe), f.power_per_missing * 2, "two steps of 5 missing")
+	assert_true(f.describe().contains("per 5 HP missing"), "the entry prints its step: %s" % f.describe())
+	# A machine runs hot from the heat the move says, and the move must say it.
+	var drake: Dictionary = db.foes["drake"].duplicate(true)
+	for a in drake["actions"]:
+		if str(a.get("when", "")) == "machine_hot":
+			a.erase("hot")
+	db.foes["test_cold_drake"] = drake
+	errs = db.validate()
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_cold_drake") and e.contains("machine_hot says the heat")), "a hot condition without its heat is refused")
+	# Cryo's cooling and Corrupted's bite are their statuses' own numbers.
+	assert_eq(Skirmish.cryo_cool(), Effects.status_value("cryoed", "cool_hitter"), "Cryo's cooling is the status's")
+	assert_eq(Skirmish.corrupt_bite(), Effects.status_value("corrupted", "corrupt_bite"), "Corrupted's bite is the status's")
+	assert_true(Skirmish.cryo_cool() > 0 and Skirmish.corrupt_bite() > 0, "both carry a number")
 
 
 func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
@@ -1606,7 +1662,7 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 	var cases := {
 		"test_free": [{"keywords": ["rapid"], "cooldown": 0}, "carries another limiter"],
 		"test_hot": [{"keywords": ["rapid"], "cooldown": 0, "heat": 5}, ""],
-		"test_bite": [{"keywords": ["rapid", "volatile"], "cooldown": 0}, ""],
+		"test_bite": [{"keywords": ["rapid", "volatile"], "volatile": 3, "cooldown": 0}, ""],
 		"test_switch": [{"keywords": ["rapid"]}, ""],
 		"test_lift": [{"cooldown": 0}, "has none to lift"],
 		"test_negative": [{"cooldown": -1}, "whole number of rounds"],

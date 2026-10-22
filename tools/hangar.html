@@ -716,12 +716,16 @@ function faceLine(f) {
     bits.push(`${vocabName(f.status || "")} ×${Number(f.stacks || 1)}`);
     if (Number(f.rounds || 1) > 1) bits.push(`${Number(f.rounds)} rounds`);
   } else if (p !== undefined && p !== null) bits.push(String(p));
-  if (f.power_per_heat) bits.push(`+${f.power_per_heat} per 10 heat`);
+  if (f.power_per_heat) bits.push(`+${f.power_per_heat} per ${f.per_heat || 10} heat`);
+  if (f.power_per_missing) bits.push(`+${f.power_per_missing} per ${f.per_missing || 20} HP missing`);
   if (f.vents_all) bits.push("vents all");
   if (f.heat) bits.push(`${f.heat} heat`);
   return bits.join(" · ");
 }
-function kwChip(k, cls = "kw") { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k)); }
+function kwChip(k, cls = "kw", num = 0) { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k) + (num ? ` ${num}` : "")); }
+// A numbered keyword's number, as the face carries it beside the keyword (Burn 2, Volatile 3).
+const KW_NUMBER = {burn: "burn", cryo: "cryo", flak: "flak", volatile: "volatile"};
+function kwNumber(f, k) { return KW_NUMBER[k] ? Number(f[KW_NUMBER[k]] || 0) : 0; }
 // An entry's place on its die as the game prints it: a Roman numeral, from one.
 function roman(n) {
   const marks = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
@@ -737,7 +741,7 @@ function componentEntry(cid, slot, comps, makers) {
   const comp = c.entry, f = comp.face || {}, kind = f.kind || "", planned = comp.status === "planned";
   const kws = el("div", {class: "kws"});
   if (comp.shape) kws.append(el("span", {class: "kw shape", title: "Silhouette class: what the model wears at a gun mount when this component is fitted, in its own maker's metal; none means it shows nowhere (armour, a vent)"}, comp.shape.replace(/_/g, " ")));
-  for (const k of (f.keywords || [])) kws.append(kwChip(k));
+  for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
   const name = el("div", {class: "cname"}, comp.name || cid);
   const tier = compTier(comp);
   if (tier !== null) name.append(el("span", {class: "tier", title: tier === 0 ? "Blueprint tier 0: a basic, whose blueprint a run starts with" : "Blueprint tier: found, or brought by a bought chassis of a higher tier"}, "T" + tier));

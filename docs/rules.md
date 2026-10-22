@@ -224,8 +224,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak after the blow, whatever it dealt (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
-- **Volatile** (any component): spending it costs its owner 10 hull, past shield and
-  armour, before it acts.
+- **Volatile** (with a number, any component): spending it costs its owner that much hull,
+  past shield and armour, before it acts (Volatile 3: 3 hull). Today's two carriers bite 10.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
   Scrambled, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
@@ -234,7 +234,8 @@ Component properties, printed on the entry rather than learned as keywords (the 
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per 10 heat fired, then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
 rule, no word of its own): each foe it kills gives its owner two stacks of Overcharged. **Missing HP** adds its bonus for every
-20 HP the target is missing. **The hopper**: a weapon that fills it puts a load in its
+step of HP the target is missing, both numbers on the entry (the Coriolis Accelerator: +5 per
+20). **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
 Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
@@ -443,7 +444,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   flat armour (bosses 5) and an aim. Its damage never rolls.
 - **Its move**: from the moves whose conditions hold, weighted (attacks 2, specials 1), never
   the same special twice running while anything else is open. Conditions: below half, hurt,
-  fewer than two summons waiting, the team has a reroll left, a machine at 20 heat or more, a
+  fewer than two summons waiting, the team has a reroll left, a machine at the heat the move
+  names or more (the Drake's Stoke and the Black Mage's Fira: 20), a
   machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
   hurt, a machine carrying a buff, one of its own not readied. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing

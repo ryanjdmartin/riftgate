@@ -476,7 +476,11 @@ read: the first fills were the old numbers divided unevenly, `docs/measurements.
    (the greedy rung sets up only where the setup pays within the round; the bible pinned a
    rollout rung); the seven constants still in code as fields on their keyword or status
    (Cryo's cooling, the hot threshold, Volatile's and Corrupted's bites, Missing HP's step,
-   Burning's and Scorched's heat on a machine, Vitriol's share); the Breach keyword on the
+   Burning's and Scorched's heat on a machine, Vitriol's share; built 22 October: Volatile a
+   numbered keyword whose bite each entry says, the missing-HP step the entry's `per_missing`,
+   the hot threshold the move's `hot` beside `machine_hot`, Cryo's cooling and Corrupted's bite
+   their statuses' numbers in the engine's table, where Burning's, Scorched's and Vitriol's
+   already were, each at today's value; the applier sets the fields); the Breach keyword on the
    Railgun; the Ram Frame's and the Rangefinder's reach reads; a condition on a weapon's
    keyword for the Battery (the face names when its Suppress lands, a foe carrying Flak, read
    through the effects' conditions; the bot values it only where it holds and the die over a

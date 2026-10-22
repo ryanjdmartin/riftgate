@@ -315,6 +315,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["aim"] = str(a["aim"])
 		if a.has("when"):
 			act["when"] = Foe.whens_of(a)
+		if a.has("hot"):
+			act["hot"] = int(a["hot"])   # machine_hot's threshold, the heat a machine runs hot from
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow.
 	for i in range(acts.size()):
@@ -828,6 +830,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: per_heat is the heat a step of power_per_heat stands for: positive, and only beside power_per_heat" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
+	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
+		errs.append("%s: per_missing is the HP a step of power_per_missing stands for: positive, and only beside power_per_missing" % where)
+	# Volatile is numbered (the stock pass's engine, 22 October): an entry says the hull a spend bites.
+	if Array(fd.get("keywords", [])).has("volatile") and int(fd.get("volatile", 0)) <= 0:
+		errs.append("%s: a Volatile entry says its bite: volatile, a positive number" % where)
+	if fd.has("volatile") and not Array(fd.get("keywords", [])).has("volatile"):
+		errs.append("%s: volatile (the bite) rides with the Volatile keyword" % where)
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
 	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
@@ -1445,6 +1454,11 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			for w in whens:
 				if not Foe.WHENS.has(str(w)):
 					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
+			# A machine runs hot from the heat the move names (the stock pass's engine, 22 October).
+			if whens.has("machine_hot") and int(a.get("hot", 0)) <= 0:
+				errs.append("%s: machine_hot says the heat a machine runs hot from: hot, a positive number" % aw)
+		if a.has("hot") and not Foe.whens_of(a).has("machine_hot"):
+			errs.append("%s: hot is machine_hot's threshold and rides with it" % aw)
 		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
 			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
 		if str(a.get("status", "")) == "implemented":

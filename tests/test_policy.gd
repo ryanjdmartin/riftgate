@@ -187,7 +187,9 @@ func test_shield_only_die_is_spent_on_the_one_machine() -> void:
 
 func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	var sk := Skirmish.new(3)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 10))
+	var bomb := Face.attack(30, L, K.VOLATILE)
+	bomb.volatile = 10
+	sk.add_mech(_mech("A", Die.single(bomb), 40, 10))
 	sk.add_foes([_ghoul(30, 10)])
 	sk.begin()
 	sk.start_round()
@@ -198,7 +200,9 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_true(sk.front[0] != null and sk.front[0].alive(), "the kill is not taken")
 	assert_eq(sk.mechs[0].unit.hull, 10, "the machine stands")
 	var s2 := Skirmish.new(3)
-	s2.add_mech(_mech("B", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 100))
+	var bomb2 := Face.attack(30, L, K.VOLATILE)
+	bomb2.volatile = 10
+	s2.add_mech(_mech("B", Die.single(bomb2), 40, 100))
 	s2.add_foes([_ghoul(30, 10)])
 	s2.begin()
 	s2.start_round()
@@ -214,6 +218,7 @@ func test_greedy_values_rage_as_another_roll() -> void:
 	var fist := Face.attack(10, L)
 	fist.rolls_again_on = "rage"
 	var gun := Face.attack(20, L, K.VOLATILE)
+	gun.volatile = 10
 	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
 		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}
 	var sk := Skirmish.new(3)

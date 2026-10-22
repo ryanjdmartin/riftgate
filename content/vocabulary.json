@@ -336,10 +336,10 @@
    "id": "volatile",
    "category": "keyword",
    "name": "Volatile",
-   "codex": "Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.",
+   "codex": "Keyword with a number, on any kind of component. Volatile 3 means spending it bites its owner for 3 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.",
    "status": "implemented",
    "design": {
-    "holes": "The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull."
+    "holes": "The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. Numbered since the stock pass's engine (22 October): the entry says its bite (the volatile field, beside the keyword, as Burn says its stacks), where a constant of 10 bit every entry before; the number is a placeholder. It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull."
    }
   },
   {
@@ -629,7 +629,7 @@
    "codex": "Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
    "status": "implemented",
    "design": {
-    "holes": "The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).",
+    "holes": "The bite is the corrupted status's own number in the engine's table (a field since the stock pass's engine, 22 October), a placeholder.",
     "table": {
      "kind": "debuff",
      "on": "machine",
@@ -1508,10 +1508,10 @@
    "id": "power_per_missing",
    "category": "component_property",
    "name": "Grows with missing HP",
-   "codex": "A flat blow that grows with its target's lost HP: it adds its bonus for every 20 HP the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
+   "codex": "A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). MISSING_STEP is a placeholder."
+    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October), the Coriolis Accelerator since 21 October (the Pinion Driver's name went to the Kite's reset gun). The step is the entry's own (per_missing, beside power_per_missing, since the stock pass's engine of 22 October; a constant of 20 before); both numbers are placeholders."
    }
   },
   {

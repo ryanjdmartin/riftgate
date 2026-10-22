@@ -28,10 +28,6 @@ enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, V
 ## one to self only or allies only, so the design space stays open.
 enum Target { SELF_ALLY, SELF, ALLY, FOE }
 
-## A blow that grows with its target's missing hull adds its power_per_missing for every this
-## much the target has lost (the Sparrowhawk's rifle, 10 October). Flat: no roll involved.
-const MISSING_STEP := 20
-
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
@@ -86,6 +82,7 @@ var strikes: int = 1          # blows per use: a rapid-fire weapon lands many sm
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
 var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
+var volatile: int = 0         # any entry with Volatile: the hull a spend bites its owner, past shield and armour (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -99,7 +96,8 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
-var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
+var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
+var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var devours: int = 0          # an attack: each kill gives its owner this many stacks of Overcharged (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
@@ -262,6 +260,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
+		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		# A save or a draft from before 11 October lists devour as a keyword, and one from before
 		# 18 October says `true`: each reads as the rule, a stack a kill.
@@ -274,6 +273,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
+	f.volatile = maxi(0, int(d.get("volatile", 0)))   # add_keyword gives a Volatile entry a bite of 1 when it says none
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
@@ -327,6 +327,7 @@ func to_dict() -> Dictionary:
 			d["per_heat"] = per_heat
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
+		d["per_missing"] = per_missing
 	if devours > 0:
 		d["devours"] = devours
 	if burn > 0 and has(Keyword.BURN):
@@ -335,6 +336,8 @@ func to_dict() -> Dictionary:
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
 		d["flak"] = flak
+	if volatile > 0 and has(Keyword.VOLATILE):
+		d["volatile"] = volatile
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -392,6 +395,8 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
+	if kw == Keyword.VOLATILE and volatile <= 0:
+		volatile = 1   # a Volatile entry says its bite; one when nothing says (a synthetic entry, an old save)
 
 
 func has(kw: int) -> bool:
@@ -469,7 +474,7 @@ func is_ranged() -> bool:
 func missing_bonus(target) -> int:
 	if power_per_missing <= 0 or target == null:
 		return 0
-	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / MISSING_STEP)
+	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / maxi(1, per_missing))
 
 
 func average() -> int:
@@ -499,10 +504,12 @@ func duplicate_face() -> Face:
 	f.power_per_heat = power_per_heat
 	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
+	f.per_missing = per_missing
 	f.devours = devours
 	f.burn = burn
 	f.cryo = cryo
 	f.flak = flak
+	f.volatile = volatile
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -645,6 +652,8 @@ func describe() -> String:
 			for k in keywords:
 				if not printed.has(k):
 					s += " " + keyword_label(k)
+					if k == Keyword.VOLATILE:
+						s += " %d" % volatile   # a numbered keyword: the hull a spend bites
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
@@ -670,10 +679,12 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
+				if k == Keyword.VOLATILE:
+					s += " %d" % volatile
 			if vents_all:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
 			if power_per_missing > 0:
-				s += " +%d per %d HP missing" % [power_per_missing, MISSING_STEP]
+				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
 			if devours > 0:
 				s += " Overcharged ×%d a kill" % devours
 			if fills_hopper > 0:

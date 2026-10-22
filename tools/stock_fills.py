@@ -85,6 +85,10 @@ for e in d['entries']:
         if k == 'power_max' and 'power_max' not in f and v == fill.get('power'):
             continue
         f[k] = v
+    if 'volatile' in f.get('keywords', []):
+        f['volatile'] = 3          # Volatile bites 3 (a numbered keyword since 22 October)
+    if f.get('power_per_missing'):
+        f['per_missing'] = 5       # the missing-HP step (a field since 22 October)
     if 'power_max' in f and f['power_max'] == f.get('power') and e['face']['kind'] == 'attack' and 'power_max' not in fill:
         pass
 assert seen == set(P), set(P) - seen
@@ -117,6 +121,8 @@ for f in d['entries']:
         if (i, a['id']) in VALUES: a['value'] = VALUES[(i, a['id'])]
         if (i, a['id']) in BREACH:
             a['keywords'] = sorted(set(a.get('keywords', [])) | {'breach'})
+        if a.get('when') == 'machine_hot' or 'machine_hot' in (a.get('when') if isinstance(a.get('when'), list) else []):
+            a['hot'] = 5               # the hot threshold (a field on the move since 22 October)
 # foes.json does not round-trip through json.dumps; write it back with the same indent as a best effort
 open(R + 'content/foes.json', 'w', encoding='utf-8').write(json.dumps(d, indent=1, ensure_ascii=False) + '\n')
 
@@ -140,13 +146,6 @@ for m in d['entries']:
 jsave(R + 'content/modules.json', d, False)
 
 # ---- the engine's constants and status values (section 1's tables)
-edit(R + 'sim/skirmish.gd', [
- ('const CRYO_COOL_PER_STACK := 10', 'const CRYO_COOL_PER_STACK := 2'),
- ('const CORRUPT_BITE_PER_STACK := 10', 'const CORRUPT_BITE_PER_STACK := 3'),
- ('const VOLATILE_BITE := 10', 'const VOLATILE_BITE := 3'),
- ('const HOT_HEAT := 20', 'const HOT_HEAT := 5'),
-])
-edit(R + 'sim/face.gd', [('const MISSING_STEP := 20', 'const MISSING_STEP := 5')])
 s = open(R + 'sim/effects.gd', encoding='utf-8').read()
 def status_value(s, sid, effect, new):
     i = s.index('"%s": {"id": "%s"' % (sid, sid)); j = s.index('\n\t"', i + 1) if '\n\t"' in s[i+1:] else len(s)
@@ -162,6 +161,8 @@ s = status_value(s, 'kindled', 'add_attack', 2)
 s = status_value(s, 'siphoning', 'heat_per_blow', 2)
 s = status_value(s, 'spun_up', 'add_damage', 2)
 s = status_value(s, 'hot_streak', 'add_heat', 1)
+s = status_value(s, 'cryoed', 'cool_hitter', 2)       # Cryo's cooling, a field on its status since 22 October
+s = status_value(s, 'corrupted', 'corrupt_bite', 3)   # Corrupted's bite, likewise
 open(R + 'sim/effects.gd', 'w', encoding='utf-8').write(s)
 edit(R + 'sim/policy.gd', [('const KILL_BONUS := 10.0', 'const KILL_BONUS := 3.0'), ('const DEATH_WEIGHT := 60.0', 'const DEATH_WEIGHT := 20.0')])
 print('fills applied')

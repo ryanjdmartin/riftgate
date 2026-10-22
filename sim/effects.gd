@@ -217,10 +217,17 @@ const STATUS := {
 		"tags": ["buff", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Armadillo's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
-	# machine's damaging hit on it spends every stack and cools the hitter so much a stack
-	# (Skirmish.CRYO_COOL_PER_STACK). It never fades on its own: the canister sticks.
+	# machine's damaging hit on it spends every stack and cools the hitter so much a stack,
+	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
+	# October). It never fades on its own: the canister sticks.
 	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter 10 a stack.", "decay": "none",
-		"tags": ["mark"], "effects": []},
+		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 10}]},
+	# Corrupted (the foes' Corrupt, 25 September): the definition each entry's own status is built
+	# from (corrupt_entry, one an entry), and the bite a stack takes from its owner each time the
+	# entry is spent, shield first (Skirmish.corrupt_bite; a field since the stock pass's engine,
+	# 22 October). Cleansable.
+	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner 10 a stack when spent.",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 10}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
 	# Flak keyword's number. Every blow the foe takes deals a point more a stack, an add before
 	# the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its armour comes off,
@@ -550,8 +557,9 @@ static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 	return out
 
 
-## The value one stack of a status ticks for by an effect's name ("tick_hp_share" for the
-## share Vitriol eats a stack): the chips and the bot read it here, never hardcoded.
+## The value one stack of a status carries by an effect's name ("tick_hp_share" for the share
+## Vitriol eats a stack, "cool_hitter" for Cryo's cooling, "corrupt_bite" for Corrupted's
+## bite): the engine, the chips and the bot read it here, never hardcoded.
 static func status_value(status_id: String, effect: String) -> int:
 	var n := 0
 	for eff in STATUS.get(status_id, {}).get("effects", []):
@@ -1619,8 +1627,9 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 ## time the entry is spent it bites its owner, per stack. The component itself is untouched;
 ## the same entry corrupted again stacks up. Cleansable.
 static func corrupt_entry(u, index: int, source: String, n: int = 1) -> Modifier:
-	var status := {"id": "corrupted_%d" % index, "name": "Corrupted", "description": "This component bites its owner when spent.",
-		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_entry", "value": index}]}
+	var def: Dictionary = STATUS["corrupted"]
+	var status := {"id": "corrupted_%d" % index, "name": def["name"], "description": def["description"],
+		"tags": (def["tags"] as Array).duplicate(), "effects": [{"trigger": "status", "effect": "corrupt_entry", "value": index}]}
 	return stack(u, status, SKIRMISH, source, n, DECAY_NONE)
 
 
@@ -1716,6 +1725,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
+		"corrupt_bite": body = "bites its owner %s a stack when its entry is spent" % vs
+		"cool_hitter": body = "a damaging hit on it cools the hitter %s heat a stack" % vs
 		"paradox":
 			body = "a foe gaining any other status gains Paradox; at %s it is suppressed and the Paradox clears" % vs
 		"add_stacks":

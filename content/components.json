@@ -345,7 +345,8 @@
     "power": 10,
     "keywords": [],
     "heat": 0,
-    "power_per_missing": 5
+    "power_per_missing": 5,
+    "per_missing": 20
    },
    "passive": null,
    "tags": [],
@@ -1084,7 +1085,8 @@
     "power": 40,
     "keywords": [
      "volatile"
-    ]
+    ],
+    "volatile": 10
    },
    "passive": null,
    "tags": []
@@ -1329,7 +1331,8 @@
     "power": 40,
     "keywords": [
      "volatile"
-    ]
+    ],
+    "volatile": 10
    },
    "passive": null,
    "tags": []

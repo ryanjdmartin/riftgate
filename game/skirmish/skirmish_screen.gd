@@ -1109,7 +1109,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if cryo > 0:
 		# The Armadillo's mark (20 October; its chip from 21 October): what a damaging hit on it
 		# cools the hitter, the stacks it spends.
-		rows.append(["cryo", str(cryo), "Cryo: a damaging hit on it spends every stack and cools the hitter %d heat (%d a stack)" % [cryo * Skirmish.CRYO_COOL_PER_STACK, Skirmish.CRYO_COOL_PER_STACK], Palette.HUD])
+		rows.append(["cryo", str(cryo), "Cryo: a damaging hit on it spends every stack and cools the hitter %d heat (%d a stack)" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).

@@ -27,9 +27,6 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
-const CRYO_COOL_PER_STACK := 10    # heat a damaging hit on a Cryo foe sheds for its hitter, a stack (20 October; a placeholder ahead of the heat rework)
-const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
-const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -140,8 +137,6 @@ var foe_factory: Callable = Callable()
 var targeting_override: String = ""
 ## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
 var _focus: Dictionary = {}
-## A machine runs hot, for a foe's condition, from this much heat on.
-const HOT_HEAT := 20
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -450,7 +445,19 @@ func pending_bite(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned or f.kind == Face.Kind.BLANK:
 		return 0
-	return Effects.corrupt_stacks(ms.unit, ms.face_index) * CORRUPT_BITE_PER_STACK
+	return Effects.corrupt_stacks(ms.unit, ms.face_index) * corrupt_bite()
+
+
+## What a stack of Corrupted bites its owner each time its entry is spent: the corrupted
+## status's own number (the stock pass's engine, 22 October; a constant before).
+static func corrupt_bite() -> int:
+	return Effects.status_value("corrupted", "corrupt_bite")
+
+
+## The heat a damaging hit sheds for its hitter for each stack of Cryo it spends on a foe:
+## the Cryo status's own number (the stock pass's engine, 22 October; a constant before).
+static func cryo_cool() -> int:
+	return Effects.status_value("cryoed", "cool_hitter")
 
 
 ## What spending the entry showing costs its owner as a volatile component (the Arsenal's
@@ -463,9 +470,10 @@ func pending_volatile(ms: MechState) -> int:
 	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))   # a Silenced entry's Volatile is muted
 
 
-## The hull a volatile entry costs its owner per spend; zero for any other entry.
+## The hull a volatile entry costs its owner per spend, the number its Volatile carries (a
+## numbered keyword since the stock pass's engine, 22 October); zero for any other entry.
 static func volatile_cost(f: Face) -> int:
-	return VOLATILE_BITE if f != null and f.has(Face.Keyword.VOLATILE) else 0
+	return f.volatile if f != null and f.has(Face.Keyword.VOLATILE) else 0
 
 
 ## The hull spending this entry costs its owner: a volatile bite, and a passive's price on
@@ -558,7 +566,7 @@ func cryo_cash(ms: MechState, over: Foe) -> int:
 	for foe in reached_by(ef, over):
 		if foe.alive():
 			stacks += Effects.stacks_of(foe, "cryoed")
-	return stacks * CRYO_COOL_PER_STACK
+	return stacks * cryo_cool()
 
 
 ## One foe's blows on a machine as they would land now, in order: each through what the
@@ -861,8 +869,10 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 		"rerolls_left":
 			return reroll_debt < REROLLS_PER_ROUND
 		"machine_hot":
+			# A machine runs hot from the heat the move names (`hot`, the stock pass's engine of
+			# 22 October; a constant of 20 before), a field on the move like its other numbers.
 			for ms in live_mechs():
-				if ms.heat >= HOT_HEAT:
+				if ms.heat >= int(a.get("hot", 0)):
 					return true
 			return false
 		"machine_armed":
@@ -1887,7 +1897,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
 		_reload(ms, f.ammo_per_foe_hit * reached.size(), "its casings")
 	if thawed > 0:
-		var cooled := mini(ms.heat, thawed * CRYO_COOL_PER_STACK)
+		var cooled := mini(ms.heat, thawed * cryo_cool())
 		ms.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [ms.unit.display_name, thawed, cooled])
 	# Chain: a kill repeats the attack on a new valid target, heat and all (the heat is the
@@ -2532,7 +2542,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		for status_id in gained[t]:
 			_foe_gained_status(t, status_id)
 	if thawed > 0 and by != null:
-		var cooled := mini(by.heat, thawed * CRYO_COOL_PER_STACK)
+		var cooled := mini(by.heat, thawed * cryo_cool())
 		by.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [by.unit.display_name, thawed, cooled])
 	# Chain does what Chain does on a blow (Ryan, 21 October): the kill repeats its spender's

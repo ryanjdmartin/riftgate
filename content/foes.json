@@ -187,7 +187,7 @@
       "hp": 30, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20,
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 2, "weight": 1, "aim": "heat", "when": "machine_hot", "text": "The hottest machine burns, ×{value}.", "status": "implemented" }
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 2, "weight": 1, "aim": "heat", "when": "machine_hot", "hot": 20, "text": "The hottest machine burns, ×{value}.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
     },
@@ -284,7 +284,7 @@
       "hp": 90, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20, "aim": "heat",
       "actions": [
         { "id": "fire", "name": "Fire", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "Fire for {damage}, at the hottest machine. It scorches.", "status": "implemented" },
-        { "id": "fira", "name": "Fira", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "when": "machine_hot", "text": "Every machine scorched, ×{value}.", "status": "implemented" },
+        { "id": "fira", "name": "Fira", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "when": "machine_hot", "hot": 20, "text": "Every machine scorched, ×{value}.", "status": "implemented" },
         { "id": "flare", "name": "Flare", "kind": "attack", "factor": 2.0, "weight": 2, "keywords": ["breach"], "when": "below_half", "text": "Everything it has, as fire: {damage}, through the shield.", "status": "implemented" }
       ],
       "flavour": "The hat is not the problem. Stop shooting the hat."
