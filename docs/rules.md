@@ -122,10 +122,8 @@ defeat when every machine is wrecked. There is no round limit.
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
   any foe carrying Exposed.
-- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords. (Not
-  built: today, fired at the front rank, it splashes: the firer loses shield equal to half
-  the damage the target took, rounded up, never hull, and the Artillery Rangefinder spares
-  it. It goes with the stock pass's area keywords and the Rangefinder's new rule.)
+- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (the
+  explosives' Spread and Penetrate land with the stock pass's content).
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
@@ -420,8 +418,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
   its hull (a breach's whole blow included) rolls the machine's die: an intact entry cracks, a
   cracked one is destroyed, a blank shrugs it off. A shield absorbs its share first and what
-  reaches the hull counts; a Barrier's blow never does. Bites, splash and overheats never
-  injure.
+  reaches the hull counts; a Barrier's blow never does. Bites and overheats never injure.
 - **Cracked**: keeps its number, heat, cooldown, action and passive; loses its keywords.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
   Badger's components are never destroyed.

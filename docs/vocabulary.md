@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 150 implemented, 5 planned, 0 idea.
+Status: 149 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -66,7 +66,7 @@ Status: 150 implemented, 5 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Direct** | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
-| **Indirect** | Targets any foe in either rank. Hitting the front rank splashes the firer's own shield. | implemented |
+| **Indirect** | Targets any foe in either rank, at no cost to its firer. | implemented |
 
 ## Keyword
 
@@ -141,7 +141,6 @@ Status: 150 implemented, 5 planned, 0 idea.
 | **Exposed** | A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in Direct reach. | implemented |
 | **Mine** | A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires. | implemented |
 | **Reinforcements** | Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated. | implemented |
-| **Splash** | Indirect fire on the front rank costs the firer shield equal to half the damage the target took, rounded up. It never reaches hull. | implemented |
 | **Massive** | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
 | **Withdraw** | Available at any point of the player's turn, the first round included. The price is always the same: your turn ends (heat over the maximum burns), the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat. | implemented |
 | **Strike order** | Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left. | implemented |

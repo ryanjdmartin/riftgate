@@ -61,7 +61,9 @@ func test_line_reach_needs_exposed_column() -> void:
 	assert_true(sk.targets_for(0).has(sk.back[0]), "archer is now a line target")
 
 
-func test_indirect_reaches_back_and_splashes_on_front() -> void:
+func test_indirect_reaches_both_ranks_and_costs_its_firer_nothing() -> void:
+	# Danger close retired with the stock pass (22 October): fired at the front rank, Indirect
+	# costs its firer nothing; area belongs to the keywords.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(20, I)), 40)
 	sk.add_mech(m)
@@ -71,7 +73,7 @@ func test_indirect_reaches_back_and_splashes_on_front() -> void:
 	var t := sk.targets_for(0)
 	assert_eq(t.size(), 2, "indirect sees both ranks")
 	assert_true(sk.assign(0, sk.front[0]), "mortar the front")
-	assert_eq(m.shield, 30, "splash cost ten shield")
+	assert_eq(m.shield, 40, "no splash: the shield stands")
 	assert_eq(sk.front[0].hp, 30, "ghoul took 20")
 
 
@@ -4339,7 +4341,7 @@ func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
 
 
-func test_the_reach_tally_counts_a_spend_its_hull_and_its_splash() -> void:
+func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
 	# For the balance runner's reach table (9 October): what a spend of each reach did.
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(20, I)), 40, 100))
@@ -4353,8 +4355,8 @@ func test_the_reach_tally_counts_a_spend_its_hull_and_its_splash() -> void:
 	assert_eq(int(t["spends"]), 1, "one spend")
 	assert_eq(int(t["damage"]), 15, "the hull it took, overkill not counted")
 	assert_eq(int(t["back"]), 0, "aimed at the front")
-	assert_eq(int(t["front_spends"]), 1, "so it is a front spend")
-	assert_eq(int(t["splash"]), 10, "and danger close cost half the blow in shield")
+	assert_false(t.has("splash"), "and no splash is counted, danger close being gone")
+	assert_eq(sk.mechs[0].unit.shield, 40, "nor paid")
 	assert_false(sk.reach_tally.has("direct"), "no direct spend happened")
 
 
@@ -5257,7 +5259,7 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 		assert_eq(f.hp, 85, "the spray lands 15 on the target and each neighbour")
 		assert_true(Effects.has(f, "burning"), "with the Burn it kept")
 	assert_eq(ms.heat, 10, "at the drum's heat")
-	assert_true(u.shield < 40, "danger close: the front-rank spray costs shield")
+	assert_eq(u.shield, 40, "the front-rank spray costs its firer nothing (danger close retired)")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 0

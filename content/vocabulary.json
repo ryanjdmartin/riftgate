@@ -154,7 +154,7 @@
    "id": "indirect",
    "category": "reach",
    "name": "Indirect",
-   "codex": "Targets any foe in either rank. Hitting the front rank splashes the firer's own shield.",
+   "codex": "Targets any foe in either rank, at no cost to its firer.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -872,16 +872,6 @@
    "status": "implemented",
    "design": {
     "holes": "Elites should surface at set points rather than in pool order."
-   }
-  },
-  {
-   "id": "danger_close",
-   "category": "formation",
-   "name": "Splash",
-   "codex": "Indirect fire on the front rank costs the firer shield equal to half the damage the target took, rounded up. It never reaches hull.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
    }
   },
   {

@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -1269,14 +1269,6 @@ static func granted_vent(u) -> int:
 	return maxi(0, n)
 
 
-## Is this machine spared danger close (spares_splash, static; the Artillery Rangefinder)?
-static func spares_splash(u) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "spares_splash":
-			return true
-	return false
-
-
 ## Hull this machine pays for every component it spends (hull_per_spend, static; the
 ## Tithe Coupling), like a volatile bite: shield and armour never see it.
 static func hull_per_spend(u) -> int:
@@ -1668,7 +1660,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_attack": body = "attack %s" % signed
 		"never_hunted": body = "no hunter ever picks it as its prey"
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
-		"spares_splash": body = "indirect fire on the front rank never splashes it"
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"rewrite_weapon": body = "every weapon fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]

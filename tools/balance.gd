@@ -678,8 +678,8 @@ func _report(fights: int, secs: float) -> String:
 	return "\n".join(L)
 
 
-## Does a pack field a back rank? Indirect's premium is reaching it (Ryan, 9 October: the
-## splash is a build issue, not a price, if the back rank holds the threats).
+## Does a pack field a back rank? Indirect's premium is reaching it (Ryan, 9 October), and
+## since danger close retired (22 October) it is its only one.
 func _has_back_rank(p: Dictionary) -> bool:
 	var ids: Array = []
 	if p.has("mix"):
@@ -700,7 +700,7 @@ func _reach_report(top: int) -> Array[String]:
 	var L: Array[String] = []
 	L.append("## Reach, %s" % Policy.kind_name(top))
 	L.append("")
-	L.append("What a spend of each reach did (lures and probes, which deal nothing, left out): its share of attack spends, the hull it took off foes a spend (every foe the blows reached, overkill not counted), the heat it paid a spend, the spends aimed at the back rank, and for indirect the shield its danger close cost per spend aimed at the front. Over every row and pack, then over the packs that field a back rank.")
+	L.append("What a spend of each reach did (lures and probes, which deal nothing, left out): its share of attack spends, the hull it took off foes a spend (every foe the blows reached, overkill not counted), the heat it paid a spend, and the spends aimed at the back rank. Over every row and pack, then over the packs that field a back rank.")
 	L.append("")
 	for only_back in [false, true]:
 		var tot := {}
@@ -719,15 +719,14 @@ func _reach_report(top: int) -> Array[String]:
 			all_spends += int(tot[rk].get("spends", 0))
 		L.append("**%s**" % ("Packs with a back rank" if only_back else "Every pack"))
 		L.append("")
-		L.append("| Reach | Share of attack spends | Hull a spend | Heat a spend | Aimed at the back | Splash a front spend |")
-		L.append("|---|---|---|---|---|---|")
+		L.append("| Reach | Share of attack spends | Hull a spend | Heat a spend | Aimed at the back |")
+		L.append("|---|---|---|---|---|")
 		for rk in ["direct", "indirect"]:
 			if not tot.has(rk):
 				continue
 			var t: Dictionary = tot[rk]
 			var n := maxi(1, int(t.get("spends", 0)))
-			var splash := "%.1f" % (float(t.get("splash", 0)) / maxi(1, int(t.get("front_spends", 0)))) if rk == "indirect" else "-"
-			L.append("| %s | %d%% | %.1f | %.1f | %d%% | %s |" % [rk, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n, _pct(int(t.get("back", 0)), n), splash])
+			L.append("| %s | %d%% | %.1f | %.1f | %d%% |" % [rk, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n, _pct(int(t.get("back", 0)), n)])
 		L.append("")
 	# Who the hits came from: the share of the damage the machines took (shield and hull)
 	# that came from the back rank, in the packs that field one.

@@ -517,16 +517,17 @@ before it. The five design sessions merged that day are paused, each resuming fr
   commander actions on map cooldowns); what the stock pass does with it is in the to-do's
   stock pass line, the reasoning in the briefs README.
 - Silence and Purge's carriers (section 12) and the front's card's intel (with the mission map).
-- The stock pass: tags on every component (the working set Ballistic, Missile, Beam, Plasma,
-  Flame, Arc, Blade, Melee), the shared basic kit at tier zero (every basic's blueprint owned
-  from a run's start), the old close weapons brought to Direct's band, the Pinion Driver locked
-  on the Kite, the Baboon free to stock a shield, every tier-one chassis on basics beside
-  its locked piece, each component's tier in its entry and every chassis stocking only below
-  its own tier (the Arsenal's tier-one components exist for its tier twos to stock), a bought
-  chassis bringing copies of its stock and never the blueprints, heat re-priced by niche so
-  that it bites (section 5's heat row: a machine firing every round overheats by its third).
-- Danger close retires and area belongs to keywords on any reach: Splash folds into Spread and
-  Penetrate, an explosive carries both (the Artillery Rangefinder needs a new rule).
+- The stock pass's content: tags on every component (the working set Ballistic, Missile,
+  Beam, Plasma, Flame, Arc, Blade, Melee; the validator holds them to it since 22 October), the
+  shared basic kit at tier zero (the tiers stored and checked since 22 October, today's tier one
+  standing in), the old close weapons brought to Direct's band, the Baboon free to stock a
+  shield, every tier-one chassis on basics beside its locked piece (the Arsenal's tier-one
+  components exist for its tier twos to stock), a bought chassis bringing copies of its stock
+  and never the blueprints, heat re-priced by niche so that it bites (section 5's heat row: a
+  machine firing every round overheats by its third).
+- Area belongs to keywords on any reach: Splash folds into Spread and Penetrate, and an
+  explosive carries both (with the stock pass's content; danger close retired 22 October, the
+  Artillery Rangefinder's rule open).
 - Purge, our keyword for the foes' buffs (its carriers and numbers open; Purge on both sides for
   now, Ryan, 20 October).
 - The go on the roster analysis, 14 and 15 October (rows and `docs/rules.md` lines): the shield

@@ -26,7 +26,6 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
-const DANGER_CLOSE_DIVISOR := 2
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CRYO_COOL_PER_STACK := 10    # heat a damaging hit on a Cryo foe sheds for its hitter, a stack (20 October; a placeholder ahead of the heat rework)
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
@@ -86,7 +85,7 @@ var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for
 var sponsorship := {"guarded": 0, "damaging_spends": 0, "quiet_spends": 0}
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
-## rank, the heat paid and the shield lost to danger close. Never read by the game.
+## rank and the heat paid. Never read by the game.
 var reach_tally: Dictionary = {}
 ## The same by the shape of the number (rolled or flat), and the damage the foes dealt by
 ## the rank they struck from. The runner's alone.
@@ -1616,7 +1615,7 @@ func withdraw() -> bool:
 
 ## Spend an attack: every strike is its own blow (its own roll, its own keywords and
 ## passives), landing on every foe the component reaches. Heat is paid once per
-## use; danger close is charged on the total.
+## use.
 ## `real`: the entry as the die holds it, when it is not the one showing (a Chain repeated out
 ## of a mine, in the reinforcement step), for the next link's reach and a drone's mine.
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real: Face = null) -> void:
@@ -1817,19 +1816,12 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
-	var was_front := target.rank == 0
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
-	# opens the back rank to direct fire until reinforcements plug it.
+	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
+	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
-	var splashed := 0
-	if reach == Face.Reach.INDIRECT and was_front:
-		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
-		if splash > 0 and not Effects.spares_splash(ms.unit):
-			splashed = mini(splash, ms.unit.shield)
-			ms.unit.shield = maxi(0, ms.unit.shield - splash)
-			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
 	if f.power > 0 or f.power_max > 0:   # a lure or a probe deals nothing: it is no spend of damage
-		_tally_reach(reach, dealt, aimed_back, heat_total, splashed)
+		_tally_reach(reach, dealt, aimed_back, heat_total)
 		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
@@ -2516,18 +2508,15 @@ func _screen_cover() -> void:
 
 
 ## One attack's share of the reach tally (the runner's; the game never reads it).
-func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int, splashed: int) -> void:
+func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int) -> void:
 	var k := str(Face.REACH_NAMES.get(reach, reach))
-	var t: Dictionary = reach_tally.get(k, {"spends": 0, "damage": 0, "back": 0, "heat": 0, "splash": 0, "front_spends": 0})
+	var t: Dictionary = reach_tally.get(k, {"spends": 0, "damage": 0, "back": 0, "heat": 0})
 	if not _chaining:
 		t["spends"] += 1
 		if aimed_back:
 			t["back"] += 1
-		else:
-			t["front_spends"] += 1
 	t["damage"] += dealt
 	t["heat"] += heat
-	t["splash"] += splashed
 	reach_tally[k] = t
 
 

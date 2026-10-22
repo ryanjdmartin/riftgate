@@ -379,8 +379,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n, sk) * HULL_WEIGHT))
 			p *= _kill_odds(link, n.hp)
 	score -= heat_cost(sk, ms, f, uses)
-	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
-		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
 	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
 
 

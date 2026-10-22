@@ -219,20 +219,15 @@
    "flavour": "",
    "stats": {},
    "text": {
-    "description": "Its indirect fire on the front rank never splashes it.",
-    "effects": [
-     {
-      "trigger": "static",
-      "effect": "spares_splash",
-      "value": 1
-     }
-    ]
+    "status": "planned",
+    "description": "",
+    "effects": []
    },
    "design": {
     "stage": "draft",
     "fantasy": "A man with a theodolite who has never once been wrong about where a shell lands.",
-    "niche": "Danger close removed: indirect fire on the front rank for free.",
-    "notes": "Ryan, 9 October: the Rangefinder as named fits a splash-damage eliminator (Claude's earlier versions rolled indirect weapons high, too near the Databank)."
+    "niche": "Its rule is open: danger close, which it spared, retired with the stock pass (22 October), and the module keeps its stats until Ryan picks a rule.",
+    "notes": "Ryan, 9 October: the Rangefinder as named fits a splash-damage eliminator (Claude's earlier versions rolled indirect weapons high, too near the Databank). 22 October (the stock pass's engine): danger close retired, so its rule went with it; the text is a planned draft with no effects until the rule is picked (the stock pass's brief proposes +1 on Indirect blows aimed at the back rank, a reach read; Ryan's call)."
    }
   },
   {
