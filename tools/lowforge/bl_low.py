@@ -327,6 +327,12 @@ class Tiles:
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
+        elif kind == "corona":
+            # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue-white,
+            # near uniform like the lit tile, so a small part reads the same wherever the world
+            # grid lands on it; the one lit colour on a machine that is no flame.
+            img = np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.04, 0.04, size=(TILE, TILE, 1)).astype(np.float32)
         else:
             img = self.metal()
         image = bpy.data.images.new(name, TILE, TILE, alpha=True)

@@ -18,8 +18,10 @@ skirmish.
 
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty chassis from five makers
-  (`content/chassis.json`). A run has four squad slots and starts with three machines.
+  slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
+  (`content/chassis.json`), three of them planned and never dealt until their engines land (the
+  Skua, the Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
+  machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
   down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
@@ -97,10 +99,9 @@ defeat when every machine is wrecked. There is no round limit.
   showing included, the one exception to the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
-- **The Quick-turn Avionics Relay** (the Needletail's passive; the machine waits on its content
-  session): a setup, a debuff or a buff read on the entry as it is spent, is Rapid on it once
-  a round, the entry dark for the rest of the round as Rapid's is; the die shows the Rapid on
-  every setup while the gate is open. A piece Rapid of its own spends no gate.
+- **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
+  read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
+  the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
   unspent at the round's end are banked, up to three, and spent in a later round like any
   reroll.
@@ -196,7 +197,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
-- **Expose** (the Needletail's Fovea Designator; no carrier in content yet): every foe reached
+- **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
   and left standing is Exposed through the next round; a second Expose refreshes it, never
   adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
@@ -316,7 +317,7 @@ On a machine:
 - **Spun Up** (buff): its next weapon spend deals +2 a stack, then every stack is spent, by a
   weapon of no damage too; carried between turns until a weapon spends it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 10 shield at the start of each
+- **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
   round for three rounds; it stacks, each grant keeping its own end.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until

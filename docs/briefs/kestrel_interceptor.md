@@ -4,8 +4,9 @@ The session designs the Kestrel tier one that acts twice a round, Ryan's pick of
 from the shield-spender's alternative kits, and finds the build hook its first kit lacked.
 "The interceptor" is a working label; the name and the look are Ryan's.
 
-**Status**: decided (Ryan's go, 21 October; named that evening, the Needletail; the look and
-numbers left to the content session, so this brief holds the rounds until then). The passive Ryan's, 18 October; the kit
+**Status**: decided (Ryan's go, 21 October; named that evening, the Needletail); its content
+landed 23 October, runnable, with its model (Claude's first cut, `ccr-7d865127-wr1ko2`), so
+this brief holds the rounds until its last item, the aims' shown words, is picked. The passive Ryan's, 18 October; the kit
 Claude's, 20 October, its third form, below the second; the fourth round, late that day, names the mark Exposed and widens the
 gate to buffs; the fifth takes Ryan's calls, the mark reach and armour and no number on a weapon
 of no damage, and answers the duration and the die's kinds). **Maker**: Kestrel. **Tier**: two (Ryan, 21 October: "Put butcher in": Kestrel's tier ones are the Storm
@@ -458,8 +459,10 @@ kit. Every number a placeholder; the names Ryan's.
 
 ## Open for the content session
 
-1. The numbers; its look, a tilt-jet; its names as settled 21 October (the Needletail, the
-   Fovea Designator, the Quick-turn Avionics Relay, K-17 Mk I Tilt-Jet Spotter).
+1. Landed 23 October: its numbers at the stock pass's scale (a light flyer at 20 hull, shield
+   10, heat 12; the Designator heat 2), its stock (the Transonic Rifle, the Overcharge Coil,
+   the Bleed Valve), its names and its look, a tilt-jet whose nacelles stand upright at rest
+   and tilt level with its speed, parted from the Buzzard from above.
 2. The aims' shown words: Ryan, 21 October, left them to the content session ("the aims
    don't matter since they're not locked or tuned at all"); the seventh round's five are its
    start.
@@ -468,13 +471,14 @@ kit. Every number a placeholder; the names Ryan's.
 
 ## Waits on
 
-Nothing. For the tender, a Kestrel tier one landed.
+Ryan's pick of the aims' words.
 
 ## What the content session lands
 
-The Needletail and the Fovea Designator in content (planned until the engine: the gate, Expose,
-Exposed, the glyph grammar, the print, the damage guard), Expose and Exposed's sentence in
-the vocabulary, the aims' shown words, its name, look and numbers; then this brief retires.
+Landed 23 October: the Needletail and the Fovea Designator in content, runnable (the gate,
+Expose, Exposed, the glyph grammar, the print and the damage guard were built 21 October; the
+validator's list of passive conditions gained the gate's that day), its name, look and numbers.
+Still to land: the aims' shown words; then this brief retires.
 The bible's Kestrel row, the die-entry row and the rules carry the design since 21 October.
 
 ## What the session hands back

@@ -98,6 +98,27 @@
   "whip_scorpion": null,
   "swallowtail": null,
   "musk_ox": null,
-  "lammergeier": null
+  "lammergeier": null,
+  "skua": [
+   1,
+   2,
+   3
+  ],
+  "storm_petrel": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "needletail": [
+   1,
+   2,
+   3
+  ],
+  "giant_petrel": [
+   1,
+   2,
+   3
+  ]
  }
 }

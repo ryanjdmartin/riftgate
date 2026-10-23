@@ -183,7 +183,8 @@ reach given to the whole team (the interceptor's designator, decided 21 October:
 for every Direct gun; its priced form, the dive through a standing front at the front foe's
 blow, on its bench). Kestrel's stock holes by kind
 (a multi-strike gun, a mid-heat gun, a reroll module; the Diffuser, the Deflector and Chain in
-mines settled since) are in `kestrel_line.md` for the stock pass.
+mines settled since) landed with the stock pass (22 October: the Cyclic Cannon, the Transonic
+Rifle, Trim Tabs).
 The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
 (Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
 if one is ever wanted; its deal is the Prairie Dog, the Cassowary or the Cottonmouth since their
@@ -302,36 +303,37 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | the cooldown property |
 | `kestrel_strafer.md` | decided; the go 21 October (a swing-wing, the Skua since that evening) | Kestrel | 1 | the content session: its numbers, then the brief retires |
 | `kestrel_shield_spender.md` | decided; the go 21 October (the Storm Petrel, a hovercraft; the off-tank package of 19 October) | Kestrel | 1 | the content session: its numbers and model; its runner row on the shield rule's engine |
-| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its model and assets (the to-do); its stock with the stock pass; its runner rows once fights have a wait list worth trapping |
+| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
 | `kestrel_gun_platform.md` | decided; the go 21 October (the Giant Petrel, the formation leader, an ekranoplan) | Kestrel | 3 | the engine and content sessions: Maverick's Playbook, the Immelmann Booster, its numbers and model |
-| `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its stock with the stock pass; its runner rows its team rows |
+| `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
 | `kestrel_interceptor.md` | decided (Ryan's go, 21 October, the Needletail: the gate, Exposed as reach and armour for two rounds, the die's grammar; the bible's rows) | Kestrel | 2 (Ryan, 21 October) | the content session: its content, Expose and Exposed in the vocabulary, the aims' words, its look |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the last slots; every chassis decided by 21 October and that evening the Buzzard's stock filled, the stock holes taken, the names settled and the last two slots marked | Kestrel | all | nothing: the hub until the line's briefs land |
 | `kestrel_magpie.md` | direction (Ryan, 21 October: a support engine, the thief or its intelligence; "Magpie" a working name); the first round that day (the thief, the mimic, the cache) | Kestrel | open | Ryan's pick of a direction |
 | `kestrel_owl.md` | direction (Ryan, 21 October: a stealth unit, the silent hunter, on the map or in the fight; the Snowy Owl); the first round that day (cold is quiet, the hunter on the map, Hidden as a status) | Kestrel | open | Ryan's pick of where the stealth lives |
-| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its forecasts, runner rows and assets (the to-do; its engine built 21 October); the stock pass's heat prices |
-| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its last reads and assets (the to-do; its engine built 21 October); the stock pass's Rapid prices, for its balance |
-| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do) |
-| `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its engine and assets (the to-do); the stock pass's heat scale |
-| `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | its assets (the to-do); its engine built 18 October |
-| `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | the stock pass's tags and the numbers' rescale (Ryan, 21 October) |
+| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its runner rows and assets (the to-do; its engine built 21 October, its forecasts 22 October) |
+| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its bot cycle, runner row and assets (the to-do; its engine built 21 October, its reads 22 October) |
+| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its runner rows and assets (the to-do; its engine built 21 October) |
+| `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its runner rows and assets (the to-do; its engine built 21 October) |
+| `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | Ryan's play (the to-do); its engine built 18 October, its assets 19 October |
+| `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | nothing since the stock pass's tags and the numbers' rescale landed (22 October; Ryan, 21 October) |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its runner row and assets (the to-do; its engine built 21 October) |
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
-| `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October); its stock with the stock pass |
+| `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
-| `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls; the stock pass |
+| `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
 | `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
 | `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
-| `stock_pass.md` | plan and proposal (22 October): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method and the chunks | all | 0 to 3 | Ryan's marks on the proposal; its engine chunk built 22 October (on its branch) |
+| `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), its plan and proposal beneath: the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method and the chunks | all | 0 to 3 | the name pass and the pricing run (the to-do; Ryan's reads of its bands settled 23 October), then it retires |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
-cooldown, a component for the stock pass, noted in the line frame's brief); the Scapegoat Brand
+cooldown, noted in the line frame's brief; combined entries before Rapid ones by the
+action-economy row, none landed with the stock pass); the Scapegoat Brand
 (a rare after the vocabulary pass, half of it now Mastema's mover: in Mastema's brief); enemy
 Shock on machines (none today; Claude's lean, if any: on a hero or an elite, telegraphed, never
 the rank and file; the foes' fresh start); the economy items (`docs/economy_pass.md`); the
@@ -440,11 +442,12 @@ overrule)
    echidna left open and the H-tank parked on Ryan's charge brief, 20 October, the day the
    Armadillo landed); then the content sessions of Kestrel's three new machines below its
    capstones (the Needletail, the Skua and the Storm Petrel, decided 21 October), and any of
-   the bomber, the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
+   the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
    landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
-   Dingo's Translocator and the Prairie Dog's fight half on 19 October.
-2. In pairs: the Baboon with the stock pass (its own plan and proposal: `stock_pass.md`, 22 October). The battlecruiser and the Carrier run apart (Ryan,
+   Dingo's Translocator and the Prairie Dog's fight half on 19 October, the bomber as the
+   Lammergeier on 21 October.
+2. The Baboon on its own, the stock pass having landed without it (22 October). The battlecruiser and the Carrier run apart (Ryan,
    20 October: "not related at all").
-3. After the stock pass and the numbers' rescale: the gunship (Ryan, 21 October); the multi-rotor landed on 21 October as the Swallowtail and
+3. The gunship, free since the stock pass and the numbers' rescale landed (22 October; Ryan, 21 October); the multi-rotor landed on 21 October as the Swallowtail and
    the artillery as the Musk Ox, the boiler on 20 October as the Whip Scorpion.
 4. After the foes' fresh start: the jellyfish, Mastema, Minos.

@@ -478,6 +478,94 @@
      }
     ]
    }
+  },
+  "skua": {
+   "when": "First cut, 23 October.",
+   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Skua is the line's one conventional jet: a long nose with the canopy forward, gloves running back to the wing pivots, two booster nacelles set wide under a flat deck, two fins near plumb (the Buzzard's and the Puffin's cant far out), all-moving tailplanes, and cobalt wings spread at twenty degrees at rest that sweep back for the run and spread past rest to brake; the Flechette Pod a dorsal pod behind the canopy, its honeycomb face forward, its collar lit twice by the strafing run. Its acts: the strafing run, a sweep and dash, harrying in two diving darts, a landing flare. On the move its wings sweep back as it gathers speed and spread as it slows. Ryan's to judge running.",
+   "images": [
+    {
+     "file": "skua/skua_front.png",
+     "alt": "skua, front"
+    },
+    {
+     "file": "skua/skua_rear.png",
+     "alt": "skua, rear"
+    },
+    {
+     "file": "skua/skua_above.png",
+     "alt": "skua, from above"
+    },
+    {
+     "file": "skua/skua_strafing_run.png",
+     "alt": "skua, the strafing run, wings swept"
+    }
+   ]
+  },
+  "needletail": {
+   "when": "First cut, 23 October.",
+   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Needletail is a needle of a fuselage on a short straight stub wing with a big booster nacelle on each tip, standing upright at rest so it hovers on them, exhausts down, where the Buzzard's nacelles tilt on the shoulders of a broad-winged airframe; a long thin tail ending in a dark needle with an X of small fins; a wide spotter's canopy; the Fovea Designator a sensor ball on a mast behind it, turning and nodding, its lens lit as it paints. Its acts: the transition to level flight and back, a sidestep, designating, backpedalling on its nacelles tipped back. On the move its nacelles tilt level as it gathers speed and come upright as it slows. Ryan's to judge running.",
+   "images": [
+    {
+     "file": "needletail/needletail_front.png",
+     "alt": "needletail, front"
+    },
+    {
+     "file": "needletail/needletail_rear.png",
+     "alt": "needletail, rear"
+    },
+    {
+     "file": "needletail/needletail_above.png",
+     "alt": "needletail, from above"
+    },
+    {
+     "file": "needletail/needletail_transition.png",
+     "alt": "needletail, the transition, nacelles level"
+    }
+   ]
+  },
+  "storm_petrel": {
+   "when": "First cut, 23 October.",
+   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Storm Petrel is a long narrow chined hull with a wave-piercing bow, one big booster on the centreline astern (the Puffin's two giant boosters ride its flanks on a wide blunt hull), two cobalt riot plates with chrome rims hinged along the deck and carried raised, their leading edges swept, like the bird's wings held up as it patters, a field strip and an emitter on each banked dark at rest; St. Elmo's Regenerator a mast amidships with St. Elmo's fire at its masthead and yardarms. Its acts: shields up (both plates to a wall, the field lit), the whack, St. Elmo's fire, pattering forward in three hops. On the move its plates draw up and it drifts flat through its corners. Ryan's to judge running.",
+   "images": [
+    {
+     "file": "storm_petrel/storm_petrel_front.png",
+     "alt": "storm petrel, front"
+    },
+    {
+     "file": "storm_petrel/storm_petrel_rear.png",
+     "alt": "storm petrel, rear"
+    },
+    {
+     "file": "storm_petrel/storm_petrel_above.png",
+     "alt": "storm petrel, from above"
+    },
+    {
+     "file": "storm_petrel/storm_petrel_shields_up.png",
+     "alt": "storm petrel, shields up"
+    }
+   ]
+  },
+  "giant_petrel": {
+   "when": "First cut, 23 October.",
+   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Giant Petrel is after the Lun: a long flying-boat hull, the longest thing Kestrel builds; eight boosters in two banks of four on canards over the bow (the Immelmann Booster), pitching to blow under the wings; short cobalt wings low on the hull with float pontoons and endplates; a tall T-tail; the Spindrift Salvo's three pairs of tubes along the spine on a plinth that elevates, each back-blast lit; the Reheat Uplink's dish behind the cockpit; two turrets. Its acts: the salvo, the Immelmann, the uplink, a traverse. On the move it runs heavy and slow, nose a touch up. Ryan's to judge running.",
+   "images": [
+    {
+     "file": "giant_petrel/giant_petrel_front.png",
+     "alt": "giant petrel, front"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_rear.png",
+     "alt": "giant petrel, rear"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_above.png",
+     "alt": "giant petrel, from above"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_salvo.png",
+     "alt": "giant petrel, the salvo, its battery raised"
+    }
+   ]
   }
  }
 }

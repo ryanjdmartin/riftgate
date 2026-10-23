@@ -466,7 +466,7 @@
    "id": "retaliate",
    "category": "status",
    "name": "Retaliate",
-   "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always.",
+   "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.",
    "status": "implemented",
    "design": {
     "holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.",
@@ -871,7 +871,7 @@
    "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation view, showing who waits rather than how many, is the to-do's."
+    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation shows the reinforcements waiting by rank since 22 October (a count a rank in its right gutter, a tall plaque for the massive), so a mine is laid against a count."
    }
   },
   {
@@ -1803,6 +1803,22 @@
      "on": "machine",
      "stacks": "No",
      "lasts": "The round"
+    }
+   }
+  },
+  {
+   "id": "regenerating",
+   "category": "status",
+   "name": "Regenerating",
+   "codex": "Mech status, the Storm Petrel's. It regains 2 shield at the start of each round for three rounds. Each grant keeps its own clock, so two grants regain 4 a round until the first runs out.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_shield_spender.md): granted by St. Elmo's Regenerator to its own spender, stacking as timed stacks do, each grant its own end (the stacking policy read off the status). Planned until the engine has it: a round-start shield, the Buzzard's passive's effect, on a timed status, and the rider on a weapon's own spender. The number is a placeholder at the stock pass's scale (the brief's 10 at 2).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: each grant its own clock",
+     "lasts": "Three rounds from its grant"
     }
    }
   },
