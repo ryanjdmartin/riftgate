@@ -4,6 +4,7 @@ copy of the project with one lever moved in its content, the balance runner read
 design tests, the levers kept landing through tools/stock_fills.py.
 
   python3 tools/stock_loop.py run <name> [--lever name[:arg]]... [--seeds 30] [--alone] [--no-campaign]
+      [--team a,b,c,d]... [--set path=json]...
   python3 tools/stock_loop.py compare <name> [<name>...]
   python3 tools/stock_loop.py levers
 
@@ -14,11 +15,14 @@ processes, every chassis alone (greedy, no party) with --alone, and the campaign
 runs unless --no-campaign; it writes summary.md against the tests of the bible's section 2
 (rounds to win by kind of fight, hull lost, the coordination gap, heat, pick share). About half
 an hour on four cores at 30 seeds for the team rows with every rung; --policies random,greedy
-and --packs big (or rank_and_file, or pack ids) cut it down. `compare` lays finished loops side
-by side. Run it from the repository; it never touches the repository's own files, and a kept
-lever lands by editing tools/stock_fills.py and running it (the copy is a direction at 30
-seeds, the bands at 200 are the report's). GODOT names the Godot binary when it is not on the
-path."""
+and --packs big (or rank_and_file, or pack ids) cut it down. --team adds a row of exactly those
+machines (a squad of four, say); --set hands the runner an override it applies after the
+content loads, unvalidated, for a fit no stock may carry (a tier-one piece on a tier-one
+chassis: `chassis/badger/loadout/0="polarity_projector"`), where a lever edits the copy's
+content and the validator still reads it. `compare` lays finished loops side by side. Run it
+from the repository; it never touches the repository's own files, and a kept lever lands by
+editing tools/stock_fills.py and running it (the copy is a direction at 30 seeds, the bands at
+200 are the report's). GODOT names the Godot binary when it is not on the path."""
 import argparse, json, math, os, re, shutil, subprocess, sys, time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -533,6 +537,8 @@ def main():
     r.add_argument('--policies', default=','.join(POLICIES))
     r.add_argument('--rows', default=','.join(TEAMS), help='the runner\'s row ids (the default team is a --team row here)')
     r.add_argument('--packs', default='', help='the runner\'s --packs: big, rank_and_file, or pack ids')
+    r.add_argument('--team', action='append', default=[], help='the runner\'s --team, repeatable: a row of exactly these chassis ids (its row id is team:a+b+c)')
+    r.add_argument('--set', action='append', default=[], help='the runner\'s --set, repeatable: path=json, applied after the content loads and never validated (a fit no stock may carry)')
     r.add_argument('--alone', action='store_true', help='every chassis alone too, greedy, without the party')
     r.add_argument('--alone-rows', default='', help='with --alone: only these chassis ids')
     r.add_argument('--no-team', action='store_true')
@@ -566,6 +572,13 @@ def main():
     open(f'{root}/levers.txt', 'w', encoding='utf-8').write('\n'.join(moved) + '\n')
     pols = a.policies.split(',')
     extra = TEAM_EXTRA + (['--packs', a.packs] if a.packs else [])
+    for t in a.team:
+        extra += ['--team', t]
+    for v in a.set:
+        extra += ['--set', v]
+    if a.set:
+        moved.append('the runner\'s overrides: ' + ', '.join(a.set))
+        open(f'{root}/levers.txt', 'w', encoding='utf-8').write('\n'.join(moved) + '\n')
     rows = a.rows.split(',')
     times = {}
     t0 = time.time()

@@ -39,7 +39,7 @@ const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Overcharged stacks are worth: a halving stack pays about twice itself over the rounds to come; kept for the battle (the Ammit), more
-const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
+const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
@@ -444,14 +444,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
 		if f.has(Face.Keyword.SHOCK):
-			# Each foe left standing takes the team's next blow double: about the team's own
-			# average blow again, capped at what the foe will have left. A charge already on a
-			# foe this blow does not spend is worth nothing more.
+			# Each foe left standing takes the team's next blow double: the blow shock_cash
+			# reads, capped at what the foe will have left. A charge already on a foe this blow
+			# does not spend is worth nothing more.
 			for foe in hit:
 				if Effects.has(foe, "shocked") and mean <= 0.0:
 					continue
 				var left := maxf(0.0, float(foe.hp) - mean)
-				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
+				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, shock_cash(sk, ms, foe))
 	if f.has(Face.Keyword.SPILLOVER) and target.rank == 0 and not target.is_massive():
 		# What the roll has past the kill lands on the foe behind, and may kill it too.
 		var behind := sk.foe_at(1, target.column)
@@ -1455,6 +1455,24 @@ static func _outlook_gain(before: Dictionary, after: Dictionary) -> float:
 		score += DEATH_WEIGHT
 	score += float(int(after["shield_after"]) - int(before["shield_after"])) * BANK_WEIGHT
 	return score
+
+
+## The blow a Shock laid on this foe now will double (23 October): the biggest an ally still to
+## act this turn shows that reaches it, the hitter in hand, else the team's average blow. Priced
+## at a share of the team's average alone, a Shock of no damage read as a bad roll beside any
+## hitter, so the rerolls every rung shares threw a Polarity Projector away nine times in ten
+## (`docs/measurements.md`, 23 October). A mine's Shock and a hull's land later and keep the
+## average at SHOCK_WEIGHT.
+func shock_cash(sk: Skirmish, ms: Skirmish.MechState, foe: Foe) -> float:
+	var best := 0.0
+	for other in sk.live_mechs():
+		if other == ms or other.assigned:
+			continue
+		var of := sk.spend_face(other)
+		if of == null or not of.is_attack() or not sk.targets_for_face(other, of).has(foe):
+			continue
+		best = maxf(best, float(of.average()))
+	return best if best > 0.0 else _team_raw_attack_mean(sk)
 
 
 ## The team's average attack entry, for what a doubled blow is worth.

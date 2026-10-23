@@ -864,3 +864,176 @@ losing where greedy wins) and shed about a sixth of their wear, which stays thre
 the heavy teams' since the trio is light and the heavies' armour 2 walls the rank and file's
 blows outright; the finisher's one-shot is gone. The 200-seed reports (`docs/balance.md`,
 `docs/campaign_run.md`) predate the four hulls' rise and are rerun with the pricing run.
+
+## 23 October, the tests on a squad of four and on built teams
+
+**Ryan's calls on the bands, read** (23 October, his "I think your suggestions are sound" of
+Claude's leans: the kill time read on a squad of four, the gap on built teams). Run with
+`tools/stock_loop.py` (its `--team` and `--set`, added for these) on main's head (`399a72d`,
+the content as landed, the light hulls at 20), each at 30 seeds against the seventeen big fights
+(`--packs big`) with greedy play, blind play and the planner, no campaign: the four team rows as
+stocked, the same seeds' baseline for the rest (its Kestrel and Wainwright & Sutler cells equal
+the hull loop's fight for fight); the four with setup pieces fitted; five squads of four, as
+stocked and with the same fits; then two experiments in copies, on the bots' price for a Shock
+and on a trio's order. Directions.
+
+The fits, through the runner's overrides (applied after the content loads and never validated,
+since a chassis stocks only below its own tier): a tier-zero basic swapped for a found setup
+piece, so each trio carries a Shock and Flak beside its stock's. The Honey Badger's Rivet Gun
+for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Armadillo's
+Twin Autoguns for the Flak Cannon, the Puffin's Twin Autoguns and Laser Carbine for the Polarity
+Projector and the Flak Cannon, the Prairie Dog's Twin Autoguns for the Suppression Battery. The
+overrides are global, so a machine on two rows carries one fit. The fours: the default team with
+the Baboon (the file's fourth machine, a fourth die and no setup) and with the Dingo (a fourth
+die and a Shock), Minerva's three with the Baboon (the maker fields three), and Kestrel's and
+Wainwright & Sutler's first four in file order (with the Lammergeier, with the Funnel-web).
+
+A lone massive foe (the four of them), mean rounds to win, greedy / blind / the planner:
+
+| Squad | Stocked | Built |
+|---|---|---|
+| The default team | 3.4 / 3.4 / 3.4 | 3.2 / 3.2 / 3.1 |
+| with the Baboon | 2.8 / 2.9 / 2.8 | 2.4 / 2.5 / 2.4 |
+| with the Dingo | 2.6 / 3.1 / 2.5 | 2.5 / 2.9 / 2.3 |
+| Minerva's team | 7.3 / 7.3 / 7.4 | 5.1 / 4.8 / 4.4 |
+| with the Baboon | 4.8 / 4.8 / 4.7 | 3.6 / 3.4 / 3.2 |
+| Kestrel's team | 2.9 / 3.1 / 2.9 | 2.4 / 2.6 / 2.3 |
+| with the Lammergeier | 2.4 / 2.5 / 2.4 | 2.2 / 2.3 / 2.1 |
+| Wainwright & Sutler's team | 7.4 / 7.8 / 6.5 | 6.8 / 6.0 / 5.6 |
+| with the Funnel-web | 4.6 / 4.3 / 4.0 | 4.3 / 3.8 / 3.7 |
+
+The gap, blind play's rounds over the planner's on the big fights (the report's mean over the
+cells both win a quarter of), the lone massive foes' in brackets:
+
+| Squad | Stocked | Built |
+|---|---|---|
+| The default team | 1.16 (1.01) | 1.15 (1.01) |
+| with the Baboon | 1.13 (1.04) | 1.12 (1.04) |
+| with the Dingo | 1.26 (1.24) | 1.23 (1.23) |
+| Minerva's team | 1.05 (0.99) | 1.11 (1.09) |
+| with the Baboon | 1.07 (1.01) | 1.08 (1.05) |
+| Kestrel's team | 1.17 (1.07) | 1.22 (1.15) |
+| with the Lammergeier | 1.12 (1.06) | 1.10 (1.07) |
+| Wainwright & Sutler's team | 1.15 (1.20) | 1.10 (1.08) |
+| with the Funnel-web | 1.07 (1.06) | 1.04 (1.02) |
+
+A four loses 3 to 7% of its hull on a formation, greedy (the trios 7 to 31%). The finale stays a
+wall but for the planner on Kestrel's four (one fight of thirty stocked, three built) and on the
+default team with the Baboon built (one).
+
+Why the gap stays shut, first the bots: every rung takes the greedy's rerolls, and they priced a
+Shock at 0.6 of the team's average blow per entry (shields and vents counting nothing), so a
+Shock of no damage read as a bad roll beside any gun. The Polarity Projector was spent 0.07 to
+0.11 times a fight on the Honey Badger and 0.3 on the Puffin, on every rung, and the
+Lammergeier's 0.05. Priced instead at the biggest blow an ally still to act shows on that foe
+(an experiment in a copy of `sim/policy.gd`, the built trios on the same seeds), it is spent
+0.29 to 0.49 a fight on the Honey Badger and 0.55 to 0.62 on the Puffin, and the gap opens by
+0.0 to 0.1: on the massive foes the default team's 1.01 to 1.11, Kestrel's 1.15 to 1.21,
+Wainwright & Sutler's 1.08 to 1.12, Minerva's 1.09 as it was; on the big fights 1.18, 1.11,
+1.27 and 1.10. The rounds move by a few tenths at most. On a lone massive foe a Shock is worth
+about the basic it displaced, and a setup pays whoever cashes it, so blind play, spending every
+die on the one foe, banks it too.
+
+Then the order, on the same priced bot, since blind play spends left to right: three trios with
+their order reversed. Kestrel's with its setter first (the Puffin before the Kite) reads 1.05 on
+the massive foes, where its file order, the setter last, read 1.21; the default team and
+Minerva's with the setter last read 1.07 and 1.14, where they read 1.11 and 1.09, a Shock laid
+last being cashed by the next round's first blow. The order moves the gap on a lone massive foe
+by up to about 0.15 either way and never toward 2; the formations' and the finals' do not move.
+
+Read: on a squad of four with a run's kit, a massive foe takes the fast squads about two rounds
+(2.2 to 2.5, greedy) and Minerva's and Wainwright & Sutler's three and a half to four and a
+half (the planner's 3.2 and 3.7); the kill time holds near its edge for three squads and misses by half
+again to twice for the slow makers', whose stocks are basics against armour. The gap does not open on
+built teams: 1.04 to 1.27 on the big fights and about 1.0 to 1.2 on a lone massive foe, against
+about 2. The bots' Shock price was a fault, fixed in `sim/policy.gd` the same day in the
+experiment's form, and not the cause.
+
+## 23 October, the starter trios
+
+**Every trio a tender can deal, stock, against every pack** (Ryan, 23 October: balance is read
+by stage, which compositions are harder for an early stock team of three than for an endgame
+optimized four; this is the early half). Run with `tools/stock_loop.py` on main's head
+(`781c4d5`): the 28 trios of three tier-one machines from three city makers (the Honey Badger or
+the Armadillo; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
+Stingray), in stock loadouts, against the twenty-nine packs, random and greedy, 30 seeds a cell,
+no campaign. A direction. The runner's team rows are no starters: each fields a tier-two machine
+and three are one maker's.
+
+By pack over the 28 trios: greedy's mean win rate (its lowest and highest trio), random's mean,
+the trios walled (greedy under 25%), the trios random wins nine times in ten, and greedy's rounds
+and hull lost:
+
+| Pack | Greedy | Random | Walled | Free | Rounds | Hull lost |
+|---|---|---|---|---|---|---|
+| The finale | 0 | 0 | 28 | 0 | - | 100% |
+| The Peak formation | 74 (0 to 100) | 31 | 4 | 0 | 8.1 | 46% |
+| The Marsh formation | 78 (20 to 100) | 23 | 4 | 0 | 9.3 | 43% |
+| The Meadow formation | 84 (13 to 100) | 31 | 2 | 1 | 8.8 | 48% |
+| The Magma Golem | 89 (0 to 100) | 25 | 1 | 0 | 7.3 | 56% |
+| The Sandworm | 97 (40 to 100) | 54 | 0 | 3 | 7.7 | 42% |
+| The Martial Artist's final | 99 | 60 | 0 | 4 | 5.2 | 29% |
+| The Waste formation | 100 | 65 | 0 | 9 | 5.8 | 19% |
+| The Treant, the Bone Wyvern | 100 | 94 | 0 | 25 | 8.5 | 1% |
+| The other seven finals | 100 | 85 to 100 | 0 | 18 to 28 | 3.9 to 5.7 | 1 to 15% |
+| The thirteen rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
+
+By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
+the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
+the time for 16 to 47% of their hull; the twelve with neither win 25 to 89% for 54 to 93%, the
+Armadillo, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
+maker, the player taking three): the eight tenders that deal the Badger or the Cottonmouth hold
+a pick that clears all five (16 to 31% hull); the four that deal neither top out at 80 to 89%
+for 54 to 68%; a tender's worst pick reads 25 to 100%.
+
+Read: for a stock starter the rank and file, the Treant, the Bone Wyvern and most finals are
+free; the three formations, the Golem and the Sandworm are the fights, random losing where
+greedy wins; the finale is a wall. The Treant and the Wyvern take eight and a half rounds and
+cost nothing: their blows carry no breach, so shields take them, where the Sandworm's and the
+Golem's main blows breach. A hero's final comes easier than any formation but the Waste's. A starter's strength rides on the draft: the Honey
+Badger and the Cottonmouth carry it, and a third of tenders deal neither. The endgame half waits
+on what an endgame optimized four is (Ryan's call).
+
+## 23 October, whom the foes strike
+
+**Ryan's question on targeting** (23 October: does a tank with a low shield and a high hull
+trip the exposed aim most often, so that most foes hit the thickest machines and the decisions
+go?). `tools/target_probe.gd` on the content as at `76f8ad1`: every starter trio a tender can
+deal, stock, greedy play, against each faction's formation, its boss and its first pack, 20
+seeds a cell, 6,720 fights. A direction.
+
+The aim as built: each machine weighs one, plus the hull the foe's blows would reach through its
+shield and armour, plus half any shield they would break, and the pick is drawn by weight. Hull
+adds nothing and armour subtracts, so while every shield would hold the blow the draw is level:
+52% of the exposed aim's 50,726 picks were. The rest of the foes aim at anything, at their
+rank's shared pick or at the armed.
+
+Each machine's share of the single-machine attacks in its fights (a third is even): picked as
+the round's intents are drawn with all three standing, picked over the whole fight, swung at as
+the enemy's turn opens (after any Lure), and its share of its team's hull lost:
+
+| Machine | Hull / shield / armour | Picked, all standing | Picked, whole fight | Swung at | Hull lost |
+|---|---|---|---|---|---|
+| Baboon | 28 / 10 / 0 | 36% | 36% | 34% | 36% |
+| Honey Badger | 36 / 8 / 2 | 36% | 36% | 38% | 34% |
+| Armadillo | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
+| Stingray | 24 / 12 / 0 | 35% | 34% | 31% | 33% |
+| Puffin | 20 / 8 / 0 | 32% | 30% | 28% | 30% |
+| Cassowary | 24 / 8 / 0 | 31% | 30% | 28% | 31% |
+| Prairie Dog | 20 / 10 / 0 | 30% | 28% | 27% | 27% |
+| Cottonmouth | 20 / 8 / 0 | 29% | 29% | 26% | 28% |
+
+By kind of fight, with all three standing: the rank and file and the formations spread 28 to
+39%; the breaching bosses (the Golem, the Sandworm) 30 to 39%, every shield failing their blow
+so the draw is near level; the Treant and the Wyvern put 47% on the Armadillo and 44% on the
+Honey Badger, 23 to 33% on the rest. Their blow of 7 is held by a standing shield, so the draw
+follows whichever shield is down, and the tanks' shields hold it least often (38 and 56% of
+the picks, the rest 63 to 81%).
+
+Read: the aim does not pile blows on thick machines while the team stands; the lean to the
+tanks comes from their outliving the light machines (every pick after a wreck lands on a
+survivor), from the Armadillo's Lure (its share of the swings the highest), and against the
+shield-held bosses from the draw chasing a broken shield. Half the exposed aim's picks are a
+level draw. Against a boss whose one blow a round a shield holds, the round asks only which
+machine to shield, and the tank's armour takes what gets through: the depth and the pressure
+are short, not the targeting.
