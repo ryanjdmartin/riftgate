@@ -571,6 +571,12 @@ merged on 21 October are paused, each resuming from its briefs:
   lone massive foe; the planner wins the finale now and then with Kestrel's four (one to three
   fights of thirty). Two experiments in copies, the bots' Shock priced at the hitter in hand
   (landed) and a trio's order, each moving the gap by 0.15 at most.
+- The starter trios (23 October, every trio a tender can deal, stock, against every pack, 30
+  seeds; `docs/measurements.md`), the early half of Ryan's read by stage: the rank and file, the
+  Treant, the Bone Wyvern and most finals are free for a starter; the Peak's, the Marsh's and the
+  Meadow's formations, the Magma Golem and the Sandworm are its fights; the finale a wall. The
+  Honey Badger and the Cottonmouth carry a starter, and a third of tenders deal neither. The
+  endgame half waits on Ryan's call on what an endgame optimized four is.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a

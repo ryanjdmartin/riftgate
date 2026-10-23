@@ -948,3 +948,48 @@ again to twice for the slow makers', whose stocks are basics against armour. The
 built teams: 1.04 to 1.27 on the big fights and about 1.0 to 1.2 on a lone massive foe, against
 about 2. The bots' Shock price was a fault, fixed in `sim/policy.gd` the same day in the
 experiment's form, and not the cause.
+
+## 23 October, the starter trios
+
+**Every trio a tender can deal, stock, against every pack** (Ryan, 23 October: balance is read
+by stage, which compositions are harder for an early stock team of three than for an endgame
+optimized four; this is the early half). Run with `tools/stock_loop.py` on main's head
+(`781c4d5`): the 28 trios of three tier-one machines from three city makers (the Honey Badger or
+the Armadillo; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
+Stingray), in stock loadouts, against the twenty-nine packs, random and greedy, 30 seeds a cell,
+no campaign. A direction. The runner's team rows are no starters: each fields a tier-two machine
+and three are one maker's.
+
+By pack over the 28 trios: greedy's mean win rate (its lowest and highest trio), random's mean,
+the trios walled (greedy under 25%), the trios random wins nine times in ten, and greedy's rounds
+and hull lost:
+
+| Pack | Greedy | Random | Walled | Free | Rounds | Hull lost |
+|---|---|---|---|---|---|---|
+| The finale | 0 | 0 | 28 | 0 | - | 100% |
+| The Peak formation | 74 (0 to 100) | 31 | 4 | 0 | 8.1 | 46% |
+| The Marsh formation | 78 (20 to 100) | 23 | 4 | 0 | 9.3 | 43% |
+| The Meadow formation | 84 (13 to 100) | 31 | 2 | 1 | 8.8 | 48% |
+| The Magma Golem | 89 (0 to 100) | 25 | 1 | 0 | 7.3 | 56% |
+| The Sandworm | 97 (40 to 100) | 54 | 0 | 3 | 7.7 | 42% |
+| The Martial Artist's final | 99 | 60 | 0 | 4 | 5.2 | 29% |
+| The Waste formation | 100 | 65 | 0 | 9 | 5.8 | 19% |
+| The Treant, the Bone Wyvern | 100 | 94 | 0 | 25 | 8.5 | 1% |
+| The other seven finals | 100 | 85 to 100 | 0 | 18 to 28 | 3.9 to 5.7 | 1 to 15% |
+| The thirteen rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
+
+By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
+the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
+the time for 16 to 47% of their hull; the twelve with neither win 25 to 89% for 54 to 93%, the
+Armadillo, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
+maker, the player taking three): the eight tenders that deal the Badger or the Cottonmouth hold
+a pick that clears all five (16 to 31% hull); the four that deal neither top out at 80 to 89%
+for 54 to 68%; a tender's worst pick reads 25 to 100%.
+
+Read: for a stock starter the rank and file, the Treant, the Bone Wyvern and most finals are
+free; the three formations, the Golem and the Sandworm are the fights, random losing where
+greedy wins; the finale is a wall. The Treant and the Wyvern take eight and a half rounds and
+cost nothing: their blows carry no breach, so shields take them, where the Sandworm's and the
+Golem's main blows breach. A hero's final comes easier than any formation but the Waste's. A starter's strength rides on the draft: the Honey
+Badger and the Cottonmouth carry it, and a third of tenders deal neither. The endgame half waits
+on what an endgame optimized four is (Ryan's call).
