@@ -186,9 +186,9 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   shield stands; the regen as a status, likely cheap, since a status may carry the round-start
   shield effect the Buzzard's passive already runs and the renewing policy exists; the bot
   reading shield spent as a cost (its `shield_score` counts hull saved this round) and the
-  zap as damage; each tested with synthetic passives. Its runner row lies until the honest
-  shield rule is built (the to-do's shield-rule line): under today's whole-block rule a
-  shield burnt to 1 still blocks a whole blow, so the burn costs nothing it should.
+  zap as damage; each tested with synthetic passives. The honest shield rule its runner row
+  waited on is built (21 October, the bible's shield row): a shield burnt to 1 absorbs 1 and
+  the rest of the blow reaches the hull, so the burn costs what it should.
 - **What the runner reads.** Alone (the loop: whether it burns before it spends); beside the
   Puffin (the overshield as the magazine, Kestrel's locked pieces working together); beside a
   tank (the regen lent out); the share of its spends that burn against the share that hold.
