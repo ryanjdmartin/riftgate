@@ -36,7 +36,7 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper", "heat_per_blow": "siphoning"}
 FACE_FIELDS_ON_FOES = {"drones": ["syrinx_drone", "exposure"]}   # the Syrinx Drone: its own status, and Exposed on a foe not yet Exposed
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
-                   "paradox": ("paradox", "foe")}   # stack_status names its own, on the machine
+                   "paradox": ("paradox", "foe"), "muster": ("muster", "machine")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "scramble": "scrambled", "silence": "silenced"}
@@ -135,6 +135,8 @@ def tally(words):
         for field, status in FACE_FIELDS.items():
             if f.get(field):
                 t.grant(status, "machine", label, how, planned, who=who)
+        if isinstance(f.get("regenerates"), dict):   # a regen on its own spender (the Storm Petrel's St. Elmo's Regenerator)
+            t.grant(f["regenerates"].get("status", ""), "machine", label, how, planned, who=who)
         for field, statuses in FACE_FIELDS_ON_FOES.items():
             if f.get(field):
                 for status in statuses:
@@ -143,6 +145,18 @@ def tally(words):
             if eff.get("effect") in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[eff["effect"]]
                 t.grant(status, on, label, how, planned, who=who)
+        # A charged form (the Swallowtail's locked pieces, spent for a muster) carries its own
+        # keywords and statuses beside the plain form's.
+        charged = f.get("charged") or {}
+        if charged:
+            clabel = c["name"] + " charged" + (" (%s's)" % machines if machines else "")
+            for k in (charged.get("keywords") or []) + (["cleanse"] if charged.get("cleanse") else []):
+                if k not in (f.get("keywords") or []):   # one count a piece, whichever form carries it
+                    t.count(k, how, planned)
+                for status, on in COMPONENT_KEYWORDS.get(k, []):
+                    t.grant(status, on, clabel, how, planned, who=who)
+            if charged.get("status"):
+                t.grant(charged["status"], "machine", clabel, how, planned, who=who)
 
     def passive(p, label, how, who):
         planned = (p or {}).get("status", "implemented") != "implemented"
@@ -152,6 +166,8 @@ def tally(words):
             if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
                 t.grant("shots", "machine", label, how, planned, who=who)
                 counted = True
+            if eff.get("when") == "setup_once":   # a grant once a round marks the round's turn spent (the Needletail's gate)
+                t.grant("quick_turned", "machine", label, how, planned, who=who)
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":
