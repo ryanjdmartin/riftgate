@@ -566,8 +566,8 @@ design call:
 ## Open for Ryan
 
 1. The Backdraft Charge's threshold and numbers (Claude's fills: two stacks, a point a stack,
-   base 2, heat 2) and the Battery's (1 to 3, heat 2): his to move before the loops, or left to
-   them.
+   base 2, heat 2) and the Battery's (1 to 3, heat 2): landed at the fills, which the loops
+   left; his to move before the pricing run, or left to it.
 2. The content name pass, later (the working names: Canopy, Bleed Valve, Decoherence Veil,
    Airburst Shell, Flak Cannon, the Stoker; the Backdraft Charge's name stands; the printed
    rule's Burns its firer).

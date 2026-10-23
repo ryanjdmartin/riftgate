@@ -3,9 +3,10 @@
 The session finishes the medium gunship whose fitted weapons raise its numbers by their tags,
 and settles its overlap with the Clydesdale.
 
-**Status**: proposal with a place, conditioned on tags (the analysis, 14 October); it waits
+**Status**: proposal with a place, conditioned on tags (the analysis, 14 October); it waited
 for the stock pass and the numbers' rescale (Ryan, 21 October: "The gunship might as well wait
-for the stock pass and number rescaling, since that's its whole deal"). **Maker**:
+for the stock pass and number rescaling, since that's its whole deal"), which landed 22 October,
+so its session is free to run. **Maker**:
 Wainwright & Sutler. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`;
 `docs/measurements.md` (13 October, the gunship's stand-in: its measured table and the recipe);
 `docs/roster_analysis.md` section 4; the bible's tags rows (section 7).

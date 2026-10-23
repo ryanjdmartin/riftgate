@@ -202,9 +202,10 @@ it spends on an ally grows by a fifth of the heat that ally carries. The fixed p
 Backwash Ionizer: shield 10, allies only, Overshield, so on a hot ally it is the big one (the
 Buzzard at the top of its gauge, 30 past its maximum; a jet at 40 heat, 18; a cold ally, 10).
 
-At tier one it stocks basics beside the Ionizer (the tiers row; the stock pass), so
-the Coil, the Diffuser and the Laser Carbine it carries until the pass become its found
-upgrades. By kind, at tier one:
+At tier one it stocks basics beside the Ionizer (the tiers row; the stock pass, 22 October:
+the Halo Shield, the Coolant Jacket, the Twin Autoguns and the Laser Carbine), so the Coil and
+the Diffuser it carried before the pass are its found upgrades. By kind, as the line review
+had it (21 October):
 
 | Entry | Piece | What it is for |
 |---|---|---|

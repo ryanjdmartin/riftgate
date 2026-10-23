@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 609 tests, 62,521 checks, green on `claude/eager-newton-sf947u` (23 October, with the bots' Shock priced at the hitter in hand; 608 and 62,516 on 22 October: the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 609 tests, 62,521 checks, green on main's head (`cd2ea56`, 23 October, with the bots' Shock priced at the hitter in hand) and on `ccr-170f6d81-465jnr` with main merged in (in a cloud session the same day); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -29,13 +29,15 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
-decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
-marks and the stun calls, the second chunk's engine items, the content landed at the brief's
-fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
-same evening on Ryan's go, a fast-forward, main having been merged into it four times that day
-and never ahead of it; the branch is to be deleted from the desk machine or GitHub, since a
-cloud session's push to delete one is refused. Its baseline (`ace3c3c`, 200 seeds) ran on
+Two branches stand beside main. `claude/eager-newton-sf947u`, the stock pass's, is at main's head
+(`cd2ea56`): merged into main on 22 October on Ryan's go and used again on 23 October for the
+reads of its bands and the runs they called for; delete it from the desk machine or GitHub once
+its work is done, since a cloud session's push to delete one is refused. `ccr-170f6d81-465jnr`
+(23 October, a cloud session) holds the to-do pruned of its ticked lines and the records swept
+for the stock pass's landing (the to-do, the status, the briefs and their README, the bible's
+v0.264, two content notes and the vocabulary page, the hangar's version 96), with main merged
+in, to merge into main (a fast-forward while main stands at `cd2ea56`). The stock pass's
+baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
 Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
 swap (the Dingo) and its boss reads (the Disrupt carriers, and the fights with a countdown,
@@ -55,7 +57,7 @@ merged on 21 October are paused, each resuming from its briefs:
   Swallowtail's and the Musk Ox's engines landed 21 October, so nothing of the maker's is
   planned in content. The gunship's brief waited for the stock pass's tags and the numbers'
   rescale (Ryan, 21 October), which landed 22 October, so its session is free to run; the five new machines' models and the Translocator's mount are the
-  to-do's art lines.
+  to-do's asset lines.
 - Minerva (the Armadillo landed on Ryan's go, 20 October: Lockdown, the Cryo Flinger pair and
   Cryo; Armoured, Overcharged and Burn in points before it, 18 October; both built, below): the
   bible's Minerva roster row (section 7) says where each machine stands; the open briefs are
@@ -290,8 +292,8 @@ merged on 21 October are paused, each resuming from its briefs:
   on the die, the next chamber marked in the hold; the bot turns the dial. It is fielded now,
   so the tender and the runner deal it. A weapon of no damage is held at nothing under any
   effect since 21 October (Ryan's die grammar, built that day, below), so Spun Up spent by a
-  lure is wasted, as its rule says. The hold's ring, the
-  hangar's chambers and the bot's cycle are the to-do's.
+  lure is wasted, as its rule says. The bot's cycle is the
+  to-do's; the hold's ring and the hangar's chambers were built 22 October.
 - 21 October, the shield rule, Barrier, Ward and cooldowns (Ryan's go of 14 and 15 October; the
   bible's shield, Barrier and Ward, cooldown and Rapid rows): a shield absorbs its number and the
   excess passes to the hull, a breach ignores the shield and leaves it standing, an injury
@@ -613,7 +615,7 @@ merged on 21 October are paused, each resuming from its briefs:
   chassis earns its place by a new read, product or price; a passive aims to be fed by and to
   feed other makers' pieces; a tier one shows its identity with basics alone.
 - The Swallowtail's and the Musk Ox's models (their engines and content landed 21 October,
-  the bible's rows in section 7; the to-do's art lines).
+  the bible's rows in section 7; the to-do's asset lines).
 - The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
   die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
   build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
@@ -649,25 +651,15 @@ to-do's Ryan list).
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
    machine's content and engine session follows from its brief (the to-do's lines).
-2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): the engine
-   chunk is built (22 October, on its branch, the baseline reports beside it); Ryan's marks are
-   made the same day, the structure not the numbers (the brief's section 3 and its tables),
-   and the stun calls of the same day are the stun row's (no stock holds a Suppress piece; the
-   Inducer the Arsenal's, tier three on Volatile; the Backdraft Charge consuming the fire for a
-   point a stack and a stun at a threshold; the Battery gated by Flak; Flak's clock reopened for
-   Flak alone, section 12); the landing (section 7, on Opus) built its engine items first (22
-   October: the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the
-   gates and the consumer, the planner and blind rungs that read the gap), then landed the
-   content at the brief's fills the same day (the stocks, the renames and retirements, the
-   eight new pieces and Trim Tabs, the tiers and tags, the Stoker's own fire a face field; the
-   content before the loops, section 7's third step brought forward, since the gap is read on
-   the new stocks' setups); the loops set its numbers the same day (six at 30 seeds, one lever
-   a loop, `docs/measurements.md`), the bands at 200 seeds read them (the reports regenerated)
-   and the hangar was republished with them; the branch merged into main the same evening on
-   Ryan's go. Ryan settled the bands' reads on 23 October (the bible's rows), and their runs put
-   two questions back to him (section 12: where the gap is read, the massive HP); next the
-   pricing run, on the bots' Shock priced at the hitter in hand. Two content questions went to section 12 with the landing: which
-   explosives carry Spread and Penetrate, and a flat Indirect basic.
+2. **The stock pass** (`docs/briefs/stock_pass.md`): landed 22 October and merged into main
+   that evening on Ryan's go: its engine items, its content at the brief's fills (the stocks,
+   the renames and retirements, the eight new pieces and Trim Tabs, the tiers and tags), the
+   loops' numbers and the bands at 200 seeds (`docs/measurements.md`); the stun calls are the
+   stun row's. Ryan settled the bands' reads on 23 October (the bible's rows), and their runs
+   put two questions back to him (section 12: where the gap is read, the massive HP); next his
+   name pass and the pricing run, on the bots' Shock priced at the hitter in hand. Two content
+   questions went to section 12 with the landing: which explosives carry Spread and Penetrate,
+   and a flat Indirect basic. The brief's table missed the Lammergeier's stock (the to-do).
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
    stock pass leaves it, the third-machine read and the fours again, prices and tier ladders
@@ -702,19 +694,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.263, and so is the
-  live (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
-  second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
-  other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
-  Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
-  three-way merged onto this branch's v0.252 of 03:42, the page's version 269, whose rows stay
-  this branch's in git until it merges) with the rows of this branch the page had not yet
-  carried on top: Ryan's marks of 22 October (the clock kept for every event-fed status, Breach
-  on the Railgun alone, the Ram Frame and the Rangefinder as mirrors, the Flakshot at Flak 1,
-  the direction run in the scales row, section 12's content item) and the stun calls of the
-  same day (the stun row, section 12), then the Battery's Flak gate, the Backdraft as a consumer
-  and the two questions reopened that evening (the stun row, section 12). The hangar is at the page's version 95 since the stock
-  pass's republishes (below).
+  `docs/design-bible.html` after every change. This file is v0.264, and so is the live (23
+  October, the page's version 281, from `ccr-170f6d81-465jnr`: the rows that still waited on the
+  stock pass brought to its landing, published onto main's v0.263 of the same day, the page's
+  version 280, Ryan's reads of the bands and the runs they called for).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -722,30 +705,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   merge onto it (`git merge-file` with main's last-published file as the base, the wrapper's
   first line and its trailing `</body></html>` stripped from the saved live source).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. Republished 15 October from main's content:
-  only the four content files that had moved since 13 October (chassis, components, foes,
-  vocabulary), the page, the models and the renders checked unchanged and kept; again that
-  evening with the boss mechanics' foes and vocabulary alone, and with the White Mage's three
-  and Skaði; on 16 October with the Augur in the Necromancer's place (foes, factions) and the
-  Cleric (foes); on 19 and 20 October with the funnel-web's model, rig sidecar, pins and renders,
-  the content that had moved, and the walkers' planted footwork (20 October, `ccr-ffcf75fa-3gkbz9`); and on 21 October with the
-  day's content (the five files that had moved: chassis, components, foes, the reserved names,
-  vocabulary; the Kite's rework, the Lammergeier, the Swallowtail and the Musk Ox runnable, the
-  party's promoted forms) and the pins, which mark the three new machines and the three without
-  models as having none (the page's version 89; `edits` empty before it); and on 22 October
-  with the chassis and the vocabulary (the stores', the carry's, the magazine's and the rage's
-  codex) and every die's entries numbered by their place, the Cassowary's die a cylinder with
-  its order printed (the page's version 91; `edits` empty before it), then the Names board's
-  rules and makers' tabs brought to the bible's naming rows (the page's version 92); and on 22
-  October from the stock pass's branch with the landed content at the loops' numbers (chassis,
-  components, foes, modules, vocabulary: the new pieces, the tiers, HP and Breach, the foes'
-  blows, the maxima) and the page's face line showing strikes, gates, consumers and own fire
-  (the page's version 93; `edits` empty before it, the five files checked identical to main's
-  before they were replaced), then the vocabulary again with its three internal table cells at
-  the scale (the page's version 94), and the chassis with the four light hulls at 20 (the page's
-  version 95). Its database
-  (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only from the
-  personal account; `edits` was empty on 15 October, after the second republish too.
+  files from `tools/hangar_data.py`'s printed map, republished after every content, model or
+  render change with only the files that moved, each checked identical to main's before it is
+  replaced and `edits` read first. At the page's version 96 (23 October, from
+  `ccr-170f6d81-465jnr`: the components' and the vocabulary's files, two design notes brought to
+  the builds of 22 October; `edits` empty before it); version 95 carried the stock pass's landed
+  content and the four light hulls at 20 (22 October), and git and the page's history hold the
+  republishes before. Its database (Ryan's saved edits, collection `edits`; name candidates,
+  `candidates`) opens only from the personal account.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
   Weapon (the axe, which settles hammer against axe) cut into `art/foes` and recorded in
   `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits

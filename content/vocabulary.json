@@ -871,7 +871,7 @@
    "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation view, showing who waits rather than how many, is the to-do's."
+    "holes": "Decided 14 to 17 October (Ryan: a trapped slot, so a reinforcement comes in damaged; the weapon is the bomb), built 21 October. The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap or Minos's turn of the ranks sets one off at once. The formation shows the reinforcements waiting by rank since 22 October (a count a rank in its right gutter, a tall plaque for the massive), so a mine is laid against a count."
    }
   },
   {
