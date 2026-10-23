@@ -70,7 +70,8 @@ records every decision, recommendation and open question, and why; section 12 is
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
-  `docs/campaign_run.md`; `screenshot.gd` renders a
+  `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
+  against each faction's formation, bosses and first pack; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -209,6 +210,10 @@ python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=
 python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+sparrowhawk+dingo --team badger,clydesdale,sparrowhawk,dingo
 python3 tools/stock_loop.py run built --packs big --set 'chassis/badger/loadout/0="polarity_projector"'
 python3 tools/stock_loop.py compare base blows
+# whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
+# faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
+# swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
+perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe.gd -- --out build/probe_0.json --part 0/4 --seeds 20
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,

@@ -577,6 +577,12 @@ merged on 21 October are paused, each resuming from its briefs:
   Meadow's formations, the Magma Golem and the Sandworm are its fights; the finale a wall. The
   Honey Badger and the Cottonmouth carry a starter, and a third of tenders deal neither. The
   endgame half waits on Ryan's call on what an endgame optimized four is.
+- Whom the foes strike (23 October, `tools/target_probe.gd`, every starter trio against each
+  faction's formation, boss and first pack, 20 seeds; `docs/measurements.md`): the exposed aim
+  spreads its picks evenly while the team stands (29 to 36% a machine), half its draws level;
+  the tanks take more over whole fights by outliving the light machines and by the Armadillo's
+  Lure, and against the Treant and the Wyvern by the draw chasing a broken shield. A shield-held
+  boss's round asks only whom to shield: the depth and the pressure are short, not the aim.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a

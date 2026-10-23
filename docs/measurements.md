@@ -993,3 +993,47 @@ cost nothing: their blows carry no breach, so shields take them, where the Sandw
 Golem's main blows breach. A hero's final comes easier than any formation but the Waste's. A starter's strength rides on the draft: the Honey
 Badger and the Cottonmouth carry it, and a third of tenders deal neither. The endgame half waits
 on what an endgame optimized four is (Ryan's call).
+
+## 23 October, whom the foes strike
+
+**Ryan's question on targeting** (23 October: does a tank with a low shield and a high hull
+trip the exposed aim most often, so that most foes hit the thickest machines and the decisions
+go?). `tools/target_probe.gd` on the content as at `76f8ad1`: every starter trio a tender can
+deal, stock, greedy play, against each faction's formation, its boss and its first pack, 20
+seeds a cell, 6,720 fights. A direction.
+
+The aim as built: each machine weighs one, plus the hull the foe's blows would reach through its
+shield and armour, plus half any shield they would break, and the pick is drawn by weight. Hull
+adds nothing and armour subtracts, so while every shield would hold the blow the draw is level:
+52% of the exposed aim's 50,726 picks were. The rest of the foes aim at anything, at their
+rank's shared pick or at the armed.
+
+Each machine's share of the single-machine attacks in its fights (a third is even): picked as
+the round's intents are drawn with all three standing, picked over the whole fight, swung at as
+the enemy's turn opens (after any Lure), and its share of its team's hull lost:
+
+| Machine | Hull / shield / armour | Picked, all standing | Picked, whole fight | Swung at | Hull lost |
+|---|---|---|---|---|---|
+| Baboon | 28 / 10 / 0 | 36% | 36% | 34% | 36% |
+| Honey Badger | 36 / 8 / 2 | 36% | 36% | 38% | 34% |
+| Armadillo | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
+| Stingray | 24 / 12 / 0 | 35% | 34% | 31% | 33% |
+| Puffin | 20 / 8 / 0 | 32% | 30% | 28% | 30% |
+| Cassowary | 24 / 8 / 0 | 31% | 30% | 28% | 31% |
+| Prairie Dog | 20 / 10 / 0 | 30% | 28% | 27% | 27% |
+| Cottonmouth | 20 / 8 / 0 | 29% | 29% | 26% | 28% |
+
+By kind of fight, with all three standing: the rank and file and the formations spread 28 to
+39%; the breaching bosses (the Golem, the Sandworm) 30 to 39%, every shield failing their blow
+so the draw is near level; the Treant and the Wyvern put 47% on the Armadillo and 44% on the
+Honey Badger, 23 to 33% on the rest. Their blow of 7 is held by a standing shield, so the draw
+follows whichever shield is down, and the tanks' shields hold it least often (38 and 56% of
+the picks, the rest 63 to 81%).
+
+Read: the aim does not pile blows on thick machines while the team stands; the lean to the
+tanks comes from their outliving the light machines (every pick after a wreck lands on a
+survivor), from the Armadillo's Lure (its share of the swings the highest), and against the
+shield-held bosses from the draw chasing a broken shield. Half the exposed aim's picks are a
+level draw. Against a boss whose one blow a round a shield holds, the round asks only which
+machine to shield, and the tank's armour takes what gets through: the depth and the pressure
+are short, not the targeting.
