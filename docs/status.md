@@ -751,11 +751,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.266, and so is the live (23
-  October, the page's version 283, from `ccr-7d865127-wr1ko2`: the four Kestrel machines,
-  published onto `ccr-170f6d81-465jnr`'s v0.265, the page's version 282, the bible cut for
-  session context on Ryan's word, "the bible is primarily used for that", its first row saying
-  what a row holds).
+  `docs/design-bible.html` after every change. This file is v0.267, and so is the live (23
+  October, the page's version 284, from `claude/eager-newton-sf947u`: Ryan's terms and elite
+  definition, the curve row, balance read by stage and the Elemental, published onto
+  `ccr-7d865127-wr1ko2`'s v0.266, the page's version 283, the four Kestrel machines, itself on
+  `ccr-170f6d81-465jnr`'s v0.265, the page's version 282, the bible cut for session context on
+  Ryan's word, "the bible is primarily used for that", its first row saying what a row holds).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
