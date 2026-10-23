@@ -216,7 +216,7 @@ which collides with the Ram Frame module) becomes the **Bleed Valve**.
 | Proximity Klaxon | Minerva | 1 | 0, heat 0 | lure, cleave | 0, heat 1 | Lure, Spread | Arc | out of Misharu's stock (its brief) |
 | Phased Sublimator | Aphelion | 1 | 20 | cleanse | 4 | Cleanse; self or ally | none | the cleanse vent |
 | Radiator Sail | Aphelion | 1 | 20 | 5 | ally only | none | from a basic to Aphelion's ally vent, so three basic vents become two |
-| Wake Diffuser | Kestrel | 1 | 10 | 3, shields 3 | self or ally | none | the combined entry; its shield half waits on its engine (the to-do) |
+| Wake Diffuser | Kestrel | 1 | 10 | 3, shields 3 | self or ally | none | the combined entry; its shield half built 21 October |
 | Overcharge Coil | Kestrel | 1 |  | Overcharged 2 | self or ally | none | 2 (Ryan, 22 October): at 1 the halving leaves +1 on one ally's blow this round and nothing after |
 | Shoring Jack | Minerva | 1 |  | Armoured 2, the round | self or ally | none | 2 at tier one (Ryan, 22 October): a tank to 4 for the round; 3 would wall everything but a boss from a tier-one piece |
 | Thermal Ray | Wainwright & Sutler | 1 | 30, heat 30 | 6, heat 6 |  | Beam | the hot flat gun; tier one so the Whip Scorpion and the Musk Ox may stock it ("the Thermal Ray's heat price") |

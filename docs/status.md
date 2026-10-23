@@ -564,8 +564,8 @@ merged on 21 October are paused, each resuming from its briefs:
   Rapid is priced by a gate and never rationed, and each want it sells has a home that is not
   a Rapid piece (own rerolls as a number, the team's order, counters that count blows,
   combined entries, rolls again paid in a banked resource, cooldown bursts, delayed actions,
-  commander actions on map cooldowns); what the stock pass does with it is in the to-do's
-  stock pass line, the reasoning in the briefs README.
+  commander actions on map cooldowns); what the stock pass does with it is in the row and in
+  `docs/briefs/stock_pass.md`, the reasoning in the briefs README.
 - Silence and Purge's carriers (section 12) and the front's card's intel (with the mission map).
 - Area belongs to keywords on any reach: Splash folds into Spread and Penetrate, and an
   explosive carries both; which explosives is Ryan's (section 12), none landed with the stock

@@ -202,7 +202,7 @@ it spends on an ally grows by a fifth of the heat that ally carries. The fixed p
 Backwash Ionizer: shield 10, allies only, Overshield, so on a hot ally it is the big one (the
 Buzzard at the top of its gauge, 30 past its maximum; a jet at 40 heat, 18; a cold ally, 10).
 
-At tier one it stocks basics beside the Ionizer (the tiers row; the to-do's stock pass), so
+At tier one it stocks basics beside the Ionizer (the tiers row; the stock pass), so
 the Coil, the Diffuser and the Laser Carbine it carries until the pass become its found
 upgrades. By kind, at tier one:
 
@@ -234,8 +234,8 @@ evening for the stock pass's list (Ryan: "stock changes as you see fit"), each w
 1. **The Cyclic Cannon**, Kestrel's multi-strike gun, tier one or two: Direct, flat and warm,
    5 ×4 at heat 15, a rotary cannon on a jet (the cyclic rate is a gun's rate of fire). The strafer's (×8 under its passive), the interceptor's cash (an
    Exposed foe's armour counts for nothing, the one thing a multi-strike gun fears), Flak's
-   partner. Parted from the Maxigun (rolled, cool, three strikes). The to-do's stock pass
-   already names multi-strike as the blow currency; this is Kestrel's one.
+   partner. Parted from the Maxigun (rolled, cool, three strikes). The action-economy row
+   (the bible, section 5) names multi-strike pieces the blow currency; this is Kestrel's one.
 2. **The Transonic Rifle**, Kestrel's mid-heat gun, tier one: Direct, flat 25, heat 20, the
    step between the Carbine and the Railgun (transonic is the band between subsonic and
    supersonic; a stock piece may be a rifle, a locked Kestrel piece never is, Ryan, 11
