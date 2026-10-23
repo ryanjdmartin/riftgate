@@ -585,6 +585,12 @@ merged on 21 October are paused, each resuming from its briefs:
   the tanks take more over whole fights by outliving the light machines and by the Armadillo's
   Lure, and against the Treant and the Wyvern by the draw chasing a broken shield. A shield-held
   boss's round asks only whom to shield: the depth and the pressure are short, not the aim.
+- Targeting and shields on the starters (23 October, 30 seeds; `docs/measurements.md`): halving
+  both basic shield pieces barely moves a starter (the Treant and the Wyvern 1 to 4% hull, the
+  Peak's formation three more walls), since a lone boss's whole fight is about a trio's standing
+  shield; every foe at random reads a little easier than the shipped aims and every foe on focus
+  harder, both on the formations alone, focus taking from the weaker starters about what the
+  halved shields take. The loop driver's `aim` lever sets every foe's aim.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
