@@ -1088,6 +1088,183 @@
     ]
    },
    "flavour": ""
+  },
+  {
+   "id": "skua",
+   "name": "Skua",
+   "designation": "K-13 Mk I Swing-Wing Strafer",
+   "maker": "kestrel",
+   "tier": 1,
+   "design": {
+    "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade, its wings sweeping as it fires twice; the Skua, the seabird that harries others in repeated dives until they drop what they carry.",
+    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a strike, flat buffs counted on each strike and multi-strike pieces, every maker's; its Flechette Pod sprays its later strikes among the foes in reach.",
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_strafer.md holds the rounds and the engine it waits on). Landed 23 October as planned: its passive (the printed number halved, rounded up, and the strikes doubled on the effective face) and its lock's spray wait on the engine, so it is never dealt. Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull; the halving's rounding at single digits is the brief's open hole. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), Ryan's to judge running."
+   },
+   "codex": "",
+   "hull": 20,
+   "shield": 12,
+   "movespeed": 50,
+   "heat_max": 12,
+   "hardpoints": 3,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 8,
+   "cooling": 1,
+   "traits": [
+    "flyer"
+   ],
+   "size": "light",
+   "fixed": [
+    "flechette_pod"
+   ],
+   "loadout": [
+    "laser_carbine",
+    "twin_autoguns",
+    "canopy"
+   ],
+   "passive": {
+    "id": "split_cycle_breech",
+    "name": "Split-cycle Breech",
+    "description": "Every weapon the Skua fires strikes twice at half: its printed number halves, rounded up, and every buff, passive and foe's condition counts on each strike.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
+  },
+  {
+   "id": "storm_petrel",
+   "name": "Storm Petrel",
+   "designation": "K-15 Mk I Air-Cushion Picket",
+   "maker": "kestrel",
+   "tier": 1,
+   "design": {
+    "fantasy": "The off-tank, a fast hovercraft (Ryan, 20 October: since the Puffin is slow, the shield-burner should be fast, so Kestrel is seen to make a fast hover), the Storm Petrel since 21 October, the small sea bird that patters across the water; its hard shields used both for defence and for whacking things with (Ryan, 21 October).",
+    "niche": "Kestrel's tier-one body, a body from a second maker for the tender: while its shield stands every blow on it loses a point, and its weapons burn shield in place of heat, the target taking a zap of what the shield paid; its lock lures a foe and regenerates its own shield for three rounds, stacking. A generalist that can zoom off and fight a pack (Ryan, 20 October).",
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_shield_spender.md holds the rounds and the engine it waits on). Landed 23 October as planned: the burn and its zap, the plate and Regenerating wait on the engine, so it is never dealt. Numbers are placeholders at the stock pass's scale: a medium hover at 24 hull and the scale's top shield, 16, its shield its gauge and its plate; the plate 1 and the regen 2 a round from the brief's 5 and 10. The stock by kind from the basics, a tier one stocking tier zero: the Laser Carbine, the hottest basic at 2, for the brief's big hot gun; the Ankle Mortar for its mid-heat gun; the Twin Autoguns, cold; the Canopy, a self shield. With basics alone its burn is 2 a spend, the brief's open hole. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), Ryan's to judge running."
+   },
+   "codex": "",
+   "hull": 24,
+   "shield": 16,
+   "movespeed": 50,
+   "heat_max": 12,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 8,
+   "cooling": 1,
+   "traits": [
+    "hover"
+   ],
+   "size": "medium",
+   "fixed": [
+    "st_elmos_regenerator"
+   ],
+   "loadout": [
+    "laser_carbine",
+    "ankle_mortar",
+    "twin_autoguns",
+    "canopy"
+   ],
+   "passive": {
+    "id": "riot_field_generator",
+    "name": "Riot Field Generator",
+    "description": "While its shield stands, every blow on the Storm Petrel loses 1, and its weapons burn shield in place of heat; after a weapon's strikes, its target takes a blow of what the shield paid.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
+  },
+  {
+   "id": "needletail",
+   "name": "Needletail",
+   "designation": "K-17 Mk I Tilt-Jet Spotter",
+   "maker": "kestrel",
+   "tier": 2,
+   "design": {
+    "fantasy": "The interceptor, a tilt-jet (Ryan, 20 October: \"agile and omnidirectional\"), named 21 October for the swift claimed the fastest in flapping flight. It spots for the team: what it paints, every machine's Direct guns reach, armour and all, and its setups cost it no turn.",
+    "niche": "Kestrel's spotter at tier two: a debuff or a buff is Rapid on it once a round (the Quick-turn Avionics Relay), so a setup is a free action and the cash its second; its Fovea Designator Exposes a foe through the next round, in every machine's Direct reach and its armour counting for nothing. It wants control pieces of every maker and a Direct-heavy team to cash its paint, and it feeds the Baboon's Paradox a status a round.",
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_interceptor.md keeps the rounds until the aims' shown words, its last item, are picked). Landed 23 October: every part of it was built 21 October (Expose and Exposed; the gate, a static grant of Rapid on setup_once), so it is runnable; a tier two, so the tender never deals it. Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull, glass on purpose. The stock by kind, the brief's die (a Direct flat gun to cash the paint, a buff, a vent), Kestrel's own: the Transonic Rifle, the Overcharge Coil and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, needletail), Ryan's to judge running."
+   },
+   "codex": "",
+   "hull": 20,
+   "shield": 10,
+   "movespeed": 50,
+   "heat_max": 12,
+   "hardpoints": 3,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 8,
+   "cooling": 1,
+   "traits": [
+    "flyer"
+   ],
+   "size": "light",
+   "fixed": [
+    "fovea_designator"
+   ],
+   "loadout": [
+    "transonic_rifle",
+    "overcharge_coil",
+    "bleed_valve"
+   ],
+   "passive": {
+    "id": "quick_turn_avionics_relay",
+    "name": "Quick-turn Avionics Relay",
+    "description": "A debuff or a buff is Rapid on the Needletail, once a round.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "rapid",
+      "when": "setup_once"
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "giant_petrel",
+   "name": "Giant Petrel",
+   "designation": "K-21 Mk I Ground-Effect Flagship",
+   "maker": "kestrel",
+   "tier": 3,
+   "design": {
+    "fantasy": "Kestrel's capital (Ryan, 20 October: from irony, the capital hovers where most of the line flies), the ekranoplan, the Giant Petrel since 21 October, the family's big one over the same sea; the formation leader, aggressive where the Swallowtail is the supportive mobile HQ, pushing its allies to act and keeping the tempo up (Ryan, 21 October).",
+    "niche": "Kestrel's action-economy capstone, the reroll economy all the way (Ryan, 20 October): the team's unspent rerolls bank, up to three; the Immelmann Booster gives the team a reroll on itself, or for three rerolls a spent ally's die rolls again and it acts again; the Spindrift Salvo's kill brews two rerolls; the Reheat Uplink Overcharges an ally and rolls its die. Its own guns are ordinary; its prices are a slot, a fleet that moves at 20 and the rerolls a team needs for its own dice.",
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_gun_platform.md holds the rounds and the engine it waits on). Landed 23 October as planned: the bank, the Booster's price, the Salvo's kill rider and the Uplink's roll wait on the engine, and the bot's look-or-action valuation on them before its runner rows, so it is never dealt. Numbers are placeholders at the stock pass's scale, an assault hover at 44 hull. The stock by kind, a tier three stocking tiers zero to two (a big flat gun, a cold rolled gun, a vent): the Overclocked Railgun, the Twin Autoguns and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, giant_petrel), Ryan's to judge running. After the Lun."
+   },
+   "codex": "",
+   "hull": 44,
+   "shield": 14,
+   "movespeed": 20,
+   "heat_max": 14,
+   "hardpoints": 3,
+   "module_slots": 2,
+   "armour": 0,
+   "recharge_field": 5,
+   "cooling": 2,
+   "traits": [
+    "hover"
+   ],
+   "size": "assault",
+   "fixed": [
+    "immelmann_booster",
+    "spindrift_salvo",
+    "reheat_uplink"
+   ],
+   "loadout": [
+    "overclocked_railgun",
+    "twin_autoguns",
+    "bleed_valve"
+   ],
+   "passive": {
+    "id": "mavericks_playbook",
+    "name": "Maverick's Playbook",
+    "description": "The team's rerolls left unspent at the round's end are banked, up to three, and spent in a later round like any reroll.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
   }
  ]
 }

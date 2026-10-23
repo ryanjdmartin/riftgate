@@ -12,8 +12,10 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: every chassis decided by 21 October and named that evening; the Buzzard's stock
-filled and the stock holes taken; the last two slots marked (the Magpie, a support engine; the
+**Status**: every chassis decided by 21 October and named that evening (the Skua, the Storm
+Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
+whole, the other three planned until their engines); the Buzzard's stock filled and the stock
+holes taken; the last two slots marked (the Magpie, a support engine; the
 Snowy Owl, a stealth unit), each in a brief of its own since that evening. A proposal (Claude,
 20 October) until then. **Maker**: Kestrel. **Read first**:
 `docs/briefs/README.md` (the taste lines, the tiers table, the action-economy section); the

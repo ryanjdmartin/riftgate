@@ -5,7 +5,8 @@ extends TestCase
 ## renderer, so the joints' nesting and the sidecars are checked against the real files;
 ## only the drawing needs a window.
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web"]
+const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
+	"skua", "needletail", "storm_petrel", "giant_petrel"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:

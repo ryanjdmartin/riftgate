@@ -5,7 +5,9 @@ fast-looking-but-slow gun platform whose passes are the team's rerolls. "The gun
 a working label; the name and the look are Ryan's.
 
 **Status**: decided (Ryan's go, 21 October: the Giant Petrel, the formation leader; its pieces
-named that evening); its engine and content wait, so this brief stays until they land. A proposal since 19 October. **Maker**: Kestrel.
+named that evening); its content landed 23 October as planned, at the stock pass's scale,
+with its model (Claude's first cut, after the Lun, `ccr-7d865127-wr1ko2`); its engine waits,
+so this brief stays until it lands. A proposal since 19 October. **Maker**: Kestrel.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (Ryan's taste, the tiers,
 Kestrel's leans as the fourth round of `kestrel_shield_spender.md` left them); the bible's rows
 on rerolls (three a round, never onto the entry showing), on Rapid's limiter and on cooldowns;
@@ -508,9 +510,9 @@ pace with it.
 
 ## Open for the engine and content sessions
 
-1. Its numbers (placeholders), its model (the ekranoplan); its names as settled 21 October
-   (Maverick's Playbook, the Immelmann Booster, the Spindrift Salvo, the Reheat Uplink,
-   K-21 Mk I Ground-Effect Flagship).
+1. Landed 23 October: its numbers at the stock pass's scale (an assault hover at 44 hull,
+   shield 14; the Salvo 2 to 6, heat 4), its stock (the Overclocked Railgun, the Twin
+   Autoguns, the Bleed Valve), its names and its model, the ekranoplan.
 2. The bot's look-or-action valuation, before its runner rows.
 
 ## Holes already raised
@@ -537,7 +539,10 @@ pace with it.
 
 ## What the engine and content sessions land
 
-Maverick's Playbook (the team's rerolls carried, capped), the Immelmann Booster (a Rapid face with a self use and
-an ally use priced in rerolls, a spent ally's die rolled and its action again), the Spindrift
-Salvo's kill rider, the Reheat Uplink's roll; the chassis planned in content; then this brief retired. The
+Landed 23 October: the chassis planned in content, its three locks planned (their rules as
+draft fields), its numbers and its model. Still to land: Maverick's Playbook (the team's
+rerolls carried, capped), the Immelmann Booster (a Rapid face with a self use and an ally use
+priced in rerolls, a spent ally's die rolled and its action again), the Spindrift Salvo's kill
+rider, the Reheat Uplink's roll, the bot's valuation and its runner rows; then this brief
+retired. The
 bible's Kestrel row and the rules carry the design since 21 October.

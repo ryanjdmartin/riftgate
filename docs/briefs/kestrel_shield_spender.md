@@ -5,8 +5,10 @@ sustained hitter with a real decision on every spend. "The shield-spender" is a 
 the name and the look are Ryan's.
 
 **Status**: decided (Ryan's go, 21 October: the Storm Petrel, a hovercraft; its lock named St.
-Elmo's Regenerator that evening, its passive the Riot Field Generator; its numbers with the content
-session, this brief kept until then; a direction since 15 October). **Maker**:
+Elmo's Regenerator that evening, its passive the Riot Field Generator; a direction since 15
+October); its content landed 23 October as planned, at the stock pass's scale, with
+Regenerating in the vocabulary and its model (Claude's first cut, `ccr-7d865127-wr1ko2`), so
+this brief is kept until its engine lands. **Maker**:
 Kestrel. **Tier**: one. **Read
 first**: `docs/briefs/README.md`; `docs/roster_analysis.md` section 8 (Kestrel gap one, the
 raider); the bible's shield rule and Kestrel rows; `content/chassis.json`
@@ -481,13 +483,15 @@ passive already fires); the plate as a damage-taken add while the shield stands 
 condition); the bot reading shield spent as a cost and the zap as damage; each tested with
 synthetic passives. Its runner row lies until the honest shield rule is built.
 
-## Open for the content session
+## Open for the engine session
 
-1. Its numbers (every one a placeholder) and its model, a medium hovercraft; its names (St.
-   Elmo's Regenerator, the Riot Field Generator, the designation K-15 Mk I Air-Cushion
-   Picket). The capacitor of
-   the second round stays on the bench (overshield as ammunition).
-2. The stock hole it names, a mid-heat gun, is the stock pass's (`kestrel_line.md`).
+1. Landed 23 October: its numbers at the stock pass's scale (a medium hover at 24 hull, the
+   scale's top shield of 16, the plate 1 and the regen 2 a round for the 5 and 10 above), its
+   names and its model, a medium hovercraft. The capacitor of the second round stays on the
+   bench (overshield as ammunition).
+2. Its burn on basics alone, the hole below: first, before the passive is built.
+3. The stock hole it named, a mid-heat gun, the stock pass filled (the Transonic Rifle, tier
+   one, so a find for this machine and never its stock).
 
 ## Holes already raised
 
@@ -513,13 +517,24 @@ synthetic passives. Its runner row lies until the honest shield rule is built.
   unique, so the count is no worry now, "but point taken".
 - The honest shield rule is decided and not built (Claude, 18 October): until it lands, a
   shield burnt down to a point still blocks a whole blow, so a runner row on this machine reads
-  the old rule's free block, not the burn's price. Its engine follows the shield rule's.
+  the old rule's free block, not the burn's price. Its engine follows the shield rule's. Built
+  21 October, so this hole is closed.
+- Its burn on basics alone (Claude, 23 October): a tier one stocks only tier zero, and the
+  hottest basic is the Laser Carbine at heat 2 (the Ankle Mortar 1, the rest 0), so its stock
+  burns 2 shield a spend for a zap of 2; the kit's big hot gun and mid-heat gun (the Railgun
+  at 8, the Transonic Rifle at 4) are tier-one finds. The identity shows at a quarter of its
+  size until a hot gun is found, against the budgets' test that a tier one shows its identity
+  with basics alone. The options for Ryan: accept it (the burn is the build's, the plate and
+  the lure carry the start), price the burn per spend rather than per heat point (the zap a
+  floor), or let the passive double the heat it burns.
 - The zap on a Guarded core (a boss in parts) deals nothing, as every blow on it does; the zap
   carries no keyword, so it never spills, chains, burns or shocks, and Chain's repeat pays its
   heat again and so burns and zaps again on the new target (Claude, 18 October).
 
-## What the content session lands
+## What landed, and what the engine session lands
 
-The Storm Petrel and St. Elmo's Regenerator in content (planned until the engine: the burn and its zap, the plate,
-Regenerating), Regenerating in the vocabulary, its numbers and model; then this brief retires.
-The bible's Kestrel row and the rules carry the design since 21 October.
+Landed 23 October: the Storm Petrel and St. Elmo's Regenerator in content as planned (the
+rider a draft field), Regenerating in the vocabulary as planned, its numbers and its model.
+The engine session lands the burn and its zap, the plate, Regenerating and the rider, the bot's
+reads and its runner rows; then this brief retires. The bible's Kestrel row and the rules carry
+the design since 21 October.

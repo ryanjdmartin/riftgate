@@ -1791,6 +1791,172 @@
    "tags": []
   },
   {
+   "id": "flechette_pod",
+   "name": "Flechette Pod",
+   "maker": "kestrel",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A pod of darts for the strafing run (Ryan named it 21 October): the first aimed where the die is dragged, the rest sprayed among whatever stands in reach.",
+    "niche": "The Skua's lock, the spray (Ryan, 15 and 16 October): a rolled Direct gun of two strikes; the first lands where the die is dragged and each strike after it draws at random among the foes in reach at that moment, the same foe again allowed, reach read again between strikes and a kill clearing its slot at once; under the Split-cycle Breech four strikes at half. Volume against a full front, a plain gun on a lone foe behind a hole, a hole in the front turning the odds toward the foe behind it.",
+    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_strafer.md). Landed 23 October as planned: the spray is a draft field read by nothing until the engine has the pick per strike (the Musk Ox's salvo picks each strike's target among every live foe, a kill clearing its slot, the nearest path). Numbers are placeholders at the stock pass's scale (the brief's 10 to 15, heat 5, at 3 to 4, heat 1). On the model a dorsal pod behind the canopy, its honeycomb face forward."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 3,
+    "power_max": 4,
+    "strikes": 2,
+    "keywords": [],
+    "heat": 1,
+    "spray": true
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
+   ]
+  },
+  {
+   "id": "st_elmos_regenerator",
+   "name": "St. Elmo's Regenerator",
+   "maker": "kestrel",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
+    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating, shield at the start of each round for three rounds, stacking. Self only, never Rapid, no cooldown: the die is its brake.",
+    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_shield_spender.md). Landed 23 October as planned: the rider on its own spender is a draft field read by nothing until the engine has Regenerating (a round-start shield, the Buzzard's passive's effect, on a timed status) and the rider. Numbers are placeholders at the stock pass's scale (the brief's 10 a round at 2). On the model a mast amidships, St. Elmo's fire at its head and its yardarms."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "lure"
+    ],
+    "heat": 0,
+    "regenerates": {
+     "status": "regenerating",
+     "shield": 2,
+     "rounds": 3
+    }
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "fovea_designator",
+   "name": "Fovea Designator",
+   "maker": "kestrel",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
+    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash.",
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_interceptor.md). Landed 23 October with the Needletail, runnable: Expose built 21 October. Heat 2 a placeholder at the stock pass's scale, a debuff's warm price (the brief's 5 at the old one). On the model a sensor ball on a mast behind the canopy, turning and nodding on its joints, its lens lit."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "expose"
+    ],
+    "heat": 2
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "immelmann_booster",
+   "name": "Immelmann Booster",
+   "maker": "kestrel",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Immelmann turn reverses a fighter's course and climbs (Ryan named it 21 October), as a spent ally comes round to act again: the flagship's eight boosters, lit.",
+    "niche": "The Giant Petrel's first lock, Rapid (Ryan, 21 October): spent on itself the team gains a reroll; spent on an ally whose die is spent, three of the team's rerolls are paid, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. The order is the play: spend the ally first.",
+    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned: the self use is the Reveille Horn's Rallied, built; the ally use is the Horn's charged act-again priced in rerolls, a draft field read by nothing until the engine has the price. On the model the two banks of four boosters on the canards over the bow, pitching to blow under the wings."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "rallied",
+    "stacks": 1,
+    "rounds": 1,
+    "keywords": [
+     "rapid"
+    ],
+    "ally_action": {
+     "rerolls": 3
+    }
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "spindrift_salvo",
+   "name": "Spindrift Salvo",
+   "maker": "kestrel",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Spray blown off the wave crests its missiles skim (Ryan named it 21 October): the ekranoplan's launch tubes on its back.",
+    "niche": "The Giant Petrel's second lock, the battery (Ryan, 21 October: \"your battery shape, works well\"): a rolled Indirect gun; if its shot kills, the team gains two rerolls this round, banked if unspent. The gamble is Kestrel's: the range against the foe's hull is on the die, and a kill brews most of the Booster's price.",
+    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md; Spindrift is a BattleTech 'Mech's name, one word of a component's, which the reserved list passes; Ryan: \"Spindrift is fine\"). Landed 23 October as planned: the kill rider is a draft field read by nothing until the engine has it (the Kite's kill trigger the nearest path). Numbers are placeholders at the stock pass's scale (the brief's 10 to 30, heat 20, at 2 to 6, heat 4). On the model three pairs of launch tubes along the spine on a plinth that elevates."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 2,
+    "power_max": 6,
+    "keywords": [],
+    "heat": 4,
+    "kill_rerolls": 2
+   },
+   "passive": null,
+   "tags": [
+    "missile"
+   ]
+  },
+  {
+   "id": "reheat_uplink",
+   "name": "Reheat Uplink",
+   "maker": "kestrel",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "status": "planned",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Reheat is the afterburner (Ryan named it 21 October), sent to an ally over the flagship's uplink.",
+    "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Overcharged 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Overcharged halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
+    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned: the Overcharged is built; the roll on its target is a draft field read by nothing until the engine has it. On the model a dish behind the cockpit that swings onto the ally."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "overcharged",
+    "stacks": 2,
+    "targets": "ally",
+    "rolls_target": true
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
    "id": "transonic_rifle",
    "name": "Transonic Rifle",
    "maker": "kestrel",

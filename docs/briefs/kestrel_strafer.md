@@ -5,8 +5,9 @@ mechanic is decided; its numbers, locked piece and shape are open. "The strafer"
 label; the name and the look are Ryan's.
 
 **Status**: decided (Ryan, 14 October), the go given 21 October: a swing-wing, the Skua since
-that evening (the Butcherbird was a BattleTech 'Mech's, below); its numbers with the content
-session, this brief kept until then. (Ryan, 14 October: "Love the [strafer], lock that in and place it
+that evening (the Butcherbird was a BattleTech 'Mech's, below); its content landed 23 October
+as planned, at the stock pass's scale, with its model (Claude's first cut,
+`ccr-7d865127-wr1ko2`), so this brief is kept until its engine lands. (Ryan, 14 October: "Love the [strafer], lock that in and place it
 accordingly"). **Maker**: Kestrel. **Tier**: one (Ryan, 21 October: "Put butcher in": Kestrel's tier ones
 are the Storm Petrel, the Puffin and the Butcherbird; `kestrel_line.md`). **Read first**: `docs/briefs/README.md`; the
 bible's row on Kestrel's next chassis (section 7); `docs/roster_analysis.md` section 8
@@ -238,13 +239,15 @@ strike and reach re-read between strikes; the bot's value of a spray, its mean o
 reach; each tested with synthetic passives.
 
 
-## Open for the content session
+## Open for the engine session
 
-1. Its numbers and the lock's, and its model, a swing-wing (Ryan, 21 October); its names as
-   settled that evening: the Skua, the Flechette Pod, the Split-cycle Breech, and the
-   designation K-13 Mk I Swing-Wing Strafer.
-2. The start's hole below (a halved basic against armour 5): section 12's scales question and
-   the stock pass, with Exposed its Kestrel answer meanwhile.
+1. Landed 23 October: its numbers and the lock's at the stock pass's scale (a light flyer at
+   20 hull, shield 12, heat 12; the Pod 3 to 4, two strikes, heat 1), its stock from the
+   basics (the Laser Carbine, the Twin Autoguns, the Canopy), its names and its model, a
+   swing-wing (the wings sweep about their pivots in its acts and with its speed on the move).
+2. The halving's rounding at the stock pass's scale, the hole below: first, before the
+   passive is built.
+3. The start's hole below (a halved basic against plate), read again at the landed scale.
 
 ## The shape and the name (21 October)
 
@@ -295,6 +298,16 @@ reach; each tested with synthetic passives.
   too; until one moves, its flat buffs are the way through plate (the table above).
 - Two light flyers at 50 (the Kite and this) read the same on the map though not on the
   die; a hovercraft silhouette would part them there too (Claude, 18 October; Ryan's call).
+  Answered by the swing-wing (21 October); the model of 23 October parts them from above as
+  well: back-swept wings over tailplanes against the Kite's forward-swept wings and V tail.
+- The rounding at the stock pass's scale (Claude, 23 October): "halve, rounded up" (Ryan, 15
+  October) was a wash when printed numbers came in fives. At single digits it is a gain on
+  every odd number: a printed 1 strikes 1 twice (double), a 3 strikes 2 twice (a third more),
+  so the Twin Autoguns (1 to 3) average 2.7 against 2 on bare foes, and the identity becomes a
+  damage bonus on trash before any rider. Against the big foes' armour 1 the same gun drops to
+  0.7 against 1, and a halved Rivet Gun (2 to 1) does nothing. The options for Ryan: keep
+  rounding up (the gain is the tier one's payoff with basics alone), round down (a printed 1
+  strikes nothing, so the basics' low ends vanish), or halve after the buffs and round once.
 - Riders double: Burn lays a stack per 10 of a blow, rounded up, so two half blows can lay more
   than one whole blow; Spread and Penetrate fire per strike. The arithmetic per strike is in
   the session above.
@@ -312,8 +325,10 @@ reach; each tested with synthetic passives.
   you still hit that guy for normal damage", and sometimes the result hoped for; showing the
   first strike's number is correct, "exactly the same as spread". Both stand as designed.
 
-## What the content session lands
+## What landed, and what the engine session lands
 
-The Skua and its Flechette Pod in content (planned until the engine: a passive that halves the
-printed number and doubles the strikes, the spray's pick per strike), the bible's chassis
-table, its numbers and model; then this brief retires.
+Landed 23 October: the Skua and its Flechette Pod in content as planned (the spray a draft
+field), the bible's chassis and motion tables, its numbers and its model. The engine session
+lands the passive that halves the printed number and doubles the strikes on the effective face,
+the spray's pick per strike, the bot's value of a spray and its runner rows; then this brief
+retires.
