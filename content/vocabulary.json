@@ -1807,6 +1807,22 @@
    }
   },
   {
+   "id": "regenerating",
+   "category": "status",
+   "name": "Regenerating",
+   "codex": "Mech status, the Storm Petrel's. It regains 2 shield at the start of each round for three rounds. Each grant keeps its own clock, so two grants regain 4 a round until the first runs out.",
+   "status": "planned",
+   "design": {
+    "holes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_shield_spender.md): granted by St. Elmo's Regenerator to its own spender, stacking as timed stacks do, each grant its own end (the stacking policy read off the status). Planned until the engine has it: a round-start shield, the Buzzard's passive's effect, on a timed status, and the rider on a weapon's own spender. The number is a placeholder at the stock pass's scale (the brief's 10 at 2).",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: each grant its own clock",
+     "lasts": "Three rounds from its grant"
+    }
+   }
+  },
+  {
    "id": "ammo",
    "category": "resource",
    "name": "Ammo",

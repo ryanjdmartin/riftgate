@@ -344,7 +344,9 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank"]
+## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
+## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.

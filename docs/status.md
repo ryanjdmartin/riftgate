@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 609 tests, 62,521 checks, green on `claude/eager-newton-sf947u` (23 October, with the bots' Shock priced at the hitter in hand; 608 and 62,516 on 22 October: the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 609 tests, 63,145 checks, green on `ccr-7d865127-wr1ko2` (23 October, with the four Kestrel machines in content and modelled, the rig tests reading their sidecars); 609 and 62,521 on `claude/eager-newton-sf947u` (23 October, with the bots' Shock priced at the hitter in hand; 608 and 62,516 on 22 October: the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -29,7 +29,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
+`ccr-7d865127-wr1ko2` (23 October, a cloud session): the four Kestrel machines decided on 21
+October in content and modelled (the bullet below, 23 October), on main's head of that
+morning; it merges on Ryan's go once he has judged the models running. No other branch is
+live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
 marks and the stun calls, the second chunk's engine items, the content landed at the brief's
 fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
@@ -99,6 +102,24 @@ merged on 21 October are paused, each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 23 October, the four Kestrel machines decided on 21 October, in content and modelled (Ryan's
+  ask: models for every chassis ready to build, their silhouettes apart from the Kestrel
+  roster's; `ccr-7d865127-wr1ko2`). The Needletail is runnable, every part of it built 21
+  October (the validator's list of passive conditions had missed its gate's `setup_once`,
+  added); the Skua, the Storm Petrel and the Giant Petrel are planned (their passives and locks
+  wait on their engines, so they are never dealt), with Regenerating planned in the vocabulary.
+  Numbers are placeholders at the stock pass's scale; the stocks by kind (a tier one stocks
+  basics). The models are Claude's first cut, each in `tools/lowforge/models_low.py` with its
+  rig, four acts and a gait, Ryan's to judge running: the Skua the line's one conventional jet
+  (swing wings over tailplanes, swept on the move), the Needletail a needle on a stub wing with
+  an upright booster nacelle on each tip (level on the move), the Storm Petrel a narrow hull
+  under two raised riot plates and a mast lit with St. Elmo's fire (a new `corona` tile), the
+  Giant Petrel after the Lun (eight boosters on canards over the bow, a T-tail, the Salvo's
+  tubes on its spine). The holes raised for the engine sessions are in their briefs: the Skua's
+  halving rounds up at single digits (a printed 1 doubles), and the Storm Petrel's burn is 2 a
+  spend on basics. The hangar's renders and the bible's chassis and motion tables carry them
+  (the Lammergeier's missing chassis row added, the Swallowtail's and the Musk Ox's stale
+  planned marks gone).
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
@@ -422,11 +443,12 @@ merged on 21 October are paused, each resuming from its briefs:
   runner (`tools/balance.gd`: `--rows`, `--module`, `--bump`, `--nopassive`, `--set`,
   `--trace`), the campaign runner and the map survey; every ally model by lowforge with acts
   and gaits; the foe art; six tracks, the effects and Jenny's lines.
-- Content: five makers, 20 chassis, every one runnable (the funnel-web built, its engine 18
+- Content: five makers, 24 chassis, every one runnable but the Skua, the Storm Petrel and the
+  Giant Petrel, planned since 23 October (the funnel-web built, its engine 18
   October and its model 19 to 20 October, its Web Bomb built; the Cassowary, the Cottonmouth
   and the Whip Scorpion built 21 October, and that day the Kite's rework, the Lammergeier, the
   Swallowtail and the Musk Ox; a planned chassis is never dealt, the campaign's Start rule),
-  69 components (26 locked, 6 unstocked, among them the shelved Gravity Knuckles at tier three), 16 modules, four domains with 18 wildlife and bosses
+  80 components (32 locked, five of them planned), 17 modules, four domains with 18 wildlife and bosses
   and 8 heroes; 8 foe moves still `planned`. Every number is a placeholder; any whole number
   may be used (the scales are magnitudes), move alone in steps of 5. The content still carries
   the old kinetic-and-energy split (every rolled weapon cold, every flat one hot), which the
@@ -616,10 +638,11 @@ merged on 21 October are paused, each resuming from its briefs:
   the bible's rows in section 7; the to-do's art lines).
 - The Kestrel line (the session of 18 to 21 October; the bible's Kestrel, Kite, Puffin,
   die-entry, names, locked-component and stock-pass rows; each machine's kit in its brief): to
-  build, the Skua (a swing-wing strafer, tier one), the Storm Petrel (a hovercraft off-tank,
-  tier one), the Needletail's content and its gate (a tilt-jet that Exposes, tier two) and
-  the Giant Petrel (the formation leader, tier three), each the to-do's line (the Kite's
-  rework, Exposed and Expose, the die's kinds and the Lammergeier built 21 October, above); a
+  build, the engines of the Skua (a swing-wing strafer, tier one), the Storm Petrel (a
+  hovercraft off-tank, tier one) and the Giant Petrel (the formation leader, tier three), each
+  the to-do's line, their content planned and their models in since 23 October (the Needletail
+  landed whole that day; the Kite's rework, Exposed and Expose, the die's kinds and the
+  Lammergeier built 21 October, above); a
   Rapid shield never below tier two and a Rapid vent never below three; a locked piece's power at its chassis's depth; the Buzzard's stock and the three
   stock pieces (the Cyclic Cannon, the Transonic Rifle, Trim Tabs), landed with the stock
   pass on 22 October; the designations K-13 to K-21. Kestrel's lean is heat, rerolls, strikes and risk; Expose stays
@@ -648,7 +671,8 @@ to-do's Ryan list).
    first round and its review are in their briefs, none of it answered, Misharu first.
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
-   machine's content and engine session follows from its brief (the to-do's lines).
+   machine's engine session follows from its brief (the to-do's lines; their content and
+   models landed 23 October, the Needletail whole, on `ccr-7d865127-wr1ko2`).
 2. **The stock pass**, from its brief (`docs/briefs/stock_pass.md`, 22 October): the engine
    chunk is built (22 October, on its branch, the baseline reports beside it); Ryan's marks are
    made the same day, the structure not the numbers (the brief's section 3 and its tables),
