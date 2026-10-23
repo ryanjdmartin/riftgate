@@ -3705,7 +3705,7 @@ func test_a_rally_lands_next_round_at_its_own_value_whoever_acts_after_it() -> v
 	assert_false(Effects.has(g, "kindled"), "gone with the round")
 
 
-func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
+func test_the_debuffs_cost_rerolls_heat_and_a_reroll() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)
 	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
@@ -3759,24 +3759,6 @@ func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
 	assert_true(s3.reroll([0]), "the reroll happens")
 	assert_false(Effects.is_scrambled(m3), "and the scramble is spent")
 	assert_true("\n".join(s3.log).contains("C's reroll is scrambled"), "the log says so")
-	# Unmake: the showing component cracks with no hull lost.
-	var s4 := Skirmish.new(11, 1)
-	var m4 := _mech("D", Die.single(Face.attack(10, L, K.BURN)), 40, 100)
-	s4.add_mech(m4)
-	var maw := _ghoul(500, 10)
-	maw.actions = [_special("debuff", "crack")]
-	maw.action = maw.actions[0]
-	s4.add_foes([maw])
-	s4.begin()
-	s4.start_round()
-	s4.end_round()
-	assert_true(m4.die.faces[0].cracked, "cracked")
-	assert_eq(m4.hull, 100, "with no hull lost")
-	assert_eq(m4.shield, 40, "or shield")
-	assert_eq(m4.damaged_component_count(), 1, "one to repair")
-	s4.start_round()
-	s4.end_round()
-	assert_eq(m4.die.faces[0].kind, Face.Kind.BLANK, "cracked again: destroyed")
 
 
 func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:

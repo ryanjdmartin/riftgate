@@ -2174,10 +2174,6 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"scramble":
 			Effects.grant_for_rounds(t.unit, Effects.STATUS["scrambled"], "foe:" + f.content_id, round + 1)
 			log.append("%s: %s, %s's next reroll is scrambled" % [f.display_name, str(a.get("name", "scrambles")), t.unit.display_name])
-		"crack":
-			if t.face_index >= 0:
-				log.append("%s: %s, %s's showing component takes the blow" % [f.display_name, str(a.get("name", "unmakes")), t.unit.display_name])
-				_injure_entry(t, t.face_index)
 		"disable":
 			# The entry the die shows is switched off through the machine's next turn, no blow.
 			if t.face_index >= 0:

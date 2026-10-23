@@ -1,5 +1,5 @@
 {
- "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills in docs/briefs/stock_pass.md, set by tools/stock_fills.py): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, and the stock pass assigns them by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger; stored since the stock pass, 22 October): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the equipment a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills in docs/briefs/stock_pass.md, set by tools/stock_fills.py): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -11,8 +11,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
-    "niche": "",
-    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): the hopper, the Badger's two locked weapons working together: each foe the claw's blows reach puts a load in the Badger's hopper, so its spread turns a crowd into ammunition for the Bullion Fragmenter."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -42,8 +41,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "As many missiles as it could carry. The box on the Badger's deck.",
-    "niche": "Minerva's indirect fire: the tank that reaches the back rank.",
-    "notes": "Claude's fill, 26 September, so the Badger's missiles exist as a component. Renamed from the Missile Rack 9 October (Ryan, the name audit: the old name was bland; Claude proposed the Shotfirer, the mine's blasting man, for Minerva's mining roots, and Ryan made it the Shotfire Rack)."
+    "niche": "Minerva's indirect fire: the tank that reaches the back rank."
    },
    "face": {
     "kind": "attack",
@@ -68,8 +66,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": "",
-    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): flat 20, and it fires the hopper the Chainsaw Claw fills, +5 a load and at most three a shot, so a full hopper feeds several big shots rather than one burst (Ryan's cap); numbers placeholders."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -97,8 +94,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The basic Minervan line weapon: a play on flamethrower under Minerva's trope that things have to physically hit other things.",
-    "niche": "The default kinetic gun of the Minervan kit, the Slug Cannon's old numbers (30 to 60, crit 15, 10 heat), on the Armadillo and twice on the Wild Boar.",
-    "notes": "Named by Ryan 6 October over Claude's Iron-Billet Thrower, Ingot Hurler and Billet Launcher: a default weapon wants the plain word. Fills the line-fire hole the Bullion Fragmenter left when it became the Badger's fixed melee piece. Numbers are placeholders."
+    "niche": "Minerva's rolled line gun, a step above the basics."
    },
    "face": {
     "kind": "attack",
@@ -150,8 +146,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A beam that goes through the wall and the thing hiding behind it.",
-    "niche": "",
-    "notes": "Renamed from the Lance 9 October (Ryan, the name audit): the Lance shared its word with the Photosphere Lance, and a lance is the Arsenal's medieval register anyway; an enfilade is fire along a line of troops, which is what penetrate does."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -178,8 +173,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Small, rude, lands behind the front rank.",
-    "niche": "",
-    "notes": "Renamed from the Pocket Mortar 9 October (Ryan, the name audit): pocket was also the Baboon's Pocket Paradox; the knee mortar's reference, extra stupid (Ryan)."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -205,8 +199,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fins. Lots of fins.",
-    "niche": "",
-    "notes": "Renamed from the Heat Sink 9 October (Ryan, the name audit: the old name was bland; Claude proposed the Water Jacket, the old machine gun's cooling sleeve, and Ryan made it the Coolant Jacket). It shares Coolant with W&S's Coolant Dump."
+    "niche": ""
    },
    "face": {
     "kind": "vent",
@@ -282,8 +275,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Whatever it was about to do, it is not doing it now.",
-    "niche": "",
-    "notes": "Renamed from the Shock Barrage 9 October (Ryan, the name audit): Shock is a keyword and a status since the content revision, and this one suppresses. 22 October, the stock pass's landing: its Suppress lands only on a foe carrying Flak (Ryan's call: the maker's condition, no back-rank clause), out of the Clydesdale's stock, tier two."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -317,8 +309,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
-    "niche": "",
-    "notes": "Was overcharge (double damage, double heat) at 50 and 20; the keyword is retired and the numbers baked in (26 September). Kept as the pool's big hot flat gun (Ryan, 21 October, the Kestrel line review: its temporary note retired); off the Kite with its rework (21 October), so it carries its own tier, a tier-two blueprint, until the stock pass puts it in the Buzzard's stock. Breach since 22 October (Ryan, on the direction run that read four machines stalling on the Treant's plate): the one big flat gun that breaches, its fantasy armour piercing, so a plated foe has an answer beside the biggest blow."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -346,8 +337,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
-    "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it. 21 October (Ryan, the Kite's rework): the Pinion Driver's name goes to the Kite's new lock, its reset gun, and this finisher takes the name the records had saved for another Kestrel piece, the Coriolis Accelerator (a sniper's long-shot correction: the shot that finishes what is hurt), the id with it. It left the Kite with its rework (21 October), a tier-two blueprint in the pool through the Buzzard's stock."
+    "niche": "The assassin's finisher: flat, and it grows with the target's missing HP, so the die shows what it will deal to the foe it is held over."
    },
    "face": {
     "kind": "attack",
@@ -374,8 +364,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
-    "niche": "The Kite's lock, its reset gun: flat 15, 30 doubled, a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, so a round chains to two actions at most.",
-    "notes": "Ryan's go, 21 October, naming the lock (the name moved here from the old finisher, the Coriolis Accelerator since then). Built 21 October with the Kite's rework: the face's resets_on_kill. Its codex and flavour are Ryan's to write. Numbers are placeholders."
+    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, so a round chains to two actions at most."
    },
    "face": {
     "kind": "attack",
@@ -399,8 +388,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Lightning that picks its own second target.",
-    "niche": "",
-    "notes": "Renamed from the Arc Projector 6 October (Ryan: makes sense and also no sense)."
+    "niche": ""
    },
    "face": {
     "kind": "attack",
@@ -427,8 +415,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
-    "niche": "",
-    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act. 20 October (Ryan): a Rapid shield is never below tier two (a Rapid vent never below tier three), so with the stock pass it leaves the tier-one and tier-two stocks that carry it today and becomes a tier-two blueprint, found; its Rapid stays. 22 October, the stock pass's landing: a tier-two blueprint with its Rapid, out of every stock (Ryan's rule of 20 October: a Rapid shield is never below tier two)."
+    "niche": ""
    },
    "face": {
     "kind": "shield",
@@ -451,8 +438,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A shadow falls across the target and it forgets what it was about to do.",
-    "niche": "Aphelion's suppress: a flat energy number on a line, so the control lands every time it comes up.",
-    "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move. Renamed from the Umbra Projector 6 October (Ryan: more slick). 22 October, the stock pass's landing: the Arsenal's at tier three (Ryan, 22 October: it reads as Arsenal tech), a Suppress with no condition priced in Volatile in place of heat, out of the Baboon's stock, found and never stocked."
+    "niche": "The ungated Suppress, the Arsenal's at tier three, priced in Volatile in place of heat; no chassis stocks it."
    },
    "face": {
     "kind": "attack",
@@ -480,8 +466,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Lobbed light. It lands at the same brightness every time and keeps burning.",
-    "niche": "Indirect burn at a flat number: predictable stacks for the passive to read.",
-    "notes": "Claude's fill, 26 September. 10 October (Ryan, bible section 5): Steady retired, so it is a flat 10 (it was 5 to 15 steady)."
+    "niche": "Indirect burn at a flat number: predictable stacks for the passive to read."
    },
    "face": {
     "kind": "attack",
@@ -510,8 +495,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A ring of light that scours whatever the rift left on the metal.",
-    "niche": "The cleanse carrier: shield an ally and clear its statuses. A unique unlock, not Aphelion stock (28 September).",
-    "notes": "Claude's fill, 26 September."
+    "niche": "The cleanse carrier: shield an ally and clear its statuses. A find, not Aphelion stock."
    },
    "face": {
     "kind": "shield",
@@ -534,8 +518,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A small fast gun that gives the machine its turn back.",
-    "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die.",
-    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it. Tier two since the same day (Ryan: it carries Rapid, so it reads as a tier-two weapon). Renamed from the Pulse Repeater the same day (Ryan, the name audit): the Flakshot Repeater had the word first, and a vacillating pulse is the rapid entry's back-and-forth."
+    "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die."
    },
    "face": {
     "kind": "attack",
@@ -562,8 +545,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A siren and a strobe on a plate of armour. Everything in earshot comes for it.",
-    "niche": "The accessible lure (Ryan, 28 September: damage redirection should be common, not locked; 2 October: a lure rides on a foe-targeted entry, and this one does nothing else).",
-    "notes": "A lure with a spread since 2 October: an indirect entry of no damage that turns the foe it is aimed at and its neighbours on the Badger for the round. Was a shield with the taunt keyword (30 September to 2 October). In the Honey Badger's stock since 30 September (Ryan: the starter set needs class-based mitigation so tanks can protect their team; an intercept is the other candidate, unwritten). Its shape is a dish for want of a siren class."
+    "niche": "The accessible lure (damage redirection is common, never a tank's lock): an Indirect entry of no damage with Spread, so a rank turns on its machine for the round."
    },
    "face": {
     "kind": "attack",
@@ -590,8 +572,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
-    "niche": "The Armadillo's locked pair (Ryan's framework, 15 October; his go, 20 October): an Indirect weapon of no damage with Lure, Rapid and Cryo 1 at 5 heat. The foe it lures carries Cryo; any machine's damaging hit spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal.",
-    "notes": "Two copies on the die (Ryan, 15 October: one or a pair; 16 October: a pair, since one lure on a five-entry die shows a fifth of rounds). Rapid with no cooldown (cooldown 0 since the cooldown property landed, 21 October; it took the switch-off until then): the heat is its limiter (the bible's Rapid row), 5 a spend, a placeholder like every heat number here until the heat rework (Ryan, 20 October). Cryo is marked for reuse on other pieces as ally cooling through a foe's debuff, and may carry a minor rider later if the roster has room (the Armadillo row)."
+    "niche": "The Armadillo's locked pair: an Indirect weapon of no damage with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's damaging hit spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
    },
    "face": {
     "kind": "attack",
@@ -622,8 +603,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked melee: one big cleaving hit that braces the Boar behind its blade.",
-    "notes": "Claude's fill, 28 September. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 12 October (Ryan: \"Give the plow braced. It fits.\"): spending it Braces the Boar until the round's end (two stacks, a placeholder), in place of the Glacis, a flat armour +5 that was meant for front-rank blows only and measured no different that way (11 October), so it was hidden base armour."
+    "niche": "The Boar's locked melee: one big cleaving hit that braces the Boar behind its blade."
    },
    "face": {
     "kind": "attack",
@@ -652,8 +632,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
-    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat 5 that sprays the target's rank (Spread) and lays Flak 2 on each foe hit, so the team's many small blows land harder and the car itself takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list. Ryan's go, 19 October (the bible's Prairie Dog row; the brief retired to git: git show f5a085a:docs/briefs/ws_prairie_dog.md): Direct, flat 5 (5 to 15 rolled before), Spread, Rapid, Flak 2, heat 0, every number a placeholder. Built 21 October: the Spread, the flat 5 and Flak 2, the face's flak field the keyword's number as Burn's and Cryo's are. Three keywords is the authored cap, carried by a tier-one locked piece because its number is the lowest in the game. The pivot (Ryan, 20 October, under the action-economy row; his go, 21 October: \"Prairie dog is locked, go flak 2 spread for now. Passive carries the damage reduction.\"): the Rapid goes, since the squad's setup-then-cash is the team's order and a gated Rapid bought the car's solo loop alone, so the gun is Direct, flat 5, Spread, Flak 2, heat 0; the car's fight half (5 less from any foe carrying Flak) is its passive's clause, not this piece's, so any Flak weapon covers it."
+    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash."
    },
    "face": {
     "kind": "attack",
@@ -681,8 +660,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A barbed dart on a cable and a capacitor the size of the car. Whatever it pins takes the next blow double.",
-    "niche": "The Dingo's locked support: a cheap Shock on the foe an ally is about to eat, so the ally's blow lands double.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 14 October (Ryan, the go on the roster analysis): Shock in place of Suppress, the first locked piece that amplifies for others, and the only hard control on a tier-one chassis gone (docs/briefs/ws_dingo.md)."
+    "niche": "The Dingo's locked support: a cheap Shock on the foe an ally is about to eat, so the ally's blow lands double."
    },
    "face": {
     "kind": "attack",
@@ -710,8 +688,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Not a winch (Ryan, 19 October: a cable cannot swap two things, and the maker cannot go that low-tech) but a teleporter in the maker's register, \"guys this totally isn't just a teleporter\". The name is his working one.",
-    "niche": "The Dingo's second locked piece (Ryan's go, 19 October; the bible's Dingo row): pick two foes, or a foe and an empty slot, and they trade places; no damage. It exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, a cross-maker combo in one locked piece; a massive foe fills its column and stays, so bosses are out by rule; a swap with an empty front slot is a pull.",
-    "notes": "Landed with its engine, 21 October (the Swap keyword, a spend that takes a second target, a foe moving between slots), the Dingo going to tier two with it now that the Cassowary and the Cottonmouth run beside the Prairie Dog at tier one. Indirect so it reaches the back rank; heat 5 a placeholder like every number here. Its model mount on the Dingo is the asset session's."
+    "niche": "The Dingo's second locked piece (Ryan's go, 19 October; the bible's Dingo row): pick two foes, or a foe and an empty slot, and they trade places; no damage. It exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, a cross-maker combo in one locked piece; a massive foe fills its column and stays, so bosses are out by rule; a swap with an empty front slot is a pull."
    },
    "face": {
     "kind": "attack",
@@ -737,8 +714,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Goshawk's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
-    "niche": "The Goshawk's burst: spend the heat the passive was living on.",
-    "notes": "Live since the engine reads vents_all and power_per_heat (30 September). Claude's fill, 28 September. Needs a face that vents all heat as it fires and adds power per 10 heat vented (vents_all and power_per_heat below); planned until the engine reads them."
+    "niche": "The Buzzard's burst: spend the heat the passive was living on."
    },
    "face": {
     "kind": "attack",
@@ -769,8 +745,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fists, and a temper: every hit the Nemesis takes, its own included, is another swing it gets to throw.",
-    "niche": "The Nemesis's locked melee and its rage's outlet: spent with rage banked, it spends one and the die rolls again, and nothing switches off, so a long rage chains the fists.",
-    "notes": "12 October (Ryan): the Nemesis gets new fists that spend rage to roll the die again (\"you just get rapid\", without the switch-off, since rage is the limit), and the Gravity Knuckles go to tier three. The name is Ryan's working name, a Bruce Lee reference (Fist of Fury), open. The Gravity Knuckles' numbers are carried over (15 flat, 10 heat). 13 October (Ryan): the name stays, and no Burn: \"it has no place\"."
+    "niche": "The Nemesis's locked melee and its rage's outlet: spent with rage banked, it spends one and the die rolls again, and nothing switches off, so a long rage chains the fists."
    },
    "face": {
     "kind": "attack",
@@ -801,8 +776,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fists that weigh what the Arsenal says they weigh. Each blow burns, and each blow costs the machine a little of itself.",
-    "niche": "The Nemesis's locked melee: energy, static, burning, and volatile so every punch feeds the Crucible.",
-    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 10 October (Ryan): volatile off; with the Nemesis's passive reading hull damage, a self-biting fist was a ramp and a payoff in one, so no other entry was ever worth spending. Something more like gravity is open (half damage to the foes beside it, or pulling a back-rank foe forward). 12 October (Ryan): off the Nemesis, which gets new fists that spend rage (the Knuckle of Fury); the Gravity Knuckles become a tier-three blueprint with the effect measured on 11 October (volatile back and an area keyword in place of Burn), the tier three keeping the word gravity and the Nemesis the word knuckles, so its second word is open. Its entry is unchanged until the name and the area keywords land. 13 October (Ryan): the gravity idea is shelved, with lots of potential; it comes back later."
+    "niche": "Shelved: a tier-three blueprint kept unstocked until the gravity piece returns (the bible's Nemesis fists row)."
    },
    "face": {
     "kind": "attack",
@@ -830,8 +804,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): devour folded into a rule printed on the talons, its one carrier, so it is no longer a keyword to learn. 18 October (Ryan): \"devour is not a thing\": the entry says what it does, each kill Overcharged 2 (a point a stack, kept for the battle by the Tap), and nothing in the records names it."
+    "niche": "The Ammit's locked melee: flat, and each kill Overcharges the Ammit, its scaling threat for the battle and nothing more."
    },
    "face": {
     "kind": "attack",
@@ -858,8 +831,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Mining kit with the safety plate off. It puts a rivet through anything.",
-    "niche": "Minerva's starter gun.",
-    "notes": "Claude's fill, 28 September: the maker starter kits."
+    "niche": "Minerva's starter gun."
    },
    "face": {
     "kind": "attack",
@@ -884,8 +856,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The gun every Kestrel airframe leaves the factory with. Light, flat, warm.",
-    "niche": "Kestrel's starter gun.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "niche": "Kestrel's starter gun."
    },
    "face": {
     "kind": "attack",
@@ -910,8 +881,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A jet's bleed-air valve thrown wide open: the engine dumps its own heat overboard. The jet's brake.",
-    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only.",
-    "notes": "Claude's fill, 28 September. 22 October, the stock pass's landing: renamed the Bleed Valve (a working name, Ryan's go on the brief's suggestion), the Ram-air Scoop colliding with the Ram Frame module; self only, tier zero, a basic."
+    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only."
    },
    "face": {
     "kind": "vent",
@@ -932,8 +902,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A ring of hard light. Nothing clever about it, which Aphelion resents.",
-    "niche": "Aphelion's generic shield.",
-    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Pulse Vacillator, so its tier is derived (two)."
+    "niche": "Aphelion's generic shield."
    },
    "face": {
     "kind": "shield",
@@ -953,8 +922,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
-    "niche": "The first buff component: two stacks of Overcharged on a machine for the round.",
-    "notes": "Claude's fill, 29 September, so the buff kind has one entry in the pool; fitted to no chassis. Numbers, name and maker are Ryan's to move. 18 October (Ryan): Overcharged 2, a point a stack halving at each round's end, no rounds (a halving status has no duration); the +10 for a round it gave before was \"silly high\" for a support action spent the same turn as a combo."
+    "niche": "The first buff component: two stacks of Overcharged on a machine for the round."
    },
    "face": {
     "kind": "buff",
@@ -975,8 +943,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A deep-space radiator, unfolded. Heat goes where it always went: out.",
-    "niche": "Aphelion's starter vent, so the Mandrill need not borrow one.",
-    "notes": "Claude's fill, 28 September. 22 October, the stock pass's landing: Aphelion's ally vent at tier one, allies only, so the basic vents are two."
+    "niche": "Aphelion's ally vent at tier one."
    },
    "face": {
     "kind": "vent",
@@ -997,8 +964,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Arsenal's issue weapon, older than it looks: plasma loaded like powder, and no two shots alike.",
-    "niche": "The Arsenal's starter gun.",
-    "notes": "Claude's fill, 28 September. Renamed from the Plasma Carbine 9 October (Ryan, the name audit): carbine is W&S's word and the Laser Carbine already carries it; an arquebus is the Arsenal's medieval firearm. 10 October (Ryan, bible section 5): By its niche it rolls (an old, unreliable gun), 5 to 15 for the flat 10 it was; the sound stays plasma (a rolled barrel would derive gunfire)."
+    "niche": "The Arsenal's starter gun."
    },
    "face": {
     "kind": "attack",
@@ -1025,8 +991,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A stream of plasma that sticks. Purification, the manual says.",
-    "niche": "The Arsenal's starter burn.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "niche": "The Arsenal's starter burn."
    },
    "face": {
     "kind": "attack",
@@ -1055,8 +1020,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Plasma lobbed high and falling burning.",
-    "niche": "The Arsenal's advanced piece, pre-installed on the Nemesis: indirect burn that runs hot.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "niche": "The Arsenal's hot Indirect burn."
    },
    "face": {
     "kind": "attack",
@@ -1085,8 +1049,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Heat condensed and thrown away. Nobody outside the Arsenal knows where.",
-    "niche": "The Arsenal's vent: the biggest number, paid in hull, and on the Nemesis every vent is a Crucible stack.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 12 October (Ryan): the twist, so the Arsenal's equipment is its biggest number paid in hull like the Oblation Mantle: 40 with volatile (a plain 30 before)."
+    "niche": "The Arsenal's vent: the biggest number, paid in hull, so on the Nemesis every spend banks a rage."
    },
    "face": {
     "kind": "vent",
@@ -1109,8 +1072,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A beam drawn off the reactor's own surface. It burns what it touches and the machine with it.",
-    "niche": "The Stingray's locked gun: a hot energy burn on a line, so the passive always has heat to read and a stack to deepen.",
-    "notes": "Proposed and decided 2 October (the Stingray row of the bible). Numbers are placeholders, Ryan's to move."
+    "niche": "The Stingray's locked gun: a hot energy burn on a line, so the passive always has heat to read and a stack to deepen."
    },
    "face": {
     "kind": "attack",
@@ -1139,8 +1101,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A lattice of light laid over a machine's weapons. Everything it hits afterwards keeps burning.",
-    "niche": "Aphelion's buff: a stack of Primed for the round, on itself or an ally, so the Stingray's suite has a buff to deepen as well as its burns.",
-    "notes": "Proposed and decided 2 October. The second buff component in the pool after Kestrel's Overcharge Coil; numbers are Ryan's to move."
+    "niche": "Aphelion's buff: a stack of Primed for the round, on itself or an ally, so the Stingray's suite has a buff to deepen as well as its burns."
    },
    "face": {
     "kind": "buff",
@@ -1161,8 +1122,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
-    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first).",
-    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right). 21 October (the Puffin's rework, Ryan's go): shield 10, down from 30; the Puffin's passive grows it by a fifth of the ally's heat, so it is the big one on a hot ally and 10 on a cold one."
+    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first)."
    },
    "face": {
     "kind": "shield",
@@ -1186,8 +1146,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A probe lobbed into the formation. Whatever the thing it lands beside was about to do, it now differentiates.",
-    "niche": "The first Disrupt in the pool: an indirect entry of no damage that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship.",
-    "notes": "Stocked on the Baboon in place of a Pulse Vacillator. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "The first Disrupt in the pool: an indirect entry of no damage that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship."
    },
    "face": {
     "kind": "attack",
@@ -1214,8 +1173,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
-    "niche": "Aphelion's cleanse vent: the Chorus's answer in a stock kit, where the Corona Shield is a unique unlock.",
-    "notes": "Stocked on the Baboon in place of the Radiator Sail, so it is Aphelion's tier-one vent. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Renamed from the Sublimation Array the same day (Ryan, the name audit: a Sublimator, with an adjective; he chose Phased)."
+    "niche": "Aphelion's cleanse vent at tier one, where the Corona Shield is the tier-two cleanse shield."
    },
    "face": {
     "kind": "vent",
@@ -1238,8 +1196,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "It projects polarity. Nobody at Aphelion will say what that means, and the next thing to hit the target hits twice as hard.",
-    "niche": "The first Shock: a line entry of no damage that sets up a doubled blow for the team. Shocked is a status, so it feeds the Baboon's Pocket Paradox, which a suppress never does.",
-    "notes": "Ryan's own example of the house joke (bible, the component-names row of 6 October). Stocked on the Baboon in place of its second Pulse Vacillator. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "The first Shock: a line entry of no damage that sets up a doubled blow for the team; Shocked is a status, so it feeds the Baboon's Pocket Paradox."
    },
    "face": {
     "kind": "attack",
@@ -1266,8 +1223,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A hydraulic pit prop jammed under a machine's plating. It holds the roof up in the mine; it holds the armour on out here.",
-    "niche": "The first Braced carrier: armour +20 for the round on itself or an ally, the answer to volume (swarms, double strikes, a storm of small blows), nothing against a breach.",
-    "notes": "Stocked on the Armadillo in place of its Ablative Plating. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. 18 October: Armoured 10 (Braced \u00d72 at +5 a stack before; a stack is an armour point now). 20 October: off the Armadillo's stock (its seal is its armour now), so it carries its own tier, one, until the stock pass finds it a home."
+    "niche": "Armoured for the round on itself or an ally: the answer to volume (swarms, multi-strikes, a storm of small blows), nothing against a breach."
    },
    "face": {
     "kind": "buff",
@@ -1289,8 +1245,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The falling-object guard over a mining machine's cab, swung down to cover the frame: what keeps a cave-in off the pilot keeps a blow off the hull.",
-    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only.",
-    "notes": "Built 9 October in the content revision as Minerva's intercept, with the Guard keyword (allies only, the foes aimed at the ally turning on the spender, its shield going up on the door); Guard taken out the same day (Ryan: until we feel we need it), so it is a plain shield, self or ally. On the Wild Boar and the Clydesdale in place of their Ablative Plating. 22 October, the stock pass's landing: renamed the Canopy (a working name, Ryan's go on the brief's suggestion), so that the Blast Door's name goes to the Barrier piece whose fantasy it already was; self only, tier zero, a basic."
+    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only."
    },
    "face": {
     "kind": "shield",
@@ -1311,8 +1266,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
-    "niche": "Melee that Shocks what it hits and leaves standing: the Armadillo's status on a weapon (Ryan's board), so the next blow on it lands double.",
-    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row). 10 October (Ryan, bible section 5): By its niche it is flat (a shock rider), 15 for the 10 to 20 it was. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "niche": "Melee that Shocks what it hits and leaves standing, so the next blow on it lands double."
    },
    "face": {
     "kind": "attack",
@@ -1340,8 +1294,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
-    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
-    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. A projector since 9 October (Ryan: plating belongs in modules, a hardpoint carries something mounted), its shape a dish and its fantasy no longer plating. On the Nemesis in place of its Ward Plate as well. 15 October (Ryan): renamed the Oblation Mantle from the Oblation Ward, Ward being the buff's word (the bible's Barrier and Ward row); the id stays, as the Bone Wyvern's did."
+    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend."
    },
    "face": {
     "kind": "shield",
@@ -1365,8 +1318,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A censer swung over the hull. Whatever strikes the consecrated metal is marked for what comes next.",
-    "niche": "The first Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked, so the Armadillo's Faraday Hull can ride on any machine; on the Nemesis its own punches spend the shocks.",
-    "notes": "Stocked on the Nemesis in place of its Plasma Carbine. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "The Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked; on the Nemesis its own punches spend the shocks."
    },
    "face": {
     "kind": "buff",
@@ -1388,8 +1340,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A minigun, but more. Three bursts a pull, each rolled on its own.",
-    "niche": "The first multi-strike: three small blows that each roll, crit and proc on their own. Strong into bare foes and with Primed, almost useless into armour 10.",
-    "notes": "From Ryan's Names board (the horde gun). Stocked on the Clydesdale in place of one Twin Autoguns. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. At the damage scale (9 October) its strikes are 5 to 10, half of 5 to 15 rounded up to fives as the scale rounds (a kinetic weapon rolls a range): 22 or so a spend against the Twin Autoguns' 10, a little hotter than the old ratio, and about 7 into armour 5, which is its weakness (bible section 11, the damage-scale row)."
+    "niche": "The multi-strike horde gun: three small blows that each roll and proc on their own, strong into bare foes and with Primed, poor into armour."
    },
    "face": {
     "kind": "attack",
@@ -1416,8 +1367,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "A combined entry: a vent of 10 that also shields 10, so a support entry is never a dead roll and costs its turn like any other.",
-    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop. Decided 9 October in the content revision as the first Rapid equipment (the escort cools an ally and acts again). Ryan, 20 October: Rapid off, a vent that shields in its place (vent 10, shield 10), the action-economy row's cantrip by density; Rapid vents and shields, if any exist, never below tier three. Both halves run since 21 October (the combined entry's engine: shields on the face), the vent first, then the shield on the same machine, which on the Puffin grows through its Slipstream by the heat the vent left. Numbers are placeholders."
+    "niche": "A combined entry: a vent that also shields, so a support entry is never a dead roll and costs its turn like any other."
    },
    "face": {
     "kind": "vent",
@@ -1438,8 +1388,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
-    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round.",
-    "notes": "Ryan's go, 18 October (the bible's funnel-web row; the brief retired to git, bfa8cf2). Built 18 October: the web keyword lands Webbed on the foe, whose chip says which neighbour the burst catches (> the right-hand one, which acts after it; < the left-hand one, which has acted), and the web bursts at the end of the foe's action (Skirmish._web_burst). Its blow of nothing lays no Vitriol, so the web never feeds the ambush directly; the window it opens next round does. Numbers are placeholders and the name a working one."
+    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round."
    },
    "face": {
     "kind": "attack",
@@ -1465,8 +1414,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
-    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up (+5 on the next weapon spend, carried between turns). Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun.",
-    "notes": "Ryan's go, 19 October (the bible's Cassowary row; the brief retired to git: git show 021f075:docs/briefs/ws_revolver.md). The names are his (Spin-Up, Spun Up). The spin landing on itself is his exception to the reroll rule (never onto the entry showing), a design one-off and no balance one; no penalty (Ryan, 19 October: a combo piece, not a typical Rapid one, and the stepped barrel prevents its abuse; Claude's heat-5 limiter set aside). Built 21 October with the die mode: cooldown 0 and spins true on the face, its Rapid's limiter the cylinder (the validator's stepping-die exemption), Spun Up granted with no rounds and spent by the next weapon spend. Shape none: the drum is the chassis's own, clicking round on the model."
+    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up for the next weapon spend, carried between turns. Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun."
    },
    "face": {
     "kind": "buff",
@@ -1492,8 +1440,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A signal mirror on a mast that every foe on the field turns to face, and a siphon that drinks the blows they land into the pressure vessel. Ryan, 19 October: \"An aoe lure that grants armour, and heat rises for every hit taken\"; 20 October: a lure-all, riskier and more rewarding; the name his (\"Keep heliographic cause its dumber\").",
-    "niche": "The Whip Scorpion's locked fuel decision: no damage; every foe in the fight turns on it for the round (Lure, every foe reached); it is Armoured 2 for the round; and every blow landed on it that round adds 10 heat, which its vents blast next round. Bad against a boss (one blow, little heat) and good against a swarm (many small blows that bounce off armour), the opposite of where its vents already excel, so the decision is whistle at the swarm, never at the brutes; the reward is capped by the heat maximum and one vent a round, the risk is the whole formation's blows and the overflow burning at the next turn's end.",
-    "notes": "Ryan's go, 20 October (the bible's Whip Scorpion row; the brief retired to git: git show 4a8ab1d:docs/briefs/ws_boiler.md). Built 21 October: the reach over every foe in the fight (the face's reaches_all) and the heat per blow landed on the owner for the round (heat_per_blow, the Siphoning status; the blows land in the enemy's turn, after the overheat settles, so it is next round's fuel or next turn's burn), the forecast's heat after the round counting it; the die's preview of the lure's blows before it is spent built 22 October. No Rapid (Ryan: too easy). Numbers are placeholders: Armoured 2 reads in the numbers branch's points (braces 2 is stacks of 5 until it merges); 10 a blow is the lever (5 was half a vent). The per-hit heat against the README's taste line on rewards for being struck: the Siphon spends the machine's own turn and pays out a round later at random, so it is not the old discharge (Ryan, 20 October; the line's row carries the condition)."
+    "niche": "The Whip Scorpion's locked fuel decision: no damage; every foe in the fight turns on it for the round, it is Armoured for the round, and every blow landed on it that round adds heat its vents blast next round. Bad against a boss (one blow, little heat) and good against a swarm (many small blows that bounce off armour), so the decision is whistle at the swarm, never at the brutes; the reward is capped by the heat maximum and one vent a round, the risk is the whole formation's blows and the overflow burning at the next turn's end."
    },
    "face": {
     "kind": "attack",
@@ -1523,8 +1470,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
-    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat 30, heat 30, so one shot fills the next vent's blast whatever else the stock carries. A hot slot-in for any machine that can vent.",
-    "notes": "Ryan's go, 20 October (the bible's Whip Scorpion row). Was the Steam Cannon, the proposal's locked piece (12 October), reappropriated to the stock when the Heliographic Siphon took the locked slot and renamed in the maker's future-tech register. Numbers are placeholders; its heat price is the stock pass's. Tier two, derived from the chassis that stocks it."
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot fills the next vent's blast. A hot slot-in for any machine that can vent."
    },
    "face": {
     "kind": "attack",
@@ -1548,8 +1494,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The hangar deck's mooring field thrown over the squad; charged, the shutters close and the squad is gone from the fight for a round.",
-    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The plain form is the team shield (Ryan: healthier than team armour; a Barrier on every ally breaks the Barrier row), the charged form Phased on every ally that has not acted (Phased's own rule), paid three times already (the muster, the docked allies' actions, the whole enemy turn on the carrier), so no cooldown; if it reads too strong the lever is its price (two musters), never a clock. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
+    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown."
    },
    "face": {
     "kind": "shield",
@@ -1576,8 +1521,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The observer's flare over the target: every gun on the field finds it. Charged, it bursts in the foe's face.",
-    "niche": "The Swallowtail's spotter, locked: the foe it lights is Exposed (the Kestrel session's debuff: in every machine's Direct reach and its armour counting for nothing, through the next round), no damage; spending a muster Suppresses it too, a stun gated by the price and clocked by Numbed.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). Ryan, 21 October, in the Kestrel session: nothing on the helicarrier is called Mark, so the planned Mark keyword left the vocabulary; the Flare Exposes the foe and Suppresses it too if a condition is met, the charge today. Expose on its face since the Swallowtail's engine (21 October), the keyword built that day. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
+    "niche": "The Swallowtail's spotter, locked: the foe it lights is Exposed (the Kestrel session's debuff: in every machine's Direct reach and its armour counting for nothing, through the next round), no damage; spending a muster Suppresses it too, a stun gated by the price and clocked by Numbed."
    },
    "face": {
     "kind": "attack",
@@ -1609,8 +1553,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A crane, a hose and a crate of plate lowered onto an ally in the middle of the fight. Charged, the whole tender comes down.",
-    "niche": "The Swallowtail's resupply, locked: a shield and some cooling on an ally; spending a muster instead fills its shield to the maximum, cools it to zero and cleanses it.",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The sutler is the army's provisioner, the maker's own word (a job, not an advert). The reset is chosen per ally: the hot builds (the Stingray, the Goshawk, the Whip Scorpion) do not want the cooling. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
+    "niche": "The Swallowtail's resupply, locked: a shield and some cooling on an ally; spending a muster instead fills its shield to the maximum, cools it to zero and cleanses it."
    },
    "face": {
     "kind": "shield",
@@ -1637,8 +1580,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The bugle that wakes the camp. Charged, it gets a machine back on its feet and firing.",
-    "niche": "The Swallowtail's rally, locked: the team gains a reroll this round; spending a muster instead lets an ally act again (its die rolled again and spent again, the gun platform's engine).",
-    "notes": "Ryan's go, 21 October (the bible's Swallowtail row; the brief retired to git: git show 5d989be:docs/briefs/ws_multirotor.md). The act-again form is the action-economy row's tempo lent, ranked last there, and passes the row's price: a second action paid in a banked resource (the muster) and the carrier's own action. The reroll it grants counts toward the Muster when spent on the carrier, the intended combo; the cap holds it. Every number is a placeholder. Built 21 October with the Swallowtail's engine: the face's `charged` is its charged form, read by Face.charged_form and bought for a muster."
+    "niche": "The Swallowtail's rally, locked: the team gains a reroll this round; spending a muster instead lets an ally act again (its die rolled again and spent again, the gun platform's engine)."
    },
    "face": {
     "kind": "buff",
@@ -1664,8 +1606,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). No cooldown, since it is a status and ammo piece (Ryan). Its Flak is the team's, to mop up what the Ox will not spend next turn's shots on, never a setup for its own salvo (Ryan: that one-two is way too obvious; Flak 1 halves to nothing by its next turn anyway). Heat 10 at today's scale is 1 ammo (Ryan's 2 heat at the stock pass's scale, a fifth of today's). Built 21 October with the Musk Ox's engine."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
@@ -1695,8 +1636,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
-    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Up to forty hits from ten strikes, so every per-hit rider on the field, the foes' Flak first, multiplies by it: the strike's number is the lever, read with and without Flak. The random target is random that adds (Ryan, 16 October), steered by thinning the field or firing at a lone boss; the Whip Scorpion's blast is the precedent. Its price is the whole magazine, so it carries no heat. Built 21 October with the Musk Ox's engine."
+    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
    },
    "face": {
     "kind": "attack",
@@ -1726,8 +1666,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
-    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat.",
-    "notes": "Ryan's go, 21 October (the bible's Musk Ox row; the brief retired to git: git show bc97727:docs/briefs/ws_artillery.md). Its name is a working one until it is known to be needed (Ryan: \"just call it 'quick reload' for now\"). Rapid with its heat as the limiter, the Rapid row's heat; a vent is its pair, more ammo and cooling for the turn spent. The Forge counts it as no vent, so its 2 is all it adds (Claude's lean; Ryan agreed, 21 October). Built 21 October with the Musk Ox's engine: a vent of nothing that reloads, drawn as a reload (the shells, its 2 as its number), its printed heat landing as it is spent."
+    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat."
    },
    "face": {
     "kind": "vent",
@@ -1752,8 +1691,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Length contraction shrinks the space between, so every mine on the field ends in one slot (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
-    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows.",
-    "notes": "Built 21 October with the Lammergeier (the face's pulls_mines). Indirect so it reaches any slot; heat 10 a placeholder, the number Ryan's. Its codex and flavour are Ryan's to write; its mount on the model is the asset session's."
+    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows."
    },
    "face": {
     "kind": "attack",
@@ -1776,8 +1714,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone copies the killing shot into the slot the foe empties.",
-    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in.",
-    "notes": "Built 21 October with the Lammergeier (the face's drones; the status syrinx_drone, a debuff the Paradox counts). Indirect, heat 0, placeholders. The line review's gate (Rapid while a mine waits) is on the bench. Its codex and flavour are Ryan's to write."
+    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in."
    },
    "face": {
     "kind": "attack",
@@ -1802,7 +1739,7 @@
     "stage": "draft",
     "fantasy": "A pod of darts for the strafing run (Ryan named it 21 October): the first aimed where the die is dragged, the rest sprayed among whatever stands in reach.",
     "niche": "The Skua's lock, the spray (Ryan, 15 and 16 October): a rolled Direct gun of two strikes; the first lands where the die is dragged and each strike after it draws at random among the foes in reach at that moment, the same foe again allowed, reach read again between strikes and a kill clearing its slot at once; under the Split-cycle Breech four strikes at half. Volume against a full front, a plain gun on a lone foe behind a hole, a hole in the front turning the odds toward the foe behind it.",
-    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_strafer.md). Landed 23 October as planned: the spray is a draft field read by nothing until the engine has the pick per strike (the Musk Ox's salvo picks each strike's target among every live foe, a kill clearing its slot, the nearest path). Numbers are placeholders at the stock pass's scale (the brief's 10 to 15, heat 5, at 3 to 4, heat 1). On the model a dorsal pod behind the canopy, its honeycomb face forward."
+    "notes": "Planned: the spray is a draft field until the engine picks a target per strike."
    },
    "face": {
     "kind": "attack",
@@ -1831,7 +1768,7 @@
     "stage": "draft",
     "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
     "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating, shield at the start of each round for three rounds, stacking. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_shield_spender.md). Landed 23 October as planned: the rider on its own spender is a draft field read by nothing until the engine has Regenerating (a round-start shield, the Buzzard's passive's effect, on a timed status) and the rider. Numbers are placeholders at the stock pass's scale (the brief's 10 a round at 2). On the model a mast amidships, St. Elmo's fire at its head and its yardarms."
+    "notes": "Planned: the rider on its own spender is a draft field until the engine has Regenerating (a round-start shield on a timed status) and the rider."
    },
    "face": {
     "kind": "attack",
@@ -1860,8 +1797,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
-    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_interceptor.md). Landed 23 October with the Needletail, runnable: Expose built 21 October. Heat 2 a placeholder at the stock pass's scale, a debuff's warm price (the brief's 5 at the old one). On the model a sensor ball on a mast behind the canopy, turning and nodding on its joints, its lens lit."
+    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash."
    },
    "face": {
     "kind": "attack",
@@ -1887,7 +1823,7 @@
     "stage": "draft",
     "fantasy": "The Immelmann turn reverses a fighter's course and climbs (Ryan named it 21 October), as a spent ally comes round to act again: the flagship's eight boosters, lit.",
     "niche": "The Giant Petrel's first lock, Rapid (Ryan, 21 October): spent on itself the team gains a reroll; spent on an ally whose die is spent, three of the team's rerolls are paid, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. The order is the play: spend the ally first.",
-    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned: the self use is the Reveille Horn's Rallied, built; the ally use is the Horn's charged act-again priced in rerolls, a draft field read by nothing until the engine has the price. On the model the two banks of four boosters on the canards over the bow, pitching to blow under the wings."
+    "notes": "Planned: the self use is the Reveille Horn's Rallied, built; the ally use (the Horn's charged act-again priced in rerolls) is a draft field until the engine has the price."
    },
    "face": {
     "kind": "buff",
@@ -1916,7 +1852,7 @@
     "stage": "draft",
     "fantasy": "Spray blown off the wave crests its missiles skim (Ryan named it 21 October): the ekranoplan's launch tubes on its back.",
     "niche": "The Giant Petrel's second lock, the battery (Ryan, 21 October: \"your battery shape, works well\"): a rolled Indirect gun; if its shot kills, the team gains two rerolls this round, banked if unspent. The gamble is Kestrel's: the range against the foe's hull is on the die, and a kill brews most of the Booster's price.",
-    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md; Spindrift is a BattleTech 'Mech's name, one word of a component's, which the reserved list passes; Ryan: \"Spindrift is fine\"). Landed 23 October as planned: the kill rider is a draft field read by nothing until the engine has it (the Kite's kill trigger the nearest path). Numbers are placeholders at the stock pass's scale (the brief's 10 to 30, heat 20, at 2 to 6, heat 4). On the model three pairs of launch tubes along the spine on a plinth that elevates."
+    "notes": "Planned: the kill rider is a draft field until the engine has it."
    },
    "face": {
     "kind": "attack",
@@ -1944,7 +1880,7 @@
     "stage": "draft",
     "fantasy": "Reheat is the afterburner (Ryan named it 21 October), sent to an ally over the flagship's uplink.",
     "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Overcharged 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Overcharged halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
-    "notes": "Ryan's go, 21 October (docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned: the Overcharged is built; the roll on its target is a draft field read by nothing until the engine has it. On the model a dish behind the cockpit that swings onto the ally."
+    "notes": "Planned: the roll on its target is a draft field until the engine has it."
    },
    "face": {
     "kind": "buff",
@@ -1967,8 +1903,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A long rifle whose rounds leave the barrel just past the speed of sound.",
-    "niche": "The step between the Laser Carbine and the Overclocked Railgun, Kestrel's 3, 5 and 10: flat, warm and plain.",
-    "notes": "Taken in the Kestrel line review (Ryan, 21 October: \"stock changes as you see fit\"; docs/briefs/kestrel_line.md); landed with the stock pass (22 October), in the Kite's and the Buzzard's stocks, Breach staying the Railgun's alone (Ryan, 22 October). Numbers are placeholders."
+    "niche": "The step between the Laser Carbine and the Overclocked Railgun, Kestrel's 3, 5 and 10: flat, warm and plain."
    },
    "face": {
     "kind": "attack",
@@ -1993,8 +1928,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A shell fused to burst over a rank, peppering every foe under it with fragments that leave each one easier to hit.",
-    "niche": "The Flak family's slot-in above the basics: a rolled Indirect spray laying Flak 1 on a foe and its neighbours, for the team's many small blows to cash.",
-    "notes": "Ryan, 19 October: an airburst shell and a flak cannon as Wainwright & Sutler slot-ins, the Flak family; landed with the stock pass (22 October; a working name), in the Clydesdale's stock in the Suppression Battery's slot and the Dingo's beside its harpoon. Indirect as a shell: Claude's reading, the brief naming no reach. Numbers are placeholders."
+    "niche": "The Flak family's slot-in above the basics: a rolled Indirect spray laying Flak 1 on a foe and its neighbours, for the team's many small blows to cash."
    },
    "face": {
     "kind": "attack",
@@ -2024,8 +1958,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A rotary cannon run at its full cyclic rate: four rounds where a rifle fires one.",
-    "niche": "The multi-strike gun (Ryan, 14 October: badly needed), Flak's partner and the strafer's eight: every strike carries the foe's Flak and loses its armour.",
-    "notes": "Taken in the Kestrel line review (21 October, docs/briefs/kestrel_line.md); landed with the stock pass (22 October), in no stock. Numbers are placeholders."
+    "niche": "The multi-strike gun (Ryan, 14 October: badly needed), Flak's partner and the strafer's eight: every strike carries the foe's Flak and loses its armour."
    },
    "face": {
     "kind": "attack",
@@ -2051,8 +1984,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "An anti-aircraft gun levelled at the ground: one heavy burst that leaves its target ringing for everything after it.",
-    "niche": "The Flak family's single-target layer: Flak 2 on one foe for the Maxigun to chew.",
-    "notes": "Ryan, 19 October, the Flak family; landed with the stock pass (22 October; a working name), in no stock. Numbers are placeholders."
+    "niche": "The Flak family's single-target layer: Flak 2 on one foe for the Maxigun to chew."
    },
    "face": {
     "kind": "attack",
@@ -2080,8 +2012,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A firebox gun that throws its own coals: the target catches, and so does the machine that fed it.",
-    "niche": "Slow fuel by decision: Burn on the foe and Burning on its own firer, a price on most machines and fuel for the Whip Scorpion's vents.",
-    "notes": "Ryan, 19 October (his word, the self-cost class: a Wainwright & Sutler piece that Burns a foe and its own firer); landed with the stock pass (22 October), its own fire the face's self_burn, in no stock. Numbers are placeholders."
+    "niche": "Slow fuel by decision: Burn on the foe and Burning on its own firer, a price on most machines and fuel for the Whip Scorpion's vents."
    },
    "face": {
     "kind": "attack",
@@ -2111,8 +2042,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A charge that pulls the fire out of whatever it strikes and turns it inward: the flames go out, and the foe goes down with them.",
-    "niche": "The fire-synergy stun: it consumes every stack of Burning on its target for a point a stack, and Suppresses it if it consumed two or more, so one Burn 2 piece opens it and no all-in burn team is needed.",
-    "notes": "Ryan, 22 October (the stun row): the name stands, it consumes the fire, a point of damage a stack consumed and the Suppress at a threshold on one piece, one burn consumer in the pool; the threshold at two and the numbers Claude's fills. Landed with the stock pass (22 October), in no stock, like every Suppress piece. Numbers are placeholders."
+    "niche": "The fire-synergy stun: it consumes every stack of Burning on its target for a point a stack, and Suppresses it if it consumed two or more, so one Burn 2 piece opens it and no all-in burn team is needed."
    },
    "face": {
     "kind": "attack",
@@ -2149,8 +2079,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it for the one blow that matters.",
-    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, so it never injures, until the round's end; self or ally, never a team buff (the Barrier row).",
-    "notes": "Ryan, 14 October: the Blast Door's fantasy is a Barrier; landed with the stock pass (22 October), the name moved from the old self shield (the Canopy), in no stock. Numbers are placeholders."
+    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, so it never injures, until the round's end; self or ally, never a team buff (the Barrier row)."
    },
    "face": {
     "kind": "buff",
@@ -2172,8 +2101,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A field that smears a machine's state across the round: whatever strikes it lands, but nothing it carries finds a hold.",
-    "niche": "The Ward carrier: every blow a foe lands on the machine this round leaves no rider, and no silence or purge touches it; self or ally, never a team buff.",
-    "notes": "Landed with the stock pass (22 October) as the brief's Ward carrier (a working name, the Votive Screen being Misharu's), in no stock. Numbers are placeholders."
+    "niche": "The Ward carrier: every blow a foe lands on the machine this round leaves no rider, and no silence or purge touches it; self or ally, never a team buff."
    },
    "face": {
     "kind": "buff",
