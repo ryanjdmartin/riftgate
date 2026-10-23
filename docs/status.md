@@ -40,7 +40,7 @@ the register's new sentence in `CLAUDE.md`; the Retaliate codex's retired Farada
 the hangar's version 97), with main merged in, to merge into main (a fast-forward while main
 stands at `d592823`). `ccr-7d865127-wr1ko2` (23 October, a cloud session) holds the four
 Kestrel machines decided on 21 October in content and modelled (the bullet below), with main
-and `ccr-170f6d81-465jnr` merged in (the bible's v0.266 and the hangar's new version, their Pages
+and `ccr-170f6d81-465jnr` merged in (the bible's v0.266 and the hangar's version 98, their Pages
 lines); it merges on Ryan's go once he has judged the models running, after that branch or
 carrying it. The stock pass's baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
@@ -724,10 +724,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.265, and so is the live (23
-  October, the page's version 282, from `ccr-170f6d81-465jnr`: the bible cut for session context
-  on Ryan's word, "the bible is primarily used for that", from 387 KB to 316 KB, its first row
-  saying what a row holds; published onto v0.264, the page's version 281).
+  `docs/design-bible.html` after every change. This file is v0.266, and so is the live (23
+  October, the page's version 283, from `ccr-7d865127-wr1ko2`: the four Kestrel machines,
+  published onto `ccr-170f6d81-465jnr`'s v0.265, the page's version 282, the bible cut for
+  session context on Ryan's word, "the bible is primarily used for that", its first row saying
+  what a row holds).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -737,13 +738,13 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to main's before it is
-  replaced and `edits` read first. At the page's version 97 (23 October, from
-  `ccr-170f6d81-465jnr`: the vocabulary's file, the Retaliate codex without the retired Faraday
-  Hull; the live file identical to this branch's version 96 and `edits` empty before it);
-  version 96 brought two design notes to the builds of 22 October, version 95 the stock pass's
-  landed content and the four light hulls at 20, and git and the page's history hold the
-  republishes before. Its database (Ryan's saved edits, collection `edits`; name candidates,
-  `candidates`) opens only from the personal account.
+  replaced and `edits` read first. At the page's version 98 (23 October, from
+  `ccr-7d865127-wr1ko2`: the four Kestrel machines' content, models, rigs and renders, 29 files;
+  the live files identical to `ccr-170f6d81-465jnr`'s and `edits` empty before it); version 97
+  brought the Retaliate codex without the retired Faraday Hull, version 96 two design notes to
+  the builds of 22 October, and git and the page's history hold the republishes before. Its
+  database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only
+  from the personal account.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen
   Weapon (the axe, which settles hammer against axe) cut into `art/foes` and recorded in
   `tools/foeforge/picks/picks.json` (art ahead of content: nothing loads them until their kits
