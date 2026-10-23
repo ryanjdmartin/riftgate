@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 609 tests, 62,521 checks, green on main's head (`cd2ea56`, 23 October, with the bots' Shock priced at the hitter in hand) and on `ccr-170f6d81-465jnr` with main merged in (in a cloud session the same day); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 609 tests, 62,521 checks, green on main at `cd2ea56` (23 October, with the bots' Shock priced at the hitter in hand; main's two commits since are docs and the loop driver) and on `ccr-170f6d81-465jnr` with main's `d592823` merged in (in a cloud session the same day); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -33,10 +33,12 @@ Two branches stand beside main. `claude/eager-newton-sf947u`, the stock pass's, 
 (`cd2ea56`): merged into main on 22 October on Ryan's go and used again on 23 October for the
 reads of its bands and the runs they called for; delete it from the desk machine or GitHub once
 its work is done, since a cloud session's push to delete one is refused. `ccr-170f6d81-465jnr`
-(23 October, a cloud session) holds the to-do pruned of its ticked lines and the records swept
-for the stock pass's landing (the to-do, the status, the briefs and their README, the bible's
-v0.264, two content notes and the vocabulary page, the hangar's version 96), with main merged
-in, to merge into main (a fast-forward while main stands at `cd2ea56`). The stock pass's
+(23 October, a cloud session) holds the to-do pruned of its ticked lines, the records swept
+for the stock pass's landing (the to-do, the status, the briefs and their README, two content
+notes and the vocabulary page) and the bible cut for session context (v0.265, its Pages line;
+the register's new sentence in `CLAUDE.md`; the Retaliate codex's retired Faraday Hull struck,
+the hangar's version 97), with main merged in, to merge into main (a fast-forward while main
+stands at `d592823`). The stock pass's
 baseline (`ace3c3c`, 200 seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
 Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
@@ -700,10 +702,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.264, and so is the live (23
-  October, the page's version 281, from `ccr-170f6d81-465jnr`: the rows that still waited on the
-  stock pass brought to its landing, published onto main's v0.263 of the same day, the page's
-  version 280, Ryan's reads of the bands and the runs they called for).
+  `docs/design-bible.html` after every change. This file is v0.265, and so is the live (23
+  October, the page's version 282, from `ccr-170f6d81-465jnr`: the bible cut for session context
+  on Ryan's word, "the bible is primarily used for that", from 387 KB to 316 KB, its first row
+  saying what a row holds; published onto v0.264, the page's version 281).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -713,10 +715,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to main's before it is
-  replaced and `edits` read first. At the page's version 96 (23 October, from
-  `ccr-170f6d81-465jnr`: the components' and the vocabulary's files, two design notes brought to
-  the builds of 22 October; `edits` empty before it); version 95 carried the stock pass's landed
-  content and the four light hulls at 20 (22 October), and git and the page's history hold the
+  replaced and `edits` read first. At the page's version 97 (23 October, from
+  `ccr-170f6d81-465jnr`: the vocabulary's file, the Retaliate codex without the retired Faraday
+  Hull; the live file identical to this branch's version 96 and `edits` empty before it);
+  version 96 brought two design notes to the builds of 22 October, version 95 the stock pass's
+  landed content and the four light hulls at 20, and git and the page's history hold the
   republishes before. Its database (Ryan's saved edits, collection `edits`; name candidates,
   `candidates`) opens only from the personal account.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

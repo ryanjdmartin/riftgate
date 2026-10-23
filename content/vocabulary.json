@@ -466,7 +466,7 @@
    "id": "retaliate",
    "category": "status",
    "name": "Retaliate",
-   "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always.",
+   "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.",
    "status": "implemented",
    "design": {
     "holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.",
