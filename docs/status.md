@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 609 tests, 63,145 checks, green on `claude/eager-newton-sf947u` with the two branches merged in, and on `ccr-7d865127-wr1ko2` (23 October, with the four Kestrel machines in content and modelled, the rig tests reading their sidecars, and `ccr-170f6d81-465jnr` merged in); 609 and 62,521 on main at `cd2ea56` (23 October, with the bots' Shock priced at the hitter in hand; main's two commits since are docs and the loop driver) and on `ccr-170f6d81-465jnr` with main's `d592823` merged in (in a cloud session the same day); 485 and 20,291 on the Windows desk machine on 19
+- Tests: 609 tests, 63,145 checks, green on `ccr-7d865127-wr1ko2` with the other two branches merged in (23 October, the four Kestrel machines in content and modelled, the rig tests reading their sidecars) and on `claude/eager-newton-sf947u` with the two merged in; 609 and 62,521 on main at `cd2ea56` (23 October, with the bots' Shock priced at the hitter in hand; main's two commits since are docs and the loop driver) and on `ccr-170f6d81-465jnr` with main's `d592823` merged in (in a cloud session the same day); 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -43,10 +43,11 @@ notes and the vocabulary page) and the bible cut for session context (v0.265, it
 the register's new sentence in `CLAUDE.md`; the Retaliate codex's retired Faraday Hull struck,
 the hangar's version 97), with main merged in, to merge into main (a fast-forward while main
 stands at `d592823`). `ccr-7d865127-wr1ko2` (23 October, a cloud session) holds the four
-Kestrel machines decided on 21 October in content and modelled (the bullet below), with main
-and `ccr-170f6d81-465jnr` merged in (the bible's v0.266 and the hangar's version 98, their Pages
-lines); it merges on Ryan's go once he has judged the models running, after that branch or
-carrying it. The stock pass's baseline (`ace3c3c`, 200 seeds) ran on
+Kestrel machines decided on 21 October in content and modelled and their second round of looks
+(the bullet below), with the other two merged in at `7843c7b` and `5b9063c` (the bible's v0.268
+and the hangar's version 99, their Pages lines); it merges on Ryan's go once the looks are
+picked and judged running, carrying the other two. The stock pass's baseline (`ace3c3c`, 200
+seeds) ran on
 `a1585a9`, before main's rule and bot changes of that morning: the rage capped at 5 (the
 Nemesis), the charged Screens for the whole team only (the Swallowtail), the bot's bunching
 swap (the Dingo) and its boss reads (the Disrupt carriers, and the fights with a countdown,
@@ -140,6 +141,15 @@ merged on 21 October are paused, each resuming from its briefs:
   tubes on its spine). The holes raised for the engine sessions are in their briefs: the Skua's
   halving rounds up at single digits (a printed 1 doubles), and the Storm Petrel's burn is 2 a
   spend on basics. The hangar's renders and the bible's chassis and motion tables carry them.
+  Ryan's notes the same day, on the first cut, open a second round of looks (the to-do): the
+  Skua was the F-14 poly for poly, a homage with no originality, so it is redrawn (look tests:
+  the jaeger and the oblique, `docs/looks/kestrel_skua.png`); the Needletail read as a nerf
+  football, its wings to sit on the centre of mass, and flipped into the classic starfighter's
+  layout is his to see (`docs/looks/kestrel_needletail.png`); the Storm Petrel is a speedboat
+  with a mast that does not look like it takes a hit, so he proposed it and the Puffin trade
+  bases, its holes in chat first; the Giant Petrel read as a chunky airliner with rockets tied
+  to the front, its reference (the Lun) his question. The aims' shown words are none of the
+  Needletail's (Ryan), so its brief retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`).
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
@@ -704,7 +714,8 @@ to-do's Ryan list).
    Kestrel's line is decided and named (21 October, merged that day): its last two chassis,
    the Magpie and the Snowy Owl, are Ryan's next session, from their briefs, and each decided
    machine's engine session follows from its brief (the to-do's lines), their content and
-   models landed 23 October on `ccr-7d865127-wr1ko2`, the Needletail whole.
+   models landed 23 October on `ccr-7d865127-wr1ko2`, the Needletail whole, and the looks in a
+   second round on Ryan's notes of that day (the to-do).
 2. **The stock pass** (`docs/briefs/stock_pass.md`): landed 22 October and merged into main
    that evening on Ryan's go: its engine items, its content at the brief's fills (the stocks,
    the renames and retirements, the eight new pieces and Trim Tabs, the tiers and tags), the
@@ -751,12 +762,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.267, and so is the live (23
-  October, the page's version 284, from `claude/eager-newton-sf947u`: Ryan's terms and elite
-  definition, the curve row, balance read by stage and the Elemental, published onto
-  `ccr-7d865127-wr1ko2`'s v0.266, the page's version 283, the four Kestrel machines, itself on
-  `ccr-170f6d81-465jnr`'s v0.265, the page's version 282, the bible cut for session context on
-  Ryan's word, "the bible is primarily used for that", its first row saying what a row holds).
+  `docs/design-bible.html` after every change. This file is v0.268, and so is the live (23
+  October, the page's version 285, from `ccr-7d865127-wr1ko2`: the Kestrel models' second round
+  of looks, the Needletail's brief retired and the aims' wording off it, the tables read with
+  `ccr-170f6d81-465jnr`'s tooling, published onto `claude/eager-newton-sf947u`'s v0.267, the
+  page's version 284: Ryan's terms and elite definition, the curve row, balance read by stage
+  and the Elemental; its first row, from the bible cut for session context, says what a row
+  holds).
   The version numbers on the publishing branch's file and the live agree after every publish,
   main's catching up at the merge; the rows between them are the other branches'. Git and the
   page's version history carry what each earlier publish brought.
@@ -766,11 +778,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to main's before it is
-  replaced and `edits` read first. At the page's version 98 (23 October, from
-  `ccr-7d865127-wr1ko2`: the four Kestrel machines' content, models, rigs and renders, 29 files;
-  the live files identical to `ccr-170f6d81-465jnr`'s and `edits` empty before it); version 97
-  brought the Retaliate codex without the retired Faraday Hull, version 96 two design notes to
-  the builds of 22 October, and git and the page's history hold the republishes before. Its
+  replaced and `edits` read first. At the page's version 99 (23 October, from
+  `ccr-7d865127-wr1ko2`: the foes' file with the Elemental, and the chassis and components files
+  with the Needletail's brief retired; the live files identical to main's and to version 98's
+  and `edits` empty before it); version 98 brought the four Kestrel machines' content, models,
+  rigs and renders, and git and the page's history hold the republishes before. Its
   database (Ryan's saved edits, collection `edits`; name candidates, `candidates`) opens only
   from the personal account.
 - The boss art round's picks (Ryan, 18 October): the Behemoth, the Cinder Tortoise and the Fallen

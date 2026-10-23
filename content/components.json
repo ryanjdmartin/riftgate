@@ -1861,7 +1861,7 @@
     "stage": "draft",
     "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
     "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_interceptor.md). Landed 23 October with the Needletail, runnable: Expose built 21 October. Heat 2 a placeholder at the stock pass's scale, a debuff's warm price (the brief's 5 at the old one). On the model a sensor ball on a mast behind the canopy, turning and nodding on its joints, its lens lit."
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief: git show 9ced5e5:docs/briefs/kestrel_interceptor.md). Landed 23 October with the Needletail, runnable: Expose built 21 October. Heat 2 a placeholder at the stock pass's scale, a debuff's warm price (the brief's 5 at the old one). On the model a sensor ball on a mast behind the canopy, turning and nodding on its joints, its lens lit."
    },
    "face": {
     "kind": "attack",
