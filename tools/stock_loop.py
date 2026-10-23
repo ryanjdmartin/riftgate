@@ -4,7 +4,7 @@ copy of the project with one lever moved in its content, the balance runner read
 design tests, the levers kept landing through tools/stock_fills.py.
 
   python3 tools/stock_loop.py run <name> [--lever name[:arg]]... [--seeds 30] [--alone] [--no-campaign]
-      [--team a,b,c,d]... [--set path=json]...
+      [--team a,b,c,d]... [--set path=json]... [--fit chassis=module,module]...
   python3 tools/stock_loop.py compare <name> [<name>...]
   python3 tools/stock_loop.py levers
 
@@ -19,7 +19,8 @@ and --packs big (or rank_and_file, or pack ids) cut it down. --team adds a row o
 machines (a squad of four, say); --set hands the runner an override it applies after the
 content loads, unvalidated, for a fit no stock may carry (a tier-one piece on a tier-one
 chassis: `chassis/badger/loadout/0="polarity_projector"`), where a lever edits the copy's
-content and the validator still reads it. `compare` lays finished loops side by side. Run it
+content and the validator still reads it; --fit hands it the modules every machine of a chassis
+wears (the endgame fours of 23 October, fitted up to tier two). `compare` lays finished loops side by side. Run it
 from the repository; it never touches the repository's own files, and a kept lever lands by
 editing tools/stock_fills.py and running it (the copy is a direction at 30 seeds, the bands at
 200 are the report's). GODOT names the Godot binary when it is not on the path."""
@@ -555,6 +556,7 @@ def main():
     r.add_argument('--packs', default='', help='the runner\'s --packs: big, rank_and_file, or pack ids')
     r.add_argument('--team', action='append', default=[], help='the runner\'s --team, repeatable: a row of exactly these chassis ids (its row id is team:a+b+c)')
     r.add_argument('--set', action='append', default=[], help='the runner\'s --set, repeatable: path=json, applied after the content loads and never validated (a fit no stock may carry)')
+    r.add_argument('--fit', action='append', default=[], help='the runner\'s --fit, repeatable: chassis=module,module, fitted to every machine of that chassis')
     r.add_argument('--alone', action='store_true', help='every chassis alone too, greedy, without the party')
     r.add_argument('--alone-rows', default='', help='with --alone: only these chassis ids')
     r.add_argument('--no-team', action='store_true')
@@ -592,8 +594,10 @@ def main():
         extra += ['--team', t]
     for v in a.set:
         extra += ['--set', v]
-    if a.set:
-        moved.append('the runner\'s overrides: ' + ', '.join(a.set))
+    for v in a.fit:
+        extra += ['--fit', v]
+    if a.set or a.fit:
+        moved.append('the runner\'s overrides: ' + ', '.join(a.set + a.fit))
         open(f'{root}/levers.txt', 'w', encoding='utf-8').write('\n'.join(moved) + '\n')
     rows = a.rows.split(',')
     times = {}

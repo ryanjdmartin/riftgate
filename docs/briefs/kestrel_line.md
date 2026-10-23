@@ -6,7 +6,7 @@ and the holes in Kestrel's stock that the stock pass should fill. Ryan asked for
 October, after the direction went to main: "revisit all the Kestrel chassis and look for
 areas of improvement, and flag any stock holes that need filling." Everything here is
 Claude's proposal for him to move; each chassis's improvement lives in its own brief and is
-only pointed at from here (the interceptor got a brief of its own, `kestrel_interceptor.md`).
+only pointed at from here (the interceptor got a brief of its own, retired 23 October: `git show 9ced5e5:docs/briefs/kestrel_interceptor.md`).
 Ryan, 20 October, on reading it: the kits written out whole, not as bullet points, and the
 stock by kind, since most stock pieces are placeholders until the stock pass; so every brief
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
@@ -34,7 +34,7 @@ burst, a delayed action, a combined entry, own rerolls).
 |---|---|---|---|---|---|
 | one | the strafer, the Skua (its go 21 October, named that evening, the Butcherbird a BattleTech 'Mech's; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
-| two | the interceptor, the Needletail (decided 21 October, tier two and named that day; `kestrel_interceptor.md`) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
+| two | the interceptor, the Needletail (decided 21 October, tier two and named that day; landed 23 October, its brief retired) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (reworked and built 21 October; its brief retired) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
@@ -108,7 +108,7 @@ One pointer each; the proposal is in the brief named.
   reason (cover is reach, armour the foe's own); the glyph's grammar settled in the open, a
   reach frame carrying a number (a gun) or the status mark (a debuff), the mark alone a buff.
   The seventh (21 October): Exposed lasts two rounds and a second Expose refreshes it (Ryan);
-  the aims' shown words to be rewritten plainly (Ryan: cryptic). `kestrel_interceptor.md`.
+  the aims' shown words to be rewritten plainly (Ryan: cryptic). `git show 9ced5e5:docs/briefs/kestrel_interceptor.md`.
 - **The Buzzard** stands; its stock was cold for a heat machine (its hottest stocked gun pays
   10, the Afterburner's base nothing), so its loop barely runs with its own kit: about 15
   heat carried, 5 shield a round. Its stock filled on Ryan's word (21 October, below): every

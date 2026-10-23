@@ -9,18 +9,28 @@ working names, and everything here is Ryan's to move.
 
 ## Elites
 
-Generic tropes, a pack of one or a pack in which every foe is unique, any size.
+Ryan's definition (23 October; the bible's tiers row): a spawn of one or more unique packs
+outside the usual spawn list, a mini-boss tier, any size. It throws a visible curveball into the
+player's strategy and demands the player adapt, by a mechanic on the map (a dangerous hunter, a
+fast blitz on the gate, a sudden swarm, an aura or a battlefield effect) or simply by being a
+harder fight that threatens the gate while it holds the team, which is what a tier-one elite
+looks like. About one an early battle, more later.
 
 | Domain | Elite | Size | State |
 |---|---|---|---|
-| The Meadow | Treant | Big | Built, as the boss it stands in for until the bosses land |
-| The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not big | Ryan, 15 October: a decent elite |
-| The Waste | Sandworm | Big | Built, standing in as the boss |
-| The Marsh | Bone Wyvern | Big | Built, standing in as the boss; could go either way (Ryan) |
-| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not big | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
-| The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not big | Noted for later (Ryan, 15 October: not yet) |
-| The Peak | Magma Golem | Big | Built, standing in as the boss; Ryan: a good elite |
-| Any | A pair of gate gargoyles (a pair trope) | Not big | Noted for later (Ryan, 15 October: not yet) |
+| The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not massive | Ryan, 15 October: a decent elite |
+| The Meadow | An alpha Treant, beefed up or a named homage | Massive | Ryan, 23 October: fits the harder-fight elite; a name of ours (the ent is Tolkien's, and the treant D&D's rename of it) |
+| The Waste | A named homage of the Sandworm | Massive | Ryan, 23 October: fits the harder-fight elite; a name of ours (Shai-Hulud is Herbert's coinage) |
+| The Marsh | Bone Wyvern | Massive | Built, standing in as the boss; an advanced foe or an elite (Ryan, 23 October: not sure) |
+| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not massive | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
+| The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not massive | Noted for later (Ryan, 15 October: not yet) |
+| The Peak | Magma Elemental (the Magma Golem until 23 October: a golem implies a master) | Massive | Built, standing in as the boss; not special enough as it stands (Ryan, 23 October), an elite only if fixed |
+| Any | A pair of gate gargoyles (a pair trope) | Not massive | Noted for later (Ryan, 15 October: not yet) |
+
+Out of the tier as built (Ryan's leans, 23 October): the Treant, a rank-and-file trope, massive,
+not special enough for a mini-boss, which joins the Meadow's spawn list once the validator lets
+a massive foe into one; the Sandworm, not special enough as it stands, its place open (rank and
+file, or fixed into an elite).
 
 ## Bosses: the slate (third cut, 15 October)
 
@@ -178,7 +188,7 @@ The ideas set aside, each with what set it aside.
 - Wings on Fáfnir (Ryan, 15 October: some later depictions give him wings, so allowed if
   wanted): the roster's two other dragons are winged (the Bone Wyvern, the Drake), so the
   wingless wyrm is the silhouette a phone tells apart, and the move's name can carry Bahamut.
-- Giga Gaia: a golem beside the Magma Golem elite; its parts live on in the parts pattern.
+- Giga Gaia: a golem beside the Peak's Magma Golem (now the Magma Elemental); its parts live on in the parts pattern.
 - Retinite: a sidequest boss rather than a who's-who name; its pattern stays (the parts, Ryan,
   15 October), carried by Exor.
 - A colossal flail for the Exor homage, its chain up into the rift (Claude's pitch, for an outline
