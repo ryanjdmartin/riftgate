@@ -430,6 +430,42 @@ func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
 	assert_eq(pol.attack_score(sk, ms, projector, g), 0.0, "and nothing on a foe already carrying one")
 
 
+## 23 October: a Shock is worth the blow it will double, the biggest an ally still to act shows
+## on that foe, so a projector of no damage beside a big gun survives the rerolls every rung
+## shares; with no hitter in hand it falls back to the team's average blow and reads as the
+## bad roll it then is.
+func test_a_shock_is_worth_the_hitter_in_hand_and_survives_the_rerolls() -> void:
+	var sk := Skirmish.new(1, 1)
+	var projector := Face.attack(0, L, K.SHOCK)
+	sk.add_mech(_mech("A", Die.of([projector, Face.attack(10, L)]), 40, 100))
+	sk.add_mech(_mech("B", Die.single(Face.attack(30, L)), 40, 100))
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0   # the projector
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(pol.shock_cash(sk, ms, g), 30.0, "the hitter in hand is the blow a shock doubles")
+	assert_true(pol.face_value(sk, ms, projector) > pol.reroll_worth(sk, ms), "so the projector beats its die's average")
+	pol._greedy_rerolls(sk)
+	assert_eq(sk.mechs[0].face_index, 0, "and is kept through the rerolls")
+
+	var lone := Skirmish.new(1, 1)
+	lone.add_mech(_mech("A", Die.of([projector, Face.attack(10, L)]), 40, 100))
+	lone.add_mech(_mech("B", Die.single(Face.shield(20)), 40, 100))
+	var h := _ghoul(500, 10)
+	lone.add_foes([h])
+	lone.begin()
+	lone.start_round()
+	lone.mechs[0].face_index = 0
+	var pol2 := Policy.make(Policy.GREEDY)
+	var ms2: Skirmish.MechState = lone.mechs[0]
+	assert_eq(pol2.shock_cash(lone, ms2, h), Policy._team_raw_attack_mean(lone), "no hitter in hand: the team's average blow")
+	pol2._greedy_rerolls(lone)
+	assert_true(lone.mechs[0].face_index != 0, "and the projector is rerolled for the gun")
+
+
 func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
 	# Ryan, 9 October: a sure number is worth most after the rolls have landed, when it can
 	# finish what they left; the bot spends rolled damage first and the flat finisher after.

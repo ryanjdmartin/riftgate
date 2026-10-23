@@ -864,3 +864,87 @@ losing where greedy wins) and shed about a sixth of their wear, which stays thre
 the heavy teams' since the trio is light and the heavies' armour 2 walls the rank and file's
 blows outright; the finisher's one-shot is gone. The 200-seed reports (`docs/balance.md`,
 `docs/campaign_run.md`) predate the four hulls' rise and are rerun with the pricing run.
+
+## 23 October, the tests on a squad of four and on built teams
+
+**Ryan's calls on the bands, read** (23 October, his "I think your suggestions are sound" of
+Claude's leans: the kill time read on a squad of four, the gap on built teams). Run with
+`tools/stock_loop.py` (its `--team` and `--set`, added for these) on main's head (`399a72d`,
+the content as landed, the light hulls at 20), each at 30 seeds against the seventeen big fights
+(`--packs big`) with greedy play, blind play and the planner, no campaign: the four team rows as
+stocked, the same seeds' baseline for the rest (its Kestrel and Wainwright & Sutler cells equal
+the hull loop's fight for fight); the four with setup pieces fitted; five squads of four, as
+stocked and with the same fits; then two experiments in copies, on the bots' price for a Shock
+and on a trio's order. Directions.
+
+The fits, through the runner's overrides (applied after the content loads and never validated,
+since a chassis stocks only below its own tier): a tier-zero basic swapped for a found setup
+piece, so each trio carries a Shock and Flak beside its stock's. The Honey Badger's Rivet Gun
+for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Armadillo's
+Twin Autoguns for the Flak Cannon, the Puffin's Twin Autoguns and Laser Carbine for the Polarity
+Projector and the Flak Cannon, the Prairie Dog's Twin Autoguns for the Suppression Battery. The
+overrides are global, so a machine on two rows carries one fit. The fours: the default team with
+the Baboon (the file's fourth machine, a fourth die and no setup) and with the Dingo (a fourth
+die and a Shock), Minerva's three with the Baboon (the maker fields three), and Kestrel's and
+Wainwright & Sutler's first four in file order (with the Lammergeier, with the Funnel-web).
+
+A lone massive foe (the four of them), mean rounds to win, greedy / blind / the planner:
+
+| Squad | Stocked | Built |
+|---|---|---|
+| The default team | 3.4 / 3.4 / 3.4 | 3.2 / 3.2 / 3.1 |
+| with the Baboon | 2.8 / 2.9 / 2.8 | 2.4 / 2.5 / 2.4 |
+| with the Dingo | 2.6 / 3.1 / 2.5 | 2.5 / 2.9 / 2.3 |
+| Minerva's team | 7.3 / 7.3 / 7.4 | 5.1 / 4.8 / 4.4 |
+| with the Baboon | 4.8 / 4.8 / 4.7 | 3.6 / 3.4 / 3.2 |
+| Kestrel's team | 2.9 / 3.1 / 2.9 | 2.4 / 2.6 / 2.3 |
+| with the Lammergeier | 2.4 / 2.5 / 2.4 | 2.2 / 2.3 / 2.1 |
+| Wainwright & Sutler's team | 7.4 / 7.8 / 6.5 | 6.8 / 6.0 / 5.6 |
+| with the Funnel-web | 4.6 / 4.3 / 4.0 | 4.3 / 3.8 / 3.7 |
+
+The gap, blind play's rounds over the planner's on the big fights (the report's mean over the
+cells both win a quarter of), the lone massive foes' in brackets:
+
+| Squad | Stocked | Built |
+|---|---|---|
+| The default team | 1.16 (1.01) | 1.15 (1.01) |
+| with the Baboon | 1.13 (1.04) | 1.12 (1.04) |
+| with the Dingo | 1.26 (1.24) | 1.23 (1.23) |
+| Minerva's team | 1.05 (0.99) | 1.11 (1.09) |
+| with the Baboon | 1.07 (1.01) | 1.08 (1.05) |
+| Kestrel's team | 1.17 (1.07) | 1.22 (1.15) |
+| with the Lammergeier | 1.12 (1.06) | 1.10 (1.07) |
+| Wainwright & Sutler's team | 1.15 (1.20) | 1.10 (1.08) |
+| with the Funnel-web | 1.07 (1.06) | 1.04 (1.02) |
+
+A four loses 3 to 7% of its hull on a formation, greedy (the trios 7 to 31%). The finale stays a
+wall but for the planner on Kestrel's four (one fight of thirty stocked, three built) and on the
+default team with the Baboon built (one).
+
+Why the gap stays shut, first the bots: every rung takes the greedy's rerolls, and they priced a
+Shock at 0.6 of the team's average blow per entry (shields and vents counting nothing), so a
+Shock of no damage read as a bad roll beside any gun. The Polarity Projector was spent 0.07 to
+0.11 times a fight on the Honey Badger and 0.3 on the Puffin, on every rung, and the
+Lammergeier's 0.05. Priced instead at the biggest blow an ally still to act shows on that foe
+(an experiment in a copy of `sim/policy.gd`, the built trios on the same seeds), it is spent
+0.29 to 0.49 a fight on the Honey Badger and 0.55 to 0.62 on the Puffin, and the gap opens by
+0.0 to 0.1: on the massive foes the default team's 1.01 to 1.11, Kestrel's 1.15 to 1.21,
+Wainwright & Sutler's 1.08 to 1.12, Minerva's 1.09 as it was; on the big fights 1.18, 1.11,
+1.27 and 1.10. The rounds move by a few tenths at most. On a lone massive foe a Shock is worth
+about the basic it displaced, and a setup pays whoever cashes it, so blind play, spending every
+die on the one foe, banks it too.
+
+Then the order, on the same priced bot, since blind play spends left to right: three trios with
+their order reversed. Kestrel's with its setter first (the Puffin before the Kite) reads 1.05 on
+the massive foes, where its file order, the setter last, read 1.21; the default team and
+Minerva's with the setter last read 1.07 and 1.14, where they read 1.11 and 1.09, a Shock laid
+last being cashed by the next round's first blow. The order moves the gap on a lone massive foe
+by up to about 0.15 either way and never toward 2; the formations' and the finals' do not move.
+
+Read: on a squad of four with a run's kit, a massive foe takes the fast squads about two rounds
+(2.2 to 2.5, greedy) and Minerva's and Wainwright & Sutler's three and a half to four and a
+half (the planner's 3.2 and 3.7); the kill time holds near its edge for three squads and misses by half
+again to twice for the slow makers', whose stocks are basics against armour. The gap does not open on
+built teams: 1.04 to 1.27 on the big fights and about 1.0 to 1.2 on a lone massive foe, against
+about 2. The bots' Shock price was a fault, fixed in `sim/policy.gd` the same day in the
+experiment's form, and not the cause.

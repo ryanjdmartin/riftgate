@@ -202,8 +202,12 @@ python3 tools/stock_fills.py .
 # Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
 # (--policies, --packs big, --rows cut it down), every chassis alone with --alone, the campaign report unless
 # --no-campaign, and a summary against the bible's section 2 tests; `compare` lays finished loops side by side.
-# About half an hour on four cores; a direction, never a band (docs/measurements.md). GODOT names the binary if needed.
+# --team adds a row of exactly those machines (a squad of four), --set passes the runner a fit no stock may carry
+# (unvalidated, after the content loads; the built teams of 23 October). About half an hour on four cores; a
+# direction, never a band (docs/measurements.md). GODOT names the binary if needed.
 python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=2 --policies random,greedy
+python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+sparrowhawk+dingo --team badger,clydesdale,sparrowhawk,dingo
+python3 tools/stock_loop.py run built --packs big --set 'chassis/badger/loadout/0="polarity_projector"'
 python3 tools/stock_loop.py compare base blows
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument

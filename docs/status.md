@@ -19,7 +19,7 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 608 tests, 62,516 checks, green on `claude/eager-newton-sf947u` (22 October, the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
+- Tests: 609 tests, 62,521 checks, green on `claude/eager-newton-sf947u` (23 October, with the bots' Shock priced at the hitter in hand; 608 and 62,516 on 22 October: the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
   October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
@@ -99,6 +99,20 @@ merged on 21 October are paused, each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
+  sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
+  (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
+  row), the finale a wall for a stock trio until the campaign runner fields built teams (section
+  9's finale row), Wainwright & Sutler's light trio's wear accepted, the Kite's finisher a play
+  read (the to-do). The runs they called for (`docs/measurements.md`, 30 seeds, directions): a
+  built squad of four takes a lone massive foe in about two rounds where its stocks carry damage
+  and three and a half to four and a half for Minerva's and Wainwright & Sutler's; the gap stays at 1.0 to
+  1.3 on built teams, since on a lone massive foe a setup pays whoever cashes it. The planner's
+  valuation, read on the way, priced a Shock as a bad roll, so the rerolls every rung shares
+  threw a Polarity Projector away nine times in ten: fixed in `sim/policy.gd` (a blow's Shock
+  worth the hitter in hand), which opened the gap by a tenth at most. Two questions went back
+  to Ryan (section 12: where the gap is read, the massive HP). The loop driver takes `--team`
+  and `--set`.
 - 22 October, the stock pass's landing and loops (the brief's section 7, on Opus): the content
   stands at the brief's stocks and pieces (the basic kit, eight new pieces and Trim Tabs, the
   renames and retirements, every piece's tier and tags, the Stoker's own fire) with the numbers
@@ -109,7 +123,7 @@ merged on 21 October are paused, each resuming from its briefs:
   `tools/stock_fills.py`. Flak's clock is a field in its status (it halves still; the loops read
   a stack a round alike), and the balance runner reads `--packs`. Wear, the free wins and heat
   moved toward their tests; a massive foe still takes a team of three 3 to 8 rounds and the gap
-  reads 1.0 to 1.2 (section 12's question for Ryan). The review of the same evening (Ryan's go)
+  reads 1.0 to 1.2 (read on squads of four and built teams on 23 October, the bullet above). The review of the same evening (Ryan's go)
   raised the four light machines' hull from 16 to the scales row's floor of 20 (the Kite's paper
   hull 12 stands), widened the row to the fills' field recharge and the Condenser's capstone
   vent, and put the loop driver in the repository (`tools/stock_loop.py`).
@@ -518,7 +532,7 @@ merged on 21 October are paused, each resuming from its briefs:
   screenshots against Share Tech Mono: "Keep the italic for the number, it works better."
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
-## Measured, 22 October
+## Measured, 22 and 23 October
 
 - `docs/balance.md` at 200 seeds on main's head of the morning (`a1585a9`), the baseline before
   the stock pass: every row the day's main left alone reads as on 21 October to the decimal;
@@ -550,6 +564,13 @@ merged on 21 October are paused, each resuming from its briefs:
   7 to 37% of their hull; the gap 1.05 to 1.17; random play still wins 19 to 28 of the 29 packs a
   team while a machine alone meets walls on 6 to 24; the hot kits peak at 74 to 94%, the cold
   ones under 45; the campaign 0 of 40 runs, 1% of battles.
+- The tests on squads of four and on built teams (23 October, 30 seeds on the big fights, greedy,
+  blind and the planner; `docs/measurements.md`): a stocked four takes a lone massive foe in 2.4
+  to 4.8 rounds and a built four in 2.2 to 4.3 (the trios 2.9 to 7.4); a four loses 3 to 7% of
+  its hull on a formation; the gap 1.04 to 1.27 on built teams' big fights and 1.0 to 1.2 on a
+  lone massive foe; the planner wins the finale now and then with Kestrel's four (one to three
+  fights of thirty). Two experiments in copies, the bots' Shock priced at the hitter in hand
+  (landed) and a trio's order, each moving the gap by 0.15 at most.
 - `docs/campaign_run.md` on main (rerun 22 October on the baseline's commit, line for line the same): the plain player wins none of 40 runs and one battle of 348
   (12 of 40 and 24% on 13 October). No bug: a bisect lands on the Armadillo's rework, and 11 of
   the 12 runs won on 13 October had drafted the old Armadillo, the one machine that carried a
@@ -631,9 +652,9 @@ to-do's Ryan list).
    the new stocks' setups); the loops set its numbers the same day (six at 30 seeds, one lever
    a loop, `docs/measurements.md`), the bands at 200 seeds read them (the reports regenerated)
    and the hangar was republished with them; the branch merged into main the same evening on
-   Ryan's go. Next Ryan's reads (section 12: the massive kill time and the gap the loops did
-   not move, the teams' free wins against the lone machine's walls, the finale's wall,
-   Wainwright & Sutler's light machines, a hero's finisher), then the pricing run. Two content questions went to section 12 with the landing: which
+   Ryan's go. Ryan settled the bands' reads on 23 October (the bible's rows), and their runs put
+   two questions back to him (section 12: where the gap is read, the massive HP); next the
+   pricing run, on the bots' Shock priced at the hitter in hand. Two content questions went to section 12 with the landing: which
    explosives carry Spread and Penetrate, and a flat Indirect basic.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
@@ -669,8 +690,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.262, and so is the
-  live (23 October, the page's version 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
+  `docs/design-bible.html` after every change. This file is v0.263, and so is the
+  live (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
   second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
