@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A balance loop (the stock pass's method, docs/briefs/stock_pass.md section 7, 22 October): a
+"""A balance loop (the stock pass's method, its retired brief's section 7, 22 October: git show a550c2e:docs/briefs/stock_pass.md): a
 copy of the project with one lever moved in its content, the balance runner read against the
 design tests, the levers kept landing through tools/stock_fills.py.
 

@@ -230,13 +230,12 @@ func strikes() -> int:
 
 ## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
 ## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
-##   defend  brace: Braced, `value` / 5 stacks of armour +5, every stack going at its next
-##           action (Burrow; flat since 2 October, one word and one icon for both sides, the
-##           half it was is gone; Braced since 16 October, Ryan: an effect and the buff it
-##           creates share a name)
+##   defend  brace: Armoured, the move's `value` in stacks of armour +1 (Effects.brace_stacks),
+##           every stack going at its next action (Burrow; one word and one icon for both
+##           sides, Ryan, 16 October: an effect and the buff it creates share a name)
 ##           regrow: regains `value` hit points (Knit)
 ##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
-##           brace_all: Braced, `value` / 5 stacks, on every foe in the fight through the next
+##           brace_all: Armoured, `value` stacks, on every foe in the fight through the next
 ##           round (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest

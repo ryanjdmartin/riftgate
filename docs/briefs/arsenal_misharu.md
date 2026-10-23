@@ -110,7 +110,7 @@ counting it. The draft's "a blocked break and a breached break both convict" and
 resisting" belong to the old shield rule and the suppress.
 
 **What the runner should read**: the boss cells (the Treant, the Sandworm, the Bone Dragon, the
-Magma Golem), the Peak's cells, team rows beside shielders, and how often shield entries are
+Magma Elemental), the Peak's cells, team rows beside shielders, and how often shield entries are
 spent on Misharu's team; the analysis (section 4) reads Misharu beside the Puffin first.
 
 **Penance as first benched** (12 October): a debuff, its blows 5 less a stack (never below 5),

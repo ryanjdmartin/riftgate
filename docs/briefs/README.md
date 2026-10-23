@@ -28,7 +28,10 @@ chat first.
 - Mark whose words are whose: Ryan's calls carry his name and the date; everything else is
   Claude's proposal for him to move.
 - Names, numbers and looks are Ryan's. He matches mechanics to silhouettes he has in hand;
-  propose a name or a look only when he asks. Every number is a placeholder.
+  propose a name or a look only when he asks. Every number is a placeholder, and a brief's
+  rounds before the rescale of 21 and 22 October quote the old scale (damage at fives, hull,
+  shield and heat at tens): read those as shapes at most, never values, and take magnitudes
+  from the bible's scales row (section 11).
 - On Ryan's go: the bible's rows (each decision with its reason and the condition that would
   reopen it), `docs/rules.md` where a rule changes, content with `"status": "planned"` where
   the engine cannot run it yet, the to-do ticked, `docs/status.md` updated, the bible
@@ -36,44 +39,22 @@ chat first.
 - Landing a chassis also takes: its locked pieces in `content/components.json`; a new keyword
   in `content/vocabulary.json` before its code; engine pieces tested with synthetic passives;
   a lowforge model with its rig, acts and gait, judged running (a new model kind where the
-  frame needs one); the bible's chassis table and the chassis count in `docs/rules.md`; the
-  hangar page republished; a balance-runner row, read alone as a diagnostic.
+  frame needs one); the chassis count in `docs/rules.md`; the hangar page republished; a balance-runner row, read alone as a diagnostic.
 - Sessions run in parallel on this repository: diff a shared file before staging it, and read
   the bible's live page before republishing it (the status says how).
 
 ## Decided on 14 and 15 October
 
-Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
-
-- **The shield rule.** A shield absorbs its number and the excess passes to the hull; a breach
-  ignores the shield outright (the shield stands); an injury counts what reaches the hull.
-  Under the old whole-block rule a tiny shield was secretly "negate one blow", and every new
-  shield design was heading for that margin.
-- **Barrier and Ward**, two buffs. A Barrier: the next blow a foe lands on the machine deals no
-  damage (so it never injures), its riders landing, until the round's end; never granted to
-  every ally at once. A Ward: every blow a foe lands on the machine that round leaves no rider,
-  breach included, while the damage lands (Ryan: it lasts the round because it is more
-  situational). Both up is the old whole block at twice its price. Ward is the buff's word, so
-  the Oblation Ward becomes the Oblation Mantle (in content, 15 October) and the Votive Ward the
-  Votive Screen.
-- **Cooldowns**: a printed property on specific pieces, shown on the entry as dark with the
-  rounds left. Ryan: nearly every Rapid component reads "Rapid, cooldown 1", and the Nemesis's
-  fists are simply Rapid. No cap on where a cooldown goes or how many a die carries (Ryan, 15
-  October: a cap is artificially limiting).
-- **The Dingo's Megataser Harpoon** carries Shock in place of Suppress (in content, 15 October).
-- **Misharu's payoff is Penance**, a weaken, in place of Suppress.
-- **Kestrel's gaps**: the strafer at tier one and the bomber above it.
-- Agreed in chat, for the HUD: a suppressed foe's intent line clears (Ryan's point, 14
-  October; built 15 October, the hold readout the last place it showed).
-- **The budgets** (15 October): hard control weighed and never capped, and three tests kept
-  (below).
+The go's decisions (the shield rule, Barrier and Ward, cooldowns, the Dingo's Shock, Misharu's
+Penance, Kestrel's gaps, the budgets) are the bible's rows and the rules' lines, never repeated
+here.
 
 ## Ryan's taste, as the go established it
 
 - Elegant over complicated. He pushed back each time a design grew a second mechanism ("this is
   taking off into complicated territory"); one passive, one idea; complexity belongs to the
   higher tiers.
-- Never an unkillable team by another name: no team-wide armour, Braced or shield handed out in
+- Never an unkillable team by another name: no team-wide armour or shield handed out in
   bulk ("giving the team tank stats is just as toxic as taking all the blows").
 - No reward for being struck that scales with the enemy's blows (the old discharge). A thorns
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
@@ -97,11 +78,9 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   session.
 - Random is welcome where it adds and the player can steer it (the bible's section 2, Ryan,
   16 October).
-- The foes' debuff vocabulary is thin at four words (Burning, Suppressed, Shocked, Paradox;
-  Numbed is a resistance), which is why designs keep reaching for Burn or Suppress. New chips
-  are fine, even unique to a chassis, since tooltips and popups carry them. The vocabulary
-  grows by kinds (a weaken, a flat on-hit, a share of current hull, a timed stun, a trapped
-  slot), never by copies.
+- The debuffs the team lays on foes grow by kinds (a weaken, a flat on-hit, a share of
+  current HP, a timed stun, a trapped slot), never by copies; new chips are fine, even unique
+  to a chassis, since tooltips and popups carry them.
 - Stun is budgeted; prefer changing the enemy's problem over removing its turn. Price, never
   scarcity (17 October, of Suppress): a mechanic rationed by availability makes its carriers
   must-picks, so it is priced so the other answers stay attractive. The price is a gate, never
@@ -134,23 +113,23 @@ Rows in the bible and lines in `docs/rules.md`; built only where a line says so.
   player takes three, so each maker's tier-one pool should vary and more than one maker's deal
   should hold a front. The host maker's offer after a win and procurement's shelf deal the
   higher tiers; the economy items the go raised are in `docs/economy_pass.md`.
-- Each brief gives a proposed tier; none is decided but Wainwright & Sutler's (20 October, the
-  bible's roster row: 3-5-2). The reshuffle proposed so far: the Wild Boar to tier one; the
+- Each brief gives a proposed tier; Wainwright & Sutler's (20 October, 3-5-2) and Kestrel's
+  (21 October, 3-3-2 with the last two open) are decided, in the bible's rows. The reshuffle proposed so far: the Wild Boar to tier one; the
   Baboon to tier two (the Clydesdale, the boiler, the revolver, the fan-boat and the Dingo are
   settled by the maker's row). The 12 October basic-kit row no longer gives every tier one a
   locked piece (reworded 20 October): a tier one shows its identity with basics alone, with a
   locked piece or without (the Cottonmouth; the form-changing Armadillo keeps its lure by
   Ryan's framework of 15 October).
 
-The tiers as the briefs propose them (nothing decided; "down" and "up" against a chassis's
+The tiers, the two decided lines and the briefs' proposals (the rest nothing decided; "down" and "up" against a chassis's
 tier today; the targets two or three tier ones a city maker, two or three tier twos and one
 tier three, the Arsenal none, three and three):
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (the line reviewed 20 October, `kestrel_line.md`: 3-3-2 decided, three hovers and five flyers; the last two marked 21 October, tiers open: the Magpie, a support engine, and the Snowy Owl, a stealth unit, each in its brief) | the strafer, the Skua (a swing-wing, its go 21 October, named that evening; the Butcherbird a BattleTech 'Mech's), the off-tank, the Storm Petrel (its go 21 October: a fast hovercraft at 50; plate and burn on the passive, a lure that regens itself locked), the Puffin (tier one since 21 October, reworked and built that day: its shields grow by the ally's heat, the Ionizer the overshield through it) | Buzzard, Kite (up, decided 21 October: the trash chain, its lock the Pinion Driver, the old finisher the Coriolis Accelerator; the caster-killer niche to the interceptor), the interceptor, the Needletail (tier two, Ryan, 21 October; decided and named that day: a tilt-jet; a debuff or a buff Rapid once a round, the Fovea Designator that Exposes a foe for two rounds, in the team's Direct reach and armourless; its content with the content session) | the bomber, the Lammergeier (Ryan, 15 October; its go 21 October, the Magpie until that evening: a heavy tandem-wing flyer, its mark the Syrinx Drone, Rapid on a foe already Exposed), the gun platform, Kestrel's capital ship, the Giant Petrel, an ekranoplan hover (Ryan, 20 and 21 October: the reroll economy all the way, the action-economy utility capstone; its go 21 October: the formation leader, aggressive beside the Swallowtail's support; Maverick's Playbook, the bank; the Immelmann Booster, a Rapid lock giving the team a reroll or, for three rerolls, a spent ally's action; the Spindrift Salvo; the Reheat Uplink, Overcharged 2 and a roll for an ally) |
-| Wainwright & Sutler (decided 20 October, the bible's roster row: 3-5-2) | Prairie Dog, the Cassowary (landed), the Cottonmouth (landed) | the Dingo (its Translocator built 21 October), the Clydesdale, the funnel-web (landed), the gunship, the Whip Scorpion (landed) | the Swallowtail (landed 21 October), the Musk Ox (the artillery, landed 21 October) |
+| Kestrel (decided 21 October, `kestrel_line.md`; the Magpie and the Snowy Owl, tiers open, in their briefs) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
+| Wainwright & Sutler (decided 20 October) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (a proposal), Whip Scorpion | Swallowtail, Musk Ox |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
 | The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
 
@@ -169,41 +148,20 @@ Decided on the roster analysis's budgets; the bible's rows hold them.
   two payoffs: an aspiration, never a pass or fail (section 7).
 - **A tier one shows its identity** with basics alone (section 10).
 
-## Roster holes, as the go left them
+## Roster holes still open
 
-Soft control: Minos, the jellyfish, the echidna's draw, the Armadillo's locked lure, filling.
-Amplify for others: the Dingo's Shock, Flak (the Prairie Dog's Flakshot, the maker's on-hit,
-19 October), the echidna's Sonic Needle; the Onryō's Grudge finds another shape.
-Area on a hardpoint: the stock pass's explosives, the strafer's volume, the bomber's clusters.
-New prices: the cooldown, negative cooling. Reads nobody used: the foes' intents (the spider),
-the slots (the bomber), the die's own state (the revolver, the Gundam, the battlecruiser), the
-team's rerolls (no taker since Ryan refused them as the Armadillo's payout, 15 October;
-Kestrel's, Ryan, 19 October: the Giant Petrel's bank, Maverick's Playbook, decided 21 October in `kestrel_gun_platform.md`). A back-rank
-reach given to the whole team (the interceptor's designator, decided 21 October: a foe Exposed
-for every Direct gun; its priced form, the dive through a standing front at the front foe's
-blow, on its bench). Kestrel's stock holes by kind
-(a multi-strike gun, a mid-heat gun, a reroll module; the Diffuser, the Deflector and Chain in
-mines settled since) landed with the stock pass (22 October: the Cyclic Cannon, the Transonic
-Rifle, Trim Tabs).
-The tender: Kestrel's deal varies with the strafer; Wainwright & Sutler's holds no front
-(Ryan, 19 October: the Cassowary is squishy on purpose, accepted, the Clydesdale down the lever
-if one is ever wanted; its deal is the Prairie Dog, the Cassowary or the Cottonmouth since their
-engines landed, 21 October); Aphelion's with the line frame. Wainwright & Sutler's
-versatility comes in three forms (Ryan, 19 October): the Clydesdale's loadout, the gunship's
-stats, the Cottonmouth's reach.
-Damage dealers (Ryan, 18 October): Wainwright & Sutler had none, its sponsorship counting
-damaging spends while no chassis was about the blow; the revolver and the boiler are promoted
-to damage class. Ryan, 20 October: the all-shells machine pitched in the Minerva session for
-the siege battery (its third-round candidate: weapons that add no heat and cost a shell each,
-vents that reload, the heat gauge a magazine; `minerva_siege_battery.md`) reads to him as a
-Wainwright & Sutler tier three; Claude agrees it is this maker's artillery tenth (the cold
-price the heat row asked for, on the maker whose kit is cold; no other machine is its loader,
-Ryan, 21 October): landed on 21 October as the Musk Ox (the bible's row; `git show bc97727:docs/briefs/ws_artillery.md`),
-the old-world artillery of the maker's lean, its second tier three and its tenth, the last.
-Every maker fields every tier it may once the gaps land. The foes' debuff vocabulary grows from
-four words by kinds, never by copies: Penance (a weaken), Grudge (a flat on-hit), Venom (a
-share of current hull), the web (a timed stun), the mine (a trapped slot); and Barrier and Ward
-on our side.
+What the go's holes left once the landings of 18 to 23 October filled the rest (the Kestrel
+line, Wainwright & Sutler's ten, the stock pass's kit; git keeps the full list):
+
+- Soft control: Minos, the jellyfish, the echidna's draw.
+- Amplify for others: the echidna's Sonic Needle; the Onryō's Grudge in another shape, since
+  Flak took the flat on-hit.
+- Area on a hardpoint: which explosives carry Spread and Penetrate (the bible's section 12).
+- New prices: negative cooling. Reads nobody uses yet: the die's own state on the Gundam and
+  the battlecruiser.
+- The tender: Aphelion's deal with the line frame, and Aphelion's defensive tier one (the
+  to-do); Wainwright & Sutler's deal holds no front, accepted (the Cassowary row).
+- Every maker fields every tier it may once its briefs land; the Arsenal fields none at tier one.
 
 ## The action economy, and why things want Rapid (20 October)
 
@@ -226,10 +184,10 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 | a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
 
-Four of the five carriers in content are ungated (the Deflector, the Diffuser, the Vacillator,
-the Flakshot: the switch-off and nothing else), the Umbra Inducers of tempo; the gated ones
-(the Spin-Up by its cylinder, the interceptor's once a round, the Zoids walker's by a kill)
-are the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
+When this was written four of the five carriers were ungated (the switch-off and nothing
+else); since then the Diffuser and the Flakshot lost Rapid and every Rapid piece carries a
+limiter (the bible's Rapid row), the gated ones (the Spin-Up by its cylinder, the Needletail's
+once a round) the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
 
 Homes for each want other than more Rapid pieces, with the engine's state:
 
@@ -261,7 +219,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
   dark: strikes 2 with a cooldown of 2, the broadside, the Kite's chain. Paid in the
-  die's reliability; the cooldown property (decided, not built) unlocks the family.
+  die's reliability; the cooldown property, built, opens the family.
 - **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
   (arm now, fire twice later), which reads the die's own state.
 - **Reactions** (actions in the enemy's turn). Retaliate, the Barrier, the web's burst; a
@@ -283,10 +241,8 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   Kestrel's city gives tempo, Minerva's plate, Wainwright & Sutler's the strike, Aphelion's a
   teleport, the capital's a blood price. Action economy nobody can stack, the opposite of a
   Rapid pile.
-- **Pricing the Rapid that exists** (the stock pass). The four ungated carriers re-priced (heat
-  on the Vacillator and the Flakshot, the Deflector's number, the Diffuser's question in
-  section 12), and every new Rapid gated like a stun: if it kills, on a cold spend, once a
-  round, by a cylinder.
+- **Pricing the Rapid that exists**: done with the stock pass; every new Rapid is gated like a
+  stun (if it kills, on a cold spend, once a round, by a cylinder).
 
 The three rules of thumb this leaves: a design that wants many blows is pointed at strikes;
 one that wants order is given a die mechanic; one that wants a second action pays for it in
@@ -300,7 +256,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
-| `minerva_battlecruiser.md` | direction | Minerva | 3 | the cooldown property |
+| `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | decided; the go 21 October (a swing-wing, the Skua since that evening); in content as planned 23 October | Kestrel | 1 | the engine session (the Split-cycle Breech, the Pod's spray; first, its holes), then the brief retires; its look (the to-do) |
 | `kestrel_shield_spender.md` | decided; the go 21 October (the Storm Petrel, a hovercraft; the off-tank package of 19 October); in content as planned 23 October | Kestrel | 1 | the engine session (the burn and its zap, the plate, Regenerating; first, its burn on basics), then the brief retires; its look (the to-do) |
 | `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
@@ -328,7 +284,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
 | `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
-| `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), its plan and proposal beneath: the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method and the chunks | all | 0 to 3 | the name pass and the pricing run (the to-do; Ryan's reads of its bands settled 23 October), then it retires |
+| `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), retired 23 October (`git show a550c2e:docs/briefs/stock_pass.md`): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method | all | 0 to 3 | nothing here: the name pass and the pricing run are the to-do's |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
@@ -424,8 +380,7 @@ overrule)
 - Crags as slow ground: set aside, since a map rule alone is weak.
 - A kill makes a spend Rapid: set aside as an Arsenal machine's shape (the Zoids walker's brief
   carries it).
-- Every weapon Indirect: set aside as free reach once danger close goes (decided 11 October,
-  not built).
+- Every weapon Indirect: set aside as free reach once danger close went.
 - Indirect weapons strike twice: set aside as dangerous as written.
 - Shield as a spider's ammunition: set aside while Misharu turned shield into damage; Misharu's
   payoff is now Penance (Ryan, 14 October), so the idea is free again.
@@ -435,19 +390,3 @@ overrule)
 - Two tests from those rounds (Claude's, 13 October): a passive that is pure upside with no
   interest fails (the fan-boat's Ballistic splash); so does a payoff not worth its setup (the
   gunship's missile-marked reach).
-
-## A suggested order
-
-1. Nothing to wait on: the Minerva session's open briefs (the Honey Badger's numbers; the
-   echidna left open and the H-tank parked on Ryan's charge brief, 20 October, the day the
-   Armadillo landed); then the content sessions of Kestrel's three new machines below its
-   capstones (the Needletail, the Skua and the Storm Petrel, decided 21 October), and any of
-   the line frame, Misharu, the Onryō and the Zoids walker (its maker first); the funnel-web
-   landed on 18 October, the revolver (the Cassowary), the fan-boat (the Cottonmouth), the
-   Dingo's Translocator and the Prairie Dog's fight half on 19 October, the bomber as the
-   Lammergeier on 21 October.
-2. The Baboon on its own, the stock pass having landed without it (22 October). The battlecruiser and the Carrier run apart (Ryan,
-   20 October: "not related at all").
-3. The gunship, free since the stock pass and the numbers' rescale landed (22 October; Ryan, 21 October); the multi-rotor landed on 21 October as the Swallowtail and
-   the artillery as the Musk Ox, the boiler on 20 October as the Whip Scorpion.
-4. After the foes' fresh start: the jellyfish, Mastema, Minos.

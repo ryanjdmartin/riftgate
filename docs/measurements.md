@@ -572,7 +572,7 @@ player's runs touch.
 ## 22 October, the stock pass's fills as a direction
 
 **The brief's first fills, run before Ryan's marks** (sections 1 to 5 of
-`docs/briefs/stock_pass.md`, applied by script to a scratch checkout of the branch: every
+the stock pass's brief, `git show a550c2e:docs/briefs/stock_pass.md`, applied by script to a scratch checkout of the branch: every
 chassis's, component's, foe's and module's numbers, the status values and the engine constants
 of section 1's tables; today's stocks, since the new pieces do not exist; no module fitted;
 the goblins' and revenants' swarm, the Prairie Dog's Flak clause, the Lammergeier's, the
@@ -655,7 +655,7 @@ content.
 
 ## 22 October, the stock pass's loops
 
-**The loops on the landed content** (`docs/briefs/stock_pass.md`, section 7, step 2; copies of
+**The loops on the landed content** (the stock pass's brief, `git show a550c2e:docs/briefs/stock_pass.md`, section 7, step 2; copies of
 the branch between `dd3037c` and `d4e009a`, the same in play; Flak's clock a field since
 `9c32ecf`, which the Flak loops' copies carry). Each loop is a copy of the branch with its
 levers moved in the copy's content, the balance runner at 30 seeds a cell on the four team rows

@@ -527,8 +527,8 @@ static func remove(u, id: String) -> bool:
 
 
 ## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
-## stopped whole (the Faraday Shutters' Live Shell); otherwise about one that reached hull
-## (the Armadillo's Faraday Hull, the Retaliate status).
+## stopped whole (shock_on_block, no carrier in content); otherwise about one that reached
+## hull (the Retaliate status).
 static func shocks_striker(u, blocked: bool) -> bool:
 	var want := "shock_on_block" if blocked else "shock_on_hull_strike"
 	for pair in _taking_part(u, "static", null):
@@ -1198,7 +1198,7 @@ static func is_scrambled(u) -> bool:
 
 
 ## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
-## (add_armour_vs_rank, static; the Breaching Plow's Glacis against the front).
+## (add_armour_vs_rank, static; no carrier in content since the Glacis went).
 static func armour_against(u, rank: int) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):

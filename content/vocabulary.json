@@ -435,7 +435,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -631,13 +631,13 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Player and enemy status. It cannot act, take damage or be targeted until the round's end. Granted only to a unit that has not acted this round.",
+   "codex": "Machine status. It cannot act, take damage or be targeted until the round's end. Granted only to a machine that has not acted this round.",
    "status": "implemented",
    "design": {
     "holes": "Not targetable means allies cannot vent or shield it either, and a foe's intent on it picks again; it still cools by its own cooling, and ticks and overheats still land. Aphelion's pieces may grant it beside the Swallowtail's screens.",
     "table": {
      "kind": "buff",
-     "on": "both",
+     "on": "machine",
      "stacks": "No",
      "lasts": "Until the round's end"
     }

@@ -1,5 +1,5 @@
-"""The stock pass's fills (22 October): the brief's numbers (docs/briefs/stock_pass.md,
-sections 1 to 5, with Ryan's marks of 22 October) onto a checkout's content and the engine's
+"""The stock pass's fills (22 October): the brief's numbers (its sections 1 to 5, retired:
+git show a550c2e:docs/briefs/stock_pass.md, with Ryan's marks of 22 October) onto a checkout's content and the engine's
 rule numbers, so the balance runner reads them against the design tests:
   python3 tools/stock_fills.py <checkout>
 A fill set is the dictionaries below, one lever moved a loop. The content landed on these on
@@ -7,7 +7,7 @@ A fill set is the dictionaries below, one lever moved a loop. The content landed
 the script is idempotent on the branch and a loop runs it on a worktree with a lever moved.
 Every edit is in place: the foes' file keeps its hand layout.
 The loops (22 October, docs/measurements.md) moved: the foes' blows up by half on the rank and
-file, a third on the massive foes and double on the heroes; the Sandworm's and the Golem's armour
+file, a third on the massive foes and double on the heroes; the Sandworm's and the Elemental's armour
 2 to 1; the Treant's and the Wyvern's regrow 5 to 3; the heat maxima 16 to 12 and 20 to 14 (the
 Kite's 10 and the Musk Ox's 8 stand). The review of the same day (Ryan's go) raised the four
 light machines' hull to the scales row's floor of 20 (the Prairie Dog, the Dingo, the Puffin, the

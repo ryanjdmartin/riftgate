@@ -38,8 +38,10 @@ skirmish.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
   the only tags a component may wear) are build flavour shown in the codex only (not built:
   the codex does not list them yet). A tag carries no rule of its own; a module or passive may
-  read one. Every weapon wears its tags by its fantasy since the stock pass, equipment none, and
-  only `melee` is read today (which blows lunge on screen).
+  read one. Every weapon wears its tags by its fantasy, equipment none, but five locked ones the stock
+  pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
+  the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today (which
+  blows lunge on screen).
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
@@ -65,8 +67,8 @@ skirmish.
 - Foes stand in two ranks of four columns, front and back. A massive foe (size 2) fills a
   whole column and counts as front rank for every rule: always in reach, never exposing its
   column, nothing behind it.
-- At the start, foes take their ranks heaviest hitters first from the left (damage times
-  strikes; ties in arrival order). Foes left over wait as reinforcements.
+- At the start, foes take their ranks heaviest hitters first from the left (its heaviest
+  move's damage times strikes, a breach 1 more; ties in arrival order). Foes left over wait as reinforcements.
 
 ### The round
 1. Rerolls reset to three (less any a foe drained). Every machine sheds heat by its cooling.
@@ -93,10 +95,11 @@ defeat when every machine is wrecked. There is no round limit.
   spending unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it; a foe's Scramble is a true roll, and the sequence runs on from where it
-  lands. The die shows its next entry beside it, and its hold and codex show its entries as a
+  lock holds it; a Scrambled die's reroll is a true roll, and the sequence runs on from where
+  it lands. The die shows its next entry beside it, and its hold and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
-  showing included, the one exception to the reroll rule. Every sixth weapon spend of the
+  showing included, the one piece that breaks the reroll rule (a Scrambled die's reroll
+  is the status that does). Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
@@ -121,13 +124,14 @@ defeat when every machine is wrecked. There is no round limit.
   cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
   down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
   buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
-  weapon as its shot of 15, so a debuff through the drum is a gun.
+  weapon as its shot of 4, so a debuff through the drum is a gun.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
   any foe carrying Exposed.
-- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (the
-  explosives' Spread and Penetrate land with the stock pass's content).
+- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
+  explosives carry Spread and Penetrate is open: no shell carries both, and the Musk Ox's two
+  locked guns do).
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
@@ -168,16 +172,19 @@ defeat when every machine is wrecked. There is no round limit.
   heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
-  to 24 heroes, 80 to 100 bosses; a foe's blow 2 to 8 (the rank and file's mostly 2 or 3), a
-  massive foe's 7 or 8, a hero's 4 to 10, a boss's 6 to 10; machine hull 20 to 50 by size (the
+  to 24 heroes, 80 to 100 for the bosses' slate (not built; the four massive foes standing in
+  as bosses are 32 to 40); a foe's blow 2 to 8 (the rank and file's mostly 2 or 3), a massive
+  foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16, field recharge 4 to 8 (about half
   the shield a map turn out of fights), base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
-  not steps: any whole number may be used. Move alone keeps steps of 5, since a hex costs 5
+  not steps: any whole number may be used, and content sits a little past them where its
+  loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
+  multiple of its blow, to 16). Move alone keeps steps of 5, since a hex costs 5
   or 10. The content's numbers are the stock pass's fills as its loops moved them
-  (`docs/briefs/stock_pass.md`, `docs/measurements.md`; set by `tools/stock_fills.py`),
-  placeholders until the bands at 200 seeds and play.
+  (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines of 23
+  October by hand at the same scale; placeholders until play.
 
 ### Player keywords
 - **Spread** (id `cleave`): also hits the target's neighbours in its rank.
@@ -209,15 +216,17 @@ defeat when every machine is wrecked. There is no round limit.
   Flinger, 1 heat). A Rapid component always carries a limiter, a cooldown, heat or
   Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: the
   cylinder cannot chain it into itself.
-  A Rapid vent, if one exists, is never below tier three, and a Rapid shield never below
-  tier two (the Laminar Deflector's two).
+  A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
+  tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
+  Deflector's two).
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
   its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
-  entry just spent, so a round chains to two actions at most.
+  entry just spent; a team reroll may bring it back up, and a second kill resets again (a
+  known gap, below).
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -234,7 +243,7 @@ defeat when every machine is wrecked. There is no round limit.
   past shield and armour, before it acts (Volatile 3: 3 hull). Its carriers today (the Umbra
   Inducer, the Oblation Mantle and the Entropy Condenser) bite 3.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
-  Scrambled, a foe's Disabled and Corrupted (never a cooldown).
+  Scrambled, Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -296,7 +305,7 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
-- **Phased** (buff, either side): cannot act, take damage or be targeted until the
+- **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
   cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
   this round, whose die stands down as it is granted.
@@ -351,6 +360,8 @@ On a machine:
   nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and
   spend as ever. Cleansable; a Ward turns the silence away. A foe's purge takes every buff,
   every stack; its stores and its passives stay; a Ward turns it away too.
+- **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
+  a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -392,8 +403,6 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
-- **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
-  a stack for each attack that killed; no cleanse, silence or purge lifts it.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
   returns to the reinforcements once, whole, unless it self-destructed.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
@@ -403,7 +412,7 @@ On a foe:
   nature.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or the Syrinx Drone.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -412,8 +421,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 - A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
   included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
-  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0), and a
-  brace, a seal or a charge adds to it for a round.
+  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0), and
+  Armoured adds to it (a brace: buff equipment, the Breaching Plow, the Siphon) until the
+  round's end, the Armadillo's seal until a vent or a damaging weapon opens it.
   Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
@@ -459,11 +469,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
-  flat armour (bosses 5) and an aim. Its damage never rolls.
-- **Its move**: from the moves whose conditions hold, weighted (attacks 2, specials 1), never
+  flat armour (the four built bosses 1, the promoted forms 2) and an aim. Its damage never rolls.
+- **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. Conditions: below half, hurt,
-  fewer than two summons waiting, the team has a reroll left, a machine at the heat the move
-  names or more (the Drake's Stoke and the Black Mage's Fira: 20), a
+  fewer than two summons waiting, the team has a reroll left (a known gap, below: it always holds), a machine at the heat the
+  move names or more (the Drake's Stoke and the Black Mage's Fira: 5), a
   machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
   hurt, a machine carrying a buff, one of its own not readied. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
@@ -522,8 +532,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, chains and spills included). No trigger feeds itself.
-- A passive may double a weapon's printed number alone, the buffs added once after it (the
-  Kite's), and may grant a cooldown to every weapon its machine fires.
+- A passive may double a weapon's printed number before its buffs, what the entry prints
+  included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
+  after it (the Kite's), and may grant a cooldown to every weapon its machine fires.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
@@ -560,7 +571,7 @@ when its own rounds run out. A status runs down to zero on its own clock or is t
 both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its
 count the larger (Suppressed, Retaliate), which on an untimed one-stack status (Shocked,
-Getting Back Up, Guarded, Scrambled) means a second grant changes nothing. Nothing writes to
+Getting Back Up, Guarded) means a second grant changes nothing. Nothing writes to
 a stat.
 
 ## The battlefield
@@ -608,7 +619,7 @@ a stat.
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo takes the riders back, until one of them has moved on its own.
-- **The boss** patrols within two hexes of the rift, ring 2, joins fights in its ring and can
+- **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
   one for each other column), or the finale's line; it stands while one of its commanders
@@ -664,7 +675,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   when the hero falls, and a won final thins the domain. The finale is due at Convergence 12,
   one sooner per fallen city; the capital is then the only front. It is fought against the
   party promoted, a column a domain in the content's order: each hero's promoted form (its
-  hero's kit, massive, armour 5, one move more), and for a domain whose final was won a
+  hero's kit, massive, armour 2, and one move more, built for the Cleric alone: Reraise on an
+  ally), and for a domain whose final was won a
   standing domain's boss, each standing boss drawn in turn before any comes twice. Winning
   it wins the run. (Not built: the party card, the reserve of elites and bosses behind the
   line.)
@@ -684,4 +696,10 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 
 ## Known gaps between these rules and the code
 
+- The Kite's reset was decided as a round of two actions at most (the bible's Kite row), but
+  it lights its own Pinion Driver again, so a team reroll that lands on it buys a third action
+  and a second kill a fourth (the bible's section 12 asks which way).
+- The move condition "the team has a reroll left" is read as the round's moves are drawn,
+  just after the rerolls refill, so it always holds and the Mandragora's Scream and the
+  Thief's Steal are never held back by it (the bible's section 12 asks what should).
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.

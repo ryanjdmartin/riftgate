@@ -245,7 +245,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(c + Vector2(cos(a), sin(a)) * r0, c + Vector2(cos(a), sin(a)) * s, color, width * 0.9)
 			ci.draw_circle(c, s * 0.22, color)
 		"corrupt":
-			# A jagged crack through the entry: the rot the Chorus leaves in a component.
+			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(-s * 0.2, -s), c + Vector2(s * 0.3, -s * 0.3), c + Vector2(-s * 0.3, s * 0.1), c + Vector2(s * 0.2, s),
 			]), color, width)

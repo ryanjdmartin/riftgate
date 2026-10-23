@@ -9,13 +9,13 @@ rules as they are now: read it first. `docs/design-bible.html` records every dec
 ## Commands
 
 ```sh
-godot --headless --path . --import                 # first run, and after adding PNGs or a class_name
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import   # first run, and after adding PNGs or a class_name
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
-godot --path .                                     # harness: skirmish screen and map viewer
-godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
+godot --path .                                     # harness: a battle, a skirmish, a saved battle and the map viewer
+perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
 python3 tools/pages/bible_tables.py                       # the bible's buff, debuff and keyword tables, after any content change
-perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (about 45 minutes); --trace "row|pack|policy|seed" for one fight's log
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (two minutes)
+perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (hours on one core; about two in four parts, the README's --part and --merge); --trace "row|pack|policy|seed" for one fight's log
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (about four minutes)
 ```
 
 Every other command (models, foes, sound, screenshots, the phone, the pages) is in `README.md`.
@@ -36,7 +36,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`.
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
   never from a hardcoded id. A draft the engine cannot run yet carries `"status": "planned"`
-  (a foe action, or a chassis passive): it is kept, not shown, not run, and not validated
+  (a foe action, a passive, a component or a vocabulary term): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
 - Equipment words (decided 18 September): a **component** is one piece of equipment and
@@ -58,7 +58,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Keep the fun in mind: randomness is one source the player can see and shift (the die, a rolled range,
   a rider's chance on a chip), and push back on systems that add no decision. Slice and Dice is the touchstone.
 - Balance is measured, not guessed (decided 25 September): `sim/policy.gd` plays the skirmish
-  headless on a ladder of skill (random, greedy; personas on top) and `tools/balance.gd`
+  headless on a ladder of skill (random, blind, greedy and a two-round planner; personas on top) and `tools/balance.gd`
   runs the matrix into `docs/balance.md`. Read bands, not numbers: random beating a pack
   means too easy, greedy losing means a wall, both landing together means no decision.
   Pick share is the component signal. Ryan's play tests decide feel and micro balance;
@@ -124,7 +124,7 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - One folder per branch (decided 5 October). The desk machine's folder stays on `main`:
   `C:\Users\jam82\Desktop\Code\riftgate` on the Windows PC since 19 October (`~/Code/riftgate`
   on the Mac before it). A session that
-  needs another branch (a cloud session resumed on the Mac for its tools, most often) works in
+  needs another branch (a cloud session resumed on the desk machine for its tools, most often) works in
   its own worktree, `git worktree add .claude/worktrees/<name> <branch>` and EnterWorktree with
   that path, never by switching the main folder's branch under whoever is using it.
   `.claude/worktrees/` is excluded in `.git/info/exclude`. A worktree has no `.godot` import
@@ -150,7 +150,7 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - One home for each thing, so nothing drifts: the order of work is `docs/status.md`'s "Next,
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
-  `docs/<maker>_proposal.md` until its evaluation, then a design in progress is its brief in
+  `docs/<topic>_proposal.md` until its evaluation, then a design in progress is its brief in
   `docs/briefs/` until its session lands; each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.

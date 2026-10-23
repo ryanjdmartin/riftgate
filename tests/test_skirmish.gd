@@ -520,7 +520,7 @@ func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
 
 func test_a_bracing_entry_braces_its_owner_until_the_rounds_end() -> void:
 	# Ryan, 12 October: the Breaching Plow braces the Boar behind its blade, in place of the
-	# Glacis. Spending a bracing entry Braces its owner, the stacks it says, until the round's
+	# Glacis. Spending a bracing entry Armours its owner, the stacks it says, until the round's
 	# end: the armour stands through the enemy's turn and is gone when the next round opens.
 	var sk := Skirmish.new(1)
 	var plow := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "braces": 10})

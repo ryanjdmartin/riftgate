@@ -192,7 +192,7 @@ The unbuilt heroes, by domain, and the trope each homages:
 
 ## The promoted forms' one move more (21 October)
 
-The promoted forms are entries since 21 October (the bible's section 9): massive, armour 5,
+The promoted forms are entries since 21 October (the bible's section 9): massive, armour 2 (5 at the old scale),
 their heroes' kits, numbers and names (Ryan, 21 October: the same names; flag it if they feel
 thin), and one move more, chosen for two of eight: the Cleric's Reraise on its allies (built)
 and the Summoner's Fáfnir (named, its mechanics open). For the other six, one move each, from

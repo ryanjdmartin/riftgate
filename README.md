@@ -4,7 +4,8 @@ Portrait-mode tactical hex battler for Android. A few customizable war machines 
 city gate against a whole genre invading, the JRPG world's wildlife and its heroes pouring through rifts, in a roguelike campaign.
 
 The game's rules as they stand are in `docs/rules.md`. The design bible, `docs/design-bible.html`,
-records every decision, recommendation and open question, and why; section 12 is the roadmap.
+records every decision, recommendation and open question, and why; its section 12 holds the
+questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 
 ## Layout
 
@@ -25,15 +26,15 @@ records every decision, recommendation and open question, and why; section 12 is
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, blind, greedy,
     and a planner that rolls each decision out two rounds) with personas on top, so balance can
     be measured over thousands of fights
-  - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
   - `effects.gd` the one pipeline every number is read through: base plus every live modifier
-    (passives, rewards, buffs, statuses) with a scope and a source
+    (passives, rewards, buffs, statuses) with a scope and a source, and the passive triggers
+    and effects the engine runs (`Effects.supports`; the validator refuses others)
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
   - `save.gd` writes the whole battle to `user://battle.json` and reads it back; the run to
     `user://campaign.json` (the battle under way inside it) and the profile to
     `user://profile.json`
   - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
-    a machine that fought is spent, a hunter's catch first), the enemy's turn, until the gate
+    a fight spends a machine's action, the Dingo's first of two, a hunter's catch first), the enemy's turn, until the gate
     falls, the team is wrecked, or the boss dies
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
     and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
@@ -41,7 +42,7 @@ records every decision, recommendation and open question, and why; section 12 is
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
     `policy.gd`), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
-  `foes.json`, `chassis.json`, `components.json`. Placeholder numbers. `reserved_names.json` is
+  `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
@@ -75,7 +76,8 @@ records every decision, recommendation and open question, and why; section 12 is
   endgame fours up to tier two and runs them through the loop driver; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
-  ally units by code from a brief (`models_low.py`, one function per chassis id) in the
+  ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
+  draws the Badger's) in the
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
   generates enemy candidates with an image model and cuts one into `art/foes/` (the combat
@@ -107,8 +109,8 @@ records every decision, recommendation and open question, and why; section 12 is
   October, published as a page by `tools/pages/roster_analysis_page.py`, background since the
   go), the design-session briefs that came of it (`briefs/`, one per chassis proposal,
   direction and rework, each the design's one home, with a README; the makers' proposal files
-  were folded into them and retired on 15 October), the Kestrel airframes as a canvas under
-  `canvas/`, the economy pass's brief (`economy_pass.md`), the bosses' slate
+  were folded into them and retired on 15 October), the economy pass's brief
+  (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`) and the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), each
   retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
@@ -133,13 +135,13 @@ the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's
 `fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card).
 
 ```sh
-# first run only: build the script class cache
-godot --headless --path . --import
+# first run, and after adding PNGs or a class_name: the import and the script class cache
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
-# run the test suite
-godot --headless --path . -s tests/run_tests.gd
+# run the test suite (about four minutes)
+perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd
 
-# run the harness (skirmish screen and map viewer)
+# run the harness: a battle, a skirmish, a saved battle and the map viewer
 godot --path .
 
 # the hangar page: the codex, the content editor, the names and the renders in one artifact
@@ -150,7 +152,7 @@ python3 tools/hangar_data.py        # writes docs/hangar/pins.json, checks the r
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html   # the roster analysis as the page published to its artifact (status has the link), in the bible's style
 
 # regenerate docs/vocabulary.md from content/vocabulary.json
-godot --headless --path . -s tools/export_vocabulary.gd
+perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabulary.gd
 
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
@@ -158,8 +160,8 @@ python3 tools/pages/bible_tables.py
 # the balance report: every chassis alone and the starting team against every pack, against
 # each faction's whole formation in one fight and against the party (each bench hero's final with
 # its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
-# and by greedy over 200 seeds a cell, written to docs/balance.md (about an hour on one core, a
-# quarter of that in four parts); the team cells run under both targeting
+# and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
+# about two in four parts, below); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
@@ -170,19 +172,19 @@ python3 tools/pages/bible_tables.py
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
 # (repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
 # (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
-# --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
+# --trace "sparrowhawk|goblin x6|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
 # so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner;
 # --packs big (or rank_and_file, or pack ids such as "treant x1,finale") runs only those packs.
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
 # the merged report reads as a whole run, the time the longest part's)
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --part $i/4 --json /tmp/part$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --merge /tmp/part0.json,/tmp/part1.json,/tmp/part2.json,/tmp/part3.json
 
-# the map survey: 200 generated maps at the game's 7x20, measuring each ground's share, the
+# the map survey: 200 generated maps at the game's 9x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
 # the phases each way of moving takes to the rift at move 30 and its reach after two phases,
 # then every map type compared; written to docs/map_survey.md (a few minutes). --type KIND
@@ -242,9 +244,11 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe
 # RIFTGATE_PREY_DEBUG=1 (any skirmish) keeps the predator sense on: the foes' ground dims and the foes
 # the first ambusher's entry can reach that show no intent on it wear pulsing eyes (with no ambusher
 # on the team, the first machine's, the read forced), to judge it running.
+# RIFTGATE_PLAQUE_DEBUG=1 (any skirmish) fires the plaque with one of the field's move names after another,
+# to judge it running.
 # RIFTGATE_BLAST_DEBUG=1 (any skirmish) keeps the blast's marks on: every foe the first machine whose
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
-# The phone's layout on the Mac: RIFTGATE_SHOT_H=<design height> renders a taller glass
+# The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
@@ -255,20 +259,20 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe
 # density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
-# run with --resolution 1080x1920 for a 1080 phone's density (the Mac's screen caps the height).
+# run with --resolution 1080x1920 for a 1080 phone's density (the screen caps the height).
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel
-godot --headless --path . --import
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
 
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
 tools/spriter/.venv/bin/python tools/sheet_export.py
-godot --headless --path . --import
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
@@ -280,7 +284,7 @@ godot --headless --path . --import
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
 # the picks. Every candidate's source render lived only in tools/foeforge/out on Ryan's Mac (git-ignored); the seventh round's
 # were force-added under it (fb45141, 19 October), so its picks cut and its page rebuilds on any machine. Rendering needs the Mac.
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --tags fix fix2 chibi_takesF takesF --only   # the 13 October round as a phone page in out/phone (status has the link)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags bossart10 heroart16 chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16 augur_chibi_heroart16   # the boss art round's seventh sets (19 October) as a phone page in out/phone (status has the link)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
@@ -297,16 +301,16 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
-godot --path . --resolution 360x640 -s tools/gait_clip.gd -- ammit arsenal clip/ammit 8 front 480x400 offbeat   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/ammit_%04d.png -pix_fmt yuv420p ammit.mp4
+godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
-RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
+RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
-# nose up), then the art/models/wslook_* files deleted again
+# nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
 godot --path . --resolution 360x640 -s tools/lowforge/looks/look_shot.gd -- wslook_deck wainwright_sutler deck.png 180 75 520 520
 
@@ -321,7 +325,7 @@ tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every 
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every section of every track, with timestamps
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch map_88  # eight-bar sketches and variants, to tools/soundforge/out (not shipped)
-godot --headless --path . --import
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # the game on a phone, without an Android export: a Web build served over the LAN (https,
 # with a certificate the script makes: accept the browser's warning once). Open the printed
@@ -369,10 +373,10 @@ die to lock it, hold a die to see every face on it, drag a die onto a foe to spe
 face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
 Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
 entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.
-Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
-land and the number flashes over the target; energy faces are static. Reroll up to three
+Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
+lands and the number flashes over the target; a flat one shows its number. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
-one showing, a copy of it included. End turn runs the enemy: its turn replays blow
+one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
 and then the next round's dice show. Hold a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
@@ -406,7 +410,7 @@ machine in hand, tap a pack (or drag the machine onto it) and it moves into rang
 ordered onto that fight; tap the pack again to take the order back. The map shows the next
 fight: its target, the packs whose ring covers it, the machines ordered in. The bottom-left
 button reads ENGAGE while a fight is ready and dives the map onto it, handing over to the
-skirmish screen. A machine that fought is spent until the next turn. A hunter that ends its
+skirmish screen. A fight spends a machine's action until the next turn (the Dingo has two). A hunter that ends its
 walk beside its prey has caught it: the next turn opens with a CAUGHT band, and that fight is
 the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
 that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
@@ -414,8 +418,8 @@ result: wrecks leave the map, packs shrink to their survivors; Rift Pressure tic
 inside a fight. The battle ends when the gate falls, every mech is wrecked, or the boss
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either
-screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
-bar, music and effects volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
+screen pauses and holds the settings (display colour, brightness, move pace, enemy pace,
+glitch, scan bar, fine map, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 
@@ -423,5 +427,5 @@ In the map viewer: drag to scroll the taller-than-screen battlefield, tap withou
 for the next seed. The gate and rift are three hexes wide and a three-hex boss walks the
 north. Escape returns to the harness.
 
-If a headless tool script errors before it calls quit(), Godot keeps running. Wrap runs in a
-timeout when scripting them.
+If a headless tool script errors before it calls quit(), Godot keeps running, so every
+headless run sits in a watchdog: `perl -e 'alarm N; exec @ARGV'`, since macOS has no `timeout`.
