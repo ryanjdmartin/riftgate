@@ -976,7 +976,7 @@ and hull lost:
 | The Waste formation | 100 | 65 | 0 | 9 | 5.8 | 19% |
 | The Treant, the Bone Wyvern | 100 | 94 | 0 | 25 | 8.5 | 1% |
 | The other seven finals | 100 | 85 to 100 | 0 | 18 to 28 | 3.9 to 5.7 | 1 to 15% |
-| The thirteen rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
+| The twelve rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
 
 By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
 the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
