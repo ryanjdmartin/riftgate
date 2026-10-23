@@ -976,7 +976,7 @@ and hull lost:
 | The Waste formation | 100 | 65 | 0 | 9 | 5.8 | 19% |
 | The Treant, the Bone Wyvern | 100 | 94 | 0 | 25 | 8.5 | 1% |
 | The other seven finals | 100 | 85 to 100 | 0 | 18 to 28 | 3.9 to 5.7 | 1 to 15% |
-| The thirteen rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
+| The twelve rank-and-file packs | 100 | 96 to 100 | 0 | 24 to 28 | 1.5 to 3.0 | 0 to 15% |
 
 By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
 the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
@@ -1037,3 +1037,56 @@ shield-held bosses from the draw chasing a broken shield. Half the exposed aim's
 level draw. Against a boss whose one blow a round a shield holds, the round asks only which
 machine to shield, and the tank's armour takes what gets through: the depth and the pressure
 are short, not the targeting.
+
+## 23 October, targeting and shields on the starters
+
+**Ryan's questions on threat and pressure** (23 October: is there a case that the shield
+pieces are too high or too cheap, and what does a run look like with the foes targeting
+completely at random, as the baseline that targeting rules for advanced foes would build on?).
+Loops on the starters, the 28 trios a tender can deal, stock, against every pack, random and
+greedy, 30 seeds a cell, each read against the starter run of the same day (`starters30`):
+every foe and every move aiming at random (`--lever aim:anything`, thirty-one foes moved), every
+foe aiming as its rank's one shared pick (`--lever aim:focus`), and the two basic shield pieces
+halved (the Canopy 8 to 4, the Halo Shield 6 to 3). Directions.
+
+The shield economy first, from the starter run, greedy, a round: the damage the machines took
+(shield and hull) against the shield their spends restored, and the share the shield held. A
+trio opens a fight with about 27 points of standing shield. Both basic pieces cost no heat and
+carry no cooldown, a die entry their one price, where a basic gun deals 2 or 3:
+
+| Fight | Damage taken a round | Shield spent a round | Held by the shield |
+|---|---|---|---|
+| The Treant, the Bone Wyvern | 4.5 | 4.5 | 97% |
+| The Sandworm, the Magma Golem (breaching) | 5.0 to 5.9 | 0.6 to 0.9 | 2 to 16% |
+| The Peak's, the Marsh's and the Meadow's formations | 6.7 to 10.7 | 1.6 to 4.4 | 39 to 68% |
+| The rank-and-file packs | 0.5 to 4.8 | 0.2 to 2.1 | 96 to 100%; 0% against the Gel and the Needler, whose blows breach |
+
+The loops, over the 28 trios: greedy's win rate, its hull lost and the trios walled, as shipped,
+with every foe at random, with every foe on focus, and with the shields halved:
+
+| Pack | Greedy wins | Hull lost | Walled |
+|---|---|---|---|
+| The Peak formation | 74 / 78 / 72 / 67 | 46 / 42 / 50 / 51% | 4 / 4 / 3 / 7 |
+| The Marsh formation | 78 / 82 / 77 / 78 | 43 / 39 / 45 / 45% | 4 / 1 / 4 / 3 |
+| The Meadow formation | 84 / 84 / 76 / 82 | 48 / 47 / 50 / 50% | 2 / 2 / 4 / 1 |
+| The Magma Golem | 89 / 90 / 89 / 89 | 56 / 57 / 56 / 56% | 1 / 1 / 1 / 1 |
+| The Sandworm | 97 / 96 / 97 / 97 | 42 / 43 / 42 / 42% | 0 / 0 / 0 / 0 |
+| The Treant, the Bone Wyvern | 100 / 100 / 100 / 100 | 1 / 1 / 1 / 4% | 0 / 0 / 0 / 0 |
+
+On every other pack greedy's wins move two points at most under any loop; random play wins the
+Treant and the Wyvern 98% with every foe at random against 94% as shipped.
+
+Read: the shield pieces are not what keeps a lone boss harmless. Halved, the Treant and the
+Wyvern take 4% of a trio's hull where they took 1%: such a boss deals about 4.5 a round over
+eight and a half rounds, a fight's whole output about the size of the trio's standing shield,
+so it is short of pressure, not of a breach. The halving bites only where the blows come in
+volume (the Peak's formation walls three more trios) and nowhere a blow breaches. Random
+targeting reads a little easier than the shipped aims, on the formations alone (the Marsh's
+walls 4 to 1, its Ghosts' focus gone), so the numbers stand without the aims and an aim is a
+lever on top of them. Every foe on focus reads harder than the shipped aims on the formations
+(the Meadow's greedy wins 84 to 76, its walls 2 to 4) and changes nothing against a lone foe,
+whose one pick is its own. On the twelve trios with neither the Honey Badger nor the Cottonmouth
+the five hard fights read 67% won with every foe at random, 64% as shipped, 59% on focus and 60%
+with the shields halved: a rank's blows on one machine take about as much from a starter as
+halving every basic shield, with no number moved. The sixteen trios with a carry win all five
+every way.

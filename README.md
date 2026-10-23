@@ -200,7 +200,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 python3 tools/stock_fills.py .
 # a balance loop (the stock pass's method): a copy of the project under build/loops/<name> with one lever moved in
 # its content (`levers` lists them: the foes' blows, our durability, cooling, the maxima, a foe's armour, HP or move,
-# Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
+# every foe's aim, Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
 # (--policies, --packs big, --rows cut it down), every chassis alone with --alone, the campaign report unless
 # --no-campaign, and a summary against the bible's section 2 tests; `compare` lays finished loops side by side.
 # --team adds a row of exactly those machines (a squad of four), --set passes the runner a fit no stock may carry
