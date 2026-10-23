@@ -71,7 +71,8 @@ records every decision, recommendation and open question, and why; section 12 is
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
   `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
-  against each faction's formation, bosses and first pack; `screenshot.gd` renders a
+  against each faction's formation, bosses and first pack; `endgame_fours.py` fits the five
+  endgame fours up to tier two and runs them through the loop driver; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -167,7 +168,8 @@ python3 tools/pages/bible_tables.py
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
-# (repeatable, never validated: knock-outs and what-ifs); compare each against the same seeds without;
+# (repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
+# (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
@@ -204,12 +206,17 @@ python3 tools/stock_fills.py .
 # (--policies, --packs big, --rows cut it down), every chassis alone with --alone, the campaign report unless
 # --no-campaign, and a summary against the bible's section 2 tests; `compare` lays finished loops side by side.
 # --team adds a row of exactly those machines (a squad of four), --set passes the runner a fit no stock may carry
-# (unvalidated, after the content loads; the built teams of 23 October). About half an hour on four cores; a
+# (unvalidated, after the content loads; the built teams of 23 October) and --fit the modules a chassis wears
+# (the endgame fours of 23 October: a loadout by --set, modules by --fit). About half an hour on four cores; a
 # direction, never a band (docs/measurements.md). GODOT names the binary if needed.
 python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=2 --policies random,greedy
 python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+sparrowhawk+dingo --team badger,clydesdale,sparrowhawk,dingo
 python3 tools/stock_loop.py run built --packs big --set 'chassis/badger/loadout/0="polarity_projector"'
 python3 tools/stock_loop.py compare base blows
+# the endgame fours (23 October, the endgame half of the read by stage): five squads of four, chassis of any tier,
+# every hardpoint and module slot filled up to tier two, checked against the content and run through the loop driver
+# (random and greedy at 30 seeds, no campaign unless --campaign; stock_loop run options pass through)
+python3 tools/endgame_fours.py endgame30
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.

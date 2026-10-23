@@ -99,6 +99,20 @@ merged on 21 October are paused, each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 23 October, evening, Ryan's terms and his elites (the bible's tiers row, section 3's new curve
+  row, section 12): a foe's tier (rank and file, elite, boss, final) is apart from its size, its
+  rank and its complexity; an elite is a spawn of one or more unique packs outside the spawn
+  list, a mini-boss tier throwing a visible curveball (a mechanic on the map, or a harder fight
+  that holds the team and threatens the gate, the tier-one kind), about one an early battle and
+  more later, worth a larger chunk of the Rupture meter and Anathema. By his leans none of the
+  four built massive foes is an elite as built (the Treant rank and file, the Bone Wyvern an
+  advanced foe or an elite, the Elemental and the Sandworm not special enough as they stand),
+  and an alpha or named homage of the Treant or the Sandworm fits the harder-fight elite. The
+  Magma Golem is the Magma Elemental (a golem implies a master; the id stays). Balance is read
+  by stage (section 11's ladder row), the endgame four fitted from pieces and modules up to tier
+  two; the runner and the loop driver take `--fit chassis=module,module`. The massive HP
+  question retired; section 12 asks the elites' scouting and trigger, the Wyvern's, the
+  Elemental's and the Sandworm's tiers, the homages' names and which stage the tests describe.
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
@@ -111,14 +125,15 @@ merged on 21 October are paused, each resuming from its briefs:
   valuation, read on the way, priced a Shock as a bad roll, so the rerolls every rung shares
   threw a Polarity Projector away nine times in ten: fixed in `sim/policy.gd` (a blow's Shock
   worth the hitter in hand), which opened the gap by a tenth at most. Two questions went back
-  to Ryan (section 12: where the gap is read, the massive HP). The loop driver takes `--team`
+  to Ryan (section 12: where the gap is read, the massive HP, the second retired the same
+  evening by his read by stage). The loop driver takes `--team`
   and `--set`.
 - 22 October, the stock pass's landing and loops (the brief's section 7, on Opus): the content
   stands at the brief's stocks and pieces (the basic kit, eight new pieces and Trim Tabs, the
   renames and retirements, every piece's tier and tags, the Stoker's own fire) with the numbers
   six measured loops moved from the fills (`docs/measurements.md`): the foes hit harder (the
   rank and file's blows up by half, the massive foes' by a third, the heroes' doubled), the
-  Sandworm and the Golem stand at armour 1, the Treant and the Wyvern regrow 3, and the heat
+  Sandworm and the Elemental stand at armour 1, the Treant and the Wyvern regrow 3, and the heat
   maxima are 12 and 14 (the Kite's 10 and the Musk Ox's 8 standing), all set by
   `tools/stock_fills.py`. Flak's clock is a field in its status (it halves still; the loops read
   a stack a round alike), and the balance runner reads `--packs`. Wear, the free wins and heat
@@ -477,7 +492,7 @@ merged on 21 October are paused, each resuming from its briefs:
   Obscur's Sciel by archetype; a working name) took the Necromancer's place on the Marsh's
   bench: Omen, a countdown of two at one machine, and Harvest below half, a countdown of one
   on every machine (the two pieces paired, tested); the Necromancer and its art are gone. The White Mage is the Cleric (id kept), its promoted form's one move more Reraise on its allies, planned (Ryan, 16 October). The Summoner's summons are its moves,
-  full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Golem no longer called. The
+  full Norse (Ryan): Skaði's frostbite, Surtr's Pyroclasm, Fáfnir the promoted form's; the Elemental no longer called. The
   boss art round is on the picker: sets from `tools/foeforge/drafts.json` (art ahead of
   content), the Fallen Weapon drawn as hammer and as axe, the third round Skaði, Fáfnir and Floraison. The bosses' slate and Ryan's marks
   are `docs/bosses_proposal.md`.
@@ -574,9 +589,14 @@ merged on 21 October are paused, each resuming from its briefs:
 - The starter trios (23 October, every trio a tender can deal, stock, against every pack, 30
   seeds; `docs/measurements.md`), the early half of Ryan's read by stage: the rank and file, the
   Treant, the Bone Wyvern and most finals are free for a starter; the Peak's, the Marsh's and the
-  Meadow's formations, the Magma Golem and the Sandworm are its fights; the finale a wall. The
-  Honey Badger and the Cottonmouth carry a starter, and a third of tenders deal neither. The
-  endgame half waits on Ryan's call on what an endgame optimized four is.
+  Meadow's formations, the Magma Elemental and the Sandworm are its fights; the finale a wall. The
+  Honey Badger and the Cottonmouth carry a starter, and a third of tenders deal neither.
+- The endgame fours (23 October, the read's endgame half: five fours of any tier fitted from
+  pieces and modules up to tier two, `tools/endgame_fours.py`, 30 seeds; `docs/measurements.md`):
+  every pack but the finale is free for an endgame four, random play included (0 to 6% of its
+  hull a fight, a lone massive foe in two to three rounds), and the finale is its one fight
+  (greedy two times in three for about two thirds of its hull, random losing). Nothing sits
+  between a starter's fights and the finale: the middle and late curve is the fresh start's.
 - Whom the foes strike (23 October, `tools/target_probe.gd`, every starter trio against each
   faction's formation, boss and first pack, 20 seeds; `docs/measurements.md`): the exposed aim
   spreads its picks evenly while the team stands (29 to 36% a machine), half its draws level;
@@ -671,8 +691,8 @@ to-do's Ryan list).
    a loop, `docs/measurements.md`), the bands at 200 seeds read them (the reports regenerated)
    and the hangar was republished with them; the branch merged into main the same evening on
    Ryan's go. Ryan settled the bands' reads on 23 October (the bible's rows), and their runs put
-   two questions back to him (section 12: where the gap is read, the massive HP); next the
-   pricing run, on the bots' Shock priced at the hitter in hand. Two content questions went to section 12 with the landing: which
+   two questions back to him (section 12: where the gap is read, and which stage the tests
+   describe, the massive HP retired by his read by stage); next the pricing run, on the bots' Shock priced at the hitter in hand. Two content questions went to section 12 with the landing: which
    explosives carry Spread and Penetrate, and a flat Indirect basic.
 3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock
    pass is in can the units be balanced for real). The runner's rows on the roster as the
@@ -682,7 +702,9 @@ to-do's Ryan list).
    pacing and four-machines rows, section 9, section 12's foe questions and
    `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift, small
    packs for detachments and formations for the body, the boss sealed by the threat-weighted
-   meter and fought with its formation, the withdrawing persona on the campaign bot; then reruns
+   meter and fought with its formation, the withdrawing persona on the campaign bot, the curve by
+   stage (section 3's curve row) and the elites on Ryan's definition (section 9's tiers row), read
+   against the starter and endgame grids of 23 October (`docs/measurements.md`); then reruns
    both reports and measures the fights a team fights together.
 5. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has
    its shape is a run he can play; the go, the stock pass and the balancing come first, Ryan,
