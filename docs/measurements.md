@@ -1090,3 +1090,78 @@ the five hard fights read 67% won with every foe at random, 64% as shipped, 59% 
 with the shields halved: a rank's blows on one machine take about as much from a starter as
 halving every basic shield, with no number moved. The sixteen trios with a carry win all five
 every way.
+
+## 23 October, the endgame fours
+
+**The endgame half of Ryan's read by stage** (23 October: which foes and compositions are
+harder for an early stock trio than for an endgame four, the four fitted from pieces and
+modules up to tier two, since tier three is powerful and rare by design, until the components'
+power curve is known). Five fours built by Claude for the read, each a concept and Ryan's to
+move, chassis of any tier, every hardpoint and module slot filled from tiers zero to two
+(`tools/endgame_fours.py`, which checks the fits and runs `tools/stock_loop.py` with them: the
+loadouts through the runner's `--set`, the modules through its `--fit`, added for this), against
+the twenty-nine packs, random and greedy, 30 seeds a cell, no campaign, on the content as it
+stands after `d592823` (the Elemental renamed). Read beside the starter trios above. A
+direction.
+
+The fours, each machine's pieces and then its modules:
+
+- The heavy line: the Nemesis (Meteor Artillery, Blazethrower, Backdraft Charge, Oblation
+  Mantle; Ward Plate, Grievance Reliquary), the Wild Boar (Tesla Gauntlets, Slugthrower,
+  Shotfire Rack, Canopy, Coolant Jacket; Ram Frame, Tactical Databank), the Honey Badger
+  (Transonic Rifle, Canopy, Coolant Jacket; Ram Frame, Tactical Databank), the Buzzard
+  (Overclocked Railgun, Transonic Rifle, Cyclic Cannon, Canopy, Bleed Valve; Boundary-layer
+  Bleed, Ward Plate).
+- The setups: the Prairie Dog (Flak Cannon, Corona Shield, Coolant Jacket; Susceptibility
+  Tensor, Flak Skirt), the Clydesdale (Maxigun, Cyclic Cannon, Enfilade Beam, two Howitzers,
+  Airburst Shell, Canopy, Suppression Battery, Coolant Jacket; Tactical Databank, Susceptibility
+  Tensor, Flak Skirt), the Baboon (Polarity Projector, Pulse Vacillator, Corona Shield, Coolant
+  Jacket, Airburst Shell, Differentiation Probe; Phase Conjugator, Susceptibility Tensor), the
+  Dingo (Airburst Shell, Cyclic Cannon, Coolant Jacket; Susceptibility Tensor, Flak Skirt).
+- Kestrel's four: the Lammergeier (Meteor Artillery, Polarity Projector, Cyclic Cannon, Wake
+  Diffuser; Boundary-layer Bleed, Ward Plate), the Kite (its stock; Boundary-layer Bleed, Ward
+  Plate), the Puffin (Corona Shield, Laminar Deflector, Radiator Sail, Cyclic Cannon; Phase
+  Conjugator, Flak Skirt), the Buzzard as above.
+- Armour and the drum: the Honey Badger as above, the Cottonmouth (Flak Cannon, Tesla Gauntlets,
+  Meteor Artillery, Corona Shield; Susceptibility Tensor, Flak Skirt), the Armadillo (Proximity
+  Klaxon, Slugthrower, Canopy, Bleed Valve; Ward Plate, Ablative Plating), the Musk Ox (its
+  stock; Ward Plate, Flak Skirt).
+- The statuses: the Stingray (Incendiary Shells, Airburst Shell, Corona Shield, Aurora Lattice,
+  Coolant Jacket; Susceptibility Tensor, Field Radiators), the Funnel-web (Maxigun, Howitzer,
+  Cyclic Cannon, Canopy; Susceptibility Tensor, Flak Skirt), the Whip Scorpion (Thermal Ray,
+  Entropy Condenser, Coolant Jacket, Maxigun; Ward Plate, Ablative Plating), the Baboon as above.
+
+By pack, the 28 starter trios against the five fours: greedy's mean win rate and random's, then
+greedy's rounds and hull lost (walled: greedy under 25%; free: random nine times in ten, as
+above):
+
+| Pack | Starter trios | Endgame fours |
+|---|---|---|
+| The finale | 0 / 0, all 28 walled | 67 (50 to 87) / 1, 12.8 rounds, 64%; none walled, none free |
+| The Peak formation | 74 / 31, 8.1 rounds, 46% | 100 / 100, 3.0 rounds, 0.3% |
+| The Marsh formation | 78 / 23, 9.3, 43% | 100 / 99, 4.3, 0.7% |
+| The Meadow formation | 84 / 31, 8.8, 48% | 100 / 100, 4.6, 3.4% |
+| The Magma Elemental | 89 / 25, 7.3, 56% | 100 / 100, 2.6, 6.0% |
+| The Sandworm | 97 / 54, 7.7, 42% | 100 / 100, 2.5, 4.9% |
+| The Martial Artist's final | 99 / 60, 5.2, 29% | 100 / 100, 2.1, 1.3% |
+| The Waste formation | 100 / 65, 5.8, 19% | 100 / 100, 2.7, 3.1% |
+| The Treant, the Bone Wyvern | 100 / 94, 8.5, 1% | 100 / 100, 2.2, 0% |
+| The other seven finals | 100 / 85 to 100, 3.9 to 5.7, 1 to 15% | 100 / 100, 2.0 to 2.4, 0 to 2% |
+| The twelve rank-and-file packs | 100 / 96 to 100, 1.5 to 3.0, 0 to 15% | 100 / 100, 1.0 to 2.1, 0 to 2% |
+
+By four on the finale, greedy: the heavy line 87% for 60% of its hull in 11.4 rounds, the
+statuses 70% for 56% in 11.7, Kestrel's 67% for 63% in 12.4, the setups 63% for 62% in 15.5,
+armour and the drum 50% for 78% in 13.1; random play wins it 0 to 3%. A lone massive foe falls to
+a four in 2.1 to 3.1 rounds (armour and the drum the slowest), where a starter needs 7.3 to 8.5.
+
+Read: an endgame four meets nothing in today's roster but the finale. Every pack a starter
+fights is free for it, random play included, at 0 to 6% of its hull a fight (the five's mean;
+11% at most for one four), and a lone massive foe dies in two to three rounds, about section 2's round or two of focus, where a starter needs
+seven to eight and a half. Only the finale presses it: greedy wins two times in three for about
+two thirds of the squad's hull over twelve rounds and random play loses, the one cell that reads
+as a fight for an endgame four. So the grid has two rungs and nothing between them, the
+starter's fights (the formations, the two breaching bosses, the Martial Artist's final) and the
+finale: no composition is a starter's wall and a fair fight late but the finale, and none is a
+wall late. Every tier draws the same lists today, so a run's later battles field what its first
+did; the middle and late curve is the foes' fresh start's to build (the bible's section 3 curve
+row).

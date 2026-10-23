@@ -445,7 +445,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak or Exposed.
   or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
   in the turn that follows, so equipment or a cool weapon plays round it. A foe's burn leaves Burning and its scorch
   leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
-  the Magma Golem's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
+  the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
   machine.
 
 ### Injury

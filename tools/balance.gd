@@ -29,7 +29,9 @@ extends SceneTree
 ## against a run without it), --nopassive (every chassis without its passive, for what the
 ## passives are worth), --set path=json, repeatable (one content value replaced for this
 ## run only, e.g. components/enfilade_beam/face/keywords=[]; never validated, for a knock-out
-## or a what-if, never a way to change content),
+## or a what-if, never a way to change content), --fit chassis=module,module, repeatable (those
+## modules fitted to every machine of that chassis in every row, up to its slots: a late-game
+## fit no stock carries, read beside --set loadouts; 23 October, the endgame fours),
 ## --noparty (the matrix without the party's cells, 21 October: each bench hero's final, the
 ## hero with its domain's first pack in the other columns as the campaign fields it, and the
 ## finale's line of each domain's first bench hero promoted, beside the packs by default),
@@ -67,6 +69,7 @@ var no_passive := false     # --nopassive: every chassis stripped of its passive
 var party := true           # the party's cells (each bench hero's final, the finale's line); --noparty drops them
 var unmeasured: Array = []  # chassis the engine cannot field yet (a planned passive or locked piece): no row, no trio
 var edits: Array = []       # --set: "path=json" content replacements for this run only
+var fits: Dictionary = {}   # --fit: chassis id -> the module ids fitted to every machine of it
 var part := -1              # --part i/n: this process runs the cells whose place in the matrix is i modulo n
 var parts := 1
 var merge: Array = []       # --merge: the parts' JSON paths to build the report from
@@ -99,6 +102,12 @@ func _init() -> void:
 		push_error("no module '%s' (modules: %s)" % [fit_module, ", ".join(db.modules.keys())])
 		quit(1)
 		return
+	for cid in fits.keys():
+		var bad: Array = Array(fits[cid]).filter(func(m) -> bool: return not db.modules.has(str(m)))
+		if not db.chassis.has(cid) or not bad.is_empty():
+			push_error("--fit %s: no chassis or no module %s" % [cid, ", ".join(bad)])
+			quit(1)
+			return
 	if not only_rows.is_empty():
 		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
 	if not only_packs.is_empty():
@@ -236,6 +245,11 @@ func _parse_args() -> void:
 				party = false
 			"--set":
 				edits.append(v)
+				i += 1
+			"--fit":
+				var fv := v.split("=")
+				if fv.size() == 2:
+					fits[fv[0]] = Array(fv[1].split(","))
 				i += 1
 			"--trace":
 				trace = v
@@ -407,7 +421,10 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	for cid in r["chassis"]:
 		uid += 1
 		var fitted := str(r.get("module", ""))
-		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, [] if fitted.is_empty() else [fitted])
+		var mods: Array = Array(fits.get(cid, [])).duplicate()
+		if not fitted.is_empty():
+			mods.append(fitted)
+		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, mods)
 		if not is_equal_approx(damage_scale, 1.0):
 			# The scale rides on every blow as a loadout modifier, the way a number is asked
 			# here, so the bot's outcomes and the resolver read the same thing.
@@ -597,6 +614,7 @@ func _report(fights: int, secs: float) -> String:
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
 		+ ("" if fit_module.is_empty() else " Each row runs beside its twin with the %s fitted to every machine." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
+		+ ("" if fits.is_empty() else " Modules fitted: %s." % "; ".join(fits.keys().map(func(c) -> String: return "%s %s" % [str(db.chassis[c].get("name", c)), ", ".join(Array(fits[c]).map(func(m) -> String: return str(db.modules[str(m)].get("name", m))))])))
 		+ ("" if not no_passive else " No chassis has its passive.")
 		+ ("" if unmeasured.is_empty() else " Not measured, the engine lacking their kit: %s." % ", ".join(unmeasured))
 		+ ("" if edits.is_empty() else " Content changed for this run: %s." % ", ".join(edits)))
