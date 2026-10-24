@@ -1209,3 +1209,29 @@ gates makes the Peak a little easier, not harder: a special replaces its foe's b
 two stacks of Burning are worth less than the Breath's 5 and a Scorched it replaces, as Fira's two
 Scorched each are against Fire's 8 and a Scorched. So the gates are not what makes the packs soft;
 the heat specials are weaker than the blows they replace.
+
+## 24 October, the rank and file at random
+
+**Ryan's baseline** (24 October: the rank and file target at random, agnostic of the player's
+composition, and never over-commit; an elite, a boss or a hero keeps an aim where it fits).
+`tools/special_probe.gd` on the content after the change, the same 10 starter trios, cells and
+10 seeds as the run above, its fights read against that run's opened column (the gates already
+gone, the old aims standing). 1,600 fights. A direction.
+
+| Cell | Won, old aims / at random | Rounds | Hull lost |
+|---|---|---|---|
+| The Marsh's formation | 81 / 88% | 8.1 / 8.1 | 40 / 33% |
+| The Meadow's formation | 84 / 83% | 8.7 / 8.6 | 50 / 47% |
+| The Peak's formation | 78 / 85% | 7.9 / 8.4 | 41 / 39% |
+| The Waste's formation | 100 / 100% | 6.0 / 5.7 | 19 / 15% |
+| The Magma Elemental alone | 87 / 88% | 7.9 / 7.8 | 59 / 57% |
+| The Sandworm alone | 95 / 93% | 7.7 / 8.2 | 43 / 44% |
+| The Treant alone | 100 / 100% | 9.1 / 8.6 | 1 / 1% |
+| Every hero alone, the Bone Wyvern alone | the same | the same | the same |
+| Every cell | 95.3 / 96.1% | 5.6 / 5.6 | 18.2 / 17.2% |
+
+Read: the formations read easier at random, a few points of hull and up to seven of wins, as
+the all-random run of 23 October found, and the lone fights barely move: a lone foe has no one
+to over-commit beside, and the heroes and the Bone Wyvern keep their aims. The numbers now stand
+on a baseline the player's composition does not move; the formations' pressure is the numbers'
+to restore when the units are balanced for real, and an advanced foe's aim is a lever on top.

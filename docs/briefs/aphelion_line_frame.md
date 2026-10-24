@@ -162,9 +162,8 @@ section is Claude's, for him to move, and every number is a placeholder.
   only in the longest, and seldom passes 5 against a big foe today; 20 needs volume. A
   formation machine first, which suits "a battle rhythm", but a different claim from the 15
   October one.
-- **A break the die forces** is random that takes away (section 2's chances row, Ryan, 16
-  October). It is rare with three weapons on the die and the team's three rerolls, but the ramp
-  is lost through no choice of the player's. The alternative for Ryan: only spending equipment
+- **A break the die forces** loses the ramp through no choice of the player's. It is rare with
+  three weapons on the die and the team's three rerolls. The alternative for Ryan: only spending equipment
   (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
 - **Decision density.** Once the combo is up, its payoffs take away the reasons to break it,
   and in the Marsh nothing attacks the die or heats it (the Meadow drains rerolls, the Waste
@@ -206,8 +205,7 @@ section is Claude's, for him to move, and every number is a placeholder.
 What they settle: the combo counts every blow its weapons land, strikes included, so strikes
 and area pieces are its fuel, as the action-economy row has it; the session resumes under the
 conventions decided since 15 October (as Claude reads them: the action-economy row, Rapid's
-limiter, a Suppress priced by a gate, the overlap rule, random that adds against random that
-takes away); and the shield's tag waits on the line frame's model session, not this one.
+limiter, a Suppress priced by a gate, the overlap rule); and the shield's tag waits on the line frame's model session, not this one.
 
 **The bench** (each with what set it aside)
 

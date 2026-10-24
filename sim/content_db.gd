@@ -272,7 +272,7 @@ func make_foe(foe_id: String) -> Foe:
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
-	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
+	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
 	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
@@ -375,7 +375,7 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		"body": str(d.get("codex", "")),
 		"stats": stats,
 		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)]] + ([["armour", str(f.armour)]] if f.armour > 0 else []) + [
-			["rank", "BACK" if f.prefers_back else "FRONT"], ["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
+			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()]] if f.aim != Foe.AIM_ANYTHING else []) + ([["size", "MASSIVE"]] if f.is_massive() else []),
 		"actions": "\n".join(acts),
 		"passive": "",
 		"faces": [],

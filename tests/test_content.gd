@@ -1287,6 +1287,14 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
 		else:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
+	# The rank and file draw at random (Ryan, 24 October: the baseline balanced on, agnostic of
+	# the player's team); an aim is an elite's, a boss's or a hero's.
+	for fac in db.factions.keys():
+		for e in db.spawn_table(str(fac)):
+			var rf := db.make_foe(str(e[0]))
+			assert_eq(rf.aim, Foe.AIM_ANYTHING, "%s, sent by a spawn list, draws at random" % e[0])
+			for a in rf.actions:
+				assert_false(a.has("aim"), "%s's %s carries no aim of its own" % [e[0], a["id"]])
 	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
 	var swarm := int(g.actions[0].get("swarm", 0))

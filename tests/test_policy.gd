@@ -53,6 +53,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	sk.add_foes([_ghoul(300, 30)])
 	sk.begin()
 	sk.start_round()
+	sk.front[0].target = sk.mechs[1]   # its pick, set: the test is the shield's, not the aim's
 	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the ghoul would wreck the weak machine")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")

@@ -1478,7 +1478,11 @@ func _on_foe_held(v: UnitView) -> void:
 		if foe.target != null and foe.reaches_every_machine():
 			text += "\n→ every machine"
 		elif foe.target != null and not foe.acts_on_nobody():
-			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]
+			# The sense only where the foe carries one: the rank and file pick at random (24 October).
+			var sense := foe.aim_of()
+			text += "\n→ %s" % foe.target.unit.display_name
+			if sense != Foe.AIM_ANYTHING:
+				text += " (%s)" % str(Foe.AIM_TEXT.get(sense, sense))
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))

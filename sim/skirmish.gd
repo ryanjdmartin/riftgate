@@ -803,17 +803,51 @@ func start_round() -> void:
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then the pick by
-	# the move's aim, each foe on its own; a rank that fires as one shares its pick.
+	# the move's aim, each foe on its own; a rank that fires as one shares its pick. The foes
+	# draw in the order they strike and never over-commit (Ryan, 24 October, after Slice and
+	# Dice): a machine the blows already drawn would wreck is skipped while another stands.
 	_focus.clear()
 	_refresh_kin()
+	var ahead := {}
 	for f in field_foes():
 		# A move gathered last round holds, and so does its pick while the machine stands.
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f)
-		if carried and f.target != null and (f.target as MechState).alive():
-			continue
-		f.target = _pick_mech_target(f)
+		if not (carried and f.target != null and (f.target as MechState).alive()):
+			f.target = _pick_mech_target(f, _doomed(ahead))
+		_draw_blows(f, ahead)
 	state = State.ASSIGN
+
+
+## The machines the blows drawn so far this round would wreck.
+func _doomed(ahead: Dictionary) -> Array:
+	var out: Array = []
+	for ms in ahead.keys():
+		if int(ahead[ms]["hull"]) <= 0:
+			out.append(ms)
+	return out
+
+
+## A foe's blows this round walked through the machines they would land on as the picks are
+## drawn, each machine's shield, Barrier and hull carried from the blows before it, as the
+## forecast reads them: a blow at every machine on each, any other on its pick. A special, a
+## suppressed foe and a countdown still gathering land nothing this round.
+func _draw_blows(f: Foe, ahead: Dictionary) -> void:
+	if not f.attacks() or f.damage() <= 0 or f.is_suppressed():
+		return
+	if not f.pending.is_empty() and f.charge > 0:
+		return
+	var on: Array = []
+	if f.hits_all():
+		on = live_mechs()
+	elif f.target != null:
+		on = [f.target]
+	for ms in on:
+		if not ahead.has(ms):
+			ahead[ms] = {"shield": ms.unit.shield, "barrier": Effects.has(ms.unit, "barrier"), "hull": ms.unit.hull}
+		var walk: Dictionary = ahead[ms]
+		for r in blows_on(ms, f, walk):
+			walk["hull"] = int(walk["hull"]) - int(r["through"])
 
 
 ## The moves a foe may announce this round: those whose conditions hold, less the special
@@ -3153,10 +3187,18 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## does); fires as one, the rank's shared pick. The pick is a commitment: a foe whose target
 ## shields up still swings at it. With the override set, or asked with no foe, the rule
 ## before: the lowest shield, then the lowest hull.
-func _pick_mech_target(f: Foe = null) -> MechState:
+func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
+	# Never over-commit: a machine the blows already drawn would wreck is passed over while
+	# another stands.
+	var open: Array[MechState] = []
+	for ms in live:
+		if not avoid.has(ms):
+			open.append(ms)
+	if not open.is_empty():
+		live = open
 	if f == null or targeting_override == "lowest":
 		return _lowest_shield(live)
 	match f.aim_of():
@@ -3171,7 +3213,10 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 					hottest.append(ms)
 			return hottest[rng.randi_range(0, hottest.size() - 1)]
 		"armed":
-			var armed := _armed_mechs()
+			var armed: Array[MechState] = []
+			for ms in _armed_mechs():
+				if live.has(ms):
+					armed.append(ms)
 			if armed.is_empty():
 				return _pick_exposed(f, live)
 			return armed[rng.randi_range(0, armed.size() - 1)]
@@ -3192,7 +3237,7 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 			return most[rng.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive() and not is_phased(shared):
+			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
 				return shared
 			var pick := _pick_exposed(f, live)
 			_focus[f.rank] = pick

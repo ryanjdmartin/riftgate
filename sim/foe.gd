@@ -7,9 +7,11 @@ extends RefCounted
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
 ##
-## Targeting (decided 2 October): machines do not taunt, monsters hunt by sense. A foe type
-## carries an `aim`, the sense its pick follows, and a move may carry its own; the skirmish
-## makes the pick (`Skirmish._pick_mech_target`), weighted and shown before the player acts.
+## Targeting: machines do not taunt (2 October), and a foe draws its target at random unless it
+## or its move carries an `aim`, the sense an advanced foe's pick may follow (Ryan, 24 October:
+## the rank and file at random, the baseline balanced on, an elite's, a boss's or a hero's aim
+## where it fits); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
+## player acts, and the foes never over-commit to a machine already doomed.
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
@@ -22,7 +24,7 @@ var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
-var aim: String = AIM_EXPOSED    # the sense its target pick follows (content; a move may override it)
+var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -52,6 +54,7 @@ var regrow_due: Array = []       # [part id, round it returns] for each part on 
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
+const AIM_ANYTHING := "anything"   # at random: the default, the rank and file's
 const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
 const AIM_TEXT := {
 	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",

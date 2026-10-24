@@ -321,8 +321,8 @@ reach; each tested with synthetic passives.
   strike's try counts only when the first was shrugged off, a small gain of the strafer's own.
 - The review raised a random strike of the lock spending a Shock at half, and the die showing
   the first strike's number only. Ryan, 17 October: with one of four shocked, firing the spray
-  is an understood risk, "no different than using a cleave", not random that takes away "since
-  you still hit that guy for normal damage", and sometimes the result hoped for; showing the
+  is an understood risk, "no different than using a cleave", "since you still hit that guy for
+  normal damage", and sometimes the result hoped for; showing the
   first strike's number is correct, "exactly the same as spread". Both stand as designed.
 
 ## What landed, and what the engine session lands

@@ -108,11 +108,14 @@ func test_cleave_hits_neighbours() -> void:
 		assert_eq(sk.front[c].hp, 30, "front %d took 20" % c)
 
 
-func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() -> void:
-	# A blow of 20: the tough machine's shield of 40 holds (weight 1); the weak one's shield of
-	# 10 takes ten and lets ten through (the honest shield), and a shield about to fail is
-	# exposure too (half of it), so the weak one weighs 16 and is picked sixteen times in
-	# seventeen.
+func test_a_foe_aims_at_random_unless_it_carries_an_aim_such_as_the_exposed() -> void:
+	# Ryan, 24 October: the rank and file at random, the baseline balanced on; an advanced foe
+	# may carry an aim.
+	assert_eq(_ghoul().aim_of(), Foe.AIM_ANYTHING, "the default sense: at random")
+	# The exposed, by weight. A blow of 20: the tough machine's shield of 40 holds (weight 1);
+	# the weak one's shield of 10 takes ten and lets ten through (the honest shield), and a
+	# shield about to fail is exposure too (half of it), so the weak one weighs 16 and is picked
+	# sixteen times in seventeen.
 	var weak_picks := 0
 	for seed_value in range(120):
 		var sk := Skirmish.new(seed_value)
@@ -120,10 +123,12 @@ func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() 
 		var weak := _mech("Weak", Die.single(Face.shield(10)), 10, 100)
 		sk.add_mech(tough)
 		sk.add_mech(weak)
-		sk.add_foes([_ghoul(30, 20)])
+		var g := _ghoul(30, 20)
+		g.aim = Foe.AIM_EXPOSED
+		sk.add_foes([g])
 		sk.begin()
 		sk.start_round()
-		assert_eq(sk.front[0].aim_of(), "exposed", "the default sense")
+		assert_eq(sk.front[0].aim_of(), "exposed", "the sense it carries")
 		if sk.front[0].target == sk.mechs[1]:
 			weak_picks += 1
 	assert_true(weak_picks > 88 and weak_picks < 120, "the exposed machine draws most of the picks, never all: %d of 120" % weak_picks)
@@ -165,6 +170,76 @@ func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() 
 	assert_eq(s2.front[0].target, s2.mechs[0], "the bare machine")
 	assert_true(s2.assign(0, null), "it shields up")
 	assert_eq(s2.front[0].target, s2.mechs[0], "and the foe still swings at it")
+
+
+func test_the_foes_never_over_commit_to_a_machine_already_doomed() -> void:
+	# Ryan, 24 October, after Slice and Dice: the foes pick in the order they strike, and a
+	# machine the blows already picked would wreck is passed over while another stands.
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("Frail", Die.single(Face.shield(10)), 0, 10))
+	sk.add_mech(_mech("Stout", Die.single(Face.shield(10)), 0, 100))
+	var seekers: Array = [_ghoul(30, 20), _ghoul(30, 20)]
+	for f in seekers:
+		f.aim = "heat"
+	sk.add_foes(seekers)
+	sk.begin()
+	sk.mechs[0].heat = 30
+	sk.start_round()
+	var order := sk.field_foes()
+	assert_eq(order[0].target, sk.mechs[0], "the first to strike takes the hottest machine")
+	assert_eq(order[1].target, sk.mechs[1], "its blow of 20 wrecks the frail machine's 10, so the second passes it over")
+	# Every machine doomed: the pick is among them all.
+	var s2 := Skirmish.new(1)
+	s2.add_mech(_mech("Frail", Die.single(Face.shield(10)), 0, 10))
+	s2.add_foes([_ghoul(30, 20), _ghoul(30, 20)])
+	s2.begin()
+	s2.start_round()
+	for f in s2.field_foes():
+		assert_eq(f.target, s2.mechs[0], "one machine standing: both strike it")
+	# A blow at every machine counts on each.
+	var s3 := Skirmish.new(1)
+	s3.add_mech(_mech("Frail", Die.single(Face.shield(10)), 0, 10))
+	s3.add_mech(_mech("Stout", Die.single(Face.shield(10)), 0, 100))
+	var storm := _storm(25, 1, ["all"])
+	var after := _ghoul(30, 20)
+	after.aim = "heat"
+	s3.add_foes([storm, after])
+	s3.begin()
+	s3.mechs[0].heat = 30
+	s3.start_round()
+	assert_eq(s3.field_foes()[0], storm, "the storm stands first")
+	assert_eq(after.target, s3.mechs[1], "its blow on every machine wrecks the frail one, so the heat seeker takes the other")
+	# A suppressed foe lands nothing, so its pick dooms nobody.
+	var s4 := Skirmish.new(1)
+	s4.add_mech(_mech("Frail", Die.single(Face.shield(10)), 0, 10))
+	s4.add_mech(_mech("Stout", Die.single(Face.shield(10)), 0, 100))
+	var stunned := _ghoul(30, 25)
+	stunned.aim = "heat"
+	var next := _ghoul(30, 20)
+	next.aim = "heat"
+	s4.add_foes([stunned, next])
+	s4.begin()
+	s4.mechs[0].heat = 30
+	Effects.grant_for_rounds(stunned, Effects.STATUS["suppressed"], "mech", 1)
+	s4.start_round()
+	assert_eq(s4.field_foes()[0], stunned, "the heavier hitter stands first")
+	assert_eq(stunned.target, s4.mechs[0], "it still picks")
+	assert_eq(next.target, s4.mechs[0], "but lands nothing, so the frail machine stays open")
+	# A rank that fires as one moves its shared pick off a machine already doomed.
+	var s5 := Skirmish.new(2)
+	s5.add_mech(_mech("Frail", Die.single(Face.shield(10)), 0, 10))
+	s5.add_mech(_mech("Stout", Die.single(Face.shield(10)), 0, 100))
+	var pair: Array = [_ghoul(30, 20), _ghoul(30, 20)]
+	for f in pair:
+		f.aim = "focus"
+	s5.add_foes(pair)
+	s5.begin()
+	s5.start_round()
+	var o5 := s5.field_foes()
+	if o5[0].target == s5.mechs[0]:
+		assert_eq(o5[1].target, s5.mechs[1], "the shared pick is doomed, so the rank moves to the other")
+	else:
+		assert_eq(o5[1].target, o5[0].target, "a pick the blows do not wreck stays shared")
 
 
 func test_the_other_aims_anything_heat_armed_and_fires_as_one() -> void:
@@ -2371,6 +2446,7 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	s2.add_foes([_ghoul(500, 20)])
 	s2.begin()
 	s2.start_round()
+	s2.front[0].target = s2.mechs[1]   # its pick, set: the test is the brace's, not the aim's
 	assert_false(s2.assign(0, null), "allies only: not on itself")
 	assert_true(s2.assign(0, s2.mechs[1]), "on the ally")
 	s2.end_round()
