@@ -6269,7 +6269,7 @@ func test_a_reset_gun_that_kills_lights_every_dark_entry_and_acts_again() -> voi
 		if f.alive():
 			target = f
 	assert_true(sk.assign(0, target), "the second action")
-	assert_true(sk.mechs[0].assigned, "a gun with no reset ends it: two actions at most")
+	assert_true(sk.mechs[0].assigned, "a gun with no reset ends it")
 	sk.end_round()
 	sk.start_round()
 	var big: Foe = null
@@ -6280,6 +6280,42 @@ func test_a_reset_gun_that_kills_lights_every_dark_entry_and_acts_again() -> voi
 	assert_true(sk.assign(0, big), "the reset gun on a foe it cannot kill")
 	assert_true(sk.mechs[0].assigned, "no kill, no reset")
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and it goes dark as any weapon")
+
+
+## The reset has no limit (Ryan, 24 October: "Let the Kite reset infinitely"): the free roll
+## never lands on the entry just spent, but a team reroll may, and every kill resets it again;
+## a spend that kills nothing ends the chain.
+func test_a_team_reroll_back_onto_a_reset_gun_chains_it_with_every_kill() -> void:
+	var reset := Face.attack(30, L)
+	reset.resets_on_kill = true
+	var other := Face.attack(10, L)
+	var sk := Skirmish.new(3, 4)
+	var m := _mech("Kite", Die.of([reset, other]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 10), _ghoul(20, 10), _ghoul(20, 10), _ghoul(200, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	for n in range(3):
+		var weak: Foe = null
+		for f in sk.field_foes():
+			if f.alive() and f.hp <= 30:
+				weak = f
+				break
+		assert_true(weak != null and sk.assign(0, weak), "reset gun %d on a weak foe" % (n + 1))
+		assert_false(sk.mechs[0].assigned, "kill %d gives it another action" % (n + 1))
+		assert_eq(sk.mechs[0].face_index, 1, "the free roll never lands on the reset gun")
+		if n < 2:
+			assert_true(sk.reroll([0]), "a team reroll")
+			assert_eq(sk.mechs[0].face_index, 0, "the reroll brings the reset gun back up")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two of the team's rerolls bought the third and fourth actions")
+	var big: Foe = null
+	for f in sk.field_foes():
+		if f.alive() and f.hp > 30:
+			big = f
+	assert_true(sk.assign(0, big), "the fourth action, a gun with no reset")
+	assert_true(sk.mechs[0].assigned, "which ends the chain")
+	assert_eq("\n".join(sk.log).count("the kill resets it"), 3, "three kills, three resets")
 
 
 ## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and

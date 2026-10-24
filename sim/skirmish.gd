@@ -1306,7 +1306,8 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
 	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
 	# from a cooldown comes back, itself included, and the machine acts again through Rapid's
-	# path, the free roll never landing on the entry just spent, so a round chains to two.
+	# path, the free roll never landing on the entry just spent; a team reroll back onto it
+	# chains it again with every kill, with no limit (Ryan, 24 October).
 	var reset := f.resets_on_kill and killed > 0 and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty())
 	if reset:
 		var lit := Effects.clear_cooldowns(ms.unit)

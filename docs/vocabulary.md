@@ -51,7 +51,7 @@ Status: 151 implemented, 6 planned, 0 idea.
 | **Overcharged a kill** | A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Overcharged (two), which the Ammit keeps for the battle. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Cooldown** | A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the rounds left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and "no cooldown" lifts even that. No cleanse lifts a cooldown, and a crack keeps it. | implemented |
-| **Reset** | A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent (the Kite's Pinion Driver). | implemented |
+| **Reset** | A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again (the Kite's Pinion Driver). | implemented |
 | **Pull** | A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there. | implemented |
 | **Drone** | A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
@@ -310,7 +310,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Cooldown** (implemented): A crack keeps it, a price as heat is. The city's battlefield abilities count their own cooldowns in phases.
-- **Reset** (implemented): A round chains to two actions at most, since the entry just spent never comes up on the free roll.
+- **Reset** (implemented): No limit (Ryan, 24 October: "Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill.
 - **Pull** (implemented): Never Rapid, so a pull costs the turn and the laying is still chosen.
 - **Drone** (implemented): The condition is read before the drone lands, so its own Exposed never makes it Rapid.
 - **Component** (implemented): Multi-slot components were set aside as invisible complexity.

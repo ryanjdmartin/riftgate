@@ -1297,10 +1297,10 @@
    "id": "reset",
    "category": "component_property",
    "name": "Reset",
-   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent (the Kite's Pinion Driver).",
+   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again (the Kite's Pinion Driver).",
    "status": "implemented",
    "design": {
-    "holes": "A round chains to two actions at most, since the entry just spent never comes up on the free roll."
+    "holes": "No limit (Ryan, 24 October: \"Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions\"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill."
    }
   },
   {

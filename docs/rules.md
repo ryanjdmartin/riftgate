@@ -223,8 +223,8 @@ defeat when every machine is wrecked. There is no round limit.
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
-  entry just spent; a team reroll may bring it back up, and a second kill resets again (a
-  known gap, below).
+  entry just spent; a team reroll may bring it back up, and every kill resets it again, with
+  no limit.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -699,7 +699,4 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 
 ## Known gaps between these rules and the code
 
-- The Kite's reset was decided as a round of two actions at most (the bible's Kite row), but
-  it lights its own Pinion Driver again, so a team reroll that lands on it buys a third action
-  and a second kill a fourth (the bible's section 12 asks which way).
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.
