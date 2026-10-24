@@ -245,8 +245,9 @@ reach; each tested with synthetic passives.
    20 hull, shield 12, heat 12; the Pod 3 to 4, two strikes, heat 1), its stock from the
    basics (the Laser Carbine, the Twin Autoguns, the Canopy), its names and its model, a
    swing-wing (the wings sweep about their pivots in its acts and with its speed on the move).
-2. The halving's rounding at the stock pass's scale, the hole below: first, before the
-   passive is built.
+2. The halving's rounding at the stock pass's scale, the hole below: answered by Ryan on 24
+   October (an even split), with how the die shows the split and how a rolled gun rolls to
+   settle first, before the passive is built.
 3. The start's hole below (a halved basic against plate), read again at the landed scale.
 
 ## The shape and the name (21 October)
@@ -308,6 +309,15 @@ reach; each tested with synthetic passives.
   0.7 against 1, and a halved Rivet Gun (2 to 1) does nothing. The options for Ryan: keep
   rounding up (the gain is the tier one's payoff with basics alone), round down (a printed 1
   strikes nothing, so the basics' low ends vanish), or halve after the buffs and round once.
+  Ryan, 24 October: split it as evenly as possible, so a 3 strikes 2 then 1, never 2 and 2; a
+  printed 1 still strikes 1 twice ("honestly, I think that's just a quirky bonus"). Raised
+  before building (Claude, the same day): today's "2 ×2" on the die means two strikes of 2, so
+  a split of 2 and 1 needs its own form; a rolled gun either rolls once and splits the result
+  or rolls each half (Claude's lean: once, the die showing the total its strikes deal to the
+  foe under it, armour off each, with a mark for the split in place of ×2); and the larger half
+  strikes first (Claude's lean), the strike the spray aims and a Shock doubles. With basics
+  alone the passive is now even on bare foes and a loss on plate, so the start's identity is
+  the Pod's spray and the riders and flat buffs counting on both strikes.
 - Riders double: Burn lays a stack per 10 of a blow, rounded up, so two half blows can lay more
   than one whole blow; Spread and Penetrate fire per strike. The arithmetic per strike is in
   the session above.

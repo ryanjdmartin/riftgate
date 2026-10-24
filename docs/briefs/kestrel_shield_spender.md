@@ -489,7 +489,9 @@ synthetic passives. Its runner row lies until the honest shield rule is built.
    scale's top shield of 16, the plate 1 and the regen 2 a round for the 5 and 10 above), its
    names and its model, a medium hovercraft. The capacitor of the second round stays on the
    bench (overshield as ammunition).
-2. Its burn on basics alone, the hole below: first, before the passive is built.
+2. Its burn on basics alone, the hole below: after the pricing run, which sets the guns' heat
+   (Ryan, 24 October: "Don't worry about the storm petrel yet, as I think we are still due a
+   heat pricing").
 3. The stock hole it named, a mid-heat gun, the stock pass filled (the Transonic Rifle, tier
    one, so a find for this machine and never its stock).
 
