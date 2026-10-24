@@ -696,7 +696,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - The Kite's reset was decided as a round of two actions at most (the bible's Kite row), but
   it lights its own Pinion Driver again, so a team reroll that lands on it buys a third action
   and a second kill a fourth (the bible's section 12 asks which way).
-- The move condition "the team has a reroll left" is read as the round's moves are drawn,
-  just after the rerolls refill, so it always holds and the Mandragora's Scream and the
-  Thief's Steal are never held back by it (the bible's section 12 asks what should).
+- The move condition "the team has a reroll left" can never fail: the Mandragora's Scream
+  and the Thief's Steal take next round's rerolls, which refill every round, so only their
+  weight and the never-twice-running rule hold them back (the bible's section 12 asks what
+  should).
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.

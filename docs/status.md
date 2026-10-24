@@ -30,9 +30,9 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and
-`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
-`ccr-170f6d81-465jnr`'s Scrambled cut, then Ryan's later calls of the day on top):
+Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
+carries all three again (24 October: fast-forwarded onto `claude/eager-newton-sf947u`'s later
+calls of the day, then the reroll thieves' question restated on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -47,10 +47,11 @@ Three branches stand beside main, each holding the one before it, and
   briefs and the stock pass's brief retired, this file, the README and `CLAUDE.md`; the foes'
   unused crack move out of the engine), with the other two merged in; on 24 October Scrambled
   cut on Ryan's word, and `CLAUDE.md`'s two content rules made true of the code (tests on
-  synthetic passives; the fallbacks a model, a maker and a faction take from content's order).
+  synthetic passives; the fallbacks a model, a maker and a faction take from content's order),
+  and the reroll thieves' question restated on Ryan's correction (v0.272 and v0.274).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
+a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -155,10 +156,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.273, and so is the live (24 October,
-  the page's version 290, from `claude/eager-newton-sf947u`: the Old Man of the Desert and the
-  curve's shape opened, published onto `ccr-170f6d81-465jnr`'s v0.272, the page's version 289,
-  Scrambled retired). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.274, and so is the live (24 October,
+  the page's version 291, from `ccr-170f6d81-465jnr`: the reroll thieves' question restated,
+  published onto `claude/eager-newton-sf947u`'s v0.273, the page's version 290, the Old Man of
+  the Desert and the curve's shape). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
