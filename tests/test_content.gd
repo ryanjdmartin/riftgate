@@ -1036,14 +1036,6 @@ func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_statu
 	foe.hp = 19
 	assert_eq(f.missing_bonus(foe), f.power_per_missing * 2, "two steps of 5 missing")
 	assert_true(f.describe().contains("per 5 HP missing"), "the entry prints its step: %s" % f.describe())
-	# A machine runs hot from the heat the move says, and the move must say it.
-	var drake: Dictionary = db.foes["drake"].duplicate(true)
-	for a in drake["actions"]:
-		if str(a.get("when", "")) == "machine_hot":
-			a.erase("hot")
-	db.foes["test_cold_drake"] = drake
-	errs = db.validate()
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_cold_drake") and e.contains("machine_hot says the heat")), "a hot condition without its heat is refused")
 	# Cryo's cooling and Corrupted's bite are their statuses' own numbers.
 	assert_eq(Skirmish.cryo_cool(), Effects.status_value("cryoed", "cool_hitter"), "Cryo's cooling is the status's")
 	assert_eq(Skirmish.corrupt_bite(), Effects.status_value("corrupted", "corrupt_bite"), "Corrupted's bite is the status's")
@@ -1272,8 +1264,8 @@ func test_every_component_names_a_silhouette_class() -> void:
 
 func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
-	# boss three; every special carries a condition; every foe reads an aim the engine knows;
-	# the ghoul's claw is a swarm blow; the bosses wear armour.
+	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; the
+	# bosses wear armour.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
@@ -1295,9 +1287,6 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
 		else:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
-		for a in f.actions:
-			if not Foe.is_attack_action(a):
-				assert_false(Foe.whens_of(a).is_empty(), "%s's %s carries a condition" % [id, a["id"]])
 	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
 	var swarm := int(g.actions[0].get("swarm", 0))

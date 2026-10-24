@@ -282,23 +282,14 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	s2.start_round()
 	assert_false(sp.attacks(), "its only move repeats: the rule needs something else to pick")
 	assert_eq(Foe.whens_of(sp.actions[0]), ["below_half", "back_behind"], "the list reads back")
-	assert_eq(Foe.whens_of({"when": "machine_hot"}), ["machine_hot"], "a word reads as a list of one")
+	assert_eq(Foe.whens_of({"when": "below_half"}), ["below_half"], "a word reads as a list of one")
 	# The other words, each on its own skirmish state.
 	var s3 := Skirmish.new(3, 2)
-	var hot := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
-	s3.add_mech(hot)
+	s3.add_mech(_mech("C", Die.single(Face.attack(10, L)), 40, 100))
 	var hc := _ghoul(100, 10)
 	s3.add_foes([hc, _ghoul(30, 10), _ghoul(30, 10)])
 	s3.begin()
 	s3.start_round()
-	assert_false(s3._when_holds(hc, {"when": "machine_hot", "hot": 20}), "nobody runs hot")
-	s3.mechs[0].heat = 20
-	assert_true(s3._when_holds(hc, {"when": "machine_hot", "hot": 20}), "now one does")
-	assert_false(s3._when_holds(hc, {"when": "machine_hot", "hot": 21}), "the threshold is the move's own (the stock pass's engine, 22 October)")
-	assert_true(s3._when_holds(hc, {"when": "machine_armed"}), "a gun is showing")
-	assert_true(s3._when_holds(hc, {"when": "rerolls_left"}), "the team has rerolls to lose")
-	s3.reroll_debt = Skirmish.REROLLS_PER_ROUND
-	assert_false(s3._when_holds(hc, {"when": "rerolls_left"}), "not when a roar has taken them all")
 	assert_true(s3._when_holds(hc, {"when": "others_on_field"}), "another stands with it")
 	assert_true(s3._when_holds(hc, {"when": "few_waiting"}), "one waits, which is few")
 	s3.reinforcements.append(_ghoul(30, 10))
@@ -3989,12 +3980,12 @@ func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
 	sk.add_mech(m)
 	var w := _ghoul(500, 10)
-	w.actions = [_special("debuff", "disable", {"aim": "armed", "when": "machine_armed"})]
+	w.actions = [_special("debuff", "disable", {"aim": "armed"})]
 	w.action = w.actions[0]
 	sk.add_foes([w])
 	sk.begin()
 	sk.start_round()
-	assert_false(w.attacks(), "a gun is showing, so the hush is open")
+	assert_false(w.attacks(), "the hush is its one move")
 	sk.end_round()
 	assert_eq(m.shield, 40, "no blow")
 	sk.start_round()

@@ -468,11 +468,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
   flat armour (the four built bosses 1, the promoted forms 2) and an aim. Its damage never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
-  the same special twice running while anything else is open. Conditions: below half, hurt,
-  fewer than two summons waiting, the team has a reroll left (a known gap, below: it always holds), a machine at the heat the
-  move names or more (the Drake's Stoke and the Black Mage's Fira: 5), a
-  machine showing an intact weapon, a foe behind it, another foe on the field, one of its own
-  hurt, a machine carrying a buff, one of its own not readied. A move may
+  the same special twice running while anything else is open. A move without a condition
+  fires on its weight; the conditions read the foe's own side or what its move needs: below
+  half, hurt, fewer than two summons waiting, a foe behind it, another foe on the field, one
+  of its own hurt, a machine carrying a buff, one of its own not readied. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field.
@@ -696,8 +695,4 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - The Kite's reset was decided as a round of two actions at most (the bible's Kite row), but
   it lights its own Pinion Driver again, so a team reroll that lands on it buys a third action
   and a second kill a fourth (the bible's section 12 asks which way).
-- The move condition "the team has a reroll left" can never fail: the Mandragora's Scream
-  and the Thief's Steal take next round's rerolls, which refill every round, so only their
-  weight and the never-twice-running rule hold them back (the bible's section 12 asks what
-  should).
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.

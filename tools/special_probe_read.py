@@ -31,5 +31,5 @@ for sk in sorted(spec["built"], key=lambda k: when[k]):
 
 print("\n%-22s %14s %14s %16s" % ("cell", "won b/o", "rounds b/o", "hull lost b/o"))
 for cid in sorted(cell["built"]):
-    b = cell["built"][cid]; o = cell["open"][cid]
+    b = cell["built"][cid]; o = cell["open"].get(cid) or b   # no opened run: the built one twice
     print("%-22s %6.0f%%/%4.0f%% %6.2f/%6.2f %7.1f%%/%5.1f%%" % (cid, 100.0 * b[1] / b[0], 100.0 * o[1] / o[0], b[2] / b[0], o[2] / o[0], 100.0 * b[3] / b[4], 100.0 * o[3] / o[4]))

@@ -3,12 +3,14 @@ extends SceneTree
 ## How often each foe special can fire, and what its gate is worth (24 October, Ryan's question:
 ## do the Cockatrice's Stone and the Drake's Stoke ever fire?). Starter trios, stock, greedy
 ## play, against each domain's formation, each boss alone and each hero alone; every cell
-## played twice on the same seeds, as built and with the gates on the player's state opened
-## (machine_hot, machine_armed, rerolls_left read as always true). Per special it tallies the
-## rounds its foe drew a move, the draws its condition held, and the draws that picked it.
+## played as built and, when OPENED names conditions, again on the same seeds with those read
+## as always true (its run of 24 October opened the three that read the player's state, a
+## machine at a heat, a machine showing a weapon and a reroll left, which went after it). Per
+## special it tallies the rounds its foe drew a move, the draws its condition held, and the
+## draws that picked it.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
 
-const OPENED := ["machine_hot", "machine_armed", "rerolls_left"]
+const OPENED := []
 
 class ProbeSkirmish extends Skirmish:
 	var opened: Array = []
@@ -58,7 +60,7 @@ func _init() -> void:
 			n += 1
 			if n % parts != part:
 				continue
-			for variant in ["built", "open"]:
+			for variant in (["built", "open"] if not OPENED.is_empty() else ["built"]):
 				res["rows"]["%s|%s|%s" % ["+".join(t), str(c["id"]), variant]] = _run(t, c, variant == "open")
 	var f := FileAccess.open(out_path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(res))

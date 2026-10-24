@@ -880,17 +880,6 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 				if who.is_empty() or r.content_id == who:
 					n += 1
 			return n < 2
-		"rerolls_left":
-			return reroll_debt < REROLLS_PER_ROUND
-		"machine_hot":
-			# A machine runs hot from the heat the move names (`hot`, the stock pass's engine of
-			# 22 October; a constant of 20 before), a field on the move like its other numbers.
-			for ms in live_mechs():
-				if ms.heat >= int(a.get("hot", 0)):
-					return true
-			return false
-		"machine_armed":
-			return not _armed_mechs().is_empty()
 		"back_behind":
 			if f.rank != 0 or f.column < 0 or f.column >= columns:
 				return false

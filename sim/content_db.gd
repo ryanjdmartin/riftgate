@@ -315,8 +315,6 @@ func make_foe(foe_id: String) -> Foe:
 			act["aim"] = str(a["aim"])
 		if a.has("when"):
 			act["when"] = Foe.whens_of(a)
-		if a.has("hot"):
-			act["hot"] = int(a["hot"])   # machine_hot's threshold, the heat a machine runs hot from
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow.
 	for i in range(acts.size()):
@@ -1509,11 +1507,6 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			for w in whens:
 				if not Foe.WHENS.has(str(w)):
 					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
-			# A machine runs hot from the heat the move names (the stock pass's engine, 22 October).
-			if whens.has("machine_hot") and int(a.get("hot", 0)) <= 0:
-				errs.append("%s: machine_hot says the heat a machine runs hot from: hot, a positive number" % aw)
-		if a.has("hot") and not Foe.whens_of(a).has("machine_hot"):
-			errs.append("%s: hot is machine_hot's threshold and rides with it" % aw)
 		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
 			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
 		if str(a.get("status", "")) == "implemented":

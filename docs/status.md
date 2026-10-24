@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 611 tests, 63,163 checks, green on `ccr-170f6d81-465jnr` (24 October, Scrambled cut and
-  the fallbacks taken from content; 610 and 63,146 on `claude/eager-newton-sf947u` before it), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 611 tests, 63,131 checks, green on `ccr-170f6d81-465jnr` (24 October, the foes' gates on
+  the player's state removed; 63,163 before it), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -30,9 +30,9 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and
-`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
-`ccr-170f6d81-465jnr`'s foes' conditions, then Ryan's shape for the curve on top):
+Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
+carries all three again (24 October: fast-forwarded onto `claude/eager-newton-sf947u`'s shape
+for the curve, then the foes' gates removed on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -48,12 +48,12 @@ Three branches stand beside main, each holding the one before it, and
   unused crack move out of the engine), with the other two merged in; on 24 October Scrambled
   cut on Ryan's word, and `CLAUDE.md`'s two content rules made true of the code (tests on
   synthetic passives; the fallbacks a model, a maker and a faction take from content's order),
-  and the foes' conditions opened to Ryan: the rule that every special carries one a session's
-  of 2 October, never his, and the gates on the player's state measured by
-  `tools/special_probe.gd` (v0.272 to v0.275).
+  and the foes' conditions: the rule that every special carries one a session's of 2 October,
+  never his, the gates on the player's state measured by `tools/special_probe.gd` and removed
+  on his word (v0.272 to v0.278), Slice and Dice's targeting put to him in section 12.
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
+a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -158,10 +158,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.277, and so is the live (24 October,
-  the page's version 294, from `claude/eager-newton-sf947u`: Ryan's shape for the curve, a soft
-  ramp with visible jumps per rift, in section 12, the elites' card question folded into it; onto `ccr-170f6d81-465jnr`'s v0.275, the
-  page's version 292, the foes' conditions in section 12). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.278, and so is the live (24 October,
+  the page's version 295, from `ccr-170f6d81-465jnr`: the foes' gates on the player's state
+  retired in the foe row, the heat specials' worth and Slice and Dice's targeting in section 12;
+  onto `claude/eager-newton-sf947u`'s v0.277, the page's version 294, Ryan's shape for the
+  curve). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -169,9 +170,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 101 (24 October, from
-  `ccr-170f6d81-465jnr`: the vocabulary and the foes' notes with Scrambled cut; the live files
-  identical to version 100's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 102 (24 October, from
+  `ccr-170f6d81-465jnr`: the foes with their gates on the player's state removed; the live file
+  identical to version 101's and `edits` empty before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

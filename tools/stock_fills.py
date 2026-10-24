@@ -127,8 +127,6 @@ for f in want['entries']:
         if (i, a['id']) in VALUES: a['value'] = VALUES[(i, a['id'])]
         if (i, a['id']) in BREACH and 'breach' not in a.get('keywords', []):
             a['keywords'] = a.get('keywords', []) + ['breach']
-        if a.get('when') == 'machine_hot':
-            a['hot'] = 5               # the hot threshold (a field on the move since 22 October)
 
 
 def setnum(line, key, value, after=None):
@@ -170,8 +168,6 @@ for line in raw.split('\n'):
                 line = re.sub(r'"keywords": \[([^\]]*)\]', lambda k: '"keywords": [%s]' % ', '.join([x for x in [k.group(1).strip()] if x] + ['"breach"']), line, count=1)
             else:
                 line = line.replace('"kind": "attack",', '"kind": "attack", "keywords": ["breach"],', 1)
-        if obj.get('when') == 'machine_hot':
-            line = setnum(line, 'hot', 5, after='"when": "machine_hot",')
     out.append(line)
 text = '\n'.join(out)
 assert json.loads(text) == want, 'the in-place edits and the data disagree'
