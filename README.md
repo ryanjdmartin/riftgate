@@ -72,7 +72,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
   `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
-  against each faction's formation, bosses and first pack; `endgame_fours.py` fits the five
+  against each faction's formation, bosses and first pack; `special_probe.gd` tallies how often
+  each foe special's condition holds and it is picked, as built and with the gates on the
+  player's state opened (`special_probe_read.py` reads its parts); `endgame_fours.py` fits the five
   endgame fours up to tier two and runs them through the loop driver; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
@@ -223,6 +225,11 @@ python3 tools/endgame_fours.py endgame30
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
 perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe.gd -- --out build/probe_0.json --part 0/4 --seeds 20
+# how often each foe special fires (24 October): every third starter trio against each domain's formation, each boss
+# and each hero alone, as built and with the gates on the player's state opened, the same seeds; four parts in parallel,
+# then the reader merges them
+perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
+python3 tools/special_probe_read.py build
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,

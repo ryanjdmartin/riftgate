@@ -1165,3 +1165,47 @@ finale: no composition is a starter's wall and a fair fight late but the finale,
 wall late. Every tier draws the same lists today, so a run's later battles field what its first
 did; the middle and late curve is the foes' fresh start's to build (the bible's section 3 curve
 row).
+
+## 24 October, the foes' specials and their gates
+
+**Ryan's question on the specials' conditions** (24 October: does the Cockatrice's Stone ever
+fire, and does the Drake's Stoke, if no machine runs hot?). `tools/special_probe.gd` on the
+content as at `7a10d09`: every third starter trio a tender can deal (10 trios), stock, greedy
+play, against each domain's formation, each boss alone and each hero alone, 10 seeds a cell,
+each cell played twice on the same seeds: as built, and with the three conditions that read
+the player's state opened (a machine at the move's heat, a machine showing an intact weapon,
+the team having a reroll left). 3,200 fights. A direction.
+
+Per special, the rounds its foe drew a move, the share of those draws its condition held, the
+share it was picked as built, and the share it was picked with the gates opened (the other
+conditions are untouched, so their two columns agree but for the knock-on):
+
+| Special | Condition | Draws | Held | Picked | Picked, opened |
+|---|---|---|---|---|---|
+| the Cockatrice's Stone | a machine showing a weapon | 969 | 90% | 24% | 26% |
+| the Summoner's Diamond Dust | a machine showing a weapon | 261 | 93% | 28% | 30% |
+| the Drake's Stoke | a machine at 5 heat | 1,132 | 47% | 12% | 25% |
+| the Black Mage's Fira | a machine at 5 heat | 298 | 5% | 2% | 27% |
+| the Mandragora's Scream | a reroll left | 1,013 | 100% | 27% | 27% |
+| the Thief's Steal | a reroll left | 305 | 100% | 30% | 30% |
+| the Dire Wolf's Howl | another on the field | 610 | 98% | 30% | 30% |
+| the Ghost's Raise | few waiting | 1,973 | 45% | 12% | 12% |
+| the Cleric's Cure | one of its own hurt | 303 | 67% | 16% | 16% |
+| the regrows (Treant, Wyvern, Martial Artist) and the Sandworm's Burrow | hurt | 359 to 906 | 70 to 86% | 18 to 19% | 18 to 19% |
+| the bosses' and heroes' signatures | below half | 173 to 906 | 29 to 46% | 9 to 20% | 9 to 20% |
+| the Bomb's Self-Destruct and the Antlion's Burrow | below half | 753 to 1,658 | 5 to 14% | 3 to 4% | 3 to 5% |
+
+The fights, as built against opened, where a gate moved anything: the Peak's formation won 77%
+against 78%, in 8.3 rounds against 7.9, with 47% of the trio's hull lost against 41%; the Black
+Mage alone 2.6% of the hull lost against 1.9%; the Waste's formation 19.5% against 19.3%; every
+other cell the same.
+
+Read: the weapon gate is nearly always open, read as the dice land, so the Stone and Diamond
+Dust fire at about their weight (and they land on whatever the die shows after the player's
+turn, not on what the gate read). The heat gate holds the Drake's Stoke to half its weight, never
+in the first round (no machine is hot yet) and never against a cold team, and almost silences the
+Black Mage's Fira, whose hero dies in about three rounds. The reroll gate never closes. Opening the
+gates makes the Peak a little easier, not harder: a special replaces its foe's blow, and Stoke's
+two stacks of Burning are worth less than the Breath's 5 and a Scorched it replaces, as Fira's two
+Scorched each are against Fire's 8 and a Scorched. So the gates are not what makes the packs soft;
+the heat specials are weaker than the blows they replace.

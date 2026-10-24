@@ -32,7 +32,7 @@ are in `README.md`.
 
 Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
 carries all three again (24 October: fast-forwarded onto `claude/eager-newton-sf947u`'s later
-calls of the day, then the reroll thieves' question restated on top):
+calls of the day, then the foes' conditions opened to Ryan on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -48,7 +48,9 @@ calls of the day, then the reroll thieves' question restated on top):
   unused crack move out of the engine), with the other two merged in; on 24 October Scrambled
   cut on Ryan's word, and `CLAUDE.md`'s two content rules made true of the code (tests on
   synthetic passives; the fallbacks a model, a maker and a faction take from content's order),
-  and the reroll thieves' question restated on Ryan's correction (v0.272 and v0.274).
+  and the foes' conditions opened to Ryan: the rule that every special carries one a session's
+  of 2 October, never his, and the gates on the player's state measured by
+  `tools/special_probe.gd` (v0.272 to v0.275).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
 a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
@@ -156,10 +158,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.274, and so is the live (24 October,
-  the page's version 291, from `ccr-170f6d81-465jnr`: the reroll thieves' question restated,
-  published onto `claude/eager-newton-sf947u`'s v0.273, the page's version 290, the Old Man of
-  the Desert and the curve's shape). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.275, and so is the live (24 October,
+  the page's version 292, from `ccr-170f6d81-465jnr`: the foes' conditions in section 12 with the
+  probe's numbers, the foe row no longer calling the rule decided; on its own v0.274, the page's
+  version 291, itself onto `claude/eager-newton-sf947u`'s v0.273). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
