@@ -23,7 +23,7 @@ team, which is what a tier-one elite looks like. About one an early battle, more
 | The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not massive | Ryan, 15 October: a decent elite |
 | The Meadow | The Elder Treant, the beefed-up alpha | Massive | Ryan, 24 October: the harder-fight elite (the ent is Tolkien's coinage, and the treant D&D's rename of it, so the name is ours) |
 | The Meadow | The Leshy (Slavic folklore's forest lord) | Open | Ryan, 24 October: liked, and may be a foe of its own beside the Elder Treant for diversity |
-| The Waste | The king sandworm, a named homage | Massive | Ryan, 24 October: the harder-fight elite; its name open (his picks, the Maker Worm and the Old Man of the Desert, both Dune's own words for the worm but plain words, which the names rule below lets stay; Claude's lean the Old Man of the Desert, a maker being the game's word for whoever builds the machines; the bible's section 12) |
+| The Waste | The Old Man of the Desert, the king sandworm | Massive | Ryan, 24 October: the harder-fight elite, named for Dune's own words for its worm, plain words the names rule below lets stay |
 | The Marsh | Bone Wyvern | Massive | Built, standing in as the boss; an elite unless a better setup comes (Ryan, 24 October) |
 | The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not massive | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador; 24 October: the deadly hunter elite. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not massive | Noted for later (Ryan, 15 October: not yet) |
@@ -81,10 +81,12 @@ balance the series out a little, never purge it):
   warrior monk who took a sword from every warrior crossing Gojō Bridge until the thousandth beat
   him (FF5 fights its Gilgamesh on the Big Bridge). The same signature, the weapon a machine shows
   taken and turned on it; the legend's death, standing in a storm of arrows, a kit idea new to the
-  engine (he holds his slot a round after he falls, the back rank still covered).
-- **The Malboro (Rotbloom)**: convert out. Beside Floraison the Meadow would hold two maw-plants,
-  and both names bloom. Its slot goes to a boss from another series, found at the slate's next
-  cut; Bad Breath (every rider at once) can go to whichever boss wants it.
+  engine (he holds his slot a round after he falls, the back rank still covered). Ryan, 24
+  October: tempted to move him down to the elites, since he can pop up anywhere; noted, not
+  decided (his slot in the Waste would then want another boss).
+- **The Malboro (Rotbloom)**: stays (Ryan, 24 October: mechanically very different from
+  Floraison, and a different silhouette), so Claude's lean to convert it out, two maw-plants in
+  one domain, is withdrawn.
 - **The Tonberry (Pilgrim)**: Ryan's call. Its dread was the countdown, which any foe can carry
   now, and the Reaper is the genre's stalker among the elites, so its slot could go to another
   series as well.
