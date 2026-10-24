@@ -164,7 +164,7 @@
       "codex": "A ball of fire with a face, and it comes straight for you. Hurt it and it swells; a swollen bomb bursts through any shield and takes itself with it.",
       "hp": 4, "attack": 8, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
       "actions": [
-        { "id": "flare_up", "name": "Flare Up", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A lick of fire for {damage}. It scorches.", "status": "implemented" },
+        { "id": "flare_up", "name": "Flare Up", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A lick of fire for {damage}. It scorches.", "status": "implemented" },
         { "id": "self_destruct", "name": "Self-Destruct", "kind": "attack", "weight": 3, "keywords": ["breach", "self_destruct"], "when": "below_half", "text": "Bursts for {damage}, through the shield, and is gone.", "status": "implemented" }
       ],
       "flavour": "If it starts to swell, you have already made the wrong call."
@@ -175,7 +175,7 @@
       "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
       "hp": 6, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
-        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
         { "id": "ember_hide", "name": "Ember Hide", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close runs hot.", "status": "planned" }
       ],
       "flavour": "Do not pet the lizard."
@@ -186,8 +186,8 @@
       "codex": "Stands at the back and breathes fire over the front rank; the front rank exists so it can. What it hits runs hot.",
       "hp": 4, "attack": 5, "rank": "back", "zone": 3, "movespeed": 20,
       "actions": [
-        { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 2, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
+        { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 4, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
     },
@@ -199,7 +199,7 @@
       "actions": [
         { "id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
         { "id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" },
-        { "id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented" }
+        { "id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented" }
       ],
       "flavour": "They brought fire. We brought bigger fire. It brought the mountain."
     },
@@ -283,8 +283,8 @@
       "codex": "A hat, a robe, and fire. It picks the machine that is already running hot and makes it hotter, and it can scorch everyone at once. When it is hurt it stops throwing fire and starts throwing the mountain.",
       "hp": 18, "attack": 8, "rank": "back", "zone": 3, "movespeed": 20, "aim": "heat",
       "actions": [
-        { "id": "fire", "name": "Fire", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "Fire for {damage}, at the hottest machine. It scorches.", "status": "implemented" },
-        { "id": "fira", "name": "Fira", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "text": "Every machine scorched, ×{value}.", "status": "implemented" },
+        { "id": "fire", "name": "Fire", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "Fire for {damage}, at the hottest machine. It scorches.", "status": "implemented" },
+        { "id": "fira", "name": "Fira", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "text": "Every machine scorched, ×{value}.", "status": "implemented" },
         { "id": "flare", "name": "Flare", "kind": "attack", "factor": 2.0, "weight": 2, "keywords": ["breach"], "when": "below_half", "text": "Everything it has, as fire: {damage}, through the shield.", "status": "implemented" }
       ],
       "flavour": "The hat is not the problem. Stop shooting the hat."
@@ -297,7 +297,7 @@
       "actions": [
         { "id": "ruin", "name": "Ruin", "kind": "attack", "weight": 2, "text": "A word that cracks plating, for {damage}.", "status": "implemented" },
         { "id": "diamond_dust", "name": "Diamond Dust", "kind": "debuff", "effect": "corrupt_all", "value": 1, "weight": 1, "text": "Skaði answers the circle: the component every machine shows is frostbitten, and bites whoever spends it.", "status": "implemented" },
-        { "id": "pyroclasm", "name": "Pyroclasm", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "when": "below_half", "text": "Surtr answers the circle: every machine scorched, ×{value}.", "status": "implemented" }
+        { "id": "pyroclasm", "name": "Pyroclasm", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "Surtr answers the circle: every machine scorched, ×{value}.", "status": "implemented" }
       ],
       "flavour": "It raised one hand. The ground answered."
     },

@@ -1235,3 +1235,30 @@ the all-random run of 23 October found, and the lone fights barely move: a lone 
 to over-commit beside, and the heroes and the Bone Wyvern keep their aims. The numbers now stand
 on a baseline the player's composition does not move; the formations' pressure is the numbers'
 to restore when the units are balanced for real, and an advanced foe's aim is a lever on top.
+
+## 24 October, the foes' heat doubled
+
+**Ryan's call** (24 October: heat needs to be more threatening, and because the heat debuffs can
+be countered, with multiple release valves, they can be significantly buffed).
+`tools/special_probe.gd --heat` on the content as at `e638c41`, every foe's heat stacks (its
+Scorch riders, the Stoke's Burning, the scorches on every machine) scaled ×1, ×2 and ×3: every
+third starter trio (10), stock, greedy, against the Peak's formation, the Magma Elemental, the
+Black Mage and the Summoner alone, 30 seeds a cell, 3,600 fights. A direction.
+
+| The Peak's formation | Won | Hull lost | Overheats a fight | Hull lost to heat | Fights with an overheat |
+|---|---|---|---|---|---|
+| ×1 | 88% | 36% | 1.4 | 4.5% | 39% |
+| ×2 | 69% | 48% | 3.1 | 12.2% | 71% |
+| ×3 | 60% | 56% | 4.6 | 22.4% | 85% |
+
+By trio, ×1 / ×2 / ×3: the four Honey Badger trios, the coldest, win 93 to 100% at ×2 and pay
+0 to 9% of their hull to heat (0 to 1% at ×1, 1 to 26% at ×3); the two Cottonmouth and Stingray
+trios win every fight at every step; the two Cassowary and Baboon trios fall from 90 and 97% won
+to 33 and 47% (20 and 10% at ×3); the two Armadillo and Puffin trios, already hard at ×1 (23
+and 73%) with the seal's own heat, to 3 and 13%. The Magma Elemental, the Black Mage and the
+Summoner alone barely move at any step: the Elemental's breaching blows are its fight, and the
+heroes die in about three rounds, before heat builds.
+
+Read: ×2 makes heat the Peak's threat, felt by the cold teams and walling the hottest starters
+on the greedy bot, which manages heat only as far as its one-round forecast reads it; ×3 walls
+all but the coldest. ×2 is the first cut in content, for Ryan's play.
