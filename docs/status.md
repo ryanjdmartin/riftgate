@@ -29,7 +29,15 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
+One branch is live beside main: `ccr-7effd31a-u5z4gw` (24 October, a cloud session), the Hold
+The Line pair sketch on Ryan's question of that day (could each track be both a map and a battle
+track, crossfading, the map's version re-voiced rather than turned down):
+`tools/soundforge/pair_sketches.py` and its page (under Pages), the map version rendered on the
+battle recipe's own groove call so the two share every sample of the timeline. Nothing in the
+game, the content or the bible changes until Ryan has heard it (the to-do's Ryan line); the
+branch merges as a sketch module either way.
+
+The stock pass's, `claude/eager-newton-sf947u` (22 October: the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
 marks and the stun calls, the second chunk's engine items, the content landed at the brief's
 fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
@@ -813,5 +821,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
+  built by `pair_sketches.py`, the page `pair_page.html`; published 24 October): Hold The Line's
+  map version on a live switch against the battle's, alone, and in a battle as the game plays it.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
