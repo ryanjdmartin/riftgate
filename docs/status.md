@@ -30,9 +30,9 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
-carries all three again (24 October: fast-forwarded onto `claude/eager-newton-sf947u`'s later
-calls of the day, then the foes' conditions opened to Ryan on top):
+Three branches stand beside main, each holding the one before it, and
+`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
+`ccr-170f6d81-465jnr`'s foes' conditions, then Ryan's shape for the curve on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -53,7 +53,7 @@ calls of the day, then the foes' conditions opened to Ryan on top):
   `tools/special_probe.gd` (v0.272 to v0.275).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
+a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -158,10 +158,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.275, and so is the live (24 October,
-  the page's version 292, from `ccr-170f6d81-465jnr`: the foes' conditions in section 12 with the
-  probe's numbers, the foe row no longer calling the rule decided; on its own v0.274, the page's
-  version 291, itself onto `claude/eager-newton-sf947u`'s v0.273). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.276, and so is the live (24 October,
+  the page's version 293, from `claude/eager-newton-sf947u`: Ryan's shape for the curve, a soft
+  ramp with visible jumps per rift, in section 12; onto `ccr-170f6d81-465jnr`'s v0.275, the
+  page's version 292, the foes' conditions in section 12). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
