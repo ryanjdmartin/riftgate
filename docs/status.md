@@ -158,9 +158,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.276, and so is the live (24 October,
-  the page's version 293, from `claude/eager-newton-sf947u`: Ryan's shape for the curve, a soft
-  ramp with visible jumps per rift, in section 12; onto `ccr-170f6d81-465jnr`'s v0.275, the
+  `docs/design-bible.html` after every change. This file is v0.277, and so is the live (24 October,
+  the page's version 294, from `claude/eager-newton-sf947u`: Ryan's shape for the curve, a soft
+  ramp with visible jumps per rift, in section 12, the elites' card question folded into it; onto `ccr-170f6d81-465jnr`'s v0.275, the
   page's version 292, the foes' conditions in section 12). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
