@@ -8,9 +8,8 @@ extends RefCounted
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
 ##
 ## Targeting: machines do not taunt (2 October), and a foe draws its target at random unless it
-## or its move carries an `aim`, the sense an advanced foe's pick may follow (Ryan, 24 October:
-## the rank and file at random, the baseline balanced on, an elite's, a boss's or a hero's aim
-## where it fits); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
+## or its move carries an `aim` (Ryan, 24 October: random is the baseline balanced on, and an
+## aim serves a foe's threat, any foe's); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
 ## player acts, and the foes never over-commit to a machine already doomed.
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more

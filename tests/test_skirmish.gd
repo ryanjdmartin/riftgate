@@ -109,8 +109,8 @@ func test_cleave_hits_neighbours() -> void:
 
 
 func test_a_foe_aims_at_random_unless_it_carries_an_aim_such_as_the_exposed() -> void:
-	# Ryan, 24 October: the rank and file at random, the baseline balanced on; an advanced foe
-	# may carry an aim.
+	# Ryan, 24 October: at random by default, the baseline balanced on; any foe may carry the
+	# aim its threat calls for.
 	assert_eq(_ghoul().aim_of(), Foe.AIM_ANYTHING, "the default sense: at random")
 	# The exposed, by weight. A blow of 20: the tough machine's shield of 40 holds (weight 1);
 	# the weak one's shield of 10 takes ten and lets ten through (the honest shield), and a

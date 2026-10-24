@@ -1478,7 +1478,7 @@ func _on_foe_held(v: UnitView) -> void:
 		if foe.target != null and foe.reaches_every_machine():
 			text += "\n→ every machine"
 		elif foe.target != null and not foe.acts_on_nobody():
-			# The sense only where the foe carries one: the rank and file pick at random (24 October).
+			# The sense only where the foe carries one: a foe without one picks at random (24 October).
 			var sense := foe.aim_of()
 			text += "\n→ %s" % foe.target.unit.display_name
 			if sense != Foe.AIM_ANYTHING:

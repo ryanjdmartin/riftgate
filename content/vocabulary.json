@@ -1407,7 +1407,7 @@
    "id": "aim",
    "category": "foe",
    "name": "Aim",
-   "codex": "Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim, as an elite, a boss or a hero may. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.",
+   "codex": "Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.",
    "status": "implemented",
    "design": {
     "holes": "Content: aim on a foe type and on a move; when on a move is the condition that lets a foe pick it, and a special never fires twice running."

@@ -50,9 +50,9 @@ for the curve, then the foes' gates removed on top):
   synthetic passives; the fallbacks a model, a maker and a faction take from content's order),
   and the foes' conditions: the rule that every special carries one a session's of 2 October,
   never his, the gates on the player's state measured by `tools/special_probe.gd` and removed
-  on his word, then the rank and file at random and no foe over-committing, the advanced foes
-  keeping their aims, the heat debuffs to be buffed and the stale quote on randomness gone
-  (v0.272 to v0.279).
+  on his word, then random targeting as the baseline with an aim on any foe whose threat calls
+  for one (Ryan's correction: the baseline random, not everything), no foe over-committing, the
+  heat debuffs to be buffed and the stale quote on randomness gone (v0.272 to v0.280).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
 a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
@@ -103,9 +103,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   but the finale; nothing sits between, so the middle of the curve is the foes' fresh start's.
   The coordination gap reads 1.0 to 1.3 on built teams against the tests' about 2, and the
   campaign's plain player wins none of 40 runs, its fights mostly one machine alone (both
-  section 12's). Since 24 October the rank and file pick at random and no foe over-commits, the
-  baseline the numbers are balanced on: the formations read a few points easier for it, and
-  their pressure is the balancing's to restore, the heat debuffs' buff first (the to-do).
+  section 12's). Since 24 October a foe picks at random unless its threat calls for an aim, every
+  rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
+  formations read a few points easier for it, and their pressure is the balancing's to restore,
+  the heat debuffs' buff first (the to-do).
 
 ## Decided, not built
 
@@ -162,11 +163,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.279, and so is the live (24 October,
-  the page's version 296, from `ccr-170f6d81-465jnr`: the rank and file at random and no foe
-  over-committing in the aim row, the heat debuffs to be buffed in the heat row, the stale quote
-  on randomness gone; on its own v0.278, the page's version 295, itself onto
-  `claude/eager-newton-sf947u`'s v0.277). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.280, and so is the live (24 October,
+  the page's version 297, from `ccr-170f6d81-465jnr`: the aim row's baseline at random with an
+  aim on any foe whose threat calls for one, Ryan's correction; on its own v0.279, the page's
+  version 296, itself onto `claude/eager-newton-sf947u`'s v0.277). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and

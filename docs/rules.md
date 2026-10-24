@@ -466,8 +466,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
-  flat armour (the four built bosses 1, the promoted forms 2) and, an advanced foe, an aim. Its
-  damage never rolls.
+  flat armour (the four built bosses 1, the promoted forms 2) and perhaps an aim. Its damage
+  never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
@@ -477,7 +477,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
-  aim (the rank and file carry none): exposed (weighted by the hull its blows would reach
+  aim, as its threat calls for: exposed (weighted by the hull its blows would reach
   plus half the shield they would break), heat (the hottest machine), armed (a machine
   showing an intact weapon, the exposed when none does), focus (its rank shares one pick),
   buffed (the machine carrying the most stacks of buffs, the exposed when none does). The
