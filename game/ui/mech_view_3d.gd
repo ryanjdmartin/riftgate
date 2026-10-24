@@ -164,13 +164,29 @@ static func ramp_for(c: Color) -> Array:
 	return [c.darkened(0.55).to_html(false), c.darkened(0.3).to_html(false), c.to_html(false), c.lightened(0.3).to_html(false)]
 
 
-## Which glTF a chassis draws: its own, else the fallback. RIFTGATE_MECH3D_MODEL=<id> shows
-## another exported file in every slot instead, for previewing a model without installing it.
-static func model_for(chassis_id: String, fallback: String) -> String:
+## Which glTF a chassis draws: its own, else the fallback named, else the stand-in (below).
+## RIFTGATE_MECH3D_MODEL=<id> shows another exported file in every slot instead, for previewing
+## a model without installing it.
+static func model_for(chassis_id: String, fallback: String = "") -> String:
 	var over := OS.get_environment("RIFTGATE_MECH3D_MODEL")
 	if not over.is_empty() and has_model(over):
 		return over
-	return chassis_id if has_model(chassis_id) else fallback
+	if has_model(chassis_id):
+		return chassis_id
+	return fallback if not fallback.is_empty() else stand_in()
+
+
+## The model a chassis without one of its own borrows: the first chassis in content's order that
+## has one, so the default comes from content and a renamed id renames it (CLAUDE.md's rule).
+static var _stand_in := ""
+
+static func stand_in() -> String:
+	if _stand_in.is_empty():
+		for id in ContentDB.load_default().chassis.keys():
+			if has_model(str(id)):
+				_stand_in = str(id)
+				break
+	return _stand_in
 
 
 ## What a node name in the model means: ["joint", "shoulder_l"], ["hp", 1], or [] for a part
@@ -198,8 +214,9 @@ static func look_setting() -> String:
 
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
-## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
+## the wanted one has no model, so a screen can show one model in every slot (none given, the
+## stand-in).
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
 	v.yaw = yaw_deg
@@ -532,7 +549,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 			var role := "steel"
 			if src != null:
 				role = src.resource_name.get_slice(".", 0).to_lower()
-			var ramp: Array = LIVERY.get(maker, LIVERY["minerva"]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
+			var ramp: Array = LIVERY.get(maker, LIVERY.values()[0]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
 			# A repaint: the primary colour takes the livery panels, the secondary the bone plating.
 			if role == "livery" and paint_arg.has("primary"):
 				ramp = ramp_for(paint_arg["primary"])
@@ -544,7 +561,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				# maker. The toon pass below is for untextured models (the structures).
 				var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
 				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-				var finish: Array = FINISH.get(maker, FINISH["minerva"])
+				var finish: Array = FINISH.get(maker, FINISH.values()[0])
 				if float(finish[1]) >= 0.25:
 					mi.layers |= 1 << (SHEEN_LAYER - 1)   # the sheen light finds it
 				tm.roughness = float(finish[0])

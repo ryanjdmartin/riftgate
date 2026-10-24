@@ -1504,8 +1504,8 @@ func _process(delta: float) -> void:
 
 func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
-		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-		var model_id := MechView3D.model_for(u.chassis_id, "badger")
+		var maker := ContentDB.load_default().maker_of(u.chassis_id)
+		var model_id := MechView3D.model_for(u.chassis_id)
 		var node := _model(model_id, maker, u.paint)
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's

@@ -160,7 +160,7 @@ func test_packs_plan_in_order_around_each_others_ends() -> void:
 func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
 	var f := _field(7, 14)
 	var rift_o := Hex.axial_to_offset(f.map.rift)
-	var boss := f.add_unit(Unit.boss(1, "colossus", _o(rift_o.x, rift_o.y + 2)))
+	var boss := f.add_unit(Unit.boss(1, "colossus", _o(rift_o.x, rift_o.y + 2), "marsh"))
 	for i in range(6):
 		var w: Battlefield.Walk = f.plan_walks()[boss.id]
 		assert_true(w.path.size() <= 1, "one step at most")
@@ -172,6 +172,8 @@ func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
 
 func test_pressure_spawns_pack_at_rift() -> void:
 	var f := _field()
+	f.spawn_faction = "marsh"
+	f.spawn_table = [["revenant", 6]]
 	f.rift_pressure_max = 2
 	assert_false(f.tick_pressure(1), "one tick, no spawn")
 	assert_true(f.tick_pressure(1), "the second spawns")
@@ -295,7 +297,7 @@ func test_the_machines_in_range_of_the_target_may_join() -> void:
 
 func test_range_and_rings_count_from_any_footprint_hex() -> void:
 	var f := _field()
-	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5)))
+	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5), "marsh"))
 	boss.footprint = Unit.TRIANGLE.duplicate()
 	var far_hex: Vector2i = boss.hexes()[2]
 	var spot := Vector2i.ZERO
@@ -317,7 +319,7 @@ func test_a_passive_can_grant_a_second_action() -> void:
 
 func test_boss_covers_three_hexes_and_blocks_them() -> void:
 	var f := _field()
-	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5)))
+	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5), "marsh"))
 	boss.footprint = Unit.TRIANGLE.duplicate()   # the wide footprint, kept in the engine for later
 	assert_eq(boss.hexes().size(), 3, "three hexes")
 	for h in boss.hexes():

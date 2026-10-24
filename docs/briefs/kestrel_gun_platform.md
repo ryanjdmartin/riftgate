@@ -131,8 +131,7 @@ Every number a placeholder; the name and the look Ryan's.
   Clydesdale's one-die rule, so the reroll is spent on the maverick and nothing else); Rapid
   pieces on it are free growth steps, a stack of them a growth engine bounded by their
   cooldowns (the lever: Rapid's free rolls count, or do not); the bot must learn lock against
-  ride, a new valuation; a Scrambled reroll may land on the same entry and still counts as a
-  roll; the battery's bust face costs the whole die a dead roll in eight for two rounds; no
+  ride, a new valuation; the battery's bust face costs the whole die a dead roll in eight for two rounds; no
   heat price in the shape, the risk being the die alone (bench: 5 heat a roll, if Ryan wants
   the engines to bust too). **The die**: the grown number shown (the game does the arithmetic),
   a growth chip with its count down the right edge. **Knobs**: the step, whether Rapid rolls

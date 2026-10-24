@@ -247,7 +247,6 @@ func strikes() -> int:
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
 ##           turn (Stoke; direct heat retired 13 October)
-##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons running
 ##           hotter (Eruption; nobody in particular)
@@ -255,7 +254,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally"],
-	"debuff": ["drain_rerolls", "burn", "scramble", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
+	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine

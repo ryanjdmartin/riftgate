@@ -403,6 +403,15 @@ func _plate_parts(c: Dictionary, maker: Dictionary, u: Unit) -> Array[String]:
 	return parts
 
 
+## The maker a chassis is built by: its own, else the first maker in content's order, so no
+## runtime default names a maker (CLAUDE.md: defaults come from content).
+func maker_of(chassis_id: String) -> String:
+	var m := str(chassis.get(chassis_id, {}).get("maker", ""))
+	if makers.has(m):
+		return m
+	return str(makers.keys()[0]) if not makers.is_empty() else ""
+
+
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})

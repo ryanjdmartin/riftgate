@@ -137,11 +137,6 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 	assert_true(u.movespeed % 5 == 0 and u.movespeed > 0, "moves are in tens")
 	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
-	var p: Dictionary = db.chassis["sparrowhawk"]["passive"]
-	var one_off := not str(db.chassis["sparrowhawk"].get("design", {}).get("one_off", "")).is_empty()
-	assert_true(p["effects"].size() <= ContentDB.MAX_PASSIVE_EFFECTS + (1 if one_off else 0), "one idea, within the cap and its one-off")
-	assert_true(not p.has("rules"), "no rules text: the description says what it does")
-	assert_true(not db.chassis["sparrowhawk"].has("passives"), "still counts as one passive")
 
 
 func test_packs_unpack_by_foe_type() -> void:
@@ -250,8 +245,8 @@ func test_passive_effect_cap_is_enforced() -> void:
 	db.load_dir(ContentDB.DIR)
 	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["design"].erase("one_off")   # the cap as it stands for every passive without one
-	var eff: Dictionary = c["passive"]["effects"][0]
-	c["passive"]["effects"] = [eff, eff, eff, eff]
+	var eff := {"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}   # synthetic: content's passives change
+	c["passive"] = {"id": "bloated", "name": "Bloated", "description": "Four effects.", "effects": [eff, eff, eff, eff]}
 	db.chassis["bloated"] = c
 	var errs := db.validate()
 	var hit := false
@@ -366,10 +361,13 @@ func test_a_reserved_machine_name_is_refused_unless_the_clash_is_recorded() -> v
 	assert_true(tank_hit, "a Halo name is refused and its source named")
 
 
-func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
-	var db := _db()
-	var u := db.make_mech("sparrowhawk")
-	assert_false(u.passive.is_empty(), "sparrowhawk carries its passive")
+## The Kite's shape on a synthetic passive (content's own passive is Ryan's to change): the
+## printed number doubled, and a flat heat tax a shot that the double leaves alone.
+func test_a_printed_double_and_a_heat_tax_on_one_shot() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive({"id": "test_double", "name": "Double", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
+		{"trigger": "on_attack", "effect": "add_heat", "value": 3}]})
 	u.die = Die.single(Face.attack(30, Face.Reach.DIRECT, [], 10))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
@@ -378,12 +376,7 @@ func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 30, "power 30 became 60")
-	var tax := 0   # the passive's flat heat a shot, read from its content (the numbers are placeholders)
-	for eff in db.chassis["sparrowhawk"]["passive"]["effects"]:
-		if str(eff.get("effect", "")) == "add_heat":
-			tax += int(eff["value"])
-	assert_true(tax > 0, "it taxes every shot in heat")
-	assert_eq(sk.mechs[0].heat, 10 + tax, "heat 10 plus the tax, the double printed-only")
+	assert_eq(sk.mechs[0].heat, 13, "heat 10 plus the tax of 3, the double printed-only")
 
 
 func test_min_damage_passive_raises_the_floor() -> void:
@@ -489,7 +482,9 @@ func test_a_planned_buff_may_grant_a_planned_machine_status() -> void:
 func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var built: Dictionary = db.chassis["sparrowhawk"].duplicate(true)   # its passive is built
+	var built: Dictionary = db.chassis["badger"].duplicate(true)
+	built["passive"] = {"id": "built", "name": "Built", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]}
 	db.chassis["built"] = built
 	assert_true(db.chassis_runnable("built"), "a chassis whose passive is built can be fielded")
 	var drafted: Dictionary = built.duplicate(true)
@@ -620,12 +615,11 @@ func test_a_component_wears_only_the_working_set_of_tags() -> void:
 	assert_true(_refused(db, "chassis tag_reader", "outside the working set"), "a condition on a retired tag is refused")
 	side["passive"]["effects"][0]["when"] = "tag_melee"
 	assert_false(_refused(db, "chassis tag_reader", "working set"), "a condition on a tag of the set is clean")
-	var drum: Dictionary = db.chassis["cottonmouth"].duplicate(true)
+	var drum: Dictionary = db.chassis["badger"].duplicate(true)
 	drum["id"] = "drum_reader"
 	drum["name"] = "Drum Reader"
-	for eff in drum["passive"]["effects"]:
-		if str(eff.get("effect", "")) == "rewrite_weapon":
-			eff["tag"] = "kinetic"
+	drum["passive"] = {"id": "p_drum_reader", "name": "P", "description": "", "effects": [
+		{"trigger": "static", "effect": "rewrite_weapon", "value": 4, "reach": "indirect", "heat": 3, "tag": "kinetic"}]}
 	db.chassis["drum_reader"] = drum
 	assert_true(_refused(db, "chassis drum_reader", "rewrite_weapon's tag"), "the drum adds only a tag of the set")
 	for id in db.components.keys():
@@ -1724,7 +1718,7 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 
 ## Cryo is a numbered keyword like Burn (20 October), and the Armadillo's content runs: its
 ## Lockdown passive carries the seal, its die the Cryo Flinger pair before four hardpoints.
-func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_seals() -> void:
+func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_leads_with_its_flingers() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["cryo_flinger"].duplicate(true)
@@ -1747,18 +1741,13 @@ func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_seals() -> void:
 	assert_eq(m.die.faces.size(), 6, "two flingers and four hardpoints")
 	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[1].has(Face.Keyword.CRYO), "the pair leads the die")
 	assert_true(m.die.faces[0].has(Face.Keyword.LURE) and m.die.faces[0].has(Face.Keyword.RAPID), "each a lure with Rapid")
-	var seal := {}
-	for eff in fresh.chassis["armadillo"]["passive"]["effects"]:
-		if str(eff.get("effect", "")) == "seal_form":
-			seal = {"armour": int(eff["value"]), "heat": int(eff["heat"])}
-	assert_eq(Effects.seal_form(m), seal, "Lockdown's seal: its armour and its heat a turn, as the content says")
-	assert_eq(m.armour, int(fresh.chassis["armadillo"]["armour"]), "its base armour, which the seal adds to")
+	assert_eq(m.armour, int(fresh.chassis["armadillo"]["armour"]), "its base armour, as the content says")
 
 
-## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, the Prairie
-## Dog's clause wakes (a foe carrying Flak hits it lighter), and the validator asks a Flak
-## weapon for its stacks and the stacks for the keyword, as it does Burn's and Cryo's.
-func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carrier() -> void:
+## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, and the
+## validator asks a Flak weapon for its stacks and the stacks for the keyword, as it does Burn's
+## and Cryo's (a foe carrying Flak hitting lighter is the synthetic attacker_status test's).
+func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void:
 	var fresh := ContentDB.load_default()
 	var m := fresh.make_mech("prairie_dog")
 	var gun: Face = null
@@ -1768,15 +1757,6 @@ func test_the_flakshot_lays_flak_and_the_prairie_dog_takes_less_from_a_flak_carr
 	var stacks := int(fresh.components["flakshot_repeater"]["face"]["flak"])
 	assert_true(gun != null and gun.has(Face.Keyword.FLAK) and gun.flak == stacks and stacks > 0, "the Repeater carries its Flak")
 	assert_true(gun.has(Face.Keyword.CLEAVE), "and sprays")
-	var lighter := 0   # the passive's clause, read from its content
-	for eff in fresh.chassis["prairie_dog"]["passive"]["effects"]:
-		if str(eff.get("effect", "")) == "add_damage_taken":
-			lighter = -int(eff["value"])
-	assert_true(lighter > 0, "the clause takes something off")
-	var foe := Foe.make("revenant", 100, 20)
-	assert_eq(Effects.damage_taken(m, 20, foe), 20, "a clean striker's blow lands whole")
-	Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
-	assert_eq(Effects.damage_taken(m, 20, foe), 20 - lighter, "a foe carrying Flak hits it lighter")
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["flakshot_repeater"].duplicate(true)

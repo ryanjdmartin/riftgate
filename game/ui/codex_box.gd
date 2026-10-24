@@ -173,10 +173,10 @@ func open(entry: Dictionary) -> void:
 	if not sid.is_empty() and not look.is_empty() and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
 		var db := ContentDB.load_default()
-		var maker := str(db.chassis.get(sid, {}).get("maker", "minerva"))
+		var maker := db.maker_of(sid)
 		var paint: Dictionary = entry.get("paint", {})
 		var plan: Array = MechView3D.plan_for(entry.get("unit", null), db)   # the fitted loadout, where it differs from stock
-		_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint, plan)
+		_view = MechView3D.make(sid, maker, "clean", "", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint, plan)
 		add_child(_view)
 		tex = _view.texture
 	elif not sid.is_empty():

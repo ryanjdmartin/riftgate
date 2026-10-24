@@ -16,9 +16,29 @@ func test_parse_tag_reads_joints_and_hardpoints() -> void:
 	assert_eq(MechView3D.parse_tag("hydraulic_shoulder_l.detail"), [], "hydraulics are parts")
 
 
-func test_model_for_falls_back_to_the_badger() -> void:
-	assert_eq(MechView3D.model_for("badger", "badger"), "badger", "the Badger has a model")
-	assert_eq(MechView3D.model_for("no_such_chassis", "badger"), "badger", "an unmodelled chassis borrows the fallback")
+func test_model_for_falls_back_to_the_stand_in() -> void:
+	# The stand-in comes from content, never a named id: the first chassis in content's order
+	# with a model of its own.
+	var modelled: Array = []
+	for id in ContentDB.load_default().chassis.keys():
+		if MechView3D.has_model(str(id)):
+			modelled.append(str(id))
+	assert_true(modelled.size() >= 2, "two chassis have models")
+	assert_eq(MechView3D.stand_in(), modelled[0], "the stand-in is the first modelled chassis in content's order")
+	assert_eq(MechView3D.model_for(modelled[1]), modelled[1], "a modelled chassis draws its own")
+	assert_eq(MechView3D.model_for("no_such_chassis"), modelled[0], "an unmodelled chassis borrows the stand-in")
+	assert_eq(MechView3D.model_for("no_such_chassis", modelled[1]), modelled[1], "or the fallback a screen names")
+
+
+func test_the_metal_tables_name_exactly_contents_makers() -> void:
+	# A table of metals keyed by maker is the one place code names a content id, so a renamed
+	# or new maker fails here rather than drawing in the first maker's colours.
+	var makers: Array = ContentDB.load_default().makers.keys()
+	for table in [MechView3D.LIVERY, MechView3D.FINISH, MechView3D.GLOSS]:
+		for maker in makers:
+			assert_true(table.has(maker), "maker %s has an entry" % maker)
+		for key in table.keys():
+			assert_true(makers.has(key), "%s is a maker in content" % key)
 
 
 func test_every_silhouette_class_has_a_model_in_every_makers_metal() -> void:

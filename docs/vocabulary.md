@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 152 implemented, 6 planned, 0 idea.
+Status: 151 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -93,7 +93,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent. | implemented |
-| **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
+| **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
 | **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
 | **Breach** | A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour. | implemented |
 
@@ -129,7 +129,6 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
-| **Scrambled** | Machine status. The die's next reroll may land anywhere, the same entry included. | implemented |
 | **Silenced** | Machine status, from a foe's silence: its buffs count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
 | **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | implemented |
@@ -233,7 +232,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Last Act** | A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after. | implemented |
 | **Parts** | A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all. | implemented |
 | **Countdown** | A move that gathers before it lands: announced as the round opens, it lands the stated number of rounds later, its warning chip counting down the whole time. Nothing hits while it gathers. Suppress holds it a round, Disrupt breaks it off, and killing the foe ends it. | implemented |
-| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing or curing one of its own, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, setting a machine burning, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves a stack of Scorched on the machine it hit: its weapons run hotter. | implemented |
 
 ## Rules

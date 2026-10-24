@@ -466,8 +466,8 @@ func _build() -> void:
 		_mech_3d.append(null)
 		if not look.is_empty():
 			var db := ContentDB.load_default()
-			var maker := str(db.chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
+			var maker := db.maker_of(ms.unit.chassis_id)
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
 			view.size_k = float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
@@ -1184,8 +1184,6 @@ static func status_glyph(id: String) -> String:
 			return "burn"
 		"retaliate":
 			return "shocked"
-		"scrambled":
-			return "reroll"
 		"hopper":
 			return "hopper"
 		"sealed":
@@ -1216,7 +1214,7 @@ static func status_glyph(id: String) -> String:
 static func _chip_colour(id: String) -> Color:
 	if id in ["burning_mech", "scorched", "overcharged", "primed", "rage", "spun_up", "siphoning"]:
 		return Palette.HEAT
-	if id.begins_with("corrupted") or id == "scrambled" or id == "silenced":
+	if id.begins_with("corrupted") or id == "silenced":
 		return Palette.ENEMY
 	if id in ["braced", "retaliate", "barrier", "ward"]:
 		return Palette.SHIELD
@@ -1836,7 +1834,7 @@ func _blow_sound(f: Face) -> String:
 
 ## The maker whose metal a machine is.
 func _maker_of(ms: Skirmish.MechState) -> String:
-	return str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
+	return ContentDB.load_default().maker_of(ms.unit.chassis_id)
 
 
 ## Each live machine's heat as a mark: 0 cool, 1 past three quarters, 2 over the cap (it will

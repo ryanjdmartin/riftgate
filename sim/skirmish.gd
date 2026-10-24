@@ -986,16 +986,9 @@ func reroll(mech_indices: Array) -> bool:
 	return true
 
 
-## One die rerolled: never the same entry, unless a foe scrambled it, in which case it lands
-## anywhere and the scramble is spent. A stepping die steps (a reroll is a roll), and a
-## Scramble is a true roll for it too, the sequence running on from where it lands.
+## One die rerolled: never the same entry. A stepping die steps (a reroll is a roll).
 func _reroll_die(ms: MechState) -> void:
 	_rolled()
-	if Effects.is_scrambled(ms.unit):
-		ms.face_index = ms.die.roll(rng)
-		Effects.remove(ms.unit, "scrambled")
-		log.append("%s's reroll is scrambled" % ms.unit.display_name)
-		return
 	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll(rng, ms.face_index)
 
 
@@ -2171,9 +2164,6 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"burn":
 			_fire_on(t, "burning_mech", maxi(1, value), f)
 			log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
-		"scramble":
-			Effects.grant_for_rounds(t.unit, Effects.STATUS["scrambled"], "foe:" + f.content_id, round + 1)
-			log.append("%s: %s, %s's next reroll is scrambled" % [f.display_name, str(a.get("name", "scrambles")), t.unit.display_name])
 		"disable":
 			# The entry the die shows is switched off through the machine's next turn, no blow.
 			if t.face_index >= 0:
@@ -2896,10 +2886,10 @@ func _lure(ms: MechState, foes: Array) -> void:
 		log.append("lured, but %s %s nothing to turn" % [", ".join(idle), "has" if idle.size() == 1 else "have"])
 
 
-## Disrupt (decided 2 October, in place of the planned scramble and confuse): the foe does its
-## other move instead, this round, the new intent shown at once. Deterministic: the next move
-## in its list that its conditions allow, so a boss with three moves steps through its
-## pattern; a foe with nothing else open is not moved. The new move picks its own target.
+## Disrupt (decided 2 October): the foe does its other move instead, this round, the new
+## intent shown at once. Deterministic: the next move in its list that its conditions allow,
+## so a boss with three moves steps through its pattern; a foe with nothing else open is not
+## moved. The new move picks its own target.
 func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive():
@@ -2938,7 +2928,7 @@ func disrupt_next(foe: Foe) -> Dictionary:
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
-## cleansable status (a foe's disable, Corrupted, Scrambled, Burning, Scorched), and the log says which.
+## cleansable status (a foe's disable, Corrupted, Silenced, Burning, Scorched), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
 	if not f.has(Face.Keyword.CLEANSE):
 		return

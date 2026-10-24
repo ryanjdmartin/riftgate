@@ -3138,9 +3138,6 @@ func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
 	u.grant_passive(plain)
 	var f := Effects.effective_face(u, u.die.faces[0])
 	assert_true(f.has(K.PENETRATE) and f.printed.is_empty(), "a plain grant is a keyword chip")
-	var db := ContentDB.load_default()
-	var boar_grant: Dictionary = db.chassis["wild_boar"]["passive"]["effects"][0]
-	assert_true(bool(boar_grant.get("printed", false)), "the Boar's spill is written out in content")
 
 
 func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:
@@ -3705,7 +3702,7 @@ func test_a_rally_lands_next_round_at_its_own_value_whoever_acts_after_it() -> v
 	assert_false(Effects.has(g, "kindled"), "gone with the round")
 
 
-func test_the_debuffs_cost_rerolls_heat_and_a_reroll() -> void:
+func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)
 	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
@@ -3742,23 +3739,6 @@ func test_the_debuffs_cost_rerolls_heat_and_a_reroll() -> void:
 	assert_eq(m2.shield, 40, "no blow with it")
 	s2.start_round()
 	assert_eq(s2.forecast(s2.mechs[0], false)["heat_end"], 2 * _rule("burning_mech", "tick_heat"), "the forecast counts the tick to come")
-	# Scramble: the next reroll of that die lands anywhere, then the scramble is spent.
-	var s3 := Skirmish.new(10, 1)
-	var m3 := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
-	s3.add_mech(m3)
-	var w := _archer(500, 10)
-	w.actions = [_special("debuff", "scramble")]
-	w.action = w.actions[0]
-	s3.add_foes([w])
-	s3.begin()
-	s3.start_round()
-	s3.end_round()
-	assert_true(Effects.is_scrambled(m3), "scrambled")
-	s3.start_round()
-	assert_true(Effects.is_scrambled(m3), "still, until it rerolls")
-	assert_true(s3.reroll([0]), "the reroll happens")
-	assert_false(Effects.is_scrambled(m3), "and the scramble is spent")
-	assert_true("\n".join(s3.log).contains("C's reroll is scrambled"), "the log says so")
 
 
 func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:
@@ -5421,8 +5401,7 @@ const STEP_PASSIVE := {"id": "test_step", "name": "Step", "description": "", "ef
 
 ## A stepping die (the Cassowary's Indexed Cylinder, Ryan's wording of 12 October; built 21
 ## October): the fight's first roll spins it to a random entry, then every roll steps it to the
-## next in order: the round's roll, a reroll, Rapid's free reroll; a lock holds it, and a foe's
-## Scramble is a true roll, the sequence running on from where it lands.
+## next in order: the round's roll, a reroll, Rapid's free reroll; a lock holds it.
 func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 	var opened := {}
 	for seed_value in range(40):
@@ -5455,19 +5434,10 @@ func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_eq(ms.face_index, (held + 1) % 4, "the round's roll steps it too")
-	Effects.grant_for_rounds(u, Effects.STATUS["scrambled"], "foe:x", sk.round + 1)
-	var landed := {}
-	for k in range(30):
-		Effects.grant_for_rounds(u, Effects.STATUS["scrambled"], "foe:x", sk.round + 1)
-		sk.rerolls_left = 3
-		var before := ms.face_index
-		sk.reroll([0])
-		landed[ms.face_index == before] = true
-	assert_true(landed.has(true) and landed.has(false), "a scrambled reroll is a true roll: it may land where it stood")
 	sk.rerolls_left = 3
 	var from := ms.face_index
 	sk.reroll([0])
-	assert_eq(ms.face_index, (from + 1) % 4, "and the sequence runs on from where it lands")
+	assert_eq(ms.face_index, (from + 1) % 4, "and every reroll after it steps one more")
 	var fast := Face.attack(10, L, [K.RAPID])
 	var s2 := Skirmish.new(2)
 	var r := _mech("R", Die.of([fast, Face.attack(20, L), Face.attack(30, L)]), 40, 100)

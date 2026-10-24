@@ -39,7 +39,7 @@ PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block":
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "disable": "disabled", "scramble": "scrambled", "silence": "silenced"}
+                           "disable": "disabled", "silence": "silenced"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen"}
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.

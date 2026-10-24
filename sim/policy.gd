@@ -1124,7 +1124,7 @@ func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 ## the turn (what it would put over the cap as hull, the rest as room), the heat Scorched would
 ## add to its weapons this turn (about one; it goes at the turn's end), the bites its
 ## Corrupted entries would take over the rounds to come, and the entries a foe switched off,
-## at the die's own mean for each. A Scrambled reroll is small change.
+## at the die's own mean for each.
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
 	var tick := int(Effects.tick_preview(who.unit, true)["heat"])
@@ -1144,8 +1144,6 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += float(bite) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 			if Effects.is_entry_disabled(who.unit, i) and Effects.cleansable_disable(who.unit, i):
 				score += _raw_attack_mean(who) * CLEANSE_ROUNDS / float(n)
-	if Effects.has(who.unit, "scrambled"):
-		score += KILL_BONUS * BANK_WEIGHT
 	# Silenced: the buffs it sleeps wake now, and the keywords it muted come back.
 	if Effects.has(who.unit, "silenced"):
 		score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT + (_raw_attack_mean(who) * 0.5 if not who.assigned else 0.0)
@@ -1682,10 +1680,9 @@ func die_mean(sk: Skirmish, ms: Skirmish.MechState) -> float:
 
 
 ## What a reroll of this die is worth, the bar a greedy reroll clears: the die's mean, or for
-## a stepping die the entry it steps to, known in advance (the Cassowary's dial, 21 October);
-## a Scrambled reroll is a true roll either way.
+## a stepping die the entry it steps to, known in advance (the Cassowary's dial, 21 October).
 func reroll_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
-	if Effects.steps_die(ms.unit) and not Effects.is_scrambled(ms.unit):
+	if Effects.steps_die(ms.unit):
 		var nf := sk.next_face(ms)
 		if nf != null:
 			return face_value(sk, ms, nf)

@@ -435,7 +435,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled, Corrupted and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1477,7 +1477,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing or curing one of its own, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, setting a machine burning, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "A foe's whole brain is its weighted draw and its aim; none plans ahead."
@@ -1670,22 +1670,6 @@
      "on": "foe",
      "stacks": "No",
      "lasts": "Until it falls; it returns once"
-    }
-   }
-  },
-  {
-   "id": "scrambled",
-   "category": "status",
-   "name": "Scrambled",
-   "codex": "Machine status. The die's next reroll may land anywhere, the same entry included.",
-   "status": "implemented",
-   "design": {
-    "holes": "",
-    "table": {
-     "kind": "debuff",
-     "on": "machine",
-     "stacks": "No",
-     "lasts": "Until the die's next reroll, or the next round's end"
     }
    }
   },

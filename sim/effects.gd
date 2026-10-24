@@ -61,7 +61,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
-	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
+	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat"],
@@ -191,8 +191,7 @@ const STATUS := {
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
-	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death;
-	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
+	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death.
 	# Kindled carries its rally's own value (13 October: the Dire Wolf's Howl says 5, Stoke the
 	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
 	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
@@ -239,8 +238,6 @@ const STATUS := {
 	# stock pass's call; through the plain pipeline, the armour comes off it, until then.
 	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
-	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.", "stacking": "renew",
-		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, +5
 	# a stack on the next weapon spend, stacking, carried between turns until a weapon spends
 	# it, damage or none (`spent_by`: the skirmish lifts every stack after a weapon spend, and a
@@ -1189,14 +1186,6 @@ static func foe_armour_bonus(f) -> int:
 	return n
 
 
-## Is this machine's next reroll scrambled (a foe's debuff)?
-static func is_scrambled(u) -> bool:
-	for pair in _taking_part(u, "status", null):
-		if str(pair[0].get("effect", "")) == "scramble_reroll":
-			return true
-	return false
-
-
 ## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
 ## (add_armour_vs_rank, static; no carrier in content since the Glacis went).
 static func armour_against(u, rank: int) -> int:
@@ -1788,7 +1777,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
-		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]

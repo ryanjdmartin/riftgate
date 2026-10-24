@@ -95,11 +95,9 @@ defeat when every machine is wrecked. There is no round limit.
   spending unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it; a Scrambled die's reroll is a true roll, and the sequence runs on from where
-  it lands. The die shows its next entry beside it, and its hold and codex show its entries as a
+  lock holds it. The die shows its next entry beside it, and its hold and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
-  showing included, the one piece that breaks the reroll rule (a Scrambled die's reroll
-  is the status that does). Every sixth weapon spend of the
+  showing included, the one piece that breaks the reroll rule. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
@@ -243,7 +241,7 @@ defeat when every machine is wrecked. There is no round limit.
   past shield and armour, before it acts (Volatile 3: 3 hull). Its carriers today (the Umbra
   Inducer, the Oblation Mantle and the Entropy Condenser) bite 3.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
-  Scrambled, Silenced, a foe's Disabled and Corrupted (never a cooldown).
+  Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -351,7 +349,6 @@ On a machine:
 - **Scorched** (debuff, from a foe's scorch): every weapon the machine fires runs 1 hotter a
   stack, until the end of the player's turn, when every stack goes, so it never piles up.
   Cleansable.
-- **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.

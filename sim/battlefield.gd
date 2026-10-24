@@ -38,10 +38,10 @@ var gate_hp: int = 200
 var gate_hp_max: int = 200
 var rift_pressure: int = 0
 var rift_pressure_max: int = 12
-var spawn_faction: String = "marsh"
+var spawn_faction: String = ""
 ## Packs the rift sends, cycled: [[foe_id, strength], ...], a guest faction's entries with
-## their faction third. The game fills this from content.
-var spawn_table: Array = [["revenant", 6]]
+## their faction third. The game fills this from content (both, so no default names a foe).
+var spawn_table: Array = []
 var _spawn_index: int = 0
 var phase: int = 0
 var log: Array[String] = []

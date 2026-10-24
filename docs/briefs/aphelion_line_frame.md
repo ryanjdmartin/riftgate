@@ -249,7 +249,7 @@ to the model session; what stays open:
 - It would be the second in-fight shield regen; the Buzzard's was kept safe on one chassis, and
   with the Puffin beside both a team can out-sustain a pack (the runner marks stalls past sixty
   rounds).
-- Once the combo is up, the enemy breaks it: the Waste's Disabled and Scrambled attack the die,
+- Once the combo is up, the enemy breaks it: the Waste's Disabled attacks the die,
   and the Peak's Scorched runs its beams hotter than the stacks cool.
 - The count must show on the machine, and the die's heat must show the cooling it has earned.
 - At tier one it is Aphelion's third tier one (its second once the Baboon moves up), which

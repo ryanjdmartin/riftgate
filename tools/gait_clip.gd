@@ -38,7 +38,7 @@ func _init() -> void:
 		_step = 1.0 / float(args[7])
 	_prefix = args[2]
 	_total = int(ceil(float(args[3]) / _step))
-	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
+	_view = MechView3D.make(args[0], args[1], "clean", "", yaw, frame, false, {}, [])
 	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
