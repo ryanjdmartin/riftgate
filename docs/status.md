@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 614 tests, 63,141 checks, green on `ccr-170f6d81-465jnr` (24 October, the foes' riders
-  numbered and their heat doubled), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 615 tests, 63,158 checks, green on `ccr-170f6d81-465jnr` (24 October, the Kite's reset
+  chaining without a limit), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -30,9 +30,10 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
-carries all three again (24 October: `claude/eager-newton-sf947u`'s curve and fronts merged in,
-with the foes' numbered riders and doubled heat on top):
+Three branches stand beside main, each holding the one before it, and
+`ccr-170f6d81-465jnr` carries all three again (24 October: `claude/eager-newton-sf947u`'s calls on
+the curve's pay, the fronts and the boss's token merged in, under the Kite's reset without a
+limit):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -42,7 +43,11 @@ with the foes' numbered riders and doubled heat on top):
   then the curve and the fronts, Ryan's tier and ramp beside the rift that deepens, what each
   reward scales on and his question whether a perfect run is possible, in
   `docs/curve_proposal.md`, the turn loop modelled by `tools/turn_loop.py` (v0.276, v0.277 and
-  v0.281).
+  v0.281); then his calls on the pay (loot and the shelf by the tier, tier three a chance and a
+  highlight, the boss's token at the tier, never below), his concern for the breadth of
+  components (the economy pass's, loot at a battle's end waiting to see), and the fronts as he
+  set them: no rift closing or stepping up, a siege costing its maker's stock on the shelf while
+  it lasts (v0.284 to v0.286).
 - `ccr-7d865127-wr1ko2`: the four Kestrel machines decided on 21 October in content and
   modelled, their second round of looks on Ryan's notes, the interceptor brief retired (the
   bible's v0.268, the hangar's version 99), with the stock pass's branch merged in.
@@ -57,7 +62,9 @@ with the foes' numbered riders and doubled heat on top):
   on his word, then random targeting as the baseline with an aim on any foe whose threat calls
   for one (Ryan's correction: the baseline random, not everything), no foe over-committing, the
   stale quote on randomness gone, the foes' stacking riders numbered and their heat doubled as
-  the first cut (v0.272 to v0.283).
+  the first cut (v0.272 to v0.283); then the to-do read against them, the Skua's halving answered
+  (a roll halved once, his lean rounding down), the Storm Petrel parked behind the pricing run and
+  the Kite's reset left without a limit on his word (v0.287).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
 a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
@@ -171,11 +178,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.283, and so is the live (24 October,
-  the page's version 300, from `ccr-170f6d81-465jnr`: the pinned plate-seeking aim read against
-  random targeting; v0.282 before it, the heat row's first cut and the riders numbered in the
-  tables, onto `claude/eager-newton-sf947u`'s v0.281, the curve and fronts questions pointed at
-  `docs/curve_proposal.md`). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.287, and so is the live (24 October,
+  the page's version 304, from `ccr-170f6d81-465jnr`: the Kite's reset without a limit, its
+  section 12 question gone; onto `claude/eager-newton-sf947u`'s v0.286, the page's version 303,
+  the boss's token at the tier and the breadth of components left to the economy pass, with its
+  v0.285 and v0.284 before it, Ryan's calls on the curve's pay and the fronts; and v0.283 and
+  v0.282 from `ccr-170f6d81-465jnr` before those, the pinned plate-seeking aim, the heat row's
+  first cut and the riders numbered). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -183,10 +192,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 104 (24 October, from
-  `ccr-170f6d81-465jnr`: the foes with their riders numbered and their heat doubled, the
-  vocabulary's riders and Aim; the live files identical to version 103's and `edits` empty
-  before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 105 (24 October, from
+  `ccr-170f6d81-465jnr`: the Pinion Driver's note and the vocabulary's Reset, the Kite's reset
+  without a limit; the live files identical to version 104's and `edits` empty before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

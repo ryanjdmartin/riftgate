@@ -99,6 +99,10 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
 - The docking rate. At `FAVOUR_DOCK` 1, a city gate of 200 can zero a win's fee.
 - The procurement shelf: how many items, the refresh, the chassis rate, and the Arsenal's
   gate by the Convergence's tier.
+- The breadth of components a run deals (Ryan, 24 October: breadth, not quantity, since a
+  blueprint is more of one piece): the loot wrecks on the map beefed up, more plentiful or more
+  bountiful, and more for the player to buy from the shelf with, loot at a battle's end waiting
+  to see (`docs/curve_proposal.md`, the pay).
 - The capital's repair price, against what the finale needs the gate to be.
 - Starting salvage and Favour, and whether the starting draft spends either.
 - Whether a held battle (a wipe the city survives) should pay any Favour. Today it pays
