@@ -300,6 +300,9 @@ func make_foe(foe_id: String) -> Foe:
 				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))}
 			if a.has("swarm"):
 				act["swarm"] = int(a["swarm"])
+			for k in Foe.NUMBERED_RIDERS:
+				if a.has(k):
+					act[k] = int(a[k])   # the stacks the rider lays a blow
 			if a.has("countdown"):
 				act["countdown"] = int(a["countdown"])
 		else:
@@ -353,6 +356,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 				head += " // +%d A KIN" % int(a["swarm"])
 			for k in a.get("keywords", []):
 				head += " // %s" % str(vocabulary.get(str(k), {}).get("name", str(k))).to_upper()
+				if Foe.NUMBERED_RIDERS.has(str(k)) and int(a.get(str(k), 0)) > 0:
+					head += " %d" % int(a[str(k)])
 			var n := int(a.get("countdown", 0))
 			if n > 0:
 				head += " // LANDS NEXT ROUND" if n == 1 else " // LANDS IN %d ROUNDS" % n
@@ -1526,7 +1531,10 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
-				for key in ["factor", "strikes", "keywords", "countdown"]:
+				# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
+				if ["burn", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+					errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
+				for key in ["factor", "strikes", "keywords", "countdown"] + Foe.NUMBERED_RIDERS:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
@@ -1548,6 +1556,13 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				for k in a.get("keywords", []):
 					if not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
+				# A rider that lays stacks says how many (24 October, as the player's Burn N does).
+				for k in Foe.NUMBERED_RIDERS:
+					var carried := Array(a.get("keywords", [])).has(k)
+					if carried and int(a.get(k, 0)) <= 0:
+						errs.append("%s: a %s rider says its stacks: %s, a positive number" % [aw, k, k])
+					if a.has(k) and not carried:
+						errs.append("%s: %s (the stacks) rides with the %s keyword" % [aw, k, k])
 	if implemented_attacks < 1:
 		errs.append("%s: needs at least one implemented attack action" % where)
 

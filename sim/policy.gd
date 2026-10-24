@@ -1414,7 +1414,8 @@ func barrier_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 ## What a Ward is worth (21 October): the breach it turns away, read as the Barrier's is (the
 ## blow lands on the shield instead, so the hull kept less the shield it costs), and every
 ## rider the blows aimed at it would lay this round, each at what a cleanse would clear of it:
-## a Scorch's and a Burn's heat, a disabled entry's share of the die, a corruption's bites.
+## a Scorch's and a Burn's heat and a corruption's bites, each by the stacks its rider lays, and
+## a disabled entry's share of the die.
 func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var after := _forecast_with(sk, who, "ward")
 	if after.is_empty():
@@ -1429,13 +1430,13 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	for a in sk.attackers_of(who):
 		var blows := float(a.strikes())
 		if a.has_keyword(a.action, "scorch"):
-			score += float(scorch) * blows * BANK_WEIGHT
+			score += float(scorch * a.rider(a.action, "scorch")) * blows * BANK_WEIGHT
 		if a.has_keyword(a.action, "burn"):
-			score += float(burn) * blows * BANK_WEIGHT
+			score += float(burn * a.rider(a.action, "burn")) * blows * BANK_WEIGHT
 		if a.has_keyword(a.action, "disable"):
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
-			score += float(Skirmish.corrupt_bite()) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+			score += float(Skirmish.corrupt_bite() * a.rider(a.action, "corrupt")) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 		# A silence sleeps the machine's buffs for the round, a purge takes them: the stacks at
 		# stake, a purge's for the rounds they would have run.
 		if a.has_keyword(a.action, "silence"):

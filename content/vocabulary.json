@@ -203,7 +203,7 @@
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
-   "codex": "Keyword with a number. On the player's weapons, Burn 3 means each foe hit gains three stacks of Burning, whatever the blow dealt. On a foe's attack: each blow that lands leaves a stack of Burning on the machine it hit.",
+   "codex": "Keyword with a number. On the player's weapons, Burn 3 means each foe hit gains three stacks of Burning, whatever the blow dealt. On a foe's attack the same: each blow that lands leaves that many stacks of Burning on the machine it hit.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the face beside the keyword (burn), and the validator asks for it."
@@ -405,7 +405,7 @@
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",
-   "codex": "Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent.",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Corrupted on the component the target's die is showing (Corrupt 2: two): it deals damage to its owner whenever spent, a bite a stack.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1741,7 +1741,7 @@
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Foe attack keyword. Each blow that lands leaves a stack of Scorched on the machine it hit: its weapons run hotter.",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): its weapons run hotter.",
    "status": "implemented",
    "design": {
     "holes": ""

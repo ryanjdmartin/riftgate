@@ -298,10 +298,19 @@ func intent_on(u) -> bool:
 ## keywords muted until the round's end; dispel (Purge since 20 October, its id kept): the
 ## machine hit loses every buff and store (Ryan, 17 and 18 October; built 21 October).
 const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all"]
+## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
+## player's Burn N: Scorch 2 lays two stacks a blow).
+const NUMBERED_RIDERS := ["scorch", "burn", "corrupt"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:
 	return a.get("keywords", []).has(k)
+
+
+## The stacks a numbered rider lays a blow: the move's number, one where it names none (a move
+## built in a test; content always says it).
+func rider(a: Dictionary, k: String) -> int:
+	return maxi(1, int(a.get(k, 1)))
 
 
 func breaches() -> bool:

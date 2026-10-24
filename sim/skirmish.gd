@@ -1529,18 +1529,20 @@ func _strike(f: Foe, t: MechState) -> void:
 				turned = true
 			continue
 		if f.has_keyword(f.action, "scorch") and t.alive():
-			_fire_on(t, "scorched", 1, f)
-			log.append("%s scorches %s" % [f.display_name, t.unit.display_name])
+			var ns := f.rider(f.action, "scorch")
+			_fire_on(t, "scorched", ns, f)
+			log.append("%s scorches %s ×%d" % [f.display_name, t.unit.display_name, ns])
 		if f.has_keyword(f.action, "burn") and t.alive():
-			_fire_on(t, "burning_mech", 1, f)
-			log.append("%s sets %s burning" % [f.display_name, t.unit.display_name])
+			var nb := f.rider(f.action, "burn")
+			_fire_on(t, "burning_mech", nb, f)
+			log.append("%s sets %s burning ×%d" % [f.display_name, t.unit.display_name, nb])
 		if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
 			# The entry the die shows is switched off through the mech's next turn.
 			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 			log.append("%s disables %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
 		if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
-			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
+			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
 		if f.has_keyword(f.action, "silence") and t.alive():
 			_silence(t, f)
@@ -2214,7 +2216,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var hit_names: Array[String] = []
 			for ms in live_mechs():
 				if ms.face_index >= 0:
-					Effects.corrupt_entry(ms.unit, ms.face_index, "foe:" + f.content_id)
+					Effects.corrupt_entry(ms.unit, ms.face_index, "foe:" + f.content_id, maxi(1, value))
 					hit_names.append(ms.unit.display_name)
 			log.append("%s: %s, the showing component of %s is corrupted" % [f.display_name, str(a.get("name", "unravels")), ", ".join(hit_names) if not hit_names.is_empty() else "nobody"])
 		_:

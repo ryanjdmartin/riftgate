@@ -1323,6 +1323,24 @@ func test_the_codex_plate_lists_the_traits() -> void:
 
 
 ## A fresh database the test may edit (the default one is shared and cached).
+func test_a_foes_stacking_rider_says_its_number() -> void:
+	# 24 October: a foe's Scorch, Burn and Corrupt say their stacks, as the player's Burn does,
+	# and so does an effect that lays them.
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [{"id": "lick", "name": "Lick", "kind": "attack", "weight": 1, "keywords": ["scorch"], "text": "", "status": "implemented"}]
+	db.foes["test_licker"] = f
+	assert_true(_refused(db, "foe test_licker", "says its stacks"), "a Scorch without its number is refused")
+	f["actions"][0]["scorch"] = 2
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_licker"), "Scorch 2 validates clean: %s" % e)
+	f["actions"][0]["corrupt"] = 1
+	assert_true(_refused(db, "foe test_licker", "rides with the corrupt keyword"), "a number without its rider is refused")
+	f["actions"][0].erase("corrupt")
+	f["actions"].append({"id": "frost", "name": "Frost", "kind": "debuff", "effect": "corrupt_all", "weight": 1, "text": "", "status": "implemented"})
+	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
+
+
 func _fresh() -> ContentDB:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

@@ -7,7 +7,9 @@ extends SceneTree
 ## as always true (its run of 24 October opened the three that read the player's state, a
 ## machine at a heat, a machine showing a weapon and a reroll left, which went after it). Per
 ## special it tallies the rounds its foe drew a move, the draws its condition held, and the
-## draws that picked it.
+## draws that picked it, and each fight's overheats and the hull they cost. --heat N scales every
+## foe's heat stacks (its Scorch and Burn riders, its burn and scorch_all moves) by N before the
+## fights, to size a buff; --only a,b keeps the cells whose names hold one of the words.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
 
 const OPENED := []
@@ -27,6 +29,8 @@ var seeds := 10
 var step := 1
 var part := 0
 var parts := 1
+var heat := 1.0
+var only: Array = []
 
 
 func _init() -> void:
@@ -43,17 +47,26 @@ func _init() -> void:
 				var p := args[i + 1].split("/")
 				part = int(p[0])
 				parts = maxi(1, int(p[1]))
+			"--heat":
+				heat = float(args[i + 1])
+			"--only":
+				only = Array(args[i + 1].split(","))
 	db = ContentDB.load_default()
 	if out_path.is_empty() or not db.load_errors.is_empty():
 		push_error("special_probe: --out <file> is needed and the content must load")
 		quit(1)
 		return
+	if not is_equal_approx(heat, 1.0):
+		_scale_heat(heat)
 	var trios := _starters()
 	var picked: Array = []
 	for i in range(0, trios.size(), step):
 		picked.append(trios[i])
-	var cells := _cells()
-	var res := {"trios": picked.size(), "cells": cells.size(), "seeds": seeds, "rows": {}}
+	var cells: Array = []
+	for c in _cells():
+		if only.is_empty() or only.any(func(w) -> bool: return str(c["id"]).contains(str(w))):
+			cells.append(c)
+	var res := {"trios": picked.size(), "cells": cells.size(), "seeds": seeds, "heat": heat, "rows": {}}
 	var n := 0
 	for t in picked:
 		for c in cells:
@@ -110,7 +123,7 @@ func _cells() -> Array:
 
 
 func _run(trio: Array, cell: Dictionary, opened: bool) -> Dictionary:
-	var agg := {"fights": 0, "won": 0, "rounds": 0, "hull_lost": 0, "hull_max": 0, "specials": {}}
+	var agg := {"fights": 0, "won": 0, "rounds": 0, "hull_lost": 0, "hull_max": 0, "overheats": 0, "over_hull": 0, "fights_overheated": 0, "specials": {}}
 	for s in range(seeds):
 		var sk := ProbeSkirmish.new(s + 1)
 		if opened:
@@ -127,6 +140,7 @@ func _run(trio: Array, cell: Dictionary, opened: bool) -> Dictionary:
 		sk.begin()
 		var pol := Policy.make(Policy.GREEDY, s + 1)
 		var rounds := 0
+		var burnt := false
 		while sk.outcome == Skirmish.Outcome.NONE and rounds < Policy.MAX_ROUNDS:
 			var carried := {}
 			for f in sk.field_foes():
@@ -138,6 +152,12 @@ func _run(trio: Array, cell: Dictionary, opened: bool) -> Dictionary:
 			if sk.outcome != Skirmish.Outcome.NONE:
 				break
 			sk.end_round()
+			for o in sk.overheats:
+				agg["overheats"] += 1
+				agg["over_hull"] += int(o["over"])
+				burnt = true
+		if burnt:
+			agg["fights_overheated"] += 1
 		agg["fights"] += 1
 		agg["rounds"] += rounds
 		if sk.outcome == Skirmish.Outcome.VICTORY:
@@ -167,3 +187,15 @@ func _tally(sk: ProbeSkirmish, agg: Dictionary, carried: Dictionary) -> void:
 			if str(f.action.get("id", "")) == str(a.get("id", "")):
 				row["picked"] += 1
 			agg["specials"][key] = row
+
+
+## Every foe's heat stacks scaled by `k` (rounded, one at least): its Scorch and Burn riders and
+## the stacks its burn and scorch_all moves lay.
+func _scale_heat(k: float) -> void:
+	for id in db.foes.keys():
+		for a in db.foes[id].get("actions", []):
+			for r in ["scorch", "burn"]:
+				if a.has(r):
+					a[r] = maxi(1, roundi(float(a[r]) * k))
+			if ["burn", "scorch_all"].has(str(a.get("effect", ""))):
+				a["value"] = maxi(1, roundi(float(a.get("value", 0)) * k))

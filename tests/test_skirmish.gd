@@ -4050,6 +4050,27 @@ func test_brace_is_flat_armour_for_the_rounds_it_says() -> void:
 	assert_eq(m.armour, 0, "gone with the round")
 
 
+func test_a_foes_rider_lays_its_number_of_stacks() -> void:
+	# The numbered riders (24 October, as the player's Burn N does): Scorch 2 lays two stacks a
+	# blow, Burn 3 three, Corrupt 2 two on the entry the die shows; a rider naming no number, as
+	# a move built here may, lays one.
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(m)
+	var f := _ghoul(500, 5)
+	f.actions = [{"id": "lick", "name": "Lick", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1,
+		"keywords": ["scorch", "burn", "corrupt"], "scorch": 2, "burn": 3, "corrupt": 2, "text": ""}]
+	f.action = f.actions[0]
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "scorched"), 2, "Scorch 2: two stacks of Scorched")
+	assert_eq(Effects.stacks_of(m, "burning_mech"), 3, "Burn 3: three of Burning")
+	assert_eq(Effects.corrupt_stacks(m, 0), 2, "Corrupt 2: two on the entry the die shows")
+	assert_eq(f.rider({"keywords": ["scorch"]}, "scorch"), 1, "no number: one")
+
+
 func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	# Hush: the showing weapon is switched off through the machine's next turn, no blow.
 	var sk := Skirmish.new(1, 1)

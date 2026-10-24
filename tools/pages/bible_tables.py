@@ -64,7 +64,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
-FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above).",
+FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away."}
 SHARED = ["burn", "breach"]   # our keyword and the foes' rider share the word, each with a row
 KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)

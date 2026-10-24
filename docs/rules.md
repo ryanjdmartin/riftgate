@@ -490,12 +490,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   it is aimed at no machine.
 - **A blow** is its base attack times the move's factor, plus its swarm for each other live
   foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
-  two): breach (the blow ignores the shield and the armour), scorch (a stack of Scorched), burn (a stack of
-  Burning), disable (the entry the machine shows), corrupt (a Corrupted stack on it), silence
+  two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
+  Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), silence
   (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
-  Lure moves it).
+  Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
+  does (Scorch 2: two).
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
   next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
   value), brace all (the same on every foe in the fight, through the next round), revive once,
@@ -503,7 +504,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
-  Scorched on every machine), corrupt all (Corrupted on the entry every machine shows),
+  Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence, purge (each on its target, no blow; a Ward turns both away). No foe in
   content carries a silence or a purge yet.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
