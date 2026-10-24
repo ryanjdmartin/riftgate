@@ -30,9 +30,10 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
-carries all three again (24 October: `claude/eager-newton-sf947u`'s curve and fronts merged in,
-with the foes' numbered riders and doubled heat on top):
+Three branches stand beside main, each holding the one before it, and
+`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
+`ccr-170f6d81-465jnr`'s numbered riders, doubled heat and to-do, then Ryan's calls on the curve's
+pay and the fronts on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -42,7 +43,9 @@ with the foes' numbered riders and doubled heat on top):
   then the curve and the fronts, Ryan's tier and ramp beside the rift that deepens, what each
   reward scales on and his question whether a perfect run is possible, in
   `docs/curve_proposal.md`, the turn loop modelled by `tools/turn_loop.py` (v0.276, v0.277 and
-  v0.281).
+  v0.281); then his calls on the pay (loot and the shelf by the tier, tier three a chance and a
+  highlight), his concern for the run's supply of components, the widening rift and the stick and
+  carrot on the shelf (v0.284).
 - `ccr-7d865127-wr1ko2`: the four Kestrel machines decided on 21 October in content and
   modelled, their second round of looks on Ryan's notes, the interceptor brief retired (the
   bible's v0.268, the hangar's version 99), with the stock pass's branch merged in.
@@ -60,7 +63,7 @@ with the foes' numbered riders and doubled heat on top):
   the first cut (v0.272 to v0.283).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
+a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -171,11 +174,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.283, and so is the live (24 October,
-  the page's version 300, from `ccr-170f6d81-465jnr`: the pinned plate-seeking aim read against
-  random targeting; v0.282 before it, the heat row's first cut and the riders numbered in the
-  tables, onto `claude/eager-newton-sf947u`'s v0.281, the curve and fronts questions pointed at
-  `docs/curve_proposal.md`). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.284, and so is the live (24 October,
+  the page's version 301, from `claude/eager-newton-sf947u`: Ryan's calls on the curve's pay and
+  the fronts in section 12, tier three a highlight in section 10; onto `ccr-170f6d81-465jnr`'s
+  v0.283, the page's version 300, the pinned plate-seeking aim read against random targeting, and
+  its v0.282 before it, the heat row's first cut and the riders numbered). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and

@@ -226,8 +226,10 @@ python3 tools/stock_loop.py compare base blows
 python3 tools/endgame_fours.py endgame30
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
 # battle won, each rift keeping the tier it opened at; per way of choosing the front, the cities fallen, the fronts
-# on the board, the turns offering two tiers and the rescues on a low gate. Seconds; a model, not a run of the game
+# on the board, the turns offering two tiers and the rescues on a low gate. --widen N tries a rift that steps a tier
+# up once it has bled its city N times. Seconds; a model, not a run of the game
 python3 tools/turn_loop.py --seeds 2000
+python3 tools/turn_loop.py --seeds 2000 --widen 3
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
