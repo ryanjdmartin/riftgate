@@ -33,8 +33,7 @@ tier-two rift draws the tier-two spawns, elites and bosses). And the curve row's
 cleanly between its two numbers. What the foes are and what the fight holds (simple or advanced
 foes, their mechanics, the elites, the identities, the guests) go on the tier; how many and how
 fast (the density, the rift timer) go on the ramp. Both forms sit inside section 3's
-never-inflate row, since the ramp is density and spawn rate, never the foes' numbers. One step
-of the first form may come back on top of the second, as the fronts' widening rift (below).
+never-inflate row, since the ramp is density and spawn rate, never the foes' numbers.
 
 **How a rift's tier is set.** By the Convergence's tier as the rift opens, shown 1 to 3 where
 the code counts 0 to 2. A rift's tier is then the components' tier it pays, so "a tier-2 rift"
@@ -63,7 +62,6 @@ What the records say today beside Ryan's guesses and calls (24 October), with Cl
 | The loot on the map (his "map chests"; working names Derelict, Carcass, Relic, never "chest" in shown text) | Salvage and components, seeded with the map; not built | Call: quality on the tier ("Loot being based on tier is fine"), the ramp kept for drop rates "if we need to fine tune later"; quantity on the salvage scale | Agreed |
 | The host maker's offer | A module, a component a tier above the shelf's and a chassis (`docs/economy_pass.md`) | As the loot | The rift's tier, with its component at that tier, so an old front's offer may sit below the shelf: the price of the safe front |
 | The boss's token | Three blueprints of the domain's theme at the Convergence's tier | As the loot | The rift's tier |
-| The Fracture's picks (section 8) | A battle-long modifier, a one-shot or a boon; not built | | The rift's tier |
 | The procurement shelf | Its tier gated by the Convergence (`docs/economy_pass.md`) | Call: the Convergence and the tier rifts are opening at | Agreed |
 
 **Tier three** (Ryan's call): a chance, "probably zero in tier 1 rifts, small in tier two, and
@@ -72,24 +70,23 @@ tier 3 gear is a healthy endgame, my intent is for them to be highlight, chase p
 the records' sense of a chase piece: the rare find that breaks the game now and then (section
 2's rule-text row), never a lynchpin a build needs (section 2's synergy row).
 
-**Enough components?** Ryan, 24 October: "I'm mildly concerned that with just the procurement
-shelf, maker rewards (if component chosen), and rare blueprints, the player might not be given
-enough components to work with, unless map chests are plentiful and/or bountiful. Which they
-could be." He raised loot at the end of a battle as an option. What the records bring in
-(section 10's offers row): every won battle's boss drops a research token, a choice of three
-blueprints of its domain's theme at the tier, and a blueprint builds copies without limit for
-salvage, so the tokens are the run's main source of components, up to a dozen blueprints a run
-beside the eight basics; then the host maker's offer, the map's loot, the shelf, and a bought
-chassis's stock, a copy of each piece. A squad of four has about sixteen hardpoints (about four
-a machine at every chassis tier). By count the supply is not thin; what can be thin is salvage
-per copy, which the economy pass prices, and how far a token's three reach (one domain's theme
-at one tier). Claude's lean: loot at the end of a battle held as a lever, measured first. A
-battle already ends with two lasting picks (the token's and the offer's) and holds three to
-five Fracture picks, so a third lasting reward dilutes the two, and a drop the player only
-receives adds no decision, where the map's loot carries the detour. If the supply reads thin
-once a runner persona builds from its tokens, the levers in order: the map's loot more
-plentiful or more bountiful (Ryan's own option), a token unpacking with its first copy built,
-then loot at the end of a battle.
+**Breadth** (Ryan, 24 October): the concern is breadth, not quantity. "A blueprint offers more
+volume of the same component, not additional options for finding synergy components ...
+Especially since our component pool could be very large"; the boss's blueprint is themed and
+meant as a guaranteed higher-quality piece, "which doesn't necessarily mean a useful synergy
+piece"; and a build needs room to upgrade, an endgame build being all tier two and maybe a couple
+of tier-three pieces ("Obviously any of the above can change"). What shows a run different
+pieces today is the host maker's offer (one component among its three things a win), the shelf,
+and the map's loot, which deals what it holds rather than a choice. With the loot by the rift's
+tier, the first third of a run deals tier one, and today's unlocked pool is 24 tier-one pieces,
+14 tier-two and 2 tier-three, so the tier a build upgrades into is the smaller share; if the
+endgame is mostly tier two, that is where the pool grows. Claude's lean: loot at a battle's end
+as a pick, one of three component copies from the whole pool at the rift's tier, unthemed. It is
+the breadth source, as Slay the Spire's card reward is, and the token's complement: the token
+gives depth in one themed piece, the pick breadth across the pool. The map's loot stays the
+detour's luck. The records have the token's three at the rift's tier, as the loot is; a
+guaranteed higher quality (a tier above, or a better chance at the top of its tier) is a line to
+add, if that is the intent.
 
 ## The fronts: does a rift close on its own, and is a perfect run possible?
 
@@ -135,47 +132,38 @@ Claude's leans:
    into a set piece, when it has to hurt because it could have been prevented. This reopens
    if the runner, once a persona chooses fronts, shows good players never losing a city (the
    bleed too soft) or always losing one.
-2. **No rift closes on its own; one that has bled its city long enough widens a tier.** Ryan's
-   effect, a nastier front at the weakened city to finish the job, needs no rift to close: the
-   rift widens in place, a step up once at a threshold, its card counting down to it. That keeps
-   his thematic no, needs no rule to steer where the next rift opens, and moves a rift's tier only
-   on a countdown the card shows. In the model (`--widen`), at a rift's third bleed (its city at
-   50) a player who rotates never meets a widened rift, since the oldest front waits two bleeds
-   at most; a player who chases meets three a run, each a tier up on a gate of 50; and a player
-   who always takes the highest tier no longer loses two cities a run, since the widened front
-   becomes the richest on the board and draws it back. At the second bleed every player meets
-   six or seven a run on a gate of 100, the rotation too, which steepens the whole curve instead
-   of pricing neglect. So the threshold sits one bleed past the rotation's longest wait: three on
-   today's numbers. It prices exactly the brinkmanship the bleed leaves free, and its pay, a tier
-   up, is the carrot for going back, set against a harder fight on a weak gate.
+2. **No rift closes on its own.** Ryan's thematic no stands, and the mechanical case fails. A
+   rift that has bled its city long enough giving way to a higher tier, whether by closing and
+   reopening or by widening in place (Claude's deepening rift again), pays the neglect a tier,
+   since a battle's loot follows the tier: "a rift upgrading a tier is more like a reward for
+   ignoring it" (Ryan, 24 October). The model shows it: at a rift's third bleed, the player who
+   always takes the highest tier stops losing cities, because the widened front becomes the
+   richest on the board (`--widen`, `docs/measurements.md`). Dropped.
 
 ## The stick and the carrot
 
 Ryan, 24 October: city damage could hurt "in other ways than just not getting paid", the
 city's maker's stock on the shelf "more expensive, and then more rare, before finally
-disappearing if the city falls. Not sure if that's enough of a price, but it's thematic"; and a
-carrot beside the stick, "since if the penalties are too great (i.e. payment for defending would
-be basically nothing), then it might just be a better opportunity cost to ignore it and let it
-fall."
+disappearing if the city falls"; and a carrot beside the stick, "since if the penalties are too
+great (i.e. payment for defending would be basically nothing), then it might just be a better
+opportunity cost to ignore it and let it fall." Then: "The point of my maker penalties was only
+biting during a seige, giving the player a discrete reason to go fix it."
 
-- His hole in Claude's earlier lean is right: docking the win's Favour for the whole siege would
-  leave a rescue from the brink paying nothing. Withdrawn; the dock stays the battle's own.
-- The shelf stick is thematic and visible, and its last step is already decided (a fallen city's
-  maker leaves the shelf). Alone it is soft: the gate refills at the win, so it bites only while
-  a siege lasts, and only on what the player would buy from that maker.
-- A carrot keyed to the rescue, a bonus for saving a city from the brink, rewards brinkmanship:
-  the careful chaser would wait for the brink on purpose. Keyed to the city's health, it rewards
-  prevention.
-- Claude's lean: one dial, Ryan's stick run both ways. The shelf price of a maker's stock reads
-  its city's gate: a discount while the gate stands whole, dearer as it drops, rarer below half,
-  gone at the fall. A win refills the gate, so defending a city puts its maker's stock on
-  discount at once: the carrot, paid where the player shops. With the widening rift, going back
-  to a neglected front pays a tier more.
+- The stick, as he means it: while a siege lasts, the city's maker's stock on the shelf grows
+  dearer, then rarer; lifting the siege restores it; a fall takes it off the shelf, as is already
+  decided. A discrete, visible reason to go and fix it.
+- Withdrawn on Ryan's points: Claude's siege dock, the win's Favour docked for the whole siege,
+  which would leave a rescue from the brink paying nothing; and Claude's discount while a gate
+  stands whole, which rewards chasing a single maker, saving it while it stands and ignoring the
+  rest even more ("It stifles diversity").
+- The carrot is the normal pay: a rescue pays its Favour, docked only for the battle's own
+  damage, its maker's offer, its token and its loot. Any carrot beyond it is open, with two tests
+  from this exchange: it must not reward waiting for the brink, nor nursing one maker.
 - The late run: near the end a fall costs little. The maker's future hardly matters, the drain
   runs a turn or two, and the finale was due anyway: a fall on the last turn costs the capital
-  25. So no shelf price bites late. If a perfect run is to mean something there, the finale
-  could pay for each city still standing, its gate's guns or its maker's last shipment beside the
-  capital. Claude's idea, for Ryan.
+  25. If a perfect run is to mean something there, the finale could pay for each city still
+  standing, its gate's guns or its maker's last shipment beside the capital. Claude's idea, for
+  Ryan.
 
 ## The runner
 

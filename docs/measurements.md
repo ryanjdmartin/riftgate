@@ -1260,8 +1260,8 @@ a fall costs nothing once its rift is won (the free restore; Favour docks only t
 damage), so a careful chaser keeps every city at the price of three rescues on a low gate.
 Two tiers share the board only around the steps, since a front lives two or three turns.
 
-**The widening rift** (`--widen N`, Ryan's idea of 24 October in the form `docs/curve_proposal.md`
-leans to: a rift that has bled its city N times steps a tier up, once, to the top tier at most).
+**The widening rift** (`--widen N`, Ryan's idea of 24 October in the form Claude proposed, then
+dropped: a rift that has bled its city N times steps a tier up, once, to the top tier at most).
 The same 2,000 seeds.
 
 | Widens at | Front chosen | Cities fallen a run | Widened rifts fought a run | Their cities' gate | Two tiers on the board |
@@ -1273,9 +1273,10 @@ The same 2,000 seeds.
 | The second bleed | Either chaser | 0 | 7 | 100 | 33% |
 
 Read: at the third bleed the widening touches only the fronts a rotation never leaves that long,
-so it prices the chase alone, and the always-chaser keeps its cities because a widened front is
-the richest on the board and draws it back; at the second bleed it meets the rotation too, a
-tier up on half the run's battles.
+and it pays the chase: the always-chaser keeps its cities because a widened front becomes the
+richest on the board, a tier of loot for the neglect (Ryan, 24 October: "more like a reward for
+ignoring it"); at the second bleed it meets the rotation too, a tier up on half the run's
+battles. Dropped (`docs/curve_proposal.md`).
 
 ## 24 October, the foes' heat doubled
 

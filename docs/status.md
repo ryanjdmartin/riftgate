@@ -33,7 +33,7 @@ are in `README.md`.
 Three branches stand beside main, each holding the one before it, and
 `claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
 `ccr-170f6d81-465jnr`'s numbered riders, doubled heat and to-do, then Ryan's calls on the curve's
-pay and the fronts on top):
+pay and the fronts on top, its bot valuations line merged in after):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -44,8 +44,9 @@ pay and the fronts on top):
   reward scales on and his question whether a perfect run is possible, in
   `docs/curve_proposal.md`, the turn loop modelled by `tools/turn_loop.py` (v0.276, v0.277 and
   v0.281); then his calls on the pay (loot and the shelf by the tier, tier three a chance and a
-  highlight), his concern for the run's supply of components, the widening rift and the stick and
-  carrot on the shelf (v0.284).
+  highlight), his concern for the breadth of components, the Fracture picks as the battle's
+  roguelike part and never loot, and the fronts as he set them: no rift closing or stepping up,
+  a siege costing its maker's stock on the shelf while it lasts (v0.284 and v0.285).
 - `ccr-7d865127-wr1ko2`: the four Kestrel machines decided on 21 October in content and
   modelled, their second round of looks on Ryan's notes, the interceptor brief retired (the
   bible's v0.268, the hangar's version 99), with the stock pass's branch merged in.
@@ -174,9 +175,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.284, and so is the live (24 October,
-  the page's version 301, from `claude/eager-newton-sf947u`: Ryan's calls on the curve's pay and
-  the fronts in section 12, tier three a highlight in section 10; onto `ccr-170f6d81-465jnr`'s
+  `docs/design-bible.html` after every change. This file is v0.285, and so is the live (24 October,
+  the page's version 302, from `claude/eager-newton-sf947u`: Ryan's corrections on breadth, the
+  Fracture picks and the fronts in sections 8 and 12; v0.284 before it, the page's version 301,
+  his calls on the curve's pay, tier three a highlight in section 10; onto `ccr-170f6d81-465jnr`'s
   v0.283, the page's version 300, the pinned plate-seeking aim read against random targeting, and
   its v0.282 before it, the heat row's first cut and the riders numbered). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
