@@ -57,7 +57,7 @@ with the foes' numbered riders and doubled heat on top):
   on his word, then random targeting as the baseline with an aim on any foe whose threat calls
   for one (Ryan's correction: the baseline random, not everything), no foe over-committing, the
   stale quote on randomness gone, the foes' stacking riders numbered and their heat doubled as
-  the first cut (v0.272 to v0.282).
+  the first cut (v0.272 to v0.283).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
 a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
@@ -171,10 +171,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.282, and so is the live (24 October,
-  the page's version 299, from `ccr-170f6d81-465jnr`: the heat row's first cut, the riders
-  numbered in the tables; onto `claude/eager-newton-sf947u`'s v0.281, the page's version 298,
-  the curve and fronts questions pointed at `docs/curve_proposal.md`). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.283, and so is the live (24 October,
+  the page's version 300, from `ccr-170f6d81-465jnr`: the pinned plate-seeking aim read against
+  random targeting; v0.282 before it, the heat row's first cut and the riders numbered in the
+  tables, onto `claude/eager-newton-sf947u`'s v0.281, the curve and fronts questions pointed at
+  `docs/curve_proposal.md`). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and

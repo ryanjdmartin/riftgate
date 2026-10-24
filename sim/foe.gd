@@ -53,7 +53,7 @@ var regrow_due: Array = []       # [part id, round it returns] for each part on 
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
-const AIM_ANYTHING := "anything"   # at random: the default, the rank and file's
+const AIM_ANYTHING := "anything"   # at random: the default
 const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
 const AIM_TEXT := {
 	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",

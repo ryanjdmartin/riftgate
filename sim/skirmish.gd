@@ -3183,12 +3183,15 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 	return "cracked"
 
 
-## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The aim: the exposed, weighted by the hull its blow would reach, so a
-## shield standing lowers the draw and a shield down raises it; anything, uniform; heat, the
-## hottest machine; the armed, a machine showing an intact weapon (the exposed when none
-## does); fires as one, the rank's shared pick. The pick is a commitment: a foe whose target
-## shields up still swings at it. With the override set, or asked with no foe, the rule
-## before: the lowest shield, then the lowest hull.
+## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows, at
+## random unless the foe carries an aim (24 October). Anything, uniform; the exposed, weighted
+## by the hull its blow would reach, so a shield standing lowers the draw and a shield down
+## raises it; heat, the hottest machine; the armed, a machine showing an intact weapon; the
+## buffed, the most stacks of buffs (each of those two the exposed when no machine qualifies);
+## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
+## the blows already drawn this round would wreck, while another stands. The pick is a
+## commitment: a foe whose target shields up still swings at it. With the override set, or
+## asked with no foe, the rule before: the lowest shield, then the lowest hull.
 func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
