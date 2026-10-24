@@ -76,7 +76,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   each foe special's condition holds and it is picked, and each fight's overheats, as built, with
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
   parts); `endgame_fours.py` fits the five
-  endgame fours up to tier two and runs them through the loop driver; `screenshot.gd` renders a
+  endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
+  campaign's turn loop from its constants with every battle won, for the pressure the fronts put
+  on the cities; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -114,8 +116,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   direction and rework, each the design's one home, with a README; the makers' proposal files
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
-  (`bosses_proposal.md`) and the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), each
-  retired once its decisions are rows and content; `sprites-enemies.html`,
+  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`) and the
+  curve and the fronts (`curve_proposal.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
@@ -222,6 +224,10 @@ python3 tools/stock_loop.py compare base blows
 # every hardpoint and module slot filled up to tier two, checked against the content and run through the loop driver
 # (random and greedy at 30 seeds, no campaign unless --campaign; stock_loop run options pass through)
 python3 tools/endgame_fours.py endgame30
+# the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
+# battle won, each rift keeping the tier it opened at; per way of choosing the front, the cities fallen, the fronts
+# on the board, the turns offering two tiers and the rescues on a low gate. Seconds; a model, not a run of the game
+python3 tools/turn_loop.py --seeds 2000
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.

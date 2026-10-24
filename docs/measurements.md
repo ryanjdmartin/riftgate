@@ -1236,6 +1236,30 @@ to over-commit beside, and the heroes and the Bone Wyvern keep their aims. The n
 on a baseline the player's composition does not move; the formations' pressure is the numbers'
 to restore when the units are balanced for real, and an advanced foe's aim is a lever on top.
 
+## 24 October, the turn loop's pressure
+
+**Ryan's question** (24 October: does a rift ever close on its own, and is a perfect run, every
+city standing, possible in a run of limited battles?). `tools/turn_loop.py`: the turn loop of
+`sim/campaign.gd` modelled from its constants (four cities, gate 200, bleed 50, rifts open to 2
+plus the Convergence's tier, a won city quiet a turn, the finale at 12), with every battle won
+and no pusher let through, so whatever falls, the schedule felled. Each rift keeps the tier it
+opened at (Ryan's locked tier, `docs/curve_proposal.md`). 2,000 seeds. A model of the
+arithmetic, not a run of the game.
+
+| Front chosen | Cities fallen a run | Fronts on the board, by tier | Two tiers on the board | Most gate lost when fought | Rescues on a gate of 50 |
+|---|---|---|---|---|---|
+| The oldest | 0 | 2, 3, 3 | 25% of turns | 100 | 0 |
+| The higher tier, turning back for a city one bleed from falling | 0 | 2, 3, 3 | 50% of turns, the higher taken on half | 150 | 3 a run |
+| The higher tier always | 2 | 2, 2 or 3, 2 | 55% of turns | 50 | 0 |
+
+Read: the schedule never fells a city, nor does one passed turn at any Convergence (the oldest
+front fought every other turn), so falls come from lost battles; the cap on open rifts
+bounds the pressure and the battle count does not. The third tier's extra rift never opens while
+every battle is won (the fourth city is the one just won, quiet for a turn). The bleed short of
+a fall costs nothing once its rift is won (the free restore; Favour docks only the battle's
+damage), so a careful chaser keeps every city at the price of three rescues on a low gate.
+Two tiers share the board only around the steps, since a front lives two or three turns.
+
 ## 24 October, the foes' heat doubled
 
 **Ryan's call** (24 October: heat needs to be more threatening, and because the heat debuffs can
