@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 612 tests, 63,167 checks, green on `ccr-170f6d81-465jnr` (24 October, the rank and file
-  at random), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 614 tests, 63,141 checks, green on `ccr-170f6d81-465jnr` (24 October, the foes' riders
+  numbered and their heat doubled), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -30,10 +30,9 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and
-`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
-`ccr-170f6d81-465jnr`'s foes' gates and the rank and file at random, then the curve and the
-fronts on top):
+Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
+carries all three again (24 October: `claude/eager-newton-sf947u`'s curve and fronts merged in,
+with the foes' numbered riders and doubled heat on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -57,10 +56,11 @@ fronts on top):
   never his, the gates on the player's state measured by `tools/special_probe.gd` and removed
   on his word, then random targeting as the baseline with an aim on any foe whose threat calls
   for one (Ryan's correction: the baseline random, not everything), no foe over-committing, the
-  heat debuffs to be buffed and the stale quote on randomness gone (v0.272 to v0.280).
+  stale quote on randomness gone, the foes' stacking riders numbered and their heat doubled as
+  the first cut (v0.272 to v0.282).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
+a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -110,8 +110,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   campaign's plain player wins none of 40 runs, its fights mostly one machine alone (both
   section 12's). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
-  formations read a few points easier for it, and their pressure is the balancing's to restore,
-  the heat debuffs' buff first (the to-do).
+  formations read a few points easier for it, and their pressure is the balancing's to restore.
+  The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
+  to 69% for the starter trios, the cold ones paying a little to heat and the hottest walled on
+  the greedy bot (Ryan's play judges it, the to-do).
 
 ## Decided, not built
 
@@ -169,12 +171,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.281, and so is the live (24 October,
-  the page's version 298, from `claude/eager-newton-sf947u`: section 12's curve and fronts
-  questions pointed at `docs/curve_proposal.md`; merged three ways onto the live v0.280, the
-  page's version 297, published by another session ahead of its commit, the aim row on Ryan's
-  "It's the baseline that needs to be random, not everything", itself onto
-  `ccr-170f6d81-465jnr`'s v0.279, the page's version 296). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.282, and so is the live (24 October,
+  the page's version 299, from `ccr-170f6d81-465jnr`: the heat row's first cut, the riders
+  numbered in the tables; onto `claude/eager-newton-sf947u`'s v0.281, the page's version 298,
+  the curve and fronts questions pointed at `docs/curve_proposal.md`). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -182,9 +182,10 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 103 (24 October, from
-  `ccr-170f6d81-465jnr`: the foes with the rank and file at random and the vocabulary's Aim; the
-  live files identical to version 102's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 104 (24 October, from
+  `ccr-170f6d81-465jnr`: the foes with their riders numbered and their heat doubled, the
+  vocabulary's riders and Aim; the live files identical to version 103's and `edits` empty
+  before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
