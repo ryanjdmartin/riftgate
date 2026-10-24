@@ -59,9 +59,9 @@ What the records say today beside Ryan's guesses and calls (24 October), with Cl
 | Favour for the win | 100, docked a point for each gate point the battle let through | Guess: on the tier and the ramp | Agreed, since what it buys rises with the Convergence; the dock stays the battle's own (the stick and the carrot, below) |
 | Salvage | 10 a kill, in any fight, to be weighted by threat (section 10's kill row) | Guess: by the kills, no scaling of its own | Agreed: the kills carry both, the tier in which foes they are, the ramp in how many |
 | Anathema | The threat-weighted tally (section 3's tally row) | Guess: by the kills | Agreed, as salvage |
-| The loot on the map (his "map chests"; working names Derelict, Carcass, Relic, never "chest" in shown text) | Salvage and components, seeded with the map; not built | Call: quality on the tier ("Loot being based on tier is fine"), the ramp kept for drop rates "if we need to fine tune later"; quantity on the salvage scale | Agreed |
+| The loot on the map (his "map chests"; working names Derelict, Carcass, Relic, never "chest" in shown text) | Salvage and components, seeded with the map; not built | Call: quality on the tier ("Loot being based on tier is fine"), the ramp kept for drop rates "if we need to fine tune later"; quantity on the salvage scale; a tier-two rift still deals cheap tier-one pieces, since the middle of a run completes its tier-two loadouts over a whole tier and resources run short early by design | Agreed |
 | The host maker's offer | A module, a component a tier above the shelf's and a chassis (`docs/economy_pass.md`) | As the loot | The rift's tier, with its component at that tier, so an old front's offer may sit below the shelf: the price of the safe front |
-| The boss's token | Three blueprints of the domain's theme at the Convergence's tier | As the loot | The rift's tier |
+| The boss's token | Three blueprints of the domain's theme at the Convergence's tier | Call: at the rift's tier, never below (his "guaranteed higher quality"), so a tier-three rift's token is a guaranteed tier three, and a guaranteed tier two is on average better than what a machine carries | Agreed |
 | The procurement shelf | Its tier gated by the Convergence (`docs/economy_pass.md`) | Call: the Convergence and the tier rifts are opening at | Agreed |
 
 **Tier three** (Ryan's call): a chance, "probably zero in tier 1 rifts, small in tier two, and
@@ -80,13 +80,10 @@ pieces today is the host maker's offer (one component among its three things a w
 and the map's loot, which deals what it holds rather than a choice. With the loot by the rift's
 tier, the first third of a run deals tier one, and today's unlocked pool is 24 tier-one pieces,
 14 tier-two and 2 tier-three, so the tier a build upgrades into is the smaller share; if the
-endgame is mostly tier two, that is where the pool grows. Claude's lean: loot at a battle's end
-as a pick, one of three component copies from the whole pool at the rift's tier, unthemed. It is
-the breadth source, as Slay the Spire's card reward is, and the token's complement: the token
-gives depth in one themed piece, the pick breadth across the pool. The map's loot stays the
-detour's luck. The records have the token's three at the rift's tier, as the loot is; a
-guaranteed higher quality (a tier above, or a better chance at the top of its tier) is a line to
-add, if that is the intent.
+endgame is mostly tier two, that is where the pool grows. Ryan's call (24 October): loot at a
+battle's end waits ("lets just wait and see"), since beefing up the loot wrecks on the map and
+giving the player more to buy from the shelf with is "theoretically more interesting"; the
+economy pass sets both (`docs/economy_pass.md`).
 
 ## The fronts: does a rift close on its own, and is a perfect run possible?
 
