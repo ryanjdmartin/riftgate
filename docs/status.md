@@ -30,15 +30,20 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and `ccr-170f6d81-465jnr`
-carries all three again (24 October: fast-forwarded onto `claude/eager-newton-sf947u`'s shape
-for the curve, then the foes' gates removed on top):
+Three branches stand beside main, each holding the one before it, and
+`claude/eager-newton-sf947u` carries all three again (24 October: fast-forwarded onto
+`ccr-170f6d81-465jnr`'s foes' gates and the rank and file at random, then the curve and the
+fronts on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
   `d592823`), Ryan's terms and elites, the Elemental and the endgame fours (the bible's v0.267);
   on 24 October his calls on the tiers and the elites, a massive foe allowed in a spawn list, the
-  Old Man of the Desert, the Rotbloom kept and the curve's shape opened (v0.270 to v0.273).
+  Old Man of the Desert, the Rotbloom kept and the curve's shape opened (v0.270 to v0.273);
+  then the curve and the fronts, Ryan's tier and ramp beside the rift that deepens, what each
+  reward scales on and his question whether a perfect run is possible, in
+  `docs/curve_proposal.md`, the turn loop modelled by `tools/turn_loop.py` (v0.276, v0.277 and
+  v0.281).
 - `ccr-7d865127-wr1ko2`: the four Kestrel machines decided on 21 October in content and
   modelled, their second round of looks on Ryan's notes, the interceptor brief retired (the
   bible's v0.268, the hangar's version 99), with the stock pass's branch merged in.
@@ -55,7 +60,7 @@ for the curve, then the foes' gates removed on top):
   (v0.272 to v0.279).
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
+a fast-forward to the branch that carries the other two (`claude/eager-newton-sf947u` today) while
 main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
@@ -132,9 +137,10 @@ to-do's Ryan list).
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
-   pacing and four-machines rows, section 9, section 12's foe questions and
-   `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift,
-   small packs for detachments and formations for the body, the boss sealed by the
+   pacing and four-machines rows, section 9, section 12's foe questions,
+   `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
+   Fractures follow, once Ryan picks its form). Builds compositions with a front and a back
+   spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the
    threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
@@ -162,11 +168,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.279, and so is the live (24 October,
-  the page's version 296, from `ccr-170f6d81-465jnr`: the rank and file at random and no foe
-  over-committing in the aim row, the heat debuffs to be buffed in the heat row, the stale quote
-  on randomness gone; on its own v0.278, the page's version 295, itself onto
-  `claude/eager-newton-sf947u`'s v0.277). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.281, and so is the live (24 October,
+  the page's version 298, from `claude/eager-newton-sf947u`: section 12's curve and fronts
+  questions pointed at `docs/curve_proposal.md`; merged three ways onto the live v0.280, the
+  page's version 297, published by another session ahead of its commit, the aim row on Ryan's
+  "It's the baseline that needs to be random, not everything", itself onto
+  `ccr-170f6d81-465jnr`'s v0.279, the page's version 296). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
