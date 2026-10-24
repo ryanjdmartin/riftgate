@@ -1667,8 +1667,6 @@ func _validate_factions(errs: Array[String]) -> void:
 				errs.append("%s: spawn entry names unknown foe %s" % [where, str(e)])
 			elif int(e.get("strength", 0)) < 1:
 				errs.append("%s: spawn entry %s needs a strength of at least 1" % [where, e.get("foe")])
-			elif int(foes[str(e["foe"])].get("size", 1)) > 1:
-				errs.append("%s: massive foe %s belongs in 'boss', not spawn" % [where, e.get("foe")])
 		for e in spawn:
 			if e is Dictionary and foes.has(str(e.get("foe", ""))) and bool(foes[str(e["foe"])].get("hero", false)):
 				errs.append("%s: hero %s is never in a spawn list; it is dealt from the bench" % [where, e["foe"]])

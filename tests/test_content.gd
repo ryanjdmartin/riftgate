@@ -183,6 +183,33 @@ func test_spawn_table_lists_the_factions_formation() -> void:
 	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
 
 
+func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
+	# The bible's tiers row (15 October, Ryan again 24 October): size is apart from the tier, so
+	# massive rank and file validate, unpack from their pack as no boss, and take a column each.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var fid := str(db.factions.keys()[0])
+	var big: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
+	big["id"] = "massive_rank_and_file"
+	big["name"] = "Massive Rank and File"
+	db.foes["massive_rank_and_file"] = big
+	db.factions[fid]["spawn"].append({"foe": "massive_rank_and_file", "strength": 2})
+	assert_true(db.validate().is_empty(), "a massive foe in a spawn list validates: %s" % str(db.validate()))
+	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 10, 2, "massive_rank_and_file"))
+	assert_eq(foes.size(), 2, "two from strength two")
+	assert_true(foes[0].is_massive() and not foes[0].boss, "massive, and no boss for it")
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech(str(db.chassis.keys()[0]), 1, Vector2i.ZERO))
+	sk.add_foes(foes)
+	sk.begin()
+	var columns := 0
+	for c in range(sk.front.size()):
+		if sk.front[c] != null and sk.front[c].is_massive():
+			assert_eq(sk.back[c], sk.front[c], "each fills both ranks of its column")
+			columns += 1
+	assert_eq(columns, 2, "and each takes a column of its own")
+
+
 func test_content_mech_survives_a_skirmish_round() -> void:
 	var db := _db()
 	var sk := Skirmish.new(5)

@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 609 tests, 63,140 checks, green on `ccr-170f6d81-465jnr` (23 October, with the other two
-  branches merged in), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 610 tests, 63,146 checks, green on `claude/eager-newton-sf947u` (24 October, a massive foe
+  allowed in a spawn list; 609 and 63,140 on `ccr-170f6d81-465jnr` the day before), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -30,8 +30,9 @@ are in `README.md`.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, so the last carries all
-three:
+Three branches stand beside main, each holding the one before it, and
+`claude/eager-newton-sf947u` carries all three again since 24 October (fast-forwarded onto
+`ccr-170f6d81-465jnr`, then Ryan's calls of that day on top):
 
 - `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
   then used on 23 October for the reads of its bands and the runs they called for (on main to
@@ -45,7 +46,7 @@ three:
   unused crack move out of the engine), with the other two merged in.
 
 They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to `ccr-170f6d81-465jnr` while main stands at `d592823`. Delete them from the
+a fast-forward to `claude/eager-newton-sf947u` while main stands at `d592823`. Delete them from the
 desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
 Every other branch was merged into main and deleted (22 October).
 
@@ -99,7 +100,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 The tasks are the to-do's; this is the index of what waits.
 
 - The Skua's, the Storm Petrel's and the Giant Petrel's engines (their briefs).
-- The elites on Ryan's definition of 23 October (the bible's tiers row), with the bosses' slate
+- The elites on Ryan's definition of 23 and 24 October, a guaranteed miniboss event mid-battle
+  (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
   (`docs/heroes_proposal.md`).
 - The planned foe moves, Silence's and Purge's carriers (section 12), and Purge as our keyword
@@ -117,11 +119,7 @@ to-do's Ryan list).
    retired once its decisions are rows and content.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
-3. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
-   is in can the units be balanced for real): the runner's rows on the roster as it stands, the
-   fours again, prices and tier ladders (the to-do's engine line), the heat report, and Ryan's
-   play deciding feel.
-4. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
+3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions and
    `docs/campaign_run.md`. Builds compositions with a front and a back spawned by the rift,
    small packs for detachments and formations for the body, the boss sealed by the
@@ -129,6 +127,11 @@ to-do's Ryan list).
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
    reports and measures the fights a team fights together.
+4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
+   is in can the units be balanced for real; 24 October: it "probably needs foes with proper
+   formations", so it follows the fresh start): the runner's rows on the roster as it stands,
+   the fours again, prices and tier ladders (the to-do's engine line), the heat report, and
+   Ryan's play deciding feel.
 5. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has its
    shape is a run he can play; the go, the stock pass and the balancing come first, Ryan, 14
    October): a prototype hangar, the mission map and the draft.
@@ -147,9 +150,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.269, and so is the live (23 October,
-  the page's version 286, from `ccr-170f6d81-465jnr`: the records' sweep, published onto
-  `ccr-7d865127-wr1ko2`'s v0.268 after every line of the live was read). The version numbers on the publishing
+  `docs/design-bible.html` after every change. This file is v0.270, and so is the live (24 October,
+  the page's version 287, from `claude/eager-newton-sf947u`: Ryan's calls of the day on the massive
+  foes' tiers, the elite as a guaranteed miniboss event and the sealed boss, published onto
+  `ccr-170f6d81-465jnr`'s v0.269, the page's version 286, the records' sweep). The version numbers on the publishing
   branch's file and the live agree after every publish, main's catching up at the merge. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
