@@ -201,6 +201,14 @@ static func edge_points(mesh: Mesh) -> PackedVector3Array:
 
 static var _points: Dictionary = {}   # mesh rid -> PackedVector3Array of segment ends
 
+
+## A mesh's edges given rather than found: a welded mesh's are its parts' own (MechWeld), so
+## a weld never changes the trace; none, and the mesh hangs no trace.
+static func seed_edges(mesh: Mesh, points: PackedVector3Array) -> void:
+	_points[mesh.get_rid()] = points
+	_cache.erase(mesh.get_rid())
+
+
 static func edge_mesh(mesh: Mesh) -> ArrayMesh:
 	var key := mesh.get_rid()
 	if _cache.has(key):
