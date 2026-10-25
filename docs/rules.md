@@ -547,8 +547,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   split every damaging weapon instead (the Skua's): the weapon strikes twice as often, each
   roll, what the entry prints included, divided between the two strikes, rounded down, and
   every buff and the foe's conditions counting on each strike, its armour too; the die shows
-  a strike's share with the strikes beside it ("1 ×2"). A debuff has no number and is not
-  split.
+  a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
+  fires twice all the same, its riders landing on each strike (a Web, a Lure, a Disrupt, a
+  Shock, an Expose and a Swap still land once a spend).
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its

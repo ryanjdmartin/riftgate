@@ -847,13 +847,14 @@ static func ceiling_bonus(u, face: Face) -> int:
 	return _range_bonus(u, face, "add_ceiling")
 
 
-## How many strikes each roll of a damaging weapon is split into (split_strikes, on_attack; the
-## Skua's Split-cycle Breech, built 25 October): the weapon strikes that many times as often,
-## each roll of its number divided among the strikes it serves, rounded down, and every buff,
-## passive and foe's condition counts on each strike. 1 for anything else, a debuff included,
-## which has no number to divide.
+## How many strikes each roll of a weapon is split into (split_strikes, on_attack; the Skua's
+## Split-cycle Breech, built 25 October): the weapon strikes that many times as often, each roll
+## of its number divided among the strikes it serves, rounded down, and every buff, passive and
+## foe's condition counts on each strike. A debuff has no number to divide and fires as often
+## all the same, its riders landing on each strike (Ryan, 25 October: "Debuff should fire twice
+## regardless of damage. That's kind of the whole point"). 1 for anything but a weapon.
 static func split_of(u, face: Face) -> int:
-	if face == null or not face.is_attack() or face.is_debuff():
+	if face == null or not face.is_attack():
 		return 1
 	var n := 1
 	for pair in _taking_part(u, "on_attack", face):

@@ -6321,7 +6321,8 @@ func test_a_team_reroll_back_onto_a_reset_gun_chains_it_with_every_kill() -> voi
 ## The split (the Skua's Split-cycle Breech, built 25 October): a damaging weapon strikes twice
 ## as often, each roll halved, rounded down, and shared by the two strikes it makes; every buff
 ## and the foe's conditions count on each strike, its armour too, and the die shows a strike's
-## share beside the strikes. A debuff has no number and is not split.
+## share beside the strikes. A debuff has no number to halve and fires twice all the same, its
+## riders on each strike (Ryan, 25 October: "That's kind of the whole point").
 func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
@@ -6354,8 +6355,17 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, plate), "fired on plate")
 	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")
-	var probe := Face.attack(0, L, [K.SUPPRESS])
-	assert_eq(Effects.effective_face(m, probe).strikes, 1, "a debuff is not split")
+	var probe := Face.attack(0, L, [K.FLAK])
+	probe.flak = 1
+	assert_eq(Effects.effective_face(m, probe).strikes, 2, "a debuff fires twice")
+	sk.end_round()
+	sk.start_round()
+	ms.die = Die.single(probe)
+	ms.face_index = 0
+	var before := Effects.stacks_of(bare, "flakked")
+	assert_true(sk.assign(0, bare), "the debuff spent")
+	assert_eq(Effects.stacks_of(bare, "flakked") - before, 2, "its Flak on each strike")
+	assert_eq(bare.hp, 98, "and no damage")
 
 
 ## Roll once, then split (Ryan, 24 October): a rolled weapon's two strikes share one roll, each
