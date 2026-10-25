@@ -25,7 +25,9 @@ Ryan's triage, 25 October: fixed 1, 2, 6 with 7, 22, 24, 31, 33 and 35; the Flak
 were done already on `ccr-170f6d81-465jnr` (Flak on a damaging weapon's blow of 0, and its hit
 spending a Shock, cashing Cryo and laying Vitriol whatever it dealt), merged under these fixes;
 his call next on 3, 4, 5, 23 (on hold), 25 and 32. The rest waits on his read. Line numbers
-are as at `a8a0e43`.
+are as at `a8a0e43`. `claude/playtesting-issues-08mnqj` (his playtest list, the same day) plans
+moves and takes UNDO back last-first to the turn's start or the last fight, which closes 23, 24
+and 25 by construction once it lands.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight

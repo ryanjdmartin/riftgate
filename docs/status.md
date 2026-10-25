@@ -33,7 +33,7 @@ are in `README.md`.
 
 ## Branches
 
-Two branches are live beside main. `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
+Three branches are live beside main. `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
 go: "merge in and clean up") and that session's later commits of the same day (a passive's lay on
 any hit, the Ambush's damaging hit its own rule; the bot's flat buff counted on each strike; a
 damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a
@@ -49,6 +49,13 @@ too, and a special on every machine passing a Phased one by; overshield fading a
 a carry's undo refused onto a taken hex. His calls wait in the audit's head (the Spin-Up, Rally,
 Cracked and Silence, a beaten domain's rifts closing, the carry's undo after a fight, moves in
 pieces). Landing it lands both.
+`claude/playtesting-issues-08mnqj` (off main, 25 October) builds Ryan's playtest list: planned
+moves, UNDO taking back the last move or order to the turn's start or the last fight (which
+closes the audit's 23, 24 and 25 by construction), a Gel's halves stepping up at once. Landing it
+beside the audit's branch conflicts in `sim/battle.gd` (the carry's undo: its model supersedes the
+audit's fix), the rules, the bible (its v0.289 against the live v0.291) and this file, and two of
+the audit's tests (a withdrawal never growing a pack, a pack's survivors its own) count a Gel's
+halves in the pool, so they follow the halves onto the field in the merge.
 The landing's other three are in main: `ccr-7d865127-wr1ko2`,
 `claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
 desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once
