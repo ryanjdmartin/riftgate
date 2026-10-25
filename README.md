@@ -40,8 +40,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
     and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
   - `quick_run.gd` the quick campaign: battles without the map, each its fights back to back
-    against one domain's formations and elites, then its boss; the loot, the token and a
-    maker's offer when the boss falls; the hangar's verbs between battles
+    against one domain's formations and elites, then its boss (or from tier two its final),
+    the tier's escort beside it; the loot, the token and a maker's offer when the boss falls;
+    the hangar's verbs between battles
   - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
     `policy.gd`), for the campaign runner

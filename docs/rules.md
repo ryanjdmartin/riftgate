@@ -463,9 +463,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   machine.
 
 ### Injury
-- A foe's blow that puts half the machine's maximum hull or more past armour into its hull (a
-  breach's whole blow included) rolls the machine's die: the entry it lands on is destroyed, a
-  blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
+- A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
+  hull (a breach's whole blow included) rolls the machine's die: the entry it lands on is
+  destroyed, a blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
   Barrier's blow never does. Bites and overheats never injure.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
   Badger's components are never destroyed, so an injury passes it by.
@@ -639,7 +639,9 @@ a stat.
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
   one for each other column), or the finale's line; it stands while one of its commanders
   does and holds the rift whatever its escort, and a withdrawal leaves it standing with the
-  commanders and the escort that survived, whole.
+  commanders and the escort that survived, whole. It brings more escort by the battle's tier:
+  none more at tier one, two at tier two, four at tier three (its escort's foe, else its
+  domain's first pack's); its commanders' numbers do not scale yet.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
@@ -712,8 +714,12 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
-  end. Then the boss with its formation. The finale's last fight is the party's line alone,
-  every domain's dealt hero promoted.
+  end. Then the boss with its formation and the tier's escort, as the campaign's boss unit
+  brings it: one of the lead's bosses its battles have not ended on this run, or from tier two
+  its final, its dealt hero leading the lead's formation, drawn as one more boss while that hero
+  stands; once all are beaten, any of its bosses again. The finale's last fight is the party's
+  line with the tier's escort, every domain's dealt hero promoted, a domain whose final was won
+  leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
   turns. **An elite** is the lead's other bench hero, the one the party was not dealt, leading
   the lead's formation (a stand-in until the elites land).

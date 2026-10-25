@@ -308,6 +308,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		team.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout))
 	var c: City = cities[city_id]
 	var b := Battle.new(rng.randi_range(1, 1 << 30))
+	b.tier = tier()
 	b.guest = str(c.rift.get("guest", ""))
 	var lead := str(c.rift.get("faction", ""))
 	if c.capital:

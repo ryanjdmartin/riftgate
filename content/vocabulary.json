@@ -807,10 +807,10 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least half its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
+   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
    "status": "implemented",
    "design": {
-    "holes": "The threshold is a placeholder, set to keep the losses of the two states it replaced (25 October). The campaign's hangar screen is not built."
+    "holes": "The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built."
    }
   },
   {
@@ -1417,7 +1417,7 @@
    "id": "breach",
    "category": "keyword",
    "name": "Breach",
-   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is half its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
+   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
    "status": "implemented",
    "design": {
     "holes": ""

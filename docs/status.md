@@ -20,9 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 645 tests, 65,045 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
-  quick campaign and one damage state; main's 628 and 64,352 since the landing), about half a
-  minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 648 tests, 65,113 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
+  quick campaign, one damage state and the bosses' escort by tier; main's 628 and 64,352 since
+  the landing), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -90,14 +90,19 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (`docs/quick_run.md`, `docs/measurements.md`) find a cliff at the first battle for a starting
   trio (34 and 35 runs of 40 lost there on the greedy and planner rungs) and a plateau after it
   while the enemy has no tiers: section 12's question. Its elite is a stand-in until the elites
-  land (the to-do); where a domain's final goes in it, and the bosses' and finals' tier, are
-  section 12's (Ryan, 25 October).
+  land (the to-do); from tier two a domain's final may be a battle's boss (Ryan, 25 October),
+  and every boss fight brings the tier's escort.
+- Bosses scale to the battle's tier (Ryan, 25 October; the bible's section 9 row): a boss
+  unit brings two more of its escort at tier two and four at tier three, in the campaign and
+  the quick campaign; its numbers wait on section 12's question against section 3's
+  escalation row ("never an old one with a bigger number").
 - Injuries (25 October, on the branch): one damage state, Ryan's "Cracked is gone". An injury
-  destroys the entry the die lands on, at half the maximum hull, which keeps a squad's losses
-  about where the two states had them (`docs/measurements.md`); a wreck loses only what was
-  destroyed; the Honey Badger's components are never destroyed, so an injury passes it by.
-  It settles the mechanics audit's 34 and the crack half of its 5 (its 7a's question to Ryan);
-  Jenny's "component damaged" lines wait unsaid on his call (section 12).
+  destroys the entry the die lands on, at a quarter of the maximum hull, the threshold set by
+  what it asks of the player (half was tried and retired within the day: a machine could lose
+  but one piece); a wreck loses only what was destroyed. The Honey Badger's "never destroyed"
+  now holds off every injury until its identity session lands (section 12). It settles the
+  mechanics audit's 34 and the crack half of its 5 (its 7a's question to Ryan). Jenny's
+  "component damaged" and "hardpoint hit" are folded into the destroyed pool (his call).
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
@@ -185,9 +190,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.293, and so is the live (25 October,
-  the page's version 310, from `claude/quick-campaign-mode-pafhiv`: one damage state, the quick
-  campaign's elite note and section 12's questions on the bosses' tier, on v0.292, which merged
+  `docs/design-bible.html` after every change. This file is v0.294, and so is the live (25 October,
+  the page's version 311, from `claude/quick-campaign-mode-pafhiv`: the injury at a quarter, the
+  bosses' escort by tier, the quick campaign's finals, on v0.292, which merged
   the quick campaign's rows onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and
   the mechanics audit's v0.291, so this file holds their rows and tables ahead of their code, which
   lands with them: `tools/pages/bible_tables.py` run here before they land writes this branch's older
@@ -199,10 +204,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 111 (25 October, from
+  before it is replaced and `edits` read first. At the page's version 112 (25 October, from
   `claude/quick-campaign-mode-pafhiv`: one damage state's content, the Badger's passive line and
-  the vocabulary's injury terms, merged onto version 110's files, the mechanics audit's, which
-  were live and identical to that branch's; `edits` empty before it). Its database (Ryan's saved edits,
+  the vocabulary's injury terms at a quarter, merged three-way onto the mechanics audit's files
+  of version 110; `edits` empty). The live content files are that merge, so neither branch's
+  files match them until the two land. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

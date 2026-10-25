@@ -365,7 +365,7 @@ func report(results: Array, secs: float) -> String:
 	L.append("")
 	L.append("| Fight | Tier | Fights | Won | Rounds | Hull left after |")
 	L.append("|---|---|---|---|---|---|")
-	for kind in ["formation", "elite", "boss", "finale"]:
+	for kind in ["formation", "elite", "boss", "final", "finale"]:
 		for t in range(QuickRun.TOP_TIER + 1):
 			var n_f := 0
 			var n_won := 0

@@ -962,8 +962,8 @@ func test_shield_component_helps_an_ally() -> void:
 func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	var sk := Skirmish.new(1)
 	var m := Unit.mech(1, "A", Vector2i.ZERO)
-	m.hull = 50
-	m.hull_max = 50
+	m.hull = 100
+	m.hull_max = 100
 	m.shield = 20
 	m.shield_max = 20
 	m.die = Die.single(Face.attack(10))
@@ -975,8 +975,8 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
 	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
 	assert_eq(fc["shield_after"], 0, "shield gone")
-	assert_eq(fc["hull_after"], 15, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
-	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 50 hull injures: half of it")
+	assert_eq(fc["hull_after"], 65, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
+	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
 	assert_false(fc["destroyed"], "still standing")
 	sk._suppress(sk.front[0])
 	fc = sk.forecast(ms)
@@ -1148,22 +1148,22 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
 	# The honest shield (Ryan, 14 October): a shield is its number, never a whole block.
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 10, 80)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(900, 50)])
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "ten shield is spent")
-	assert_eq(m.hull, 40, "fifty on a ten-point shield: forty pass to the hull")
+	assert_eq(m.hull, 60, "fifty on a ten-point shield: forty pass to the hull")
 	assert_true(not sk.turn_events[0]["blocked"] and sk.turn_events[0]["broke_shield"], "the blow broke the shield and was not blocked")
-	assert_eq(m.damaged_component_count(), 1, "and the forty that reached the hull, half of it, injure: an injury counts what reaches it")
+	assert_eq(m.damaged_component_count(), 1, "and the forty that reached the hull injure: an injury counts what reaches it")
 	assert_true(str(sk.log).contains("shield -10, hull -40"), "the log says what each took")
 	m.shield = 50
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "a shield the blow's size takes it all")
-	assert_eq(m.hull, 40, "and nothing passes")
+	assert_eq(m.hull, 60, "and nothing passes")
 	assert_true(sk.turn_events[0]["blocked"], "the blow is recorded as blocked")
 
 
@@ -1187,7 +1187,7 @@ func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
 
 func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 10, 60)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
 	var brute := Foe.make("brute", 200, 30)
 	brute.actions[0]["strikes"] = 2
@@ -1196,11 +1196,11 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	sk.start_round()
 	var fc := sk.forecast(sk.mechs[0])
 	assert_eq(fc["incoming"], 60, "forecast counts both blows")
-	assert_eq(fc["hull_after"], 10, "and knows the first passes twenty and the second lands on bare hull")
-	assert_true(fc["component_risk"], "and that it can injure: thirty on sixty is half")
+	assert_eq(fc["hull_after"], 50, "and knows the first passes twenty and the second lands on bare hull")
+	assert_true(fc["component_risk"], "and that it can injure")
 	sk.end_round()
 	assert_eq(m.shield, 0, "first blow spends the shield")
-	assert_eq(m.hull, 10, "twenty past it, and the second blow's thirty")
+	assert_eq(m.hull, 50, "twenty past it, and the second blow's thirty")
 
 
 func test_breach_ignores_the_shield_and_can_injure() -> void:

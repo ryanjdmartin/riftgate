@@ -1439,15 +1439,21 @@ components destroyed a fight (gone for good when the fight is won). A direction,
 | One state at two fifths | 0.079 | 0.004 | 46.0% | 0.099 | 99.9% |
 | One state at half | 0.008 | 0.000 | 46.0% | 0.031 | 100% |
 
-Read: no threshold moves a win rate, as on 12 October. The two reads part: a machine alone loses
-about what it did at two fifths, but nearly all of its losses come in fights it loses (0.006 a
-won fight before), while a team row wins every fight, so each piece it loses is gone for good,
-and only half keeps that near where it was (0.031 a fight against 0.019, the big fights all of
-it). Set at half, on the team rows, since the squad is how the campaign and the quick campaign
-fight. The wreck's old price, its cracked components, goes with the state, which no row here
-reads. Bible section 7's damage-state row.
+Read: no threshold moves a win rate, as on 12 October, and only half keeps a squad's losses near
+the two states' (0.031 a team fight against 0.019). Half was set and retired the same day (Ryan:
+"a unit has to lose half it's hull to lose a component? Ergo the maximum components a unit can
+lose is...1? ... It's not about win rate, it's about forcing player choices and balancing
+compositions"): the threshold is set by what it asks of the player, so it stands at a quarter,
+where every injury now destroys (0.22 a team fight, about a piece every four or five, against
+0.02 on the two states). What that costs a run is the economy pass's to read against the inflow
+(section 10's guard: about one a won battle). The wreck's old price, its cracked components,
+goes with the state (Ryan: being wrecked and out for a battle is the price). Bible section 7's
+damage-state row.
 
-The quick campaign's greedy runs rerun on the one state at half (`docs/quick_run.md`, 40 runs
-from seed 1, 63 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states,
-the first runs above), none won (1), no component destroyed for good in any battle (0.12 a
-squad in the first battle before): the same cliff, inside 40 runs' noise, its losses gone.
+The quick campaign's greedy runs rerun on the one state at a quarter, with the bosses' escort
+by tier and the finals drawn as bosses from tier two (`docs/quick_run.md`, 40 runs from seed 1,
+94 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states, the first
+runs above), none won (1): the same cliff, inside 40 runs' noise. A squad loses 0.15 to 1.75
+pieces for good a battle through tier one (0.12 to 0.50 on the two states) and 0.5 to 1.3
+after; the finals turned up ten times (eight at tier two, all won, the squad keeping 80% of its
+hull; two at tier three, one won).

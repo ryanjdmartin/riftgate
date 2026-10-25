@@ -655,3 +655,34 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 	assert_eq(b.boss.lineup.size(), c.db.factions.size(), "the line at the capital: a column a domain")
 	assert_eq(b.boss.display_name, "the party", "and it goes by the party")
 	assert_false(bool(c.capital().rift.get("final", true)), "the capital's is the finale, never a final")
+
+
+## Bosses scale to the battle's tier (Ryan, 25 October: "scaling stats and upgrading the
+## escort"; the escort half built, Battle.BOSS_ESCORT): a boss unit brings more of its escort at
+## each tier, its domain's first pack's foe when it names none, a final's wildlife beside it.
+func test_a_boss_unit_brings_the_tiers_escort() -> void:
+	var db := ContentDB.load_default()
+	var faction := str(db.factions.keys()[0])
+	var first := str(db.spawn_table(faction)[0][0])
+	var counts: Array = []
+	for t in range(Battle.BOSS_ESCORT.size()):
+		var b := Battle.new(3)
+		b.tier = t
+		b.setup([], faction)
+		assert_true(b.boss != null, "the boss takes the field")
+		assert_eq(b.boss.strength, Battle.escort_at(t), "tier %d's escort" % (t + 1))
+		var foes := db.foes_for(b.boss)
+		var escorts := foes.filter(func(f) -> bool: return f.escorts)
+		assert_eq(escorts.size(), Battle.escort_at(t), "unpacked beside the boss")
+		for f in escorts:
+			assert_eq(f.content_id, first, "its domain's first pack's foe")
+		counts.append(escorts.size())
+	assert_eq(counts[0], 0, "a tier-one boss alone, as before")
+	assert_true(counts[2] > counts[1], "more at tier three than at tier two")
+	var c := Campaign.new(5)
+	c.convergence = Campaign.TIER_EVERY * 2
+	assert_eq(c.tier(), 2, "the Convergence at tier three")
+	var front := str(c.fronts()[0])
+	var uids: Array = c.ready_machines().slice(0, 1).map(func(m) -> int: return m.uid)
+	var b2 := c.start_battle(front, uids)
+	assert_eq(b2.tier, 2, "the campaign hands its tier to the battle")

@@ -8,7 +8,7 @@ extends RefCounted
 ##
 ## The rules, as the pools' file states them and Ryan settled them:
 ##   chance       a hook speaks on a trigger with its chance; an information hook (a machine
-##                lost, a component damaged or destroyed, the two heat marks, a loss) every time.
+##                lost, a component destroyed, the two heat marks, a loss) every time.
 ##   pools        a hook draws from its own pool and any it merges (a Horde foe falling draws
 ##                the generic foe-down pool too; every unit committed, the moves' pool too).
 ##   variety      a shuffle bag per hook: nothing repeats until the bag is spent.

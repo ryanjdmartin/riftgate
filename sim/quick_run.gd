@@ -42,6 +42,7 @@ const BATTLES := Campaign.FINALE_AT         # the campaign's twelve battles, the
 const TIER_EVERY := Campaign.TIER_EVERY     # a battle a step of the Convergence, a tier every four
 const TOP_TIER := 2                         # the tiers count 0 to 2, shown 1 to 3
 const GUEST_TIER := Campaign.GUEST_TIER
+const FINAL_TIER := 1                        # from tier two a domain's final may be a battle's boss (Ryan, 25 October)
 const FRACTURES := [3, 4, 5]   # the fights before the boss by tier: the Rupture's Fractures (bible section 4's pacing row)
 const ELITES := [1, 2, 3]      # of them, elites: an elite counts a Fracture (Ryan, 25 October)
 const CHOICES := 3             # a loot pick, the token and the offer: one of three
@@ -72,6 +73,7 @@ var components: Dictionary = {}   # the stores: component id -> copies unfitted 
 var modules: Dictionary = {}      # the stores: module id -> copies unfitted
 var party: Dictionary = {}        # domain -> its dealt hero (the finale's line; the other bench hero leads its elite fights)
 var bosses_ended: Dictionary = {} # domain -> the bosses beaten this run, so the next draws another (the campaign's rule)
+var finals_won: Array = []        # domains whose final was won: their hero leaves the finale's line, as in the campaign
 ## The formations' density by tier: each spawn entry's strength scaled, at least one (the ramp's
 ## one lever without a map; 1.0 everywhere unless the runner asks: docs/measurements.md, 25 October).
 var density: Array = [1.0, 1.0, 1.0]
@@ -320,25 +322,61 @@ func _encounters(t: int) -> Array:
 			enc["foe"] = elite_of(lead)
 		out.append(enc)
 	if is_finale():
-		out.append({"kind": "finale", "domain": lead})
+		# The line is drawn as the finale is rolled, so whoever shows it reads the one fought.
+		out.append({"kind": "finale", "domain": lead, "line": finale_line()})
 	else:
-		out.append({"kind": "boss", "domain": lead, "foe": draw_boss(lead)})
+		out.append(_boss_encounter(t))
 	return out
 
 
+## The fight a battle ends on: one of the lead's bosses its battles have not ended on this run,
+## or from FINAL_TIER its final, the dealt hero leading the lead's formation, drawn as one more
+## boss while that hero stands (Ryan, 25 October: "finale bosses can just appear as a random
+## boss in tier 2 or 3"); once all are beaten, any of its bosses again.
+func _boss_encounter(t: int) -> Dictionary:
+	var hero := str(party.get(lead, ""))
+	var final_open := t >= FINAL_TIER and db.foes.has(hero) and not finals_won.has(lead)
+	var ended: Array = bosses_ended.get(lead, [])
+	var open: Array = Array(db.bosses_of(lead)).filter(func(id) -> bool: return not ended.has(id))
+	var n := open.size() + (1 if final_open else 0)
+	if n == 0:
+		return {"kind": "boss", "domain": lead, "foe": draw_boss(lead)}
+	var pick := 0 if n == 1 else rng.randi_range(0, n - 1)
+	if pick >= open.size():
+		return {"kind": "final", "domain": lead, "foe": hero}
+	return {"kind": "boss", "domain": lead, "foe": str(open[pick])}
+
+
 ## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
-## an elite's hero or the boss before the domain's formation; the finale's line alone, as the
-## campaign fields it (no final is won here, so it is the whole party promoted).
+## an elite's hero, the boss or a final's hero before the domain's formation; the finale's line,
+## as the campaign fields it. A boss, a final and the finale bring the tier's escort after them,
+## as the campaign's boss unit does (Battle.BOSS_ESCORT).
 func encounter_foes(enc: Dictionary) -> Array:
 	var out: Array = []
-	if str(enc.get("kind", "")) == "finale":
-		for fid in finale_line():
-			out.append(db.make_foe(str(fid)))
+	var kind := str(enc.get("kind", ""))
+	if kind == "finale":
+		for fid in (enc["line"] if enc.has("line") else finale_line()):
+			if db.foes.has(str(fid)):
+				out.append(db.make_foe(str(fid)))
+	else:
+		var lead_foe := str(enc.get("foe", ""))
+		if db.foes.has(lead_foe):
+			out.append(db.make_foe(lead_foe))
+		out.append_array(formation_foes(str(enc.get("domain", lead))))
+	if kind == "boss" or kind == "final" or kind == "finale":
+		out.append_array(escort_foes(str(enc.get("domain", lead))))
+	return out
+
+
+## A boss's escort at the battle's tier, beyond its formation: Battle.escort_at(tier) of its
+## domain's first pack's foe, as the campaign's boss unit brings it.
+func escort_foes(domain: String) -> Array:
+	var out: Array = []
+	var spawn := db.spawn_table(domain)
+	if spawn.is_empty() or not db.foes.has(str(spawn[0][0])):
 		return out
-	var lead_foe := str(enc.get("foe", ""))
-	if db.foes.has(lead_foe):
-		out.append(db.make_foe(lead_foe))
-	out.append_array(formation_foes(str(enc.get("domain", lead))))
+	for i in range(Battle.escort_at(tier())):
+		out.append(db.make_foe(str(spawn[0][0])))
 	return out
 
 
@@ -377,13 +415,27 @@ func draw_boss(domain: String) -> String:
 	return str(open[rng.randi_range(0, open.size() - 1)])
 
 
-## The finale's line: each domain's dealt hero promoted, a column a domain, in content order.
+## The finale's line, the campaign's rule (Campaign.finale_line): each domain's dealt hero
+## promoted, a column a domain, in content order; a domain whose final was won leaves its column
+## to boss-tier wildlife of a domain still standing, each standing domain's boss drawn in turn
+## before any comes twice.
 func finale_line() -> Array:
+	var standing: Array = []
+	for fid in db.factions.keys():
+		if not finals_won.has(fid):
+			standing.append_array(db.bosses_of(str(fid)))
+	var bag: Array = []
 	var out: Array = []
 	for fid in db.factions.keys():
 		var promoted := db.promoted_form(str(party.get(fid, "")))
-		if not promoted.is_empty():
+		if not finals_won.has(fid) and not promoted.is_empty():
 			out.append(promoted)
+			continue
+		if standing.is_empty():
+			continue
+		if bag.is_empty():
+			bag = standing.duplicate()
+		out.append(str(bag.pop_at(rng.randi_range(0, bag.size() - 1))))
 	return out
 
 
@@ -427,6 +479,8 @@ func finish_fight() -> Dictionary:
 		var ended: Array = bosses_ended.get(lead, [])
 		ended.append(str(enc["foe"]))
 		bosses_ended[lead] = ended
+	elif str(enc["kind"]) == "final" and not finals_won.has(lead):
+		finals_won.append(lead)
 	fight += 1
 	if fight < encounters.size():
 		_recharge()

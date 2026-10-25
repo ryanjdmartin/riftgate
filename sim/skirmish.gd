@@ -26,7 +26,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
-const INJURY_MIN_HULL_PCT := 50     # a single hull hit this big (percent of max) destroys the entry the die lands on (25 October: half keeps the two states' losses)
+const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3

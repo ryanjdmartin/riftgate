@@ -79,8 +79,13 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 		var elites := enc.filter(func(e) -> bool: return e["kind"] == "elite").size()
 		assert_eq(elites, QuickRun.ELITES[t], "elites folded into the count")
 		assert_eq(enc[0]["kind"], "formation", "a formation opens the battle")
-		assert_eq(enc[enc.size() - 1]["kind"], "boss", "the boss closes it")
-		assert_true(r.db.bosses_of(r.lead).has(str(enc[enc.size() - 1]["foe"])), "the lead's boss")
+		var last: Dictionary = enc[enc.size() - 1]
+		if str(last["kind"]) == "final":
+			assert_true(t >= QuickRun.FINAL_TIER, "a final closes a battle from tier two")
+			assert_eq(str(last["foe"]), str(r.party.get(r.lead, "")), "the lead's dealt hero")
+		else:
+			assert_eq(last["kind"], "boss", "the boss closes it")
+			assert_true(r.db.bosses_of(r.lead).has(str(last["foe"])), "the lead's boss")
 		for e in enc:
 			if e["kind"] == "elite":
 				assert_eq(e["domain"], r.lead, "an elite is the lead's")
@@ -115,11 +120,71 @@ func test_twelve_battles_then_the_finale_on_the_partys_line() -> void:
 		assert_eq(r.is_finale(), n > QuickRun.BATTLES, "battle %d is the finale or not" % n)
 	var last: Dictionary = r.encounters[r.encounters.size() - 1]
 	assert_eq(last["kind"], "finale", "the finale's last fight")
-	var line: Array = r.encounter_foes(last)
-	assert_eq(line.size(), r.finale_line().size(), "the line alone")
-	for f in line:
-		assert_eq(f.size, 2, "every one promoted, massive")
-	assert_eq(r.finale_line().size(), r.party.size(), "a column a domain")
+	var line: Array = last["line"]
+	assert_eq(line.size(), r.party.size(), "a column a domain, drawn as the finale is rolled")
+	var foes: Array = r.encounter_foes(last)
+	assert_eq(foes.size(), line.size() + Battle.escort_at(r.tier()), "the line, then the tier's escort")
+	for i in range(line.size()):
+		assert_eq(foes[i].size, 2, "every one promoted, massive")
+
+
+func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line() -> void:
+	# Ryan, 25 October: "finale bosses can just appear as a random boss in tier 2 or 3".
+	var finals := 0
+	for seed_value in range(1, 13):
+		var r := _run(seed_value)
+		_at_battle(r, 1)
+		assert_ne(r.encounters[r.encounters.size() - 1]["kind"], "final", "never at tier one")
+		_at_battle(r, 1 + QuickRun.FINAL_TIER * QuickRun.TIER_EVERY)
+		if r.encounters[r.encounters.size() - 1]["kind"] == "final":
+			finals += 1
+	assert_true(finals > 0, "a final turns up as a boss from tier two (%d of 12)" % finals)
+	# Its bosses beaten, a domain's next boss fight is its final while its hero stands.
+	var r := _run(4)
+	_at_battle(r, 1 + QuickRun.FINAL_TIER * QuickRun.TIER_EVERY)
+	r.bosses_ended[r.lead] = Array(r.db.bosses_of(r.lead))
+	var enc := r._boss_encounter(r.tier())
+	assert_eq(enc["kind"], "final", "the final, the bosses all beaten")
+	assert_eq(str(enc["foe"]), str(r.party[r.lead]), "the lead's dealt hero")
+	var foes: Array = r.encounter_foes(enc)
+	assert_true(foes[0].hero and foes[0].size == 1, "the hero leads, human-sized")
+	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size() + Battle.escort_at(r.tier()), "its formation and the tier's escort beside it")
+	# Won, the hero leaves the finale's line for boss-tier wildlife of a standing domain.
+	r.encounters[r.encounters.size() - 1] = enc
+	r.start_battle()
+	for i in range(r.encounters.size()):
+		_end(r, Skirmish.Outcome.VICTORY)
+	assert_true(r.finals_won.has(r.history[0]["lead"]), "the final counts as won")
+	var won_domain := str(r.history[0]["lead"])
+	var line := r.finale_line()
+	assert_eq(line.size(), r.party.size(), "still a column a domain")
+	assert_false(line.has(r.db.promoted_form(str(r.party[won_domain]))), "the beaten hero is gone from the line")
+	var promoted := 0
+	for fid in line:
+		if r.db.foes[str(fid)].has("promotes"):
+			promoted += 1
+	assert_eq(promoted, r.party.size() - 1, "the others still promoted")
+	var r2 := _run(4)
+	_at_battle(r2, 1 + QuickRun.FINAL_TIER * QuickRun.TIER_EVERY)
+	r2.bosses_ended[r2.lead] = Array(r2.db.bosses_of(r2.lead))
+	r2.finals_won.append(r2.lead)
+	assert_eq(r2._boss_encounter(r2.tier())["kind"], "boss", "a won final never comes back: a boss again")
+
+
+func test_a_boss_brings_the_tiers_escort() -> void:
+	var r := _run(6)
+	var counts: Array = []
+	for t in range(QuickRun.TOP_TIER + 1):
+		_at_battle(r, 1 + t * QuickRun.TIER_EVERY)
+		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
+		var n: int = r.encounter_foes(boss).size() - 1 - r.formation_foes(r.lead).size()
+		assert_eq(n, Battle.escort_at(t), "tier %d's escort beside the formation" % (t + 1))
+		counts.append(n)
+	assert_true(counts[0] < counts[2], "more at tier three than at tier one")
+	for e in r.encounters:
+		if e["kind"] == "formation" or e["kind"] == "elite":
+			var plain: int = r.encounter_foes(e).size()
+			assert_eq(plain, r.formation_foes(str(e["domain"])).size() + (1 if e["kind"] == "elite" and r.db.foes.has(str(e.get("foe", ""))) else 0), "no escort outside a boss fight")
 
 
 func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws() -> void:
@@ -324,6 +389,7 @@ func test_the_hangar_fits_from_the_stores_and_the_basics_are_free() -> void:
 func test_a_run_saves_and_resumes_mid_fight_alike() -> void:
 	var r := _run(9)
 	r.components[str(r.pool(2)[0]["id"])] = 1
+	r.finals_won.append(str(r.db.factions.keys()[0]))
 	r.start_battle()
 	_end(r, Skirmish.Outcome.VICTORY)
 	var sk := r.open_fight()
@@ -343,6 +409,7 @@ func test_a_run_saves_and_resumes_mid_fight_alike() -> void:
 	assert_eq(back.squad, r.squad, "the squad")
 	assert_eq(back.components, r.components, "the stores")
 	assert_eq(back.party, r.party, "the party")
+	assert_eq(back.finals_won, r.finals_won, "the finals won")
 	assert_eq(back.rng.state, r.rng.state, "the run's random stream")
 	assert_true(back.current != null, "the fight came back")
 	assert_false(back.current.withdraw_allowed, "still without withdrawal")

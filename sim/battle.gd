@@ -71,6 +71,11 @@ var with_boss := true
 ## every commander has fallen. Empty keeps the lead faction's boss alone.
 var lineup: Array = []
 var escort: Array = []
+## The battle's tier, 0 to 2 (the campaign's, set before setup; 0 in the harness): a boss unit
+## brings BOSS_ESCORT more of its escort at it (Ryan, 25 October: bosses scale to the tier by
+## "upgrading the escort"), its own escort's foe, else its domain's first pack's. Placeholders.
+var tier: int = 0
+const BOSS_ESCORT := [0, 2, 4]
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -150,10 +155,16 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		if escort.size() >= 2 and db.foes.has(str(escort[0])):
 			boss.foe_id = str(escort[0])
 			boss.strength = maxi(0, int(escort[1]))
+		boss.strength += escort_at(tier)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	state = State.PLAN
 	_new_turn()
+
+
+## The escort a boss unit adds at a tier (BOSS_ESCORT, clamped to its tiers).
+static func escort_at(t: int) -> int:
+	return int(BOSS_ESCORT[clampi(t, 0, BOSS_ESCORT.size() - 1)])
 
 
 func _pack_name(foe_id: String) -> String:

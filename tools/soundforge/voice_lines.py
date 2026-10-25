@@ -5,7 +5,7 @@ between lines so she never rattles off several at once.
 The system (for sound.gd when it lands):
 
   chance      each hook has a chance that a trigger says a line at all; information hooks (a
-              machine lost, a component damaged or destroyed, heat past three quarters, an
+              machine lost, a component destroyed, heat past three quarters, an
               overheat, a loss) say one every time, since that is actual information; victory
               and the battle opening say one every time too (Ryan: common moments, obvious ones).
   pre-emption (Ryan, 7 October) a loss clears the queue and speaks at once, the player's
@@ -116,11 +116,8 @@ HOOKS = {
     "machine_lost": (1.0, True,
                      ["machine lost", "unit destroyed"],
                      []),
-    "component_damaged": (1.0, True,
-                          ["component damaged", "hardpoint hit"],
-                          []),
-    "component_destroyed": (1.0, True,
-                            ["component destroyed", "hardpoint lost"],
+    "component_destroyed": (1.0, True,   # the damaged pair folded in when Cracked went (Ryan, 25 October: "Fold Jenny lines in")
+                            ["component destroyed", "hardpoint lost", "component damaged", "hardpoint hit"],
                             []),
     "resolve_all": (1.0 / 2.0, False,
                     ["all units committed", "full line advancing", "full squad deployed"],

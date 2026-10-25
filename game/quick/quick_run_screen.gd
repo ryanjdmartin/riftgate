@@ -458,7 +458,7 @@ func _between_fights() -> void:
 	for u in run.units:
 		_content.add_child(_squad_row(u))
 	var kind := str(enc["kind"])
-	_primary.text = "FIGHT THE LINE" if kind == "finale" else ("FIGHT THE BOSS" if kind == "boss" else "FIGHT")
+	_primary.text = "FIGHT THE LINE" if kind == "finale" else ("FIGHT THE BOSS" if kind == "boss" else ("FIGHT THE FINAL" if kind == "final" else "FIGHT"))
 
 
 func _squad_row(u: Unit) -> Control:
@@ -530,13 +530,16 @@ func _track(done: int) -> Control:
 func _fielded(enc: Dictionary) -> String:
 	var domain := _domain_name(str(enc["domain"]))
 	var n := run.formation_foes(str(enc["domain"])).size()
+	var escort := Battle.escort_at(run.tier())
 	match str(enc["kind"]):
 		"elite":
 			return "%s LEADS %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1]
 		"boss":
-			return "%s WITH %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1]
+			return "%s WITH %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1 + escort]
+		"final":
+			return "%s'S FINAL: %s WITH ITS FORMATION  ·  %d FOES" % [domain, _foe_name(str(enc.get("foe", ""))), n + 1 + escort]
 		"finale":
-			return "THE PARTY'S LINE, PROMOTED  ·  %d" % run.finale_line().size()
+			return "THE PARTY'S LINE  ·  %d FOES" % (Array(enc.get("line", [])).size() + escort)
 	return "%s'S FORMATION  ·  %d FOES" % [domain, n]
 
 
@@ -654,7 +657,7 @@ func _enter_fight(sk: Skirmish) -> void:
 	screen.sk = sk
 	screen.back_label = "BACK TO THE RUN"
 	var kind := str(run.encounters[run.fight]["kind"]) if run.fight < run.encounters.size() else ""
-	if kind == "boss" or kind == "finale":
+	if kind == "boss" or kind == "final" or kind == "finale":
 		var bs := Sound.boss_set(run.lead)
 		if not bs.is_empty():
 			Sound.music(bs, true)
