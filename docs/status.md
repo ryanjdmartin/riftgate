@@ -32,7 +32,11 @@ are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. On 25 October, on Ryan's go ("merge in and clean up"), main took
+One branch is live beside main: `claude/quick-campaign-mode-pafhiv` (25 October), the quick
+campaign's proposal (`docs/quick_campaign_proposal.md`: Ryan's mode of battles of back-to-back
+formations, its holes and Claude's leans) and the probe it cites (`tools/chain_probe.gd`, the
+measurements' entry of that day), waiting on Ryan's answers; nothing of the mode is built. On 25
+October, on Ryan's go ("merge in and clean up"), main took
 the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
 doubled, the Kite's reset without a limit, the Skua's engine), which carried

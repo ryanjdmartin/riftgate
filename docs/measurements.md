@@ -1343,3 +1343,46 @@ carry one or two: the Dingo's body, the Goshawk's and the Sparrowhawk's fuselage
 hull) are live at these sizes, and a weld without them differed twice as much; the welded
 meshes carry every part's levels. The weld costs 9 to 31 ms the first time a model is seen and
 about 1 to 9 ms an instance after it (the plan is built once a model).
+
+## 25 October, formations back to back
+
+**How many complete formations a squad gets through in a row** (Ryan's quick campaign of 25
+October, `docs/quick_campaign_proposal.md`: battles of four, six and eight fights before the boss,
+every one a formation or an elite, nothing healed until the boss falls). `tools/chain_probe.gd`
+on the content at `a8a0e43`: a squad fights one domain's formation (its whole spawn list in one
+fight, as the balance report's formation cells) up to nine times in a row, hull, shield, cracks
+and wrecks carried and heat starting each fight at zero, greedy play, never withdrawing; each
+chain with no shield back between fights (every machine fought, so no field recharge) and with
+one field recharge (a map turn's walk to the next pack). The squads: every trio a tender deals
+(44 since the Skua, stock) at 2 seeds a domain, every four (24, stock) at 3, and the five endgame
+fours of 23 October (`tools/endgame_fours.py --json`) at 5. The share of chains still winning
+after the k-th formation, and the hull they have left (a wreck counting nothing):
+
+| Squad | Between fights | 1 | 2 | 4 | 6 | 8 |
+|---|---|---|---|---|---|---|
+| Starter trios (352 chains each) | no shield back | 85% (76%) | 63% (60%) | 32% (48%) | 14% (40%) | 6% (39%) |
+| | a field recharge | 87% (74%) | 64% (68%) | 43% (58%) | 29% (59%) | 19% (61%) |
+| Starter fours (288) | no shield back | 100% (93%) | 98% (81%) | 84% (68%) | 70% (60%) | 56% (55%) |
+| | a field recharge | 100% (93%) | 98% (86%) | 89% (79%) | 80% (75%) | 71% (71%) |
+| Endgame fours (100) | no shield back | 100% (98%) | 100% (96%) | 100% (89%) | 100% (83%) | 99% (76%) |
+| | a field recharge | 100% (97%) | 100% (95%) | 100% (91%) | 100% (86%) | 97% (84%) |
+| The same, half again as dense (`--density 1.5`) | a field recharge | 100% (95%) | 100% (90%) | 99% (80%) | 95% (73%) | 90% (66%) |
+| The same, double (`--density 2`) | a field recharge | 100% (91%) | 100% (82%) | 94% (68%) | 75% (64%) | 66% (60%) |
+
+By domain, the Meadow is the starters' wall: a stock four wins four of its formations in a row
+67% of the time (76% with the recharge), the Waste's 100%. By machine, the Cottonmouth carries
+(the trios with it win four in a row 85% and 95%, the fours with it eight 95% and 97%) and the
+Cassowary and the Prairie Dog least (their trios 4% and 9% without the recharge), as the trios'
+reads of 23 October had it. The survivors' hull reads high late because the chains that last are
+the strong pairings. Denser formations take longer as well as more: 4.2 rounds a fight for the
+endgame fours, 6.4 at half again as dense, 8.4 at double.
+
+Read: a trio cannot carry a battle of formations: more than half the stock trios fall before the
+fourth. A fourth machine about halves each fight's cost (section 4's four-machines row) and takes
+most stock fours through four (84 to 89%) and half or more through eight. The field recharge is
+worth five to fifteen points on a starter squad; on a built one it moves the hull left (76% to
+84% after eight), not the wins. A four fitted to tier two loses about a thirtieth of its hull a
+formation and leaves eight with three quarters of it or more; every tier draws the same lists
+today (the curve row), so only the formation's density presses it, half again as dense taking it
+to 90% through eight and double to 66%. A direction: 2 to 5 seeds a cell over many cells, greedy
+only.

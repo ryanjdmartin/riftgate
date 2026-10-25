@@ -6,6 +6,7 @@ three is powerful and rare by design (Ryan, 23 October: until the components' po
 known). Built by Claude for the read, each a concept; the fits are Ryan's to move.
 
   python3 tools/endgame_fours.py <name> [stock_loop run options]...
+  python3 tools/endgame_fours.py --json    # the five as tools/chain_probe.gd's squads
 
 checks every fit against the content (tier two at most, no more pieces than hardpoints or
 modules than slots) and runs `tools/stock_loop.py run <name>` on the five rows, random and
@@ -83,6 +84,9 @@ def main():
     errs = check()
     if errs:
         raise SystemExit('\n'.join(errs))
+    if sys.argv[1] == '--json':
+        print(json.dumps([[[cid, KITS[cid][0], KITS[cid][1]] for cid in f] for _, f in FOURS]))
+        return
     extra = sys.argv[2:]
     defaults = [] if '--policies' in extra else ['--policies', 'random,greedy']
     defaults += [] if '--seeds' in extra else ['--seeds', '30']

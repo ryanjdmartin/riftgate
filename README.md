@@ -76,7 +76,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   against each faction's formation, bosses and first pack; `special_probe.gd` tallies how often
   each foe special's condition holds and it is picked, and each fight's overheats, as built, with
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
-  parts); `endgame_fours.py` fits the five
+  parts); `chain_probe.gd` plays a squad through one domain's formation up to nine times in a
+  row with its damage carried, for the quick campaign's proposal (`chain_probe_read.py` reads
+  its parts); `endgame_fours.py` fits the five
   endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
@@ -240,6 +242,13 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe
 # foes' heat stacks to size a buff, --only peak,magma keeps the cells named; four parts in parallel, then the reader
 perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
 python3 tools/special_probe_read.py build
+# formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
+# or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
+# to nine times in a row, hull, shield, cracks and wrecks carried, with no shield back between fights and with one
+# field recharge; --density F scales the formation; four parts in parallel, then the reader
+perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
+python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
+python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
