@@ -167,10 +167,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.290, and so is the live (25 October,
-  the page's version 307, from `ccr-170f6d81-465jnr`: Flak on a damaging weapon's blow of 0 in
-  the Prairie Dog's row, the Skua's paragraph and the tables; 306 put the branch's v0.289 onto
-  main's v0.288 at 305). The
+  `docs/design-bible.html` after every change. This file is v0.291, and so is the live (25 October,
+  the page's version 308, from `claude/affectionate-goldberg-8e3mkh`: the Ward turning away every
+  rider, a special's too, and the tables; 307 was `ccr-170f6d81-465jnr`'s v0.290, Flak on a
+  damaging weapon's blow of 0, which the live matched before 308). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -178,11 +178,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 108 (25 October, from
-  `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
+  before it is replaced and `edits` read first. At the page's version 110 (25 October: from
+  `ccr-170f6d81-465jnr`, the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
   hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
-  the Cryo Flinger at 108, Flak's line at 109; the live files identical to the last publish's and `edits` empty
-  before each). Its database (Ryan's saved edits,
+  the Cryo Flinger at 108, Flak's line at 109; from `claude/affectionate-goldberg-8e3mkh`, the
+  Ward's, Phased's and Overshield's codex lines at 110; the live files identical to the last
+  publish's and `edits` empty before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
