@@ -349,7 +349,7 @@ static func hopper_bonus(u, f: Face) -> int:
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
 ## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
 ## to that foe: its missing hull, conditions on it (a status it carries), its Flak (a point a
-## stack on a blow that deals something) and its armour off the blow. A shock is left out, the
+## stack on a damaging weapon's blow, a 0 included) and its armour off the blow. A shock is left out, the
 ## foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
@@ -361,7 +361,7 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 		# A split entry (the Skua's) shows a strike's share of the roll, rounded down.
 		var d := int(Effects.attack(ms.unit, f, (v + add) / maxi(1, f.split), 0, target)["damage"])
 		if target != null:
-			if d > 0:
+			if not f.is_debuff():
 				d += Effects.damage_taken_add(target, ms.unit)
 			d = maxi(0, d - target.armour_for(f))
 		out.append(d)
@@ -467,7 +467,7 @@ static func corrupt_bite() -> int:
 	return Effects.status_value("corrupted", "corrupt_bite")
 
 
-## The heat a damaging hit sheds for its hitter for each stack of Cryo it spends on a foe:
+## The heat a damaging weapon's hit sheds for its hitter for each stack of Cryo it spends on a foe:
 ## the Cryo status's own number (the stock pass's engine, 22 October; a constant before).
 static func cryo_cool() -> int:
 	return Effects.status_value("cryoed", "cool_hitter")
@@ -505,7 +505,7 @@ static func spend_bite(u, f: Face) -> int:
 ## asks the same question with that much more shield standing (a shield component about
 ## to be spent here), for whoever weighs one; `overshield` lets it pass the maximum, as a
 ## component with that keyword would. `aimed`, the foe a dragged die is held over, folds in
-## what that spend cashes there: a damaging hit on a Cryo foe cools the hitter after its own
+## what that spend cashes there: a damaging weapon's hit on a Cryo foe cools the hitter after its own
 ## heat lands (Ryan, 16 October: the net on the heat bar, never the die).
 func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false, aimed: Foe = null) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
@@ -575,7 +575,7 @@ func cryo_cash(ms: MechState, over: Foe) -> int:
 	if over == null or f == null or ms.assigned or not f.is_attack():
 		return 0
 	var ef := Effects.effective_face(ms.unit, f, over)
-	if ef.power <= 0 and ef.power_max <= 0:
+	if ef.is_debuff():
 		return 0
 	var stacks := 0
 	for foe in reached_by(ef, over):
@@ -1784,7 +1784,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in judged:
 		if f.has(Face.Keyword.SUPPRESS) and not Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, foe):
 			shut[foe] = [Face.Keyword.SUPPRESS]
-	var thawed := 0   # Cryo stacks this spend's damaging hits spent, cooling the hitter after its heat lands
+	var thawed := 0   # Cryo stacks this spend's hits with a damaging weapon spent, cooling the hitter after its heat lands
 	var split := maxi(1, f.split)    # the strikes one roll serves (the Skua's Split-cycle Breech; Effects.split_of)
 	var roll := 0                    # the roll the strikes of one split share
 	var aimed := target              # the strike's own foe: the target, or where a spray's strike fell
@@ -1835,15 +1835,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# more, its armour included, and the strike's whole number goes on behind it; with
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess.
-				_spill(ms, f, foe, dmg, hit)
+				_spill(ms, f, foe, dmg, hit, not f.is_debuff())
 				if foe == aimed:
 					landed = dmg
 				continue
-			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
-			# double, and the shock is spent by the blow), then its armour comes off, flat, so
-			# small blows bounce off a braced foe the way they do off a heavy machine; a
+			# What the foe takes of the blow: its own statuses read last (its Flak adds to a
+			# damaging weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
+			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
+			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, dmg, ms.unit)
+			var taken := Effects.damage_taken(foe, dmg, ms.unit, not f.is_debuff())
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
@@ -1855,14 +1856,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe == aimed:
 				landed = taken
 				armoured_total += foe_armoured
-			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
-			if dmg > 0 and Effects.remove(foe, "shocked"):
+			# A damaging weapon's blow spends a shock, even one that deals nothing (Ryan, 25
+			# October: "The important part is that it was a damaging weapon"); a debuff (a lure, a
+			# probe) leaves it standing.
+			if not f.is_debuff() and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-			# A hit lays what the passives lay on this foe, a stack per strike that lands with a
-			# number: a blow of nothing (the web, a lure) is no hit, and a strike on a foe an
-			# earlier one killed lays nothing on it.
-			if was_alive and dmg > 0 and lays.has(foe):
+			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
+			# unless the passive asks for a damaging weapon's hit (the Ambush's Vitriol, its text
+			# says so, whatever the hit dealt: Ryan, 25 October); a strike on a foe an earlier one
+			# killed lays nothing on it.
+			if was_alive and lays.has(foe):
 				for pair in lays[foe]:
+					if bool(pair[2]) and f.is_debuff():
+						continue
 					var sid := str(pair[0])
 					var n_laid := _stacks_from(ms, sid, int(pair[1])) * doubled
 					Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n_laid, Effects.status_decay(Effects.STATUS[sid]))
@@ -1893,11 +1899,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 				_note_status(gained, foe, "webbed")
 				webbed.append(foe)
-			# Cryo (20 October): a damaging hit spends every stack the foe carries, and the hitter
-			# cools for them once the spend's own heat has landed (below); a blow of nothing
-			# spends none. Then the blow's own Cryo lands, after the cash, so a damaging Cryo
-			# weapon never eats what it lays.
-			if was_alive and dmg > 0 and Effects.has(foe, "cryoed"):
+			# Cryo (20 October): a damaging weapon's hit spends every stack the foe carries, whatever
+			# it dealt (Ryan, 25 October), and the hitter cools for them once the spend's own heat has
+			# landed (below); a debuff spends none. Then the blow's own Cryo lands, after the cash, so
+			# a damaging Cryo weapon never eats what it lays.
+			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
 				thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and foe.alive():
@@ -2007,11 +2013,11 @@ func _blast(ms: MechState, amount: int) -> void:
 	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
 	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
 	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
-	var taken := Effects.damage_taken(foe, dmg, ms.unit)
+	var taken := Effects.damage_taken(foe, dmg, ms.unit, true)   # a blast is a damaging blow
 	var armoured := mini(taken, foe.armour_total())
 	taken -= armoured
 	foe.hp -= taken
-	if dmg > 0 and Effects.remove(foe, "shocked"):
+	if Effects.remove(foe, "shocked"):   # a blast is a damaging blow, whatever it dealt
 		log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 	log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, foe.display_name, taken, " (armour -%d)" % armoured if armoured > 0 else ""])
 	last_blast = {"mech": mechs.find(ms), "foe": foe, "dealt": taken}
@@ -2443,7 +2449,7 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 				kws.append(int(k))
 	var burn := (f.burn if f.has(Face.Keyword.BURN) else 0) + extra_burn
 	mine_seq += 1
-	return {"damage": maxi(0, dmg), "keywords": kws, "seq": mine_seq, "by": ms.unit.display_name, "mech": mechs.find(ms),
+	return {"damage": maxi(0, dmg), "weapon": plain or not f.is_debuff(), "keywords": kws, "seq": mine_seq, "by": ms.unit.display_name, "mech": mechs.find(ms),
 		"face": real.to_dict() if real != null and not plain else {},
 		"burn": _stacks_from(ms, "burning", burn) * doubled if burn > 0 and not plain else 0,
 		"cryo": _stacks_from(ms, "cryoed", f.cryo) * doubled if f.has(Face.Keyword.CRYO) and not plain else 0,
@@ -2557,7 +2563,7 @@ func _mine_spender(shot: Dictionary) -> MechState:
 ## damage taken (a Shocked foe takes double, spending the shock) and its armour, then the shot's
 ## keywords acting as on a blow: Spread its rank neighbours too and Penetrate the other rank of
 ## its column (a cluster), Spillover past a front kill, Burning, a stun, a web, Cryo (cashed
-## for its spender, as any damaging hit cashes it), Flak, Shock, Exposed, and Chain, a kill
+## for its spender, as any damaging weapon's hit cashes it), Flak, Shock, Exposed, and Chain, a kill
 ## repeating its spender's attack on the next foe in reach, rolled and paying heat again. A
 ## kill on a foe carrying the Syrinx Drone leaves the shot in its slot again.
 func _mine_hit(foe: Foe, shot: Dictionary) -> void:
@@ -2599,10 +2605,11 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
 			Effects.remove(t, eat)
 			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
-		var taken := maxi(0, Effects.damage_taken(t, blow, source) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
+		var weapon := bool(shot.get("weapon", blow > 0))   # a damaging weapon's shot, whatever it deals
+		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		if blow > 0 and Effects.remove(t, "shocked"):
+		if weapon and Effects.remove(t, "shocked"):
 			log.append("%s: the shock lands, %d doubled" % [t.display_name, blow])
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive():
@@ -2614,7 +2621,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			if kws.has(Face.Keyword.SPILLOVER) and t.rank == 0 and not t.is_massive():
 				_mine_spill(t, taken - hp_before, hit, shot, source)
 			continue
-		if dmg > 0 and Effects.has(t, "cryoed"):
+		if bool(shot.get("weapon", dmg > 0)) and Effects.has(t, "cryoed"):
 			thawed += Effects.stacks_of(t, "cryoed")
 			Effects.remove(t, "cryoed")
 		if int(shot.get("burn", 0)) > 0:
@@ -2817,11 +2824,13 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
-func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> void:
+## `whole`: a later strike's whole number, a damaging weapon's, which lands as its blow even at
+## 0 (its Flak added); a kill's excess of 0 carries nothing.
+func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
+	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit) - behind.armour_total())
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole) - behind.armour_total())
 	behind.hp -= behind_taken
 	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])

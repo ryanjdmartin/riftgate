@@ -150,7 +150,8 @@ defeat when every machine is wrecked. There is no round limit.
    the target's missing hull adds.
 2. The attacker's modifiers: adds, then multiplies, then floors.
 3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
-   then loses its armour off it. A blow of nothing stays nothing.
+   then loses its armour off it. A damaging weapon's blow takes them whatever it deals, a 0
+   included (the Skua's halved 1); a debuff's blow stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
   each takes half the roll, rounded down.
@@ -194,8 +195,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
-  machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 2 a
-  stack, after the spend's own heat lands; a blow of nothing spends none.
+  machine's hit with a damaging weapon on a foe carrying Cryo spends every stack, whatever the
+  hit dealt, and cools the hitter 2 a stack, after the spend's own heat lands; a debuff spends
+  none.
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
@@ -372,8 +374,9 @@ On a foe:
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
-- **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
-  shock; it never stacks.
+- **Shocked** (debuff): the next team blow of a damaging weapon deals double, spending the
+  shock whatever the blow dealt (a vent's blast and a mine's shot of a damaging weapon too); a
+  debuff leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
@@ -388,8 +391,8 @@ On a foe:
   Suppressed does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
-  then a stack fades; it never finishes a foe. A passive lays it a stack per strike that lands
-  with a number; a blow of nothing (a web, a lure) lays none.
+  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per hit
+  with a damaging weapon, whatever the hit dealt, as its text says; a web or a lure lays none.
 - **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
@@ -398,11 +401,12 @@ On a foe:
   as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
-- **Cryo** (debuff): a damaging hit on it spends every stack and cools the hitter 2 a stack;
-  a blow of nothing spends none. It never fades on its own.
-- **Flak** (debuff): every blow it takes deals a point more a stack, before its multiplies and
-  its armour (a Shocked foe takes blow plus Flak, doubled); the stacks halve at the end of each
-  round, rounded down.
+- **Cryo** (debuff): a hit on it with a damaging weapon spends every stack, whatever it dealt,
+  and cools the hitter 2 a stack; a debuff spends none. It never fades on its own.
+- **Flak** (debuff): every blow of a damaging weapon it takes deals a point more a stack, a
+  blow of 0 included, before its multiplies and its armour (a Shocked foe takes blow plus Flak,
+  doubled); a debuff's blow stays nothing. The stacks halve at the end of each round, rounded
+  down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
@@ -561,8 +565,10 @@ shields do not refill; a pack keeps its survivors, who return whole.
   Indirect blows at the back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 1 lighter, whoever laid the Flak).
-- A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
-  number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
+- A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
+  the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
+  included, unless the passive's text asks for a damaging weapon's hit (the funnel-web's
+  Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. The
   Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,

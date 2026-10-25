@@ -460,7 +460,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			# reads, capped at what the foe will have left. A charge already on a foe this blow
 			# does not spend is worth nothing more.
 			for foe in hit:
-				if Effects.has(foe, "shocked") and mean <= 0.0:
+				if Effects.has(foe, "shocked") and f.is_debuff():
 					continue
 				var left := maxf(0.0, float(foe.hp) - mean)
 				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, shock_cash(sk, ms, foe))
@@ -499,23 +499,24 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			var survives_flak := (1.0 - p_kill) if foe == target else 1.0
 			score += survives_flak * flak_score(sk, ms, f, foe, maxf(0.0, float(foe.hp) - mean), foe == target)
 	# What this machine's passives lay on each foe the blow reaches, judged alone (the
-	# funnel-web's Ambush, 18 October): a stack per strike that lands with a number, worth its
-	# ticks over the actions to come on the hull the blow leaves, at the odds the foe outlives
-	# the blow. A blow of nothing lays nothing.
+	# funnel-web's Ambush, 18 October): a stack per strike, worth its ticks over the actions to
+	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
+	# a damaging weapon's hit (the Ambush's) gets nothing from a debuff.
 	var laid_apps := 0
-	if f.power > 0 or f.power_max > 0:
-		for foe in sk.reached_by(f, target):
-			if not foe.alive():
+	for foe in sk.reached_by(f, target):
+		if not foe.alive():
+			continue
+		var lays := Effects.laid_statuses(ms.unit, f, foe)
+		if lays.is_empty():
+			continue
+		var left := int(maxf(0.0, float(foe.hp) - mean))
+		var survives := (1.0 - p_kill) if foe == target else 1.0
+		for pair in lays:
+			if bool(pair[2]) and f.is_debuff():
 				continue
-			var lays := Effects.laid_statuses(ms.unit, f, foe)
-			if lays.is_empty():
-				continue
-			var left := int(maxf(0.0, float(foe.hp) - mean))
-			var survives := (1.0 - p_kill) if foe == target else 1.0
-			for pair in lays:
-				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
-				if foe == target:
-					laid_apps += 1
+			score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+			if foe == target:
+				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
 	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
@@ -528,9 +529,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 		var laid_burn := f.burn * maxi(1, f.strikes)
 		score += (1.0 - p_kill) * per * float(laid_burn * (laid_burn + 1)) / 2.0 * BURN_WEIGHT
-	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
+	# Cryo (20 October): a damaging weapon's hit cashes the foe's stacks for cooling, worth what a vent
 	# of that much would be on the hitter.
-	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
+	if not f.is_debuff() and Effects.has(target, "cryoed"):
 		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.cryo_cool())
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
@@ -664,11 +665,12 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 		if hp <= 0.0:
 			break
 		var d := float(int(shot["damage"]))
-		if d > 0.0:
+		var weapon := bool(shot.get("weapon", d > 0.0))   # a damaging weapon's shot takes the adds, whatever it deals
+		if weapon:
 			d += add
-			if shocked:
-				d *= 2.0
-				shocked = false
+		if shocked and weapon:
+			d *= 2.0   # and spends the shock
+			shocked = false
 		d = maxf(0.0, d - (0.0 if Array(shot["keywords"]).has(Face.Keyword.BREACH) else arm))
 		dealt += minf(d, hp)
 		hp -= d
@@ -995,18 +997,19 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
+	var damaging := not f.is_debuff()
 	for v in rolls:
 		var dmg: int = (v + fired) / maxi(1, f.split)
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
-		# Flak adds to every blow that deals something. Then its armour comes off every blow,
-		# so a braced foe is worth less to a volume weapon.
+		# Flak adds to every blow of a damaging weapon, a strike of 0 included. Then its armour
+		# comes off every blow, so a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
-		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and dmg > 0 else 0) - arm)
+		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and damaging else 0) - arm)
 		if not aimed:
 			out.append([float(later) * n, w])
 			continue
-		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit) if target != null else dmg) - arm)
+		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, damaging) if target != null else dmg) - arm)
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
 	return out
 
@@ -1366,7 +1369,10 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				if status.has("spent_by"):
 					score += v * n   # Spun Up: damage on the next weapon spend, whenever it comes
 				else:
-					score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
+					# A flat add lands on every strike, so the gun showing counts it once a strike (the
+					# Skua's split guns twice, its Pod four times).
+					var blows := float(maxi(1, Effects.effective_face(who.unit, shown).strikes)) if attack_now > 0.0 else 0.0
+					score += v * n * blows + v * n * float(f.buff_rounds - 1)
 			"multiply_damage_taken":
 				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
 			"add_stat":
@@ -1552,7 +1558,7 @@ func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
 		return 0.0
 	var total := 0.0
 	for foe in live:
-		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit) - foe.armour_total())
+		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit, true) - foe.armour_total())
 		total += minf(float(taken), float(foe.hp))
 		if taken >= foe.hp:
 			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT

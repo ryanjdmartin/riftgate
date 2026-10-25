@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 628 tests, 64,352 checks, green on main (25 October, the three branches landed onto
-  the weld), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 633 tests, 64,386 checks, green on `ccr-170f6d81-465jnr` (25 October, Flak on a
+  damaging weapon's 0), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -32,23 +32,19 @@ are in `README.md`.
 
 ## Branches
 
-`claude/affectionate-goldberg-8e3mkh` stands beside main (25 October, docs only): the mechanics
-audit Ryan asked for after the Flak fix, `docs/mechanics_audit.md`, 42 findings traced through
-the code and cited by line, its "start here" list first. Nothing in it is fixed or decided; it
-waits on Ryan's triage, each finding to a fix, a row, a task or struck, and retires after.
-
-No other branch is live beside main. On 25 October, on Ryan's go ("merge in and clean up"), main took
-the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
-October, the foes' conditions and their targeting at random, the riders numbered and the heat
-doubled, the Kite's reset without a limit, the Skua's engine), which carried
-`ccr-7d865127-wr1ko2` (the four Kestrel machines of 21 October and their models' first cut,
-whose second round of looks is still Ryan's to judge) and `claude/eager-newton-sf947u` (the
-stock pass's reads, the read by stage, Ryan's terms and elites, the curve and the fronts in
-`docs/curve_proposal.md`). Main's weld (`claude/friendly-cannon-kyk9v4`, landed the same day)
-was merged into them first, so main fast-forwarded. Delete the four from the desk machine or
-GitHub, since a cloud session's push to delete one is refused; `ccr-170f6d81-465jnr`'s session
-was still at work that day, so its later commits land by merging main in. Every other branch was
-merged into main and deleted (22 October).
+Two branches are live beside main. `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
+go: "merge in and clean up") and that session's later commits of the same day (a passive's lay on
+any hit, the Ambush's damaging hit its own rule; the bot's flat buff counted on each strike; a
+damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a
+damaging weapon's blow of 0), so main fast-forwards onto it.
+`claude/affectionate-goldberg-8e3mkh` carries it, merged in, and the mechanics audit Ryan asked
+for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced through the code and cited
+by line, its "start here" list first), with the fixes he called for on 25 October; landing it
+lands both.
+The landing's other three are in main: `ccr-7d865127-wr1ko2`,
+`claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
+desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once
+main has it. Every other branch was merged into main and deleted (22 October).
 
 ## The design sessions
 
@@ -56,7 +52,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
-  halved, rounded down, and struck twice; the Pod's spray); the Giant Petrel's engine session
+  halved, rounded down, and struck twice; the Pod's spray), its rows read the same day: mid-field
+  alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
@@ -162,9 +159,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.288, and so is the live (25 October,
-  the page's version 305, from main at the landing: the battery row's weld built, and the Skua's
-  records, which the page's version 304, v0.287 with the Kite's reset, did not yet carry). The
+  `docs/design-bible.html` after every change. This file is v0.290, and so is the live (25 October,
+  the page's version 307, from `ccr-170f6d81-465jnr`: Flak on a damaging weapon's blow of 0 in
+  the Prairie Dog's row, the Skua's paragraph and the tables; 306 put the branch's v0.289 onto
+  main's v0.288 at 305). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -172,9 +170,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 106 (25 October, from
-  `ccr-170f6d81-465jnr`: the Skua fielded, its passive and the Pod's spray, and the vocabulary's
-  Spray; the live files identical to version 105's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 108 (25 October, from
+  `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
+  hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
+  the Cryo Flinger at 108, Flak's line at 109; the live files identical to the last publish's and `edits` empty
+  before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

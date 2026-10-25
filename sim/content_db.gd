@@ -1094,6 +1094,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
 		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
+		# A lay that asks for a damaging weapon's hit (the Ambush's Vitriol, Ryan, 25 October) says so
+		# on the effect and in its passive's text; any other lays on every hit, a debuff's included.
+		if effect == "lay_status" and eff.has("damaging") and not (eff["damaging"] is bool):
+			errs.append("%s: lay_status's damaging is true or false (a damaging weapon's hit only, said in the passive's text)" % where)
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:

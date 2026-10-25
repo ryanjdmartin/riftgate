@@ -4745,7 +4745,7 @@ func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
 ## A synthetic ambush: the engine's lay_status on its target_no_intent condition, never the
 ## content's passive.
 const AMBUSH := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
-	{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+	{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 
 
 func _strikes(f: Face, n: int) -> Face:
@@ -4851,6 +4851,104 @@ func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per
 	assert_true(at_a.intent_on(a), "a countdown aimed at it shows intent")
 	at_a.target = other
 	assert_false(at_a.intent_on(a), "and one aimed elsewhere shows none")
+
+
+## A passive's lay lands on every hit, a debuff's included, unless it asks for a damaging
+## weapon's hit (Ryan, 25 October: "that should be a vitriol specific rule, and documented in the
+## passive text"): a debuff spent on the foe lays the plain lay and not the damaging one.
+func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_damaging_one() -> void:
+	var lays := {"id": "lays_t", "name": "Lays", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "flakked", "stacks": 1},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "damaging": true}]}
+	var probe := Face.attack(0, L, [K.SUPPRESS])
+	var gun := Face.attack(5, L)
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.of([probe, gun]), 0, 500)
+	a.grant_passive(lays)
+	sk.add_mech(a)
+	var g := _ghoul(100, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, g), "a debuff on the foe")
+	assert_eq(Effects.stacks_of(g, "flakked"), 1, "the plain lay lands on a blow of nothing")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 0, "the damaging one waits for a damaging hit")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, g), "a gun on the foe")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 1, "and lands with it")
+	assert_true(Effects.effect_text(lays["effects"][1]).contains("a damaging weapon"), "its line says so")
+
+
+## A damaging weapon's hit spends a Shock, cashes Cryo and lays a damaging lay whatever it dealt
+## (Ryan, 25 October: "The important part is that it was a damaging weapon"); a debuff does none
+## of it. Under a split a printed 1 strikes 0, twice.
+func test_a_damaging_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -> void:
+	var passive := {"id": "split_lays", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "damaging": true}]}
+	for weapon in ["debuff", "gun"]:
+		var f := Face.attack(0, L, [K.SUPPRESS]) if weapon == "debuff" else Face.attack(1, L)
+		var sk := Skirmish.new(1, 1)
+		var m := _mech("S", Die.single(f), 40, 100)
+		m.grant_passive(passive)
+		sk.add_mech(m)
+		var g := _ghoul(100, 10)
+		sk.add_foes([g])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+		Effects.stack(g, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+		ms.heat = 8
+		assert_true(sk.assign(0, g), "the %s spent" % weapon)
+		assert_eq(g.hp, 100, "the %s deals nothing" % weapon)
+		if weapon == "debuff":
+			assert_true(Effects.has(g, "shocked"), "a debuff leaves the shock standing")
+			assert_eq(Effects.stacks_of(g, "cryoed"), 2, "and the Cryo")
+			assert_eq(Effects.stacks_of(g, "vitriol"), 0, "and lays no damaging lay")
+		else:
+			assert_false(Effects.has(g, "shocked"), "a damaging weapon's 0 spends the shock")
+			assert_eq(Effects.stacks_of(g, "cryoed"), 0, "and cashes the Cryo")
+			assert_eq(ms.heat, 8 - 2 * sk.cryo_cool(), "cooling its hitter")
+			assert_eq(Effects.stacks_of(g, "vitriol"), 2, "and lays the damaging lay on each strike")
+
+
+## Flak on a damaging weapon's blow of 0 (Ryan, 25 October: "Flak and overcharge exist in part
+## to get past armour"): a split 1 strikes twice at 0, and each strike takes the foe's Flak
+## before its armour comes off, on the die over the foe, in the bot's read and in the blow; a
+## debuff's blow stays nothing.
+func test_a_damaging_weapons_blow_of_0_takes_the_foes_flak_before_its_armour() -> void:
+	var split := {"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
+	for weapon in ["debuff", "gun"]:
+		var f := Face.attack(0, L, [K.SUPPRESS]) if weapon == "debuff" else Face.attack(1, L)
+		var sk := Skirmish.new(1, 1)
+		var m := _mech("S", Die.single(f), 40, 100)
+		m.grant_passive(split)
+		sk.add_mech(m)
+		var g := _ghoul(100, 10)
+		g.armour = 1
+		sk.add_foes([g])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
+		var shown := sk.shown_face(ms, f)
+		var pol := Policy.make(Policy.GREEDY)
+		if weapon == "debuff":
+			assert_eq(sk.shown_number(ms, shown, g), [0, 0] as Array[int], "a debuff shows none, Flak or not")
+			assert_eq(pol.expected_damage(ms, shown, g), 0.0, "and the bot reads none")
+			assert_true(sk.assign(0, g), "the debuff spent")
+			assert_eq(g.hp, 100, "and it deals nothing")
+		else:
+			assert_eq(shown.number_text(), "0", "a 1 halved is 0")
+			assert_eq(sk.shown_number(ms, shown, g), [2, 2] as Array[int], "over the foe a strike shows its 0 and the 3 Flak, the armour off")
+			assert_eq(pol.expected_damage(ms, shown, g), 4.0, "and the bot reads both strikes")
+			assert_true(sk.assign(0, g), "the gun spent")
+			assert_eq(g.hp, 96, "each strike of 0 takes the Flak, then loses the armour: 2 twice")
 
 
 func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:
@@ -6613,6 +6711,36 @@ func test_the_pull_gathers_every_mine_into_its_slot_and_a_foe_there_takes_them_n
 	assert_true(s2.can_assign(2, Vector2i(0, 1)), "the pull, Indirect, on any empty slot")
 	assert_true(s2.assign(2, Vector2i(0, 1)), "spent on the other")
 	assert_eq(s2.mines.keys(), [Vector2i(0, 1)], "the mine moved there")
+
+
+## A damaging weapon's mine of 0 (a split 1 laid: two shots of 0) takes the foe's Flak as its
+## blow would, before the armour, in the landing and in the bot's read of the pull (Ryan, 25
+## October: "Flak and overcharge exist in part to get past armour").
+func test_a_damaging_weapons_mine_of_0_takes_the_foes_flak() -> void:
+	var pull := Face.attack(0, I)
+	pull.pulls_mines = true
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("Bomber", Die.single(Face.attack(1, I)), 40, 100)
+	a.grant_passive(MINER)
+	a.grant_passive({"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]})
+	sk.add_mech(a)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
+	var weak := _ghoul(10, 0)
+	var boss := _ghoul(300, 0)
+	boss.armour = 1
+	sk.add_foes([weak, boss])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(1, weak), "a slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "the split 1 laid there")
+	var shots := sk.mines_at(Vector2i(0, 0))
+	assert_true(shots.size() == 2 and int(shots[0]["damage"]) == 0 and int(shots[1]["damage"]) == 0, "two shots of 0: %s" % str(shots))
+	Effects.stack(boss, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
+	assert_eq(Policy.make(Policy.GREEDY).pull_score(sk, boss), 4.0, "the bot reads each shot's 0 with the 3 Flak, the armour off")
+	assert_true(sk.assign(2, boss), "the pull on the boss")
+	assert_eq(boss.hp, 296, "each takes the Flak, then loses the armour: 2 twice")
 
 
 ## The Syrinx Drone (Ryan's go, 21 October): the foe carries it, and the next weapon to kill it,
