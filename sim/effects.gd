@@ -1008,9 +1008,11 @@ static func granted_keywords(u, face: Face, target = null, printed_only: bool = 
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit], ...]. The skirmish asks once a foe at the spend, before any
-## strike's riders land, and lays them a stack per strike that lands with a number; the bot
-## asks the same. Nothing for a foe the condition rules out.
+## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend, before
+## any strike's riders land, and lays them on every strike that reaches the foe alive, a blow of
+## nothing included, unless the effect asks for a damaging hit (`damaging`, which its passive's
+## text says: the Ambush's Vitriol, Ryan, 25 October); the bot asks the same. Nothing for a foe
+## the condition rules out.
 static func laid_statuses(u, face: Face, target) -> Array:
 	var out: Array = []
 	if face == null or not face.is_attack() or target == null:
@@ -1022,7 +1024,7 @@ static func laid_statuses(u, face: Face, target) -> Array:
 		var id := str(eff.get("value", ""))
 		if not STATUS.has(id):
 			continue
-		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)])
+		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false))])
 	return out
 
 
@@ -1762,7 +1764,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_burn": body = "+%s burn" % vs
 		"lay_status":
 			var n := int(eff.get("stacks", 1))
-			body = "lays %s on each foe hit, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a stack" if n <= 1 else "%d stacks" % n]
+			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a damaging hit reaches" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
 		"vent_heat": body = "sheds %s heat" % vs
 		"add_ceiling": body = "rolls reach %s higher" % vs
 		"add_floor": body = "the lowest roll %s higher" % vs

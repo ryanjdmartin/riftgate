@@ -725,7 +725,7 @@ func test_the_plaque_shows_a_name_in_its_pixel_face() -> void:
 ## and a webbed or acid-eaten foe wears its chip, the web's pointing at the neighbour it catches.
 func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_or_dragged() -> void:
 	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 	var s := _screen(7)
 	var i := 0
 	var ms: Skirmish.MechState = s.sk.mechs[i]

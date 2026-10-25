@@ -4745,7 +4745,7 @@ func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
 ## A synthetic ambush: the engine's lay_status on its target_no_intent condition, never the
 ## content's passive.
 const AMBUSH := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
-	{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+	{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 
 
 func _strikes(f: Face, n: int) -> Face:
@@ -4851,6 +4851,35 @@ func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per
 	assert_true(at_a.intent_on(a), "a countdown aimed at it shows intent")
 	at_a.target = other
 	assert_false(at_a.intent_on(a), "and one aimed elsewhere shows none")
+
+
+## A passive's lay lands on every hit, a blow of nothing included, unless it asks for a damaging
+## hit (Ryan, 25 October: "that should be a vitriol specific rule, and documented in the passive
+## text"): a debuff spent on the foe lays the plain lay and not the damaging one.
+func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_damaging_one() -> void:
+	var lays := {"id": "lays_t", "name": "Lays", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "flakked", "stacks": 1},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "damaging": true}]}
+	var probe := Face.attack(0, L, [K.SUPPRESS])
+	var gun := Face.attack(5, L)
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.of([probe, gun]), 0, 500)
+	a.grant_passive(lays)
+	sk.add_mech(a)
+	var g := _ghoul(100, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, g), "a debuff on the foe")
+	assert_eq(Effects.stacks_of(g, "flakked"), 1, "the plain lay lands on a blow of nothing")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 0, "the damaging one waits for a damaging hit")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, g), "a gun on the foe")
+	assert_eq(Effects.stacks_of(g, "vitriol"), 1, "and lands with it")
+	assert_true(Effects.effect_text(lays["effects"][1]).contains("a damaging hit"), "its line says so")
 
 
 func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:

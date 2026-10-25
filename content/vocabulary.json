@@ -686,7 +686,7 @@
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: a stack per hit on a foe showing no intent on the spider; a tick a stack",
+     "stacks": "Yes: a stack per damaging hit on a foe showing no intent on the spider; a tick a stack",
      "lasts": "A stack fades at each of its actions"
     }
    }

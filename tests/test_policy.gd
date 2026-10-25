@@ -518,7 +518,7 @@ func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
 ## will stop.
 func test_greedy_bites_the_foe_looking_away() -> void:
 	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 	var sk := Skirmish.new(3, 2)
 	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 500)
 	a.grant_passive(ambush)

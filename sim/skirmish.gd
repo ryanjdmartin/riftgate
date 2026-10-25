@@ -1858,11 +1858,13 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
 			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-			# A hit lays what the passives lay on this foe, a stack per strike that lands with a
-			# number: a blow of nothing (the web, a lure) is no hit, and a strike on a foe an
-			# earlier one killed lays nothing on it.
-			if was_alive and dmg > 0 and lays.has(foe):
+			# A hit lays what the passives lay on this foe, a stack per strike, a blow of nothing
+			# included, unless the passive asks for a damaging hit (the Ambush's Vitriol, its text
+			# says so: Ryan, 25 October); a strike on a foe an earlier one killed lays nothing on it.
+			if was_alive and lays.has(foe):
 				for pair in lays[foe]:
+					if bool(pair[2]) and dmg <= 0:
+						continue
 					var sid := str(pair[0])
 					var n_laid := _stacks_from(ms, sid, int(pair[1])) * doubled
 					Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n_laid, Effects.status_decay(Effects.STATUS[sid]))

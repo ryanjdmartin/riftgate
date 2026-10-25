@@ -388,8 +388,8 @@ On a foe:
   Suppressed does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
-  then a stack fades; it never finishes a foe. A passive lays it a stack per strike that lands
-  with a number; a blow of nothing (a web, a lure) lays none.
+  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
+  damaging hit, as its text says; a web or a lure lays none.
 - **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
@@ -561,8 +561,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   Indirect blows at the back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 1 lighter, whoever laid the Flak).
-- A passive may lay a status on each foe its blows hit (a stack per strike that lands with a
-  number, the foe judged by the passive's condition alone: the funnel-web's Vitriol).
+- A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
+  the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
+  included, unless the passive's text asks for a damaging hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. The
   Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,

@@ -499,23 +499,24 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			var survives_flak := (1.0 - p_kill) if foe == target else 1.0
 			score += survives_flak * flak_score(sk, ms, f, foe, maxf(0.0, float(foe.hp) - mean), foe == target)
 	# What this machine's passives lay on each foe the blow reaches, judged alone (the
-	# funnel-web's Ambush, 18 October): a stack per strike that lands with a number, worth its
-	# ticks over the actions to come on the hull the blow leaves, at the odds the foe outlives
-	# the blow. A blow of nothing lays nothing.
+	# funnel-web's Ambush, 18 October): a stack per strike, worth its ticks over the actions to
+	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
+	# a damaging hit (the Ambush's) gets nothing from a weapon of no damage.
 	var laid_apps := 0
-	if f.power > 0 or f.power_max > 0:
-		for foe in sk.reached_by(f, target):
-			if not foe.alive():
+	for foe in sk.reached_by(f, target):
+		if not foe.alive():
+			continue
+		var lays := Effects.laid_statuses(ms.unit, f, foe)
+		if lays.is_empty():
+			continue
+		var left := int(maxf(0.0, float(foe.hp) - mean))
+		var survives := (1.0 - p_kill) if foe == target else 1.0
+		for pair in lays:
+			if bool(pair[2]) and f.is_debuff():
 				continue
-			var lays := Effects.laid_statuses(ms.unit, f, foe)
-			if lays.is_empty():
-				continue
-			var left := int(maxf(0.0, float(foe.hp) - mean))
-			var survives := (1.0 - p_kill) if foe == target else 1.0
-			for pair in lays:
-				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
-				if foe == target:
-					laid_apps += 1
+			score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+			if foe == target:
+				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
 	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
