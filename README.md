@@ -128,8 +128,12 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 Open the folder in Godot 4.7 or later, or from a terminal:
 
 On Windows (the desk machine since 19 October, when the Mac went out of reach) every command
-below runs as written from Git Bash; from PowerShell, wrap one as
-`& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. What makes them run there: `godot` and
+below runs as written from Git Bash, from the repo folder (a new Git Bash starts in the home
+folder: `cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
+`& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. The phone scripts have launchers for
+PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the `.sh` with Git
+Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
+opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
 `python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
 `%LOCALAPPDATA%\Programs\Godot`; Python 3.13, since Windows' own `python3` is a Microsoft Store
 stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
