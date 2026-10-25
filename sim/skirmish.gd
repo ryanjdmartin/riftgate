@@ -137,6 +137,9 @@ var foe_factory: Callable = Callable()
 var targeting_override: String = ""
 ## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
 var _focus: Dictionary = {}
+## Whether the team may pull out: a battle's fights may, the quick campaign's never (Ryan, 25
+## October: no withdrawal there).
+var withdraw_allowed: bool = true
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -304,7 +307,7 @@ func any_assigned() -> bool:
 ## always the same: the enemy takes its turn, then the team flees at the end of the round, so
 ## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
 func can_withdraw() -> bool:
-	return state == State.ROUND_START or state == State.ASSIGN
+	return withdraw_allowed and (state == State.ROUND_START or state == State.ASSIGN)
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that

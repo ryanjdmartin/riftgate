@@ -499,11 +499,19 @@ func _fielded(b: Battle, uid: int) -> Unit:
 ## destroyed hardpoint component is gone; a wreck loses its cracked ones too. Returns the
 ## component ids lost.
 func _after_battle(m: Machine, u: Unit, wreck: bool) -> Array:
-	var fixed_n: int = db.chassis.get(m.chassis, {}).get("fixed", []).size()
+	if u.die == null:
+		return []
+	var r := after_battle_loadout(db, m.chassis, u, wreck)
+	m.loadout = r[0]
+	return r[1]
+
+
+## The rule above for any machine's die (the quick campaign's too): [the hardpoint components
+## it keeps, in die order; the ones gone for good].
+static func after_battle_loadout(content: ContentDB, chassis_id: String, u: Unit, wreck: bool) -> Array:
+	var fixed_n: int = content.chassis.get(chassis_id, {}).get("fixed", []).size()
 	var kept: Array = []
 	var lost: Array = []
-	if u.die == null:
-		return lost
 	for idx in range(fixed_n, u.die.faces.size()):
 		var f: Face = u.die.faces[idx]
 		if f.component.is_empty():
@@ -513,8 +521,7 @@ func _after_battle(m: Machine, u: Unit, wreck: bool) -> Array:
 			lost.append(f.component)
 		else:
 			kept.append(f.component)
-	m.loadout = kept
-	return lost
+	return [kept, lost]
 
 
 func _fall(c: City) -> void:

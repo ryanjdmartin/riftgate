@@ -239,7 +239,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
 		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "lineup": u.lineup, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
-		"hardpoints": u.hardpoints, "damaged_faces": damaged,
+		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
 	}
 
 
@@ -288,6 +288,8 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.hardpoints = int(d.get("hardpoints", 0))
 	for idx in d.get("damaged_faces", {}).keys():
 		u.damaged_faces[int(str(idx))] = _face_from(d["damaged_faces"][idx])
+	for mid in d.get("modules", []):   # the fitted modules' ids, for the codex (their effects are the modifiers above)
+		u.modules.append(str(mid))
 	return u
 
 
@@ -710,6 +712,125 @@ static func _strings(list) -> Array:
 	for x in list:
 		out.append(str(x))
 	return out
+
+
+# ---------------------------------------------------------------- the quick campaign
+
+const QUICK_PATH := "user://quick_run.json"
+const QUICK_VERSION := 1
+
+
+static func save_quick(r: QuickRun, path: String = QUICK_PATH) -> bool:
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(quick_to_dict(r)))
+	f.close()
+	return true
+
+
+## The saved quick run, or null when there is none or it cannot be read.
+static func load_quick(path: String = QUICK_PATH) -> QuickRun:
+	if not FileAccess.file_exists(path):
+		return null
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (parsed is Dictionary) or int(parsed.get("version", 0)) != QUICK_VERSION:
+		return null
+	return quick_from_dict(parsed)
+
+
+## The run whole: its roster and stores, the battle ahead or under way with the squad's machines
+## as they stand (their damage, dice and live modifiers) and the fight open, if one is, with its
+## random stream, so a resumed fight plays on exactly as it would have.
+static func quick_to_dict(r: QuickRun) -> Dictionary:
+	var roster: Array = []
+	for m in r.roster:
+		roster.append({"uid": m.uid, "chassis": m.chassis, "loadout": m.loadout, "modules": m.modules})
+	return {
+		"version": QUICK_VERSION,
+		"seed": r.seed_value,
+		"rng": str(r.rng.state),
+		"state": r.state, "won": r.won, "battle": r.battle,
+		"roster": roster, "next_uid": r._next_uid, "squad": r.squad,
+		"components": r.components, "modules": r.modules,
+		"party": r.party, "bosses_ended": r.bosses_ended, "density": r.density,
+		"lead": r.lead, "guest": r.guest, "encounters": r.encounters, "fight": r.fight,
+		"units": _units(r.units),
+		"skirmish": _skirmish_dict(r.current, null) if r.current != null else null,
+		"rewards": r.rewards, "history": r.history, "lost_at": r.lost_at,
+	}
+
+
+static func quick_from_dict(d: Dictionary) -> QuickRun:
+	var r := QuickRun.new(int(d.get("seed", 1)))
+	r.rng.state = str(d.get("rng", "0")).to_int()
+	r.state = int(d.get("state", QuickRun.DRAFT))
+	r.won = bool(d.get("won", false))
+	r.battle = int(d.get("battle", 0))
+	for md in d.get("roster", []):
+		var m := QuickRun.Machine.new()
+		m.uid = int(md.get("uid", 0))
+		m.chassis = str(md.get("chassis", ""))
+		m.loadout = _strings(md.get("loadout", []))
+		m.modules = _strings(md.get("modules", []))
+		r.roster.append(m)
+	r._next_uid = int(d.get("next_uid", r.roster.size() + 1))
+	for uid in d.get("squad", []):
+		r.squad.append(int(uid))
+	for key in ["components", "modules"]:
+		var store: Dictionary = r.components if key == "components" else r.modules
+		var saved: Dictionary = d.get(key, {})
+		for id in saved.keys():
+			store[str(id)] = int(saved[id])
+	var dealt: Dictionary = d.get("party", {})
+	for fid in dealt.keys():
+		r.party[str(fid)] = str(dealt[fid])
+	var ended: Dictionary = d.get("bosses_ended", {})
+	for fid in ended.keys():
+		r.bosses_ended[str(fid)] = _strings(ended[fid])
+	var dens: Array = d.get("density", [])
+	if not dens.is_empty():
+		r.density = dens.map(func(x) -> float: return float(x))
+	r.lead = str(d.get("lead", ""))
+	r.guest = str(d.get("guest", ""))
+	r.encounters = []
+	for e in d.get("encounters", []):
+		var enc := {}
+		for k in e.keys():
+			enc[str(k)] = str(e[k])
+		r.encounters.append(enc)
+	r.fight = int(d.get("fight", 0))
+	r.units = []
+	for ud in d.get("units", []):
+		r.units.append(_unit_from(ud))
+	var sd = d.get("skirmish", null)
+	if sd is Dictionary:
+		var by_id := func(uid: int) -> Unit: return r.unit_of(uid)
+		r.current = _skirmish_build(sd, by_id)
+		r.current.withdraw_allowed = false
+		r.current.foe_factory = func(foe_id: String) -> Foe: return r.db.make_foe(foe_id) if r.db.foes.has(foe_id) else null
+	r.rewards = []
+	for rd in d.get("rewards", []):
+		var reward := {"kind": str(rd.get("kind", "")), "choices": []}
+		if rd.has("maker"):
+			reward["maker"] = str(rd["maker"])
+		for it in rd.get("choices", []):
+			reward["choices"].append({"kind": str(it.get("kind", "")), "id": str(it.get("id", ""))})
+		r.rewards.append(reward)
+	r.history = []
+	for hd in d.get("history", []):
+		var h: Dictionary = hd.duplicate(true)
+		for k in ["battle", "tier", "fights"]:
+			if h.has(k):
+				h[k] = int(h[k])
+		h["lost"] = _strings(h.get("lost", []))
+		h["wrecked"] = Array(h.get("wrecked", [])).map(func(x) -> int: return int(x))
+		r.history.append(h)
+	var at: Dictionary = d.get("lost_at", {})
+	r.lost_at = {}
+	for k in at.keys():
+		r.lost_at[str(k)] = int(at[k]) if (k == "battle" or k == "fight") else str(at[k])
+	return r
 
 
 # ---------------------------------------------------------------- the profile
