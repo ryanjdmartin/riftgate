@@ -4853,9 +4853,9 @@ func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per
 	assert_false(at_a.intent_on(a), "and one aimed elsewhere shows none")
 
 
-## A passive's lay lands on every hit, a blow of nothing included, unless it asks for a damaging
-## hit (Ryan, 25 October: "that should be a vitriol specific rule, and documented in the passive
-## text"): a debuff spent on the foe lays the plain lay and not the damaging one.
+## A passive's lay lands on every hit, a debuff's included, unless it asks for a damaging
+## weapon's hit (Ryan, 25 October: "that should be a vitriol specific rule, and documented in the
+## passive text"): a debuff spent on the foe lays the plain lay and not the damaging one.
 func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_damaging_one() -> void:
 	var lays := {"id": "lays_t", "name": "Lays", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "lay_status", "value": "flakked", "stacks": 1},
@@ -4879,7 +4879,41 @@ func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_damaging_one() ->
 	sk.mechs[0].face_index = 1
 	assert_true(sk.assign(0, g), "a gun on the foe")
 	assert_eq(Effects.stacks_of(g, "vitriol"), 1, "and lands with it")
-	assert_true(Effects.effect_text(lays["effects"][1]).contains("a damaging hit"), "its line says so")
+	assert_true(Effects.effect_text(lays["effects"][1]).contains("a damaging weapon"), "its line says so")
+
+
+## A damaging weapon's hit spends a Shock, cashes Cryo and lays a damaging lay whatever it dealt
+## (Ryan, 25 October: "The important part is that it was a damaging weapon"); a debuff does none
+## of it. Under a split a printed 1 strikes 0, twice.
+func test_a_damaging_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -> void:
+	var passive := {"id": "split_lays", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "damaging": true}]}
+	for weapon in ["debuff", "gun"]:
+		var f := Face.attack(0, L, [K.SUPPRESS]) if weapon == "debuff" else Face.attack(1, L)
+		var sk := Skirmish.new(1, 1)
+		var m := _mech("S", Die.single(f), 40, 100)
+		m.grant_passive(passive)
+		sk.add_mech(m)
+		var g := _ghoul(100, 10)
+		sk.add_foes([g])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+		Effects.stack(g, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+		ms.heat = 8
+		assert_true(sk.assign(0, g), "the %s spent" % weapon)
+		assert_eq(g.hp, 100, "the %s deals nothing" % weapon)
+		if weapon == "debuff":
+			assert_true(Effects.has(g, "shocked"), "a debuff leaves the shock standing")
+			assert_eq(Effects.stacks_of(g, "cryoed"), 2, "and the Cryo")
+			assert_eq(Effects.stacks_of(g, "vitriol"), 0, "and lays no damaging lay")
+		else:
+			assert_false(Effects.has(g, "shocked"), "a damaging weapon's 0 spends the shock")
+			assert_eq(Effects.stacks_of(g, "cryoed"), 0, "and cashes the Cryo")
+			assert_eq(ms.heat, 8 - 2 * sk.cryo_cool(), "cooling its hitter")
+			assert_eq(Effects.stacks_of(g, "vitriol"), 2, "and lays the damaging lay on each strike")
 
 
 func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:

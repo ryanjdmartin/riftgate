@@ -460,7 +460,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			# reads, capped at what the foe will have left. A charge already on a foe this blow
 			# does not spend is worth nothing more.
 			for foe in hit:
-				if Effects.has(foe, "shocked") and mean <= 0.0:
+				if Effects.has(foe, "shocked") and f.is_debuff():
 					continue
 				var left := maxf(0.0, float(foe.hp) - mean)
 				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, shock_cash(sk, ms, foe))
@@ -501,7 +501,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# What this machine's passives lay on each foe the blow reaches, judged alone (the
 	# funnel-web's Ambush, 18 October): a stack per strike, worth its ticks over the actions to
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
-	# a damaging hit (the Ambush's) gets nothing from a weapon of no damage.
+	# a damaging weapon's hit (the Ambush's) gets nothing from a debuff.
 	var laid_apps := 0
 	for foe in sk.reached_by(f, target):
 		if not foe.alive():
@@ -529,9 +529,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 		var laid_burn := f.burn * maxi(1, f.strikes)
 		score += (1.0 - p_kill) * per * float(laid_burn * (laid_burn + 1)) / 2.0 * BURN_WEIGHT
-	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
+	# Cryo (20 October): a damaging weapon's hit cashes the foe's stacks for cooling, worth what a vent
 	# of that much would be on the hitter.
-	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
+	if not f.is_debuff() and Effects.has(target, "cryoed"):
 		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.cryo_cool())
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
@@ -667,9 +667,9 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 		var d := float(int(shot["damage"]))
 		if d > 0.0:
 			d += add
-			if shocked:
-				d *= 2.0
-				shocked = false
+		if shocked and bool(shot.get("weapon", d > 0.0)):
+			d *= 2.0   # a damaging weapon's shot spends the shock, whatever it deals
+			shocked = false
 		d = maxf(0.0, d - (0.0 if Array(shot["keywords"]).has(Face.Keyword.BREACH) else arm))
 		dealt += minf(d, hp)
 		hp -= d

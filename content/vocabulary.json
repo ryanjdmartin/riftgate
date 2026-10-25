@@ -193,7 +193,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a damaging weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack, whatever it dealt.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -471,7 +471,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Laid by weapons that shock, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
+   "codex": "Foe status. The next blow of a damaging weapon this foe takes deals double damage, then the status clears, whatever the blow dealt; a debuff (a lure, a probe) leaves it standing. Never stacks. Laid by weapons that shock, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -479,7 +479,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Never",
-     "lasts": "Until the next team blow that deals it damage"
+     "lasts": "Until the next team blow of a damaging weapon"
     }
    }
   },
@@ -551,15 +551,15 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's damaging hit on it spends every stack and cools the hitter 2 a stack; a blow of nothing spends none. It never fades on its own.",
+   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's hit on it with a damaging weapon spends every stack and cools the hitter 2 a stack, whatever the hit dealt; a debuff spends none. It never fades on its own.",
    "status": "implemented",
    "design": {
     "holes": "Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: the Cryo's number per foe reached; a damaging hit spends every stack",
-     "lasts": "Until a damaging hit spends it, or the skirmish ends"
+     "stacks": "Yes: the Cryo's number per foe reached; a damaging weapon's hit spends every stack",
+     "lasts": "Until a damaging weapon's hit spends it, or the skirmish ends"
     }
    }
   },
@@ -686,7 +686,7 @@
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: a stack per damaging hit on a foe showing no intent on the spider; a tick a stack",
+     "stacks": "Yes: a stack per hit with a damaging weapon on a foe showing no intent on the spider; a tick a stack",
      "lasts": "A stack fades at each of its actions"
     }
    }

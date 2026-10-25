@@ -194,8 +194,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
   blow dealt (Burn 3: three stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
-  machine's damaging hit on a foe carrying Cryo spends every stack and cools the hitter 2 a
-  stack, after the spend's own heat lands; a blow of nothing spends none.
+  machine's hit with a damaging weapon on a foe carrying Cryo spends every stack, whatever the
+  hit dealt, and cools the hitter 2 a stack, after the spend's own heat lands; a debuff spends
+  none.
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
@@ -372,8 +373,9 @@ On a foe:
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
-- **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
-  shock; it never stacks.
+- **Shocked** (debuff): the next team blow of a damaging weapon deals double, spending the
+  shock whatever the blow dealt (a vent's blast and a mine's shot of a damaging weapon too); a
+  debuff leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
@@ -388,8 +390,8 @@ On a foe:
   Suppressed does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
-  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
-  damaging hit, as its text says; a web or a lure lays none.
+  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per hit
+  with a damaging weapon, whatever the hit dealt, as its text says; a web or a lure lays none.
 - **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
@@ -398,8 +400,8 @@ On a foe:
   as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
-- **Cryo** (debuff): a damaging hit on it spends every stack and cools the hitter 2 a stack;
-  a blow of nothing spends none. It never fades on its own.
+- **Cryo** (debuff): a hit on it with a damaging weapon spends every stack, whatever it dealt,
+  and cools the hitter 2 a stack; a debuff spends none. It never fades on its own.
 - **Flak** (debuff): every blow it takes deals a point more a stack, before its multiplies and
   its armour (a Shocked foe takes blow plus Flak, doubled); the stacks halve at the end of each
   round, rounded down.
@@ -563,7 +565,8 @@ shields do not refill; a pack keeps its survivors, who return whole.
   hits it 1 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
   the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
-  included, unless the passive's text asks for a damaging hit (the funnel-web's Vitriol).
+  included, unless the passive's text asks for a damaging weapon's hit (the funnel-web's
+  Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. The
   Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,

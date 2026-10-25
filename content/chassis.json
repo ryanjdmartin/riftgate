@@ -730,7 +730,7 @@
    "passive": {
     "id": "ambush",
     "name": "Ambush",
-    "description": "Its damaging hits on a foe showing no intent on it lay Vitriol, a stack a hit; at its action the foe loses 10% of its current HP a stack.",
+    "description": "Its hits with a damaging weapon on a foe showing no intent on it lay Vitriol, a stack a hit; at its action the foe loses 10% of its current HP a stack.",
     "effects": [
      {
       "trigger": "on_attack",

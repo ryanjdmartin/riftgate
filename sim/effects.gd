@@ -158,7 +158,7 @@ const STATUS := {
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
 	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "renew",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.", "stacking": "renew",
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow of a damaging weapon it takes deals double, then the shock is spent.", "stacking": "renew",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# Exposed (the Kestrel session, 20 and 21 October; built 21 October), the debuff: the foe
 	# stands in Direct reach of every machine as if its column's front were empty, and its
@@ -216,10 +216,10 @@ const STATUS := {
 		"tags": ["buff", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Armadillo's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
-	# machine's damaging hit on it spends every stack and cools the hitter so much a stack,
+	# machine's hit on it with a damaging weapon, whatever it dealt, spends every stack and cools the hitter so much a stack,
 	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
 	# October). It never fades on its own: the canister sticks.
-	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A damaging hit on it spends every stack and cools the hitter {value} a stack.", "decay": "none",
+	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A hit on it with a damaging weapon spends every stack and cools the hitter {value} a stack.", "decay": "none",
 		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 2}]},
 	# Corrupted (the foes' Corrupt, 25 September): the definition each entry's own status is built
 	# from (corrupt_entry, one an entry), and the bite a stack takes from its owner each time the
@@ -1010,8 +1010,9 @@ static func granted_keywords(u, face: Face, target = null, printed_only: bool = 
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
 ## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend, before
 ## any strike's riders land, and lays them on every strike that reaches the foe alive, a blow of
-## nothing included, unless the effect asks for a damaging hit (`damaging`, which its passive's
-## text says: the Ambush's Vitriol, Ryan, 25 October); the bot asks the same. Nothing for a foe
+## nothing included, unless the effect asks for a damaging weapon's hit (`damaging`, which its
+## passive's text says, whatever the hit dealt: the Ambush's Vitriol, Ryan, 25 October); the bot
+## asks the same. Nothing for a foe
 ## the condition rules out.
 static func laid_statuses(u, face: Face, target) -> Array:
 	var out: Array = []
@@ -1764,7 +1765,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_burn": body = "+%s burn" % vs
 		"lay_status":
 			var n := int(eff.get("stacks", 1))
-			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a damaging hit reaches" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
+			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a damaging weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
 		"vent_heat": body = "sheds %s heat" % vs
 		"add_ceiling": body = "rolls reach %s higher" % vs
 		"add_floor": body = "the lowest roll %s higher" % vs
@@ -1812,7 +1813,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
 		"corrupt_bite": body = "bites its owner %s a stack when its entry is spent" % vs
-		"cool_hitter": body = "a damaging hit on it cools the hitter %s heat a stack" % vs
+		"cool_hitter": body = "a damaging weapon's hit on it cools the hitter %s heat a stack" % vs
 		"paradox":
 			body = "a foe gaining any other status gains Paradox; at %s it is suppressed and the Paradox clears" % vs
 		"add_stacks":
