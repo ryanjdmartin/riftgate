@@ -176,7 +176,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   `docs/design-bible.html` after every change. This file is v0.292, and so is the live (25 October,
   the page's version 309, from `claude/quick-campaign-mode-pafhiv`: the quick campaign's rows
   merged onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and the mechanics
-  audit's v0.291, so this file holds their rows ahead of their code, which lands with them). The
+  audit's v0.291, so this file holds their rows and tables ahead of their code, which lands with
+  them: `tools/pages/bible_tables.py` run here before they land writes this branch's older
+  tables back). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
