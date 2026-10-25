@@ -33,12 +33,18 @@ are in `README.md`.
 
 ## Branches
 
-One branch is live beside main: `claude/quick-campaign-mode-pafhiv` (25 October), the quick
-campaign built on Ryan's calls of that day (the bible's section 3 row; `sim/quick_run.gd`, its
-screens in `game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal
-cited, waiting on his play and on section 12's quick campaign question before it merges. On 25
-October, on Ryan's go ("merge in and clean up"), main took
-the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
+This branch, `claude/quick-campaign-mode-pafhiv` (25 October), is the quick campaign built on
+Ryan's calls of that day (the bible's section 3 row; `sim/quick_run.gd`, its screens in
+`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, waiting
+on his play and on section 12's quick campaign question before it merges. Other sessions' branches
+of the same day stand beside it, each with its own status: `ccr-170f6d81-465jnr`'s later commits,
+`claude/affectionate-goldberg-8e3mkh` (the mechanics audit, which carries them),
+`claude/playtesting-issues-08mnqj` (Ryan's playtest list), and main's Windows launchers
+(`ef91382`). A trial merge with each (25 October) takes the code clean and conflicts in the
+records alone: this file, the bible (its version line, and beside the playtest branch the built
+list's one line) and, beside the audit's, the measurements. Earlier on 25 October, on Ryan's
+go ("merge in and clean up"), main took the three that stood beside it:
+`ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
 doubled, the Kite's reset without a limit, the Skua's engine), which carried
 `ccr-7d865127-wr1ko2` (the four Kestrel machines of 21 October and their models' first cut,
@@ -167,9 +173,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.288, and so is the live (25 October,
-  the page's version 305, from main at the landing: the battery row's weld built, and the Skua's
-  records, which the page's version 304, v0.287 with the Kite's reset, did not yet carry). The
+  `docs/design-bible.html` after every change. This file is v0.292, and so is the live (25 October,
+  the page's version 309, from `claude/quick-campaign-mode-pafhiv`: the quick campaign's rows
+  merged onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and the mechanics
+  audit's v0.291, so this file holds their rows ahead of their code, which lands with them). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
