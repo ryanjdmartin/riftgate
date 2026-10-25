@@ -117,8 +117,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   direction and rework, each the design's one home, with a README; the makers' proposal files
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
-  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`) and the
-  curve and the fronts (`curve_proposal.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
+  curve and the fronts (`curve_proposal.md`) and the mechanics audit of 25 October
+  (`mechanics_audit.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
