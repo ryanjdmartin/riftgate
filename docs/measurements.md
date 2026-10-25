@@ -1419,3 +1419,18 @@ Cottonmouth's pair and the Prairie Dog's, and a flat buff counted on each strike
 through plate, the brief's claim: the Coil turns the big foes from the pair's slowest wins into
 nine-round ones. A tier one in the middle of the field, neither weak nor a must-pick; Ryan's play
 decides whether its start bites.
+
+## 25 October, the mechanics audit's fixes
+
+**The tender on its own stream** (`docs/mechanics_audit.md`, item 33). `tools/campaign_run.gd`,
+40 runs from seed 1, the greedy rung, on the content as at this entry's commit (the audit's
+fixes with `ccr-170f6d81-465jnr`'s day merged in). Who started the runs, against the 22 October
+report: the Honey Badger 11 (9), the Baboon 15 (18), the Armadillo 17 (20), the Prairie Dog 10
+(12), the Stingray 10 (14), the Puffin 16 (28), the Cassowary 16 (12), the Cottonmouth 10 (7),
+the Skua 15 (not dealt then). On 22 October the tender and the run drew one stream, so the
+runner's pick of three reread Minerva's offer: the Armadillo started every run it was offered
+and the Badger about half. A model of Godot's PCG32 reproduces that table run for run, and on
+the new streams puts every machine at about three starts in four offers over 4,000 seeds. The
+report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen a run against
+3.75) carry everything landed since 22 October, the targeting at random and the doubled heat
+among it, and say nothing about the fix. A direction at 40 runs.

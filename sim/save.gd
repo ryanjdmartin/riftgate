@@ -92,6 +92,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"map": {"w": b.map.width, "h": b.map.height, "seed": b.map.map_seed, "kind": b.map.kind},
 		"field": _field_dict(b.field),
 		"skirmish": _skirmish_dict(b.current, b.field) if b.current != null else null,
+		"lineup": b.lineup, "escort": b.escort,
 	}
 
 
@@ -141,6 +142,10 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map_kind = str(md.get("kind", "mixed"))
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
+	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
+	# Pressure spawns after a resume is dressed by it, its ring, move and hunt (the mechanics
+	# audit, 25 October: a resumed battle's spawns came out as plain pushers).
+	b.field.foe_profiles = b.db.pack_profiles()
 	for uid in d.get("spent", {}).keys():
 		b.spent[int(str(uid))] = int(d["spent"][uid])
 	for uid in d.get("move_left", {}).keys():
@@ -176,6 +181,10 @@ static func from_dict(d: Dictionary) -> Battle:
 	var sd = d.get("skirmish", null)
 	if sd is Dictionary:
 		b.current = _skirmish_from(sd, b.field)
+		b.current.foe_factory = b.foe_factory()   # a resumed fight splits, summons and regrows as the fresh one did
+	b.lineup = _strings(d.get("lineup", []))
+	var esc: Array = d.get("escort", [])
+	b.escort = [str(esc[0]), int(esc[1])] if esc.size() >= 2 else []
 	return b
 
 
@@ -382,6 +391,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
 		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq,
+		"joined_fallen": _int_keys(sk.joined_fallen),
 	}
 
 
@@ -476,6 +486,9 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 		if not shots.is_empty():
 			sk.mines[Vector2i(int(md.get("rank", 0)), int(md.get("column", 0)))] = shots
 	sk.mine_seq = int(d.get("mine_seq", 0))
+	var joined: Dictionary = d.get("joined_fallen", {})
+	for pid in joined.keys():
+		sk.joined_fallen[int(str(pid))] = int(joined[pid])
 	return sk
 
 

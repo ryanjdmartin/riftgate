@@ -275,7 +275,7 @@ const STATUS := {
 	# damage lands. Neither stacks, and both go at the round's end (a buff's grant).
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
-	"ward": {"id": "ward", "name": "Ward", "description": "Every blow a foe lands on it this round leaves no rider (breach, burn, scorch, disable, corrupt); its damage lands. Until the round's end.", "stacking": "renew",
+	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
 	# each attack that killed makes its shots 5 hotter for the fight, a stack a killing attack.

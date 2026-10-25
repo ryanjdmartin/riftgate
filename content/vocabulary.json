@@ -445,7 +445,7 @@
    "id": "overshield",
    "category": "keyword",
    "name": "Overshield",
-   "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
+   "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round, or as the fight ends. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
    "status": "implemented",
    "design": {
     "holes": "Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow."
@@ -631,7 +631,7 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Machine status. It cannot act, take damage or be targeted until the round's end. Granted only to a machine that has not acted this round.",
+   "codex": "Machine status. It cannot act, take damage or be targeted until the round's end: a blow or a move at every machine passes it by. Granted only to a machine that has not acted this round.",
    "status": "implemented",
    "design": {
     "holes": "Not targetable means allies cannot vent or shield it either, and a foe's intent on it picks again; it still cools by its own cooling, and ticks and overheats still land. Aphelion's pieces may grant it beside the Swallowtail's screens.",
@@ -1735,10 +1735,10 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage lands. Until the round's end.",
+   "codex": "Machine status. No rider a foe lays lands on this machine this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.",
    "status": "implemented",
    "design": {
-    "holes": "A foe's move that lays a debuff without a blow is no rider, so the Ward leaves it.",
+    "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.",
     "table": {
      "kind": "buff",
      "on": "machine",

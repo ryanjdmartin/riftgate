@@ -3862,6 +3862,26 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	sk.end_round()
 	assert_eq(taker.shield, 20, "untouched by the blows this round, the 40 past the maximum faded at the round's end")
 	assert_true("\n".join(sk.log).contains("40 shield past its maximum fades"), "and the log says so")
+	# The excess fades as the fight ends too (the mechanics audit, 25 October), so a fight won
+	# mid-turn or left by a withdrawal never carries it onto the map and into the next fight.
+	for how in ["win", "withdraw"]:
+		var sk3 := Skirmish.new(1)
+		var giver3 := _mech("Giver", Die.single(ov), 40, 100)
+		var taker3 := _mech("Taker", Die.single(Face.attack(200, L)), 20, 100)
+		sk3.add_mech(giver3)
+		sk3.add_mech(taker3)
+		var last := _ghoul(10, 1)
+		sk3.add_foes([last])
+		sk3.begin()
+		sk3.start_round()
+		assert_true(sk3.assign(0, sk3.mechs[1]), "%s: shield the ally past its maximum" % how)
+		assert_eq(taker3.shield, 60, "%s: past its maximum" % how)
+		if how == "win":
+			assert_true(sk3.assign(1, last), "the last foe falls")
+			assert_eq(sk3.outcome, Skirmish.Outcome.VICTORY, "won mid-turn")
+		else:
+			assert_true(sk3.withdraw(), "the team pulls out")
+		assert_true(taker3.shield <= taker3.shield_max, "%s: the excess goes with the fight" % how)
 	# Without the keyword the same shield is capped, as it always was.
 	var plain := _mech("Plain", Die.single(Face.shield(30)), 40, 100)
 	var sk2 := Skirmish.new(1)
@@ -4721,6 +4741,42 @@ func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
 
 
+## A pack's survivors are its own foe type (the mechanics audit, 25 October): a Gel's halves join
+## the fight under its pack but never come back on the map as Gels, so the pack never grows, and
+## every one of them that falls is a kill all the same ("a kill is a kill").
+func test_a_packs_survivors_are_its_own_and_every_foe_that_falls_is_a_kill() -> void:
+	var sk := Skirmish.new(2, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
+	var sq := Unit.pack(7, "gel pack", Vector2i.ZERO, "", Unit.PACK_MOVE, 2, "gel")
+	var gels: Array = []
+	for i in range(2):
+		var g := _ghoul(30, 1)
+		g.content_id = "gel"
+		g.on_death = {"summon": "gel_half", "count": 2}
+		gels.append(g)
+	sk.foe_factory = func(id: String) -> Foe:
+		var h := Foe.make(id, 10, 1)
+		h.content_id = id
+		return h
+	sk.add_foes(gels, sq)
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, gels[0]), "a Gel falls")
+	assert_eq(sk.reinforcements.size(), 2, "its two halves join the fight")
+	assert_eq(sk.reinforcements[0].pack_id, sq.id, "under its pack")
+	assert_eq(sk.survivors_for(sq), 1, "but the pack's own left is the one Gel: halves never come back as Gels")
+	assert_eq(sk.kills_for(sq), 1, "the Gel is a kill")
+	sk.end_round()
+	sk.start_round()
+	var half: Foe = sk.front[0]
+	assert_true(half != null and half.content_id == "gel_half", "a half stepped in")
+	assert_true(sk.assign(0, half), "and falls")
+	assert_eq(sk.survivors_for(sq), 1, "the pack's own unchanged")
+	assert_eq(sk.kills_for(sq), 2, "the half is a kill too")
+	var copy := SaveGame.clone_skirmish(sk)
+	assert_eq(copy.kills_for(copy.packs[0]), 2, "and the tally survives the save's round trip")
+
+
 func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
 	# For the balance runner's reach table (9 October): what a spend of each reach did.
 	var sk := Skirmish.new(1)
@@ -5498,6 +5554,53 @@ func test_a_ward_turns_away_every_rider_and_the_breach_for_the_round() -> void:
 	assert_eq(int(sk2.forecast(sk2.mechs[0], false)["hull_after"]), 80, "unwarded, the breach ignores the plate")
 	assert_true(sk2.assign(0, sk2.mechs[0]), "the Ward goes up")
 	assert_eq(int(sk2.forecast(sk2.mechs[0], false)["hull_after"]), 85, "warded, the armour takes its five")
+
+
+## The Ward turns away every rider, a special's too (Ryan, 25 October: "Should stop all riders,
+## even from non-damaging attacks"): a Stoke's Burning, a Stone's switch-off, an Eruption's
+## Scorched and a Diamond Dust's Corrupted, on the warded machine while the bare one beside it
+## takes the all-machine ones; and a Phased machine is out of a special on every machine as it
+## is out of a blow at every machine (the mechanics audit, 25 October).
+func test_a_ward_turns_away_a_specials_riders_and_phased_is_out_of_them() -> void:
+	for effect in ["burn", "disable", "scorch_all", "corrupt_all"]:
+		var sk := Skirmish.new(1, 1)
+		var warded := _mech("W", Die.single(Face.buff("ward")), 30, 100)
+		var bare := _mech("B", Die.single(Face.attack(1, L)), 30, 100)
+		sk.add_mech(warded)
+		sk.add_mech(bare)
+		var caster := _ghoul(500, 10)
+		caster.actions = [_special("debuff", effect, {"value": 2})]
+		caster.action = caster.actions[0]
+		sk.add_foes([caster])
+		sk.begin()
+		sk.start_round()
+		caster.target = sk.mechs[0]
+		assert_true(sk.assign(0, sk.mechs[0]), "the Ward goes up")
+		sk.end_round()
+		assert_eq(Effects.stacks_of(warded, "burning_mech"), 0, "%s: no Burning on the warded" % effect)
+		assert_false(Effects.is_entry_disabled(warded, 0), "%s: nothing switched off" % effect)
+		assert_eq(Effects.stacks_of(warded, "scorched"), 0, "%s: no Scorched" % effect)
+		assert_eq(Effects.corrupt_stacks(warded, 0), 0, "%s: no Corrupted" % effect)
+		assert_true("\n".join(sk.log).contains("W's Ward turns it away"), "%s: the log says so" % effect)
+		if effect == "scorch_all":
+			assert_eq(Effects.stacks_of(bare, "scorched"), 2, "the bare machine is scorched")
+		if effect == "corrupt_all":
+			assert_eq(Effects.corrupt_stacks(bare, 0), 2, "the bare machine's entry is corrupted")
+	var sk3 := Skirmish.new(1, 1)
+	var out := _mech("P", Die.single(Face.attack(1, L)), 30, 100)
+	var left := _mech("Q", Die.single(Face.attack(1, L)), 30, 100)
+	sk3.add_mech(out)
+	sk3.add_mech(left)
+	var erupter := _ghoul(500, 10)
+	erupter.actions = [_special("debuff", "scorch_all", {"value": 2})]
+	erupter.action = erupter.actions[0]
+	sk3.add_foes([erupter])
+	sk3.begin()
+	sk3.start_round()
+	Effects.grant_buff(out, "phased", 1, "test", sk3.round)
+	sk3.end_round()
+	assert_eq(Effects.stacks_of(out, "scorched"), 0, "the Phased machine is out of the eruption")
+	assert_eq(Effects.stacks_of(left, "scorched"), 2, "the other takes it")
 
 
 ## The cooldown (Ryan, 14 October; built 21 October): a printed property, the entry dark for

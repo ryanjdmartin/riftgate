@@ -345,6 +345,18 @@ func can_undo(u: Unit) -> bool:
 		var r := field.unit_by_id(int(c[0]))
 		if r == null or r.pos != c[3]:
 			return false
+	# The block goes back as it came, each rider where it rode from: a hex another machine has
+	# taken since refuses the undo, as a landing that does not fit refuses the move (the mechanics
+	# audit, 25 October: the undo set a rider down on a machine that had moved in after it).
+	var starts := {}
+	var riders: Array[Unit] = []
+	for c in carried.get(u.id, []):
+		if not starts.has(int(c[0])):
+			starts[int(c[0])] = c[1]
+			riders.append(field.unit_by_id(int(c[0])))
+	for r in riders:
+		if not _lands_on(r, starts[r.id], u, riders):
+			return false
 	var a: Array = action_from[u.id]
 	if u.pos == a[0] or field.can_stand(u, a[0]):
 		return true
@@ -676,10 +688,17 @@ func ground_terrain(group: Array) -> int:
 	return int(map.terrain.get(ground_hex(group), BattleMap.Terrain.PLAIN))
 
 
+## What a skirmish of this battle calls up content with (a summon, a split, a part regrowing):
+## the content database's foes. A fight resumed from a save takes it too (the mechanics audit,
+## 25 October: without it a resumed fight never split, summoned or regrew).
+func foe_factory() -> Callable:
+	return func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
+
+
 func _build_skirmish(group: Array) -> Skirmish:
 	var sk := Skirmish.new(rng.randi(), columns)
 	sk.terrain = ground_terrain(group)
-	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null   # a summoning action calls up content
+	sk.foe_factory = foe_factory()   # a summoning action calls up content
 	for u in group:
 		if not field.units.has(u):
 			continue

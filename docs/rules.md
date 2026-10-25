@@ -250,7 +250,8 @@ defeat when every machine is wrecked. There is no round limit.
   Inducer, the Oblation Mantle and the Entropy Condenser) bite 3.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
-- **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
+- **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as
+  the fight ends, mid-turn or by a withdrawal, so it never leaves the fight.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
@@ -312,8 +313,9 @@ On a machine:
   its brace) until its next action.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Phased** (buff): cannot act, take damage or be targeted until the
-  round's end, so allies cannot vent or shield it and a foe's intent on it re-picks; it still
-  cools by its cooling, and ticks and overheats land. Granted only to a unit that has not acted
+  round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
+  a special at every machine passes it by; it still cools by its cooling, and ticks and
+  overheats land. Granted only to a unit that has not acted
   this round, whose die stands down as it is granted.
 - **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
@@ -337,10 +339,10 @@ On a machine:
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
-- **Ward** (buff): every blow a foe lands on this machine this round leaves no rider
-  (breach, burn, scorch, disable, corrupt), so its shield absorbs a breach like any blow,
-  and no silence or purge touches it; its damage lands. Until the round's end. The
-  Decoherence Veil grants it, self or ally.
+- **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
+  move of its own (breach, burn, scorch, disable, corrupt, silence, purge), so its shield
+  absorbs a breach like any blow; a blow's damage lands. Until the round's end. The Decoherence
+  Veil grants it, self or ally.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
   never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
@@ -515,8 +517,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   summon,
   rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
-  disable, silence, purge (each on its target, no blow; a Ward turns both away). No foe in
-  content carries a silence or a purge yet.
+  disable, silence, purge (each on its target, no blow). A Ward turns away every one of them
+  that lands on its machine, a scorch all's and a corrupt all's share included, and a scorch all
+  or a corrupt all passes a Phased machine by. No foe in content carries a silence or a purge
+  yet.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.
@@ -536,8 +540,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 ### Withdrawal
 Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
 burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
-not run. Kills stay counted, machines keep their damage and
-shields do not refill; a pack keeps its survivors, who return whole.
+not run, but shield past the maximum fades as the fight ends. Kills stay counted, machines
+keep their damage and shields do not refill; a pack keeps its own survivors, who return whole
+(a foe that joined it in the fight, a Gel's half, a raised Revenant or a part, is no survivor,
+and every one of them that fell is a kill).
 
 ### Passives: triggers and conditions
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
@@ -639,7 +645,8 @@ a stat.
   action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
-  undo takes the riders back, until one of them has moved on its own.
+  undo takes the riders back, until one of them has moved on its own, and only while every hex
+  they rode from is free.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,

@@ -275,6 +275,38 @@ func test_survivors_shrink_the_pack() -> void:
 	assert_eq(sq.strength, sk.survivors_for(sq), "strength is what survived")
 
 
+## The mechanics audit (25 October): a Gel killed leaves two halves under its pack, and a
+## withdrawal used to walk the pack on as every foe of it standing, halves made whole Gels; the
+## pack keeps its own Gels alone, and the kill counts.
+func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
+	var b := Battle.new(3)
+	b.setup(_team(), "meadow")
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = null
+	for p in b.field.packs():
+		if p.foe_id == "gel":
+			sq = p
+	assert_true(sq != null, "the Meadow fields a Gel pack")
+	var before := sq.strength
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		if f.content_id == "gel":
+			f.hp = 0
+			break
+	assert_true(sk.withdraw(), "the team pulls out")
+	var halves := 0
+	for f in sk.reinforcements:
+		if f.content_id == "gel_half":
+			halves += 1
+	assert_eq(halves, 2, "the fallen Gel split into two halves")
+	b.finish_skirmish()
+	assert_eq(sq.strength, before - 1, "the pack walks on one Gel short, never grown by its halves")
+	assert_eq(b.foes_killed, 1, "and the Gel is a kill")
+
+
 func test_boss_death_seals_the_rift() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
@@ -772,6 +804,32 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 		break
 	b.move_to(rider, hop)
 	assert_false(b.can_undo(carrier), "once the rider has moved on its own, the carry stands")
+
+
+## The mechanics audit (25 October): the undo puts the block back as the move lands it, each
+## rider where it rode from, so a hex another machine has taken since refuses it, as a landing
+## that does not fit refuses the move: two machines never share a hex.
+func test_a_carry_is_never_undone_onto_a_machine_that_moved_in() -> void:
+	var b := _battle()
+	var carrier: Unit = b.mechs()[0]
+	var rider: Unit = b.mechs()[1]
+	var third: Unit = b.mechs()[2]
+	carrier.grant_passive({"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "carry"}]})
+	var line := _carry_line(b, carrier, rider, third)
+	assert_false(line.is_empty(), "a line of four open hexes")
+	third.pos = Vector2i(-50, -50)
+	carrier.pos = line[0]
+	rider.pos = line[1]
+	b.move_to(carrier, line[2])
+	assert_eq(rider.pos, line[3], "the rider landed beyond the carrier")
+	assert_true(b.can_undo(carrier), "the carry may be undone")
+	third.pos = line[1]   # another machine on the hex the rider rode from
+	assert_false(b.can_undo(carrier), "with another machine where the rider rode from, it may not")
+	assert_false(b.undo_move(carrier), "so the undo is refused")
+	assert_eq([carrier.pos, rider.pos, third.pos], [line[2], line[3], line[1]], "and no two machines share a hex")
+	third.pos = Vector2i(-50, -50)
+	assert_true(b.undo_move(carrier), "the hex free again, the undo goes")
+	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "the block back where it stood")
 
 
 ## Four hexes in a line from a machine's own side of the map, every one open ground for the

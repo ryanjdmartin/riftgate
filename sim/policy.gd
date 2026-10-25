@@ -1471,6 +1471,32 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
 		if a.has_keyword(a.action, "dispel"):
 			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
+	# A special's rider lands on it too, and the Ward turns that away as well (Ryan, 25 October:
+	# "Should stop all riders, even from non-damaging attacks"): a Stoke's Burning, a Stone's
+	# switch-off, a silence or a purge on its pick; an Eruption's Scorched and a Diamond Dust's
+	# Corrupted on every machine.
+	for a in sk.field_foes():
+		if not a.alive() or a.is_suppressed() or a.attacks() or a.gathering():
+			continue
+		var value := maxi(1, int(a.action.get("value", 0)))
+		var on_it: bool = a.target == who
+		match str(a.action.get("effect", "")):
+			"burn":
+				if on_it:
+					score += float(burn * value) * BANK_WEIGHT
+			"disable":
+				if on_it:
+					score += _raw_attack_mean(who) / float(n)
+			"silence":
+				if on_it:
+					score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
+			"dispel":
+				if on_it:
+					score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
+			"scorch_all":
+				score += float(scorch * value) * BANK_WEIGHT
+			"corrupt_all":
+				score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 	return score
 
 

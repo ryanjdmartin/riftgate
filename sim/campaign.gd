@@ -125,7 +125,9 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 	var start: Array = team
 	if start.is_empty():
 		start = tender(db, seed_arg)
-		_shuffle(start)
+		var pick := RandomNumberGenerator.new()
+		pick.seed = seed_arg * 4813 + 5   # the pick's own stream, so it never reads the offer's draws nor moves the run's
+		_shuffle(start, pick)
 		start = start.slice(0, START_MACHINES)
 	for cid in start:
 		add_machine(str(cid))
@@ -141,10 +143,13 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 ## START_MACHINES of them. The Arsenal never offers; a maker with no tier-one chassis
 ## offers nothing, and a chassis the engine cannot field yet (its passive or a locked piece
 ## planned; ContentDB.chassis_runnable) is never dealt, so a maker whose only tier one is a
-## draft offers nothing until it lands. The same seed always offers the same machines.
+## draft offers nothing until it lands. The same seed always offers the same machines, drawn on
+## a stream of its own, as the party's (the mechanics audit, 25 October: on the run's own
+## stream the runner's pick of three reread Minerva's offer, so the Armadillo started every run
+## it was offered, and the offer told where the first rifts would open).
 static func tender(content: ContentDB, seed_arg: int) -> Array:
 	var r := RandomNumberGenerator.new()
-	r.seed = seed_arg
+	r.seed = seed_arg * 6151 + 29
 	var tier_one := content.chassis_of_tier(1)
 	var out: Array = []
 	for mk in content.city_makers():
@@ -201,9 +206,9 @@ static func deal_party(content: ContentDB, seed_arg: int) -> Dictionary:
 	return out
 
 
-func _shuffle(a: Array) -> void:
+func _shuffle(a: Array, r: RandomNumberGenerator) -> void:
 	for i in range(a.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
+		var j := r.randi_range(0, i)
 		var t = a[i]
 		a[i] = a[j]
 		a[j] = t

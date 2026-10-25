@@ -93,6 +93,26 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 	assert_eq(seen.size(), city_tier_one, "across seeds every city maker's tier-one machine the engine can field is offered")
 
 
+## The mechanics audit (25 October): the tender drew on the run's own stream, so the runner's
+## random pick of three reread Minerva's offer and the Armadillo started every run it was
+## offered. On a stream of its own, an offered machine sits a run out as often as any other.
+func test_the_runners_pick_never_rereads_the_offer() -> void:
+	var db := ContentDB.load_default()
+	var sat_out := {}
+	for seed_value in range(1, 61):
+		var offered := Campaign.tender(db, seed_value)
+		var c := Campaign.new(seed_value)
+		var started := {}
+		for m in c.roster:
+			started[m.chassis] = true
+		for id in offered:
+			if not started.has(id):
+				sat_out[id] = true
+	for id in db.chassis_of_tier(1):
+		if str(db.chassis[id].get("maker", "")) != db.capital_maker() and db.chassis_runnable(id):
+			assert_true(sat_out.has(id), "%s, offered, sits a run out now and then" % id)
+
+
 func test_the_tender_never_deals_a_planned_chassis() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

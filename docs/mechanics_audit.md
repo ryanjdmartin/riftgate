@@ -18,8 +18,14 @@ How to read it. Each finding carries a kind:
 - **Question**: the code does what the records say, but it defeats the mechanic's own purpose,
   the Flak kind of problem. Ryan's call; each carries Claude's lean, never a decision.
 
-Nothing here is decided. It retires once its findings are fixed, struck or turned into rows
-and tasks.
+Nothing here is decided but what Ryan settled. It retires once its findings are fixed, struck
+or turned into rows and tasks.
+
+Ryan's triage, 25 October: fixed 1, 2, 6 with 7, 22, 24, 31, 33 and 35; the Flak fix's follow-ons
+were done already on `ccr-170f6d81-465jnr` (Flak on a damaging weapon's blow of 0, and its hit
+spending a Shock, cashing Cryo and laying Vitriol whatever it dealt), merged under these fixes;
+his call next on 3, 4, 5, 23 (on hold), 25 and 32. The rest waits on his read. Line numbers
+are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -39,7 +45,7 @@ Start here, the ones that change play most:
 
 ## The skirmish
 
-### 1. Bug: a Gel's split and a Ghost's summons join their pack, so a pack can grow
+### 1. Fixed 25 October. Bug: a Gel's split and a Ghost's summons join their pack, so a pack can grow
 `Skirmish._split` (sim/skirmish.gd:966) and the summon special (sim/skirmish.gd:2196) give
 the new foes the caller's `pack_id`; `survivors_for` (sim/skirmish.gd:250) counts every foe
 of that pack id on the field or waiting; `Battlefield.apply_skirmish_result` sets the pack's
@@ -62,7 +68,7 @@ fight it loses while other machines stand on the map leaves the pack grown the s
 `docs/campaign_run.md` can carry it. Fix: count a pack's survivors by its own foe type (a
 risen one included), and its kills from the foes that fell.
 
-### 2. Bug: Overshield's excess outlives a fight that ends mid-turn or by withdrawal
+### 2. Fixed 25 October. Bug: Overshield's excess outlives a fight that ends mid-turn or by withdrawal
 The excess is trimmed only in `end_round` (`_trim_overshield`, sim/skirmish.gd:1353). A
 fight won mid-turn ends at once (`_check_outcome`), and a withdrawal skips the round's end
 (sim/skirmish.gd:1698), so neither trims; `finish_skirmish` doesn't clamp
@@ -73,7 +79,7 @@ Slipstream's point for every 2 heat the ally carries: 8 at 10 heat) and opens th
 with it, through that fight's first enemy turn. Overshield then a withdrawal keeps it on
 purpose. Fix: trim at `_finish`.
 
-### 3. Question: the Spin-Up can chain into itself for free
+### 3. Ryan's call (its intent pulled, 25 October). Question: the Spin-Up can chain into itself for free
 The rules say both "its Spin-Up spins the whole die, the entry showing included"
 (docs/rules.md:99) and that it needs no limiter because "the cylinder cannot chain it into
 itself" (docs/rules.md:217); the bible says both in one sentence. The first is what runs, and
@@ -87,7 +93,7 @@ expectation (a fifth of a spin more a spend), unbounded in principle. Question f
 limiter (a heat, or the spin never landing on itself), or keep the spin and strike the
 exemption's premise.
 
-### 4. Bug: a rally's Kindled is multiplied by the move's factor
+### 4. Ryan's call (Rally explained, 25 October). Bug: a rally's Kindled is multiplied by the move's factor
 `Foe.damage_of` adds Kindled to the base attack before the move's factor
 (sim/foe.gd:176), where Kindled says "hits {value} harder" (the chip, the rally's text,
 docs/rules.md:406) and the bible gives it the job of "lifting a small blow over the plate".
@@ -98,7 +104,7 @@ which the finale can field beside a standing Magma Elemental. The intent number 
 reads `damage_of`); the promise isn't. Fix: add the rally after the factor, as the Kite's
 double adds the buffs once after the printed number.
 
-### 5. Question: a cracked or silenced Volatile piece loses its price and keeps its number
+### 5. Ryan's call (25 October: Cracked gone? Silence on buffs alone?). Question: a cracked or silenced Volatile piece loses its price and keeps its number
 Volatile is a keyword, and a crack clears keywords (`Face.crack`, sim/face.gd:630;
 `volatile_cost` reads the keyword, sim/skirmish.gd:489), so a crack takes the hull price
 away and leaves the number. The Oblation Mantle (shield 10, Volatile 3) and the Entropy
@@ -115,7 +121,7 @@ keywords and unique effects" (content/vocabulary.json, `cracked_component`), whe
 Afterburner Cannon still vents all and a cracked Pinion Driver still resets. One of the two
 moves, and the answer decides whether a crack should take a printed price too.
 
-### 6. Question: the Ward turns away no special, and the Peak's scorch is mostly specials
+### 6. Fixed 25 October (Ryan: "Should stop all riders, even from non-damaging attacks"). Question: the Ward turns away no special, and the Peak's scorch is mostly specials
 The Ward stops riders on blows only (sim/skirmish.gd:1528), plus the silence and purge
 specials (sim/skirmish.gd:2225, :2231), as the rules say (docs/rules.md:338, :514). The bible
 gives it the job of answering "the Waste's breach and the Peak's scorch". The Peak's heaviest
@@ -125,7 +131,7 @@ Stoke (Burning 4), with the Summoner's Diamond Dust (Corrupted) and the Cockatri
 Salamander, the Drake's Breath, the Black Mage's Fire). Lean: a Ward turns away the debuff
 specials on its machine as it does the riders.
 
-### 7. Bug: specials on every machine reach a Phased one
+### 7. Fixed 25 October, with 6. Bug: specials on every machine reach a Phased one
 A blow at every machine skips a Phased machine (sim/skirmish.gd:1456), but the scorch-all and
 corrupt-all specials walk `live_mechs()` (sim/skirmish.gd:2237, :2243), so a machine the
 Mooring Screens Phased still takes Eruption's Scorched and Diamond Dust's Corrupted. Phased
@@ -247,7 +253,7 @@ should know it.
   the team's debuffs only (`FOE_STATUSES`, sim/effects.gd:331), never a foe's own Armoured,
   Kindled or Getting Back Up, though those show as chips too.
 
-### The Flak fix's follow-ons
+### The Flak fix's follow-ons (done on `ccr-170f6d81-465jnr`, 25 October)
 The same "a blow of nothing stays nothing" gate lives in four more places, which a fix in
 `Effects.damage_taken` alone leaves behind: the die's number (`shown_number`,
 sim/skirmish.gd:364), the bot's (sim/policy.gd:1005), and the strike's own reads of "did it
@@ -263,7 +269,7 @@ Exotic-matter Shell into 2 and spends a Barrier on it.
 The pack-growth bug (1 above) is the map's worst too: the map is where the grown pack walks
 on.
 
-### 22. Bug: a resumed battle's Rift Pressure spawns come out undressed
+### 22. Fixed 25 October. Bug: a resumed battle's Rift Pressure spawns come out undressed
 `field.foe_profiles` is filled once, in `Battle.setup` (sim/battle.gd:123); a battle loaded
 from its save never fills it (`SaveGame._field_from`, sim/save.gd:197), so `dress_pack`
 (sim/battlefield.gd:69) finds nothing for a spawn and leaves the Unit's defaults: ring 1, move
@@ -274,20 +280,20 @@ Wolves, Needlers and Bombs move 20 instead of 30, and the Mandragora, Cockatrice
 Drake ring 1 instead of 3. Packs already on the field are saved with their numbers,
 so the fault shows only later. Fix: fill the profiles on load (the content is to hand).
 
-### 23. Bug: UNDO MOVE goes dark after a carry in two pieces
+### 23. On hold (Ryan, 25 October: whether a move comes in pieces at all). Bug: UNDO MOVE goes dark after a carry in two pieces
 Each piece of a carrier's move logs every rider again (sim/battle.gd:327), and `can_undo`
 asks every record's rider to stand where that record set it down (sim/battle.gd:344). After a
 second piece the first record's landing is stale, so a Swallowtail that moved a hex, then
 another, with a rider beside it, can undo neither, though nobody has fought or moved alone.
 `undo_move` itself would replay the records last-first correctly; only the check is wrong.
 
-### 24. Bug, rare: undoing a carry can stack two machines on one hex
+### 24. Fixed 25 October. Bug, rare: undoing a carry can stack two machines on one hex
 `can_undo` checks only the carrier's own first hex (sim/battle.gd:349); `undo_move` puts each
 rider back where it rode from without asking whether that hex is still free
 (sim/battle.gd:373). Carry a rider off, move another machine into the hex it left, undo the
 carrier: two machines share the hex ("One unit to a hex", docs/rules.md:595).
 
-### 25. Question: a carry can be undone after its rider has fought
+### 25. Ryan's call (25 October: riding spent is fine; the undo after a rider's fight is the question). Question: a carry can be undone after its rider has fought
 A fight clears the move records of the machines in it only (sim/battle.gd:705), so a carrier
 that stayed out keeps its undo while the rider it set down fights. Carry a machine into range,
 fight with it, then UNDO the carrier: the spent rider goes back behind the line and the
@@ -344,7 +350,7 @@ predates the stock pass's single digits.
 Two of the battle's bugs are the campaign's too: the resumed battle's spawns (22) and the boss
 killed before a wipe (26).
 
-### 31. Bug: a fight resumed from a save never splits, summons or regrows
+### 31. Fixed 25 October. Bug: a fight resumed from a save never splits, summons or regrows
 Only a fresh fight is given the content's foe factory (`_build_skirmish`, sim/battle.gd:682);
 the save's rebuild (`SaveGame._skirmish_build`, sim/save.gd:420) never sets it, and only the
 planner's clone copies it (sim/save.gd:413). `_split`, the summon special and `_regrow_parts`
@@ -353,7 +359,7 @@ against Gels and pick it up: every Gel killed after that leaves no Half-Gels, an
 Raise calls nothing ("A dead Gel splits into two Half-Gels", docs/rules.md:528). The resume test
 fights Goblins, which neither split nor summon. Fix: set the factory on load.
 
-### 32. Bug: a domain can hold two finals at once, and the second refights a beaten hero
+### 32. Ryan's call (25 October: a beaten domain's other rifts close). Bug: a domain can hold two finals at once, and the second refights a beaten hero
 Whether a rift is a final is decided as it opens (`_roll_rift`, sim/campaign.gd:601: three of
 the lead's bosses beaten and its final not won), and `start_battle` takes the final's branch
 without asking again (sim/campaign.gd:316). Every rift of that lead opened before its final is
@@ -364,7 +370,7 @@ game's stream, so an estimate): two finals of one domain open at once in about 4
 under the runner's front choice, a thinned hero refought in about 25%; 1 to 2% for a player who
 takes finals first. Fix: decide the final at the battle, not at the rift.
 
-### 33. Measurement: the tender and the run share one random stream
+### 33. Fixed 25 October (`docs/measurements.md`). Measurement: the tender and the run share one random stream
 `Campaign.tender` seeds a generator of its own with the run's seed, and the run seeds its own
 with the same number (sim/campaign.gd:147, :118), so both streams are one. The party's deal
 uses "a stream of its own" (sim/campaign.gd:161) for exactly this reason. Two effects, traced
@@ -389,7 +395,7 @@ crack it banked, its passive's protection turned into the biggest loss on the ro
 Badger's brief planned "never destroyed" to move to a module "where its campaign meaning
 survives". Ryan's call: does the passive spare a wreck's cracks?
 
-### 35. Latent: a resumed battle's boss isn't marked as ended
+### 35. Fixed 25 October, with 22. Latent: a resumed battle's boss isn't marked as ended
 `Battle.lineup` and `escort` aren't saved (sim/save.gd:52), and `finish_battle` reads the
 lineup to record the boss as ended (sim/campaign.gd:396), so a battle resumed from a save
 records no boss and the domain may draw it again. Harmless while each domain has one boss; it

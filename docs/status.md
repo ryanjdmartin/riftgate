@@ -20,8 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 633 tests, 64,386 checks, green on `ccr-170f6d81-465jnr` (25 October, Flak on a
-  damaging weapon's 0), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 639 tests, 64,479 checks, green on `claude/affectionate-goldberg-8e3mkh` (25 October,
+  the mechanics audit's fixes onto `ccr-170f6d81-465jnr`'s Flak on a damaging weapon's 0), about
+  a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -39,8 +40,15 @@ damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner r
 damaging weapon's blow of 0), so main fast-forwards onto it.
 `claude/affectionate-goldberg-8e3mkh` carries it, merged in, and the mechanics audit Ryan asked
 for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced through the code and cited
-by line, its "start here" list first), with the fixes he called for on 25 October; landing it
-lands both.
+by line, its "start here" list first), with the fixes he called for on 25 October: a pack's
+survivors its own type, never a Gel's halves or a summons, with every fallen foe a kill; a
+resumed battle's spawns dressed from the content and its fight given the foe factory, its
+commanders saved; the tender and the runner's pick on streams of their own (the runner's
+Armadillo started every run it was offered); the Ward turning away every rider, a special's
+too, and a special on every machine passing a Phased one by; overshield fading as a fight ends;
+a carry's undo refused onto a taken hex. His calls wait in the audit's head (the Spin-Up, Rally,
+Cracked and Silence, a beaten domain's rifts closing, the carry's undo after a fight, moves in
+pieces). Landing it lands both.
 The landing's other three are in main: `ccr-7d865127-wr1ko2`,
 `claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
 desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once

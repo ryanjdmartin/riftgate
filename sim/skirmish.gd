@@ -107,6 +107,9 @@ var turn_specials: Array = []
 var _rallies: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
+## Foes that joined a pack in this fight (a Gel's half, a summon, a part) and fell for good, by
+## pack id: the kills its own count cannot see (kills_for).
+var joined_fallen: Dictionary = {}
 ## Mines (the Lammergeier's Fuse-delayed Bay, 21 October): Vector2i(rank, column) -> the shots
 ## waiting in that empty slot, in laid order, each {damage, keywords, burn, cryo, flak, by, seq}:
 ## its number as rolled and modified when laid, and its keywords, acting as it lands.
@@ -247,15 +250,28 @@ static func is_phased(ms: MechState) -> bool:
 	return ms != null and Effects.has(ms.unit, "phased")
 
 
+## The pack's own foes left standing, on the field or waiting: what it keeps on the map. A pack
+## is one foe type times a strength (docs/rules.md, the packs), so a foe that joined it in the
+## fight (a Gel's half, a raised Revenant, a part) is never a survivor: counted, it would come
+## back as one of the pack's own and the pack would grow (the mechanics audit, 25 October).
 func survivors_for(sq: Unit) -> int:
 	var n := 0
 	for f in field_foes():
-		if f.pack_id == sq.id and f.alive():
+		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
 			n += 1
 	for f in reinforcements:
-		if f.pack_id == sq.id:
+		if f.pack_id == sq.id and is_own(sq, f):
 			n += 1
 	return n
+
+
+## Is this foe one of the pack's own, the foes it came with (a readied one that got back up
+## among them), rather than one that joined it in the fight (a Gel's half, a summon, a part)?
+## A boss unit's own are its commanders and its escort; a pack's, its foe type.
+static func is_own(sq: Unit, f: Foe) -> bool:
+	if sq.is_boss:
+		return f.commands or f.escorts
+	return sq.foe_id.is_empty() or f.content_id == sq.foe_id
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
@@ -284,13 +300,16 @@ func escort_left(sq: Unit) -> int:
 	return n
 
 
-## The foes of a pack this fight killed, for the salvage the battle tallies: a pack's strength
-## less its survivors; a boss unit's fallen commanders and escort (read before the map takes
-## the result, while its lineup and strength are still the ones it came with).
+## The foes of a pack this fight killed, for the salvage the battle tallies ("a kill is a
+## kill", the bible): its own that are gone, a pack's strength less its survivors or a boss
+## unit's fallen commanders and escort, and every foe that joined it and fell for good (read
+## before the map takes the result, while its lineup and strength are still the ones it came
+## with).
 func kills_for(sq: Unit) -> int:
+	var joined := int(joined_fallen.get(sq.id, 0))
 	if sq.is_boss:
-		return maxi(0, maxi(1, sq.lineup.size()) - commanders_left(sq).size()) + maxi(0, sq.strength - escort_left(sq))
-	return maxi(0, sq.strength - survivors_for(sq))
+		return maxi(0, maxi(1, sq.lineup.size()) - commanders_left(sq).size()) + maxi(0, sq.strength - escort_left(sq)) + joined
+	return maxi(0, sq.strength - survivors_for(sq)) + joined
 
 
 func any_assigned() -> bool:
@@ -2219,11 +2238,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"burn":
-			_fire_on(t, "burning_mech", maxi(1, value), f)
-			log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
+			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
+			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name])
+			else:
+				_fire_on(t, "burning_mech", maxi(1, value), f)
+				log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
 		"disable":
 			# The entry the die shows is switched off through the machine's next turn, no blow.
-			if t.face_index >= 0:
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name])
+			elif t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
 		"silence":
@@ -2240,13 +2266,19 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				_purge(t, f)
 		"scorch_all":
 			var names: Array[String] = []
-			for ms in live_mechs():
+			for ms in specials_reach():
+				if Effects.has(ms.unit, "ward"):
+					log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "erupts")), ms.unit.display_name])
+					continue
 				_fire_on(ms, "scorched", maxi(1, value), f)
 				names.append(ms.unit.display_name)
-			log.append("%s: %s, %s scorched ×%d" % [f.display_name, str(a.get("name", "erupts")), ", ".join(names), maxi(1, value)])
+			log.append("%s: %s, %s scorched ×%d" % [f.display_name, str(a.get("name", "erupts")), ", ".join(names) if not names.is_empty() else "nobody", maxi(1, value)])
 		"corrupt_all":
 			var hit_names: Array[String] = []
-			for ms in live_mechs():
+			for ms in specials_reach():
+				if Effects.has(ms.unit, "ward"):
+					log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "unravels")), ms.unit.display_name])
+					continue
 				if ms.face_index >= 0:
 					Effects.corrupt_entry(ms.unit, ms.face_index, "foe:" + f.content_id, maxi(1, value))
 					hit_names.append(ms.unit.display_name)
@@ -2267,6 +2299,17 @@ func _unready_ally(caster: Foe) -> Foe:
 		if best == null or (o.hero and not best.hero) or (o.hero == best.hero and o.threat() > best.threat()):
 			best = o
 	return best
+
+
+## The machines a special on every machine reaches (a scorch all, a corrupt all): every live one
+## but the Phased, which is out of the fight until the round's end as it is for a blow at every
+## machine (the mechanics audit, 25 October).
+func specials_reach() -> Array[MechState]:
+	var out: Array[MechState] = []
+	for ms in live_mechs():
+		if not is_phased(ms):
+			out.append(ms)
+	return out
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
@@ -3477,6 +3520,14 @@ func _fall_with_cores() -> void:
 			log.append("%s falls, and its parts with it" % core.display_name)
 
 
+## The pack a foe fights for, or null (a test's foes come from none).
+func _pack_of(f: Foe) -> Unit:
+	for sq in packs:
+		if sq.id == f.pack_id:
+			return sq
+	return null
+
+
 func _clear_dead_slots() -> void:
 	for col in range(columns):
 		for rank in [front, back]:
@@ -3497,6 +3548,9 @@ func _clear_dead_slots() -> void:
 						log.append("%s falls, and gets back up into the pool" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
+						var sq := _pack_of(f)
+						if sq != null and not is_own(sq, f):
+							joined_fallen[sq.id] = int(joined_fallen.get(sq.id, 0)) + 1
 						_last_act(f)
 						_split(f)
 				f.rank = -1
@@ -3599,5 +3653,9 @@ func _check_outcome() -> void:
 ## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
+	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn or by
+	# a withdrawal, never carried onto the map and into the next fight (the mechanics audit, 25
+	# October: only the round's end trimmed it).
+	_trim_overshield()
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

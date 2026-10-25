@@ -95,7 +95,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Corrupted on the component the target's die is showing (Corrupt 2: two): it deals damage to its owner whenever spent, a bite a stack. | implemented |
 | **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
-| **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
+| **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round, or as the fight ends. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
 | **Breach** | A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour. | implemented |
 
 ## Status
@@ -115,7 +115,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Primed** | Machine status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
-| **Phased** | Machine status. It cannot act, take damage or be targeted until the round's end. Granted only to a machine that has not acted this round. | implemented |
+| **Phased** | Machine status. It cannot act, take damage or be targeted until the round's end: a blow or a move at every machine passes it by. Granted only to a machine that has not acted this round. | implemented |
 | **Burning** | Status. On a foe: loses 1 HP per stack at the start of its action, then loses one stack; bypasses armour. On a machine: gains 1 heat per stack at the end of the player's turn, before the overheat, then loses one stack, so a vent makes room for it or a cleanse takes it off. Metal does not burn, it heats. | implemented |
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Vitriol** | Foe status, the funnel-web's acid. At its action it loses 10% of its current HP a stack, past armour, after Burning, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe. | implemented |
@@ -133,7 +133,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Silenced** | Machine status, from a foe's silence: its buffs count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
 | **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | implemented |
-| **Ward** | Machine status. Every blow a foe lands on this machine this round leaves no rider (breach, burn, scorch, disable, corrupt), and no silence or purge touches it; its damage lands. Until the round's end. | implemented |
+| **Ward** | Machine status. No rider a foe lays lands on this machine this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end. | implemented |
 | **Rallied** | Machine status, the Swallowtail's Reveille Horn: its team has one reroll more this round. | implemented |
 | **Regenerating** | Machine status, the Storm Petrel's. It regains 2 shield at the start of each round for three rounds. Each grant keeps its own clock, so two grants regain 4 a round until the first runs out. | planned |
 
@@ -341,7 +341,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
 - **Silenced** (implemented): Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them.
-- **Ward** (implemented): A foe's move that lays a debuff without a blow is no rider, so the Ward leaves it.
+- **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
 - **Regenerating** (planned): Planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender. The number is a placeholder.
