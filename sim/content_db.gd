@@ -768,6 +768,18 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 			errs.append("vocabulary %s: unknown category %s" % [id, e.get("category", "")])
 		if not VALID_STATUS.has(e.get("status", "")):
 			errs.append("vocabulary %s: status must be one of %s" % [id, str(VALID_STATUS)])
+		if e.has("hint") and (not (e["hint"] is String) or str(e["hint"]).is_empty()):
+			errs.append("vocabulary %s: hint is the short line of text the die's hold shows" % id)
+	# The die's hold explains every keyword and reach it prints (Ryan, 25 October): a keyword
+	# that lays a status reads that status's own description, every other one and each reach
+	# its vocabulary hint.
+	for k in Face.KEYWORD_NAMES.keys():
+		var kname: String = Face.KEYWORD_NAMES[k]
+		if k != Face.Keyword.NONE and not Face.KEYWORD_STATUS.has(k) and vocabulary.has(kname) and str(vocabulary[kname].get("hint", "")).is_empty():
+			errs.append("engine keyword '%s' has no hint for the die's hold" % kname)
+	for r in [Face.Reach.DIRECT, Face.Reach.INDIRECT]:
+		if str(vocabulary.get(Face.REACH_NAMES[r], {}).get("hint", "")).is_empty():
+			errs.append("reach '%s' has no hint for the die's hold" % Face.REACH_NAMES[r])
 	# Engine keywords and vocabulary keywords must agree in both directions.
 	for k in Face.KEYWORD_NAMES.keys():
 		if k == Face.Keyword.NONE:

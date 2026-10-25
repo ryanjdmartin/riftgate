@@ -23,8 +23,8 @@ skirmish.
   Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
-  order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
-  down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
+  beside its name in the hold, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
   undamaged machine is reliable.
 - **Components**: a **weapon** is spent on a foe and need not deal damage; **equipment** (a
   shield, a vent or a buff) is spent on a machine: itself and allies by default, or self
@@ -163,6 +163,13 @@ defeat when every machine is wrecked. There is no round limit.
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
+- **Holding the die** shows the entry showing, alone: its place and name, what holds on it
+  (fixed, dark, corrupted), its codex, then one effect a line in the order a spend runs it
+  (its number as the die prints it, its reach or whom it is spent on, how it lands, its heat
+  and Volatile, what it leaves on each foe hit, Rapid), its own rules and every passive's
+  change last, then its tags. Each keyword and reach carries what it does in a quieter
+  italic: a keyword that lays a status in that status's own words. The whole die is in the
+  codex (double-tap the machine).
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.

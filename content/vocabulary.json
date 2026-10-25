@@ -1,5 +1,5 @@
 {
- "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
+ "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; hint, on a reach and on every keyword that lays no status, is the short line the die's hold shows beside it in the quieter face (a keyword that lays a status reads that status's own description there); design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
  "categories": [
   "resource",
   "equipment",
@@ -144,6 +144,7 @@
    "category": "reach",
    "name": "Direct",
    "codex": "Targets any front-rank foe, and any back-rank foe whose column is exposed.",
+   "hint": "Targets any front-rank foe, and a back-rank foe whose front is empty",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -154,6 +155,7 @@
    "category": "reach",
    "name": "Indirect",
    "codex": "Targets any foe in either rank, at no cost to its firer.",
+   "hint": "Targets any foe in either rank",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -164,6 +166,7 @@
    "category": "keyword",
    "name": "Spread",
    "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank.",
+   "hint": "Also hits the target's neighbours in its rank",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -174,6 +177,7 @@
    "category": "keyword",
    "name": "Penetrate",
    "codex": "Player keyword. Hits first the front, then the back rank of a single column.",
+   "hint": "Also hits the other rank of the target's column",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -184,6 +188,7 @@
    "category": "keyword",
    "name": "Spillover",
    "codex": "The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
+   "hint": "Damage past a front-rank kill carries into the foe behind it",
    "status": "implemented",
    "design": {
     "holes": "The spill is plain damage: it spends a Shock and feeds the Ammit's kill rule, and carries no other keyword of the blow."
@@ -214,6 +219,7 @@
    "category": "keyword",
    "name": "Lure",
    "codex": "Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
+   "hint": "Every foe it reaches and leaves standing turns on this machine for the round",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -244,6 +250,7 @@
    "category": "keyword",
    "name": "Disrupt",
    "codex": "Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved.",
+   "hint": "Every foe it reaches and leaves standing takes its next move instead, with a new target",
    "status": "implemented",
    "design": {
     "holes": "Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern."
@@ -274,6 +281,7 @@
    "category": "keyword",
    "name": "Swap",
    "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "hint": "Spent on a foe, then another foe or an empty slot: the two trade places",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -326,6 +334,7 @@
    "category": "keyword",
    "name": "Volatile",
    "codex": "Keyword with a number, on any kind of component. Volatile 3 means spending it bites its owner for 3 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.",
+   "hint": "Spending it costs its own machine that much hull, past shield and armour, before it acts",
    "status": "implemented",
    "design": {
     "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder."
@@ -376,6 +385,7 @@
    "category": "keyword",
    "name": "Chain",
    "codex": "If this attack kills an enemy, repeat it on a new, valid target.",
+   "hint": "A kill repeats the attack on the next foe in reach, rolling and paying heat again",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -386,6 +396,7 @@
    "category": "keyword",
    "name": "Rapid",
    "codex": "After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
+   "hint": "The die rerolls free onto another entry and the machine acts again; this one goes dark for the round unless it prints its own cooldown",
    "status": "implemented",
    "design": {
     "holes": "Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row)."
@@ -436,6 +447,7 @@
    "category": "keyword",
    "name": "Cleanse",
    "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "hint": "The machine it lands on loses Burning, Scorched, Silenced, Disabled and Corrupted",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -446,6 +458,7 @@
    "category": "keyword",
    "name": "Overshield",
    "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
+   "hint": "May shield past the maximum; the excess fades at the round's end",
    "status": "implemented",
    "design": {
     "holes": "Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow."
@@ -1428,6 +1441,7 @@
    "category": "keyword",
    "name": "Breach",
    "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
+   "hint": "Ignores the foe's armour",
    "status": "implemented",
    "design": {
     "holes": ""

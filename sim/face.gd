@@ -45,6 +45,13 @@ const KEYWORD_NAMES := {
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
+## The status each foe hit gains from a keyword that lays one: the die's hold explains such a
+## keyword with that status's own description (Ryan, 25 October), so a rider reads the engine's
+## words and numbers; every other keyword carries a vocabulary hint (the validator holds both).
+const KEYWORD_STATUS := {
+	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
+	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",
+}
 const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
 }
@@ -632,10 +639,81 @@ func crack() -> void:
 	spins = false   # Rapid's reroll as a spin goes with Rapid
 
 
-## A Rapid entry's spin as its text says it, and the Siphon's two rules.
+## A Rapid entry's spin as its text says it, and the Siphon's two rules. Equipment that reaches
+## every ally says so in its own words ("on every ally"), never "reaches every foe".
 func spin_text() -> String:
-	return (" spins the die" if spins else "") + (" reaches every foe" if reaches_all else "") \
-		+ (" +%d heat a blow taken this round" % heat_per_blow if heat_per_blow > 0 else "")
+	var out := ""
+	for p in _spin_phrases():
+		out += " " + p
+	return out
+
+
+func _spin_phrases() -> Array[String]:
+	var out: Array[String] = []
+	if spins:
+		out.append("spins the die")
+	if reaches_all and kind == Kind.ATTACK:
+		out.append("reaches every foe")
+	if heat_per_blow > 0:
+		out.append("+%d heat a blow taken this round" % heat_per_blow)
+	return out
+
+
+## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
+## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
+## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
+## with no vent of its own is that vent's number, not a rule.
+func rule_phrases() -> Array[String]:
+	var out: Array[String] = []
+	if kind == Kind.BLANK:
+		return out
+	if kind == Kind.ATTACK:
+		if vents_all:
+			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
+		if power_per_missing > 0:
+			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
+		if not consumes.is_empty():
+			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
+		if self_burn > 0:
+			out.append("Burning %d on itself" % self_burn)
+		if devours > 0:
+			out.append("Overcharged ×%d a kill" % devours)
+		if fills_hopper > 0:
+			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
+		if fires_hopper > 0:
+			out.append("fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper])
+	else:
+		if reloads_ammo > 0 and power > 0:
+			out.append("reloads %d ammo" % reloads_ammo)
+		if vents > 0:
+			out.append("cools %d" % vents)
+		if cools_all:
+			out.append("cools to nothing")
+	if braces > 0:
+		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
+	if not rolls_again_on.is_empty():
+		out.append("spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
+	if kind == Kind.ATTACK:
+		if resets_on_kill:
+			out.append("a kill brings every weapon back and it acts again")
+		if pulls_mines:
+			out.append("gathers every mine into its slot")
+		if drones:
+			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
+		if spends_magazine:
+			out.append("a strike for every ammo in the magazine")
+		if random_targets:
+			out.append("at random live foes")
+		if spray:
+			out.append("sprays the rest in reach")
+		if ammo_per_foe_hit > 0:
+			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
+	if printed_cooldown():
+		out.append(cooldown_text().strip_edges())
+	out.append_array(_spin_phrases())
+	if not charged.is_empty():
+		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
+	return out
 
 
 ## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid

@@ -3,8 +3,8 @@ extends Control
 
 ## Every face of a die in a column: a small face on the left, its description to the right.
 ## The current face is bracketed and drawn bright; the rest are dimmed. Each row opens on the
-## entry's place on its die, a grey Roman numeral as on the die itself. Used by the die's hold
-## readout and by the codex.
+## entry's place on its die, a grey Roman numeral as on the die itself. The codex's die list;
+## the die's hold shows the entry showing alone (EntryReadout, 25 October).
 
 const ROW := 54.0
 const MINI := 44.0
@@ -13,7 +13,7 @@ const LINE := 19.0        # a description's line height when it takes two
 
 var faces: Array = []     # Face
 var current: int = -1
-var columns: int = 1      # the codex runs two columns; the die readout one
+var columns: int = 1      # the codex runs two columns
 var labels: Array = []    # optional, one per face: the component's name above its description
 
 

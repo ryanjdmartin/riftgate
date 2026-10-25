@@ -101,7 +101,7 @@ var _pending: Dictionary = {}
 var _arrows: ArrowLayer
 var _details: HudPanel
 var _details_label: Label
-var _details_faces: FaceListView
+var _details_entry: EntryReadout     # the die's hold: the entry showing, its effects listed (Ryan, 25 October)
 var _details_ring: CylinderView      # a stepping die's chambers in its hold (the Cassowary's)
 var _details_status: StatusListView
 var _roll_label: Label
@@ -556,6 +556,7 @@ func _build() -> void:
 	_place(_roll_label, Vector2.ZERO, Vector2(200, 60))
 
 	_details = HudPanel.new(14.0)
+	_details.fill_alpha = 1.0   # the log's lines sit behind it; a readout of text reads over nothing
 	_details.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_details.visible = false
 	_details.custom_minimum_size = Vector2(340, 0)
@@ -570,10 +571,9 @@ func _build() -> void:
 	_details_ring.visible = false
 	_details_ring.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dv.add_child(_details_ring)
-	_details_faces = FaceListView.new()
-	_details_faces.visible = false
-	_details_faces.custom_minimum_size = Vector2(400, 0)
-	dv.add_child(_details_faces)
+	_details_entry = EntryReadout.new()
+	_details_entry.visible = false
+	dv.add_child(_details_entry)
 	_details_status = StatusListView.new()
 	_details_status.visible = false
 	_details_status.custom_minimum_size = Vector2(300, 0)
@@ -1339,20 +1339,24 @@ func _refresh_arrows() -> void:
 	_arrows.set_arrows(list)
 
 
-## Hold readout beside a control: a text block, then for a die every face in a column, or
-## for a unit its statuses and warnings as icon-and-text rows.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = [], ring: Array = []) -> void:
+## Hold readout beside a control: a text block and, for a unit, its statuses and warnings as
+## icon-and-text rows; for a die, the entry showing with its effects listed (EntryReadout),
+## a stepping die's cylinder above it.
+func _show_details(text: String, near: Control, rows: Array = [], ring: Array = [], entry: Array = []) -> void:
 	_details_label.text = text
+	_details_label.visible = not text.is_empty()
 	# A stepping die's cylinder above its entries: [faces, the chamber showing, the next].
 	_details_ring.visible = not ring.is_empty()
 	if not ring.is_empty():
 		_details_ring.set_cylinder(ring[0], int(ring[1]), int(ring[2]))
-	_details_faces.visible = not faces.is_empty()
-	_details_faces.labels = labels
-	if not faces.is_empty():
-		_details_faces.set_faces(faces, current)
 	_details_status.set_rows(rows)
-	var width := 440.0 if not faces.is_empty() else 360.0
+	var width := 360.0
+	# The die's hold: one entry, its effects a line each (EntryReadout), at the panel's
+	# content width so its wrapping is measured at the width it is drawn.
+	_details_entry.visible = not entry.is_empty()
+	if not entry.is_empty():
+		width = EntryReadout.WIDTH + 28.0
+		_details_entry.set_lines(entry, EntryReadout.WIDTH)
 	_details.custom_minimum_size = Vector2(width, 0)
 	_details.visible = true
 	# Size from the children's minimums now, not from the last frame's layout: the first
@@ -1404,32 +1408,26 @@ func _on_die_tapped(i: int) -> void:
 	_refresh()
 
 
-## One label per die entry: the component's name, FIXED where it is built in, and, with
-## `tags`, the effects that apply to it right now with their source.
-func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
-	var db := ContentDB.load_default()
-	var labels: Array = []
-	for i in range(ms.die.faces.size()):
-		var f: Face = ms.die.faces[i]
-		if f.empty:
-			labels.append("EMPTY HARDPOINT")
-			continue
-		var label := db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else "")
-		if Effects.is_entry_disabled(ms.unit, i):
-			var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-			label += (" // DISABLED" if Effects.cleansable_disable(ms.unit, i) else " // DARK") \
-				+ (", %d ROUND%s LEFT" % [dark, "" if dark == 1 else "S"] if dark > 0 else "")
-		var rot := Effects.corrupt_stacks(ms.unit, i)
-		if rot > 0:
-			label += " // CORRUPTED" + (" ×%d" % rot if rot > 1 else "")
-		if Effects.steps_die(ms.unit) and ms.face_index >= 0 and i == (ms.face_index + 1) % ms.die.faces.size():
-			label += " // NEXT"   # a stepping die's next chamber, in the hold
-		if tags:
-			var notes: Array[String] = Effects.explain(ms.unit, f)
-			if not notes.is_empty():
-				label += "  · " + " · ".join(notes)
-		labels.append(label)
-	return labels
+## What holds on die entry `i` now, a word each, for its hold: FIXED where it is built in, a
+## dark entry's rounds left or a foe's switch-off, its corruption. A stepping die's next
+## chamber is its cylinder's arrow.
+func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
+	var out: Array[String] = []
+	if i < 0 or i >= ms.die.faces.size():
+		return out
+	var f: Face = ms.die.faces[i]
+	if f.fixed:
+		out.append("FIXED")
+	if Effects.is_entry_disabled(ms.unit, i):
+		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
+		out.append(("DISABLED" if Effects.cleansable_disable(ms.unit, i) else "DARK") \
+			+ (", %d ROUND%s LEFT" % [dark, "" if dark == 1 else "S"] if dark > 0 else ""))
+	var rot := Effects.corrupt_stacks(ms.unit, i)
+	if rot > 0:
+		out.append("CORRUPTED" + (" ×%d" % rot if rot > 1 else ""))
+	if f.cracked:
+		out.append("CRACKED")
+	return out
 
 
 ## The die's entries as the player should see them (effective reach), for lists.
@@ -1442,12 +1440,20 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	# Every entry with what applies to it right now (a disabled entry, a passive's change,
-	# a cracked component): the hold is the die's whole readout since the die codex went.
-	# A die that steps (the Cassowary's) shows its chambers as a cylinder above the list: the one
-	# showing lit, an arrow round to the next (Ryan's ring, 19 October).
+	# The entry showing, alone (Ryan, 25 October: "only show the visible component"): its
+	# place and name, what holds on it now, its codex, every effect a line with what each
+	# keyword does, its own rules and every passive's change last, its tags (EntryReadout).
+	# The whole die is the codex's, a double-tap on the machine. A die that steps (the
+	# Cassowary's) shows its chambers as a cylinder above it: the one showing lit, an arrow
+	# round to the next (Ryan's ring, 19 October).
 	var ring: Array = [_shown_faces(ms), ms.face_index, sk.next_index(ms)] if Effects.steps_die(ms.unit) else []
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true), ring)
+	var at := ms.face_index
+	var f: Face = ms.die.faces[at] if at >= 0 and at < ms.die.faces.size() else null
+	var entry: Array = []
+	if f != null:
+		var sf := sk.shown_face(ms, f)
+		entry = EntryReadout.lines_for(sf, at + 1, sk.shown_number_text(ms, sf), _entry_states(ms, at), Effects.explain_parts(ms.unit, f), ContentDB.load_default())
+	_show_details("", _dice[i], [], ring, entry)
 	Sound.play("hold")
 	_hold_die = i
 	_refresh(false)   # the marks and a lure's preview read the held die
@@ -1460,7 +1466,7 @@ func _on_foe_held(v: UnitView) -> void:
 		for rank in range(2):
 			var col: int = _slot_views[rank].find(v)
 			if col >= 0 and not sk.mines_at(Vector2i(rank, col)).is_empty():
-				_show_details(_mine_text(rank, col, sk.mines_at(Vector2i(rank, col))), v, [], -1, [])
+				_show_details(_mine_text(rank, col, sk.mines_at(Vector2i(rank, col))), v)
 				Sound.play("hold")
 		return
 	_hold_foe = foe
@@ -1487,7 +1493,7 @@ func _on_foe_held(v: UnitView) -> void:
 				text += " (%s)" % str(Foe.AIM_TEXT.get(sense, sense))
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
-	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))
+	_show_details(text, v, _readout_rows(_foe_rows(foe)))
 	Sound.play("hold")
 	_refresh_arrows()
 
@@ -1498,7 +1504,7 @@ func _on_mech_held(i: int) -> void:
 	var text := "%s\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
 	if ms.unit.cooling > 0:
 		text += "\ncools %d at the start of each turn" % ms.unit.cooling
-	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
+	_show_details(text, _mech_views[i], _readout_rows(_mech_rows(i)))
 	Sound.play("hold")
 	_refresh_arrows()
 

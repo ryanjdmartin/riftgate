@@ -1857,16 +1857,25 @@ static func effect_text(eff: Dictionary) -> String:
 	return lead + body
 
 
-## The effects that apply to this component right now, as short tags with their source:
-## what the row on the die screen shows beside the component's name. A component's own
-## passive is named first (the codex has its description), on any kind of entry.
+## The effects that apply to this component right now, as short tags with their source. A
+## component's own passive is named first (the codex has its description), on any kind of entry.
 static func explain(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
+	for part in explain_parts(u, face):
+		out.append(("passive: %s" % part["source"]) if bool(part["own"]) else "%s (%s)" % [part["text"], part["source"]])
+	return out
+
+
+## explain()'s notes in parts, each {text, source, own}: what changes the entry, the modifier
+## that changes it, and whether it is the component's own passive (its description the text):
+## the die's hold lists them last, the source in the quieter face (Ryan, 25 October).
+static func explain_parts(u, face: Face) -> Array:
+	var out: Array = []
 	if face == null:
 		return out
 	for m in live(u):
 		if m.scope == LOADOUT and not m.component.is_empty() and m.component == face.component and not face.empty:
-			out.append("passive: %s" % m.name)
+			out.append({"text": m.description, "source": m.name, "own": true})
 	if not face.is_attack():
 		return out
 	# A status granted again in a later round is a second modifier of one status (16 October):
@@ -1882,13 +1891,13 @@ static func explain(u, face: Face) -> Array[String]:
 			var name := str(eff.get("effect", ""))
 			if trig == "static" and name == "set_reach":
 				if not str(eff.get("when", "")).begins_with("reach_") and _usable(u, m, name) and _holds(u, eff, face) and effective_reach(u, face) == Face.reach_from_name(str(eff.get("value", ""))) and effective_reach(u, face) != face.reach:
-					out.append("%s (%s)" % [effect_text(eff), m.name])
+					out.append({"text": effect_text(eff), "source": m.name, "own": false})
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
 					# A grant written out (the Boar's spill) reads the passive's own line, the
 					# star's text, since the player learns no keyword for it.
-					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
+					out.append({"text": m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), "source": m.name, "own": false})
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand. A raised ceiling means nothing to a flat face.
@@ -1899,7 +1908,7 @@ static func explain(u, face: Face) -> Array[String]:
 				if w == "target_rank" and not str(eff.get("reach", "")).is_empty():
 					on_target = effective_reach(u, face) == Face.reach_from_name(str(eff["reach"]))   # the Ram Frame's read: Direct entries only
 				if _usable(u, m, name) and (on_target or _holds(u, eff, face)):
-					out.append("%s (%s)" % [effect_text(eff), m.name])
+					out.append({"text": effect_text(eff), "source": m.name, "own": false})
 	return out
 
 

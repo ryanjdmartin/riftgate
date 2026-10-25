@@ -4,7 +4,8 @@ extends SceneTree
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
-## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
+## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
+## showing), confirm (the end-turn question), lock, rage (the rage's
 ## roll again mid-burst), heat (Burning and Scorched on the first machine).
 
 var _frames := 0
@@ -76,6 +77,12 @@ func _apply_pose() -> void:
 		"mechcodex":
 			s._on_mech_double_tapped(0)
 		"hold":
+			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
+			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
+			var at := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
+			if at >= 0 and at < s.sk.mechs[1].die.faces.size():
+				s.sk.mechs[1].face_index = at
+				s._refresh()
 			s._on_die_held(1)
 		"confirm":
 			s._on_end_turn()

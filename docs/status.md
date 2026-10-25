@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 633 tests, 64,386 checks, green on `ccr-170f6d81-465jnr` (25 October, Flak on a
-  damaging weapon's 0), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 636 tests, 64,501 checks, green on `ccr-170f6d81-465jnr` (25 October, the die's
+  hold), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -32,14 +32,19 @@ are in `README.md`.
 
 ## Branches
 
-One branch is live beside main: `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
-go: "merge in and clean up") and that session's later commits of the same day (a passive's lay on
-any hit, the Ambush's damaging hit its own rule; the bot's flat buff counted on each strike; a
-damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a
-damaging weapon's blow of 0), so main fast-forwards onto it. The landing's other three are in main: `ccr-7d865127-wr1ko2`,
-`claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
-desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once
-main has it. Every other branch was merged into main and deleted (22 October).
+Main is at `ef91382` (the phone scripts' Windows launchers) on the landing of 25 October (Ryan's
+go: "merge in and clean up"). Live beside it, from sessions running the same day:
+`ccr-170f6d81-465jnr` (this one: a passive's lay on any hit, the bot's flat buff on each strike,
+a damaging weapon's procs whatever it dealt, the Skua's runner rows, Flak on a damaging weapon's
+blow of 0, the die's hold); `claude/affectionate-goldberg-8e3mkh` (the mechanics audit and its
+fixes, with this branch's Flak commit merged in); `claude/quick-campaign-mode-pafhiv` (the quick
+campaign, and one damage state: "Cracked is gone"); `claude/playtesting-issues-08mnqj` (Ryan's
+playtest list); `ccr-7effd31a-u5z4gw` (the Hold The Line pair, 24 October). When they meet, this
+branch's hold drops its CRACKED state for the one damage state, and the bible and the hangar's
+vocabulary already hold every branch's rows (Pages). The landing's three (`ccr-7d865127-wr1ko2`,
+`claude/eager-newton-sf947u`, the weld's `claude/friendly-cannon-kyk9v4`) are in main: delete them
+from the desk machine or GitHub, since a cloud session's push to delete one is refused. Every
+other branch was merged into main and deleted (22 October).
 
 ## The design sessions
 
@@ -82,6 +87,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
   new model's part that moves, glows or hides on its own needs a joint, a pin or a name in
   `glow_parts`.
+- The die's hold shows the entry showing alone since 25 October (Ryan's layout; the bible's
+  tap-hold-drag row, `game/ui/entry_readout.gd`): a line an effect, each keyword explained by
+  its vocabulary `hint` or a rider by its status's description; the whole die is the codex's.
+  His phone read decides the crowding (the to-do).
 - Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
   content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the
   picker's seventh round (Pages).
@@ -154,10 +163,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.290, and so is the live (25 October,
-  the page's version 307, from `ccr-170f6d81-465jnr`: Flak on a damaging weapon's blow of 0 in
-  the Prairie Dog's row, the Skua's paragraph and the tables; 306 put the branch's v0.289 onto
-  main's v0.288 at 305). The
+  `docs/design-bible.html` after every change. This file is v0.295, and so is the live (25 October,
+  the page's version 312, from `ccr-170f6d81-465jnr`: the die's hold in the tap-hold-drag row,
+  merged onto the live v0.294, which carries the other branches' rows, so this file holds their
+  rows and tables too and the tables script waits until they land, as run here it writes this
+  branch's older tables). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -165,10 +175,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 108 (25 October, from
+  before it is replaced and `edits` read first. At the page's version 113 (25 October, from
   `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
   hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
-  the Cryo Flinger at 108, Flak's line at 109; the live files identical to the last publish's and `edits` empty
+  the Cryo Flinger at 108, Flak's line at 109; the vocabulary at 113 the quick campaign's of 112
+  with the die's hold's hints merged in, from a scratch merge, since the branches' content
+  differs until they land; the live files identical to the last publish's and `edits` empty
   before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from

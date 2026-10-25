@@ -123,27 +123,118 @@ func test_hold_shows_details_and_arrows() -> void:
 	s.free()
 
 
-func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
+## The die's hold (Ryan, 25 October: "only show the visible component"): the entry showing,
+## alone, as a list in the order a spend runs it: its place and name from content, its number
+## as the die prints it, its reach and keywords each with what it does in the quieter face (a
+## rider reads its status's own words), its heat, its own rules and every passive's change
+## last, then its tags. The whole die is the codex's.
+func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
+	var db := ContentDB.load_default()
+	var ms: Skirmish.MechState = s.sk.mechs[2]
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3, 5)
+	gun.burn = 2
+	gun.strikes = 2
+	gun.spray = true
+	gun.component = str(db.components.keys()[0])
+	gun.tags.append_array(["beam", "flame"])
+	ms.die = Die.single(gun)
+	ms.face_index = 0
+	ms.unit.grant_passive({"id": "t_amp", "name": "Test Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]})
+	s._refresh()
 	s._on_die_held(2)
-	assert_true(s._details.visible, "details shown")
-	var text := s._details_label.text
-	var title := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("name", "")).to_upper()
-	var size := s.sk.mechs[2].die.faces.size()
-	assert_true(text.begins_with(title + " // D%d" % size), "names the die and its size (from content, never a hardcoded name)")
-	assert_true(s._details_faces.visible, "face list shown")
-	assert_eq(s._details_faces.faces.size(), size, "every face in the column")
-	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
-	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", ""))
-	assert_false(text.contains(passive_name), "the passive is not in the heading")
-	var tagged := false
-	for l in s._details_faces.labels:
-		if str(l).contains(passive_name):
-			tagged = true
-	assert_true(tagged, "but each entry it changes says so (the Sparrowhawk's doubled damage and heat)")
+	assert_true(s._details.visible and s._details_entry.visible, "the entry's readout shown")
+	assert_false(s._details_label.visible, "no heading over it: the entry's name is its first line")
+	var lines: Array = s._details_entry.lines
+	var texts: Array[String] = []
+	for l in lines:
+		texts.append(str(l["text"]))
+	assert_eq(texts[0], db.component_name(gun.component).to_upper(), "its name, from content")
+	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
+	var sf := s.sk.shown_face(ms, gun)
+	assert_eq(texts.slice(1, 6), ["Attack %s ×2" % s.sk.shown_number_text(ms, sf), "Indirect", "Spread", "Heat %d" % sf.heat, "Apply Burn 2 on hit"],
+		"a line an effect in the order a spend runs it, the number as the die prints it: %s" % str(texts))
+	assert_eq(str(lines[2]["hint"]), str(db.vocabulary["indirect"]["hint"]), "the reach says what it reaches")
+	assert_eq(str(lines[3]["hint"]), str(db.vocabulary["cleave"]["hint"]), "a keyword what it does")
+	assert_eq(str(lines[5]["hint"]), EntryReadout.status_hint("burning"), "a rider in its status's own words")
+	assert_false(str(lines[5]["hint"]).contains("{"), "its numbers filled")
+	assert_eq(texts[6], "Sprays the rest in reach", "then its own rules")
+	var amp := texts.find("Damage +2")
+	assert_true(amp > 6, "then every change applying now: %s" % str(texts))
+	assert_eq(str(lines[amp]["hint"]), "Test Amp", "with its source in the quieter face")
+	assert_eq(texts[texts.size() - 1], "Tags: Beam, Flame", "its tags last")
+	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
+	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
 	s.free()
+
+
+## Equipment says whom it is spent on where a weapon says its reach; a debuff prints no number,
+## a gated rider says where it lands, and a buff reads its status's words.
+func test_the_hold_reads_equipment_debuffs_and_buffs() -> void:
+	var db := ContentDB.load_default()
+	var shield := Face.shield(6)
+	shield.targets = Face.Target.SELF
+	shield.add_keyword(Face.Keyword.CLEANSE)
+	var texts: Array[String] = []
+	for l in EntryReadout.effects_of(shield, db):
+		texts.append(str(l["text"]))
+	assert_eq(texts, ["Shield 6", "Self only", "Cleanse"], "its number, whom, its keyword: %s" % str(texts))
+	var probe := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SUPPRESS])
+	probe.strikes = 2
+	probe.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	var lines := EntryReadout.effects_of(probe, db)
+	assert_eq(str(lines[0]["text"]), "Debuff ×2", "a debuff prints no number")
+	assert_eq(str(lines[2]["text"]), "Apply Suppress %s" % Effects.gate_text(probe.gates["suppress"]), "a gated rider says where it lands")
+	assert_eq(str(EntryReadout.effects_of(Face.empty_slot(), db)[0]["text"]), "Comes up blank: nothing fills it", "an empty hardpoint says what it does, its name the title")
+	var wreck := Face.blank()
+	wreck.component = str(db.components.keys()[0])
+	assert_eq(str(EntryReadout.effects_of(wreck, db)[0]["text"]), "Destroyed: comes up blank for the rest of the battle", "and a destroyed one what is left of it")
+	assert_eq(str(EntryReadout.lines_for(wreck, 2, "", [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
+	var coil := Face.buff("overcharged", 2)
+	var grant: Dictionary = EntryReadout.effects_of(coil, db)[0]
+	assert_eq(str(grant["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
+	assert_eq(str(grant["hint"]), EntryReadout.status_hint("overcharged"), "in the status's words")
+
+
+## Every keyword the die prints is explained on the hold (Ryan, 25 October): one that lays a
+## status by its status's description, every other one and each reach by its vocabulary hint.
+func test_the_hold_explains_every_keyword_and_reach() -> void:
+	var db := ContentDB.load_default()
+	for k in Face.KEYWORD_NAMES.keys():
+		if k == Face.Keyword.NONE:
+			continue
+		var f := Face.shield(4) if Face.SUPPORT_KEYWORDS.has(k) else Face.attack(2, Face.Reach.DIRECT)
+		f.add_keyword(k)
+		var label := EntryReadout.capital(Face.keyword_label(k))
+		var found := false
+		for l in EntryReadout.effects_of(f, db):
+			if str(l["text"]).contains(label):
+				found = true
+				assert_false(str(l["hint"]).is_empty(), "%s says what it does" % label)
+		assert_true(found, "%s has its line" % label)
+	for r in [Face.Reach.DIRECT, Face.Reach.INDIRECT]:
+		var line: Dictionary = EntryReadout.effects_of(Face.attack(2, r), db)[1]
+		assert_false(str(line["hint"]).is_empty(), "%s says what it reaches" % str(line["text"]))
+	for k in Face.KEYWORD_STATUS.keys():
+		assert_true(Effects.STATUS.has(Face.KEYWORD_STATUS[k]), "a rider's status is the engine's")
+
+
+## The rules the hold lists last are the ones the entry prints, word for word, for every
+## component in content and its charged form; equipment reaching every ally never says it
+## reaches every foe.
+func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
+	var db := ContentDB.load_default()
+	var checked := 0
+	for cid in db.components.keys():
+		var f := db.build_face(db.components[cid].get("face", {}))
+		for r in f.rule_phrases():
+			assert_true(f.describe().contains(r), "%s prints %s: %s" % [cid, r, f.describe()])
+			checked += 1
+		if not f.is_attack():
+			assert_false(f.describe().contains("reaches every foe"), "%s, equipment, reaches no foe: %s" % [cid, f.describe()])
+	assert_true(checked > 10, "the rules read: %d" % checked)
 
 
 func test_every_die_shows_the_place_of_the_entry_it_shows() -> void:
@@ -891,10 +982,10 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 	Effects.disable_entry(ms.unit, ms.face_index, "cooldown", s.sk.round + 1)
 	s._refresh()
 	assert_eq(s._dice[0].dark, 2, "the die shows the entry dark with two rounds left")
-	assert_true(s._face_labels(ms, false)[ms.face_index].contains("DARK, 2 ROUNDS LEFT"), "and so does the hold")
+	assert_true(" // ".join(s._entry_states(ms, ms.face_index)).contains("DARK, 2 ROUNDS LEFT"), "and so does the hold")
 	Effects.disable_entry(ms.unit, ms.face_index, "foe:x", s.sk.round)
 	s._refresh()
-	assert_true(s._face_labels(ms, false)[ms.face_index].contains("DISABLED"), "a foe's switch-off says so, cleansable")
+	assert_true(" // ".join(s._entry_states(ms, ms.face_index)).contains("DISABLED"), "a foe's switch-off says so, cleansable")
 	s.free()
 
 
@@ -911,7 +1002,6 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	var n := ms.die.faces.size()
 	assert_true(s._dice[0].next_face != null, "the die carries its next chamber")
 	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
-	assert_true(s._face_labels(ms, false)[(ms.face_index + 1) % n].contains("// NEXT"), "the hold marks it")
 	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
 	for r in s._mech_rows(0):
 		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
