@@ -368,6 +368,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		widest = maxf(hi.x - lo.x, hi.z - lo.z)
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
+	MechWeld.weld(_model, MechWeld.kept_parts(chassis_id))   # a mesh a material in each moving group (the battery plan), before the rig and the traces read it
 	rig.place = "skirmish"
 	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
 	if widest > 0.0:
@@ -503,6 +504,7 @@ func mount(n: int, scene: PackedScene, maker: String) -> bool:
 	part.set_meta("mounted", true)
 	pin.add_child(part)
 	_apply_materials(part, maker)
+	MechWeld.weld(part as Node3D)
 	return true
 
 
@@ -695,7 +697,8 @@ func _collect_vertices(node: Node, out: Array[Vector3]) -> void:
 
 
 ## Every mesh's box corners in `root`'s own space, by walking the parent chain: usable
-## before anything is in the tree, where global transforms are not.
+## before anything is in the tree, where global transforms are not. A welded mesh gives its
+## parts' boxes (MechWeld.corners).
 func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> void:
 	if node is MeshInstance3D and (node as MeshInstance3D).visible:
 		var mi: MeshInstance3D = node
@@ -705,9 +708,8 @@ func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> vo
 			if p is Node3D:
 				xf = (p as Node3D).transform * xf
 			p = p.get_parent()
-		var aabb := mi.get_aabb()
-		for i in range(8):
-			out.append(xf * aabb.get_endpoint(i))
+		for c in MechWeld.corners(mi):
+			out.append(xf * c)
 	for c in node.get_children():
 		_collect_corners_local(c, root, out)
 
@@ -715,8 +717,7 @@ func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> vo
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:
 	if node is MeshInstance3D and (node as MeshInstance3D).visible:
 		var mi: MeshInstance3D = node
-		var aabb := mi.get_aabb()
-		for i in range(8):
-			out.append(mi.global_transform * aabb.get_endpoint(i))
+		for c in MechWeld.corners(mi):
+			out.append(mi.global_transform * c)
 	for c in node.get_children():
 		_collect_corners(c, out)

@@ -19,17 +19,20 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 609 tests, 62,521 checks, green on `claude/eager-newton-sf947u` (23 October, with the bots' Shock priced at the hitter in hand; 608 and 62,516 on 22 October: the stock pass's engine chunk, the second chunk's engine items (the rule numbers as fields, Breach on the Railgun and the mirrors' reach reads, the gated stuns' gate and consumer, the planner and blind rungs, Flak's clock a field) and the content landed at the brief's fills as the loops moved them, with main's rows of the day merged in: the Whip Scorpion's forecasts, the Cassowary's cylinder, the bot's bunching swap and boss reads, the reserve's plaques and the boss list); 588 and 62,269 on main the same day; 485 and 20,291 on the Windows desk machine on 19
-  October, about a minute there. A cloud session fetches
+- Tests: 618 tests, 63,655 checks, green on `claude/friendly-cannon-kyk9v4` (25 October, the
+  weld's nine tests; 25 seconds in a cloud session); 609 and 62,521 on main (23 October); 485 and
+  20,291 on the Windows desk machine on 19 October, about a minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots, and builds models
+  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with `--rendering-method gl_compatibility`, Mesa's llvmpipe on
+  the CPU: its draw calls are true counts, its frame times mean nothing), and builds models
   with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`. Its first `--import`
   rewrites four Prairie Dog textures; restore them (`git checkout -- art/models/prairie_dog_*`)
   rather than commit them.
 
 ## Branches
 
-No branch is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
+`claude/friendly-cannon-kyk9v4` (25 October, a cloud session) carries the weld, built, tested and
+measured (below), for Ryan's go to merge; nothing else is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
 marks and the stun calls, the second chunk's engine items, the content landed at the brief's
 fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
@@ -99,6 +102,20 @@ merged on 21 October are paused, each resuming from its briefs:
 
 ## The game as left (18 October)
 
+- 25 October, the weld (the bible's battery plan, section 11; `game/ui/mech_weld.gd`): every
+  machine's parts are merged at load, in the skirmish, the codex and on the map, by material
+  within each moving group (the body, a joint, a weapon's pin), the parts the rig drives by name
+  kept apart (the sidecar's `glow_parts`: the glows and the treads). Nothing on screen changes:
+  each welded mesh keeps its parts' scale (the map's outline grows in a mesh's own units), a
+  group's trace is its parts' edges on one mesh, a framing reads the parts' boxes
+  (`MechWeld.corners`), the importer's levels of detail come along; renders diffed against the
+  code before it differ only by rounding noise (0.14% of the machines' pixels, most by a level or
+  two of 255, no outline moved). The fourteen models go from 917 meshes to 521,
+  a machine's draw calls about halve on both screens and the battle map's frame draws a third
+  fewer (`docs/measurements.md`). `RIFTGATE_WELD=off` draws every part as authored, to compare;
+  `tools/perf_probe.gd -- skirmish` counts the skirmish, and both modes print the 3D views' own
+  calls. A new model's part that moves, glows or hides on its own needs a joint, a pin or a
+  name in `glow_parts`. The frame time and the heat it saves are the phone's to read.
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
@@ -266,7 +283,7 @@ merged on 21 October are paused, each resuming from its briefs:
   on shield and armour, dice spent on entries that deal damage or none; each maker's content
   names its own); the balance report gains a heat section (peaks, hot rounds, overheats, dice
   held for heat) and `--module` twin rows with their differences; the bot values the
-  Armadillo's seal. Welding the machines' meshes waits for a session that can count draw calls.
+  Armadillo's seal.
 - 21 October, the Whip Scorpion's engine (Ryan's go, 20 October; the bible's Whip Scorpion
   row): a vent it spends on itself blasts a random live foe for the heat it took off (a static
   vent_blast, one blow through the pipeline, back rank included); the Heliographic Siphon lures
@@ -708,8 +725,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.263, and so is the
-  live (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
+  `docs/design-bible.html` after every change. This branch's file is v0.264 (25 October, the
+  battery row's weld built), not yet published; the live is v0.263 (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
   second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,

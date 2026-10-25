@@ -60,7 +60,8 @@ records every decision, recommendation and open question, and why; section 12 is
   - `skirmish/skirmish_screen.gd` the skirmish screen, built in code
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
-    (its joints, idle acts and strikes from the model's sidecar), the feed
+    (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
+    welded at load, a mesh a material in each moving group, for the draw calls), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
@@ -73,7 +74,7 @@ records every decision, recommendation and open question, and why; section 12 is
   `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
   against each faction's formation, bosses and first pack; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
-  the battle map's frame cost; `lowforge/` builds the
+  the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
@@ -257,7 +258,8 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
-godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
+godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom, with the 3D views' own (the map's world, its machines' layer)
+godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd -- skirmish   # the skirmish's, with each machine's view; RIFTGATE_WELD=off on either counts the machines' parts unwelded (any run: every part drawn as authored, to compare)
 
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
 tools/spriter/.venv/bin/python tools/sheet_export.py

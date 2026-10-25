@@ -1090,3 +1090,42 @@ the five hard fights read 67% won with every foe at random, 64% as shipped, 59% 
 with the shields halved: a rank's blows on one machine take about as much from a starter as
 halving every basic shield, with no number moved. The sixteen trios with a carry win all five
 every way.
+
+## 25 October, the weld's draw calls
+
+**The battery plan's weld** (bible section 11; the to-do's line: count draw calls before and
+after). `tools/perf_probe.gd` on the Compatibility renderer (the phone's) in a cloud container,
+whose renderer is Mesa's llvmpipe on the CPU: its frame times say nothing about a phone, its
+draw calls are the engine's own count. The battle screen at zoom 1 and 2.6 and the skirmish
+screen, the default team (the Badger, the Clydesdale, the Sparrowhawk) and a heavy four (the
+funnel-web, the Ammit, the Goshawk, the Puffin), `RIFTGATE_WELD=off` against the weld. Draw
+calls a frame; "machines" is the map's machines' layer, or the skirmish's machine views:
+
+| Screen | Team | Frame, off / on | The map's world, off / on | Machines, off / on |
+|---|---|---|---|---|
+| Battle, zoom 1 | Default | 1,650 / 1,081 | 957 / 639 | 508 / 257 |
+| Battle, zoom 2.6 | Default | 1,400 / 844 | 743 / 432 | 490 / 245 |
+| Skirmish | Default | 929 / 668 | | 507 / 256 |
+| Battle, zoom 1 | Heavy | 2,506 / 1,583 | 1,445 / 928 | 874 / 468 |
+| Battle, zoom 2.6 | Heavy | 1,894 / 1,200 | 1,037 / 643 | 688 / 388 |
+| Skirmish | Heavy | 1,305 / 900 | | 873 / 467 |
+
+The fourteen models go from 917 meshes to 521 (29 to 91 a machine, to 19 to 57). In a skirmish
+view a mesh costs two calls and its trace one, so a part cost three; a group's trace is now
+one call. The triangles drawn are the same: the primitives within a tenth of a percent at zoom
+1 and in the skirmish, and up 0.2% (default) to 1.2% (heavy) at full zoom, where a welded group
+is drawn whole once any part of it is in view. The frame's remainder is the field and the 2D,
+which the weld does not touch.
+
+The look, diffed pixel by pixel against the code before the weld, at a fixed frame rate so a
+render is the same every run: 103 renders of the fourteen machines (at rest, outlined and bare,
+each act halfway through, driving; 240x288), each skirmish view and the map's world and
+machines' layer at both zooms. With the weld off every one matches the code before it. With
+the weld on, 0.14% of the machines' pixels differ, 82% of those by one or two levels of 255
+(float rounding where a part's transform is baked into its mesh), the rest single edge pixels
+and speckle where a shadow's test sits on its threshold; no outline or silhouette pixel moves,
+on a fitted mount or a bared socket either. The importer's levels of detail (about fifty parts
+carry one or two: the Dingo's body, the Goshawk's and the Sparrowhawk's fuselages, the Puffin's
+hull) are live at these sizes, and a weld without them differed twice as much; the welded
+meshes carry every part's levels. The weld costs 9 to 31 ms the first time a model is seen and
+about 1 to 9 ms an instance after it (the plan is built once a model).

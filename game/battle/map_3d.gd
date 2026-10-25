@@ -1507,6 +1507,7 @@ func _make_unit(u: Unit) -> Node3D:
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
 		var model_id := MechView3D.model_for(u.chassis_id, "badger")
 		var node := _model(model_id, maker, u.paint)
+		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
 		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
@@ -1574,16 +1575,17 @@ func _marker(node: Node) -> void:
 		_trace(child, "asset")
 
 
-## The union of every mesh's bounds under `node`, in the node's own space.
+## The union of every mesh's bounds under `node`, in the node's own space (a welded mesh's
+## are its parts', MechWeld.corners).
 func _bounds(node: Node3D) -> AABB:
 	var out := AABB()
 	var first := true
 	for mi in node.find_children("*", "MeshInstance3D", true, false):
-		var box: AABB = (mi as MeshInstance3D).get_aabb()
 		var xf: Transform3D = node.global_transform.affine_inverse() * (mi as Node3D).global_transform if node.is_inside_tree() else _relative(mi, node)
-		var b := xf * box
-		out = b if first else out.merge(b)
-		first = false
+		for c in MechWeld.corners(mi):
+			var p := xf * c
+			out = AABB(p, Vector3.ZERO) if first else out.expand(p)
+			first = false
 	return out
 
 
