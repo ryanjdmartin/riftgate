@@ -1304,3 +1304,79 @@ heroes die in about three rounds, before heat builds.
 Read: ×2 makes heat the Peak's threat, felt by the cold teams and walling the hottest starters
 on the greedy bot, which manages heat only as far as its one-round forecast reads it; ×3 walls
 all but the coldest. ×2 is the first cut in content, for Ryan's play.
+
+## 25 October, the Skua's rows
+
+**Its engine session's reads** (the Skua fielded 25 October: each roll halved, rounded down, and
+struck twice; the Flechette Pod's spray), as its brief asked: alone against the packs (the trash
+claim) and the four big foes (the bounce), beside the Puffin with the Overcharge Coil (a flat
+buff counted twice), and the spray's share of the spends. `tools/balance.gd`, 200 seeds a cell,
+random and greedy, no party, on the content as at `36ec6da` (the later commits of the day touch
+no row here: the Skua's stock carries no debuff, no machine here a passive lay, a Shock or a
+Cryo, and the bot's buff fix only the Coil's rows, which were run again on it).
+
+**Alone**, the nine runnable tier ones against the twenty packs, 72,000 fights: won, random /
+greedy.
+
+| Row | Every pack | Rank and file (12) | The four big foes | The four formations | Hull lost (greedy) |
+|---|---|---|---|---|---|
+| Honey Badger | 43 / 67 | 72 / 95 | 0 / 37 | 0 / 11 | 53% |
+| Cottonmouth | 38 / 55 | 63 / 91 | 0 / 0 | 0 / 0 | 51% |
+| **Skua** | **27 / 37** | **45 / 61** | **0 / 0** | **0 / 0** | **69%** |
+| Baboon | 25 / 37 | 41 / 55 | 0 / 22 | 0 / 0 | 74% |
+| Armadillo | 25 / 33 | 41 / 55 | 0 / 0 | 0 / 0 | 77% |
+| Stingray | 23 / 29 | 38 / 48 | 1 / 3 | 0 / 0 | 74% |
+| Cassowary | 16 / 23 | 27 / 38 | 0 / 0 | 0 / 0 | 84% |
+| Puffin | 8 / 22 | 14 / 37 | 0 / 0 | 0 / 0 | 86% |
+| Prairie Dog | 11 / 21 | 18 / 35 | 0 / 0 | 0 / 0 | 85% |
+
+By pack, greedy: the Skua wins every small pack the field wins (the Cockatrice, Drake, Ghost,
+Mandragora and Wolf packs 100%, the Antlions 88%) in 2.3 to 3.5 rounds, behind only the
+Cottonmouth's 1.3 to 3.1 (the Badger's 2.4 to 4.1); the swarms are where it falls on its 20
+hull: the Goblin and Revenant sixes 12% (the Badger 93, the Cottonmouth 100), the Gel's four 4%,
+the Needler's five 48%, the Bomb's four 55%, the Salamander's three 21%. Every big foe and
+formation 0%, as for every tier one but the Badger (the Treant 75%, the Bone Wyvern 73%, the
+Waste's and the Marsh's formations 32 and 12%) and the Baboon (the Treant 38%, the Bone Wyvern 45%).
+
+The Flechette Pod's share of the Skua's spends, greedy: 48 to 65% against the full fronts of
+the Meadow's, the Marsh's and the Peak's formations (the Waste's 29%, its Needlers met by the
+basics); 72 and 76% against a lone Sandworm and Magma Elemental, 29% against the Treant and the
+Bone Wyvern, where the Canopy takes three spends in five; 35 to 65% on the rank and file.
+
+**Beside the Puffin**, three pairs, 24,000 fights a run: won, random / greedy.
+
+| Pair | Every pack | Rank and file | The four big foes | The four formations | Hull lost (greedy) |
+|---|---|---|---|---|---|
+| Skua + Puffin, stock | 49 / 70 | 81 / 100 | 0 / 43 | 1 / 9 | 40% |
+| Cottonmouth + Puffin, stock | 58 / 86 | 91 / 100 | 10 / 53 | 6 / 77 | 25% |
+| Prairie Dog + Puffin, stock | 36 / 60 | 60 / 94 | 0 / 16 | 0 / 0 | 47% |
+| Skua + Puffin, the Coil | 50 / 75 | 83 / 100 | 0 / 66 | 2 / 12 | 35% |
+| Cottonmouth + Puffin, the Coil | 59 / 86 | 91 / 100 | 13 / 52 | 6 / 77 | 25% |
+| Prairie Dog + Puffin, the Coil | 37 / 62 | 62 / 94 | 0 / 32 | 0 / 0 | 48% |
+
+Stock, by pack, greedy: the Skua's pair wins every rank-and-file pack (98 to 100%), the Treant
+90% and the Bone Wyvern 84% (in 23 and 24 rounds), the Waste's formation 34% and no other
+formation; the Cottonmouth's wins every pack but the Peak's formation (27%), the Sandworm (10%)
+and the Magma Elemental (0%), in fewer rounds; the Prairie Dog's 76 to 100% on the rank and file,
+16 and 48% on the Wyvern and the Treant, no formation.
+
+With the Overcharge Coil in the Puffin's Coolant Jacket's place (`--set
+chassis/puffin/loadout=["halo_shield","overcharge_coil","twin_autoguns","laser_carbine"]`),
+on the bot that counts a flat buff once a strike of the ally's gun (`e28c40f`): the Puffin
+spends it on 9% of the Skua pair's spends (6 and 5% of the others'), and the Skua's pair takes
+the Treant and the Bone Wyvern in 9 rounds where it took 23 and 24 (90 and 84% won, now 100),
+the Sandworm 39% and the Magma Elemental 26% where it took neither; the Cottonmouth's pair, its
+drum one strike, gains nothing; the Prairie Dog's doubles its big-foe wins (16 to 32%, the
+Treant 48 to 82%). The first Coil run, on the bot that counted a flat buff once a blow whatever
+the gun, spent the Coil on 4% of the Skua pair's spends and moved its rows a point or two (the
+other two pairs read as now): a verdict on the bot, fixed the same day.
+
+Read: alone, the Skua is third of the nine tier ones on the rank and file, behind the Badger and
+the Cottonmouth and level with or above the rest, with a decision in it (random 45%, greedy
+61%); it kills the small packs fast, falls to the swarms on its 20 hull, and bounces off the big
+foes, as designed. The Pod is its most spent entry on nearly every pack, against a full front
+and a lone foe alike, the locked piece doing a lock's work. Beside the Puffin it sits between the
+Cottonmouth's pair and the Prairie Dog's, and a flat buff counted on each strike is its way
+through plate, the brief's claim: the Coil turns the big foes from the pair's slowest wins into
+nine-round ones. A tier one in the middle of the field, neither weak nor a must-pick; Ryan's play
+decides whether its start bites.

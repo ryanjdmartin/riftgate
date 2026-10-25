@@ -79,7 +79,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
-  halved, rounded down, and struck twice; the Pod's spray); the Giant Petrel's engine session
+  halved, rounded down, and struck twice; the Pod's spray), its rows read the same day: mid-field
+  alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
