@@ -32,7 +32,12 @@ are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. On 25 October, on Ryan's go ("merge in and clean up"), main took
+`claude/affectionate-goldberg-8e3mkh` stands beside main (25 October, docs only): the mechanics
+audit Ryan asked for after the Flak fix, `docs/mechanics_audit.md`, 42 findings traced through
+the code and cited by line, its "start here" list first. Nothing in it is fixed or decided; it
+waits on Ryan's triage, each finding to a fix, a row, a task or struck, and retires after.
+
+No other branch is live beside main. On 25 October, on Ryan's go ("merge in and clean up"), main took
 the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
 doubled, the Kite's reset without a limit, the Skua's engine), which carried
