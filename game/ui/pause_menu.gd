@@ -112,6 +112,7 @@ func _show_page(page: String) -> void:
 			_credit("Voice: Jenny (Dioco)")   # her licence asks for it (CREDITS.md is the record)
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
+				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")

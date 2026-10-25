@@ -1542,7 +1542,10 @@ func _open_menu() -> void:
 			if key == "pace":
 				BattleMapView.pace = float(value)
 			elif key == "scan" and _bg != null:
-				_bg.scan = bool(value))
+				_bg.scan = bool(value)
+			elif key == "weld":
+				_build()   # the machines remade, welded or as authored (a debug build's comparison)
+				_refresh())
 		_menu.hud_changed.connect(func() -> void:
 			_build()
 			_refresh())

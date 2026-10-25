@@ -10,6 +10,10 @@ extends TestCase
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web"]
 
 
+func _init() -> void:
+	Settings.display["weld"] = true   # a debug build reads the WELD toggle, and a desk machine may have saved it off
+
+
 func _model(id: String) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
@@ -294,7 +298,7 @@ func test_a_welded_surface_carries_every_parts_levels_of_detail() -> void:
 	root.free()
 
 
-func test_the_switch_leaves_every_part_as_authored() -> void:
+func test_the_switches_leave_every_part_as_authored() -> void:
 	var node := _model("dingo")
 	var before := node.find_children("*", "MeshInstance3D", true, false).size()
 	OS.set_environment("RIFTGATE_WELD", "off")
@@ -302,4 +306,9 @@ func test_the_switch_leaves_every_part_as_authored() -> void:
 	OS.unset_environment("RIFTGATE_WELD")
 	assert_eq(removed, 0, "RIFTGATE_WELD=off welds nothing")
 	assert_eq(node.find_children("*", "MeshInstance3D", true, false).size(), before, "every part still there")
+	if OS.is_debug_build():   # the tests' build always is; a release build welds whatever is saved
+		Settings.display["weld"] = false
+		assert_eq(MechWeld.weld(node, MechWeld.kept_parts("dingo")), 0, "the WELD toggle off welds nothing (the phone's switch)")
+		Settings.display["weld"] = true
+	assert_true(MechWeld.weld(node, MechWeld.kept_parts("dingo")) > 0, "and on again, it welds")
 	node.free()

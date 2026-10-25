@@ -19,7 +19,8 @@ extends RefCounted
 ## its first welded mesh (TraceLines.seed_edges), so a joint draws its trace in one call and
 ## no line is lost where two parts touch; and a framing reads the parts' boxes (`corners`).
 ## The geometry is built once a model and shared by every instance (`_plans`).
-## RIFTGATE_WELD=off leaves every part as authored, to compare.
+## RIFTGATE_WELD=off leaves every part as authored, to compare, and so does a debug build's
+## WELD toggle in the settings (the phone has no environment to set).
 
 const META := "weld"               # on a welded mesh: its parts' box corners in its own space (corners)
 const META_TRACE := "weld_trace"   # on a group's first welded mesh: its parts' traces' box corners there
@@ -32,9 +33,10 @@ const CARRIED := Mesh.ARRAY_FORMAT_NORMAL | Mesh.ARRAY_FORMAT_TANGENT | Mesh.ARR
 static var _plans: Dictionary = {}
 
 
-## Whether machines weld: RIFTGATE_WELD=off keeps every part as authored.
+## Whether machines weld: RIFTGATE_WELD=off keeps every part as authored, and so does the
+## WELD toggle off in a debug build (a release build always welds).
 static func enabled() -> bool:
-	return OS.get_environment("RIFTGATE_WELD") != "off"
+	return OS.get_environment("RIFTGATE_WELD") != "off" and (not OS.is_debug_build() or bool(Settings.display.get("weld", true)))
 
 
 ## The parts a model's sidecar says the rig drives by name (its `glow_parts`), which a weld

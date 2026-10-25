@@ -26,6 +26,7 @@ const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
 	"music": 1.0, "effects": 1.0, "voice": 1.0,   # Hold The Line at the full knob matches other games on the phone (Ryan, 8 October); the effects and the voice mastered up to sit over it
 	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
+	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 }
 const DISPLAY_RANGES := {

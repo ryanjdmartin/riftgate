@@ -19,9 +19,9 @@ document's job and every command are in `README.md`.
   what is set up there. What the Mac held outside git is gone but the seventh round's foeforge
   renders, force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and
   `fix` have no machine until a route for the image model is chosen.
-- Tests: 618 tests, 63,655 checks, green on `claude/friendly-cannon-kyk9v4` (25 October, the
-  weld's nine tests; 25 seconds in a cloud session); 609 and 62,521 on main (23 October); 485 and
-  20,291 on the Windows desk machine on 19 October, about a minute there. A cloud session fetches
+- Tests: 618 tests, 63,657 checks, green on main (25 October, with the weld's nine tests; 25
+  seconds in a cloud session); 485 and 20,291 on the Windows desk machine on 19 October, about a
+  minute there. A cloud session fetches
   Godot 4.7's Linux build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with `--rendering-method gl_compatibility`, Mesa's llvmpipe on
   the CPU: its draw calls are true counts, its frame times mean nothing), and builds models
@@ -31,8 +31,10 @@ document's job and every command are in `README.md`.
 
 ## Branches
 
-`claude/friendly-cannon-kyk9v4` (25 October, a cloud session) carries the weld, built, tested and
-measured (below), for Ryan's go to merge; nothing else is live beside main. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
+No branch is live beside main. The weld's, `claude/friendly-cannon-kyk9v4` (25 October, a cloud
+session: the weld, its tests and counts, the debug build's WELD toggle, Ryan's phone read in the
+to-do), merged into main the same day on Ryan's go, a fast-forward; it is to be deleted from the
+desk machine or GitHub like the stock pass's below. The stock pass's, `claude/eager-newton-sf947u` (22 October: the
 decisions of 21 and 22 October as rows, its brief, the engine chunk and its baseline, Ryan's
 marks and the stun calls, the second chunk's engine items, the content landed at the brief's
 fills and the loops' numbers, the bands, the review, each item a commit), merged into main the
@@ -112,7 +114,9 @@ merged on 21 October are paused, each resuming from its briefs:
   code before it differ only by rounding noise (0.14% of the machines' pixels, most by a level or
   two of 255, no outline moved). The fourteen models go from 917 meshes to 521,
   a machine's draw calls about halve on both screens and the battle map's frame draws a third
-  fewer (`docs/measurements.md`). `RIFTGATE_WELD=off` draws every part as authored, to compare;
+  fewer (`docs/measurements.md`). `RIFTGATE_WELD=off` draws every part as authored, to compare, and a debug build's
+  settings carry the same switch as WELD for the phone (flipping it remakes the machines there and
+  then);
   `tools/perf_probe.gd -- skirmish` counts the skirmish, and both modes print the 3D views' own
   calls. A new model's part that moves, glows or hides on its own needs a joint, a pin or a
   name in `glow_parts`. The frame time and the heat it saves are the phone's to read.
@@ -725,8 +729,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   republished 15 October with its section 12 cut to a pointer; republish after the page changes, and retire it with the page once the last brief
   that cites it lands.
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This branch's file is v0.264 (25 October, the
-  battery row's weld built), not yet published; the live is v0.263 (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
+  `docs/design-bible.html` after every change. Main's file is v0.264 (25 October, the battery
+  row's weld built), not yet published; the live is v0.263 (23 October, the page's version 280, Ryan's reads of the bands and the runs they called for; v0.262 the page's 279, the two reads the hull rise closed; v0.261 the page's 278, the light hulls at the floor and the scales row widened to the fills; v0.260 the page's 277, the review's holes; v0.259 the page's 276, the loops and the bands; v0.258 the page's 275, the content landed; v0.257 the page's 274, the
   second chunk's engine items; v0.254 to v0.256 the page's versions 271 to 273): main's v0.253 (the page's version 270: the
   other session's rows of the day, the Whip Scorpion's forecasts, the Cassowary's cylinder, the
   Dingo's bunching swap, the reinforcements by rank, the bot's boss reads, a domain's boss list,
