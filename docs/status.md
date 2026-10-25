@@ -46,7 +46,9 @@ but for `Skirmish.can_withdraw` beside the playtest branch (at `3caf956`), whose
 boss's fight, no withdrawal) is this branch's `withdraw_allowed` the other way round: one flag at
 the landing, the quick run setting it. The records conflict: this file, the bible (its version
 line; beside the playtest branch the built list and section 12's rules list), the measurements
-beside the audit's, and `docs/vocabulary.md`, regenerated after the merge. Earlier on 25 October, on Ryan's
+beside the audit's, `docs/vocabulary.md` (regenerated after the merge), and beside the playtest
+branch the rules' boss paragraph (its boss fight allows no withdrawal; the escort by tier
+follows its last sentence). Earlier on 25 October, on Ryan's
 go ("merge in and clean up"), main took the three that stood beside it:
 `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
