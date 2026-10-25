@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 631 tests, 64,371 checks, green on `ccr-170f6d81-465jnr` (25 October, main's landing
-  merged into its later commits), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 633 tests, 64,386 checks, green on `ccr-170f6d81-465jnr` (25 October, Flak on a
+  damaging weapon's 0), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -35,8 +35,8 @@ are in `README.md`.
 One branch is live beside main: `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
 go: "merge in and clean up") and that session's later commits of the same day (a passive's lay on
 any hit, the Ambush's damaging hit its own rule; the bot's flat buff counted on each strike; a
-damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows), so main
-fast-forwards onto it. The landing's other three are in main: `ccr-7d865127-wr1ko2`,
+damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a
+damaging weapon's blow of 0), so main fast-forwards onto it. The landing's other three are in main: `ccr-7d865127-wr1ko2`,
 `claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
 desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once
 main has it. Every other branch was merged into main and deleted (22 October).
@@ -154,10 +154,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.289, and so is the live (25 October,
-  the page's version 306, from `ccr-170f6d81-465jnr` onto main's v0.288 at 305: a damaging
-  weapon's procs in the funnel-web's and the Armadillo's rows and the tables, and the Skua's runner
-  rows). The
+  `docs/design-bible.html` after every change. This file is v0.290, and so is the live (25 October,
+  the page's version 307, from `ccr-170f6d81-465jnr`: Flak on a damaging weapon's blow of 0 in
+  the Prairie Dog's row, the Skua's paragraph and the tables; 306 put the branch's v0.289 onto
+  main's v0.288 at 305). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -168,7 +168,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   before it is replaced and `edits` read first. At the page's version 108 (25 October, from
   `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
   hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
-  the Cryo Flinger at 108; the live files identical to the last publish's and `edits` empty
+  the Cryo Flinger at 108, Flak's line at 109; the live files identical to the last publish's and `edits` empty
   before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from

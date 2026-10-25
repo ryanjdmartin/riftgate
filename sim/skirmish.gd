@@ -349,7 +349,7 @@ static func hopper_bonus(u, f: Face) -> int:
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
 ## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
 ## to that foe: its missing hull, conditions on it (a status it carries), its Flak (a point a
-## stack on a blow that deals something) and its armour off the blow. A shock is left out, the
+## stack on a damaging weapon's blow, a 0 included) and its armour off the blow. A shock is left out, the
 ## foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
@@ -361,7 +361,7 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 		# A split entry (the Skua's) shows a strike's share of the roll, rounded down.
 		var d := int(Effects.attack(ms.unit, f, (v + add) / maxi(1, f.split), 0, target)["damage"])
 		if target != null:
-			if d > 0:
+			if not f.is_debuff():
 				d += Effects.damage_taken_add(target, ms.unit)
 			d = maxi(0, d - target.armour_for(f))
 		out.append(d)
@@ -1835,15 +1835,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# more, its armour included, and the strike's whole number goes on behind it; with
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess.
-				_spill(ms, f, foe, dmg, hit)
+				_spill(ms, f, foe, dmg, hit, not f.is_debuff())
 				if foe == aimed:
 					landed = dmg
 				continue
-			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
-			# double, and the shock is spent by the blow), then its armour comes off, flat, so
-			# small blows bounce off a braced foe the way they do off a heavy machine; a
+			# What the foe takes of the blow: its own statuses read last (its Flak adds to a
+			# damaging weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
+			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
+			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, dmg, ms.unit)
+			var taken := Effects.damage_taken(foe, dmg, ms.unit, not f.is_debuff())
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
@@ -2012,7 +2013,7 @@ func _blast(ms: MechState, amount: int) -> void:
 	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
 	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
 	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
-	var taken := Effects.damage_taken(foe, dmg, ms.unit)
+	var taken := Effects.damage_taken(foe, dmg, ms.unit, true)   # a blast is a damaging blow
 	var armoured := mini(taken, foe.armour_total())
 	taken -= armoured
 	foe.hp -= taken
@@ -2604,10 +2605,11 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
 			Effects.remove(t, eat)
 			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
-		var taken := maxi(0, Effects.damage_taken(t, blow, source) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
+		var weapon := bool(shot.get("weapon", blow > 0))   # a damaging weapon's shot, whatever it deals
+		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		if bool(shot.get("weapon", blow > 0)) and Effects.remove(t, "shocked"):   # a damaging weapon's shot, whatever it dealt
+		if weapon and Effects.remove(t, "shocked"):
 			log.append("%s: the shock lands, %d doubled" % [t.display_name, blow])
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive():
@@ -2822,11 +2824,13 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
-func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe]) -> void:
+## `whole`: a later strike's whole number, a damaging weapon's, which lands as its blow even at
+## 0 (its Flak added); a kill's excess of 0 carries nothing.
+func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
+	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit) - behind.armour_total())
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole) - behind.armour_total())
 	behind.hp -= behind_taken
 	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])

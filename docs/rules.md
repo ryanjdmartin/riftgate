@@ -150,7 +150,8 @@ defeat when every machine is wrecked. There is no round limit.
    the target's missing hull adds.
 2. The attacker's modifiers: adds, then multiplies, then floors.
 3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
-   then loses its armour off it. A blow of nothing stays nothing.
+   then loses its armour off it. A damaging weapon's blow takes them whatever it deals, a 0
+   included (the Skua's halved 1); a debuff's blow stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
   each takes half the roll, rounded down.
@@ -402,9 +403,10 @@ On a foe:
   the neighbour the burst catches.
 - **Cryo** (debuff): a hit on it with a damaging weapon spends every stack, whatever it dealt,
   and cools the hitter 2 a stack; a debuff spends none. It never fades on its own.
-- **Flak** (debuff): every blow it takes deals a point more a stack, before its multiplies and
-  its armour (a Shocked foe takes blow plus Flak, doubled); the stacks halve at the end of each
-  round, rounded down.
+- **Flak** (debuff): every blow of a damaging weapon it takes deals a point more a stack, a
+  blow of 0 included, before its multiplies and its armour (a Shocked foe takes blow plus Flak,
+  doubled); a debuff's blow stays nothing. The stacks halve at the end of each round, rounded
+  down.
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.

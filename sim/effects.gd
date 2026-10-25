@@ -228,15 +228,16 @@ const STATUS := {
 	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner {value} a stack when spent.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 3}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
-	# Flak keyword's number. Every blow the foe takes deals a point more a stack, an add before
-	# the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its armour comes off,
-	# and a blow of nothing stays nothing (damage_taken). The stacks halve at the end of each
-	# round, rounded down (Overcharged's clock: Skirmish.end_round halves a foe's), so a sprayer
-	# feeding three a round settles near six and a boss never ramps. The clock is this entry's
-	# decay, read where Flak is laid, by the bot and by the hold (stacks_next_round), so the
-	# stock pass's loop can read a stack a round against it (Ryan's question, 22 October). Past armour or not is the
-	# stock pass's call; through the plain pipeline, the armour comes off it, until then.
-	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+	# Flak keyword's number. Every blow of a damaging weapon the foe takes deals a point more a
+	# stack, a strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get
+	# past armour"), an add before the multiplies (a Shocked foe takes blow plus Flak, doubled)
+	# and before its armour comes off (the bible's armour row); a debuff's blow stays nothing
+	# (damage_taken). The stacks halve at the end of each round, rounded down (Overcharged's
+	# clock: Skirmish.end_round halves a foe's), so a sprayer feeding three a round settles near
+	# six and a boss never ramps. The clock is this entry's decay, read where Flak is laid, by
+	# the bot and by the hold (stacks_next_round), so the stock pass's loop can read a stack a
+	# round against it (Ryan's question, 22 October).
+	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow of a damaging weapon it takes deals a point more a stack, a blow of 0 included. At the end of each round the stacks halve, rounded down.", "decay": "half",
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, +5
 	# a stack on the next weapon spend, stacking, carried between turns until a weapon spends
@@ -933,9 +934,11 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
 ## A blow of nothing (a lure, a web, a probe) stays nothing: an add on what a blow deals
-## (Flak's point a stack) never turns no blow into one.
-static func damage_taken(u, amount: int, source = null) -> int:
-	if amount <= 0:
+## (Flak's point a stack) never turns no blow into one. A `damaging` blow, a damaging weapon's,
+## takes every add whatever it deals, a strike of 0 included (Ryan, 25 October: "Flak and
+## overcharge exist in part to get past armour").
+static func damage_taken(u, amount: int, source = null, damaging: bool = false) -> int:
+	if amount <= 0 and not damaging:
 		return 0
 	var add := 0.0
 	var mult := 1.0

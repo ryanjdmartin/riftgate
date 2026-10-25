@@ -791,14 +791,14 @@
    "id": "flakked",
    "category": "status",
    "name": "Flak",
-   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
+   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a damaging weapon it takes deals a point more a stack, a blow of 0 included. At the end of each round the stacks halve, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Adds before multiplies and before armour, to a damaging weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow it takes, a stack",
+     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow of a damaging weapon it takes, a stack",
      "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }

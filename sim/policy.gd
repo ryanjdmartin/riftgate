@@ -665,10 +665,11 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 		if hp <= 0.0:
 			break
 		var d := float(int(shot["damage"]))
-		if d > 0.0:
+		var weapon := bool(shot.get("weapon", d > 0.0))   # a damaging weapon's shot takes the adds, whatever it deals
+		if weapon:
 			d += add
-		if shocked and bool(shot.get("weapon", d > 0.0)):
-			d *= 2.0   # a damaging weapon's shot spends the shock, whatever it deals
+		if shocked and weapon:
+			d *= 2.0   # and spends the shock
 			shocked = false
 		d = maxf(0.0, d - (0.0 if Array(shot["keywords"]).has(Face.Keyword.BREACH) else arm))
 		dealt += minf(d, hp)
@@ -996,18 +997,19 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
+	var damaging := not f.is_debuff()
 	for v in rolls:
 		var dmg: int = (v + fired) / maxi(1, f.split)
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
-		# Flak adds to every blow that deals something. Then its armour comes off every blow,
-		# so a braced foe is worth less to a volume weapon.
+		# Flak adds to every blow of a damaging weapon, a strike of 0 included. Then its armour
+		# comes off every blow, so a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
-		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and dmg > 0 else 0) - arm)
+		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and damaging else 0) - arm)
 		if not aimed:
 			out.append([float(later) * n, w])
 			continue
-		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit) if target != null else dmg) - arm)
+		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, damaging) if target != null else dmg) - arm)
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
 	return out
 
@@ -1556,7 +1558,7 @@ func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
 		return 0.0
 	var total := 0.0
 	for foe in live:
-		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit) - foe.armour_total())
+		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit, true) - foe.armour_total())
 		total += minf(float(taken), float(foe.hp))
 		if taken >= foe.hp:
 			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT

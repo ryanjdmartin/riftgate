@@ -1102,15 +1102,17 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current HP a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
-		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow it takes
-		# deals, and what its clock keeps into the next round (the status names the clock).
+		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
+		# damaging weapon it takes deals, a 0 included, and what its clock keeps into the next
+		# round (the status names the clock). The number leads: a row is one line, clipped.
 		var halves := Effects.status_decay(Effects.STATUS["flakked"]) == Effects.DECAY_HALF
-		rows.append(["flak", str(flak), "Flak: every blow it takes deals %d more, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
+		rows.append(["flak", str(flak), "Flak: +%d to every damaging weapon's blow, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
-		# The Armadillo's mark (20 October; its chip from 21 October): what a damaging hit on it
-		# cools the hitter, the stacks it spends.
-		rows.append(["cryo", str(cryo), "Cryo: a damaging hit on it spends every stack and cools the hitter %d heat (%d a stack)" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
+		# The Armadillo's mark (20 October; its chip from 21 October): what a hit on it with a
+		# damaging weapon cools the hitter, whatever the hit dealt, the stacks it spends; the
+		# number first, since a row is one line, clipped.
+		rows.append(["cryo", str(cryo), "Cryo: cools the hitter %d heat (%d a stack) when a damaging weapon hits it, spending every stack" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
