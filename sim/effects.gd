@@ -1748,7 +1748,7 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
-		"split_strikes": body = "every weapon it fires strikes %s times as often, each roll divided among them, rounded down, every buff and the foe's conditions counting on each strike" % vs
+		"split_strikes": body = "strikes twice at half, rounded down" if vs == "2" else "strikes ×%s at its share of the roll, rounded down" % vs
 		"weapon_cooldown": body = "every weapon it fires goes dark for %s rounds" % vs
 		"lay_mines": body = "its weapons may be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"

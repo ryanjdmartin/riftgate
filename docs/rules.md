@@ -19,8 +19,8 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), three of them planned and never dealt until their engines land (the
-  Skua, the Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
+  (`content/chassis.json`), two of them planned and never dealt until their engines land (the
+  Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
@@ -152,8 +152,8 @@ defeat when every machine is wrecked. There is no round limit.
 3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
    then loses its armour off it. A blow of nothing stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
-  A split weapon (the Skua's) rolls once for the strikes the split makes of each, and each
-  takes its share of the roll, rounded down.
+  A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
+  each takes half the roll, rounded down.
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.

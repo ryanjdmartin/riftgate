@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 615 tests, 63,158 checks, green on `ccr-170f6d81-465jnr` (24 October, the Kite's reset
-  chaining without a limit), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 619 tests, 63,213 checks, green on `ccr-170f6d81-465jnr` (25 October, the Skua's
+  engine), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -77,8 +77,9 @@ Every other branch was merged into main and deleted (22 October).
 Each resumes from its briefs; `docs/briefs/README.md`'s table says what each waits on.
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Skua's, the Storm Petrel's and the Giant Petrel's engine
-  sessions follow from their briefs; the last two, the Magpie (a working name, a support engine)
+  `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
+  halved, rounded down, and struck twice; the Pod's spray); the Giant Petrel's engine session
+  follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -96,8 +97,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
-- Content: five makers; 24 chassis, every one runnable but the Skua, the Storm Petrel and the
-  Giant Petrel (their passives and five locked pieces planned, so never dealt); 80 components,
+- Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
+  (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
   heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
@@ -126,7 +127,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Skua's, the Storm Petrel's and the Giant Petrel's engines (their briefs).
+- The Giant Petrel's engine and the Storm Petrel's, after the pricing run (their briefs).
 - The elites on Ryan's definition of 23 and 24 October, a guaranteed miniboss event mid-battle
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
@@ -192,9 +193,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 105 (24 October, from
-  `ccr-170f6d81-465jnr`: the Pinion Driver's note and the vocabulary's Reset, the Kite's reset
-  without a limit; the live files identical to version 104's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 106 (25 October, from
+  `ccr-170f6d81-465jnr`: the Skua fielded, its passive and the Pod's spray, and the vocabulary's
+  Spray; the live files identical to version 105's and `edits` empty before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

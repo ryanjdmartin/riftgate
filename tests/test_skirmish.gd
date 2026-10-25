@@ -6391,7 +6391,7 @@ func test_a_spray_falls_on_foes_in_reach_and_a_kill_opens_the_one_behind() -> vo
 	var pod := Face.attack(5, L)
 	pod.strikes = 3
 	pod.spray = true
-	assert_true(pod.has_unique_rule() and pod.describe().contains("each strike after the first at a random foe in reach"), "the entry prints its rule")
+	assert_true(pod.has_unique_rule() and pod.describe().contains("sprays the rest in reach"), "the entry prints its rule")
 	var sk := Skirmish.new(1, 1)   # one column: a front foe and one behind it
 	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
 	var front_foe := _ghoul(4, 10)

@@ -753,7 +753,7 @@ func describe() -> String:
 			if random_targets:
 				s += " at random live foes"
 			if spray:
-				s += " each strike after the first at a random foe in reach"
+				s += " sprays the rest in reach"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			s += cooldown_text() + spin_text()

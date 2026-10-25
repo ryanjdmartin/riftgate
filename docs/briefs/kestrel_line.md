@@ -14,7 +14,7 @@ and a piece named only where it fits as it is.
 
 **Status**: every chassis decided by 21 October and named that evening (the Skua, the Storm
 Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
-whole, the other three planned until their engines); the Buzzard's stock filled and the stock
+whole, the Skua whole since its engine of 25 October, the other two planned until theirs); the Buzzard's stock filled and the stock
 holes taken; the last two slots marked (the Magpie, a support engine; the
 Snowy Owl, a stealth unit), each in a brief of its own since that evening. A proposal (Claude,
 20 October) until then. **Maker**: Kestrel. **Read first**:
@@ -32,7 +32,7 @@ burst, a delayed action, a combined entry, own rerolls).
 
 | Tier | Machine | Reads | Produces | Pays | Currency |
 |---|---|---|---|---|---|
-| one | the strafer, the Skua (its go 21 October, named that evening, the Butcherbird a BattleTech 'Mech's; `kestrel_strafer.md`) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
+| one | the strafer, the Skua (its go 21 October, named that evening, the Butcherbird a BattleTech 'Mech's; landed 25 October, its brief retired) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
 | one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | two | the interceptor, the Needletail (decided 21 October, tier two and named that day; landed 23 October, its brief retired) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
@@ -82,7 +82,7 @@ One pointer each; the proposal is in the brief named.
   gains nothing against bare foes and loses against plate; the root is the scales question
   (section 12), never an exception; its payoffs are riders, flat buffs and multi-strike
   pieces, cross-maker by design, and the stock holes below give Kestrel one of its own.
-  `kestrel_strafer.md`, the line review.
+  `git show f87b831:docs/briefs/kestrel_strafer.md`, the line review.
 - **The off-tank** stands as Ryan's package, a hovercraft at 50 (Ryan, 20 October: fast, so
   Kestrel is seen to make a fast one; a decent generalist that can zoom off and fight a pack).
   The plate's arithmetic read against the foes: a wall against the packs that strike for 10
@@ -354,7 +354,7 @@ The bench for either, one line each:
   aerodynamics, with a bird inside where one fits (the Pinion Driver, the Syrinx Drone).
   Every chassis name is checked against `content/reserved_names.json` (BattleTech, Heavy Gear,
   Warhammer 40,000, Halo), which is how the Butcherbird turned out a BattleTech 'Mech
-  (`kestrel_strafer.md`); every name against the names in content on main and the branches.
+  (`git show f87b831:docs/briefs/kestrel_strafer.md`); every name against the names in content on main and the branches.
 
 | Item | What it is | Claude's pick | The other |
 |---|---|---|---|
