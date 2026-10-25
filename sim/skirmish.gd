@@ -811,6 +811,7 @@ func start_round() -> void:
 	_refresh_kin()
 	var ahead := {}
 	for f in field_foes():
+		f.fresh = false   # a half that stepped up last round acts from this one
 		# A move gathered last round holds, and so does its pick while the machine stands.
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f)
@@ -950,26 +951,70 @@ func _armed_mechs() -> Array[MechState]:
 	return out
 
 
-## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
-## current as foes fall and step in, so the intent chips drop as the pack thins.
-## A foe that splits (the Gel): destroyed, so many of the named foe step into the pool
-## under its pack, made by the battle's content; without a factory nothing steps in.
-func _split(f: Foe) -> void:
+## A foe that splits (the Gel): destroyed, so many of the named foe step up at once (Ryan, 25
+## October: "spawn the half-gel immediately in place, not wait for the reinforcement phase"; the
+## Gel is a wall, not an attacker), made by the battle's content; without a factory nothing
+## steps in. The first takes the slot it fell from, the rest the nearest empty slots of their
+## rank, the left on a tie, and one with no room waits in the pool. An arrival sets off a mine
+## waiting in its slot, as any way in but the reinforcement step's does; its round is over, so
+## it shows no intent and acts from the next round (Foe.fresh).
+func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	if f.on_death.is_empty() or not foe_factory.is_valid():
 		return
 	var who := str(f.on_death.get("summon", ""))
 	var count := maxi(1, int(f.on_death.get("count", 1)))
-	var made := 0
+	var made: Array[Foe] = []
 	for i in range(count):
 		var n = foe_factory.call(who)
 		if n is Foe:
 			n.pack_id = f.pack_id
+			made.append(n)
+	if made.is_empty():
+		return
+	var stood := 0
+	for n in made:
+		var slot := _split_slot(n, at_rank, at_col)
+		if slot.y < 0:
 			reinforcements.append(n)
-			made += 1
-	if made > 0:
-		log.append("%s splits: %d %s step into the pool" % [f.display_name, made, who])
+			continue
+		n.fresh = true
+		_place(n, slot.x, slot.y)
+		if n.is_massive():
+			back[slot.y] = n
+		stood += 1
+		if _reinforcing and not mines.is_empty():
+			_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
+	var waiting := made.size() - stood
+	var name_of := made[0].display_name
+	if stood > 0 and waiting > 0:
+		log.append("%s splits: %d %s step up in its place, %d into the pool" % [f.display_name, stood, name_of, waiting])
+	elif stood > 0:
+		log.append("%s splits: %d %s step up in its place" % [f.display_name, stood, name_of])
+	else:
+		log.append("%s splits: %d %s step into the pool" % [f.display_name, waiting, name_of])
 
 
+## Where a split's arrival steps up: the slot of its rank in the column the foe fell from, then
+## the nearest column with that slot empty, the left on a tie (a massive arrival a whole empty
+## column). (-1, -1) when there is no room, or nowhere it fell from.
+func _split_slot(n: Foe, _at_rank: int, at_col: int) -> Vector2i:
+	if at_col < 0 or at_col >= columns:
+		return Vector2i(-1, -1)
+	var want := 1 if n.prefers_back and not n.is_massive() else 0
+	for d in range(columns):
+		for c in [at_col - d, at_col + d]:
+			if c < 0 or c >= columns or (d == 0 and c != at_col):
+				continue
+			if n.is_massive():
+				if front[c] == null and back[c] == null:
+					return Vector2i(0, c)
+			elif (front if want == 0 else back)[c] == null:
+				return Vector2i(want, c)
+	return Vector2i(-1, -1)
+
+
+## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
+## current as foes fall and step in, so the intent chips drop as the pack thins.
 func _refresh_kin() -> void:
 	var live := field_foes()
 	for f in live:
@@ -1084,6 +1129,24 @@ func can_assign(mech_index: int, target) -> bool:
 		return target is Foe and targets_for_face(ms, raw).has(target)
 	if f.is_equipment():
 		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
+	return false
+
+
+## Whether die `mech_index` has anywhere to be spent now: alive and unspent, an entry that is no
+## blank (a dark one is), and a target it may land on (a foe or an empty slot in reach, a
+## machine its chip allows). The screen's END TURN pulses once no die has (25 October).
+func can_spend(mech_index: int) -> bool:
+	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
+		return false
+	var ms := mechs[mech_index]
+	if not ms.alive() or ms.assigned or ms.face() == null or ms.face().kind == Face.Kind.BLANK:
+		return false
+	var raw := spend_face(ms)
+	var f := Effects.effective_face(ms.unit, raw)
+	if f.is_attack():
+		return not targets_for_face(ms, raw).is_empty() or not slot_targets(ms, f).is_empty()
+	if f.is_equipment():
+		return not equipment_targets_for(ms, f).is_empty()
 	return false
 
 
@@ -1402,7 +1465,7 @@ func _enemy_turn() -> void:
 			if not f.alive():
 				continue   # burnt to death before it acts: a web it carried goes with it
 		var more := true
-		if not tick["skip"]:   # a suppressed foe does nothing, and a web on it still bursts
+		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			more = _foe_turn(f)
 		_web_burst(f)
 		if not more:
@@ -2098,7 +2161,10 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 	var ef := Effects.effective_face(ms.unit, f, aimed)
 	if not ef.has(Face.Keyword.LURE):
 		return out
-	return reached_by(ef, aimed)
+	for foe in reached_by(ef, aimed):
+		if not foe.fresh:
+			out.append(foe)
+	return out
 
 
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
@@ -2866,8 +2932,9 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## does not carry"), so a Paradox tripping on a suppressed foe is wasted, its meter spent.
 func _suppress(foe: Foe) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
-	# and so does one a mine stuns as it steps in, the round's turn being over.
-	var next := _acted.has(foe) or _reinforcing
+	# and so does one a mine stuns as it steps in or one that stepped up mid-round (a split's
+	# half), the round's turn being over.
+	var next := _acted.has(foe) or _reinforcing or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -2937,8 +3004,8 @@ func _lure(ms: MechState, foes: Array) -> void:
 	var turned: Array[String] = []
 	var idle: Array[String] = []
 	for foe in foes:
-		if not foe.alive():
-			continue
+		if not foe.alive() or foe.fresh:
+			continue   # one that stepped up mid-round has had its round: nothing to turn, as on a mine's arrival
 		if foe.hits_all() or foe.acts_on_nobody():
 			idle.append(foe.display_name)
 		if foe.target != ms:
@@ -2956,7 +3023,7 @@ func _lure(ms: MechState, foes: Array) -> void:
 ## moved. The new move picks its own target.
 func _disrupt(foes: Array) -> void:
 	for foe in foes:
-		if not foe.alive():
+		if not foe.alive() or foe.fresh:
 			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():
@@ -3469,6 +3536,7 @@ func _fall_with_cores() -> void:
 
 
 func _clear_dead_slots() -> void:
+	var splits: Array = []   # [foe, rank, column]: the foes that split, stepping up once their slots are clear
 	for col in range(columns):
 		for rank in [front, back]:
 			var f: Foe = rank[col]
@@ -3489,9 +3557,13 @@ func _clear_dead_slots() -> void:
 					else:
 						log.append("%s destroyed" % f.display_name)
 						_last_act(f)
-						_split(f)
+						if not f.on_death.is_empty() and f.on_death.has("summon"):
+							splits.append([f, 0 if is_same(rank, front) else 1, col])
 				f.rank = -1
 				rank[col] = null
+	# A split steps up once its slot is clear (the Gel's halves, in its place).
+	for sp in splits:
+		_split(sp[0], sp[1], sp[2])
 
 
 ## The reinforcement phase. Ranks hold: a front foe only ever stands in the front, a back

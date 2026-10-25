@@ -52,6 +52,9 @@ var spent: Dictionary = {}           # machine id -> true: no action left this t
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
 var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
 var destinations: Dictionary = {}    # hexes the selected mech may end on
+var threat: Dictionary = {}          # hexes past its move the selected mech may attack from there (Battle.threat_for), in red
+var plans: Array = []                # the moves planned and not yet played (Battle.plan_pieces), drawn as routes
+var shown: Dictionary = {}           # machine id -> [hex, facing]: where a planned machine stands until its plan plays (Battle.shown_positions)
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
 var scroll_x: float = 0.0
 var zoom: float = 1.0                # the reconstruction's zoom (Ryan, 21 September); 1 fits the width
@@ -272,9 +275,28 @@ func hex_at(local: Vector2) -> Vector2i:
 	return best
 
 
+## The unit a tap on `h` means: a machine standing there on the map (one whose plan has not
+## played stands where its plan starts), else whatever the battle has there (a planned
+## machine's route end among them).
+func unit_at_shown(h: Vector2i) -> Unit:
+	if field == null:
+		return null
+	for uid in shown.keys():
+		if shown[uid][0] == h:
+			var m := field.unit_by_id(int(uid))
+			if m != null:
+				return m
+	return field.unit_at(h)
+
+
+## Where a unit stands on the map: a planned machine at its plan's start.
+func shown_hex(u: Unit) -> Vector2i:
+	return shown[u.id][0] if shown.has(u.id) else u.pos
+
+
 ## Scroll so the unit sits in the middle of the view.
 func scroll_to_unit(u: Unit) -> void:
-	var p := center(u.pos)
+	var p := center(shown_hex(u))
 	scroll_x = size.x * 0.5 - p.x * zoom
 	scroll_y = size.y * 0.5 - p.y * zoom
 	_clamp_scroll()
@@ -354,6 +376,7 @@ func _draw() -> void:
 		# space; the foes, being pictures from the other world, and every overlay are drawn
 		# on top in map space.
 		_map3d.look(Vector2(scroll_x, scroll_y), zoom)
+		_map3d.held = shown
 		_map3d.sync()
 		var mat: ShaderMaterial = _composite.material
 		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
@@ -405,6 +428,62 @@ func _draw() -> void:
 				_dashed_line(pts[i], pts[(i + 1) % 6], Color(hud, 0.9), HEX_SIZE * 0.16)
 		else:
 			Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
+
+	# Where the selected machine could attack from past its move (Ryan, 25 October: "not only its
+	# available move spaces, but its available attacking spaces at the edge of that move, in
+	# red"): a red band round the lit hexes, tinted, under one solid edge, so it reads as one
+	# region beside the move's outlined cells (structure as well as hue); a pack it could be
+	# ordered onto, in the band or in reach where it stands, bracketed in red.
+	if not threat.is_empty() and _anim.is_empty():
+		for h in threat.keys():
+			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.26))
+		_ring_outline(threat, Palette.ENEMY, 3.0, false)
+		if selected != null:
+			for sq in field.packs():
+				var hit := false
+				for x in sq.hexes():
+					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
+				if hit:
+					var bc := center(sq.pos)
+					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, ENEMY_HOT, 3.0)
+
+	# Every pack's ring, the enemy's engagement range: a fight on a hex in it pulls the pack in,
+	# and a hunter catches what stands in it (Ryan, 25 October: "always visible, and become more
+	# visible when the enemy is tapped, and done in red not hud colour"). At rest a dashed red
+	# edge on a deep-red track; the pack tapped, or one that would join the fight shown, its ring
+	# tinted under a solid edge, heavier.
+	if _anim.is_empty() and fight_group.is_empty():
+		var lit := {}
+		var tapped := field.unit_at(inspected) if map.has(inspected) else null
+		if tapped != null and tapped.is_enemy():
+			lit[tapped] = true
+		for j in attack.get("joins", []):
+			lit[j] = true
+		for sq in field.packs():
+			var ring: Dictionary = {}
+			_zone_hexes(sq, sq.pos, ring)
+			if lit.has(sq):
+				for h in ring.keys():
+					_fill(h, Color(Palette.ENEMY, 0.5))
+				_ring_outline(ring, Palette.ENEMY, 4.5, false, true)
+			else:
+				_ring_outline(ring, Color(Palette.ENEMY, 0.85), 2.5, true)
+
+	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
+	# move like we used to"): each machine's route in the display's light from where it stands,
+	# its lock on the hex its plan ends on, and a carrier's riders' landings outlined. They play
+	# on ENGAGE or END TURN.
+	if _anim.is_empty() and fight_group.is_empty():
+		var last_piece := {}
+		for k in range(plans.size()):
+			last_piece[int(plans[k]["unit"])] = k
+		for k in range(plans.size()):
+			var pc: Dictionary = plans[k]
+			if (pc["path"] as Array).is_empty():
+				continue
+			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
+			for rd in pc["riders"]:
+				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - 6.0), Color(hud, 0.8), 2.5)
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
@@ -531,16 +610,16 @@ func _draw() -> void:
 	# in it lit, the machines in it bracketed.
 	if not attack.is_empty() and _anim.is_empty():
 		var targets: Array = attack.get("targets", [])
-		var reach: Dictionary = {}
-		for t in targets:
-			_zone_hexes(t, (t as Unit).pos, reach, _attack_reach())
-		for h in reach.keys():
-			_fill(h, Color(hud, 0.28))   # hot: on a phone every mark has come back wanting more
-		_region_outline(reach, hud, 3.0)
-		for j in attack.get("joins", []):
-			var ring: Dictionary = {}
-			_zone_hexes(j, (j as Unit).pos, ring)
-			_region_outline(ring, Color(Palette.ENEMY, 0.85), 2.0)
+		# Where a machine must stand to join, in the display's light; a pack looked at with
+		# nothing in hand shows its own ring instead (above), the selected machine's red band
+		# saying where it could attack from (Ryan, 25 October).
+		if not bool(attack.get("inspect", false)):
+			var reach: Dictionary = {}
+			for t in targets:
+				_zone_hexes(t, (t as Unit).pos, reach, _attack_reach())
+			for h in reach.keys():
+				_fill(h, Color(hud, 0.28))   # hot: on a phone every mark has come back wanting more
+			_region_outline(reach, hud, 3.0)
 		var group: Array = targets + attack.get("joins", [])
 		for u in group:
 			_contact_effect((u as Unit).pos, true, true)
@@ -557,13 +636,13 @@ func _draw() -> void:
 	if _anim.is_empty():
 		for m in field.mechs():
 			if spent.has(m.id):
-				_plaque(center(m.pos) + Vector2(0.0, HEX_SIZE * 0.7), "SPENT", Palette.MUTED, 1.5)
+				_plaque(_unit_center(m) + Vector2(0.0, HEX_SIZE * 0.7), "SPENT", Palette.MUTED, 1.5)
 
 	for u in field.units:
 		_draw_unit(u)
 
 	if selected != null:
-		var c := center(selected.pos)
+		var c := _unit_center(selected)
 		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
 
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # from here, screen space
@@ -1176,7 +1255,7 @@ func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, wi
 
 ## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
 ## by `offset` dashes so it can crawl.
-func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0, phase: float = 0.0) -> void:
+func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0, phase: float = 0.0, width: float = 3.0) -> void:
 	var n := maxi(1, int(a.distance_to(b) / dash))
 	var k := -2.0 + fmod(offset, 2.0)
 	while k < n:
@@ -1184,9 +1263,9 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 		var t1 := clampf((k + 1.0) / n, 0.0, 1.0)
 		if t1 > t0:
 			if col.a == 0.0:   # the intent field's colours
-				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, 3.0)
+				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, width)
 			else:
-				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, 3.0)
+				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, width)
 		k += 2.0
 
 
@@ -1220,6 +1299,29 @@ func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary, radius: int = -
 					queue.append(n)
 
 
+## The edge of a region of hexes drawn over the map, heavy enough for the phone: each edge whose
+## far side is outside the region, on a deep-red track, solid or dashed, and with `crawl` the
+## contact's bright dashes crawling along it; no edge against the map's end. Corner i to i+1
+## faces DIRECTIONS[(6 - i) % 6], as on the ground (_region_outline).
+func _ring_outline(region: Dictionary, col: Color, width: float, dashed: bool, crawl: bool = false) -> void:
+	for h in region.keys():
+		var nb := Hex.neighbors(h)
+		var pts := Hex.corners(center(h), HEX_SIZE - 2.5)
+		for i in range(6):
+			var across: Vector2i = nb[(6 - i) % 6]
+			if region.has(across) or not field.map.has(across):
+				continue
+			var a := pts[i]
+			var b := pts[(i + 1) % 6]
+			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), width + 3.0)
+			if dashed:
+				_dashed_line(a, b, col, HEX_SIZE * 0.17, 0.0, 0.0, width)
+			else:
+				draw_line(a, b, col, width)
+			if crawl:
+				_dashed_line(a, b, ENEMY_HOT, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0), 0.0, width * 0.5)
+
+
 ## One outline round the outside of a region of hexes, on the ground so the units standing
 ## in it hide it. Corner i to corner i+1 of a pointy hex (corners from -30 degrees) faces
 ## the direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; the edges whose far side
@@ -1238,7 +1340,7 @@ func _region_outline(region: Dictionary, col: Color, _thick: float) -> void:
 
 ## A selected machine's shield and hull as two gauges floating over its hex.
 func _unit_gauges(u: Unit) -> void:
-	var c := center(u.pos) + Vector2(0.0, -HEX_SIZE * 1.05)
+	var c := _unit_center(u) + Vector2(0.0, -HEX_SIZE * 1.05)
 	var w := HEX_SIZE * 1.3
 	var r := Rect2(c.x - w * 0.5, c.y - 12.0, w, 6.0)
 	for pair in [[u.shield, u.shield_max, Palette.SHIELD], [u.hull, u.hull_max, Palette.HULL]]:
@@ -1361,6 +1463,53 @@ var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, th
 var _anim_done: Callable = Callable()
 
 
+## The plan as phases to play (Ryan, 25 October: the planned moves animate on ENGAGE or END
+## TURN, and the fight opens once they have): every piece in the first phase it may play in,
+## after its own machine's earlier piece (a rider's included) and after any piece that left a
+## hex it walks into or sets a rider down on, since it was planned into the room that move
+## made. Each move in play_phases' form, with where it leaves its machine and its riders.
+static func plan_phases(pieces: Array) -> Array:
+	var wave_of: Array[int] = []
+	var phases: Array = []
+	for k in range(pieces.size()):
+		var p: Dictionary = pieces[k]
+		var mine := _piece_units(p)
+		var enters := {}
+		for h in p["path"]:
+			enters[h] = true
+		for r in p["riders"]:
+			enters[r[3]] = true
+		var w := 0
+		for j in range(k):
+			var q: Dictionary = pieces[j]
+			var after := enters.has(q["from"])
+			for uid in _piece_units(q):
+				after = after or mine.has(uid)
+			for r in q["riders"]:
+				after = after or enters.has(r[1])
+			if after:
+				w = maxi(w, wave_of[j] + 1)
+		wave_of.append(w)
+		while phases.size() <= w:
+			phases.append([])
+		var path: Array = [p["from"]]
+		path.append_array(p["path"])
+		var riders: Array = []
+		var rider_lands := {}
+		for r in p["riders"]:
+			riders.append([r[0], r[1]])
+			rider_lands[r[0]] = [r[3], r[2]]
+		phases[w].append([p["unit"], path, riders, [path[path.size() - 1], p["to_facing"]], rider_lands])
+	return phases
+
+
+static func _piece_units(p: Dictionary) -> Dictionary:
+	var out := {int(p["unit"]): true}
+	for r in p["riders"]:
+		out[int(r[0])] = true
+	return out
+
+
 func is_playing() -> bool:
 	return not _anim.is_empty() or not _anim_queue.is_empty()
 
@@ -1371,23 +1520,36 @@ func is_playing() -> bool:
 ## Swallowtail's ring (Ryan, 21 October), each rider riding the carrier's curve at the offset it
 ## stood at, so the block travels as one and lands where the engine set it down.
 func play_moves(mech_moves: Array, pack_moves: Array, done: Callable) -> void:
-	_anim_queue = [mech_moves, pack_moves]
+	play_phases([mech_moves, pack_moves], done)
+
+
+## Play phases of moves one after another, then `done`: each phase a list of moves played
+## together, [unit id, Array of hexes from start to end, riders], a move's riders
+## [[rider id, the hex it rode from, ...], ...]. A move may carry where it leaves its unit
+## standing, [..., riders, [end hex, facing], {rider id: [hex, facing]}], so a planned machine
+## with more of its plan still to play stands there between its pieces (`shown`).
+func play_phases(phases: Array, done: Callable) -> void:
+	_anim_queue = phases.duplicate()
 	_anim_done = done
 	# Everyone who will move starts where they were, this frame, so nobody blinks to the
-	# end and rewinds (Ryan, 22 September); the packs wait there while the mechs play.
+	# end and rewinds (Ryan, 22 September); the packs wait there while the mechs play. A unit
+	# that moves in more than one phase starts where its first move does, and a planned
+	# machine stands where its plan starts already (`shown`).
 	for moves in _anim_queue:
 		for mv in moves:
 			var path: Array = mv[1]
-			if path.size() >= 2:
+			if path.size() >= 2 and not _anim_px.has(mv[0]) and not shown.has(mv[0]):
 				var px: Vector2 = Hex.to_pixel(path[0], HEX_SIZE)
 				_anim_px[mv[0]] = px
 				if _map3d != null:
 					_map3d.set_anim(mv[0], px, Vector2.ZERO)
-				for rd in (mv[2] if mv.size() >= 3 else []):
-					var rpx: Vector2 = Hex.to_pixel(rd[1], HEX_SIZE)
-					_anim_px[rd[0]] = rpx
-					if _map3d != null:
-						_map3d.set_anim(rd[0], rpx, Vector2.ZERO)
+			for rd in (mv[2] if mv.size() >= 3 else []):
+				if _anim_px.has(rd[0]) or shown.has(rd[0]):
+					continue
+				var rpx: Vector2 = Hex.to_pixel(rd[1], HEX_SIZE)
+				_anim_px[rd[0]] = rpx
+				if _map3d != null:
+					_map3d.set_anim(rd[0], rpx, Vector2.ZERO)
 	_next_anim_phase()
 
 
@@ -1400,12 +1562,25 @@ func _next_anim_phase() -> void:
 				var riders: Array = []
 				for rd in (mv[2] if mv.size() >= 3 else []):
 					riders.append([rd[0], Hex.to_pixel(rd[1], HEX_SIZE) - Hex.to_pixel(mv[1][0], HEX_SIZE)])
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0, "riders": riders}
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0, "riders": riders,
+					"lands": mv[3] if mv.size() >= 4 else [], "rider_lands": mv[4] if mv.size() >= 5 else {}}
+				# On its way: the animation has it now, from where it stood.
+				shown.erase(mv[0])
+				var start_px: Vector2 = Hex.to_pixel(mv[1][0], HEX_SIZE)
+				_anim_px[mv[0]] = start_px
+				if _map3d != null:
+					_map3d.set_anim(mv[0], start_px, Vector2.ZERO)
+				for rd in riders:
+					shown.erase(rd[0])
+					_anim_px[rd[0]] = start_px + (rd[1] as Vector2)
+					if _map3d != null:
+						_map3d.set_anim(rd[0], start_px + (rd[1] as Vector2), Vector2.ZERO)
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
 				_map3d.clear_anim(uid)
 		_anim_px.clear()
+		shown.clear()   # every plan has played: each machine stands where the battle has it
 		var cb := _anim_done
 		_anim_done = Callable()
 		if cb.is_valid():
@@ -1463,8 +1638,15 @@ func _advance_anim(delta: float) -> void:
 			if _map3d != null:
 				_map3d.set_anim(rd[0], rpx, here[1])
 	for uid in finished:
+		# A planned machine stands where this piece left it while the rest of its plan waits.
+		var lands: Array = (_anim[uid] as Dictionary).get("lands", [])
+		if lands.size() >= 2:
+			shown[uid] = lands
+		var rider_lands: Dictionary = (_anim[uid] as Dictionary).get("rider_lands", {})
 		for rd in (_anim[uid] as Dictionary).get("riders", []):
 			_anim_px.erase(rd[0])
+			if rider_lands.has(rd[0]):
+				shown[rd[0]] = rider_lands[rd[0]]
 			if _map3d != null:
 				_map3d.clear_anim(rd[0])
 		_anim.erase(uid)
@@ -1483,7 +1665,7 @@ func _unit_center(u: Unit) -> Vector2:
 		var px: Vector2 = _anim_px[u.id]
 		var under := Hex.from_pixel(px, HEX_SIZE)
 		return _origin + px + Vector2(0, -_lift_at(under))
-	return center(u.pos)
+	return center(shown_hex(u))
 
 
 func _draw_unit(u: Unit) -> void:
@@ -1535,7 +1717,7 @@ func _gui_input(event: InputEvent) -> void:
 			# A press on one of the player's machines may become a route drawn from it.
 			_press_unit = null
 			if route_drawing and field != null and _tag_at(event.position) == null:
-				var pu := field.unit_at(hex_at(event.position))
+				var pu := unit_at_shown(hex_at(event.position))
 				if pu != null and pu.is_player() and not pu.is_static():
 					_press_unit = pu
 		else:
@@ -1632,6 +1814,6 @@ func _process(delta: float) -> void:
 	if _pressed and not _dragged and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
 		if field != null:
-			var u := field.unit_at(hex_at(_press_pos))
+			var u := unit_at_shown(hex_at(_press_pos))
 			if u != null:
 				unit_held.emit(u)

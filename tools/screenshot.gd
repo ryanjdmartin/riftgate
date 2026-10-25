@@ -172,7 +172,8 @@ func _apply_pose() -> void:
 			s._toggle_all_arrows(true)
 
 
-## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
+## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
+## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
@@ -192,6 +193,19 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
+		"plan_play":
+			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
+			for i in range(mini(2, b.mechs().size())):
+				s._on_hex_tapped(b.mechs()[i].pos)
+				var dests: Array = s._map.destinations.keys()
+				if not dests.is_empty():
+					s._on_hex_tapped(dests[dests.size() / 2])
+			s._on_end_turn()
+		"inspect":
+			# A pack tapped with nothing in hand: its ring lit, every other pack's at rest.
+			var sq: Unit = b.field.packs()[0]
+			s._on_hex_tapped(sq.pos)
+			s._map.scroll_to_unit(sq)
 		"draft", "draftslow":
 			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
 			# stops about halfway through the move on open ground, draftslow ends on a slow hex,

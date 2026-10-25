@@ -198,7 +198,9 @@ func _gui_input(event: InputEvent) -> void:
 					tapped.emit()
 			_pressed = false
 			_holding = false
-			set_process(_has_pending())
+			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
+			# under the finger froze where it stood (Ryan, 25 October: SIG LOST held for ages).
+			set_process(true)
 		accept_event()
 
 

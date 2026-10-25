@@ -31,6 +31,19 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 		sq.behaviour = "push"
 
 
+## A pack parked three hexes from a machine, out of its range of two and inside its move's reach:
+## an order onto it moves the machine first.
+func _a_pack_in_reach(b: Battle, m: Unit) -> Unit:
+	var sq: Unit = b.field.packs()[0]
+	sq.behaviour = "push"
+	for h in b.field.map.all_hexes():
+		if Hex.distance(h, m.pos) == 3 and b.field.can_stand(sq, h):
+			sq.pos = h
+			if b.attack_hex(m, sq) != Battle.NO_HEX:
+				return sq
+	return null
+
+
 func _win(sk: Skirmish) -> void:
 	sk.begin()
 	sk.start_round()
@@ -130,15 +143,135 @@ func test_undo_puts_a_machine_back_with_its_whole_move() -> void:
 	var m: Unit = b.mechs()[0]
 	var start := m.pos
 	var facing := m.facing
-	assert_false(b.can_undo(m), "nothing to undo")
+	assert_false(b.can_undo(), "nothing to undo")
 	var h: Vector2i = b.destinations_for(m).keys()[0]
 	b.move_to(m, h)
-	assert_true(b.can_undo(m), "the move can be taken back")
-	assert_true(b.undo_move(m), "undone")
+	assert_true(b.can_undo(), "the move can be taken back")
+	assert_eq(b.undo(), m, "undone, and the machine it was about handed back")
 	assert_eq(m.pos, start, "back where it was")
 	assert_eq(m.facing, facing, "facing as it was")
 	assert_eq(b.moves_left(m), m.movespeed, "its whole move again")
-	assert_false(b.can_undo(m), "and nothing more to undo")
+	assert_false(b.can_undo(), "and nothing more to undo")
+	assert_true(b.planned.is_empty(), "nor any plan")
+
+
+## The undo runs in the order things were done, whoever did them (Ryan, 25 October: "the undo
+## stack is stored in order, and undos in order, always"), orders included, and an order with
+## its move into range is one step.
+func test_undo_takes_back_moves_and_orders_in_the_order_they_were_made() -> void:
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var a0 := a.pos
+	var c0 := c.pos
+	var ha: Vector2i = b.destinations_for(a).keys()[0]
+	b.move_to(a, ha)
+	var hc: Vector2i = Vector2i(-99, -99)
+	for h in b.destinations_for(c).keys():
+		if h != ha:
+			hc = h
+			break
+	b.move_to(c, hc)
+	assert_eq(b.undo(), c, "the last move first, the second machine's")
+	assert_eq([a.pos, c.pos], [ha, c0], "the first still where it went")
+	assert_eq(b.undo(), a, "then the first")
+	assert_eq(a.pos, a0, "back")
+	# An order and its move into range: one step.
+	var pack := _a_pack_in_reach(b, a)
+	assert_true(pack != null, "a pack the machine can reach this turn")
+	assert_eq(b.order_onto(a, pack), "ordered", "ordered, moving into range")
+	assert_eq(b.order_of(a), pack, "on that pack")
+	assert_eq(b.history.size(), 1, "one step on the undo")
+	b.undo()
+	assert_eq(b.order_of(a), null, "the order taken back")
+	assert_eq(a.pos, a0, "and the move with it")
+	# A second tap takes the order back, and an undo puts it back.
+	b.order_onto(a, pack)
+	assert_eq(b.order_onto(a, pack), "cancelled", "the second tap cancels it")
+	assert_eq(b.order_of(a), null, "no order")
+	b.undo()
+	assert_eq(b.order_of(a), pack, "the undo puts the order back")
+	b.undo()
+	assert_eq([b.order_of(a), a.pos], [null, a0], "and the next takes the first order back")
+
+
+## A move is planned on the map (Ryan, 25 October: shown, then played on ENGAGE or END TURN):
+## the battle has the machine at its route's end, and the plan says where it stands until then.
+func test_a_move_is_planned_and_handed_over_once() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var start := m.pos
+	var facing := m.facing
+	var h: Vector2i = b.destinations_for(m).keys()[0]
+	var route := b.move_to(m, h)
+	assert_eq(m.pos, h, "the battle has it at the route's end")
+	assert_eq(b.shown_positions(), {m.id: [start, facing]}, "the map shows it where it stood")
+	var pieces := b.plan_pieces()
+	assert_eq(pieces.size(), 1, "one piece")
+	assert_eq(pieces[0]["path"], route, "along its route")
+	var phases := BattleMapView.plan_phases(pieces)
+	assert_eq(phases.size(), 1, "played in one phase")
+	assert_eq((phases[0][0][1] as Array).size(), route.size() + 1, "from where it stood")
+	var saved := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(saved.shown_positions(), {m.id: [start, facing]}, "a save keeps the plan")
+	assert_true(saved.can_undo(), "and the undo")
+	saved.undo()
+	assert_eq(saved.field.unit_by_id(m.id).pos, start, "which still takes the move back")
+	assert_eq(b.take_plan().size(), 1, "the plan handed to the screen")
+	assert_true(b.shown_positions().is_empty(), "and gone from the battle")
+	assert_true(b.can_undo(), "the move can still be taken back until a fight or the turn's end")
+
+
+## A piece planned into the room another piece made waits for it to play.
+func test_a_move_into_a_hex_another_left_plays_after_it() -> void:
+	var a := {"unit": 1, "from": Vector2i(2, 2), "facing": 0, "path": [Vector2i(3, 2)] as Array[Vector2i], "to_facing": 0, "riders": []}
+	var c := {"unit": 2, "from": Vector2i(1, 2), "facing": 0, "path": [Vector2i(2, 2)] as Array[Vector2i], "to_facing": 0, "riders": []}
+	var d := {"unit": 3, "from": Vector2i(5, 5), "facing": 0, "path": [Vector2i(5, 6)] as Array[Vector2i], "to_facing": 0, "riders": []}
+	var again := {"unit": 1, "from": Vector2i(3, 2), "facing": 0, "path": [Vector2i(4, 2)] as Array[Vector2i], "to_facing": 0, "riders": []}
+	var phases := BattleMapView.plan_phases([a, c, d, again])
+	assert_eq(phases.size(), 2, "two phases")
+	assert_eq(phases[0].map(func(mv): return mv[0]), [1, 3], "the first move and the one beside nobody together")
+	assert_eq(phases[1].map(func(mv): return mv[0]), [2, 1], "the move into the hex it left after it, and its own second piece")
+
+
+## Nothing left on the map but the button (Ryan, 25 October: END TURN pulses "when all units are
+## out of actions"): every machine fought out, ordered, or with no move and nothing in reach.
+func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
+	var b := _battle()
+	assert_false(b.nothing_left(), "a fresh turn: everyone can move")
+	for m in b.mechs():
+		b.spent[m.id] = 1
+	assert_true(b.nothing_left(), "every action spent")
+	b.spent.clear()
+	for m in b.mechs():
+		b.move_left[m.id] = 0
+	var a: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, a)
+	assert_false(b.nothing_left(), "no move left, but a pack in reach of the first")
+	assert_true(b.order(a, sq), "ordered onto it")
+	for m in b.mechs():
+		if m != a and b.in_range_from(m, m.pos, sq):
+			assert_false(b.nothing_left(), "another still has it in reach")
+			b.order(m, sq)
+	assert_true(b.nothing_left(), "and now the button is all that is left")
+
+
+## Where a selected machine could attack from, past its move, in red on the map (Ryan, 25 October).
+func test_the_attack_hexes_ring_the_move() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var dests := b.destinations_for(m)
+	var threat := b.threat_for(m)
+	assert_false(threat.is_empty(), "there are some")
+	for h in threat.keys():
+		assert_false(dests.has(h) or h == m.pos, "past the move")
+		var near := Hex.distance(h, m.pos) <= m.attack_range
+		for d in dests.keys():
+			near = near or Hex.distance(h, d) <= m.attack_range
+		assert_true(near, "within its attack range of where it can stand")
+	b.spent[m.id] = 1
+	assert_true(b.threat_for(m).is_empty(), "none with no action left")
 
 
 func test_a_machine_cannot_end_on_another() -> void:
@@ -635,7 +768,7 @@ func test_the_hexes_moved_are_tallied_and_an_undo_takes_them_back() -> void:
 	var h: Vector2i = b.destinations_for(m).keys()[0]
 	var route := b.move_to(m, h)
 	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "the route's hexes")
-	b.undo_move(m)
+	b.undo()
 	assert_eq(int(b.sponsorship["hexes_moved"]), 0, "taken back with the move")
 	route = b.move_to(m, h)
 	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "and counted again when it goes")
@@ -756,7 +889,8 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 	assert_eq(b.last_carry, [[rider.id, line[1], line[3]]], "the map is told the ring's move")
 	assert_eq(b.moves_left(rider), rider_move, "its move as it was")
 	assert_eq(b.actions_left(rider), 1, "and its action")
-	assert_true(b.undo_move(carrier), "the carrier's move undone")
+	assert_eq(b.shown_positions()[rider.id][0], line[1], "the rider shown where it rode from until the plan plays")
+	assert_eq(b.undo(), carrier, "the carrier's move undone")
 	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "the block back where it stood")
 	# A stop the block does not fit: the rider's landing held by another machine.
 	third.pos = line[3]
@@ -771,7 +905,10 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 		hop = h
 		break
 	b.move_to(rider, hop)
-	assert_false(b.can_undo(carrier), "once the rider has moved on its own, the carry stands")
+	assert_eq(b.undo(), rider, "the rider's own move comes back first")
+	assert_eq(rider.pos, line[2] + d, "to where it was set down")
+	assert_eq(b.undo(), carrier, "then the carry")
+	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "the block back where it stood")
 
 
 ## Four hexes in a line from a machine's own side of the map, every one open ground for the

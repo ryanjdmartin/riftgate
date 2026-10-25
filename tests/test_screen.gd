@@ -1060,3 +1060,18 @@ func test_a_forging_machine_shows_its_magazine_and_each_guns_price() -> void:
 	s._refresh()
 	assert_true(s._dice[0].face.dry, "and DRY when it cannot")
 	s.free()
+
+
+## END TURN pulses once no die can be spent, rerolls left or not (Ryan, 25 October).
+func test_end_turn_pulses_once_nothing_is_left_to_spend() -> void:
+	var s := _screen(5)
+	var any := false
+	for i in range(s.sk.mechs.size()):
+		any = any or s.sk.can_spend(i)
+	assert_eq(s._end_btn.pulse, not any, "it pulses only when nothing can be spent")
+	for i in range(s.sk.mechs.size()):
+		s.sk.mechs[i].assigned = true
+	s._refresh(false)
+	assert_true(s.sk.rerolls_left > 0, "rerolls are left")
+	assert_true(s._end_btn.pulse, "and it pulses all the same: every die is spent")
+	s.free()

@@ -60,12 +60,6 @@ static func to_dict(b: Battle) -> Dictionary:
 	for uid in b.action_from.keys():
 		var a: Array = b.action_from[uid]
 		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
-	var rode := {}   # the carry's riders this action (the Swallowtail's), for an undo
-	for uid in b.carried.keys():
-		var list: Array = []
-		for c in b.carried[uid]:
-			list.append([int(c[0]), _hex(c[1]), int(c[2]), _hex(c[3])])
-		rode[str(uid)] = list
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -82,7 +76,8 @@ static func to_dict(b: Battle) -> Dictionary:
 		"move_left": _int_keys(b.move_left),
 		"fought": _int_keys(b.fought),
 		"action_from": moved,
-		"carried": rode,
+		"history": b.history,   # the turn's undo, in order: snapshots kept JSON's way already
+		"planned": b.planned,   # and the moves not yet played on the map
 		"forced": forced,
 		"orders": _order_ids(b.orders),
 		"boss_fight": b.boss_fight,
@@ -150,11 +145,10 @@ static func from_dict(d: Dictionary) -> Battle:
 	for uid in d.get("action_from", {}).keys():
 		var a: Array = d["action_from"][uid]
 		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
-	for uid in d.get("carried", {}).keys():
-		var list: Array = []
-		for c in d["carried"][uid]:
-			list.append([int(c[0]), _hex_from(c[1]), int(c[2]), _hex_from(c[3])])
-		b.carried[int(str(uid))] = list
+	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's
+	# floats and string keys themselves (Battle._restore, Battle.plan_pieces).
+	b.history = (d.get("history", []) as Array).duplicate(true)
+	b.planned = (d.get("planned", []) as Array).duplicate(true)
 	for fd in d.get("forced", []):
 		var prey := b.field.unit_by_id(int(fd.get("prey", -1)))
 		var hunters: Array = []
@@ -491,7 +485,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
-		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down,
+		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "fresh": f.fresh,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 	}
@@ -521,6 +515,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	if od is Dictionary and od.get("blow", null) is Dictionary:
 		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October)
 	f.stays_down = bool(d.get("stays_down", false))
+	f.fresh = bool(d.get("fresh", false))
 	f.actions = []
 	for a in d.get("actions", []):
 		var act: Dictionary = a.duplicate()

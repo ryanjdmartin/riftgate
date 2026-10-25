@@ -895,6 +895,11 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll())
 	_end_btn.set_enabled(assigning)
+	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
+	var left := false
+	for i in range(sk.mechs.size()):
+		left = left or sk.can_spend(i)
+	_end_btn.set_pulse(assigning and not left)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
 	_refresh_prey()
@@ -1981,6 +1986,14 @@ func _use_die(i: int, target, second = null) -> bool:
 			landed = fire_at + Sound.lands(effect)
 	if not heat_hook.is_empty():
 		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
+	# A split's halves step up where it fell (the Gel's, 25 October), in once the death has landed.
+	if ok:
+		var stepped := 0
+		for foe in sk.field_foes():
+			if not was.has(foe):
+				_animate_arrival(_foe_view_for(foe), landed + 0.3)
+				Sound.play_after(landed + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
+				stepped += 1
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends once the last blow has landed and played.
 		if is_inside_tree():
