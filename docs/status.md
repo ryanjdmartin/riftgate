@@ -20,57 +20,30 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 619 tests, 63,213 checks, green on `ccr-170f6d81-465jnr` (25 October, the Skua's
-  engine), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
-  asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
-  for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
+- Tests: 628 tests, 64,352 checks, green on main (25 October, the three branches landed onto
+  the weld), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+  build from the GitHub release asset (`godotengine/godot-builds`,
+  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
+  `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
+  counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
   four Prairie Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
 
-Three branches stand beside main, each holding the one before it, and
-`ccr-170f6d81-465jnr` carries all three again (24 October: `claude/eager-newton-sf947u`'s calls on
-the curve's pay, the fronts and the boss's token merged in, under the Kite's reset without a
-limit):
-
-- `claude/eager-newton-sf947u`, the stock pass's: merged into main on 22 October on Ryan's go,
-  then used on 23 October for the reads of its bands and the runs they called for (on main to
-  `d592823`), Ryan's terms and elites, the Elemental and the endgame fours (the bible's v0.267);
-  on 24 October his calls on the tiers and the elites, a massive foe allowed in a spawn list, the
-  Old Man of the Desert, the Rotbloom kept and the curve's shape opened (v0.270 to v0.273);
-  then the curve and the fronts, Ryan's tier and ramp beside the rift that deepens, what each
-  reward scales on and his question whether a perfect run is possible, in
-  `docs/curve_proposal.md`, the turn loop modelled by `tools/turn_loop.py` (v0.276, v0.277 and
-  v0.281); then his calls on the pay (loot and the shelf by the tier, tier three a chance and a
-  highlight, the boss's token at the tier, never below), his concern for the breadth of
-  components (the economy pass's, loot at a battle's end waiting to see), and the fronts as he
-  set them: no rift closing or stepping up, a siege costing its maker's stock on the shelf while
-  it lasts (v0.284 to v0.286).
-- `ccr-7d865127-wr1ko2`: the four Kestrel machines decided on 21 October in content and
-  modelled, their second round of looks on Ryan's notes, the interceptor brief retired (the
-  bible's v0.268, the hangar's version 99), with the stock pass's branch merged in.
-- `ccr-170f6d81-465jnr`: the records swept of stale and contradictory text on Ryan's ask of 23
-  October (the content's notes and the vocabulary, the rules, the bible's machine rows, the
-  briefs and the stock pass's brief retired, this file, the README and `CLAUDE.md`; the foes'
-  unused crack move out of the engine), with the other two merged in; on 24 October Scrambled
-  cut on Ryan's word, and `CLAUDE.md`'s two content rules made true of the code (tests on
-  synthetic passives; the fallbacks a model, a maker and a faction take from content's order),
-  and the foes' conditions: the rule that every special carries one a session's of 2 October,
-  never his, the gates on the player's state measured by `tools/special_probe.gd` and removed
-  on his word, then random targeting as the baseline with an aim on any foe whose threat calls
-  for one (Ryan's correction: the baseline random, not everything), no foe over-committing, the
-  stale quote on randomness gone, the foes' stacking riders numbered and their heat doubled as
-  the first cut (v0.272 to v0.283); then the to-do read against them, the Skua's halving answered
-  (a roll halved once, his lean rounding down), the Storm Petrel parked behind the pricing run and
-  the Kite's reset left without a limit on his word (v0.287).
-
-They land on main on Ryan's go for the Kestrel looks, the condition `ccr-7d865127-wr1ko2` set:
-a fast-forward to the branch that carries the other two (`ccr-170f6d81-465jnr` today) while
-main stands at `d592823`. Delete them from the
-desk machine or GitHub once merged, since a cloud session's push to delete one is refused.
-Every other branch was merged into main and deleted (22 October).
+No branch is live beside main. On 25 October, on Ryan's go ("merge in and clean up"), main took
+the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
+October, the foes' conditions and their targeting at random, the riders numbered and the heat
+doubled, the Kite's reset without a limit, the Skua's engine), which carried
+`ccr-7d865127-wr1ko2` (the four Kestrel machines of 21 October and their models' first cut,
+whose second round of looks is still Ryan's to judge) and `claude/eager-newton-sf947u` (the
+stock pass's reads, the read by stage, Ryan's terms and elites, the curve and the fronts in
+`docs/curve_proposal.md`). Main's weld (`claude/friendly-cannon-kyk9v4`, landed the same day)
+was merged into them first, so main fast-forwarded. Delete the four from the desk machine or
+GitHub, since a cloud session's push to delete one is refused; `ccr-170f6d81-465jnr`'s session
+was still at work that day, so its later commits land by merging main in. Every other branch was
+merged into main and deleted (22 October).
 
 ## The design sessions
 
@@ -106,7 +79,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - Models: every machine's by lowforge but six (the Cassowary, the Cottonmouth, the Whip
   Scorpion, the Swallowtail, the Musk Ox and the Lammergeier, which draw the Badger's); the four
   Kestrel models of 23 October are Claude's first cut, in a second round of looks on Ryan's
-  notes (the to-do).
+  notes (the to-do). Since 25 October every machine's parts are welded at load by material
+  within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
+  calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
+  or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
+  new model's part that moves, glows or hides on its own needs a joint, a pin or a name in
+  `glow_parts`.
 - Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
   content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the
   picker's seventh round (Pages).
@@ -168,7 +146,7 @@ to-do's Ryan list).
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
-   the bosses' slate as content alone); the pacing session's remaining pieces; battery; audio;
+   the bosses' slate as content alone); the pacing session's remaining pieces; the battery plan's rest (the props' fade, the 3D at 30); audio;
    art; the commander layer after a balance baseline; onboarding before a phone leaves the desk.
 
 ## Pages
@@ -179,14 +157,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.287, and so is the live (24 October,
-  the page's version 304, from `ccr-170f6d81-465jnr`: the Kite's reset without a limit, its
-  section 12 question gone; onto `claude/eager-newton-sf947u`'s v0.286, the page's version 303,
-  the boss's token at the tier and the breadth of components left to the economy pass, with its
-  v0.285 and v0.284 before it, Ryan's calls on the curve's pay and the fronts; and v0.283 and
-  v0.282 from `ccr-170f6d81-465jnr` before those, the pinned plate-seeking aim, the heat row's
-  first cut and the riders numbered). The version numbers on the publishing
-  branch's file and the live agree after every publish, main's catching up at the merge. Before
+  `docs/design-bible.html` after every change. This file is v0.288, and so is the live (25 October,
+  the page's version 305, from main at the landing: the battery row's weld built, and the Skua's
+  records, which the page's version 304, v0.287 with the Kite's reset, did not yet carry). The
+  version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
   its trailing `</body></html>` stripped from the saved live source).
