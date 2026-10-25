@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 152 implemented, 6 planned, 0 idea.
+Status: 151 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -50,7 +50,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Damage range** | A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. | implemented |
 | **Overcharged a kill** | A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Overcharged (two), which the Ammit keeps for the battle. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
-| **Cooldown** | A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the rounds left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and "no cooldown" lifts even that. No cleanse lifts a cooldown, and a crack keeps it. | implemented |
+| **Cooldown** | A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the rounds left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and "no cooldown" lifts even that. No cleanse lifts a cooldown. | implemented |
 | **Reset** | A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again (the Kite's Pinion Driver). | implemented |
 | **Pull** | A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there. | implemented |
 | **Drone** | A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it. | implemented |
@@ -96,7 +96,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Corrupt** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Corrupted on the component the target's die is showing (Corrupt 2: two): it deals damage to its owner whenever spent, a bite a stack. | implemented |
 | **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
 | **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
-| **Breach** | A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour. | implemented |
+| **Breach** | A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is half its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour. | implemented |
 
 ## Status
 
@@ -125,8 +125,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Quick turn spent** | Machine marker, the Needletail's gate: its free setup this round is spent, so its next debuff or buff this round is a full action. Never a chip: the die shows the gate open by the Rapid it grants a setup. Gone at the round's end. | implemented |
 | **Siphoning** | Machine status, the Whip Scorpion's Siphon: every blow a foe lands on it this round adds heat, 2 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel for its vents, or next turn's burn. Until the round's end; nothing cleanses it. | implemented |
 | **Flak** | Foe status, Wainwright & Sutler's on-hit. Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down. | implemented |
-| **Cracked component** | Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of maximum hull, the machine's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, keeps any cooldown it prints, and still provides its passive bonuses and abilities. A shield prevents an injury only by absorbing enough of the blow, and a blow a Barrier takes never injures. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
-| **Destroyed component** | Machine status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them. | implemented |
+| **Destroyed component** | Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least half its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them. | implemented |
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it returns to the reinforcements once, whole, unless it self-destructed. | implemented |
@@ -193,7 +192,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
+| **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage. | implemented |
 | **On shield gain** | Passive trigger. Fires when this machine gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
 | **On shielding an ally** | Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself. | implemented |
 | **On heat gain** | Passive trigger. Fires when this machine gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
@@ -204,7 +203,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **On hull damage** | Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat. | implemented |
 | **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Kite's Hot Streak), a shield or a vent. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish, after the field recharge: more shield. | implemented |
-| **On injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
+| **On injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed). | implemented |
 | **Static** | Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag. | implemented |
 
 ## Commander
@@ -285,7 +284,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Quick turn spent** (implemented): Set by a static grant of Rapid on setup_once (the Needletail's relay).
 - **Siphoning** (implemented): The number is the entry's own (heat_per_blow), the lever.
 - **Flak** (implemented): Adds before multiplies and before armour, so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.
-- **Cracked component** (implemented): The threshold is a placeholder. Repair cost and the hangar screen are not built.
+- **Destroyed component** (implemented): The threshold is a placeholder, set to keep the losses of the two states it replaced (25 October). The campaign's hangar screen is not built.
 - **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
 - **Reinforcements** (implemented): How elites arrive is section 12's question.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
@@ -310,14 +309,14 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Out of combat** (implemented): Heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
-- **Cooldown** (implemented): A crack keeps it, a price as heat is. The city's battlefield abilities count their own cooldowns in phases.
+- **Cooldown** (implemented): A price as heat is. The city's battlefield abilities count their own cooldowns in phases.
 - **Reset** (implemented): No limit (Ryan, 24 October: "Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill.
 - **Pull** (implemented): Never Rapid, so a pull costs the turn and the laying is still chosen.
 - **Drone** (implemented): The condition is read before the drone lands, so its own Exposed never makes it Rapid.
 - **Spray** (implemented): The die shows the first strike's number, as a Spread does (Ryan, 17 October); a later strike may spend a Shock on another foe, an understood risk ("no different than using a cleave").
 - **Component** (implemented): Multi-slot components were set aside as invisible complexity.
 - **Fixed component** (implemented): Never bought open. Locked pieces are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0).
-- **Module** (implemented): Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar screen.
+- **Module** (implemented): Fitted in the harness and the quick campaign's hangar: the campaign's roster, the loot that drops them and its hangar wait for the economy pass and the hangar screen.
 - **Armour** (implemented): Numbers are placeholders.
 - **Aim** (implemented): Content: aim on a foe type and on a move; when on a move is the condition that lets a foe pick it, and a special never fires twice running.
 - **Self-Destruct** (implemented): A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other.

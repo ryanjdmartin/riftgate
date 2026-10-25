@@ -250,7 +250,7 @@ func test_a_wipe_on_a_weak_gate_loses_the_city() -> void:
 	assert_true(c.cities[front].fallen, "the city falls")
 
 
-func test_destroyed_components_go_cracked_ones_mend_and_fixed_ones_are_rebuilt() -> void:
+func test_destroyed_components_go_and_fixed_ones_are_rebuilt() -> void:
 	var db := ContentDB.load_default()
 	var cid := _mixed_chassis(db)
 	assert_true(not cid.is_empty(), "the content has a chassis with both kinds")
@@ -262,18 +262,17 @@ func test_destroyed_components_go_cracked_ones_mend_and_fixed_ones_are_rebuilt()
 	var u := b.field.unit_by_id(m.uid)
 	_destroy(u, 0)                # a fixed component
 	_destroy(u, fixed_n)          # the first hardpoint
-	u.die.faces[fixed_n + 1].crack()
 	_end(b, Battle.Outcome.VICTORY)
 	var r := c.finish_battle()
 	assert_eq(r["lost"], [stock[0]], "only the destroyed hardpoint component is gone")
-	assert_eq(m.loadout, stock.slice(1), "the cracked one is kept, mended")
+	assert_eq(m.loadout, stock.slice(1), "the intact ones are kept")
 	var b2 := _battle(c)
 	var u2 := b2.field.unit_by_id(m.uid)
 	assert_true(u2.die.faces[0].component == str(db.chassis[cid]["fixed"][0]) and u2.die.faces[0].kind != Face.Kind.BLANK, "the fixed component is rebuilt")
-	assert_true(not u2.die.faces[fixed_n].cracked, "nothing is cracked next battle")
+	assert_true(u2.die.faces[fixed_n].kind != Face.Kind.BLANK, "the kept hardpoint is whole next battle")
 
 
-func test_a_wreck_loses_its_cracked_components_and_sits_out_a_battle() -> void:
+func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 	var db := ContentDB.load_default()
 	var cid := _mixed_chassis(db)
 	var c := Campaign.new(5, [cid, cid])
@@ -282,12 +281,12 @@ func test_a_wreck_loses_its_cracked_components_and_sits_out_a_battle() -> void:
 	var fixed_n: int = db.chassis[cid]["fixed"].size()
 	var b := _battle(c)
 	var u := b.field.unit_by_id(m.uid)
-	u.die.faces[fixed_n].crack()
+	_destroy(u, fixed_n)
 	_wreck(b, u)
 	_end(b, Battle.Outcome.VICTORY)
 	var r := c.finish_battle()
 	assert_eq(r["wrecked"], [m.uid], "reported wrecked")
-	assert_eq(m.loadout, stock.slice(1), "its cracked component is lost, the intact ones kept")
+	assert_eq(m.loadout, stock.slice(1), "its destroyed component is lost as any machine's, the intact ones kept")
 	assert_eq(m.shop, Campaign.SHOP_BATTLES, "in the shop")
 	assert_true(not c.ready_machines().has(m), "not ready")
 	c.pass_turn()

@@ -20,9 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 646 tests, 65,060 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
-  quick campaign; main's 628 and 64,352 since the landing), about half a minute in a cloud
-  session. A cloud session fetches Godot 4.7's Linux
+- Tests: 645 tests, 65,045 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
+  quick campaign and one damage state; main's 628 and 64,352 since the landing), about half a
+  minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -35,14 +35,18 @@ are in `README.md`.
 
 This branch, `claude/quick-campaign-mode-pafhiv` (25 October), is the quick campaign built on
 Ryan's calls of that day (the bible's section 3 row; `sim/quick_run.gd`, its screens in
-`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, waiting
-on his play and on section 12's quick campaign question before it merges. Other sessions' branches
+`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, and one
+damage state (his "Cracked is gone", the same day; the audit's 7a asked it), waiting on his play
+and on section 12's quick campaign question before it merges. Other sessions' branches
 of the same day stand beside it, each with its own status: `ccr-170f6d81-465jnr`'s later commits,
 `claude/affectionate-goldberg-8e3mkh` (the mechanics audit, which carries them),
 `claude/playtesting-issues-08mnqj` (Ryan's playtest list), and main's Windows launchers
-(`ef91382`). A trial merge with each (25 October) takes the code clean and conflicts in the
-records alone: this file, the bible (its version line, and beside the playtest branch the built
-list's one line) and, beside the audit's, the measurements. Earlier on 25 October, on Ryan's
+(`ef91382`). A trial merge with each (25 October, after the damage state) takes the code clean
+but for `Skirmish.can_withdraw` beside the playtest branch (at `3caf956`), whose `committed` (the
+boss's fight, no withdrawal) is this branch's `withdraw_allowed` the other way round: one flag at
+the landing, the quick run setting it. The records conflict: this file, the bible (its version
+line; beside the playtest branch the built list and section 12's rules list), the measurements
+beside the audit's, and `docs/vocabulary.md`, regenerated after the merge. Earlier on 25 October, on Ryan's
 go ("merge in and clean up"), main took the three that stood beside it:
 `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
@@ -85,7 +89,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   screen with the game's first hangar, and run by `tools/quick_run.gd`. Its first runs
   (`docs/quick_run.md`, `docs/measurements.md`) find a cliff at the first battle for a starting
   trio (34 and 35 runs of 40 lost there on the greedy and planner rungs) and a plateau after it
-  while the enemy has no tiers: section 12's question.
+  while the enemy has no tiers: section 12's question. Its elite is a stand-in until the elites
+  land (the to-do); where a domain's final goes in it, and the bosses' and finals' tier, are
+  section 12's (Ryan, 25 October).
+- Injuries (25 October, on the branch): one damage state, Ryan's "Cracked is gone". An injury
+  destroys the entry the die lands on, at half the maximum hull, which keeps a squad's losses
+  about where the two states had them (`docs/measurements.md`); a wreck loses only what was
+  destroyed; the Honey Badger's components are never destroyed, so an injury passes it by.
+  It settles the mechanics audit's 34 and the crack half of its 5 (its 7a's question to Ryan);
+  Jenny's "component damaged" lines wait unsaid on his call (section 12).
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
@@ -173,11 +185,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.292, and so is the live (25 October,
-  the page's version 309, from `claude/quick-campaign-mode-pafhiv`: the quick campaign's rows
-  merged onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and the mechanics
-  audit's v0.291, so this file holds their rows and tables ahead of their code, which lands with
-  them: `tools/pages/bible_tables.py` run here before they land writes this branch's older
+  `docs/design-bible.html` after every change. This file is v0.293, and so is the live (25 October,
+  the page's version 310, from `claude/quick-campaign-mode-pafhiv`: one damage state, the quick
+  campaign's elite note and section 12's questions on the bosses' tier, on v0.292, which merged
+  the quick campaign's rows onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and
+  the mechanics audit's v0.291, so this file holds their rows and tables ahead of their code, which
+  lands with them: `tools/pages/bible_tables.py` run here before they land writes this branch's older
   tables back). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
@@ -186,9 +199,10 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 106 (25 October, from
-  `ccr-170f6d81-465jnr`: the Skua fielded, its passive and the Pod's spray, and the vocabulary's
-  Spray; the live files identical to version 105's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 111 (25 October, from
+  `claude/quick-campaign-mode-pafhiv`: one damage state's content, the Badger's passive line and
+  the vocabulary's injury terms, merged onto version 110's files, the mechanics audit's, which
+  were live and identical to that branch's; `edits` empty before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

@@ -1422,3 +1422,32 @@ few runs through it field four from the first offer and win nearly everything to
 since the loot ramps their kit while the enemy keeps the first battle's tiers. Tier three's
 bosses and the finale press again. What moves it is section 12's (the bible's quick campaign
 question).
+
+## 25 October, one damage state's threshold
+
+**An injury that destroys outright, at four thresholds** (Ryan, 25 October: "Cracked is gone"):
+`tools/balance.gd -- --policies greedy --seeds 30 --noparty` in four parts, once on the two
+states as they stood (at `54e064a`) and once for each threshold with `--injury N` and the one
+state; every machine alone and the four team rows against the twenty packs and formations, the
+components destroyed a fight (gone for good when the fight is won). A direction, 30 seeds a cell.
+
+| Injury | Alone: destroyed a fight | Alone: a won fight | Alone: won | Teams: destroyed a fight | Teams: won |
+|---|---|---|---|---|---|
+| Two states at a quarter (before) | 0.108 | 0.006 | 45.7% | 0.019 | 100% |
+| One state at a quarter | 0.500 | 0.046 | 45.3% | 0.223 | 99.9% |
+| One state at a third | 0.162 | 0.004 | 46.0% | 0.123 | 99.9% |
+| One state at two fifths | 0.079 | 0.004 | 46.0% | 0.099 | 99.9% |
+| One state at half | 0.008 | 0.000 | 46.0% | 0.031 | 100% |
+
+Read: no threshold moves a win rate, as on 12 October. The two reads part: a machine alone loses
+about what it did at two fifths, but nearly all of its losses come in fights it loses (0.006 a
+won fight before), while a team row wins every fight, so each piece it loses is gone for good,
+and only half keeps that near where it was (0.031 a fight against 0.019, the big fights all of
+it). Set at half, on the team rows, since the squad is how the campaign and the quick campaign
+fight. The wreck's old price, its cracked components, goes with the state, which no row here
+reads. Bible section 7's damage-state row.
+
+The quick campaign's greedy runs rerun on the one state at half (`docs/quick_run.md`, 40 runs
+from seed 1, 63 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states,
+the first runs above), none won (1), no component destroyed for good in any battle (0.12 a
+squad in the first battle before): the same cliff, inside 40 runs' noise, its losses gone.

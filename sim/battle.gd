@@ -81,7 +81,7 @@ var foes_killed: int = 0
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
 var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current action, taken back with an undo
 ## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
-## still reads their dice (a wreck loses its cracked and destroyed components).
+## still reads their dice (a wreck loses its destroyed components).
 var wrecks: Array[Unit] = []
 
 

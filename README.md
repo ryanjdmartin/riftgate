@@ -262,7 +262,7 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
-# to nine times in a row, hull, shield, cracks and wrecks carried, with no shield back between fights and with one
+# to nine times in a row, hull, shield, injuries and wrecks carried, with no shield back between fights and with one
 # field recharge; --density F scales the formation; four parts in parallel, then the reader
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
@@ -414,7 +414,7 @@ them, mechs at the bottom with their gauges above the sprite, End turn bottom-le
 Withdraw bottom-right. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
 statuses and warning signs: a broken shield when incoming damage will break it, a crack when
-a hit that big may injure a component, a skull when the round would wreck it, a thermometer
+a hit that big may destroy a component, a skull when the round would wreck it, a thermometer
 when the current face would overheat. The gauges pulse over the part about to change and the
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
 die to lock it, hold a die to see every face on it, drag a die onto a foe to spend an attack

@@ -88,7 +88,6 @@ var consumes: String = ""     # an attack: the status it consumes on its target,
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
 var label: String = ""
-var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -426,8 +425,7 @@ func has(kw: int) -> bool:
 
 ## The rounds this entry goes dark once spent, this one included (the cooldown row, 14
 ## October): what it prints, or else Rapid's switch-off, a cooldown of one, the rest of this
-## round; none for any other entry. A cracked Rapid entry has lost the keyword and its
-## switch-off with it; a printed cooldown is a price, and a crack keeps it as it keeps heat.
+## round; none for any other entry.
 func cooldown_rounds() -> int:
 	if cooldown >= 0:
 		return cooldown
@@ -521,7 +519,6 @@ func duplicate_face() -> Face:
 	f.strikes = strikes
 	f.printed = printed.duplicate()
 	f.label = label
-	f.cracked = cracked
 	f.component = component
 	f.empty = empty
 	f.fixed = fixed
@@ -620,16 +617,6 @@ func charged_form() -> Face:
 ## The musters a charged spend costs (one unless the draft says more).
 func muster_price() -> int:
 	return maxi(1, int(charged.get("muster", 1)))
-
-
-## An injury: the component keeps its action, its numbers and its heat, and loses
-## its keywords (Ryan, 18 September: cracked is the mild state; destroyed is the real one).
-## A cracked component hit again is destroyed, which is Face.blank().
-func crack() -> void:
-	cracked = true
-	keywords.clear()
-	label = ""
-	spins = false   # Rapid's reroll as a spin goes with Rapid
 
 
 ## A Rapid entry's spin as its text says it, and the Siphon's two rules.
@@ -763,6 +750,4 @@ func describe() -> String:
 		# What a muster buys (the Swallowtail's locked pieces): the charged form, after the plain.
 		var cf := charged_form()
 		s += " · %s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), cf.describe()]
-	if cracked:
-		s += " (cracked)"
 	return s.strip_edges()

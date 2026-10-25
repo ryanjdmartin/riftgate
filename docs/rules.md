@@ -60,7 +60,7 @@ skirmish.
   the Laser Carbine, warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
   bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
   bigger).
-- **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
+- **Damage states**: a component is intact or destroyed, for the whole battle.
 
 ## The skirmish
 
@@ -223,7 +223,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
   its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the rounds left; the die may
-  land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
+  land on it, and a dark entry does nothing. No cleanse lifts it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
@@ -463,13 +463,12 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   machine.
 
 ### Injury
-- A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
-  its hull (a breach's whole blow included) rolls the machine's die: an intact entry cracks, a
-  cracked one is destroyed, a blank shrugs it off. A shield absorbs its share first and what
-  reaches the hull counts; a Barrier's blow never does. Bites and overheats never injure.
-- **Cracked**: keeps its number, heat, cooldown, action and passive; loses its keywords.
+- A foe's blow that puts half the machine's maximum hull or more past armour into its hull (a
+  breach's whole blow included) rolls the machine's die: the entry it lands on is destroyed, a
+  blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
+  Barrier's blow never does. Bites and overheats never injure.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
-  Badger's components are never destroyed.
+  Badger's components are never destroyed, so an injury passes it by.
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
@@ -551,7 +550,7 @@ shields do not refill; a pack keeps its survivors, who return whole.
   a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
   fires twice all the same, its riders landing on each strike (a Web, a Lure, a Disrupt, a
   Shock, an Expose and a Swap still land once a spend).
-- Conditions: the component is cracked; the weapon is rolled; the reach is direct or
+- Conditions: the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
@@ -672,10 +671,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
-- **After a battle**: hull and cracks mend free; a destroyed hardpoint component is gone, a
-  destroyed fixed one rebuilt; a wreck also loses its cracked components and sits out the next
-  turn unless rushed (100 Favour). Fitting and stripping are instant; the capital's gate
-  repairs at 5 salvage a point.
+- **After a battle**: hull mends free; a destroyed hardpoint component is gone, a destroyed
+  fixed one rebuilt; a wreck sits out the next turn unless rushed (100 Favour). Fitting and
+  stripping are instant; the capital's gate repairs at 5 salvage a point.
 - **Turn end**: each unfought open rift bleeds its city 50 (falling it at zero); each fallen
   city drains the capital 25; the Convergence rises 1; rifts open at standing cities up to
   2 + tier (tier = the Convergence ÷ 4).
@@ -722,15 +720,15 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
 - **A fight** takes the squad's machines still standing, their damage carried and their heat
   from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
   before the next; a wipe ends the run.
-- **The boss's fall**: the campaign's after-battle rule without the shop (hull and cracks mend; a
-  destroyed hardpoint component is gone, a destroyed fixed one rebuilt; a wreck loses its cracked
-  components too). Then, each one of three and one taken: a loot pick for each fight before the
-  boss (components and modules: a tier-one battle's of tier one; a tier-two's of tiers one and
-  two, a tier three now and then; a tier-three's mostly tier two, tier three oftener); the
-  boss's token, components of the battle's tier, its modules filling in where it has fewer
-  than three (tier three has two); and an offer from a maker drawn from all five: a
-  chassis of its own at or under the battle's tier that the roster lacks (bringing its stock), a
-  component of the tier (else the highest under it the maker makes) and a module at or under it.
+- **The boss's fall**: the campaign's after-battle rule without the shop (hull mends; a
+  destroyed hardpoint component is gone, a destroyed fixed one rebuilt). Then, each one of three
+  and one taken: a loot pick for each fight before the boss (components and modules: a tier-one
+  battle's of tier one; a tier-two's of tiers one and two, a tier three now and then; a
+  tier-three's mostly tier two, tier three oftener); the boss's token, components of the
+  battle's tier, its modules filling in where it has fewer than three (tier three has two); and
+  an offer from a maker drawn from all five: a chassis of its own at or under the battle's tier
+  that the roster lacks (bringing its stock), a component of the tier (else the highest under it
+  the maker makes) and a module at or under it.
 - **The hangar**, between battles only: up to four machines of the roster, in the order they
   deploy; any component from the stores on any hardpoint and any module in any slot, what comes
   off going back to the stores.

@@ -293,11 +293,10 @@ static func _unit_from(d: Dictionary) -> Unit:
 	return u
 
 
-## A die entry with everything the die keeps beyond the content shape: its damage state,
-## its component, whether it is fixed or an empty hardpoint.
+## A die entry with everything the die keeps beyond the content shape: its component,
+## whether it is fixed or an empty hardpoint (a destroyed one is a blank).
 static func _face_dict(f: Face) -> Dictionary:
 	var d := f.to_dict()
-	d["cracked"] = f.cracked
 	d["component"] = f.component
 	d["empty"] = f.empty
 	d["fixed"] = f.fixed
@@ -310,7 +309,6 @@ static func _face_dict(f: Face) -> Dictionary:
 
 static func _face_from(d: Dictionary) -> Face:
 	var f := Face.from_dict(d)
-	f.cracked = bool(d.get("cracked", false))
 	f.component = str(d.get("component", ""))
 	f.empty = bool(d.get("empty", false))
 	f.fixed = bool(d.get("fixed", false))

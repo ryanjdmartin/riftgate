@@ -24,9 +24,9 @@ extends RefCounted
 ##   team wiped     the horde strikes the gate unopposed for WIPE_PHASES; at zero the city
 ##                  falls as above, otherwise it stands wounded, the rift stays, the salvage
 ##                  is kept; no token, no offer
-##   every machine  hull and cracked components repair free; a destroyed hardpoint
-##                  component is gone, a destroyed fixed one rebuilt; a wreck also loses its
-##                  cracked components and sits out SHOP_BATTLES battles, unless rushed
+##   every machine  hull repairs free; a destroyed hardpoint component is gone, a
+##                  destroyed fixed one rebuilt; a wreck sits out SHOP_BATTLES battles,
+##                  unless rushed
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
 ##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
@@ -368,7 +368,7 @@ func finish_battle() -> Dictionary:
 		var wreck := u.hull <= 0 or not b.field.units.has(u)
 		if wreck:
 			wrecked.append(m)
-		report["lost"].append_array(_after_battle(m, u, wreck))
+		report["lost"].append_array(_after_battle(m, u))
 	for m in wrecked:
 		report["wrecked"].append(m.uid)
 	# The city.
@@ -494,21 +494,20 @@ func _fielded(b: Battle, uid: int) -> Unit:
 	return null
 
 
-## What a battle left a machine with (section 3, the hangar row): hull and cracks repair
-## free and a destroyed fixed component is rebuilt, since both are the chassis's; a
-## destroyed hardpoint component is gone; a wreck loses its cracked ones too. Returns the
-## component ids lost.
-func _after_battle(m: Machine, u: Unit, wreck: bool) -> Array:
+## What a battle left a machine with (section 3, the hangar row): hull repairs free and a
+## destroyed fixed component is rebuilt, since both are the chassis's; a destroyed hardpoint
+## component is gone, a wreck's as any machine's. Returns the component ids lost.
+func _after_battle(m: Machine, u: Unit) -> Array:
 	if u.die == null:
 		return []
-	var r := after_battle_loadout(db, m.chassis, u, wreck)
+	var r := after_battle_loadout(db, m.chassis, u)
 	m.loadout = r[0]
 	return r[1]
 
 
 ## The rule above for any machine's die (the quick campaign's too): [the hardpoint components
 ## it keeps, in die order; the ones gone for good].
-static func after_battle_loadout(content: ContentDB, chassis_id: String, u: Unit, wreck: bool) -> Array:
+static func after_battle_loadout(content: ContentDB, chassis_id: String, u: Unit) -> Array:
 	var fixed_n: int = content.chassis.get(chassis_id, {}).get("fixed", []).size()
 	var kept: Array = []
 	var lost: Array = []
@@ -517,7 +516,7 @@ static func after_battle_loadout(content: ContentDB, chassis_id: String, u: Unit
 		if f.component.is_empty():
 			continue   # an empty hardpoint: nothing was there
 		var destroyed := f.kind == Face.Kind.BLANK and not f.empty and not f.disabled
-		if destroyed or (wreck and f.cracked):
+		if destroyed:
 			lost.append(f.component)
 		else:
 			kept.append(f.component)

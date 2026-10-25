@@ -595,7 +595,7 @@ func _on_unit_held(u: Unit) -> void:
 		text = "%s\nshield %d/%d · hull %d/%d · move %d · %d of %d action%s left" % [u.display_name, u.shield, u.shield_max, u.hull, u.hull_max, u.movespeed,
 			battle.actions_left(u), Battlefield.actions_for(u), "" if Battlefield.actions_for(u) == 1 else "s"]
 		if u.damaged_component_count() > 0:
-			text += "\n%d damaged component%s" % [u.damaged_component_count(), "" if u.damaged_component_count() == 1 else "s"]
+			text += "\n%d destroyed component%s" % [u.damaged_component_count(), "" if u.damaged_component_count() == 1 else "s"]
 	else:
 		var db := ContentDB.load_default()
 		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))

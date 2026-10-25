@@ -169,12 +169,9 @@ func test_the_boss_falling_mends_the_squad_and_owes_the_rewards() -> void:
 	var ma: QuickRun.Machine = r.machine(a.id)
 	var mb: QuickRun.Machine = r.machine(b.id)
 	var fixed_a: int = r.db.chassis[ma.chassis].get("fixed", []).size()
-	var fixed_b: int = r.db.chassis[mb.chassis].get("fixed", []).size()
 	assert_true(ma.loadout.size() >= 1 and mb.loadout.size() >= 1, "both carry a hardpoint piece")
 	var gone := str(ma.loadout[0])
 	_destroy(a, fixed_a)
-	b.die.faces[fixed_b].cracked = true
-	var cracked := str(mb.loadout[0])
 	b.hull = 0
 	var fights := r.encounters.size()
 	for i in range(fights):
@@ -185,8 +182,7 @@ func test_the_boss_falling_mends_the_squad_and_owes_the_rewards() -> void:
 	var stock_b: Array = r.db.chassis[mb.chassis].get("loadout", [])
 	assert_eq(ma.loadout.size(), stock_a.size() - 1, "a destroyed piece is gone")
 	assert_eq(ma.loadout.count(gone), stock_a.count(gone) - 1, "the destroyed one")
-	assert_eq(mb.loadout.size(), stock_b.size() - 1, "a wreck loses its cracked piece")
-	assert_eq(mb.loadout.count(cracked), stock_b.count(cracked) - 1, "that one")
+	assert_eq(mb.loadout, stock_b, "a wreck loses only what was destroyed, here nothing")
 	assert_eq(r.squad.size(), 3, "the wreck stays in the squad, mended (no shop)")
 	var kinds: Array = r.rewards.map(func(x) -> String: return x["kind"])
 	assert_eq(kinds.count("loot"), fights - 1, "a loot pick for every fight before the boss")

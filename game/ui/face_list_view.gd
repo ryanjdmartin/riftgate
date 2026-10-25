@@ -90,8 +90,6 @@ func _draw() -> void:
 			Glyphs.draw(self, Glyphs.primary_for(f), rect.position + Vector2(10.0, 10.0), 10.0, col, 1.4)
 			var num := f.number_text()
 			draw_string(mono, Vector2(rect.position.x, rect.position.y + 35.0), num, HORIZONTAL_ALIGNMENT_CENTER, MINI, 13 if f.is_ranged() else 17, col)
-			if f.cracked:
-				draw_line(rect.position + Vector2(6.0, MINI - 6.0), rect.position + Vector2(MINI - 6.0, 6.0), Palette.ENEMY, 1.5)
 		var ink := Palette.INK if cur else Palette.MUTED
 		if i < labels.size() and not str(labels[i]).is_empty():
 			draw_string(mono, Vector2(x0 + MINI + 22.0, y + 21.0), str(labels[i]), HORIZONTAL_ALIGNMENT_LEFT, col_w - GUTTER - MINI - 26.0, 11, Color(Palette.HUD, 0.8 if cur else 0.5))

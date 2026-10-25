@@ -17,8 +17,8 @@ extends RefCounted
 ##   spacing      one line at a time, never overlapping, SPACING seconds after the last one
 ##                ends; a line that waited STALE seconds is dropped unsaid, except an
 ##                information line, which waits only for the line in progress and INFO_GAP.
-##   one a hook   a hook already waiting is not queued twice (three cracks in one enemy turn
-##                say "component damaged" once).
+##   one a hook   a hook already waiting is not queued twice (three components destroyed in one
+##                enemy turn say "component destroyed" once).
 ##   pre-emption  a loss clears the queue, cuts a line in progress and speaks at once (the
 ##                player's hands are off the controls anyway); the skirmish's win clears the
 ##                queue, so the final kill never gets a heat warning after it, and the victory

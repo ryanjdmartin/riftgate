@@ -10,6 +10,8 @@ extends SceneTree
 ## fights' time each, so it is run on the team rows: --rows team,... --policies blind,planner),
 ## --out path (docs/balance.md),
 ## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
+## --injury N (the injury threshold at N percent of maximum hull for this run, a what-if read
+## against the engine's own, Skirmish.INJURY_MIN_HULL_PCT; 25 October, for the one state),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
 ## the lowest-shield rule from before 2 October; the team cells are always run under both
 ## and compared in their own section, since a single machine cannot see targeting),
@@ -221,6 +223,9 @@ func _parse_args() -> void:
 				i += 1
 			"--withdraw":
 				withdraw_below = int(v)
+				i += 1
+			"--injury":
+				Skirmish.injury_pct = clampi(int(v), 1, 100)
 				i += 1
 			"--rows":
 				only_rows = Array(v.split(","))

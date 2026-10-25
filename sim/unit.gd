@@ -97,7 +97,7 @@ var passive: Dictionary = {}     # the chassis passive as content, for the codex
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
 
-## Damaged components. A cracked or destroyed component is damaged and stays that way across
+## Damaged components. A destroyed component is damaged and stays that way across
 ## skirmishes and battles until repaired in the hangar. Maps a die entry index to the
 ## original, undamaged component.
 var damaged_faces: Dictionary = {}

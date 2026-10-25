@@ -22,10 +22,10 @@ extends RefCounted
 ##   a fight       the squad's machines still standing, their damage carried from the last and
 ##                 their heat from zero; no withdrawal; won, one field recharge before the next;
 ##                 every machine wrecked, the run is over
-##   the boss dead the campaign's after-battle rule without the shop (hull and cracks mend; a
-##                 destroyed hardpoint piece is gone, a destroyed fixed one rebuilt; a wreck loses
-##                 its cracked pieces too); then a loot pick for each fight before the boss, the
-##                 token and a maker's offer, each one of CHOICES, one taken
+##   the boss dead the campaign's after-battle rule without the shop (hull mends; a destroyed
+##                 hardpoint piece is gone, a destroyed fixed one rebuilt); then a loot pick for
+##                 each fight before the boss, the token and a maker's offer, each one of
+##                 CHOICES, one taken
 ##   the hangar    up to SQUAD machines of the roster; any piece from the stores on any
 ##                 hardpoint and any module in any slot, what comes off going back to the stores
 
@@ -466,7 +466,7 @@ func _battle_won() -> void:
 		var wreck: bool = u.hull <= 0
 		if wreck:
 			wrecked.append(m.uid)
-		var r := Campaign.after_battle_loadout(db, m.chassis, u, wreck)
+		var r := Campaign.after_battle_loadout(db, m.chassis, u)
 		m.loadout = r[0]
 		lost.append_array(r[1])
 	var report := _battle_report(true)

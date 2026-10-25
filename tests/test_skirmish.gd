@@ -285,10 +285,8 @@ func test_the_other_aims_anything_heat_armed_and_fires_as_one() -> void:
 	s3.start_round()
 	assert_eq(s3.front[0].aim_of(), "armed", "the move's own sense")
 	assert_eq(s3.front[0].target, s3.mechs[0], "the machine showing a gun")
-	var cracked := Face.attack(10, L)
-	cracked.crack()
 	var s4 := Skirmish.new(1)
-	s4.add_mech(_mech("Broken", Die.single(cracked), 40, 100))
+	s4.add_mech(_mech("Broken", Die.single(Face.blank()), 40, 100))
 	s4.add_mech(_mech("Bare", Die.single(Face.shield(10)), 0, 100))
 	var w2 := _ghoul(30, 20)
 	w2.aim = "armed"
@@ -558,12 +556,6 @@ func test_the_hopper_fills_from_a_claw_and_a_shot_fires_a_few_loads() -> void:
 	sk.start_round()
 	ms.face_index = 1
 	assert_eq(sk.shown_number(ms, gun), [30, 30] as Array[int], "the next shot fires the two left")
-	# A cracked component keeps its unique rule for now (Ryan, 11 October: hold until the
-	# impact is measured); only its keywords go.
-	var cracked := claw.duplicate_face()
-	cracked.crack()
-	assert_eq(cracked.fills_hopper, 1, "a cracked claw still fills the hopper")
-	assert_false(cracked.has(Face.Keyword.CLEAVE), "but loses its spread")
 
 
 func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
@@ -607,9 +599,6 @@ func test_a_bracing_entry_braces_its_owner_until_the_rounds_end() -> void:
 	sk.end_round()
 	assert_eq(hull - m.hull, maxi(0, 20 - (armour + 10)), "the ghoul's 20 lands less the brace")
 	assert_eq(Effects.stacks_of(m, "braced"), 0, "and it is gone at the round's end")
-	var cracked := plow.duplicate_face()
-	cracked.crack()
-	assert_eq(cracked.braces, 10, "a crack takes keywords only, so a cracked plow still braces")
 
 
 func test_braced_lasts_one_turn_from_every_source() -> void:
@@ -807,10 +796,10 @@ func test_same_seed_same_rolls() -> void:
 	assert_eq(a.mechs[1].face_index, b.mechs[1].face_index, "mech B rolls match")
 
 
-func _cracked_count(d: Die) -> int:
+func _destroyed_count(d: Die) -> int:
 	var n := 0
 	for f in d.faces:
-		if f.cracked or f.kind == Face.Kind.BLANK:
+		if f.kind == Face.Kind.BLANK:
 			n += 1
 	return n
 
@@ -826,7 +815,7 @@ func test_big_hull_hits_always_injure_a_face() -> void:
 		sk.start_round()
 		sk.end_round()
 		assert_eq(m.hull, 50, "the hit reached the hull")
-		assert_eq(_cracked_count(d), 1, "a half-hull hit cracks one face, no coin toss (seed %d)" % seed_value)
+		assert_eq(_destroyed_count(d), 1, "a half-hull hit destroys one face, no coin toss (seed %d)" % seed_value)
 
 
 func test_injury_rolls_the_die_and_a_destroyed_component_takes_the_blow() -> void:
@@ -848,11 +837,11 @@ func test_injury_rolls_the_die_and_a_destroyed_component_takes_the_blow() -> voi
 			hits += 1
 		assert_eq(sk.log.size(), before + 1, "every injury logs one line")
 	assert_true(misses > hits, "two destroyed faces of three absorb most blows (%d misses, %d hits)" % [misses, hits])
-	assert_eq(d.faces[2].kind, Face.Kind.BLANK, "the live face was cracked then destroyed by the hits")
+	assert_eq(d.faces[2].kind, Face.Kind.BLANK, "the live face was destroyed by the hits")
 	assert_eq(m.damaged_component_count(), 1, "blows on already destroyed faces add no damaged components")
 
 
-func test_small_hits_and_shielded_hits_never_crack() -> void:
+func test_small_hits_and_shielded_hits_never_injure() -> void:
 	for seed_value in range(1, 11):
 		var sk := Skirmish.new(seed_value)
 		var d := Die.of([Face.attack(10, L, K.CLEAVE)])
@@ -862,7 +851,7 @@ func test_small_hits_and_shielded_hits_never_crack() -> void:
 		sk.begin()
 		sk.start_round()
 		sk.end_round()
-		assert_eq(_cracked_count(d), 0, "a hit under a quarter of hull never cracks")
+		assert_eq(_destroyed_count(d), 0, "a hit under the threshold never injures")
 	for seed_value in range(1, 11):
 		var sk := Skirmish.new(seed_value)
 		var d := Die.of([Face.attack(10, L, K.CLEAVE)])
@@ -872,10 +861,11 @@ func test_small_hits_and_shielded_hits_never_crack() -> void:
 		sk.begin()
 		sk.start_round()
 		sk.end_round()
-		assert_eq(_cracked_count(d), 0, "a hit absorbed by shield never cracks")
+		assert_eq(_destroyed_count(d), 0, "a hit absorbed by shield never injures")
 
 
-func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
+func test_injury_destroys_and_persists_until_repaired() -> void:
+	# One state (Ryan, 25 October: "Cracked is gone"): an injury destroys what it lands on.
 	var sk := Skirmish.new(3)
 	var d := Die.single(Face.attack(30, L, [K.CLEAVE, K.BURN], 10, 50))
 	var m := _mech("A", d, 0, 100)
@@ -883,20 +873,12 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
-	sk.apply_injury(sk.mechs[0])
-	var f := d.faces[0]
-	assert_true(f.cracked, "first injury cracks the face")
-	assert_eq(f.kind, Face.Kind.ATTACK, "it still attacks")
-	assert_eq(f.power, 30, "with its basic damage")
-	assert_true(f.keywords.is_empty(), "keywords gone")
-	assert_eq(f.power_max, 50, "its range kept (18 September: a crack takes only the keywords)")
-	assert_true(f.describe().ends_with("(cracked)"), "described as cracked")
+	assert_eq(sk.apply_injury(sk.mechs[0]), "destroyed", "the first injury destroys it")
+	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "blank")
+	assert_true(str(sk.log[sk.log.size() - 1]).contains("a component is destroyed"), "and the log says so")
 	assert_eq(m.damaged_component_count(), 1, "one damaged component on the unit")
-	sk.apply_injury(sk.mechs[0])
-	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "second injury destroys it")
-	assert_eq(m.damaged_component_count(), 1, "still one component, now destroyed")
-	sk.apply_injury(sk.mechs[0])
-	assert_eq(m.damaged_component_count(), 1, "a third injury finds nothing left to break")
+	assert_eq(sk.apply_injury(sk.mechs[0]), "", "a second finds nothing left to break")
+	assert_eq(m.damaged_component_count(), 1, "still one component")
 	sk.end_round()
 	sk.start_round()
 	sk.withdraw()
@@ -911,7 +893,6 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	m.repair_faces()
 	assert_eq(d.faces[0].kind, Face.Kind.ATTACK, "hangar repair restores the component")
 	assert_true(d.faces[0].has(K.CLEAVE) and d.faces[0].has(K.BURN), "with its keywords")
-	assert_false(d.faces[0].cracked, "not cracked any more")
 	assert_eq(m.damaged_component_count(), 0, "nothing left to repair")
 
 
@@ -981,8 +962,8 @@ func test_shield_component_helps_an_ally() -> void:
 func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	var sk := Skirmish.new(1)
 	var m := Unit.mech(1, "A", Vector2i.ZERO)
-	m.hull = 100
-	m.hull_max = 100
+	m.hull = 50
+	m.hull_max = 50
 	m.shield = 20
 	m.shield_max = 20
 	m.die = Die.single(Face.attack(10))
@@ -994,8 +975,8 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
 	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
 	assert_eq(fc["shield_after"], 0, "shield gone")
-	assert_eq(fc["hull_after"], 65, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
-	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
+	assert_eq(fc["hull_after"], 15, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
+	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 50 hull injures: half of it")
 	assert_false(fc["destroyed"], "still standing")
 	sk._suppress(sk.front[0])
 	fc = sk.forecast(ms)
@@ -1117,7 +1098,7 @@ func test_four_columns_fill_and_reach() -> void:
 	assert_eq(three.columns, Skirmish.DEFAULT_COLUMNS, "three by default")
 
 
-func test_no_destroy_passive_holds_a_cracked_component() -> void:
+func test_no_destroy_passive_holds_an_injured_component() -> void:
 	var sk := Skirmish.new(3)
 	var d := Die.single(Face.attack(30, L, [K.CLEAVE], 0, 50))
 	var m := _mech("A", d, 0, 100)
@@ -1126,13 +1107,12 @@ func test_no_destroy_passive_holds_a_cracked_component() -> void:
 	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
-	sk.apply_injury(sk.mechs[0])
-	assert_true(d.faces[0].cracked, "the first injury still cracks")
-	sk.apply_injury(sk.mechs[0])
-	assert_eq(d.faces[0].kind, Face.Kind.ATTACK, "the second does not destroy it")
-	assert_true(d.faces[0].cracked, "it stays cracked")
+	for i in range(3):
+		assert_eq(sk.apply_injury(sk.mechs[0]), "", "the injury lands and holds (%d)" % i)
+	assert_eq(d.faces[0].kind, Face.Kind.ATTACK, "never destroyed")
+	assert_true(d.faces[0].has(K.CLEAVE), "and untouched, its keywords kept")
 	assert_true(str(sk.log[sk.log.size() - 1]).contains("holds"), "and the log says it held")
-	assert_eq(m.damaged_component_count(), 1, "one damaged component")
+	assert_eq(m.damaged_component_count(), 0, "nothing damaged")
 
 
 func test_injury_on_an_empty_hardpoint_breaks_nothing() -> void:
@@ -1147,17 +1127,6 @@ func test_injury_on_an_empty_hardpoint_breaks_nothing() -> void:
 	assert_true(str(sk.log[sk.log.size() - 1]).contains("empty hardpoint"), "the log names the empty hardpoint")
 	assert_eq(m.damaged_component_count(), 0, "nothing was there to damage")
 	assert_eq(d.faces[0].describe(), "empty hardpoint", "described as empty, not destroyed")
-
-
-func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
-	var bonus := {"id": "scars", "name": "Scars", "description": "", "effects": [{"trigger": "on_attack", "when": "component_cracked", "effect": "add_damage", "value": 10}]}
-	var u := Unit.mech(0, "A", Vector2i.ZERO)
-	u.grant_passive(bonus)
-	var f := Face.attack(20, L)
-	assert_eq(Effects.attack(u, f, 20, 0)["damage"], 20, "an intact component gets nothing")
-	f.crack()
-	assert_eq(Effects.attack(u, f, 20, 0)["damage"], 30, "a cracked one hits harder")
-	assert_eq(Effects.attack(u, null, 20, 0)["damage"], 20, "no component in hand, no bonus")
 
 
 func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
@@ -1179,22 +1148,22 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
 	# The honest shield (Ryan, 14 October): a shield is its number, never a whole block.
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 80)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(900, 50)])
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "ten shield is spent")
-	assert_eq(m.hull, 60, "fifty on a ten-point shield: forty pass to the hull")
+	assert_eq(m.hull, 40, "fifty on a ten-point shield: forty pass to the hull")
 	assert_true(not sk.turn_events[0]["blocked"] and sk.turn_events[0]["broke_shield"], "the blow broke the shield and was not blocked")
-	assert_eq(m.damaged_component_count(), 1, "and the forty that reached the hull injure: an injury counts what reaches it")
+	assert_eq(m.damaged_component_count(), 1, "and the forty that reached the hull, half of it, injure: an injury counts what reaches it")
 	assert_true(str(sk.log).contains("shield -10, hull -40"), "the log says what each took")
 	m.shield = 50
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "a shield the blow's size takes it all")
-	assert_eq(m.hull, 60, "and nothing passes")
+	assert_eq(m.hull, 40, "and nothing passes")
 	assert_true(sk.turn_events[0]["blocked"], "the blow is recorded as blocked")
 
 
@@ -1218,7 +1187,7 @@ func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
 
 func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 60)
 	sk.add_mech(m)
 	var brute := Foe.make("brute", 200, 30)
 	brute.actions[0]["strikes"] = 2
@@ -1227,11 +1196,11 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	sk.start_round()
 	var fc := sk.forecast(sk.mechs[0])
 	assert_eq(fc["incoming"], 60, "forecast counts both blows")
-	assert_eq(fc["hull_after"], 50, "and knows the first passes twenty and the second lands on bare hull")
-	assert_true(fc["component_risk"], "and that it can injure")
+	assert_eq(fc["hull_after"], 10, "and knows the first passes twenty and the second lands on bare hull")
+	assert_true(fc["component_risk"], "and that it can injure: thirty on sixty is half")
 	sk.end_round()
 	assert_eq(m.shield, 0, "first blow spends the shield")
-	assert_eq(m.hull, 50, "twenty past it, and the second blow's thirty")
+	assert_eq(m.hull, 10, "twenty past it, and the second blow's thirty")
 
 
 func test_breach_ignores_the_shield_and_can_injure() -> void:
@@ -1529,21 +1498,23 @@ func test_a_melee_tag_reaches_as_direct_does() -> void:
 	assert_true(plain.size() > 1, "the front and an exposed back")
 
 
-func test_static_set_reach_sends_a_cracked_component_to_direct() -> void:
+func test_static_set_reach_sends_a_tagged_component_to_direct() -> void:
 	var sk := Skirmish.new(3)
 	var mortar := Face.attack(30, I)
-	var m := _mech("A", Die.single(mortar), 0, 100)
+	var m := _mech("A", Die.of([mortar, Face.attack(30, I)]), 0, 100)
 	m.grant_passive({"id": "rs", "name": "RS", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_direct"},
-		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "component_cracked"}]})
+		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "tag_siege"}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(200), _archer(200)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(sk.targets_for(0).size(), 2, "an intact mortar reaches both ranks")
-	sk.apply_injury(sk.mechs[0])
+	sk.mechs[0].face_index = 1
+	assert_eq(sk.targets_for(0).size(), 2, "an untagged mortar reaches both ranks")
+	sk.mechs[0].die.faces[0].tags = ["siege"] as Array[String]
+	sk.mechs[0].face_index = 0
 	var f := sk.mechs[0].face()
-	assert_true(f.cracked and f.reach == Face.Reach.INDIRECT, "cracked; the component itself is untouched")
+	assert_true(f.tags.has("siege") and f.reach == Face.Reach.INDIRECT, "tagged; the component itself is untouched")
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.DIRECT, "but read through the passive it is direct")
 	assert_eq(sk.shown_face(sk.mechs[0], f).reach, Face.Reach.DIRECT, "and the screen shows it as direct")
 	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
@@ -1557,8 +1528,7 @@ func test_static_set_reach_sends_a_cracked_component_to_direct() -> void:
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "a skirmish-long suppression of the passive turns the transformation off too")
 	Effects.end_skirmish(m)
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.DIRECT, "and when the skirmish ends the suppression is gone and the passive answers again")
-	m.repair_faces()
-	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
+	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "the mortar itself never changed")
 
 
 func test_chain_repeats_on_a_kill() -> void:
@@ -1911,13 +1881,13 @@ func test_the_die_screen_explains_what_applies_to_a_component() -> void:
 	var mortar := Face.attack(30, I)
 	u.grant_passive({"id": "rs", "name": "Reinforced Skeleton", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_direct"},
-		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "component_cracked"}]})
-	assert_true(Effects.explain(u, mortar).is_empty(), "nothing applies to an intact mortar")
-	mortar.crack()
+		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "tag_siege"}]})
+	assert_true(Effects.explain(u, mortar).is_empty(), "nothing applies to an untagged mortar")
+	mortar.tags = ["siege"] as Array[String]
 	var notes := Effects.explain(u, mortar)
-	assert_eq(notes.size(), 2, "cracked: the reach change and the direct bonus both apply")
+	assert_eq(notes.size(), 2, "tagged: the reach change and the direct bonus both apply")
 	assert_true(notes[0].contains("reach becomes direct (Reinforced Skeleton)") or notes[1].contains("reach becomes direct (Reinforced Skeleton)"), "the reach change names its source")
-	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: cracked components are never destroyed", "effects read as sentences")
+	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: components are never destroyed", "effects read as sentences")
 
 
 func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
@@ -5403,8 +5373,8 @@ func test_a_ward_turns_away_every_rider_and_the_breach_for_the_round() -> void:
 
 
 ## The cooldown (Ryan, 14 October; built 21 October): a printed property, the entry dark for
-## the rounds it says, this one included, shown with the rounds left; no cleanse lifts it,
-## and a crack keeps it, a price as heat is.
+## the rounds it says, this one included, shown with the rounds left; no cleanse lifts it, a
+## price as heat is.
 func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	var gun := Face.attack(10, L)
 	gun.cooldown = 2
@@ -5432,9 +5402,6 @@ func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_false(Effects.is_entry_disabled(m, 0), "lit again the round after")
-	var cracked := gun.duplicate_face()
-	cracked.crack()
-	assert_eq(cracked.cooldown_rounds(), 2, "a crack keeps a printed cooldown")
 	var round_trip := Face.from_dict(gun.to_dict())
 	assert_eq(round_trip.cooldown_rounds(), 2, "and a save keeps it")
 
@@ -5460,9 +5427,6 @@ func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_false(Effects.is_entry_disabled(m, 0), "lit the next round")
-	var z := zap.duplicate_face()
-	z.crack()
-	assert_eq(z.cooldown_rounds(), 0, "a cracked Rapid entry lost its switch-off with the keyword")
 	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["rapid"], "heat": 5, "cooldown": 0})
 	assert_eq(hot.cooldown_rounds(), 0, "it prints none")
 	assert_eq(hot.describe(), "10 rapid no cooldown (+5 heat)", "and says so")
@@ -5545,9 +5509,6 @@ func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
 	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "cooldown": 0, "spins": true})
 	assert_true(spin.spins and spin.has_unique_rule(), "a printed rule: the star")
 	assert_eq(spin.describe(), "Spun Up ×1 rapid no cooldown spins the die (self only)", "the entry says what it does")
-	var crack := spin.duplicate_face()
-	crack.crack()
-	assert_false(crack.spins, "a crack takes the spin with Rapid")
 	var landed := {}
 	for seed_value in range(60):
 		var sk := Skirmish.new(seed_value)

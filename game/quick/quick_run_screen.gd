@@ -556,7 +556,7 @@ func _rewards() -> void:
 	if not run.history.is_empty() and str(r["kind"]) == "loot" and loot_left == run.encounters.size() - 1:
 		var h: Dictionary = run.history[run.history.size() - 1]
 		var lost: Array = h.get("lost", [])
-		var line := "Hull and cracks mended."
+		var line := "Hull mended."
 		if not lost.is_empty():
 			line += " Gone for good: %s." % ", ".join(lost.map(func(c) -> String: return _db.component_name(str(c))))
 		_content.add_child(_hint(line))
