@@ -335,6 +335,29 @@ func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
 	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
 
 
+## A flat buff lands on every strike, so the bot counts Overcharged once a strike of the ally's
+## gun showing: twice on a split gun (the Skua's), once on a plain one.
+func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
+	var split := {"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
+	var sk := Skirmish.new(1, 2)
+	var coil := Face.buff("overcharged", 2)
+	var plain := _mech("P", Die.single(Face.attack(4, L)), 40, 100)
+	var skua := _mech("S", Die.single(Face.attack(4, L)), 40, 100)
+	skua.grant_passive(split)
+	sk.add_mech(_mech("B", Die.single(coil), 40, 100))
+	sk.add_mech(plain)
+	sk.add_mech(skua)
+	sk.add_foes([_ghoul(100, 10), _ghoul(100, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var on_plain := pol.buff_score(sk, sk.mechs[1], coil)
+	var on_skua := pol.buff_score(sk, sk.mechs[2], coil)
+	assert_true(on_plain > 0.0, "worth something on a gun showing")
+	assert_true(absf(on_skua - 2.0 * on_plain) < 0.001, "twice as much on a gun that strikes twice")
+
+
 func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	var sk := Skirmish.new(2, 2)
 	var klaxon := Face.attack(0, I, K.LURE)

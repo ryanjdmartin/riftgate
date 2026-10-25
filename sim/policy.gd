@@ -1367,7 +1367,10 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				if status.has("spent_by"):
 					score += v * n   # Spun Up: damage on the next weapon spend, whenever it comes
 				else:
-					score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
+					# A flat add lands on every strike, so the gun showing counts it once a strike (the
+					# Skua's split guns twice, its Pod four times).
+					var blows := float(maxi(1, Effects.effective_face(who.unit, shown).strikes)) if attack_now > 0.0 else 0.0
+					score += v * n * blows + v * n * float(f.buff_rounds - 1)
 			"multiply_damage_taken":
 				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
 			"add_stat":

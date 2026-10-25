@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 620 tests, 63,222 checks, green on `ccr-170f6d81-465jnr` (25 October, the Skua's
-  engine and a passive's lay on any hit), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
+- Tests: 621 tests, 63,224 checks, green on `ccr-170f6d81-465jnr` (25 October, the Skua's
+  engine, a passive's lay on any hit, a flat buff valued once a strike), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux build from the GitHub release
   asset (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run`
   for screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -193,9 +193,10 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 106 (25 October, from
-  `ccr-170f6d81-465jnr`: the Skua fielded, its passive and the Pod's spray, and the vocabulary's
-  Spray; the live files identical to version 105's and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 107 (25 October, from
+  `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
+  hits and Vitriol's line at 107; the live files identical to the last publish's and `edits`
+  empty before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
