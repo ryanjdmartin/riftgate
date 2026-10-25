@@ -977,6 +977,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: pulls_mines (true) is a weapon's: every mine on the field gathers into the slot it is spent on" % where)
 	if fd.has("drones") and (kind != "attack" or not (fd["drones"] is bool)):
 		errs.append("%s: drones (true) is a weapon's: the foe carries the Syrinx Drone" % where)
+	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
+	# random foes in reach, so a spray strikes at least twice.
+	if fd.has("spray") and (kind != "attack" or not (fd["spray"] is bool) or int(fd.get("strikes", 1)) < 2):
+		errs.append("%s: spray (true) is a weapon's of two strikes or more: each strike after the first falls on a random foe in reach" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -1103,6 +1107,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
 			if eff.has("tag") and not TAGS.has(str(eff["tag"])):
 				errs.append("%s: rewrite_weapon's tag '%s' is not in the working set (%s)" % [where, eff["tag"], ", ".join(TAGS)])
+		# The Skua's Split-cycle Breech (25 October): every weapon strikes that many times as often, a
+		# whole number of two or more.
+		if effect == "split_strikes" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: split_strikes divides each roll among that many strikes: a whole number, 2 or more" % where)
 		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
 			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
 		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an

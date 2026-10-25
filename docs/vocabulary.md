@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 151 implemented, 6 planned, 0 idea.
+Status: 152 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -54,6 +54,7 @@ Status: 151 implemented, 6 planned, 0 idea.
 | **Reset** | A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again (the Kite's Pinion Driver). | implemented |
 | **Pull** | A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there. | implemented |
 | **Drone** | A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it. | implemented |
+| **Spray** | A rule printed on a weapon (the Skua's Flechette Pod): its first strike lands on the foe it is spent on, and each strike after it falls on a random foe in reach at that moment, the same foe again allowed. A kill clears its slot at once, so a hole burnt in the front rank opens the foe behind it to the strikes still to come. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
 | **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Flak or on a foe carrying two Burning or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
@@ -62,7 +63,7 @@ Status: 151 implemented, 6 planned, 0 idea.
 | **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
 | **Braces** | A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until the round's end: the armour stands behind the blow through the enemy's turn. | implemented |
 | **Rolls again** | A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit. | implemented |
-| **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often. Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
+| **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share each roll, halved). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
 
@@ -313,6 +314,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Reset** (implemented): No limit (Ryan, 24 October: "Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill.
 - **Pull** (implemented): Never Rapid, so a pull costs the turn and the laying is still chosen.
 - **Drone** (implemented): The condition is read before the drone lands, so its own Exposed never makes it Rapid.
+- **Spray** (implemented): The die shows the first strike's number, as a Spread does (Ryan, 17 October); a later strike may spend a Shock on another foe, an understood risk ("no different than using a cleave").
 - **Component** (implemented): Multi-slot components were set aside as invisible complexity.
 - **Fixed component** (implemented): Never bought open. Locked pieces are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0).
 - **Module** (implemented): Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar screen.

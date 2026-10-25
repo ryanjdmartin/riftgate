@@ -309,6 +309,32 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
+## The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a random
+## foe in reach, so the bot reads each foe its share; on a foe one strike kills, a spray among
+## others wastes less past the kill than the same strikes all on it.
+func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
+	var sk := Skirmish.new(1, 3)
+	var plain := Face.attack(5, L)
+	plain.strikes = 3
+	var pod := plain.duplicate_face()
+	pod.spray = true
+	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
+	var weak := _ghoul(3, 10)
+	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the spray's later strikes go on to the others")
+	var lone := Skirmish.new(1, 1)
+	lone.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
+	var big := _ghoul(100, 10)
+	lone.add_foes([big])
+	lone.begin()
+	lone.start_round()
+	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
+
+
 func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	var sk := Skirmish.new(2, 2)
 	var klaxon := Face.attack(0, I, K.LURE)

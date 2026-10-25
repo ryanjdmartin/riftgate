@@ -51,7 +51,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
@@ -847,6 +847,21 @@ static func ceiling_bonus(u, face: Face) -> int:
 	return _range_bonus(u, face, "add_ceiling")
 
 
+## How many strikes each roll of a damaging weapon is split into (split_strikes, on_attack; the
+## Skua's Split-cycle Breech, built 25 October): the weapon strikes that many times as often,
+## each roll of its number divided among the strikes it serves, rounded down, and every buff,
+## passive and foe's condition counts on each strike. 1 for anything else, a debuff included,
+## which has no number to divide.
+static func split_of(u, face: Face) -> int:
+	if face == null or not face.is_attack() or face.is_debuff():
+		return 1
+	var n := 1
+	for pair in _taking_part(u, "on_attack", face):
+		if str(pair[0].get("effect", "")) == "split_strikes":
+			n = maxi(n, int(pair[0].get("value", 1)))
+	return n
+
+
 ## What they add to the bottom (add_floor; the Tactical Databank, 10 October): the floor and
 ## the ceiling are the two ways to push a range. Never past the top, so a narrow range can
 ## end up flat.
@@ -1037,7 +1052,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		printed = granted_keywords(u, base, target, true)
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
-	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0 and not muted:
+	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
+	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1 and not muted:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	if muted:
@@ -1049,6 +1065,9 @@ static func effective_face(u, face: Face, target = null) -> Face:
 			c.printed.append(kw)
 	c.power_max += ceiling
 	c.power = mini(c.power + floor_up, c.power_max)
+	if split > 1:
+		c.strikes = maxi(1, c.strikes) * split
+		c.split = split
 	return c
 
 
@@ -1729,6 +1748,7 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
+		"split_strikes": body = "every weapon it fires strikes %s times as often, each roll divided among them, rounded down, every buff and the foe's conditions counting on each strike" % vs
 		"weapon_cooldown": body = "every weapon it fires goes dark for %s rounds" % vs
 		"lay_mines": body = "its weapons may be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"

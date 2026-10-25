@@ -6318,6 +6318,106 @@ func test_a_team_reroll_back_onto_a_reset_gun_chains_it_with_every_kill() -> voi
 	assert_eq("\n".join(sk.log).count("the kill resets it"), 3, "three kills, three resets")
 
 
+## The split (the Skua's Split-cycle Breech, built 25 October): a damaging weapon strikes twice
+## as often, each roll halved, rounded down, and shared by the two strikes it makes; every buff
+## and the foe's conditions count on each strike, its armour too, and the die shows a strike's
+## share beside the strikes. A debuff has no number and is not split.
+func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
+	var split := {"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
+	var gun := Face.attack(3, L)
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("S", Die.single(gun), 40, 100)
+	m.grant_passive(split)
+	sk.add_mech(m)
+	var bare := _ghoul(100, 10)
+	var plate := _ghoul(100, 10)
+	plate.armour = 1
+	sk.add_foes([bare, plate])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var shown := sk.shown_face(ms, gun)
+	assert_eq(shown.strikes, 2, "two strikes")
+	assert_eq(shown.number_text(), "1", "each a 3 halved, rounded down")
+	assert_true(shown.describe().contains("×2"), "the strikes beside it")
+	assert_eq(sk.shown_number(ms, shown, bare), [1, 1] as Array[int], "the die over a bare foe")
+	assert_eq(sk.shown_number(ms, shown, plate), [0, 0] as Array[int], "over armour 1 each strike bounces")
+	assert_eq(Effects.effective_face(m, shown).strikes, 2, "never split twice")
+	assert_true(sk.assign(0, bare), "fired")
+	assert_eq(bare.hp, 98, "1 twice")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2)
+	shown = sk.shown_face(ms, gun)
+	assert_eq(sk.shown_number(ms, shown, plate), [2, 2] as Array[int], "Overcharged on each strike, the armour off each")
+	ms.face_index = 0
+	assert_true(sk.assign(0, plate), "fired on plate")
+	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")
+	var probe := Face.attack(0, L, [K.SUPPRESS])
+	assert_eq(Effects.effective_face(m, probe).strikes, 1, "a debuff is not split")
+
+
+## Roll once, then split (Ryan, 24 October): a rolled weapon's two strikes share one roll, each
+## taking half of it, rounded down, never a roll of their own.
+func test_a_split_rolled_weapon_rolls_once_and_halves_it() -> void:
+	var split := {"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
+	var re := RegEx.new()
+	re.compile("rolled (\\d+)")
+	for seed_value in range(1, 9):
+		var gun := Face.attack(1, L)
+		gun.power_max = 9
+		var sk := Skirmish.new(seed_value, 1)
+		var m := _mech("S", Die.single(gun), 40, 100)
+		m.grant_passive(split)
+		sk.add_mech(m)
+		var foe := _ghoul(100, 10)
+		sk.add_foes([foe])
+		sk.begin()
+		sk.start_round()
+		assert_eq(sk.shown_number(sk.mechs[0], sk.shown_face(sk.mechs[0], gun)), [0, 4] as Array[int], "the die shows a strike's share of 1 to 9")
+		assert_true(sk.assign(0, foe), "fired, seed %d" % seed_value)
+		var hit := re.search("\n".join(sk.log))
+		assert_true(hit != null, "the log says the roll")
+		var rolled := int(hit.get_string(1))
+		assert_eq(100 - foe.hp, 2 * (rolled / 2), "seed %d: a roll of %d struck twice at %d" % [seed_value, rolled, rolled / 2])
+
+
+## The spray (the Skua's Flechette Pod, built 25 October): the first strike lands on the foe it is
+## spent on, each after it on a random foe in reach at that moment; a kill clears its slot at
+## once, so the foe behind a front foe the first strike killed takes the strikes still to come.
+func test_a_spray_falls_on_foes_in_reach_and_a_kill_opens_the_one_behind() -> void:
+	var pod := Face.attack(5, L)
+	pod.strikes = 3
+	pod.spray = true
+	assert_true(pod.has_unique_rule() and pod.describe().contains("each strike after the first at a random foe in reach"), "the entry prints its rule")
+	var sk := Skirmish.new(1, 1)   # one column: a front foe and one behind it
+	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var front_foe := _ghoul(4, 10)
+	var behind := _archer(100, 10)
+	sk.add_foes([front_foe, behind])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[0] == front_foe and sk.back[0] == behind, "a front foe with one behind it")
+	assert_true(sk.assign(0, front_foe), "sprayed at the front foe")
+	assert_false(front_foe.alive(), "the first strike kills it")
+	assert_eq(behind.hp, 90, "its slot cleared at once, the two strikes after fall on the foe behind")
+	assert_true("\n".join(sk.log).contains("sprays"), "the log tells the spray")
+	var sk2 := Skirmish.new(2, 3)
+	sk2.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var row := [_ghoul(100, 10), _ghoul(100, 10), _ghoul(100, 10)]
+	sk2.add_foes(row)
+	sk2.begin()
+	sk2.start_round()
+	assert_true(sk2.assign(0, row[1]), "sprayed at the middle of a full front")
+	var dealt := 0
+	for f in row:
+		dealt += 100 - f.hp
+	assert_eq(dealt, 15, "every strike lands on a foe in reach")
+	assert_true(row[1].hp <= 95, "the first on the foe it was spent on")
+
+
 ## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and
 ## leaves standing is Exposed through the next round, in Direct reach of every machine as if
 ## its column's front were empty and its armour counting for nothing, its own and any Armoured;

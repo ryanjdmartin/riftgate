@@ -127,6 +127,8 @@ var charged: Dictionary = {}  # a locked piece's charged form, what a muster buy
 var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
 var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
 var random_targets: bool = false    # an attack: each strike at a random live foe, the target the die is dropped on only the gesture
+var spray: bool = false       # an attack: its first strike lands where it is spent, each after it on a random foe in reach at that moment, a kill clearing its slot at once (the Skua's Flechette Pod, 25 October)
+var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
 var reloads_ammo: int = 0     # equipment: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
@@ -302,6 +304,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
 	f.random_targets = bool(d.get("random_targets", false)) and f.kind == Kind.ATTACK
+	f.spray = bool(d.get("spray", false)) and f.kind == Kind.ATTACK
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
@@ -397,6 +400,8 @@ func to_dict() -> Dictionary:
 		d["spends_magazine"] = true
 	if random_targets:
 		d["random_targets"] = true
+	if spray:
+		d["spray"] = true
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
 	return d
@@ -438,7 +443,7 @@ func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
-		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or reloads_ammo > 0
+		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray or reloads_ammo > 0
 
 
 ## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
@@ -561,6 +566,8 @@ func duplicate_face() -> Face:
 	f.ammo_per_foe_hit = ammo_per_foe_hit
 	f.spends_magazine = spends_magazine
 	f.random_targets = random_targets
+	f.spray = spray
+	f.split = split
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
 	f.dry = dry
@@ -646,6 +653,11 @@ func number_text() -> String:
 		return "×%d" % buff_stacks
 	if power <= 0 and reloads_ammo > 0:
 		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
+	if split > 1:
+		# A split entry (the Skua's): a strike's share of the roll, rounded down.
+		var lo := power / split
+		var hi := power_max / split
+		return "%d–%d" % [lo, hi] if is_ranged() and hi != lo else str(lo)
 	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
 
 
@@ -740,6 +752,8 @@ func describe() -> String:
 				s += " a strike for every ammo in the magazine"
 			if random_targets:
 				s += " at random live foes"
+			if spray:
+				s += " each strike after the first at a random foe in reach"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			s += cooldown_text() + spin_text()

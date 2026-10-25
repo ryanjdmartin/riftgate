@@ -1734,12 +1734,10 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "A pod of darts for the strafing run (Ryan named it 21 October): the first aimed where the die is dragged, the rest sprayed among whatever stands in reach.",
-    "niche": "The Skua's lock, the spray (Ryan, 15 and 16 October): a rolled Direct gun of two strikes; the first lands where the die is dragged and each strike after it draws at random among the foes in reach at that moment, the same foe again allowed, reach read again between strikes and a kill clearing its slot at once; under the Split-cycle Breech four strikes at half. Volume against a full front, a plain gun on a lone foe behind a hole, a hole in the front turning the odds toward the foe behind it.",
-    "notes": "Planned: the spray is a draft field until the engine picks a target per strike."
+    "niche": "The Skua's lock, the spray (Ryan, 15 and 16 October): a rolled Direct gun of two strikes; the first lands where the die is dragged and each strike after it draws at random among the foes in reach at that moment, the same foe again allowed, reach read again between strikes and a kill clearing its slot at once; under the Split-cycle Breech four strikes at half. Volume against a full front, a plain gun on a lone foe behind a hole, a hole in the front turning the odds toward the foe behind it."
    },
    "face": {
     "kind": "attack",

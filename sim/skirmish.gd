@@ -358,7 +358,8 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	var add := heat_bonus(ms, f) + f.missing_bonus(target) + f.consume_bonus(target) + hopper_bonus(ms.unit, f)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
-		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
+		# A split entry (the Skua's) shows a strike's share of the roll, rounded down.
+		var d := int(Effects.attack(ms.unit, f, (v + add) / maxi(1, f.split), 0, target)["damage"])
 		if target != null:
 			if d > 0:
 				d += Effects.damage_taken_add(target, ms.unit)
@@ -1760,13 +1761,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.vents_all:
 		ms.heat = 0
 	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column), the same for
-	# each strike, since a kill clears its slot only after the spend.
+	# each strike, since a kill clears its slot only after the spend; a spray's later strikes
+	# find their own (below).
 	var hit := reached_by(f, target)
 	# What this machine's passives lay on each foe reached, judged alone and read now, before
 	# any strike's riders land (the funnel-web's Ambush, 18 October: a Suppress gun never feeds
 	# its own read): foe -> [[status id, stacks a hit], ...]; and what was laid, for the log.
+	# A spray may land on any foe in the fight, so every one is judged.
+	var judged: Array[Foe] = field_foes() if f.spray else hit
 	var lays := {}
-	for foe in hit:
+	for foe in judged:
 		var l := Effects.laid_statuses(ms.unit, f, foe)
 		if not l.is_empty():
 			lays[foe] = l
@@ -1777,23 +1781,40 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# on a foe carrying Flak): each foe reached judged at the spend, before any strike's riders,
 	# so the spend never opens its own gate.
 	var shut := {}
-	for foe in hit:
+	for foe in judged:
 		if f.has(Face.Keyword.SUPPRESS) and not Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, foe):
 			shut[foe] = [Face.Keyword.SUPPRESS]
 	var thawed := 0   # Cryo stacks this spend's damaging hits spent, cooling the hitter after its heat lands
+	var split := maxi(1, f.split)    # the strikes one roll serves (the Skua's Split-cycle Breech; Effects.split_of)
+	var roll := 0                    # the roll the strikes of one split share
+	var aimed := target              # the strike's own foe: the target, or where a spray's strike fell
+	var sprayed: Array[String] = []  # a spray's strikes, the foe and what it took, for the log
 	for s in range(maxi(1, f.strikes)):
-		var rolled := f.power
-		if f.is_ranged():
-			rolled = rng.randi_range(f.power, f.power_max)
-		rolled += fired + missing + from_hopper
-		if s == 0:
-			rolled += eaten * f.per_consumed   # a consumer's point a stack, on its one blow
+		if f.spray and s > 0:
+			# The spray (the Skua's Flechette Pod, built 25 October): each strike after the first
+			# falls on a random foe in reach at that moment, the same foe again allowed; a kill
+			# clears its slot at once, so a hole in the front opens the foe behind it.
+			_clear_dead()
+			aimed = _spray_pick(ms, real)
+			if aimed == null:
+				break
+			hit = reached_by(f, aimed)
+		if s % split == 0:
+			# Roll once, then split (Ryan, 24 October): the strikes of one split share the roll.
+			roll = f.power
+			if f.is_ranged():
+				roll = rng.randi_range(f.power, f.power_max)
+			roll += fired + missing + from_hopper
+			if s == 0:
+				roll += eaten * f.per_consumed   # a consumer's point a stack, on its one blow
+			rolled_total += roll
+		var rolled := roll / split   # a strike's share, rounded down
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
-		# Conditions on the foe read the primary target; a spread or a penetrate carries
-		# the same blow to the others.
-		var modded := Effects.attack(ms.unit, f, dmg, heat, target)
+		# Conditions on the foe read the strike's own foe (the target, or a spray's pick); a
+		# spread or a penetrate carries the same blow to the others.
+		var modded := Effects.attack(ms.unit, f, dmg, heat, aimed)
 		dmg = modded["damage"]
 		if s == 0:
 			heat_total += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
@@ -1815,7 +1836,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess.
 				_spill(ms, f, foe, dmg, hit)
-				if foe == target:
+				if foe == aimed:
 					landed = dmg
 				continue
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
@@ -1831,7 +1852,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				log.append("%s consumes %s ×%d on %s, +%d" % [ms.unit.display_name, str(Effects.STATUS.get(f.consumes, {}).get("name", f.consumes)), eaten, foe.display_name, eaten * f.per_consumed])
 			if was_alive:
 				dealt += clampi(taken, 0, maxi(0, hp_before))
-			if foe == target:
+			if foe == aimed:
 				landed = taken
 				armoured_total += foe_armoured
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
@@ -1891,7 +1912,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		total += landed
-		rolled_total += rolled
+		if f.spray:
+			sprayed.append("%s %d" % [aimed.display_name, landed])
 	for foe in laid.keys():
 		var bits: Array[String] = []
 		for sid in laid[foe].keys():
@@ -1936,7 +1958,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var how := f.describe()
 	if f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
-	log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
+	if f.spray:
+		log.append("%s sprays %s (%s)%s" % [ms.unit.display_name, ", ".join(sprayed), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
+	else:
+		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
@@ -2313,6 +2338,15 @@ func _random_foe(fallback: Foe) -> Foe:
 	return live[rng.randi_range(0, live.size() - 1)]
 
 
+## Where a spray's strike falls (the Skua's Flechette Pod): a random live foe the entry reaches
+## now, from the seeded stream, the same foe again allowed; null when none stands in reach.
+func _spray_pick(ms: MechState, real: Face) -> Foe:
+	var pool := targets_for_face(ms, real)
+	if pool.is_empty():
+		return null
+	return pool[rng.randi_range(0, pool.size() - 1)]
+
+
 ## The Unrestricted Expenditure (the Musk Ox's, Ryan's go of 21 October): every ammo in the
 ## magazine as a strike, each at a random live foe from the seeded stream, with the entry's
 ## keywords (Spread and Penetrate on every strike), the magazine its price and no heat; a kill
@@ -2430,11 +2464,15 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 	var laid: Array = []
 	var heat_total := 0
 	var vent := 0
+	var split := maxi(1, f.split)
+	var roll := 0
 	for s in range(maxi(1, f.strikes)):
-		var rolled := f.power
-		if f.is_ranged():
-			rolled = rng.randi_range(f.power, f.power_max)
-		rolled += fired + from_hopper
+		if s % split == 0:
+			roll = f.power
+			if f.is_ranged():
+				roll = rng.randi_range(f.power, f.power_max)
+			roll += fired + from_hopper
+		var rolled := roll / split   # a split entry's strike takes its share of the roll, rounded down
 		var modded := Effects.attack(ms.unit, f, rolled, f.heat if s == 0 else 0, null)
 		if s == 0:
 			heat_total += int(modded["heat"])   # heat once a spend

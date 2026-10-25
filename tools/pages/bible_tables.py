@@ -61,6 +61,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
            ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
            ("drone", "Drone", lambda f: bool(f.get("drones"))),
+           ("spray", "Spray", lambda f: bool(f.get("spray"))),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]

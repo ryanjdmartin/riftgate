@@ -152,6 +152,8 @@ defeat when every machine is wrecked. There is no round limit.
 3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
    then loses its armour off it. A blow of nothing stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
+  A split weapon (the Skua's) rolls once for the strikes the split makes of each, and each
+  takes its share of the roll, rounded down.
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
@@ -225,6 +227,10 @@ defeat when every machine is wrecked. There is no round limit.
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
   no limit.
+- **Spray** (the Skua's Flechette Pod): the first strike lands on the foe the entry is spent
+  on; each strike after it falls on a random foe in reach at that moment, the same foe again
+  allowed, and a kill clears its slot at once, so a hole in the front opens the foe behind it
+  to the strikes still to come. The die shows the first strike's number.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -537,7 +543,12 @@ shields do not refill; a pack keeps its survivors, who return whole.
   this machine's that killed, chains and spills included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, what the entry prints
   included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
-  after it (the Kite's), and may grant a cooldown to every weapon its machine fires.
+  after it (the Kite's), and may grant a cooldown to every weapon its machine fires. It may
+  split every damaging weapon instead (the Skua's): the weapon strikes twice as often, each
+  roll, what the entry prints included, divided between the two strikes, rounded down, and
+  every buff and the foe's conditions counting on each strike, its armour too; the die shows
+  a strike's share with the strikes beside it ("1 ×2"). A debuff has no number and is not
+  split.
 - Conditions: the component is cracked; the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its

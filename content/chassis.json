@@ -1079,7 +1079,7 @@
    "design": {
     "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade, its wings sweeping as it fires twice; the Skua, the seabird that harries others in repeated dives until they drop what they carry.",
     "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a strike, flat buffs counted on each strike and multi-strike pieces, every maker's; its Flechette Pod sprays its later strikes among the foes in reach.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_strafer.md holds the rounds and the engine it waits on). Landed 23 October as planned: its passive (the printed number halved, rounded up, and the strikes doubled on the effective face) and its lock's spray wait on the engine, so it is never dealt. Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull; the halving's rounding at single digits is the brief's open hole. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), Ryan's to judge running."
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row). Its engine landed 25 October: the Split-cycle Breech (each roll halved, rounded down, Ryan's call of 24 October, and struck twice) and the Flechette Pod's spray; its rounds are in git (git show f87b831:docs/briefs/kestrel_strafer.md). Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), in a second round of looks on Ryan's notes (the to-do)."
    },
    "codex": "",
    "hull": 20,
@@ -1106,9 +1106,14 @@
    "passive": {
     "id": "split_cycle_breech",
     "name": "Split-cycle Breech",
-    "description": "Every weapon the Skua fires strikes twice at half: its printed number halves, rounded up, and every buff, passive and foe's condition counts on each strike.",
-    "status": "planned",
-    "effects": []
+    "description": "Every weapon the Skua fires strikes twice at half: its number, as rolled, halves, rounded down, and every buff, passive and foe's condition counts on each strike.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "split_strikes",
+      "value": 2
+     }
+    ]
    },
    "flavour": ""
   },

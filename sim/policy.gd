@@ -418,13 +418,25 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	var quick := Effects.quick_turn_live(ms.unit, f)
+	var real := f
 	f = Effects.effective_face(ms.unit, f, target)
 	if f.spends_magazine:
 		return salvo_score(sk, ms, f)   # the Musk Ox's salvo: random targets, the magazine its price
 	var outcomes := damage_outcomes(ms, f, target)
+	var spray_score := 0.0
+	if f.spray:
+		# The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a
+		# random foe in reach, so every foe in reach takes its share of the later strikes, the
+		# target its first and its share; read on the foes in reach now.
+		var pool := sk.targets_for_face(ms, real)
+		var share := float(maxi(1, f.strikes) - 1) / float(maxi(1, pool.size()))
+		outcomes = damage_outcomes(ms, f, target, 1.0 + share)
+		for foe in pool:
+			if foe != target:
+				spray_score += _capped(damage_outcomes(ms, f, foe, share, false), foe.hp)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
-	var score := _capped(outcomes, target.hp)
+	var score := _capped(outcomes, target.hp) + spray_score
 	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, a reach over
 	# every foe), the blow on each capped at what it has left.
 	for n in sk.reached_by(f, target):
@@ -512,8 +524,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.BURN):
 		# Burn N leaves N stacks that tick N, N-1, ... 1 over the actions to come (Ryan, 18
 		# October: a numbered keyword, a damage point a stack); the tick is read from the status.
+		# Every strike lays its stacks, so a split or multi-strike gun's add up first.
 		var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
-		score += (1.0 - p_kill) * per * float(f.burn * (f.burn + 1)) / 2.0 * BURN_WEIGHT
+		var laid_burn := f.burn * maxi(1, f.strikes)
+		score += (1.0 - p_kill) * per * float(laid_burn * (laid_burn + 1)) / 2.0 * BURN_WEIGHT
 	# Cryo (20 October): a damaging hit cashes the foe's stacks for cooling, worth what a vent
 	# of that much would be on the hitter.
 	if (f.power > 0 or f.power_max > 0) and Effects.has(target, "cryoed"):
@@ -962,8 +976,10 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
 ## A rolled entry is read at five points (its ends, its quarters, its middle); a flat entry is
 ## one point. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
-## resolver applies them; the strikes multiply the blow.
-func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
+## resolver applies them; the strikes multiply the blow, a split entry's (the Skua's) each
+## taking its share of the roll, rounded down. `strikes_on` is how many of them land on this
+## foe when not all do (a spray's share, fractional), and `aimed` whether the first is one.
+func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strikes_on: float = -1.0, aimed: bool = true) -> Array:
 	f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
@@ -978,14 +994,20 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var out: Array = []
 	var w := 1.0 / rolls.size()
+	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
 	for v in rolls:
-		var dmg: int = v + fired
+		var dmg: int = (v + fired) / maxi(1, f.split)
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
-		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
-		# armour comes off every blow, so a braced foe is worth less to a volume weapon.
+		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
+		# Flak adds to every blow that deals something. Then its armour comes off every blow,
+		# so a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
+		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and dmg > 0 else 0) - arm)
+		if not aimed:
+			out.append([float(later) * n, w])
+			continue
 		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit) if target != null else dmg) - arm)
-		out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
+		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
 	return out
 
 
