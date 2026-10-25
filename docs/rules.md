@@ -46,7 +46,8 @@ skirmish.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
-  Fitted in the harness only (not in the run yet). Catalogue: `content/modules.json`.
+  Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
+  `content/modules.json`.
 - **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
   starts with every basic's blueprint. Every other component carries its tier, one to three,
   and a chassis stocks only components below its own tier, so a tier-one chassis stocks
@@ -700,6 +701,40 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   far).
 - Not built: building from blueprints, offers, procurement, loot on the map, modules in the
   run, Sponsorship, livery, the mission map, draft and hangar screens.
+
+## The quick campaign
+
+A run of battles with no map and no cities, Slice and Dice's flow (`sim/quick_run.gd`; the
+harness's Quick campaign). The campaign's rules hold where this part says nothing.
+
+- **Start**: three different tier-one chassis, picked freely from every one the engine can
+  field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
+  dealt as in the campaign. The eight basics are free and without limit.
+- **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
+  drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
+  Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
+  elites: a formation first, then elites and formations in turn, the elites left over at the
+  end. Then the boss with its formation. The finale's last fight is the party's line alone,
+  every domain's dealt hero promoted.
+- **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
+  turns. **An elite** is the lead's other bench hero, the one the party was not dealt, leading
+  the lead's formation (a stand-in until the elites land).
+- **A fight** takes the squad's machines still standing, their damage carried and their heat
+  from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
+  before the next; a wipe ends the run.
+- **The boss's fall**: the campaign's after-battle rule without the shop (hull and cracks mend; a
+  destroyed hardpoint component is gone, a destroyed fixed one rebuilt; a wreck loses its cracked
+  components too). Then, each one of three and one taken: a loot pick for each fight before the
+  boss (components and modules: a tier-one battle's of tier one; a tier-two's of tiers one and
+  two, a tier three now and then; a tier-three's mostly tier two, tier three oftener); the
+  boss's token, components of the battle's tier, its modules filling in where it has fewer
+  than three (tier three has two); and an offer from a maker drawn from all five: a
+  chassis of its own at or under the battle's tier that the roster lacks (bringing its stock), a
+  component of the tier (else the highest under it the maker makes) and a module at or under it.
+- **The hangar**, between battles only: up to four machines of the roster, in the order they
+  deploy; any component from the stores on any hardpoint and any module in any slot, what comes
+  off going back to the stores.
+- The run saves after every change and resumes where it stood, a fight under way included.
 
 ## Content conventions
 

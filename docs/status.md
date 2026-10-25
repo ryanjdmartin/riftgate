@@ -20,8 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 628 tests, 64,352 checks, green on main (25 October, the three branches landed onto
-  the weld), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 646 tests, 65,060 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
+  quick campaign; main's 628 and 64,352 since the landing), about half a minute in a cloud
+  session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,9 +34,9 @@ are in `README.md`.
 ## Branches
 
 One branch is live beside main: `claude/quick-campaign-mode-pafhiv` (25 October), the quick
-campaign's proposal (`docs/quick_campaign_proposal.md`: Ryan's mode of battles of back-to-back
-formations, its holes and Claude's leans) and the probe it cites (`tools/chain_probe.gd`, the
-measurements' entry of that day), waiting on Ryan's answers; nothing of the mode is built. On 25
+campaign built on Ryan's calls of that day (the bible's section 3 row; `sim/quick_run.gd`, its
+screens in `game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal
+cited, waiting on his play and on section 12's quick campaign question before it merges. On 25
 October, on Ryan's go ("merge in and clean up"), main took
 the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
@@ -74,6 +75,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
+- The quick campaign (25 October, on the branch): battles without the map, headless, saved, on
+  screen with the game's first hangar, and run by `tools/quick_run.gd`. Its first runs
+  (`docs/quick_run.md`, `docs/measurements.md`) find a cliff at the first battle for a starting
+  trio (34 and 35 runs of 40 lost there on the greedy and planner rungs) and a plateau after it
+  while the enemy has no tiers: section 12's question.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8

@@ -1347,7 +1347,8 @@ about 1 to 9 ms an instance after it (the plan is built once a model).
 ## 25 October, formations back to back
 
 **How many complete formations a squad gets through in a row** (Ryan's quick campaign of 25
-October, `docs/quick_campaign_proposal.md`: battles of four, six and eight fights before the boss,
+October as first proposed, `git show 2b64715:docs/quick_campaign_proposal.md`: battles of four,
+six and eight fights before the boss,
 every one a formation or an elite, nothing healed until the boss falls). `tools/chain_probe.gd`
 on the content at `a8a0e43`: a squad fights one domain's formation (its whole spawn list in one
 fight, as the balance report's formation cells) up to nine times in a row, hull, shield, cracks
@@ -1386,3 +1387,38 @@ formation and leaves eight with three quarters of it or more; every tier draws t
 today (the curve row), so only the formation's density presses it, half again as dense taking it
 to 90% through eight and double to 66%. A direction: 2 to 5 seeds a cell over many cells, greedy
 only.
+
+## 25 October, the quick campaign's first runs
+
+**Whole quick runs, the mode as Ryan decided it that day** (the bible's quick campaign row;
+`docs/rules.md`'s quick campaign part): `tools/quick_run.gd` at 40 runs from seed 1, each
+starting with three different draft chassis at random, the plain player picking the loot by
+tier and fitting it the same way, once on the greedy rung (`docs/quick_run.md`, 129 s in four
+parts) and once on the planner (563 s), on the content and engine at `f7c1fa0`.
+Every fight a complete formation, an elite (each domain's other bench hero leading its
+formation) or the boss with its formation, the enemy the same at every tier. A direction.
+
+| Read | Greedy | Planner |
+|---|---|---|
+| Runs won | 1 of 40 | 1 of 40 |
+| Runs lost in the first battle | 34 (its elite 15, a formation 10, its boss 9) | 35 (15, 8, 12) |
+| The first battle won | 15% | 13% |
+| Battles 2 to 8 won, by the runs that passed the first | 80 to 100% (4 to 6 runs) | 100% (5 runs) |
+| The squad's hull as the boss fight opened, battles 2 to 10 | 76 to 96% | 70 to 98% |
+| Battles 11 and 12 won; hull before the boss | 67%, 100%; 62%, 56% | 80%, 75%; 58%, 48% |
+| The finale | 2 reached, 1 won | 3 reached, 1 won |
+| The kit at battle 7 (a squad's hardpoint pieces of tiers 0 / 1 / 2 / 3, and modules) | 0 / 6.5 / 8.5 / 1.2, 1.0 | 0 / 6.4 / 8.6 / 1.2, 1.4 |
+
+By fight on the greedy rung: a tier-one formation won 90% (5.0 rounds, the squad at 73% of its
+hull after), a tier-one elite 72% (49%), a tier-one boss 73% (47%); from tier two every
+formation and elite 97 to 100%, the bosses 91 to 94%. The Meadow is the hardest lead (38% of its
+battles won), the Marsh and the Peak the easiest (71 and 70%); the Cottonmouth's runs won the
+most battles (3.7 a run), the Puffin's none.
+
+Read: the first battle is a cliff and the middle a plateau, alike on both rungs, so it is the
+shape and not the bot. A starting trio meets three complete formations, an elite and a boss with
+its formation with no heal, which the chain probe of the same day reads as a trio's wall; the
+few runs through it field four from the first offer and win nearly everything to tier three,
+since the loot ramps their kit while the enemy keeps the first battle's tiers. Tier three's
+bosses and the finale press again. What moves it is section 12's (the bible's quick campaign
+question).

@@ -511,6 +511,7 @@ func _build() -> void:
 	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
 	_withdraw_btn.ghost = true
 	_withdraw_btn.tooltip_text = "Pull out: the enemy strikes once more, then the team flees."
+	_withdraw_btn.visible = sk.withdraw_allowed   # the quick campaign's fights have none (Ryan, 25 October)
 	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
 	# While the enemy's turn replays, nothing on the screen takes a tap.

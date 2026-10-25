@@ -720,6 +720,10 @@ const QUICK_PATH := "user://quick_run.json"
 const QUICK_VERSION := 1
 
 
+static func quick_exists(path: String = QUICK_PATH) -> bool:
+	return FileAccess.file_exists(path)
+
+
 static func save_quick(r: QuickRun, path: String = QUICK_PATH) -> bool:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:

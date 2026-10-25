@@ -15,6 +15,7 @@ var faces: Array = []     # Face
 var current: int = -1
 var columns: int = 1      # the codex runs two columns; the die readout one
 var labels: Array = []    # optional, one per face: the component's name above its description
+var numerals: bool = true # each row's place on its die; off for a list of pieces that are no die (the quick campaign's stores and picks)
 
 
 func _init() -> void:
@@ -49,8 +50,9 @@ func _draw() -> void:
 		var column := i / rows
 		var x0 := float(column) * col_w + offsets[column]      # fill down the first column, then the next
 		var y := float(i % rows) * ROW
-		draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + 1), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
-				Color(Palette.MUTED, 1.0 if i == current else 0.75))
+		if numerals:
+			draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + 1), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
+					Color(Palette.MUTED, 1.0 if i == current else 0.75))
 		x0 += GUTTER
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current
