@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 636 tests, 64,470 checks, green on `claude/playtesting-issues-08mnqj` (25 October,
+- Tests: 638 tests, 64,487 checks, green on `claude/playtesting-issues-08mnqj` (25 October,
   Ryan's playtest list), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -36,9 +36,11 @@ are in `README.md`.
 (the map's moves planned and played on ENGAGE or END TURN, UNDO in the order things were done
 with orders in it, every pack's ring in red and a selected machine's red band, the button's
 pulse on the map and in a fight, the Gel's halves stepping up at once without its breach, SIG
-LOST no longer stuck under a held foe, the boss's order no longer bobbing and saying how many
-are in, the grid down a fifth); it waits on his phone read (the to-do) and the boss-fight
-question (section 12) before it merges. On 25 October, on Ryan's go ("merge in and clean up"), main took
+LOST no longer stuck under a held foe, the boss's order no longer bobbing, the grid down a
+fifth), then his second round the same day (the boss's fight takes every machine, straight to
+the reveal, with no withdrawal; a hunted machine's tag; a stop sign on end hexes; a foe flying
+into the pool's count); it waits on his phone read (the to-do) and the Gel's twin slot
+(section 12, proposed in chat) before it merges. On 25 October, on Ryan's go ("merge in and clean up"), main took
 the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
 doubled, the Kite's reset without a limit, the Skua's engine), which carried

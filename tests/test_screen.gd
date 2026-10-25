@@ -1075,3 +1075,18 @@ func test_end_turn_pulses_once_nothing_is_left_to_spend() -> void:
 	assert_true(s.sk.rerolls_left > 0, "rerolls are left")
 	assert_true(s._end_btn.pulse, "and it pulses all the same: every die is spent")
 	s.free()
+
+
+## A foe joining the pool is shown going in (Ryan, 25 October): the screen notices who was not
+## waiting at its last look; the fight's opening pool is no join.
+func test_a_foe_joining_the_pool_is_noticed() -> void:
+	var s := _screen(5)
+	assert_true(s._pool_primed, "the opening pool remembered")
+	var waiting := s.sk.reinforcements.size()
+	assert_eq(s._pool_last.size(), waiting, "everyone waiting at the start")
+	var joined := Foe.make("revenant", 3, 2)
+	s.sk.reinforcements.append(joined)
+	s._refresh(false)
+	assert_true(s._pool_last.has(joined), "the newcomer seen joining")
+	assert_eq(s._reserve.pending.get("front", 0), 0, "headless, nothing flies and the count stands as it is")
+	s.free()

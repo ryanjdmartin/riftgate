@@ -958,7 +958,7 @@ func _fight_preview() -> Dictionary:
 			var team: Array = _ordered_onto(r["targets"])
 			if not team.has(_draft_unit):
 				team.append(_draft_unit)
-			r["committed"] = team
+			r["committed"] = (r["eligible"] as Array).duplicate() if bool(r.get("all_in", false)) else team   # the boss's fight takes every machine
 			return r
 	var f := battle.next_fight()
 	if not f.is_empty():
@@ -972,7 +972,7 @@ func _fight_preview() -> Dictionary:
 	if _inspect_pack != null and battle.field.units.has(_inspect_pack):
 		var r := battle.roster(_inspect_pack)
 		if not r.is_empty():
-			r["committed"] = _ordered_onto(r["targets"])
+			r["committed"] = (r["eligible"] as Array).duplicate() if bool(r.get("all_in", false)) else _ordered_onto(r["targets"])
 			r["inspect"] = true   # its own ring shows, lit, in place of where a machine must stand
 			return r
 	return {}
@@ -1016,8 +1016,14 @@ func _engage() -> void:
 	_select(null)
 	_details.visible = false
 	_inspect_pack = null
-	# The planned moves play first, and the fight opens once they have (Ryan, 25 October).
-	_play_plan(battle.take_plan(), [], func() -> void:
+	# The planned moves play first, and the fight opens once they have (Ryan, 25 October); the
+	# boss's fight takes every machine wherever it stands and ends the battle, so nothing moves
+	# first and the reveal plays at once ("just go right into the boss animation").
+	var plan := battle.take_plan()
+	if battle.next_fight_is_boss():
+		plan = []
+		_map.shown = {}
+	_play_plan(plan, [], func() -> void:
 		var sk := battle.engage()
 		if sk == null:
 			Sound.play("ui_back")

@@ -273,6 +273,8 @@ python3 tools/special_probe_read.py build
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
+# of seconds, to judge the join running.
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the

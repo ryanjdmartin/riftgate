@@ -375,7 +375,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed,
 	}
 
 
@@ -417,6 +417,7 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	sk.terrain = int(d.get("terrain", BattleMap.Terrain.PLAIN))
 	sk.round = int(d.get("round", 0))
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
+	sk.committed = bool(d.get("committed", false))
 	sk.state = int(d.get("state", Skirmish.State.SETUP))
 	sk.outcome = int(d.get("outcome", Skirmish.Outcome.NONE))
 	for line in d.get("log", []):

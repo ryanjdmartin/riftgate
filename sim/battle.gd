@@ -577,6 +577,16 @@ func nothing_left() -> bool:
 	return true
 
 
+## Whether the next fight ENGAGE opens holds the boss: every machine goes in, nothing moves first
+## (Ryan, 25 October: "no reason to move any units once engage is clicked, just go right into
+## the boss animation").
+func next_fight_is_boss() -> bool:
+	var f := next_fight()
+	if f.is_empty() or f["target"] == null:
+		return false
+	return bool(roster(f["target"]).get("all_in", false))
+
+
 ## The fight the player would open at `target`, or the next fight a hunter forced, which comes
 ## first whatever is tapped (bible section 5): {"targets": the packs attacked, "joins": the
 ## packs whose ring covers a target, "in_range": the machines whose attack range covers one,
@@ -598,12 +608,18 @@ func roster(target: Unit = null) -> Dictionary:
 	var eligible: Array[Unit] = []
 	if pinned != null:
 		eligible.append(pinned)
-	for m in r["in_range"]:
-		if m != pinned and actions_left(m) > 0:
+	# The boss's fight takes every machine (Ryan, 25 October: "automatically make all units
+	# attacking when one unit targets it, regardless of their range", "doesn't matter if a
+	# unit has fought this turn already"), whether the boss is the target or its ring pulls it
+	# in, since its fight cannot be left.
+	var all_in := boss != null and (targets.has(boss) or (r["joins"] as Array).has(boss))
+	for m in (mechs() if all_in else r["in_range"]):
+		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
 	r["eligible"] = eligible
 	r["pinned"] = pinned
 	r["forced"] = pinned != null
+	r["all_in"] = all_in
 	return r
 
 
@@ -617,7 +633,7 @@ func attack(target: Unit, machines: Array) -> Skirmish:
 	var team: Array = []
 	if r["pinned"] != null:
 		team.append(r["pinned"])
-	for m in machines:
+	for m in (r["eligible"] if bool(r["all_in"]) and not machines.is_empty() else machines):
 		if (r["eligible"] as Array).has(m) and not team.has(m):
 			team.append(m)
 	if team.is_empty():
@@ -630,6 +646,7 @@ func attack(target: Unit, machines: Array) -> Skirmish:
 	if sk == null:
 		return null
 	boss_fight = boss != null and group.has(boss)
+	sk.committed = boss_fight   # no withdrawing from the boss's fight
 	# A fight is a barrier: what came before it is played out on the map and cannot be taken
 	# back (Ryan, 25 October: the undo runs in order, always).
 	history.clear()
@@ -778,6 +795,9 @@ func next_fight() -> Dictionary:
 	for uid in orders.keys():
 		if orders[uid] == first:
 			team.append(field.unit_by_id(int(uid)))
+	var r := roster(first)
+	if bool(r.get("all_in", false)):
+		team = (r["eligible"] as Array).duplicate()   # one order on the boss's fight brings every machine
 	return {"target": first, "machines": team}
 
 

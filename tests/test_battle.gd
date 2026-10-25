@@ -317,7 +317,11 @@ func test_attack_opens_a_fight_with_the_target_the_packs_that_join_and_the_machi
 func test_a_machine_out_of_range_cannot_be_committed() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.packs()[0]
+	var sq: Unit = null
+	for p in b.field.packs():
+		if not p.is_boss and not bool(b.roster(p)["all_in"]):
+			sq = p   # a pack whose fight the boss stays out of
+			break
 	assert_true(Battlefield.unit_distance(m, sq) > m.attack_range, "the packs start far off")
 	assert_false((b.roster(sq)["eligible"] as Array).has(m), "out of range")
 	assert_eq(b.attack(sq, [m]), null, "so there is nobody to fight with")
@@ -774,28 +778,57 @@ func test_the_hexes_moved_are_tallied_and_an_undo_takes_them_back() -> void:
 	assert_eq(int(b.sponsorship["hexes_moved"]), route.size(), "and counted again when it goes")
 
 
-## A boss withdrawn from holds the rift still (found 21 October: the withdrawal counted the
-## boss among its strength, so it walked as a pack and came back with a foe of the spawn list
-## beside it), and its death counts among the battle's kills.
-func test_a_boss_withdrawn_from_holds_the_rift_and_its_kill_counts() -> void:
+## The boss's fight (Ryan, 25 October): one order onto it brings every machine, wherever it
+## stands and whether or not it has fought this turn; nobody withdraws from it; and its death
+## counts among the battle's kills.
+func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
+	var far: Unit = b.mechs()[2]
 	_engage(b, b.boss, m)
-	var sk := b.attack(b.boss, [m])
+	far.pos = b.field.nearest_standable(far, Hex.offset_to_axial(0, b.map.height - 3))
+	assert_false(b.in_range_from(far, far.pos, b.boss), "one machine far out of range")
+	b.spent[b.mechs()[1].id] = 1   # and one that has fought this turn
+	assert_true(b.order(m, b.boss), "one order onto the boss")
+	assert_true(b.next_fight_is_boss(), "the next fight is the boss's")
+	assert_eq((b.next_fight()["machines"] as Array).size(), b.mechs().size(), "and it takes every machine")
+	var before := b.foes_killed
+	var sk := b.engage()
+	assert_eq(sk.mechs.size(), b.mechs().size(), "every machine is in the fight")
 	sk.begin()
 	sk.start_round()
-	sk.withdraw()
-	b.finish_skirmish()
-	assert_true(b.field.units.has(b.boss) and b.boss.is_boss, "still on the map, still the boss")
-	assert_eq(b.boss.strength, 0, "no escort grew out of it")
-	assert_eq(b.db.foes_for(b.boss).size(), 1, "it comes back alone")
-	var before := b.foes_killed
-	b.spent.clear()   # a fresh turn's actions, without the enemy's turn between
-	var sk2 := b.attack(b.boss, [m])
-	_win(sk2)
+	assert_true(sk.committed, "the fight is committed")
+	assert_false(sk.can_withdraw(), "no withdrawing from it")
+	assert_false(sk.withdraw(), "refused")
+	var trip := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_true(trip.current.committed, "a save keeps it committed")
+	_win(sk)
 	b.finish_skirmish()
 	assert_eq(b.foes_killed, before + 1, "the boss's death is a kill")
 	assert_eq(b.outcome, Battle.Outcome.VICTORY, "and the rift is sealed")
+
+
+## A fight the boss joins by its ring is the boss's fight too: every machine, no withdrawal.
+func test_a_fight_the_boss_joins_takes_every_machine() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	sq.behaviour = "push"
+	# The pack beside the boss, inside its ring, and the machine beside the pack.
+	for n in Hex.neighbors(b.boss.pos):
+		if b.field.can_stand(sq, n):
+			sq.pos = n
+			break
+	for n in Hex.neighbors(sq.pos):
+		if b.field.can_stand(m, n):
+			m.pos = n
+			break
+	var r := b.roster(sq)
+	assert_true((r["joins"] as Array).has(b.boss), "the boss joins by its ring")
+	assert_true(bool(r["all_in"]), "so it is the boss's fight")
+	var sk := b.attack(sq, [m])
+	assert_eq(sk.mechs.size(), b.mechs().size(), "every machine goes in")
+	assert_true(sk.committed, "and none withdraws")
 
 
 ## A final (the bible's section 9): the dealt hero commands the rift, in its rank, with its

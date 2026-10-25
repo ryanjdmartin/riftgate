@@ -113,6 +113,9 @@ var _falls: int = 0   # foes that have fallen this fight, counted as their slots
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
 var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
+## The boss's fight (Ryan, 25 October: "the player is committed to closing the rift or getting
+## scrapped trying"): no withdrawal, so it ends in the boss's fall or the team's.
+var committed := false
 ## The runner's mine tally (the game never reads it): spends on a slot, shots laid by them and
 ## by the drone, shots landed on an arrival or by the pull, and the hull they took.
 var mine_tally := {"slot_spends": 0, "laid": 0, "drone_laid": 0, "landed": 0, "pulled": 0, "damage": 0}
@@ -304,7 +307,7 @@ func any_assigned() -> bool:
 ## always the same: the enemy takes its turn, then the team flees at the end of the round, so
 ## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
 func can_withdraw() -> bool:
-	return state == State.ROUND_START or state == State.ASSIGN
+	return not committed and (state == State.ROUND_START or state == State.ASSIGN)
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that

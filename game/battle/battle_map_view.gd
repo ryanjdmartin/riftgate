@@ -419,13 +419,15 @@ func _draw() -> void:
 	# Where the selected mech may end its move. A slow hex for it (water for a walker,
 	# rubble for tracks) is an end hex: it can be entered with any move left and the step
 	# ends the move, so it wears a dashed edge where the others are solid (decided 2
-	# October; structure, never hue, since Ryan is colourblind).
+	# October; structure, never hue, since Ryan is colourblind) and a stop sign in its middle
+	# (Ryan, 25 October: the dashes alone did not say what they meant).
 	for h in destinations.keys():
 		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
 		draw_colored_polygon(pts, Color(hud, 0.26))
 		if selected != null and BattleMap.move_cost(map.terrain[h], selected.traits) == BattleMap.SLOW:
 			for i in range(6):
 				_dashed_line(pts[i], pts[(i + 1) % 6], Color(hud, 0.9), HEX_SIZE * 0.16)
+			_stop_mark(center(h), HEX_SIZE * 0.24, hud)
 		else:
 			Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
@@ -488,6 +490,7 @@ func _draw() -> void:
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
 	# entered. A fight a hunter forced comes first, so its marks have the map until it is fought.
+	var hunted := {}   # prey -> the packs hunting it, for the tags drawn over the units
 	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
 			var w: Battlefield.Walk = walks.get(sq.id, null)
@@ -496,7 +499,9 @@ func _draw() -> void:
 			if w.prey != 0:
 				var prey := field.unit_by_id(w.prey)
 				if prey != null:
-					_prey_lock(prey.pos)
+					if not hunted.has(prey):
+						hunted[prey] = []
+					(hunted[prey] as Array).append(sq)
 			if not w.path.is_empty():
 				# The same route mark as the player's (Ryan, 29 September), in steady red; the
 				# colour breathes only on the pack that was tapped.
@@ -640,6 +645,8 @@ func _draw() -> void:
 
 	for u in field.units:
 		_draw_unit(u)
+	for prey in hunted.keys():
+		_hunted_tag(prey, hunted[prey])
 
 	if selected != null:
 		var c := _unit_center(selected)
@@ -1269,13 +1276,57 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 		k += 2.0
 
 
-## A hunter's lock on its prey: the display's target rings in the enemy's register on the
-## prey's hex.
-func _prey_lock(h: Vector2i) -> void:
-	_field_hot = ENEMY_HOT
-	_field_deep = Color(Palette.ENEMY, 0.5)
-	_field_rings(center(h), DEST_RING, -1.0, 0.0)
-	draw_circle(center(h), 3.5, ENEMY_HOT)
+## A hunted machine wears a tag hovering by it (Ryan, 25 October: not the orange target under
+## it, "a tag hovering by the unit with the hunter's portrait (probably cropped) and some kind
+## of target symbol"): one plate a hunter, up and left of the machine, clear of its gauges,
+## each the hunter's map picture trimmed to what is drawn and a target turning beside it, in
+## the enemy's register.
+const HUNT_TAG := Vector2(66.0, 40.0)   # the picture at twice its pixels, the target beside it
+
+func _hunted_tag(prey: Unit, hunters: Array) -> void:
+	var c := _unit_center(prey)
+	var right := c + Vector2(-HEX_SIZE * 0.72, -HEX_SIZE * 0.95)   # the first plate's right edge, clear of a selected machine's gauges
+	for k in range(hunters.size()):
+		var sq: Unit = hunters[k]
+		var rect := Rect2(right + Vector2(-HUNT_TAG.x - k * (HUNT_TAG.x + 4.0), -HUNT_TAG.y * 0.5), HUNT_TAG)
+		draw_rect(rect.grow(2.0), Color(ENEMY_EDGE, 0.9), true)
+		draw_rect(rect, Color(Palette.BG, 0.95), true)
+		draw_rect(rect, Palette.ENEMY, false, 2.5)
+		var face := Rect2(rect.position + Vector2(4.0, 4.0), Vector2(HUNT_TAG.y - 8.0, HUNT_TAG.y - 8.0))
+		var tex := Sprites.map_foe(foe_sprite_id(sq))
+		if tex != null:
+			var used := Sprites.used_rect(tex)
+			var s := maxf(1.0, floorf(face.size.y / maxf(used.size.x, used.size.y)))
+			var sz := used.size * s
+			draw_texture_rect_region(tex, Rect2((face.get_center() - sz * 0.5).floor(), sz), used)
+		else:
+			draw_string(Hud.mono(), face.position + Vector2(6.0, 17.0), sq.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.ENEMY)
+		_target_mark(Vector2(rect.end.x - 14.0, rect.get_center().y), 10.0)
+		# A tick from the first plate toward the machine, so the tag reads as its.
+		if k == 0:
+			var tip := Vector2(rect.end.x + 6.0, rect.end.y + 6.0)
+			draw_colored_polygon(PackedVector2Array([Vector2(rect.end.x - 10.0, rect.end.y), Vector2(rect.end.x, rect.end.y - 8.0), tip]), Palette.ENEMY)
+
+
+## A stop sign: an octagon on its own dark plate with a bar across it, the end of a move.
+func _stop_mark(c: Vector2, r: float, col: Color) -> void:
+	var oct := PackedVector2Array()
+	for k in range(8):
+		var a := TAU * (float(k) + 0.5) / 8.0
+		oct.append(c + Vector2(cos(a), sin(a)) * r)
+	draw_colored_polygon(oct, Color(Palette.BG, 0.88))
+	Hud.stroke_poly(self, oct, col, 2.5)
+	draw_line(c + Vector2(-r * 0.55, 0.0), c + Vector2(r * 0.55, 0.0), col, 4.0)
+
+
+## The target: a ring of three dashes turning, four ticks closing on a hot centre.
+func _target_mark(c: Vector2, r: float) -> void:
+	for k in range(3):
+		var a := _ring_t * 1.6 + TAU * float(k) / 3.0
+		draw_arc(c, r, a, a + TAU / 3.0 * 0.62, 8, ENEMY_HOT, 2.0)
+	for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN]:
+		draw_line(c + d * (r * 0.35), c + d * (r * 0.8), Palette.ENEMY, 2.0)
+	draw_circle(c, 1.8, ENEMY_HOT)
 
 
 ## The hexes within a unit's ring of its anchor at `anchor` (a pack's own, or `radius`):

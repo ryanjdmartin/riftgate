@@ -60,6 +60,10 @@ const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (
 const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
 ## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
 static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
+## RIFTGATE_POOL_DEBUG=1: every couple of seconds a foe on the field flies into the pool, to judge
+## the join running (the counts land back where they were).
+static var POOL_DEBUG := OS.get_environment("RIFTGATE_POOL_DEBUG") == "1"
+var _pool_debug_at := 0.0
 ## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
 ## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
@@ -141,6 +145,13 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
+		_pool_debug_at = _fight_t
+		var live := sk.field_foes()
+		var f: Foe = live[int(_fight_t) % live.size()]
+		var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
+		_reserve.counts[kind] = int(_reserve.counts.get(kind, 0)) + 1   # shown as one more waiting, for the look
+		_animate_pool_join(f, 0.0)
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -767,6 +778,7 @@ func _refresh(save: bool = true) -> void:
 	_header.queue_redraw()
 	if _reserve != null:
 		_reserve.set_counts(sk.reserve_counts())
+		_pool_joins()
 	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
 	_view_foe.clear()
 
@@ -901,6 +913,9 @@ func _refresh(save: bool = true) -> void:
 		left = left or sk.can_spend(i)
 	_end_btn.set_pulse(assigning and not left)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
+	if sk.committed and _withdraw_btn.text != "NO RETREAT":
+		_withdraw_btn.text = "NO RETREAT"   # the boss's fight: closing the rift or scrapped trying
+		_withdraw_btn.queue_redraw()
 	_refresh_arrows()
 	_refresh_prey()
 	if save and autosave.is_valid():
@@ -2455,6 +2470,72 @@ func _end_turn_now() -> void:
 				_animate_arrival(_foe_view_for(foe), 0.1)
 				Sound.play_after(0.36 + 0.09 * arrived, "arrival", -3.0 * arrived)
 				arrived += 1)
+
+
+## A foe that joins the pool, whatever brought it there (a split with no room, a summon, a foe
+## getting back up), is shown going in (Ryan, 25 October: "we need to make it clear when
+## something joins the pool"): its picture lifts off where its pack stands (or appears at the
+## formation's edge), shrinks into its rank's plaque in the gutter, and the count goes up there
+## with a burst as it lands. The screen remembers who was waiting at its last look.
+var _pool_last: Dictionary = {}   # Foe -> true: the pool as the screen last saw it
+var _pool_primed := false         # the first look only remembers: the fight's opening pool is no join
+
+func _pool_joins() -> void:
+	var now := {}
+	var joined: Array[Foe] = []
+	for f in sk.reinforcements:
+		now[f] = true
+		if _pool_primed and not _pool_last.has(f):
+			joined.append(f)
+	_pool_last = now
+	_pool_primed = true
+	for k in range(joined.size()):
+		_animate_pool_join(joined[k], 0.25 + 0.18 * k)
+
+
+func _animate_pool_join(f: Foe, delay: float) -> void:
+	var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
+	var tex := Sprites.combat_foe(f.content_id)
+	if not is_inside_tree() or _reserve == null or tex == null:
+		return
+	_reserve.pending[kind] = int(_reserve.pending.get(kind, 0)) + 1
+	_reserve.queue_redraw()
+	var to := _reserve.position + _reserve.plaque_center(kind)
+	var from := to + Vector2(-90.0, 0.0)
+	for v in _view_foe.keys():
+		var other: Foe = _view_foe[v]
+		if other != null and other.pack_id == f.pack_id and other.alive():
+			from = (v as Control).position + (v as Control).size * 0.5   # off its pack mate: the half beside it, the summoner
+			break
+	var used := Sprites.used_rect(tex)
+	var sz := used.size * minf(1.0, 84.0 / maxf(used.size.x, used.size.y))
+	var ghost := TextureRect.new()
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = used
+	ghost.texture = at
+	ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ghost.stretch_mode = TextureRect.STRETCH_SCALE
+	ghost.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ghost.size = sz
+	ghost.pivot_offset = sz * 0.5
+	ghost.position = from - sz * 0.5
+	ghost.modulate = Color(1.6, 0.8, 0.8, 0.0)
+	add_child(ghost)
+	var tw := create_tween()
+	tw.tween_interval(delay)
+	tw.tween_property(ghost, "modulate", Color(1.6, 0.8, 0.8, 1.0), 0.12)
+	tw.tween_interval(0.18)
+	tw.set_parallel(true)
+	tw.tween_property(ghost, "position", to - sz * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.tween_property(ghost, "scale", Vector2(0.25, 0.25), 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY, 0.5), 0.55)
+	tw.set_parallel(false)
+	tw.tween_callback(func() -> void:
+		_reserve.arrive(kind)
+		ghost.queue_free())
+	Sound.play_after(delay + 0.85, "arrival", -6.0)
 
 
 ## Withdraw always asks first.

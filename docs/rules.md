@@ -531,13 +531,16 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   rank, the left on a tie; one with no room waits in the reinforcements. So its hole never
   opens: the Gel is a wall, not an attacker, and its blow carries no breach. A half stepping
   up sets off a mine waiting in its slot. Its round is over: it shows no intent, no Lure or
-  Disrupt turns it, a stun takes its next action, and it acts from the next round.
+  Disrupt turns it, a stun takes its next action, and it acts from the next round, as a
+  summoned foe does (summons wait in the reinforcements). A foe joining the reinforcements is
+  shown going in: it flies into its rank's count in the gutter, which goes up as it lands.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. The formation
   shows how many wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
-Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
+Open at any point of the player's turn, but in the boss's fight, which ends in the boss's fall
+or the team's. Withdrawing ends the turn, so heat over the maximum
 burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
 not run. Kills stay counted, machines keep their damage and
 shields do not refill; a pack keeps its survivors, who return whole.
@@ -606,7 +609,8 @@ a stat.
   lake band); the two rows before the gate are never water or crags. Five map types: Mixed
   Ground, Open Steppe, Rubble Field, Badlands, Flooded. Height is landscape; no rule reads it.
 - **Ways of moving** (each chassis has one): a fast hex costs 5, a normal hex 10; a slow hex
-  takes whatever move is left and ends the move; crags are walls except to flyers. Tracked:
+  takes whatever move is left and ends the move (lit with a dashed edge and a stop sign);
+  crags are walls except to flyers. Tracked:
   ruins slow. Walker: water slow. Wheeled: open fast; rough, ruins and water slow. Hover:
   water fast; rough and ruins slow. Flyer: everything normal. Machines never enter or cross
   another unit's hex.
@@ -619,7 +623,8 @@ a stat.
   could attack from. A move is planned: its route shows from where the machine stands, and the
   next move or order reads from the route's end. UNDO takes back the last move or order,
   whoever made it, in the order they were made, back to the turn's start or the last fight.
-  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first;
+  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first (the
+  boss's fight aside, below);
   then the fight opens, or the turn ends: packs walk and strike; machines that did not fight
   regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
   is ordered, is caught, or can neither move nor reach a pack where it stands, the button
@@ -639,7 +644,8 @@ a stat.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
 - **Hunters** lock one machine when they appear (nearest, weakest, strongest or slowest; never
-  the Prairie Dog) and walk to put it inside their ring. A hunter with its prey in its ring
+  the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
+  hunter with the hunter's picture and a target. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
@@ -650,11 +656,13 @@ a stat.
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
-  be attacked from the first turn; its death wins the battle. The unit at the rift commands
+  be attacked from the first turn; its death wins the battle. A fight it is in, ordered onto
+  it or joined by its ring, takes every machine, wherever it stands and whether or not it has
+  fought this turn; nothing moves first (ENGAGE goes straight to the reveal) and nobody
+  withdraws, so it ends the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
   one for each other column), or the finale's line; it stands while one of its commanders
-  does and holds the rift whatever its escort, and a withdrawal leaves it standing with the
-  commanders and the escort that survived, whole.
+  does and holds the rift whatever its escort.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
