@@ -16,10 +16,16 @@ const MASSIVE_H := 0.36     # the massive plaque's height, a share of the gap be
 var back_y := Vector2.ZERO  # the back rank's top and bottom, in this control's space
 var front_y := Vector2.ZERO
 var counts := {}            # {"front": n, "back": n, "massive": n}
+## Foes on their way into the pool (Ryan, 25 October: a foe joining it needs an animation): the
+## screen flies each in, and its count goes up with a burst as it lands (arrive).
+var pending := {"front": 0, "back": 0, "massive": 0}
+var _bursts: Dictionary = {}   # kind -> seconds since a foe landed in that plaque
+const BURST_SECONDS := 0.7
 
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	set_process(false)
 
 
 func set_counts(c: Dictionary) -> void:
@@ -28,10 +34,36 @@ func set_counts(c: Dictionary) -> void:
 		queue_redraw()
 
 
+## Where a rank's plaque sits, in this control's space: "front", "back" or "massive".
+func plaque_center(kind: String) -> Vector2:
+	var mid_back := (back_y.x + back_y.y) * 0.5
+	var mid_front := (front_y.x + front_y.y) * 0.5
+	var y := mid_back if kind == "back" else (mid_front if kind == "front" else (mid_back + mid_front) * 0.5)
+	return Vector2(size.x * 0.5, y)
+
+
+## A foe flown in has landed: its count goes up, and the plaque bursts.
+func arrive(kind: String) -> void:
+	pending[kind] = maxi(0, int(pending.get(kind, 0)) - 1)
+	_bursts[kind] = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	for k in _bursts.keys():
+		_bursts[k] += delta
+		if _bursts[k] > BURST_SECONDS:
+			_bursts.erase(k)
+	if _bursts.is_empty():
+		set_process(false)
+	queue_redraw()
+
+
 func _draw() -> void:
-	var front := int(counts.get("front", 0))
-	var back := int(counts.get("back", 0))
-	var massive := int(counts.get("massive", 0))
+	var front := int(counts.get("front", 0)) - int(pending.get("front", 0))
+	var back := int(counts.get("back", 0)) - int(pending.get("back", 0))
+	var massive := int(counts.get("massive", 0)) - int(pending.get("massive", 0))
 	if front + back + massive <= 0:
 		return
 	var mid_back := (back_y.x + back_y.y) * 0.5
@@ -40,6 +72,17 @@ func _draw() -> void:
 	_plaque(mid_front, front, false)
 	if massive > 0:
 		_plaque((mid_back + mid_front) * 0.5, massive, true)
+	# A foe landing in a plaque: the frame flashes hot, a ring bursts off it and a +1 rises.
+	for kind in _bursts.keys():
+		var t := clampf(float(_bursts[kind]) / BURST_SECONDS, 0.0, 1.0)
+		var c := plaque_center(str(kind))
+		var r := Rect2(c - Vector2(size.x * 0.5 - 1.0, 23.0), Vector2(size.x - 2.0, 46.0))
+		Hud.box(self, r.grow(2.0 + 14.0 * t), 5.0, Color(0, 0, 0, 0), Color(Palette.ENEMY, 1.0 - t), 3.0 * (1.0 - t) + 1.0)
+		if t < 0.3:
+			Hud.box(self, r, 4.0, Color(Palette.ENEMY, (0.3 - t) * 2.0), Color(0, 0, 0, 0), 0.0)
+		var y := r.position.y - 6.0 - 22.0 * t
+		draw_string_outline(Hud.mono(), Vector2(r.position.x, y), "+1", HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 18, 4, Color(Palette.BG, 1.0 - t))
+		draw_string(Hud.mono(), Vector2(r.position.x, y), "+1", HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 18, Color(Palette.ENEMY, 1.0 - t))
 
 
 ## One rank's plaque, centred at `y`: the arrow into the formation over the count; a massive

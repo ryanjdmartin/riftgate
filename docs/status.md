@@ -20,9 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 639 tests, 64,479 checks, green on `claude/affectionate-goldberg-8e3mkh` (25 October,
-  the mechanics audit's fixes onto `ccr-170f6d81-465jnr`'s Flak on a damaging weapon's 0), about
-  a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 652 tests, 64,646 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+  playtest list merged in with the mechanics audit's fixes), about a minute in a cloud session.
+  A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,33 +33,38 @@ are in `README.md`.
 
 ## Branches
 
-Three branches are live beside main. `ccr-170f6d81-465jnr` holds main's landing of 25 October (Ryan's
-go: "merge in and clean up") and that session's later commits of the same day (a passive's lay on
-any hit, the Ambush's damaging hit its own rule; the bot's flat buff counted on each strike; a
-damaging weapon's Shock, Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a
-damaging weapon's blow of 0), so main fast-forwards onto it.
-`claude/affectionate-goldberg-8e3mkh` carries it, merged in, and the mechanics audit Ryan asked
-for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced through the code and cited
-by line, its "start here" list first), with the fixes he called for on 25 October: a pack's
-survivors its own type, never a Gel's halves or a summons, with every fallen foe a kill; a
-resumed battle's spawns dressed from the content and its fight given the foe factory, its
-commanders saved; the tender and the runner's pick on streams of their own (the runner's
-Armadillo started every run it was offered); the Ward turning away every rider, a special's
-too, and a special on every machine passing a Phased one by; overshield fading as a fight ends;
-a carry's undo refused onto a taken hex. His calls wait in the audit's head (the Spin-Up, Rally,
-Cracked and Silence, a beaten domain's rifts closing, the carry's undo after a fight, moves in
-pieces). Landing it lands both.
-`claude/playtesting-issues-08mnqj` (off main, 25 October) builds Ryan's playtest list: planned
-moves, UNDO taking back the last move or order to the turn's start or the last fight (which
-closes the audit's 23, 24 and 25 by construction), a Gel's halves stepping up at once. Landing it
-beside the audit's branch conflicts in `sim/battle.gd` (the carry's undo: its model supersedes the
-audit's fix), the rules, the bible (its v0.289 against the live v0.291) and this file, and two of
-the audit's tests (a withdrawal never growing a pack, a pack's survivors its own) count a Gel's
-halves in the pool, so they follow the halves onto the field in the merge.
-The landing's other three are in main: `ccr-7d865127-wr1ko2`,
-`claude/eager-newton-sf947u` and the weld's `claude/friendly-cannon-kyk9v4`. Delete them from the
-desk machine or GitHub, since a cloud session's push to delete one is refused, and this one once
-main has it. Every other branch was merged into main and deleted (22 October).
+Four branches of 25 and 26 October stand beside main, none of them in it yet.
+`claude/affectionate-goldberg-8e3mkh` carries two of the others merged in. One is
+`ccr-170f6d81-465jnr` to `70481ec`: main's landing of 25 October (Ryan's go: "merge in and clean
+up") and that session's later commits of the day (a passive's lay on any hit, the Ambush's
+damaging hit its own rule; the bot's flat buff counted on each strike; a damaging weapon's Shock,
+Cryo and Vitriol whatever it dealt; the Skua's runner rows; Flak on a damaging weapon's blow of
+0). The other is `claude/playtesting-issues-08mnqj`, merged on Ryan's word of 26 October ("Yes do
+the merge, those changes were important"): his playtest list (the map's moves planned and played
+on ENGAGE or END TURN, UNDO in the order things were done with orders in it, every pack's ring in
+red and a selected machine's red band, the button's pulse on the map and in a fight, SIG LOST no
+longer stuck under a held foe, the boss's order no longer bobbing, the grid down a fifth), his
+second round (the boss's fight takes every machine, straight to the reveal, with no withdrawal; a
+hunted machine's tag; a stop sign on end hexes; a foe flying into the pool's count) and his third
+(the Gel's halves a pair in one slot, summons taking an empty slot, a foe getting back up in its
+slot, no Exposed chip for an empty front), waiting on his phone read (the to-do). On them, the
+mechanics audit Ryan asked for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced
+through the code and cited by line, its "start here" list first) and the fixes he called for on
+25 and 26 October (the audit's head lists them). Landing it lands all three.
+`ccr-170f6d81-465jnr` has one commit past it (`b1aa261`, the die's hold showing the entry alone),
+which main takes from that branch.
+On 25 October, on Ryan's go ("merge in and clean up"), main took
+the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
+October, the foes' conditions and their targeting at random, the riders numbered and the heat
+doubled, the Kite's reset without a limit, the Skua's engine), which carried
+`ccr-7d865127-wr1ko2` (the four Kestrel machines of 21 October and their models' first cut,
+whose second round of looks is still Ryan's to judge) and `claude/eager-newton-sf947u` (the
+stock pass's reads, the read by stage, Ryan's terms and elites, the curve and the fronts in
+`docs/curve_proposal.md`). Main's weld (`claude/friendly-cannon-kyk9v4`, landed the same day)
+was merged into them first, so main fast-forwarded. Delete the four from the desk machine or
+GitHub, since a cloud session's push to delete one is refused; `ccr-170f6d81-465jnr`'s session
+was still at work that day, so its later commits land by merging main in. Every other branch was
+merged into main and deleted (22 October).
 
 ## The design sessions
 

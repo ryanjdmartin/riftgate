@@ -60,6 +60,10 @@ const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (
 const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
 ## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
 static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
+## RIFTGATE_POOL_DEBUG=1: every couple of seconds a foe on the field flies into the pool, to judge
+## the join running (the counts land back where they were).
+static var POOL_DEBUG := OS.get_environment("RIFTGATE_POOL_DEBUG") == "1"
+var _pool_debug_at := 0.0
 ## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
 ## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
@@ -90,6 +94,7 @@ var _home: Dictionary = {}           # Control -> where it rests; every animatio
 var _live_tweens: Dictionary = {}    # Control -> the tweens moving it now, killed before a new one starts
 var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
+var _twin_views: Array = []          # [rank][col] -> UnitView: a twin slot's right-hand half (the Gel's pair), hidden otherwise
 var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
@@ -141,6 +146,13 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
+		_pool_debug_at = _fight_t
+		var live := sk.field_foes()
+		var f: Foe = live[int(_fight_t) % live.size()]
+		var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
+		_reserve.counts[kind] = int(_reserve.counts.get(kind, 0)) + 1   # shown as one more waiting, for the look
+		_animate_pool_join(f, 0.0)
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -321,6 +333,10 @@ func _build() -> void:
 	_massive_views = []
 	_massive_views.resize(sk.columns)
 	_massive_views.fill(null)
+	_twin_views = [[], []]
+	for rank in range(2):
+		_twin_views[rank].resize(sk.columns)
+		_twin_views[rank].fill(null)
 	_mech_views.clear()
 	_mech_3d.clear()
 	_dice.clear()
@@ -385,6 +401,17 @@ func _build() -> void:
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
 			v.tapped.connect(_on_slot_tapped.bind(rank, col))
 			_slot_views[rank][col] = v
+			# A twin slot's right-hand half (26 October): the slot's right half while the pair
+			# stands, the left half's view taking the other.
+			var tv := UnitView.new()
+			tv.is_enemy = true
+			tv.visible = false
+			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+			tv.held.connect(_on_foe_held.bind(tv))
+			tv.hold_released.connect(_on_hold_released)
+			tv.double_tapped.connect(_on_foe_double_tapped.bind(tv))
+			tv.tapped.connect(_on_twin_tapped.bind(rank, col))
+			_twin_views[rank][col] = tv
 		var mv := UnitView.new()
 		mv.is_enemy = true
 		mv.massive = true
@@ -767,6 +794,7 @@ func _refresh(save: bool = true) -> void:
 	_header.queue_redraw()
 	if _reserve != null:
 		_reserve.set_counts(sk.reserve_counts())
+		_pool_joins()
 	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
 	_view_foe.clear()
 
@@ -799,9 +827,25 @@ func _refresh(save: bool = true) -> void:
 		for rank in range(2):
 			var v: UnitView = _slot_views[rank][col]
 			v.visible = not massive
+			var tv: UnitView = _twin_views[rank][col]
+			var foe := sk.foe_at(rank, col)
+			var twin: Foe = sk.twins.get(Vector2i(rank, col), null) if not massive and foe != null else null
+			# A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left
+			# half and the right half's view the other, each foe its own target; a plain slot is
+			# one view across the whole.
+			var at := Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
+			if twin != null:
+				_lay(v, at, Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+				_lay(tv, at + Vector2(SLOT_SIZE.x * 0.5, 0.0), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+				tv.visible = true
+				tv.modulate = Color.WHITE
+				_fill_foe_view(tv, twin, targets, rank * sk.columns + col + 11)
+				_view_foe[tv] = twin
+			else:
+				tv.visible = false
+				_lay(v, at, SLOT_SIZE)
 			if massive:
 				continue
-			var foe := sk.foe_at(rank, col)
 			if foe == null:
 				# An empty slot; with mines waiting (the Lammergeier's) its dashed outline, the
 				# mine's glyph with the total waiting and a chip per keyword riding in them.
@@ -895,7 +939,15 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll())
 	_end_btn.set_enabled(assigning)
+	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
+	var left := false
+	for i in range(sk.mechs.size()):
+		left = left or sk.can_spend(i)
+	_end_btn.set_pulse(assigning and not left)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
+	if sk.committed and _withdraw_btn.text != "NO RETREAT":
+		_withdraw_btn.text = "NO RETREAT"   # the boss's fight: closing the rift or scrapped trying
+		_withdraw_btn.queue_redraw()
 	_refresh_arrows()
 	_refresh_prey()
 	if save and autosave.is_valid():
@@ -1157,11 +1209,11 @@ func _foe_rows(foe: Foe) -> Array:
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
 		rows.append(["syrinx_drone", "", "%s: %s" % [drone["name"], drone["description"]], Palette.HUD])
 	if Effects.has(foe, "exposure"):
-		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed, the
-		# number saying what the debuff adds to the reach the formation gives.
+		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
+		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
+		# October: a chip for it "steps on the debuff and is very confusing"); a dragged line
+		# weapon lighting it says it is in reach.
 		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
-	elif foe.rank == 1 and sk.is_exposed(foe.column):
-		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
 
 
@@ -1794,6 +1846,29 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 	_refresh()
 
 
+## A tap on a twin slot's right-hand half while a Swap waits for its second target.
+func _on_twin_tapped(rank: int, col: int) -> void:
+	var twin: Foe = sk.twins.get(Vector2i(rank, col), null)
+	if _pending.is_empty() or twin == null or not sk.swap_targets(_pending["primary"]).has(twin):
+		return
+	var i: int = _pending["mech"]
+	var primary: Foe = _pending["primary"]
+	_cancel_second()
+	if not _use_die(i, primary, twin):
+		Sound.play("die_drop")
+	_refresh()
+
+
+## A control laid where it now rests, its animations settled first when that moves it.
+func _lay(c: Control, pos: Vector2, sz: Vector2) -> void:
+	if c.size == sz and _home.get(c, Vector2(-1.0e9, 0.0)) == pos:
+		return
+	_settle(c)
+	c.position = pos
+	c.size = sz
+	_home[c] = pos
+
+
 ## The pending Swap put back in the tray, unspent.
 func _cancel_second() -> void:
 	_pending = {}
@@ -1899,10 +1974,13 @@ func _use_die(i: int, target, second = null) -> bool:
 	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
 	# the death has to be played from what was there (the ghost of the sprite).
 	var was: Dictionary = {}
+	var readied: Array = []   # the foes ready to get back up: one that does falls and stands again in its slot
 	for foe in sk.field_foes():
 		var fv := _foe_view_for(foe)
 		if fv != null:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
+		if Effects.has(foe, "risen"):
+			readied.append(foe)
 	var spent: Face = sk.mechs[i].face()
 	var heat_before := _heat_marks()
 	var fuel := spent.rolls_again_on if spent != null else ""
@@ -1931,8 +2009,8 @@ func _use_die(i: int, target, second = null) -> bool:
 		var dead: Array = []
 		var fallen := ""
 		for foe in was.keys():
-			if not foe.alive():
-				dead.append(foe)
+			if not foe.alive() or (readied.has(foe) and not Effects.has(foe, "risen")):
+				dead.append(foe)   # a foe that got back up dies on screen first, then stands again
 				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
 		if not quiet:
 			if dead.is_empty():
@@ -1983,6 +2061,15 @@ func _use_die(i: int, target, second = null) -> bool:
 			landed = fire_at + Sound.lands(effect)
 	if not heat_hook.is_empty():
 		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
+	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
+	# stands again in its slot (26 October), in once the death has landed.
+	if ok:
+		var stepped := 0
+		for foe in sk.field_foes():
+			if not was.has(foe) or (readied.has(foe) and not Effects.has(foe, "risen")):
+				_animate_arrival(_foe_view_for(foe), landed + 0.3)
+				Sound.play_after(landed + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
+				stepped += 1
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends once the last blow has landed and played.
 		if is_inside_tree():
@@ -2444,6 +2531,72 @@ func _end_turn_now() -> void:
 				_animate_arrival(_foe_view_for(foe), 0.1)
 				Sound.play_after(0.36 + 0.09 * arrived, "arrival", -3.0 * arrived)
 				arrived += 1)
+
+
+## A foe that joins the pool, whatever brought it there (a split with no room, a summon, a foe
+## getting back up), is shown going in (Ryan, 25 October: "we need to make it clear when
+## something joins the pool"): its picture lifts off where its pack stands (or appears at the
+## formation's edge), shrinks into its rank's plaque in the gutter, and the count goes up there
+## with a burst as it lands. The screen remembers who was waiting at its last look.
+var _pool_last: Dictionary = {}   # Foe -> true: the pool as the screen last saw it
+var _pool_primed := false         # the first look only remembers: the fight's opening pool is no join
+
+func _pool_joins() -> void:
+	var now := {}
+	var joined: Array[Foe] = []
+	for f in sk.reinforcements:
+		now[f] = true
+		if _pool_primed and not _pool_last.has(f):
+			joined.append(f)
+	_pool_last = now
+	_pool_primed = true
+	for k in range(joined.size()):
+		_animate_pool_join(joined[k], 0.25 + 0.18 * k)
+
+
+func _animate_pool_join(f: Foe, delay: float) -> void:
+	var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
+	var tex := Sprites.combat_foe(f.content_id)
+	if not is_inside_tree() or _reserve == null or tex == null:
+		return
+	_reserve.pending[kind] = int(_reserve.pending.get(kind, 0)) + 1
+	_reserve.queue_redraw()
+	var to := _reserve.position + _reserve.plaque_center(kind)
+	var from := to + Vector2(-90.0, 0.0)
+	for v in _view_foe.keys():
+		var other: Foe = _view_foe[v]
+		if other != null and other.pack_id == f.pack_id and other.alive():
+			from = (v as Control).position + (v as Control).size * 0.5   # off its pack mate: the half beside it, the summoner
+			break
+	var used := Sprites.used_rect(tex)
+	var sz := used.size * minf(1.0, 84.0 / maxf(used.size.x, used.size.y))
+	var ghost := TextureRect.new()
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = used
+	ghost.texture = at
+	ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ghost.stretch_mode = TextureRect.STRETCH_SCALE
+	ghost.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ghost.size = sz
+	ghost.pivot_offset = sz * 0.5
+	ghost.position = from - sz * 0.5
+	ghost.modulate = Color(1.6, 0.8, 0.8, 0.0)
+	add_child(ghost)
+	var tw := create_tween()
+	tw.tween_interval(delay)
+	tw.tween_property(ghost, "modulate", Color(1.6, 0.8, 0.8, 1.0), 0.12)
+	tw.tween_interval(0.18)
+	tw.set_parallel(true)
+	tw.tween_property(ghost, "position", to - sz * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.tween_property(ghost, "scale", Vector2(0.25, 0.25), 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY, 0.5), 0.55)
+	tw.set_parallel(false)
+	tw.tween_callback(func() -> void:
+		_reserve.arrive(kind)
+		ghost.queue_free())
+	Sound.play_after(delay + 0.85, "arrival", -6.0)
 
 
 ## Withdraw always asks first.

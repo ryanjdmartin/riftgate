@@ -1,12 +1,12 @@
 class_name BossReveal
 extends Control
 
-## The boss's contact on the field (Ryan, 25 September): the round's other contacts are
-## dropped, every machine is committed, and before the handover the display makes a show
-## of who it has found. Over the dimmed map a black band with red rules slides in; the
+## The boss's contact on the field (Ryan, 25 September): before the handover the display
+## makes a show of who it has found. Over the dimmed map a black band with red rules slides in; the
 ## boss's picture flies up out of its hex and grows to fill the band's left, three red
 ## afterimages behind it; brackets collapse onto it as the feed acquires it; its family
-## types in, its name resolves out of a scramble, and the order to engage types under; the
+## types in, its name resolves out of a scramble, and the order to engage types under, saying how
+## many machines are committed (the boss is fought like any pack, by the machines ordered on); the
 ## picture tears every third of a second while it is held. Then it fades and `finished`
 ## fires, and the owner runs the ordinary handover into the skirmish. A tap ends it early.
 ## The boss theme starts under it, from its top, so the intro plays over the reveal and the
@@ -32,6 +32,7 @@ var family := ""
 var tex: Texture2D = null
 var from := Vector2.ZERO           # the picture on the map, in this control's pixels
 var from_size := Vector2(32, 32)
+var order_text := "ENGAGING"       # the order typed under the name: who is committed (the screen sets it)
 
 var _t := 0.0
 var _pinned := false
@@ -72,10 +73,7 @@ func _process(delta: float) -> void:
 		return
 	_family_label.text = _typed(family.to_upper() + " // BOSS", 0.8, 0.5)
 	_name_label.text = _resolved(boss_name.to_upper(), 1.0, 0.7)
-	var order := _typed("ALL UNITS COMMITTED // ENGAGING", 1.8, 0.7)
-	if _t > 1.8 and fmod(_t, 0.8) < 0.4:
-		order += "▮"
-	_sub_label.text = order
+	_sub_label.text = _typed(order_text, 1.8, 0.7)
 	modulate = Color(1, 1, 1, _alpha())
 	queue_redraw()
 
@@ -133,6 +131,14 @@ func _draw() -> void:
 		Hud.brackets(self, r, 24.0, Palette.ENEMY, 2.0)
 		if v >= 1.0:
 			Hud.box(self, target, 4.0, Color(0, 0, 0, 0), Color(Palette.ENEMY, 0.35), 1.0)
+	# The cursor after the order, blinking: a block drawn here, never a character, since the
+	# mono face has no block and the fallback's taller line bobbed the order up and down with
+	# every blink (Ryan, 25 October).
+	if _t > 1.8 and fmod(_t, 0.8) < 0.4:
+		var font := Hud.mono()
+		var tw := font.get_string_size(_sub_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+		var top := _sub_label.position.y + (_sub_label.size.y - 15.0) * 0.5
+		draw_rect(Rect2(_sub_label.position.x + tw + 3.0, top, 8.0, 15.0), Palette.INK)
 
 
 func _sprite_rect(band: Rect2) -> Rect2:

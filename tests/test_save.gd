@@ -87,7 +87,7 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_eq(back.field.gate_hp, b.field.gate_hp, "the gate")
 	assert_eq(back.field.unit_by_id(m.id).pos, dest, "the machine where it moved")
 	assert_eq(back.moves_left(back.field.unit_by_id(m.id)), b.moves_left(m), "with the move it has left")
-	assert_true(back.can_undo(back.field.unit_by_id(m.id)), "and its move can still be taken back")
+	assert_true(back.can_undo(), "and its move can still be taken back")
 	assert_eq(back.spent, b.spent, "who has fought")
 	assert_eq(back.fought, b.fought, "and who recharges")
 	assert_eq(back.forced.size(), 1, "the fight a hunter forced")
