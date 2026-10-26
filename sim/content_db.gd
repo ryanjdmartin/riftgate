@@ -937,9 +937,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: cooldown 0 lifts Rapid's switch-off, and an entry without Rapid has none to lift" % where)
 	# Every Rapid piece carries a limiter (Ryan, 15 October): a cooldown, heat or Volatile, so
 	# no chain is free; one that prints no cooldown pays heat or hull every spend. A piece locked
-	# on a stepping die has the cylinder for its limiter (the Cassowary's Spin-Up, Ryan, 19
-	# October: a stepping die cannot chain it into itself; the exit, a stepping-die piece that
-	# ever makes a free chain gets a limiter of its own).
+	# on a stepping die has the cylinder and its odds for its limiter (the Cassowary's Spin-Up,
+	# Ryan, 19 October: a combo piece, its spin a true roll that lands on itself one time in its
+	# die's size, to be spent again, the high roll he allowed; the exit, a stepping-die piece that
+	# ever chains for sure gets a limiter of its own).
 	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
 			and int(fd.get("heat", 0)) <= 0 and not Array(fd.get("keywords", [])).has("volatile"):
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
@@ -1304,7 +1305,7 @@ func _validate_components(errs: Array[String]) -> void:
 
 
 ## Whether a component is locked on a chassis whose die steps (the Cassowary's): its Rapid's
-## limiter is the cylinder, so it needs none of its own (the bible's Rapid row).
+## limiter is the cylinder and its odds, so it needs none of its own (the bible's Rapid row).
 func _locked_on_stepping_die(cid: String) -> bool:
 	for id in chassis.keys():
 		var ch: Dictionary = chassis[id]

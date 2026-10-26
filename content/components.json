@@ -1414,7 +1414,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
-    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up for the next weapon spend, carried between turns. Its limiter is the cylinder: a stepping die cannot chain it into itself, and the way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun."
+    "niche": "The Cassowary's locked combo piece: no damage, Rapid with no cooldown, no heat and no Volatile, its reroll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up for the next weapon spend, carried between turns. Its limiter is the cylinder and its odds: its spin lands on itself one time in six, to be spent again (Ryan, 19 October: \"I think we can allow the high-roll for the revolver spin, landing on itself, as an exception to the global rule\"), a fifth of a spin more a spend on average, each a stack of Spun Up; every other way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun."
    },
    "face": {
     "kind": "buff",

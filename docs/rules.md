@@ -98,7 +98,8 @@ defeat when every machine is wrecked. There is no round limit.
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry beside it, and its hold and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
-  showing included, the one piece that breaks the reroll rule. Every sixth weapon spend of the
+  showing included, the one piece that breaks the reroll rule, so it may land on itself and
+  be spent again. Every sixth weapon spend of the
   fight counts double, its damage and the stacks it lays; the count shows as six pips under
   the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
@@ -218,8 +219,10 @@ defeat when every machine is wrecked. There is no round limit.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
   component prints its own; one that prints none pays heat or Volatile every spend (the Cryo
   Flinger, 1 heat). A Rapid component always carries a limiter, a cooldown, heat or
-  Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: the
-  cylinder cannot chain it into itself.
+  Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: its spin
+  is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
+  a fifth of a spin more a spend on average, and every other way back to it in a round runs
+  through the other chambers' switch-offs or the team's rerolls.
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
