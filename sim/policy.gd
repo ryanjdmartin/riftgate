@@ -274,6 +274,9 @@ static func _mirror(copy: Skirmish, sk: Skirmish, t):
 	if t == null or t is Vector2i:
 		return t
 	if t is Foe:
+		var key := Vector2i(t.rank, t.column)
+		if sk.twins.get(key, null) == t:
+			return copy.twins.get(key, null)   # a twin slot's right-hand half (the Gel's pair)
 		return copy.foe_at(t.rank, t.column)
 	if t is Skirmish.MechState:
 		var i := sk.mechs.find(t)
@@ -641,9 +644,9 @@ func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -
 		for dc in [-1, 1]:
 			var c: int = slot.y + dc
 			if c >= 0 and c < sk.columns:
-				var n := sk.foe_at(slot.x, c)
-				if n != null and n.alive():
-					score += p * minf(mean, float(n.hp))
+				for n in sk.slot_foes(slot.x, c):   # a twin slot's pair both (the Gel's halves)
+					if n.alive():
+						score += p * minf(mean, float(n.hp))
 	score *= MINE_WEIGHT
 	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
@@ -897,17 +900,8 @@ func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Fo
 			per_shot = ef.fires_hopper
 	if per_load <= 0:
 		return 0.0
-	var reached := 1
-	if f.has(Face.Keyword.CLEAVE):
-		for c in [target.column - 1, target.column + 1]:
-			if c >= 0 and c < sk.columns:
-				var n := sk.foe_at(target.rank, c)
-				if n != null and n != target and n.alive():
-					reached += 1
-	if f.has(Face.Keyword.PENETRATE):
-		var other := sk.foe_at(1 - target.rank, target.column)
-		if other != null and other != target and other.alive():
-			reached += 1
+	# A load for each foe the blow reaches, as the resolver reaches them (a twin slot's pair both).
+	var reached := maxi(1, sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive()).size())
 	var room := maxi(0, per_shot * 2 - Effects.stacks_of(ms.unit, "hopper"))
 	return float(mini(f.fills_hopper * reached, room) * per_load) * HOPPER_WEIGHT
 
