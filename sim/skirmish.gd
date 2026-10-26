@@ -494,10 +494,18 @@ func acting_on(ms: MechState) -> Array[Foe]:
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
-		if f.hp - int(Effects.tick_preview(f)["hp"]) <= 0:   # burns to death before it strikes
+		if hp_after_ticks(f) <= 0:   # burns to death before it strikes
 			continue
 		out.append(f)
 	return out
+
+
+## The HP a foe's ticks leave it at the start of its action (its Burning, then Vitriol's share):
+## static numbers, so its gauge shows the loss to come and a death before it acts (Ryan, 26
+## October). At 0 it burns to death before it strikes: the forecast leaves its blow out and no
+## rally of its lands.
+func hp_after_ticks(f: Foe) -> int:
+	return maxi(0, f.hp - int(Effects.tick_preview(f)["hp"]))
 
 
 func incoming_for(ms: MechState) -> int:
@@ -549,7 +557,7 @@ func rallies_now(r: Foe) -> bool:
 		return false
 	if Foe.is_attack_action(r.action) or str(r.action.get("effect", "")) != "rally":
 		return false
-	return r.hp - int(Effects.tick_preview(r)["hp"]) > 0
+	return hp_after_ticks(r) > 0
 
 
 ## What a rally adds to this round's blows, on every machine they reach: each foe acting after

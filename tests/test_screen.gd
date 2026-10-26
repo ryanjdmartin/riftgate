@@ -634,6 +634,35 @@ func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_
 	s.free()
 
 
+## A foe's ticks preview on its gauge (Ryan, 26 October: Burning and the other ticks are static
+## numbers, "so a hypothetical death at the start of the enemy's turn could be previewed"): the HP
+## its Burning will take at its action is the gauge's pending loss, the whole bar when it kills it
+## before it acts, which the machines' forecast already reads.
+func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(1, Face.Reach.DIRECT))
+	sk.add_mech(m)
+	var a := Foe.make("revenant", 10, 2)
+	var b := Foe.make("revenant", 3, 2)
+	sk.add_foes([a, b])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10, "nothing ticking: no change pending")
+	var per := Effects.status_value("burning", "tick_hp")
+	Effects.stack(a, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 4)
+	s._refresh()
+	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10 - 2 * per, "its Burning's tick pending on its gauge")
+	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that kills it before it acts: the whole bar")
+	assert_eq(sk.hp_after_ticks(b), 0, "the same number the forecast reads")
+	sk.end_round()
+	assert_false(b.alive(), "and it burnt to death at its action")
+	assert_eq(a.hp, 10 - 2 * per, "the other took what its gauge showed")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()

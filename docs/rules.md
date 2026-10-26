@@ -171,7 +171,9 @@ defeat when every machine is wrecked. There is no round limit.
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
 - **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in
-  hand (its own heat, its bite, its brace) will leave. A Lure in hand shows its turn before it
+  hand (its own heat, its bite, its brace) will leave. A foe's gauge forecasts its ticks: the
+  HP its Burning and Vitriol will take at the start of its action pulses on it, the whole bar
+  when they kill it before it acts, a blow the machines' gauges already leave out. A Lure in hand shows its turn before it
   is spent: the foes it would turn draw dashed arrows to its machine, those on it already
   solid, and every machine's gauges read the round as the lure would leave it (the Siphon's
   heat a blow included).

@@ -1134,7 +1134,12 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
 	v.breathe_phase = slot * 2.39996 + 0.7
-	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
+	# Its ticks at its action (Burning, Vitriol) are static numbers, so the HP they will take
+	# pulses on its gauge as a machine's coming loss does, the whole bar when they kill it before
+	# it acts (Ryan, 26 October: "a hypothetical death at the start of the enemy's turn could be
+	# previewed").
+	var after := sk.hp_after_ticks(foe) if sk.state == Skirmish.State.ASSIGN and foe.alive() else foe.hp
+	v.bars = [[foe.hp, foe.hp_max, Palette.HUD, after]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
 	v.intent = ""

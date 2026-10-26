@@ -20,8 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 661 tests, 64,802 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
-  playtest list merged in with the mechanics audit's fixes, the rally at once and the set finals),
+- Tests: 662 tests, 64,808 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+  playtest list merged in with the mechanics audit's fixes, the rally at once, the set finals
+  and the foes' tick preview),
   about a minute in a cloud session.
   A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
