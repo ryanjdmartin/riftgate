@@ -89,8 +89,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   `glow_parts`.
 - The die's hold shows the entry showing alone, its marks as text (Ryan's layout of 25 October
   and his second round of 26 October; the bible's tap-hold-drag row, `game/ui/entry_readout.gd`):
-  no source and no explanation, a number the live sources moved in a white or red chip with
-  its arrow; what a keyword means is the keywords list's, the pause menu's KEYWORDS page and the
+  no source and no explanation, a number the live sources moved green or red with its own
+  arrow on it (the split's blow down and its strikes up); what a keyword means is the keywords list's, the pause menu's KEYWORDS page and the
   `?` under the eye (`PauseMenu.glossary`). His phone read judges both (the to-do).
 - Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
   content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the

@@ -127,8 +127,8 @@ func test_hold_shows_details_and_arrows() -> void:
 ## turns the iconography into text"): the entry showing, alone, as a list in the order a spend
 ## runs it: its place and name from content, its number as the die prints it, its target, its
 ## keywords, its heat, its own rules, then its tags. A number the live sources moved off the
-## component's own is highlighted, never its sources listed: the player's gain white, a loss
-## the enemy red, an arrow for which way. The whole die is the codex's.
+## component's own is coloured, never its sources listed: the player's gain green, a loss the
+## enemy red, an arrow on the number for which way. The whole die is the codex's.
 func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
 	var db := ContentDB.load_default()
@@ -154,22 +154,49 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack", "Target: Enemy, Indirect", "Spread", "Heat", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
-		"a line a mark on the die, in the order a spend runs it, and no source listed: %s" % str(texts))
-	assert_eq(str(lines[1]["value"]).replace(EntryReadout.NBSP, " "), "%d–%d ×2" % [n[0], n[1]], "the number as the die prints it")
-	assert_eq([int(lines[1]["trend"]), bool(lines[1]["gain"])], [1, true], "moved up by the passive, the player's gain: highlighted, never explained")
-	assert_eq(str(lines[4]["value"]), str(sf.heat), "the heat as the spend adds it")
-	assert_true(s._details_entry.text().contains("▲"), "its arrow says which way it moved: %s" % s._details_entry.text())
+	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Target: Enemy, Indirect", "Spread", "Heat %d" % sf.heat, "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
+	var attack: Array = lines[1]["parts"]
+	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the player's gain: coloured, never explained")
+	assert_eq(int(attack[2]["trend"]), 0, "its strikes its own: plain")
+	assert_eq(int(lines[4]["parts"][1]["trend"]), 0, "the heat its own: plain")
+	assert_eq(EntryReadout.trend_ink(attack[1]), Palette.GAIN, "a gain in the gain's green")
+	assert_true(s._details_entry.text().contains("%d–%d▲ ×2" % [n[0], n[1]]), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
 	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
-	# A heat a passive raised is the player's loss: the red chip, its arrow up.
+	# A heat a passive raised is the player's loss: the red, its arrow up.
 	ms.unit.grant_passive({"id": "t_hot", "name": "Test Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 2}]})
 	s._on_die_held(1)
+	var heat: Dictionary = {}
 	for l in s._details_entry.lines:
-		if str(l["text"]) == "Heat":
-			assert_eq([int(l["trend"]), bool(l["gain"])], [1, false], "more heat than the component's own: a loss")
+		if str(l["text"]).begins_with("Heat"):
+			heat = l["parts"][1]
+	assert_eq([int(heat.get("trend", 0)), bool(heat.get("gain", true))], [1, false], "more heat than the component's own: a loss")
+	assert_eq(EntryReadout.trend_ink(heat), Palette.ENEMY, "in the enemy red")
+	s._on_hold_released()
+	s.free()
+
+
+## A split weapon (the Skua's breech) prints a smaller blow struck more often: each number its own
+## arrow, the blow down and the strikes up (Ryan, 26 October: "Skua should have down on the damage
+## and up on the count").
+func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[1]
+	var breech := Face.attack(4, Face.Reach.DIRECT, [], 1, 6)
+	breech.component = str(ContentDB.load_default().components.keys()[0])
+	ms.die = Die.single(breech)
+	ms.face_index = 0
+	ms.unit.grant_passive({"id": "t_split", "name": "Test Split", "description": "", "effects": [{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]})
+	s._refresh()
+	s._on_die_held(1)
+	var parts: Array = s._details_entry.lines[1]["parts"]
+	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2–3 ×2", "a strike's share of the roll, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
+	assert_eq([int(parts[1]["trend"]), bool(parts[1]["gain"])], [-1, false], "the blow down, a loss")
+	assert_eq([int(parts[2]["trend"]), bool(parts[2]["gain"])], [1, true], "the strikes up, a gain")
+	assert_true(s._details_entry.text().contains("2–3▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
 	s._on_hold_released()
 	s.free()
 

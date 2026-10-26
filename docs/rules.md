@@ -170,8 +170,9 @@ defeat when every machine is wrecked. There is no round limit.
   codex, then a line a mark in the order a spend runs it (its number as the die prints it, its
   target, how it lands, its heat and Volatile, what it applies on hit, Rapid), its own rules
   and a written-out grant's line last, then its tags. A number the live sources moved off the
-  component's own sits in a chip, white where the change is the player's gain, red where it
-  is a loss (more heat, less damage over the spend), its arrow the way it moved; no source is
+  component's own is coloured, green where the change is the player's gain and red where it
+  is a loss (more heat, a smaller blow), with its arrow on it, the way it moved: each number
+  on its own, so a split weapon's smaller blow and its extra strike each say so. No source is
   listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
   the pause menu and behind the button under the eye, gives every reach, keyword, rule and
   status the dice and chips print, with its codex line.
