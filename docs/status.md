@@ -188,10 +188,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.291, and so is the live (25 October,
-  the page's version 308, from `claude/affectionate-goldberg-8e3mkh`: the Ward turning away every
-  rider, a special's too, and the tables; 307 was `ccr-170f6d81-465jnr`'s v0.290, Flak on a
-  damaging weapon's blow of 0, which the live matched before 308). The
+  `docs/design-bible.html` after every change. This file is v0.296, and so is the live (26 October,
+  the page's version 313, from `claude/affectionate-goldberg-8e3mkh`: the playtest list's rows, a
+  silence on buffs alone, the Cassowary's limiter set to the engine and a beaten domain's rifts
+  closing, merged onto the live v0.295, `ccr-170f6d81-465jnr`'s, which carried the quick
+  campaign's v0.294 and this branch's v0.291). So this file holds those two branches' rows and
+  tables ahead of their code, which lands with them: `tools/pages/bible_tables.py` run here
+  before they land writes this branch's older tables back. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -199,12 +202,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 110 (25 October: from
-  `ccr-170f6d81-465jnr`, the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
-  hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
-  the Cryo Flinger at 108, Flak's line at 109; from `claude/affectionate-goldberg-8e3mkh`, the
-  Ward's, Phased's and Overshield's codex lines at 110; the live files identical to the last
-  publish's and `edits` empty before each). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 114 (26 October, from
+  `claude/affectionate-goldberg-8e3mkh`: the playtest list's foes and vocabulary lines, the
+  Silence and Silenced codex and the Spin-Up's note, its vocabulary a three-way merge onto 113's,
+  `ccr-170f6d81-465jnr`'s scratch merge of the quick campaign's, since the branches' content
+  differs until they land; components and foes identical to the last publish's before, and
+  `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
