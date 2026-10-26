@@ -993,8 +993,7 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	sk.start_round()
 	var fc := sk.forecast(ms)
 	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
-	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
-	assert_eq(fc["shield_after"], 0, "shield gone")
+	assert_eq(fc["shield_after"], 0, "55 incoming takes the 20 shield")
 	assert_eq(fc["hull_after"], 65, "the thirty stands left and strikes first: the shield takes twenty and ten pass; the twenty-five lands on bare hull")
 	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
 	assert_false(fc["destroyed"], "still standing")
@@ -1004,7 +1003,7 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	sk.front[1].hp = 0
 	fc = sk.forecast(ms)
 	assert_eq(fc["incoming"], 0, "a dead foe does not count")
-	assert_false(fc["breaks_shield"], "nothing incoming")
+	assert_eq(fc["shield_after"], 20, "nothing incoming, the shield stands")
 
 
 func test_forecast_predicts_wreck_and_overheat() -> void:

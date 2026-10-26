@@ -156,8 +156,10 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(gauges.keys(), ["Shield", "Hull", "Heat"], "its three gauges, as on the field")
 	assert_eq(str(gauges["Hull"]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "each with its numbers")
 	var top: Dictionary = gauges["Hull"]["parts"][1]
-	assert_eq([int(top["trend"]), bool(top["gain"])], [1, true], "a maximum the passive raised: up, the player's gain")
+	assert_eq([int(top["trend"]), bool(top["gain"])], [1, true], "a maximum the passive raised: up, the machine's gain")
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
+	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
+	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
 	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
 	s._on_hold_released()
 	# A foe: its HP, its attack a rally raised (the player's loss: up and red), its intent.
@@ -167,7 +169,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	var said := s._details_entry.text()
 	assert_true(said.begins_with(foe.display_name.to_upper()), "its name first: %s" % said)
 	assert_true(said.contains("HP %d/%d" % [foe.hp, foe.hp_max]), "its HP with its numbers")
-	assert_true(said.contains("Attack %d▲" % (foe.attack + 2)), "its attack the rally raised, its arrow on it: %s" % said)
+	assert_true(said.contains("Attack %d (+2▲)" % foe.attack), "its attack as a stat, the change the rally made beside it: %s" % said)
 	var flines: Array = s._details_entry.lines
 	var at := -1
 	for k in range(flines.size()):
@@ -177,7 +179,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(str(flines[at + 1]["text"]), str(foe.action.get("name", "")).to_upper(), "the move's name heads it")
 	assert_eq(str(flines[at + 2]["text"]), "Attack %d" % foe.damage(), "its blow as it will land")
 	var blow: Dictionary = flines[at + 2]["parts"][1]
-	assert_eq([int(blow["trend"]), bool(blow["gain"])], [1, false], "harder than its own: the player's loss")
+	assert_eq([int(blow["trend"]), bool(blow["gain"])], [1, true], "harder than its own: the foe's gain, relative to the unit")
 	assert_eq(str(flines[at + 3]["text"]), "Target: %s" % foe.target.unit.display_name, "the machine it is aimed at, named")
 	s._on_hold_released()
 	s.free()
@@ -214,12 +216,12 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Target: Enemy, Indirect", "Spread", "Heat %d" % sf.heat, "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the player's gain: coloured, never explained")
 	assert_eq(int(attack[2]["trend"]), 0, "its strikes its own: plain")
-	assert_eq(int(lines[4]["parts"][1]["trend"]), 0, "the heat its own: plain")
+	assert_eq(int(lines[2]["parts"][1]["trend"]), 0, "the heat its own: plain")
 	assert_eq(EntryReadout.trend_ink(attack[1]), Palette.GAIN, "a gain in the gain's green")
 	assert_true(s._details_entry.text().contains("%d–%d▲ ×2" % [n[0], n[1]]), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
 	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
@@ -277,9 +279,14 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Target: Enemy, Indirect · Heat 3", "Spread · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
-	assert_eq(str(lines[0]["tags"]), "Beam, Flame", "its tags beside its name")
+	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
+	var types := {}
+	var debuff := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SUPPRESS])
+	for f in [gun, Face.shield(4), Face.vent(3), Face.buff("overcharged", 1), debuff]:
+		types[EntryReadout.face_type(f)] = true
+	assert_eq(types.keys(), ["Weapon", "Shield", "Vent", "Equipment"], "a weapon, a shield, a vent; a buff and a debuff are equipment (Ryan, 26 October)")
 	var shield := Face.shield(6)
 	shield.targets = Face.Target.SELF
 	var plain: Array[String] = []

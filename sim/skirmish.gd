@@ -521,7 +521,6 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	hull -= volatile
 	var incoming := 0
 	var component_risk := false
-	var standing := shield
 	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
 	# Breaching Plow, the Siphon) and a Siphon's heat a blow, a second Siphon renewing the first.
 	var spent := spend_face(ms) if with_face and not ms.assigned and ms.face() != null else null
@@ -561,7 +560,6 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
 		"heat_after": heat_after,   # the gauge after the round: settled at the cap, then the foes' heat
 		"overheat": over,
-		"breaks_shield": standing > 0 and shield <= 0,
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}

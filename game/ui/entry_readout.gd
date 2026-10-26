@@ -4,16 +4,17 @@ extends Control
 ## The die's hold (Ryan, 25 and 26 October): the entry showing, alone, its iconography as text
 ## ("it just turns the iconography into text, basically"). Its place on the die and its name,
 ## what holds on it now (a cooldown with its turns left, a foe's switch-off, corruption), its
-## codex, then a line for each mark the die carries, in the order a spend runs it: its number as
-## the die prints it, its target, how it lands, what the spend costs, what it leaves on each foe
-## hit, Rapid's turn after, then its own rules and a written-out grant's (the star; "unique
-## effects last"), then its tags. A number the live sources have moved off the component's own
-## is coloured rather than its sources listed (Ryan, 26 October: listing them "reads to me like
+## codex, then a line for each mark the die carries: its number as the die prints it, its heat,
+## its target, then its keywords (how it lands, Volatile, what it leaves on each foe hit,
+## Rapid's turn after), then its own rules and a written-out grant's (the star; "unique effects
+## last"), then its tags. A number the live sources have moved off the component's own is
+## coloured rather than its sources listed (Ryan, 26 October: listing them "reads to me like
 ## we're expecting the player to do math"; "just change the font colour and add the arrow"):
-## green where the change is the player's gain, the enemy red where it is a loss (more heat, a
-## smaller blow), its arrow attached to the number that moved, so a split weapon's smaller blow
-## and its extra strike each say so ("Skua should have down on the damage and up on the count"),
-## and it reads without the hue. What a keyword means is the keywords list's (the pause menu,
+## green where the change is good for its unit, the enemy red where it is bad (more heat, a
+## smaller blow), relative to the unit and never to the player ("Positive and negative are
+## always relative to the unit"), its arrow attached to the number that moved, so a split
+## weapon's smaller blow and its extra strike each say so ("Skua should have down on the damage
+## and up on the count"), and it reads without the hue. What a keyword means is the keywords list's (the pause menu,
 ## and the button under the eye). No flavour yet.
 
 ## The content width at the readout's panel width (460, less the panel's margins).
@@ -70,12 +71,13 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 	return out
 
 
-## What the entry does, a line each in the order a spend runs it: its number as the die prints
-## it (`shown`), its target, how it lands, what the spend costs, what it leaves on each foe hit,
-## Rapid's turn after, then its own rules (Face.rule_phrases). `base`, the component as built,
-## is what each number is read against; null reads `f` as its own. Each line carries its group,
-## for the codex's three lines: "attr" (its number, its target, its heat and ammo), "kw" (how it
-## lands, Volatile, what it applies, Rapid) and "rule" (its own rules).
+## What the entry does, a line each: its number as the die prints it (`shown`), its heat (or its
+## ammo), its target (Ryan, 26 October: "Swap heat and target places"), then its keywords below
+## them, how it lands, Volatile, what it leaves on each foe hit, Rapid's turn after, then its own
+## rules (Face.rule_phrases). `base`, the component as built, is what each number is read
+## against; null reads `f` as its own. Each line carries its group, for the codex's three lines:
+## "attr" (its number, its heat and ammo, its target), "kw" (its keywords) and "rule" (its own
+## rules).
 static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	var out: Array = []
 	if base == null:
@@ -89,8 +91,8 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		else:
 			out.append(text_line("effect", capital(f.describe()), "attr"))
 		return out
-	# The strikes, read against the component's own: a split weapon's extra strike is the
-	# player's gain beside its smaller blow (Ryan, 26 October).
+	# The strikes, read against the component's own: a split weapon's extra strike is a gain
+	# beside its smaller blow (Ryan, 26 October).
 	var strikes: Array = [num("×%d" % f.strikes, f.strikes, base.strikes)] if f.strikes > 1 or base.strikes > 1 else []
 	match f.kind:
 		Face.Kind.ATTACK:
@@ -103,7 +105,6 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 				var blow := word(str(lo) if lo == hi else "%d–%d" % [lo, hi])
 				_trend(blow, lo + hi, base.power + base.power_max)
 				out.append(parts_line("effect", [word("Attack"), blow] + strikes, "attr"))
-			out.append(text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]), "attr"))
 		Face.Kind.BUFF:
 			if f.act_again:
 				out.append(text_line("effect", "An ally whose die is spent acts again", "attr"))
@@ -125,8 +126,15 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 				out.append(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"))
 			if f.shields > 0:
 				out.append(parts_line("effect", [word("Shield"), num(str(f.shields), f.shields, base.shields)], "attr"))   # the combined entry's second half, after the vent
-	if f.kind != Face.Kind.ATTACK:
-		out.append(text_line("effect", whom(f), "attr"))
+	if f.ammo > 0:
+		# A forging machine's gun (the Musk Ox's): its price in ammo.
+		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
+		if f.dry:
+			ammo.append(word("(the magazine cannot pay it)"))
+		out.append(parts_line("effect", ammo, "attr"))
+	if f.heat > 0 or base.heat > 0:
+		out.append(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"))
+	out.append(text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr"))
 	var land: Array = []   # how it lands
 	var cost: Array = []   # what the spend costs past its heat
 	var lays: Array = []   # what it leaves on each foe hit
@@ -152,14 +160,6 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		else:
 			land.append(text_line("effect", label, "kw"))
 	out.append_array(land)
-	if f.ammo > 0:
-		# A forging machine's gun (the Musk Ox's): its price in ammo.
-		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
-		if f.dry:
-			ammo.append(word("(the magazine cannot pay it)"))
-		out.append(parts_line("effect", ammo, "attr"))
-	if f.heat > 0 or base.heat > 0:
-		out.append(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"))
 	out.append_array(cost)
 	out.append_array(lays)
 	out.append_array(after)
@@ -169,20 +169,37 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 
 
 ## The codex's row for a component (Ryan, 26 October: "each component row has a line for basic
-## attributes, a line for keywords, and a line for unique component effects"): its name with its
-## tags beside it, then the hold's lines joined by group, at the component's own numbers, and
-## `rules` (its passive's lines) after its own. A line with nothing to say is left out.
+## attributes, a line for keywords, and a line for unique component effects"): its name, its
+## type (face_type) and its tags beside it, then the hold's lines joined by group, at the
+## component's own numbers, and `rules` (its passive's lines) after its own. A line with
+## nothing to say is left out.
 static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
 	var title := "EMPTY HARDPOINT" if f.empty else (db.component_name(f.component).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	var tags: Array[String] = []
 	for t in f.tags:
 		tags.append(capital(t))
-	var out: Array = [{"style": "name", "text": title, "tags": ", ".join(tags), "parts": [word(title)], "place": ""}]
+	var out: Array = [{"style": "name", "text": title, "type": face_type(f), "tags": ", ".join(tags), "parts": [word(title)], "place": ""}]
 	var marks := effects_of(f)
 	for r in rules:
 		marks.append(text_line("rule", str(r), "rule"))
 	out.append_array(joined(marks))
 	return out
+
+
+## What kind of piece an entry is, as its main icon on the die says it (Ryan, 26 October: "Face
+## type is either Weapon, Shield, Vent, or Equipment. Equipment is the label for all 4 forms of
+## buff and debuff faces"); a blank is none.
+static func face_type(f: Face) -> String:
+	match f.kind:
+		Face.Kind.ATTACK:
+			return "Equipment" if f.is_debuff() else "Weapon"
+		Face.Kind.SHIELD:
+			return "Shield"
+		Face.Kind.VENT:
+			return "Vent"
+		Face.Kind.BUFF:
+			return "Equipment"
+	return ""
 
 
 ## Lines of one group each, in the order attributes, keywords, rules, each a group's lines' parts
@@ -206,8 +223,9 @@ static func joined(marks: Array) -> Array:
 ## format as the die hold press for a component"): its name, its blow and strikes (or what kind
 ## of move it is), whom it is aimed at, when it lands and on what condition, its riders, then its
 ## text. `live` reads the blow as it will land now (its kin, a rally), coloured against its own
-## from the player's side (a harder blow is the player's loss), with `target` the machine it is
-## aimed at; the codex reads it at its own numbers. Groups as effects_of's.
+## relative to the foe (Ryan: "Positive and negative are always relative to the unit, not the
+## player": a harder blow is green), with `target` the machine it is aimed at; the codex reads
+## it at its own numbers. Groups as effects_of's.
 static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false, target: String = "") -> Array:
 	var out: Array = []
 	var name := str(a.get("name", "")).to_upper()
@@ -217,7 +235,7 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	var aim := f.aim_of(a)
 	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
 	if Foe.is_attack_action(a):
-		var line := [word("Attack"), num(str(dmg), dmg, own, true) if live else word(str(dmg))]
+		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
 		var n := maxi(1, int(a.get("strikes", 1)))
 		if n > 1:
 			line.append(word("×%d" % n))
@@ -314,8 +332,9 @@ static func word(text: String) -> Dictionary:
 	return {"text": text, "trend": 0, "gain": false}
 
 
-## A number `now` read against the component's own `own`: moved, it carries the way it moved and
-## whether that is the player's gain (more is, unless `less_is_gain`: heat, a hull price).
+## A number `now` read against its unit's own `own`: moved, it carries the way it moved and
+## whether that is a gain for the unit whose number it is, never for the player (Ryan, 26
+## October): more is, unless `less_is_gain` (heat, a hull price).
 static func num(text: String, now: int, own: int, less_is_gain: bool = false) -> Dictionary:
 	var p := word(text)
 	_trend(p, now, own, less_is_gain)
@@ -327,7 +346,7 @@ static func _trend(p: Dictionary, now: int, own: int, less_is_gain: bool = false
 	p["gain"] = (now < own) if less_is_gain else (now > own)
 
 
-## The ink of a moved number: green for the player's gain, the enemy red for a loss (Ryan, 26
+## The ink of a moved number: green for its unit's gain, the enemy red for its loss (Ryan, 26
 ## October: "If that means using green, this is the place for it"); unmoved, the text's own.
 static func trend_ink(p: Dictionary, plain: Color = Palette.INK) -> Color:
 	if int(p.get("trend", 0)) == 0:
@@ -386,10 +405,14 @@ static func _spans(l: Dictionary) -> Array:
 		"tags":
 			return [_span(text, Hud.quote(), 17, hint_ink())]
 		"name":
-			# A codex row's head: the name, its tags quiet beside it.
+			# A codex row's head: the name, its type in ink (it matters), its tags quiet after it.
 			var head := [_span(text, Hud.display_bold(), 18, Palette.INK)]
-			if not str(l.get("tags", "")).is_empty():
-				head.append(_span(str(l["tags"]), Hud.quote(), 16, hint_ink(), 8.0))
+			var kind := str(l.get("type", ""))
+			var tags := str(l.get("tags", ""))
+			if not kind.is_empty():
+				head.append(_span(kind, Hud.display(), 16, Palette.INK, 8.0))
+			if not tags.is_empty():
+				head.append(_span(("· " if not kind.is_empty() else "") + tags, Hud.quote(), 16, hint_ink(), 0.0 if not kind.is_empty() else 8.0))
 			return head
 		"caption":
 			return [_span(text, Hud.mono(), 12, Color(Palette.HUD, 0.75))]
@@ -428,7 +451,7 @@ func _bar(l: Dictionary, y: float) -> float:
 
 ## A gauge's line for the unit holds: `label`, what it holds `now` of its maximum `top`, read
 ## against `own_top`, the maximum as built: a maximum something moved is coloured with its
-## arrow (more the player's gain, unless `less_is_gain`: a foe's).
+## arrow (more is the unit's gain, unless `less_is_gain`).
 static func bar_line(label: String, now: int, top: int, own_top: int, colour: Color, less_is_gain: bool = false) -> Dictionary:
 	var high := num(str(top), top, own_top, less_is_gain)
 	high["glue"] = true

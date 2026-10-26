@@ -842,7 +842,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	assert_false(str(codex["passive"]).contains("Fins"), "never as the machine's own")
 	for item in codex["stat_items"]:
 		if str(item[0]) == "cooling":
-			assert_eq(StatBlock.value_text(item), "10 (15▲)", "its cooling the chassis's, with what the component makes it beside it")
+			assert_eq(StatBlock.value_text(item), "10 (+5▲)", "its cooling the chassis's, the change the component makes beside it")
 	var sink: Face = u.die.faces[0]
 	assert_eq(sink.component, "fins_pack", "the first entry is the component")
 	assert_eq(Effects.explain(u, sink).size(), 1, "the die row names it")
@@ -1505,8 +1505,8 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	var read := {}
 	for item in codex["stat_items"]:
 		read[str(item[0]).get_slice(" ", 0)] = StatBlock.value_text(item)
-	assert_eq(read["hull"], "%d (%d▲)" % [int(plain.base["hull"]), int(plain.base["hull"]) + 30], "its hull the chassis's, the module's in a bracket, up")
-	assert_eq(read["move"], "%d (%d▼)" % [int(plain.base["move"]), int(plain.base["move"]) - 10], "and a drawback down")
+	assert_eq(read["hull"], "%d (+30▲)" % int(plain.base["hull"]), "its hull the chassis's, the module's change in a bracket, up")
+	assert_eq(read["move"], "%d (-10▼)" % int(plain.base["move"]), "and a drawback down")
 
 
 func test_a_machine_wears_no_more_modules_than_its_slots() -> void:

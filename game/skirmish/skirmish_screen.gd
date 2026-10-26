@@ -1288,8 +1288,6 @@ func _mech_rows(i: int) -> Array:
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
 		elif bool(fc["component_risk"]):
 			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY])
-		if bool(fc["breaks_shield"]):
-			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY])
 	return rows
 
 
@@ -1489,8 +1487,8 @@ func _on_mech_held(i: int) -> void:
 ## similar format as the hold press on the die, showing resource bars with numbers and
 ## modification up/downs if they exist, a list of all chips on the unit"): its name; its
 ## gauges with their numbers, a maximum anything moved off the chassis's coloured with its
-## arrow; its armour and cooling the same; then every chip on it and the round's warnings, each
-## with what it does.
+## arrow; its armour and cooling as the codex's stats, the base with the change beside it
+## ("Armour 2 (+1▲)"); then every chip on it and the round's warnings, each with what it does.
 func _mech_hold_lines(i: int) -> Array:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var u := ms.unit
@@ -1503,17 +1501,17 @@ func _mech_hold_lines(i: int) -> Array:
 	out.append(EntryReadout.bar_line("Heat", ms.heat, ms.heat_max, int(u.base["heat"]), Palette.HEAT))
 	if ms.ammo_max > 0:
 		out.append(EntryReadout.bar_line("Ammo", ms.ammo, ms.ammo_max, ms.ammo_max, Palette.SELECT))
-	out.append(EntryReadout.parts_line("effect", [EntryReadout.word("Armour"), EntryReadout.num(str(u.armour), u.armour, int(u.base["armour"])),
-		EntryReadout.word("·"), EntryReadout.word("Cools"), EntryReadout.num(str(u.cooling), u.cooling, int(u.base["cooling"])), EntryReadout.word("a turn")]))
+	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), u.cooling)))
 	for r in _mech_rows(i):
 		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	return out
 
 
-## A foe's hold, the same way: its name, its HP, its armour and its attack against its own (a
-## harder foe is the player's loss, so up is red), every chip on it, then its intent as the die's
-## hold lists an entry (Ryan: "for enemies their current intent in the same format as the die
-## hold press for a component"), the machine it is aimed at named.
+## A foe's hold, the same way: its name, its HP, its armour and its attack against its own, the
+## colour the foe's (Ryan, 26 October: "Positive and negative are always relative to the unit,
+## not the player": a foe hitting harder is green and up), every chip on it, then its intent as
+## the die's hold lists an entry (Ryan: "for enemies their current intent in the same format as
+## the die hold press for a component"), the machine it is aimed at named.
 func _foe_hold_lines(foe: Foe) -> Array:
 	var db := ContentDB.load_default()
 	var own: Dictionary = db.foes.get(foe.content_id, {})
@@ -1521,9 +1519,8 @@ func _foe_hold_lines(foe: Foe) -> Array:
 	if not foe.alive():
 		out.append({"style": "state", "text": "Destroyed: cleared at the end of the round", "parts": [], "place": ""})
 		return out
-	out.append(EntryReadout.bar_line("HP", foe.hp, foe.hp_max, int(own.get("hp", foe.hp_max)), Palette.HUD, true))
-	var stats: Array = [EntryReadout.word("Armour"), EntryReadout.num(str(foe.armour_total()), foe.armour_total(), foe.armour, true),
-		EntryReadout.word("·"), EntryReadout.word("Attack"), EntryReadout.num(str(foe.attack + Effects.foe_attack_bonus(foe)), foe.attack + Effects.foe_attack_bonus(foe), foe.attack, true)]
+	out.append(EntryReadout.bar_line("HP", foe.hp, foe.hp_max, int(own.get("hp", foe.hp_max)), Palette.HUD))
+	var stats: Array = _stat("Armour", foe.armour, foe.armour_total()) + [EntryReadout.word("·")] + _stat("Attack", foe.attack, foe.attack + Effects.foe_attack_bonus(foe))
 	if foe.is_massive():
 		stats.append_array([EntryReadout.word("·"), EntryReadout.word("Massive: fills the column")])
 	out.append(EntryReadout.parts_line("effect", stats))
@@ -1542,6 +1539,12 @@ func _foe_hold_lines(foe: Foe) -> Array:
 	move[0]["tags"] = ""
 	out.append_array(move)
 	return out
+
+
+## A stat in a hold, as the codex has it: its label, its base in ink and the change in a
+## bracket beside it, coloured for the unit with its arrow (ContentDB.stat_parts).
+static func _stat(label: String, base: int, now: int) -> Array:
+	return [EntryReadout.word(label)] + ContentDB.stat_parts(base, now)
 
 
 ## A unit hold's first line: its name, as the die's hold heads an entry.

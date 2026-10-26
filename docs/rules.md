@@ -167,13 +167,13 @@ defeat when every machine is wrecked. There is no round limit.
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - **Holding the die** shows the entry showing, alone, its marks as text: its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
-  codex, then a line a mark in the order a spend runs it (its number as the die prints it, its
-  target, how it lands, its heat and Volatile, what it applies on hit, Rapid), its own rules
-  and a written-out grant's line last, then its tags. A number the live sources moved off the
-  component's own is coloured, green where the change is the player's gain and red where it
-  is a loss (more heat, a smaller blow), with its arrow on it, the way it moved: each number
-  on its own, so a split weapon's smaller blow and its extra strike each say so. No source is
-  listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
+  codex, then a line a mark: its number as the die prints it, its heat, its target, then its
+  keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
+  written-out grant's line last, then its tags. A number the live sources moved off the
+  component's own is coloured, green where the change is good for its unit and red where it
+  is bad (more heat, a smaller blow), always relative to the unit and never the player, with
+  its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
+  and its extra strike each say so. No source is listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
   the pause menu and behind the button under the eye, gives every reach, keyword, rule and
   status the dice and chips print, with its codex line.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
@@ -182,18 +182,21 @@ defeat when every machine is wrecked. There is no round limit.
 - **Holding a machine or a foe** shows it the way the die's hold shows an entry: its name;
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
-  armour and cooling (a foe's armour and attack) the same way, read from the player's side,
-  so a foe hitting harder is red and up; every chip on it with what it does, and the round's
-  warnings; then a foe's intent a line a mark: its move's name, its blow as it will land read
-  against its own, the machine it is aimed at by name, when it lands, its riders and its
-  text. A suppressed foe shows no intent.
+  armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
+  beside it ("Armour 2 (+1▲)"); every chip on it with what it does, and the round's warnings
+  (an overheat, a wreck, an injury's risk); then a foe's intent a line a mark: its move's name,
+  its blow as it will land read against its own, the machine it is aimed at by name, when it
+  lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
+  and up. A suppressed foe shows no intent.
 - **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
-  effect: its numbers, each its chassis's or its kind's own with what its loadout and the
-  battle make of it in a bracket beside it, green up or red down with its arrow; its passive;
+  effect: its numbers, each its chassis's or its kind's own with the change its loadout and
+  the battle make in a bracket beside it, the change green up or red down with its arrow
+  ("20 (+18▲)"); its passive;
   its active effects, what else it carries between fights (a module, a battle's reward, a
   status the battle keeps), each named with its source; then its die in one column, each
-  component a row (its tile, its name and tags, and the hold's marks joined into three lines:
-  its number, target, heat and ammo; its keywords; its own rules and its passive's), at the
+  component a row (its tile, its name, its type as its icon shows it, Weapon, Shield, Vent, or
+  Equipment for a buff or a debuff, and its tags, then the hold's marks joined into three
+  lines: its number, heat and target; its keywords; its own rules and its passive's), at the
   component's own numbers; a foe's moves the same way, at its own numbers, its last act
   last; then its lore and its quote.
 - **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in

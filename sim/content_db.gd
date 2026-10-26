@@ -376,16 +376,17 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	}
 
 
-## A codex number as parts the screen draws (EntryReadout's: text, trend, gain, glue): the base
-## alone, or the base with what it is now in a bracket beside it, the arrow the way it moved
-## (Ryan, 26 October: "the base number, with a bracket containing semi-permanent changes, if
-## any, also coloured with arrows"). More is the player's gain unless `less_is_gain`;
-## `prefix` goes before each number ("+" on a rate).
+## A stat as parts the screen draws (EntryReadout's: text, trend, gain, glue): the base alone,
+## or the base with the change in a bracket beside it, signed, the arrow the way it moved (Ryan,
+## 26 October: "just go Base (+/- change) like I said, ... with the change value coloured with
+## the arrow and the base in the normal white"): "20 (+18▲)". The colour is the unit's, never
+## the player's: more is its gain unless `less_is_gain`. `prefix` goes before the base ("+" on
+## a rate).
 static func stat_parts(base: int, now: int, prefix: String = "", less_is_gain: bool = false) -> Array:
 	var out: Array = [{"text": prefix + str(base), "trend": 0, "gain": false}]
 	if now != base:
 		out.append({"text": "(", "trend": 0, "gain": false})
-		out.append({"text": prefix + str(now), "trend": signi(now - base), "gain": (now < base) if less_is_gain else (now > base), "glue": true})
+		out.append({"text": "%+d" % (now - base), "trend": signi(now - base), "gain": (now < base) if less_is_gain else (now > base), "glue": true})
 		out.append({"text": ")", "trend": 0, "gain": false, "glue": true})
 	return out
 

@@ -24,9 +24,9 @@ const HEAT := Color("ff6a00")
 const SELECT := Color("ffffff")
 const TARGET := Color("ffffff")
 const OK := Color("ffffff")
-## A number moved in the player's favour, in the holds and the codex, always with its arrow; a
-## loss there is the enemy red (Ryan, 26 October: "If that means using green, this is the place
-## for it"). Picked by the Machado simulation's worst case: against the red, deutan, lightness
+## A number moved in its unit's favour, in the holds and the codex, always with its arrow; the
+## other way is the enemy red (Ryan, 26 October: "If that means using green, this is the place
+## for it"; "Positive and negative are always relative to the unit, not the player"). Picked by the Machado simulation's worst case: against the red, deutan, lightness
 ## 87 to 61; against the ink, every simulation a clear step apart.
 const GAIN := Color("5cff6a")
 
