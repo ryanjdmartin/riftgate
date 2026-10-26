@@ -5,16 +5,19 @@ extends Control
 ## section 4, the round row). Portrait, 720x1280 logical, absolute layout.
 ##
 ##   header   the turn and Rift Pressure; the turn's readout beside it
-##   map      drag to scroll; tap a machine to select it and light where it can move; tap a
-##            lit hex (or draw a route from it) and it moves there at once; with a machine in
-##            hand, tap a pack (or drag the machine onto one) and it moves into range and is
-##            ordered onto that fight; hold a unit for its numbers. Every pack's walk on the
-##            enemy's turn shows, a hunter's lock on its prey, and the next fight: its target,
-##            the packs whose ring covers it, the machines ordered onto it
-##   bottom   ENGAGE (while a fight is ready) or END TURN bottom-left, Undo move bottom-right
+##   map      drag to scroll; tap a machine to select it and light where it can move, and in
+##            red where it could attack from there; tap a lit hex (or draw a route from it)
+##            and the move is planned, its route drawn from where the machine stands; with a
+##            machine in hand, tap a pack (or drag the machine onto one) and it is planned into
+##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
+##            ring, its walk on the enemy's turn, a hunter's lock on its prey, and the next
+##            fight: its target, the packs whose ring covers it, the machines ordered onto it
+##   bottom   ENGAGE (while a fight is ready) or END TURN bottom-left, pulsing when nothing is
+##            left to do; UNDO bottom-right, the last move or order, in the order they were made
 ##
-## A fight opens the skirmish screen over the map. Its Back button applies the result, and
-## the turn goes on; End turn plays the enemy's turn.
+## The planned moves play on ENGAGE or END TURN (Ryan, 25 October), and the fight opens or the
+## enemy walks once they have. A fight opens the skirmish screen over the map. Its Back button
+## applies the result, and the turn goes on; End turn plays the enemy's turn.
 
 signal back_requested
 signal quit_requested   # the menu's QUIT, on this screen or in an open skirmish: out to the harness
@@ -222,7 +225,7 @@ func _build() -> void:
 	_resolve_btn.sound = ""   # the lever is the sound
 	_resolve_btn.filled = true
 	_place(_resolve_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
-	_clear_btn = HudButton.new("UNDO MOVE", _on_undo)
+	_clear_btn = HudButton.new("UNDO", _on_undo)
 	_clear_btn.sound = ""   # the undo plays its own dismiss
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
@@ -358,6 +361,10 @@ func _refresh() -> void:
 			spent[m.id] = true
 	_map.spent = spent
 	_map.orders = battle.orders if planning else {}
+	# The plan as it stands; while it plays the map keeps where it has each machine.
+	if not playing:
+		_map.plans = battle.plan_pieces() if planning else []
+		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
 	_map.route_drawing = planning and not playing
 	_map.queue_redraw()
@@ -368,7 +375,8 @@ func _refresh() -> void:
 	_resolve_btn.text = "ENGAGE" if not fight.is_empty() else "END TURN"
 	_resolve_btn.queue_redraw()
 	_resolve_btn.set_enabled(planning and not playing)
-	_clear_btn.set_enabled(planning and not playing and _undo_target() != null)
+	_resolve_btn.set_pulse(planning and not playing and battle.nothing_left())   # every machine done: the button is next
+	_clear_btn.set_enabled(planning and not playing and battle.can_undo())
 
 
 func _refresh_log() -> void:
@@ -445,6 +453,7 @@ func _toggle_log_full() -> void:
 func _select(u: Unit) -> void:
 	_map.selected = u
 	_map.destinations = battle.destinations_for(u) if u != null else {}
+	_map.threat = battle.threat_for(u) if u != null else {}
 
 
 # ---------------------------------------------------------------- gestures
@@ -457,7 +466,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
 	_details.visible = false
-	var u := battle.field.unit_at(h)
+	var u := _map.unit_at_shown(h)
 	var sel: Unit = _map.selected
 	# A second tap on what is selected unselects it (Ryan, 29 September): the gate, a hex
 	# asked about, a pack looked at.
@@ -483,10 +492,8 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		Sound.play("map_select")
 		return
 	if sel != null and u == null and _map.destinations.has(h):
-		var from := sel.pos
-		var route := battle.move_to(sel, h)
-		if not route.is_empty():
-			_play_move(sel, from, route)
+		if not battle.move_to(sel, h).is_empty():
+			_planned(sel)
 			return
 	elif u != null and u.is_player() and not u.is_static():
 		if sel == u:
@@ -571,9 +578,8 @@ func _on_route_drag_ended(commit: bool) -> void:
 		_order_attack(u, target, draft)
 		return
 	if u != null and commit and not draft.is_empty():
-		var from := u.pos
 		if battle.move_along(u, draft):
-			_play_move(u, from, draft)
+			_planned(u)
 			return
 		_refuse()
 	_select(null)
@@ -754,7 +760,7 @@ func _toggle_tuner() -> void:
 func _on_hex_double_tapped(h: Vector2i) -> void:
 	if battle.state == Battle.State.DONE:
 		return
-	var u := battle.field.unit_at(h)
+	var u := _map.unit_at_shown(h)
 	if u == null and battle.field.map.gate_hexes.has(h):
 		_details.visible = false
 		_codex.move_to_front()
@@ -815,51 +821,46 @@ func _show_details(lines: Array) -> void:
 
 # ---------------------------------------------------------------- the turn
 
-var _last_moved: Unit = null   # the machine moved last, for UNDO MOVE when none is selected
-
-
-## The machine UNDO MOVE puts back: the selected one, else the one moved last.
-func _undo_target() -> Unit:
-	if _map.selected != null and battle.can_undo(_map.selected):
-		return _map.selected
-	if _last_moved != null and battle.field.units.has(_last_moved) and battle.can_undo(_last_moved):
-		return _last_moved
-	return null
-
-
+## UNDO: the last move or order, whoever made it (Ryan, 25 October: "the undo stack is stored
+## in order, and undos in order, always"), its machine back in hand while it can still move.
 func _on_undo() -> void:
-	var u := _undo_target()
-	if u == null or _map.is_playing():
+	if _map.is_playing() or not battle.can_undo():
 		return
-	battle.undo_move(u)
-	if u == _last_moved:
-		_last_moved = null
+	var u := battle.undo()
 	Sound.play("ui_back")
-	_select(null)
+	_details.visible = false
+	_select(u if u != null and battle.can_move(u) else null)
 	_refresh()
 	_autosave()
 
 
-## A machine has moved (the battle already has it there): play its walk. It stays in hand
-## while it can still act, so a tap on a pack next is its attack from where it now stands
-## (Abalon's move, then pick a target).
-func _play_move(u: Unit, from: Vector2i, route: Array, keep: bool = true) -> void:
-	_last_moved = u
+## A move planned (the battle already has the machine at its route's end): the route shows from
+## where it stands, and it plays on ENGAGE or END TURN (Ryan, 25 October: no waiting on a walk
+## to do the next thing). It stays in hand while it can still act, so a tap on a pack next is
+## its attack from the route's end (Abalon's move, then pick a target).
+func _planned(u: Unit, keep: bool = true) -> void:
 	Sound.play("plot")
 	_select(u if keep and battle.actions_left(u) > 0 else null)
 	_details.visible = false
-	if DisplayServer.get_name() == "headless" or route.is_empty():
-		_refresh()
-		_autosave()
-		return
-	# A carrier's riders ride with it as a ring (the Swallowtail's carry): the hexes they rode from.
-	var riders: Array = []
-	for c in battle.last_carry:
-		riders.append([int(c[0]), c[1]])
-	_map.play_moves([[u.id, [from] + route, riders]], [], func() -> void:
-		_refresh()
-		_autosave())
 	_refresh()
+	_autosave()
+
+
+## The plan played on the map, then `then`: the pieces in their phases, and after them the
+## packs' walks when there are any. Headless, nothing plays and `then` runs at once.
+func _play_plan(plan: Array, pack_moves: Array, then: Callable) -> void:
+	var phases := BattleMapView.plan_phases(plan)
+	if not pack_moves.is_empty():
+		phases.append(pack_moves)
+	if DisplayServer.get_name() == "headless" or phases.is_empty():
+		_map.shown = {}
+		then.call()
+		return
+	if not plan.is_empty():
+		Sound.play("plot")
+	_map.plans = []
+	_map.play_phases(phases, then)
+	_refresh()   # the buttons grey until the plan has played
 
 
 ## End the turn: the enemy's turn plays (bible section 4), the packs walking where the map
@@ -880,25 +881,21 @@ func _on_end_turn() -> void:
 		if m.is_static() or not m.alive():
 			continue
 		free += 1
-		if battle.action_from.has(m.id) or int(battle.spent.get(m.id, 0)) > 0:
+		if battle.action_from.has(m.id) or int(battle.spent.get(m.id, 0)) > 0 or battle.orders.has(m.id):
 			committed += 1
 	if committed > 0:
 		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
+	var plan := battle.take_plan()   # the machines' planned moves play first, then the packs walk
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
-	_last_moved = null
 	var pack_moves: Array = []
 	for sid in walks.keys():
 		var w: Battlefield.Walk = walks[sid]
 		if starts.has(sid) and not w.path.is_empty():
 			pack_moves.append([sid, [starts[sid]] + Array(w.path)])
-	if DisplayServer.get_name() == "headless":
-		_after_step()
-	else:
-		_map.play_moves([], pack_moves, _after_step)
-		_refresh()   # the buttons grey until the walk has played
+	_play_plan(plan, pack_moves, _after_step)
 
 
 var _gate_struck := false   # the enemy's turn just played hit the gate: heard when the walk has played
@@ -986,57 +983,41 @@ func _show_caught() -> void:
 var _inspect_pack: Unit = null
 
 
-## Order a machine onto a pack (bible section 5): along a drawn route first, if one was drawn,
-## then the fight from the route's end if the pack is in range there; with no route, from the
-## farthest hex in range its move left reaches, or where it stands. A second tap on the pack it
-## is already ordered onto takes the order back.
+## Order a machine onto a pack (bible section 5; Battle.order_onto): along a drawn route first,
+## if one was drawn, then the fight from the route's end if the pack is in range there; with no
+## route, from the farthest hex in range its move left reaches, or where it stands. A second tap
+## on the pack it is already ordered onto takes the order back. The move into range is planned
+## and one UNDO takes back the move and the order together.
 func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
-	if draft.is_empty() and battle.order_of(m) == target:
-		battle.cancel_order(m)
-		Sound.play("ui_back")
-		_select(null)
-		_refresh()
-		_autosave()
-		return
-	if not battle.can_target(target) or battle.actions_left(m) <= 0:
-		Sound.play("ui_back")
-		if not battle.forced.is_empty():
-			_show_details(notice_lines("A hunter's catch comes first", "Order machines onto the hunter, then ENGAGE"))
-		_refresh()
-		return
-	var from := m.pos
-	var route: Array = []
-	if not draft.is_empty():
-		if not battle.move_along(m, draft):
-			# A carrier's block that does not fit where the route ends is a move refused.
-			if not (battle.draft_landing(m, draft).get("bad", []) as Array).is_empty():
-				_refuse()
-			else:
-				Sound.play("ui_back")
+	match battle.order_onto(m, target, draft):
+		"ordered":
+			Sound.play("plot")
 			_select(null)
+		"moved":
+			Sound.play("ui_back")   # the drawn route ended out of range: it moved, and no order
+			_select(null)
+		"cancelled":
+			Sound.play("ui_back")
+			_select(null)
+		"refused":
+			Sound.play("ui_back")
+			if not battle.forced.is_empty():
+				_show_details(notice_lines("A hunter's catch comes first", "Order machines onto the hunter, then ENGAGE"))
 			_refresh()
 			return
-		route = draft
-	else:
-		var h := battle.attack_hex(m, target)
-		if h == Battle.NO_HEX:
+		"out_of_reach":
 			Sound.play("ui_back")
 			_show_details(notice_lines("Out of reach", "%s cannot get within %d of it this turn" % [m.display_name, m.attack_range]))
 			_refresh()
 			return
-		if h != m.pos:
-			route = battle.move_to(m, h)
-	var ordered := battle.order(m, target)
-	if not ordered:
-		Sound.play("ui_back")   # the drawn route ended out of range: it moved, and no order
-	if route.is_empty():
-		if ordered:
-			Sound.play("plot")
-		_select(null)
-		_refresh()
-		_autosave()
-		return
-	_play_move(m, from, route, false)
+		"no_room":
+			_refuse()
+			_select(null)
+		_:
+			Sound.play("ui_back")
+			_select(null)
+	_refresh()
+	_autosave()
 
 
 ## The fight the map shows: the pack the finger is on while a route is drawn, with the machine
@@ -1049,7 +1030,7 @@ func _fight_preview() -> Dictionary:
 			var team: Array = _ordered_onto(r["targets"])
 			if not team.has(_draft_unit):
 				team.append(_draft_unit)
-			r["committed"] = team
+			r["committed"] = (r["eligible"] as Array).duplicate() if bool(r.get("all_in", false)) else team   # the boss's fight takes every machine
 			return r
 	var f := battle.next_fight()
 	if not f.is_empty():
@@ -1063,7 +1044,8 @@ func _fight_preview() -> Dictionary:
 	if _inspect_pack != null and battle.field.units.has(_inspect_pack):
 		var r := battle.roster(_inspect_pack)
 		if not r.is_empty():
-			r["committed"] = _ordered_onto(r["targets"])
+			r["committed"] = (r["eligible"] as Array).duplicate() if bool(r.get("all_in", false)) else _ordered_onto(r["targets"])
+			r["inspect"] = true   # its own ring shows, lit, in place of where a machine must stand
 			return r
 	return {}
 
@@ -1106,16 +1088,24 @@ func _engage() -> void:
 	_select(null)
 	_details.visible = false
 	_inspect_pack = null
-	var sk := battle.engage()
-	if sk == null:
-		Sound.play("ui_back")
-		_refresh()
-		return
-	_map.attack = {}
-	if battle.boss_fight:
-		_play_boss_reveal(sk, group)
-	else:
-		_enter_skirmish(sk, group, true)
+	# The planned moves play first, and the fight opens once they have (Ryan, 25 October); the
+	# boss's fight takes every machine wherever it stands and ends the battle, so nothing moves
+	# first and the reveal plays at once ("just go right into the boss animation").
+	var plan := battle.take_plan()
+	if battle.next_fight_is_boss():
+		plan = []
+		_map.shown = {}
+	_play_plan(plan, [], func() -> void:
+		var sk := battle.engage()
+		if sk == null:
+			Sound.play("ui_back")
+			_refresh()
+			return
+		_map.attack = {}
+		if battle.boss_fight:
+			_play_boss_reveal(sk, group)
+		else:
+			_enter_skirmish(sk, group, true))
 
 
 ## The boss's fight (Ryan, 25 September): the family's theme starts from its top, the map
@@ -1138,6 +1128,16 @@ func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 	reveal.position = Vector2(0, MAP_Y)
 	reveal.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
 	reveal.boss_name = str(boss.display_name)
+	# The order says who is in: the machines ordered onto the boss, every one when all are.
+	var committed := 0
+	for u in group:
+		if (u as Unit).is_player():
+			committed += 1
+	var free := 0
+	for m in battle.mechs():
+		if not m.is_static():
+			free += 1
+	reveal.order_text = ("ALL UNITS" if committed >= free else "%d UNIT%s" % [committed, "" if committed == 1 else "S"]) + " COMMITTED // ENGAGING"
 	reveal.family = str(battle.db.factions.get(battle.faction, {}).get("name", battle.faction))
 	var fid := BattleMapView.foe_sprite_id(boss)
 	reveal.tex = Sprites.combat_foe(fid)
@@ -1190,9 +1190,8 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	var hexes: Array = []
 	var mid := Vector2.ZERO
 	if battle.boss_fight and battle.boss != null:
-		# The boss's fight holds every machine, so the group's centroid is the middle of the
-		# field: the dive aims at the boss's hex alone (Ryan, 29 September: the spread came
-		# out of the centre of the map, not the boss's tile).
+		# The dive aims at the boss's hex alone, wherever the machines on it stand (Ryan, 29
+		# September: the spread came out of the centre of the map, not the boss's tile).
 		hexes.append(battle.boss.pos)
 		mid = _map.center(battle.boss.pos)
 	else:

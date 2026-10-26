@@ -129,7 +129,10 @@ name, as the Thief keeps its own, and every look is ours.
   resisted the edit model (ten seeds: outward axes, plain spearheads, and one two-bladed head,
   9; a removal of its outer blade took the inner one too), so its flip is the reflection, with
   the mask and axis fixed, passed at 0.85. On the picker as `augur_heroart16` and
-  `augur_chibi_heroart16`.
+  `augur_chibi_heroart16`. Ryan's picks of the seventh (26 October): the hero's 9 and the
+  chibi's 18, the chibi cut into the game as her sprite and the hero recorded as her boss
+  register (`picks.json`); "the augur will need another pass at some point since she's
+  still not correct" (Ryan), so that pass is the to-do's, from her renders kept in git.
   **Her name** (Ryan: Seer is fine, but a more specific term for a seer of doom or omens?):
   the **Augur**, Rome's reader of omens, the job's own word and Claude's lean, since reading the
   omen and then its landing is her whole kit; the **Harbinger**, the one who announces what is
@@ -229,7 +232,6 @@ Set aside (each with what set it aside):
 ## Questions for Ryan
 
 - The promoted forms' one move more for six of them, and Fáfnir's mechanics (the slate above).
-- The Augur's second-round picks on the picker (no coat or hood, the blades bigger), then the cut.
 - Maelle as the Duelist on the Peak, in the Mage's place, or not; and the Blue Mage.
 
 ## Bench

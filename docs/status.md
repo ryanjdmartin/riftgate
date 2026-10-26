@@ -17,11 +17,12 @@ are in `README.md`.
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
 - The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
   `C:\Users\jam82\Desktop\Code\riftgate`; the README's Running section says what is set up
-  there. What the Mac held outside git is gone but the seventh round's foeforge renders,
-  force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
-  no machine until a route for the image model is chosen.
-- Tests: 643 tests, 64,579 checks, green on `ccr-170f6d81-465jnr` (26 October, Spun Up spent
-  by a weapon alone), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+  there. What the Mac held outside git is gone. Of the seventh round's foeforge renders
+  (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
+  only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
+  `generate` and `fix` have no machine until a route for the image model is chosen.
+- Tests: 659 tests, 64,752 checks, green on main (26 October, `ccr-170f6d81-465jnr` landed),
+  about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -32,21 +33,26 @@ are in `README.md`.
 
 ## Branches
 
-Main is at `ef91382` (the phone scripts' Windows launchers) on the landing of 25 October (Ryan's
-go: "merge in and clean up"). Live beside it, from sessions running the same day:
-`ccr-170f6d81-465jnr` (this one: a passive's lay on any hit, the bot's flat buff on each strike,
-a weapon's hit procs whatever it dealt, the Skua's runner rows, Flak on a weapon's blow of 0, the
-die's hold and the keywords list, area at half, the holds and the codex reworked, the weapon and
-equipment words of 26 October, the map's readout as lines, the vent blast as a weapon's hit,
-Spun Up spent by a weapon alone); `claude/affectionate-goldberg-8e3mkh` (the
-mechanics audit and its fixes, with this branch's Flak commit and the playtest branch merged in);
-`claude/quick-campaign-mode-pafhiv` (the quick campaign, and one damage state: "Cracked is
-gone"); `claude/playtesting-issues-08mnqj` (Ryan's playtest list and its rounds); `ccr-7effd31a-u5z4gw` (the Hold The Line pair, 24 October). When they meet, this
-branch's hold drops its CRACKED state for the one damage state, and the bible and the hangar's
-vocabulary already hold every branch's rows (Pages). The landing's three (`ccr-7d865127-wr1ko2`,
-`claude/eager-newton-sf947u`, the weld's `claude/friendly-cannon-kyk9v4`) are in main: delete them
-from the desk machine or GitHub, since a cloud session's push to delete one is refused. Every
-other branch was merged into main and deleted (22 October).
+Live beside main on 26 October, each another session's work, unmerged and landing by merging
+main in: `claude/affectionate-goldberg-8e3mkh` (a beaten domain's rifts close, a rally at once),
+`claude/quick-campaign-mode-pafhiv` (one damage state, bosses at their tier; when it lands the
+holds and the map's readout drop their crack chip for the one damage state),
+`ccr-6073bda9-p34o8q` (the foes' fresh start proposed, `docs/foes_proposal.md`),
+`ccr-7d865127-wr1ko2` (at work again since 26 October: the Kestrel looks' third round) and
+`ccr-7effd31a-u5z4gw` (the Hold The Line pair, sketched on 24 October). On 26 October, on
+Ryan's go, main took `claude/playtesting-issues-08mnqj` (his playtest list of 25 and 26
+October: moves planned and played on ENGAGE or END TURN, UNDO in the order things were done,
+the packs' rings in red, the boss's fight taking every machine, the Gel's halves a pair in one
+slot, summons and a foe getting back up stepping up at once; its phone read is the to-do's),
+then `ccr-535a7596-5ptzsj` (the boss art round's last picks cut, the cutter's `--keep-glow`, the
+seventh round's renders out of git but the Augur's), then `ccr-170f6d81-465jnr` ("merge in and
+clean up": the die's hold, the units' holds and the codex as text, the keywords list, area at
+half, Flak on a weapon's blow of 0, the weapon and equipment words, the map's readout as lines,
+the vent's blast as a weapon's hit, Spun Up spent by a weapon alone). Fully merged, so to delete
+from the desk machine or GitHub, since a cloud session may not delete one:
+`claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`, `claude/eager-newton-sf947u` and
+`claude/friendly-cannon-kyk9v4` (`ccr-170f6d81-465jnr` too, once its session ends). Every other
+branch was merged into main and deleted (22 October).
 
 ## The design sessions
 
@@ -97,9 +103,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   under the passive, and the die in one column, three lines a component (`game/ui/codex_box.gd`);
   a unit's hold the same format, its gauges with their numbers, every chip, a foe's intent; what a keyword means is the keywords list's, the pause menu's KEYWORDS page and the
   `?` under the eye (`PauseMenu.glossary`). His phone read judges both (the to-do).
-- Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
-  content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the
-  picker's seventh round (Pages).
+- Foe art: every foe and hero cut from Ryan's picks, and every subject of the boss art round
+  cut ahead of its kit (`art/foes`, `tools/foeforge/picks/picks.json`), the last three from the
+  picker's seventh round on 26 October: Surtr (his white-hot blade and blaze kept by the cut's
+  new `--keep-glow`), Floraison and the Augur, who needs another pass "at some point" (Ryan:
+  "she's still not correct"; the to-do). The cloud session that cut those three could not fetch
+  Godot; their six `.import` files were written and committed on the desk machine the same day,
+  the suite green there (644 tests).
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
@@ -172,17 +182,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.315, and so is the live (26 October,
-  the page's version 332, from `ccr-170f6d81-465jnr`: Spun Up spent by a weapon alone, and
-  Scorched and Thrust Overboost in the Kite's words, merged onto the live v0.314, which carries
-  the other branches' rows, so this file holds
-  their rows and tables too and the tables script waits until they land, as run here it writes
-  this branch's older tables: this branch's table cells are edited by hand to the generator's
-  text). The
-  version numbers on the publishing branch's file and the live agree after every publish. Before
-  republishing, read the live page; if another session moved it, publish a three-way merge onto
-  it (`git merge-file` with the last-published file as the base, the wrapper's first line and
-  its trailing `</body></html>` stripped from the saved live source).
+  `docs/design-bible.html` after every change. This file is v0.315, and so is the live (26
+  October, the page's version 332, landed with `ccr-170f6d81-465jnr`). The live carries the
+  rows of the branches still beside main, so this file holds them too, tables and all: the
+  tables script run on main writes main's content's cells over theirs, so until those branches
+  land a table cell is edited by hand to the generator's text. The version numbers on the
+  publishing branch's file and the live agree after every publish. Before republishing, read
+  the live page; if another session moved it, publish a three-way merge onto it (`git
+  merge-file` with the last-published file as the base, the wrapper's first line and its
+  trailing `</body></html>` stripped from the saved live source).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -199,11 +207,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   lands.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round's seventh sets (19 October): Surtr's blade on the grip's line,
-  Floraison's eyes painted out, and the Augur's new base with the smoke gone and the top blade
-  flipped inward; the README has the command that builds it. Every earlier round's folder stays
-  under `tools/foeforge/out/` as the record, and the renders that lost a blade or a brief sit in
-  each set's `set_aside/`; the fix order that worked is the bible's art row.
+  It holds the boss art round's seventh sets (19 October), all picked on 26 October and cut:
+  Surtr's blade on the grip's line, Floraison's eyes painted out, and the Augur's new base with
+  the smoke gone and the top blade flipped inward. Of the rounds' folders under
+  `tools/foeforge/out/`, only the Augur's last two stay, with the seventh round's job lists (each
+  set's `set_aside/` holds the renders that lost a blade or a brief); the README has the
+  command that builds her sets as a page, and the fix order that worked is the bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

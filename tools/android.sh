@@ -8,13 +8,20 @@
 # Once, on the phone: Settings > About > tap Build number seven times, then Developer
 # options > USB debugging on; plug in and accept the computer's key. The desk machine has
 # the 4.7.2 export templates, the Android SDK (platform-tools, build-tools 35, platform 35;
-# ~/Library/Android/sdk on a Mac, %LOCALAPPDATA%\Android\Sdk on Windows), a JDK, and the
-# debug keystore Godot expects; the README says how they were put there. On Windows this
-# runs from Git Bash.
+# ~/Library/Android/sdk on the Mac, ~/Android/Sdk on the Windows PC), a JDK, and the debug
+# keystore Godot expects; the README says how they were put there. On Windows this runs from
+# Git Bash, or from PowerShell as tools\android.
 set -e
 cd "$(dirname "$0")/.."
-SDK=${ANDROID_HOME:-$HOME/Library/Android/sdk}
-[ -d "$SDK" ] || [ -z "$LOCALAPPDATA" ] || SDK="$(cygpath -u "$LOCALAPPDATA")/Android/Sdk"
+# The SDK: $ANDROID_HOME, or where Android Studio puts it (~/Library/Android/sdk on a Mac,
+# ~/Android/Sdk on Linux and on the Windows desk machine, %LOCALAPPDATA%\Android\Sdk on Windows).
+WINSDK=
+[ -z "$LOCALAPPDATA" ] || WINSDK="$(cygpath -u "$LOCALAPPDATA")/Android/Sdk"
+SDK=
+for d in "${ANDROID_HOME:-}" "$HOME/Library/Android/sdk" "$HOME/Android/Sdk" "$WINSDK"; do
+	if [ -n "$d" ] && [ -d "$d" ]; then SDK=$d; break; fi
+done
+[ -n "$SDK" ] || [ -n "$ADB" ] || { echo "no Android SDK found: set ANDROID_HOME" >&2; exit 1; }
 ADB=${ADB:-$SDK/platform-tools/adb}
 case "$1" in
 	log)
@@ -24,8 +31,16 @@ case "$1" in
 		;;
 	*)
 		mkdir -p build
-		perl -e 'alarm 600; exec @ARGV' godot --headless --path . --export-debug Android build/riftgate.apk 2>&1 | grep -i 'error' || true
-		[ -f build/riftgate.apk ] || { echo "export failed: no build/riftgate.apk" >&2; exit 1; }
+		# Gone first, so a failed export cannot fall through to installing the last APK.
+		rm -f build/riftgate.apk
+		perl -e 'alarm 600; exec @ARGV' godot --headless --path . --export-debug Android build/riftgate.apk > build/export.log 2>&1 || true
+		if [ ! -f build/riftgate.apk ]; then
+			# Godot gives the reasons on the lines after its ERROR line.
+			grep -i -A 4 'error' build/export.log >&2 || tail -n 20 build/export.log >&2
+			echo "export failed: no build/riftgate.apk (the whole log is build/export.log)" >&2
+			exit 1
+		fi
+		grep -i 'error' build/export.log || true
 		;;
 esac
 # tr: adb on Windows ends its lines with a carriage return.

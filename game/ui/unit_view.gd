@@ -42,7 +42,7 @@ var sprite_density := 1.0         # a machine's render is this much larger than 
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
-var intent: String = ""           # quiet text for an empty slot, e.g. "EXPOSED"
+var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed)
 var highlight: bool = false       # valid drop target while dragging a die
@@ -198,7 +198,9 @@ func _gui_input(event: InputEvent) -> void:
 					tapped.emit()
 			_pressed = false
 			_holding = false
-			set_process(_has_pending())
+			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
+			# under the finger froze where it stood (Ryan, 25 October: SIG LOST held for ages).
+			set_process(true)
 		accept_event()
 
 

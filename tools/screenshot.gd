@@ -3,7 +3,8 @@ extends SceneTree
 ## Renders a scene into a 720x1280 offscreen viewport and saves a PNG. Needs a window
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
-## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
+## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
+## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's), confirm (the
 ## end-turn question), lock, rage (the rage's
@@ -77,6 +78,22 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
+		"pair", "pair_spread":
+			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
+			# in its slot (RIFTGATE_FOES=gel:2,goblin:3); pair_spread holds a Spread weapon over
+			# the formation, the pair bracketed as one slot.
+			var db := ContentDB.load_default()
+			s.sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+			for f in s.sk.field_foes():
+				if f.content_id == "gel" and f.rank == 0:
+					f.hp = 0
+					break
+			s.sk._clear_dead()
+			if _pose == "pair_spread":
+				s.sk.mechs[0].die = Die.single(Face.attack(3, Face.Reach.DIRECT, Face.Keyword.CLEAVE))
+				s.sk.mechs[0].face_index = 0
+				s._drag_from = 0
+			s._refresh()
 		"hold":
 			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
 			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
@@ -186,7 +203,8 @@ func _apply_pose() -> void:
 			s._toggle_all_arrows(true)
 
 
-## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
+## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
+## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
@@ -208,8 +226,6 @@ func _apply_battle_pose() -> void:
 			s._on_unit_held(b.field.packs()[0])
 		"boss":
 			s._on_unit_held(b.boss)
-		"gate":
-			s._on_hex_tapped(b.field.map.gate)
 		"ground":
 			# Nothing in hand, a tap on the first open water (else ruins): what the ground is.
 			var pick := Vector2i(-9999, -9999)
@@ -221,6 +237,19 @@ func _apply_battle_pose() -> void:
 				if pick != Vector2i(-9999, -9999):
 					break
 			s._on_hex_tapped(pick)
+		"plan_play":
+			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
+			for i in range(mini(2, b.mechs().size())):
+				s._on_hex_tapped(b.mechs()[i].pos)
+				var dests: Array = s._map.destinations.keys()
+				if not dests.is_empty():
+					s._on_hex_tapped(dests[dests.size() / 2])
+			s._on_end_turn()
+		"inspect":
+			# A pack tapped with nothing in hand: its ring lit, every other pack's at rest.
+			var sq: Unit = b.field.packs()[0]
+			s._on_hex_tapped(sq.pos)
+			s._map.scroll_to_unit(sq)
 		"draft", "draftslow":
 			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
 			# stops about halfway through the move on open ground, draftslow ends on a slow hex,
@@ -342,7 +371,7 @@ func _apply_battle_pose() -> void:
 		"resolve":
 			s._on_end_turn()
 		"gate":
-			# The gate tapped: its footprint and the hexes it can be attacked from.
+			# The gate tapped: its footprint, the hexes it can be attacked from and its readout.
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.

@@ -1001,3 +1001,25 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	assert_false(sk.mechs[2].assigned, "the hot gun was held")
 	assert_eq(Policy.kind_name(Policy.BLIND), "blind", "the rung's name, as the runner reads it")
 	assert_eq(Policy.kind_name(Policy.PLANNER), "planner", "and the planner's")
+
+
+## The bot reads a Gel's pair as the resolver does (26 October): a Spread filling the hopper
+## beside a twin slot loads for both halves.
+func test_the_bot_counts_both_halves_of_a_pair() -> void:
+	var sk := Skirmish.new(3, 3)
+	var fill := Face.attack(3, L, K.CLEAVE)
+	fill.fills_hopper = 1
+	var fire := Face.attack(3, L)
+	fire.fires_hopper = 6
+	fire.power_per_load = 1
+	sk.add_mech(_mech("A", Die.of([fill, fire])))
+	var target := _ghoul(500, 10)
+	sk.add_foes([target, _ghoul(400, 10)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	var plain := pol.hopper_fill_score(sk, ms, fill, target)
+	var lead: Foe = sk.front[1]
+	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
+	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")

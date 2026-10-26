@@ -1333,3 +1333,89 @@ func test_a_forging_machine_shows_its_magazine_and_each_guns_price() -> void:
 	s._refresh()
 	assert_true(s._dice[0].face.dry, "and DRY when it cannot")
 	s.free()
+
+
+## END TURN pulses once no die can be spent, rerolls left or not (Ryan, 25 October).
+func test_end_turn_pulses_once_nothing_is_left_to_spend() -> void:
+	var s := _screen(5)
+	var any := false
+	for i in range(s.sk.mechs.size()):
+		any = any or s.sk.can_spend(i)
+	assert_eq(s._end_btn.pulse, not any, "it pulses only when nothing can be spent")
+	for i in range(s.sk.mechs.size()):
+		s.sk.mechs[i].assigned = true
+	s._refresh(false)
+	assert_true(s.sk.rerolls_left > 0, "rerolls are left")
+	assert_true(s._end_btn.pulse, "and it pulses all the same: every die is spent")
+	s.free()
+
+
+## A foe joining the pool is shown going in (Ryan, 25 October): the screen notices who was not
+## waiting at its last look; the fight's opening pool is no join.
+func test_a_foe_joining_the_pool_is_noticed() -> void:
+	var s := _screen(5)
+	assert_true(s._pool_primed, "the opening pool remembered")
+	var waiting := s.sk.reinforcements.size()
+	assert_eq(s._pool_last.size(), waiting, "everyone waiting at the start")
+	var joined := Foe.make("revenant", 3, 2)
+	s.sk.reinforcements.append(joined)
+	s._refresh(false)
+	assert_true(s._pool_last.has(joined), "the newcomer seen joining")
+	assert_eq(s._reserve.pending.get("front", 0), 0, "headless, nothing flies and the count stands as it is")
+	s.free()
+
+
+## A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left half and
+## the right half's view the other, each its own target; a plain slot is one view again.
+func test_a_twin_slot_shows_both_halves() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	s._refresh(false)
+	var tv: UnitView = s._twin_views[0][0]
+	assert_true(tv.visible, "the right half shows")
+	assert_eq(s._view_foe.get(tv, null), half, "its own view, its own target")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the left half takes half the slot")
+	s.sk.twins.clear()
+	s._refresh(false)
+	assert_false(tv.visible, "a plain slot again")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "one view across it")
+	s.free()
+
+
+## An area weapon in hand brackets a twin slot's pair as one slot (Ryan, 26 October); a
+## single-target one brackets each half its own.
+func test_an_area_weapon_brackets_a_pair_as_one_slot() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.die = Die.single(Face.attack(3, Face.Reach.DIRECT, Face.Keyword.CLEAVE))
+	ms.face_index = 0
+	s._drag_from = 0
+	s._refresh(false)
+	assert_eq(s._pair_marks.rects.size(), 1, "one bracket round the pair")
+	assert_false(s._slot_views[0][0].highlight or s._twin_views[0][0].highlight, "and none on either half alone")
+	ms.die = Die.single(Face.attack(3, Face.Reach.DIRECT))
+	s._refresh(false)
+	assert_true(s._pair_marks.rects.is_empty(), "a single-target weapon: no slot bracket")
+	assert_true(s._slot_views[0][0].highlight and s._twin_views[0][0].highlight, "each half bracketed on its own")
+	s._drag_from = -1
+	s.free()
+
+
+## A foe ready to get back up that burns down in the enemy's turn stands again in its slot, and
+## the screen plays its fall and its return after the turn (26 October).
+func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
+	var s := _screen(5)
+	var foe: Foe = s.sk.front[0]
+	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 5, Effects.DECAY_TICK)
+	foe.hp = 1
+	s._end_turn_now()
+	assert_true(s.sk.field_foes().has(foe), "it stood again")
+	assert_eq(foe.hp, foe.hp_max, "whole")
+	assert_false(Effects.has(foe, "risen"), "its charge spent")
+	s.free()

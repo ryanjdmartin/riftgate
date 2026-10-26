@@ -13,9 +13,10 @@
 # the LAN, later loads come from the browser cache.
 #
 # Needs the 4.7.2 export templates in ~/Library/Application Support/Godot/export_templates
-# on a Mac, %APPDATA%\Godot\export_templates on Windows (the README says where to fetch them).
-# On Windows it runs from Git Bash, and the first serve asks Windows Firewall to let Python
-# take connections on private networks.
+# on the Mac, editor_data\export_templates beside the Godot executable on the Windows PC (the
+# README says where to fetch them). On Windows it runs from Git Bash, or from PowerShell as
+# tools\phone, and the first serve asks Windows Firewall to let Python take connections on
+# private networks.
 set -e
 cd "$(dirname "$0")/.."
 PORT=${PORT:-8060}
@@ -24,8 +25,16 @@ PYTHON=python3
 "$PYTHON" -c '' 2>/dev/null || PYTHON=python
 if [ "$1" != "serve" ]; then
 	mkdir -p build/web
-	perl -e 'alarm 600; exec @ARGV' godot --headless --path . --export-debug Web build/web/index.html 2>&1 | grep -i 'error' || true
-	[ -f build/web/index.wasm ] || { echo "export failed: no build/web/index.wasm" >&2; exit 1; }
+	# Gone first, so a failed export cannot fall through to serving the last build.
+	rm -f build/web/index.wasm
+	perl -e 'alarm 600; exec @ARGV' godot --headless --path . --export-debug Web build/web/index.html > build/export.log 2>&1 || true
+	if [ ! -f build/web/index.wasm ]; then
+		# Godot gives the reasons on the lines after its ERROR line.
+		grep -i -A 4 'error' build/export.log >&2 || tail -n 20 build/export.log >&2
+		echo "export failed: no build/web/index.wasm (the whole log is build/export.log)" >&2
+		exit 1
+	fi
+	grep -i 'error' build/export.log || true
 fi
 case "$(uname -s)" in
 	Darwin) IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo 127.0.0.1) ;;

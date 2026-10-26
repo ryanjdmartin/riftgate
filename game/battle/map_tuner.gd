@@ -20,7 +20,7 @@ func _init(map: BattleMapView) -> void:
 	_option("TRACE", ["assets", "pulse", "light", "ink", "off"], func(i: int) -> void: _m3d().set_trace_mode(["assets", "pulse", "light", "ink", "off"][i]))
 	_slider("TRACE GAIN", 0.0, 2.5, 1.0, func(v: float) -> void: _m3d().set_trace_gain(v))
 	_slider("BLOOM", 0.0, 2.0, 0.8, func(v: float) -> void: _m3d().set_glow(v))
-	_slider("GRID", 0.0, 1.6, 0.7, func(v: float) -> void: _m3d().set_grid(v))
+	_slider("GRID", 0.0, 1.6, Map3D.GRID_GAIN, func(v: float) -> void: _m3d().set_grid(v))
 	_slider("SATURATION", 0.0, 1.6, 1.0, func(v: float) -> void: _map.tune("saturation", v))
 	_slider("BRIGHTNESS", 0.4, 1.6, 1.0, func(v: float) -> void: _map.tune("brightness", v))
 	_slider("FAR BLUR", 0.0, 6.0, 3.0, func(v: float) -> void: _map.tune("blur_max", v))
