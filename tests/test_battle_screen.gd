@@ -42,21 +42,56 @@ func test_screen_builds_on_the_players_turn() -> void:
 	s.free()
 
 
-func test_a_tap_selects_and_a_lit_hex_moves_the_machine_at_once() -> void:
+func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
 	var start := m.pos
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "mech selected")
 	assert_true(s._map.destinations.size() > 0, "destinations lit")
+	assert_false(s._map.threat.is_empty(), "and in red where it could attack from past them")
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
-	assert_eq(m.pos, dest, "it moved at once")
-	assert_eq(s._map.selected, m, "and stays in hand, to pick a target from there")
+	assert_eq(m.pos, dest, "the battle has it there at once")
+	assert_eq(s._map.shown[m.id][0], start, "the map shows it where it stood until the plan plays")
+	assert_eq(s._map.plans.size(), 1, "with its route drawn")
+	assert_eq(s._map.unit_at_shown(start), m, "a tap where it stands finds it")
+	assert_eq(s._map.selected, m, "and it stays in hand, to pick a target from there")
 	assert_false(s._clear_btn.disabled, "the move can be undone")
+	assert_eq(s._clear_btn.text, "UNDO", "the button undoes whatever came last")
 	s._on_undo()
 	assert_eq(m.pos, start, "undo puts it back")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "and the plan with it")
 	assert_true(s._clear_btn.disabled, "and there is nothing more to undo")
+	assert_eq(s._map.selected, m, "the machine back in hand")
+	s._on_hex_tapped(dest)
+	s._on_end_turn()
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "END TURN plays the plan")
+	assert_eq(m.pos, dest, "and it stands where it went")
+	s.free()
+
+
+func test_undo_takes_back_an_order_and_the_moves_in_the_order_made() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, a)
+	s._refresh()
+	var c0 := c.pos
+	s._on_hex_tapped(c.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	s._on_hex_tapped(a.pos)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(a), sq, "ordered")
+	s._on_undo()
+	assert_eq(b.order_of(a), null, "the order comes back first")
+	assert_eq(c.pos, dest, "the other machine's move still planned")
+	s._on_undo()
+	assert_eq(c.pos, c0, "then the move")
+	assert_true(s._clear_btn.disabled, "and nothing is left")
 	s.free()
 
 
@@ -270,6 +305,9 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	assert_true(b.boss_fight, "the boss's fight")
 	assert_true(s._skirmish != null, "it opens")
 	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
+	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
+	assert_true(s._skirmish._withdraw_btn.disabled, "no withdrawing")
+	assert_eq(s._skirmish._withdraw_btn.text, "NO RETREAT", "and the button says why")
 	var want := Sound.boss_set(b.faction)
 	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
 	s._on_skirmish_back()

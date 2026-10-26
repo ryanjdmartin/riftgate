@@ -113,6 +113,16 @@ var _falls: int = 0   # foes that have fallen this fight, counted as their slots
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
 var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
+## The boss's fight (Ryan, 25 October: "the player is committed to closing the rift or getting
+## scrapped trying"): no withdrawal, so it ends in the boss's fall or the team's.
+var committed := false
+## The twin slot (Ryan, 26 October: the Gel's halves "should exist as a pair taking the place of
+## one unit"): Vector2i(rank, column) -> the right-hand half, the left standing in front or back
+## as any foe. The slot is one slot to the formation, full while either stands, so no mine is
+## laid in it and nothing else joins it; an area blow that reaches it reaches both, a
+## single-target blow the one it is spent on. When one falls the other keeps the slot alone,
+## and with both gone it is a plain slot again: the pair exists only as its split made it.
+var twins: Dictionary = {}
 ## The runner's mine tally (the game never reads it): spends on a slot, shots laid by them and
 ## by the drone, shots landed on an arrival or by the pull, and the hull they took.
 var mine_tally := {"slot_spends": 0, "laid": 0, "drone_laid": 0, "landed": 0, "pulled": 0, "damage": 0}
@@ -199,12 +209,41 @@ func begin() -> void:
 ## Every foe on the field once. A massive foe sits in both slots of its column.
 func field_foes() -> Array[Foe]:
 	var out: Array[Foe] = []
-	for f in front:
-		if f != null and not out.has(f):
-			out.append(f)
-	for f in back:
-		if f != null and not out.has(f):
-			out.append(f)
+	for r in range(2):
+		var row: Array = front if r == 0 else back
+		for col in range(row.size()):
+			var f: Foe = row[col]
+			if f != null and not out.has(f):
+				out.append(f)
+			var t: Foe = twins.get(Vector2i(r, col), null)
+			if t != null:
+				out.append(t)   # the right-hand half acts after the left
+	return out
+
+
+## The other half of a twin slot's pair (the Gel's), or null.
+func twin_of(f: Foe) -> Foe:
+	if f == null or f.rank < 0 or f.column < 0:
+		return null
+	var key := Vector2i(f.rank, f.column)
+	if not twins.has(key):
+		return null
+	var right: Foe = twins[key]
+	var left := foe_at(f.rank, f.column)
+	if f == right:
+		return left
+	return right if f == left else null
+
+
+## A slot's foes, the left first: one, two for a twin slot's pair, or none.
+func slot_foes(rank: int, col: int) -> Array[Foe]:
+	var out: Array[Foe] = []
+	var lead := foe_at(rank, col)
+	if lead != null:
+		out.append(lead)
+	var t: Foe = twins.get(Vector2i(rank, col), null)
+	if t != null:
+		out.append(t)
 	return out
 
 
@@ -217,7 +256,7 @@ func is_exposed(col: int) -> bool:
 
 
 ## Is this foe in Direct reach: the front rank, a back-rank foe whose column's front is empty
-## (exposed by its formation), or any foe carrying Exposed (the debuff, 21 October).
+## (the layout, nothing said about it), or any foe carrying Exposed (the debuff, 21 October).
 func in_direct_reach(foe: Foe) -> bool:
 	if foe == null or foe.rank < 0:
 		return false
@@ -304,7 +343,7 @@ func any_assigned() -> bool:
 ## always the same: the enemy takes its turn, then the team flees at the end of the round, so
 ## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
 func can_withdraw() -> bool:
-	return state == State.ROUND_START or state == State.ASSIGN
+	return not committed and (state == State.ROUND_START or state == State.ASSIGN)
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that
@@ -689,8 +728,9 @@ func swap_targets(first: Foe) -> Array:
 	var out: Array = []
 	if first == null or not first.alive() or first.is_massive():
 		return out
+	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe.alive() and not foe.is_massive():
+		if foe != first and foe != pair and foe.alive() and not foe.is_massive():
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null:
@@ -714,12 +754,14 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	# A foe already killed this round still stands until the dead are cleared, but it is
 	# no target: a die spent on it would be wasted.
 	for col in range(columns):
-		if front[col] != null and front[col].alive() and not out.has(front[col]):
-			out.append(front[col])
-		if back[col] == null or not back[col].alive() or out.has(back[col]):
-			continue
-		if reach_of(ms, f) == Face.Reach.INDIRECT or in_direct_reach(back[col]):
-			out.append(back[col])
+		for foe in slot_foes(0, col):
+			if foe.alive() and not out.has(foe):
+				out.append(foe)
+		for foe in slot_foes(1, col):
+			if not foe.alive() or out.has(foe):
+				continue
+			if reach_of(ms, f) == Face.Reach.INDIRECT or in_direct_reach(foe):
+				out.append(foe)
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
 	if Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
 		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
@@ -811,6 +853,7 @@ func start_round() -> void:
 	_refresh_kin()
 	var ahead := {}
 	for f in field_foes():
+		f.fresh = false   # a half that stepped up last round acts from this one
 		# A move gathered last round holds, and so does its pick while the machine stands.
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f)
@@ -907,14 +950,6 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			return f.hp * 2 <= f.hp_max
 		"missing_hull":
 			return f.hp <= f.hp_max - maxi(1, int(a.get("value", 0)))
-		"few_waiting":
-			# Fewer than two of the foe a summon calls (or of anyone, when it names none) wait.
-			var who := str(a.get("foe", ""))
-			var n := 0
-			for r in reinforcements:
-				if who.is_empty() or r.content_id == who:
-					n += 1
-			return n < 2
 		"back_behind":
 			if f.rank != 0 or f.column < 0 or f.column >= columns:
 				return false
@@ -950,26 +985,90 @@ func _armed_mechs() -> Array[MechState]:
 	return out
 
 
-## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
-## current as foes fall and step in, so the intent chips drop as the pack thins.
-## A foe that splits (the Gel): destroyed, so many of the named foe step into the pool
-## under its pack, made by the battle's content; without a factory nothing steps in.
-func _split(f: Foe) -> void:
+## A foe that splits (the Gel): destroyed, so many of the named foe step up at once (Ryan, 25
+## October: "spawn the half-gel immediately in place, not wait for the reinforcement phase"; the
+## Gel is a wall, not an attacker), made by the battle's content; without a factory nothing
+## steps in. The first takes the slot it fell from, the rest the nearest empty slots of their
+## rank, the left on a tie, and one with no room waits in the pool. An arrival sets off a mine
+## waiting in its slot, as any way in but the reinforcement step's does; its round is over, so
+## it shows no intent and acts from the next round (Foe.fresh).
+func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	if f.on_death.is_empty() or not foe_factory.is_valid():
 		return
 	var who := str(f.on_death.get("summon", ""))
 	var count := maxi(1, int(f.on_death.get("count", 1)))
-	var made := 0
+	var made: Array[Foe] = []
 	for i in range(count):
 		var n = foe_factory.call(who)
 		if n is Foe:
 			n.pack_id = f.pack_id
+			made.append(n)
+	if made.is_empty():
+		return
+	# A pair (the Gel's halves, 26 October): both stand in the slot it fell from, one slot to the
+	# formation, their round over; a mine waiting there goes off on them as it would on one.
+	if bool(f.on_death.get("pair", false)) and made.size() == 2 and at_col >= 0 and foe_at(at_rank, at_col) == null:
+		var at := Vector2i(at_rank, at_col)
+		for n in made:
+			n.fresh = true
+		_set_contents(at, [made[0], made[1]])
+		if not mines.is_empty():
+			_land(made[0])
+		log.append("%s splits: 2 %s step up in its place, a pair in one slot" % [f.display_name, made[0].display_name])
+		return
+	var stood := 0
+	for n in made:
+		if _step_up(n, at_col):
+			stood += 1
+		else:
 			reinforcements.append(n)
-			made += 1
-	if made > 0:
-		log.append("%s splits: %d %s step into the pool" % [f.display_name, made, who])
+	var waiting := made.size() - stood
+	var name_of := made[0].display_name
+	if stood > 0 and waiting > 0:
+		log.append("%s splits: %d %s step up in its place, %d into the pool" % [f.display_name, stood, name_of, waiting])
+	elif stood > 0:
+		log.append("%s splits: %d %s step up in its place" % [f.display_name, stood, name_of])
+	else:
+		log.append("%s splits: %d %s step into the pool" % [f.display_name, waiting, name_of])
 
 
+## A foe that arrives mid-round (a split's half, a summon) steps up into the slot `_split_slot`
+## finds near `at_col`, its round over (Foe.fresh), setting off any mine waiting there. False
+## when there is no room, and it is not placed.
+func _step_up(n: Foe, at_col: int) -> bool:
+	var slot := _split_slot(n, 0, at_col)
+	if slot.y < 0:
+		return false
+	n.fresh = true
+	if n.is_massive():
+		back[slot.y] = n   # both slots of its column, before a mine there can land on it
+	_place(n, slot.x, slot.y)
+	if _reinforcing and not mines.is_empty():
+		_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
+	return true
+
+
+## Where a split's arrival steps up: the slot of its rank in the column the foe fell from, then
+## the nearest column with that slot empty, the left on a tie (a massive arrival a whole empty
+## column). (-1, -1) when there is no room, or nowhere it fell from.
+func _split_slot(n: Foe, _at_rank: int, at_col: int) -> Vector2i:
+	if at_col < 0 or at_col >= columns:
+		return Vector2i(-1, -1)
+	var want := 1 if n.prefers_back and not n.is_massive() else 0
+	for d in range(columns):
+		for c in [at_col - d, at_col + d]:
+			if c < 0 or c >= columns or (d == 0 and c != at_col):
+				continue
+			if n.is_massive():
+				if front[c] == null and back[c] == null:
+					return Vector2i(0, c)
+			elif (front if want == 0 else back)[c] == null:
+				return Vector2i(want, c)
+	return Vector2i(-1, -1)
+
+
+## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
+## current as foes fall and step in, so the intent chips drop as the pack thins.
 func _refresh_kin() -> void:
 	var live := field_foes()
 	for f in live:
@@ -1084,6 +1183,24 @@ func can_assign(mech_index: int, target) -> bool:
 		return target is Foe and targets_for_face(ms, raw).has(target)
 	if f.is_equipment():
 		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
+	return false
+
+
+## Whether die `mech_index` has anywhere to be spent now: alive and unspent, an entry that is no
+## blank (a dark one is), and a target it may land on (a foe or an empty slot in reach, a
+## machine its chip allows). The screen's END TURN pulses once no die has (25 October).
+func can_spend(mech_index: int) -> bool:
+	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
+		return false
+	var ms := mechs[mech_index]
+	if not ms.alive() or ms.assigned or ms.face() == null or ms.face().kind == Face.Kind.BLANK:
+		return false
+	var raw := spend_face(ms)
+	var f := Effects.effective_face(ms.unit, raw)
+	if f.is_attack():
+		return not targets_for_face(ms, raw).is_empty() or not slot_targets(ms, f).is_empty()
+	if f.is_equipment():
+		return not equipment_targets_for(ms, f).is_empty()
 	return false
 
 
@@ -1402,7 +1519,7 @@ func _enemy_turn() -> void:
 			if not f.alive():
 				continue   # burnt to death before it acts: a web it carried goes with it
 		var more := true
-		if not tick["skip"]:   # a suppressed foe does nothing, and a web on it still bursts
+		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			more = _foe_turn(f)
 		_web_burst(f)
 		if not more:
@@ -1498,12 +1615,21 @@ func _web_burst(f: Foe) -> void:
 func web_catch(f: Foe) -> Foe:
 	if f.column < 0 or f.rank < 0:
 		return null
-	var row: Array = front if f.rank == 0 else back
-	for c in [f.column + 1, f.column - 1]:
-		if c < 0 or c >= columns:
+	# The rank in acting order, a twin slot's pair left then right: the next after it, or with
+	# none standing there the one before.
+	var order: Array[Foe] = []
+	for c in range(columns):
+		for foe in slot_foes(f.rank, c):
+			if not order.has(foe):
+				order.append(foe)
+	var i := order.find(f)
+	if i < 0:
+		return null
+	for j in [i + 1, i - 1]:
+		if j < 0 or j >= order.size():
 			continue
-		var n: Foe = row[c]
-		if n != null and n != f and n.alive():
+		var n: Foe = order[j]
+		if absi(n.column - f.column) <= 1 and n != f and n.alive():
 			return n
 	return null
 
@@ -1567,22 +1693,49 @@ static func _rides(f: Foe) -> bool:
 ## stands in is the swap's, so a caster pulled forward stands exposed to Direct fire.
 func _swap(first: Foe, second) -> void:
 	var from := Vector2i(first.rank, first.column)
+	var mine := _slot_contents(from)   # a twin slot's pair moves together
 	if second is Foe:
 		var other: Foe = second
 		var to := Vector2i(other.rank, other.column)
-		_place(other, from.x, from.y)
-		_place(first, to.x, to.y)
+		var theirs := _slot_contents(to)
+		_set_contents(to, mine)
+		_set_contents(from, theirs)
 		log.append("%s and %s trade places" % [first.display_name, other.display_name])
+		_arrive_at(from)
+		_arrive_at(to)
 	elif second is Vector2i:
 		var slot: Vector2i = second
-		if from.x == 0:
-			front[from.y] = null
-		else:
-			back[from.y] = null
-		_place(first, slot.x, slot.y)
+		_set_contents(from, [null, null])
+		_set_contents(slot, mine)
 		log.append("%s is moved to the %s rank" % [first.display_name, "front" if slot.x == 0 else "back"])
+		_arrive_at(slot)
 	_refresh_kin()
 	_refresh_guards()
+
+
+## A slot's contents, [the left foe or null, its twin or null].
+func _slot_contents(at: Vector2i) -> Array:
+	return [foe_at(at.x, at.y), twins.get(at, null)]
+
+
+## Stand [left, twin] in a slot, as they are, no mine set off.
+func _set_contents(at: Vector2i, c: Array) -> void:
+	_set_slot(at, c[0])
+	if c[1] != null:
+		twins[at] = c[1]
+	else:
+		twins.erase(at)
+	for f in c:
+		if f != null:
+			f.rank = at.x
+			f.column = at.y
+
+
+## Whoever has just come into a slot outside the reinforcement step sets off what waits there.
+func _arrive_at(at: Vector2i) -> void:
+	var lead := foe_at(at.x, at.y)
+	if lead != null and not _reinforcing and not mines.is_empty():
+		_land(lead)
 
 
 ## A swap read without making it (the bot's bunching, 22 October): the two foes, or the foe and
@@ -1592,21 +1745,13 @@ func swap_what_if(first: Foe, second, read: Callable) -> void:
 	var from := Vector2i(first.rank, first.column)
 	var other: Foe = second if second is Foe else null
 	var to: Vector2i = Vector2i(other.rank, other.column) if other != null else second
-	_set_slot(from, other)
-	_set_slot(to, first)
-	first.rank = to.x
-	first.column = to.y
-	if other != null:
-		other.rank = from.x
-		other.column = from.y
+	var mine := _slot_contents(from)
+	var theirs := _slot_contents(to)
+	_set_contents(to, mine)
+	_set_contents(from, theirs)
 	read.call()
-	_set_slot(from, first)
-	_set_slot(to, other)
-	first.rank = from.x
-	first.column = from.y
-	if other != null:
-		other.rank = to.x
-		other.column = to.y
+	_set_contents(from, mine)
+	_set_contents(to, theirs)
 
 
 func _set_slot(at: Vector2i, f: Foe) -> void:
@@ -2098,7 +2243,10 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 	var ef := Effects.effective_face(ms.unit, f, aimed)
 	if not ef.has(Face.Keyword.LURE):
 		return out
-	return reached_by(ef, aimed)
+	for foe in reached_by(ef, aimed):
+		if not foe.fresh:
+			out.append(foe)
+	return out
 
 
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
@@ -2123,7 +2271,17 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 		var other := foe_at(1 - target.rank, target.column)
 		if other != null and not hit.has(other):
 			hit.append(other)
+	if f.has(Face.Keyword.CLEAVE) or f.has(Face.Keyword.PENETRATE):
+		_with_twins(hit)   # an area blow reaches a twin slot whole
 	return hit
+
+
+## Every twin of the foes in `hit` joins it, the slot reached whole: an area blow's (26 October).
+func _with_twins(hit: Array[Foe]) -> void:
+	for foe in hit.duplicate():
+		var t := twin_of(foe)
+		if t != null and not hit.has(t):
+			hit.append(t)
 
 
 ## A foe's defend, buff or debuff action, resolved in its turn in place of a blow (the ten
@@ -2190,12 +2348,20 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var count := maxi(1, int(a.get("count", 1)))
 			var who := str(a.get("foe", ""))
 			if foe_factory.is_valid() and not who.is_empty():
+				# A summon takes an empty slot of its rank at once, the nearest the summoner's
+				# column, else it waits in the pool (Ryan, 26 October); either way its round is
+				# over, so it strikes from the next.
+				var stood := 0
 				for i in range(count):
 					var n = foe_factory.call(who)
 					if n is Foe:
 						n.pack_id = f.pack_id
-						reinforcements.append(n)
-				log.append("%s: %s, %d %s answer%s the call" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else ""])
+						if _step_up(n, f.column):
+							stood += 1
+						else:
+							reinforcements.append(n)
+				log.append("%s: %s, %d %s answer%s the call%s" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else "",
+					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
 		"rally":
@@ -2576,6 +2742,9 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		var other := foe_at(1 - foe.rank, foe.column)
 		if other != null and other.alive() and not hit.has(other):
 			hit.append(other)
+	if kws.has(Face.Keyword.CLEAVE) or kws.has(Face.Keyword.PENETRATE):
+		_with_twins(hit)
+		hit = hit.filter(func(x: Foe) -> bool: return x.alive())
 	var dmg := int(shot.get("damage", 0))
 	var gained := {}
 	var touched: Array[Foe] = []
@@ -2720,6 +2889,12 @@ func _drone(ms: MechState, foe: Foe, exposed_before: bool) -> bool:
 func _drone_mine(foe: Foe, shot: Dictionary) -> void:
 	Effects.remove(foe, "syrinx_drone")
 	if foe.rank < 0:
+		return
+	var pair := twin_of(foe)
+	if pair != null and pair.alive():
+		# Its other half still holds the slot, and a held slot takes no mine (Ryan, 26 October:
+		# "a half is treated as occupied"): the shot goes with it.
+		log.append("the Syrinx Drone falls with %s: its other half holds the slot" % foe.display_name)
 		return
 	var slot := Vector2i(0 if foe.is_massive() else foe.rank, foe.column)
 	var waiting: Array = mines.get(slot, [])
@@ -2866,8 +3041,9 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## does not carry"), so a Paradox tripping on a suppressed foe is wasted, its meter spent.
 func _suppress(foe: Foe) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
-	# and so does one a mine stuns as it steps in, the round's turn being over.
-	var next := _acted.has(foe) or _reinforcing
+	# and so does one a mine stuns as it steps in or one that stepped up mid-round (a split's
+	# half), the round's turn being over.
+	var next := _acted.has(foe) or _reinforcing or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -2937,8 +3113,8 @@ func _lure(ms: MechState, foes: Array) -> void:
 	var turned: Array[String] = []
 	var idle: Array[String] = []
 	for foe in foes:
-		if not foe.alive():
-			continue
+		if not foe.alive() or foe.fresh:
+			continue   # one that stepped up mid-round has had its round: nothing to turn, as on a mine's arrival
 		if foe.hits_all() or foe.acts_on_nobody():
 			idle.append(foe.display_name)
 		if foe.target != ms:
@@ -2956,7 +3132,7 @@ func _lure(ms: MechState, foes: Array) -> void:
 ## moved. The new move picks its own target.
 func _disrupt(foes: Array) -> void:
 	for foe in foes:
-		if not foe.alive():
+		if not foe.alive() or foe.fresh:
 			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():
@@ -3469,29 +3645,55 @@ func _fall_with_cores() -> void:
 
 
 func _clear_dead_slots() -> void:
+	var splits: Array = []   # [foe, rank, column]: the foes that split, stepping up once their slots are clear
+	var risen: Array = []    # [foe, rank, column]: the foes getting back up, in the slots they fell from
 	for col in range(columns):
 		for rank in [front, back]:
-			var f: Foe = rank[col]
-			if f != null and not f.alive():
+			var key := Vector2i(0 if is_same(rank, front) else 1, col)
+			var members: Array = [rank[col], twins.get(key, null)]
+			var cleared := false
+			for f in members:
+				if f == null or f.alive():
+					continue
+				cleared = true
 				if f.rank >= 0:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
-					# A foe that readied itself to get back up returns to the pool once, whole,
-					# unless it went whole (a Bomb's burst).
+					# A foe that readied itself to get back up does so once, whole, in its own slot
+					# and at once (Ryan, 26 October: "just like the gel splitting. It makes clearing
+					# that column harder"), unless it went whole (a Bomb's burst).
 					if Effects.has(f, "risen") and not f.stays_down:
 						Effects.remove(f, "risen")
 						f.hp = f.hp_max
-						f.rank = -1
-						f.column = -1
 						f.target = null
 						f.modifiers.clear()
-						reinforcements.append(f)
-						log.append("%s falls, and gets back up into the pool" % f.display_name)
+						risen.append([f, 0 if is_same(rank, front) or f.is_massive() else 1, col])
+						log.append("%s falls, and gets back up" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
 						_last_act(f)
-						_split(f)
+						if not f.on_death.is_empty() and f.on_death.has("summon"):
+							splits.append([f, 0 if is_same(rank, front) else 1, col])
 				f.rank = -1
-				rank[col] = null
+			if cleared:
+				# A twin slot's survivor keeps it alone; with none it is a plain empty slot.
+				var standing: Array = members.filter(func(x) -> bool: return x != null and x.alive())
+				rank[col] = standing[0] if not standing.is_empty() else null
+				twins.erase(key)
+	# A foe getting back up stands again in its slot once it is clear, its round over, and
+	# takes a mine its fall left there; then a split steps up (the Gel's halves, in its place).
+	for rs in risen:
+		var back_up: Foe = rs[0]
+		back_up.fresh = true
+		var held := foe_at(rs[1], rs[2])
+		if held != null and held != back_up:
+			# Its other half kept the slot: it stands again beside it, the pair whole.
+			_set_contents(Vector2i(rs[1], rs[2]), [held, back_up])
+			continue
+		if back_up.is_massive():
+			back[rs[2]] = back_up
+		_place(back_up, rs[1], rs[2])
+	for sp in splits:
+		_split(sp[0], sp[1], sp[2])
 
 
 ## The reinforcement phase. Ranks hold: a front foe only ever stands in the front, a back

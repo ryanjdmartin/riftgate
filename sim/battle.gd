@@ -8,9 +8,11 @@ extends RefCounted
 ##
 ## Loop:
 ##   PLAN      the player's turn: move_to() any machine with an action left; order() it onto
-##             a pack in its attack range; engage() opens the next fight with the machines
-##             ordered onto it, a fight hunters forced always first (`forced`); end_turn()
-##             when done
+##             a pack in its attack range (order_onto() moves it into range first); undo()
+##             takes back the last move or order, in the order they were made; engage() opens
+##             the next fight with the machines ordered onto it, a fight hunters forced always
+##             first (`forced`); end_turn() when done. A move lands in the battle at once and is
+##             planned on the map (`planned`): the screen plays the plan on ENGAGE or END TURN
 ##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
 ##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
@@ -36,9 +38,25 @@ var state: int = State.PLAN
 var outcome: int = Outcome.NONE
 var spent: Dictionary = {}       # mech id -> actions spent this turn (a fight spends one)
 var move_left: Dictionary = {}   # mech id -> move points left in its current action; whole when absent
-var action_from: Dictionary = {} # mech id -> [hex, facing, move left] where its current action's moving began, for an undo
-var carried: Dictionary = {}     # carrier id -> [[rider id, hex, facing, hex set down], ...]: the machines its move this action carried, for an undo
+var action_from: Dictionary = {} # mech id -> [hex, facing, move left] where its current action's moving began: it has moved this action
 var last_carry: Array = []       # the last move's riders, [[rider id, hex, hex set down], ...], for the map's ring; never saved
+## The turn's undo, in the order things were done (Ryan, 25 October: "undo should happen in
+## global order, not on a per-unit basis"): one entry a move or an order (an order's move into
+## range with it), each the turn as it stood before it (_snapshot), so UNDO takes back the
+## last, always. A fight is a barrier: what came before it is played and fought over, so the
+## stack starts again after it, and a new turn empties it.
+var history: Array = []
+## The moves made and not yet played on the map (Ryan, 25 October: "highlight and display the
+## planned move like we used to, and then on engage or end turn actually animate and resolve"):
+## one piece a move, in the order made, {"unit": id, "from": [x, y], "facing": int, "path":
+## [[x, y], ...] the hexes after it, "to_facing": int, "riders": [[rider id, x, y, facing, set
+## down x, y], ...]}. The battle has every machine at its route's end already, so the next
+## move, the orders and every walk are read from there; the map draws each machine where its
+## plan starts (shown_positions) with its route ahead of it, until take_plan() hands the plan
+## to the screen to play. Kept JSON's way (arrays, never hexes), for the save and the undo.
+var planned: Array = []
+var _batch := 0              # inside order_onto: its move and its order are one entry
+var _batch_dirty := false    # and something changed under it
 var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
 ## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
 ## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
@@ -206,6 +224,37 @@ func destinations_for(u: Unit) -> Dictionary:
 	return out
 
 
+## Where a machine could attack from this action, past its move (Ryan, 25 October: "not only
+## its available move spaces, but its available attacking spaces at the edge of that move, in
+## red"): every hex within its attack range of where it stands or of any hex its move reaches,
+## not one of those, and not a structure. A pack standing in it can be ordered on. Empty
+## with no action left; with no move left, the ring of its range round where it stands.
+func threat_for(u: Unit) -> Dictionary:
+	if u == null or state != State.PLAN or actions_left(u) <= 0:
+		return {}
+	var dests := destinations_for(u)
+	var out := {}
+	var seen := {}
+	var queue: Array = []
+	for h in dests.keys() + [u.pos]:
+		seen[h] = 0
+		queue.append(h)
+	# Outward from the whole reach at once: a hex's distance is to the nearest hex of it.
+	while not queue.is_empty():
+		var h: Vector2i = queue.pop_front()
+		var d: int = seen[h]
+		var occ := field.unit_at(h) if d > 0 else null
+		if d > 0 and field.map.has(h) and not field.map.is_structure(h) and not (occ != null and occ.is_player()):
+			out[h] = true   # a machine's hex is no place to attack
+		if d >= u.attack_range:
+			continue
+		for n in Hex.neighbors(h):
+			if not seen.has(n):
+				seen[n] = d + 1
+				queue.append(n)
+	return out
+
+
 ## The machines that travel with a carrier when it moves (the Swallowtail's Muster Deck, Ryan's
 ## go of 21 October): every machine on a hex beside it, a caught one aside (it cannot move first).
 func riders_of(u: Unit) -> Array[Unit]:
@@ -274,6 +323,10 @@ func _set_down() -> void:
 	field.lifted = []
 
 
+static func _arr(h: Vector2i) -> Array:
+	return [h.x, h.y]
+
+
 ## Move a machine to `to` by its cheapest route, at once (a machine moves, then fights; bible
 ## section 4). The route walked, as the hexes after where it stood; empty when refused.
 func move_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
@@ -313,6 +366,10 @@ func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	var cost := field.route_cost(u, route, moves_left(u))
 	_set_down()
 	var lands: Dictionary = landing(u, riders, route[route.size() - 1])["to"] if not riders.is_empty() else {}
+	_push(u)
+	var piece := {"unit": u.id, "from": _arr(u.pos), "facing": u.facing, "path": route.map(func(h): return _arr(h)), "riders": []}
+	for r in riders:
+		(piece["riders"] as Array).append([r.id, r.pos.x, r.pos.y, r.facing, (lands[r] as Vector2i).x, (lands[r] as Vector2i).y])
 	if not action_from.has(u.id):
 		action_from[u.id] = [u.pos, u.facing, moves_left(u)]
 	move_left[u.id] = moves_left(u) - cost
@@ -324,59 +381,133 @@ func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	# is, never what it has left).
 	last_carry = []
 	if not riders.is_empty():
-		var log_of: Array = carried.get(u.id, [])
 		for r in riders:
-			log_of.append([r.id, r.pos, r.facing, lands[r]])
 			last_carry.append([r.id, r.pos, lands[r]])
 		for r in riders:
 			r.pos = lands[r]
-		carried[u.id] = log_of
+	piece["to_facing"] = u.facing
+	planned.append(piece)
 	sponsorship["hexes_moved"] = int(sponsorship["hexes_moved"]) + route.size()
 	action_hexes[u.id] = int(action_hexes.get(u.id, 0)) + route.size()
 	_prune_orders()
 
 
-## Whether a machine's move this action can be taken back: its first hex free, and every machine
-## it carried still where it was set down.
-func can_undo(u: Unit) -> bool:
-	if state != State.PLAN or u == null or not action_from.has(u.id):
-		return false
-	for c in carried.get(u.id, []):
-		var r := field.unit_by_id(int(c[0]))
-		if r == null or r.pos != c[3]:
-			return false
-	var a: Array = action_from[u.id]
-	if u.pos == a[0] or field.can_stand(u, a[0]):
-		return true
-	# A rider it set down on the hex it left goes back too (the block's 1-hex move).
-	var occ := field.unit_at(a[0])
-	for c in carried.get(u.id, []):
-		if occ != null and int(c[0]) == occ.id:
-			return true
-	return false
+# ---------------------------------------------------------------- the undo and the plan
+
+## The turn as it stands, JSON's way: every machine's hex and facing, its move and action,
+## the orders, the hexes moved and the plan. `who` is the machine the step about to be taken
+## is about (an undo hands it back to the player's hand).
+func _snapshot(who: Unit = null) -> Dictionary:
+	var units := {}
+	for m in field.mechs():
+		units[str(m.id)] = [m.pos.x, m.pos.y, m.facing]
+	var moved := {}
+	for uid in action_from.keys():
+		var a: Array = action_from[uid]
+		moved[str(uid)] = [(a[0] as Vector2i).x, (a[0] as Vector2i).y, int(a[1]), int(a[2])]
+	var left := {}
+	for uid in move_left.keys():
+		left[str(uid)] = int(move_left[uid])
+	var hexes := {}
+	for uid in action_hexes.keys():
+		hexes[str(uid)] = int(action_hexes[uid])
+	var ords := {}
+	for uid in orders.keys():
+		ords[str(uid)] = (orders[uid] as Unit).id
+	return {"who": who.id if who != null else 0, "units": units, "action_from": moved, "move_left": left,
+		"action_hexes": hexes, "orders": ords, "hexes_moved": int(sponsorship["hexes_moved"]), "planned": planned.duplicate(true)}
 
 
-## Put a machine back where its current action's moving began, its move whole again.
-func undo_move(u: Unit) -> bool:
-	if not can_undo(u):
-		return false
-	var a: Array = action_from[u.id]
-	u.pos = a[0]
-	u.facing = int(a[1])
-	move_left[u.id] = int(a[2])
-	action_from.erase(u.id)
-	# Its riders back where they rode from, last carried first.
-	var back: Array = carried.get(u.id, [])
-	for k in range(back.size() - 1, -1, -1):
-		var r := field.unit_by_id(int(back[k][0]))
-		if r != null:
-			r.pos = back[k][1]
-			r.facing = int(back[k][2])
-	carried.erase(u.id)
-	sponsorship["hexes_moved"] = maxi(0, int(sponsorship["hexes_moved"]) - int(action_hexes.get(u.id, 0)))
-	action_hexes.erase(u.id)
-	_prune_orders()
-	return true
+## Put the turn back as a snapshot had it (a JSON round trip's floats and string keys read too).
+func _restore(snap: Dictionary) -> void:
+	var units: Dictionary = snap.get("units", {})
+	for m in field.mechs():
+		var at = units.get(str(m.id), null)
+		if at is Array and (at as Array).size() >= 3:
+			m.pos = Vector2i(int(at[0]), int(at[1]))
+			m.facing = int(at[2])
+	action_from.clear()
+	var moved: Dictionary = snap.get("action_from", {})
+	for k in moved.keys():
+		var a: Array = moved[k]
+		action_from[int(str(k))] = [Vector2i(int(a[0]), int(a[1])), int(a[2]), int(a[3])]
+	move_left.clear()
+	var left: Dictionary = snap.get("move_left", {})
+	for k in left.keys():
+		move_left[int(str(k))] = int(left[k])
+	action_hexes.clear()
+	var hexes: Dictionary = snap.get("action_hexes", {})
+	for k in hexes.keys():
+		action_hexes[int(str(k))] = int(hexes[k])
+	orders.clear()
+	var ords: Dictionary = snap.get("orders", {})
+	for k in ords.keys():
+		var t := field.unit_by_id(int(ords[k]))
+		if t != null:
+			orders[int(str(k))] = t
+	sponsorship["hexes_moved"] = int(snap.get("hexes_moved", sponsorship["hexes_moved"]))
+	planned = (snap.get("planned", []) as Array).duplicate(true)
+	last_carry = []
+
+
+## A step about to be taken goes on the undo, unless it is part of an order's (order_onto).
+func _push(who: Unit) -> void:
+	if _batch > 0:
+		_batch_dirty = true
+		return
+	history.append(_snapshot(who))
+
+
+## Whether UNDO has anything to take back: the player's turn, and a move or an order since the
+## turn opened or the last fight.
+func can_undo() -> bool:
+	return state == State.PLAN and not history.is_empty()
+
+
+## Take back the last move or order, whoever made it (Ryan, 25 October: "the undo stack is
+## stored in order, and undos in order, always"). The machine it was about, or null when
+## there was nothing to undo.
+func undo() -> Unit:
+	if not can_undo():
+		return null
+	var snap: Dictionary = history.pop_back()
+	_restore(snap)
+	return field.unit_by_id(int(snap.get("who", 0)))
+
+
+## The plan as the map draws it: each piece with hexes, in the order made.
+func plan_pieces() -> Array:
+	var out: Array = []
+	for p in planned:
+		var path: Array[Vector2i] = []
+		for h in p["path"]:
+			path.append(Vector2i(int(h[0]), int(h[1])))
+		var riders: Array = []
+		for r in p.get("riders", []):
+			riders.append([int(r[0]), Vector2i(int(r[1]), int(r[2])), int(r[3]), Vector2i(int(r[4]), int(r[5]))])
+		out.append({"unit": int(p["unit"]), "from": Vector2i(int(p["from"][0]), int(p["from"][1])), "facing": int(p["facing"]),
+			"path": path, "to_facing": int(p.get("to_facing", p["facing"])), "riders": riders})
+	return out
+
+
+## Where the map draws each machine whose plan has not played: where its first piece starts (or
+## where a carrier's first piece lifted it), facing as it stood. Machine id -> [hex, facing].
+func shown_positions() -> Dictionary:
+	var out := {}
+	for p in plan_pieces():
+		if not out.has(p["unit"]):
+			out[p["unit"]] = [p["from"], p["facing"]]
+		for r in p["riders"]:
+			if not out.has(r[0]):
+				out[r[0]] = [r[1], r[2]]
+	return out
+
+
+## The plan, handed to the screen to play (on ENGAGE or END TURN), and gone from the battle.
+func take_plan() -> Array:
+	var out := plan_pieces()
+	planned.clear()
+	return out
 
 
 ## One step of drawing a route by hand: `draft` is the route so far (hexes after the
@@ -428,6 +559,34 @@ func draft_spend(u: Unit, draft: Array) -> Vector2i:
 	return Vector2i(before, cost - before)
 
 
+## Whether nothing is left for the player to do on the map this turn but press the button
+## (Ryan, 25 October: END TURN pulses "when all units are out of actions"): every machine has
+## fought its actions out, is ordered onto a fight, is caught (its fight comes first), or can
+## neither move nor reach a pack where it stands.
+func nothing_left() -> bool:
+	if state != State.PLAN:
+		return false
+	for m in mechs():
+		if m.is_static() or not m.alive() or actions_left(m) <= 0 or orders.has(m.id) or is_pinned(m):
+			continue
+		if can_move(m):
+			return false
+		for p in field.packs():
+			if can_target(p) and in_range_from(m, m.pos, p):
+				return false
+	return true
+
+
+## Whether the next fight ENGAGE opens holds the boss: every machine goes in, nothing moves first
+## (Ryan, 25 October: "no reason to move any units once engage is clicked, just go right into
+## the boss animation").
+func next_fight_is_boss() -> bool:
+	var f := next_fight()
+	if f.is_empty() or f["target"] == null:
+		return false
+	return bool(roster(f["target"]).get("all_in", false))
+
+
 ## The fight the player would open at `target`, or the next fight a hunter forced, which comes
 ## first whatever is tapped (bible section 5): {"targets": the packs attacked, "joins": the
 ## packs whose ring covers a target, "in_range": the machines whose attack range covers one,
@@ -449,12 +608,18 @@ func roster(target: Unit = null) -> Dictionary:
 	var eligible: Array[Unit] = []
 	if pinned != null:
 		eligible.append(pinned)
-	for m in r["in_range"]:
-		if m != pinned and actions_left(m) > 0:
+	# The boss's fight takes every machine (Ryan, 25 October: "automatically make all units
+	# attacking when one unit targets it, regardless of their range", "doesn't matter if a
+	# unit has fought this turn already"), whether the boss is the target or its ring pulls it
+	# in, since its fight cannot be left.
+	var all_in := boss != null and (targets.has(boss) or (r["joins"] as Array).has(boss))
+	for m in (mechs() if all_in else r["in_range"]):
+		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
 	r["eligible"] = eligible
 	r["pinned"] = pinned
 	r["forced"] = pinned != null
+	r["all_in"] = all_in
 	return r
 
 
@@ -468,7 +633,7 @@ func attack(target: Unit, machines: Array) -> Skirmish:
 	var team: Array = []
 	if r["pinned"] != null:
 		team.append(r["pinned"])
-	for m in machines:
+	for m in (r["eligible"] if bool(r["all_in"]) and not machines.is_empty() else machines):
 		if (r["eligible"] as Array).has(m) and not team.has(m):
 			team.append(m)
 	if team.is_empty():
@@ -481,6 +646,11 @@ func attack(target: Unit, machines: Array) -> Skirmish:
 	if sk == null:
 		return null
 	boss_fight = boss != null and group.has(boss)
+	sk.committed = boss_fight   # no withdrawing from the boss's fight
+	# A fight is a barrier: what came before it is played out on the map and cannot be taken
+	# back (Ryan, 25 October: the undo runs in order, always).
+	history.clear()
+	planned.clear()
 	current = sk
 	skirmishes_fought += 1
 	state = State.SKIRMISH
@@ -548,13 +718,57 @@ func order(m: Unit, target: Unit) -> bool:
 		return false
 	if not can_target(target) or not in_range_from(m, m.pos, target):
 		return false
+	if orders.get(m.id, null) == target:
+		return true
+	_push(m)
 	orders[m.id] = target
 	return true
 
 
 func cancel_order(m: Unit) -> void:
-	if m != null:
+	if m != null and orders.has(m.id):
+		_push(m)
 		orders.erase(m.id)
+
+
+## A tap or a drag onto a pack (bible section 5), as one step and one undo: along a drawn route
+## first if one was drawn, then the order from its end if the pack is in range there; with no
+## route, from the farthest hex in range its move left reaches, or where it stands. A second tap
+## on the pack it is already ordered onto takes the order back. What happened: "ordered",
+## "moved" (the route ended out of range: it moved, and no order), "cancelled", "refused" (not
+## a pack that may be fought now, or no action left), "out_of_reach", "no_room" (a carrier's
+## block does not fit where the route ends) or "blocked" (the route cannot be walked).
+func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
+	if m == null or state != State.PLAN:
+		return "refused"
+	if draft.is_empty() and order_of(m) == target:
+		cancel_order(m)
+		return "cancelled"
+	if not can_target(target) or actions_left(m) <= 0:
+		return "refused"
+	var snap := _snapshot(m)
+	_batch += 1
+	_batch_dirty = false
+	var out := _order_onto(m, target, draft)
+	_batch -= 1
+	if _batch_dirty:
+		history.append(snap)
+	return out
+
+
+func _order_onto(m: Unit, target: Unit, draft: Array) -> String:
+	if not draft.is_empty():
+		if not move_along(m, draft):
+			return "no_room" if not (draft_landing(m, draft).get("bad", []) as Array).is_empty() else "blocked"
+	else:
+		var h := attack_hex(m, target)
+		if h == NO_HEX:
+			return "out_of_reach"
+		if h != m.pos and move_to(m, h).is_empty():
+			return "out_of_reach"
+	if order(m, target):
+		return "ordered"
+	return "moved" if _batch_dirty else "out_of_reach"
 
 
 ## The pack a machine is ordered onto, or null.
@@ -581,6 +795,9 @@ func next_fight() -> Dictionary:
 	for uid in orders.keys():
 		if orders[uid] == first:
 			team.append(field.unit_by_id(int(uid)))
+	var r := roster(first)
+	if bool(r.get("all_in", false)):
+		team = (r["eligible"] as Array).duplicate()   # one order on the boss's fight brings every machine
 	return {"target": first, "machines": team}
 
 
@@ -634,10 +851,11 @@ func _new_turn() -> void:
 	spent.clear()
 	move_left.clear()
 	action_from.clear()
-	carried.clear()
 	action_hexes.clear()
 	fought.clear()
 	orders.clear()
+	history.clear()
+	planned.clear()
 	forced = []
 	if _check_outcome():
 		return
@@ -706,7 +924,6 @@ func finish_skirmish() -> void:
 		fought[ms.unit.id] = true
 		move_left.erase(ms.unit.id)
 		action_from.erase(ms.unit.id)
-		carried.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		foes_killed += current.kills_for(sq)
