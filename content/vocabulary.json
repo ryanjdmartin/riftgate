@@ -415,7 +415,7 @@
    "id": "silence",
    "category": "foe",
    "name": "Silence",
-   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing and its components' keywords are muted through its next round. A Ward turns it away.",
+   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store."
@@ -1687,10 +1687,10 @@
    "id": "silenced",
    "category": "status",
    "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its buffs count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
+   "codex": "Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
    "status": "implemented",
    "design": {
-    "holes": "Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them.",
+    "holes": "Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).",
     "table": {
      "kind": "debuff",
      "on": "machine",

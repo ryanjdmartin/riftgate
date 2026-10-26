@@ -130,7 +130,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Scorched** | Machine status, from a foe's scorch: every weapon it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally. It hits harder by its rally's value through the next round. It goes live when that round's intents are drawn, so a foe striking after the rallier this turn hits the number it showed. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
-| **Silenced** | Machine status, from a foe's silence: its buffs count for nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away. | implemented |
+| **Silenced** | Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
 | **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | implemented |
 | **Ward** | Machine status. No rider a foe lays lands on this machine this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end. | implemented |
@@ -225,7 +225,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Silence** | Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing and its components' keywords are muted through its next round. A Ward turns it away. | implemented |
+| **Silence** | Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away. | implemented |
 | **Purge** | Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away. | implemented |
 | **Aim** | Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
@@ -340,7 +340,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
-- **Silenced** (implemented): Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them.
+- **Silenced** (implemented): Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).
 - **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.

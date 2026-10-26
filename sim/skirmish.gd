@@ -538,7 +538,7 @@ func pending_volatile(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned:
 		return 0
-	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))   # a Silenced entry's Volatile is muted
+	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))
 
 
 ## The hull a volatile entry costs its owner per spend, the number its Volatile carries (a
@@ -1788,13 +1788,13 @@ func _set_slot(at: Vector2i, f: Foe) -> void:
 		back[at.y] = f
 
 
-## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs count for nothing and its
-## keywords are muted through its next round, its stores untouched (Ryan, 21 October), as a
-## foe's Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
+## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs count for nothing through
+## its next round, its keywords and stores untouched (Ryan, 21 and 26 October), as a foe's
+## Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
 ## machine's next.
 func _silence(t: MechState, f: Foe) -> void:
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["silenced"], "foe:" + f.content_id, round + 1)
-	log.append("%s silences %s: its buffs sleep and its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
+	log.append("%s silences %s: its buffs sleep through its next round" % [f.display_name, t.unit.display_name])
 
 
 ## A purge: every buff the machine carries goes, every stack; its stores stay (Ryan, 21 October).

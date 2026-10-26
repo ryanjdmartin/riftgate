@@ -295,9 +295,9 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-## silence: the machine hit is Silenced, its buffs and stores counting for nothing and its
-## keywords muted until the round's end; dispel (Purge since 20 October, its id kept): the
-## machine hit loses every buff and store (Ryan, 17 and 18 October; built 21 October).
+## silence: the machine hit is Silenced, its buffs counting for nothing through its next
+## round; dispel (Purge since 20 October, its id kept): the machine hit loses every buff, its
+## stores kept (Ryan, 17, 18 and 21 October; built 21 October).
 const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Burn N: Scorch 2 lays two stacks a blow).

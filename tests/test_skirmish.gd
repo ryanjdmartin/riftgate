@@ -6269,11 +6269,12 @@ func test_a_fight_tallies_its_sponsorship_measures() -> void:
 	assert_eq(int(sk.sponsorship["damaging_spends"]), 2, "a vent that blasts deals damage")
 
 
-## Silence (Ryan, 17 and 18 October; built 21 October; its keywords muted on his word of 21
-## October): the machine a silence lands on is Silenced until the round's end, its buffs
-## counting for nothing and its components' keywords muted, its stores untouched (Ryan, 21
-## October: a store is a resource); a cleanse lifts it, a Ward turns it away.
-func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> void:
+## Silence (Ryan, 17 and 18 October; built 21 October; on buffs alone since his word of 26
+## October): the machine a silence lands on is Silenced through its next round, its buffs
+## counting for nothing, its components' keywords acting as ever (a Volatile still bites) and
+## its stores untouched (Ryan, 21 October: a store is a resource); a cleanse lifts it, a Ward
+## turns it away.
+func test_a_silence_sleeps_the_buffs_for_the_round_and_leaves_the_keywords() -> void:
 	var sk := Skirmish.new(1, 1)
 	var torch := Face.attack(10, L, [K.BURN, K.RAPID])
 	var u := _mech("A", Die.of([torch, Face.attack(10, L)]), 40, 200)
@@ -6292,14 +6293,14 @@ func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> v
 	assert_eq(Effects.stacks_of(u, "rage"), 2, "a store fills and spends as ever under a silence")
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var shown := sk.shown_face(ms, torch)
-	assert_true(shown.keywords.is_empty(), "the die shows the entry without its keywords")
-	assert_eq(torch.keywords.size(), 2, "and keeps the real one")
+	assert_eq(shown.keywords.size(), 2, "the die shows the entry with its keywords")
 	Effects.end_round(u, sk.round)
 	assert_true(Effects.has(u, "silenced"), "it lasts through the machine's next round: the foe acted as this one ended")
 	Effects.end_round(u, sk.round + 1)
 	assert_false(Effects.has(u, "silenced"), "and that round's end lifts it")
 	assert_true(Effects.has(u, "overcharged"), "and the buffs wake")
-	# Within a round: a muted Rapid acts once, a muted Burn lays nothing.
+	# Within a round: a silenced Rapid acts again, a silenced Burn lays its stacks, and a
+	# silenced Volatile bites, so a silence is never an upgrade (the mechanics audit, 25 October).
 	var s2 := Skirmish.new(1, 1)
 	var v := _mech("B", Die.of([torch, Face.attack(10, L)]), 40, 200)
 	s2.add_mech(v)
@@ -6310,9 +6311,19 @@ func test_a_silence_sleeps_the_buffs_and_mutes_the_keywords_for_the_round() -> v
 	Effects.grant_for_rounds(v, Effects.STATUS["silenced"], "foe:x", s2.round)
 	s2.mechs[0].face_index = 0
 	assert_true(s2.assign(0, g), "the torch fires")
-	assert_true(s2.mechs[0].assigned, "Rapid muted: no second action")
-	assert_false(Effects.has(g, "burning"), "Burn muted: no stack")
+	assert_false(s2.mechs[0].assigned, "Rapid acts: a second action")
+	assert_true(Effects.has(g, "burning"), "Burn lays its stacks")
 	assert_true(Effects.cleanse(v).has("Silenced"), "a cleanse lifts it")
+	var bite := Face.attack(10, L, [K.VOLATILE])
+	bite.volatile = 3
+	var s4 := Skirmish.new(1, 1)
+	var x := _mech("D", Die.single(bite), 40, 200)
+	s4.add_mech(x)
+	s4.add_foes([_ghoul(500, 1)])
+	s4.begin()
+	s4.start_round()
+	Effects.grant_for_rounds(x, Effects.STATUS["silenced"], "foe:x", s4.round)
+	assert_eq(s4.pending_volatile(s4.mechs[0]), 3, "a silenced Volatile still bites")
 	# A Ward turns it away.
 	var s3 := Skirmish.new(1, 1)
 	var w := _mech("C", Die.single(Face.attack(10, L)), 40, 200)

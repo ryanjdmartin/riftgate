@@ -53,8 +53,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
 		"silence":
-			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep and its
-			# keywords muted for the round.
+			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep for the
+			# round.
 			for k in range(3):
 				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
 			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)

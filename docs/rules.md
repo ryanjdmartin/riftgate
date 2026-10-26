@@ -365,10 +365,10 @@ On a machine:
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
 - **Silenced** (debuff, a foe's silence): its buffs (a kept Overcharged too) count for
-  nothing and its components' keywords are muted (a Rapid entry acts once, a Burn lays
-  nothing, a Volatile bites nothing) through its next round, then wake; its stores fill and
-  spend as ever. Cleansable; a Ward turns the silence away. A foe's purge takes every buff,
-  every stack; its stores and its passives stay; a Ward turns it away too.
+  nothing through its next round, then wake. Its components' keywords act as ever (a Volatile
+  still bites), and its stores fill and spend as ever. Cleansable; a Ward turns the silence
+  away. A foe's purge takes every buff, every stack; its stores and its passives stay; a Ward
+  turns it away too.
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
