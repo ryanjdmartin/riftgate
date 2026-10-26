@@ -4135,7 +4135,8 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	assert_true(s3.rng.state == state3, "nothing drawn")
 	s3.end_round()
 	assert_eq(s3.mechs[1].unit.hull, 100 - 7, "and the round strikes it")
-	# An aim that decides still decides: the hottest machine, however far down the line.
+	# An aim never breaks the line (Ryan: "More unpredictable info"): the Black Mage's heat sense
+	# picks the hottest as the round opens, and the next in line when its machine falls.
 	var sh := Skirmish.new(4, 2)
 	sh.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
 	sh.add_mech(_mech("B", Die.single(Face.blank()), 0, 100))
@@ -4150,7 +4151,7 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	bigh.target = sh.mechs[0]
 	mage.target = sh.mechs[0]
 	pv = sh.preview_round()
-	assert_eq(pv["foes"][mage]["struck"], [2], "the hottest, C")
+	assert_eq(pv["foes"][mage]["struck"], [1], "B, the next in line, not the hottest")
 	# A weapon that strikes at random, with one foe standing, strikes it for sure.
 	var s1 := Skirmish.new(4, 2)
 	var gun := Face.attack(5, L)

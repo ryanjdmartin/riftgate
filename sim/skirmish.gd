@@ -3753,44 +3753,17 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 
 
 ## A pick made again mid-round (its machine fell before it acts or is Phased, a Disrupted foe's
-## gone): the next machine in line, left to right, that stands and is not Phased (Ryan, 26
-## October: Slice and Dice's rule, "it just targets the next ally in line", which the player can
-## tell without the preview; it retires a draw from a stream of the fight's own, randomness the
-## player could see only through the preview). An aim that decides (heat, armed, buffed) still
-## decides, the line breaking its ties; a rank that fires as one keeps its shared pick while it
-## stands, else the line's pick becomes it. With the override set, the rule before.
-func _repick(f: Foe) -> MechState:
+## gone): the next machine in line, left to right, that stands and is not Phased, whatever the
+## foe's aim (Ryan, 26 October: Slice and Dice's rule, "it just targets the next ally in line",
+## which the player can tell without the preview, and an aim breaking it would be "more
+## unpredictable info"; it retires a draw from a stream of the fight's own, randomness the player
+## could see only through the preview). With the override set, the rule before.
+func _repick(_f: Foe) -> MechState:
 	var live := targetable_mechs()   # in field order, left to right
 	if live.is_empty():
 		return null
 	if targeting_override == "lowest":
 		return _lowest_shield(live)
-	match f.aim_of():
-		"heat":
-			var hottest: MechState = live[0]
-			for ms in live:
-				if ms.heat > hottest.heat:
-					hottest = ms
-			return hottest
-		"armed":
-			for ms in live:
-				if _armed_mechs().has(ms):
-					return ms
-		"buffed":
-			var most: MechState = null
-			var top := 0
-			for ms in live:
-				var n := Effects.buff_stacks(ms.unit)
-				if n > top:
-					top = n
-					most = ms
-			if most != null:
-				return most
-		"focus":
-			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
-				return shared
-			_focus[f.rank] = live[0]
 	return live[0]
 
 

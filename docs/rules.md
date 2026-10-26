@@ -530,9 +530,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Dice's model, Ryan, 26 October): during the player's turn it moves only by a Lure, by the
   machine being Phased, or by a Disrupt whose foe finds its machine gone or Phased; a foe
   whose machine has fallen or is Phased when it acts strikes the next machine in line, left to
-  right, that stands and is not Phased (an aim that decides, heat, armed or buffed, still
-  decides, the line breaking its ties), so the player can tell the pick it will make, and
-  the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
+  right, that stands and is not Phased, whatever its aim, so the player can tell the pick it
+  will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
   aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
