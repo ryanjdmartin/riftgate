@@ -312,8 +312,9 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
 # the picks. Every candidate's source render lived only in tools/foeforge/out on Ryan's Mac (git-ignored); the seventh round's
-# were force-added under it (fb45141, 19 October) and cut on 26 October, the Augur's kept for her next pass. Rendering needs the Mac.
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags bossart10 heroart16 chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16 augur_chibi_heroart16   # the boss art round's seventh sets (19 October) as a phone page in out/phone (status has the link)
+# were force-added under it (fb45141, 19 October), and once they were cut (26 October) only the Augur's stayed, for her next pass (the
+# rest: git show fb45141). Rendering needs the Mac.
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags heroart16 chibi_heroart16 --keys augur_heroart16 augur_chibi_heroart16   # the Augur's seventh-round sets (19 October), where her next pass starts, as a phone page in out/phone
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
