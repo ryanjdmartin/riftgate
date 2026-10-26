@@ -52,7 +52,12 @@ mechanics audit Ryan asked for after the Flak fix (`docs/mechanics_audit.md`, 42
 through the code and cited by line, its "start here" list first) and the fixes he called for on
 25 and 26 October (the audit's head lists them). Landing it lands all three.
 `ccr-170f6d81-465jnr` has one commit past it (`b1aa261`, the die's hold showing the entry alone),
-which main takes from that branch.
+which main takes from that branch. `claude/quick-campaign-mode-pafhiv` (25 October) holds the
+quick campaign (`sim/quick_run.gd` and its screen), one damage state (Cracked gone, each injury
+destroying, at a quarter of the hull) and the bosses' escort by tier; its bible is the live page's
+(v0.294 at the page's 311, this branch's v0.291 rows merged in ahead of their code). Landing it
+beside this branch conflicts in `sim/skirmish.gd`, the rules, the bible, the vocabulary and its
+page, the measurements and this file.
 On 25 October, on Ryan's go ("merge in and clean up"), main took
 the three that stood beside it: `ccr-170f6d81-465jnr` (the records swept on his ask of 23
 October, the foes' conditions and their targeting at random, the riders numbered and the heat
