@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 644 tests, 64,525 checks, green on main (26 October, Ryan's playtest list merged),
-  about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 646 tests, 64,535 checks, green on this branch with main merged (26 October; main's
+  644 and 64,525 at the playtest list's landing), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -32,7 +32,18 @@ are in `README.md`.
 
 ## Branches
 
-No branch is live beside main. On 26 October, on Ryan's go ("merge in"), main fast-forwarded
+This branch, `ccr-6073bda9-p34o8q` (26 October), is the foes' fresh start proposed
+(`docs/foes_proposal.md`, Ryan's "We need to work on the foe refresh"), waiting on his marks on
+its fourteen questions before anything of the design is built, with the runner work its session
+built without waiting (the campaign bot moving the squad as one and its allies joining a
+hunter's catch, the fight bot's withdrawing persona on it, the balance runner's composed packs)
+and the reads they gave (`docs/measurements.md`, 26 October). Main was merged into it at
+`a738435`. Beside main stands `claude/quick-campaign-mode-pafhiv` (the quick campaign, the
+bosses at their tier, one damage state; waiting on Ryan's play), whose rows the live bible
+carries and the proposal is written against: a trial merge with it (26 October) conflicts in
+the records (this file, the bible, the rules) and in `content/foes.json`'s `_about` and
+`sim/skirmish.gd`, main's playtest code against its quick run, none of them this branch's own
+files. On 26 October, on Ryan's go ("merge in"), main fast-forwarded
 onto `claude/playtesting-issues-08mnqj`: his playtest list of 25 and 26 October (moves planned
 and played on ENGAGE or END TURN, UNDO in the order things were done with orders in it, every
 pack's ring in red and a selected machine's red band, the hunted tag, the stop sign on end
@@ -107,7 +118,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
   to 69% for the starter trios, the cold ones paying a little to heat and the hottest walled on
-  the greedy bot (Ryan's play judges it, the to-do).
+  the greedy bot (Ryan's play judges it, the to-do). The fight-size spectrum as it stands (26
+  October): two foes are free for any machine alone, three of a swarm type a real fight for a
+  light machine alone and free for a heavy, a front and a back of six a quarter of a lone
+  heavy's hull and a wall for the lights, a whole spawn list 6 to 12% of a tier-two trio's and
+  1 to 6% of a four's. The campaign's lone fights are the roster's, not the bot's walk: 46% of
+  its battles are fought by one machine and 42% by two, wrecks sitting out with no spares, and
+  the squad moving as one moves none of it, so the fights' shape is read on the quick campaign
+  (`claude/quick-campaign-mode-pafhiv`) until a run can field a squad.
 
 ## Decided, not built
 
@@ -133,15 +151,18 @@ to-do's Ryan list).
    retired once its decisions are rows and content.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
-3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
-   pacing and four-machines rows, section 9, section 12's foe questions,
-   `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
-   Fractures follow, once Ryan picks its form). Builds compositions with a front and a back
-   spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the
-   threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
-   bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
-   9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together.
+3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Proposed 26
+   October in `docs/foes_proposal.md` (its first section lists the rows it stands on, the
+   quick campaign's and the bosses' among them): Ryan's marks on its fourteen questions, then
+   the build it lists, the pack as a composition with members (the boss unit's shape already),
+   each domain's compositions by size and tier in content, the quick campaign dealing the
+   tier's compositions in place of the whole spawn list and the bench hero, the rift's tier and
+   the ramp as two numbers, the Rupture meter filling with each kill's menace with its Fractures
+   spawning the elites and its last breaking the boss's seal, the first elites as he marks them,
+   the bosses' escorts hand-tailored by tier; read first on the quick run by tier (the first
+   battle's cliff a slope, the plateau a climb), then the starter and endgame grids of 23
+   October by stage, then the campaign report once a run can field a squad. The persona and the
+   squad moving as one are built.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
@@ -165,9 +186,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.288, and so is the live (25 October,
-  the page's version 305, from main at the landing: the battery row's weld built, and the Skua's
-  records, which the page's version 304, v0.287 with the Kite's reset, did not yet carry). The
+  `docs/design-bible.html` after every change. This file is v0.299, and so is the live (26 October,
+  the page's version 316, from this branch: the live v0.298, the quick campaign's branch's, with
+  section 12's fresh-start question pointing at `docs/foes_proposal.md` and its campaign question
+  carrying the day's read of the lone fights; so this branch's file holds the other branches'
+  rows too, as the publishing convention has it, and main's v0.292 is behind it). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and

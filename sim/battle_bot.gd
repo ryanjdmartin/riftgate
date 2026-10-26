@@ -122,11 +122,22 @@ func _squad_target(b: Battle) -> Unit:
 
 
 ## The pack the most ready machines can reach, nearest the gate on a tie; null when none can.
+## A fight needs an order, which needs a machine with an action left within its attack range
+## of the pack (Battle.order; the screen's ENGAGE); only then does the boss's fight bring every
+## machine (the roster's all_in), so the bot never opens the boss's fight from across the map.
 func _best_target(b: Battle) -> Unit:
 	var best: Unit = null
 	var best_n := 0
 	for p in b.field.packs():
-		var n := (b.roster(p).get("eligible", []) as Array).size()
+		var r := b.roster(p)
+		var ordered := false
+		for m in r.get("in_range", []):
+			if b.actions_left(m) > 0:
+				ordered = true
+				break
+		if not ordered:
+			continue
+		var n := (r.get("eligible", []) as Array).size()
 		if n > best_n:
 			best = p
 			best_n = n
