@@ -5,14 +5,14 @@ extends Control
 ## two per row. Replaces a one-line stats string in the codex, where the line wrapped and
 ## read like a subtitle although it is the critical information. A value is text, or parts
 ## (ContentDB.stat_parts): the base number in ink, and where the loadout or the battle moves
-## it, what it is now in a bracket beside it, green for the player's gain and red for a loss,
-## its arrow on it (Ryan, 26 October).
+## it, the change in a bracket beside it, green where it is good for the unit and red where it
+## is bad, its arrow on it (Ryan, 26 October: "Base (+/- change)").
 
 const ROW_H := 50.0
 const COLS := 2
 const INSET := 4.0   # glyphs have a left bearing; without this the first digit clips at the panel edge
 const PX := 24       # a value
-const BRACKET_PX := 19   # what it is now, beside it
+const BRACKET_PX := 19   # the change, beside it
 
 var items: Array = []     # [[caption, value or parts], ...]
 

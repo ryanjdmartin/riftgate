@@ -127,8 +127,9 @@ func test_hold_shows_details_and_arrows() -> void:
 ## resource bars with numbers and modification up/downs if they exist, a list of all chips on
 ## the unit, and for enemies their current intent in the same format as the die hold press for
 ## a component"): its name, its gauges with their numbers, a maximum something moved coloured
-## with its arrow, every chip with what it does; a foe's intent a line a mark, the machine it is
-## aimed at named and its blow read against its own from the player's side.
+## with its arrow, its stats as base (change), every chip with what it does; a foe's intent a
+## line a mark, the machine it is aimed at named and its blow read against its own, the colours
+## the unit's ("Positive and negative are always relative to the unit, not the player").
 func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -162,7 +163,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
 	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
 	s._on_hold_released()
-	# A foe: its HP, its attack a rally raised (the player's loss: up and red), its intent.
+	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
 	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
 	s._refresh()
 	s._on_foe_held(s._foe_view_for(foe))
@@ -187,10 +188,11 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 
 ## The die's hold (Ryan, 25 October: "only show the visible component"; 26 October: "it just
 ## turns the iconography into text"): the entry showing, alone, as a list in the order a spend
-## runs it: its place and name from content, its number as the die prints it, its target, its
-## keywords, its heat, its own rules, then its tags. A number the live sources moved off the
-## component's own is coloured, never its sources listed: the player's gain green, a loss the
-## enemy red, an arrow on the number for which way. The whole die is the codex's.
+## runs it: its place and name from content, its number as the die prints it, its heat, its
+## target, its keywords, its own rules, then its tags. A number the live sources moved off the
+## component's own is coloured, never its sources listed: green where it is good for the unit,
+## the enemy red where it is bad, an arrow on the number for which way. The whole die is the
+## codex's.
 func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
 	var db := ContentDB.load_default()
@@ -219,7 +221,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
-	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the player's gain: coloured, never explained")
+	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
 	assert_eq(int(attack[2]["trend"]), 0, "its strikes its own: plain")
 	assert_eq(int(lines[2]["parts"][1]["trend"]), 0, "the heat its own: plain")
 	assert_eq(EntryReadout.trend_ink(attack[1]), Palette.GAIN, "a gain in the gain's green")
@@ -228,7 +230,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
-	# A heat a passive raised is the player's loss: the red, its arrow up.
+	# A heat a passive raised is bad for the machine: the red, its arrow up.
 	ms.unit.grant_passive({"id": "t_hot", "name": "Test Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 2}]})
 	s._on_die_held(1)
 	var heat: Dictionary = {}
