@@ -1235,7 +1235,8 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
 			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
-			# the pipeline); every spend at a foe counts, and spends the machine's Spun Up whole.
+			# the pipeline); every spend at a foe counts, and a weapon's spends the machine's Spun
+			# Up whole, equipment leaving it (Ryan, 26 October: "Spun up only interacts with damage").
 			if Effects.nth_shot_due(ms.unit):
 				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
 			var falls_before := _falls
@@ -1265,7 +1266,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
-			if Effects.remove(ms.unit, "spun_up"):
+			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
 	if f.on_machines():
 		_machine_spend_after(ms, f, target)

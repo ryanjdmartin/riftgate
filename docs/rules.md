@@ -107,8 +107,8 @@ defeat when every machine is wrecked. There is no round limit.
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry beside it, and its hold and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
-  showing included, the one piece that breaks the reroll rule. Every sixth spend at a foe of
-  the fight, a weapon's or a debuff's, counts double, its damage and the stacks it lays; the
+  showing included, the one piece that breaks the reroll rule. Every sixth weapon or equipment
+  it aims at a foe in the fight counts double, its damage and the stacks it lays; the
   count shows as six pips under the heat bar, the sixth lit when it is next, and a shield, a
   vent, a buff and a spin are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
@@ -373,8 +373,8 @@ On a machine:
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
 - **Rallied** (buff): the team has one reroll more this round.
-- **Spun Up** (buff): its next spend at a foe deals +2 a stack, then every stack is spent, by a
-  debuff too, for nothing; carried between turns until a weapon or a debuff spends it.
+- **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
+  stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
   round for three rounds; it stacks, each grant keeping its own end.
@@ -398,8 +398,8 @@ On a machine:
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +1 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
-- **Scorched** (debuff, from a foe's scorch): every weapon and debuff the machine fires runs 1 hotter a
-  stack, until the end of the player's turn, when every stack goes, so it never piles up.
+- **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
+  foe runs 1 hotter a stack, until the end of the player's turn, when every stack goes, so it never piles up.
   Cleansable.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
@@ -502,8 +502,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   is spent.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
-  or a cleanse takes it off; Scorched, the softer, heats only the weapons and debuffs the
-  machine fires in the turn that follows, so a shield, a vent, a buff or a cool weapon plays
+  or a cleanse takes it off; Scorched, the softer, heats only the weapons and equipment the
+  machine aims at a foe in the turn that follows, so a shield, a vent, a buff or a cool weapon plays
   round it. A foe's burn leaves Burning and its scorch
   leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
   the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every

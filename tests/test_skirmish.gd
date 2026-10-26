@@ -5668,9 +5668,9 @@ func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
 
 
 ## Spun Up (the Cassowary's, Ryan's go of 19 October; built 21 October): its number a stack on
-## the next spend at a foe, stacking, carried between turns until one takes it, a weapon's or a
-## debuff's.
-func test_spun_up_lasts_until_a_spend_at_a_foe_and_adds_its_number_a_stack() -> void:
+## the next weapon the machine spends, stacking, carried between turns until one takes it;
+## equipment leaves it standing (Ryan, 26 October: "Spun up only interacts with damage").
+func test_spun_up_lasts_until_a_weapon_takes_it_and_adds_its_number_a_stack() -> void:
 	var sk := Skirmish.new(1)
 	var u := _mech("A", Die.of([Face.attack(10, L), Face.attack(0, I, [K.LURE])]), 40, 100)
 	sk.add_mech(u)
@@ -5696,11 +5696,18 @@ func test_spun_up_lasts_until_a_spend_at_a_foe_and_adds_its_number_a_stack() -> 
 	Effects.grant_buff(u, "spun_up", 1, "buff", sk.round)
 	ms.face_index = 1
 	assert_true(sk.assign(0, g), "a debuff")
-	assert_false(Effects.has(u, "spun_up"), "spends it too")
+	assert_eq(Effects.stacks_of(u, "spun_up"), 1, "leaves it standing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	var hp_before := g.hp
+	assert_true(sk.assign(0, g), "then a weapon")
+	assert_eq(g.hp, hp_before - (10 + su), "takes its stack")
+	assert_false(Effects.has(u, "spun_up"), "and spends it")
 
 
 ## Every n-th shot (the Cassowary's sixth, Ryan's kit of 18 October; built 21 October): the
-## spend at a foe the count lands on (a weapon's or a debuff's) doubles its damage and the
+## weapon or equipment aimed at a foe the count lands on doubles its damage and the
 ## stacks it lays; a shield, a vent, a buff and a spin are no shots, and the count resets each
 ## fight.
 func test_every_nth_shot_doubles_its_damage_and_the_stacks_it_lays() -> void:

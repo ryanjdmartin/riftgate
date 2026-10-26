@@ -1012,9 +1012,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
-		# One a use spends (Spun Up, spent by the next spend at a foe) lasts until then.
+		# One a use spends (Spun Up, spent by the next weapon) lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
-			errs.append("%s: %s lasts until the next spend at a foe, so a buff grants it stacks and no rounds" % [where, st])
+			errs.append("%s: %s lasts until a use spends it, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):

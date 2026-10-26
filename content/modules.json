@@ -138,7 +138,7 @@
     "shield": 12
    },
    "text": {
-    "description": "Its weapons and debuffs run twice as hot.",
+    "description": "Every weapon and equipment it aims at a foe runs twice as hot.",
     "effects": [
      {
       "trigger": "on_attack",

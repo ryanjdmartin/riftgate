@@ -53,7 +53,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Weapons and debuffs may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons and debuffs run hotter.",
+   "codex": "A component that prints heat adds it when spent. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons and equipment aimed at foes run hotter.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -701,15 +701,15 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Machine status, the Cassowary's. Its next spend at a foe deals 2 more a stack, then every stack is spent: a weapon's blow takes them, a debuff spends them for nothing. Carried between turns until then.",
+   "codex": "Machine status, the Cassowary's. The next weapon it spends deals 2 more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.",
    "status": "implemented",
    "design": {
-    "holes": "Spent whole by the next spend at a foe, a weapon's or a debuff's.",
+    "holes": "Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).",
     "table": {
      "kind": "buff",
      "on": "machine",
-     "stacks": "Yes: its bonus a stack, every stack spent by the next spend at a foe",
-     "lasts": "Until its next spend at a foe, across turns"
+     "stacks": "Yes: its bonus a stack, every stack spent by the next weapon",
+     "lasts": "Until the next weapon it spends, across turns"
     }
    }
   },
@@ -733,14 +733,14 @@
    "id": "shots",
    "category": "resource",
    "name": "Shots",
-   "codex": "Machine count, the Cassowary's: its spends at foes this fight, a weapon's or a debuff's, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
+   "codex": "Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
    "status": "implemented",
    "design": {
     "holes": "Kept only for a machine whose rule counts (an nth_shot condition).",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: one a spend at a foe",
+     "stacks": "Yes: one a weapon or equipment aimed at a foe",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -1629,7 +1629,7 @@
    "id": "scorched",
    "category": "status",
    "name": "Scorched",
-   "codex": "Machine status, from a foe's scorch: every weapon and debuff it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending a shield, a vent, a buff or a cool weapon plays round it. Can be cleansed.",
+   "codex": "Machine status, from a foe's scorch: every weapon and equipment it aims at a foe runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending a shield, a vent, a buff or a cool weapon plays round it. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "Placeholder numbers.",
@@ -1741,7 +1741,7 @@
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): its weapons and debuffs run hotter.",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): every weapon and equipment it aims at a foe runs hotter.",
    "status": "implemented",
    "design": {
     "holes": ""

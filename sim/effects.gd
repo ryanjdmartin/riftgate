@@ -99,12 +99,12 @@ const STATUS := {
 	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
 	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
 	# heat at the end of the player's turn, before the overheat, where a vent made room for it
-	# or a cleanse took it off, then loses a stack. Scorched is the softer: every weapon and debuff
-	# fired runs hotter until the turn's end, when every stack goes, so it never piles up under several
-	# scorchers, and spending a shield, a vent, a buff or a cool weapon plays round it.
+	# or a cleanse took it off, then loses a stack. Scorched is the softer: every weapon and equipment
+	# aimed at a foe runs hotter until the turn's end, when every stack goes, so it never piles up under
+	# several scorchers, and spending a shield, a vent, a buff or a cool weapon plays round it.
 	"burning_mech": {"id": "burning_mech", "name": "Burning", "description": "Gains {value} heat per stack at the end of the player's turn, before the overheat, then loses a stack.", "decay": "turn",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 1}]},
-	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and debuff it fires runs {value} hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
+	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and equipment it aims at a foe runs {value} hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
@@ -240,15 +240,15 @@ const STATUS := {
 	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
-	# number a stack on the next spend at a foe, stacking, carried between turns until a weapon or
-	# a debuff spends it (`spent_by`: the skirmish lifts every stack after any spend at a foe, and
-	# a buff grants it with no rounds).
-	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "Its next spend at a foe deals {value} more a stack, then every stack is spent: a weapon's blow takes them, a debuff spends them for nothing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
+	# number a stack on the next weapon the machine spends, stacking, carried between turns until
+	# then (`spent_by`: the skirmish lifts every stack after a weapon's spend, equipment leaving
+	# them, since it only adds damage: Ryan, 26 October; a buff grants it with no rounds).
+	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "The next weapon it spends deals {value} more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
-	# A count a rule reads (the Cassowary's sixth shot, 21 October): the machine's spends at foes
-	# this fight, a weapon's or a debuff's, a stack each, kept only where a live effect counts them (nth_shot). A
+	# A count a rule reads (the Cassowary's sixth shot, 21 October): every weapon and equipment the
+	# machine aims at a foe this fight, a stack each, kept only where a live effect counts them (nth_shot). A
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
-	"shots": {"id": "shots", "name": "Shots", "description": "Spends at foes this fight, a weapon's or a debuff's, counted for a rule that lands on a number of them.", "decay": "none",
+	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
 		"tags": ["store", "count"], "effects": []},
 	# The Whip Scorpion's Siphon (Ryan's go, 20 October; built 21 October): spending it, every
 	# blow a foe lands on the machine that round adds heat, next round's fuel for its vents; the
@@ -1732,7 +1732,7 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 	var def: Dictionary = STATUS[status_id]
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
-	# One a use spends (Spun Up, spent by the next spend at a foe) lasts until then, across turns.
+	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns.
 	if def.has("spent_by"):
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_NONE)
 	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
