@@ -2499,16 +2499,16 @@ func test_the_bot_values_a_burn_more_when_a_paradox_may_trip_on_the_foe() -> voi
 
 func test_a_volatile_spend_bites_hull_past_shield_and_armour() -> void:
 	var sk := Skirmish.new(1)
-	var fist := Face.attack(30, L, K.VOLATILE)
-	assert_eq(fist.volatile, 1, "an entry that says no bite bites one")
-	fist.volatile = 10   # Volatile 10: the entry's own number (a numbered keyword since 22 October)
+	var fist := Face.attack(30, L)
+	fist.volatile = 10   # Volatile 10: a cost printed on the entry (Ryan, 26 October: a cost beside the heat, a keyword with a chip until then)
 	var m := _mech("A", Die.single(fist), 40, 100)
 	m.armour = 50
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(fist.describe(), "30 volatile 10", "the keyword and its number read on the entry")
+	assert_eq(fist.describe(), "30 (-10 hull)", "the cost reads on the entry as the heat does")
+	assert_false(fist.to_dict().has("keywords") and Array(fist.to_dict()["keywords"]).has("volatile"), "and is no keyword")
 	assert_eq(sk.pending_volatile(sk.mechs[0]), 10, "spending it costs the 10 hull it says")
 	assert_eq(sk.forecast(sk.mechs[0], true)["volatile"], 10, "the forecast names the cost while the die is in hand")
 	assert_eq(sk.forecast(sk.mechs[0], true)["hull_after"], 90, "and takes it off the hull, shield or no shield")
@@ -2517,14 +2517,13 @@ func test_a_volatile_spend_bites_hull_past_shield_and_armour() -> void:
 	assert_eq(m.hull, 90, "the bite lands on the hull as the entry is spent, past shield and armour")
 	assert_eq(m.shield, 40, "the shield never saw it")
 	assert_eq(sk.front[0].hp, 470, "and the component still does its work")
-	assert_true("\n".join(sk.log).contains("A: 30 volatile 10 is volatile, hull -10"), "the log says so")
+	assert_true("\n".join(sk.log).contains("A: 30 (-10 hull) costs hull 10"), "the log says so")
 	assert_eq(sk.pending_volatile(sk.mechs[0]), 0, "a spent die costs nothing more")
 
 
 func test_a_volatile_shield_costs_hull_to_raise() -> void:
 	var sk := Skirmish.new(1)
 	var plate := Face.shield(20)
-	plate.add_keyword(K.VOLATILE)
 	plate.volatile = 10
 	var m := _mech("A", Die.single(plate), 40, 100)
 	m.shield = 0
@@ -2539,7 +2538,7 @@ func test_a_volatile_shield_costs_hull_to_raise() -> void:
 
 func test_a_volatile_component_can_wreck_its_owner_before_it_acts() -> void:
 	var sk := Skirmish.new(1)
-	var bomb := Face.attack(30, L, K.VOLATILE)
+	var bomb := Face.attack(30, L)
 	bomb.volatile = 10
 	var m := _mech("A", Die.single(bomb), 40, 10)
 	sk.add_mech(m)
@@ -2556,7 +2555,9 @@ func test_a_volatile_component_can_wreck_its_owner_before_it_acts() -> void:
 
 func test_a_disabled_volatile_entry_does_not_bite() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 100)
+	var fist := Face.attack(30, L)
+	fist.volatile = 1
+	var m := _mech("A", Die.single(fist), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
@@ -2564,6 +2565,66 @@ func test_a_disabled_volatile_entry_does_not_bite() -> void:
 	Effects.disable_entry(m, 0, "foe:x", sk.round + 1)
 	assert_eq(sk.pending_volatile(sk.mechs[0]), 0, "a blank is never spent")
 	assert_true(sk.assign(0, null), "the blank is discarded")
+
+
+## A shield cost (Ryan, 26 October: "if you don't have the shield, the face cannot be played, and
+## overshield does cheat it out at the cost of using two actions for one effect"): taken first
+## from the shield as it stands, overshield included; short of it, the entry is locked: nowhere to
+## land, the drag finds no target, END TURN pulses, the die shows the cost struck through.
+func test_a_shield_cost_is_paid_first_and_locks_the_entry_while_the_shield_is_short() -> void:
+	var sk := Skirmish.new(1)
+	var lance := Face.attack(30, L)
+	lance.shield_cost = 15
+	var m := _mech("A", Die.single(lance), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(lance.describe(), "30 (-15 shield)", "the cost reads on the entry")
+	assert_false(sk.shield_short(sk.mechs[0], lance), "40 shield pays 15")
+	assert_false(sk.shown_face(sk.mechs[0], lance).short, "and the die shows it payable")
+	assert_true(sk.can_assign(0, sk.front[0]), "playable")
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_eq(m.shield, 25, "the shield paid it first")
+	assert_eq(sk.front[0].hp, 470, "and the component did its work")
+	assert_true("\n".join(sk.log).contains("A: 30 (-15 shield) costs shield 15"), "the log says so")
+	# Short of it, the entry cannot be played.
+	var s2 := Skirmish.new(1)
+	var m2 := _mech("B", Die.single(lance), 40, 100)
+	m2.shield = 10
+	s2.add_mech(m2)
+	s2.add_foes([_ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.shield_short(s2.mechs[0], lance), "10 shield cannot pay 15")
+	assert_true(s2.shown_face(s2.mechs[0], lance).short, "the die shows it short")
+	assert_true(s2.targets_for_face(s2.mechs[0], lance).is_empty(), "nowhere to land")
+	assert_false(s2.can_assign(0, s2.front[0]), "not playable")
+	assert_false(s2.can_spend(0), "END TURN may pulse")
+	assert_false(s2.assign(0, s2.front[0]), "and a spend is refused")
+	assert_eq([m2.shield, s2.front[0].hp], [10, 500], "nothing paid, nothing fired")
+	var pv := s2.preview_round(0, s2.front[0])
+	assert_eq(int(pv["foes"][s2.front[0]]["hp"]), 500, "the preview counts no spend over it")
+	# Overshield pays it: a shield past the maximum is shield.
+	m2.shield = 55
+	assert_false(s2.shield_short(s2.mechs[0], lance), "55 of a 40 maximum pays")
+	assert_true(s2.assign(0, s2.front[0]), "spent")
+	assert_eq(m2.shield, 40, "from the overshield first, as any shield loss is")
+	# Equipment pays it too, and locks the same way.
+	var s3 := Skirmish.new(1)
+	var vent := Face.vent(20)
+	vent.shield_cost = 5
+	var m3 := _mech("C", Die.single(vent), 40, 100)
+	m3.shield = 4
+	s3.add_mech(m3)
+	s3.add_foes([_ghoul(500, 10)])
+	s3.begin()
+	s3.start_round()
+	assert_true(s3.equipment_targets_for(s3.mechs[0], vent).is_empty(), "a vent short of its shield cost lands nowhere")
+	assert_false(s3.can_spend(0), "and cannot be spent")
+	m3.shield = 5
+	assert_true(s3.assign(0, null), "with the shield to pay, it is spent")
+	assert_eq(m3.shield, 0, "to nothing")
 	assert_eq(m.hull, 100, "and costs nothing")
 
 
@@ -3421,7 +3482,9 @@ func test_rage_banks_on_every_hull_hit_for_the_skirmish() -> void:
 	assert_eq(Effects.stacks_of(m, "rage"), before + 1, "the overheat fed it")
 	# A volatile bite is the machine's own weapon reaching hull: it counts.
 	var s2 := Skirmish.new(2)
-	var n := _mech("N", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 200)
+	var biter := Face.attack(30, L)
+	biter.volatile = 1
+	var n := _mech("N", Die.single(biter), 40, 200)
 	n.grant_passive(core)
 	s2.add_mech(n)
 	s2.add_foes([_ghoul(500, 10)])
@@ -6717,7 +6780,7 @@ func test_a_silence_sleeps_the_buffs_for_the_round_and_leaves_the_keywords() -> 
 	assert_false(s2.mechs[0].assigned, "Rapid acts: a second action")
 	assert_true(Effects.has(g, "burning"), "Burn lays its stacks")
 	assert_true(Effects.cleanse(v).has("Silenced"), "a cleanse lifts it")
-	var bite := Face.attack(10, L, [K.VOLATILE])
+	var bite := Face.attack(10, L)
 	bite.volatile = 3
 	var s4 := Skirmish.new(1, 1)
 	var x := _mech("D", Die.single(bite), 40, 200)

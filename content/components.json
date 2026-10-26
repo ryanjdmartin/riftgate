@@ -445,8 +445,7 @@
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "suppress",
-     "volatile"
+     "suppress"
     ],
     "heat": 0,
     "volatile": 3
@@ -1054,9 +1053,7 @@
    "face": {
     "kind": "vent",
     "power": 10,
-    "keywords": [
-     "volatile"
-    ],
+    "keywords": [],
     "volatile": 3
    },
    "passive": null,
@@ -1299,9 +1296,7 @@
    "face": {
     "kind": "shield",
     "power": 10,
-    "keywords": [
-     "volatile"
-    ],
+    "keywords": [],
     "volatile": 3
    },
    "passive": null,

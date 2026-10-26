@@ -733,7 +733,7 @@ func pending_volatile(ms: MechState) -> int:
 ## The hull a volatile entry costs its owner per spend, the number its Volatile carries (a
 ## numbered keyword since the stock pass's engine, 22 October); zero for any other entry.
 static func volatile_cost(f: Face) -> int:
-	return f.volatile if f != null and f.has(Face.Keyword.VOLATILE) else 0
+	return f.volatile if f != null else 0
 
 
 ## The hull spending this entry costs its owner: a volatile bite, and a passive's price on
@@ -857,7 +857,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 ## component says (Ryan, 26 September: not every shield reaches an ally). Live machines only.
 func equipment_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	var out: Array[MechState] = []
-	if f == null or not f.is_equipment():
+	if f == null or not f.is_equipment() or shield_short(ms, f):
 		return out
 	for who in live_mechs():
 		if who != ms and is_phased(who):
@@ -956,8 +956,8 @@ func needs_second(ms: MechState) -> bool:
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if f == null or not f.is_attack() or not can_fire(ms, f):
-		return out   # a dry gun on a forging machine (the Musk Ox's) has nothing it may be spent on
+	if f == null or not f.is_attack() or not can_fire(ms, f) or shield_short(ms, f):
+		return out   # a dry gun on a forging machine (the Musk Ox's), or an entry whose shield cost the shield cannot pay, has nothing it may be spent on
 	# Reach: direct hits the front and any exposed column's back; indirect hits everyone.
 	# A foe already killed this round still stands until the dead are cleared, but it is
 	# no target: a die spent on it would be wasted.
@@ -993,6 +993,10 @@ func reach_of(ms: MechState, f: Face) -> int:
 ## front, Penetrate at the back), as the spend will carry them.
 func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 	var sf := Effects.effective_face(ms.unit, f, target)
+	if sf != null and shield_short(ms, sf):
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.short = true   # the shield cannot pay: the cost struck through, like a dry gun's ammo
 	if sf == null or not sf.is_attack():
 		return sf
 	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
@@ -1451,6 +1455,16 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
+	# A shield cost (Ryan, 26 October: "if you don't have the shield, the face cannot be played,
+	# and overshield does cheat it out at the cost of using two actions for one effect"): taken
+	# first, from the shield as it stands, overshield included; short of it the entry is locked
+	# (shield_short) and never reaches here.
+	var toll := f.shield_cost
+	if toll > 0:
+		if ms.unit.shield < toll:
+			return false
+		ms.unit.shield -= toll
+		log.append("%s: %s costs shield %d" % [ms.unit.display_name, f.describe(), toll])
 	# A corrupted entry bites its owner as it is spent (shield first, no armour: the rot is
 	# inside the machine), before the component does its work. A machine it finishes acts
 	# no further.
@@ -1474,7 +1488,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	var volatile := pending_volatile(ms)
 	if volatile > 0:
 		ms.unit.hull -= volatile
-		log.append("%s: %s %s, hull -%d" % [ms.unit.display_name, f.describe(), "is volatile" if f.has(Face.Keyword.VOLATILE) else "pays its tithe", volatile])
+		log.append("%s: %s %s hull %d" % [ms.unit.display_name, f.describe(), "costs" if f.volatile > 0 else "pays its tithe,", volatile])
 		_hull_damaged(ms)
 		if not ms.alive():
 			log.append("%s is wrecked by its own volatile component" % ms.unit.display_name)
@@ -2717,6 +2731,16 @@ func can_fire(ms: MechState, f: Face) -> bool:
 	return price <= 0 or ms.ammo >= price
 
 
+## The first entry with a condition on its play (Ryan, 26 October, the shield cost: "if you don't
+## have the shield, the face cannot be played"): true while the machine's shield, overshield
+## included, is short of the entry's shield cost. Every target list reads it, so the die has
+## nowhere to land, the screen's drag finds no target, the bot passes it over and END TURN
+## pulses; the die shows the cost struck through (Face.short, shown_face). The pattern for any
+## conditional entry to come.
+func shield_short(ms: MechState, f: Face) -> bool:
+	return f != null and f.shield_cost > 0 and ms.unit.shield < f.shield_cost
+
+
 ## Ammo into the magazine, up to its size.
 func _reload(ms: MechState, n: int, why: String) -> void:
 	if ms.ammo_max <= 0 or n <= 0:
@@ -2849,7 +2873,7 @@ func _muster(ms: MechState, points: int) -> void:
 ## column. A Swap and the Syrinx Drone take a foe: a slot holds none to move or carry it.
 func slot_targets(ms: MechState, f: Face) -> Array:
 	var out: Array = []
-	if f == null or not f.is_attack() or not (f.pulls_mines or Effects.lays_mines(ms.unit)) or not can_fire(ms, f):
+	if f == null or not f.is_attack() or not (f.pulls_mines or Effects.lays_mines(ms.unit)) or not can_fire(ms, f) or shield_short(ms, f):
 		return out
 	if f.drones or Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
 		return out
@@ -2873,7 +2897,7 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 	var kws: Array = []
 	if not plain:
 		for k in f.keywords:
-			if not [Face.Keyword.RAPID, Face.Keyword.VOLATILE, Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP].has(k):
+			if not [Face.Keyword.RAPID, Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP].has(k):
 				kws.append(int(k))
 	var burn := (f.burn if f.has(Face.Keyword.BURN) else 0) + extra_burn
 	mine_seq += 1

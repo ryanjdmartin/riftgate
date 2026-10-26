@@ -185,8 +185,8 @@ defeat when every machine is wrecked. There is no round limit.
   destroyed chip, its intent kept. Every status the round will land, on a machine or a foe,
   wears a preview chip: the status's own glyph and colour, pulsing in opacity on a dashed
   edge, with the stacks it gains, beside the destroyed chip when one is its cause; every
-  warning (the overheat, a Volatile bite, an injury, the destroyed chip itself) pulses the
-  same way, a prediction like any other. A Lure in hand shows its turn before it is spent: the foes it
+  warning (the overheat, an injury, the destroyed chip itself) pulses the same way, a
+  prediction like any other. A Lure in hand shows its turn before it is spent: the foes it
   would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
   the round as the lure would leave it.
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
@@ -234,9 +234,9 @@ defeat when every machine is wrecked. There is no round limit.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
-  component prints its own; one that prints none pays heat or Volatile every spend (the Cryo
-  Flinger, 1 heat). A Rapid component always carries a limiter, a cooldown, heat or
-  Volatile; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: its spin
+  component prints its own; one that prints none pays heat, hull or shield every spend (the
+  Cryo Flinger, 1 heat). A Rapid component always carries a limiter, a cooldown, heat or a
+  cost; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: its spin
   is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
   a fifth of a spin more a spend on average, and every other way back to it in a round runs
   through the other chambers' switch-offs or the team's rerolls.
@@ -267,9 +267,14 @@ defeat when every machine is wrecked. There is no round limit.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak after the blow, whatever it dealt (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
-- **Volatile** (with a number, any component): spending it costs its owner that much hull,
-  past shield and armour, before it acts (Volatile 3: 3 hull). Its carriers today (the Umbra
-  Inducer, the Oblation Mantle and the Entropy Condenser) bite 3.
+- **Costs** are printed on the entry beside its heat, never a keyword and never a chip: a
+  **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
+  before it acts, and a machine it leaves at nothing is wrecked; the Umbra Inducer, the
+  Oblation Mantle and the Entropy Condenser cost 3) and a **shield cost** (3 shield, taken
+  first from the shield as it stands, overshield included). An entry whose shield cost the
+  shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
+  to land, and END TURN pulses as if the die were spent. It is the first entry with a
+  condition on its play, and the pattern for any to come.
 - **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as

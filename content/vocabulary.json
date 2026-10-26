@@ -323,12 +323,23 @@
   },
   {
    "id": "volatile",
-   "category": "keyword",
+   "category": "component_property",
    "name": "Volatile",
-   "codex": "Keyword with a number, on any kind of component. Volatile 3 means spending it bites its owner for 3 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.",
+   "codex": "A cost printed on any kind of component, beside its heat. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
    "status": "implemented",
    "design": {
-    "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder."
+    "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does."
+   }
+  },
+  {
+   "id": "shield_cost",
+   "category": "component_property",
+   "name": "Shield cost",
+   "codex": "A cost printed on any kind of component, beside its heat: spending it takes that much shield from its owner first, overshield included. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land.",
+   "status": "implemented",
+   "design": {
+    "fantasy": "Ryan, 26 October: a price paid in the buffer, which overshield cheats out at the cost of two actions for one effect; the first entry with a condition on its play, so advanced pieces may follow.",
+    "holes": "No piece carries it yet; the numbers are content's."
    }
   },
   {

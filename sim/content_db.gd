@@ -846,11 +846,15 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
 		errs.append("%s: per_missing is the HP a step of power_per_missing stands for: positive, and only beside power_per_missing" % where)
-	# Volatile is numbered (the stock pass's engine, 22 October): an entry says the hull a spend bites.
-	if Array(fd.get("keywords", [])).has("volatile") and int(fd.get("volatile", 0)) <= 0:
-		errs.append("%s: a Volatile entry says its bite: volatile, a positive number" % where)
-	if fd.has("volatile") and not Array(fd.get("keywords", [])).has("volatile"):
-		errs.append("%s: volatile (the bite) rides with the Volatile keyword" % where)
+	# Volatile is a cost, not a keyword (Ryan, 26 October): `volatile`, the hull a spend bites, a
+	# positive number beside the heat; and a shield cost the same way (`shield_cost`), the shield
+	# a spend takes first, the entry unplayable while the shield is short of it.
+	if Array(fd.get("keywords", [])).has("volatile"):
+		errs.append("%s: Volatile is a cost, not a keyword: volatile, a number, and nothing in keywords" % where)
+	if fd.has("volatile") and int(fd.get("volatile", 0)) <= 0:
+		errs.append("%s: volatile is the hull a spend bites: a positive number" % where)
+	if fd.has("shield_cost") and int(fd.get("shield_cost", 0)) <= 0:
+		errs.append("%s: shield_cost is the shield a spend takes first: a positive number" % where)
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
 	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
@@ -942,8 +946,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# die's size, to be spent again, the high roll he allowed; the exit, a stepping-die piece that
 	# ever chains for sure gets a limiter of its own).
 	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
-			and int(fd.get("heat", 0)) <= 0 and not Array(fd.get("keywords", [])).has("volatile"):
-		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
+			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
+		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
 	# The Siphon's rules (the Whip Scorpion's, 20 October): a reach over every foe in the fight,
 	# an attack's; and a heat every blow taken that round adds, any entry's.
 	# On equipment it is every machine it may land on (the Swallowtail's team shield, built 21

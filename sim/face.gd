@@ -22,7 +22,7 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## keyword like Burn and Cryo; each foe hit gains that many stacks of Flak.
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -38,7 +38,7 @@ const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress",
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
-	Keyword.VOLATILE: "volatile", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
+	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach",
@@ -60,10 +60,10 @@ const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
 ## round's end. A vent has nothing to pass.
 const SHIELD_ONLY_KEYWORDS := [Keyword.OVERSHIELD]
 ## Keywords about the spend itself, not its target, so any kind of component may carry
-## them: volatile (the Arsenal's self-damage, 28 September) bites the owner whatever the
-## component does, and rapid (equipment too since 9 October, the Wake Diffuser first) gives
-## the machine its turn back whatever the component did.
-const ANY_KEYWORDS := [Keyword.VOLATILE, Keyword.RAPID]
+## them: rapid (equipment too since 9 October, the Wake Diffuser first) gives the machine its
+## turn back whatever the component did. Volatile rode here until 26 October, when it became a
+## cost printed beside the heat (`volatile`, below), a keyword no longer.
+const ANY_KEYWORDS := [Keyword.RAPID]
 
 
 static func keyword_label(k: int) -> String:
@@ -82,7 +82,9 @@ var strikes: int = 1          # blows per use: a rapid-fire weapon lands many sm
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
 var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
-var volatile: int = 0         # any entry with Volatile: the hull a spend bites its owner, past shield and armour (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
+var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
+var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
+var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
@@ -284,7 +286,8 @@ static func from_dict(d: Dictionary) -> Face:
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
-	f.volatile = maxi(0, int(d.get("volatile", 0)))   # add_keyword gives a Volatile entry a bite of 1 when it says none
+	f.volatile = maxi(0, int(d.get("volatile", 0)))
+	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
@@ -348,8 +351,10 @@ func to_dict() -> Dictionary:
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
 		d["flak"] = flak
-	if volatile > 0 and has(Keyword.VOLATILE):
+	if volatile > 0:
 		d["volatile"] = volatile
+	if shield_cost > 0:
+		d["shield_cost"] = shield_cost
 	if not gates.is_empty():
 		d["gates"] = gates.duplicate(true)
 	if not consumes.is_empty():
@@ -416,8 +421,6 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
-	if kw == Keyword.VOLATILE and volatile <= 0:
-		volatile = 1   # a Volatile entry says its bite; one when nothing says (a synthetic entry, an old save)
 
 
 func has(kw: int) -> bool:
@@ -540,6 +543,8 @@ func duplicate_face() -> Face:
 	f.cryo = cryo
 	f.flak = flak
 	f.volatile = volatile
+	f.shield_cost = shield_cost
+	f.short = short
 	f.gates = gates.duplicate(true)
 	f.consumes = consumes
 	f.per_consumed = per_consumed
@@ -632,6 +637,12 @@ func crack() -> void:
 	spins = false   # Rapid's reroll as a spin goes with Rapid
 
 
+## The entry's costs past heat as its text says them (Ryan, 26 October: Volatile a cost like
+## heat, and a cost may be shield): the hull a spend bites, the shield it takes first.
+func cost_text() -> String:
+	return (" (-%d hull)" % volatile if volatile > 0 else "") + (" (-%d shield)" % shield_cost if shield_cost > 0 else "")
+
+
 ## A Rapid entry's spin as its text says it, and the Siphon's two rules.
 func spin_text() -> String:
 	return (" spins the die" if spins else "") + (" reaches every foe" if reaches_all else "") \
@@ -693,13 +704,11 @@ func describe() -> String:
 			for k in keywords:
 				if not printed.has(k):
 					s += " " + keyword_label(k)
-					if k == Keyword.VOLATILE:
-						s += " %d" % volatile   # a numbered keyword: the hull a spend bites
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
-			s += cooldown_text() + spin_text()
+			s += cooldown_text() + spin_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
 			elif targets == Target.ALLY and not reaches_all and not act_again:
@@ -720,8 +729,6 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
-				if k == Keyword.VOLATILE:
-					s += " %d" % volatile
 				if gates.has(KEYWORD_NAMES[k]):
 					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:
@@ -759,6 +766,7 @@ func describe() -> String:
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat
+			s += cost_text()
 	if not charged.is_empty():
 		# What a muster buys (the Swallowtail's locked pieces): the charged form, after the plain.
 		var cf := charged_form()

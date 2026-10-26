@@ -190,7 +190,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	# At the single-digit scale the bot's weights are set to (the stock pass, 22 October): a
 	# blow of 3 kills a foe of 3 HP that hits for 1, and the bite is 3.
 	var sk := Skirmish.new(3)
-	var bomb := Face.attack(3, L, K.VOLATILE)
+	var bomb := Face.attack(3, L)
 	bomb.volatile = 3
 	sk.add_mech(_mech("A", Die.single(bomb), 8, 3))
 	sk.add_foes([_ghoul(3, 1)])
@@ -203,7 +203,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_true(sk.front[0] != null and sk.front[0].alive(), "the kill is not taken")
 	assert_eq(sk.mechs[0].unit.hull, 3, "the machine stands")
 	var s2 := Skirmish.new(3)
-	var bomb2 := Face.attack(3, L, K.VOLATILE)
+	var bomb2 := Face.attack(3, L)
 	bomb2.volatile = 3
 	s2.add_mech(_mech("B", Die.single(bomb2), 8, 30))
 	s2.add_foes([_ghoul(3, 1)])
@@ -251,7 +251,7 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 func test_greedy_values_rage_as_another_roll() -> void:
 	var fist := Face.attack(10, L)
 	fist.rolls_again_on = "rage"
-	var gun := Face.attack(20, L, K.VOLATILE)
+	var gun := Face.attack(20, L)
 	gun.volatile = 10
 	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
 		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}

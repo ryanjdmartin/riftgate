@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 152 implemented, 6 planned, 0 idea.
+Status: 153 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -48,6 +48,8 @@ Status: 152 implemented, 6 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Damage range** | A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. | implemented |
+| **Volatile** | A cost printed on any kind of component, beside its heat. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing. | implemented |
+| **Shield cost** | A cost printed on any kind of component, beside its heat: spending it takes that much shield from its owner first, overshield included. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land. | implemented |
 | **Overcharged a kill** | A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Overcharged (two), which the Ammit keeps for the battle. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Cooldown** | A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the rounds left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and "no cooldown" lifts even that. No cleanse lifts a cooldown, and a crack keeps it. | implemented |
@@ -89,7 +91,6 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Web** | The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it. | implemented |
 | **Swap** | Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back. | implemented |
 | **Flak** | Flak N: each foe hit gains N stacks of Flak, whatever the blow dealt. | implemented |
-| **Volatile** | Keyword with a number, on any kind of component. Volatile 3 means spending it bites its owner for 3 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
@@ -261,7 +262,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Flak** (implemented): The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does.
 - **Numbed** (implemented): Its numbers are placeholders, to be judged against fight lengths.
 - **Paradox** (implemented): The count is a placeholder.
-- **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder.
+- **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
+- **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
 - **Overcharged a kill** (implemented): A spread that kills two feeds twice; a chain feeds on every link.
 - **Rapid** (implemented): Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
 - **Silence** (implemented): Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store.

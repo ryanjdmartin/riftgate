@@ -881,25 +881,23 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
-	plate["face"]["keywords"] = ["volatile"]
 	plate["face"]["volatile"] = 3
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
-	gun["face"]["keywords"] = ["volatile"]
 	gun["face"]["volatile"] = 3
+	gun["face"]["shield_cost"] = 2
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
 	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
-	fins["face"]["keywords"] = ["volatile"]
 	fins["face"]["volatile"] = 3
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
 	for e in db.validate():
-		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
+		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike, a shield cost too: %s" % e)
 	var f := db.build_face(plate["face"])
-	assert_true(f.has(Face.Keyword.VOLATILE), "and builds onto the entry")
-	assert_eq(f.volatile, 3, "with the bite it says")
+	assert_eq(f.volatile, 3, "and builds onto the entry as a cost (26 October), with the bite it says")
+	assert_eq(db.build_face(gun["face"]).shield_cost, 2, "the shield cost too")
 
 
 ## The gated stuns' fields (22 October): a gate maps a keyword the entry carries (Suppress
@@ -1005,9 +1003,11 @@ func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_statu
 	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	base["tier"] = 1
 	var cases := {
-		"test_nobite": [{"keywords": ["volatile"]}, "says its bite"],
-		"test_stray_bite": [{"volatile": 3}, "rides with the Volatile keyword"],
-		"test_bite_ok": [{"keywords": ["volatile"], "volatile": 3}, ""],
+		"test_keyword": [{"keywords": ["volatile"]}, "Volatile is a cost, not a keyword"],
+		"test_nobite": [{"volatile": 0}, "a positive number"],
+		"test_bite_ok": [{"volatile": 3}, ""],
+		"test_notoll": [{"shield_cost": 0}, "a positive number"],
+		"test_toll_ok": [{"shield_cost": 2}, ""],
 	}
 	var gun: Dictionary = db.components["coriolis_accelerator"].duplicate(true)
 	gun["tier"] = 1
@@ -1793,7 +1793,8 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 	var cases := {
 		"test_free": [{"keywords": ["rapid"], "cooldown": 0}, "carries another limiter"],
 		"test_hot": [{"keywords": ["rapid"], "cooldown": 0, "heat": 5}, ""],
-		"test_bite": [{"keywords": ["rapid", "volatile"], "volatile": 3, "cooldown": 0}, ""],
+		"test_bite": [{"keywords": ["rapid"], "volatile": 3, "cooldown": 0}, ""],
+		"test_toll": [{"keywords": ["rapid"], "shield_cost": 2, "cooldown": 0}, ""],
 		"test_switch": [{"keywords": ["rapid"]}, ""],
 		"test_lift": [{"cooldown": 0}, "has none to lift"],
 		"test_negative": [{"cooldown": -1}, "whole number of rounds"],

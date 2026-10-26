@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 673 tests, 64,880 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 674 tests, 64,906 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes, the rally at once, the set finals
   and the round preview),
   about a minute in a cloud session.
@@ -203,9 +203,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.317, and so is the live (26 October,
-  the page's version 334, from `claude/affectionate-goldberg-8e3mkh`: a pick made again going to
-  the next machine in line whatever the foe's aim, merged onto another session's republish of 18:53 (the heat rows and
+  `docs/design-bible.html` after every change. This file is v0.318, and so is the live (26 October,
+  the page's version 335, from `claude/affectionate-goldberg-8e3mkh`: Volatile a printed cost and
+  the shield cost, its Volatile keyword row taken out of the table by hand, the script not run
+  (it would write this branch's older tables back); before it a pick made again going to the
+  next machine in line whatever the foe's aim, merged onto another session's republish of 18:53 (the heat rows and
   the Cassowary's); before it the settled re-pick drawn as a second arrow, merged onto the
   republish of 18:18 (the Kite, Cottonmouth, Whip Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
   afresh and every warning chip pulsing, merged onto the republish of 17:36, which reworked the
