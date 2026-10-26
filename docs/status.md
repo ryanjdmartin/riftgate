@@ -20,9 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 648 tests, 65,113 checks, green on `claude/quick-campaign-mode-pafhiv` (25 October, the
-  quick campaign, one damage state and the bosses' escort by tier; main's 628 and 64,352 since
-  the landing), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 649 tests, 65,166 checks, green on `claude/quick-campaign-mode-pafhiv` (26 October, the
+  quick campaign, one damage state and the bosses at their tier; main's 644 and 64,525 since the
+  playtest list landed), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,34 +33,30 @@ are in `README.md`.
 
 ## Branches
 
-This branch, `claude/quick-campaign-mode-pafhiv` (25 October), is the quick campaign built on
-Ryan's calls of that day (the bible's section 3 row; `sim/quick_run.gd`, its screens in
-`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, and one
-damage state (his "Cracked is gone", the same day; the audit's 7a asked it), waiting on his play
-and on section 12's quick campaign question before it merges. Other sessions' branches
-of the same day stand beside it, each with its own status: `ccr-170f6d81-465jnr`'s later commits,
-`claude/affectionate-goldberg-8e3mkh` (the mechanics audit, which carries them),
-`claude/playtesting-issues-08mnqj` (Ryan's playtest list), and main's Windows launchers
-(`ef91382`). A trial merge with each (25 October, after the damage state) takes the code clean
-but for `Skirmish.can_withdraw` beside the playtest branch (at `3caf956`), whose `committed` (the
-boss's fight, no withdrawal) is this branch's `withdraw_allowed` the other way round: one flag at
-the landing, the quick run setting it. The records conflict: this file, the bible (its version
-line; beside the playtest branch the built list and section 12's rules list), the measurements
-beside the audit's, `docs/vocabulary.md` (regenerated after the merge), and beside the playtest
-branch the rules' boss paragraph (its boss fight allows no withdrawal; the escort by tier
-follows its last sentence). Earlier on 25 October, on Ryan's
-go ("merge in and clean up"), main took the three that stood beside it:
-`ccr-170f6d81-465jnr` (the records swept on his ask of 23
-October, the foes' conditions and their targeting at random, the riders numbered and the heat
-doubled, the Kite's reset without a limit, the Skua's engine), which carried
-`ccr-7d865127-wr1ko2` (the four Kestrel machines of 21 October and their models' first cut,
-whose second round of looks is still Ryan's to judge) and `claude/eager-newton-sf947u` (the
-stock pass's reads, the read by stage, Ryan's terms and elites, the curve and the fronts in
-`docs/curve_proposal.md`). Main's weld (`claude/friendly-cannon-kyk9v4`, landed the same day)
-was merged into them first, so main fast-forwarded. Delete the four from the desk machine or
-GitHub, since a cloud session's push to delete one is refused; `ccr-170f6d81-465jnr`'s session
-was still at work that day, so its later commits land by merging main in. Every other branch was
-merged into main and deleted (22 October).
+This branch, `claude/quick-campaign-mode-pafhiv` (25 and 26 October), is the quick campaign built
+on Ryan's calls of 25 October (the bible's section 3 row; `sim/quick_run.gd`, its screens in
+`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, one
+damage state at a quarter of the hull (his "Cracked is gone"; the audit's 7a asked it) and the
+bosses at the battle's tier (his calls of 25 and 26 October), waiting on his play and on section
+12's quick campaign question before it merges. Main moved under it on 26 October, fast-forwarding
+onto `claude/playtesting-issues-08mnqj` (`a738435`, his playtest list). Beside them stand the
+mechanics audit, `claude/affectionate-goldberg-8e3mkh` (`e23440f`, carrying the playtest branch
+and `ccr-170f6d81-465jnr` to `70481ec`); that session's later commits (`ccr-170f6d81-465jnr` at
+`2b5bb53`); the boss art's seventh picks cut (`ccr-535a7596-5ptzsj`, one commit); and the Hold
+The Line pair, a sound sketch of 24 October (`ccr-7effd31a-u5z4gw`, one commit). A trial merge
+with each (26 October) conflicts in the records (this file; the bible's version line and rows;
+the rules; the measurements; `docs/vocabulary.md`, regenerated after the merge) and in a few
+lines of code and content. Beside main and the audit: `Skirmish.can_withdraw`, whose
+`committed` there (the boss's fight, no withdrawal) is this branch's `withdraw_allowed` the
+other way round, one flag at the landing with the quick run setting it; the rules' boss
+paragraph (main's every machine and no withdrawal, this branch's tier and escort: keep both);
+`content/foes.json`'s `_about` (main's pair and arrival lines, this branch's tier sentence: keep
+both). Beside `ccr-170f6d81-465jnr`'s later commits: `sim/face.gd` (their doc line on equipment
+reaching every ally kept, the crack gone), the skirmish screen's hold comment (theirs) and the
+cooldown's codex ("turns" against "rounds"). Delete the landed branches
+(`ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and the
+playtest branch) from the desk machine or GitHub, since a cloud session's push to delete one is
+refused.
 
 ## The design sessions
 
@@ -94,15 +90,16 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   while the enemy has no tiers: section 12's question. Its elite is a stand-in until the elites
   land (the to-do); from tier two a domain's final may be a battle's boss (Ryan, 25 October),
   and every boss fight brings the tier's escort.
-- Bosses scale to the battle's tier (Ryan, 25 October; the bible's section 9 row): a boss
-  unit brings two more of its escort at tier two and four at tier three, in the campaign and
-  the quick campaign; its numbers wait on section 12's question against section 3's
-  escalation row ("never an old one with a bigger number").
+- Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
+  3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
+  the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
+  unit's `tier` in content, one by default: no unit has another yet), in the campaign and the
+  quick campaign; the rank and file never scale. Placeholders throughout.
 - Injuries (25 October, on the branch): one damage state, Ryan's "Cracked is gone". An injury
   destroys the entry the die lands on, at a quarter of the maximum hull, the threshold set by
   what it asks of the player (half was tried and retired within the day: a machine could lose
   but one piece); a wreck loses only what was destroyed. The Honey Badger's "never destroyed"
-  now holds off every injury until its identity session lands (section 12). It settles the
+  now holds off every injury until its identity session lands (Ryan: later; the to-do). It settles the
   mechanics audit's 34 and the crack half of its 5 (its 7a's question to Ryan). Jenny's
   "component damaged" and "hardpoint hit" are folded into the destroyed pool (his call).
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
@@ -192,13 +189,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.294, and so is the live (25 October,
-  the page's version 311, from `claude/quick-campaign-mode-pafhiv`: the injury at a quarter, the
-  bosses' escort by tier, the quick campaign's finals, on v0.292, which merged
-  the quick campaign's rows onto the live v0.291, which carried `ccr-170f6d81-465jnr`'s v0.290 and
-  the mechanics audit's v0.291, so this file holds their rows and tables ahead of their code, which
-  lands with them: `tools/pages/bible_tables.py` run here before they land writes this branch's older
-  tables back). The
+  `docs/design-bible.html` after every change. This file is v0.298, and so is the live (26 October,
+  the page's version 315, from `claude/quick-campaign-mode-pafhiv`: the bosses at their tier,
+  section 3's exception and the Badger's question answered, merged three-way onto the live
+  v0.297, which carried the mechanics audit's v0.296 and v0.297 and, through it, the playtest
+  branch's and `ccr-170f6d81-465jnr`'s rows), so this file holds their rows and tables ahead of
+  their code, which lands with them: `tools/pages/bible_tables.py` run here before they land
+  writes this branch's older tables back. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -206,11 +203,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 112 (25 October, from
-  `claude/quick-campaign-mode-pafhiv`: one damage state's content, the Badger's passive line and
-  the vocabulary's injury terms at a quarter, merged three-way onto the mechanics audit's files
-  of version 110; `edits` empty). The live content files are that merge, so neither branch's
-  files match them until the two land. Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 116 (26 October, from
+  `claude/quick-campaign-mode-pafhiv`: the unit's tier in the foes' `_about`, the Badger's
+  passive line and the vocabulary's injury terms at a quarter, merged three-way onto the
+  mechanics audit's files, which carry the playtest branch's, the `_about` by hand; `edits`
+  empty). The live content files are that merge, so no branch's files match them until the
+  branches land. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

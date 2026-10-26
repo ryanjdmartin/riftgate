@@ -1451,9 +1451,21 @@ goes with the state (Ryan: being wrecked and out for a battle is the price). Bib
 damage-state row.
 
 The quick campaign's greedy runs rerun on the one state at a quarter, with the bosses' escort
-by tier and the finals drawn as bosses from tier two (`docs/quick_run.md`, 40 runs from seed 1,
-94 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states, the first
+by tier and the finals drawn as bosses from tier two (`docs/quick_run.md` at `a34f2cc`, 40 runs
+from seed 1, 94 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states, the first
 runs above), none won (1): the same cliff, inside 40 runs' noise. A squad loses 0.15 to 1.75
 pieces for good a battle through tier one (0.12 to 0.50 on the two states) and 0.5 to 1.3
 after; the finals turned up ten times (eight at tier two, all won, the squad keeping 80% of its
 hull; two at tier three, one won).
+
+## 26 October, the bosses at their tier
+
+**The quick campaign with a boss, a final's hero and the finale's line at the battle's tier**
+(the bible's section 9 boss row; the placeholders: HP ×1.25 and ×1.5, attack +1 and +2, an escort
+of two and four of the domain's units of the tier): `tools/quick_run.gd` at 40 runs from seed 1,
+greedy, 160 s in four parts (`docs/quick_run.md`), against the same runs before (`a34f2cc`). A
+direction. The first battle's cliff is untouched (36 runs of 40 lost there, its boss at tier one
+as before). The finals at tier two are still all won (10 of 10) but cost the squad more, 56% of
+its hull standing after against 80%; tier three's bosses fall 60% of the time (67%), its finals
+one of two as before, and battle 9 is won by two of the four runs reaching it (all three
+before). None of 40 reached the finale, as before.

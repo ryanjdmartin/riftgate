@@ -515,8 +515,18 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			var b := make_foe(str(cid))
 			b.pack_id = sq.id
 			b.commands = true
+			scale_boss(b, sq.boss_tier)
 			out.append(b)
-			out.append_array(parts_for(b))
+			for part in parts_for(b):
+				scale_boss(part, sq.boss_tier)
+				out.append(part)
+		if sq.foe_id.is_empty():
+			# Its escort unnamed, the tier's own units of its domain (escort_units).
+			for f in escort_units(sq.faction, sq.boss_tier, sq.strength):
+				f.pack_id = sq.id
+				f.escorts = true
+				out.append(f)
+			return out
 	var fid := sq.foe_id
 	if fid.is_empty():
 		var spawn: Array = fac.get("spawn", [])
@@ -529,6 +539,72 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			f.escorts = sq.is_boss
 			out.append(f)
 			out.append_array(parts_for(f))
+	return out
+
+
+## A boss unit at its battle's tier, 0 to 2 (Ryan, 25 and 26 October: bosses scale to the tier,
+## "scaling stats and upgrading the escort", while the rank and file are never inflated, "a fine
+## compromise for the sake of run diversity"): its commanders' HP multiplied and their attack
+## raised, a domain's boss, a final's hero and the finale's line alike, and its escort grown by
+## the tier's own units. Placeholders.
+const BOSS_TIERS := [
+	{"hp": 1.0, "attack": 0, "escort": 0},
+	{"hp": 1.25, "attack": 1, "escort": 2},
+	{"hp": 1.5, "attack": 2, "escort": 4},
+]
+
+
+static func boss_tier(t: int) -> Dictionary:
+	return BOSS_TIERS[clampi(t, 0, BOSS_TIERS.size() - 1)]
+
+
+## The escort a boss unit brings at a tier beyond its own.
+static func escort_at(t: int) -> int:
+	return int(boss_tier(t)["escort"])
+
+
+## A commander at its battle's tier: its HP and attack as the tier gives them, set as it is made,
+## so the plaque, the codex and a save read them as its own.
+func scale_boss(f: Foe, t: int) -> void:
+	var s := boss_tier(t)
+	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"])))
+	f.hp = f.hp_max
+	f.attack += int(s["attack"])
+
+
+## A unit's tier (content `tier`, 1 to 3, one by default): what a boss's escort is drawn from.
+func foe_tier(foe_id: String) -> int:
+	return clampi(int(foes.get(foe_id, {}).get("tier", 1)), 1, 3)
+
+
+## A boss's escort from its domain's units of the tier (Ryan, 26 October: "Make sure that boss
+## escorts are composed of units from the tier. I expect they will be hand tailored at some point
+## though"): the domain's spawn-list foes of the battle's tier, else of the highest tier under it
+## that has any, in spawn order and round robin, n of them; never a massive foe, the columns
+## being few. Empty when the domain has none.
+func escort_units(faction_id: String, t: int, n: int) -> Array[Foe]:
+	var out: Array[Foe] = []
+	var by_tier := {}
+	for e in factions.get(faction_id, {}).get("spawn", []):
+		var fid := str(e.get("foe", ""))
+		if not foes.has(fid) or int(foes[fid].get("size", 1)) > 1 or is_boss(fid):
+			continue
+		var ft := foe_tier(fid)
+		if ft > t + 1:
+			continue
+		var list: Array = by_tier.get(ft, [])
+		if not list.has(fid):
+			list.append(fid)
+		by_tier[ft] = list
+	var units: Array = []
+	for ft in range(t + 1, 0, -1):
+		if by_tier.has(ft):
+			units = by_tier[ft]
+			break
+	if units.is_empty():
+		return out
+	for i in range(n):
+		out.append(make_foe(str(units[i % units.size()])))
 	return out
 
 
@@ -1597,6 +1673,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: size must be 1 or 2 (massive)" % where)
 		if sz == 2 and str(f.get("rank", "")) == "back":
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
+		if f.has("tier") and (int(f["tier"]) < 1 or int(f["tier"]) > 3):
+			errs.append("%s: tier must be 1 to 3" % where)
 		if f.has("injures"):
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
 		if f.has("stun_resist"):

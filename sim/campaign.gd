@@ -316,11 +316,10 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		b.lineup = finale_line()
 	elif bool(c.rift.get("final", false)) and db.foes.has(str(party.get(lead, ""))):
 		# A domain's final: its dealt hero commands the rift, in its rank, the domain's wildlife
-		# in the other columns (its first pack's foe), and the final counts when the hero falls.
+		# in the other columns (the tier's own units, unnamed here), and the final counts when
+		# the hero falls.
 		b.lineup = [str(party[lead])]
-		var spawn := db.spawn_table(lead)
-		if not spawn.is_empty():
-			b.escort = [str(spawn[0][0]), b.columns - 1]
+		b.escort = ["", b.columns - 1]
 	else:
 		# A boss its domain has not ended on this run (the bible's section 9: three a domain
 		# before its hero, drawn without repeats).

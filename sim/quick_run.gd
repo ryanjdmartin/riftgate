@@ -349,35 +349,36 @@ func _boss_encounter(t: int) -> Dictionary:
 
 ## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
 ## an elite's hero, the boss or a final's hero before the domain's formation; the finale's line,
-## as the campaign fields it. A boss, a final and the finale bring the tier's escort after them,
-## as the campaign's boss unit does (Battle.BOSS_ESCORT).
+## as the campaign fields it. A boss, a final's hero and the finale's line stand at the battle's
+## tier and bring its escort after them, as the campaign's boss unit does (ContentDB.BOSS_TIERS);
+## an elite, a stand-in, does not.
 func encounter_foes(enc: Dictionary) -> Array:
 	var out: Array = []
 	var kind := str(enc.get("kind", ""))
+	var boss := kind == "boss" or kind == "final" or kind == "finale"
 	if kind == "finale":
 		for fid in (enc["line"] if enc.has("line") else finale_line()):
 			if db.foes.has(str(fid)):
-				out.append(db.make_foe(str(fid)))
+				var f := db.make_foe(str(fid))
+				db.scale_boss(f, tier())
+				out.append(f)
 	else:
 		var lead_foe := str(enc.get("foe", ""))
 		if db.foes.has(lead_foe):
-			out.append(db.make_foe(lead_foe))
+			var f := db.make_foe(lead_foe)
+			if boss:
+				db.scale_boss(f, tier())
+			out.append(f)
 		out.append_array(formation_foes(str(enc.get("domain", lead))))
-	if kind == "boss" or kind == "final" or kind == "finale":
+	if boss:
 		out.append_array(escort_foes(str(enc.get("domain", lead))))
 	return out
 
 
-## A boss's escort at the battle's tier, beyond its formation: Battle.escort_at(tier) of its
-## domain's first pack's foe, as the campaign's boss unit brings it.
+## A boss's escort at the battle's tier, beyond its formation: the domain's own units of the
+## tier, ContentDB.escort_at(tier) of them, as the campaign's boss unit brings it.
 func escort_foes(domain: String) -> Array:
-	var out: Array = []
-	var spawn := db.spawn_table(domain)
-	if spawn.is_empty() or not db.foes.has(str(spawn[0][0])):
-		return out
-	for i in range(Battle.escort_at(tier())):
-		out.append(db.make_foe(str(spawn[0][0])))
-	return out
+	return Array(db.escort_units(domain, tier(), ContentDB.escort_at(tier())))
 
 
 ## A domain's formation: its whole spawn list in one fight, at the tier's density.

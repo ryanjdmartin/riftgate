@@ -123,7 +123,7 @@ func test_twelve_battles_then_the_finale_on_the_partys_line() -> void:
 	var line: Array = last["line"]
 	assert_eq(line.size(), r.party.size(), "a column a domain, drawn as the finale is rolled")
 	var foes: Array = r.encounter_foes(last)
-	assert_eq(foes.size(), line.size() + Battle.escort_at(r.tier()), "the line, then the tier's escort")
+	assert_eq(foes.size(), line.size() + ContentDB.escort_at(r.tier()), "the line, then the tier's escort")
 	for i in range(line.size()):
 		assert_eq(foes[i].size, 2, "every one promoted, massive")
 
@@ -148,7 +148,7 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(str(enc["foe"]), str(r.party[r.lead]), "the lead's dealt hero")
 	var foes: Array = r.encounter_foes(enc)
 	assert_true(foes[0].hero and foes[0].size == 1, "the hero leads, human-sized")
-	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size() + Battle.escort_at(r.tier()), "its formation and the tier's escort beside it")
+	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size() + ContentDB.escort_at(r.tier()), "its formation and the tier's escort beside it")
 	# Won, the hero leaves the finale's line for boss-tier wildlife of a standing domain.
 	r.encounters[r.encounters.size() - 1] = enc
 	r.start_battle()
@@ -177,9 +177,16 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 	for t in range(QuickRun.TOP_TIER + 1):
 		_at_battle(r, 1 + t * QuickRun.TIER_EVERY)
 		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
-		var n: int = r.encounter_foes(boss).size() - 1 - r.formation_foes(r.lead).size()
-		assert_eq(n, Battle.escort_at(t), "tier %d's escort beside the formation" % (t + 1))
+		var foes: Array = r.encounter_foes(boss)
+		var n: int = foes.size() - 1 - r.formation_foes(r.lead).size()
+		assert_eq(n, ContentDB.escort_at(t), "tier %d's escort beside the formation" % (t + 1))
 		counts.append(n)
+		var content: Dictionary = r.db.foes[str(boss["foe"])]
+		assert_eq(foes[0].hp_max, roundi(int(content["hp"]) * float(ContentDB.boss_tier(t)["hp"])), "the boss's HP at the tier")
+		assert_eq(foes[0].attack, int(content["attack"]) + int(ContentDB.boss_tier(t)["attack"]), "its attack at the tier")
+		for e in r.encounters:
+			if e["kind"] == "elite" and r.db.foes.has(str(e.get("foe", ""))):
+				assert_eq(r.encounter_foes(e)[0].hp_max, int(r.db.foes[str(e["foe"])]["hp"]), "an elite's stand-in stays as it is")
 	assert_true(counts[0] < counts[2], "more at tier three than at tier one")
 	for e in r.encounters:
 		if e["kind"] == "formation" or e["kind"] == "elite":

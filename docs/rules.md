@@ -636,12 +636,15 @@ a stat.
   undo takes the riders back, until one of them has moved on its own.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
   be attacked from the first turn; its death wins the battle. The unit at the rift commands
-  it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
-  one for each other column), or the finale's line; it stands while one of its commanders
-  does and holds the rift whatever its escort, and a withdrawal leaves it standing with the
-  commanders and the escort that survived, whole. It brings more escort by the battle's tier:
-  none more at tier one, two at tier two, four at tier three (its escort's foe, else its
-  domain's first pack's); its commanders' numbers do not scale yet.
+  it: the lead domain's boss, a final's hero with its escort (one for each other column), or
+  the finale's line; it stands while one of its commanders does and holds the rift whatever
+  its escort, and a withdrawal leaves it standing with the commanders and the escort that
+  survived, whole. It stands at the battle's tier: its commanders' HP ×1.25 at tier two and
+  ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
+  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
+  of the tier (a unit's tier is content's, one by default), else of the highest tier under it,
+  round robin in spawn order and never massive; a named escort is kept. The rank and file never
+  scale; the spawn lists do not read a unit's tier yet.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
@@ -714,12 +717,12 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
-  end. Then the boss with its formation and the tier's escort, as the campaign's boss unit
-  brings it: one of the lead's bosses its battles have not ended on this run, or from tier two
-  its final, its dealt hero leading the lead's formation, drawn as one more boss while that hero
-  stands; once all are beaten, any of its bosses again. The finale's last fight is the party's
-  line with the tier's escort, every domain's dealt hero promoted, a domain whose final was won
-  leaving its column to a standing domain's boss, as in the campaign.
+  end. Then the boss with its formation and the tier's escort, at the tier's numbers, as the
+  campaign's boss unit stands: one of the lead's bosses its battles have not ended on this run,
+  or from tier two its final, its dealt hero leading the lead's formation, drawn as one more
+  boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
+  fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
+  whose final was won leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
   turns. **An elite** is the lead's other bench hero, the one the party was not dealt, leading
   the lead's formation (a stand-in until the elites land).

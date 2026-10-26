@@ -45,7 +45,7 @@ bible's section 12; the order of work is `docs/status.md`. Never the same item i
 
 The design sessions below run from the briefs in `docs/briefs/`, one session each, proposed in chat first; the briefs' README gives the shared context and what each waits on, and the order of work is the status's.
 
-- [ ] The Honey Badger's identity, the hopper as plate and shot (`minerva_honey_badger.md`), its numbers open
+- [ ] The Honey Badger's identity, the hopper as plate and shot (`minerva_honey_badger.md`), its numbers open; "never destroyed" leaves its passive for the module with it, and holds off every injury until then (Ryan, 26 October: "I'll do the badger later")
 - [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), left open for now (Ryan, 20 October)
 - [ ] The siege battery, Ryan's H-tank (`minerva_siege_battery.md`), parked on his charge brief of 20 October (a charge a spend up to a cap, the turrets spending it for power in steps, the cooldown perhaps growing with the spend) until he picks it up; the shells went to Wainwright & Sutler
 - [ ] The battlecruiser, Minerva's capital ship (`minerva_battlecruiser.md`), never with the Carrier's session (Ryan, 20 October: not related)
