@@ -170,11 +170,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.297, and so is the live (26 October,
-  the page's version 314, from `ccr-170f6d81-465jnr`: the hold as text, the keywords list, the
-  cooldown's turns and the area question in section 12, merged onto the live v0.296, which
-  carries the other branches' rows, so this file holds their rows and tables too and the tables
-  script waits until they land, as run here it writes this branch's older tables). The
+  `docs/design-bible.html` after every change. This file is v0.305, and so is the live (26 October,
+  the page's version 322, from `ccr-170f6d81-465jnr`: area at half, the holds' colours, the codex
+  and the unit holds, merged onto the live v0.304, which carries the other branches' rows, so
+  this file holds their rows and tables too and the tables script waits until they land, as run
+  here it writes this branch's older tables). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -182,13 +182,13 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 115 (26 October, from
+  before it is replaced and `edits` read first. At the page's version 119 (26 October, from
   `ccr-170f6d81-465jnr`: the Skua fielded and the vocabulary's Spray at 106, the Ambush's damaging
   hits and Vitriol's line at 107, a damaging weapon's procs in Shocked, Cryoed, Cryo, Vitriol and
-  the Cryo Flinger at 108, Flak's line at 109; the vocabulary at 115 the other branches' of 114
-  with this branch's cooldown wording and its hold's hints taken out again, from a scratch
-  merge, since the branches' content differs until they land; the live files identical to the last publish's and `edits` empty
-  before each). Its database (Ryan's saved edits,
+  the Cryo Flinger at 108, Flak's line at 109; the vocabulary at 119 the other branches' of 118
+  with this branch's Spread and Penetrate at half, from a scratch merge, since the branches'
+  content differs until they land; the live files identical to the last publish's and `edits`
+  empty before each). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
