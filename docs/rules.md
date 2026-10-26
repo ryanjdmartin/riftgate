@@ -183,7 +183,9 @@ defeat when every machine is wrecked. There is no round limit.
   leave it, a heal hatched as a machine's gain is, and a foe the round kills wears the
   destroyed chip, its intent kept. Every status the round will land, on a machine or a foe,
   wears a preview chip: the status's own glyph and colour, pulsing in opacity on a dashed
-  edge, with the stacks it gains. A Lure in hand shows its turn before it is spent: the foes it
+  edge, with the stacks it gains, beside the destroyed chip when one is its cause; every
+  warning (the overheat, a Volatile bite, an injury, the destroyed chip itself) pulses the
+  same way, a prediction like any other. A Lure in hand shows its turn before it is spent: the foes it
   would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
   the round as the lure would leave it.
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
@@ -225,8 +227,9 @@ defeat when every machine is wrecked. There is no round limit.
   and left standing is Exposed through the next round; a second Expose refreshes it, never
   adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
-  conditions allow, keeping its pick while the machine stands and is not Phased (a new one
-  otherwise). Disrupt resolves before Lure.
+  conditions allow, keeping its pick while the machine stands and is not Phased; a new one
+  otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
+  machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the

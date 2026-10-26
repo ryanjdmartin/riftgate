@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 673 tests, 64,876 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 673 tests, 64,880 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes, the rally at once, the set finals
   and the round preview),
   about a minute in a cloud session.
@@ -203,9 +203,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.310, and so is the live (26 October,
-  the page's version 327, from `claude/affectionate-goldberg-8e3mkh`: the pick smart as it is
-  made and never after, a Disrupt keeping a standing pick, the chips beside the skull; before it
+  `docs/design-bible.html` after every change. This file is v0.312, and so is the live (26 October,
+  the page's version 329, from `claude/affectionate-goldberg-8e3mkh`: a Disrupt from a move aimed
+  at no one picking afresh and every warning chip pulsing, merged onto another session's republish
+  of 17:36, which reworked the status and keyword tables and the Burn, Stun, heat and die-entry
+  rows; before it the pick smart as it is made and never after, a Disrupt keeping a standing
+  pick, the chips beside the skull; before it
   the settled re-picks and the incoming chips, merged onto another session's republish of 16:47, which retired the
   shield-break warning and rewrote the hold, colour and codex rows; before it the round preview, merged
   onto another session's republish of 15:34, which built area at half and rewrote the hold, drag

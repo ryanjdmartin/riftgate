@@ -6,7 +6,8 @@ extends SceneTree
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
-## roll again mid-burst), heat (Burning and Scorched on the first machine).
+## roll again mid-burst), heat (Burning and Scorched on the first machine), repick (a foe whose
+## machine falls before it acts, its arrow dashed to the machine it will strike).
 
 var _frames := 0
 var _vp: SubViewport
@@ -161,6 +162,21 @@ func _apply_pose() -> void:
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
 			s._rage_debug()
+		"repick":
+			# The round preview's settled re-pick (26 October): the first machine falls to the first
+			# front foe's blow, so the second, aimed at it too, strikes the pick it will make; every
+			# arrow on, the second foe's dashed to that machine, the first's solid.
+			s.sk.mechs[0].unit.shield = 0
+			s.sk.mechs[0].unit.hull = 1
+			var foes := s.sk.field_foes()
+			for i in range(mini(2, foes.size())):
+				for a in foes[i].actions:
+					if Foe.is_attack_action(a):
+						foes[i].action = a   # a blow, not a howl
+						break
+				foes[i].target = s.sk.mechs[0]
+			s._toggle_all_arrows(true)
+			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
 			# Primed beside them, the one other flame a machine wears.

@@ -3419,15 +3419,18 @@ func _disrupt(foes: Array) -> void:
 			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
 			continue
 		var was := str(foe.action.get("name", ""))
+		var aimed: bool = not foe.acts_on_nobody() and not foe.reaches_every_machine()   # its pick was its intent, shown
 		foe.pending = {}   # a gathered move is broken off
 		foe.charge = 0
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
 		_begin_countdown(foe)
 		# Its pick holds (Ryan, 26 October: the intent moves on a Disrupt "only if the disrupt would
-		# result in an invalid target"): a new one only when the machine is gone or Phased.
+		# result in an invalid target"): a new one when the machine is gone or Phased, or when the
+		# move it leaves aimed at no one machine (a brace, a blow at every machine), so the pick it
+		# carried was never an intent the player saw.
 		var t := foe.target as MechState
-		if t == null or not t.alive() or is_phased(t):
+		if t == null or not t.alive() or is_phased(t) or not aimed:
 			foe.target = _pick_mech_target(foe, [], pick_rng)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 

@@ -2956,6 +2956,23 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	Effects.grant_for_rounds(phm, Effects.STATUS["phased"], "test", sp.round)
 	assert_true(sp.assign(0, hp3), "disrupted")
 	assert_eq(hp3.target, sp.mechs[0], "its machine Phased, it picks the one it may")
+	# A move aimed at no one machine (a brace) turned into a blow picks afresh: the pick it carried
+	# was never an intent the player saw (Ryan, 26 October: a buff to an attack "should still retarget").
+	var sb := Skirmish.new(1, 1)
+	sb.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
+	sb.add_mech(_mech("B", Die.single(Face.blank()), 0, 50))
+	var hb := _ghoul(500, 20)
+	hb.actions = [Foe.basic_action(), _special("defend", "brace", {"value": 2})]
+	hb.actions[1]["weight"] = 1000
+	hb.action = hb.actions[1]
+	sb.add_foes([hb])
+	sb.begin()
+	sb.start_round()
+	assert_true(hb.acts_on_nobody(), "the brace, at that weight")
+	var drawn := sb.pick_rng.state
+	assert_true(sb.assign(0, hb), "disrupted")
+	assert_true(hb.attacks(), "into its blow")
+	assert_true(sb.pick_rng.state != drawn and hb.target != null, "which picks afresh from the pick stream")
 	# Nothing else open: a foe with one move, or whose other move's condition fails, is not moved.
 	var s2 := Skirmish.new(1, 1)
 	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))

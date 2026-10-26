@@ -1223,7 +1223,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# since its line still matters to what reads it.
 	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
 	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
-		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.ENEMY])
+		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.ENEMY, "preview"])
 	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])
@@ -1280,6 +1280,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
 	var shows_blow := foe.alive() and not foe.is_suppressed() and foe.target != null and (foe.attacks() or foe.gathering())
+	var rally_chip := shows_blow and coming > 0
 	if shows_blow and (coming > 0 or PREVIEW_DEBUG):
 		var who: Array[String] = []
 		for r in sk.rallies_on(foe):
@@ -1310,9 +1311,10 @@ func _foe_rows(foe: Foe) -> Array:
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
-	# Kindled's is the rally chip above.
+	# A Kindled lifting this round's blow is the rally chip above; one landing after its move
+	# (for the next round's) is a chip like any other.
 	if foe.alive():
-		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"], _foe_glyph, _foe_chip_colour))
+		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"] if rally_chip else [], _foe_glyph, _foe_chip_colour))
 	return rows
 
 
@@ -1480,17 +1482,19 @@ func _mech_rows(i: int) -> Array:
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
+		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:
+		# the skull "is just another predicted chip, like any other. It just symbolizes death").
 		if int(fc["overheat"]) > 0:
 			# The heat burns as the turn ends, so there is still time to vent.
-			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT])
+			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT, "preview"])
 		if int(fc.get("volatile", 0)) > 0:
-			rows.append(["volatile", "-%d" % int(fc["volatile"]), "Volatile: spending this component costs hull -%d, past shield and armour" % int(fc["volatile"]), Palette.ENEMY])
+			rows.append(["volatile", "-%d" % int(fc["volatile"]), "Volatile: spending this component costs hull -%d, past shield and armour" % int(fc["volatile"]), Palette.ENEMY, "preview"])
 		if bool(fc["destroyed"]):
-			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
+			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY, "preview"])
 		elif bool(fc["component_risk"]):
-			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY])
+			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY, "preview"])
 		if bool(fc["breaks_shield"]):
-			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY])
+			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY, "preview"])
 		# Every status the round will land on it (Ryan, 26 October: "All incoming chips should
 		# appear as pulsing opacity versions"), beside the skull when the round wrecks it (one may be
 		# the cause: a Burning it lit on itself), the counts and stores that are no chip left out.
