@@ -2558,6 +2558,14 @@ func _end_turn_now() -> void:
 			sk.assign(i, null)
 	var before := _before_enemy_turn()
 	var field_before: Array[Foe] = sk.field_foes()
+	# The foes ready to get back up, as they look now: one that falls in the enemy's turn (to its
+	# Burning, to a mine as reinforcements step in) and stands again is shown dying and rising
+	# once the turn has played (26 October), as one killed by a die is.
+	var readied := {}
+	for foe in field_before:
+		var rv := _foe_view_for(foe)
+		if Effects.has(foe, "risen") and rv != null:
+			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h]
 	var outcome := sk.end_round()
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
@@ -2570,6 +2578,16 @@ func _end_turn_now() -> void:
 			return
 		_refresh()
 		_acquire_intents()
+		# A foe that got back up in the enemy's turn falls on screen, then stands again.
+		var rose := 0
+		for foe in readied.keys():
+			if Effects.has(foe, "risen") or not sk.field_foes().has(foe):
+				continue
+			var w: Array = readied[foe]
+			_animate_death(w[0], w[1], w[2], w[3], 0.05 + 0.2 * rose)
+			Sound.play_after(0.05 + 0.2 * rose, "kill", -4.0)
+			_animate_arrival(_foe_view_for(foe), 0.5 + 0.2 * rose)
+			rose += 1
 		# Then the reinforcements step in.
 		var arrived := 0
 		for foe in sk.field_foes():
@@ -2579,8 +2597,8 @@ func _end_turn_now() -> void:
 				arrived += 1)
 
 
-## A foe that joins the pool, whatever brought it there (a split with no room, a summon, a foe
-## getting back up), is shown going in (Ryan, 25 October: "we need to make it clear when
+## A foe that joins the pool, whatever brought it there (a split with no room, a summon with no
+## empty slot), is shown going in (Ryan, 25 October: "we need to make it clear when
 ## something joins the pool"): its picture lifts off where its pack stands (or appears at the
 ## formation's edge), shrinks into its rank's plaque in the gutter, and the count goes up there
 ## with a burst as it lands. The screen remembers who was waiting at its last look.
