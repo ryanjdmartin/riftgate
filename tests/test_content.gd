@@ -1085,7 +1085,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	assert_true(bad_plate, "a lure on a shield is refused")
 	var built := db.build_face(gun["face"])
 	assert_true(built.has(Face.Keyword.LURE) and built.has(Face.Keyword.DISRUPT), "and the weapon builds with both")
-	# The shipped lure: an entry of no damage that lures with a spread, in the Badger's stock.
+	# The shipped lure: a debuff that lures with a spread, in the Badger's stock.
 	var klaxon := db.build_face(db.components["proximity_klaxon"]["face"])
 	assert_true(klaxon.is_attack() and klaxon.power == 0 and klaxon.has(Face.Keyword.LURE) and klaxon.has(Face.Keyword.CLEAVE), "the klaxon lures and does nothing else")
 
@@ -1874,7 +1874,7 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 	side["passive"]["effects"] = [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "middle"}]
 	db.chassis["test_rank_bad"] = side
 	var errs := db.validate()
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_drum_bad") and e.contains("rewrite_weapon fires every weapon as one shot")), "a rewrite with no reach is refused")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_drum_bad") and e.contains("rewrite_weapon fires every weapon and debuff as one shot")), "a rewrite with no reach is refused")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")
 
 

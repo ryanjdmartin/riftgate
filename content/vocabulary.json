@@ -2,7 +2,7 @@
  "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
  "categories": [
   "resource",
-  "equipment",
+  "kit",
   "component_kind",
   "component_property",
   "reach",
@@ -53,7 +53,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons run hotter.",
+   "codex": "Weapons and debuffs may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons and debuffs run hotter.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -90,13 +90,13 @@
    }
   },
   {
-   "id": "attack",
+   "id": "weapon",
    "category": "component_kind",
-   "name": "Attack component",
-   "codex": "Spend on a foe within reach to deal its power in damage, then apply its keywords and heat.",
+   "name": "Weapon",
+   "codex": "A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. A passive may make another kind a weapon on its machine too (the Whip Scorpion's vents): its hold reads both, Vent, Weapon.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "The engine's kind is attack for a weapon and a debuff alike: a debuff is an attack of no damage (Face.is_debuff), so code asks is_weapon() for this word and is_attack() for both."
    }
   },
   {
@@ -114,6 +114,16 @@
    "category": "component_kind",
    "name": "Vent component",
    "codex": "Spend on self or an ally to remove its power in heat.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "equipment",
+   "category": "component_kind",
+   "name": "Equipment",
+   "codex": "A buff or a debuff: a component that deals no damage. A buff is spent on a machine (itself, an ally, or either, as it says) and grants it a status; a debuff is spent on a foe within its reach, its keywords its whole effect. Shields and vents are kinds of their own.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -193,7 +203,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a damaging weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack, whatever it dealt.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -203,7 +213,7 @@
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
-   "codex": "Keyword with a number. On the player's weapons, Burn 3 means each foe hit gains three stacks of Burning, whatever the blow dealt. On a foe's attack the same: each blow that lands leaves that many stacks of Burning on the machine it hit.",
+   "codex": "Keyword with a number. On a player's weapon or equipment, Burn 3 means each foe hit gains three stacks of Burning. On a foe's attack the same: each blow that lands leaves that many stacks of Burning on the machine it hit.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the face beside the keyword (burn), and the validator asks for it."
@@ -213,7 +223,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
+   "codex": "Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -283,7 +293,7 @@
    "id": "flak",
    "category": "keyword",
    "name": "Flak",
-   "codex": "Flak N: each foe hit gains N stacks of Flak, whatever the blow dealt.",
+   "codex": "Flak N: each foe hit gains N stacks of Flak.",
    "status": "implemented",
    "design": {
     "holes": "The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does."
@@ -342,30 +352,10 @@
    }
   },
   {
-   "id": "weapon",
-   "category": "component_kind",
-   "name": "Weapon",
-   "codex": "A component spent on a foe within its reach. It need not deal damage.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
-   "id": "equipment",
-   "category": "component_kind",
-   "name": "Equipment",
-   "codex": "A component spent on a machine: itself, an ally, or either, as the component says. Shields and vents are equipment.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed.",
+   "codex": "Whom a shield, a vent or a buff may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -471,7 +461,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow of a damaging weapon this foe takes deals double damage, then the status clears, whatever the blow dealt; a debuff (a lure, a probe) leaves it standing. Never stacks. Laid by weapons that shock, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
+   "codex": "Foe status. The next blow of a weapon this foe takes deals double damage, then the status clears; equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -479,7 +469,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Never",
-     "lasts": "Until the next team blow of a damaging weapon"
+     "lasts": "Until the next team blow of a weapon"
     }
    }
   },
@@ -535,7 +525,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a damaging weapon opens it; a shield on an ally, a buff and a weapon of no damage leave it as it is. An ally's vent still cools it.",
+   "codex": "Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is. An ally's vent still cools it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -543,7 +533,7 @@
      "kind": "buff",
      "on": "machine",
      "stacks": "Renews: one seal however many shields",
-     "lasts": "Until a vent or a damaging weapon opens it, or the skirmish ends"
+     "lasts": "Until a vent or a weapon opens it, or the skirmish ends"
     }
    }
   },
@@ -551,15 +541,15 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "Foe status, the mark a Cryo weapon leaves. Any machine's hit on it with a damaging weapon spends every stack and cools the hitter 2 a stack, whatever the hit dealt; a debuff spends none. It never fades on its own.",
+   "codex": "Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own.",
    "status": "implemented",
    "design": {
     "holes": "Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: the Cryo's number per foe reached; a damaging weapon's hit spends every stack",
-     "lasts": "Until a damaging weapon's hit spends it, or the skirmish ends"
+     "stacks": "Yes: the Cryo's number per foe reached; a weapon's hit spends every stack",
+     "lasts": "Until a weapon's hit spends it, or the skirmish ends"
     }
    }
   },
@@ -567,7 +557,7 @@
    "id": "braced",
    "category": "status",
    "name": "Armoured",
-   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (buff equipment, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action.",
+   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (a buff, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action.",
    "status": "implemented",
    "design": {
     "holes": "The engine id stays braced.",
@@ -583,7 +573,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "Machine status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says.",
+   "codex": "Machine status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by a buff for the rounds it says.",
    "status": "implemented",
    "design": {
     "holes": "A placeholder name.",
@@ -686,7 +676,7 @@
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: a stack per hit with a damaging weapon on a foe showing no intent on the spider; a tick a stack",
+     "stacks": "Yes: a stack per weapon hit on a foe showing no intent on the spider; a tick a stack",
      "lasts": "A stack fades at each of its actions"
     }
    }
@@ -698,7 +688,7 @@
    "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, Numbed resisting each for itself. Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
    "status": "implemented",
    "design": {
-    "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as a weapon's Suppressed does.",
+    "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does.",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -711,15 +701,15 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Machine status, the Cassowary's. Its next weapon spend deals 2 more a stack, then every stack is spent. Carried between turns until a weapon spends it.",
+   "codex": "Machine status, the Cassowary's. Its next spend at a foe deals 2 more a stack, then every stack is spent: a weapon's blow takes them, a debuff spends them for nothing. Carried between turns until then.",
    "status": "implemented",
    "design": {
-    "holes": "Spent whole by the next weapon spend, damage or none.",
+    "holes": "Spent whole by the next spend at a foe, a weapon's or a debuff's.",
     "table": {
      "kind": "buff",
      "on": "machine",
-     "stacks": "Yes: its bonus a stack, every stack spent by the next weapon spend",
-     "lasts": "Until its next weapon spend, across turns"
+     "stacks": "Yes: its bonus a stack, every stack spent by the next spend at a foe",
+     "lasts": "Until its next spend at a foe, across turns"
     }
    }
   },
@@ -743,14 +733,14 @@
    "id": "shots",
    "category": "resource",
    "name": "Shots",
-   "codex": "Machine count, the Cassowary's: its weapon spends this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Equipment and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
+   "codex": "Machine count, the Cassowary's: its spends at foes this fight, a weapon's or a debuff's, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
    "status": "implemented",
    "design": {
     "holes": "Kept only for a machine whose rule counts (an nth_shot condition).",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: one a weapon spend",
+     "stacks": "Yes: one a spend at a foe",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -791,14 +781,14 @@
    "id": "flakked",
    "category": "status",
    "name": "Flak",
-   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a damaging weapon it takes deals a point more a stack, a blow of 0 included. At the end of each round the stacks halve, rounded down.",
+   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, to a damaging weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow of a damaging weapon it takes, a stack",
+     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow of a weapon it takes, a stack",
      "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }
@@ -857,7 +847,7 @@
    "id": "mine",
    "category": "formation",
    "name": "Mine",
-   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
+   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and debuffs may be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
    "status": "implemented",
    "design": {
     "holes": "The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once."
@@ -1307,7 +1297,7 @@
    "id": "pull",
    "category": "component_property",
    "name": "Pull",
-   "codex": "A rule printed on a weapon (the Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
+   "codex": "A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
    "status": "implemented",
    "design": {
     "holes": "Never Rapid, so a pull costs the turn and the laying is still chosen."
@@ -1317,7 +1307,7 @@
    "id": "drone",
    "category": "component_property",
    "name": "Drone",
-   "codex": "A rule printed on a weapon (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
+   "codex": "A rule printed on a component (the Lammergeier's Syrinx Drone, a debuff): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
    "status": "implemented",
    "design": {
     "holes": "The condition is read before the drone lands, so its own Exposed never makes it Rapid."
@@ -1335,9 +1325,9 @@
   },
   {
    "id": "component",
-   "category": "equipment",
+   "category": "kit",
    "name": "Component",
-   "codex": "A piece of equipment on a machine, and one entry on its die. There is no generic equipment: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the machine can do.",
+   "codex": "A piece of kit on a machine, and one entry on its die. There is no generic kit: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the machine can do.",
    "status": "implemented",
    "design": {
     "holes": "Multi-slot components were set aside as invisible complexity."
@@ -1345,7 +1335,7 @@
   },
   {
    "id": "hardpoint",
-   "category": "equipment",
+   "category": "kit",
    "name": "Hardpoint",
    "codex": "A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts.",
    "status": "implemented",
@@ -1355,7 +1345,7 @@
   },
   {
    "id": "fixed_component",
-   "category": "equipment",
+   "category": "kit",
    "name": "Fixed component",
    "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. It is the machine's own: no other machine carries one, and it can never be built.",
    "status": "implemented",
@@ -1365,7 +1355,7 @@
   },
   {
    "id": "empty_hardpoint",
-   "category": "equipment",
+   "category": "kit",
    "name": "Empty hardpoint",
    "codex": "A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you.",
    "status": "implemented",
@@ -1375,9 +1365,9 @@
   },
   {
    "id": "module",
-   "category": "equipment",
+   "category": "kit",
    "name": "Module",
-   "codex": "Equipment inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working.",
+   "codex": "Kit inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working.",
    "status": "implemented",
    "design": {
     "holes": "Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar screen."
@@ -1417,7 +1407,7 @@
    "id": "aim",
    "category": "foe",
    "name": "Aim",
-   "codex": "Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.",
+   "codex": "Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon or debuff. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.",
    "status": "implemented",
    "design": {
     "holes": "Content: aim on a foe type and on a move; when on a move is the condition that lets a foe pick it, and a special never fires twice running."
@@ -1639,7 +1629,7 @@
    "id": "scorched",
    "category": "status",
    "name": "Scorched",
-   "codex": "Machine status, from a foe's scorch: every weapon it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending equipment or a cool weapon plays round it. Can be cleansed.",
+   "codex": "Machine status, from a foe's scorch: every weapon and debuff it fires runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending a shield, a vent, a buff or a cool weapon plays round it. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "Placeholder numbers.",
@@ -1751,7 +1741,7 @@
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): its weapons run hotter.",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): its weapons and debuffs run hotter.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1809,7 +1799,7 @@
    "id": "ammo",
    "category": "resource",
    "name": "Ammo",
-   "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its damaging guns spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
+   "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
    "status": "implemented",
    "design": {
     "holes": "Never a buff, so no Silence or Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down."

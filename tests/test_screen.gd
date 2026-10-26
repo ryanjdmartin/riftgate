@@ -243,6 +243,29 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	s.free()
 
 
+## The hold says what kind of piece the entry is on its machine, a passive's hybrid in (Ryan, 26
+## October: the Whip Scorpion's vents are "vent, weapon" on that machine, shown on the hold and
+## never in the codex, which shows the component as built).
+func test_the_hold_names_the_entrys_type_with_a_passives_hybrid() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[1]
+	var vent := Face.vent(4)
+	vent.component = str(ContentDB.load_default().components.keys()[0])
+	ms.die = Die.single(vent)
+	ms.face_index = 0
+	s._refresh()
+	s._on_die_held(1)
+	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent", "a vent is a vent")
+	s._on_hold_released()
+	ms.unit.grant_passive({"id": "t_blast", "name": "Test Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1.0}]})
+	s._on_die_held(1)
+	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent, Weapon", "on a machine whose vents blast, a weapon too")
+	s._on_hold_released()
+	var rows := EntryReadout.codex_lines(vent, ContentDB.load_default())
+	assert_eq(str(rows[0]["type"]), "Vent", "the codex keeps the component as built")
+	s.free()
+
+
 ## A split weapon (the Skua's breech) prints a smaller blow struck more often: each number its own
 ## arrow, the blow down and the strikes up (Ryan, 26 October: "Skua should have down on the damage
 ## and up on the count").
@@ -302,7 +325,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 
 ## Equipment says whom it is spent on, in Ryan's words; a debuff prints no number; a gated rider
 ## says where it lands; a written-out grant prints its passive's line (the star's text).
-func test_the_hold_reads_equipment_debuffs_buffs_and_grants() -> void:
+func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	var db := ContentDB.load_default()
 	var shield := Face.shield(6)
 	shield.targets = Face.Target.SELF
@@ -373,7 +396,7 @@ func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 
 
 ## The rules the hold lists last are the ones the entry prints, word for word, for every
-## component in content and its charged form; equipment reaching every ally never says it
+## component in content and its charged form; a piece reaching every ally never says it
 ## reaches every foe.
 func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 	var db := ContentDB.load_default()
@@ -384,7 +407,7 @@ func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 			assert_true(f.describe().contains(r), "%s prints %s: %s" % [cid, r, f.describe()])
 			checked += 1
 		if not f.is_attack():
-			assert_false(f.describe().contains("reaches every foe"), "%s, equipment, reaches no foe: %s" % [cid, f.describe()])
+			assert_false(f.describe().contains("reaches every foe"), "%s, spent on machines, reaches no foe: %s" % [cid, f.describe()])
 	assert_true(checked > 10, "the rules read: %d" % checked)
 
 
@@ -488,7 +511,7 @@ func test_end_turn_asks_only_when_dice_would_be_wasted() -> void:
 			elif f.kind == Face.Kind.BLANK:
 				s._use_die(i, null)
 			else:
-				s._use_die(i, s.sk.equipment_targets_for(ms, f)[0])
+				s._use_die(i, s.sk.machine_targets_for(ms, f)[0])
 		if not left:
 			break
 	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "the fight is still on")
@@ -972,10 +995,10 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	var i := 0
 	var ms: Skirmish.MechState = s.sk.mechs[i]
 	for k in range(ms.die.faces.size()):
-		if ms.die.faces[k].is_attack():
+		if ms.die.faces[k].is_weapon():
 			ms.face_index = k
 			break
-	assert_true(ms.face().is_attack(), "the first machine shows a weapon")
+	assert_true(ms.face().is_weapon(), "the first machine shows a weapon")
 	ms.unit.grant_passive(ambush)
 	for foe in s.sk.field_foes():
 		foe.target = s.sk.mechs[1]
@@ -997,6 +1020,15 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	s._on_drag_ended(Vector2(-100, -100))
 	assert_false(s._prey.on, "off when the drag ends")
 	assert_true(s.prey_for(1).is_empty(), "a machine without the read marks nothing")
+	# The read asks for a weapon's hit, so a debuff showing marks nothing (26 October: a debuff
+	# is equipment, and "hitting a foe with a weapon" passes it by).
+	var kept := ms.die
+	ms.die = Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"]}))
+	ms.face_index = 0
+	assert_true(ms.face().is_debuff(), "the machine shows a debuff")
+	assert_true(s.prey_for(i).is_empty(), "a debuff marks no prey for a rule that asks for a weapon's hit")
+	assert_false(s.prey_for(i, true).is_empty(), "the debug switch marks for anything aimed at a foe")
+	ms.die = kept
 	var foe: Foe = s.sk.front[0]
 	Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(foe, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)

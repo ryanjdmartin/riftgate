@@ -47,14 +47,16 @@ static func hint_ink() -> Color:
 ## `place` on its die (from one). `shown` is its blow as the die prints it ([low, high],
 ## Skirmish.shown_number: every modifier in; empty, the entry's own), `base` the component as
 ## built, whose numbers a highlight is read against, `states` what holds on it now, `grants`
-## the written-out grants' lines (Effects.printed_grants).
-static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB) -> Array:
+## the written-out grants' lines (Effects.printed_grants), `types` what kind of piece it is on
+## its machine (face_types), beside its name; its tags are the shown entry's, a passive's
+## change in.
+static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = []) -> Array:
 	var out: Array = []
 	if f == null:
 		return out
 	var comp: Dictionary = db.components.get(f.component, {}) if not f.component.is_empty() else {}
 	var title := "EMPTY HARDPOINT" if f.empty else (db.component_name(f.component).to_upper() if not f.component.is_empty() else f.describe().to_upper())
-	out.append({"style": "title", "text": title, "place": Hud.roman(place)})
+	out.append({"style": "title", "text": title, "place": Hud.roman(place), "type": ", ".join(PackedStringArray(types))})
 	if not states.is_empty():
 		out.append(text_line("state", " · ".join(PackedStringArray(states))))
 	var codex := str(comp.get("codex", ""))
@@ -186,13 +188,30 @@ static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
 	return out
 
 
+## What kind of piece an entry is on its machine, for the die's hold: its own type, then any a
+## passive adds there (Ryan, 26 October: "Hybrid cases can exist. Such as the steam vents, they
+## get tagged as a hybrid 'vent, weapon' on that machine"; "If a passive or other effect alters
+## labels or tags, the same rule applies"): a vent on a machine whose vents blast a foe is a
+## weapon too. `f` is the entry as the machine shows it, its rewrites in, so the drum's shot
+## from a debuff reads as the weapon it fires as. The codex reads the component as built and
+## never asks this.
+static func face_types(f: Face, u = null) -> Array[String]:
+	var out: Array[String] = []
+	var own := face_type(f)
+	if not own.is_empty():
+		out.append(own)
+	if u != null and f.kind == Face.Kind.VENT and Effects.vent_blast(u) > 0.0:
+		out.append("Weapon")
+	return out
+
+
 ## What kind of piece an entry is, as its main icon on the die says it (Ryan, 26 October: "Face
 ## type is either Weapon, Shield, Vent, or Equipment. Equipment is the label for all 4 forms of
 ## buff and debuff faces"); a blank is none.
 static func face_type(f: Face) -> String:
 	match f.kind:
 		Face.Kind.ATTACK:
-			return "Equipment" if f.is_debuff() else "Weapon"
+			return "Weapon" if f.is_weapon() else "Equipment"
 		Face.Kind.SHIELD:
 			return "Shield"
 		Face.Kind.VENT:
@@ -297,7 +316,7 @@ const MOVE_TARGETS := {
 }
 
 
-## Whom a piece of equipment is spent on (Ryan's words, 26 October).
+## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October).
 static func whom(f: Face) -> String:
 	if f.reaches_all:
 		return "Target: Every ally yet to act" if f.not_acted else "Target: Every ally"
@@ -397,7 +416,10 @@ static func _spans(l: Dictionary) -> Array:
 	var text := str(l.get("text", ""))
 	match str(l.get("style", "effect")):
 		"title":
-			return [_span(str(l.get("place", "")), Hud.quote(), 19, Palette.MUTED), _span(text, Hud.display_bold(), 21, Palette.INK, 6.0)]
+			var head := [_span(str(l.get("place", "")), Hud.quote(), 19, Palette.MUTED), _span(text, Hud.display_bold(), 21, Palette.INK, 6.0)]
+			if not str(l.get("type", "")).is_empty():
+				head.append(_span(str(l["type"]), Hud.display(), 17, Palette.INK, 10.0))   # what kind of piece it is on this machine
+			return head
 		"state":
 			return [_span(text, Hud.display_bold(), 18, Palette.INK)]
 		"codex":

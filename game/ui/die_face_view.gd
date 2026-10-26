@@ -302,7 +302,7 @@ func _draw() -> void:
 	if face.has_unique_rule():
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if face.targets == Face.Target.SELF:
-		tags.append("self")      # equipment that reaches only its own machine
+		tags.append("self")      # a piece that reaches only its own machine
 	elif face.targets == Face.Target.ALLY:
 		tags.append("ally")      # or only its allies
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:

@@ -462,7 +462,6 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var passive_lines: Array[String] = []
 	for r in rows:
 		passive_lines.append(str(r[0]))
-	var open: int = int(now["move"]) / maxi(1, BattleMap.move_cost(BattleMap.Terrain.PLAIN, u.traits))
 	return {
 		"title": u.display_name,
 		"subtitle": " // ".join(_plate_parts(c, maker, u)),
@@ -475,7 +474,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"stat_items": [["shield max", stat_parts(int(u.base["shield"]), now["shield"])], ["recharge", stat_parts(int(u.base["recharge"]), now["recharge"], "+")],
 			["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
 			["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
-			["move · %d open" % open, stat_parts(int(u.base["move"]), now["move"])]],
+			["move", stat_parts(int(u.base["move"]), now["move"])]],
 		"actions": "",
 		"passive": "\n".join(passive_lines),
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
@@ -860,19 +859,19 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: devours is the stacks of Overcharged a kill gives its owner: a positive number on an attack" % where)
 	if Array(fd.get("keywords", [])).has("devour"):
 		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
-	# Burn is a numbered keyword (Ryan, 18 October): a weapon says the stacks each blow leaves.
+	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
 	if Array(fd.get("keywords", [])).has("burn") and int(fd.get("burn", 0)) <= 0:
-		errs.append("%s: a Burn weapon says its stacks: burn, a positive number" % where)
+		errs.append("%s: an entry with Burn says its stacks: burn, a positive number" % where)
 	if fd.has("burn") and not Array(fd.get("keywords", [])).has("burn"):
 		errs.append("%s: burn (the stacks) rides with the Burn keyword" % where)
 	# Cryo is numbered the same way (20 October): the stacks each foe reached gains.
 	if Array(fd.get("keywords", [])).has("cryo") and int(fd.get("cryo", 0)) <= 0:
-		errs.append("%s: a Cryo weapon says its stacks: cryo, a positive number" % where)
+		errs.append("%s: an entry with Cryo says its stacks: cryo, a positive number" % where)
 	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
 		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
 	# And Flak (21 October): the stacks each foe hit gains.
 	if Array(fd.get("keywords", [])).has("flak") and int(fd.get("flak", 0)) <= 0:
-		errs.append("%s: a Flak weapon says its stacks: flak, a positive number" % where)
+		errs.append("%s: an entry with Flak says its stacks: flak, a positive number" % where)
 	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
 		errs.append("%s: flak (the stacks) rides with the Flak keyword" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
@@ -948,7 +947,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat or Volatile (the bible's Rapid row)" % where)
 	# The Siphon's rules (the Whip Scorpion's, 20 October): a reach over every foe in the fight,
 	# an attack's; and a heat every blow taken that round adds, any entry's.
-	# On equipment it is every machine it may land on (the Swallowtail's team shield, built 21
+	# On a shield or a buff it is every machine it may land on (the Swallowtail's team shield, built 21
 	# October), never a vent's.
 	if fd.has("reaches_all") and (not (fd["reaches_all"] is bool) or kind == "vent" or kind == "blank"):
 		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight, or a shield's or a buff's over every ally" % where)
@@ -966,26 +965,26 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		_validate_charged(where, kind, fd["charged"], errs)
 	# The Musk Ox's pieces (21 October): a refund, the salvo, random targets, a reload.
 	if fd.has("ammo_per_foe_hit") and (kind != "attack" or int(fd["ammo_per_foe_hit"]) <= 0):
-		errs.append("%s: ammo_per_foe_hit is a weapon's: the ammo back for every foe its blows reach, a positive number" % where)
+		errs.append("%s: ammo_per_foe_hit is an attack's, a weapon's or a debuff's: the ammo back for every foe its blows reach, a positive number" % where)
 	for key in ["spends_magazine", "random_targets"]:
 		if fd.has(key) and (kind != "attack" or not (fd[key] is bool)):
-			errs.append("%s: %s (true) is a weapon's" % [where, key])
+			errs.append("%s: %s (true) is an attack's, a weapon's or a debuff's" % [where, key])
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
-		errs.append("%s: reloads_ammo is equipment's: the ammo it adds to its forging machine, a positive number" % where)
+		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
-		errs.append("%s: resets_on_kill (true) is a weapon's: if its spend kills, every dark entry comes back and its machine acts again" % where)
+		errs.append("%s: resets_on_kill (true) is an attack's: if its spend kills, every dark entry comes back and its machine acts again" % where)
 	if fd.has("pulls_mines") and (kind != "attack" or not (fd["pulls_mines"] is bool)):
-		errs.append("%s: pulls_mines (true) is a weapon's: every mine on the field gathers into the slot it is spent on" % where)
+		errs.append("%s: pulls_mines (true) is an attack's, a weapon's or a debuff's: every mine on the field gathers into the slot it is spent on" % where)
 	if fd.has("drones") and (kind != "attack" or not (fd["drones"] is bool)):
-		errs.append("%s: drones (true) is a weapon's: the foe carries the Syrinx Drone" % where)
+		errs.append("%s: drones (true) is an attack's, a weapon's or a debuff's: the foe carries the Syrinx Drone" % where)
 	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
 	# random foes in reach, so a spray strikes at least twice.
 	if fd.has("spray") and (kind != "attack" or not (fd["spray"] is bool) or int(fd.get("strikes", 1)) < 2):
-		errs.append("%s: spray (true) is a weapon's of two strikes or more: each strike after the first falls on a random foe in reach" % where)
+		errs.append("%s: spray (true) is an attack's of two strikes or more: each strike after the first falls on a random foe in reach" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -1013,15 +1012,15 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
-		# One a use spends (Spun Up, spent by the next weapon spend) lasts until then.
+		# One a use spends (Spun Up, spent by the next spend at a foe) lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
-			errs.append("%s: %s lasts until a weapon spends it, so a buff grants it stacks and no rounds" % [where, st])
+			errs.append("%s: %s lasts until the next spend at a foe, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
 		var t := Face.target_from_name(str(fd["targets"]))
 		if kind == "attack":
-			errs.append("%s: a weapon always targets foes; 'targets' is for equipment" % where)
+			errs.append("%s: an attack always targets foes; 'targets' is for a shield, a vent or a buff" % where)
 		elif t < 0 or t == Face.Target.FOE:
 			errs.append("%s: targets must be self_ally, self or ally, got '%s'" % [where, fd["targets"]])
 	var kws: Array = fd.get("keywords", [])
@@ -1099,29 +1098,29 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
 		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
-		# A lay that asks for a damaging weapon's hit (the Ambush's Vitriol, Ryan, 25 October) says so
-		# on the effect and in its passive's text; any other lays on every hit, a debuff's included.
+		# A lay that asks for a weapon's hit (the Ambush's Vitriol, Ryan, 25 October) says so on the
+		# effect and in its passive's text; any other lays on every hit, equipment's included.
 		if effect == "lay_status" and eff.has("damaging") and not (eff["damaging"] is bool):
-			errs.append("%s: lay_status's damaging is true or false (a damaging weapon's hit only, said in the passive's text)" % where)
+			errs.append("%s: lay_status's damaging is true or false (a weapon's hit only, said in the passive's text)" % where)
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
-		# The Cottonmouth's drum (19 October): every weapon fired as one shot of a flat number,
+		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
 			if int(eff.get("value", 0)) <= 0 or not ["direct", "indirect"].has(str(eff.get("reach", ""))) or int(eff.get("heat", -1)) < 0:
-				errs.append("%s: rewrite_weapon fires every weapon as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
+				errs.append("%s: rewrite_weapon fires every weapon and debuff as one shot: value (its flat number, positive), reach (direct or indirect) and heat (0 or more)" % where)
 			if str(eff.get("when", "")).begins_with("reach_"):
 				errs.append("%s: a rewrite never keys on reach, since the reach reads the rewrite" % where)
 			if eff.has("tag") and not TAGS.has(str(eff["tag"])):
 				errs.append("%s: rewrite_weapon's tag '%s' is not in the working set (%s)" % [where, eff["tag"], ", ".join(TAGS)])
-		# The Skua's Split-cycle Breech (25 October): every weapon strikes that many times as often, a
-		# whole number of two or more.
+		# The Skua's Split-cycle Breech (25 October): every weapon and debuff strikes that many times
+		# as often, a whole number of two or more.
 		if effect == "split_strikes" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: split_strikes divides each roll among that many strikes: a whole number, 2 or more" % where)
 		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
-			errs.append("%s: %s needs a positive value (the rounds every weapon goes dark; the multiply on the printed number)" % [where, effect])
+			errs.append("%s: %s needs a positive value (the rounds every weapon and debuff goes dark; the multiply on the printed number)" % [where, effect])
 		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an
 		# ammo stands for, the reloads of a vent and a shield on itself.
 		if effect == "forge" and (int(eff.get("value", 0)) < 1 or int(eff.get("per_heat", 0)) < 1 \

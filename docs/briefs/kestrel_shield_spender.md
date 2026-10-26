@@ -318,7 +318,7 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
 - Claude, 19 October, the package refined (tier one, the off-tank, in Ryan's frame). The
   passive as the third round left it: while its shield stands every blow on it loses 5, and
   its weapons burn shield in place of heat with the zap of the burn on the target. The lock:
-  a weapon of no damage, Indirect, heat 0, spent on one foe: that foe is Lured for the round
+  a debuff, Indirect, heat 0, spent on one foe: that foe is Lured for the round
   and the spender gains Regenerating, 10 shield at the start of each round for three rounds,
   stacking (timed stacks keep their own end, so two casts are 20 a round until the first runs
   out); self only, never Rapid, no cooldown, the die its brake. The loop: lure and regen, the
@@ -428,7 +428,7 @@ a weapon hotter than the shield left burns what the shield holds and the rest re
 gauge. After the weapon's strikes the target takes a zap of what the shield paid, a plain blow
 with its armour off, lost on a kill.
 
-**The lock, St. Elmo's Regenerator**, the lure that regens itself (Ryan, 19 October): a weapon of no damage,
+**The lock, St. Elmo's Regenerator**, the lure that regens itself (Ryan, 19 October): a debuff,
 Indirect, heat 0, spent on one foe. That foe is Lured for the round, and this machine gains
 Regenerating: 10 shield at the start of each round for three rounds, stacking (timed stacks
 keep their own end, so two casts are 20 a round until the first runs out). Self only, never

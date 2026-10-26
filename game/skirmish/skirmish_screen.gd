@@ -775,9 +775,9 @@ func _refresh(save: bool = true) -> void:
 	_view_foe.clear()
 
 	var targets: Array[Foe] = []
-	var support: Array[Skirmish.MechState] = []   # the machines a dragged piece of equipment may land on
+	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
-	var slots: Array = []     # the empty slots a dragged weapon may be spent on (the Lammergeier's mines, its pull)
+	var slots: Array = []     # the empty slots a dragged weapon or debuff may be spent on (the Lammergeier's mines, its pull)
 	if not _pending.is_empty():
 		seconds = sk.swap_targets(_pending["primary"])
 		for x in seconds:
@@ -789,8 +789,8 @@ func _refresh(save: bool = true) -> void:
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
 			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
-		elif f != null and f.is_equipment():
-			support = sk.equipment_targets_for(dm, Effects.effective_face(dm.unit, f))
+		elif f != null and f.on_machines():
+			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
 	for col in range(sk.columns):
 		var front_foe := sk.foe_at(0, col)
@@ -816,7 +816,7 @@ func _refresh(save: bool = true) -> void:
 				v.intent_kind = ""
 				v.statuses = _mine_chips(shots)
 				v.mined = not shots.is_empty()
-				# A slot a pending Swap may move its foe into, or one a dragged weapon may be spent on.
+				# A slot a pending Swap may move its foe into, or one a dragged weapon or debuff may be spent on.
 				v.highlight = seconds.has(Vector2i(rank, col)) or slots.has(Vector2i(rank, col))
 				v.dead = false
 				v.sprite = null
@@ -1107,16 +1107,15 @@ func _foe_rows(foe: Foe) -> Array:
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
-		# damaging weapon it takes deals, a 0 included, and what its clock keeps into the next
-		# round (the status names the clock). The number leads: a row is one line, clipped.
+		# weapon it takes deals, and what its clock keeps into the next round (the status names
+		# the clock).
 		var halves := Effects.status_decay(Effects.STATUS["flakked"]) == Effects.DECAY_HALF
-		rows.append(["flak", str(flak), "Flak: +%d to every damaging weapon's blow, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
+		rows.append(["flak", str(flak), "Flak: +%d to every weapon's blow, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
-		# The Armadillo's mark (20 October; its chip from 21 October): what a hit on it with a
-		# damaging weapon cools the hitter, whatever the hit dealt, the stacks it spends; the
-		# number first, since a row is one line, clipped.
-		rows.append(["cryo", str(cryo), "Cryo: cools the hitter %d heat (%d a stack) when a damaging weapon hits it, spending every stack" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
+		# The Armadillo's mark (20 October; its chip from 21 October): what a weapon's hit on it
+		# cools the hitter, the stacks it spends.
+		rows.append(["cryo", str(cryo), "Cryo: cools the hitter %d heat (%d a stack) when a weapon hits it, spending every stack" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
@@ -1163,9 +1162,9 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed, the
 		# number saying what the debuff adds to the reach the formation gives.
-		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
+		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.ENEMY])
 	elif foe.rank == 1 and sk.is_exposed(foe.column):
-		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
+		rows.append(["exposed", "", "Exposed: nothing in front, in Direct reach", Palette.HUD])
 	return rows
 
 
@@ -1453,7 +1452,7 @@ func _on_die_held(i: int) -> void:
 	if f != null:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
-		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default())
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit))
 	_show_details("", _dice[i], ring, entry)
 	Sound.play("hold")
 	_hold_die = i
@@ -1699,16 +1698,17 @@ func _blast_marks() -> Dictionary:
 
 ## The foes an ambusher's entry showing marks: those it can reach that show no intent on the
 ## machine, when the machine's passives read that (`force` reads it for any machine, the debug
-## switch's); nothing for another machine, an entry that is no weapon, or a spent die.
+## switch's); nothing for another machine, an entry not aimed at a foe, one whose hit the read
+## passes by (a debuff, where the rule asks for a weapon's hit), or a spent die.
 func prey_for(i: int, force: bool = false) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if i < 0 or i >= sk.mechs.size():
 		return out
 	var ms: Skirmish.MechState = sk.mechs[i]
-	if not ms.alive() or ms.assigned or not (force or Effects.reads_intent(ms.unit)):
+	if not ms.alive() or ms.assigned:
 		return out
 	var f := sk.shown_face(ms, ms.face())
-	if f == null or not f.is_attack():
+	if f == null or not f.is_attack() or not (force or Effects.reads_intent(ms.unit, f)):
 		return out
 	for foe in sk.targets_for_face(ms, f):
 		if not foe.intent_on(ms.unit):

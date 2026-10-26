@@ -257,8 +257,8 @@ func strikes() -> int:
 ##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
 ##           turn (Stoke; direct heat retired 13 October)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
-##           scorch_all: every machine gains `value` stacks of Scorched, its weapons running
-##           hotter (Eruption; nobody in particular)
+##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
+##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
@@ -294,7 +294,7 @@ func intent_on(u) -> bool:
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
 ## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
-## weapons running hotter for the turn; burn: a stack of Burning, heat at the end of the
+## weapons and debuffs running hotter for the turn; burn: a stack of Burning, heat at the end of the
 ## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is

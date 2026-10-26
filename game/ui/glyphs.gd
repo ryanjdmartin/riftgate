@@ -270,7 +270,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
-			# Heat rising off a barrel: Scorched, every weapon running hotter (13 October).
+			# Heat rising off a barrel: Scorched, every weapon and debuff running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
 			for i in range(3):
 				var x := -s * 0.55 + i * s * 0.55
@@ -444,7 +444,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BUFF:
 			return "buff"
 		_:
-			# A debuff (a weapon of no damage) wears its reach frame with the status mark inside.
+			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
 				return "debuff_indirect" if face.is_debuff() else "indirect"
 			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
