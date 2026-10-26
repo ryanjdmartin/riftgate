@@ -175,15 +175,17 @@ defeat when every machine is wrecked. There is no round limit.
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
   rally, a web's burst, a death before it acts, the last act it sets off, a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
-  spent there. Nothing a roll decides is promised: a rolled blow counts its lowest roll, and a
-  pick drawn again (a foe whose machine fell or is Phased mid-turn), a stun Numbed may shrug
-  off, the entry an injury lands on and a strike at a random foe are left out. A draw only one
-  machine or foe can answer is no draw and counts: the last machine a foe may pick takes its
-  blow, the lone foe a random strike's. The reinforcements are the next round's. A foe's gauge shows the HP the round will leave it, a
-  heal hatched as a machine's gain is, and a foe the round kills wears the destroyed chip, its
-  intent kept. A Lure in hand shows its turn before it is spent: the foes it would turn draw
-  dashed arrows to its machine, those on it already solid, and the gauges read the round as the
-  lure would leave it.
+  spent there. A foe whose machine falls before it acts strikes the pick it will make (its
+  pick stream is the preview's too), its arrow dashed to that machine. Nothing a roll decides
+  is promised: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, the entry
+  an injury lands on and a strike at a random foe among several are left out (a lone foe takes
+  it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
+  leave it, a heal hatched as a machine's gain is, and a foe the round kills wears the
+  destroyed chip, its intent kept. Every status the round will land, on a machine or a foe,
+  wears a preview chip: the status's own glyph and colour, pulsing in opacity on a dashed
+  edge, with the stacks it gains. A Lure in hand shows its turn before it is spent: the foes it
+  would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
+  the round as the lure would leave it.
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
   to 24 heroes, 80 to 100 for the bosses' slate (not built; the four massive foes standing in
@@ -520,7 +522,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
   count nothing). The pick is a commitment; Lure and Disrupt move it, and a foe whose machine
-  has fallen picks again as it acts. A special that acts on nobody
+  has fallen or is Phased picks again, by the same sense, from a stream of its own, so the
+  round preview shows the pick it will make and no pick is ever open. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
 - **A blow** is its base attack, plus its Kindled and its swarm for each other live foe of its

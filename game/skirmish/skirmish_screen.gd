@@ -1307,7 +1307,67 @@ func _foe_rows(foe: Foe) -> Array:
 		# October: a chip for it "steps on the debuff and is very confusing"); a dragged line
 		# weapon lighting it says it is in reach.
 		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
+	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
+	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
+	# the stacks it gains. Kindled's is the rally chip above; a foe the round kills wears its
+	# skull alone.
+	if foe.alive() and bool(fate.get("alive", true)):
+		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"], _foe_glyph, _foe_chip_colour))
 	return rows
+
+
+## The preview chips for the statuses a round preview says a unit gains: one a status, its
+## glyph and colour from the callables, the stacks gained its number (none for a status that
+## renews), the readout the status's own words.
+static func _coming_rows(coming: Dictionary, skip: Array, glyph_of: Callable, colour_of: Callable) -> Array:
+	var rows: Array = []
+	for id in coming.keys():
+		if skip.has(id):
+			continue
+		var c: Dictionary = coming[id]
+		var renews := Effects.STATUS.has(id) and Effects.status_stacking(Effects.STATUS[id]) == "renew"
+		var text := "" if renews else "+%d" % int(c["stacks"])
+		rows.append([glyph_of.call(id), text, "%s on its way: %s" % [str(c["name"]), str(c["description"])], colour_of.call(id), "preview"])
+	return rows
+
+
+## The glyph a foe's status wears on its chip (the rows above name them inline).
+static func _foe_glyph(id: String) -> String:
+	match id:
+		"burning":
+			return "burn"
+		"flakked":
+			return "flak"
+		"cryoed":
+			return "cryo"
+		"webbed":
+			return "web"
+		"suppressed":
+			return "suppress"
+		"guarded":
+			return "lock"
+		"braced":
+			return "shield"
+		"kindled":
+			return "overcharge"
+		"risen":
+			return "star"
+		"exposure":
+			return "exposed"
+		"vitriol", "paradox", "shocked", "numbed", "syrinx_drone":
+			return id
+	return status_glyph(id)
+
+
+## A foe's status's colour on its chip, as the rows above give them.
+static func _foe_chip_colour(id: String) -> Color:
+	if id in ["burning", "vitriol", "flakked", "kindled", "shocked"]:
+		return Palette.HEAT
+	if id in ["webbed", "braced", "numbed", "paradox"]:
+		return Palette.SHIELD
+	if id in ["risen", "exposure"]:
+		return Palette.ENEMY
+	return Palette.HUD
 
 
 ## The glyph a machine's status wears on its chip.
@@ -1431,6 +1491,14 @@ func _mech_rows(i: int) -> Array:
 			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY])
 		if bool(fc["breaks_shield"]):
 			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY])
+		if not bool(fc["destroyed"]):
+			# Every status the round will land on it (Ryan, 26 October: "All incoming chips should
+			# appear as pulsing opacity versions"), the counts and stores that are no chip left out.
+			var skip: Array = ["shots", "quick_turned", "muster"]
+			for id in fc.get("coming", {}).keys():
+				if Effects.store_cap(ms.unit, id) > 0:
+					skip.append(id)
+			rows.append_array(_coming_rows(fc.get("coming", {}), skip, status_glyph, _chip_colour))
 	return rows
 
 
@@ -1465,6 +1533,15 @@ func _refresh_arrows() -> void:
 			if target_index < 0:
 				continue
 			targets.append(target_index)
+		# Its machine falls before it acts, as the round stands, and it strikes another (the round
+		# preview, 26 October: the pick it will make, from the pick stream): its arrow dashes to
+		# the machine its blow lands on, the way a lure's turn is drawn.
+		var struck: Array = _round.get("foes", {}).get(foe, {}).get("struck", [])
+		var turned := not struck.is_empty() and not struck.any(func(i) -> bool: return targets.has(int(i)))
+		if turned:
+			targets.clear()
+			for i in struck:
+				targets.append(int(i))
 		var fv := _foe_view_for(foe)
 		if fv == null:
 			continue
@@ -1474,7 +1551,7 @@ func _refresh_arrows() -> void:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
 			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
-			list.append([from, to, Palette.ENEMY])
+			list.append([from, to, Palette.ENEMY, true] if turned else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked.
 	if lurer >= 0 and lurer < _mech_views.size():
 		for foe in _turns:

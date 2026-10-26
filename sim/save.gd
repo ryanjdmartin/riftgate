@@ -384,7 +384,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	for slot in sk.mines.keys():
 		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
 	return {
-		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
+		"rng": str(sk.rng.state), "pick_rng": str(sk.pick_rng.state), "columns": sk.columns, "terrain": sk.terrain,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
 		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
@@ -427,6 +427,8 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	var sk := Skirmish.new(0, int(d.get("columns", Skirmish.DEFAULT_COLUMNS)))
 	sk.rng.state = str(d.get("rng", "0")).to_int()
+	if d.has("pick_rng"):
+		sk.pick_rng.state = str(d["pick_rng"]).to_int()   # a save from before 26 October keeps the seeded stream
 	sk.terrain = int(d.get("terrain", BattleMap.Terrain.PLAIN))
 	sk.round = int(d.get("round", 0))
 	sk.rerolls_left = int(d.get("rerolls_left", 0))

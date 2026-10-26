@@ -4061,10 +4061,11 @@ func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> voi
 	assert_eq(m.hull, 100 - 6, "before its blow")
 
 
-## A draw only one machine or foe can answer is no draw (Ryan, 26 October: the preview leaves out
-## "random active effects" alone): the foe whose machine falls strikes the last one standing, in
-## the preview as in the round; with two to pick between, its blow is held back and noted.
-func test_the_round_preview_counts_a_pick_only_one_can_answer() -> void:
+## No pick is ever open (Ryan, 26 October: "the targeting recalculates immediately, showing the
+## new game state"): a foe whose machine falls before it acts draws its new pick from the pick
+## stream, which the copy shares, so the preview shows the machine it will strike, among one or
+## among two; a strike at random with one foe standing strikes it.
+func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make() -> void:
 	var sk := Skirmish.new(4, 2)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
 	var b := _mech("B", Die.single(Face.blank()), 0, 100)
@@ -4093,9 +4094,16 @@ func test_the_round_preview_counts_a_pick_only_one_can_answer() -> void:
 	big3.target = s3.mechs[0]
 	small3.target = s3.mechs[0]
 	pv = s3.preview_round()
-	assert_eq(int(pv["mechs"][1]["hull_after"]) + int(pv["mechs"][2]["hull_after"]), 200, "B or C: the blow is held back")
-	var held: Array = (pv["notes"] as Array).filter(func(n) -> bool: return str(n["kind"]) == "pick" and n["foe"] == small3)
-	assert_eq(held.size(), 1, "and noted")
+	assert_eq(int(pv["mechs"][1]["hull_after"]) + int(pv["mechs"][2]["hull_after"]), 200 - 7, "B or C takes the blow, and the preview says which")
+	var struck: Array = pv["foes"][small3]["struck"]
+	assert_eq(struck.size(), 1, "the machine it strikes")
+	var pick_state := s3.pick_rng.state
+	var state3 := s3.rng.state
+	pv = s3.preview_round()
+	assert_eq(pv["foes"][small3]["struck"], struck, "the same every refresh")
+	assert_true(s3.pick_rng.state == pick_state and s3.rng.state == state3, "neither stream drawn from")
+	s3.end_round()
+	assert_eq(s3.mechs[int(struck[0])].unit.hull, 100 - 7, "and the round strikes it")
 	# A weapon that strikes at random, with one foe standing, strikes it for sure.
 	var s1 := Skirmish.new(4, 2)
 	var gun := Face.attack(5, L)
@@ -4107,6 +4115,33 @@ func test_the_round_preview_counts_a_pick_only_one_can_answer() -> void:
 	s1.start_round()
 	pv = s1.preview_round(0, lone)
 	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe is the random strike's only answer")
+
+
+## Every status the round lands is in the preview (Ryan, 26 October: "All incoming chips should
+## appear as pulsing opacity versions"): the Burn the die in hand lays, the Burning a foe's rider
+## leaves on the machine it strikes, the Shocked a Retaliate puts on the striker.
+func test_the_round_preview_lists_every_status_the_round_lands() -> void:
+	var sk := Skirmish.new(4, 2)
+	var torch := Face.attack(1, L, K.BURN)
+	torch.burn = 3
+	var m := _mech("A", Die.single(torch), 0, 100)
+	sk.add_mech(m)
+	var x := _ghoul(500, 9)
+	x.actions[0]["keywords"] = ["burn"]
+	x.actions[0]["burn"] = 2
+	sk.add_foes([x])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_for_rounds(m, Effects.STATUS["retaliate"], "test", sk.round)
+	var pv := sk.preview_round()
+	assert_false(pv["foes"][x]["coming"].has("burning"), "nothing in hand: no Burn on it")
+	assert_eq(int(pv["mechs"][0]["coming"]["burning_mech"]["stacks"]), 2, "its rider's Burning on the machine")
+	assert_eq(int(pv["foes"][x]["coming"]["shocked"]["stacks"]), 1, "and the Retaliate's Shocked on it")
+	assert_eq(str(pv["foes"][x]["coming"]["shocked"]["name"]), "Shocked", "named")
+	pv = sk.preview_round(0, x)
+	assert_eq(int(pv["foes"][x]["coming"]["burning"]["stacks"]), 3, "over it, the Burn the die lays")
+	assert_false(Effects.recording, "the recorder is off again")
+	assert_false(Effects.has(x, "burning") or Effects.has(x, "shocked") or Effects.has(m, "burning_mech"), "the fight untouched")
 
 
 func test_the_debuffs_cost_rerolls_and_heat() -> void:

@@ -414,7 +414,20 @@ static func grant(u, m: Modifier) -> Modifier:
 	_seq += 1
 	m.seq = _seq
 	u.modifiers.append(m)
+	_record(u, m, m.stacks)
 	return m
+
+
+## What a play lands (Ryan, 26 October: "All incoming chips should appear as pulsing opacity
+## versions"): while `recording`, every grant and every stack added, as [unit or foe, the
+## modifier, the stacks]. Skirmish.preview_round turns it on for its copy's play and reads it back.
+static var recording := false
+static var recorded: Array = []
+
+
+static func _record(u, m: Modifier, n: int) -> void:
+	if recording and n > 0:
+		recorded.append([u, m, n])
 
 
 ## A timed effect: gone after the end of `round`.
@@ -445,6 +458,7 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 			continue
 		if m.scope == ROUNDS and scope == ROUNDS:
 			m.expires_round = maxi(m.expires_round, expires_round)
+		_record(u, m, n - m.stacks)
 		m.stacks = maxi(m.stacks, n)
 		return m
 	return null
@@ -471,6 +485,7 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 	for m in u.modifiers:
 		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
+			_record(u, m, n)
 			return m
 	var m := make(passive, scope, source)
 	if m == null:

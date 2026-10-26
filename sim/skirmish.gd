@@ -57,6 +57,11 @@ class MechState:
 
 
 var rng := RandomNumberGenerator.new()
+## The stream a pick drawn again mid-round comes from (a foe whose machine fell or is Phased,
+## one Disrupted onto a new move): apart from the fight's, so the round preview's copy, which
+## clones its state, draws the pick the foe will make, and nothing is open (Ryan, 26 October:
+## "the targeting recalculates immediately, showing the new game state").
+var pick_rng := RandomNumberGenerator.new()
 var mechs: Array[MechState] = []
 var packs: Array[Unit] = []
 var columns: int = DEFAULT_COLUMNS
@@ -158,6 +163,7 @@ var _focus: Dictionary = {}
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
 	rng.seed = seed_value
+	pick_rng.seed = hash([seed_value, "pick"])
 	columns = maxi(1, columns_arg)
 	front.resize(columns)
 	front.fill(null)
@@ -573,14 +579,19 @@ func rallies_now(r: Foe) -> bool:
 ## target"). A copy of the fight plays it out, every rule as it runs: the die in hand spent on
 ## `hover_target` when one is given, the end of the player's turn, the enemy's turn (each foe's
 ## move as announced: its heal, its death before it acts, a last act, a web's burst, a rally, a
-## self-destruct) and the round's end. Nothing random is drawn: a rolled blow counts its lowest
-## roll, and a pick drawn again, a stun Numbed may shrug off, an injury's entry and a random target
-## are held back (`notes`); the reinforcements are the next round's. Returns {"mechs": the
-## forecast's keys for each machine by index, "foes": {foe on the field: {"hp", "alive"}},
-## "notes": what was held back}; the fight itself is untouched.
+## self-destruct) and the round's end. A pick drawn again (a foe whose machine fell first) comes
+## from the pick stream the copy shares, so the copy strikes the machine the round will. Nothing
+## else random is drawn: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, an
+## injury's entry and a strike at a random foe among several are held back (`notes`); the
+## reinforcements are the next round's. Returns {"mechs": the forecast's keys for each machine by
+## index, plus "coming" (the statuses the round lands on it: {id: {"stacks", "name",
+## "description"}}), "foes": {foe on the field: {"hp", "alive", "struck" (the machines its blows
+## land on, by index), "coming"}}, "notes": what was held back}; the fight itself is untouched.
 func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var copy: Skirmish = SaveGame.clone_skirmish(self)
 	copy.previewing = true
+	Effects.recorded = []
+	Effects.recording = true   # every status the copy's play lands (Ryan, 26 October: "All incoming chips should appear as pulsing opacity versions")
 	var ours := field_foes()
 	var theirs := copy.field_foes()
 	var back := {}   # the copy's foe -> ours
@@ -627,6 +638,16 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			Effects.halve(f)
 		copy._trim_overshield()
 		copy._regrow_parts()
+	Effects.recording = false
+	var coming := {}   # the copy's unit or foe -> {status id: {"stacks", "name", "description"}}
+	for r in Effects.recorded:
+		var per: Dictionary = coming.get(r[0], {})
+		var m: Effects.Modifier = r[1]
+		var c: Dictionary = per.get(m.id, {"stacks": 0, "name": m.name, "description": m.description})
+		c["stacks"] = int(c["stacks"]) + int(r[2])
+		per[m.id] = c
+		coming[r[0]] = per
+	Effects.recorded = []
 	var out_mechs: Array = []
 	for i in range(mechs.size()):
 		var cm: MechState = copy.mechs[i]
@@ -637,6 +658,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 				incoming += int(ev.get("amount", 0))
 				injures = injures or bool(ev.get("injured", false))
 		out_mechs.append({
+			"coming": coming.get(cm.unit, {}),
 			"incoming": incoming,
 			"bite": bite if i == hover_mech else 0,
 			"volatile": volatile if i == hover_mech else 0,
@@ -651,7 +673,11 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 		})
 	var out_foes := {}
 	for cf in back.keys():
-		out_foes[back[cf]] = {"hp": maxi(0, cf.hp), "alive": cf.alive()}
+		var struck: Array[int] = []
+		for ev in events:
+			if ev.get("foe", null) == cf and not struck.has(int(ev.get("mech", -1))):
+				struck.append(int(ev.get("mech", -1)))
+		out_foes[back[cf]] = {"hp": maxi(0, cf.hp), "alive": cf.alive(), "struck": struck, "coming": coming.get(cf, {})}
 	var notes: Array = []
 	for n in copy.preview_notes:
 		var d: Dictionary = n.duplicate()
@@ -1743,16 +1769,7 @@ func _enemy_turn() -> void:
 func _foe_turn(f: Foe) -> bool:
 	var t := f.target as MechState
 	if t == null or not t.alive() or is_phased(t):
-		t = _pick_mech_target(f)
-	if t == null and previewing and not targetable_mechs().is_empty():
-		# Its pick is drawn again at random among machines it may strike (its own fell, or is
-		# Phased): a move that needs no machine goes ahead in the round preview's copy, and a blow
-		# at one is held back (a pick only one machine can answer is sure, and was made).
-		if f.acts_on_nobody() or f.reaches_every_machine() or f.gathering():
-			t = targetable_mechs()[0]
-		else:
-			_acted.append(f)
-			return true
+		t = _pick_mech_target(f, [], pick_rng)   # its machine fell, or is Phased: the pick it will make
 	if t == null:
 		return false
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
@@ -2799,7 +2816,7 @@ func _phase(w: MechState) -> void:
 	w.assigned = true
 	for foe in field_foes():
 		if foe.alive() and foe.target == w:
-			foe.target = _pick_mech_target(foe)
+			foe.target = _pick_mech_target(foe, [], pick_rng)
 	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
 
 
@@ -3407,7 +3424,7 @@ func _disrupt(foes: Array) -> void:
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
 		_begin_countdown(foe)
-		foe.target = _pick_mech_target(foe)
+		foe.target = _pick_mech_target(foe, [], pick_rng)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
 
@@ -3673,12 +3690,13 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a
 ## commitment: a foe whose target shields up still swings at it. With the override set, or
-## asked with no foe, the rule before: the lowest shield, then the lowest hull. The round
-## preview's copy draws nothing (_draw_mech): a pick only one machine can answer is sure.
-func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
+## asked with no foe, the rule before: the lowest shield, then the lowest hull. The draw comes
+## from `stream` when one is given (pick_rng, a pick drawn again mid-round), else the fight's.
+func _pick_mech_target(f: Foe = null, avoid: Array = [], stream: RandomNumberGenerator = null) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
+	var r := stream if stream != null else rng
 	# Never over-commit: a machine the blows already drawn would wreck is passed over while
 	# another stands.
 	var open: Array[MechState] = []
@@ -3691,7 +3709,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 		return _lowest_shield(live)
 	match f.aim_of():
 		"anything":
-			return _draw_mech(live, f)
+			return live[r.randi_range(0, live.size() - 1)]
 		"heat":
 			var hottest: Array[MechState] = []
 			for ms in live:
@@ -3699,15 +3717,15 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 					hottest = [ms]
 				elif ms.heat == hottest[0].heat:
 					hottest.append(ms)
-			return _draw_mech(hottest, f)
+			return hottest[r.randi_range(0, hottest.size() - 1)]
 		"armed":
 			var armed: Array[MechState] = []
 			for ms in _armed_mechs():
 				if live.has(ms):
 					armed.append(ms)
 			if armed.is_empty():
-				return _pick_exposed(f, live)
-			return _draw_mech(armed, f)
+				return _pick_exposed(f, live, r)
+			return armed[r.randi_range(0, armed.size() - 1)]
 		"buffed":
 			# The buffed (21 October): the machine carrying the most stacks of buffs (never stores),
 			# drawn among the tied; the exposed when none carries any.
@@ -3721,27 +3739,16 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 				elif n == top and n > 0:
 					most.append(ms)
 			if most.is_empty():
-				return _pick_exposed(f, live)
-			return _draw_mech(most, f)
+				return _pick_exposed(f, live, r)
+			return most[r.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
 			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
 				return shared
-			var pick := _pick_exposed(f, live)
+			var pick := _pick_exposed(f, live, r)
 			_focus[f.rank] = pick
 			return pick
-	return _pick_exposed(f, live)
-
-
-## One machine drawn from `pool` on the seeded stream. The round preview's copy draws nothing: a
-## pool of one is a sure pick, and any other is held back and noted, never promised.
-func _draw_mech(pool: Array[MechState], f: Foe) -> MechState:
-	if previewing:
-		if pool.size() == 1:
-			return pool[0]
-		preview_notes.append({"kind": "pick", "foe": f})
-		return null
-	return pool[rng.randi_range(0, pool.size() - 1)]
+	return _pick_exposed(f, live, r)
 
 
 static func _lowest_shield(live: Array[MechState]) -> MechState:
@@ -3756,18 +3763,15 @@ static func _lowest_shield(live: Array[MechState]) -> MechState:
 
 ## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
 ## its shield, armour, Barrier and Ward as they stand, plus half of any shield they would
-## break (a shield about to fail is exposure too), and the pick is drawn by weight. Every
-## machine weighs something, so in the round preview's copy only a lone one is sure.
-func _pick_exposed(f: Foe, live: Array[MechState]) -> MechState:
-	if previewing:
-		return _draw_mech(live, f)
+## break (a shield about to fail is exposure too), and the pick is drawn by weight from `r`.
+func _pick_exposed(f: Foe, live: Array[MechState], r: RandomNumberGenerator) -> MechState:
 	var weights: Array[float] = []
 	var total := 0.0
 	for ms in live:
 		var w := 1.0 + float(hull_reached(f, ms)) + float(shield_broken(f, ms)) * 0.5
 		weights.append(w)
 		total += w
-	var roll := rng.randf() * total
+	var roll := r.randf() * total
 	for i in range(live.size()):
 		roll -= weights[i]
 		if roll <= 0.0:
@@ -3899,7 +3903,7 @@ func _last_act(f: Foe) -> void:
 	else:
 		var t := f.target as MechState
 		if t == null or not t.alive():
-			t = _pick_mech_target(f)
+			t = _pick_mech_target(f, [], pick_rng)
 		if t != null:
 			struck.append(mechs.find(t))
 			_strike(f, t)

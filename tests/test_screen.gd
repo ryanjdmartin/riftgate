@@ -634,6 +634,75 @@ func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_
 	s.free()
 
 
+## Every status on its way wears a pulsing preview chip (Ryan, 26 October: "All incoming chips
+## should appear as pulsing opacity versions"): the Shocked a Retaliate will put on the foe that
+## strikes the bare hull, the Burning its rider leaves on the machine; a foe the round kills wears
+## its skull and no chips on the way.
+func test_every_status_on_its_way_wears_a_preview_chip() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.blank())
+	m.shield = 0
+	sk.add_mech(m)
+	var g := Foe.make("revenant", 300, 4)
+	g.actions[0]["keywords"] = ["burn"]
+	g.actions[0]["burn"] = 2
+	sk.add_foes([g])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.grant_for_rounds(m, Effects.STATUS["retaliate"], "test", sk.round)
+	g.target = sk.mechs[0]
+	s._refresh()
+	var previews: Array = s._foe_view_for(g).statuses.filter(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "preview")
+	assert_eq(previews.size(), 1, "the foe wears one chip on its way")
+	if previews.size() == 1:
+		assert_eq(str(previews[0][0]), "shocked", "the Shocked the Retaliate lands")
+		assert_eq(str(previews[0][1]), "", "a status that renews shows no count")
+	var mine: Array = s._mech_rows(0).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview")
+	assert_eq(mine.size(), 1, "the machine wears one")
+	if mine.size() == 1:
+		assert_eq(str(mine[0][0]), SkirmishScreen.status_glyph("burning_mech"), "the Burning its rider leaves")
+		assert_eq(str(mine[0][1]), "+2", "two stacks")
+	g.hp = 1
+	Effects.stack(g, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	s._refresh()
+	var rows := s._foe_rows(g)
+	assert_true(rows.any(func(r) -> bool: return str(r[0]) == "skull" and str(r[1]) == ""), "burning to death first, it wears the skull")
+	assert_false(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview"), "and nothing on its way")
+	s.free()
+
+
+## A foe whose machine falls before it acts strikes the pick it will make (26 October: no pick is
+## open), and its arrow dashes there as the round stands, the way a lure's turn is drawn.
+func test_a_foe_whose_machine_falls_first_draws_its_arrow_dashed_to_the_machine_it_will_strike() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var a := db.make_mech("badger")
+	a.die = Die.single(Face.blank())
+	a.shield = 0
+	a.hull = 1
+	sk.add_mech(a)
+	var b := db.make_mech("clydesdale")
+	b.die = Die.single(Face.blank())
+	sk.add_mech(b)
+	var big := Foe.make("revenant", 300, 20)
+	var small := Foe.make("revenant", 300, 7)
+	sk.add_foes([big, small])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	s.show_all_arrows = true
+	big.target = sk.mechs[0]
+	small.target = sk.mechs[0]
+	s._refresh()
+	var dashed := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3]))
+	var solid := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() <= 3)
+	assert_eq(solid.size(), 1, "the first blow's arrow, solid")
+	assert_eq(dashed.size(), 1, "the second's dashed to the machine it will strike")
+	assert_eq(int(s._mech_views[1].bars[1][3]), b.hull - 7 + mini(b.shield, 7) if b.shield < 7 else b.hull, "whose gauge reads the blow")
+	s.free()
+
+
 ## A foe's ticks preview on its gauge (Ryan, 26 October: Burning and the other ticks are static
 ## numbers, "so a hypothetical death at the start of the enemy's turn could be previewed"): the HP
 ## its Burning will take at its action is the gauge's pending loss, the whole bar when it kills it
