@@ -4033,6 +4033,34 @@ func test_the_round_preview_spends_the_die_in_hand_only_over_its_target() -> voi
 	assert_eq(int(pv["foes"][a]["hp"]), 4, "which is 1")
 
 
+## Ryan's own case (26 October): "if a player hits with a weapon that grants burn, it should then
+## show impending death if the burn is sufficient". Over the foe, the Burn the hit lays ticks at
+## its action and kills it before it strikes; spent, the same reads with nothing in hand.
+func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> void:
+	var sk := Skirmish.new(4, 2)
+	var torch := Face.attack(1, L, K.BURN)
+	torch.burn = 3
+	var m := _mech("A", Die.single(torch), 0, 100)
+	sk.add_mech(m)
+	var x := _ghoul(1 + 3 * _rule("burning", "tick_hp"), 9)
+	var b := _ghoul(500, 6)
+	sk.add_foes([x, b])
+	sk.begin()
+	sk.start_round()
+	var pv := sk.preview_round()
+	assert_true(bool(pv["foes"][x]["alive"]), "nothing in hand: it stands")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "and strikes")
+	pv = sk.preview_round(0, x)
+	assert_false(bool(pv["foes"][x]["alive"]), "over it, the Burn the hit lays kills it at its action")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 6, "before it strikes")
+	sk.assign(0, x)
+	pv = sk.preview_round()
+	assert_false(bool(pv["foes"][x]["alive"]), "spent, the same with nothing in hand")
+	sk.end_round()
+	assert_false(x.alive(), "as it fell")
+	assert_eq(m.hull, 100 - 6, "before its blow")
+
+
 func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)
