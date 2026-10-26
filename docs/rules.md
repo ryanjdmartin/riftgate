@@ -656,6 +656,12 @@ a stat.
   UNDO MOVE restores a machine until it fights. A caught machine's fight comes first. END
   TURN: packs walk and strike; machines that did not fight regain shield at their field rate;
   Rift Pressure rises one.
+- **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
+  it in the strip under the map, as the fight's holds read: a machine's shield and hull as
+  gauges, its move and actions left, a chip for its damaged components; a pack's foe and
+  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground's
+  word for each way of moving, a line a word, and whether packs enter it. A refused order
+  says what stopped it there too.
 - **Orders**: a tap or drag onto a pack moves the machine to the farthest hex in attack range
   its move reaches (or leaves it, if in range) and orders it. ENGAGE opens one fight at a
   time: the first order's pack and every machine ordered onto it.

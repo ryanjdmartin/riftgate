@@ -457,18 +457,21 @@ static func _span(text: String, font: Font, px: int, ink: Color, pad: float = 0.
 
 
 ## A gauge: its label, its bar filled to what it holds, then its numbers, a maximum something
-## moved coloured with its arrow; returns the bottom.
+## moved coloured with its arrow; returns the bottom. A label longer than the bar's place (the
+## gate's Integrity) pushes the bar along.
 func _bar(l: Dictionary, y: float) -> float:
 	var font := Hud.display()
 	var px := 17
 	var ascent := font.get_ascent(px)
 	var height := ascent + font.get_descent(px)
 	var label := str(l.get("label", ""))
-	_words.append({"text": label, "font": font, "px": px, "ink": Palette.INK, "at": Vector2(0.0, y + ascent), "top": y, "height": height, "w": font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x, "arrow": 0})
+	var label_w := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+	_words.append({"text": label, "font": font, "px": px, "ink": Palette.INK, "at": Vector2(0.0, y + ascent), "top": y, "height": height, "w": label_w, "arrow": 0})
+	var bar_x := maxf(BAR_X, label_w + 12.0)
 	var top := maxi(1, int(l.get("max", 1)))
-	_bars.append({"rect": Rect2(Vector2(BAR_X, y + (height - BAR_H) * 0.5), Vector2(BAR_W, BAR_H)), "frac": float(l.get("now", 0)) / float(top), "colour": l.get("colour", Palette.HUD)})
+	_bars.append({"rect": Rect2(Vector2(bar_x, y + (height - BAR_H) * 0.5), Vector2(BAR_W, BAR_H)), "frac": float(l.get("now", 0)) / float(top), "colour": l.get("colour", Palette.HUD)})
 	var numbers := _spans({"style": "effect", "parts": l.get("parts", [])})
-	return maxf(_flow(numbers, WIDTH * 4.0, y, BAR_X + BAR_W + 12.0), y + height)
+	return maxf(_flow(numbers, WIDTH * 4.0, y, bar_x + BAR_W + 12.0), y + height)
 
 
 ## A gauge's line for the unit holds: `label`, what it holds `now` of its maximum `top`, read

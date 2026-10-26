@@ -189,7 +189,7 @@ func _apply_pose() -> void:
 ## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -206,6 +206,21 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
+		"boss":
+			s._on_unit_held(b.boss)
+		"gate":
+			s._on_hex_tapped(b.field.map.gate)
+		"ground":
+			# Nothing in hand, a tap on the first open water (else ruins): what the ground is.
+			var pick := Vector2i(-9999, -9999)
+			for want in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS]:
+				for h in b.field.map.all_hexes():
+					if b.field.map.terrain.get(h, -1) == want and b.field.unit_at(h) == null and not b.field.map.is_structure(h):
+						pick = h
+						break
+				if pick != Vector2i(-9999, -9999):
+					break
+			s._on_hex_tapped(pick)
 		"draft", "draftslow":
 			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
 			# stops about halfway through the move on open ground, draftslow ends on a slow hex,
