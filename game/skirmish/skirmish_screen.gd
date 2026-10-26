@@ -94,6 +94,7 @@ var _home: Dictionary = {}           # Control -> where it rests; every animatio
 var _live_tweens: Dictionary = {}    # Control -> the tweens moving it now, killed before a new one starts
 var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
+var _twin_views: Array = []          # [rank][col] -> UnitView: a twin slot's right-hand half (the Gel's pair), hidden otherwise
 var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
@@ -332,6 +333,10 @@ func _build() -> void:
 	_massive_views = []
 	_massive_views.resize(sk.columns)
 	_massive_views.fill(null)
+	_twin_views = [[], []]
+	for rank in range(2):
+		_twin_views[rank].resize(sk.columns)
+		_twin_views[rank].fill(null)
 	_mech_views.clear()
 	_mech_3d.clear()
 	_dice.clear()
@@ -396,6 +401,17 @@ func _build() -> void:
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
 			v.tapped.connect(_on_slot_tapped.bind(rank, col))
 			_slot_views[rank][col] = v
+			# A twin slot's right-hand half (26 October): the slot's right half while the pair
+			# stands, the left half's view taking the other.
+			var tv := UnitView.new()
+			tv.is_enemy = true
+			tv.visible = false
+			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+			tv.held.connect(_on_foe_held.bind(tv))
+			tv.hold_released.connect(_on_hold_released)
+			tv.double_tapped.connect(_on_foe_double_tapped.bind(tv))
+			tv.tapped.connect(_on_twin_tapped.bind(rank, col))
+			_twin_views[rank][col] = tv
 		var mv := UnitView.new()
 		mv.is_enemy = true
 		mv.massive = true
@@ -811,9 +827,25 @@ func _refresh(save: bool = true) -> void:
 		for rank in range(2):
 			var v: UnitView = _slot_views[rank][col]
 			v.visible = not massive
+			var tv: UnitView = _twin_views[rank][col]
+			var foe := sk.foe_at(rank, col)
+			var twin: Foe = sk.twins.get(Vector2i(rank, col), null) if not massive and foe != null else null
+			# A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left
+			# half and the right half's view the other, each foe its own target; a plain slot is
+			# one view across the whole.
+			var at := Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
+			if twin != null:
+				_lay(v, at, Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+				_lay(tv, at + Vector2(SLOT_SIZE.x * 0.5, 0.0), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+				tv.visible = true
+				tv.modulate = Color.WHITE
+				_fill_foe_view(tv, twin, targets, rank * sk.columns + col + 11)
+				_view_foe[tv] = twin
+			else:
+				tv.visible = false
+				_lay(v, at, SLOT_SIZE)
 			if massive:
 				continue
-			var foe := sk.foe_at(rank, col)
 			if foe == null:
 				# An empty slot; with mines waiting (the Lammergeier's) its dashed outline, the
 				# mine's glyph with the total waiting and a chip per keyword riding in them.
@@ -1810,6 +1842,29 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 	if not _use_die(i, primary, second):
 		Sound.play("die_drop")
 	_refresh()
+
+
+## A tap on a twin slot's right-hand half while a Swap waits for its second target.
+func _on_twin_tapped(rank: int, col: int) -> void:
+	var twin: Foe = sk.twins.get(Vector2i(rank, col), null)
+	if _pending.is_empty() or twin == null or not sk.swap_targets(_pending["primary"]).has(twin):
+		return
+	var i: int = _pending["mech"]
+	var primary: Foe = _pending["primary"]
+	_cancel_second()
+	if not _use_die(i, primary, twin):
+		Sound.play("die_drop")
+	_refresh()
+
+
+## A control laid where it now rests, its animations settled first when that moves it.
+func _lay(c: Control, pos: Vector2, sz: Vector2) -> void:
+	if c.size == sz and _home.get(c, Vector2(-1.0e9, 0.0)) == pos:
+		return
+	_settle(c)
+	c.position = pos
+	c.size = sz
+	_home[c] = pos
 
 
 ## The pending Swap put back in the tray, unspent.

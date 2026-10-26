@@ -3,7 +3,8 @@ extends SceneTree
 ## Renders a scene into a 720x1280 offscreen viewport and saves a PNG. Needs a window
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
-## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
+## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
+## (a Gel's halves in its slot, RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
 ## roll again mid-burst), heat (Burning and Scorched on the first machine).
 
@@ -75,6 +76,17 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
+		"pair":
+			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
+			# in its slot (RIFTGATE_FOES=gel:2,goblin:3).
+			var db := ContentDB.load_default()
+			s.sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+			for f in s.sk.field_foes():
+				if f.content_id == "gel" and f.rank == 0:
+					f.hp = 0
+					break
+			s.sk._clear_dead()
+			s._refresh()
 		"hold":
 			s._on_die_held(1)
 		"confirm":

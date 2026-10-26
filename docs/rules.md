@@ -527,12 +527,19 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
   on it bursts at the end of its action, skipped or not.
-- **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), the first
-  stepping up into the slot it fell from and the second into the nearest empty slot of its
-  rank, the left on a tie; one with no room waits in the reinforcements. So its hole never
-  opens: the Gel is a wall, not an attacker, and its blow carries no breach. A half stepping
-  up sets off a mine waiting in its slot. Its round is over: it shows no intent, no Lure or
-  Disrupt turns it, a stun takes its next action, and it acts from the next round.
+- **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), standing as a
+  pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
+  opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
+  that reaches the slot (Spread, Penetrate, a mine's) reaches both halves, aimed at one of them
+  or beside; a single-target blow, a Spillover included, the one it is spent on. The slot is
+  full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
+  while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
+  Swap moves the pair together and never swaps a half with its twin. When one falls the other
+  keeps the slot alone, and with both gone it is a plain slot: the pair is only ever its
+  split's, so no half joins another's slot. A mine waiting in the slot goes off on the pair
+  as they step up. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
+  their next action, and they act from the next round. A split that is no pair (none in
+  content) steps up one into the slot and the rest into the nearest empty slots of their rank.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; with no room it waits in the
   reinforcements. A foe joining the reinforcements is shown going in: it flies into its rank's

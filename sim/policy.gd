@@ -274,6 +274,9 @@ static func _mirror(copy: Skirmish, sk: Skirmish, t):
 	if t == null or t is Vector2i:
 		return t
 	if t is Foe:
+		var key := Vector2i(t.rank, t.column)
+		if sk.twins.get(key, null) == t:
+			return copy.twins.get(key, null)   # a twin slot's right-hand half (the Gel's pair)
 		return copy.foe_at(t.rank, t.column)
 	if t is Skirmish.MechState:
 		var i := sk.mechs.find(t)

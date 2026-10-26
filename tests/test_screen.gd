@@ -1090,3 +1090,22 @@ func test_a_foe_joining_the_pool_is_noticed() -> void:
 	assert_true(s._pool_last.has(joined), "the newcomer seen joining")
 	assert_eq(s._reserve.pending.get("front", 0), 0, "headless, nothing flies and the count stands as it is")
 	s.free()
+
+
+## A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left half and
+## the right half's view the other, each its own target; a plain slot is one view again.
+func test_a_twin_slot_shows_both_halves() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	s._refresh(false)
+	var tv: UnitView = s._twin_views[0][0]
+	assert_true(tv.visible, "the right half shows")
+	assert_eq(s._view_foe.get(tv, null), half, "its own view, its own target")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the left half takes half the slot")
+	s.sk.twins.clear()
+	s._refresh(false)
+	assert_false(tv.visible, "a plain slot again")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "one view across it")
+	s.free()

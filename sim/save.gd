@@ -367,6 +367,9 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var queue: Array = []
 	for f in sk.reinforcements:
 		queue.append(foes.find(f))
+	var paired: Array = []   # the twin slots (the Gel's halves): each slot and its right-hand half
+	for at in sk.twins.keys():
+		paired.append([at.x, at.y, foes.find(sk.twins[at])])
 	# The mines (the Lammergeier's): each slot's shots in laid order, the slot as its rank and column.
 	var mined: Array = []
 	for slot in sk.mines.keys():
@@ -375,7 +378,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
 	}
 
 
@@ -449,6 +452,10 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 		var bi := int(back[col]) if col < back.size() else -1
 		sk.front[col] = foes[fi] if fi >= 0 and fi < foes.size() else null
 		sk.back[col] = foes[bi] if bi >= 0 and bi < foes.size() else null
+	for tw in d.get("twins", []):
+		var ti := int(tw[2])
+		if ti >= 0 and ti < foes.size():
+			sk.twins[Vector2i(int(tw[0]), int(tw[1]))] = foes[ti]
 	for qi in d.get("reinforcements", []):
 		var i := int(qi)
 		if i >= 0 and i < foes.size():
@@ -513,6 +520,8 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	var od = d.get("on_death", {})
 	if od is Dictionary and od.has("summon"):
 		f.on_death = {"summon": str(od["summon"]), "count": maxi(1, int(od.get("count", 1)))}
+		if bool(od.get("pair", false)):
+			f.on_death["pair"] = true   # the halves stand as a pair in its slot (26 October)
 	if od is Dictionary and od.get("blow", null) is Dictionary:
 		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October)
 	f.stays_down = bool(d.get("stays_down", false))

@@ -4771,6 +4771,78 @@ func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
 
 
+## The Gel's pair (Ryan, 26 October: the halves "should exist as a pair taking the place of one
+## unit"): both stand in its slot at once, one slot to the formation; an area blow reaches both,
+## a single-target blow one; no mine goes in while either stands, a drone's included; when one
+## falls the other keeps the slot alone, and with both gone it is a plain slot.
+func test_a_pair_of_halves_stands_in_one_slot() -> void:
+	var sk := Skirmish.new(2, 3)
+	var spread := Face.attack(3, L, K.CLEAVE)
+	var single := Face.attack(3, L)
+	sk.add_mech(_mech("A", Die.of([Face.attack(200, L), spread, single]), 40, 100))
+	var heavy := _ghoul(500, 20)
+	var gel := _ghoul(30, 10)
+	gel.display_name = "gel"
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 2)
+	sk.add_foes([heavy, gel])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	sk.assign(0, gel)
+	var left: Foe = sk.front[1]
+	var right: Foe = sk.twins.get(Vector2i(0, 1), null)
+	assert_true(left != null and right != null, "both halves stand in its slot")
+	assert_eq(sk.front[2], null, "the next slot stays empty")
+	assert_eq(sk.reinforcements.size(), 0, "and nothing goes to the pool")
+	assert_eq(sk.twin_of(left), right, "a pair")
+	assert_eq(sk.field_foes(), [heavy, left, right] as Array[Foe], "the right half acts after the left")
+	assert_true(left.fresh and right.fresh, "their round over")
+	assert_true("\n".join(sk.log).contains("a pair in one slot"), "the log says so")
+	assert_false(sk.slot_targets(ms, Face.attack(3, L)).has(Vector2i(0, 1)), "the slot is full: no mine goes in")
+	assert_true(sk.targets_for_face(ms, single).has(right), "each half its own target")
+	assert_eq(sk.web_catch(left), right, "a web on the left half catches the right")
+	# An area blow reaches the slot whole; a single-target blow one half.
+	assert_true(sk.reached_by(spread, heavy).has(left) and sk.reached_by(spread, heavy).has(right), "a Spread beside it reaches both")
+	assert_true(sk.reached_by(spread, right).has(left), "and aimed at one, its twin too")
+	assert_eq(sk.reached_by(single, right), [right] as Array[Foe], "a single-target blow the one")
+	# The drone: a marked half killed while its twin stands leaves no mine.
+	Effects.stack(left, Effects.STATUS["syrinx_drone"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	left.hp = 0
+	sk._drone_mine(left, {"damage": 3, "keywords": [], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0})
+	assert_true(sk.mines.is_empty(), "no mine while its twin holds the slot")
+	sk._clear_dead()
+	assert_eq(sk.front[1], right, "the survivor keeps the slot alone")
+	assert_true(sk.twins.is_empty(), "the pair gone")
+	right.hp = 0
+	sk._clear_dead()
+	assert_eq(sk.front[1], null, "both gone: a plain empty slot")
+
+
+## A Swap moves a pair together, and a save keeps it.
+func test_a_pair_moves_and_saves_together() -> void:
+	var sk := Skirmish.new(2, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
+	var gel := _ghoul(30, 10)
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 2)
+	sk.add_foes([gel])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, gel)
+	var left: Foe = sk.front[0]
+	var right: Foe = sk.twins[Vector2i(0, 0)]
+	assert_false(sk.swap_targets(left).has(right), "a half never swaps with its own twin")
+	sk._swap(left, Vector2i(0, 2))
+	assert_eq([sk.front[0], sk.front[2], sk.twins.get(Vector2i(0, 2), null)], [null, left, right], "the pair moved as one")
+	assert_eq([right.rank, right.column], [0, 2], "the right half with it")
+	var c := SaveGame.clone_skirmish(sk)
+	var cl: Foe = c.front[2]
+	assert_true(cl != null and c.twin_of(cl) != null, "a copy through the save keeps the pair")
+	assert_eq(c.twin_of(cl).hp, right.hp, "its right half as it was")
+
+
 func test_a_split_steps_onto_a_mine_waiting_in_its_slot_and_a_stun_takes_its_next_action() -> void:
 	# A half stepping up mid-turn is a way in like a Swap's: a mine waiting in the slot goes off
 	# at once, and a stun in it takes the half's next action, its round being over.
