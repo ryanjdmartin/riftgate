@@ -106,7 +106,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
   to 69% for the starter trios, the cold ones paying a little to heat and the hottest walled on
-  the greedy bot (Ryan's play judges it, the to-do).
+  the greedy bot (Ryan's play judges it, the to-do). Since 26 October Spread and Penetrate deal
+  every foe past the target half the blow (Ryan's rule of 11 and 12 October, unbuilt until
+  then): alone, the Cottonmouth's swarms went from free to a decision (greedy 100 to 62%), the
+  Badger's formations back to walls, and no machine without area moved.
 
 ## Decided, not built
 
