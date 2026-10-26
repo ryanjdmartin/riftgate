@@ -94,11 +94,14 @@ The reads this proposal answers, each in `docs/measurements.md` unless named oth
   keeps the first battle's lists. The enemy's side of the curve is the hole, and the row says
   so: "the enemy the same at every tier until the foes' fresh start".
 - **A fight is one pack, mostly, because the squad is one machine, mostly** (26 October, this
-  session's reads below): of the campaign runner's battles 46% are fought by one machine and
-  42% by two, wrecks sitting out with no spares (section 3's roster row), so 47% of its fights
-  are one machine alone against one pack, and the squad walking as one moves none of it. The
-  campaign report reads the roster's spiral, not the fights' shape; the quick campaign reads
-  the fights.
+  session's reads): four of the campaign runner's battles in five are fought by one or two
+  machines, wrecks sitting out with no spares (section 3's roster row), so two fights in five
+  are one machine alone against one pack, and the squad walking as one moves none of it. What
+  main's boss row moved is the battles won, from 1% to 15%: a trio that reaches the boss fights
+  it together, every machine in whatever its turn, so the boss's fight is the first decision a
+  trio makes and the one it wins; the seal (section 4 below) is what makes it the last. The
+  campaign report reads the roster's spiral and the boss row, not the fights' shape; the quick
+  campaign reads the fights.
 - **Formations are the only decision, and they read easier at random** (24 October): the
   formations' pressure is the balancing's to restore, and an advanced foe's aim is a lever on
   top.
@@ -515,11 +518,12 @@ Runner work only; no rule, no content and no screen changed. The reads are in
   range of the hunters before the catch opens; before, each machine walked toward its own
   nearest enemy and a catch was fought by whoever stood in range. `--solo` on
   `tools/campaign_run.gd` keeps the old walk for comparison. What it found: the lone fights
-  are the roster's, not the walk's (above). And one rule the bot had been missing under
-  main's boss row: a fight needs an order, which needs a machine within attack range of the
-  pack, and only then does the boss's fight bring every machine; the bot had been opening the
-  boss's fight from across the map on its first turn once the row landed (41% of battles won
-  in one fight on the first read of the merged code, a bot artefact and no read), and now
+  are the roster's, not the walk's (above), and the alone fights do not move with it (419 to
+  416), while the whole squad's fights do (58 to 81). And one rule the bot had been missing
+  under main's boss row: a fight needs an order, which needs a machine within attack range of
+  the pack, and only then does the boss's fight bring every machine; the bot had been opening
+  the boss's fight from across the map on its first turn once the row landed (41% of battles
+  won in one fight on the first read of the merged code, a bot artefact and no read), and now
   opens a fight only where an order could.
 - **The withdrawing persona on the campaign bot** (`--withdraw N`): the fight bot's persona on
   every fight the player picks, withdrawing once the fighters' hull is under N percent; a fight

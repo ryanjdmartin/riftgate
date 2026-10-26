@@ -122,9 +122,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   October): two foes are free for any machine alone, three of a swarm type a real fight for a
   light machine alone and free for a heavy, a front and a back of six a quarter of a lone
   heavy's hull and a wall for the lights, a whole spawn list 6 to 12% of a tier-two trio's and
-  1 to 6% of a four's. The campaign's lone fights are the roster's, not the bot's walk: 46% of
-  its battles are fought by one machine and 42% by two, wrecks sitting out with no spares, and
-  the squad moving as one moves none of it, so the fights' shape is read on the quick campaign
+  1 to 6% of a four's. The campaign's lone fights are the roster's, not the bot's walk: four
+  battles in five are fought by one or two machines, wrecks sitting out with no spares, and the
+  squad moving as one moves none of it; what main's boss row moved is the battles won (1% to
+  15%), a trio that reaches the boss fighting it together, which is also the read that says the
+  proposal's seal matters. The fights' shape is read on the quick campaign
   (`claude/quick-campaign-mode-pafhiv`) until a run can field a squad.
 
 ## Decided, not built
@@ -186,8 +188,8 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.299, and so is the live (26 October,
-  the page's version 316, from this branch: the live v0.298, the quick campaign's branch's, with
+  `docs/design-bible.html` after every change. This file is v0.300, and so is the live (26 October,
+  the page's version 317, from this branch: the live v0.298, the quick campaign's branch's, with
   section 12's fresh-start question pointing at `docs/foes_proposal.md` and its campaign question
   carrying the day's read of the lone fights; so this branch's file holds the other branches'
   rows too, as the publishing convention has it, and main's v0.292 is behind it). The
