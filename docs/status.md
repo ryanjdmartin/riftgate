@@ -18,8 +18,9 @@ are in `README.md`.
 - The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
   `C:\Users\jam82\Desktop\Code\riftgate`; the README's Running section says what is set up
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
-  force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
-  no machine until a route for the image model is chosen.
+  force-added in `fb45141` and cut from Ryan's picks on 26 October (the Augur's, her only
+  surviving renders, kept for her next pass); foeforge's `generate` and `fix` have no machine
+  until a route for the image model is chosen.
 - Tests: 628 tests, 64,352 checks, green on main (25 October, the three branches landed onto
   the weld), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
@@ -85,9 +86,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
   new model's part that moves, glows or hides on its own needs a joint, a pin or a name in
   `glow_parts`.
-- Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
-  content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the
-  picker's seventh round (Pages).
+- Foe art: every foe and hero cut from Ryan's picks, and every subject of the boss art round
+  cut ahead of its kit (`art/foes`, `tools/foeforge/picks/picks.json`), the last three from the
+  picker's seventh round on 26 October: Surtr (his white-hot blade and blaze kept by the cut's
+  new `--keep-glow`), Floraison and the Augur, who needs another pass "at some point" (Ryan:
+  "she's still not correct"; the to-do). Those three went in without their `.import` files,
+  since that session could not fetch Godot: the desk machine's next `--import` writes them.
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
@@ -177,11 +181,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   lands.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round's seventh sets (19 October): Surtr's blade on the grip's line,
-  Floraison's eyes painted out, and the Augur's new base with the smoke gone and the top blade
-  flipped inward; the README has the command that builds it. Every earlier round's folder stays
-  under `tools/foeforge/out/` as the record, and the renders that lost a blade or a brief sit in
-  each set's `set_aside/`; the fix order that worked is the bible's art row.
+  It holds the boss art round's seventh sets (19 October), all picked on 26 October and cut:
+  Surtr's blade on the grip's line, Floraison's eyes painted out, and the Augur's new base with
+  the smoke gone and the top blade flipped inward; the README has the command that builds it.
+  Every earlier round's folder stays under `tools/foeforge/out/` as the record, and the renders
+  that lost a blade or a brief sit in each set's `set_aside/`; the fix order that worked is the
+  bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
