@@ -211,11 +211,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 114 (26 October, from
-  `claude/affectionate-goldberg-8e3mkh`: the playtest list's foes and vocabulary lines, the
-  Silence and Silenced codex and the Spin-Up's note, its vocabulary a three-way merge onto 113's,
-  `ccr-170f6d81-465jnr`'s scratch merge of the quick campaign's, since the branches' content
-  differs until they land; components and foes identical to the last publish's before, and
+  before it is replaced and `edits` read first. At the page's version 117 (26 October, from
+  `claude/affectionate-goldberg-8e3mkh`: the Howl's and Stoke the Forge's text and Kindled's codex
+  and table entry, each file a three-way merge onto the live one another session published at noon with
+  the quick campaign's foes note and `ccr-170f6d81-465jnr`'s vocabulary wording, since the
+  branches' content differs until they land; the page itself identical on every branch, and
   `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
