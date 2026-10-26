@@ -33,8 +33,7 @@ func _init() -> void:
 		lines.append("| Term | Codex | Status |")
 		lines.append("|---|---|---|")
 		for e in rows:
-			var hint := str(e.get("hint", ""))
-			lines.append("| **%s** | %s%s | %s |" % [e["name"], e["codex"], (" *On the die's hold: %s.*" % hint) if not hint.is_empty() else "", e["status"]])
+			lines.append("| **%s** | %s | %s |" % [e["name"], e["codex"], e["status"]])
 		lines.append("")
 	lines.append("## Holes")
 	lines.append("")

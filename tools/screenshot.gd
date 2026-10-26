@@ -100,6 +100,8 @@ func _apply_pose() -> void:
 			# One of the feed's analysis events, started now (RIFTGATE_SHOT_FRAME=20 for the
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))
+		"keywords":
+			s._open_menu("keywords")   # as the button under the eye opens it
 		"menu", "settings", "quit":
 			s._open_menu()
 			if _pose != "menu":

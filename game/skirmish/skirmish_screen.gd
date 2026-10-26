@@ -80,6 +80,7 @@ var show_all_arrows: bool = false
 var _header: HudButton
 var _sub_label: Label
 var _eye: HudButton
+var _keys: HudButton                 # the keywords list, under the eye (Ryan, 26 October)
 var _log: RichTextLabel
 var _log_scroll: ScrollContainer
 var _log_full: Control = null        # the log full screen: a shade with a panel
@@ -371,6 +372,14 @@ func _build() -> void:
 	_eye.tooltip_text = "Show every intent arrow"
 	_eye.toggled.connect(_toggle_all_arrows)
 	_place(_eye, Vector2(W - 12 - EYE, EYE_Y), Vector2(EYE, EYE))
+	# The keywords list (Ryan, 26 October: "an accessible overlay with a button that's somehow
+	# always visible"): under the eye, in the black beside the dice, the pause menu's KEYWORDS
+	# page opened straight, its CLOSE resuming.
+	_keys = HudButton.new("?", _open_menu.bind("keywords"))
+	_keys.slant_px = 0.0
+	_keys.font_size = 30
+	_keys.tooltip_text = "Keywords"
+	_place(_keys, Vector2(W - 12 - EYE, EYE_Y + EYE + 8.0), Vector2(EYE, EYE))
 
 	# Formation: six slot views, three massive views (hidden until needed). Ranks need no
 	# label; the back rank is the one behind.
@@ -1408,25 +1417,23 @@ func _on_die_tapped(i: int) -> void:
 	_refresh()
 
 
-## What holds on die entry `i` now, a word each, for its hold: FIXED where it is built in, a
-## dark entry's rounds left or a foe's switch-off, its corruption. A stepping die's next
-## chamber is its cylinder's arrow.
+## What holds on die entry `i` now, for its hold: a cooldown with its turns left (Ryan, 26
+## October: "On Cooldown (X turns left)"), a foe's switch-off, its corruption, a crack. A
+## stepping die's next chamber is its cylinder's arrow.
 func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
 	var out: Array[String] = []
 	if i < 0 or i >= ms.die.faces.size():
 		return out
 	var f: Face = ms.die.faces[i]
-	if f.fixed:
-		out.append("FIXED")
 	if Effects.is_entry_disabled(ms.unit, i):
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append(("DISABLED" if Effects.cleansable_disable(ms.unit, i) else "DARK") \
-			+ (", %d ROUND%s LEFT" % [dark, "" if dark == 1 else "S"] if dark > 0 else ""))
+		out.append(("Disabled" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""))
 	var rot := Effects.corrupt_stacks(ms.unit, i)
 	if rot > 0:
-		out.append("CORRUPTED" + (" ×%d" % rot if rot > 1 else ""))
+		out.append("Corrupted" + (" ×%d" % rot if rot > 1 else ""))
 	if f.cracked:
-		out.append("CRACKED")
+		out.append("Cracked")
 	return out
 
 
@@ -1440,9 +1447,10 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	# The entry showing, alone (Ryan, 25 October: "only show the visible component"): its
-	# place and name, what holds on it now, its codex, every effect a line with what each
-	# keyword does, its own rules and every passive's change last, its tags (EntryReadout).
+	# The entry showing, alone (Ryan, 25 October: "only show the visible component"; 26
+	# October: "it just turns the iconography into text"): its place and name, what holds on
+	# it now, its codex, a line for each mark on the die, a number the live sources moved
+	# highlighted, its own rules last, its tags (EntryReadout).
 	# The whole die is the codex's, a double-tap on the machine. A die that steps (the
 	# Cassowary's) shows its chambers as a cylinder above it: the one showing lit, an arrow
 	# round to the next (Ryan's ring, 19 October).
@@ -1452,7 +1460,8 @@ func _on_die_held(i: int) -> void:
 	var entry: Array = []
 	if f != null:
 		var sf := sk.shown_face(ms, f)
-		entry = EntryReadout.lines_for(sf, at + 1, sk.shown_number_text(ms, sf), _entry_states(ms, at), Effects.explain_parts(ms.unit, f), ContentDB.load_default())
+		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default())
 	_show_details("", _dice[i], [], ring, entry)
 	Sound.play("hold")
 	_hold_die = i
@@ -1545,7 +1554,8 @@ func _close_codex() -> void:
 
 var _menu: PauseMenu = null
 
-func _open_menu() -> void:
+## The pause menu, on PAUSED from MENU or straight on `page` (the keywords button).
+func _open_menu(page: String = "paused") -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, value: Variant) -> void:
@@ -1562,7 +1572,7 @@ func _open_menu() -> void:
 		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
 	_menu.move_to_front()
-	_menu.open()
+	_menu.open(page)
 
 
 func _toggle_all_arrows(on: bool) -> void:

@@ -239,10 +239,11 @@ func _draw() -> void:
 	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
 	var num := shown_number if not shown_number.is_empty() else face.number_text()
 	if face.disabled and dark > 0:
-		# Dark with the rounds left (the cooldown row, 14 October): the count where the number
-		# sits and what it counts beneath, so it never reads as the component's number.
+		# Dark with the turns left (the cooldown row, 14 October; Ryan's "turns", 26 October): the
+		# count where the number sits and what it counts beneath, so it never reads as the
+		# component's number.
 		num = str(dark)
-		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "ROUND LEFT" if dark == 1 else "ROUNDS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
+		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "TURN LEFT" if dark == 1 else "TURNS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
 	var num_size := 28 if num.contains("–") else 38
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;

@@ -33,8 +33,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   validator, so bad content fails the build. Every entry's internal text lives under `design`
   (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;
   the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
-  entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`,
-  a vocabulary term's `hint` (the line the die's hold shows beside a keyword or a reach).
+  entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`.
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
   never from a hardcoded id (a fallback model, maker or faction is content's first). Code
   names an id only to key an asset to a maker or a domain (a metal, a sound, the gate's

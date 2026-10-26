@@ -163,13 +163,16 @@ defeat when every machine is wrecked. There is no round limit.
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
-- **Holding the die** shows the entry showing, alone: its place and name, what holds on it
-  (fixed, dark, corrupted), its codex, then one effect a line in the order a spend runs it
-  (its number as the die prints it, its reach or whom it is spent on, how it lands, its heat
-  and Volatile, what it leaves on each foe hit, Rapid), its own rules and every passive's
-  change last, then its tags. Each keyword and reach carries what it does in a quieter
-  italic: a keyword that lays a status in that status's own words. The whole die is in the
-  codex (double-tap the machine).
+- **Holding the die** shows the entry showing, alone, its marks as text: its place and name,
+  what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
+  codex, then a line a mark in the order a spend runs it (its number as the die prints it, its
+  target, how it lands, its heat and Volatile, what it applies on hit, Rapid), its own rules
+  and a written-out grant's line last, then its tags. A number the live sources moved off the
+  component's own sits in a chip, white where the change is the player's gain, red where it
+  is a loss (more heat, less damage over the spend), its arrow the way it moved; no source is
+  listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
+  the pause menu and behind the button under the eye, gives every reach, keyword, rule and
+  status the dice and chips print, with its codex line.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
@@ -230,7 +233,7 @@ defeat when every machine is wrecked. There is no round limit.
   Deflector's two).
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
   its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
-  that many rounds, this one included, shown on the die with the rounds left; the die may
+  that many rounds, this one included, shown on the die with the turns left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the

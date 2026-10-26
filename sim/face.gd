@@ -45,9 +45,8 @@ const KEYWORD_NAMES := {
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
-## The status each foe hit gains from a keyword that lays one: the die's hold explains such a
-## keyword with that status's own description (Ryan, 25 October), so a rider reads the engine's
-## words and numbers; every other keyword carries a vocabulary hint (the validator holds both).
+## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
+## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
 	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",

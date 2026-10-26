@@ -15,6 +15,10 @@ extends Control
 ## Under the PAUSED page, in the scrim's empty space, a second plate is the music: what is
 ## playing, by title and working label, with previous and next through the screen's set
 ## (Ryan, 25 September: on the page itself, not a settings item).
+##
+## KEYWORDS (Ryan, 26 October: "We need a keywords list in the pause menu"): every term the
+## dice and the chips print, by kind, each with its codex line, in a scroller; the skirmish's
+## button under the eye opens it straight, and then CLOSE (or a tap outside) resumes.
 
 signal resumed
 signal display_changed(key: String, value: Variant)
@@ -23,6 +27,12 @@ signal quit_requested
 
 const WIDTH := 560.0
 const MUSIC_GAP := 18.0   # between the menu's panel and the music plate
+const TOP_LIST := 64.0     # the keywords page's panel top
+const LIST_CHROME := 230.0 # its title, button, margins and a gap under it: the rest is the list
+
+## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
+## page's heading for it.
+const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel
@@ -36,6 +46,8 @@ var _music_next: HudButton
 var _music_loop := "?"    # the loop the plate shows; "?" so the first poll draws it
 var _page := "paused"
 var _busy := false
+var _direct := false      # opened straight on a page (the keywords button): its BACK closes
+var _list: ScrollContainer = null   # the keywords page's scroller, sized to the glass in _fit
 
 
 func _init() -> void:
@@ -47,7 +59,7 @@ func _init() -> void:
 	_scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_scrim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_scrim.gui_input.connect(func(e: InputEvent) -> void:
-		if e is InputEventMouseButton and e.pressed and _page == "paused" and not _busy:
+		if e is InputEventMouseButton and e.pressed and (_page == "paused" or _direct) and not _busy:
 			close())
 	add_child(_scrim)
 	_panel = HudPanel.new(24.0)
@@ -67,9 +79,11 @@ func _init() -> void:
 	add_child(_mask)
 
 
-func open() -> void:
+## Open on `page`: PAUSED from MENU, or straight on KEYWORDS from the skirmish's button.
+func open(page: String = "paused") -> void:
 	_music_loop = "?"
-	_show_page("paused")
+	_direct = page != "paused"
+	_show_page(page)
 	visible = true
 	Sound.play("menu_open")
 	Sound.duck(true)
@@ -95,6 +109,7 @@ func _show_page(page: String) -> void:
 		"paused":
 			_title("PAUSED")
 			_button("RESUME", close, true, "")   # close() plays the menu closing
+			_button("KEYWORDS", func() -> void: _show_page("keywords"))
 			_button("SETTINGS", func() -> void: _show_page("settings"))
 			_button("QUIT", func() -> void: _show_page("quit"))
 		"settings":
@@ -114,6 +129,14 @@ func _show_page(page: String) -> void:
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
+		"keywords":
+			_title("KEYWORDS")
+			_list = _keywords_list()
+			_rows.add_child(_list)
+			if _direct:
+				_button("CLOSE", close, true, "")
+			else:
+				_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")
 			var l := Hud.label("Leave for the harness. A battle is kept where it stands.", 18, Palette.MUTED)
@@ -130,6 +153,11 @@ func _show_page(page: String) -> void:
 
 
 func _fit() -> void:
+	# The keywords page stands tall from near the top, its scroller taking what the glass has.
+	_panel.position.y = TOP_LIST if _page == "keywords" else 240.0
+	if _page == "keywords" and _list != null:
+		var tall := size.y if size.y > 0.0 else 1280.0
+		_list.custom_minimum_size = Vector2(WIDTH - 48.0, maxf(320.0, tall - TOP_LIST - LIST_CHROME))
 	_panel.reset_size()
 	_panel.size = Vector2(WIDTH, _panel.get_combined_minimum_size().y)
 	_music.visible = _page == "paused"
@@ -309,3 +337,54 @@ class BusyMask extends Control:
 		draw_polyline(Hex.corners(c + Vector2(0, -30), 26.0) + PackedVector2Array([Hex.corners(c + Vector2(0, -30), 26.0)[0]]), hud, 2.0, true)
 		draw_polyline(Hex.corners(c + Vector2(0, -30), 14.0) + PackedVector2Array([Hex.corners(c + Vector2(0, -30), 14.0)[0]]), Color(hud, 0.5), 1.5, true)
 		draw_string(Hud.mono(), Vector2(0, c.y + 30.0), "RECONFIGURING DISPLAY", HORIZONTAL_ALIGNMENT_CENTER, size.x, 16, hud)
+
+
+## The keywords list as data: each kind's heading and its terms, [name, codex, id] sorted by
+## name; only what the engine runs (a planned term is never shown).
+static func glossary(db: ContentDB) -> Array:
+	var out: Array = []
+	for kind in GLOSSARY:
+		var entries: Array = []
+		for id in db.vocabulary.keys():
+			var e: Dictionary = db.vocabulary[id]
+			if str(e.get("category", "")) == str(kind[0]) and str(e.get("status", "")) == "implemented":
+				entries.append([str(e.get("name", id)), str(e.get("codex", "")), str(id)])
+		entries.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]).naturalnocasecmp_to(str(b[0])) < 0)
+		if not entries.is_empty():
+			out.append({"title": kind[1], "entries": entries})
+	return out
+
+
+## The keywords page's scroller: a heading a kind, then each term's name over its codex line.
+func _keywords_list() -> ScrollContainer:
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sc.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	var bar := sc.get_v_scroll_bar()
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(Palette.HUD, 0.12)
+	var grab := StyleBoxFlat.new()
+	grab.bg_color = Color(Palette.HUD, 0.7)
+	bar.add_theme_stylebox_override("scroll", track)
+	bar.add_theme_stylebox_override("grabber", grab)
+	bar.add_theme_stylebox_override("grabber_highlight", grab)
+	bar.add_theme_stylebox_override("grabber_pressed", grab)
+	bar.custom_minimum_size = Vector2(8, 0)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 14)
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.add_child(col)
+	var width := WIDTH - 48.0 - 20.0   # inside the panel's margins, clear of the bar
+	for kind in glossary(ContentDB.load_default()):
+		var head := Hud.label(str(kind["title"]), 15, Palette.HUD, Hud.mono())
+		col.add_child(head)
+		for e in kind["entries"]:
+			var term := VBoxContainer.new()   # a name over its line, close together
+			term.add_theme_constant_override("separation", 0)
+			term.add_child(Hud.label(str(e[0]), 20, Palette.INK, Hud.display_bold()))
+			var codex := Hud.label(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))
+			codex.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			codex.custom_minimum_size = Vector2(width, 0)   # a wrapping label needs its width before its first layout
+			term.add_child(codex)
+			col.add_child(term)
+	return sc
