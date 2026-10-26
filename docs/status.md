@@ -150,6 +150,13 @@ merged on 21 October are paused, each resuming from its briefs:
   bases, its holes in chat first; the Giant Petrel read as a chunky airliner with rockets tied
   to the front, its reference (the Lun) his question. The aims' shown words are none of the
   Needletail's (Ryan), so its brief retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`).
+  His reads of 26 October and the third round of looks (`tools/lowforge/looks/kestrel_looks2.py`,
+  the sheets in `docs/looks/`): the jaeger "pretty cool", so a second crack at it beside two more
+  swing-wings (the scissor, an X of two stacked wings; the drop-tip, whose tips fold down); the
+  starfighter Needletail good, so two riffs (the lance, with the designator as the needle's tip;
+  the dart, a faceted diamond body); the swap taken as a stab (the Puffin on the boat, the Storm
+  Petrel on the Puffin's hull with a bow plate and a front riot shield); the Lun the wrong
+  reference, so the Giant Petrel as a flying-wing hovercraft and as a catamaran. His picks next.
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
