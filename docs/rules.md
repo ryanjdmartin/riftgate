@@ -179,6 +179,14 @@ defeat when every machine is wrecked. There is no round limit.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
+- **Holding a machine or a foe** shows it the way the die's hold shows an entry: its name;
+  its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
+  has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
+  armour and cooling (a foe's armour and attack) the same way, read from the player's side,
+  so a foe hitting harder is red and up; every chip on it with what it does, and the round's
+  warnings; then a foe's intent a line a mark: its move's name, its blow as it will land read
+  against its own, the machine it is aimed at by name, when it lands, its riders and its
+  text. A suppressed foe shows no intent.
 - **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
   effect: its numbers, each its chassis's or its kind's own with what its loadout and the
   battle make of it in a bracket beside it, green up or red down with its arrow; its passive;

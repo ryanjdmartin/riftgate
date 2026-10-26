@@ -104,7 +104,6 @@ var _details: HudPanel
 var _details_label: Label
 var _details_entry: EntryReadout     # the die's hold: the entry showing, its effects listed (Ryan, 25 October)
 var _details_ring: CylinderView      # a stepping die's chambers in its hold (the Cassowary's)
-var _details_status: StatusListView
 var _roll_label: Label
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
@@ -583,10 +582,6 @@ func _build() -> void:
 	_details_entry = EntryReadout.new()
 	_details_entry.visible = false
 	dv.add_child(_details_entry)
-	_details_status = StatusListView.new()
-	_details_status.visible = false
-	_details_status.custom_minimum_size = Vector2(300, 0)
-	dv.add_child(_details_status)
 
 	_build_codex()
 	_build_confirm()
@@ -1348,20 +1343,19 @@ func _refresh_arrows() -> void:
 	_arrows.set_arrows(list)
 
 
-## Hold readout beside a control: a text block and, for a unit, its statuses and warnings as
-## icon-and-text rows; for a die, the entry showing with its effects listed (EntryReadout),
-## a stepping die's cylinder above it.
-func _show_details(text: String, near: Control, rows: Array = [], ring: Array = [], entry: Array = []) -> void:
+## Hold readout beside a control: a text block (a mined slot's), or lines (EntryReadout): a
+## die's entry showing with its effects listed, a stepping die's cylinder above it, or a
+## unit's gauges, chips and intent.
+func _show_details(text: String, near: Control, ring: Array = [], entry: Array = []) -> void:
 	_details_label.text = text
 	_details_label.visible = not text.is_empty()
 	# A stepping die's cylinder above its entries: [faces, the chamber showing, the next].
 	_details_ring.visible = not ring.is_empty()
 	if not ring.is_empty():
 		_details_ring.set_cylinder(ring[0], int(ring[1]), int(ring[2]))
-	_details_status.set_rows(rows)
 	var width := 360.0
-	# The die's hold: one entry, its effects a line each (EntryReadout), at the panel's
-	# content width so its wrapping is measured at the width it is drawn.
+	# The readout's lines at the panel's content width, so their wrapping is measured at the
+	# width they are drawn.
 	_details_entry.visible = not entry.is_empty()
 	if not entry.is_empty():
 		width = EntryReadout.WIDTH + 28.0
@@ -1462,7 +1456,7 @@ func _on_die_held(i: int) -> void:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default())
-	_show_details("", _dice[i], [], ring, entry)
+	_show_details("", _dice[i], ring, entry)
 	Sound.play("hold")
 	_hold_die = i
 	_refresh(false)   # the marks and a lure's preview read the held die
@@ -1479,51 +1473,80 @@ func _on_foe_held(v: UnitView) -> void:
 				Sound.play("hold")
 		return
 	_hold_foe = foe
-	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
-	if not foe.alive():
-		text += "\ndestroyed: cleared at the end of the round"
-	elif not foe.is_suppressed():
-		# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed row
-		# below says what it does this round, as the chip does under its sprite.
-		if not foe.action.is_empty():
-			if foe.gathering():
-				text += "\n%s %d%s, lands %s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note, "next round" if foe.charge == 1 else "in %d rounds" % foe.charge]
-			elif foe.attacks():
-				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
-			else:
-				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
-		if foe.target != null and foe.reaches_every_machine():
-			text += "\n→ every machine"
-		elif foe.target != null and not foe.acts_on_nobody():
-			# The sense only where the foe carries one: a foe without one picks at random (24 October).
-			var sense := foe.aim_of()
-			text += "\n→ %s" % foe.target.unit.display_name
-			if sense != Foe.AIM_ANYTHING:
-				text += " (%s)" % str(Foe.AIM_TEXT.get(sense, sense))
-	if foe.is_massive():
-		text += "\nmassive: fills the column"
-	_show_details(text, v, _readout_rows(_foe_rows(foe)))
+	_show_details("", v, [], _foe_hold_lines(foe))
 	Sound.play("hold")
 	_refresh_arrows()
 
 
 func _on_mech_held(i: int) -> void:
 	_hold_mech = i
-	var ms: Skirmish.MechState = sk.mechs[i]
-	var text := "%s\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
-	if ms.unit.cooling > 0:
-		text += "\ncools %d at the start of each turn" % ms.unit.cooling
-	_show_details(text, _mech_views[i], _readout_rows(_mech_rows(i)))
+	_show_details("", _mech_views[i], [], _mech_hold_lines(i))
 	Sound.play("hold")
 	_refresh_arrows()
 
 
-## Status rows for the readout: [glyph, readout text, colour].
-func _readout_rows(rows: Array) -> Array:
-	var out: Array = []
-	for r in rows:
-		out.append([r[0], r[2], r[3]])
+## A machine's hold (Ryan, 26 October: "the hold press on an ally or enemy should follow a
+## similar format as the hold press on the die, showing resource bars with numbers and
+## modification up/downs if they exist, a list of all chips on the unit"): its name; its
+## gauges with their numbers, a maximum anything moved off the chassis's coloured with its
+## arrow; its armour and cooling the same; then every chip on it and the round's warnings, each
+## with what it does.
+func _mech_hold_lines(i: int) -> Array:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var u := ms.unit
+	var out: Array = [_hold_title(u.display_name)]
+	if not ms.alive():
+		out.append({"style": "state", "text": "Wrecked: out for the rest of the battle", "parts": [], "place": ""})
+		return out
+	out.append(EntryReadout.bar_line("Shield", u.shield, u.shield_max, int(u.base["shield"]), Palette.SHIELD))
+	out.append(EntryReadout.bar_line("Hull", u.hull, u.hull_max, int(u.base["hull"]), Palette.HULL))
+	out.append(EntryReadout.bar_line("Heat", ms.heat, ms.heat_max, int(u.base["heat"]), Palette.HEAT))
+	if ms.ammo_max > 0:
+		out.append(EntryReadout.bar_line("Ammo", ms.ammo, ms.ammo_max, ms.ammo_max, Palette.SELECT))
+	out.append(EntryReadout.parts_line("effect", [EntryReadout.word("Armour"), EntryReadout.num(str(u.armour), u.armour, int(u.base["armour"])),
+		EntryReadout.word("·"), EntryReadout.word("Cools"), EntryReadout.num(str(u.cooling), u.cooling, int(u.base["cooling"])), EntryReadout.word("a turn")]))
+	for r in _mech_rows(i):
+		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	return out
+
+
+## A foe's hold, the same way: its name, its HP, its armour and its attack against its own (a
+## harder foe is the player's loss, so up is red), every chip on it, then its intent as the die's
+## hold lists an entry (Ryan: "for enemies their current intent in the same format as the die
+## hold press for a component"), the machine it is aimed at named.
+func _foe_hold_lines(foe: Foe) -> Array:
+	var db := ContentDB.load_default()
+	var own: Dictionary = db.foes.get(foe.content_id, {})
+	var out: Array = [_hold_title(foe.display_name)]
+	if not foe.alive():
+		out.append({"style": "state", "text": "Destroyed: cleared at the end of the round", "parts": [], "place": ""})
+		return out
+	out.append(EntryReadout.bar_line("HP", foe.hp, foe.hp_max, int(own.get("hp", foe.hp_max)), Palette.HUD, true))
+	var stats: Array = [EntryReadout.word("Armour"), EntryReadout.num(str(foe.armour_total()), foe.armour_total(), foe.armour, true),
+		EntryReadout.word("·"), EntryReadout.word("Attack"), EntryReadout.num(str(foe.attack + Effects.foe_attack_bonus(foe)), foe.attack + Effects.foe_attack_bonus(foe), foe.attack, true)]
+	if foe.is_massive():
+		stats.append_array([EntryReadout.word("·"), EntryReadout.word("Massive: fills the column")])
+	out.append(EntryReadout.parts_line("effect", stats))
+	for r in _foe_rows(foe):
+		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
+	# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed chip says what
+	# it does this round, as the chip does under its sprite.
+	if foe.is_suppressed() or foe.action.is_empty():
+		return out
+	var target := ""
+	if foe.target != null and not foe.acts_on_nobody() and not foe.reaches_every_machine():
+		target = foe.target.unit.display_name
+	out.append({"style": "caption", "text": "INTENT", "parts": [], "place": ""})
+	var move := EntryReadout.move_lines(foe, foe.action, db, true, target)
+	move[0]["style"] = "name"
+	move[0]["tags"] = ""
+	out.append_array(move)
+	return out
+
+
+## A unit hold's first line: its name, as the die's hold heads an entry.
+static func _hold_title(name: String) -> Dictionary:
+	return {"style": "title", "text": name.to_upper(), "parts": [], "place": ""}
 
 
 func _on_foe_double_tapped(v: UnitView) -> void:

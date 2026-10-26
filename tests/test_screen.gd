@@ -123,6 +123,66 @@ func test_hold_shows_details_and_arrows() -> void:
 	s.free()
 
 
+## A unit's hold (Ryan, 26 October: "a similar format as the hold press on the die, showing
+## resource bars with numbers and modification up/downs if they exist, a list of all chips on
+## the unit, and for enemies their current intent in the same format as the die hold press for
+## a component"): its name, its gauges with their numbers, a maximum something moved coloured
+## with its arrow, every chip with what it does; a foe's intent a line a mark, the machine it is
+## aimed at named and its blow read against its own from the player's side.
+func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(5))
+	m.grant_passive({"id": "t_plate", "name": "Plate", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 10}]})
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 30, 4)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
+	s._refresh()
+	s._on_mech_held(0)
+	assert_true(s._details_entry.visible and not s._details_label.visible, "the readout's lines, no text block")
+	var lines: Array = s._details_entry.lines
+	assert_eq(str(lines[0]["text"]), m.display_name.to_upper(), "its name first")
+	var gauges := {}
+	var chips: Array[String] = []
+	for l in lines:
+		if str(l["style"]) == "bar":
+			gauges[str(l["label"])] = l
+		elif str(l["style"]) == "chip":
+			chips.append(str(l["text"]))
+	assert_eq(gauges.keys(), ["Shield", "Hull", "Heat"], "its three gauges, as on the field")
+	assert_eq(str(gauges["Hull"]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "each with its numbers")
+	var top: Dictionary = gauges["Hull"]["parts"][1]
+	assert_eq([int(top["trend"]), bool(top["gain"])], [1, true], "a maximum the passive raised: up, the player's gain")
+	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
+	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
+	s._on_hold_released()
+	# A foe: its HP, its attack a rally raised (the player's loss: up and red), its intent.
+	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
+	s._refresh()
+	s._on_foe_held(s._foe_view_for(foe))
+	var said := s._details_entry.text()
+	assert_true(said.begins_with(foe.display_name.to_upper()), "its name first: %s" % said)
+	assert_true(said.contains("HP %d/%d" % [foe.hp, foe.hp_max]), "its HP with its numbers")
+	assert_true(said.contains("Attack %d▲" % (foe.attack + 2)), "its attack the rally raised, its arrow on it: %s" % said)
+	var flines: Array = s._details_entry.lines
+	var at := -1
+	for k in range(flines.size()):
+		if str(flines[k]["text"]) == "INTENT":
+			at = k
+	assert_true(at > 0, "its intent under a caption")
+	assert_eq(str(flines[at + 1]["text"]), str(foe.action.get("name", "")).to_upper(), "the move's name heads it")
+	assert_eq(str(flines[at + 2]["text"]), "Attack %d" % foe.damage(), "its blow as it will land")
+	var blow: Dictionary = flines[at + 2]["parts"][1]
+	assert_eq([int(blow["trend"]), bool(blow["gain"])], [1, false], "harder than its own: the player's loss")
+	assert_eq(str(flines[at + 3]["text"]), "Target: %s" % foe.target.unit.display_name, "the machine it is aimed at, named")
+	s._on_hold_released()
+	s.free()
+
+
 ## The die's hold (Ryan, 25 October: "only show the visible component"; 26 October: "it just
 ## turns the iconography into text"): the entry showing, alone, as a list in the order a spend
 ## runs it: its place and name from content, its number as the die prints it, its target, its
@@ -568,9 +628,9 @@ func test_a_suppressed_foe_shows_its_chip_in_place_of_its_intent() -> void:
 	assert_eq(str(v.statuses[0][0]), "suppress", "the Suppressed chip leads the row in its place")
 	assert_eq(s._arrows.arrows.size(), 1, "only the other foe's arrow stays")
 	s._on_foe_held(v)
-	var text := s._details_label.text
-	assert_false(text.contains("→"), "the hold names no target")
-	assert_false(text.contains("%s %d" % [str(first.action.get("name", "")), first.damage()]), "nor the blow it will not land")
+	var text := s._details_entry.text()
+	assert_false(text.contains("INTENT") or text.contains("Target:"), "the hold lists no intent and names no target: %s" % text)
+	assert_true(text.contains("Suppressed"), "its Suppressed chip says what it does this round")
 	s._on_hold_released()
 	s.free()
 
@@ -712,8 +772,8 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	s._refresh()
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
 	var held := 0
-	for r in s._readout_rows(s._mech_rows(0)):
-		if str(r[1]).begins_with("Overcharged"):
+	for l in s._mech_hold_lines(0):
+		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Overcharged"):
 			held += 1
 	assert_eq(held, 1, "the hold lists it once")
 	var named := 0
