@@ -177,8 +177,9 @@ defeat when every machine is wrecked. There is no round limit.
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. Nothing a roll decides is promised: a rolled blow counts its lowest roll, and a
   pick drawn again (a foe whose machine fell or is Phased mid-turn), a stun Numbed may shrug
-  off, the entry an injury lands on and a strike at a random foe are left out; the
-  reinforcements are the next round's. A foe's gauge shows the HP the round will leave it, a
+  off, the entry an injury lands on and a strike at a random foe are left out. A draw only one
+  machine or foe can answer is no draw and counts: the last machine a foe may pick takes its
+  blow, the lone foe a random strike's. The reinforcements are the next round's. A foe's gauge shows the HP the round will leave it, a
   heal hatched as a machine's gain is, and a foe the round kills wears the destroyed chip, its
   intent kept. A Lure in hand shows its turn before it is spent: the foes it would turn draw
   dashed arrows to its machine, those on it already solid, and the gauges read the round as the

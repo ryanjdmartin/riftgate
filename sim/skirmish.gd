@@ -1744,11 +1744,12 @@ func _foe_turn(f: Foe) -> bool:
 	var t := f.target as MechState
 	if t == null or not t.alive() or is_phased(t):
 		t = _pick_mech_target(f)
-	if t == null and previewing and not live_mechs().is_empty():
-		# Its pick is drawn again at random (its machine fell, or is Phased): a move that needs no
-		# machine goes ahead in the round preview's copy, and a blow at one is held back.
+	if t == null and previewing and not targetable_mechs().is_empty():
+		# Its pick is drawn again at random among machines it may strike (its own fell, or is
+		# Phased): a move that needs no machine goes ahead in the round preview's copy, and a blow
+		# at one is held back (a pick only one machine can answer is sure, and was made).
 		if f.acts_on_nobody() or f.reaches_every_machine() or f.gathering():
-			t = live_mechs()[0]
+			t = targetable_mechs()[0]
 		else:
 			_acted.append(f)
 			return true
@@ -2355,15 +2356,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 ## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
 ## one blow of the machine's on a live foe drawn from the seeded stream, back rank included,
 ## through the damage pipeline (the machine's adds and multiplies, then the foe's own: its
-## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does.
+## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does. The
+## round preview's copy draws nothing: a lone foe takes it for sure, else it is held back.
 func _blast(ms: MechState, amount: int) -> void:
 	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
 		return
-	if previewing:
+	if previewing and live.size() > 1:
 		preview_notes.append({"kind": "blast", "mech": mechs.find(ms)})
 		return
-	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
+	var foe: Foe = live[0] if previewing else live[rng.randi_range(0, live.size() - 1)]
 	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
 	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
 	var taken := Effects.damage_taken(foe, dmg, ms.unit, true)   # a blast is a damaging blow
@@ -2736,28 +2738,34 @@ func _equipment_after(ms: MechState, f: Face, target) -> void:
 		_reload(ms, int(rule.get("shield", 0)), "the shield")
 
 
-## A random live foe from the seeded stream, or `fallback` when none stands.
+## A random live foe from the seeded stream, or `fallback` when none stands. The round preview's
+## copy draws nothing: a lone foe is a sure strike, and among more the strike is held back.
 func _random_foe(fallback: Foe) -> Foe:
-	if previewing:
-		preview_notes.append({"kind": "random_target"})
-		return null
 	var live: Array[Foe] = []
 	for foe in field_foes():
 		if foe.alive():
 			live.append(foe)
 	if live.is_empty():
 		return fallback
+	if previewing:
+		if live.size() == 1:
+			return live[0]
+		preview_notes.append({"kind": "random_target"})
+		return null
 	return live[rng.randi_range(0, live.size() - 1)]
 
 
 ## Where a spray's strike falls (the Skua's Flechette Pod): a random live foe the entry reaches
-## now, from the seeded stream, the same foe again allowed; null when none stands in reach.
+## now, from the seeded stream, the same foe again allowed; null when none stands in reach. The
+## round preview's copy draws nothing: a lone foe in reach takes it for sure, else it is held back.
 func _spray_pick(ms: MechState, real: Face) -> Foe:
-	if previewing:
-		preview_notes.append({"kind": "spray", "mech": mechs.find(ms)})
-		return null
 	var pool := targets_for_face(ms, real)
 	if pool.is_empty():
+		return null
+	if previewing:
+		if pool.size() == 1:
+			return pool[0]
+		preview_notes.append({"kind": "spray", "mech": mechs.find(ms)})
 		return null
 	return pool[rng.randi_range(0, pool.size() - 1)]
 
@@ -3300,7 +3308,7 @@ func _suppress(foe: Foe) -> bool:
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
 	var resist := foe.resist_total()
-	if resist > 0 and previewing:
+	if resist > 0 and resist < 100 and previewing:
 		preview_notes.append({"kind": "resist", "foe": foe})   # a stun Numbed may shrug off is never promised
 		return false
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
@@ -3665,13 +3673,11 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a
 ## commitment: a foe whose target shields up still swings at it. With the override set, or
-## asked with no foe, the rule before: the lowest shield, then the lowest hull.
+## asked with no foe, the rule before: the lowest shield, then the lowest hull. The round
+## preview's copy draws nothing (_draw_mech): a pick only one machine can answer is sure.
 func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
-		return null
-	if previewing:
-		preview_notes.append({"kind": "pick", "foe": f})   # a pick drawn mid-round is never promised
 		return null
 	# Never over-commit: a machine the blows already drawn would wreck is passed over while
 	# another stands.
@@ -3685,7 +3691,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 		return _lowest_shield(live)
 	match f.aim_of():
 		"anything":
-			return live[rng.randi_range(0, live.size() - 1)]
+			return _draw_mech(live, f)
 		"heat":
 			var hottest: Array[MechState] = []
 			for ms in live:
@@ -3693,7 +3699,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 					hottest = [ms]
 				elif ms.heat == hottest[0].heat:
 					hottest.append(ms)
-			return hottest[rng.randi_range(0, hottest.size() - 1)]
+			return _draw_mech(hottest, f)
 		"armed":
 			var armed: Array[MechState] = []
 			for ms in _armed_mechs():
@@ -3701,7 +3707,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 					armed.append(ms)
 			if armed.is_empty():
 				return _pick_exposed(f, live)
-			return armed[rng.randi_range(0, armed.size() - 1)]
+			return _draw_mech(armed, f)
 		"buffed":
 			# The buffed (21 October): the machine carrying the most stacks of buffs (never stores),
 			# drawn among the tied; the exposed when none carries any.
@@ -3716,7 +3722,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 					most.append(ms)
 			if most.is_empty():
 				return _pick_exposed(f, live)
-			return most[rng.randi_range(0, most.size() - 1)]
+			return _draw_mech(most, f)
 		"focus":
 			var shared = _focus.get(f.rank, null)
 			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
@@ -3725,6 +3731,17 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 			_focus[f.rank] = pick
 			return pick
 	return _pick_exposed(f, live)
+
+
+## One machine drawn from `pool` on the seeded stream. The round preview's copy draws nothing: a
+## pool of one is a sure pick, and any other is held back and noted, never promised.
+func _draw_mech(pool: Array[MechState], f: Foe) -> MechState:
+	if previewing:
+		if pool.size() == 1:
+			return pool[0]
+		preview_notes.append({"kind": "pick", "foe": f})
+		return null
+	return pool[rng.randi_range(0, pool.size() - 1)]
 
 
 static func _lowest_shield(live: Array[MechState]) -> MechState:
@@ -3739,8 +3756,11 @@ static func _lowest_shield(live: Array[MechState]) -> MechState:
 
 ## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
 ## its shield, armour, Barrier and Ward as they stand, plus half of any shield they would
-## break (a shield about to fail is exposure too), and the pick is drawn by weight.
+## break (a shield about to fail is exposure too), and the pick is drawn by weight. Every
+## machine weighs something, so in the round preview's copy only a lone one is sure.
 func _pick_exposed(f: Foe, live: Array[MechState]) -> MechState:
+	if previewing:
+		return _draw_mech(live, f)
 	var weights: Array[float] = []
 	var total := 0.0
 	for ms in live:

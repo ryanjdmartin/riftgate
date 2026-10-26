@@ -6,9 +6,10 @@ extends RefCounted
 ## means nothing on its own and a band means something:
 ##   RANDOM  never rerolls, spends every die on any legal target, shields and vents itself.
 ##           The floor: a fight random play wins is too easy, no argument.
-##   GREEDY  reads the same forecast the screen shows and takes the best one-round trade,
-##           rerolling dice that came up under their die's average. A competent new player.
-##           It cannot see anything the player cannot.
+##   GREEDY  reads the forecast (Skirmish.forecast: the blows the screen's round preview shows,
+##           summed by hand, without what only playing the round finds, a heal or a last act)
+##           and takes the best one-round trade, rerolling dice that came up under their
+##           die's average. A competent new player. It cannot see anything the player cannot.
 ##   BLIND   the tests' blind play (the bible's section 2: "a team that spends each die on the
 ##           nearest foe"): the greedy's rerolls, then every weapon on the nearest foe in reach
 ##           and every piece of equipment on its own machine, holding only what would overheat

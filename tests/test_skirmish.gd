@@ -4061,6 +4061,54 @@ func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> voi
 	assert_eq(m.hull, 100 - 6, "before its blow")
 
 
+## A draw only one machine or foe can answer is no draw (Ryan, 26 October: the preview leaves out
+## "random active effects" alone): the foe whose machine falls strikes the last one standing, in
+## the preview as in the round; with two to pick between, its blow is held back and noted.
+func test_the_round_preview_counts_a_pick_only_one_can_answer() -> void:
+	var sk := Skirmish.new(4, 2)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
+	var b := _mech("B", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(b)
+	var big := _ghoul(500, 20)
+	var small := _ghoul(500, 7)
+	sk.add_foes([big, small])
+	sk.begin()
+	sk.start_round()
+	big.target = sk.mechs[0]
+	small.target = sk.mechs[0]
+	var pv := sk.preview_round()
+	assert_true(bool(pv["mechs"][0]["destroyed"]), "the first blow wrecks A")
+	assert_eq(int(pv["mechs"][1]["hull_after"]), 100 - 7, "and the second, its machine gone, can only pick B")
+	sk.end_round()
+	assert_eq(b.hull, 100 - 7, "as it did")
+	var s3 := Skirmish.new(4, 2)
+	s3.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
+	s3.add_mech(_mech("B", Die.single(Face.blank()), 0, 100))
+	s3.add_mech(_mech("C", Die.single(Face.blank()), 0, 100))
+	var big3 := _ghoul(500, 20)
+	var small3 := _ghoul(500, 7)
+	s3.add_foes([big3, small3])
+	s3.begin()
+	s3.start_round()
+	big3.target = s3.mechs[0]
+	small3.target = s3.mechs[0]
+	pv = s3.preview_round()
+	assert_eq(int(pv["mechs"][1]["hull_after"]) + int(pv["mechs"][2]["hull_after"]), 200, "B or C: the blow is held back")
+	var held: Array = (pv["notes"] as Array).filter(func(n) -> bool: return str(n["kind"]) == "pick" and n["foe"] == small3)
+	assert_eq(held.size(), 1, "and noted")
+	# A weapon that strikes at random, with one foe standing, strikes it for sure.
+	var s1 := Skirmish.new(4, 2)
+	var gun := Face.attack(5, L)
+	gun.random_targets = true
+	s1.add_mech(_mech("A", Die.single(gun), 0, 100))
+	var lone := _ghoul(5, 9)
+	s1.add_foes([lone])
+	s1.begin()
+	s1.start_round()
+	pv = s1.preview_round(0, lone)
+	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe is the random strike's only answer")
+
+
 func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)

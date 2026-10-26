@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 669 tests, 64,847 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 670 tests, 64,853 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes, the rally at once, the set finals
   and the round preview),
   about a minute in a cloud session.
@@ -203,8 +203,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.306, and so is the live (26 October,
-  the page's version 323, from `claude/affectionate-goldberg-8e3mkh`: the round preview, merged
+  `docs/design-bible.html` after every change. This file is v0.307, and so is the live (26 October,
+  the page's version 324, from `claude/affectionate-goldberg-8e3mkh`: the round preview's sure
+  draws; before it the round preview, merged
   onto another session's republish of 15:34, which built area at half and rewrote the hold, drag
   and codex rows; before it this branch's tick preview, rally at once, chip pulse and set finals,
   merged onto the quick campaign's republish of 15:17 (main's Gel clause) and the live v0.300,
