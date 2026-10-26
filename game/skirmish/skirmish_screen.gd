@@ -1538,24 +1538,25 @@ func _refresh_arrows() -> void:
 				continue
 			targets.append(target_index)
 		# Its machine falls before it acts, as the round stands, and it strikes another (the round
-		# preview, 26 October: the pick it will make, from the pick stream): its arrow dashes to
-		# the machine its blow lands on, the way a lure's turn is drawn.
-		var struck: Array = _round.get("foes", {}).get(foe, {}).get("struck", [])
-		var turned := not struck.is_empty() and not struck.any(func(i) -> bool: return targets.has(int(i)))
-		if turned:
-			targets.clear()
-			for i in struck:
-				targets.append(int(i))
+		# preview, 26 October: the pick it will make, from the pick stream): a second arrow, dashed
+		# the way a lure's turn is drawn, to the machine its blow lands on. Its own stays solid on
+		# its pick (Ryan, 26 October: a dashed arrow in its place "masks the true intent", which
+		# whatever reads the intent still needs; "We either need to show both arrows, or ... just
+		# preview the damage, not the target cascade").
 		var fv := _foe_view_for(foe)
 		if fv == null:
 			continue
-		for target_index in targets:
+		var spill: Array[int] = []
+		for i in _round.get("foes", {}).get(foe, {}).get("struck", []):
+			if not targets.has(int(i)) and int(i) >= 0 and int(i) < _mech_views.size():
+				spill.append(int(i))
+		for target_index in targets + spill:
 			var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech or target_index == lurer
 			if not wanted:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
 			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
-			list.append([from, to, Palette.ENEMY, true] if turned else [from, to, Palette.ENEMY])
+			list.append([from, to, Palette.ENEMY, true] if spill.has(target_index) else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked;
 	# one whose blow lands elsewhere as the round stands (the lurer falls before it acts, and it
 	# picks again) dashes to that machine too, so the lure reads as worked and the blow as landing.

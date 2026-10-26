@@ -7,7 +7,7 @@ extends SceneTree
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
 ## roll again mid-burst), heat (Burning and Scorched on the first machine), repick (a foe whose
-## machine falls before it acts, its arrow dashed to the machine it will strike).
+## machine falls before it acts, a second arrow dashed to the machine it will strike).
 
 var _frames := 0
 var _vp: SubViewport
@@ -165,7 +165,7 @@ func _apply_pose() -> void:
 		"repick":
 			# The round preview's settled re-pick (26 October): the first machine falls to the first
 			# front foe's blow, so the second, aimed at it too, strikes the pick it will make; every
-			# arrow on, the second foe's dashed to that machine, the first's solid.
+			# arrow on, both intents solid and the second foe's spill dashed to that machine.
 			s.sk.mechs[0].unit.shield = 0
 			s.sk.mechs[0].unit.hull = 1
 			var foes := s.sk.field_foes()

@@ -176,7 +176,8 @@ defeat when every machine is wrecked. There is no round limit.
   rally, a web's burst, a death before it acts, the last act it sets off, a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the pick it will make (its
-  pick stream is the preview's too), its arrow dashed to that machine. Nothing a roll decides
+  pick stream is the preview's too): its arrow stays on its pick, and a second, dashed, goes
+  to the machine its blow lands on. Nothing a roll decides
   is promised: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, the entry
   an injury lands on and a strike at a random foe among several are left out (a lone foe takes
   it). The reinforcements are the next round's. A foe's gauge shows the HP the round will

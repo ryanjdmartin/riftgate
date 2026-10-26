@@ -684,7 +684,8 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 
 
 ## A foe whose machine falls before it acts strikes the pick it will make (26 October: no pick is
-## open), and its arrow dashes there as the round stands, the way a lure's turn is drawn.
+## open): its own arrow stays on its pick, the intent whatever reads it still needs, and a second,
+## dashed the way a lure's turn is drawn, goes to the machine its blow lands on.
 func test_a_foe_whose_machine_falls_first_draws_its_arrow_dashed_to_the_machine_it_will_strike() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -707,8 +708,8 @@ func test_a_foe_whose_machine_falls_first_draws_its_arrow_dashed_to_the_machine_
 	s._refresh()
 	var dashed := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3]))
 	var solid := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() <= 3)
-	assert_eq(solid.size(), 1, "the first blow's arrow, solid")
-	assert_eq(dashed.size(), 1, "the second's dashed to the machine it will strike")
+	assert_eq(solid.size(), 2, "both intents, solid")
+	assert_eq(dashed.size(), 1, "and the second's dashed to the machine it will strike")
 	assert_eq(int(s._mech_views[1].bars[1][3]), b.hull - 7 + mini(b.shield, 7) if b.shield < 7 else b.hull, "whose gauge reads the blow")
 	s.free()
 

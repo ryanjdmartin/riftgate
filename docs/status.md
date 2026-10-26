@@ -203,12 +203,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.312, and so is the live (26 October,
-  the page's version 329, from `claude/affectionate-goldberg-8e3mkh`: a Disrupt from a move aimed
-  at no one picking afresh and every warning chip pulsing, merged onto another session's republish
-  of 17:36, which reworked the status and keyword tables and the Burn, Stun, heat and die-entry
-  rows; before it the pick smart as it is made and never after, a Disrupt keeping a standing
-  pick, the chips beside the skull; before it
+  `docs/design-bible.html` after every change. This file is v0.314, and so is the live (26 October,
+  the page's version 331, from `claude/affectionate-goldberg-8e3mkh`: the settled re-pick drawn as
+  a second arrow, merged onto another session's republish of 18:18 (the Kite, Cottonmouth, Whip
+  Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
+  afresh and every warning chip pulsing, merged onto the republish of 17:36, which reworked the
+  status and keyword tables and the Burn, Stun, heat and die-entry rows; before it the pick smart
+  as it is made and never after, a Disrupt keeping a standing pick, the chips beside the skull; before it
   the settled re-picks and the incoming chips, merged onto another session's republish of 16:47, which retired the
   shield-break warning and rewrote the hold, colour and codex rows; before it the round preview, merged
   onto another session's republish of 15:34, which built area at half and rewrote the hold, drag
