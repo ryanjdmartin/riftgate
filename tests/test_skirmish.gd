@@ -364,11 +364,7 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	s3.begin()
 	s3.start_round()
 	assert_true(s3._when_holds(hc, {"when": "others_on_field"}), "another stands with it")
-	assert_true(s3._when_holds(hc, {"when": "few_waiting"}), "one waits, which is few")
-	s3.reinforcements.append(_ghoul(30, 10))
-	s3.reinforcements.append(_ghoul(30, 10))
-	assert_false(s3._when_holds(hc, {"when": "few_waiting"}), "three wait: not few")
-	assert_true(s3._when_holds(hc, {"when": "few_waiting", "foe": "nobody"}), "none of a named foe waits")
+	assert_false(Foe.WHENS.has("few_waiting"), "no condition counts the pool (Ryan, 26 October: a summoner needs none)")
 	assert_false(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "whole")
 	hc.hp = 80
 	assert_true(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "missing the value")
@@ -3640,16 +3636,19 @@ func test_a_readied_foe_gets_back_up_once() -> void:
 	sk.end_round()
 	assert_true(Effects.has(g, "risen"), "readied")
 	sk.start_round()
+	var hp_before := m.hull + m.shield
 	sk.assign(0, g)
-	assert_eq(sk.front[0], null, "it fell")
-	assert_eq(sk.reinforcements.size(), 1, "and went back to the pool")
+	assert_eq(sk.front[0], g, "it fell and got back up in its own slot at once (Ryan, 26 October)")
+	assert_eq(sk.reinforcements.size(), 0, "never into the pool")
 	assert_eq(g.hp, 30, "whole")
 	assert_false(Effects.has(g, "risen"), "the charge spent")
-	assert_true("\n".join(sk.log).contains("gets back up into the pool"), "the log says so")
+	assert_true(g.fresh and g.target == null, "its round over: no intent")
+	assert_true("\n".join(sk.log).contains("gets back up"), "the log says so")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
 	sk.end_round()
-	assert_eq(sk.front[0], g, "it stepped back in")
+	assert_eq(m.hull + m.shield, hp_before, "it struck nobody the round it got back up")
 	sk.start_round()
+	assert_false(g.fresh, "it acts from the next round")
 	sk.assign(0, g)
 	assert_eq(sk.reinforcements.size(), 0, "once only")
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and the second death holds")
@@ -3666,10 +3665,27 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
 	sk.begin()
 	sk.start_round()
+	var a: Skirmish.MechState = sk.mechs[0]
+	var hull := a.unit.hull + a.unit.shield
 	sk.end_round()
-	assert_eq(sk.field_foes().size(), 3, "two ghouls stepped in at the round's end")
+	assert_eq(sk.field_foes().size(), 3, "two ghouls took the empty slots at once (Ryan, 26 October)")
+	assert_true("\n".join(sk.log).contains("answer the call, stepping up"), "the log says so")
+	assert_eq(a.unit.hull + a.unit.shield, hull, "and struck nobody the round they came")
 	for f in sk.field_foes():
 		assert_eq(f.pack_id, 7, "in the summoner's pack")
+	# No empty slot of its rank: the summon waits in the pool.
+	var s3 := Skirmish.new(5, 1)
+	s3.add_mech(_mech("C", Die.single(Face.attack(10, L)), 40, 100))
+	var n3 := _archer(30, 10)
+	n3.actions = [_special("buff", "summon", {"foe": "revenant"})]
+	n3.action = n3.actions[0]
+	s3.add_foes([_ghoul(300, 1), n3])
+	s3.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
+	s3.begin()
+	s3.start_round()
+	n3.action = n3.actions[0]
+	s3._foe_acts(n3, s3.mechs[0])
+	assert_eq(s3.reinforcements.size(), 1, "the front full: it waits in the pool")
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)
@@ -4658,27 +4674,57 @@ func test_the_last_foes_last_act_lands_even_as_the_fight_is_won() -> void:
 	assert_eq(int(trip.last_act().get("strikes", 0)), 1, "a whole number of strikes")
 
 
-func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
-	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
-	# halves never split again, and without the battle's factory nothing steps in.
-	var sk := Skirmish.new(2, 1)
+func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
+	# The Gel (Ryan, 25 October: "spawn the half-gel immediately in place, not wait for the
+	# reinforcement phase"): destroyed, its halves step up at once, the first into its slot and
+	# the next into the nearest empty slot of its rank; their round is over, so they show no
+	# intent and strike from the next round. The halves never split again, and without the
+	# battle's factory nothing steps in.
+	var sk := Skirmish.new(2, 3)
 	var m := _mech("A", Die.single(Face.attack(200, L)), 40, 100)
 	sk.add_mech(m)
+	var heavy := _ghoul(500, 20)
 	var gel := _ghoul(30, 10)
+	gel.display_name = "gel"
 	gel.on_death = {"summon": "gel_small", "count": 2}
 	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
-	sk.add_foes([gel])
+	sk.add_foes([heavy, gel])
 	sk.begin()
 	sk.start_round()
+	assert_eq(sk.front[1], gel, "the gel stands beside the heavier hitter")
 	sk.assign(0, gel)
-	assert_eq(sk.front[0], null, "it fell")
-	assert_eq(sk.reinforcements.size(), 2, "two halves wait in the pool")
-	assert_eq(sk.reinforcements[0].display_name, "gel_small", "the named foe")
-	assert_eq(sk.reinforcements[0].pack_id, gel.pack_id, "under the same pack")
-	assert_true("\n".join(sk.log).contains("splits: 2 gel_small"), "the log says so")
+	assert_false(gel.alive(), "it fell")
+	assert_eq(sk.front[1].display_name, "gel_small", "a half stepped up in its slot at once")
+	assert_eq(sk.front[2].display_name, "gel_small", "and the other into the nearest empty slot")
+	assert_eq(sk.front[1].pack_id, gel.pack_id, "under the same pack")
+	assert_eq(sk.reinforcements.size(), 0, "nothing waits")
+	assert_true("\n".join(sk.log).contains("splits: 2 gel_small step up in its place"), "the log says so")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	assert_true(sk.front[1].fresh and sk.front[1].target == null, "its round is over: no intent")
+	assert_false(sk.front[1].intent_on(m), "so it shows none on the machine")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 20, "the forecast counts the heavy hitter alone")
 	sk.end_round()
-	assert_eq(sk.front[0].display_name, "gel_small", "a half stepped in")
+	assert_eq(m.shield, 20, "only the heavy hitter struck")
+	sk.start_round()
+	assert_false(sk.front[1].fresh, "the next round it acts")
+	assert_true(sk.front[1].intent_on(m), "and shows its intent")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(sk.front[2], sk))), sk)
+	assert_false(trip.fresh, "a save keeps whether it has had its round")
+	# A one-column fight: the second half has no room and waits in the pool.
+	var sk1 := Skirmish.new(2, 1)
+	sk1.add_mech(_mech("C", Die.single(Face.attack(200, L)), 40, 100))
+	var one := _ghoul(30, 10)
+	one.on_death = {"summon": "gel_small", "count": 2}
+	sk1.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
+	sk1.add_foes([one])
+	sk1.begin()
+	sk1.start_round()
+	sk1.assign(0, one)
+	assert_eq(sk1.front[0].display_name, "gel_small", "one half in its place")
+	assert_eq(sk1.reinforcements.size(), 1, "the other waits in the pool")
+	assert_true("\n".join(sk1.log).contains("1 gel_small step up in its place, 1 into the pool"), "the log says where each went")
+	var fresh_save := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(sk1.front[0], sk1))), sk1)
+	assert_true(fresh_save.fresh, "a save keeps a half that has had its round")
 	var sk2 := Skirmish.new(2, 1)
 	sk2.add_mech(_mech("B", Die.single(Face.attack(200, L)), 40, 100))
 	var lone := _ghoul(30, 10)
@@ -4689,6 +4735,99 @@ func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	sk2.assign(0, lone)
 	assert_eq(sk2.reinforcements.size(), 0, "no factory, no halves")
 	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
+
+
+## The Gel's pair (Ryan, 26 October: the halves "should exist as a pair taking the place of one
+## unit"): both stand in its slot at once, one slot to the formation; an area blow reaches both,
+## a single-target blow one; no mine goes in while either stands, a drone's included; when one
+## falls the other keeps the slot alone, and with both gone it is a plain slot.
+func test_a_pair_of_halves_stands_in_one_slot() -> void:
+	var sk := Skirmish.new(2, 3)
+	var spread := Face.attack(3, L, K.CLEAVE)
+	var single := Face.attack(3, L)
+	sk.add_mech(_mech("A", Die.of([Face.attack(200, L), spread, single]), 40, 100))
+	var heavy := _ghoul(500, 20)
+	var gel := _ghoul(30, 10)
+	gel.display_name = "gel"
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 2)
+	sk.add_foes([heavy, gel])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	sk.assign(0, gel)
+	var left: Foe = sk.front[1]
+	var right: Foe = sk.twins.get(Vector2i(0, 1), null)
+	assert_true(left != null and right != null, "both halves stand in its slot")
+	assert_eq(sk.front[2], null, "the next slot stays empty")
+	assert_eq(sk.reinforcements.size(), 0, "and nothing goes to the pool")
+	assert_eq(sk.twin_of(left), right, "a pair")
+	assert_eq(sk.field_foes(), [heavy, left, right] as Array[Foe], "the right half acts after the left")
+	assert_true(left.fresh and right.fresh, "their round over")
+	assert_true("\n".join(sk.log).contains("a pair in one slot"), "the log says so")
+	assert_false(sk.slot_targets(ms, Face.attack(3, L)).has(Vector2i(0, 1)), "the slot is full: no mine goes in")
+	assert_true(sk.targets_for_face(ms, single).has(right), "each half its own target")
+	assert_eq(sk.web_catch(left), right, "a web on the left half catches the right")
+	# An area blow reaches the slot whole; a single-target blow one half.
+	assert_true(sk.reached_by(spread, heavy).has(left) and sk.reached_by(spread, heavy).has(right), "a Spread beside it reaches both")
+	assert_true(sk.reached_by(spread, right).has(left), "and aimed at one, its twin too")
+	assert_eq(sk.reached_by(single, right), [right] as Array[Foe], "a single-target blow the one")
+	# The drone: a marked half killed while its twin stands leaves no mine.
+	Effects.stack(left, Effects.STATUS["syrinx_drone"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	left.hp = 0
+	sk._drone_mine(left, {"damage": 3, "keywords": [], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0})
+	assert_true(sk.mines.is_empty(), "no mine while its twin holds the slot")
+	sk._clear_dead()
+	assert_eq(sk.front[1], right, "the survivor keeps the slot alone")
+	assert_true(sk.twins.is_empty(), "the pair gone")
+	right.hp = 0
+	sk._clear_dead()
+	assert_eq(sk.front[1], null, "both gone: a plain empty slot")
+
+
+## A Swap moves a pair together, and a save keeps it.
+func test_a_pair_moves_and_saves_together() -> void:
+	var sk := Skirmish.new(2, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
+	var gel := _ghoul(30, 10)
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 2)
+	sk.add_foes([gel])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, gel)
+	var left: Foe = sk.front[0]
+	var right: Foe = sk.twins[Vector2i(0, 0)]
+	assert_false(sk.swap_targets(left).has(right), "a half never swaps with its own twin")
+	sk._swap(left, Vector2i(0, 2))
+	assert_eq([sk.front[0], sk.front[2], sk.twins.get(Vector2i(0, 2), null)], [null, left, right], "the pair moved as one")
+	assert_eq([right.rank, right.column], [0, 2], "the right half with it")
+	var c := SaveGame.clone_skirmish(sk)
+	var cl: Foe = c.front[2]
+	assert_true(cl != null and c.twin_of(cl) != null, "a copy through the save keeps the pair")
+	assert_eq(c.twin_of(cl).hp, right.hp, "its right half as it was")
+
+
+func test_a_split_steps_onto_a_mine_waiting_in_its_slot_and_a_stun_takes_its_next_action() -> void:
+	# A half stepping up mid-turn is a way in like a Swap's: a mine waiting in the slot goes off
+	# at once, and a stun in it takes the half's next action, its round being over.
+	var sk := Skirmish.new(2, 1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
+	var gel := _ghoul(30, 10)
+	gel.on_death = {"summon": "gel_small", "count": 1}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
+	sk.add_foes([gel])
+	sk.begin()
+	sk.start_round()
+	# A shot waiting in the slot the gel holds (as a drone's kill would leave one there).
+	sk.mines[Vector2i(0, 0)] = [{"damage": 3, "keywords": [int(K.SUPPRESS)], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0}]
+	sk.assign(0, gel)
+	var half: Foe = sk.front[0]
+	assert_eq(half.display_name, "gel_small", "the half stepped up")
+	assert_eq(half.hp, 7, "onto the shot, which went off at once")
+	assert_false(sk.mines.has(Vector2i(0, 0)), "and is spent")
+	assert_true(sk._suppressed_through(half, sk.round + 1), "and its stun takes the next round's action")
 
 
 func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
@@ -6070,7 +6209,7 @@ func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself
 	assert_true("\n".join(sk.log).contains("revenant will return once"), "the log names the one readied")
 	knight.hp = 0
 	sk._clear_dead_slots()
-	assert_true(sk.reinforcements.has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up into the pool, whole")
+	assert_true(sk.field_foes().has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up in its slot, whole")
 
 
 ## The die's kinds (Ryan, 20 and 21 October): a debuff is a weapon of no damage, and it deals

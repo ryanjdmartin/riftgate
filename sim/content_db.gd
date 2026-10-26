@@ -286,6 +286,8 @@ func make_foe(foe_id: String) -> Foe:
 		if od.has("summon"):
 			made["summon"] = str(od["summon"])
 			made["count"] = maxi(1, int(od.get("count", 1)))
+			if bool(od.get("pair", false)):
+				made["pair"] = true   # its two halves stand as a pair in its slot (the Gel's, 26 October)
 		if od.get("blow", null) is Dictionary:
 			made["blow"] = Foe.death_blow_from(od["blow"])
 		f.on_death = made
@@ -1749,6 +1751,8 @@ func _validate_foes(errs: Array[String]) -> void:
 				errs.append("%s: on_death count is at least 1" % where)
 			elif foes[str(od["summon"])].has("on_death"):
 				errs.append("%s: on_death summons %s, which splits too; a split goes one deep" % [where, od["summon"]])
+			elif bool(od.get("pair", false)) and (int(od.get("count", 1)) != 2 or int(foes[str(od["summon"])].get("size", 1)) >= 2):
+				errs.append("%s: on_death pair stands two halves in one slot: count 2, and no massive half" % where)
 
 
 func _validate_factions(errs: Array[String]) -> void:

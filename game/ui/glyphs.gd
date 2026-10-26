@@ -392,7 +392,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.45), s * 0.62, PI * 1.2, PI * 1.8, 12, color, width)
 			ci.draw_arc(c + Vector2(0, s * 0.45), s * 1.0, PI * 1.25, PI * 1.75, 14, color, width)
 		"exposed", "expose", "exposure":
-			# A reticle with its top open: nothing in front (the formation's, Exposed's chip and
+			# A reticle with its top open: nothing in front (Exposed's chip and
 			# the Expose keyword's).
 			ci.draw_arc(c, s * 0.8, PI * 0.15, PI * 1.85 + PI, 24, color, width)
 			ci.draw_line(c + Vector2(-s * 0.35, 0), c + Vector2(s * 0.35, 0), color, width)

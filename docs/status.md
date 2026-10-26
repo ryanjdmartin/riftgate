@@ -17,12 +17,13 @@ are in `README.md`.
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
 - The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
   `C:\Users\jam82\Desktop\Code\riftgate`; the README's Running section says what is set up
-  there. What the Mac held outside git is gone but the seventh round's foeforge renders,
-  force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
-  no machine until a route for the image model is chosen.
-- Tests: 649 tests, 65,166 checks, green on `claude/quick-campaign-mode-pafhiv` (26 October, the
-  quick campaign, one damage state and the bosses at their tier; main's 644 and 64,525 since the
-  playtest list landed), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+  there. What the Mac held outside git is gone. Of the seventh round's foeforge renders
+  (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
+  only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
+  `generate` and `fix` have no machine until a route for the image model is chosen.
+- Tests: 665 tests, 65,340 checks, green on `claude/quick-campaign-mode-pafhiv` (26 October, main
+  merged in: the quick campaign, one damage state and the bosses at their tier on Ryan's playtest
+  list; main's 644 and 64,525), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,30 +34,32 @@ are in `README.md`.
 
 ## Branches
 
-This branch, `claude/quick-campaign-mode-pafhiv` (25 and 26 October), is the quick campaign built
-on Ryan's calls of 25 October (the bible's section 3 row; `sim/quick_run.gd`, its screens in
-`game/quick/`, its save, `tools/quick_run.gd`) with the chain probe its proposal cited, one
-damage state at a quarter of the hull (his "Cracked is gone"; the audit's 7a asked it) and the
-bosses at the battle's tier (his calls of 25 and 26 October), waiting on his play and on section
-12's quick campaign question before it merges. Main moved under it on 26 October, fast-forwarding
-onto `claude/playtesting-issues-08mnqj` (`a738435`, his playtest list). Beside them stand the
-mechanics audit, `claude/affectionate-goldberg-8e3mkh` (`e23440f`, carrying the playtest branch
-and `ccr-170f6d81-465jnr` to `70481ec`); that session's later commits (`ccr-170f6d81-465jnr` at
-`2b5bb53`); the boss art's seventh picks cut (`ccr-535a7596-5ptzsj`, one commit); and the Hold
-The Line pair, a sound sketch of 24 October (`ccr-7effd31a-u5z4gw`, one commit). A trial merge
-with each (26 October) conflicts in the records (this file; the bible's version line and rows;
-the rules; the measurements; `docs/vocabulary.md`, regenerated after the merge) and in a few
-lines of code and content. Beside main and the audit: `Skirmish.can_withdraw`, whose
-`committed` there (the boss's fight, no withdrawal) is this branch's `withdraw_allowed` the
-other way round, one flag at the landing with the quick run setting it; the rules' boss
-paragraph (main's every machine and no withdrawal, this branch's tier and escort: keep both);
-`content/foes.json`'s `_about` (main's pair and arrival lines, this branch's tier sentence: keep
-both). Beside `ccr-170f6d81-465jnr`'s later commits: `sim/face.gd` (their doc line on equipment
-reaching every ally kept, the crack gone), the skirmish screen's hold comment (theirs) and the
-cooldown's codex ("turns" against "rounds"). Delete the landed branches
-(`ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and the
-playtest branch) from the desk machine or GitHub, since a cloud session's push to delete one is
-refused.
+Live beside main on 26 October, each another session's work, unmerged and landing by merging
+main in: `ccr-170f6d81-465jnr` (at work since the landing of 25 October: the die's hold as
+text, Flak on every blow, the Skua's runner rows), `claude/affectionate-goldberg-8e3mkh` (a
+beaten domain's rifts close, a rally at once), `ccr-6073bda9-p34o8q` (the foes' fresh start
+proposed, `docs/foes_proposal.md`) and `ccr-7effd31a-u5z4gw` (the Hold The Line pair, sketched
+on 24 October). This branch, `claude/quick-campaign-mode-pafhiv` (the quick campaign of 25
+October, one damage state, bosses at their tier), took main on 26 October on Ryan's go ("merge
+in and clean up here"), so it lands on main as a fast-forward once he has played it: a fight
+nobody leaves is main's `committed` for both the boss's fight and the quick campaign's (the
+branch's own flag went), so the quick campaign's fights show NO RETREAT where the button was
+hidden. A trial merge of each live branch into this one (26 October) conflicts in the records
+alone (this file, the bible, the measurements, `docs/vocabulary.md` regenerated after, and
+`ccr-6073bda9-p34o8q`'s to-do), but for `ccr-170f6d81-465jnr`'s later commits, which meet the
+crack this branch removed in `sim/face.gd` (their doc line on equipment reaching every ally
+kept, the crack gone) and in the rules' and the vocabulary's cooldown (their newer "turns",
+"a crack keeps it" gone), and the skirmish screen's hold comment (theirs), besides
+the README and `tools/screenshot.gd`, where they meet main too. On 26 October, on Ryan's go, main took
+`claude/playtesting-issues-08mnqj` (his playtest list of 25 and 26 October: moves planned and
+played on ENGAGE or END TURN, UNDO in the order things were done, the packs' rings in red, the
+boss's fight taking every machine, the Gel's halves a pair in one slot, summons and a foe
+getting back up stepping up at once; its phone read is the to-do's), then `ccr-535a7596-5ptzsj`
+(the boss art round's last picks cut, the cutter's `--keep-glow`, the seventh round's renders
+out of git but the Augur's). Fully merged, so to delete from the desk machine or GitHub, since a
+cloud session may not delete one: those two, `ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u`
+and `claude/friendly-cannon-kyk9v4`. Every other branch was merged into main and deleted (22
+October).
 
 ## The design sessions
 
@@ -87,7 +90,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   screen with the game's first hangar, and run by `tools/quick_run.gd`. Its first runs
   (`docs/quick_run.md`, `docs/measurements.md`) find a cliff at the first battle for a starting
   trio (34 and 35 runs of 40 lost there on the greedy and planner rungs) and a plateau after it
-  while the enemy has no tiers: section 12's question. Its elite is a stand-in until the elites
+  while the enemy has no tiers: section 12's question. On main's engine (26 October, the report
+  as it stands) the cliff holds, 34 of 40, and one run reaches the finale. Its elite is a stand-in until the elites
   land (the to-do); from tier two a domain's final may be a battle's boss (Ryan, 25 October),
   and every boss fight brings the tier's escort.
 - Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
@@ -117,9 +121,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
   new model's part that moves, glows or hides on its own needs a joint, a pin or a name in
   `glow_parts`.
-- Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
-  content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the
-  picker's seventh round (Pages).
+- Foe art: every foe and hero cut from Ryan's picks, and every subject of the boss art round
+  cut ahead of its kit (`art/foes`, `tools/foeforge/picks/picks.json`), the last three from the
+  picker's seventh round on 26 October: Surtr (his white-hot blade and blaze kept by the cut's
+  new `--keep-glow`), Floraison and the Augur, who needs another pass "at some point" (Ryan:
+  "she's still not correct"; the to-do). Those three went in without their `.import` files,
+  since that session could not fetch Godot: the desk machine's next `--import` writes them.
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
@@ -189,13 +196,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.298, and so is the live (26 October,
-  the page's version 315, from `claude/quick-campaign-mode-pafhiv`: the bosses at their tier,
-  section 3's exception and the Badger's question answered, merged three-way onto the live
-  v0.297, which carried the mechanics audit's v0.296 and v0.297 and, through it, the playtest
-  branch's and `ccr-170f6d81-465jnr`'s rows), so this file holds their rows and tables ahead of
-  their code, which lands with them: `tools/pages/bible_tables.py` run here before they land
-  writes this branch's older tables back. The
+  `docs/design-bible.html` after every change. This file is v0.303, and so is the live (26 October,
+  the page's version 320, from `claude/quick-campaign-mode-pafhiv`: main merged in, its Gel row's
+  clause on the pool-counting condition restored onto the live v0.302, which carried the
+  mechanics audit's rally and the foes' fresh start's rows), so this file holds other branches'
+  rows and tables ahead of their code, which lands with them: `tools/pages/bible_tables.py` run
+  here before they land writes this branch's older tables back. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
@@ -203,12 +209,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 116 (26 October, from
-  `claude/quick-campaign-mode-pafhiv`: the unit's tier in the foes' `_about`, the Badger's
-  passive line and the vocabulary's injury terms at a quarter, merged three-way onto the
-  mechanics audit's files, which carry the playtest branch's, the `_about` by hand; `edits`
-  empty). The live content files are that merge, so no branch's files match them until the
-  branches land. Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 118 (26 October, from
+  `claude/quick-campaign-mode-pafhiv`: main's foes `_about` without the pool-counting condition,
+  onto the live files of version 117, the mechanics audit's, which carry this branch's tier
+  note and the playtest branch's content; `edits` empty). The live content files are that
+  merge, so no branch's files match them until the branches land. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
@@ -216,11 +221,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   lands.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
   as Editor); picks and notes in collection `picks`, readable from a personal-account session.
-  It holds the boss art round's seventh sets (19 October): Surtr's blade on the grip's line,
-  Floraison's eyes painted out, and the Augur's new base with the smoke gone and the top blade
-  flipped inward; the README has the command that builds it. Every earlier round's folder stays
-  under `tools/foeforge/out/` as the record, and the renders that lost a blade or a brief sit in
-  each set's `set_aside/`; the fix order that worked is the bible's art row.
+  It holds the boss art round's seventh sets (19 October), all picked on 26 October and cut:
+  Surtr's blade on the grip's line, Floraison's eyes painted out, and the Augur's new base with
+  the smoke gone and the top blade flipped inward. Of the rounds' folders under
+  `tools/foeforge/out/`, only the Augur's last two stay, with the seventh round's job lists (each
+  set's `set_aside/` holds the renders that lost a blade or a brief); the README has the
+  command that builds her sets as a page, and the fix order that worked is the bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

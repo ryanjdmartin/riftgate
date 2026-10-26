@@ -140,8 +140,12 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 Open the folder in Godot 4.7 or later, or from a terminal:
 
 On Windows (the desk machine since 19 October, when the Mac went out of reach) every command
-below runs as written from Git Bash; from PowerShell, wrap one as
-`& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. What makes them run there: `godot` and
+below runs as written from Git Bash, from the repo folder (a new Git Bash starts in the home
+folder: `cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
+`& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. The phone scripts have launchers for
+PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the `.sh` with Git
+Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
+opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
 `python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
 `%LOCALAPPDATA%\Programs\Godot`; Python 3.13, since Windows' own `python3` is a Microsoft Store
 stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
@@ -270,12 +274,14 @@ python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squa
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
+# poses the screen first. Skirmish: codex, mechcodex, pair (a Gel's halves in its slot, RIFTGATE_FOES=gel:2,goblin:3), hold, confirm, lock, strike,
 # enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
-# Battle: select, route, draft and draftslow (a route drawn by hand, its move gauge spent or
+# Battle: select (a machine in hand: its move and its red band), route (two moves planned),
+# plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
+# lit, the others' dashed), draft and draftslow (a route drawn by hand, its move gauge spent or
 # stopped by a slow hex), carry (a carrier's route to a stop where its rider cannot land: NO
 # ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
@@ -293,6 +299,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # to judge it running.
 # RIFTGATE_BLAST_DEBUG=1 (any skirmish) keeps the blast's marks on: every foe the first machine whose
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
+# RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
+# running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
+# of seconds, to judge the join running.
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -326,14 +336,16 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
 # a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
-# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 46 on
-# every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them), record it in picks.json. A flaw his
+# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 42 on
+# every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them, and --keep-glow X0 Y0 X1 Y1
+# keeps white-hot light the background's white inside that box of the render, Surtr's blade and blaze), record it in picks.json. A flaw his
 # note names is tried first with `forge.py fix` (the edit model on the picked source, four candidates into out/<foe>_fix). Rebuild the
 # page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
 # the picks. Every candidate's source render lived only in tools/foeforge/out on Ryan's Mac (git-ignored); the seventh round's
-# were force-added under it (fb45141, 19 October), so its picks cut and its page rebuilds on any machine. Rendering needs the Mac.
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags bossart10 heroart16 chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16 augur_chibi_heroart16   # the boss art round's seventh sets (19 October) as a phone page in out/phone (status has the link)
+# were force-added under it (fb45141, 19 October), and once they were cut (26 October) only the Augur's stayed, for her next pass (the
+# rest: git show fb45141). Rendering needs the Mac.
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags heroart16 chibi_heroart16 --keys augur_heroart16 augur_chibi_heroart16   # the Augur's seventh-round sets (19 October), where her next pass starts, as a phone page in out/phone
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)

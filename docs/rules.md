@@ -76,7 +76,8 @@ skirmish.
    Every die rolls; entries are equally likely. Round-start passives fire.
 2. Every foe picks its move, then its target; both show, exact, before the player acts.
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
-   the next. Withdrawal is open at any point.
+   the next. Withdrawal is open at any point. END TURN pulses once no die has anywhere to be
+   spent, rerolls aside.
 4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
    then heat over a machine's maximum burns hull one for one and the gauge settles at the
    maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
@@ -131,7 +132,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
   explosives carry Spread and Penetrate is open: no shell carries both, and the Musk Ox's two
   locked guns do).
-- A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
+- A kill clears its slot at once, so a hole in the front opens that column's back to Direct
+  (a Gel's halves step up into it at once, below).
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
   the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
@@ -377,8 +379,7 @@ On a foe:
   shock; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
-  is exposed by its formation, in reach only.
+  Through the next round; refreshed, never added.
 - **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
   machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.
@@ -407,8 +408,9 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
-- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
-  returns to the reinforcements once, whole, unless it self-destructed.
+- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
+  back up once, whole, in its own slot and at once, unless it self-destructed; its round is
+  over, as a split's half's is, and it takes a mine its fall left there.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
@@ -477,7 +479,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
-  half, hurt, fewer than two summons waiting, a foe behind it, another foe on the field, one
+  half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
@@ -524,13 +526,30 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
   on it bursts at the end of its action, skipped or not.
+- **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), standing as a
+  pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
+  opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
+  that reaches the slot (Spread, Penetrate, a mine's) reaches both halves, aimed at one of them
+  or beside; a single-target blow, a Spillover included, the one it is spent on. The slot is
+  full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
+  while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
+  Swap moves the pair together and never swaps a half with its twin. When one falls the other
+  keeps the slot alone, and with both gone it is a plain slot: the pair is only ever its
+  split's, so no half joins another's slot. A mine waiting in the slot goes off on the pair
+  as they step up. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
+  their next action, and they act from the next round. A split that is no pair (none in
+  content) steps up one into the slot and the rest into the nearest empty slots of their rank.
+- **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
+  left on a tie, its round over like a split's half's; with no room it waits in the
+  reinforcements. A foe joining the reinforcements is shown going in: it flies into its rank's
+  count in the gutter, which goes up as it lands.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
-  first, then each empty slot, left to right, a random waiting foe of its rank. A dead Gel
-  splits into two Half-Gels in the reinforcements (one deep). The formation shows how many
-  wait for each rank, and the massive ones apart, in its right gutter.
+  first, then each empty slot, left to right, a random waiting foe of its rank. The formation
+  shows how many wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
-Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
+Open at any point of the player's turn, but in the boss's fight, which ends in the boss's fall
+or the team's, and in the quick campaign, which has none. Withdrawing ends the turn, so heat over the maximum
 burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
 not run. Kills stay counted, machines keep their damage and
 shields do not refill; a pack keeps its survivors, who return whole.
@@ -599,20 +618,30 @@ a stat.
   lake band); the two rows before the gate are never water or crags. Five map types: Mixed
   Ground, Open Steppe, Rubble Field, Badlands, Flooded. Height is landscape; no rule reads it.
 - **Ways of moving** (each chassis has one): a fast hex costs 5, a normal hex 10; a slow hex
-  takes whatever move is left and ends the move; crags are walls except to flyers. Tracked:
+  takes whatever move is left and ends the move (lit with a dashed edge and a stop sign);
+  crags are walls except to flyers. Tracked:
   ruins slow. Walker: water slow. Wheeled: open fast; rough, ruins and water slow. Hover:
   water fast; rough and ruins slow. Flyer: everything normal. Machines never enter or cross
   another unit's hex.
 - **Setup**: up to four machines on the row before the gate; the lead domain's spawn list as
   packs three to five rows below the rift; the boss one row below the rift.
-- **A turn**: the map shows every pack's coming walk. Each machine has one action (the Dingo
-  two): move, in pieces if wanted, then may fight; a fight ends the action however it ends.
-  UNDO MOVE restores a machine until it fights. A caught machine's fight comes first. END
-  TURN: packs walk and strike; machines that did not fight regain shield at their field rate;
-  Rift Pressure rises one.
-- **Orders**: a tap or drag onto a pack moves the machine to the farthest hex in attack range
-  its move reaches (or leaves it, if in range) and orders it. ENGAGE opens one fight at a
-  time: the first order's pack and every machine ordered onto it.
+- **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
+  and every pack's ring. Each machine has one action (the Dingo two): move, in pieces if
+  wanted, then may fight; a fight ends the action however it ends. A selected machine lights
+  the hexes its move reaches, and in red the hexes past them within its attack range: where it
+  could attack from. A move is planned: its route shows from where the machine stands, and the
+  next move or order reads from the route's end. UNDO takes back the last move or order,
+  whoever made it, in the order they were made, back to the turn's start or the last fight.
+  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first (the
+  boss's fight aside, below);
+  then the fight opens, or the turn ends: packs walk and strike; machines that did not fight
+  regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
+  is ordered, is caught, or can neither move nor reach a pack where it stands, the button
+  pulses.
+- **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
+  range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
+  second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
+  order's pack and every machine ordered onto it.
 - **A fight** is at the target's hex. Every other pack whose ring covers that hex joins (no
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
   it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
@@ -624,7 +653,8 @@ a stat.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
 - **Hunters** lock one machine when they appear (nearest, weakest, strongest or slowest; never
-  the Prairie Dog) and walk to put it inside their ring. A hunter with its prey in its ring
+  the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
+  hunter with the hunter's picture and a target. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
@@ -633,13 +663,15 @@ a stat.
   action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
-  undo takes the riders back, until one of them has moved on its own.
+  undo of the carrier's move takes the riders back with it.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
-  be attacked from the first turn; its death wins the battle. The unit at the rift commands
+  be attacked from the first turn; its death wins the battle. A fight it is in, ordered onto
+  it or joined by its ring, takes every machine, wherever it stands and whether or not it has
+  fought this turn; nothing moves first (ENGAGE goes straight to the reveal) and nobody
+  withdraws, so it ends the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (one for each other column), or
   the finale's line; it stands while one of its commanders does and holds the rift whatever
-  its escort, and a withdrawal leaves it standing with the commanders and the escort that
-  survived, whole. It stands at the battle's tier: its commanders' HP ×1.25 at tier two and
+  its escort. It stands at the battle's tier: its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
   three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
   of the tier (a unit's tier is content's, one by default), else of the highest tier under it,

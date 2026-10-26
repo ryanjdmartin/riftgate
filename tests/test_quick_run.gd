@@ -199,7 +199,7 @@ func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws(
 	assert_true(r.start_battle(), "into the battle")
 	assert_eq(r.state, QuickRun.BATTLE, "a battle under way")
 	var sk := r.open_fight()
-	assert_false(sk.withdraw_allowed, "no withdrawal in the quick campaign")
+	assert_true(sk.committed, "no withdrawal in the quick campaign")
 	sk.begin()
 	assert_false(sk.can_withdraw(), "so none is open")
 	assert_eq(sk.mechs.size(), r.squad.size(), "the whole squad fights")
@@ -419,7 +419,7 @@ func test_a_run_saves_and_resumes_mid_fight_alike() -> void:
 	assert_eq(back.finals_won, r.finals_won, "the finals won")
 	assert_eq(back.rng.state, r.rng.state, "the run's random stream")
 	assert_true(back.current != null, "the fight came back")
-	assert_false(back.current.withdraw_allowed, "still without withdrawal")
+	assert_true(back.current.committed, "still without withdrawal")
 	for i in range(r.units.size()):
 		assert_eq(back.units[i].hull, r.units[i].hull, "a machine's hull")
 		assert_eq(back.units[i].shield, r.units[i].shield, "its shield")

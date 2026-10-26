@@ -487,7 +487,7 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. A back-rank foe whose front is empty is exposed by its formation, in reach only.",
+   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "The id is exposure, since exposed names the formation word and the foes' default aim.",
@@ -1661,7 +1661,7 @@
    "id": "risen",
    "category": "status",
    "name": "Getting Back Up",
-   "codex": "Foe status, from a Reraise, its own or an ally's. After it falls it returns to the reinforcements once, whole, unless it self-destructed.",
+   "codex": "Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round.",
    "status": "implemented",
    "design": {
     "holes": "",

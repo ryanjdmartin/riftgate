@@ -448,7 +448,7 @@ func open_fight() -> Skirmish:
 	if current != null:
 		return current
 	var sk := Skirmish.new(rng.randi())
-	sk.withdraw_allowed = false
+	sk.committed = true
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	for u in live_units():
 		sk.add_mech(u)

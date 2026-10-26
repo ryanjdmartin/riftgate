@@ -80,7 +80,8 @@ func test_a_fight_opens_without_withdrawal_and_comes_back_to_the_track() -> void
 	assert_eq(s._primary.text, "FIGHT", "the first fight waits")
 	s._on_primary()
 	assert_true(s._skirmish != null, "the fight's screen")
-	assert_false(s._skirmish._withdraw_btn.visible, "no withdrawal here")
+	assert_true(s._skirmish._withdraw_btn.disabled, "no withdrawal here")
+	assert_eq(s._skirmish._withdraw_btn.text, "NO RETREAT", "and the button says why, as in the boss's fight")
 	assert_eq(s._skirmish.back_label, "BACK TO THE RUN", "back leads to the run")
 	s.run.current.outcome = Skirmish.Outcome.VICTORY
 	s.run.current.state = Skirmish.State.DONE

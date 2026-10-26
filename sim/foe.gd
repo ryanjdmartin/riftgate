@@ -43,7 +43,8 @@ var hero: bool = false           # one of the party: a hero (content `hero`, hum
 var commands: bool = false       # a commander of its boss unit (the faction's boss, a final's hero, one of the finale's line), marked as the unit unpacks: the unit stands while one does
 var escorts: bool = false        # the wildlife beside a boss unit's commanders (a final's), marked as the unit unpacks: the unit's strength counts them
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
-var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
+var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping up in its place at once (the Gel)
+var fresh: bool = false          # stepped up mid-round (a split's half): its round is over, so it shows no intent and acts from the next round
 var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
 var charge: int = 0              # rounds before the pending move lands; at 0 it lands this round
 var part_ids: Array = []         # a core's parts (content `parts`): the foes of its pack that stand beside it
@@ -61,9 +62,9 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
+const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
 const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
+	"below_half": "when below half", "missing_hull": "when hurt",
 	"back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
