@@ -94,8 +94,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   cut ahead of its kit (`art/foes`, `tools/foeforge/picks/picks.json`), the last three from the
   picker's seventh round on 26 October: Surtr (his white-hot blade and blaze kept by the cut's
   new `--keep-glow`), Floraison and the Augur, who needs another pass "at some point" (Ryan:
-  "she's still not correct"; the to-do). Those three went in without their `.import` files,
-  since that session could not fetch Godot: the desk machine's next `--import` writes them.
+  "she's still not correct"; the to-do). The cloud session that cut those three could not fetch
+  Godot; their six `.import` files were written and committed on the desk machine the same day,
+  the suite green there (644 tests).
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
