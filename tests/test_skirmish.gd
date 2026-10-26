@@ -5956,6 +5956,27 @@ func test_the_blast_is_a_weapons_hit_cryo_and_primed_included() -> void:
 	assert_true("\n".join(sk.log).contains("cashes Cryo"), "the log says so")
 
 
+## A blast that kills fires the machine's kill trigger, as any weapon's hit does (Ryan, 26
+## October: "It shouldn't need exceptions in code, it should just work now"), on a synthetic
+## passive; two weak foes, so whichever the blast draws falls and the fight goes on.
+func test_a_blast_that_kills_fires_the_kill_trigger() -> void:
+	var a := _mech("A", Die.single(Face.vent(30)), 40, 100)
+	a.grant_passive({"id": "test_blast_streak", "name": "Blast", "description": "", "effects": [
+		{"trigger": "static", "effect": "vent_blast", "value": 1},
+		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]})
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(a)
+	sk.add_foes([_ghoul(10, 1), _ghoul(10, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 30
+	assert_true(sk.assign(0, ms), "the vent spent on itself")
+	assert_eq(sk.field_foes().size(), 1, "the blast kills the foe it draws")
+	assert_eq(Effects.stacks_of(a, "hot_streak"), 1, "and the kill fires the kill trigger, once")
+	assert_true("\n".join(sk.log).contains("after the kill"), "the log says so")
+
+
 ## The lure preview (the Siphon's forecast, 22 October): a Lure entry's turn read before it is
 ## spent, every foe it reaches turned on its machine in a what-if and put back; the spender's
 ## forecast takes the lured blows behind its brace and drinks their heat, the machine they left

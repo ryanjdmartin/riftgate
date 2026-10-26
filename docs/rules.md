@@ -588,7 +588,7 @@ shields do not refill; a pack keeps its survivors, who return whole.
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, chains and spills included). No trigger feeds itself.
+  this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, what the entry prints
   included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
   after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
@@ -623,7 +623,7 @@ shields do not refill; a pack keeps its survivors, who return whole.
   live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
   that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,
   its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a drone's
-  mine), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
+  mine, the machine's kill trigger), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
   an ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
 
 ### Every number is a question

@@ -1217,7 +1217,7 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Kite's Hot Streak), a shield or a vent.",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Kite's Hot Streak), a shield or a vent.",
    "status": "implemented",
    "design": {
     "holes": ""

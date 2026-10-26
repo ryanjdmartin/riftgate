@@ -1150,7 +1150,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
 		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
-	var killed := 0        # the foes a weapon spend felled, chains and spills included (a kill trigger, the reset gun)
+	var killed := 0        # the foes a weapon spend or a vent's blast felled, chains and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
 	match f.kind:
 		Face.Kind.BLANK:
@@ -1186,8 +1186,11 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
 			# blasts nothing, and so does an ally's vent on it.
 			if blast > 0:
+				var falls_before := _falls
 				_blast(mech_index, ms, blast)
 				blasted = true
+				killed = _falls - falls_before
+				_after_kills(ms, killed)
 			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
 			# shield on the same machine, through its shield gain and the spender's passives
 			# for an ally it shields, sized on the heat the vent left.
@@ -1257,12 +1260,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				if f.drones and target.alive():
 					free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
-			if killed > 0:
-				_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))   # a kill by its own guns (the Swallowtail's)
-			# A kill trigger (the Kite's heat tax, 21 October): after an attack that killed, once
-			# however many fell.
-			if killed > 0 and ms.alive():
-				_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
+			_after_kills(ms, killed)
 			if f.has(Face.Keyword.SWAP) and target is Foe and target.alive():
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
@@ -2016,8 +2014,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 ## shouldn't need exceptions in code"), so the blow is a weapon's hit and resolves as every
 ## weapon's does (_resolve_attack): the machine's pipeline, the foe's Flak, a Shocked doubling
 ## spent, its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a
-## drone's mine. It is one hit inside the vent's spend, so the spend's heat, ammo and tallies
-## stay the vent's, paid once. A kill clears its slot as any blow's does.
+## drone's mine, and its kills fire the machine's kill rules (_after_kills). It is one hit inside
+## the vent's spend, so the spend's heat, ammo and tallies stay the vent's, paid once. A kill
+## clears its slot as any blow's does.
 func _blast(mech_index: int, ms: MechState, amount: int) -> void:
 	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
@@ -2035,6 +2034,16 @@ func _blast(mech_index: int, ms: MechState, amount: int) -> void:
 ## The blast as the blow it is: flat, Indirect, the heat the vent took off.
 static func blast_shot(amount: int) -> Face:
 	return Face.attack(amount, Face.Reach.INDIRECT)
+
+
+## A spend's kills, its weapon's or its vent's blast's: the muster its guns earn (the
+## Swallowtail's) and the kill trigger (the Kite's heat tax, 21 October), once however many fell.
+func _after_kills(ms: MechState, killed: int) -> void:
+	if killed <= 0:
+		return
+	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
+	if ms.alive():
+		_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
 
 
 ## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13

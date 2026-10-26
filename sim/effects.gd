@@ -239,9 +239,9 @@ const STATUS := {
 	# round against it (Ryan's question, 22 October).
 	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
 		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
-	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, +5
-	# a stack on the next spend at a foe, stacking, carried between turns until a weapon or a
-	# debuff spends it (`spent_by`: the skirmish lifts every stack after any spend at a foe, and
+	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
+	# number a stack on the next spend at a foe, stacking, carried between turns until a weapon or
+	# a debuff spends it (`spent_by`: the skirmish lifts every stack after any spend at a foe, and
 	# a buff grants it with no rounds).
 	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "Its next spend at a foe deals {value} more a stack, then every stack is spent: a weapon's blow takes them, a debuff spends them for nothing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
