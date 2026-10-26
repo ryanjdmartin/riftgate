@@ -170,11 +170,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.305, and so is the live (26 October,
-  the page's version 322, from `ccr-170f6d81-465jnr`: area at half, the holds' colours, the codex
-  and the unit holds, merged onto the live v0.304, which carries the other branches' rows, so
-  this file holds their rows and tables too and the tables script waits until they land, as run
-  here it writes this branch's older tables). The
+  `docs/design-bible.html` after every change. This file is v0.308, and so is the live (26 October,
+  the page's version 325, from `ccr-170f6d81-465jnr`: area at half, the holds and the codex,
+  their colours the unit's and their stats as base (change), merged onto the live v0.307, which
+  carries the other branches' rows, so this file holds their rows and tables too and the tables
+  script waits until they land, as run here it writes this branch's older tables). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and
