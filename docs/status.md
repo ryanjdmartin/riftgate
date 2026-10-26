@@ -196,9 +196,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.301, and so is the live (26 October,
-  the page's version 318, from `claude/affectionate-goldberg-8e3mkh`: the rally at once and the set
-  finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
+  `docs/design-bible.html` after every change. This file is v0.302, and so is the live (26 October,
+  the page's version 319, from `claude/affectionate-goldberg-8e3mkh`: the rally at once, its chip's
+  opacity pulse and the set finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
   day's other branches: `ccr-170f6d81-465jnr`'s and the quick campaign's rows, a boss scaled to its
   tier, the die's hold showing the entry alone, area at half asked again). So this file holds
   those branches' rows and tables ahead of their code, which lands with them:
