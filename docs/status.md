@@ -35,7 +35,11 @@ are in `README.md`.
 
 ## Branches
 
-Four branches of 25 and 26 October stand beside main, none of them in it yet.
+Main moved on 26 October: it took the playtest branch (to `a738435`) and the boss art round
+(`9848826`, the landing's clean-up). This branch has the playtest list but its last two commits
+(`cb945a3`: the pool-counting condition gone, the bot reading a pair as the resolver does, a foe
+getting back up in the enemy's turn shown; `a738435`: its status), so landing it merges main.
+Four branches of 25 and 26 October stood beside main before that.
 `claude/affectionate-goldberg-8e3mkh` carries two of the others merged in. One is
 `ccr-170f6d81-465jnr` to `70481ec`: main's landing of 25 October (Ryan's go: "merge in and clean
 up") and that session's later commits of the day (a passive's lay on any hit, the Ambush's
@@ -197,9 +201,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.302, and so is the live (26 October,
-  the page's version 319, from `claude/affectionate-goldberg-8e3mkh`: the rally at once, its chip's
-  opacity pulse and the set finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
+  `docs/design-bible.html` after every change. This file is v0.304, and so is the live (26 October,
+  the page's version 321, from `claude/affectionate-goldberg-8e3mkh`: the foes' tick preview, on
+  the quick campaign's republish of 15:17, which carried main's Gel clause; before it the rally
+  at once, its chip's opacity pulse and the set finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
   day's other branches: `ccr-170f6d81-465jnr`'s and the quick campaign's rows, a boss scaled to its
   tier, the die's hold showing the entry alone, area at half asked again). So this file holds
   those branches' rows and tables ahead of their code, which lands with them:
