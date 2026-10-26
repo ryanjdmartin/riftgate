@@ -134,15 +134,20 @@ PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the
 Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
 opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
 `python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
-`%LOCALAPPDATA%\Programs\Godot`; Python 3.13, since Windows' own `python3` is a Microsoft Store
-stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
+`%LOCALAPPDATA%\Programs\Godot`, self-contained: the `._sc_` file beside it keeps its settings,
+export templates and debug keystore in `editor_data` there; Python 3.13, since Windows' own
+`python3` is a Microsoft Store stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
 `BPY_PYTHON` points lowforge at `.bpy` (Python 3.11 with `bpy==5.0.1`; `.bpy/` and
 `tools/soundforge/.venv-piper/` sit in `.git/info/exclude`); and `PYTHONUTF8=1` is set, since
 the tools open text without naming an encoding and Windows would read it as cp1252. Python
 writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
 the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
-`fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card).
+`fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
+desktop app is a packaged Windows app: what its sessions write under `AppData` lands in a
+private copy only Claude's own processes see (`AppData\Local\Programs` excepted), which is why
+the SDK and Godot's data live where every shell sees them; check a new install from a terminal
+tab, which sees what your own shells see.
 
 ```sh
 # first run, and after adding PNGs or a class_name: the import and the script class cache
@@ -363,8 +368,8 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # screen. Sizes and touch are the phone's own, the frame rate is the browser's.
 # Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
 # from the Godot release, unzip, and put its `templates` folder at
-# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on Windows,
-# %APPDATA%\Godot\export_templates\4.7.2.stable). On Windows the first serve asks Windows
+# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on the Windows PC,
+# editor_data\export_templates\4.7.2.stable beside the Godot executable). On Windows the first serve asks Windows
 # Firewall to let Python take connections: allow it on private networks.
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 
@@ -374,18 +379,18 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
 # (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
-# On Windows, where it is set up now: the SDK at %LOCALAPPDATA%\Android\Sdk (Google's
+# On Windows, where it is set up now: the SDK at ~/Android/Sdk, out of AppData (Google's
 # command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
 # build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
 # names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
 # unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
-# other software opens .jar files with stays the default), and the keystore at
-# %APPDATA%\Godot\keystores\debug.keystore. The export needs no NDK (no Gradle build). A phone
+# other software opens .jar files with stays the default), and the keystore in Godot's
+# editor_data\keystores. The export needs no NDK (no Gradle build). A phone
 # holding a build signed on the Mac refuses this machine's until that build is uninstalled.
 tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
 # after a crash on the phone: the abort and its backtrace; and the app's memory while it
 # runs (Native Heap and EGL/GL mtrack are the columns that climb when something leaks;
-# on Windows, adb is %LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe)
+# on the Windows PC, adb is ~/Android/Sdk/platform-tools/adb)
 ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash | grep -A 12 "Abort message"
 ~/Library/Android/sdk/platform-tools/adb shell dumpsys meminfo com.publabs.riftgate
 ```
