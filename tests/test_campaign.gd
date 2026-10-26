@@ -523,6 +523,82 @@ func test_the_bot_plays_a_battle_of_the_run_to_its_end() -> void:
 	assert_true(["won", "held", "fell"].has(r["result"]), "and the run reads it")
 
 
+## A machine the bot fields that no volley wrecks (a hull bump the way the runner grants one),
+## standing hurt, so a persona's line is already crossed.
+func _hurt_tank(db: ContentDB) -> Unit:
+	var u := db.make_mech(str(db.default_team(1)[0]))
+	u.grant_passive({"id": "test_hull", "name": "Hull", "description": "The test's hull.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 500}]}, "test")
+	u.hull = u.hull_max / 4
+	return u
+
+
+## Park a pack beside a machine so the next fight is at hand: rooted, and pushing unless the
+## test wants a hunter.
+func _park(b: Battle, sq: Unit, m: Unit, hunting: bool) -> void:
+	for n in Hex.neighbors(m.pos):
+		if b.field.can_stand(sq, n):
+			sq.pos = n
+			break
+	sq.movespeed = 0
+	sq.behaviour = "hunt" if hunting else "push"
+
+
+## The withdrawing persona on the campaign bot (26 October, the foes' fresh start): a fight the
+## player picked is left once the fighters' hull is under the line, the pack keeping its
+## survivors, and the bot says so.
+func test_the_bots_persona_withdraws_from_a_fight_it_is_losing() -> void:
+	var db := ContentDB.load_default()
+	var fac := db.default_faction()
+	var foe := str(db.spawn_foes(fac)[0])
+	var b := Battle.new(4)
+	b.with_boss = false
+	b.formation = [[foe, 8]]
+	var u := _hurt_tank(db)
+	b.setup([u], fac)
+	var sq: Unit = b.field.packs()[0]
+	_park(b, sq, u, false)
+	var bot := BattleBot.make(Policy.GREEDY, 4)
+	bot.withdraw_below = 50
+	bot.take_turn(b)
+	assert_eq(bot.fights, 1, "one fight")
+	assert_eq(bot.withdrawals, 1, "withdrawn from, under the line")
+	assert_eq(bot.fights_won, 0, "so not won")
+	assert_true(u.hull > 0 and b.field.units.has(u), "the machine took the volley and stands")
+	assert_true(b.field.units.has(sq), "the pack keeps its survivors")
+	assert_eq(bot.fight_sizes[0][4], true, "and the fight is marked withdrawn")
+
+
+## A fight a hunter forced is never withdrawn from: the prey would stay caught and take the
+## volley for nothing, so the persona fights it out.
+func test_the_bots_persona_fights_out_a_hunters_catch() -> void:
+	var db := ContentDB.load_default()
+	var fac := db.default_faction()
+	var hunter := ""
+	for id in db.foes.keys():
+		var f: Dictionary = db.foes[id]
+		if str(f.get("behaviour", "push")) == "hunt" and not bool(f.get("hero", false)) and not f.has("promotes"):
+			hunter = str(id)
+			break
+	if hunter.is_empty():
+		return   # no hunter in content: nothing to force
+	var b := Battle.new(4)
+	b.with_boss = false
+	b.formation = [[hunter, 3]]
+	var u := _hurt_tank(db)
+	b.setup([u], fac)
+	var sq: Unit = b.field.packs()[0]
+	_park(b, sq, u, true)
+	b.forced = b.field.forced_fights()
+	assert_eq(b.forced.size(), 1, "the hunter has caught the machine")
+	var bot := BattleBot.make(Policy.GREEDY, 4)
+	bot.withdraw_below = 50
+	bot.take_turn(b)
+	assert_eq(bot.fights, 1, "the catch was fought")
+	assert_eq(bot.withdrawals, 0, "and never withdrawn from")
+	assert_true(b.forced.is_empty(), "the catch is answered")
+
+
 func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
 	var c := _run()
 	var front := str(c.fronts()[0])

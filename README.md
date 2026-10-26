@@ -186,7 +186,10 @@ python3 tools/pages/bible_tables.py
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
 # so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner;
-# --packs big (or rank_and_file, or pack ids such as "treant x1,finale") runs only those packs.
+# --packs big (or rank_and_file, or pack ids such as "treant x1,finale") runs only those packs;
+# --pack goblin:3 or --pack goblin:4+mandragora:2 (repeatable) adds a composed pack, one foe type
+# times a strength or several together in one fight (its id "pack:" and the spec, for --packs
+# and --trace), so patrols and a front with a back read beside the spawn lists' packs (26 October).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
@@ -206,8 +209,14 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd
 # nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
 # the campaign's placeholders: runs won, cities fallen, wipes, components destroyed per battle;
 # written to docs/campaign_run.md. --runs N, --seed S, --policy random; --trace SEED prints one
-# run battle by battle instead.
+# run battle by battle instead. The squad moves as one (the pack nearest the squad, every
+# machine in range fighting it, allies walking into range of a hunter's catch before it opens);
+# --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
+# comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
+# picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
+# report then counts the fights withdrawn from
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 
 # the stock pass's fills (22 October): the brief's numbers as the loops moved them, onto a checkout's content
 # and the engine's rule numbers; idempotent on the branch, so a kept lever lands by editing its tables and running it
