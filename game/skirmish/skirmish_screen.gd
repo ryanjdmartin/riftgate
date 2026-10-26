@@ -258,8 +258,8 @@ var _log_seen: int = 0
 var _hold_foe: Foe = null
 var _hold_mech: int = -1
 var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
-var _preview: Dictionary = {}         # the lure preview (Skirmish.lure_preview): each machine's forecast with the lured foes turned
-var _turns: Array[Foe] = []           # the foes that preview turns, their arrows drawn dashed to the die's machine
+var _round: Dictionary = {}           # the rest of the round as it stands (Skirmish.preview_round): every machine's gauges and warnings, every foe's HP after it
+var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, their arrows drawn dashed to the die's machine
 
 
 func setup(skirmish: Skirmish) -> void:
@@ -815,6 +815,7 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 func _refresh(save: bool = true) -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_update_preview()
+	_update_round()
 	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
 	_header.queue_redraw()
 	if _reserve != null:
@@ -1012,19 +1013,18 @@ func _forecast_for(i: int) -> Dictionary:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	if not ms.alive() or sk.state != Skirmish.State.ASSIGN:
 		return {}
-	if _preview.has(ms):
-		return _preview[ms]
-	var over: Foe = _drag_over if _drag_from == i and _drag_over is Foe else null
-	return sk.forecast(ms, _drag_from == i, 0, false, over)
+	var all: Array = _round.get("mechs", [])
+	if i < all.size():
+		return all[i]
+	return sk.forecast(ms, false)   # no preview this refresh (a Swap's second target pending)
 
 
 ## The lure preview (the Whip Scorpion's Siphon, 22 October): while a die whose entry Lures is
 ## dragged over a foe it may be spent on, or held or dragged anywhere when it reaches every foe,
-## the foes it would turn draw their arrows dashed to its machine and every machine's gauges and
-## warnings read the round as the lure would leave it: the lured blows, the brace, the heat a
+## the foes it would turn draw their arrows dashed to its machine, and the round preview reads the
+## round as the lure would leave it (_update_round): the lured blows, the brace, the heat a
 ## Siphon drinks from them.
 func _update_preview() -> void:
-	_preview = {}
 	_turns = []
 	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
 		return
@@ -1034,8 +1034,26 @@ func _update_preview() -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var aimed: Foe = _drag_over if _drag_from >= 0 and _drag_over is Foe else null
 	_turns = sk.lure_turns(ms, aimed)
-	if not _turns.is_empty():
-		_preview = sk.lure_preview(ms, aimed)
+
+
+## The round preview for this refresh (Skirmish.preview_round; Ryan, 26 October: it accounts for
+## everything that will happen but chance and the player's own choices, and "Die faces only apply
+## to the preview when hovered over a valid target"): the die in hand counts dragged over somewhere
+## it may be spent, or held or dragged anywhere when its Lure reaches every foe (any foe it turns
+## is its target, its pieces dealing no damage). Nothing while a Swap waits on its second target.
+func _update_round() -> void:
+	_round = {}
+	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
+		return
+	var hm := -1
+	var ht = null
+	if _drag_from >= 0 and _drag_over != null:
+		hm = _drag_from
+		ht = _drag_over
+	elif not _turns.is_empty():
+		hm = _drag_from if _drag_from >= 0 else _hold_die
+		ht = _turns[0]
+	_round = sk.preview_round(hm, ht)
 
 
 func _refresh_log() -> void:
@@ -1134,11 +1152,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
 	v.breathe_phase = slot * 2.39996 + 0.7
-	# Its ticks at its action (Burning, Vitriol) are static numbers, so the HP they will take
-	# pulses on its gauge as a machine's coming loss does, the whole bar when they kill it before
-	# it acts (Ryan, 26 October: "a hypothetical death at the start of the enemy's turn could be
-	# previewed").
-	var after := sk.hp_after_ticks(foe) if sk.state == Skirmish.State.ASSIGN and foe.alive() else foe.hp
+	# Its HP as the round will leave it (the round preview: its ticks, a heal, the die in hand over
+	# it, its own self-destruct) pulses on its gauge as a machine's coming change does, a loss
+	# dimming and lit, a heal hatched, the whole bar when it falls (Ryan, 26 October).
+	var after := int(_round.get("foes", {}).get(foe, {}).get("hp", foe.hp)) if foe.alive() else foe.hp
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD, after]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
@@ -1201,6 +1218,12 @@ func _mine_text(rank: int, col: int, shots: Array) -> String:
 ## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
+	# A fall the round will bring (the round preview; Ryan, 26 October: "It should get a destroyed
+	# chip same as the player to indicate incoming death"): the machines' skull, its intent kept,
+	# since its line still matters to what reads it.
+	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
+	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
+		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.ENEMY])
 	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])

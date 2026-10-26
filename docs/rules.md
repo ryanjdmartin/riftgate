@@ -170,13 +170,19 @@ defeat when every machine is wrecked. There is no round limit.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
-- **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in
-  hand (its own heat, its bite, its brace) will leave. A foe's gauge forecasts its ticks: the
-  HP its Burning and Vitriol will take at the start of its action pulses on it, the whole bar
-  when they kill it before it acts, a blow the machines' gauges already leave out. A Lure in hand shows its turn before it
-  is spent: the foes it would turn draw dashed arrows to its machine, those on it already
-  solid, and every machine's gauges read the round as the lure would leave it (the Siphon's
-  heat a blow included).
+- **The gauges forecast the round**: everything the rest of the round will do as it stands,
+  played on a copy of the fight with every rule as it runs: the end of the player's turn (its
+  burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
+  rally, a web's burst, a death before it acts, the last act it sets off, a self-destruct) and
+  the round's end. The die in hand counts only over somewhere it may be spent, as it would be
+  spent there. Nothing a roll decides is promised: a rolled blow counts its lowest roll, and a
+  pick drawn again (a foe whose machine fell or is Phased mid-turn), a stun Numbed may shrug
+  off, the entry an injury lands on and a strike at a random foe are left out; the
+  reinforcements are the next round's. A foe's gauge shows the HP the round will leave it, a
+  heal hatched as a machine's gain is, and a foe the round kills wears the destroyed chip, its
+  intent kept. A Lure in hand shows its turn before it is spent: the foes it would turn draw
+  dashed arrows to its machine, those on it already solid, and the gauges read the round as the
+  lure would leave it.
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
   to 24 heroes, 80 to 100 for the bosses' slate (not built; the four massive foes standing in

@@ -20,9 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 662 tests, 64,808 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 668 tests, 64,840 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes, the rally at once, the set finals
-  and the foes' tick preview),
+  and the round preview),
   about a minute in a cloud session.
   A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
@@ -61,7 +61,9 @@ through the code and cited by line, its "start here" list first) and the fixes h
 rally's Kindled landing at once and riding each foe's next move, the intents counting the rallies
 on their way under a pulsing preview chip (`RIFTGATE_PREVIEW_DEBUG=1`; the swarm's add moved
 before the factor with it, one damage formula), and a domain's third boss turning every open rift
-it leads final. Landing it lands all three.
+it leads final; and the round preview (Skirmish.preview_round): the rest of the round played on
+a copy of the fight for the gauges, the warnings and the foes' bars, nothing a roll decides
+promised, a foe the round kills wearing the destroyed chip. Landing it lands all three.
 `ccr-170f6d81-465jnr` has one commit past it (`b1aa261`, the die's hold showing the entry alone),
 which main takes from that branch. `claude/quick-campaign-mode-pafhiv` (25 October) holds the
 quick campaign (`sim/quick_run.gd` and its screen), one damage state (Cracked gone, each injury

@@ -3911,6 +3911,128 @@ func test_a_special_spends_a_kindled_move_for_nothing() -> void:
 	assert_false(Effects.has(g, "kindled"), "and spends the Kindled all the same")
 
 
+## The round preview (Ryan, 26 October: it "should account for every single thing that will
+## happen other than 1) random active effects ... and 2) player decisions"): a copy plays the rest
+## of the round, so the fight is untouched and the round then lands as shown.
+func test_the_round_preview_plays_a_copy_and_the_round_then_lands_as_shown() -> void:
+	var sk := Skirmish.new(4, 2)
+	var m := _mech("A", Die.single(Face.blank()), 10, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 12), _ghoul(500, 8)])
+	sk.begin()
+	sk.start_round()
+	var state := sk.rng.state
+	var logged := sk.log.size()
+	var pv := sk.preview_round()
+	assert_eq(sk.rng.state, state, "no draw from the fight's stream")
+	assert_eq(sk.log.size(), logged, "nothing logged in the fight")
+	assert_eq(m.hull, 100, "and nothing struck")
+	var mp: Dictionary = pv["mechs"][0]
+	assert_eq(int(mp["incoming"]), 20, "both blows come in")
+	assert_true(bool(mp["breaks_shield"]), "and break its shield")
+	sk.end_round()
+	assert_eq(int(mp["hull_after"]), m.hull, "the hull the round left is the hull previewed")
+	assert_eq(int(mp["shield_after"]), m.shield, "and the shield")
+
+
+## A heal is set before the player acts, so the preview reads it (Ryan, 26 October: "showing
+## healing on the enemy side as part of the preview is incredibly important for decision
+## making"): a Cure before a burning foe's tick keeps it standing, and its blow lands.
+func test_the_round_preview_reads_a_cure_that_saves_a_burning_foe() -> void:
+	var sk := Skirmish.new(4, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(m)
+	var cleric := _ghoul(500, 20)
+	var cure := _special("defend", "regrow_ally", {"value": 5})
+	cleric.actions = [Foe.basic_action(), cure]
+	var x := _ghoul(10, 7)
+	sk.add_foes([cleric, x])
+	sk.begin()
+	assert_true(sk.front[0] == cleric, "the curer stands left and acts first")
+	sk.start_round()
+	cleric.action = cure
+	x.hp = 2
+	Effects.stack(x, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	var per := _rule("burning", "tick_hp")
+	assert_eq(sk.hp_after_ticks(x), 0, "alone, its Burning would kill it before it acts")
+	var pv := sk.preview_round()
+	assert_true(bool(pv["foes"][x]["alive"]), "cured first, it stands")
+	assert_eq(int(pv["foes"][x]["hp"]), 2 + 5 - 3 * per, "2, cured 5, burnt 3")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 7, "and its blow lands")
+	sk.end_round()
+	assert_true(x.alive(), "as it did")
+	assert_eq(m.hull, 93, "and so did its blow")
+
+
+## A foe's fall in the round reads in the preview, with what it sets off: a last act (fired as the
+## dead are cleared) and a self-destruct.
+func test_the_round_preview_lands_a_last_act_and_reads_a_self_destruct() -> void:
+	var sk := Skirmish.new(4, 3)
+	var m := _mech("A", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(m)
+	var beast := _meteor_beast(2)
+	Effects.stack(beast, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 5)
+	var bomb := Foe.make("bomb", 50, 6)
+	bomb.actions = [{"id": "burst", "name": "Self-Destruct", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["self_destruct"], "text": ""}]
+	bomb.action = bomb.actions[0]
+	sk.add_foes([beast, bomb])
+	sk.begin()
+	sk.start_round()
+	var pv := sk.preview_round()
+	assert_false(bool(pv["foes"][beast]["alive"]), "it burns to death at its action")
+	assert_false(bool(pv["foes"][bomb]["alive"]), "the bomb spends itself")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 20 - 6, "the Meteor its fall sets off, and the bomb's blow")
+	sk.end_round()
+	assert_eq(m.hull, 100 - 20 - 6, "as they landed")
+
+
+## The preview never promises a roll: a web's burst on a foe with no Numbed is a sure stun, so the
+## caught foe's blow comes off; a foe with Numbed may shrug it off, so its blow stays counted.
+func test_the_round_preview_never_promises_a_roll() -> void:
+	var sk := Skirmish.new(4, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(m)
+	var a := _ghoul(500, 9)
+	var b := _ghoul(500, 6)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(a, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	var pv := sk.preview_round()
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9, "the burst stops the next foe's blow, for sure")
+	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
+	pv = sk.preview_round()
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "Numbed may shrug it off: the stun is never promised")
+	var held: Array = (pv["notes"] as Array).filter(func(n) -> bool: return str(n["kind"]) == "resist" and n["foe"] == b)
+	assert_eq(held.size(), 1, "and the copy notes the roll it held back")
+
+
+## The die in hand counts only over a valid target (Ryan, 26 October: "Die faces only apply to
+## the preview when hovered over a valid target"): over the foe it kills, the foe falls and its
+## blow comes off; a rolled blow counts its lowest roll, never a promise.
+func test_the_round_preview_spends_the_die_in_hand_only_over_its_target() -> void:
+	var sk := Skirmish.new(4, 2)
+	var m := _mech("A", Die.single(Face.attack(5, L)), 0, 100)
+	sk.add_mech(m)
+	var a := _ghoul(5, 9)
+	var b := _ghoul(500, 6)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	var pv := sk.preview_round()
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 15, "nothing in hand: both blows")
+	pv = sk.preview_round(0, a)
+	assert_false(bool(pv["foes"][a]["alive"]), "over the foe it kills, it falls")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 6, "and its blow comes off")
+	assert_true(a.alive() and not sk.mechs[0].assigned, "the fight untouched")
+	m.die = Die.single(Face.attack(1, L, [], 0, 9))
+	sk.mechs[0].die = m.die
+	sk.mechs[0].face_index = 0
+	pv = sk.preview_round(0, a)
+	assert_true(bool(pv["foes"][a]["alive"]), "a 1 to 9 kills nothing for sure: its lowest roll")
+	assert_eq(int(pv["foes"][a]["hp"]), 4, "which is 1")
+
+
 func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	# Roar: the team has one reroll fewer next round.
 	var sk := Skirmish.new(8, 1)

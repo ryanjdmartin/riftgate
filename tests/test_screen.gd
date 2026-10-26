@@ -663,6 +663,43 @@ func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 	s.free()
 
 
+## A foe the round will kill wears the machines' destroyed chip and keeps its intent (Ryan, 26
+## October: "Intent of a foe thats dying should absolutely NOT lose its intent ... It should get a
+## destroyed chip same as the player"); a Burn hit enough to kill it shows the fall at once, and a
+## foe a Cure will heal shows the heal coming on its gauge.
+func test_a_foe_the_round_kills_wears_the_destroyed_chip_and_keeps_its_intent() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.BURN]))
+	sk.add_mech(m)
+	var cleric := Foe.make("revenant", 500, 20)
+	var cure := {"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 3, "weight": 1, "text": ""}
+	cleric.actions = [Foe.basic_action(), cure]
+	var a := Foe.make("revenant", 3, 2)
+	sk.add_foes([cleric, a])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	cleric.action = Foe.basic_action()
+	s._refresh()
+	var skulls := func(v: UnitView) -> int:
+		return v.statuses.filter(func(st) -> bool: return str(st[0]) == "skull").size()
+	assert_eq(skulls.call(s._foe_view_for(a)), 0, "standing through the round: no skull")
+	Effects.stack(a, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 5)
+	s._refresh()
+	var v := s._foe_view_for(a)
+	assert_eq(skulls.call(v), 1, "its Burning kills it at its action: the destroyed chip")
+	assert_eq(v.intent_kind, "attack", "its intent kept")
+	assert_eq(int(v.bars[0][3]), 0, "and the whole bar pulsing")
+	Effects.remove(a, "burning")
+	a.hp = 1
+	cleric.action = cure
+	s._refresh()
+	v = s._foe_view_for(a)
+	assert_eq(int(v.bars[0][3]), 3, "the Cure's heal coming, shown on its gauge before it lands")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()

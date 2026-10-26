@@ -133,6 +133,13 @@ var overheats: Array = []
 ## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
 ## its next action rather than an action already taken.
 var _acted: Array = []
+## The round preview (Ryan, 26 October: it "should account for every single thing that will
+## happen other than 1) random active effects ... and 2) player decisions"): set on a copy of the
+## fight that plays the rest of the round (preview_round), so every rule runs as it will, and a
+## random draw is never made there: the copy holds it back and notes it, a rolled blow counts its
+## lowest roll, and the preview promises nothing a roll decides.
+var previewing := false
+var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, injury, blast, spray, random_target; foe or mech}
 ## The machines a static screen covers during a withdrawal (the Prairie Dog): a blow aimed at
 ## one is lost. Empty outside a withdrawal.
 var _screened: Array = []
@@ -558,6 +565,100 @@ func rallies_now(r: Foe) -> bool:
 	if Foe.is_attack_action(r.action) or str(r.action.get("effect", "")) != "rally":
 		return false
 	return hp_after_ticks(r) > 0
+
+
+## The rest of the round as it stands (Ryan, 26 October: the preview "should account for every
+## single thing that will happen other than 1) random active effects ... and 2) player decisions
+## such as spending dice faces. Die faces only apply to the preview when hovered over a valid
+## target"). A copy of the fight plays it out, every rule as it runs: the die in hand spent on
+## `hover_target` when one is given, the end of the player's turn, the enemy's turn (each foe's
+## move as announced: its heal, its death before it acts, a last act, a web's burst, a rally, a
+## self-destruct) and the round's end. Nothing random is drawn: a rolled blow counts its lowest
+## roll, and a pick drawn again, a stun Numbed may shrug off, an injury's entry and a random target
+## are held back (`notes`); the reinforcements are the next round's. Returns {"mechs": the
+## forecast's keys for each machine by index, "foes": {foe on the field: {"hp", "alive"}},
+## "notes": what was held back}; the fight itself is untouched.
+func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
+	var copy: Skirmish = SaveGame.clone_skirmish(self)
+	copy.previewing = true
+	var ours := field_foes()
+	var theirs := copy.field_foes()
+	var back := {}   # the copy's foe -> ours
+	for i in range(mini(ours.size(), theirs.size())):
+		back[theirs[i]] = ours[i]
+	var bite := 0
+	var volatile := 0
+	if hover_mech >= 0 and hover_mech < mechs.size() and hover_target != null:
+		var t = hover_target
+		if t is Foe:
+			var at := ours.find(t)
+			t = theirs[at] if at >= 0 and at < theirs.size() else null
+		elif t is MechState:
+			var at := mechs.find(t)
+			t = copy.mechs[at] if at >= 0 else null
+		if t != null:
+			bite = pending_bite(mechs[hover_mech])
+			volatile = pending_volatile(mechs[hover_mech])
+			copy.assign(hover_mech, t)
+	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
+	var over: Array[int] = []
+	var standing: Array[int] = []
+	over.resize(mechs.size())
+	standing.resize(mechs.size())
+	if copy.outcome == Outcome.NONE:
+		copy._end_player_turn()
+		for o in copy.overheats:
+			over[int(o["mech"])] += int(o["over"])
+	for i in range(mechs.size()):
+		standing[i] = copy.mechs[i].unit.shield
+	var heat_end: Array[int] = []
+	for i in range(mechs.size()):
+		heat_end.append(copy.mechs[i].heat + over[i])
+	var played := copy.outcome == Outcome.NONE   # a spend that wins, or a burn that wrecks the last machine, ends the fight at once
+	if played:
+		copy._enemy_turn()
+		events.append_array(copy.turn_events)
+	var shield_hit: Array[int] = []
+	for i in range(mechs.size()):
+		shield_hit.append(copy.mechs[i].unit.shield)
+	if played:
+		copy._tick_mechs()
+		for f in copy.field_foes():
+			Effects.halve(f)
+		copy._trim_overshield()
+		copy._regrow_parts()
+	var out_mechs: Array = []
+	for i in range(mechs.size()):
+		var cm: MechState = copy.mechs[i]
+		var incoming := 0
+		var injures := false
+		for ev in events:
+			if int(ev.get("mech", -1)) == i:
+				incoming += int(ev.get("amount", 0))
+				injures = injures or bool(ev.get("injured", false))
+		out_mechs.append({
+			"incoming": incoming,
+			"bite": bite if i == hover_mech else 0,
+			"volatile": volatile if i == hover_mech else 0,
+			"shield_after": cm.unit.shield,
+			"hull_after": cm.unit.hull,
+			"heat_end": heat_end[i],       # the gauge as the turn ends, uncapped: what the burn reads
+			"heat_after": cm.heat,         # the gauge after the round
+			"overheat": over[i],
+			"breaks_shield": standing[i] > 0 and shield_hit[i] <= 0,
+			"component_risk": injures,
+			"destroyed": mechs[i].alive() and not cm.alive(),
+		})
+	var out_foes := {}
+	for cf in back.keys():
+		out_foes[back[cf]] = {"hp": maxi(0, cf.hp), "alive": cf.alive()}
+	var notes: Array = []
+	for n in copy.preview_notes:
+		var d: Dictionary = n.duplicate()
+		if d.get("foe") is Foe:
+			d["foe"] = back.get(d["foe"], null)
+		notes.append(d)
+	return {"mechs": out_mechs, "foes": out_foes, "notes": notes}
 
 
 ## What a rally adds to this round's blows, on every machine they reach: each foe acting after
@@ -1215,6 +1316,8 @@ func _reroll_die(ms: MechState) -> void:
 ## first roll has spun it to a random chamber (Ryan, 18 October: "like a revolver spinning");
 ## any other die rolls.
 func _roll(ms: MechState) -> int:
+	if previewing:
+		return ms.face_index   # the copy's die keeps its entry: a roll is never promised
 	_rolled()
 	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
 		return _step(ms)
@@ -1464,11 +1567,12 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			else:
 				if f.random_targets:
 					target = _random_foe(target)   # the drop is the gesture; the shot goes where it will
-				_resolve_attack(mech_index, ms, f, target)
-				if f.pulls_mines and target.alive():
-					_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
-				if f.drones and target.alive():
-					free = _drone(ms, target, exposed_before)
+				if target != null:   # the round preview's copy holds a random target back
+					_resolve_attack(mech_index, ms, f, target)
+					if f.pulls_mines and target.alive():
+						_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
+					if f.drones and target.alive():
+						free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
 			if killed > 0:
 				_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))   # a kill by its own guns (the Swallowtail's)
@@ -1640,6 +1744,14 @@ func _foe_turn(f: Foe) -> bool:
 	var t := f.target as MechState
 	if t == null or not t.alive() or is_phased(t):
 		t = _pick_mech_target(f)
+	if t == null and previewing and not live_mechs().is_empty():
+		# Its pick is drawn again at random (its machine fell, or is Phased): a move that needs no
+		# machine goes ahead in the round preview's copy, and a blow at one is held back.
+		if f.acts_on_nobody() or f.reaches_every_machine() or f.gathering():
+			t = live_mechs()[0]
+		else:
+			_acted.append(f)
+			return true
 	if t == null:
 		return false
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
@@ -2040,7 +2152,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		if s % split == 0:
 			# Roll once, then split (Ryan, 24 October): the strikes of one split share the roll.
 			roll = f.power
-			if f.is_ranged():
+			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
 				roll = rng.randi_range(f.power, f.power_max)
 			roll += fired + missing + from_hopper
 			if s == 0:
@@ -2247,6 +2359,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 func _blast(ms: MechState, amount: int) -> void:
 	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
+		return
+	if previewing:
+		preview_notes.append({"kind": "blast", "mech": mechs.find(ms)})
 		return
 	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
 	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
@@ -2557,6 +2672,9 @@ func specials_reach() -> Array[MechState]:
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
 ## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping.
 func _act_again(ms: MechState, f: Face) -> void:
+	if previewing:
+		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
+		return
 	_rolled()
 	if f.spins:
 		ms.face_index = ms.die.roll(rng)
@@ -2620,6 +2738,9 @@ func _equipment_after(ms: MechState, f: Face, target) -> void:
 
 ## A random live foe from the seeded stream, or `fallback` when none stands.
 func _random_foe(fallback: Foe) -> Foe:
+	if previewing:
+		preview_notes.append({"kind": "random_target"})
+		return null
 	var live: Array[Foe] = []
 	for foe in field_foes():
 		if foe.alive():
@@ -2632,6 +2753,9 @@ func _random_foe(fallback: Foe) -> Foe:
 ## Where a spray's strike falls (the Skua's Flechette Pod): a random live foe the entry reaches
 ## now, from the seeded stream, the same foe again allowed; null when none stands in reach.
 func _spray_pick(ms: MechState, real: Face) -> Foe:
+	if previewing:
+		preview_notes.append({"kind": "spray", "mech": mechs.find(ms)})
+		return null
 	var pool := targets_for_face(ms, real)
 	if pool.is_empty():
 		return null
@@ -2760,7 +2884,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 	for s in range(maxi(1, f.strikes)):
 		if s % split == 0:
 			roll = f.power
-			if f.is_ranged():
+			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
 				roll = rng.randi_range(f.power, f.power_max)
 			roll += fired + from_hopper
 		var rolled := roll / split   # a split entry's strike takes its share of the roll, rounded down
@@ -3176,6 +3300,9 @@ func _suppress(foe: Foe) -> bool:
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
 	var resist := foe.resist_total()
+	if resist > 0 and previewing:
+		preview_notes.append({"kind": "resist", "foe": foe})   # a stun Numbed may shrug off is never promised
+		return false
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
@@ -3411,6 +3538,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if is_phased(ms):
 		return   # a Phased machine takes no damage (ticks and overheats are its own, and land elsewhere)
 	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
+	var brought := amount   # the blow as it arrives, for the round preview's incoming
 	# A Barrier takes the next blow that deals anything, whole, and is spent; a blow of nothing
 	# leaves it standing (Shocked's mirror). A Ward turns a breach away, so the shield absorbs
 	# it like any blow (Ryan, 14 October).
@@ -3428,7 +3556,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	taken_by_rank[rk] = int(taken_by_rank.get(rk, 0)) + int(r["absorbed"]) + int(r["through"])
 	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
-	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
+	turn_events.append({"foe": source, "mech": mechs.find(ms), "amount": brought, "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
 		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
@@ -3493,6 +3621,9 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
 		return ""
+	if previewing:
+		preview_notes.append({"kind": "injury", "mech": mechs.find(ms)})   # the entry it lands on is the die's roll
+		return ""
 	return _injure_entry(ms, ms.die.roll(rng))
 
 
@@ -3538,6 +3669,9 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
+		return null
+	if previewing:
+		preview_notes.append({"kind": "pick", "foe": f})   # a pick drawn mid-round is never promised
 		return null
 	# Never over-commit: a machine the blows already drawn would wreck is passed over while
 	# another stands.
