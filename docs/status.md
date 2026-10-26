@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 652 tests, 64,646 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 653 tests, 64,716 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes), about a minute in a cloud session.
   A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
@@ -120,8 +120,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
   but the finale; nothing sits between, so the middle of the curve is the foes' fresh start's.
   The coordination gap reads 1.0 to 1.3 on built teams against the tests' about 2, and the
-  campaign's plain player wins none of 40 runs, its fights mostly one machine alone (both
-  section 12's). Since 24 October a foe picks at random unless its threat calls for an aim, every
+  campaign's plain player wins none of 40 runs (both section 12's). Since the playtest list's
+  boss fight (every machine goes in, with no withdrawal) its battles are mostly one fight, the
+  boss's, joined by its ring within about four phases: it wins 39% of its battles where it won
+  2%, a run lasting fourteen turns where it lasted nine (`docs/campaign_run.md`, 40 runs, a
+  direction), so until the Rupture's seal lands a battle can be a straight rush on the boss. Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
