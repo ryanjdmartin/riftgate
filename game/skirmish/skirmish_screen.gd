@@ -1538,7 +1538,7 @@ func _refresh_arrows() -> void:
 				continue
 			targets.append(target_index)
 		# Its machine falls before it acts, as the round stands, and it strikes another (the round
-		# preview, 26 October: the pick it will make, from the pick stream): a second arrow, dashed
+		# preview, 26 October: the next machine in line): a second arrow, dashed
 		# the way a lure's turn is drawn, to the machine its blow lands on. Its own stays solid on
 		# its pick (Ryan, 26 October: a dashed arrow in its place "masks the true intent", which
 		# whatever reads the intent still needs; "We either need to show both arrows, or ... just

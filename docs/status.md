@@ -203,10 +203,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.314, and so is the live (26 October,
-  the page's version 331, from `claude/affectionate-goldberg-8e3mkh`: the settled re-pick drawn as
-  a second arrow, merged onto another session's republish of 18:18 (the Kite, Cottonmouth, Whip
-  Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
+  `docs/design-bible.html` after every change. This file is v0.316, and so is the live (26 October,
+  the page's version 333, from `claude/affectionate-goldberg-8e3mkh`: a pick made again going to
+  the next machine in line, merged onto another session's republish of 18:53 (the heat rows and
+  the Cassowary's); before it the settled re-pick drawn as a second arrow, merged onto the
+  republish of 18:18 (the Kite, Cottonmouth, Whip Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
   afresh and every warning chip pulsing, merged onto the republish of 17:36, which reworked the
   status and keyword tables and the Burn, Stun, heat and die-entry rows; before it the pick smart
   as it is made and never after, a Disrupt keeping a standing pick, the chips beside the skull; before it

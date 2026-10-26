@@ -2969,10 +2969,10 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	sb.begin()
 	sb.start_round()
 	assert_true(hb.acts_on_nobody(), "the brace, at that weight")
-	var drawn := sb.pick_rng.state
+	hb.target = sb.mechs[1]
 	assert_true(sb.assign(0, hb), "disrupted")
 	assert_true(hb.attacks(), "into its blow")
-	assert_true(sb.pick_rng.state != drawn and hb.target != null, "which picks afresh from the pick stream")
+	assert_eq(hb.target, sb.mechs[0], "which picks afresh: the next in line, whatever it carried")
 	# Nothing else open: a foe with one move, or whose other move's condition fails, is not moved.
 	var s2 := Skirmish.new(1, 1)
 	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
@@ -4095,9 +4095,9 @@ func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> voi
 
 
 ## No pick is ever open (Ryan, 26 October: "the targeting recalculates immediately, showing the
-## new game state"): a foe whose machine falls before it acts draws its new pick from the pick
-## stream, which the copy shares, so the preview shows the machine it will strike, among one or
-## among two; a strike at random with one foe standing strikes it.
+## new game state"): a foe whose machine falls before it acts strikes the next machine in line,
+## left to right (Slice and Dice's rule, Ryan's call of the same day), so the preview shows the
+## machine it will strike; a strike at random with one foe standing strikes it.
 func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make() -> void:
 	var sk := Skirmish.new(4, 2)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
@@ -4127,16 +4127,30 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	big3.target = s3.mechs[0]
 	small3.target = s3.mechs[0]
 	pv = s3.preview_round()
-	assert_eq(int(pv["mechs"][1]["hull_after"]) + int(pv["mechs"][2]["hull_after"]), 200 - 7, "B or C takes the blow, and the preview says which")
+	assert_eq(int(pv["mechs"][1]["hull_after"]), 100 - 7, "B, the next in line, takes the blow")
 	var struck: Array = pv["foes"][small3]["struck"]
-	assert_eq(struck.size(), 1, "the machine it strikes")
-	var pick_state := s3.pick_rng.state
+	assert_eq(struck, [1], "and the preview says so")
 	var state3 := s3.rng.state
 	pv = s3.preview_round()
-	assert_eq(pv["foes"][small3]["struck"], struck, "the same every refresh")
-	assert_true(s3.pick_rng.state == pick_state and s3.rng.state == state3, "neither stream drawn from")
+	assert_true(s3.rng.state == state3, "nothing drawn")
 	s3.end_round()
-	assert_eq(s3.mechs[int(struck[0])].unit.hull, 100 - 7, "and the round strikes it")
+	assert_eq(s3.mechs[1].unit.hull, 100 - 7, "and the round strikes it")
+	# An aim that decides still decides: the hottest machine, however far down the line.
+	var sh := Skirmish.new(4, 2)
+	sh.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
+	sh.add_mech(_mech("B", Die.single(Face.blank()), 0, 100))
+	sh.add_mech(_mech("C", Die.single(Face.blank()), 0, 100))
+	var bigh := _ghoul(500, 20)
+	var mage := _ghoul(500, 7)
+	mage.aim = "heat"
+	sh.add_foes([bigh, mage])
+	sh.begin()
+	sh.start_round()
+	sh.mechs[2].heat = 30
+	bigh.target = sh.mechs[0]
+	mage.target = sh.mechs[0]
+	pv = sh.preview_round()
+	assert_eq(pv["foes"][mage]["struck"], [2], "the hottest, C")
 	# A weapon that strikes at random, with one foe standing, strikes it for sure.
 	var s1 := Skirmish.new(4, 2)
 	var gun := Face.attack(5, L)

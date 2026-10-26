@@ -57,11 +57,6 @@ class MechState:
 
 
 var rng := RandomNumberGenerator.new()
-## The stream a pick drawn again mid-round comes from (a foe whose machine fell or is Phased,
-## one Disrupted onto a new move): apart from the fight's, so the round preview's copy, which
-## clones its state, draws the pick the foe will make, and nothing is open (Ryan, 26 October:
-## "the targeting recalculates immediately, showing the new game state").
-var pick_rng := RandomNumberGenerator.new()
 var mechs: Array[MechState] = []
 var packs: Array[Unit] = []
 var columns: int = DEFAULT_COLUMNS
@@ -163,7 +158,6 @@ var _focus: Dictionary = {}
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
 	rng.seed = seed_value
-	pick_rng.seed = hash([seed_value, "pick"])
 	columns = maxi(1, columns_arg)
 	front.resize(columns)
 	front.fill(null)
@@ -579,9 +573,9 @@ func rallies_now(r: Foe) -> bool:
 ## target"). A copy of the fight plays it out, every rule as it runs: the die in hand spent on
 ## `hover_target` when one is given, the end of the player's turn, the enemy's turn (each foe's
 ## move as announced: its heal, its death before it acts, a last act, a web's burst, a rally, a
-## self-destruct) and the round's end. A pick drawn again (a foe whose machine fell first) comes
-## from the pick stream the copy shares, so the copy strikes the machine the round will. Nothing
-## else random is drawn: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, an
+## self-destruct) and the round's end. A pick made again (a foe whose machine fell first) is the
+## next machine in line, so the copy strikes the machine the round will. Nothing random is
+## drawn: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, an
 ## injury's entry and a strike at a random foe among several are held back (`notes`); the
 ## reinforcements are the next round's. Returns {"mechs": the forecast's keys for each machine by
 ## index, plus "coming" (the statuses the round lands on it: {id: {"stacks", "name",
@@ -1769,7 +1763,7 @@ func _enemy_turn() -> void:
 func _foe_turn(f: Foe) -> bool:
 	var t := f.target as MechState
 	if t == null or not t.alive() or is_phased(t):
-		t = _pick_mech_target(f, [], pick_rng)   # its machine fell, or is Phased: the pick it will make
+		t = _repick(f)   # its machine fell, or is Phased: the next in line
 	if t == null:
 		return false
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
@@ -2816,7 +2810,7 @@ func _phase(w: MechState) -> void:
 	w.assigned = true
 	for foe in field_foes():
 		if foe.alive() and foe.target == w:
-			foe.target = _pick_mech_target(foe, [], pick_rng)
+			foe.target = _repick(foe)
 	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
 
 
@@ -3431,7 +3425,7 @@ func _disrupt(foes: Array) -> void:
 		# carried was never an intent the player saw.
 		var t := foe.target as MechState
 		if t == null or not t.alive() or is_phased(t) or not aimed:
-			foe.target = _pick_mech_target(foe, [], pick_rng)
+			foe.target = _repick(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
 
@@ -3697,13 +3691,13 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a
 ## commitment: a foe whose target shields up still swings at it. With the override set, or
-## asked with no foe, the rule before: the lowest shield, then the lowest hull. The draw comes
-## from `stream` when one is given (pick_rng, a pick drawn again mid-round), else the fight's.
-func _pick_mech_target(f: Foe = null, avoid: Array = [], stream: RandomNumberGenerator = null) -> MechState:
+## asked with no foe, the rule before: the lowest shield, then the lowest hull. A pick made
+## again mid-round is _repick's, and draws nothing.
+func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
-	var r := stream if stream != null else rng
+	var r := rng
 	# Never over-commit: a machine the blows already drawn would wreck is passed over while
 	# another stands.
 	var open: Array[MechState] = []
@@ -3756,6 +3750,48 @@ func _pick_mech_target(f: Foe = null, avoid: Array = [], stream: RandomNumberGen
 			_focus[f.rank] = pick
 			return pick
 	return _pick_exposed(f, live, r)
+
+
+## A pick made again mid-round (its machine fell before it acts or is Phased, a Disrupted foe's
+## gone): the next machine in line, left to right, that stands and is not Phased (Ryan, 26
+## October: Slice and Dice's rule, "it just targets the next ally in line", which the player can
+## tell without the preview; it retires a draw from a stream of the fight's own, randomness the
+## player could see only through the preview). An aim that decides (heat, armed, buffed) still
+## decides, the line breaking its ties; a rank that fires as one keeps its shared pick while it
+## stands, else the line's pick becomes it. With the override set, the rule before.
+func _repick(f: Foe) -> MechState:
+	var live := targetable_mechs()   # in field order, left to right
+	if live.is_empty():
+		return null
+	if targeting_override == "lowest":
+		return _lowest_shield(live)
+	match f.aim_of():
+		"heat":
+			var hottest: MechState = live[0]
+			for ms in live:
+				if ms.heat > hottest.heat:
+					hottest = ms
+			return hottest
+		"armed":
+			for ms in live:
+				if _armed_mechs().has(ms):
+					return ms
+		"buffed":
+			var most: MechState = null
+			var top := 0
+			for ms in live:
+				var n := Effects.buff_stacks(ms.unit)
+				if n > top:
+					top = n
+					most = ms
+			if most != null:
+				return most
+		"focus":
+			var shared = _focus.get(f.rank, null)
+			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
+				return shared
+			_focus[f.rank] = live[0]
+	return live[0]
 
 
 static func _lowest_shield(live: Array[MechState]) -> MechState:
@@ -3910,7 +3946,7 @@ func _last_act(f: Foe) -> void:
 	else:
 		var t := f.target as MechState
 		if t == null or not t.alive():
-			t = _pick_mech_target(f, [], pick_rng)
+			t = _repick(f)
 		if t != null:
 			struck.append(mechs.find(t))
 			_strike(f, t)

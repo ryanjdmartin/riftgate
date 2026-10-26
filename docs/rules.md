@@ -175,9 +175,9 @@ defeat when every machine is wrecked. There is no round limit.
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
   rally, a web's burst, a death before it acts, the last act it sets off, a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
-  spent there. A foe whose machine falls before it acts strikes the pick it will make (its
-  pick stream is the preview's too): its arrow stays on its pick, and a second, dashed, goes
-  to the machine its blow lands on. Nothing a roll decides
+  spent there. A foe whose machine falls before it acts strikes the next machine in line: its
+  arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
+  Nothing a roll decides
   is promised: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, the entry
   an injury lands on and a strike at a random foe among several are left out (a lone foe takes
   it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
@@ -529,9 +529,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   count nothing). The pick is a commitment, smart as it is made and never after (Slice and
   Dice's model, Ryan, 26 October): during the player's turn it moves only by a Lure, by the
   machine being Phased, or by a Disrupt whose foe finds its machine gone or Phased; a foe
-  whose machine has fallen or is Phased when it acts picks again, by the same sense, from a
-  stream of its own, so the round preview shows the pick it will make and no pick is ever
-  open. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
+  whose machine has fallen or is Phased when it acts strikes the next machine in line, left to
+  right, that stands and is not Phased (an aim that decides, heat, armed or buffed, still
+  decides, the line breaking its ties), so the player can tell the pick it will make, and
+  the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
   aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
