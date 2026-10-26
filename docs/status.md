@@ -203,12 +203,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.304, and so is the live (26 October,
-  the page's version 321, from `claude/affectionate-goldberg-8e3mkh`: the foes' tick preview, on
-  the quick campaign's republish of 15:17, which carried main's Gel clause; before it the rally
-  at once, its chip's opacity pulse and the set finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
-  day's other branches: `ccr-170f6d81-465jnr`'s and the quick campaign's rows, a boss scaled to its
-  tier, the die's hold showing the entry alone, area at half asked again). So this file holds
+  `docs/design-bible.html` after every change. This file is v0.306, and so is the live (26 October,
+  the page's version 323, from `claude/affectionate-goldberg-8e3mkh`: the round preview, merged
+  onto another session's republish of 15:34, which built area at half and rewrote the hold, drag
+  and codex rows; before it this branch's tick preview, rally at once, chip pulse and set finals,
+  merged onto the quick campaign's republish of 15:17 (main's Gel clause) and the live v0.300,
+  `ccr-6073bda9-p34o8q`'s file, which carried the day's other branches: `ccr-170f6d81-465jnr`'s
+  and the quick campaign's rows, a boss scaled to its tier, the die's hold showing the entry
+  alone, area at half). So this file holds
   those branches' rows and tables ahead of their code, which lands with them:
   `tools/pages/bible_tables.py` run here before they land writes this branch's older tables back
   (its Kindled row here was checked identical to what the script writes). The
