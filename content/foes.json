@@ -18,7 +18,7 @@
       "hp": 4, "attack": 3, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
       ],
       "flavour": "You hear them before the sensors do."
     },
@@ -198,7 +198,7 @@
       "hp": 40, "attack": 8, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 10,
       "actions": [
         { "id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
-        { "id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" },
+        { "id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" },
         { "id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented" }
       ],
       "flavour": "They brought fire. We brought bigger fire. It brought the mountain."

@@ -1233,7 +1233,7 @@ static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
 	var instead := 0.0
 	if Foe.is_attack_action(next) and Foe.countdown_of(next) == 0:
 		var machines: int = sk.live_mechs().size() if foe.has_keyword(next, "all") else 1
-		instead = float(foe.damage_of(next) * maxi(1, int(next.get("strikes", 1))) * machines)
+		instead = float(foe.damage_of(next, sk.incoming_rally(foe)) * maxi(1, int(next.get("strikes", 1))) * machines)
 	return maxf(0.0, now - instead) * HULL_WEIGHT
 
 
@@ -1246,7 +1246,8 @@ static func countdown_threat(f: Foe, sk: Skirmish = null) -> float:
 		return 0.0
 	var machines: int = sk.live_mechs().size() if sk != null and f.reaches_every_machine() else 1
 	var rounds := f.charge + (1 if f.is_suppressed() else 0)
-	return float(f.damage() * f.strikes() * machines) * pow(COUNTDOWN_DISCOUNT, float(rounds))
+	var blow := sk.foe_blow(f) if sk != null else f.damage()
+	return float(blow * f.strikes() * machines) * pow(COUNTDOWN_DISCOUNT, float(rounds))
 
 
 ## What stopping a foe's next action is worth (a Suppress): this round's blow, and on a gathering
@@ -1329,7 +1330,7 @@ static func _threat_next(f: Foe, sk: Skirmish) -> float:
 		return 0.0
 	if f.attacks() or f.gathering():
 		var machines: int = sk.live_mechs().size() if f.reaches_every_machine() else 1
-		return float(f.damage() * f.strikes() * machines)
+		return float(sk.foe_blow(f) * f.strikes() * machines)
 	return float(f.attack)
 
 
@@ -1786,12 +1787,17 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 
 
 ## The blow this foe is about to land, if it is aimed at anyone: on every live machine for a
-## blow at every machine (`all`).
+## blow at every machine (`all`), the rallies on their way to it included. A rallier's is what
+## its rally adds to the blows after it this round (Skirmish.rally_worth, 26 October), so the
+## wolf is worth killing, Suppressing or Disrupting for the fodder it lifts.
 static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
+	if sk != null and sk.rallies_now(f):
+		return float(sk.rally_worth(f))
 	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
 	var machines: int = sk.live_mechs().size() if sk != null and f.hits_all() else 1
-	return float(f.damage() * f.strikes() * machines)
+	var blow := sk.foe_blow(f) if sk != null else f.damage()
+	return float(blow * f.strikes() * machines)
 
 
 func _tally(f: Face) -> void:

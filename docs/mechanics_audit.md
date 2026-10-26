@@ -25,8 +25,10 @@ Ryan's triage, 25 October: fixed 1, 2, 6 with 7, 22, 24, 31, 33 and 35; the Flak
 were done already on `ccr-170f6d81-465jnr` (Flak on a damaging weapon's blow of 0, and its hit
 spending a Shock, cashing Cryo and laying Vitriol whatever it dealt), merged under these fixes;
 his calls of 26 October settled 3 (the records set to the engine), 4 (not a bug: Kindled runs
-Overcharged's formula), 5 (a silence on buffs alone here; Cracked gone on
-`claude/quick-campaign-mode-pafhiv`) and 32 (a beaten domain's rifts close), and
+Overcharged's formula, one damage formula for the whole game; the rally now lands at once and
+the intents count it), 5 (a silence on buffs alone here; Cracked gone on
+`claude/quick-campaign-mode-pafhiv`) and 32 (a beaten domain's rifts close, and a set final turns
+every open rift its domain leads final), and
 `claude/playtesting-issues-08mnqj` (his playtest list, merged here on his word) takes UNDO back
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
 The rest waits on his read. Line numbers are as at `a8a0e43`.
@@ -97,7 +99,14 @@ expectation (a fifth of a spin more a spend), unbounded in principle. Question f
 limiter (a heat, or the spin never landing on itself), or keep the spin and strike the
 exemption's premise.
 
-### 4. Not a bug (Ryan, 26 October: Kindled is the foes' Overcharged, one formula on both sides). Bug: a rally's Kindled is multiplied by the move's factor
+### 4. Not a bug (Ryan, 26 October: Kindled is the foes' Overcharged, one damage formula for the whole game). Bug: a rally's Kindled is multiplied by the move's factor
+Ryan, 26 October, on Claude's reply that the rally's text promised a flat lift: "One formula
+means one damage formula followed by the whole game. Not that we need to display a formula.
+The text is irrelevant. If it's unintuitive that holy multiplies after, that's a problem either
+with the move itself, or a problem with how we display attacks." So the add stays before the
+factor, the swarm's add moved there too (no number moved: every swarm move's factor is 1), and
+the rally now lands at once and the intents count it (the bible's rally row). The finding as
+written:
 `Foe.damage_of` adds Kindled to the base attack before the move's factor
 (sim/foe.gd:176), where Kindled says "hits {value} harder" (the chip, the rally's text,
 docs/rules.md:406) and the bible gives it the job of "lifting a small blow over the plate".
@@ -363,7 +372,7 @@ against Gels and pick it up: every Gel killed after that leaves no Half-Gels, an
 Raise calls nothing ("A dead Gel splits into two Half-Gels", docs/rules.md:528). The resume test
 fights Goblins, which neither split nor summon. Fix: set the factory on load.
 
-### 32. Fixed 26 October (a beaten domain's other rifts close with its final; a rift opened before the third boss still brings a boss, not the final). Bug: a domain can hold two finals at once, and the second refights a beaten hero
+### 32. Fixed 26 October (a beaten domain's other rifts close with its final, and the third boss beaten turns every open rift the domain leads final: Ryan, "If the final is set, then all open rifts should change to show the final as the boss in the mission select"). Bug: a domain can hold two finals at once, and the second refights a beaten hero
 Whether a rift is a final is decided as it opens (`_roll_rift`, sim/campaign.gd:601: three of
 the lead's bosses beaten and its final not won), and `start_battle` takes the final's branch
 without asking again (sim/campaign.gd:316). Every rift of that lead opened before its final is

@@ -595,6 +595,45 @@ func test_a_braced_foe_wears_one_braced_chip() -> void:
 	s.free()
 
 
+## A rally on its way (Ryan, 26 October: "The intents should take into account incoming buffs.
+## They should have a pulsing version of the incoming buff as a preview chip"): the foe after the
+## rallier shows its lifted blow and wears the preview chip, the rallier none, and both go the
+## moment the rallier falls.
+func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_rallier_falls() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(500, Face.Reach.DIRECT))
+	sk.add_mech(m)
+	var lord := Foe.make("revenant", 30, 50)
+	var howl := {"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 5, "weight": 1, "text": ""}
+	lord.actions = [Foe.basic_action(), howl]
+	var g := Foe.make("revenant", 300, 10)
+	sk.add_foes([lord, g])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	lord.action = howl
+	s._refresh()
+	var v := s._foe_view_for(g)
+	assert_eq(v.intent_value, 15, "the intent shows the blow lifted by the Howl on its way")
+	var previews: Array = []
+	for st in v.statuses:
+		if st.size() >= 4 and str(st[3]) == "preview":
+			previews.append(st)
+	assert_eq(previews.size(), 1, "and one preview chip says why")
+	if previews.size() == 1:
+		assert_eq(str(previews[0][1]), "+5", "at the rally's value")
+	for st in s._foe_view_for(lord).statuses:
+		assert_false(st.size() >= 4 and str(st[3]) == "preview", "the rallier wears none")
+	s._use_die(0, lord)
+	assert_false(lord.alive(), "the rallier falls")
+	v = s._foe_view_for(g)
+	assert_eq(v.intent_value, 10, "the intent drops at once")
+	for st in v.statuses:
+		assert_false(st.size() >= 4 and str(st[3]) == "preview", "and the chip goes")
+	s.free()
+
+
 func test_the_formation_is_four_wide_by_default() -> void:
 	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
 	var s := _screen()

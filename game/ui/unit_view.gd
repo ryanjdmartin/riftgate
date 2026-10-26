@@ -30,6 +30,7 @@ const GAP := 10.0          # between the drawing and its gauges above or its chi
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
 const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
+const PREVIEW_RATE := 4.2  # a preview chip's pulse, radians a second: a beat about every 1.5 s (a placeholder, judged running)
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -44,7 +45,7 @@ var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed)
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
@@ -175,6 +176,9 @@ func _has_pending() -> bool:
 	for b in bars:
 		if b.size() >= 4 and int(b[3]) != int(b[0]):
 			return true
+	for st in statuses:
+		if st.size() >= 4 and st[3] == "preview":
+			return true   # a buff on its way pulses
 	return false
 
 
@@ -480,6 +484,16 @@ func _draw() -> void:
 			# never the box a status wears, so the difference is the frame, not a hue.
 			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
 			Hud.brackets(self, rect, 5.0, col, 1.6)
+		elif ch.size() >= 4 and ch[3] == "preview":
+			# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
+			# incoming buff as a preview chip"): a full swing between faint and lit on one clock
+			# for every preview on screen, on a dashed edge with a second breathing out past it,
+			# so "coming" reads by motion and structure, never by hue; started hot, to come down.
+			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PREVIEW_RATE)
+			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+			_draw_dashed(rect.grow(1.0 + 5.0 * beat), Color(col, 0.6 * (1.0 - beat)), 1.5)
+			col = Color(col, 0.3 + 0.7 * beat)
+			_draw_dashed(rect, col, 2.0)
 		else:
 			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
 		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
@@ -496,7 +510,8 @@ func _draw() -> void:
 	_draw_spend(mono)
 
 
-## A rect drawn in dashes (a mined slot's outline): structure, so it never rests on its hue.
+## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
+## rests on its hue. The dark edge under each dash fades with the colour.
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 	var dash := 9.0
 	var gap := 6.0
@@ -508,7 +523,7 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 		var dir := (b - a) / maxf(1.0, length)
 		var t := 0.0
 		while t < length:
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8), width + 2.0)
+			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
 			draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
 			t += dash + gap
 

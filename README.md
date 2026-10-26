@@ -276,6 +276,9 @@ python3 tools/special_probe_read.py build
 # running (it pulses on its own once nothing else is left to do).
 # RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
 # of seconds, to judge the join running.
+# RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
+# every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
+# running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the

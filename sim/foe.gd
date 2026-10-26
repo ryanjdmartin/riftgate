@@ -14,8 +14,9 @@ extends RefCounted
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
-## Damage is base attack times the action's factor; strikes are separate blows; keywords are
-## tags on the blow (breach: ignores the shield and the armour, the whole blow to hull).
+## Damage is base attack, plus its Kindled and its swarm, times the action's factor (damage_of);
+## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
+## armour, the whole blow to hull).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -167,14 +168,17 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack (plus what a rally adds for the round) times
-## its factor, rounded to the nearest whole number (numbers are in the magnitude of tens,
-## not multiples of ten). A defend, buff or debuff action deals nothing.
-func damage_of(a: Dictionary) -> int:
+## What one blow of an action does: base attack, plus what its statuses add (a rally's Kindled),
+## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow) and its swarm,
+## times its factor, rounded to the nearest whole number: the adds, then the multiplies, one
+## damage formula for the whole game (Ryan, 26 October: "One formula means one damage formula
+## followed by the whole game"). A defend, buff or debuff action deals nothing.
+func damage_of(a: Dictionary, extra: int = 0) -> int:
 	if not is_attack_action(a):
 		return 0
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
-	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0)))) + int(a.get("swarm", 0)) * kin
+	var swarm := int(a.get("swarm", 0)) * kin
+	return int(roundf((attack + Effects.foe_attack_bonus(self) + extra + swarm) * float(a.get("factor", 1.0))))
 
 
 ## The action's kind: attack by default (the basic action), or defend, buff, debuff.

@@ -1434,3 +1434,17 @@ the new streams puts every machine at about three starts in four offers over 4,0
 report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen a run against
 3.75) carry everything landed since 22 October, the targeting at random and the doubled heat
 among it, and say nothing about the fix. A direction at 40 runs.
+
+## 26 October, the rally at once
+
+**The rally landing at once, its intents counted** (the bible's rally row, section 5).
+`tools/balance.gd -- --seeds 30 --packs "wolf x3,magma_golem x1,meadow formation"`, every row,
+random and greedy, on this entry's commit against the same run with its change stashed; the
+change carries the greedy bot's read of a rallier (its threat is what its rally adds to the
+blows after it), so the delta is the rule and the bot together. Dire Wolf x3 holds its band on
+every row (the largest moves 3 to 6 points, inside a cell's band at 30 seeds: the Kite's
+random 93 to 90, the Prairie Dog's greedy 73 to 67). The Magma Elemental alone does not move:
+its rally needs others on the field. The Meadow formation moves on four greedy cells, three up and
+one down: the Honey Badger's 20 to 37, Wainwright & Sutler's team's 40 to 57, the Nemesis's 0
+to 3, the Wild Boar's 83 to 73. No cell turns into a wall or goes easy for random
+play. A direction at 30 seeds.

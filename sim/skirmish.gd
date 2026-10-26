@@ -102,9 +102,6 @@ var last_acts: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
-## This turn's rallies, [foe, value, source], granted as Kindled once the turn is over (13
-## October): live from the next round, so a foe striking after the rallier hits what it showed.
-var _rallies: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
 ## Foes that joined a pack in this fight (a Gel's half, a summon, a part) and fell for good, by
@@ -506,7 +503,70 @@ func acting_on(ms: MechState) -> Array[Foe]:
 func incoming_for(ms: MechState) -> int:
 	var total := 0
 	for f in attackers_of(ms):
-		total += f.damage() * f.strikes()
+		total += foe_blow(f) * f.strikes()
+	return total
+
+
+## The blow a foe's move lands, as its intent shows it (Ryan, 26 October: "The intents should
+## take into account incoming buffs"): its own statuses and the rallies on their way to it
+## (rallies_on), one damage formula, every add before the factor (Foe.damage_of).
+func foe_blow(f: Foe) -> int:
+	return f.damage_of(f.action, incoming_rally(f))
+
+
+## What the rallies on their way to a foe add to its move (rallies_on), each at its move's value.
+func incoming_rally(x: Foe) -> int:
+	var n := 0
+	for r in rallies_on(x):
+		n += maxi(0, int(r.action.get("value", 0)))
+	return n
+
+
+## The foes whose rally reaches this one before its move lands: every other foe on the field
+## rallying this round (rallies_now), those acting ahead of it for a move this round and every
+## one for a countdown still gathering, whose blow lands after the round. Nothing reaches a
+## foe that has acted, or one that stepped up this round (its next move is next round's). A
+## rallier killed, Suppressed or Disrupted drops out at once, so the intents do too; once a
+## rally lands it is the foe's own Kindled.
+func rallies_on(x: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if x == null or not x.alive() or x.fresh or _acted.has(x):
+		return out
+	var ahead := true
+	for r in field_foes():
+		if r == x:
+			ahead = false
+		elif (ahead or x.gathering()) and rallies_now(r):
+			out.append(r)
+	return out
+
+
+## Will this foe's move this round rally the others: a rally, the foe alive and yet to act, not
+## Suppressed, not gathering, not stepped up this round and not about to burn to death at its
+## action.
+func rallies_now(r: Foe) -> bool:
+	if r == null or not r.alive() or r.fresh or r.is_suppressed() or r.gathering() or _acted.has(r):
+		return false
+	if Foe.is_attack_action(r.action) or str(r.action.get("effect", "")) != "rally":
+		return false
+	return r.hp - int(Effects.tick_preview(r)["hp"]) > 0
+
+
+## What a rally adds to this round's blows, on every machine they reach: each foe acting after
+## the rallier with a blow landing this round, its blow with the rally less without, its strikes
+## on its machines. The bot reads it as the rallier's threat, so killing, Suppressing or
+## Disrupting the rallier weighs what it saves; the next round's share, on the foes that acted
+## before it, is left out. Nothing for a foe whose move is no rally that will land.
+func rally_worth(r: Foe) -> int:
+	if not rallies_now(r):
+		return 0
+	var v := maxi(0, int(r.action.get("value", 0)))
+	var total := 0
+	for x in field_foes():
+		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or x.target == null:
+			continue
+		var machines := live_mechs().size() if x.hits_all() else 1
+		total += (foe_blow(x) - x.damage_of(x.action, incoming_rally(x) - v)) * x.strikes() * machines
 	return total
 
 
@@ -589,7 +649,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 		per_blow += spent.heat_per_blow
 	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier"), "armour": braced}
 	for f in attackers_of(ms):
-		incoming += f.damage() * f.strikes()
+		incoming += foe_blow(f) * f.strikes()
 		for r in blows_on(ms, f, walk):
 			hull -= int(r["through"])
 			if r["injures"]:
@@ -654,7 +714,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var breach := f.breaches() and not Effects.has(ms.unit, "ward")
 	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank) + int(walk.get("armour", 0))
 	for s in range(f.strikes()):
-		var amount := Effects.damage_taken(ms.unit, f.damage(), f)
+		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f)
 		if amount > 0 and bool(walk.get("barrier", false)):
 			walk["barrier"] = false
 			amount = 0
@@ -896,7 +956,7 @@ func _doomed(ahead: Dictionary) -> Array:
 ## forecast reads them: a blow at every machine on each, any other on its pick. A special, a
 ## suppressed foe and a countdown still gathering land nothing this round.
 func _draw_blows(f: Foe, ahead: Dictionary) -> void:
-	if not f.attacks() or f.damage() <= 0 or f.is_suppressed():
+	if not f.attacks() or foe_blow(f) <= 0 or f.is_suppressed():
 		return
 	if not f.pending.is_empty() and f.charge > 0:
 		return
@@ -1524,7 +1584,6 @@ func _end_player_turn() -> void:
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
-	_rallies.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first; vitriol eats
@@ -1545,21 +1604,20 @@ func _enemy_turn() -> void:
 			f.hp -= int(tick["hp"])
 			if not f.alive():
 				continue   # burnt to death before it acts: a web it carried goes with it
+		# Its move this turn, landing or lost to a Suppress, spends what a rally gave it (Kindled,
+		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
+		# that stepped up this round has had its round, so it keeps it for its next.
+		var moves := not f.fresh and not f.gathering()
 		var more := true
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			more = _foe_turn(f)
+		if moves:
+			Effects.remove(f, "kindled")
 		_web_burst(f)
 		if not more:
 			break
 	_acted.clear()
 	_clear_dead()
-	# The rallies land now, on the foes still standing: Kindled at each rally's own value,
-	# live from the next round (its intents drawn with it) and gone after it.
-	for r in _rallies:
-		var other: Foe = r[0]
-		if other.alive() and field_foes().has(other):
-			Effects.grant_for_rounds(other, Effects.kindled(int(r[1])), str(r[2]), round + 1)
-	_rallies.clear()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
@@ -2398,16 +2456,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
 		"rally":
-			# Kindled goes live from the next round, when intents are drawn with it (13
-			# October): the grant waits until the enemy's turn is over (_enemy_turn), so a foe
-			# striking after the rallier this turn hits the number it showed, and it carries
-			# the move's own value (the Howl's 5, Stoke the Forge's 10), never a fixed 10.
+			# Kindled lands at once on every other foe on the field, at the move's own value
+			# (Ryan, 26 October: "howl is more clear if it gives kindled for the next action,
+			# which could be the turn its granted"): one acting after the rallier this turn hits
+			# harder now, one that has acted carries it to its next move, and every intent
+			# showed it from the round's start (incoming_rally). Each grant is its own, so two
+			# rallies add.
 			var rallied := 0
 			for other in field_foes():
 				if other != f and other.alive():
-					_rallies.append([other, maxi(0, value), "foe:" + f.content_id])
+					Effects.grant(other, Effects.make(Effects.kindled(maxi(0, value)), Effects.SKIRMISH, "foe:" + f.content_id))
 					rallied += 1
-			log.append("%s: %s, %d hit %d harder next round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
+			log.append("%s: %s, %d hit %d harder at their next move" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
@@ -3556,7 +3616,7 @@ func _pick_exposed(f: Foe, live: Array[MechState]) -> MechState:
 ## The shield this foe's blows would take off a machine, when they would take all of it;
 ## zero when the shield holds.
 func shield_broken(f: Foe, ms: MechState) -> int:
-	if f.damage() <= 0 or ms.unit.shield <= 0:
+	if foe_blow(f) <= 0 or ms.unit.shield <= 0:
 		return 0
 	var walk := {"shield": ms.unit.shield, "barrier": Effects.has(ms.unit, "barrier")}
 	blows_on(ms, f, walk)
@@ -3566,7 +3626,7 @@ func shield_broken(f: Foe, ms: MechState) -> int:
 ## The hull this foe's blows would reach on a machine as it stands: its damage, its strikes,
 ## its breach, against the shield, armour, Barrier, Ward and damage taken the forecast reads.
 func hull_reached(f: Foe, ms: MechState) -> int:
-	if f.damage() <= 0:
+	if foe_blow(f) <= 0:
 		return 0
 	var walk := {"shield": ms.unit.shield, "barrier": Effects.has(ms.unit, "barrier")}
 	var through := 0

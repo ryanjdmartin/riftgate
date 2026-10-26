@@ -19,6 +19,9 @@ extends RefCounted
 ##                  closes; the city opens no new rift for QUIET_TURNS; the battle's salvage
 ##                  banks; the boss drops a research token of its faction; the host maker
 ##                  owes an offer
+##   third boss     a domain's FINAL_AFTER-th boss beaten sets its final: every standing
+##                  city's rift it leads turns final at once, its hero the boss, and so does
+##                  every rift it leads after
 ##   won final      the domain is beaten: it leads no new rift and guests none, and every
 ##                  standing city's rift it leads closes too, that city quiet for QUIET_TURNS,
 ##                  its gate as it stood and nothing paid (a free reprieve)
@@ -363,7 +366,7 @@ func finish_battle() -> Dictionary:
 			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
-		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": []}
+		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": [], "finals": []}
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
 	# battle's end and never shown while it is fought, 7 October: one less number on the
 	# screen, and no visible count to farm against.)
@@ -410,6 +413,8 @@ func finish_battle() -> Dictionary:
 		if final and not c.capital and not finals_won.has(faction):
 			finals_won.append(faction)
 			report["closed"] = _close_beaten(faction)
+		elif int(bosses_beaten[faction]) >= FINAL_AFTER and not finals_won.has(faction):
+			report["finals"] = _set_finals(faction)
 	elif c.gate <= 0:
 		report["result"] = "fell"
 		_fall(c)
@@ -541,6 +546,22 @@ func _close_beaten(faction: String) -> Array:
 		c.quiet = QUIET_TURNS
 		closed.append(c.id)
 	return closed
+
+
+## A domain's final is set by its third boss beaten (FINAL_AFTER; Ryan, 26 October: "If the
+## final is set, then all open rifts should change to show the final as the boss in the mission
+## select"): every standing city's rift it leads turns final at once, its dealt hero the boss
+## shown, so no rift opened before then brings a plain boss after; the ones it opens later are
+## dealt final (_roll_rift). The capital's rift is the finale, and a fallen city's is no front.
+## Returns the cities turned.
+func _set_finals(faction: String) -> Array:
+	var turned: Array = []
+	for c in cities.values():
+		if c.capital or c.fallen or c.rift.is_empty() or str(c.rift.get("faction", "")) != faction or bool(c.rift.get("final", false)):
+			continue
+		c.rift["final"] = true
+		turned.append(c.id)
+	return turned
 
 
 func _fall(c: City) -> void:

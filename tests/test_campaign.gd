@@ -652,6 +652,57 @@ func test_a_final_is_fought_against_the_dealt_hero_with_its_wildlife() -> void:
 	assert_true(c.finals_won.has(fid), "won: the domain is thinned")
 
 
+## A domain's final is set by its third boss beaten (Ryan, 26 October: "If the final is set,
+## then all open rifts should change to show the final as the boss in the mission select"):
+## every standing city's rift it leads turns final at once, its dealt hero the boss; a rift it
+## guests and a fallen city's stay as they are, and a rift it leads after is dealt final.
+func test_a_third_boss_beaten_turns_every_open_rift_its_domain_leads_final() -> void:
+	var c := _run()
+	var fid := str(c.party.keys()[0])
+	var other := ""
+	for f in c.db.factions.keys():
+		if str(f) != fid:
+			other = str(f)
+			break
+	var ids: Array = []
+	for city in c.cities.values():
+		if not city.capital:
+			ids.append(city.id)
+	assert_true(ids.size() >= 4, "four cities around the capital")
+	var won_at: String = ids[0]
+	var led: String = ids[1]
+	var guested: String = ids[2]
+	var fallen: String = ids[3]
+	c.bosses_beaten[fid] = Campaign.FINAL_AFTER - 1
+	c.cities[won_at].rift = {"faction": fid, "guest": "", "final": false}
+	c.cities[led].rift = {"faction": fid, "guest": other, "final": false}   # opened before the third boss fell
+	c.cities[guested].rift = {"faction": other, "guest": fid, "final": false}
+	c.cities[fallen].rift = {"faction": fid, "guest": "", "final": false}
+	c.cities[fallen].fallen = true
+	c.cities[fallen].gate = 0
+	var b := _battle(c, won_at)
+	assert_ne(b.boss.lineup, [str(c.party[fid])], "the third is a boss, not the final")
+	_end(b, Battle.Outcome.VICTORY)
+	var r := c.finish_battle()
+	assert_false(r["final"], "the report says it was no final")
+	assert_eq(int(c.bosses_beaten[fid]), Campaign.FINAL_AFTER, "the third boss beaten")
+	assert_eq(r["finals"], [led], "the report names the rift turned final")
+	assert_true(bool(c.cities[led].rift.get("final", false)), "the rift it leads turns final at once")
+	assert_eq(str(c.cities[led].rift.get("guest", "")), other, "its guest kept")
+	assert_false(bool(c.cities[guested].rift.get("final", false)), "a rift it only guests keeps its own lead's boss")
+	assert_false(bool(c.cities[fallen].rift.get("final", false)), "a fallen city's rift stays as it was")
+	assert_false(c.finals_won.has(fid), "the domain stands until its final is won")
+	var b2 := _battle(c, led)
+	assert_eq(b2.boss.lineup, [str(c.party[fid])], "the battle there is its final: the dealt hero commands it")
+	var turned := false
+	for i in range(80):
+		var rift := c._roll_rift()
+		if str(rift["faction"]) == fid:
+			turned = true
+			assert_true(bool(rift["final"]), "a rift it leads after is dealt final")
+	assert_true(turned, "and some rift it leads was rolled")
+
+
 ## A beaten domain's other rifts close (Ryan, 26 October: "if a domain gets beat, other rifts
 ## for that domain should close"): its final won, every standing city whose rift it leads is
 ## free of it at once, quiet for a turn as a won city is, its gate as it stood (only a win

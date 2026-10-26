@@ -386,6 +386,28 @@ func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	assert_eq(Policy.disrupt_score(sk, sk.front[1]), 0.0, "a foe with only its blow cannot be moved")
 
 
+## A rallier's threat is what its rally adds to the blows after it this round (26 October), so
+## killing, Suppressing or Disrupting it weighs the fodder it lifts, and the forecast reads the
+## lifted blows.
+func test_the_bot_reads_a_rallier_by_the_blows_its_rally_lifts() -> void:
+	var sk := Skirmish.new(3, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 0, 300))
+	var lord := _ghoul(500, 50)
+	var howl := {"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 5, "weight": 1, "text": ""}
+	lord.actions = [Foe.basic_action(), howl]
+	sk.add_foes([lord, _ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[0] == lord, "the rallier acts first")
+	lord.action = howl
+	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "the forecast reads both lifted blows")
+	assert_eq(Policy._threat_now(lord, sk), 10.0, "the rallier threatens what its rally adds: 5 on each of two blows")
+	assert_eq(Policy.suppress_worth(sk, lord), 10.0, "and a Suppress on it is worth that")
+	assert_eq(Policy.disrupt_score(sk, lord), 0.0, "a Disrupt turning it to its 50 is worth nothing")
+	lord.action = lord.actions[0]
+	assert_eq(Policy._threat_now(lord, sk), 50.0, "on its blow it threatens its blow")
+
+
 func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() -> void:
 	var sk := Skirmish.new(2, 2)
 	var tank := _mech("Tank", Die.single(Face.attack(0, I, K.LURE)), 40, 200)

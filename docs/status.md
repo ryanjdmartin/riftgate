@@ -20,8 +20,9 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 654 tests, 64,720 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
-  playtest list merged in with the mechanics audit's fixes), about a minute in a cloud session.
+- Tests: 661 tests, 64,802 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+  playtest list merged in with the mechanics audit's fixes, the rally at once and the set finals),
+  about a minute in a cloud session.
   A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -51,7 +52,11 @@ slot, no Exposed chip or codex line for an empty front, an area weapon bracketin
 one, summoners with no condition), waiting on his phone read (the to-do). On them, the
 mechanics audit Ryan asked for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced
 through the code and cited by line, its "start here" list first) and the fixes he called for on
-25 and 26 October (the audit's head lists them). Landing it lands all three.
+25 and 26 October (the audit's head lists them), and his two builds of the 26th's last round: a
+rally's Kindled landing at once and riding each foe's next move, the intents counting the rallies
+on their way under a pulsing preview chip (`RIFTGATE_PREVIEW_DEBUG=1`; the swarm's add moved
+before the factor with it, one damage formula), and a domain's third boss turning every open rift
+it leads final. Landing it lands all three.
 `ccr-170f6d81-465jnr` has one commit past it (`b1aa261`, the die's hold showing the entry alone),
 which main takes from that branch. `claude/quick-campaign-mode-pafhiv` (25 October) holds the
 quick campaign (`sim/quick_run.gd` and its screen), one damage state (Cracked gone, each injury
@@ -125,7 +130,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   boss fight (every machine goes in, with no withdrawal) its battles are mostly one fight, the
   boss's, joined by its ring within about four phases: it wins 39% of its battles where it won
   2%, a run lasting fourteen turns where it lasted nine (`docs/campaign_run.md`, 40 runs, a
-  direction), so until the Rupture's seal lands a battle can be a straight rush on the boss. Since 24 October a foe picks at random unless its threat calls for an aim, every
+  direction), so until the Rupture's seal lands a battle can be a straight rush on the boss.
+  Since the set finals (26 October) a run fights about twice the finals (23 in 40 runs where
+  13 were), winning 86%; the rally at once moves no cell of the packs that field it out of its
+  band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
@@ -188,13 +196,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.296, and so is the live (26 October,
-  the page's version 313, from `claude/affectionate-goldberg-8e3mkh`: the playtest list's rows, a
-  silence on buffs alone, the Cassowary's limiter set to the engine and a beaten domain's rifts
-  closing, merged onto the live v0.295, `ccr-170f6d81-465jnr`'s, which carried the quick
-  campaign's v0.294 and this branch's v0.291). So this file holds those two branches' rows and
-  tables ahead of their code, which lands with them: `tools/pages/bible_tables.py` run here
-  before they land writes this branch's older tables back. The
+  `docs/design-bible.html` after every change. This file is v0.301, and so is the live (26 October,
+  the page's version 318, from `claude/affectionate-goldberg-8e3mkh`: the rally at once and the set
+  finals, merged three ways onto the live v0.300, `ccr-6073bda9-p34o8q`'s file, which carried the
+  day's other branches: `ccr-170f6d81-465jnr`'s and the quick campaign's rows, a boss scaled to its
+  tier, the die's hold showing the entry alone, area at half asked again). So this file holds
+  those branches' rows and tables ahead of their code, which lands with them:
+  `tools/pages/bible_tables.py` run here before they land writes this branch's older tables back
+  (its Kindled row here was checked identical to what the script writes). The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it (`git merge-file` with the last-published file as the base, the wrapper's first line and

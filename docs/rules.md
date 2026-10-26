@@ -73,7 +73,8 @@ skirmish.
 ### The round
 1. Rerolls reset to three (less any a foe drained). Every machine sheds heat by its cooling.
    Every die rolls; entries are equally likely. Round-start passives fire.
-2. Every foe picks its move, then its target; both show, exact, before the player acts.
+2. Every foe picks its move, then its target; both show, exact, before the player acts. A
+   blow's number counts the rallies on their way to it this round (Kindled, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point. END TURN pulses once no die has anywhere to be
    spent, rerolls aside.
@@ -413,9 +414,17 @@ On a foe:
   blow of 0 included, before its multiplies and its armour (a Shocked foe takes blow plus Flak,
   doubled); a debuff's blow stays nothing. The stacks halve at the end of each round, rounded
   down.
-- **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
-  live when that round's intents are drawn, so a foe striking after the rallier this turn
-  hits the number it showed.
+- **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,
+  and its next move hits harder by the rally's value, an add before the move's factor as
+  every add is. That move spends it, whatever it is: a blow lands it, a special gains nothing
+  from it, a Suppress that takes the move takes it too, and a countdown still gathering
+  carries it to the blow it lands. A foe acting after the rallier spends it this turn; one
+  that has acted carries it to its next move; each rally's grant adds. An intent counts the
+  rallies on their way: a blow this round those of the ralliers acting before it, a
+  countdown's blow every rally this round, each from a rallier alive, not Suppressed and not
+  about to burn to death, so it drops the moment the rallier is killed, Suppressed or
+  Disrupted. The foe wears the coming Kindled as a preview chip, pulsing on a dashed edge,
+  until it lands; a foe whose move shows no blow wears none.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
@@ -505,8 +514,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   has fallen picks again as it acts. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
-- **A blow** is its base attack times the move's factor, plus its swarm for each other live
-  foe of its type; strikes are separate blows. Riders (a Ward turns away all but the last
+- **A blow** is its base attack, plus its Kindled and its swarm for each other live foe of its
+  type, times the move's factor: the adds, then the multiplies, the one damage formula on both
+  sides; strikes are separate blows. Riders (a Ward turns away all but the last
   two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
   Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), silence
   (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
@@ -520,7 +530,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally, drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  rally (Kindled at its value on every other foe on the field, at once), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence, purge (each on its target, no blow). A Ward turns away every one of them
   that lands on its machine, a scorch all's and a corrupt all's share included, and a scorch all
@@ -734,7 +744,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them.
-- **Finals and finale**: three bosses of one domain beaten make its next rift a final, fought
+- **Finals and finale**: three bosses of one domain beaten set its final: every standing
+  city's rift it leads turns final at once, and every rift it leads after is one, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
   when the hero falls, and a won final beats the domain: it leads and guests no new rift (a
   rift it already guests keeps it), and every standing city's rift it leads closes at once, a

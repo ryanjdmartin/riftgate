@@ -3733,7 +3733,11 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	assert_true("\n".join(s2.log).contains("nothing answers"), "and the log says so")
 
 
-func test_a_rally_makes_the_others_hit_harder_next_round_only() -> void:
+func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_to_its_next_move() -> void:
+	# The rallier strikes nothing, so it stands right of the ghoul and acts after it (Ryan, 26
+	# October: "howl is more clear if it gives kindled for the next action, which could be the
+	# turn its granted"): the ghoul has struck by the time the rally lands, so it carries its
+	# Kindled to its next move and spends it there.
 	var sk := Skirmish.new(7, 2)
 	var m := _mech("A", Die.single(Face.blank()), 0, 300)
 	sk.add_mech(m)
@@ -3743,26 +3747,31 @@ func test_a_rally_makes_the_others_hit_harder_next_round_only() -> void:
 	var g := _ghoul(500, 10)
 	sk.add_foes([lord, g])
 	sk.begin()
+	assert_true(sk.front[0] == g, "the ghoul stands left and acts first")
 	sk.start_round()
+	assert_eq(sk.foe_blow(g), 10, "no rally reaches it before its blow: its intent is its plain 10")
+	assert_true(sk.rallies_on(g).is_empty(), "and none is on its way")
 	sk.end_round()
-	assert_eq(m.hull, 290, "the ghoul's plain 10 this round; the lord rallied")
-	assert_true(Effects.has(g, "kindled"), "the ghoul is kindled")
+	assert_eq(m.hull, 290, "the ghoul's plain 10 this round; the lord rallied after it")
+	assert_true(Effects.has(g, "kindled"), "the ghoul is kindled, carried to its next move")
 	assert_false(Effects.has(lord, "kindled"), "not the lord itself")
+	assert_true("\n".join(sk.log).contains("hit 10 harder at their next move"), "and the log says so")
 	sk.start_round()
 	assert_eq(g.damage(), 20, "its intent reads 20")
 	lord.actions = [Foe.basic_action()]
 	lord.action = lord.actions[0]
 	sk.end_round()
 	assert_eq(m.hull, 290 - 20 - 10, "20 from the kindled ghoul, 10 from the lord's blow")
-	assert_false(Effects.has(g, "kindled"), "gone with the round")
+	assert_false(Effects.has(g, "kindled"), "spent by the move it lifted")
 	sk.start_round()
 	assert_eq(g.damage(), 10, "plain again")
 
 
-func test_a_rally_lands_next_round_at_its_own_value_whoever_acts_after_it() -> void:
-	# The rallier is the heaviest hitter, so it stands left and acts first (13 October): the
-	# foe striking after it this turn hits the number it showed, and next round every intent
-	# is drawn with Kindled at the move's own value (the Howl's 5), never a fixed 10.
+func test_a_rally_lifts_the_foes_acting_after_it_this_turn_and_their_intents_show_it() -> void:
+	# The rallier is the heaviest hitter, so it stands left and acts first: the foe after it is
+	# Kindled before its blow, at the move's own value, and its intent shows the lifted number
+	# from the round's start (Ryan, 26 October: "The intents should take into account incoming
+	# buffs").
 	var sk := Skirmish.new(11, 2)
 	var m := _mech("A", Die.single(Face.blank()), 0, 300)
 	sk.add_mech(m)
@@ -3775,18 +3784,131 @@ func test_a_rally_lands_next_round_at_its_own_value_whoever_acts_after_it() -> v
 	assert_true(sk.front[0] == lord, "the heavier hitter stands left and acts first")
 	sk.start_round()
 	lord.action = howl
-	assert_eq(g.damage(), 10, "the intent shown")
+	assert_eq(g.damage(), 10, "its own statuses lift nothing yet")
+	assert_eq(sk.incoming_rally(g), 5, "the Howl's own 5 is on its way")
+	assert_true(sk.rallies_on(g).size() == 1 and sk.rallies_on(g).has(lord), "from the lord")
+	assert_eq(sk.foe_blow(g), 15, "so the intent shows 15")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 15, "and the forecast counts it")
+	assert_eq(sk.foe_blow(lord), 0, "the rallier strikes nothing")
 	sk.end_round()
-	assert_eq(m.hull, 290, "the blow landed is the intent shown, rallied or not")
-	assert_true(Effects.has(g, "kindled"), "kindled for next round")
-	assert_false(Effects.has(lord, "kindled"), "not the rallier itself")
-	assert_eq(Effects.foe_attack_bonus(g), 5, "by the Howl's own 5")
+	assert_eq(m.hull, 285, "the blow landed is the intent shown: 10 and the Howl's 5")
+	assert_false(Effects.has(g, "kindled"), "spent by the blow it lifted")
+	assert_false(Effects.has(lord, "kindled"), "and never on the rallier itself")
 	sk.start_round()
 	lord.action = lord.actions[0]
-	assert_eq(g.damage(), 15, "its intent reads 15")
+	assert_eq(sk.foe_blow(g), 10, "plain again, with no rally on its way")
 	sk.end_round()
-	assert_eq(m.hull, 290 - 50 - 15, "the lord's 50 and the kindled 15")
-	assert_false(Effects.has(g, "kindled"), "gone with the round")
+	assert_eq(m.hull, 285 - 50 - 10, "the lord's 50 and the ghoul's plain 10")
+
+
+func test_an_incoming_rally_drops_when_its_rallier_is_suppressed_disrupted_or_killed() -> void:
+	var sk := Skirmish.new(11, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 300)
+	sk.add_mech(m)
+	var lord := _ghoul(500, 50)
+	var howl := _special("buff", "rally", {"value": 5})
+	lord.actions = [Foe.basic_action(), howl]
+	var g := _ghoul(500, 10)
+	sk.add_foes([lord, g])
+	sk.begin()
+	sk.start_round()
+	lord.action = howl
+	assert_eq(sk.foe_blow(g), 15, "the rally is on its way")
+	Effects.grant_for_rounds(lord, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_eq(sk.foe_blow(g), 10, "Suppressed, the rallier lands nothing, and the intent drops at once")
+	assert_eq(sk.rally_worth(lord), 0, "nor is its rally worth anything to stop")
+	Effects.remove(lord, "suppressed")
+	assert_eq(sk.foe_blow(g), 15, "lifted again")
+	sk._disrupt([lord])
+	assert_true(lord.attacks(), "Disrupted, it swings instead")
+	assert_eq(sk.foe_blow(g), 10, "and the rally is gone from the intent")
+	lord.action = howl
+	assert_eq(sk.foe_blow(g), 15, "back on its rally")
+	lord.hp = 0
+	assert_eq(sk.foe_blow(g), 10, "killed, it rallies nobody")
+	sk.end_round()
+	assert_eq(m.hull, 290, "the ghoul's plain 10 landed")
+	assert_false(Effects.has(g, "kindled"), "and nothing was kindled")
+
+
+func test_a_rally_reaches_every_foe_after_it_at_its_value_and_two_rallies_add() -> void:
+	# Two ralliers: each lands its own grant, so the foes after both carry both, and a rallier
+	# after the other is lifted by the first though its own move, a special, gains nothing.
+	var sk := Skirmish.new(3, 4)
+	var m := _mech("A", Die.single(Face.blank()), 0, 500)
+	sk.add_mech(m)
+	var a := _ghoul(500, 40)
+	var b := _ghoul(500, 30)
+	var c := _ghoul(500, 10)
+	var d := _ghoul(500, 10)
+	a.actions = [Foe.basic_action(), _special("buff", "rally", {"value": 2})]
+	b.actions = [Foe.basic_action(), _special("buff", "rally", {"value": 3})]
+	sk.add_foes([a, b, c, d])
+	sk.begin()
+	assert_eq(sk.front, [a, b, c, d], "the heavier hitters stand left")
+	sk.start_round()
+	a.action = a.actions[1]
+	b.action = b.actions[1]
+	assert_eq(sk.foe_blow(c), 15, "10 and both rallies on their way")
+	assert_eq(sk.foe_blow(d), 15, "the last as well")
+	assert_eq(sk.incoming_rally(b), 2, "the second rallier is reached by the first")
+	assert_eq(sk.rally_worth(a), 4, "the first's rally lifts the two blows after it by 2 each")
+	assert_eq(sk.rally_worth(b), 6, "the second's by 3 each")
+	sk.end_round()
+	assert_eq(m.hull, 500 - 15 - 15, "both lifted blows landed")
+	assert_false(Effects.has(b, "kindled"), "its own rally spent what the first gave it, for nothing")
+	assert_eq(Effects.foe_attack_bonus(a), 3, "the first, having acted, carries the second's 3 to its next move")
+	assert_false(Effects.has(c, "kindled") or Effects.has(d, "kindled"), "the blows spent theirs")
+
+
+func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_the_blow() -> void:
+	# A Suppress that takes the move takes the Kindled riding on it (Ryan, 17 October: "they
+	# lose their next action"); a countdown gathering carries a rally to the blow it lands, any
+	# rally this round reaching it, whoever acts first.
+	var sk := Skirmish.new(5, 3)
+	var m := _mech("A", Die.single(Face.blank()), 0, 500)
+	sk.add_mech(m)
+	var lancer := _gatherer(30, 1)
+	var g := _ghoul(500, 10)
+	var lord := _ghoul(500, 1)
+	lord.actions = [_special("buff", "rally", {"value": 4})]
+	lord.action = lord.actions[0]
+	sk.add_foes([lancer, g, lord])
+	sk.begin()
+	assert_eq(sk.front, [lancer, g, lord], "the rallier acts last")
+	sk.start_round()
+	assert_true(lancer.gathering(), "the lancer gathers")
+	assert_eq(sk.foe_blow(lancer), 34, "its Jump shows the rally it will carry, though the rallier acts after it")
+	assert_eq(sk.foe_blow(g), 10, "the ghoul acts before the rally: its blow this round is plain")
+	sk.end_round()
+	assert_eq(m.hull, 490, "the ghoul's plain 10")
+	assert_eq(Effects.foe_attack_bonus(lancer), 4, "the lancer carries it through its gathering")
+	assert_eq(Effects.foe_attack_bonus(g), 4, "and the ghoul to its next move")
+	sk.start_round()
+	lord.action = Foe.basic_action()
+	Effects.grant_for_rounds(g, Effects.STATUS["suppressed"], "mech", sk.round)
+	assert_eq(sk.foe_blow(lancer), 34, "the Jump lands lifted")
+	sk.end_round()
+	assert_eq(m.hull, 490 - 34 - 1, "the lifted Jump and the lord's 1; the ghoul lost its move")
+	assert_false(Effects.has(g, "kindled"), "and the Kindled riding on it")
+	assert_false(Effects.has(lancer, "kindled"), "the Jump spent the lancer's")
+
+
+func test_a_special_spends_a_kindled_move_for_nothing() -> void:
+	var sk := Skirmish.new(5, 1)
+	var m := _mech("A", Die.single(Face.blank()), 0, 300)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	g.actions = [_special("defend", "regrow", {"value": 5})]
+	g.action = g.actions[0]
+	sk.add_foes([g])
+	sk.begin()
+	Effects.grant(g, Effects.make(Effects.kindled(6), Effects.SKIRMISH, "foe:test"))
+	assert_eq(Effects.STATUS["kindled"]["spent_by"], "move", "Kindled rides the next move")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 300, "a regrow lands no blow")
+	assert_false(Effects.has(g, "kindled"), "and spends the Kindled all the same")
 
 
 func test_the_debuffs_cost_rerolls_and_heat() -> void:

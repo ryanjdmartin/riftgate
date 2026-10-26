@@ -74,6 +74,9 @@ static var PREY_DEBUG := OS.get_environment("RIFTGATE_PREY_DEBUG") == "1"
 ## RIFTGATE_BLAST_DEBUG=1: the blast's marks stay on, over every foe the first machine whose vents
 ## blast would fire at with its die's vent (its heat raised to fire it), to judge them running.
 static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
+## RIFTGATE_PREVIEW_DEBUG=1: every foe showing a blow wears the pulsing preview chip of a rally on
+## its way (+1 where none is coming, its number unchanged), to judge the pulse running.
+static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 var _rage_debug_at := -10.0
 
@@ -1142,7 +1145,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
 	var blow := foe.attacks() or foe.gathering()
-	v.intent_value = foe.damage() if blow else int(foe.action.get("value", 0))
+	v.intent_value = sk.foe_blow(foe) if blow else int(foe.action.get("value", 0))
 	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if blow else ""
 	v.statuses = []
 	for r in _foe_rows(foe):
@@ -1240,7 +1243,21 @@ func _foe_rows(foe: Foe) -> Array:
 		var arm := Effects.foe_armour_bonus(foe)
 		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
-		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
+		var kindled := Effects.foe_attack_bonus(foe)
+		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, Palette.HEAT])
+	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
+	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
+	# the Kindled the rallies will land before its blow, already in the number its intent
+	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
+	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
+	var coming := sk.incoming_rally(foe)
+	var shows_blow := foe.alive() and not foe.is_suppressed() and foe.target != null and (foe.attacks() or foe.gathering())
+	if shows_blow and (coming > 0 or PREVIEW_DEBUG):
+		var who: Array[String] = []
+		for r in sk.rallies_on(foe):
+			who.append(r.display_name)
+		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
+		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], Palette.HEAT, "preview"])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
 	var paradox := Effects.stacks_of(foe, "paradox")
@@ -1572,9 +1589,9 @@ func _on_foe_held(v: UnitView) -> void:
 		# below says what it does this round, as the chip does under its sprite.
 		if not foe.action.is_empty():
 			if foe.gathering():
-				text += "\n%s %d%s, lands %s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note, "next round" if foe.charge == 1 else "in %d rounds" % foe.charge]
+				text += "\n%s %d%s, lands %s" % [str(foe.action.get("name", "")), sk.foe_blow(foe), v.intent_note, "next round" if foe.charge == 1 else "in %d rounds" % foe.charge]
 			elif foe.attacks():
-				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
+				text += "\n%s %d%s" % [str(foe.action.get("name", "")), sk.foe_blow(foe), v.intent_note]
 			else:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
 		if foe.target != null and foe.reaches_every_machine():

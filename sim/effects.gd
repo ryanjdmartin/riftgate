@@ -191,12 +191,19 @@ const STATUS := {
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
-	# its brace (above): Kindled lasts the next round; Risen is a charge spent by a death.
-	# Kindled carries its rally's own value (13 October: the Dire Wolf's Howl says 5, Stoke the
-	# Forge 10; kindled() below) and goes live from the next round, when intents are drawn
-	# with it, so no foe strikes above the intent it showed: the skirmish grants it once the
-	# enemy's turn is over. The 10 here is only the default a bare grant would carry.
-	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits {value} harder this round.",
+	# its brace (above): Kindled rides its next move; Risen is a charge spent by a death.
+	# Kindled carries its rally's own value (13 October; kindled() below) and lands the moment
+	# the rally does, on every other foe on the field (Ryan, 26 October: "howl is more clear if
+	# it gives kindled for the next action, which could be the turn its granted"): a foe acting
+	# after the rallier spends it this turn, one that has acted carries it to its next move.
+	# The move spends it whatever it is (`spent_by`, the skirmish lifting every grant after the
+	# foe's action): a blow lands it, a special gains nothing from it, a Suppress that takes
+	# the move takes it too, and a countdown still gathering carries it to the blow it lands.
+	# The intents read a rally on its way (Skirmish.incoming_rally), so no foe strikes above
+	# the number it showed. An add before the factor, one damage formula for the whole game
+	# (Ryan, 26 October), as Overcharged is on the machines' side. Each grant is its own, its
+	# rally's value; the 2 here is only the default a bare grant would carry.
+	"kindled": {"id": "kindled", "name": "Kindled", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
@@ -306,8 +313,8 @@ static func is_status(id: String) -> bool:
 ## default, so the Howl's 5 is 5 and the chip says so.
 static func kindled(value: int) -> Dictionary:
 	var d: Dictionary = STATUS["kindled"].duplicate(true)
-	d["description"] = "Hits %d harder this round." % value
 	d["effects"][0]["value"] = value
+	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
 	return d
 
 
