@@ -188,37 +188,26 @@ static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
 	return out
 
 
-## What kind of piece an entry is on its machine, for the die's hold: its own type, then any a
-## passive adds there (Ryan, 26 October: "Hybrid cases can exist. Such as the steam vents, they
-## get tagged as a hybrid 'vent, weapon' on that machine"; "If a passive or other effect alters
-## labels or tags, the same rule applies"): a vent on a machine whose vents blast a foe is a
-## weapon too. `f` is the entry as the machine shows it, its rewrites in, so the drum's shot
-## from a debuff reads as the weapon it fires as. The codex reads the component as built and
-## never asks this.
+## What kinds of piece an entry is on its machine, for the die's hold: the engine's kinds
+## (Effects.kinds_of), its own then any a passive adds there (Ryan, 26 October: "Hybrid cases can
+## exist. Such as the steam vents, they get tagged as a hybrid 'vent, weapon' on that machine";
+## "If a passive or other effect alters labels or tags, the same rule applies"), so the label
+## and the rules read one source. `f` is the entry as the machine shows it, its rewrites in, so
+## the drum's shot from a debuff reads as the weapon it fires as. The codex reads the component
+## as built and never asks this.
 static func face_types(f: Face, u = null) -> Array[String]:
 	var out: Array[String] = []
-	var own := face_type(f)
-	if not own.is_empty():
-		out.append(own)
-	if u != null and f.kind == Face.Kind.VENT and Effects.vent_blast(u) > 0.0:
-		out.append("Weapon")
+	for k in Effects.kinds_of(u, f):
+		out.append(capital(k))
 	return out
 
 
-## What kind of piece an entry is, as its main icon on the die says it (Ryan, 26 October: "Face
-## type is either Weapon, Shield, Vent, or Equipment. Equipment is the label for all 4 forms of
-## buff and debuff faces"); a blank is none.
+## What kind of piece an entry is as built, as its main icon on the die says it (Ryan, 26
+## October: "Face type is either Weapon, Shield, Vent, or Equipment. Equipment is the label for
+## all 4 forms of buff and debuff faces"); a blank is none.
 static func face_type(f: Face) -> String:
-	match f.kind:
-		Face.Kind.ATTACK:
-			return "Weapon" if f.is_weapon() else "Equipment"
-		Face.Kind.SHIELD:
-			return "Shield"
-		Face.Kind.VENT:
-			return "Vent"
-		Face.Kind.BUFF:
-			return "Equipment"
-	return ""
+	var own := Effects.kinds_of(null, f)
+	return capital(own[0]) if not own.is_empty() else ""
 
 
 ## Lines of one group each, in the order attributes, keywords, rules, each a group's lines' parts

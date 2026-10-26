@@ -5923,6 +5923,39 @@ func test_the_blast_is_read_in_one_place_and_its_number_is_what_lands() -> void:
 	assert_eq(s2.blast_amount(s2.mechs[0], s2.mechs[0].face()), 8, "half of fifteen, rounded")
 
 
+## The blast is a weapon's hit (Ryan, 26 October: "Vent blast should obviously proc cryo, that's
+## the point of tagging it with weapon. It shouldn't need exceptions in code"): the vent is a
+## weapon too on its machine, and its blast resolves as every weapon's hit does, so the foe's
+## Cryo is cashed for the machine's cooling and a Primed machine's blow leaves Burning; the
+## vent's spend pays its own heat once, the blast nothing more, even under Scorched.
+func test_the_blast_is_a_weapons_hit_cryo_and_primed_included() -> void:
+	var vent := Face.vent(30)
+	var plain := _mech("P", Die.single(Face.vent(30)), 40, 100)
+	var a := _mech("A", Die.single(vent), 40, 100)
+	a.grant_passive(BLAST_PASSIVE)
+	assert_eq(Effects.kinds_of(a, vent), ["vent", "weapon"] as Array[String], "a vent on a machine whose vents blast is a weapon too")
+	assert_eq(Effects.kinds_of(plain, vent), ["vent"] as Array[String], "a plain vent is a vent")
+	assert_eq(Effects.kinds_of(null, vent), ["vent"] as Array[String], "as built, a vent")
+	assert_eq(Effects.kinds_of(a, Face.attack(0, L, [K.LURE])), ["equipment"] as Array[String], "a debuff is equipment")
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(a)
+	var g := _ghoul(100, 1)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	Effects.stack(g, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	Effects.grant_buff(a, "primed", 1, "test", sk.round)
+	Effects.stack(a, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 3, Effects.DECAY_TURN_ALL)
+	ms.heat = 30 + 2 * Skirmish.cryo_cool()
+	assert_true(sk.assign(0, ms), "the vent spent on itself")
+	assert_eq(g.hp, 100 - 30, "it blasts the ghoul for the thirty it took off")
+	assert_false(Effects.has(g, "cryoed"), "the blast cashes the ghoul's Cryo, every stack")
+	assert_eq(ms.heat, 0, "and the machine cools for it, the vent's spend paying no heat of its own, Scorched or not")
+	assert_true(Effects.stacks_of(g, "burning") >= 1, "a Primed machine's blast leaves Burning")
+	assert_true("\n".join(sk.log).contains("cashes Cryo"), "the log says so")
+
+
 ## The lure preview (the Siphon's forecast, 22 October): a Lure entry's turn read before it is
 ## spent, every foe it reaches turned on its machine in a what-if and put back; the spender's
 ## forecast takes the lured blows behind its brace and drinks their heat, the machine they left

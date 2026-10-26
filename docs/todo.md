@@ -70,6 +70,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 
 ## Engine
 
+- [ ] The armed aim reworked or retired: it reads the entry a machine shows, a transient property (Ryan, 26 October: "this makes no sense as it's targeting a transient property. Will get changed if it already isn't"); the Thief carries it, left as it is until then
 - [ ] The aims' shown words rewritten plainly for the foes that carry one (a foe at random shows none since 24 October), once the aims are tuned (Ryan, 21 October: "aims at the exposed" is cryptic, and "the aims don't matter since they're not locked or tuned at all"; 23 October: none of the Needletail's): five proposals in the retired interceptor brief's seventh round (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`: "aims where its blow hurts most", "aims at anyone", "aims at the hottest", "aims at a machine showing a weapon", "fires as one"), then `AIM_TEXT` in `sim/foe.gd`, the vocabulary's Aim entry and `docs/vocabulary.md`
 - [ ] Silence and Purge's carriers once Ryan places them (section 12), and the front's card warning of a purge among the leaders, with the mission map
 - [ ] Jenny's foe-down lines keyed by domain, once Ryan says whether a domain borrows an old family's pool or gets its own

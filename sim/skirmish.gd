@@ -90,6 +90,7 @@ var class_tally: Dictionary = {}
 var taken_by_rank: Dictionary = {}
 var _chaining := false
 var _salvo_strike := false   # a strike of the Musk Ox's salvo, paid for by the whole magazine at the spend
+var _blast_strike := false   # a vent's blast: one weapon hit inside the vent's spend, whose heat, ammo and tallies are the spend's
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -1185,7 +1186,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
 			# blasts nothing, and so does an ally's vent on it.
 			if blast > 0:
-				_blast(ms, blast)
+				_blast(mech_index, ms, blast)
 				blasted = true
 			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
 			# shield on the same machine, through its shield gain and the spender's passives
@@ -1727,7 +1728,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# A forging machine's weapon pays ammo for the heat its own spend would make (the Musk
 	# Ox's Desublimation Forge): a chain link it cannot pay for is never fired. The salvo's
 	# strikes are paid for by the whole magazine, at the spend.
-	var forged := ammo_price_of(ms, f) > 0
+	var forged := not _blast_strike and ammo_price_of(ms, f) > 0
 	if forged and not _salvo_strike:
 		var price := ammo_price_of(ms, f)
 		if ms.ammo < price:
@@ -1968,6 +1969,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		how = "rolled %d, " % rolled_total + how
 	if f.spray:
 		log.append("%s sprays %s (%s)%s" % [ms.unit.display_name, ", ".join(sprayed), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
+	elif _blast_strike:
+		log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, target.display_name, total, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	else:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
@@ -1976,13 +1979,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
 	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
-	if f.power > 0 or f.power_max > 0:   # a lure or a probe deals nothing: it is no spend of damage
+	if (f.power > 0 or f.power_max > 0) and not _blast_strike:   # a lure or a probe deals nothing: it is no spend of damage; a blast is no spend of its own
 		_tally_reach(reach, dealt, aimed_back, heat_total)
 		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	if forged:
 		heat_total = 0 if _salvo_strike else Effects.debuff_heat(ms.unit, f)   # the forge took the gun's own heat; a foe's debuff still heats it
+	if _blast_strike:
+		heat_total = 0   # the vent's spend paid its own heat, once
 	_add_heat(ms, heat_total)
 	# The Shrapnel Recuperator's refund: ammo back for every foe its blows reached.
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
@@ -2005,25 +2010,31 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 
 
 ## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
-## one blow of the machine's on a live foe drawn from the seeded stream, back rank included,
-## through the damage pipeline (the machine's adds and multiplies, then the foe's own: its
-## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does.
-func _blast(ms: MechState, amount: int) -> void:
+## one flat blow of the machine's on a live foe drawn from the seeded stream, back rank
+## included. The vent is a weapon too on that machine (Effects.kinds_of; Ryan, 26 October:
+## "Vent blast should obviously proc cryo, that's the point of tagging it with weapon. It
+## shouldn't need exceptions in code"), so the blow is a weapon's hit and resolves as every
+## weapon's does (_resolve_attack): the machine's pipeline, the foe's Flak, a Shocked doubling
+## spent, its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a
+## drone's mine. It is one hit inside the vent's spend, so the spend's heat, ammo and tallies
+## stay the vent's, paid once. A kill clears its slot as any blow's does.
+func _blast(mech_index: int, ms: MechState, amount: int) -> void:
 	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
 		return
 	var foe: Foe = live[rng.randi_range(0, live.size() - 1)]
-	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
-	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
-	var taken := Effects.damage_taken(foe, dmg, ms.unit, true)   # a blast is a weapon's blow (the vent a weapon too on this machine)
-	var armoured := mini(taken, foe.armour_total())
-	taken -= armoured
-	foe.hp -= taken
-	if Effects.remove(foe, "shocked"):   # a blast is a weapon's blow
-		log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-	log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, foe.display_name, taken, " (armour -%d)" % armoured if armoured > 0 else ""])
-	last_blast = {"mech": mechs.find(ms), "foe": foe, "dealt": taken}
-	_clear_dead()
+	var shot := blast_shot(amount)
+	var hp_before := foe.hp
+	var was := _blast_strike
+	_blast_strike = true
+	_resolve_attack(mech_index, ms, shot, foe, shot)
+	_blast_strike = was
+	last_blast = {"mech": mech_index, "foe": foe, "dealt": hp_before - foe.hp}
+
+
+## The blast as the blow it is: flat, Indirect, the heat the vent took off.
+static func blast_shot(amount: int) -> Face:
+	return Face.attack(amount, Face.Reach.INDIRECT)
 
 
 ## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13
@@ -2054,7 +2065,7 @@ func blast_targets() -> Array[Foe]:
 func blast_number(ms: MechState, amount: int, foe: Foe = null) -> int:
 	if amount <= 0:
 		return 0
-	return shown_number(ms, Face.attack(amount, Face.Reach.INDIRECT), foe)[0]
+	return shown_number(ms, blast_shot(amount), foe)[0]
 
 
 ## The foes a Lure entry spent on `aimed` would turn on this machine, as the arrows show them:

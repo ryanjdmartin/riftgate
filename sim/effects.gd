@@ -1531,6 +1531,30 @@ static func vent_blast(u) -> float:
 	return share
 
 
+## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
+## either Weapon, Shield, Vent, or Equipment"): its own (equipment a buff or a debuff, a blank
+## none), then any a live passive adds. A vent on a machine whose vents blast a foe is a weapon
+## too ("Hybrid cases can exist. Such as the steam vents"): its blast is a weapon's hit and
+## resolves as one (Skirmish._blast), and the die's hold names both. With no machine, the piece
+## as built, as the codex shows it.
+static func kinds_of(u, f: Face) -> Array[String]:
+	var out: Array[String] = []
+	if f == null:
+		return out
+	match f.kind:
+		Face.Kind.ATTACK:
+			out.append("weapon" if f.is_weapon() else "equipment")
+		Face.Kind.SHIELD:
+			out.append("shield")
+		Face.Kind.VENT:
+			out.append("vent")
+			if u != null and vent_blast(u) > 0.0:
+				out.append("weapon")
+		Face.Kind.BUFF:
+			out.append("equipment")
+	return out
+
+
 ## A count as the rules say it: "sixth".
 static func ordinal(n: int) -> String:
 	var words := {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth"}
@@ -1757,8 +1781,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "strikes twice at half, rounded down" if vs == "2" else "strikes ×%s at its share of the roll, rounded down" % vs
-		"weapon_cooldown": body = "every weapon and debuff it fires goes dark for %s rounds" % vs
-		"lay_mines": body = "its weapons and debuffs may be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
+		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
+		"lay_mines": body = "every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
@@ -1800,7 +1824,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
-		"rewrite_weapon": body = "every weapon and debuff fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
+		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"mute_keywords": body = "its components' keywords are muted"

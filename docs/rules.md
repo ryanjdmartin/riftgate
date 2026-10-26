@@ -32,7 +32,9 @@ skirmish.
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
   default, or self only, or allies only, as its chip says. A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
-  too there): the hold shows the kind on the machine, the codex the piece as built. A
+  too there, and the blast is a weapon's hit): the hold shows the kind on the machine, the
+  codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
+  and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
   carry a passive. A **fixed** component is built into its chassis, uses no hardpoint, is
   never a blueprint and has no tier.
@@ -109,7 +111,7 @@ defeat when every machine is wrecked. There is no round limit.
   the fight, a weapon's or a debuff's, counts double, its damage and the stacks it lays; the
   count shows as six pips under the heat bar, the sixth lit when it is next, and a shield, a
   vent, a buff and a spin are no shots.
-- **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
+- **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
@@ -131,7 +133,8 @@ defeat when every machine is wrecked. There is no round limit.
   cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
   down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
   buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
-  weapon and debuff as its shot of 4, so a debuff through the drum is a weapon.
+  weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
+  weapon.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
@@ -140,8 +143,8 @@ defeat when every machine is wrecked. There is no round limit.
   explosives carry Spread and Penetrate is open: no shell carries both, and the Musk Ox's two
   locked guns do).
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct.
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons and debuffs may be spent on an empty slot
-  in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
+  aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
   to move or carry it. The shot waits there, its number as rolled and modified when laid
   (each strike a shot), with its keywords, behind what already waits; its heat lands now.
@@ -263,7 +266,7 @@ defeat when every machine is wrecked. There is no round limit.
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
-  and debuff its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
+  and equipment its machine aims at a foe, the Kite's two; the longer stands): once spent, the entry is dark for
   that many rounds, this one included, shown on the die with the turns left; the die may
   land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
@@ -588,8 +591,9 @@ shields do not refill; a pack keeps its survivors, who return whole.
   this machine's that killed, chains and spills included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, what the entry prints
   included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
-  after it (the Kite's), and may grant a cooldown to every weapon and debuff its machine
-  fires. It may split every weapon and debuff instead (the Skua's): each strikes twice as often, each
+  after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
+  aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
+  each strikes twice as often, each
   roll, what the entry prints included, divided between the two strikes, rounded down, and
   every buff and the foe's conditions counting on each strike, its armour too; the die shows
   a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
@@ -611,13 +615,16 @@ shields do not refill; a pack keeps its survivors, who return whole.
   included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. The
-  Cottonmouth's replaces every weapon's and debuff's shot whole, first, under every other change (Indirect,
+  Cottonmouth's replaces the shot of every weapon and equipment it aims at a foe whole, first,
+  under every other change (Indirect,
   a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
   Penetrate when aimed at the back rank and Spread at the front, shown on the die over the foe
   it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
-  live foe, back rank included, for the heat it took off, as its own blow through the
-  pipeline, the foe's Flak, Shocked and armour applying (a vent on an ally blasts nothing, an
-  ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
+  live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
+  that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,
+  its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a drone's
+  mine), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
+  an ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in
