@@ -1175,11 +1175,11 @@ func _foe_rows(foe: Foe) -> Array:
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
 		rows.append(["syrinx_drone", "", "%s: %s" % [drone["name"], drone["description"]], Palette.HUD])
 	if Effects.has(foe, "exposure"):
-		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed, the
-		# number saying what the debuff adds to the reach the formation gives.
+		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
+		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
+		# October: a chip for it "steps on the debuff and is very confusing"); a dragged line
+		# weapon lighting it says it is in reach.
 		rows.append(["exposed", "0", "Exposed: every machine's line weapons reach it, and its armour counts for nothing, through the next round", Palette.ENEMY])
-	elif foe.rank == 1 and sk.is_exposed(foe.column):
-		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
 
 
@@ -1917,10 +1917,13 @@ func _use_die(i: int, target, second = null) -> bool:
 	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
 	# the death has to be played from what was there (the ghost of the sprite).
 	var was: Dictionary = {}
+	var readied: Array = []   # the foes ready to get back up: one that does falls and stands again in its slot
 	for foe in sk.field_foes():
 		var fv := _foe_view_for(foe)
 		if fv != null:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
+		if Effects.has(foe, "risen"):
+			readied.append(foe)
 	var spent: Face = sk.mechs[i].face()
 	var heat_before := _heat_marks()
 	var fuel := spent.rolls_again_on if spent != null else ""
@@ -1949,8 +1952,8 @@ func _use_die(i: int, target, second = null) -> bool:
 		var dead: Array = []
 		var fallen := ""
 		for foe in was.keys():
-			if not foe.alive():
-				dead.append(foe)
+			if not foe.alive() or (readied.has(foe) and not Effects.has(foe, "risen")):
+				dead.append(foe)   # a foe that got back up dies on screen first, then stands again
 				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
 		if not quiet:
 			if dead.is_empty():
@@ -2001,11 +2004,12 @@ func _use_die(i: int, target, second = null) -> bool:
 			landed = fire_at + Sound.lands(effect)
 	if not heat_hook.is_empty():
 		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
-	# A split's halves step up where it fell (the Gel's, 25 October), in once the death has landed.
+	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
+	# stands again in its slot (26 October), in once the death has landed.
 	if ok:
 		var stepped := 0
 		for foe in sk.field_foes():
-			if not was.has(foe):
+			if not was.has(foe) or (readied.has(foe) and not Effects.has(foe, "risen")):
 				_animate_arrival(_foe_view_for(foe), landed + 0.3)
 				Sound.play_after(landed + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
 				stepped += 1

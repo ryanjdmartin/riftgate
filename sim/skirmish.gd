@@ -976,17 +976,10 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 		return
 	var stood := 0
 	for n in made:
-		var slot := _split_slot(n, at_rank, at_col)
-		if slot.y < 0:
+		if _step_up(n, at_col):
+			stood += 1
+		else:
 			reinforcements.append(n)
-			continue
-		n.fresh = true
-		_place(n, slot.x, slot.y)
-		if n.is_massive():
-			back[slot.y] = n
-		stood += 1
-		if _reinforcing and not mines.is_empty():
-			_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
 	var waiting := made.size() - stood
 	var name_of := made[0].display_name
 	if stood > 0 and waiting > 0:
@@ -995,6 +988,22 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 		log.append("%s splits: %d %s step up in its place" % [f.display_name, stood, name_of])
 	else:
 		log.append("%s splits: %d %s step into the pool" % [f.display_name, waiting, name_of])
+
+
+## A foe that arrives mid-round (a split's half, a summon) steps up into the slot `_split_slot`
+## finds near `at_col`, its round over (Foe.fresh), setting off any mine waiting there. False
+## when there is no room, and it is not placed.
+func _step_up(n: Foe, at_col: int) -> bool:
+	var slot := _split_slot(n, 0, at_col)
+	if slot.y < 0:
+		return false
+	n.fresh = true
+	if n.is_massive():
+		back[slot.y] = n   # both slots of its column, before a mine there can land on it
+	_place(n, slot.x, slot.y)
+	if _reinforcing and not mines.is_empty():
+		_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
+	return true
 
 
 ## Where a split's arrival steps up: the slot of its rank in the column the foe fell from, then
@@ -2259,12 +2268,20 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var count := maxi(1, int(a.get("count", 1)))
 			var who := str(a.get("foe", ""))
 			if foe_factory.is_valid() and not who.is_empty():
+				# A summon takes an empty slot of its rank at once, the nearest the summoner's
+				# column, else it waits in the pool (Ryan, 26 October); either way its round is
+				# over, so it strikes from the next.
+				var stood := 0
 				for i in range(count):
 					var n = foe_factory.call(who)
 					if n is Foe:
 						n.pack_id = f.pack_id
-						reinforcements.append(n)
-				log.append("%s: %s, %d %s answer%s the call" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else ""])
+						if _step_up(n, f.column):
+							stood += 1
+						else:
+							reinforcements.append(n)
+				log.append("%s: %s, %d %s answer%s the call%s" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else "",
+					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
 		"rally":
@@ -3540,23 +3557,23 @@ func _fall_with_cores() -> void:
 
 func _clear_dead_slots() -> void:
 	var splits: Array = []   # [foe, rank, column]: the foes that split, stepping up once their slots are clear
+	var risen: Array = []    # [foe, rank, column]: the foes getting back up, in the slots they fell from
 	for col in range(columns):
 		for rank in [front, back]:
 			var f: Foe = rank[col]
 			if f != null and not f.alive():
 				if f.rank >= 0:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
-					# A foe that readied itself to get back up returns to the pool once, whole,
-					# unless it went whole (a Bomb's burst).
+					# A foe that readied itself to get back up does so once, whole, in its own slot
+					# and at once (Ryan, 26 October: "just like the gel splitting. It makes clearing
+					# that column harder"), unless it went whole (a Bomb's burst).
 					if Effects.has(f, "risen") and not f.stays_down:
 						Effects.remove(f, "risen")
 						f.hp = f.hp_max
-						f.rank = -1
-						f.column = -1
 						f.target = null
 						f.modifiers.clear()
-						reinforcements.append(f)
-						log.append("%s falls, and gets back up into the pool" % f.display_name)
+						risen.append([f, 0 if is_same(rank, front) or f.is_massive() else 1, col])
+						log.append("%s falls, and gets back up" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
 						_last_act(f)
@@ -3564,7 +3581,14 @@ func _clear_dead_slots() -> void:
 							splits.append([f, 0 if is_same(rank, front) else 1, col])
 				f.rank = -1
 				rank[col] = null
-	# A split steps up once its slot is clear (the Gel's halves, in its place).
+	# A foe getting back up stands again in its slot once it is clear, its round over, and
+	# takes a mine its fall left there; then a split steps up (the Gel's halves, in its place).
+	for rs in risen:
+		var back_up: Foe = rs[0]
+		back_up.fresh = true
+		if back_up.is_massive():
+			back[rs[2]] = back_up
+		_place(back_up, rs[1], rs[2])
 	for sp in splits:
 		_split(sp[0], sp[1], sp[2])
 

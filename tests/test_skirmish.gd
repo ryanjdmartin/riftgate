@@ -3670,16 +3670,19 @@ func test_a_readied_foe_gets_back_up_once() -> void:
 	sk.end_round()
 	assert_true(Effects.has(g, "risen"), "readied")
 	sk.start_round()
+	var hp_before := m.hull + m.shield
 	sk.assign(0, g)
-	assert_eq(sk.front[0], null, "it fell")
-	assert_eq(sk.reinforcements.size(), 1, "and went back to the pool")
+	assert_eq(sk.front[0], g, "it fell and got back up in its own slot at once (Ryan, 26 October)")
+	assert_eq(sk.reinforcements.size(), 0, "never into the pool")
 	assert_eq(g.hp, 30, "whole")
 	assert_false(Effects.has(g, "risen"), "the charge spent")
-	assert_true("\n".join(sk.log).contains("gets back up into the pool"), "the log says so")
+	assert_true(g.fresh and g.target == null, "its round over: no intent")
+	assert_true("\n".join(sk.log).contains("gets back up"), "the log says so")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
 	sk.end_round()
-	assert_eq(sk.front[0], g, "it stepped back in")
+	assert_eq(m.hull + m.shield, hp_before, "it struck nobody the round it got back up")
 	sk.start_round()
+	assert_false(g.fresh, "it acts from the next round")
 	sk.assign(0, g)
 	assert_eq(sk.reinforcements.size(), 0, "once only")
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and the second death holds")
@@ -3696,10 +3699,27 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
 	sk.begin()
 	sk.start_round()
+	var a: Skirmish.MechState = sk.mechs[0]
+	var hull := a.unit.hull + a.unit.shield
 	sk.end_round()
-	assert_eq(sk.field_foes().size(), 3, "two ghouls stepped in at the round's end")
+	assert_eq(sk.field_foes().size(), 3, "two ghouls took the empty slots at once (Ryan, 26 October)")
+	assert_true("\n".join(sk.log).contains("answer the call, stepping up"), "the log says so")
+	assert_eq(a.unit.hull + a.unit.shield, hull, "and struck nobody the round they came")
 	for f in sk.field_foes():
 		assert_eq(f.pack_id, 7, "in the summoner's pack")
+	# No empty slot of its rank: the summon waits in the pool.
+	var s3 := Skirmish.new(5, 1)
+	s3.add_mech(_mech("C", Die.single(Face.attack(10, L)), 40, 100))
+	var n3 := _archer(30, 10)
+	n3.actions = [_special("buff", "summon", {"foe": "revenant"})]
+	n3.action = n3.actions[0]
+	s3.add_foes([_ghoul(300, 1), n3])
+	s3.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
+	s3.begin()
+	s3.start_round()
+	n3.action = n3.actions[0]
+	s3._foe_acts(n3, s3.mechs[0])
+	assert_eq(s3.reinforcements.size(), 1, "the front full: it waits in the pool")
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)
@@ -6160,7 +6180,7 @@ func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself
 	assert_true("\n".join(sk.log).contains("revenant will return once"), "the log names the one readied")
 	knight.hp = 0
 	sk._clear_dead_slots()
-	assert_true(sk.reinforcements.has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up into the pool, whole")
+	assert_true(sk.field_foes().has(knight) and knight.hp == knight.hp_max, "the readied ally falls and gets back up in its slot, whole")
 
 
 ## The die's kinds (Ryan, 20 and 21 October): a debuff is a weapon of no damage, and it deals

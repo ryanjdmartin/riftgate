@@ -408,8 +408,9 @@ On a foe:
 - **Kindled** (buff, Rally): hits harder by its rally's value through the next round. It goes
   live when that round's intents are drawn, so a foe striking after the rallier this turn
   hits the number it showed.
-- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it
-  returns to the reinforcements once, whole, unless it self-destructed.
+- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
+  back up once, whole, in its own slot and at once, unless it self-destructed; its round is
+  over, as a split's half's is, and it takes a mine its fall left there.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
   chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
@@ -531,9 +532,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   rank, the left on a tie; one with no room waits in the reinforcements. So its hole never
   opens: the Gel is a wall, not an attacker, and its blow carries no breach. A half stepping
   up sets off a mine waiting in its slot. Its round is over: it shows no intent, no Lure or
-  Disrupt turns it, a stun takes its next action, and it acts from the next round, as a
-  summoned foe does (summons wait in the reinforcements). A foe joining the reinforcements is
-  shown going in: it flies into its rank's count in the gutter, which goes up as it lands.
+  Disrupt turns it, a stun takes its next action, and it acts from the next round.
+- **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
+  left on a tie, its round over like a split's half's; with no room it waits in the
+  reinforcements. A foe joining the reinforcements is shown going in: it flies into its rank's
+  count in the gutter, which goes up as it lands.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. The formation
   shows how many wait for each rank, and the massive ones apart, in its right gutter.
