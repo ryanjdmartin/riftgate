@@ -171,9 +171,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.311, and so is the live (26 October,
-  the page's version 328, from `ccr-170f6d81-465jnr`: the weapon and equipment words and the map's
-  readout, merged onto the live v0.310, which carries the other branches' rows, so this file holds
+  `docs/design-bible.html` after every change. This file is v0.313, and so is the live (26 October,
+  the page's version 330, from `ccr-170f6d81-465jnr`: the vent's blast as a weapon's hit and the
+  rules over what a machine aims at a foe, merged onto the live v0.312, which carries the other
+  branches' rows, so this file holds
   their rows and tables too and the tables script waits until they land, as run here it writes
   this branch's older tables: this branch's table cells are edited by hand to the generator's
   text). The
