@@ -423,8 +423,8 @@ On a foe:
   rallies on their way: a blow this round those of the ralliers acting before it, a
   countdown's blow every rally this round, each from a rallier alive, not Suppressed and not
   about to burn to death, so it drops the moment the rallier is killed, Suppressed or
-  Disrupted. The foe wears the coming Kindled as a preview chip, pulsing on a dashed edge,
-  until it lands; a foe whose move shows no blow wears none.
+  Disrupted. The foe wears the coming Kindled as a preview chip on a dashed edge, its opacity
+  pulsing on the gauges' clock, until it lands; a foe whose move shows no blow wears none.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
@@ -744,14 +744,16 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them.
-- **Finals and finale**: three bosses of one domain beaten set its final: every standing
-  city's rift it leads turns final at once, and every rift it leads after is one, fought
+- **Finals and finale**: three bosses of one domain beaten set its final: every rift it leads
+  at a standing city around the capital turns final at once, and every rift it leads after is
+  one, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
   when the hero falls, and a won final beats the domain: it leads and guests no new rift (a
-  rift it already guests keeps it), and every standing city's rift it leads closes at once, a
-  free reprieve: that city opens no rift next turn, its gate stays as it stood (only a win
+  rift it already guests keeps it), and every rift it leads at a standing city around the
+  capital closes at once, a free reprieve: that city opens no rift next turn, its gate stays as it stood (only a win
   restores one) and nothing is paid. The finale is due at Convergence 12,
-  one sooner per fallen city; the capital is then the only front. It is fought against the
+  one sooner per fallen city; the capital, which holds no rift before then (a fallen city's horde
+  drains its gate from the fallen city), opens the finale's and is then the only front. It is fought against the
   party promoted, a column a domain in the content's order: each hero's promoted form (its
   hero's kit, massive, armour 2, and one move more, built for the Cleric alone: Reraise on an
   ally), and for a domain whose final was won a

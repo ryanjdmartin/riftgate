@@ -30,7 +30,7 @@ const GAP := 10.0          # between the drawing and its gauges above or its chi
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
 const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
-const PREVIEW_RATE := 4.2  # a preview chip's pulse, radians a second: a beat about every 1.5 s (a placeholder, judged running)
+const PENDING_RATE := 3.2  # the one clock every pending mark breathes on, radians a second: a gauge's change and a buff on its way (a preview chip) pulse in step
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -486,12 +486,12 @@ func _draw() -> void:
 			Hud.brackets(self, rect, 5.0, col, 1.6)
 		elif ch.size() >= 4 and ch[3] == "preview":
 			# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
-			# incoming buff as a preview chip"): a full swing between faint and lit on one clock
-			# for every preview on screen, on a dashed edge with a second breathing out past it,
-			# so "coming" reads by motion and structure, never by hue; started hot, to come down.
-			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PREVIEW_RATE)
+			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
+			# in concept to the health and shield bars"), on the gauges' one clock, a full swing
+			# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
+			# motion and structure, never by hue.
+			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
 			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			_draw_dashed(rect.grow(1.0 + 5.0 * beat), Color(col, 0.6 * (1.0 - beat)), 1.5)
 			col = Color(col, 0.3 + 0.7 * beat)
 			_draw_dashed(rect, col, 2.0)
 		else:
@@ -632,14 +632,14 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	# One clock for every gauge on screen (Ryan, 22 September: bars that breathe together
 	# are easier to read), not this view's own, which starts when its first pending shows.
 	var clock := Time.get_ticks_msec() / 1000.0
-	var pulse := 0.72 + 0.22 * sin(clock * 3.2)
+	var pulse := 0.72 + 0.22 * sin(clock * PENDING_RATE)
 	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
 	var pts := Hud.slant(seg, 2.4)
 	if pending < frac:
 		# A loss: the part about to go breathes between dimmed and lit in ink, a full swing,
 		# so it is seen to pulse on any bar colour (Ryan, 22 September: it had faded to a
 		# faint dimming).
-		var beat := 0.5 + 0.5 * sin(clock * 3.2)
+		var beat := 0.5 + 0.5 * sin(clock * PENDING_RATE)
 		Hud.fill_poly(self, pts, Color(Palette.BG, 0.65 * (1.0 - beat)))
 		Hud.fill_poly(self, pts, Color(Palette.INK, 0.55 * beat))
 		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.6 + 0.4 * beat), 1.0)
