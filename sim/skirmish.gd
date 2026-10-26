@@ -3409,7 +3409,7 @@ func _lure(ms: MechState, foes: Array) -> void:
 ## Disrupt (decided 2 October): the foe does its other move instead, this round, the new
 ## intent shown at once. Deterministic: the next move in its list that its conditions allow,
 ## so a boss with three moves steps through its pattern; a foe with nothing else open is not
-## moved. The new move picks its own target.
+## moved. The new move keeps the pick while the machine stands.
 func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive() or foe.fresh:
@@ -3424,7 +3424,11 @@ func _disrupt(foes: Array) -> void:
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
 		_begin_countdown(foe)
-		foe.target = _pick_mech_target(foe, [], pick_rng)
+		# Its pick holds (Ryan, 26 October: the intent moves on a Disrupt "only if the disrupt would
+		# result in an invalid target"): a new one only when the machine is gone or Phased.
+		var t := foe.target as MechState
+		if t == null or not t.alive() or is_phased(t):
+			foe.target = _pick_mech_target(foe, [], pick_rng)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
 

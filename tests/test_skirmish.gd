@@ -2934,12 +2934,28 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	assert_true(sk.assign(0, h), "disrupted")
 	assert_false(h.attacks(), "it does its other move instead")
 	assert_eq(str(h.action.get("effect", "")), "burn", "the stoke")
-	assert_eq(h.target, sk.mechs[1], "which aims for itself: at heat")
+	assert_eq(h.target, sk.mechs[0], "and keeps its pick, whatever the new move's aim (Ryan, 26 October: a new one only for an invalid target)")
 	assert_eq(h.last_special, "burn", "and counts as the special announced")
 	assert_true("\n".join(sk.log).contains("is disrupted: Burn instead of Attack"), "the log names both: %s" % sk.log[sk.log.size() - 1])
 	sk.end_round()
-	assert_eq(Effects.stacks_of(sk.mechs[1].unit, "burning_mech"), 2, "the stoke landed: two stacks of Burning")
+	assert_eq(Effects.stacks_of(sk.mechs[0].unit, "burning_mech"), 2, "the stoke landed on its pick: two stacks of Burning")
 	assert_eq(cold.shield, 40, "and no blow did")
+	# A pick the new move cannot keep (its machine Phased) is drawn again.
+	var sp := Skirmish.new(1, 1)
+	sp.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
+	var phm := _mech("B", Die.single(Face.blank()), 0, 50)
+	sp.add_mech(phm)
+	var hp3 := _ghoul(500, 20)
+	hp3.actions = [Foe.basic_action(), _special("debuff", "burn", {"value": 2})]
+	hp3.actions[0]["weight"] = 1000
+	hp3.action = hp3.actions[0]
+	sp.add_foes([hp3])
+	sp.begin()
+	sp.start_round()
+	hp3.target = sp.mechs[1]
+	Effects.grant_for_rounds(phm, Effects.STATUS["phased"], "test", sp.round)
+	assert_true(sp.assign(0, hp3), "disrupted")
+	assert_eq(hp3.target, sp.mechs[0], "its machine Phased, it picks the one it may")
 	# Nothing else open: a foe with one move, or whose other move's condition fails, is not moved.
 	var s2 := Skirmish.new(1, 1)
 	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))

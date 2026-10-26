@@ -225,7 +225,8 @@ defeat when every machine is wrecked. There is no round limit.
   and left standing is Exposed through the next round; a second Expose refreshes it, never
   adds.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
-  conditions allow, with a new target. Disrupt resolves before Lure.
+  conditions allow, keeping its pick while the machine stands and is not Phased (a new one
+  otherwise). Disrupt resolves before Lure.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
@@ -521,9 +522,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
-  count nothing). The pick is a commitment; Lure and Disrupt move it, and a foe whose machine
-  has fallen or is Phased picks again, by the same sense, from a stream of its own, so the
-  round preview shows the pick it will make and no pick is ever open. A special that acts on nobody
+  count nothing). The pick is a commitment, smart as it is made and never after (Slice and
+  Dice's model, Ryan, 26 October): during the player's turn it moves only by a Lure, by the
+  machine being Phased, or by a Disrupt whose foe finds its machine gone or Phased; a foe
+  whose machine has fallen or is Phased when it acts picks again, by the same sense, from a
+  stream of its own, so the round preview shows the pick it will make and no pick is ever
+  open. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
+  aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
 - **A blow** is its base attack, plus its Kindled and its swarm for each other live foe of its

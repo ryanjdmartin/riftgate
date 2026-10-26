@@ -664,12 +664,22 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	if mine.size() == 1:
 		assert_eq(str(mine[0][0]), SkirmishScreen.status_glyph("burning_mech"), "the Burning its rider leaves")
 		assert_eq(str(mine[0][1]), "+2", "two stacks")
+	# A foe the die in hand kills with a Burn weapon wears the skull and the Burn coming, both
+	# (Ryan, 26 October: "It should be in addition ... some of those chips might be the cause").
+	var torch := Face.attack(1, Face.Reach.DIRECT, Face.Keyword.BURN)
+	torch.burn = 3
+	m.die = Die.single(torch)
+	sk.mechs[0].die = m.die
+	sk.mechs[0].face_index = 0
 	g.hp = 1
-	Effects.stack(g, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	s._drag_from = 0
+	s._drag_over = g
 	s._refresh()
 	var rows := s._foe_rows(g)
-	assert_true(rows.any(func(r) -> bool: return str(r[0]) == "skull" and str(r[1]) == ""), "burning to death first, it wears the skull")
-	assert_false(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview"), "and nothing on its way")
+	assert_true(rows.any(func(r) -> bool: return str(r[0]) == "skull" and str(r[1]) == ""), "over it, it wears the skull")
+	assert_true(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview" and str(r[0]) == "burn"), "and the Burn on its way beside it")
+	s._drag_from = -1
+	s._drag_over = null
 	s.free()
 
 
