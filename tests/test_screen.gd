@@ -201,6 +201,36 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	s.free()
 
 
+## The codex's row for a component (Ryan, 26 October): its name with its tags beside it, then
+## the hold's lines joined into three, its attributes, its keywords and its own rules, at the
+## component's own numbers whatever moves them in the fight; a line with nothing to say is left
+## out. The plate lays the die out a row a component, one column.
+func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
+	var db := ContentDB.load_default()
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3, 5)
+	gun.burn = 2
+	gun.strikes = 2
+	gun.spray = true
+	gun.component = str(db.components.keys()[0])
+	gun.tags.append_array(["beam", "flame"])
+	var lines := EntryReadout.codex_lines(gun, db, ["Test: a passive's line."])
+	var texts: Array[String] = []
+	for l in lines:
+		texts.append(str(l["text"]))
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Target: Enemy, Indirect · Heat 3", "Spread · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+		"its name, its attributes, its keywords, its rules: %s" % str(texts))
+	assert_eq(str(lines[0]["tags"]), "Beam, Flame", "its tags beside its name")
+	var shield := Face.shield(6)
+	shield.targets = Face.Target.SELF
+	var plain: Array[String] = []
+	for l in EntryReadout.codex_lines(shield, db):
+		plain.append(str(l["text"]))
+	assert_eq(plain.slice(1), ["Shield 6 · Target: Self"] as Array[String], "a line with nothing to say is left out")
+	for l in lines:
+		for p in l.get("parts", []):
+			assert_eq(int(p.get("trend", 0)), 0, "the codex reads the component as built: nothing moved")
+
+
 ## Equipment says whom it is spent on, in Ryan's words; a debuff prints no number; a gated rider
 ## says where it lands; a written-out grant prints its passive's line (the star's text).
 func test_the_hold_reads_equipment_debuffs_buffs_and_grants() -> void:
@@ -328,8 +358,8 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex._title.text, foe.display_name, "titled with the foe's name")
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
 	assert_true(not s._codex._body.text.is_empty(), "foe codex text present")
-	assert_true(s._codex._actions.visible and s._codex._actions.text.contains("CLAW"), "implemented actions listed")
-	assert_true(s._codex._actions.text.contains("A KIN"), "the swarm is said too")
+	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
+	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
 	assert_true(s._codex._flavour.text.contains("tired"), "the foe's own line, not the faction's")
 	assert_false(s._codex._faces.visible, "no face list for a foe")
@@ -351,7 +381,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	var first: Label = s._codex._passives.get_child(0)
 	assert_eq(first.get_theme_color("font_color"), CodexBox.passive_colour("chassis"), "the chassis's own passive in its colour, first")
 	assert_true(CodexBox.passive_colour("component") != CodexBox.passive_colour("chassis"), "a component's passive reads in another")
-	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == s.sk.mechs[2].die.faces.size(), "faces listed visually")
+	assert_true(s._codex._faces.visible and s._codex._faces.get_child_count() == s.sk.mechs[2].die.faces.size(), "a row an entry, one column")
 	s._close_codex()
 	s.free()
 
@@ -692,10 +722,10 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 			named += 1
 	assert_eq(named, 1, "the die's row names it once")
 	var listed := 0
-	for r in db.codex_for_unit(m)["passive_rows"]:
-		if str(r[0]).begins_with("OVERCHARGED"):
+	for e in db.codex_for_unit(m)["effects"]:
+		if str(e["name"]).begins_with("OVERCHARGED"):
 			listed += 1
-			assert_true(str(r[0]).begins_with("OVERCHARGED ×3 (KEPT FOR THE BATTLE)"), "a kept status, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October): %s" % str(r[0]))
+			assert_eq([str(e["name"]), str(e["note"])], ["OVERCHARGED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
 	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",

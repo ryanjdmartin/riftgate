@@ -36,8 +36,8 @@ skirmish.
   armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
   its reach. There are no crits and no weapon classes.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
-  the only tags a component may wear) are build flavour shown in the codex only (not built:
-  the codex does not list them yet). A tag carries no rule of its own; a module or passive may
+  the only tags a component may wear) are build flavour, shown on its hold's last line and
+  beside its name in its codex row. A tag carries no rule of its own; a module or passive may
   read one. Every weapon wears its tags by its fantasy, equipment none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today (which
@@ -179,6 +179,15 @@ defeat when every machine is wrecked. There is no round limit.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
+- **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
+  effect: its numbers, each its chassis's or its kind's own with what its loadout and the
+  battle make of it in a bracket beside it, green up or red down with its arrow; its passive;
+  its active effects, what else it carries between fights (a module, a battle's reward, a
+  status the battle keeps), each named with its source; then its die in one column, each
+  component a row (its tile, its name and tags, and the hold's marks joined into three lines:
+  its number, target, heat and ammo; its keywords; its own rules and its passive's), at the
+  component's own numbers; a foe's moves the same way, at its own numbers, its last act
+  last; then its lore and its quote.
 - **The gauges forecast the round**: what the enemy's blows, the turn's heat and the die in
   hand (its own heat, its bite, its brace) will leave. A Lure in hand shows its turn before it
   is spent: the foes it would turn draw dashed arrows to its machine, those on it already

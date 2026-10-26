@@ -54,7 +54,7 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 		out.append(_line("codex", codex))
 	out.append_array(effects_of(f, shown, base))
 	for g in grants:
-		out.append(_line("rule", str(g)))
+		out.append(_line("rule", str(g), "rule"))
 	if not f.tags.is_empty():
 		var names: Array[String] = []
 		for t in f.tags:
@@ -66,7 +66,9 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 ## What the entry does, a line each in the order a spend runs it: its number as the die prints
 ## it (`shown`), its target, how it lands, what the spend costs, what it leaves on each foe hit,
 ## Rapid's turn after, then its own rules (Face.rule_phrases). `base`, the component as built,
-## is what each number is read against; null reads `f` as its own.
+## is what each number is read against; null reads `f` as its own. Each line carries its group,
+## for the codex's three lines: "attr" (its number, its target, its heat and ammo), "kw" (how it
+## lands, Volatile, what it applies, Rapid) and "rule" (its own rules).
 static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	var out: Array = []
 	if base == null:
@@ -74,11 +76,11 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	if f.kind == Face.Kind.BLANK:
 		# The title names what was there; the line says what the blank does.
 		if f.empty:
-			out.append(_line("effect", "Comes up blank: nothing fills it"))
+			out.append(_line("effect", "Comes up blank: nothing fills it", "attr"))
 		elif not f.disabled and not f.component.is_empty():
-			out.append(_line("effect", "Destroyed: comes up blank for the rest of the battle"))
+			out.append(_line("effect", "Destroyed: comes up blank for the rest of the battle", "attr"))
 		else:
-			out.append(_line("effect", capital(f.describe())))
+			out.append(_line("effect", capital(f.describe()), "attr"))
 		return out
 	# The strikes, read against the component's own: a split weapon's extra strike is the
 	# player's gain beside its smaller blow (Ryan, 26 October).
@@ -86,38 +88,38 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	match f.kind:
 		Face.Kind.ATTACK:
 			if f.is_debuff():
-				out.append(_parts("effect", [_word("Debuff")] + strikes))
+				out.append(_parts("effect", [_word("Debuff")] + strikes, "attr"))
 			else:
 				var lo: int = int(shown[0]) if shown.size() == 2 else f.power
 				var hi: int = int(shown[1]) if shown.size() == 2 else f.power_max
 				# A strike's blow, its middle against the component's own: more is the gain.
 				var blow := _word(str(lo) if lo == hi else "%d–%d" % [lo, hi])
 				_trend(blow, lo + hi, base.power + base.power_max)
-				out.append(_parts("effect", [_word("Attack"), blow] + strikes))
-			out.append(_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])))
+				out.append(_parts("effect", [_word("Attack"), blow] + strikes, "attr"))
+			out.append(_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]), "attr"))
 		Face.Kind.BUFF:
 			if f.act_again:
-				out.append(_line("effect", "An ally whose die is spent acts again"))
+				out.append(_line("effect", "An ally whose die is spent acts again", "attr"))
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
 				var line := [_word("Grants %s" % str(st.get("name", f.buff_status))), _num("×%d" % f.buff_stacks, f.buff_stacks, base.buff_stacks)]
 				if f.buff_rounds > 1:
 					line.append(_word("for %d rounds" % f.buff_rounds))
-				out.append(_parts("effect", line))
+				out.append(_parts("effect", line, "attr"))
 		Face.Kind.SHIELD:
 			if f.fills_shield:
-				out.append(_line("effect", "Shield to its maximum"))
+				out.append(_line("effect", "Shield to its maximum", "attr"))
 			else:
-				out.append(_parts("effect", [_word("Shield"), _num(str(f.power), f.power, base.power)]))
+				out.append(_parts("effect", [_word("Shield"), _num(str(f.power), f.power, base.power)], "attr"))
 		Face.Kind.VENT:
 			if f.power <= 0 and f.reloads_ammo > 0:
-				out.append(_parts("effect", [_word("Reloads"), _num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), _word("ammo")]))
+				out.append(_parts("effect", [_word("Reloads"), _num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), _word("ammo")], "attr"))
 			else:
-				out.append(_parts("effect", [_word("Vent"), _num(str(f.power), f.power, base.power)]))
+				out.append(_parts("effect", [_word("Vent"), _num(str(f.power), f.power, base.power)], "attr"))
 			if f.shields > 0:
-				out.append(_parts("effect", [_word("Shield"), _num(str(f.shields), f.shields, base.shields)]))   # the combined entry's second half, after the vent
+				out.append(_parts("effect", [_word("Shield"), _num(str(f.shields), f.shields, base.shields)], "attr"))   # the combined entry's second half, after the vent
 	if f.kind != Face.Kind.ATTACK:
-		out.append(_line("effect", whom(f)))
+		out.append(_line("effect", whom(f), "attr"))
 	var land: Array = []   # how it lands
 	var cost: Array = []   # what the spend costs past its heat
 	var lays: Array = []   # what it leaves on each foe hit
@@ -133,30 +135,141 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			if not field.is_empty() and int(f.get(field)) > 0:
 				line.append(_num(str(f.get(field)), int(f.get(field)), int(base.get(field))))
 			line.append(_word(gate if not gate.is_empty() else "on hit"))
-			lays.append(_parts("effect", line))
+			lays.append(_parts("effect", line, "kw"))
 		elif k == Face.Keyword.VOLATILE:
-			cost.append(_parts("effect", [_word(label), _num(str(f.volatile), f.volatile, base.volatile, true)]))
+			cost.append(_parts("effect", [_word(label), _num(str(f.volatile), f.volatile, base.volatile, true)], "kw"))
 		elif k == Face.Keyword.RAPID:
-			after.append(_line("effect", label))
+			after.append(_line("effect", label, "kw"))
 		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP]:
-			lays.append(_line("effect", label))
+			lays.append(_line("effect", label, "kw"))
 		else:
-			land.append(_line("effect", label))
+			land.append(_line("effect", label, "kw"))
 	out.append_array(land)
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo.
 		var ammo := [_word("Ammo"), _num(str(f.ammo), f.ammo, base.ammo, true)]
 		if f.dry:
 			ammo.append(_word("(the magazine cannot pay it)"))
-		out.append(_parts("effect", ammo))
+		out.append(_parts("effect", ammo, "attr"))
 	if f.heat > 0 or base.heat > 0:
-		out.append(_parts("effect", [_word("Heat"), _num(str(f.heat), f.heat, base.heat, true)]))
+		out.append(_parts("effect", [_word("Heat"), _num(str(f.heat), f.heat, base.heat, true)], "attr"))
 	out.append_array(cost)
 	out.append_array(lays)
 	out.append_array(after)
 	for r in f.rule_phrases():
-		out.append(_line("rule", capital(r)))
+		out.append(_line("rule", capital(r), "rule"))
 	return out
+
+
+## The codex's row for a component (Ryan, 26 October: "each component row has a line for basic
+## attributes, a line for keywords, and a line for unique component effects"): its name with its
+## tags beside it, then the hold's lines joined by group, at the component's own numbers, and
+## `rules` (its passive's lines) after its own. A line with nothing to say is left out.
+static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
+	var title := "EMPTY HARDPOINT" if f.empty else (db.component_name(f.component).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+	var tags: Array[String] = []
+	for t in f.tags:
+		tags.append(capital(t))
+	var out: Array = [{"style": "name", "text": title, "tags": ", ".join(tags), "parts": [_word(title)], "place": ""}]
+	var marks := effects_of(f)
+	for r in rules:
+		marks.append(_line("rule", str(r), "rule"))
+	out.append_array(joined(marks))
+	return out
+
+
+## Lines of one group each, in the order attributes, keywords, rules, each a group's lines' parts
+## run together with a dot between: the codex's way of saying what the hold says a line a mark.
+static func joined(marks: Array) -> Array:
+	var out: Array = []
+	for g in ["attr", "kw", "rule"]:
+		var parts: Array = []
+		for l in marks:
+			if str(l.get("group", "")) != g:
+				continue
+			if not parts.is_empty():
+				parts.append(_word("·"))
+			parts.append_array(l.get("parts", [_word(str(l.get("text", "")))]))
+		if not parts.is_empty():
+			out.append(_parts("row_" + g, parts, g))
+	return out
+
+
+## A foe's move, a line a mark in the die's order (Ryan, 26 October: a foe's intent "in the same
+## format as the die hold press for a component"): its name, its blow and strikes (or what kind
+## of move it is), whom it is aimed at, when it lands and on what condition, its riders, then its
+## text. `live` reads the blow as it will land now (its kin, a rally), coloured against its own
+## from the player's side (a harder blow is the player's loss), with `target` the machine it is
+## aimed at; the codex reads it at its own numbers. Groups as effects_of's.
+static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false, target: String = "") -> Array:
+	var out: Array = []
+	var name := str(a.get("name", "")).to_upper()
+	out.append({"style": "title", "text": name, "parts": [_word(name)], "place": ""})
+	var own := f.base_damage_of(a)
+	var dmg := f.damage_of(a) if live else own
+	var aim := f.aim_of(a)
+	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
+	if Foe.is_attack_action(a):
+		var line := [_word("Attack"), _num(str(dmg), dmg, own, true) if live else _word(str(dmg))]
+		var n := maxi(1, int(a.get("strikes", 1)))
+		if n > 1:
+			line.append(_word("×%d" % n))
+		if int(a.get("swarm", 0)) > 0 and not live:
+			line.append(_word("(+%d a kin standing)" % int(a["swarm"])))
+		out.append(_parts("effect", line, "attr"))
+		if Array(a.get("keywords", [])).has("all"):
+			out.append(_line("effect", "Target: Every machine", "attr"))
+		else:
+			out.append(_line("effect", "Target: %s%s" % [target if live and not target.is_empty() else "Any machine", aimed], "attr"))
+	else:
+		var kind := capital(Foe.kind_of(a))
+		var whom := str(MOVE_TARGETS.get(str(a.get("effect", "")), "Any machine"))
+		if live and whom == "Any machine" and not target.is_empty():
+			whom = target
+		out.append(_line("effect", kind, "attr"))
+		out.append(_line("effect", "Target: %s%s" % [whom, aimed if whom == "Any machine" or whom == target else ""], "attr"))
+	if str(a.get("id", "")) == "last_act":
+		out.append(_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
+	var count := Foe.countdown_of(a)
+	if count > 0:
+		var left := f.charge if live and f.gathering() and f.pending.get("id", "") == a.get("id", "") else count
+		out.append(_line("effect", "Lands next round" if left == 1 else "Lands in %d rounds" % left, "attr"))
+	var whens := Foe.whens_of(a)
+	if not whens.is_empty():
+		var said: Array[String] = []
+		for w in whens:
+			said.append(str(Foe.WHEN_TEXT.get(str(w), str(w))))
+		out.append(_line("effect", capital(" or ".join(said)), "attr"))
+	for k in a.get("keywords", []):
+		if str(k) == "all":
+			continue   # its target says it
+		var label := str(db.vocabulary.get(str(k), {}).get("name", str(k)))
+		if Foe.NUMBERED_RIDERS.has(str(k)):
+			label += " %d" % f.rider(a, str(k))
+		out.append(_line("effect", label, "kw"))
+	var text := str(a.get("text", "")).replace("{damage}", str(dmg)).replace("{value}", str(int(a.get("value", 0))))
+	if not text.is_empty():
+		out.append(_line("rule", text, "rule"))
+	return out
+
+
+## The codex's row for a foe's move: its name, then move_lines' groups joined, at its own numbers.
+static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
+	var marks := move_lines(f, a, db)
+	var head: Dictionary = marks.pop_front()
+	head["style"] = "name"
+	head["tags"] = ""
+	return [head] + joined(marks)
+
+
+## Whom a foe's move that is no blow acts on, by its effect (Foe.ACTION_EFFECTS); a debuff aimed at
+## a machine is "Any machine", as a blow is.
+const MOVE_TARGETS := {
+	"brace": "Self", "regrow": "Self", "revive_once": "Self",
+	"regrow_ally": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
+	"summon": "The waiting pool", "rally": "Every other foe",
+	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
+}
 
 
 ## Whom a piece of equipment is spent on (Ryan's words, 26 October).
@@ -176,17 +289,18 @@ static func capital(s: String) -> String:
 
 
 ## A line of one plain part.
-static func _line(style: String, text: String) -> Dictionary:
-	return _parts(style, [_word(text)])
+static func _line(style: String, text: String, group: String = "") -> Dictionary:
+	return _parts(style, [_word(text)], group)
 
 
-## A line of parts, each {text, trend, gain}: plain words, or a number a live source moved. Its
-## `text` is the parts joined, for tests and the log.
-static func _parts(style: String, parts: Array) -> Dictionary:
-	var words: Array[String] = []
+## A line of parts, each {text, trend, gain, glue}: plain words, or a number a live source moved;
+## a glued part sits against the one before it, no space between. Its `text` is the parts
+## joined, for tests and the log.
+static func _parts(style: String, parts: Array, group: String = "") -> Dictionary:
+	var t := ""
 	for p in parts:
-		words.append(str(p["text"]))
-	return {"style": style, "text": " ".join(words), "parts": parts, "place": ""}
+		t += ("" if t.is_empty() or bool(p.get("glue", false)) else " ") + str(p["text"])
+	return {"style": style, "text": t, "parts": parts, "place": "", "group": group}
 
 
 static func _word(text: String) -> Dictionary:
@@ -226,7 +340,12 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 		var style := str(l.get("style", "effect"))
 		if i > 0:
 			var before := str(list[i - 1].get("style", ""))
-			y += BREATH if style == "tags" or (style in ["effect", "rule"] and before in ["title", "state", "codex"]) else LEADING
+			if style in ["name", "caption"]:
+				y += BREATH + 6.0   # a codex row or a section starts clear of the one before
+			elif style == "tags" or (style in ["effect", "rule"] and before in ["title", "state", "codex"]):
+				y += BREATH
+			else:
+				y += LEADING
 		y = _flow(_spans(l), width, y)
 	custom_minimum_size = Vector2(width, ceilf(y))
 	size = custom_minimum_size
@@ -247,20 +366,30 @@ static func _spans(l: Dictionary) -> Array:
 			return [_span(text, Hud.display(), 17, Palette.INK)]
 		"tags":
 			return [_span(text, Hud.quote(), 17, hint_ink())]
+		"name":
+			# A codex row's head: the name, its tags quiet beside it.
+			var head := [_span(text, Hud.display_bold(), 18, Palette.INK)]
+			if not str(l.get("tags", "")).is_empty():
+				head.append(_span(str(l["tags"]), Hud.quote(), 16, hint_ink(), 8.0))
+			return head
+		"caption":
+			return [_span(text, Hud.mono(), 12, Color(Palette.HUD, 0.75))]
+	# The codex's joined rows a size down from the hold's lines. A moved number is bold in its
+	# trend's ink with its arrow; a part may ask for bold or an ink of its own (a source's).
+	var px := 17 if str(l.get("style", "")).begins_with("row_") or str(l.get("style", "")) == "named" else 18
 	var out: Array = []
 	for p in l.get("parts", [_word(text)]):
 		var trend := int(p.get("trend", 0))
-		if trend == 0:
-			out.append(_span(str(p["text"]), Hud.display(), 18, Palette.INK))
-		else:
-			var sp := _span(str(p["text"]), Hud.display_bold(), 18, trend_ink(p))
-			sp["arrow"] = trend
-			out.append(sp)
+		var bold := trend != 0 or bool(p.get("bold", false))
+		var sp := _span(str(p["text"]), Hud.display_bold() if bold else Hud.display(), px, trend_ink(p, p.get("ink", Palette.INK)))
+		sp["arrow"] = trend
+		sp["glue"] = bool(p.get("glue", false))
+		out.append(sp)
 	return out
 
 
 static func _span(text: String, font: Font, px: int, ink: Color, pad: float = 0.0) -> Dictionary:
-	return {"text": text, "font": font, "px": px, "ink": ink, "pad": pad, "arrow": 0}
+	return {"text": text, "font": font, "px": px, "ink": ink, "pad": pad, "arrow": 0, "glue": false}
 
 
 ## The width an arrow takes beside a number at `px`.
@@ -283,7 +412,7 @@ func _flow(spans: Array, width: float, y: float) -> float:
 			var ww := font.get_string_size(w, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 			if int(sp["arrow"]) != 0:
 				ww += arrow_width(px)
-			var lead := 0.0 if row.is_empty() else space + (float(sp["pad"]) if first else 0.0)
+			var lead := 0.0 if row.is_empty() or (first and bool(sp["glue"])) else space + (float(sp["pad"]) if first else 0.0)
 			if not row.is_empty() and x + lead + ww > width:
 				y = _commit(row, y) + LEADING
 				row = []
@@ -333,13 +462,13 @@ static func draw_arrow(ci: CanvasItem, left: Vector2, px: float, trend: int, ink
 
 ## A line as text: its parts, a moved number with its arrow attached ("1–2▼ ×2▲").
 static func line_text(l: Dictionary) -> String:
-	var words: Array[String] = []
+	var out := ""
 	for p in l.get("parts", [_word(str(l.get("text", "")))]):
 		var t := str(p["text"])
 		if int(p.get("trend", 0)) != 0:
 			t += "▲" if int(p["trend"]) > 0 else "▼"
-		words.append(t)
-	return " ".join(words)
+		out += ("" if out.is_empty() or bool(p.get("glue", false)) else " ") + t
+	return out
 
 
 ## The readout's text as one string, a line each, for tests and the log.

@@ -90,7 +90,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - The die's hold shows the entry showing alone, its marks as text (Ryan's layout of 25 October
   and his second round of 26 October; the bible's tap-hold-drag row, `game/ui/entry_readout.gd`):
   no source and no explanation, a number the live sources moved green or red with its own
-  arrow on it (the split's blow down and its strikes up); what a keyword means is the keywords list's, the pause menu's KEYWORDS page and the
+  arrow on it (the split's blow down and its strikes up); the codex since the same day its
+  numbers at base with a bracket where a module or the battle moves them, its active effects
+  under the passive, and the die in one column, three lines a component (`game/ui/codex_box.gd`); what a keyword means is the keywords list's, the pause menu's KEYWORDS page and the
   `?` under the eye (`PauseMenu.glossary`). His phone read judges both (the to-do).
 - Foe art: every foe and hero cut from Ryan's picks; the boss art round's picks cut ahead of
   content (`art/foes`, `tools/foeforge/picks/picks.json`), Surtr, Floraison and the Augur on the

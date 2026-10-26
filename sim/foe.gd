@@ -176,6 +176,14 @@ func damage_of(a: Dictionary) -> int:
 	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0)))) + int(a.get("swarm", 0)) * kin
 
 
+## One blow of an action at the foe's own numbers: its attack times the move's factor, with no
+## kin and no rally (the codex's number, and what the hold reads a live blow against).
+func base_damage_of(a: Dictionary) -> int:
+	if not is_attack_action(a):
+		return 0
+	return int(roundf(attack * float(a.get("factor", 1.0))))
+
+
 ## The action's kind: attack by default (the basic action), or defend, buff, debuff.
 static func kind_of(a: Dictionary) -> String:
 	return str(a.get("kind", "attack"))

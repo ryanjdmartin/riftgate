@@ -332,8 +332,10 @@ func make_foe(foe_id: String) -> Foe:
 	return f
 
 
-## Codex text for a foe: its codex entry, numbers, implemented actions, and its quote. Nothing
-## from `design` is ever read here.
+## Codex text for a foe: its codex entry, its numbers at its own (each in a bracket where this
+## foe's differ from its kind's), its implemented moves and its last act (the screen lays each
+## out as the die's codex rows, EntryReadout.codex_move_lines), and its quote. Nothing from
+## `design` is ever read here.
 func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
@@ -342,52 +344,50 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		stats += " // ARM %d" % f.armour
 	if f.is_massive():
 		stats += " // MASSIVE"
-	var acts: Array[String] = []
-	for a in d.get("actions", []):
-		if str(a.get("status", "")) != "implemented":
-			continue
-		var head := "%s // %s" % [str(a.get("name", "")).to_upper(), str(a.get("kind", "")).to_upper()]
-		if str(a.get("kind", "")) == "attack":
-			# The resulting number, never the factor: "Jaw Rend 15", not "1.5x".
-			head += " %d" % f.damage_of(a)
-			if int(a.get("strikes", 1)) > 1:
-				head += " ×%d" % int(a["strikes"])
-			if int(a.get("swarm", 0)) > 0:
-				head += " // +%d A KIN" % int(a["swarm"])
-			for k in a.get("keywords", []):
-				head += " // %s" % str(vocabulary.get(str(k), {}).get("name", str(k))).to_upper()
-				if Foe.NUMBERED_RIDERS.has(str(k)) and int(a.get(str(k), 0)) > 0:
-					head += " %d" % int(a[str(k)])
-			var n := int(a.get("countdown", 0))
-			if n > 0:
-				head += " // LANDS NEXT ROUND" if n == 1 else " // LANDS IN %d ROUNDS" % n
-		# A move's own sense, where it differs from the foe's, and its condition.
-		if a.has("aim") and str(a["aim"]) != f.aim:
-			head += " // %s" % str(Foe.AIM_TEXT.get(str(a["aim"]), str(a["aim"]))).to_upper()
-		var whens := Foe.whens_of(a)
-		if not whens.is_empty():
-			var said: Array[String] = []
-			for w in whens:
-				said.append(str(Foe.WHEN_TEXT.get(str(w), str(w))))
-			head += " // %s" % " OR ".join(said).to_upper()
-		acts.append("%s\n  %s" % [head, f.text_of(a)])
+	var moves: Array = []
+	for a in f.actions:
+		moves.append(a)
+	if not f.last_act().is_empty():
+		moves.append(f.last_act())
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
 		faction_name = str(d.get("faction", "")).capitalize()
+	var items: Array = [["hp", stat_parts(int(d.get("hp", f.hp_max)), f.hp_max)], ["attack", stat_parts(int(d.get("attack", f.attack)), f.attack)]]
+	if f.armour > 0 or int(d.get("armour", 0)) > 0:
+		items.append(["armour", stat_parts(int(d.get("armour", 0)), f.armour)])
+	items.append(["rank", "BACK" if f.prefers_back else "FRONT"])
+	if f.aim != Foe.AIM_ANYTHING:
+		items.append(["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()])
+	if f.is_massive():
+		items.append(["size", "MASSIVE"])
 	return {
 		"title": f.display_name,
 		"subtitle": faction_name.to_upper(),
 		"body": str(d.get("codex", "")),
 		"stats": stats,
-		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)]] + ([["armour", str(f.armour)]] if f.armour > 0 else []) + [
-			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()]] if f.aim != Foe.AIM_ANYTHING else []) + ([["size", "MASSIVE"]] if f.is_massive() else []),
-		"actions": "\n".join(acts),
+		"stat_items": items,
+		"moves": moves,   # its implemented moves, the first attack first, then its last act
+		"foe": f,
 		"passive": "",
 		"faces": [],
 		"current": -1,
 		"flavour": str(d.get("flavour", "")),
 		"sprite_id": f.content_id,
 	}
+
+
+## A codex number as parts the screen draws (EntryReadout's: text, trend, gain, glue): the base
+## alone, or the base with what it is now in a bracket beside it, the arrow the way it moved
+## (Ryan, 26 October: "the base number, with a bracket containing semi-permanent changes, if
+## any, also coloured with arrows"). More is the player's gain unless `less_is_gain`;
+## `prefix` goes before each number ("+" on a rate).
+static func stat_parts(base: int, now: int, prefix: String = "", less_is_gain: bool = false) -> Array:
+	var out: Array = [{"text": prefix + str(base), "trend": 0, "gain": false}]
+	if now != base:
+		out.append({"text": "(", "trend": 0, "gain": false})
+		out.append({"text": prefix + str(now), "trend": signi(now - base), "gain": (now < base) if less_is_gain else (now > base), "glue": true})
+		out.append({"text": ")", "trend": 0, "gain": false, "glue": true})
+	return out
 
 
 ## Codex text for a mech: chassis codex, maker, numbers, faces (for a visual list), passive,
@@ -418,50 +418,50 @@ func maker_of(chassis_id: String) -> String:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	# The codex is the machine's base state with its battle rewards, never its combat effects
-	# (Ryan, 26 September): every number is asked up to the BATTLE scope, and the list below
-	# carries loadout and battle modifiers only; the hold popup in the fight has the rest.
-	var shield_max := Effects.stat(u, "shield", Effects.BATTLE)
-	var hull_max := Effects.stat(u, "hull", Effects.BATTLE)
-	var armour := Effects.stat(u, "armour", Effects.BATTLE)
-	var heat_max := Effects.stat(u, "heat", Effects.BATTLE)
-	var recharge := Effects.stat(u, "recharge", Effects.BATTLE)
-	var cooling := Effects.stat(u, "cooling", Effects.BATTLE)
-	var move := Effects.stat(u, "move", Effects.BATTLE)
+	# The codex is the machine between fights (Ryan, 26 September): each number is the chassis's
+	# own, with what its loadout and the battle make of it in a bracket where they move it (26
+	# October), never a combat effect; the hold in the fight has those.
+	var now := {}
+	for k in Effects.STATS:
+		now[k] = Effects.stat(u, k, Effects.BATTLE)
 	var stats := "SHIELD %d (+%d A PHASE OUT OF COMBAT) // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
-		shield_max, recharge, hull_max, armour, heat_max, cooling, move, u.hardpoints, u.die.size() if u.die != null else 0]
+		now["shield"], now["recharge"], now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	# The die as built: the codex shows each component at its own numbers (26 October).
 	var faces: Array = []
+	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
 	if u.die != null:
 		for f in u.die.faces:
-			faces.append(Effects.effective_face(u, f))   # its reach and keywords as the passives make them
-	# Every live loadout and battle modifier: the chassis passive first, then what
-	# components and modules grant, then the battle's rewards; nothing from the fight itself.
-	# Each row says where it comes from ("chassis", "component", "module", "reward"), and the codex colours
-	# it by that, so a granted passive never reads as the machine's own.
-	var lines: Array[String] = []
+			faces.append(f)
+			face_rules.append([])
+	# The chassis passive is the passive row; a component's passive rides on its row; everything
+	# else the machine carries between fights (a module, a battle's reward, a status the battle
+	# keeps) is an active effect, listed under them (Ryan, 26 October: "non-chip effects granted
+	# not as part of the passive, such as modules, auras, battle effects from fracture rewards").
+	# Each row says where it comes from, and the codex colours it by that.
 	var rows: Array = []
+	var effects: Array = []
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
 		var head: String = str(d[0]).to_upper()
-		var kind := "chassis"
-		if d[2] != "chassis" and components.has(d[2]):
-			head += " (%s)" % str(components[d[2]].get("name", d[2]))
-			kind = "component"
+		if d[2] == "chassis":
+			rows.append(["%s: %s" % [head, d[1]], "chassis"])
+		elif components.has(d[2]):
+			for i in range(faces.size()):
+				if faces[i].component == d[2]:
+					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
-			head += " (MODULE)"
-			kind = "module"
-		elif d[3] == Effects.BATTLE and Effects.is_status(str(d[5])):
-			# A status the battle keeps (the Ammit's Overcharged, 16 October) is no reward: its
-			# count and how long it lasts, inked like what the battle has given.
-			head += "%s (KEPT FOR THE BATTLE)" % (" ×%d" % int(d[4]) if int(d[4]) > 1 else "")
-			kind = "reward"
-		elif d[3] == Effects.BATTLE:
-			head += " (REWARD)"
-			kind = "reward"
-		lines.append("%s: %s" % [head, d[1]])
-		rows.append([lines[lines.size() - 1], kind])
-	var passive := "\n".join(lines)
+			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
+		elif Effects.is_status(str(d[5])):
+			# A status the battle keeps (the Ammit's Overcharged, 16 October): its count, kept for
+			# the battle.
+			effects.append({"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE"})
+		else:
+			effects.append({"name": head, "text": str(d[1]), "kind": "reward", "note": "REWARD"})
+	var passive_lines: Array[String] = []
+	for r in rows:
+		passive_lines.append(str(r[0]))
+	var open: int = int(now["move"]) / maxi(1, BattleMap.move_cost(BattleMap.Terrain.PLAIN, u.traits))
 	return {
 		"title": u.display_name,
 		"subtitle": " // ".join(_plate_parts(c, maker, u)),
@@ -471,12 +471,16 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
 		# plate; the gauges say how it is doing): maxima with their rates beside them.
-		"stat_items": [["shield max / recharge", "%d / +%d" % [shield_max, recharge]], ["hull max / armour", "%d / %d" % [hull_max, armour]],
-			["heat max / cooling", "%d / %d" % [heat_max, cooling]], ["move", "%d (%d open)" % [move, move / maxi(1, BattleMap.move_cost(BattleMap.Terrain.PLAIN, u.traits))]]],
+		"stat_items": [["shield max", stat_parts(int(u.base["shield"]), now["shield"])], ["recharge", stat_parts(int(u.base["recharge"]), now["recharge"], "+")],
+			["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
+			["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
+			["move · %d open" % open, stat_parts(int(u.base["move"]), now["move"])]],
 		"actions": "",
-		"passive": passive,
-		"passive_rows": rows,   # [text, "chassis" | "component" | "reward"]
+		"passive": "\n".join(passive_lines),
+		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
+		"effects": effects,     # {name, text, kind ("module" | "reward"), note}: what else it carries between fights
 		"faces": faces,
+		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
 		"flavour": str(c.get("flavour", "")),
