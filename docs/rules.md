@@ -378,8 +378,7 @@ On a foe:
   shock; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Through the next round; refreshed, never added. A back-rank foe whose front slot is empty
-  is exposed by its formation, in reach only.
+  Through the next round; refreshed, never added.
 - **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
   machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
   skirmish, and a death by a tick leaves nothing.

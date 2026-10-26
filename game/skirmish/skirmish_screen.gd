@@ -95,6 +95,26 @@ var _live_tweens: Dictionary = {}    # Control -> the tweens moving it now, kill
 var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
 var _twin_views: Array = []          # [rank][col] -> UnitView: a twin slot's right-hand half (the Gel's pair), hidden otherwise
+var _pair_marks: PairMarks = null    # an area weapon's target brackets round a twin slot whole
+
+
+## The brackets an area weapon draws round a twin slot's pair, one for the slot (Ryan, 26
+## October: "show both halves selected as if they were a single slot", so a Spread plainly
+## still reaches the neighbours and a Penetrate both halves), over the views.
+class PairMarks extends Control:
+	var rects: Array = []   # Rect2 in the screen's space
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func set_rects(r: Array) -> void:
+		if r != rects:
+			rects = r
+			queue_redraw()
+
+	func _draw() -> void:
+		for r in rects:
+			Hud.brackets(self, r, 14.0, Palette.TARGET, 2.0)
 var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
@@ -421,6 +441,8 @@ func _build() -> void:
 		mv.hold_released.connect(_on_hold_released)
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
 		_massive_views[col] = mv
+	_pair_marks = PairMarks.new()
+	_place(_pair_marks, Vector2.ZERO, Vector2(W, H))
 	# The reinforcements waiting, by rank (Ryan, 15 October), in the gutter right of the formation:
 	# a plaque at each rank's height, a tall one between them for a massive foe.
 	_reserve = ReserveView.new()
@@ -816,6 +838,7 @@ func _refresh(save: bool = true) -> void:
 		elif f != null and f.is_equipment():
 			support = sk.equipment_targets_for(dm, Effects.effective_face(dm.unit, f))
 
+	var pairs: Array = []   # [left view, right view, left foe, right foe]: the twin slots shown this refresh
 	for col in range(sk.columns):
 		var front_foe := sk.foe_at(0, col)
 		var massive := front_foe != null and front_foe.is_massive()
@@ -841,6 +864,7 @@ func _refresh(save: bool = true) -> void:
 				tv.modulate = Color.WHITE
 				_fill_foe_view(tv, twin, targets, rank * sk.columns + col + 11)
 				_view_foe[tv] = twin
+				pairs.append([v, tv, foe, twin])
 			else:
 				tv.visible = false
 				_lay(v, at, SLOT_SIZE)
@@ -868,6 +892,30 @@ func _refresh(save: bool = true) -> void:
 			v.modulate = Color.WHITE
 			_fill_foe_view(v, foe, targets, rank * sk.columns + col)
 			_view_foe[v] = foe
+
+	# An area weapon in hand reads a twin slot as one: one bracket round the pair, never two,
+	# whichever half it lands on behind the scenes.
+	var marks: Array = []
+	if _drag_from >= 0:
+		var dm: Skirmish.MechState = sk.mechs[_drag_from]
+		var df := sk.spend_face(dm)
+		for p in pairs:
+			var lv: UnitView = p[0]
+			var rv: UnitView = p[1]
+			if df == null or not df.is_attack() or not (lv.highlight and rv.highlight):
+				continue
+			var ef := Effects.effective_face(dm.unit, df, p[2])
+			if not (ef.has(Face.Keyword.CLEAVE) or ef.has(Face.Keyword.PENETRATE) or ef.reaches_all):
+				continue
+			lv.highlight = false
+			rv.highlight = false
+			lv.queue_redraw()
+			rv.queue_redraw()
+			var a := lv.drawing_rect()
+			var b := rv.drawing_rect()
+			marks.append(Rect2(_home.get(lv, lv.position) + a.position, a.size).merge(Rect2(_home.get(rv, rv.position) + b.position, b.size)).grow(6.0))
+	if _pair_marks != null:
+		_pair_marks.set_rects(marks)
 
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]

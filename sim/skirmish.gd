@@ -256,7 +256,7 @@ func is_exposed(col: int) -> bool:
 
 
 ## Is this foe in Direct reach: the front rank, a back-rank foe whose column's front is empty
-## (exposed by its formation), or any foe carrying Exposed (the debuff, 21 October).
+## (the layout, nothing said about it), or any foe carrying Exposed (the debuff, 21 October).
 func in_direct_reach(foe: Foe) -> bool:
 	if foe == null or foe.rank < 0:
 		return false

@@ -1109,3 +1109,25 @@ func test_a_twin_slot_shows_both_halves() -> void:
 	assert_false(tv.visible, "a plain slot again")
 	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "one view across it")
 	s.free()
+
+
+## An area weapon in hand brackets a twin slot's pair as one slot (Ryan, 26 October); a
+## single-target one brackets each half its own.
+func test_an_area_weapon_brackets_a_pair_as_one_slot() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.die = Die.single(Face.attack(3, Face.Reach.DIRECT, Face.Keyword.CLEAVE))
+	ms.face_index = 0
+	s._drag_from = 0
+	s._refresh(false)
+	assert_eq(s._pair_marks.rects.size(), 1, "one bracket round the pair")
+	assert_false(s._slot_views[0][0].highlight or s._twin_views[0][0].highlight, "and none on either half alone")
+	ms.die = Die.single(Face.attack(3, Face.Reach.DIRECT))
+	s._refresh(false)
+	assert_true(s._pair_marks.rects.is_empty(), "a single-target weapon: no slot bracket")
+	assert_true(s._slot_views[0][0].highlight and s._twin_views[0][0].highlight, "each half bracketed on its own")
+	s._drag_from = -1
+	s.free()

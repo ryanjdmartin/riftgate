@@ -4,7 +4,7 @@ extends SceneTree
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
-## (a Gel's halves in its slot, RIFTGATE_FOES=gel:2,goblin:3),
+## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
 ## roll again mid-burst), heat (Burning and Scorched on the first machine).
 
@@ -76,9 +76,10 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
-		"pair":
+		"pair", "pair_spread":
 			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
-			# in its slot (RIFTGATE_FOES=gel:2,goblin:3).
+			# in its slot (RIFTGATE_FOES=gel:2,goblin:3); pair_spread holds a Spread weapon over
+			# the formation, the pair bracketed as one slot.
 			var db := ContentDB.load_default()
 			s.sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
 			for f in s.sk.field_foes():
@@ -86,6 +87,10 @@ func _apply_pose() -> void:
 					f.hp = 0
 					break
 			s.sk._clear_dead()
+			if _pose == "pair_spread":
+				s.sk.mechs[0].die = Die.single(Face.attack(3, Face.Reach.DIRECT, Face.Keyword.CLEAVE))
+				s.sk.mechs[0].face_index = 0
+				s._drag_from = 0
 			s._refresh()
 		"hold":
 			s._on_die_held(1)
