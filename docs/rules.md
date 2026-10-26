@@ -717,17 +717,19 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   component copy and a module from the maker's catalogue, one taken free; unpacking and offers
   not built).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
-  open. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
+  open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
 - **After a battle**: hull and cracks mend free; a destroyed hardpoint component is gone, a
   destroyed fixed one rebuilt; a wreck also loses its cracked components and sits out the next
   turn unless rushed (100 Favour). Fitting and stripping are instant; the capital's gate
   repairs at 5 salvage a point.
 - **Turn end**: each unfought open rift bleeds its city 50 (falling it at zero); each fallen
-  city drains the capital 25; the Convergence rises 1; rifts open at standing cities up to
-  2 + tier (tier = the Convergence ÷ 4).
-- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a thinned one)
-  and from tier 1 a guest, whose packs alternate with the lead's in the spawn cycle.
+  city drains the capital 25; the Convergence rises 1; rifts open at standing cities that are
+  not quiet, up to 2 + tier (tier = the Convergence ÷ 4, rounded down, so two rifts at first,
+  three from Convergence 4 and four from 8, before the finale at 12).
+- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one)
+  and from tier 1 a guest, another domain not beaten, whose packs alternate with the lead's in
+  the spawn cycle.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
   jobs and the back as even as the benches allow (two and two), by the seed; no job changes
   after.
@@ -735,7 +737,10 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   ended on this run, drawn by the seed; once every one has been, any of them.
 - **Finals and finale**: three bosses of one domain beaten make its next rift a final, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
-  when the hero falls, and a won final thins the domain. The finale is due at Convergence 12,
+  when the hero falls, and a won final beats the domain: it leads and guests no new rift (a
+  rift it already guests keeps it), and every standing city's rift it leads closes at once, a
+  free reprieve: that city opens no rift next turn, its gate stays as it stood (only a win
+  restores one) and nothing is paid. The finale is due at Convergence 12,
   one sooner per fallen city; the capital is then the only front. It is fought against the
   party promoted, a column a domain in the content's order: each hero's promoted form (its
   hero's kit, massive, armour 2, and one move more, built for the Cleric alone: Reraise on an

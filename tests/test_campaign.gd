@@ -652,6 +652,55 @@ func test_a_final_is_fought_against_the_dealt_hero_with_its_wildlife() -> void:
 	assert_true(c.finals_won.has(fid), "won: the domain is thinned")
 
 
+## A beaten domain's other rifts close (Ryan, 26 October: "if a domain gets beat, other rifts
+## for that domain should close"): its final won, every standing city whose rift it leads is
+## free of it at once, quiet for a turn as a won city is, its gate as it stood (only a win
+## restores one) and nothing paid; a rift it only guests keeps it, a fallen city's rift stays as
+## it is, and the domain guests no new rift.
+func test_a_won_final_closes_its_domains_other_rifts() -> void:
+	var c := _run()
+	var fid := str(c.party.keys()[0])
+	var other := ""
+	for f in c.db.factions.keys():
+		if str(f) != fid:
+			other = str(f)
+			break
+	var ids: Array = []
+	for city in c.cities.values():
+		if not city.capital:
+			ids.append(city.id)
+	assert_true(ids.size() >= 4, "four cities around the capital")
+	var won_at: String = ids[0]
+	var led: String = ids[1]
+	var guested: String = ids[2]
+	var fallen: String = ids[3]
+	c.cities[won_at].rift = {"faction": fid, "guest": "", "final": true}
+	c.cities[led].rift = {"faction": fid, "guest": other, "final": true}   # a second final, opened before the first was won
+	c.cities[led].gate = 100
+	c.cities[guested].rift = {"faction": other, "guest": fid, "final": false}
+	c.cities[fallen].rift = {"faction": fid, "guest": "", "final": false}
+	c.cities[fallen].fallen = true
+	c.cities[fallen].gate = 0
+	var salvage := c.salvage
+	var favour := c.favour
+	var b := _battle(c, won_at)
+	_end(b, Battle.Outcome.VICTORY)
+	var r := c.finish_battle()
+	assert_true(c.finals_won.has(fid), "the domain is beaten")
+	assert_eq(r["closed"], [led], "its other rift closes with its final")
+	assert_true(c.cities[led].rift.is_empty(), "no rift reopens there on the turn it closed")
+	assert_eq(c.cities[led].gate, 100, "its gate as it stood: neither restored nor bled")
+	assert_eq(c.salvage - salvage, int(r["salvage"]), "nothing paid for the closure but the battle's own salvage")
+	assert_eq(c.favour - favour, int(r["favour"]), "and its Favour")
+	assert_eq(str(c.cities[guested].rift.get("guest", "")), fid, "a rift it only guests keeps it")
+	assert_eq(str(c.cities[fallen].rift.get("faction", "")), fid, "a fallen city's rift stays as it was")
+	assert_false(c.fronts().has(fallen), "and is no front")
+	c.convergence = Campaign.TIER_EVERY * Campaign.GUEST_TIER
+	for i in range(60):
+		var rift := c._roll_rift()
+		assert_true(str(rift["faction"]) != fid and str(rift["guest"]) != fid, "a beaten domain leads and guests no new rift")
+
+
 ## The finale (the bible's section 9): the dealt party promoted, a column a domain, and a domain
 ## whose final was won leaves its column to a standing domain's boss.
 func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_boss() -> void:

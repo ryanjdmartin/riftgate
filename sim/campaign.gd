@@ -19,6 +19,9 @@ extends RefCounted
 ##                  closes; the city opens no new rift for QUIET_TURNS; the battle's salvage
 ##                  banks; the boss drops a research token of its faction; the host maker
 ##                  owes an offer
+##   won final      the domain is beaten: it leads no new rift and guests none, and every
+##                  standing city's rift it leads closes too, that city quiet for QUIET_TURNS,
+##                  its gate as it stood and nothing paid (a free reprieve)
 ##   gate fallen    the city falls; the battle's salvage is lost; its rift stays open and
 ##                  its horde drains the capital every turn from then on
 ##   team wiped     the horde strikes the gate unopposed for WIPE_PHASES; at zero the city
@@ -101,7 +104,7 @@ var tokens: Array = []            # research tokens, by the faction whose boss d
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
 var bosses_ended: Dictionary = {}    # faction id -> the bosses its battles ended on this run, by foe id, so the next draws another
-var finals_won: Array = []        # factions thinned: they lead no new rift
+var finals_won: Array = []        # factions beaten (their final won): they lead and guest no new rift
 var party: Dictionary = {}        # faction id -> the hero dealt it at the run's start (its final; promoted, its column at the finale)
 var battle: Battle = null
 var battle_city: String = ""
@@ -360,7 +363,7 @@ func finish_battle() -> Dictionary:
 			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
-		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital}
+		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": []}
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
 	# battle's end and never shown while it is fought, 7 October: one less number on the
 	# screen, and no visible count to farm against.)
@@ -406,6 +409,7 @@ func finish_battle() -> Dictionary:
 		# so the battle is won when it does (the Thief's Flee, when it lands, is the exception).
 		if final and not c.capital and not finals_won.has(faction):
 			finals_won.append(faction)
+			report["closed"] = _close_beaten(faction)
 	elif c.gate <= 0:
 		report["result"] = "fell"
 		_fall(c)
@@ -522,6 +526,23 @@ func _after_battle(m: Machine, u: Unit, wreck: bool) -> Array:
 	return lost
 
 
+## A beaten domain's other rifts close with its final (Ryan, 26 October: "if a domain gets
+## beat, other rifts for that domain should close"): every standing city whose rift it leads is
+## free of it, quiet for QUIET_TURNS as a won city is ("if that is too easy then we take it
+## away"), its gate as it stood, since only a win restores one, and nothing paid, a reprieve
+## and no battle. A rift it only guests keeps it, and a fallen city's rift is no front, so it
+## stays as it is. Returns the cities freed.
+func _close_beaten(faction: String) -> Array:
+	var closed: Array = []
+	for c in cities.values():
+		if c.capital or c.fallen or c.rift.is_empty() or str(c.rift.get("faction", "")) != faction:
+			continue
+		c.rift = {}
+		c.quiet = QUIET_TURNS
+		closed.append(c.id)
+	return closed
+
+
 func _fall(c: City) -> void:
 	c.fallen = true
 	c.gate = 0
@@ -585,7 +606,8 @@ func _open_rifts() -> void:
 
 
 ## A rift's factions (6 October: rolled when the rift opens, never fixed to a city). The
-## lead is any faction not yet thinned; a guest, from GUEST_TIER, any other faction.
+## lead is any faction not yet beaten; a guest, from GUEST_TIER, any other faction not beaten
+## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts").
 func _roll_rift() -> Dictionary:
 	var all: Array = db.factions.keys()
 	var leads: Array = []
@@ -599,7 +621,7 @@ func _roll_rift() -> Dictionary:
 	if tier() >= GUEST_TIER:
 		var others: Array = []
 		for f in all:
-			if str(f) != lead:
+			if str(f) != lead and not finals_won.has(f):
 				others.append(f)
 		if not others.is_empty():
 			guest = str(others[rng.randi_range(0, others.size() - 1)])
