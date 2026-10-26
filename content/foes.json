@@ -130,7 +130,7 @@
       "hp": 4, "attack": 3, "rank": "back", "zone": 3, "movespeed": 20,
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
-        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "when": "few_waiting", "text": "Calls a revenant up from the pool at the end of the round.", "status": "implemented" }
+        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "text": "Raises a revenant into an empty place at once, or into the pool when the line is full.", "status": "implemented" }
       ],
       "flavour": "Kill the one holding the light."
     },

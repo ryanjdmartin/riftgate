@@ -20,7 +20,7 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 653 tests, 64,716 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
+- Tests: 654 tests, 64,720 checks, green on `claude/affectionate-goldberg-8e3mkh` (26 October, Ryan's
   playtest list merged in with the mechanics audit's fixes), about a minute in a cloud session.
   A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
@@ -47,7 +47,8 @@ longer stuck under a held foe, the boss's order no longer bobbing, the grid down
 second round (the boss's fight takes every machine, straight to the reveal, with no withdrawal; a
 hunted machine's tag; a stop sign on end hexes; a foe flying into the pool's count) and his third
 (the Gel's halves a pair in one slot, summons taking an empty slot, a foe getting back up in its
-slot, no Exposed chip for an empty front), waiting on his phone read (the to-do). On them, the
+slot, no Exposed chip or codex line for an empty front, an area weapon bracketing the pair as
+one, summoners with no condition), waiting on his phone read (the to-do). On them, the
 mechanics audit Ryan asked for after the Flak fix (`docs/mechanics_audit.md`, 42 findings traced
 through the code and cited by line, its "start here" list first) and the fixes he called for on
 25 and 26 October (the audit's head lists them). Landing it lands all three.
