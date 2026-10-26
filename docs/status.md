@@ -185,11 +185,11 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 120 (26 October, from
-  `ccr-170f6d81-465jnr`: the weapon and equipment words in the vocabulary, the chassis, the
-  components and the modules, each merged field by field onto the live file, which carries the
-  other branches' content, since the branches' content differs until they land; no conflict,
-  and `edits` empty before it). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. At the page's version 121 (26 October, from
+  `ccr-170f6d81-465jnr`: the rules over what a machine aims at a foe in the chassis and the
+  Mine's entry, merged field by field onto the live file, which carries the other branches'
+  content, since the branches' content differs until they land; no conflict, and `edits` empty
+  before it). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
