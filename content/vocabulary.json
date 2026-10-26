@@ -163,7 +163,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank.",
+   "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank, for half the blow.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -173,7 +173,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Player keyword. Hits first the front, then the back rank of a single column.",
+   "codex": "Player keyword. Also hits the other rank of the target's column, for half the blow.",
    "status": "implemented",
    "design": {
     "holes": ""

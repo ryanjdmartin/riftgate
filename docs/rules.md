@@ -150,8 +150,10 @@ defeat when every machine is wrecked. There is no round limit.
    the target's missing hull adds.
 2. The attacker's modifiers: adds, then multiplies, then floors.
 3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
-   then loses its armour off it. A damaging weapon's blow takes them whatever it deals, a 0
-   included (the Skua's halved 1); a debuff's blow stays nothing.
+   then loses its armour off it. A foe a Spread or Penetrate reaches past the one the blow is
+   aimed at takes half the blow, rounded down, before its own modifiers (a mine's spread the
+   same, past the foe it lands on); its riders land in full. A damaging weapon's blow takes
+   them whatever it deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
   each takes half the roll, rounded down.
@@ -198,8 +200,8 @@ defeat when every machine is wrecked. There is no round limit.
   October by hand at the same scale; placeholders until play.
 
 ### Player keywords
-- **Spread** (id `cleave`): also hits the target's neighbours in its rank.
-- **Penetrate**: also hits the other rank of the target's column.
+- **Spread** (id `cleave`): also hits the target's neighbours in its rank, for half the blow.
+- **Penetrate**: also hits the other rank of the target's column, for half the blow.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
   foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the

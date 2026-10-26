@@ -20,8 +20,8 @@ are in `README.md`.
   there. What the Mac held outside git is gone but the seventh round's foeforge renders,
   force-added in `fb45141` so the picks can be cut here; foeforge's `generate` and `fix` have
   no machine until a route for the image model is chosen.
-- Tests: 636 tests, 64,494 checks, green on `ccr-170f6d81-465jnr` (26 October, the hold as
-  text and the keywords list), about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 636 tests, 64,494 checks, green on `ccr-170f6d81-465jnr` (26 October, area at half),
+  about half a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -36,7 +36,7 @@ Main is at `ef91382` (the phone scripts' Windows launchers) on the landing of 25
 go: "merge in and clean up"). Live beside it, from sessions running the same day:
 `ccr-170f6d81-465jnr` (this one: a passive's lay on any hit, the bot's flat buff on each strike,
 a damaging weapon's procs whatever it dealt, the Skua's runner rows, Flak on a damaging weapon's
-blow of 0, the die's hold and the keywords list); `claude/affectionate-goldberg-8e3mkh` (the
+blow of 0, the die's hold and the keywords list, area at half); `claude/affectionate-goldberg-8e3mkh` (the
 mechanics audit and its fixes, with this branch's Flak commit and the playtest branch merged in);
 `claude/quick-campaign-mode-pafhiv` (the quick campaign, and one damage state: "Cracked is
 gone"); `claude/playtesting-issues-08mnqj` (Ryan's playtest list and its rounds); `ccr-7effd31a-u5z4gw` (the Hold The Line pair, 24 October). When they meet, this

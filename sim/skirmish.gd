@@ -1826,6 +1826,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			# Area by shape (Ryan, 11 and 12 October; built 26 October): the foe the strike is aimed
+			# at takes the blow, every other foe its Spread or Penetrate reaches half of it, rounded
+			# down, before its own statuses and armour.
+			var blow := dmg if foe == aimed else dmg / 2
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
 			var spills := f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive()
@@ -1835,7 +1839,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# more, its armour included, and the strike's whole number goes on behind it; with
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess.
-				_spill(ms, f, foe, dmg, hit, not f.is_debuff())
+				_spill(ms, f, foe, blow, hit, not f.is_debuff())
 				if foe == aimed:
 					landed = dmg
 				continue
@@ -1844,7 +1848,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
 			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, dmg, ms.unit, not f.is_debuff())
+			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff())
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
@@ -2599,7 +2603,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 				shut.append(t)
 	for t in hit:
 		var hp_before := t.hp
-		var blow := dmg
+		var blow := dmg if t == foe else dmg / 2   # area by shape: the arrival takes the shot, the others reached half
 		var eaten := Effects.stacks_of(t, eat) if not eat.is_empty() and t == foe else 0
 		if eaten > 0:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))

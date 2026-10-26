@@ -438,10 +438,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp) + spray_score
 	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, a reach over
-	# every foe), the blow on each capped at what it has left.
+	# every foe): half the blow on each, through its own statuses and armour, capped at what it
+	# has left (area by shape, 26 October).
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
-			score += minf(mean, float(n.hp))
+			score += _capped(damage_outcomes(ms, f, n, -1.0, true, true), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
@@ -981,7 +982,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## resolver applies them; the strikes multiply the blow, a split entry's (the Skua's) each
 ## taking its share of the roll, rounded down. `strikes_on` is how many of them land on this
 ## foe when not all do (a spray's share, fractional), and `aimed` whether the first is one.
-func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strikes_on: float = -1.0, aimed: bool = true) -> Array:
+func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strikes_on: float = -1.0, aimed: bool = true, area: bool = false) -> Array:
 	f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
@@ -1001,6 +1002,8 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	for v in rolls:
 		var dmg: int = (v + fired) / maxi(1, f.split)
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
+		if area:
+			dmg /= 2   # a foe a Spread or Penetrate reaches past the target takes half the blow (26 October)
 		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
 		# Flak adds to every blow of a damaging weapon, a strike of 0 included. Then its armour
 		# comes off every blow, so a braced foe is worth less to a volume weapon.
@@ -1107,9 +1110,9 @@ func ammo_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	return best * AMMO_SHARE
 
 
-## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and on
-## every foe its Spread and Penetrate reach there, each capped at what it has left, averaged
-## over the foes it may fall on.
+## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and half
+## of it on every foe its Spread and Penetrate reach there, each capped at what it has left,
+## averaged over the foes it may fall on.
 func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	var live: Array[Foe] = []
 	for foe in sk.field_foes():
@@ -1119,10 +1122,9 @@ func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		return 0.0
 	var total := 0.0
 	for t in live:
-		var mean := expected_damage(ms, f, t)
 		for n in sk.reached_by(f, t):
 			if n.alive():
-				total += minf(mean, float(n.hp))
+				total += minf(_mean(damage_outcomes(ms, f, n, -1.0, true, n != t)), float(n.hp))   # half past the strike's own foe
 	return total / float(live.size())
 
 
@@ -1601,8 +1603,8 @@ static func bunching_score(sk: Skirmish, ms: Skirmish.MechState, first: Foe, sec
 
 
 ## The team's area entries at their widest: for each, over its targets, the most its spend would
-## deal to the live foes it reaches past its target (its mean blow less each foe's armour, capped
-## at what the foe has left); an entry that reaches only its target adds nothing.
+## deal to the live foes it reaches past its target (half its mean blow less each foe's armour,
+## capped at what the foe has left); an entry that reaches only its target adds nothing.
 static func _widest(sk: Skirmish, areas: Array) -> float:
 	var total := 0.0
 	for a in areas:
@@ -1617,7 +1619,7 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 			var past := 0.0
 			for foe in sk.reached_by(ef, t):
 				if foe != t and foe.alive():
-					past += minf(maxf(0.0, blow - float(foe.armour_total())), float(foe.hp))
+					past += minf(maxf(0.0, blow * 0.5 - float(foe.armour_total())), float(foe.hp))   # half past the target
 			most = maxf(most, past)
 		total += most
 	return total

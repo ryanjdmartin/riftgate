@@ -76,8 +76,8 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank. | implemented |
-| **Penetrate** | Player keyword. Hits first the front, then the back rank of a single column. | implemented |
+| **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank, for half the blow. | implemented |
+| **Penetrate** | Player keyword. Also hits the other rank of the target's column, for half the blow. | implemented |
 | **Spillover** | The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it. | implemented |
 | **Cryo** | Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a damaging weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack, whatever it dealt. | implemented |
 | **Burn** | Keyword with a number. On the player's weapons, Burn 3 means each foe hit gains three stacks of Burning, whatever the blow dealt. On a foe's attack the same: each blow that lands leaves that many stacks of Burning on the machine it hit. | implemented |
