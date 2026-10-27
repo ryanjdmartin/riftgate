@@ -21,8 +21,11 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 676 tests, 64,908 checks, green on main (27 October, `claude/affectionate-goldberg-8e3mkh`
-  landed), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 676 tests, 64,908 checks, green on main at `e59691d` (27 October, before the five
+  merges of the Branches section, which have not run the suite: the cloud session's download of
+  Godot was refused by its permission classifier, so the first desk-machine session runs it before
+  anything else, the to-do's first engine line, then fast-forwards main). About a minute in a
+  cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,22 +36,24 @@ are in `README.md`.
 
 ## Branches
 
-Main took `claude/affectionate-goldberg-8e3mkh` on 27 October (Ryan's go: "merge in and clean
-up", then "Merge into main"), a fast-forward with main merged into it first. On main's 26
-October (the playtest list, the boss art round) it added: the mechanics audit (`docs/mechanics_audit.md`) and its fixes, a beaten domain's rifts
-closing and a set final turning every open rift final, the rally at once under a pulsing chip,
-the round preview (the rest of the round played on a copy for the gauges, the warnings, the foes'
-bars and every status on its way, each a pulsing chip, the skull among them), a pick made again
-going to the next machine in line and a Disrupt keeping a standing pick, and Volatile a printed
-cost beside a shield cost that locks the entry while the shield is short. Live beside main, each
-another session's work, unmerged and landing by merging main in: `ccr-170f6d81-465jnr` (the
-die's hold as text, Flak on every blow, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv`
-(one damage state, bosses at their tier, area at half), `ccr-6073bda9-p34o8q` (the foes' fresh
-start proposed, `docs/foes_proposal.md`) and `ccr-7effd31a-u5z4gw` (the Hold The Line pair). Fully
-merged, so to delete from the desk machine or GitHub, since a cloud session may not delete one:
-`claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
-into main and deleted (22 October).
+The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
+beside main into it, since two sessions had each expected main to take theirs on the 26th and
+neither merged the other: `ccr-170f6d81-465jnr` (Ryan's go of 26 October: the die's hold, the
+units' holds and the codex as text, the keywords list, area at half, Flak on a weapon's blow of
+0, the weapon and equipment words, the vent's blast as a weapon's hit, Spun Up spent by a weapon
+alone, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv` (the quick campaign, one
+damage state, the bosses at their tier), `ccr-6073bda9-p34o8q` (the foes' fresh start proposed,
+`docs/foes_proposal.md`; the campaign bot moving as one with its withdrawing persona; `--pack` on
+the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth rounds, which the
+status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
+(the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
+changes to the skirmish (each merge commit says how it was resolved); the suite has not run on
+the result (the Tests line). Main takes this branch as a fast-forward (`git merge --ff-only`)
+once the suite is green on it, or on Ryan's word; every branch named here is then fully merged,
+to delete from the desk machine or GitHub along with `claude/affectionate-goldberg-8e3mkh`,
+`claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`, `claude/eager-newton-sf947u` and
+`claude/friendly-cannon-kyk9v4` (a cloud session may not delete one). Every other branch was
+merged into main and deleted (22 October).
 
 ## The design sessions
 
@@ -76,6 +81,34 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
+  Since 27 October main also holds, from the branches above, the quick campaign on screen with
+  the game's first hangar, the die's, the units' and the map's holds as text with the keywords
+  list, area at half, one damage state and the bosses at their tier.
+- The quick campaign (25 October): battles without the map, headless, saved, on screen with the
+  game's first hangar, run by `tools/quick_run.gd`. Its first runs (`docs/quick_run.md`,
+  `docs/measurements.md`, 40 runs a rung) find a cliff at the first battle for a starting trio
+  (34 to 36 runs of 40 lost there, 19 of them at the elite stand-in, the bench hero leading a
+  whole formation, which reads harder than the tier's boss) and a plateau after it while the
+  enemy has no tiers: section 12's question, to read against the fresh start's compositions
+  before any lever moves. Its elite is a stand-in until the elites land (the to-do); from tier
+  two a domain's final may be a battle's boss (Ryan, 25 October), and every boss fight brings
+  the tier's escort.
+- Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
+  3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
+  the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
+  unit's `tier` in content, one by default: no unit has another yet), in the campaign and the
+  quick campaign; the rank and file never scale. The campaign counts its tiers from the
+  Convergence (tier two from 4, tier three from 8, the finale at 12 on tier three's step); every
+  number a placeholder.
+- Injuries (25 October): one damage state, Ryan's "Cracked is gone". An injury destroys the
+  entry the die lands on, at a quarter of the maximum hull, the threshold set by what it asks of
+  the player (half was tried and retired within the day: a machine could lose but one piece); a
+  wreck loses only what was destroyed. The Honey Badger's "never destroyed" now holds off every
+  injury until its identity session lands (Ryan: later; the to-do), so until then it is the one
+  machine no blow can strip. The quick runs on the bot destroy about one to one and a half
+  pieces a battle in tiers one and two (`docs/quick_run.md`), at or past section 10's "about one
+  a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
+  economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
@@ -103,14 +136,20 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
   but the finale; nothing sits between, so the middle of the curve is the foes' fresh start's.
   The coordination gap reads 1.0 to 1.3 on built teams against the tests' about 2, and the
-  campaign's plain player wins none of 40 runs (both section 12's). Since the playtest list's
-  boss fight (every machine goes in, with no withdrawal) its battles are mostly one fight, the
-  boss's, joined by its ring within about four phases: it wins 39% of its battles where it won
-  2%, a run lasting fourteen turns where it lasted nine (`docs/campaign_run.md`, 40 runs, a
-  direction), so until the Rupture's seal lands a battle can be a straight rush on the boss.
-  Since the set finals (26 October) a run fights about twice the finals (23 in 40 runs where
-  13 were), winning 86%; the rally at once moves no cell of the packs that field it out of its
-  band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
+  campaign's plain player wins none of 40 runs (both section 12's). The 39% of battles that
+  player won after the playtest list's boss fight (26 October, the report main carried until
+  the 27th) was a bot artefact: it opened the boss's fight from the gate on its first turn, which
+  no order allows; with the order rule on it (`ccr-6073bda9-p34o8q`, 26 October,
+  `docs/measurements.md`) it wins 15% of its battles where it won 1 to 2%, the three-machine
+  battles 54 to 60%, since a trio that reaches the boss fights it together, and a battle is no
+  rush on the boss, who stands across the field. The set finals (26 October) turn every rift a
+  domain leads final at once, so a run meets more finals (the 26th's report read 23 in 40 runs
+  where 13 were, won 86%, on the artefact bot: the count waits on the rerun); the rally at once
+  moves no cell of the packs that field it out of its band (`docs/measurements.md`, 30 seeds, a
+  direction). `docs/campaign_run.md` as committed is the 26th's run on the fixed bot before the
+  set finals and the rally at once, and `docs/quick_run.md` the quick campaign's branch's run:
+  neither was run on main as it now stands, and nor was `docs/balance.md` (22 October), so every
+  band read since then predates one change or another (the to-do's first engine line). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
@@ -135,7 +174,9 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list).
+to-do's Ryan list). First, on the desk machine: the suite on main's head, then the three reports
+rerun (the to-do's first engine line), since no number read since 22 October was read on the
+content as it now stands.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
@@ -173,32 +214,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.319, and so is the live (27 October,
-  the page's version 336, from `claude/affectionate-goldberg-8e3mkh`: the bot kept on the hand
-  sum, by measurement; before it Volatile a printed cost and
-  the shield cost, its Volatile keyword row taken out of the table by hand, the script not run
-  (it would write this branch's older tables back); before it a pick made again going to the
-  next machine in line whatever the foe's aim, merged onto another session's republish of 18:53 (the heat rows and
-  the Cassowary's); before it the settled re-pick drawn as a second arrow, merged onto the
-  republish of 18:18 (the Kite, Cottonmouth, Whip Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
-  afresh and every warning chip pulsing, merged onto the republish of 17:36, which reworked the
-  status and keyword tables and the Burn, Stun, heat and die-entry rows; before it the pick smart
-  as it is made and never after, a Disrupt keeping a standing pick, the chips beside the skull; before it
-  the settled re-picks and the incoming chips, merged onto another session's republish of 16:47, which retired the
-  shield-break warning and rewrote the hold, colour and codex rows; before it the round preview, merged
-  onto another session's republish of 15:34, which built area at half and rewrote the hold, drag
-  and codex rows; before it this branch's tick preview, rally at once, chip pulse and set finals,
-  merged onto the quick campaign's republish of 15:17 (main's Gel clause) and the live v0.300,
-  `ccr-6073bda9-p34o8q`'s file, which carried the day's other branches: `ccr-170f6d81-465jnr`'s
-  and the quick campaign's rows, a boss scaled to its tier, the die's hold showing the entry
-  alone, area at half). So this file holds
-  those branches' rows and tables ahead of their code, which lands with them:
-  `tools/pages/bible_tables.py` run here before they land writes this branch's older tables back
-  (its Kindled row here was checked identical to what the script writes). The
-  version numbers on the publishing branch's file and the live agree after every publish. Before
-  republishing, read the live page; if another session moved it, publish a three-way merge onto
-  it (`git merge-file` with the last-published file as the base, the wrapper's first line and
-  its trailing `</body></html>` stripped from the saved live source).
+  `docs/design-bible.html` after every change. This file is v0.320 (27 October: section 12's
+  finals question and the quick campaign question's elite clause; the tables regenerated by
+  `tools/pages/bible_tables.py` on the merged content, which changed nothing, so every branch's
+  hand-edited rows agreed with the content); the live page is v0.319 (the page's version 336,
+  from `claude/affectionate-goldberg-8e3mkh`), so the next session with the page republishes this
+  file onto it. The version numbers on the publishing branch's file and the live agree after
+  every publish. Before republishing, read the live page; if another session moved it, publish a
+  three-way merge onto it (`git merge-file` with the last-published file as the base, the
+  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
+  With every branch landed, the file holds no rows ahead of code, and the tables script may run
+  freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -207,7 +233,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   and table entry, each file a three-way merge onto the live one another session published at noon with
   the quick campaign's foes note and `ccr-170f6d81-465jnr`'s vocabulary wording, since the
   branches' content differs until they land; the page itself identical on every branch, and
-  `edits` empty). Its database (Ryan's saved edits,
+  `edits` empty). Every branch has landed since (27 October), so main's content should match the
+  live files: check each identical (the files map) before the next republish, and republish those
+  that differ. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

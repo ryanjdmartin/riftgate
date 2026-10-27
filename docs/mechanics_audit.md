@@ -31,7 +31,9 @@ the intents count it), 5 (a silence on buffs alone here; Cracked gone on
 every open rift its domain leads final), and
 `claude/playtesting-issues-08mnqj` (his playtest list, merged here on his word) takes UNDO back
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
-The rest waits on his read. Line numbers are as at `a8a0e43`.
+The rest waits on his read. The review of 27 October fixed 15 in the rules, marked 34 settled by
+the one damage state, and found 26 sharpened by the boss's fight that cannot be left (25
+October), so it is the one to read first. Line numbers are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -204,7 +206,7 @@ not only at 1. One or the other moves. Its neighbour "when hurt" (`missing_hull`
 sim/skirmish.gd:909) needs the move's own value missing, which is right for a regrow and
 wrong for a brace: the Sandworm's Burrow (armour 3) reads 3 HP lost as its threshold.
 
-### 15. Text: the Drake's Stoke picks at random
+### 15. Fixed 27 October (the rules' line). Text: the Drake's Stoke picks at random
 "The Drake's Stoke sets the hottest machine burning" (docs/rules.md:460), but neither the
 Drake nor Stoke carries the heat aim since the 24 October random baseline, so it burns a
 machine at random. The rules line is stale (or Stoke takes `aim: heat`, as the Black Mage's
@@ -323,7 +325,11 @@ death wins the battle" (docs/rules.md:638), and the end conditions carry no orde
 (docs/rules.md:645). Withdrawing right after the kill would have won. The same when the hero
 burns to death at the start of the enemy's turn and its escort wipes the team in it; at the
 finale the order can lose the run after the whole party has fallen. Ryan's precedence to set;
-lean: the boss's death wins, as the rule reads.
+lean: the boss's death wins, as the rule reads. Sharpened on 25 October, after this was
+written: the boss's fight takes every machine and cannot be left (section 4's boss row), so
+the withdrawal that would have won is gone, and the escort the fight goes on against grows
+with the tier (two more at tier two, four at tier three, 26 October). The precedence is the
+only answer left, and the order in `Battle._check_outcome` is a one-line change.
 
 ### 27. Text: flyers hold nothing, and the rules never say so
 A pack walks under a flyer (`can_block()` is false for a flyer, sim/unit.gd:217;
@@ -400,7 +406,7 @@ start table to the run: the Honey Badger 9, the Armadillo 20, the Puffin 28, the
 
 Fix: give the tender a stream of its own, as the party has; the runner's pick too.
 
-### 34. Question: the Honey Badger's "never destroyed" piles up cracks for a wreck to take
+### 34. Settled 25 October (one damage state: no crack to bank; the Badger's passive now holds off every injury until its identity session, the to-do's line). Question: the Honey Badger's "never destroyed" piles up cracks for a wreck to take
 "Components can be cracked but never destroyed" holds in the fight, so a Badger's cracks never
 turn into losses there; but a wreck "also loses its cracked components" (docs/rules.md:676),
 and `_after_battle` never asks the passive (sim/campaign.gd:511). A wrecked Badger loses every

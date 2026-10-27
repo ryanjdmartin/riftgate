@@ -542,7 +542,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   or a cleanse takes it off; Scorched, the softer, heats only the weapons and equipment the
   machine aims at a foe in the turn that follows, so a shield, a vent, a buff or a cool weapon plays
   round it. A foe's burn leaves Burning and its scorch
-  leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
+  leaves Scorched, a stack a blow; the Drake's Stoke sets one machine burning, picked as its
+  target is (at random since 24 October: no foe but the Black Mage carries the heat aim), and
   the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
   machine.
 
@@ -774,7 +775,9 @@ a stat.
   withdraws, so it ends the battle. The unit at the rift commands
   it: the lead domain's boss, a final's hero with its escort (one for each other column), or
   the finale's line; it stands while one of its commanders does and holds the rift whatever
-  its escort. It stands at the battle's tier: its commanders' HP ×1.25 at tier two and
+  its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
+  to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
+  finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
   three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
   of the tier (a unit's tier is content's, one by default), else of the highest tier under it,
