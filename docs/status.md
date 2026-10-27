@@ -142,9 +142,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the three-machine battles 36%, and no quick campaign run leaves its first battle (12 at a
   formation, 22 at the elite stand-in, 6 at the boss; the tier-one formations won 77%, the
   elite 37%, the boss 0 of 6, where the branch read 91, 65 and 73): tier one reads harder than
-  on any branch alone, by more than any merged rule moved when measured by itself, and the
-  200-seed matrix on the merged head says which (`docs/balance.md` is the 22nd's until it
-  lands; the to-do's first engine line). The set finals (26 October) turn every rift a domain
+  on any branch alone, and the rule is area at half, by experiment (`docs/measurements.md`, 27
+  October: with area at full the first battle is won 18%, the formations 94%, the elite 65%,
+  the boss 80%; the re-pick put back changes nothing), since the Honey Badger and the
+  Cottonmouth carried the starter trios on their area and the 26th's read saw them alone:
+  section 12's quick campaign question carries the call. The 200-seed matrix on the merged head
+  (`docs/balance.md` is the 22nd's until it lands; the to-do's first engine line) reads the
+  rest. The set finals (26 October) turn every rift a domain
   leads final at once; the rally at once moves no cell of the packs that field it out of its
   band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the

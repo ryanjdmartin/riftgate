@@ -1738,3 +1738,22 @@ unmeasured). Which rule, or their sum, is the 200-seed matrix's to say (running 
 written; its deltas against `docs/balance.md` of 22 October and the tier-one tables of 25 and 26
 October). Until it does, no band read on the branches stands, and the quick campaign's
 first-battle question (section 12) is read on these numbers.
+
+**Two experiments, the same 40 quick campaign runs with one rule put back** (the same day, each
+a one-line change in a working copy, never committed). The re-pick before next in line (a fresh
+pick by the foe's aim when its machine has fallen, in place of the next machine in line): no run
+leaves its first battle, the tier-one formations won 79%, the elite 36%, the boss 0 of 6, so
+next in line is not what moved. Area at full (every foe a Spread or Penetrate reaches taking the
+whole blow, as before 26 October): the branch's shape comes back and past it, the first battle
+won 18% (seven runs on, one to the finale), the tier-one formations 94% in 5.5 rounds leaving
+80% hull, the elite 65%, the boss 80% of 35, every domain's battles won 50 to 68%.
+
+Read: area at half is the rule that walled the quick campaign's first battle. The 26 October
+read of the halving, on the tier ones alone, saw only the three area carriers' swarm cells move;
+in a trio those carriers are the Honey Badger and the Cottonmouth, which carried the starters'
+formation fights (the 23 October grid: the sixteen trios with either win the five hard fights,
+the twelve without top out at 80 to 89%), and a chain of formations with no heal compounds what
+each loses. Whether the half stands, with the fresh start's thinner tier-one formations to
+answer it, or the player's area stays whole, is Ryan's (section 12's quick campaign question);
+the halving's own exit (a plus too strong where back ranks stand) was written for the other
+direction.
