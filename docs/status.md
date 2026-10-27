@@ -44,7 +44,10 @@ cost beside a shield cost that locks the entry while the shield is short. Live b
 another session's work, unmerged and landing by merging main in: `ccr-170f6d81-465jnr` (the
 die's hold as text, Flak on every blow, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv`
 (one damage state, bosses at their tier, area at half), `ccr-6073bda9-p34o8q` (the foes' fresh
-start proposed, `docs/foes_proposal.md`) and `ccr-7effd31a-u5z4gw` (the Hold The Line pair). Fully
+start proposed, `docs/foes_proposal.md`), `ccr-7effd31a-u5z4gw` (the Hold The Line pair) and
+`ccr-c04908be-3r43xf` (27 October: the pricing run's method and driver, the synergy map and
+the roster's synergy holes, `docs/pricing_proposal.md`; docs and Python tools only, the suite
+untouched and not run there, since that cloud session could not fetch Godot). Fully
 merged, so to delete from the desk machine or GitHub, since a cloud session may not delete one:
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
@@ -140,7 +143,15 @@ to-do's Ryan list).
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
-   the hitter in hand (the to-do); the Lammergeier's stock.
+   the hitter in hand (the to-do); the Lammergeier's stock. The run's method and driver are
+   built (27 October, `docs/pricing_proposal.md`, `tools/pricing_run.py`: every stocked piece by
+   knock-out, every slottable component through the same hardpoint of five benches, every
+   module on them, and the guns' heat by steps, 393 variants, about two and a half hours on
+   four cores); the run itself is the desk machine's (`python3 tools/pricing_run.py run
+   prices`), then its summary read against the proposal's rules, the deltas it names read
+   again at 200 seeds, and Ryan's marks on the proposal's section 6 (the benches, the heat
+   lean, the holes). The roster's synergy holes are its section 5, from the generated map
+   (`tools/synergy_map.py`).
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
