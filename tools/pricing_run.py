@@ -370,6 +370,35 @@ def read_variant(v, packs, policy):
     return cell_read(data, row_id(v['row']), packs, policy)
 
 
+def order(r):
+    """The order a variant's worth is read in where wins saturate at a hundred (the team rows against
+    these packs): a lost band of five points first, then the rounds to win, then the hull lost."""
+    return (-math.floor(r['win'] / 5.0) * 5, r['rounds'] if not math.isnan(r['rounds']) else 99.0, r['hull'])
+
+
+def better(a, b):
+    """Is read a better than read b: a band of wins higher, or the same band and quicker by a tenth of
+    a round, or as quick and lighter on the hull."""
+    oa, ob = order(a), order(b)
+    if oa[0] != ob[0]:
+        return oa[0] < ob[0]
+    if abs(oa[1] - ob[1]) >= 0.1:
+        return oa[1] < ob[1]
+    return oa[2] < ob[2] - 0.5
+
+
+def delta_text(r, s):
+    if not s:
+        return '-'
+    parts = []
+    if abs(r['win'] - s['win']) >= 0.5:
+        parts.append('win %+.1f' % (r['win'] - s['win']))
+    if not math.isnan(r['rounds']) and not math.isnan(s['rounds']):
+        parts.append('%+.1f r' % (r['rounds'] - s['rounds']))
+    parts.append('%+.0f%% hull' % (r['hull'] - s['hull']))
+    return ', '.join(parts)
+
+
 def fmt(x, d=1):
     return '-' if x is None or (isinstance(x, float) and math.isnan(x)) else ('%.*f' % (d, x))
 
@@ -418,7 +447,7 @@ def summarise(db, opts):
         L.append('')
         L.append('What the row loses without the piece: a drop is the piece\'s worth to its row, nothing says the stock carries filler there (the stock\'s question, not the piece\'s price).')
         L.append('')
-        L.append('| Row | Machine | Piece | Tier | Stock share | Win stock > without | Rounds | Hull | Peak |')
+        L.append('| Row | Machine | Piece | Tier | Stock share | Win, stock > without | Rounds | Hull | Peak |')
         L.append('|---|---|---|---|---|---|---|---|---|')
         rows_ko = []
         for v in ko:
@@ -426,12 +455,12 @@ def summarise(db, opts):
             s = stock.get('+'.join(v['row']))
             if not r or not s:
                 continue
-            rows_ko.append((s['win'] - r['win'], v, r, s))
-        rows_ko.sort(key=lambda x: -x[0])
+            rows_ko.append((order(r), v, r, s))
+        rows_ko.sort(key=lambda x: x[0], reverse=True)   # the piece the row misses most first
         for d, v, r, s in rows_ko:
-            L.append('| %s | %s | %s | %s | %s%% | %s > %s (%+.1f) | %s > %s | %s > %s%% | %s > %s%% |' % (
+            L.append('| %s | %s | %s | %s | %s%% | %s > %s | %s > %s | %s > %s%% | %s > %s%% |' % (
                 v['row_name'], db.name(v['chassis']), db.name(v['piece']), db.components[v['piece']].get('tier', '-'), fmt(s['share'].get(v['piece'], 0), 0),
-                fmt(s['win']), fmt(r['win']), -d, fmt(s['rounds']), fmt(r['rounds']), fmt(s['hull'], 0), fmt(r['hull'], 0), fmt(s['peak'], 0), fmt(r['peak'], 0)))
+                fmt(s['win']), fmt(r['win']), fmt(s['rounds']), fmt(r['rounds']), fmt(s['hull'], 0), fmt(r['hull'], 0), fmt(s['peak'], 0), fmt(r['peak'], 0)))
         L.append('')
     # the ladders
     for b in p['benches']:
@@ -443,11 +472,13 @@ def summarise(db, opts):
         stock_piece = db.chassis[cid].get('loadout', [])[slot]
         L.append('## Ladder: %s, hardpoint %d (the %s in stock), with %s' % (db.name(cid), slot, db.name(stock_piece), ' and '.join(db.name(x) for x in ids if x != cid)))
         L.append('')
-        L.append('Each candidate in that hardpoint in place of the stock piece, by tier, best change first; the stock row is the floor every delta is read against. '
-                 'Flags: dead (share under 5%%), the die (share over 35%%), hot (an overheat a fight more than stock), under tier %s (below the best of the tier beneath).' % 'N-1')
+        L.append('Each candidate in that hardpoint in place of the stock piece, by tier, the best first: wins in bands of five, then the rounds to win, then the hull lost, '
+                 'since the wins saturate on a team row and the rounds and the hull carry the read. The delta is against the row as stocked. '
+                 'Flags: dead (share under 5%%), the die (share over 35%%), hot (the peak at the maximum, or a quarter of an overheat a fight more than stock), '
+                 'holds (a tenth of a die a fight more held for heat), under tier %s (no better than the best of the tier beneath).' % 'N-1')
         L.append('')
-        L.append('| Tier | Candidate | Kind | Win (delta) | Rounds | Hull | Share | Peak | Over | Held | Flags |')
-        L.append('|---|---|---|---|---|---|---|---|---|---|---|')
+        L.append('| Tier | Candidate | Kind | Win | Rounds | Hull | Delta | Share | Peak | Over | Held | Flags |')
+        L.append('|---|---|---|---|---|---|---|---|---|---|---|---|')
         best_by_tier = {}
         got = []
         for v in lad:
@@ -456,8 +487,9 @@ def summarise(db, opts):
                 continue
             got.append((v, r))
             t = v['tier']
-            best_by_tier[t] = max(best_by_tier.get(t, -999), r['win'])
-        got.sort(key=lambda x: (x[0]['tier'], -x[1]['win']))
+            if t not in best_by_tier or better(r, best_by_tier[t]):
+                best_by_tier[t] = r
+        got.sort(key=lambda x: (x[0]['tier'], order(x[1])))
         for v, r in got:
             e = db.components[v['piece']]
             f = e['face']
@@ -473,15 +505,16 @@ def summarise(db, opts):
                 flags.append('dead')
             if share > 35:
                 flags.append('the die')
-            if s and r['overheats'] >= s['overheats'] + 1:
+            if r['peak'] >= 100 or (s and r['overheats'] >= s['overheats'] + 0.25):
                 flags.append('hot')
+            if s and r['held'] >= s['held'] + 0.1:
+                flags.append('holds')
             t = v['tier']
-            if t >= 1 and (t - 1) in best_by_tier and r['win'] < best_by_tier[t - 1]:
+            if t >= 1 and (t - 1) in best_by_tier and not better(r, best_by_tier[t - 1]):
                 flags.append('under tier %d' % (t - 1))
-            delta = (r['win'] - s['win']) if s else float('nan')
-            L.append('| %d | %s | %s | %s (%s) | %s | %s%% | %s%% | %s%% | %s | %s | %s |' % (
-                t, e['name'] + (' (stock)' if v['piece'] == stock_piece else ''), kind, fmt(r['win']), ('%+.1f' % delta) if not math.isnan(delta) else '-',
-                fmt(r['rounds']), fmt(r['hull'], 0), fmt(share, 0), fmt(r['peak'], 0), fmt(r['overheats'], 2), fmt(r['held'], 2), ', '.join(flags)))
+            L.append('| %d | %s | %s | %s | %s | %s%% | %s | %s%% | %s%% | %s | %s | %s |' % (
+                t, e['name'] + (' (stock)' if v['piece'] == stock_piece else ''), kind, fmt(r['win']), fmt(r['rounds']), fmt(r['hull'], 0), delta_text(r, s),
+                fmt(share, 0), fmt(r['peak'], 0), fmt(r['overheats'], 2), fmt(r['held'], 2), ', '.join(flags)))
         L.append('')
     # the modules
     for b in p['benches']:
@@ -494,22 +527,21 @@ def summarise(db, opts):
         L.append('')
         L.append('Each module fitted to the machine alone, its other slot empty; the delta against the row as stocked. The mirrors (the Ram Frame and the Rangefinder, the Booster and the Databank) read against each other here, and a module ahead of every other on every bench is the must-pick the modules row forbids.')
         L.append('')
-        L.append('| Tier | Module | Stats and text | Win (delta) | Rounds | Hull | Peak | Over |')
-        L.append('|---|---|---|---|---|---|---|---|')
+        L.append('| Tier | Module | Stats and text | Win | Rounds | Hull | Delta | Peak | Over |')
+        L.append('|---|---|---|---|---|---|---|---|---|')
         got = []
         for v in mod:
             r = reads[v['id']]
             if r:
                 got.append((v, r))
-        got.sort(key=lambda x: (x[0]['tier'], -x[1]['win']))
+        got.sort(key=lambda x: (x[0]['tier'], order(x[1])))
         for v, r in got:
             m = db.modules[v['module']]
             text = ', '.join('%s %+d' % (k, val) for k, val in (m.get('stats') or {}).items())
             if m.get('text'):
                 text += ('; ' if text else '') + m['text'].get('description', '')
-            delta = (r['win'] - s['win']) if s else float('nan')
-            L.append('| %d | %s | %s | %s (%s) | %s | %s%% | %s%% | %s |' % (v['tier'], m['name'], text, fmt(r['win']), ('%+.1f' % delta) if not math.isnan(delta) else '-',
-                                                                         fmt(r['rounds']), fmt(r['hull'], 0), fmt(r['peak'], 0), fmt(r['overheats'], 2)))
+            L.append('| %d | %s | %s | %s | %s | %s%% | %s | %s%% | %s |' % (v['tier'], m['name'], text, fmt(r['win']), fmt(r['rounds']), fmt(r['hull'], 0),
+                                                                     delta_text(r, s), fmt(r['peak'], 0), fmt(r['overheats'], 2)))
         L.append('')
     # the heat ladder
     heat = [v for v in vs if v['part'] == 'heat']
