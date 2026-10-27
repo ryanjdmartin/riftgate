@@ -152,8 +152,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   changes nothing), since the Honey Badger and the Cottonmouth carried the starter trios on
   their area and the 26th's read saw them alone:
   section 12's quick campaign question carries the call. The 200-seed matrix on the merged head
-  (`docs/balance.md` is the 22nd's until it lands; the to-do's first engine line) reads the
-  rest. The set finals (26 October) turn every rift a domain
+  (`docs/balance.md`, 27 October; its read in `docs/measurements.md`) finds every move a rule of
+  the week landing where it was meant to, and area at half landing harder than its read of the
+  26th said: the Honey Badger's, the Wild Boar's and the Musk Ox's formation cells and the
+  Cottonmouth's finals go back to the 22nd's bands with area whole, and nothing else moves them.
+  Gel x4 alone is a free pack for most of the roster since the Gel became a wall; its work is
+  inside a formation. The set finals (26 October) turn every rift a domain
   leads final at once; the rally at once moves no cell of the packs that field it out of its
   band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the

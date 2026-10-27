@@ -1779,3 +1779,55 @@ Drakes random 76 to 85, the Needlers greedy 48 to 55) and the Gels greedy 45 to 
 width. Read: a roll of 1 no longer wastes a strike, which random play felt most; the Skua's
 place among the tier ones does not move, and its start still bites with basics alone (the
 to-do's play line).
+
+## 27 October, the balance report on the merged head
+
+**The matrix rerun on main as it stands** (`docs/balance.md`, 313,200 fights, 200 seeds a cell,
+random and greedy, eight parts side by side: the 26 rows, the Skua and the Needletail among
+them for the first time, against the 29 packs), read cell by cell against the 22 October
+report, which predates the targeting at random, the doubled heat, the Gel as a wall, area at
+half, Flak on a 0, the one damage state and the bosses at their tier. Then three runs of the
+cells that moved most (five rows, the Honey Badger, the Wild Boar, the Nemesis, the Cottonmouth
+and the Musk Ox, against six packs: the Needlers, the Salamanders, the Waste and Marsh
+formations, the Augur's and the Summoner's finals, 200 seeds a cell) with one rule put back at a
+time in a working copy: as the head stands, injuries off (`--injury`), and area at full.
+
+By pack, the mean move over the 24 rows both reports hold, random / greedy: the Gels +24 / +33
+(16 rows' cells moved ten points or more, most of them free now: the Badger 7 / 61 to 94 / 100,
+the Boar 15 / 53 to 100 / 100, the Armadillo 0 / 0 to 46 / 100); the Bombs -8 / -8, the
+Salamanders -4 / -8, the Drakes -3 / -4 (the Armadillo against the Drakes 94 / 100 to 51 / 65,
+the Ammit against the Bombs 99 to 69 greedy, the Nemesis against the Salamanders 100 to 76);
+the Meadow formation +1 / +4 (the Boar greedy 6 to 55, the Buzzard 0 to 41), the Waste -1 / -2,
+the Marsh +1 / -1, the Peak -1 / -1; the Augur's final -4 / -6, the Summoner's -3 / -6; every
+other pack within three points, the finale 0 / 0 on every row as before. By row the Cottonmouth
+is the one past three points (-3 / -9); the four team rows move a point or less.
+
+What moved each, the experiments deciding where a cell could carry more than one cause:
+
+- The Gel as a wall without a breach (25 October): a lone machine's shield now holds its
+  Engulf, so Gel x4 alone is a pack both rungs beat for most of the roster, no decision, and
+  the Meadow formation eases for the heavies. The Gel's work is inside a formation, where it
+  holds a slot; as a pack of its own it is free.
+- The doubled heat (24 October): the Peak's three packs and its finals, the seal's own heat
+  walling the Armadillo against the Drakes.
+- Area at half (26 October): the Cottonmouth's swarms (the Goblins and Revenants 98 to 62
+  greedy) and its finals (the Augur's 88 to 4, the Summoner's 99 to 23, the Cleric's 43 to 10),
+  and the formation cells of the other area carriers, which the 26 October read on the tier
+  ones alone did not hold: the Badger's Waste 30 to 4 and Marsh 11 to 0, the Boar's Waste 30
+  to 7 and Marsh 45 to 14, the Musk Ox's Needlers 60 to 15 and Waste 11 to 6. With area at
+  full they come back to the 22nd's bands or near them (the Badger's Waste 32 and Marsh 17,
+  the Boar's Waste 22 and Marsh 42, the Cottonmouth's Augur 91 and Summoner 100, the Musk
+  Ox's Needlers 54), and the Nemesis, which carries no area, does not move.
+- The one damage state (25 October): with injuries off only the Augur's final cells move,
+  ten to sixteen points (the Boar 41 to 57 random, the Nemesis 72 to 82, the Musk Ox 70 to
+  81, the Cottonmouth 4 to 16 greedy), and the Cottonmouth's Salamanders (56 to 66 greedy):
+  the Augur's Omen is the one blow in these cells big enough to injure, and a lone machine
+  that loses an entry to it loses the race.
+- The Skua reads for the first time (above, its own row at min 1 beside it); the Needletail
+  alone reads 0 on all but the small packs, a spotter with no one to spot for.
+
+Read: every move is a rule of the week landing where it was meant to, and one of them, area at
+half, lands harder than its read said: on every area carrier alone, on the trios in the quick
+campaign (above), and nowhere else. The 23 October grids by stage (`tools/stock_loop.py`, the
+starter trios and the endgame fours) were not rerun and predate all of it; this report is the
+baseline for the rows it holds until the fresh start lands.
