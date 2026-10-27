@@ -88,7 +88,7 @@ class Content:
         for mk, m in self.makers.items():
             own = [cid for cid, c in self.chassis.items() if c.get('maker') == mk and self.runnable(cid)]
             if len(own) >= 3:
-                rows["%s's team" % m.get('name', mk)] = own[:3]
+                rows["%s team" % m.get('name', mk)] = own[:3]   # the runner's own name for the row
         return rows
 
     def packs(self, which):

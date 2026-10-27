@@ -24,7 +24,9 @@ are in `README.md`.
 - Tests: 676 tests, 64,908 checks, green on main (27 October, `claude/affectionate-goldberg-8e3mkh`
   landed), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
+  `Godot_v4.7.2-stable_linux.x86_64.zip`; in Auto mode the download goes in a command of its
+  own and the unpacking and first run in another, since one line that fetches and runs it is
+  refused, 27 October), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
