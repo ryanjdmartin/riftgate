@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 676 tests, 64,908 checks, green on `claude/affectionate-goldberg-8e3mkh` with main
-  merged in (27 October), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 676 tests, 64,908 checks, green on main (27 October, `claude/affectionate-goldberg-8e3mkh`
+  landed), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,9 +33,9 @@ are in `README.md`.
 
 ## Branches
 
-`claude/affectionate-goldberg-8e3mkh` carries main merged in (27 October, Ryan's go: "merge in
-and clean up"), so it lands clean. On main's 26 October (the playtest list, the boss art round) it
-adds: the mechanics audit (`docs/mechanics_audit.md`) and its fixes, a beaten domain's rifts
+Main took `claude/affectionate-goldberg-8e3mkh` on 27 October (Ryan's go: "merge in and clean
+up", then "Merge into main"), a fast-forward with main merged into it first. On main's 26
+October (the playtest list, the boss art round) it added: the mechanics audit (`docs/mechanics_audit.md`) and its fixes, a beaten domain's rifts
 closing and a set final turning every open rift final, the rally at once under a pulsing chip,
 the round preview (the rest of the round played on a copy for the gauges, the warnings, the foes'
 bars and every status on its way, each a pulsing chip, the skull among them), a pick made again
@@ -46,8 +46,8 @@ die's hold as text, Flak on every blow, the Skua's runner rows), `claude/quick-c
 (one damage state, bosses at their tier, area at half), `ccr-6073bda9-p34o8q` (the foes' fresh
 start proposed, `docs/foes_proposal.md`) and `ccr-7effd31a-u5z4gw` (the Hold The Line pair). Fully
 merged, so to delete from the desk machine or GitHub, since a cloud session may not delete one:
-`claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`, `ccr-7d865127-wr1ko2`,
-`claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
+`claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
+`ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
 into main and deleted (22 October).
 
 ## The design sessions
