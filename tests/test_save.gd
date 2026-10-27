@@ -87,7 +87,7 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_eq(back.field.gate_hp, b.field.gate_hp, "the gate")
 	assert_eq(back.field.unit_by_id(m.id).pos, dest, "the machine where it moved")
 	assert_eq(back.moves_left(back.field.unit_by_id(m.id)), b.moves_left(m), "with the move it has left")
-	assert_true(back.can_undo(back.field.unit_by_id(m.id)), "and its move can still be taken back")
+	assert_true(back.can_undo(), "and its move can still be taken back")
 	assert_eq(back.spent, b.spent, "who has fought")
 	assert_eq(back.fought, b.fought, "and who recharges")
 	assert_eq(back.forced.size(), 1, "the fight a hunter forced")
@@ -111,6 +111,50 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_eq(back.rng.state, b.rng.state, "the battle's random stream")
 	# Written twice, the data is the same: nothing drifts through a round trip.
 	assert_eq(JSON.stringify(SaveGame.to_dict(back)), JSON.stringify(SaveGame.to_dict(SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(back)))))), "stable")
+
+
+## The mechanics audit (25 October): a battle read back from its save dresses every pack Rift
+## Pressure spawns from the content (its ring, move and hunt), a resumed fight calls content up
+## as a fresh one does (a fallen Gel splits), and a final's commanders come back with it.
+func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -> void:
+	var b := Battle.new(4)
+	b.lineup = ["warrior"]
+	b.escort = ["goblin", 3]
+	b.setup(_team(), "meadow")
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(back.lineup, b.lineup, "the rift's commanders")
+	assert_eq(back.escort, b.escort, "and its escort")
+	var profiles: Dictionary = b.db.pack_profiles()
+	for i in range(back.field.spawn_table.size()):
+		assert_true(back.field.tick_pressure(back.field.rift_pressure_max), "the rift spawns")
+		var spawned: Unit = back.field.units[back.field.units.size() - 1]
+		var p: Dictionary = profiles.get(spawned.foe_id, {})
+		assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
+		assert_eq(spawned.zone, int(p.get("zone", 1)), "%s: its ring" % spawned.foe_id)
+		assert_eq(spawned.movespeed, int(p.get("movespeed", Unit.PACK_MOVE)), "%s: its move" % spawned.foe_id)
+		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk" % spawned.foe_id)
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = null
+	for p in b.field.packs():
+		if p.foe_id == "gel":
+			sq = p
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	var resumed := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	var sk2: Skirmish = resumed.current
+	assert_true(sk2.foe_factory.is_valid(), "the resumed fight can call content up")
+	for f in sk2.field_foes():
+		if f.content_id == "gel":
+			f.hp = 0
+			break
+	sk2.end_round()
+	var halves := 0
+	for f in sk2.field_foes() + sk2.reinforcements:
+		if f.content_id == "gel_half":
+			halves += 1
+	assert_eq(halves, 2, "and a Gel it fells splits in two")
 
 
 func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
@@ -194,12 +238,12 @@ func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
 func test_damage_and_statuses_survive_the_trip() -> void:
 	var b := _battle(4)
 	var m: Unit = b.mechs()[0]
-	# A cracked entry, a destroyed one, a battle reward and a skirmish status, by hand.
+	# Two destroyed entries, a battle reward and a skirmish status, by hand.
 	var original: Face = m.die.faces[0].duplicate_face()
 	m.damaged_faces[0] = original
-	var cracked: Face = m.die.faces[0].duplicate_face()
-	cracked.crack()
-	m.die.faces[0] = cracked
+	var first := Face.blank()
+	first.component = original.component
+	m.die.faces[0] = first
 	var gone := Face.blank()
 	gone.component = m.die.faces[1].component
 	m.damaged_faces[1] = m.die.faces[1].duplicate_face()
@@ -211,9 +255,9 @@ func test_damage_and_statuses_survive_the_trip() -> void:
 	m.shield = 7
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var bm: Unit = back.field.unit_by_id(m.id)
-	assert_true(bm.die.faces[0].cracked, "the crack")
-	assert_eq(bm.die.faces[0].keywords.size(), 0, "with its keywords gone")
-	assert_eq(bm.die.faces[1].kind, Face.Kind.BLANK, "the destroyed entry is blank")
+	assert_eq(bm.die.faces[0].kind, Face.Kind.BLANK, "the first destroyed entry is blank")
+	assert_eq(bm.die.faces[0].component, original.component, "and remembers what it was")
+	assert_eq(bm.die.faces[1].kind, Face.Kind.BLANK, "the second too")
 	assert_eq(bm.die.faces[1].component, gone.component, "and remembers what it was")
 	assert_eq(bm.damaged_component_count(), 2, "two to repair")
 	assert_eq(bm.damaged_faces[0].to_dict(), original.to_dict(), "the original kept for the hangar")

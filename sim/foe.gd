@@ -7,14 +7,16 @@ extends RefCounted
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
 ##
-## Targeting (decided 2 October): machines do not taunt, monsters hunt by sense. A foe type
-## carries an `aim`, the sense its pick follows, and a move may carry its own; the skirmish
-## makes the pick (`Skirmish._pick_mech_target`), weighted and shown before the player acts.
+## Targeting: machines do not taunt (2 October), and a foe draws its target at random unless it
+## or its move carries an `aim` (Ryan, 24 October: random is the baseline balanced on, and an
+## aim serves a foe's threat, any foe's); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
+## player acts, and the foes never over-commit to a machine already doomed.
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
-## Damage is base attack times the action's factor; strikes are separate blows; keywords are
-## tags on the blow (breach: ignores the shield and the armour, the whole blow to hull).
+## Damage is base attack, plus its Kindled and its swarm, times the action's factor (damage_of);
+## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
+## armour, the whole blow to hull).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -22,7 +24,7 @@ var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
-var aim: String = AIM_EXPOSED    # the sense its target pick follows (content; a move may override it)
+var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -42,7 +44,8 @@ var hero: bool = false           # one of the party: a hero (content `hero`, hum
 var commands: bool = false       # a commander of its boss unit (the faction's boss, a final's hero, one of the finale's line), marked as the unit unpacks: the unit stands while one does
 var escorts: bool = false        # the wildlife beside a boss unit's commanders (a final's), marked as the unit unpacks: the unit's strength counts them
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
-var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
+var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping up in its place at once (the Gel)
+var fresh: bool = false          # stepped up mid-round (a split's half): its round is over, so it shows no intent and acts from the next round
 var pending: Dictionary = {}     # a countdown move it is gathering (`countdown` on the move): it holds until it lands
 var charge: int = 0              # rounds before the pending move lands; at 0 it lands this round
 var part_ids: Array = []         # a core's parts (content `parts`): the foes of its pack that stand beside it
@@ -52,6 +55,7 @@ var regrow_due: Array = []       # [part id, round it returns] for each part on 
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
+const AIM_ANYTHING := "anything"   # at random: the default
 const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
 const AIM_TEXT := {
 	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",
@@ -59,11 +63,10 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
+const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
 const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
-	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
-	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
+	"below_half": "when below half", "missing_hull": "when hurt",
+	"back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
 }
@@ -165,14 +168,25 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack (plus what a rally adds for the round) times
-## its factor, rounded to the nearest whole number (numbers are in the magnitude of tens,
-## not multiples of ten). A defend, buff or debuff action deals nothing.
-func damage_of(a: Dictionary) -> int:
+## What one blow of an action does: base attack, plus what its statuses add (a rally's Kindled),
+## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow) and its swarm,
+## times its factor, rounded to the nearest whole number: the adds, then the multiplies, one
+## damage formula for the whole game (Ryan, 26 October: "One formula means one damage formula
+## followed by the whole game"). A defend, buff or debuff action deals nothing.
+func damage_of(a: Dictionary, extra: int = 0) -> int:
 	if not is_attack_action(a):
 		return 0
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
-	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0)))) + int(a.get("swarm", 0)) * kin
+	var swarm := int(a.get("swarm", 0)) * kin
+	return int(roundf((attack + Effects.foe_attack_bonus(self) + extra + swarm) * float(a.get("factor", 1.0))))
+
+
+## One blow of an action at the foe's own numbers: its attack times the move's factor, with no
+## kin and no rally (the codex's number, and what the hold reads a live blow against).
+func base_damage_of(a: Dictionary) -> int:
+	if not is_attack_action(a):
+		return 0
+	return int(roundf(attack * float(a.get("factor", 1.0))))
 
 
 ## The action's kind: attack by default (the basic action), or defend, buff, debuff.
@@ -230,13 +244,12 @@ func strikes() -> int:
 
 ## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
 ## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
-##   defend  brace: Braced, `value` / 5 stacks of armour +5, every stack going at its next
-##           action (Burrow; flat since 2 October, one word and one icon for both sides, the
-##           half it was is gone; Braced since 16 October, Ryan: an effect and the buff it
-##           creates share a name)
+##   defend  brace: Armoured, the move's `value` in stacks of armour +1 (Effects.brace_stacks),
+##           every stack going at its next action (Burrow; one word and one icon for both
+##           sides, Ryan, 16 October: an effect and the buff it creates share a name)
 ##           regrow: regains `value` hit points (Knit)
 ##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
-##           brace_all: Braced, `value` / 5 stacks, on every foe in the fight through the next
+##           brace_all: Armoured, `value` stacks, on every foe in the fight through the next
 ##           round (Protect, 15 October: until its next action, as the player sees it)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
@@ -248,16 +261,14 @@ func strikes() -> int:
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
 ##           turn (Stoke; direct heat retired 13 October)
-##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
-##           crack: its target's showing entry cracks, no hull hit needed (Unmake)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
-##           scorch_all: every machine gains `value` stacks of Scorched, its weapons running
-##           hotter (Eruption; nobody in particular)
+##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
+##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally"],
-	"debuff": ["drain_rerolls", "burn", "scramble", "crack", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
+	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -288,7 +299,7 @@ func intent_on(u) -> bool:
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
 ## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
-## weapons running hotter for the turn; burn: a stack of Burning, heat at the end of the
+## weapons and debuffs running hotter for the turn; burn: a stack of Burning, heat at the end of the
 ## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
@@ -296,14 +307,23 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-## silence: the machine hit is Silenced, its buffs and stores counting for nothing and its
-## keywords muted until the round's end; dispel (Purge since 20 October, its id kept): the
-## machine hit loses every buff and store (Ryan, 17 and 18 October; built 21 October).
+## silence: the machine hit is Silenced, its buffs counting for nothing through its next
+## round; dispel (Purge since 20 October, its id kept): the machine hit loses every buff, its
+## stores kept (Ryan, 17, 18 and 21 October; built 21 October).
 const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all"]
+## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
+## player's Burn N: Scorch 2 lays two stacks a blow).
+const NUMBERED_RIDERS := ["scorch", "burn", "corrupt"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:
 	return a.get("keywords", []).has(k)
+
+
+## The stacks a numbered rider lays a blow: the move's number, one where it names none (a move
+## built in a test; content always says it).
+func rider(a: Dictionary, k: String) -> int:
+	return maxi(1, int(a.get(k, 1)))
 
 
 func breaches() -> bool:

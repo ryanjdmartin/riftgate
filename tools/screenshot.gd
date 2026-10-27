@@ -3,9 +3,13 @@ extends SceneTree
 ## Renders a scene into a 720x1280 offscreen viewport and saves a PNG. Needs a window
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
-## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
-## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
-## roll again mid-burst), heat (Burning and Scorched on the first machine).
+## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
+## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
+## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
+## showing), mechhold and foehold (the first machine's and the first foe's), confirm (the
+## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
+## Scorched on the first machine), repick (a foe whose machine falls before it acts, a second
+## arrow dashed to the machine it will strike).
 
 var _frames := 0
 var _vp: SubViewport
@@ -67,6 +71,9 @@ func _apply_pose() -> void:
 	if _node is BattleScreen:
 		_apply_battle_pose()
 		return
+	if _node is QuickRunScreen:
+		_apply_quick_pose()
+		return
 	if not (_node is SkirmishScreen):
 		return
 	var s: SkirmishScreen = _node
@@ -75,8 +82,34 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
+		"pair", "pair_spread":
+			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
+			# in its slot (RIFTGATE_FOES=gel:2,goblin:3); pair_spread holds a Spread weapon over
+			# the formation, the pair bracketed as one slot.
+			var db := ContentDB.load_default()
+			s.sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+			for f in s.sk.field_foes():
+				if f.content_id == "gel" and f.rank == 0:
+					f.hp = 0
+					break
+			s.sk._clear_dead()
+			if _pose == "pair_spread":
+				s.sk.mechs[0].die = Die.single(Face.attack(3, Face.Reach.DIRECT, Face.Keyword.CLEAVE))
+				s.sk.mechs[0].face_index = 0
+				s._drag_from = 0
+			s._refresh()
 		"hold":
+			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
+			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
+			var at := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
+			if at >= 0 and at < s.sk.mechs[1].die.faces.size():
+				s.sk.mechs[1].face_index = at
+				s._refresh()
 			s._on_die_held(1)
+		"mechhold":
+			s._on_mech_held(0)
+		"foehold":
+			s._on_foe_held(s._foe_view_for(s.sk.front[0]))
 		"confirm":
 			s._on_end_turn()
 		"lock":
@@ -93,6 +126,8 @@ func _apply_pose() -> void:
 			# One of the feed's analysis events, started now (RIFTGATE_SHOT_FRAME=20 for the
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))
+		"keywords":
+			s._open_menu("keywords")   # as the button under the eye opens it
 		"menu", "settings", "quit":
 			s._open_menu()
 			if _pose != "menu":
@@ -144,6 +179,21 @@ func _apply_pose() -> void:
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
 			s._rage_debug()
+		"repick":
+			# The round preview's settled re-pick (26 October): the first machine falls to the first
+			# front foe's blow, so the second, aimed at it too, strikes the pick it will make; every
+			# arrow on, both intents solid and the second foe's spill dashed to that machine.
+			s.sk.mechs[0].unit.shield = 0
+			s.sk.mechs[0].unit.hull = 1
+			var foes := s.sk.field_foes()
+			for i in range(mini(2, foes.size())):
+				for a in foes[i].actions:
+					if Foe.is_attack_action(a):
+						foes[i].action = a   # a blow, not a howl
+						break
+				foes[i].target = s.sk.mechs[0]
+			s._toggle_all_arrows(true)
+			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
 			# Primed beside them, the one other flame a machine wears.
@@ -172,10 +222,11 @@ func _apply_pose() -> void:
 			s._toggle_all_arrows(true)
 
 
-## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
+## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
+## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -192,6 +243,32 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
+		"boss":
+			s._on_unit_held(b.boss)
+		"ground":
+			# Nothing in hand, a tap on the first open water (else ruins): what the ground is.
+			var pick := Vector2i(-9999, -9999)
+			for want in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS]:
+				for h in b.field.map.all_hexes():
+					if b.field.map.terrain.get(h, -1) == want and b.field.unit_at(h) == null and not b.field.map.is_structure(h):
+						pick = h
+						break
+				if pick != Vector2i(-9999, -9999):
+					break
+			s._on_hex_tapped(pick)
+		"plan_play":
+			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
+			for i in range(mini(2, b.mechs().size())):
+				s._on_hex_tapped(b.mechs()[i].pos)
+				var dests: Array = s._map.destinations.keys()
+				if not dests.is_empty():
+					s._on_hex_tapped(dests[dests.size() / 2])
+			s._on_end_turn()
+		"inspect":
+			# A pack tapped with nothing in hand: its ring lit, every other pack's at rest.
+			var sq: Unit = b.field.packs()[0]
+			s._on_hex_tapped(sq.pos)
+			s._map.scroll_to_unit(sq)
 		"draft", "draftslow":
 			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
 			# stops about halfway through the move on open ground, draftslow ends on a slow hex,
@@ -313,7 +390,7 @@ func _apply_battle_pose() -> void:
 		"resolve":
 			s._on_end_turn()
 		"gate":
-			# The gate tapped: its footprint and the hexes it can be attacked from.
+			# The gate tapped: its footprint, the hexes it can be attacked from and its readout.
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
@@ -381,6 +458,51 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(m.pos)
 			s._on_hex_tapped(boss.pos)
 			s._engage()
+
+## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
+## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows
+## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open, no
+## withdrawal), track (between fights, one won), rewards (the boss down, a card chosen), over.
+func _apply_quick_pose() -> void:
+	var s: QuickRunScreen = _node
+	var r := s.run
+	if _pose == "draft":
+		return
+	for id in QuickRun.draft_choices(r.db).slice(0, QuickRun.START_MACHINES):
+		s._toggle_pick(str(id))
+	if _pose == "picked":
+		return
+	s._on_primary()
+	for it in r.pool(2):
+		if it["kind"] == "component":
+			r.components[str(it["id"])] = 1
+			break
+	r.modules[str(r.db.modules.keys()[0])] = 1
+	s._refresh()
+	match _pose:
+		"chooser":
+			var m: QuickRun.Machine = r.roster[0]
+			s._open_hardpoint(m.uid, 0, r.db.chassis[m.chassis].get("fixed", []).size())
+		"fight":
+			s._on_primary()
+			s._on_primary()
+		"track", "rewards", "over":
+			r.start_battle()
+			var sk := r.open_fight()
+			r.units[0].hull = r.units[0].hull_max / 2
+			r.units[1].shield = 1
+			sk.outcome = Skirmish.Outcome.VICTORY if _pose != "over" else Skirmish.Outcome.DEFEAT
+			sk.state = Skirmish.State.DONE
+			r.finish_fight()
+			if _pose == "rewards":
+				while r.state == QuickRun.BATTLE:
+					var next := r.open_fight()
+					next.outcome = Skirmish.Outcome.VICTORY
+					next.state = Skirmish.State.DONE
+					r.finish_fight()
+				s._choice = 1
+			s._refresh()
+
 
 func _tick() -> void:
 	_frames += 1

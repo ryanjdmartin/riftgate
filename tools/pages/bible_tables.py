@@ -39,7 +39,7 @@ PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block":
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "disable": "disabled", "scramble": "scrambled", "silence": "silenced"}
+                           "disable": "disabled", "silence": "silenced"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen"}
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
@@ -61,10 +61,11 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
            ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
            ("drone", "Drone", lambda f: bool(f.get("drones"))),
+           ("spray", "Spray", lambda f: bool(f.get("spray"))),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
-FOE_ONLY_TEXT = {"burn": "Each blow that lands leaves a stack of Burning on the machine it hits (Burning, above).",
+FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away."}
 SHARED = ["burn", "breach"]   # our keyword and the foes' rider share the word, each with a row
 KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)

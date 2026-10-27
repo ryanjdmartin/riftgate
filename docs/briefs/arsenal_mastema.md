@@ -159,7 +159,7 @@ face, Azazel on reflection).
 on a foe. Which foe moves lay Burning and Scorched on machines is in `docs/rules.md`, "Heat";
 the proposal's table of 12 October predates it. The proposal's reading of the rest on a foe:
 Scorched means nothing, since a foe has no heat (Claude's mover of 14 October lands it as
-Burning); Scrambled nothing, since a foe never rolls, and no foe lays it; Disabled (the Waste:
+Burning); Disabled (the Waste:
 the Cockatrice's Stone) nearest Suppressed, a translation and a strong one; Corrupted (the
 Waste: the Thief's Mug) nearest a bite of 10 a stack at each of its actions for the skirmish,
 with no foe word today. The other way, Burning is the only foe debuff a machine carries

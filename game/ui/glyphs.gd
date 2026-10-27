@@ -53,8 +53,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
 		"silence":
-			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep and its
-			# keywords muted for the round.
+			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep for the
+			# round.
 			for k in range(3):
 				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
 			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)
@@ -245,7 +245,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(c + Vector2(cos(a), sin(a)) * r0, c + Vector2(cos(a), sin(a)) * s, color, width * 0.9)
 			ci.draw_circle(c, s * 0.22, color)
 		"corrupt":
-			# A jagged crack through the entry: the rot the Chorus leaves in a component.
+			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(-s * 0.2, -s), c + Vector2(s * 0.3, -s * 0.3), c + Vector2(-s * 0.3, s * 0.1), c + Vector2(s * 0.2, s),
 			]), color, width)
@@ -270,7 +270,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
-			# Heat rising off a barrel: Scorched, every weapon running hotter (13 October).
+			# Heat rising off a barrel: Scorched, every weapon and debuff running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
 			for i in range(3):
 				var x := -s * 0.55 + i * s * 0.55
@@ -392,7 +392,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.45), s * 0.62, PI * 1.2, PI * 1.8, 12, color, width)
 			ci.draw_arc(c + Vector2(0, s * 0.45), s * 1.0, PI * 1.25, PI * 1.75, 14, color, width)
 		"exposed", "expose", "exposure":
-			# A reticle with its top open: nothing in front (the formation's, Exposed's chip and
+			# A reticle with its top open: nothing in front (Exposed's chip and
 			# the Expose keyword's).
 			ci.draw_arc(c, s * 0.8, PI * 0.15, PI * 1.85 + PI, 24, color, width)
 			ci.draw_line(c + Vector2(-s * 0.35, 0), c + Vector2(s * 0.35, 0), color, width)
@@ -444,7 +444,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BUFF:
 			return "buff"
 		_:
-			# A debuff (a weapon of no damage) wears its reach frame with the status mark inside.
+			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
 				return "debuff_indirect" if face.is_debuff() else "indirect"
 			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags

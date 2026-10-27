@@ -239,10 +239,11 @@ func _draw() -> void:
 	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
 	var num := shown_number if not shown_number.is_empty() else face.number_text()
 	if face.disabled and dark > 0:
-		# Dark with the rounds left (the cooldown row, 14 October): the count where the number
-		# sits and what it counts beneath, so it never reads as the component's number.
+		# Dark with the turns left (the cooldown row, 14 October; Ryan's "turns", 26 October): the
+		# count where the number sits and what it counts beneath, so it never reads as the
+		# component's number.
 		num = str(dark)
-		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "ROUND LEFT" if dark == 1 else "ROUNDS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
+		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "TURN LEFT" if dark == 1 else "TURNS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
 	var num_size := 28 if num.contains("–") else 38
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
@@ -273,6 +274,23 @@ func _draw() -> void:
 		var heat_text := "+%d HEAT" % face.heat
 		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
 		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
+	if face.volatile > 0 and not (face.disabled and dark > 0):
+		# A hull cost (Volatile, a cost beside the heat since 26 October, Ryan: "converting it
+		# from a keyword with a chip to a cost, alongside heat"): the enemy's colour, what it takes.
+		var vc := Color(Palette.ENEMY, alpha)
+		var hull_text := "-%d HULL" % face.volatile
+		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, vc)
+		slot_x += mono.get_string_size(hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
+	if face.shield_cost > 0 and not (face.disabled and dark > 0):
+		# A shield cost (26 October): the shield's colour while the shield can pay; struck through
+		# and SHORT in the enemy's when it cannot and the entry is locked (the dry gun's pattern).
+		var cc := Color(Palette.ENEMY if face.short else Palette.SHIELD, alpha)
+		var cost_text := ("-%d SHORT" if face.short else "-%d SHIELD") % face.shield_cost
+		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, cc)
+		var cw := mono.get_string_size(cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+		if face.short:
+			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + cw, FACE - 13.0 + bob), cc, 2.0)
+		slot_x += cw + 8.0
 	if face.shields > 0 and not (face.disabled and dark > 0):
 		# The combined entry's second half (Ryan's go, 20 October): the shield it also gives, its
 		# own glyph and number beside the heat slot, so the two numbers part by structure.
@@ -301,7 +319,7 @@ func _draw() -> void:
 	if face.has_unique_rule():
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if face.targets == Face.Target.SELF:
-		tags.append("self")      # equipment that reaches only its own machine
+		tags.append("self")      # a piece that reaches only its own machine
 	elif face.targets == Face.Target.ALLY:
 		tags.append("ally")      # or only its allies
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:

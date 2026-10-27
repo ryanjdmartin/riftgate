@@ -43,7 +43,7 @@
       "reward_bias": "one_shot",
       "spawn": [
         { "foe": "revenant", "strength": 6 },
-        { "foe": "revenant", "strength": 6 },
+        { "foe": "zombie_knight", "strength": 2 },
         { "foe": "ghost", "strength": 3 }
       ],
       "boss": "bone_dragon",

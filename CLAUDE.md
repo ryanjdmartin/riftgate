@@ -9,19 +9,23 @@ rules as they are now: read it first. `docs/design-bible.html` records every dec
 ## Commands
 
 ```sh
-godot --headless --path . --import                 # first run, and after adding PNGs or a class_name
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import   # first run, and after adding PNGs or a class_name
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
-godot --path .                                     # harness: skirmish screen and map viewer
-godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
+godot --path .                                     # harness: a battle, a skirmish, a saved battle and the map viewer
+perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
 python3 tools/pages/bible_tables.py                       # the bible's buff, debuff and keyword tables, after any content change
-perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (about 45 minutes); --trace "row|pack|policy|seed" for one fight's log
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (two minutes)
+perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (hours on one core; about two in four parts, the README's --part and --merge); --trace "row|pack|policy|seed" for one fight's log
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs against a plain player into docs/campaign_run.md (about four minutes)
 ```
 
 Every other command (models, foes, sound, screenshots, the phone, the pages) is in `README.md`.
 On the Windows desk machine (since 19 October) they all run as written from Git Bash; from
 PowerShell, `& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. The README's Running
 section says what is set up there and what cannot run (foeforge's renders need the Mac).
+There the Claude app is a packaged Windows app: anything a session writes under `AppData`
+(`AppData\Local\Programs` excepted) goes to a private copy that Ryan's own shells never see,
+though the session's own commands do. Install shared tools elsewhere, and check from a
+terminal tab, which sees what his shells see.
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.
 
@@ -35,15 +39,22 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
   entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`.
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
-  never from a hardcoded id. A draft the engine cannot run yet carries `"status": "planned"`
-  (a foe action, or a chassis passive): it is kept, not shown, not run, and not validated
+  never from a hardcoded id (a fallback model, maker or faction is content's first). Code
+  names an id only to key an asset to a maker or a domain (a metal, a sound, the gate's
+  Arsenal iron); tests tie the metal and sound tables to content, so a rename fails the build
+  until they follow. A draft the engine cannot run yet carries `"status": "planned"`
+  (a foe action, a passive, a component or a vocabulary term): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
-- Equipment words (decided 18 September): a **component** is one piece of equipment and
-  exactly one entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the
-  model); a chassis's **fixed** components are built in and use no hardpoint; an empty
-  hardpoint is a blank entry, nothing fills it. Shown text never says "face" (the player
-  sees no polyhedron); `Face` is the engine's name for one die entry.
+- Kit words (decided 18 September): a **component** is one piece of kit and exactly one
+  entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
+  chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a
+  blank entry, nothing fills it. Shown text never says "face" (the player sees no
+  polyhedron); `Face` is the engine's name for one die entry. A component is a **weapon**
+  (it deals damage), a **shield**, a **vent** or **equipment** (a buff or a debuff, dealing
+  none; Ryan, 26 October), so text never says "damaging weapon": a trigger is damaging a foe
+  with a weapon, hitting a foe with a weapon, or hitting a foe with a weapon or equipment.
+  The engine's `Kind.ATTACK` is a weapon and a debuff alike (`is_weapon()`, `is_attack()`).
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
@@ -58,7 +69,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Keep the fun in mind: randomness is one source the player can see and shift (the die, a rolled range,
   a rider's chance on a chip), and push back on systems that add no decision. Slice and Dice is the touchstone.
 - Balance is measured, not guessed (decided 25 September): `sim/policy.gd` plays the skirmish
-  headless on a ladder of skill (random, greedy; personas on top) and `tools/balance.gd`
+  headless on a ladder of skill (random, blind, greedy and a two-round planner; personas on top) and `tools/balance.gd`
   runs the matrix into `docs/balance.md`. Read bands, not numbers: random beating a pack
   means too easy, greedy losing means a wall, both landing together means no decision.
   Pick share is the component signal. Ryan's play tests decide feel and micro balance;
@@ -124,7 +135,7 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - One folder per branch (decided 5 October). The desk machine's folder stays on `main`:
   `C:\Users\jam82\Desktop\Code\riftgate` on the Windows PC since 19 October (`~/Code/riftgate`
   on the Mac before it). A session that
-  needs another branch (a cloud session resumed on the Mac for its tools, most often) works in
+  needs another branch (a cloud session resumed on the desk machine for its tools, most often) works in
   its own worktree, `git worktree add .claude/worktrees/<name> <branch>` and EnterWorktree with
   that path, never by switching the main folder's branch under whoever is using it.
   `.claude/worktrees/` is excluded in `.git/info/exclude`. A worktree has no `.godot` import
@@ -150,7 +161,7 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - One home for each thing, so nothing drifts: the order of work is `docs/status.md`'s "Next,
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
-  `docs/<maker>_proposal.md` until its evaluation, then a design in progress is its brief in
+  `docs/<topic>_proposal.md` until its evaluation, then a design in progress is its brief in
   `docs/briefs/` until its session lands; each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.

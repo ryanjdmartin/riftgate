@@ -9,28 +9,30 @@ working names, and everything here is Ryan's to move.
 
 ## Elites
 
-Ryan's definition (23 October; the bible's tiers row): a spawn of one or more unique packs
-outside the usual spawn list, a mini-boss tier, any size. It throws a visible curveball into the
-player's strategy and demands the player adapt, by a mechanic on the map (a dangerous hunter, a
-fast blitz on the gate, a sudden swarm, an aura or a battlefield effect) or simply by being a
-harder fight that threatens the gate while it holds the team, which is what a tier-one elite
-looks like. About one an early battle, more later.
+Ryan's definition (23 and 24 October; the bible's tiers row): a spawn of one or more unique packs
+outside the usual spawn list, a mini-boss tier, any size: a miniboss event in the middle of a
+battle, guaranteed rather than one of the random spawns, to break up the flow, add depth and
+drain the player's resources with a high-pressure situation every battle is sure to hold. It
+throws a visible curveball into the player's strategy and demands the player adapt, by a
+mechanic on the map (a dangerous hunter, a fast blitz on the gate, a sudden swarm, an aura or a
+battlefield effect) or simply by being a harder fight that threatens the gate while it holds the
+team, which is what a tier-one elite looks like. About one an early battle, more later.
 
 | Domain | Elite | Size | State |
 |---|---|---|---|
 | The Meadow | Goblin shaman (the marked `goblin_takesD_1`) | Not massive | Ryan, 15 October: a decent elite |
-| The Meadow | An alpha Treant, beefed up or a named homage | Massive | Ryan, 23 October: fits the harder-fight elite; a name of ours (the ent is Tolkien's, and the treant D&D's rename of it) |
-| The Waste | A named homage of the Sandworm | Massive | Ryan, 23 October: fits the harder-fight elite; a name of ours (Shai-Hulud is Herbert's coinage) |
-| The Marsh | Bone Wyvern | Massive | Built, standing in as the boss; an advanced foe or an elite (Ryan, 23 October: not sure) |
-| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not massive | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
+| The Meadow | The Elder Treant, the beefed-up alpha | Massive | Ryan, 24 October: the harder-fight elite (the ent is Tolkien's coinage, and the treant D&D's rename of it, so the name is ours) |
+| The Meadow | The Leshy (Slavic folklore's forest lord) | Open | Ryan, 24 October: liked, and may be a foe of its own beside the Elder Treant for diversity |
+| The Waste | The Old Man of the Desert, the king sandworm | Massive | Ryan, 24 October: the harder-fight elite, named for Dune's own words for its worm, plain words the names rule below lets stay |
+| The Marsh | Bone Wyvern | Massive | Built, standing in as the boss; an elite unless a better setup comes (Ryan, 24 October) |
+| The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not massive | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador; 24 October: the deadly hunter elite. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not massive | Noted for later (Ryan, 15 October: not yet) |
-| The Peak | Magma Elemental (the Magma Golem until 23 October: a golem implies a master) | Massive | Built, standing in as the boss; not special enough as it stands (Ryan, 23 October), an elite only if fixed |
 | Any | A pair of gate gargoyles (a pair trope) | Not massive | Noted for later (Ryan, 15 October: not yet) |
 
-Out of the tier as built (Ryan's leans, 23 October): the Treant, a rank-and-file trope, massive,
-not special enough for a mini-boss, which joins the Meadow's spawn list once the validator lets
-a massive foe into one; the Sandworm, not special enough as it stands, its place open (rank and
-file, or fixed into an elite).
+Out of the tier (Ryan, 23 and 24 October): the Treant, the Magma Elemental (the Magma Golem
+until 23 October: a golem implies a master) and the Sandworm are rank and file, massive. Each
+stands in as its domain's boss until the slate lands, then joins its spawn list (a massive foe
+may stand in one since 24 October).
 
 ## Bosses: the slate (third cut, 15 October)
 
@@ -46,7 +48,7 @@ stands or shielding it until one falls.
 |---|---|---|---|---|
 | The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
 | The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes; his pick of it (4), redrawn less muscular, lanky as a sapling, for the fifth; his pick of that (2) wanted 1's eyeless maw (19 October), so the sixth is the edit model on 2 (the eyes inside the mouth removed) beside a composite of 1's head onto 2 re-rendered close; his pick of that (3, the composite) lost spines and vines on the head's left where the paste box clipped, so the seventh completed them (the edit model, and the composite redone wider), which did not work either (Ryan, 19 October: "maybe go back and try the head-swap compositing again"); the eighth is the composite of 1's head onto 2 again, a generous box, shown raw and after a close pass at 0.9: the spines and vines complete at last, all three clean to Claude's eye; Ryan (19 October): still weird even at phone scale, cut off or blurred by turns, is there another way? The ninth round is another way: the two eyes inside the maw painted out with the maw's own black on his pick itself (an erase over dark, as an erase over white is the one hand edit that has passed his bar; nothing re-rendered, so nothing blurs), beside image to image from his pick at 0.7 with the maw described eyeless (0.8 kept the eyes, set aside) | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
+| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes; his pick of it (4), redrawn less muscular, lanky as a sapling, for the fifth; his pick of that (2) wanted 1's eyeless maw (19 October), so the sixth is the edit model on 2 (the eyes inside the mouth removed) beside a composite of 1's head onto 2 re-rendered close; his pick of that (3, the composite) lost spines and vines on the head's left where the paste box clipped, so the seventh completed them (the edit model, and the composite redone wider), which did not work either (Ryan, 19 October: "maybe go back and try the head-swap compositing again"); the eighth is the composite of 1's head onto 2 again, a generous box, shown raw and after a close pass at 0.9: the spines and vines complete at last, all three clean to Claude's eye; Ryan (19 October): still weird even at phone scale, cut off or blurred by turns, is there another way? The ninth round is another way: the two eyes inside the maw painted out with the maw's own black on his pick itself (an erase over dark, as an erase over white is the one hand edit that has passed his bar; nothing re-rendered, so nothing blurs), beside image to image from his pick at 0.7 with the maw described eyeless (0.8 kept the eyes, set aside); Ryan's pick (26 October) the paint-out (bossart10 1), cut into `art/foes` and recorded in picks.json: Floraison is done | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
 | The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts (above) |
@@ -79,10 +81,12 @@ balance the series out a little, never purge it):
   warrior monk who took a sword from every warrior crossing Gojō Bridge until the thousandth beat
   him (FF5 fights its Gilgamesh on the Big Bridge). The same signature, the weapon a machine shows
   taken and turned on it; the legend's death, standing in a storm of arrows, a kit idea new to the
-  engine (he holds his slot a round after he falls, the back rank still covered).
-- **The Malboro (Rotbloom)**: convert out. Beside Floraison the Meadow would hold two maw-plants,
-  and both names bloom. Its slot goes to a boss from another series, found at the slate's next
-  cut; Bad Breath (every rider at once) can go to whichever boss wants it.
+  engine (he holds his slot a round after he falls, the back rank still covered). Ryan, 24
+  October: tempted to move him down to the elites, since he can pop up anywhere; noted, not
+  decided (his slot in the Waste would then want another boss).
+- **The Malboro (Rotbloom)**: stays (Ryan, 24 October: mechanically very different from
+  Floraison, and a different silhouette), so Claude's lean to convert it out, two maw-plants in
+  one domain, is withdrawn.
 - **The Tonberry (Pilgrim)**: Ryan's call. Its dread was the countdown, which any foe can carry
   now, and the Reaper is the genre's stalker among the elites, so its slot could go to another
   series as well.
@@ -154,8 +158,11 @@ balance the series out a little, never purge it):
   base and moved onto the grip's line, the hand edit the layout for a close pass at 0.9, never
   shown raw): the pass drew the blade on the grip's line and joined to the crossguard, but
   redrew his head a little, so the sword's column alone is pasted back onto his pick (the two
-  aligned, the seam in white and in the fist both share), shown beside the full pass. Skaði is picked and cut (19 October: the fifth round's 1, the fresh-take pose
-  with the edit's lower half).
+  aligned, the seam in white and in the fist both share), shown beside the full pass; Ryan's
+  pick (26 October) the pasted column (bossart10 5), cut into `art/foes` with his white-hot
+  blade and the blaze round his face kept by the cut (`--keep-glow`, since they are the
+  background's white) and recorded in picks.json: Surtr is done. Skaði is picked and cut (19
+  October: the fifth round's 1, the fresh-take pose with the edit's lower half).
 - **Clair Obscur's Mime**, if wanted beside Floraison: a rare pack that throws the last blow it
   took back at whoever dealt it (the bible's pinned reflect), its plaque blank, a livery its
   prize.

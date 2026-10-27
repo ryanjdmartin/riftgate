@@ -162,15 +162,14 @@ section is Claude's, for him to move, and every number is a placeholder.
   only in the longest, and seldom passes 5 against a big foe today; 20 needs volume. A
   formation machine first, which suits "a battle rhythm", but a different claim from the 15
   October one.
-- **A break the die forces** is random that takes away (section 2's chances row, Ryan, 16
-  October). It is rare with three weapons on the die and the team's three rerolls, but the ramp
-  is lost through no choice of the player's. The alternative for Ryan: only spending equipment
-  (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
+- **A break the die forces** loses the ramp through no choice of the player's. It is rare with
+  three weapons on the die and the team's three rerolls. The alternative for Ryan: only spending a shield, a
+  vent or a buff (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
 - **Decision density.** Once the combo is up, its payoffs take away the reasons to break it,
   and in the Marsh nothing attacks the die or heats it (the Meadow drains rerolls, the Waste
   disables, the Peak scorches and corrupts), so there it is a stat line that grows. The
   decisions left are the team's: rerolls spent on its die rather than an ally's, and allies
-  cooling or shielding it (an ally's equipment spent on it never breaks it). The double-edged
+  cooling or shielding it (an ally's shield, vent or buff spent on it never breaks it). The double-edged
   form has its decision built in and was undersold on 15 October.
 - **The second in-fight shield regen** beside the Goshawk's (the first hole below), read by
   pattern in context (Ryan, 16 October): its regen is paid only while it attacks every round,
@@ -206,8 +205,7 @@ section is Claude's, for him to move, and every number is a placeholder.
 What they settle: the combo counts every blow its weapons land, strikes included, so strikes
 and area pieces are its fuel, as the action-economy row has it; the session resumes under the
 conventions decided since 15 October (as Claude reads them: the action-economy row, Rapid's
-limiter, a Suppress priced by a gate, the overlap rule, random that adds against random that
-takes away); and the shield's tag waits on the line frame's model session, not this one.
+limiter, a Suppress priced by a gate, the overlap rule); and the shield's tag waits on the line frame's model session, not this one.
 
 **The bench** (each with what set it aside)
 
@@ -235,8 +233,8 @@ and what it grants buffs, slept by a silence and silenced a turn by a purge.
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
 to the model session; what stays open:
 
-1. What breaks it: a turn ended without a weapon spent (Ryan's), or only equipment spent (the
-   review's alternative, so the die never takes the ramp away).
+1. What breaks it: a turn ended without a weapon spent (Ryan's), or only a shield, a vent or a buff
+   spent (the review's alternative, so the die never takes the ramp away).
 2. The thresholds' numbers against these fight lengths, now that strikes and area pieces climb
    the count, and the cooling kept under the weapons' heat.
 3. The parry: a self-Barrier, cooldown 2, keeping the combo (proposed), or Rapid against the
@@ -249,7 +247,7 @@ to the model session; what stays open:
 - It would be the second in-fight shield regen; the Buzzard's was kept safe on one chassis, and
   with the Puffin beside both a team can out-sustain a pack (the runner marks stalls past sixty
   rounds).
-- Once the combo is up, the enemy breaks it: the Waste's Disabled and Scrambled attack the die,
+- Once the combo is up, the enemy breaks it: the Waste's Disabled attacks the die,
   and the Peak's Scorched runs its beams hotter than the stacks cool.
 - The count must show on the machine, and the die's heat must show the cooling it has earned.
 - At tier one it is Aphelion's third tier one (its second once the Baboon moves up), which

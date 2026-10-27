@@ -42,21 +42,56 @@ func test_screen_builds_on_the_players_turn() -> void:
 	s.free()
 
 
-func test_a_tap_selects_and_a_lit_hex_moves_the_machine_at_once() -> void:
+func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
 	var start := m.pos
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "mech selected")
 	assert_true(s._map.destinations.size() > 0, "destinations lit")
+	assert_false(s._map.threat.is_empty(), "and in red where it could attack from past them")
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
-	assert_eq(m.pos, dest, "it moved at once")
-	assert_eq(s._map.selected, m, "and stays in hand, to pick a target from there")
+	assert_eq(m.pos, dest, "the battle has it there at once")
+	assert_eq(s._map.shown[m.id][0], start, "the map shows it where it stood until the plan plays")
+	assert_eq(s._map.plans.size(), 1, "with its route drawn")
+	assert_eq(s._map.unit_at_shown(start), m, "a tap where it stands finds it")
+	assert_eq(s._map.selected, m, "and it stays in hand, to pick a target from there")
 	assert_false(s._clear_btn.disabled, "the move can be undone")
+	assert_eq(s._clear_btn.text, "UNDO", "the button undoes whatever came last")
 	s._on_undo()
 	assert_eq(m.pos, start, "undo puts it back")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "and the plan with it")
 	assert_true(s._clear_btn.disabled, "and there is nothing more to undo")
+	assert_eq(s._map.selected, m, "the machine back in hand")
+	s._on_hex_tapped(dest)
+	s._on_end_turn()
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "END TURN plays the plan")
+	assert_eq(m.pos, dest, "and it stands where it went")
+	s.free()
+
+
+func test_undo_takes_back_an_order_and_the_moves_in_the_order_made() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, a)
+	s._refresh()
+	var c0 := c.pos
+	s._on_hex_tapped(c.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	s._on_hex_tapped(a.pos)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(a), sq, "ordered")
+	s._on_undo()
+	assert_eq(b.order_of(a), null, "the order comes back first")
+	assert_eq(c.pos, dest, "the other machine's move still planned")
+	s._on_undo()
+	assert_eq(c.pos, c0, "then the move")
+	assert_true(s._clear_btn.disabled, "and nothing is left")
 	s.free()
 
 
@@ -270,6 +305,9 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	assert_true(b.boss_fight, "the boss's fight")
 	assert_true(s._skirmish != null, "it opens")
 	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
+	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
+	assert_true(s._skirmish._withdraw_btn.disabled, "no withdrawing")
+	assert_eq(s._skirmish._withdraw_btn.text, "NO RETREAT", "and the button says why")
 	var want := Sound.boss_set(b.faction)
 	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
 	s._on_skirmish_back()
@@ -303,17 +341,47 @@ func test_offscreen_packs_get_edge_tags() -> void:
 
 func test_hold_shows_a_readout() -> void:
 	var s := _screen()
-	s._on_unit_held(s.battle.mechs()[0])
+	var m: Unit = s.battle.mechs()[0]
+	s._on_unit_held(m)
 	assert_true(s._details.visible, "readout shown")
-	assert_true(s._details_label.text.contains("hull"), "mech numbers")
-	assert_true(s._details_label.text.contains("action"), "and its actions")
+	# Readout lines, as the fight's holds read (Ryan, 26 October: the map's looked like blocks
+	# of text): the name, the gauges with their numbers, then the stats.
+	var lines: Array = s._details_entry.lines
+	assert_eq(str(lines[0]["style"]), "title", "the name heads it")
+	assert_eq(str(lines[0]["text"]), m.display_name.to_upper(), "the machine's name")
+	assert_eq(str(lines[1]["style"]), "bar", "its shield a gauge")
+	assert_eq(str(lines[2]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "its hull a gauge with its numbers")
+	assert_true(s._details_entry.text().contains("action"), "and its actions")
+	assert_true(s._details_entry.text().contains("Move %d" % int(m.base["move"])), "and its move")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
-	s._on_unit_held(s.battle.field.packs()[0])
-	assert_true(s._details_label.text.contains("×"), "pack strength")
-	assert_true(s._details_label.text.contains("ring"), "and its ring")
+	var sq: Unit = s.battle.field.packs()[0]
+	s._on_unit_held(sq)
+	assert_true(s._details_entry.text().contains("×%d" % sq.strength), "pack strength")
+	assert_true(s._details_entry.text().contains("Ring %d" % sq.zone), "and its ring")
+	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
-	assert_true(s._details_label.text.contains("massive"), "boss readout")
+	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
+	assert_true(s._details_entry.text().contains("Massive"), "boss readout")
+	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "the panel holds its lines")
+	s.free()
+
+
+func test_the_ground_and_a_refusal_read_as_lines() -> void:
+	var s := _screen()
+	var water := BattleScreen.ground_lines(BattleMap.Terrain.WATER)
+	assert_eq(str(water[0]["text"]), "WATER", "the ground's name heads it")
+	var text := ""
+	for l in water:
+		text += EntryReadout.line_text(l) + "\n"
+	assert_true(text.contains("Fast: Hover"), "a line a word, the ways under it: %s" % text)
+	assert_true(text.contains("Slow: Walker, Wheeled (the step ends the move)"), "the slow step's price said: %s" % text)
+	assert_true(text.contains("Packs never enter it"), "and what the horde does")
+	var mountain := BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN)
+	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Impassable:"), "a wall reads impassable")
+	s._show_details(BattleScreen.notice_lines("Out of reach", "It cannot get there"))
+	assert_eq(str(s._details_entry.lines[0]["text"]), "OUT OF REACH", "a refusal's title")
+	assert_true(s._details.visible, "shown in the readout")
 	s.free()
 
 
@@ -354,7 +422,7 @@ func test_the_gate_is_selectable_and_has_an_entry() -> void:
 	var g: Vector2i = s.battle.field.map.gate
 	s._on_hex_tapped(g)
 	assert_true(s._map.gate_selected, "the gate is selected")
-	assert_true(s._details.visible and s._details_label.text.contains("integrity"), "its integrity in the readout")
+	assert_true(s._details.visible and s._details_entry.text().contains("Integrity %d/%d" % [s.battle.field.gate_hp, s.battle.field.gate_hp_max]), "its integrity a gauge in the readout")
 	s._on_hex_tapped(s.battle.mechs()[0].pos)
 	assert_false(s._map.gate_selected, "another tap lets it go")
 	s._on_hex_double_tapped(g)

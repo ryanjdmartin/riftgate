@@ -53,6 +53,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	sk.add_foes([_ghoul(300, 30)])
 	sk.begin()
 	sk.start_round()
+	sk.front[0].target = sk.mechs[1]   # its pick, set: the test is the shield's, not the aim's
 	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the ghoul would wreck the weak machine")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")
@@ -189,7 +190,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	# At the single-digit scale the bot's weights are set to (the stock pass, 22 October): a
 	# blow of 3 kills a foe of 3 HP that hits for 1, and the bite is 3.
 	var sk := Skirmish.new(3)
-	var bomb := Face.attack(3, L, K.VOLATILE)
+	var bomb := Face.attack(3, L)
 	bomb.volatile = 3
 	sk.add_mech(_mech("A", Die.single(bomb), 8, 3))
 	sk.add_foes([_ghoul(3, 1)])
@@ -202,7 +203,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	assert_true(sk.front[0] != null and sk.front[0].alive(), "the kill is not taken")
 	assert_eq(sk.mechs[0].unit.hull, 3, "the machine stands")
 	var s2 := Skirmish.new(3)
-	var bomb2 := Face.attack(3, L, K.VOLATILE)
+	var bomb2 := Face.attack(3, L)
 	bomb2.volatile = 3
 	s2.add_mech(_mech("B", Die.single(bomb2), 8, 30))
 	s2.add_foes([_ghoul(3, 1)])
@@ -250,7 +251,7 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 func test_greedy_values_rage_as_another_roll() -> void:
 	var fist := Face.attack(10, L)
 	fist.rolls_again_on = "rage"
-	var gun := Face.attack(20, L, K.VOLATILE)
+	var gun := Face.attack(20, L)
 	gun.volatile = 10
 	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
 		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}
@@ -308,6 +309,55 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
+## The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a random
+## foe in reach, so the bot reads each foe its share; on a foe one strike kills, a spray among
+## others wastes less past the kill than the same strikes all on it.
+func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
+	var sk := Skirmish.new(1, 3)
+	var plain := Face.attack(5, L)
+	plain.strikes = 3
+	var pod := plain.duplicate_face()
+	pod.spray = true
+	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
+	var weak := _ghoul(3, 10)
+	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the spray's later strikes go on to the others")
+	var lone := Skirmish.new(1, 1)
+	lone.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
+	var big := _ghoul(100, 10)
+	lone.add_foes([big])
+	lone.begin()
+	lone.start_round()
+	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
+
+
+## A flat buff lands on every strike, so the bot counts Overcharged once a strike of the ally's
+## gun showing: twice on a split gun (the Skua's), once on a plain one.
+func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
+	var split := {"id": "split", "name": "Split", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
+	var sk := Skirmish.new(1, 2)
+	var coil := Face.buff("overcharged", 2)
+	var plain := _mech("P", Die.single(Face.attack(4, L)), 40, 100)
+	var skua := _mech("S", Die.single(Face.attack(4, L)), 40, 100)
+	skua.grant_passive(split)
+	sk.add_mech(_mech("B", Die.single(coil), 40, 100))
+	sk.add_mech(plain)
+	sk.add_mech(skua)
+	sk.add_foes([_ghoul(100, 10), _ghoul(100, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var on_plain := pol.buff_score(sk, sk.mechs[1], coil)
+	var on_skua := pol.buff_score(sk, sk.mechs[2], coil)
+	assert_true(on_plain > 0.0, "worth something on a gun showing")
+	assert_true(absf(on_skua - 2.0 * on_plain) < 0.001, "twice as much on a gun that strikes twice")
+
+
 func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	var sk := Skirmish.new(2, 2)
 	var klaxon := Face.attack(0, I, K.LURE)
@@ -334,6 +384,28 @@ func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	g.action = g.actions[0]
 	assert_eq(Policy.disrupt_score(sk, g), 10.0 * Policy.HULL_WEIGHT, "the roar is quieter than the blow")
 	assert_eq(Policy.disrupt_score(sk, sk.front[1]), 0.0, "a foe with only its blow cannot be moved")
+
+
+## A rallier's threat is what its rally adds to the blows after it this round (26 October), so
+## killing, Suppressing or Disrupting it weighs the fodder it lifts, and the forecast reads the
+## lifted blows.
+func test_the_bot_reads_a_rallier_by_the_blows_its_rally_lifts() -> void:
+	var sk := Skirmish.new(3, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 0, 300))
+	var lord := _ghoul(500, 50)
+	var howl := {"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 5, "weight": 1, "text": ""}
+	lord.actions = [Foe.basic_action(), howl]
+	sk.add_foes([lord, _ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[0] == lord, "the rallier acts first")
+	lord.action = howl
+	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "the forecast reads both lifted blows")
+	assert_eq(Policy._threat_now(lord, sk), 10.0, "the rallier threatens what its rally adds: 5 on each of two blows")
+	assert_eq(Policy.suppress_worth(sk, lord), 10.0, "and a Suppress on it is worth that")
+	assert_eq(Policy.disrupt_score(sk, lord), 0.0, "a Disrupt turning it to its 50 is worth nothing")
+	lord.action = lord.actions[0]
+	assert_eq(Policy._threat_now(lord, sk), 50.0, "on its blow it threatens its blow")
 
 
 func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() -> void:
@@ -402,9 +474,9 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq(pol.equipment_score(sk, ms, ms, scrub), pol.equipment_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, scrub), pol.machine_spend_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
 	Effects.corrupt_entry(m, 2, "foe:x", 2)
-	assert_true(pol.equipment_score(sk, ms, ms, scrub) > pol.equipment_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
+	assert_true(pol.machine_spend_score(sk, ms, ms, scrub) > pol.machine_spend_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
 	Effects.disable_entry(m, 2, "cooldown", sk.round)
 	var before := pol.cleanse_score(sk, ms)
 	Effects.disable_entry(m, 2, "foe:x", sk.round + 1)
@@ -491,7 +563,7 @@ func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
 ## will stop.
 func test_greedy_bites_the_foe_looking_away() -> void:
 	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent"}]}
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 	var sk := Skirmish.new(3, 2)
 	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 500)
 	a.grant_passive(ambush)
@@ -578,8 +650,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.equipment_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
-	assert_eq(pol.equipment_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
+	assert_true(pol.machine_spend_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
 	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
 	assert_eq(pol.barrier_score(sk, ms), 0.0, "a second Barrier adds nothing")
 	var s2 := Skirmish.new(1)
@@ -592,8 +664,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	s2.begin()
 	s2.start_round()
 	var ns: Skirmish.MechState = s2.mechs[0]
-	assert_true(pol.equipment_score(s2, ns, ns, ward) > pol.equipment_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
-	assert_true(pol.equipment_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > pol.machine_spend_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
+	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
 
 
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
@@ -926,7 +998,7 @@ func test_the_planner_places_a_setup_where_the_next_round_cashes_it() -> void:
 
 ## Blind play (the bible's section 2: "a team that spends each die on the nearest foe"; the rung
 ## since 22 October): every weapon on the nearest foe, the front rank before the back and left
-## before right, whatever a kill elsewhere would give; every piece of equipment on its own
+## before right, whatever a kill elsewhere would give; every shield, vent and buff on its own
 ## machine; a die held only where its heat would burn the machine.
 func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	var sk := Skirmish.new(2, 2)
@@ -951,3 +1023,25 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	assert_false(sk.mechs[2].assigned, "the hot gun was held")
 	assert_eq(Policy.kind_name(Policy.BLIND), "blind", "the rung's name, as the runner reads it")
 	assert_eq(Policy.kind_name(Policy.PLANNER), "planner", "and the planner's")
+
+
+## The bot reads a Gel's pair as the resolver does (26 October): a Spread filling the hopper
+## beside a twin slot loads for both halves.
+func test_the_bot_counts_both_halves_of_a_pair() -> void:
+	var sk := Skirmish.new(3, 3)
+	var fill := Face.attack(3, L, K.CLEAVE)
+	fill.fills_hopper = 1
+	var fire := Face.attack(3, L)
+	fire.fires_hopper = 6
+	fire.power_per_load = 1
+	sk.add_mech(_mech("A", Die.of([fill, fire])))
+	var target := _ghoul(500, 10)
+	sk.add_foes([target, _ghoul(400, 10)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	var plain := pol.hopper_fill_score(sk, ms, fill, target)
+	var lead: Foe = sk.front[1]
+	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
+	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")

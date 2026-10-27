@@ -30,6 +30,7 @@ const GAP := 10.0          # between the drawing and its gauges above or its chi
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
 const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
+const PENDING_RATE := 3.2  # the one clock every pending mark breathes on, radians a second: a gauge's change and a buff on its way (a preview chip) pulse in step
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -42,9 +43,9 @@ var sprite_density := 1.0         # a machine's render is this much larger than 
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
-var intent: String = ""           # quiet text for an empty slot, e.g. "EXPOSED"
+var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed)
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
@@ -175,6 +176,9 @@ func _has_pending() -> bool:
 	for b in bars:
 		if b.size() >= 4 and int(b[3]) != int(b[0]):
 			return true
+	for st in statuses:
+		if st.size() >= 4 and st[3] == "preview":
+			return true   # a buff on its way pulses
 	return false
 
 
@@ -198,7 +202,9 @@ func _gui_input(event: InputEvent) -> void:
 					tapped.emit()
 			_pressed = false
 			_holding = false
-			set_process(_has_pending())
+			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
+			# under the finger froze where it stood (Ryan, 25 October: SIG LOST held for ages).
+			set_process(true)
 		accept_event()
 
 
@@ -478,6 +484,16 @@ func _draw() -> void:
 			# never the box a status wears, so the difference is the frame, not a hue.
 			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
 			Hud.brackets(self, rect, 5.0, col, 1.6)
+		elif ch.size() >= 4 and ch[3] == "preview":
+			# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
+			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
+			# in concept to the health and shield bars"), on the gauges' one clock, a full swing
+			# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
+			# motion and structure, never by hue.
+			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+			col = Color(col, 0.3 + 0.7 * beat)
+			_draw_dashed(rect, col, 2.0)
 		else:
 			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
 		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
@@ -494,7 +510,8 @@ func _draw() -> void:
 	_draw_spend(mono)
 
 
-## A rect drawn in dashes (a mined slot's outline): structure, so it never rests on its hue.
+## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
+## rests on its hue. The dark edge under each dash fades with the colour.
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 	var dash := 9.0
 	var gap := 6.0
@@ -506,7 +523,7 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 		var dir := (b - a) / maxf(1.0, length)
 		var t := 0.0
 		while t < length:
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8), width + 2.0)
+			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
 			draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
 			t += dash + gap
 
@@ -615,14 +632,14 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	# One clock for every gauge on screen (Ryan, 22 September: bars that breathe together
 	# are easier to read), not this view's own, which starts when its first pending shows.
 	var clock := Time.get_ticks_msec() / 1000.0
-	var pulse := 0.72 + 0.22 * sin(clock * 3.2)
+	var pulse := 0.72 + 0.22 * sin(clock * PENDING_RATE)
 	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
 	var pts := Hud.slant(seg, 2.4)
 	if pending < frac:
 		# A loss: the part about to go breathes between dimmed and lit in ink, a full swing,
 		# so it is seen to pulse on any bar colour (Ryan, 22 September: it had faded to a
 		# faint dimming).
-		var beat := 0.5 + 0.5 * sin(clock * 3.2)
+		var beat := 0.5 + 0.5 * sin(clock * PENDING_RATE)
 		Hud.fill_poly(self, pts, Color(Palette.BG, 0.65 * (1.0 - beat)))
 		Hud.fill_poly(self, pts, Color(Palette.INK, 0.55 * beat))
 		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.6 + 0.4 * beat), 1.0)

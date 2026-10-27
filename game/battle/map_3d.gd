@@ -699,6 +699,17 @@ func set_sweep(map_y: float) -> void:
 # ---------------------------------------------------------------- the movement phase
 
 var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
+## A machine whose move is planned and not yet played stands where its plan starts (Ryan, 25
+## October): unit id -> [hex, facing], in place of the battle's hex, until the plan plays.
+var held: Dictionary = {}
+
+
+func _hex_of(u: Unit) -> Vector2i:
+	return held[u.id][0] if held.has(u.id) else u.pos
+
+
+func _facing_of(u: Unit) -> int:
+	return int(held[u.id][1]) if held.has(u.id) else u.facing
 
 ## While a phase plays, a unit is where its animation says, not on its hex. The heading is
 ## where the move is going; the facing follows it through the cornering module (_corner),
@@ -1086,9 +1097,10 @@ func _grid_material() -> ShaderMaterial:
 ## The grid's resting brightness (the tuner's GRID knob). The phone needs far more than
 ## the Mac: the ribbons drawn at the Mac's gain were still dim on the phone at any zoom
 ## (Ryan, 28 September; the Compatibility renderer adds no bloom halo to a line, and the
-## glass is small), so a phone rests hotter.
-const GRID_GAIN := 0.7
-const GRID_GAIN_PHONE := 1.5
+## glass is small), so a phone rests hotter. Both down a fifth (Ryan, 25 October: "base hex
+## outline brightness can be reduced a bit"), so the marks drawn over the grid stand out.
+const GRID_GAIN := 0.56
+const GRID_GAIN_PHONE := 1.2
 
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.
@@ -1389,7 +1401,7 @@ func sync() -> void:
 	for u in field.units:
 		seen[u.id] = true
 		if u.is_player() and not u.traits.has("flyer"):
-			occupied[Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else u.pos] = true
+			occupied[Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)] = true
 		var node: Node3D = _units.get(u.id, null)
 		if node == null:
 			node = _make_unit(u)
@@ -1398,7 +1410,7 @@ func sync() -> void:
 			add_child(node)
 			_units[u.id] = node
 			_phase[u.id] = float(u.id) * 1.7
-		var under: Vector2i = Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else u.pos
+		var under: Vector2i = Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)
 		var y: float = float(_lift.get(under, 0.0)) / (_cos * _ppu)
 		var ground_y := y
 		if u.traits.has("flyer"):
@@ -1406,7 +1418,7 @@ func sync() -> void:
 			# through a mesa), just clear of the tallest thing there. Over ground the other
 			# world has taken, the painting is flat, so it flies level with it, and the
 			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
-			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else Hex.to_pixel(u.pos, hex_px))
+			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else Hex.to_pixel(_hex_of(u), hex_px))
 			# Whether the ground here is still the reconstruction's: the same threshold the
 			# compositor paints at, so the flyer clears the geometry wherever it can be seen
 			# and flies level only where the painting has taken it.
@@ -1422,9 +1434,9 @@ func sync() -> void:
 			if _shadows.has(u.id):
 				(_shadows[u.id] as Node3D).position = _world(_anim_px[u.id], ground_y + 0.3)
 		else:
-			_base[u.id] = _hex_world(u.pos, y)
+			_base[u.id] = _hex_world(_hex_of(u), y)
 			if _shadows.has(u.id):
-				(_shadows[u.id] as Node3D).position = _hex_world(u.pos, ground_y + 0.3)   # on the ground, always
+				(_shadows[u.id] as Node3D).position = _hex_world(_hex_of(u), ground_y + 0.3)   # on the ground, always
 		node.position = _base[u.id]
 		if _anim_px.has(u.id):
 			continue   # heading is set by the move
@@ -1435,8 +1447,8 @@ func sync() -> void:
 			# Eased there by the cornering module (_corner) once it has a rig; set outright the
 			# first time, so a machine never turns in from north on arrival.
 			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
-				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(u.facing)
-			_rest_yaw[u.id] = facing_yaw(u.facing)
+				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
+			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
@@ -1504,9 +1516,10 @@ func _process(delta: float) -> void:
 
 func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
-		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-		var model_id := MechView3D.model_for(u.chassis_id, "badger")
+		var maker := ContentDB.load_default().maker_of(u.chassis_id)
+		var model_id := MechView3D.model_for(u.chassis_id)
 		var node := _model(model_id, maker, u.paint)
+		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
 		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
@@ -1574,16 +1587,17 @@ func _marker(node: Node) -> void:
 		_trace(child, "asset")
 
 
-## The union of every mesh's bounds under `node`, in the node's own space.
+## The union of every mesh's bounds under `node`, in the node's own space (a welded mesh's
+## are its parts', MechWeld.corners).
 func _bounds(node: Node3D) -> AABB:
 	var out := AABB()
 	var first := true
 	for mi in node.find_children("*", "MeshInstance3D", true, false):
-		var box: AABB = (mi as MeshInstance3D).get_aabb()
 		var xf: Transform3D = node.global_transform.affine_inverse() * (mi as Node3D).global_transform if node.is_inside_tree() else _relative(mi, node)
-		var b := xf * box
-		out = b if first else out.merge(b)
-		first = false
+		for c in MechWeld.corners(mi):
+			var p := xf * c
+			out = AABB(p, Vector3.ZERO) if first else out.expand(p)
+			first = false
 	return out
 
 

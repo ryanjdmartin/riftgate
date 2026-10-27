@@ -1,0 +1,411 @@
+<title>Hold The Line Pair</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* The soundforge listening pages' look: one column of rows to tap, a transport on each player. */
+  :root {
+    --ground: #F2F3F5; --surface: #FFFFFF; --ink: #1A1E25; --muted: #5C6673;
+    --rule: #D5DAE1; --rule-strong: #B9C0CA; --accent: #B4501C; --accent-ink: #FFFFFF;
+    --steel: #2E5B87; --steel-ink: #FFFFFF; --tint: #E9EBEF; --playing: #FBEFE6;
+    --display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+      --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+      --steel: #7FAEDF; --steel-ink: #14171C; --tint: #232830; --playing: #2A2320;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+    --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+    --steel: #7FAEDF; --steel-ink: #14171C; --tint: #232830; --playing: #2A2320;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; margin: 0;
+         padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+  .page { max-width: 64ch; margin: 0 auto; }
+  h1, h2 { font-family: var(--display); text-wrap: balance; line-height: 1.05; margin: 0; text-transform: uppercase; }
+  h1 { font-size: clamp(38px, 9vw, 56px); font-weight: 700; }
+  h2 { font-size: 26px; font-weight: 700; margin-top: 40px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+  p { margin: 0 0 1em; max-width: 62ch; }
+  header { border-top: 6px solid var(--ink); border-bottom: 1px solid var(--rule-strong); padding-block: 22px 18px; margin-bottom: 24px; }
+  .stamp { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 10px; }
+  .lede { font-size: 17px; margin-top: 12px; }
+  .how { background: var(--tint); padding: 12px 16px; margin: 12px 0; font-size: 15px; }
+  .how p:last-child { margin: 0; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* the switch */
+  .deck { background: var(--surface); border: 1px solid var(--rule-strong); padding: 16px; display: grid; gap: 14px; margin-top: 14px; }
+  .flip { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--ink); }
+  .flip button { border: 0; background: var(--surface); padding: 16px 8px 12px; cursor: pointer; display: grid; gap: 2px; justify-items: center; }
+  .flip button + button { border-left: 2px solid var(--ink); }
+  .flip .big { font-family: var(--display); font-size: 34px; font-weight: 700; letter-spacing: 0.04em; line-height: 1; }
+  .flip .small { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .flip button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .flip button[aria-pressed="true"] .small { color: var(--surface); }
+  .flip button[aria-pressed="true"] .big::before { content: "\25CF\00A0"; font-size: 22px; vertical-align: 4px; }
+  .mix { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .mix .rail { height: 10px; background: repeating-linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 9px); position: relative; }
+  .mix .thumb { position: absolute; top: -5px; width: 6px; height: 20px; background: var(--ink); left: 0; transform: translateX(-3px); }
+  .transport { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; }
+  .pp { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); cursor: pointer; font-size: 18px; padding: 0; display: grid; place-items: center; }
+  .pp.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .now { min-width: 0; }
+  .now .sec { font-weight: 600; font-size: 15px; }
+  .now .what { font-size: 13px; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; }
+  .time { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .seek { grid-column: 1 / span 2; height: 22px; position: relative; cursor: pointer; touch-action: none; }
+  .seek .track { position: absolute; left: 0; right: 0; top: 8px; height: 6px; background: var(--rule); }
+  .seek .fill { position: absolute; left: 0; top: 8px; height: 6px; width: 0; background: var(--accent); }
+  .seek .tick { position: absolute; top: 2px; width: 2px; height: 18px; background: var(--rule-strong); }
+  .opts { display: grid; gap: 8px; font-size: 14px; }
+  .opt { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .opt .lab { color: var(--muted); font-size: 13px; min-width: 7.5em; }
+  .seg { border: 1px solid var(--rule-strong); background: var(--surface); padding: 5px 10px; cursor: pointer; font-family: var(--mono); font-size: 12px; border-radius: 2px; }
+  .seg[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-family: var(--mono); font-size: 12px; padding: 4px 9px; border: 1px solid var(--rule-strong); background: var(--surface); cursor: pointer; border-radius: 2px; }
+  .chip.here { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+  .err { color: var(--accent); font-size: 14px; }
+
+  /* the plain rows */
+  .rows { display: grid; margin: 14px 0 6px; border-top: 1px solid var(--rule); }
+  .row { display: grid; grid-template-columns: 44px 1fr auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .row.playing { background: var(--playing); margin-inline: -8px; padding-inline: 8px; }
+  .row .btn { grid-row: 1 / span 2; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); cursor: pointer; font-size: 16px; display: grid; place-items: center; padding: 0; }
+  .row.playing .btn { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .row .name { font-weight: 600; min-width: 0; }
+  .row .num { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 3px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .row .note { grid-column: 2 / span 2; color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .row .bar { grid-column: 2 / span 2; height: 4px; background: var(--rule); position: relative; cursor: pointer; margin-top: 6px; }
+  .row .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); }
+  .row .chips { grid-column: 2 / span 2; margin-top: 6px; }
+
+  .changes { display: grid; margin: 10px 0 18px; border-top: 2px solid var(--ink); }
+  .change { display: grid; grid-template-columns: 4.2em 1fr; gap: 4px 10px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 14px; line-height: 1.45; }
+  .change .head { grid-column: 1 / span 2; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .change .secname { font-weight: 600; font-size: 15px; }
+  .change .bars { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .change .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+  .change .v { min-width: 0; }
+  ol.ask { padding-left: 1.3em; margin: 10px 0; }
+  ol.ask li { margin-bottom: 8px; }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule-strong); font-size: 13px; color: var(--muted); }
+  code { font-family: var(--mono); font-size: 0.9em; background: var(--tint); padding: 1px 4px; }
+  @media (prefers-reduced-motion: no-preference) { .seek .fill, .row .bar .fill { transition: width 0.2s linear; } }
+</style>
+
+<div class="page">
+<header>
+  <span class="stamp">Riftgate &middot; soundforge &middot; 24 October 2026</span>
+  <h1>Hold The Line, map and battle</h1>
+  <p class="lede">One track written once and voiced twice on one timeline. The battle version is the track as it ships. The map version is new: no drums, no gain, the map's own instruments, four decibels under. Flip between them anywhere and the music keeps its place.</p>
+</header>
+
+<h2>The switch</h2>
+<div class="how"><p>Press play, then tap MAP or BATTLE whenever you like. The other version fades in from the same beat. The mix line under the switch shows where the crossfade is. Try it on the phone's speaker first, then once in headphones.</p></div>
+
+<div class="deck" id="deck">
+  <div class="flip" role="group" aria-label="Which version plays">
+    <button id="to-map" aria-pressed="true"><span class="big">MAP</span><span class="small">strategic</span></button>
+    <button id="to-battle" aria-pressed="false"><span class="big">BATTLE</span><span class="small">as it ships</span></button>
+  </div>
+  <div class="mix" aria-hidden="true"><span>map</span><div class="rail"><div class="thumb" id="thumb"></div></div><span>battle</span></div>
+  <div class="transport">
+    <button class="pp" id="pp" aria-label="Play">&#9654;</button>
+    <div class="now"><div class="sec" id="sec">A &middot; bars 1 to 16</div><div class="what" id="what">Loading&hellip;</div></div>
+    <div class="seek" id="seek" aria-label="Seek"><div class="track"></div><div class="fill" id="fill"></div></div>
+    <div class="time" id="time" style="grid-column: 1 / span 2">0:00 / 4:38</div>
+  </div>
+  <div class="opts">
+    <div class="opt"><span class="lab">Crossfade</span>
+      <button class="seg" data-fade="0.5" aria-pressed="false">0.5 s</button>
+      <button class="seg" data-fade="2.15" aria-pressed="true">2.15 s, the dive</button>
+      <button class="seg" data-fade="4" aria-pressed="false">4 s</button>
+    </div>
+    <div class="opt"><span class="lab">Start the flip</span>
+      <button class="seg" data-quant="now" aria-pressed="true">at once</button>
+      <button class="seg" data-quant="bar" aria-pressed="false">on the next bar</button>
+    </div>
+  </div>
+  <div class="chips" id="sections"></div>
+  <p class="err" id="err" hidden></p>
+</div>
+
+<h2>In the game</h2>
+<p>A battle as the game would play it: the map from the top, ENGAGE in the first lift (the map crossfades into the fight over the dive), a victory, back to the field, then a hunter's catch whose fight lands in the quiet keys section and climbs into the climax. The shipped engage, cut, contact and victory sounds at their own levels, with the dips the game puts under them.</p>
+<div class="rows">
+  <div class="row" id="run-row" data-src="hold_run.mp4">
+    <button class="btn" aria-label="Play the run">&#9654;</button>
+    <div class="name">A battle, start to finish</div><div class="num" id="run-time">3:52</div>
+    <div class="bar"><div class="fill"></div></div>
+    <div class="chips" id="run-marks"></div>
+  </div>
+  <div class="row" id="map-row" data-src="hold_map.mp4">
+    <button class="btn" aria-label="Play the map version">&#9654;</button>
+    <div class="name">The map version alone</div><div class="num" id="map-time">4:38</div>
+    <div class="note">The same as MAP above, as a plain file, if the switch will not play.</div>
+    <div class="bar"><div class="fill"></div></div>
+  </div>
+</div>
+
+<h2>What changed</h2>
+<p>Every note in the map version comes from the battle recipe: the riffs, the lifts, the seven, Ryan's tune and harmony and sub line, the climax, the solo, the descent, on the same chords. What plays them changes.</p>
+<div class="changes">
+  <div class="change"><div class="head"><span class="secname">A, N riff</span><span class="bars">bars 1&ndash;16, 26&ndash;29</span></div><span class="k">Battle</span><span class="v">The chug's seven-step figure, the driven bass on the riff, power chords, the drone, the kit</span><span class="k">Map</span><span class="v">The figure on the mechanical guitar, clean and muted; the soft sub on the riff from bar 5; the riff on the tine piano from bar 9; the drone throughout; the bell</span></div>
+  <div class="change"><div class="head"><span class="secname">C, L lifts</span><span class="bars">bars 18&ndash;25, 30&ndash;37</span></div><span class="k">Battle</span><span class="v">The sub's riff, then the crunch synth's; piano stabs off the beat; choir; snare and toms</span><span class="k">Map</span><span class="v">The sub's riff, then spiccato cellos over the sub; piano chords on one and three; the choir and the bell's figure in the first</span></div>
+  <div class="change"><div class="head"><span class="secname">X the seven</span><span class="bars">bars 39&ndash;50</span></div><span class="k">Battle</span><span class="v">The 7/8 riff on chug and two basses, the piano on the long beat, the held guitar walking down</span><span class="k">Map</span><span class="v">The riff on the muted guitar and the piano; the sub on each bar's root; the walk on a cello</span></div>
+  <div class="change"><div class="head"><span class="secname">U unison</span><span class="bars">bars 51&ndash;58</span></div><span class="k">Battle</span><span class="v">Chug, bass and lead in octaves over the drum solo</span><span class="k">Map</span><span class="v">The harp, the muted guitar under it, the sub held on E</span></div>
+  <div class="change"><div class="head"><span class="secname">F keys</span><span class="bars">bars 59&ndash;74</span></div><span class="k">Battle</span><span class="v">Ryan's tune on the lead, his harmony line, the sub punching, piano chords, kick and ride</span><span class="k">Map</span><span class="v">The tune on the piano, the harmony on a soft horn, his sub line held, the pad</span></div>
+  <div class="change"><div class="head"><span class="secname">S, R, Z climax</span><span class="bars">bars 77&ndash;100</span></div><span class="k">Battle</span><span class="v">The new unison riff on lead guitar, chugs and driven bass; the ringing chord; the keys; double kicks</span><span class="k">Map</span><span class="v">The riff on the harp and the muted guitar; bowed strings from the second set; the piano on the riff and the choir in the third; the drone</span></div>
+  <div class="change"><div class="head"><span class="secname">K solo</span><span class="bars">bars 102&ndash;117</span></div><span class="k">Battle</span><span class="v">The piano's solo over the crunch synth's walk, guitar and piano chords, long crashes</span><span class="k">Map</span><span class="v">The piano's solo over the walk on cellos, piano chords and bowed strings</span></div>
+  <div class="change"><div class="head"><span class="secname">J descent</span><span class="bars">bars 120&ndash;121</span></div><span class="k">Battle</span><span class="v">The gallop down on chug, bass and lead with the toms</span><span class="k">Map</span><span class="v">The gallop on the harp, the muted guitar and the piano</span></div>
+  <div class="change"><div class="head"><span class="secname">B, W, Y, V, Q turns</span><span class="bars">bars 17, 75&ndash;76, 101, 118&ndash;119</span></div><span class="k">Battle</span><span class="v">Fills and held chords</span><span class="k">Map</span><span class="v">Held chords, a cello or a horn holding the note, a backwards swell where the battle fills</span></div>
+</div>
+
+<h2>What to listen for</h2>
+<ol class="ask">
+  <li>Does the map version still read as Hold The Line, and does it read as planning music rather than a quiet cover?</li>
+  <li>The ticking guitar: enough pulse for the map, or should the map have none at all?</li>
+  <li>The flip: which crossfade length, and whether it should wait for the bar line.</li>
+  <li>The second fight in the run opens in the keys section. With pairs a fight joins the track wherever the map has it, so about a third of fights open somewhere quiet. Is that fine?</li>
+</ol>
+
+<footer>
+  <p>Built by <code>tools/soundforge/pair_sketches.py</code>. Nothing here ships: the battle version is <code>art/audio/music_hold_the_line.wav</code> as it is, and the map version lives only in this sketch. The switch plays one stereo file, the map on the left and the battle on the right, so the two never drift apart.</p>
+</footer>
+</div>
+
+<audio id="pair" src="hold_pair.mp4" preload="auto"></audio>
+<audio id="plain" preload="none"></audio>
+
+<script>
+(function () {
+  var pair = document.getElementById('pair');
+  var plain = document.getElementById('plain');
+  var pp = document.getElementById('pp');
+  var toMap = document.getElementById('to-map');
+  var toBattle = document.getElementById('to-battle');
+  var thumb = document.getElementById('thumb');
+  var fill = document.getElementById('fill');
+  var seek = document.getElementById('seek');
+  var timeEl = document.getElementById('time');
+  var secEl = document.getElementById('sec');
+  var whatEl = document.getElementById('what');
+  var errEl = document.getElementById('err');
+  var man = null;
+  var ctx = null, gMap = null, gBattle = null;
+  var fadeLen = 2.15, quant = 'now';
+  var target = 0;                         // 0 map, 1 battle
+  var fade = {x0: 0, x1: 0, t0: 0, len: 0}; // the crossfade in flight, on the AudioContext's clock
+
+  function fmt(s) { if (!isFinite(s)) return '0:00'; s = Math.floor(s); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function showErr(msg) { errEl.textContent = msg; errEl.hidden = false; }
+
+  // Where the crossfade is now, 0 (map) to 1 (battle).
+  function xNow() {
+    if (!ctx) return target;
+    var t = ctx.currentTime;
+    if (t <= fade.t0) return fade.x0;
+    if (fade.len <= 0 || t >= fade.t0 + fade.len) return fade.x1;
+    return fade.x0 + (fade.x1 - fade.x0) * (t - fade.t0) / fade.len;
+  }
+
+  // Equal power, as the game's crossfade: the map on the cosine, the battle on the sine,
+  // laid down as short straight pieces so a flip in the middle of a flip carries on from where it is.
+  function schedule(x0, x1, t0, len) {
+    var t = ctx.currentTime;
+    [gMap, gBattle].forEach(function (g, i) {
+      g.gain.cancelScheduledValues(t);
+      var v = i === 0 ? Math.cos(xNow() * Math.PI / 2) : Math.sin(xNow() * Math.PI / 2);
+      g.gain.setValueAtTime(v, t);
+    });
+    fade = {x0: x0, x1: x1, t0: t0, len: len};
+    var steps = Math.max(1, Math.round(len * 40));
+    gMap.gain.setValueAtTime(Math.cos(x0 * Math.PI / 2), t0);
+    gBattle.gain.setValueAtTime(Math.sin(x0 * Math.PI / 2), t0);
+    for (var k = 1; k <= steps; k++) {
+      var x = x0 + (x1 - x0) * k / steps, at = t0 + len * k / steps;
+      gMap.gain.linearRampToValueAtTime(Math.cos(x * Math.PI / 2), at);
+      gBattle.gain.linearRampToValueAtTime(Math.sin(x * Math.PI / 2), at);
+    }
+  }
+
+  function graph() {
+    if (ctx) return true;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) { showErr('This browser has no Web Audio, so the switch cannot crossfade. The plain files below still play.'); return false; }
+    try {
+      ctx = new AC();
+      var src = ctx.createMediaElementSource(pair);
+      var split = ctx.createChannelSplitter(2);
+      gMap = ctx.createGain(); gBattle = ctx.createGain();
+      src.connect(split);
+      split.connect(gMap, 0); split.connect(gBattle, 1);
+      gMap.connect(ctx.destination); gBattle.connect(ctx.destination);
+      gMap.gain.value = Math.cos(target * Math.PI / 2);
+      gBattle.gain.value = Math.sin(target * Math.PI / 2);
+      fade = {x0: target, x1: target, t0: 0, len: 0};
+      return true;
+    } catch (e) { ctx = null; showErr('The switch could not start Web Audio here (' + e.message + '). The plain files below still play.'); return false; }
+  }
+
+  function nextBar(t) {
+    if (!man) return t;
+    for (var i = 0; i < man.bar_at.length; i++) if (man.bar_at[i] > t + 0.02) return man.bar_at[i];
+    return man.length;
+  }
+
+  function flip(to) {
+    target = to;
+    toMap.setAttribute('aria-pressed', to === 0 ? 'true' : 'false');
+    toBattle.setAttribute('aria-pressed', to === 1 ? 'true' : 'false');
+    if (!ctx) return;
+    var x = xNow();
+    var wait = 0;
+    if (quant === 'bar' && !pair.paused) wait = Math.max(0, nextBar(pair.currentTime) - pair.currentTime);
+    var len = Math.abs(to - x) * fadeLen;
+    schedule(x, to, ctx.currentTime + wait, len);
+  }
+
+  function stopPlain() { if (!plain.paused) plain.pause(); }
+
+  function playPause() {
+    if (!graph()) { return; }
+    if (ctx.state === 'suspended') ctx.resume();
+    if (pair.paused) { stopPlain(); pair.play().catch(function (e) { showErr('Playback did not start: ' + e.message); }); }
+    else pair.pause();
+  }
+
+  pp.addEventListener('click', playPause);
+  toMap.addEventListener('click', function () { flip(0); });
+  toBattle.addEventListener('click', function () { flip(1); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fade]'), function (b) {
+    b.addEventListener('click', function () {
+      fadeLen = parseFloat(b.getAttribute('data-fade'));
+      Array.prototype.forEach.call(document.querySelectorAll('[data-fade]'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-quant]'), function (b) {
+    b.addEventListener('click', function () {
+      quant = b.getAttribute('data-quant');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-quant]'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  function seekTo(t) { try { pair.currentTime = Math.max(0, Math.min(t, (pair.duration || t) - 0.05)); } catch (e) {} }
+  function seekFrom(e) {
+    var r = seek.getBoundingClientRect();
+    var d = pair.duration || (man && man.length) || 0;
+    if (d) seekTo((e.clientX - r.left) / r.width * d);
+  }
+  seek.addEventListener('pointerdown', function (e) { seekFrom(e); });
+
+  // The game loops the track from bar nine: so does the switch (with a small gap here that the game does not have).
+  pair.addEventListener('ended', function () { if (man) { seekTo(man.bar_at[man.loop_from_bar - 1]); pair.play(); } });
+  pair.addEventListener('play', function () { pp.classList.add('on'); pp.innerHTML = '&#10074;&#10074;'; pp.setAttribute('aria-label', 'Pause'); });
+  pair.addEventListener('pause', function () { pp.classList.remove('on'); pp.innerHTML = '&#9654;'; pp.setAttribute('aria-label', 'Play'); });
+  pair.addEventListener('error', function () { showErr('The pair file did not load (hold_pair.mp4).'); });
+
+  function sectionAt(t) {
+    if (!man) return null;
+    var cur = man.sections[0];
+    man.sections.forEach(function (s) { if (s.at <= t + 0.01) cur = s; });
+    return cur;
+  }
+
+  var lastSec = null;
+  function tick() {
+    var t = pair.currentTime, d = pair.duration || (man && man.length) || 0;
+    timeEl.textContent = fmt(t) + ' / ' + fmt(d);
+    fill.style.width = (d ? t / d * 100 : 0) + '%';
+    var x = ctx ? xNow() : target;
+    thumb.style.left = (x * 100) + '%';
+    var s = sectionAt(t);
+    if (s && s !== lastSec) {
+      lastSec = s;
+      secEl.textContent = s.section + ' \u00b7 ' + (s.bars[0] === s.bars[1] ? 'bar ' + s.bars[0] : 'bars ' + s.bars[0] + ' to ' + s.bars[1]);
+      whatEl.textContent = s.what;
+      Array.prototype.forEach.call(document.querySelectorAll('#sections .chip'), function (c) { c.classList.toggle('here', c.getAttribute('data-at') === String(s.at)); });
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // The plain rows: the run and the map version alone, on their own player.
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.row[data-src]'));
+  var current = null;
+  function markRows() {
+    rows.forEach(function (r) {
+      var on = r === current && !plain.paused;
+      r.classList.toggle('playing', r === current);
+      r.querySelector('.btn').innerHTML = on ? '&#10074;&#10074;' : '&#9654;';
+    });
+  }
+  function playRow(row, at) {
+    if (!pair.paused) pair.pause();
+    if (current === row && at === undefined) { if (plain.paused) plain.play(); else plain.pause(); return; }
+    if (current === row && plain.duration) { plain.currentTime = at; plain.play(); return; }
+    current = row;
+    plain.src = row.getAttribute('data-src');
+    var go = function () { plain.removeEventListener('loadedmetadata', go); try { plain.currentTime = at || 0; } catch (e) {} plain.play(); };
+    plain.addEventListener('loadedmetadata', go);
+    plain.load();
+  }
+  rows.forEach(function (row) {
+    row.querySelector('.btn').addEventListener('click', function () { playRow(row); });
+    row.querySelector('.bar').addEventListener('click', function (e) {
+      var r = e.currentTarget.getBoundingClientRect();
+      if (current === row && plain.duration) plain.currentTime = (e.clientX - r.left) / r.width * plain.duration;
+      else playRow(row, 0);
+    });
+  });
+  ['play', 'pause', 'ended'].forEach(function (ev) { plain.addEventListener(ev, markRows); });
+  plain.addEventListener('timeupdate', function () {
+    if (!current || !plain.duration) return;
+    current.querySelector('.bar .fill').style.width = (plain.currentTime / plain.duration * 100) + '%';
+  });
+
+  var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
+  fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
+    man = m;
+    var d = m.length;
+    m.sections.forEach(function (s) {
+      var tk = document.createElement('div');
+      tk.className = 'tick';
+      tk.style.left = (s.at / d * 100) + '%';
+      seek.appendChild(tk);
+    });
+    var box = document.getElementById('sections');
+    var named = {A: 'riff', C: 'lift', N: 'riff again', L: 'second lift', X: 'the seven', U: 'unison', F: 'keys', S: 'climax', R: 'climax two', Z: 'climax three', K: 'solo', J: 'descent'};
+    m.sections.forEach(function (s) {
+      if (!named[s.section]) return;
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.setAttribute('data-at', String(s.at));
+      b.textContent = s.section + ' ' + named[s.section] + ' ' + fmt(s.at);
+      b.addEventListener('click', function () { seekTo(s.at); if (pair.paused) playPause(); });
+      box.appendChild(b);
+    });
+    var runBox = document.getElementById('run-marks');
+    var runRow = document.getElementById('run-row');
+    [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = (e.what === 'map' ? 'the map' : RUN_LABELS[e.what] || e.what) + ' ' + fmt(e.at);
+      b.addEventListener('click', function () { playRow(runRow, Math.max(0, e.at - 3)); });
+      runBox.appendChild(b);
+    });
+    document.getElementById('run-time').textContent = fmt(m.run.end);
+    document.getElementById('map-time').textContent = fmt(m.length);
+    lastSec = null;
+  }).catch(function () { whatEl.textContent = 'The section list did not load; the switch still plays.'; });
+})();
+</script>

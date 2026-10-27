@@ -582,6 +582,76 @@ def key_glow(img, keyed, soft=150, min_alpha=0.15, min_chroma=110):
     return Image.fromarray(out.astype(np.uint8), "RGBA")
 
 
+def _grow(mask, r):
+    """The mask grown by r pixels, four-neighbour steps."""
+    out = mask.copy()
+    for _ in range(r):
+        g = out.copy()
+        g[1:] |= out[:-1]
+        g[:-1] |= out[1:]
+        g[:, 1:] |= out[:, :-1]
+        g[:, :-1] |= out[:, 1:]
+        out = g
+    return out
+
+
+def _fill(seed, within):
+    """Every pixel of `within` connected to `seed`."""
+    out = seed & within
+    while True:
+        g = _grow(out, 1) & within
+        if (g == out).all():
+            return out
+        out = g
+
+
+def _components(mask):
+    """The mask's connected regions, each as its (ys, xs) arrays."""
+    h, w = mask.shape
+    seen = np.zeros_like(mask)
+    comps = []
+    for y0, x0 in zip(*np.nonzero(mask)):
+        if seen[y0, x0]:
+            continue
+        seen[y0, x0] = True
+        stack, ys, xs = [(y0, x0)], [], []
+        while stack:
+            y, x = stack.pop()
+            ys.append(y)
+            xs.append(x)
+            for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    stack.append((ny, nx))
+        comps.append((np.array(ys), np.array(xs)))
+    return comps
+
+
+def keep_glow(img, keyed, boxes, gap=8):
+    """Put back white-hot light inside a figure, white the same as the background (Surtr's
+    blade core and the blaze round his face, 26 October): key_holes takes it as a pocket, and
+    the edge fill reaches the blaze through the gaps between flames. Each pocket of keyed white
+    whose centre lies in one of `boxes` (render pixels, x0 y0 x1 y1) comes back as the render
+    drew it, counting white the edge fill reached only through gaps narrower than 2 * gap as a
+    pocket. Opt-in per cut and per box, since a pocket of real background between two parts
+    looks the same (the gap between Surtr's sword arm and his body stays keyed)."""
+    src = np.array(img.convert("RGBA"))
+    out = np.array(keyed)
+    clear = out[..., 3] == 0
+    edge = np.zeros_like(clear)
+    edge[0] = edge[-1] = edge[:, 0] = edge[:, -1] = True
+    core = ~_grow(~clear, gap)
+    outside = _fill(edge & core, core)
+    sealed = _grow(core & ~outside, gap) & clear & ~_grow(outside, gap)
+    enclosed = clear & ~_fill(edge & clear, clear)
+    for ys, xs in _components(sealed | enclosed):
+        cx, cy = xs.mean(), ys.mean()
+        if any(x0 <= cx <= x1 and y0 <= cy <= y1 for x0, y0, x1, y1 in boxes):
+            out[ys, xs] = src[ys, xs]
+            out[ys, xs, 3] = 255
+    return Image.fromarray(out, "RGBA")
+
+
 def quantize(img, palette, colours=16):
     """Flatten the shading into a few coherent regions (median cut on the opaque pixels),
     then, if a palette is given, snap each region colour to its nearest palette colour.
@@ -728,6 +798,8 @@ def cut(args):
         # Antlion's leg, between the Drake's wings, round the Needler's hand). An eye white is
         # off-white and survives; --holes 0 keeps every pocket, for a white robe that is not.
         src = key_holes(src, tol=args.holes_tol, min_area=args.holes)
+    if args.keep_glow:
+        src = keep_glow(image, src, args.keep_glow)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
@@ -1125,6 +1197,7 @@ def main():
     c.add_argument("--holes-tol", type=int, default=8, help="how near pure white a pocket must be to key (default 8: an eye white or a robe is off-white and survives; 24 catches a grey pocket)")
     c.add_argument("--height", type=int, default=0, help="scale the figure so its body (the rows at least 35% as wide as its widest, which skips a weapon held overhead) stands this many frame pixels tall, instead of filling the frame (the chibis at 42, so the party stands at one scale)")
     c.add_argument("--glow", action="store_true", help="coloured light over the white (a flame, a glow) cut as solid colour instead of a pale blob; off by default, since it is only for glows")
+    c.add_argument("--keep-glow", nargs=4, type=int, action="append", default=[], metavar=("X0", "Y0", "X1", "Y1"), help="white-hot light inside the figure, in this box of the render (repeatable): every pocket of keyed white centred in it comes back, white the edge fill reached through gaps under 16 pixels counting as a pocket (Surtr's blade and the blaze round his face)")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
     r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")

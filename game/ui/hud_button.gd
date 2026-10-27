@@ -19,6 +19,14 @@ var mono: bool = false                      # mono face for readout tags
 var color_override: Color = Color(0, 0, 0, 0)   # zero alpha: use the HUD colour
 var sound: String = "ui_tap"                # heard on press; "" for a button whose action has its own sound
 var hit_pad: Vector2 = Vector2.ZERO         # how far past its drawing the button answers a touch, each side (MENU on a phone: the whole bar)
+## The button is the next thing to press (Ryan, 25 October: END TURN pulses when nothing is
+## left to do): rings breathe out past its edge and its face brightens, by motion as well as
+## light. Set with set_pulse.
+var pulse: bool = false
+var _pulse_t := 0.0
+const PULSE_RATE := 1.1   # rings a second
+## RIFTGATE_PULSE_DEBUG=1: every button asked whether to pulse pulses, to judge it running.
+static var PULSE_DEBUG := OS.get_environment("RIFTGATE_PULSE_DEBUG") == "1"
 
 
 ## A touch a little off the drawing still lands (Ryan, 25 September: MENU on the phone was
@@ -48,6 +56,25 @@ func set_enabled(on: bool) -> void:
 	queue_redraw()
 
 
+func _ready() -> void:
+	set_process(pulse)   # a script with _process processes from the start; only a pulse needs it
+
+
+func set_pulse(on: bool) -> void:
+	on = on or PULSE_DEBUG
+	if pulse == on:
+		return
+	pulse = on
+	_pulse_t = 0.0
+	set_process(on)
+	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	_pulse_t += delta
+	queue_redraw()
+
+
 func _draw() -> void:
 	var base := color_override if color_override.a > 0.0 else Palette.HUD
 	var col := base
@@ -57,8 +84,19 @@ func _draw() -> void:
 	var pts := Hud.slant(rect, slant_px)
 	var active := button_pressed or is_pressed()
 	var ink := col
+	var pulsing := pulse and not disabled
+	if pulsing:
+		# Two rings breathing out past the edge, half a beat apart, fading as they go; hot, since
+		# every mark judged on the phone has come back wanting more.
+		for k in range(2):
+			var ph := fmod(_pulse_t * PULSE_RATE + k * 0.5, 1.0)
+			var grow := 3.0 + 18.0 * ph
+			Hud.stroke_poly(self, Hud.slant(rect.grow(grow), slant_px + grow * 0.4), Color(base, 0.9 * (1.0 - ph)), 3.0 - 1.5 * ph)
 	if filled:
-		Hud.fill_poly(self, pts, Color(base, alpha * (0.75 if active else 1.0)))
+		var face := Color(base, alpha * (0.75 if active else 1.0))
+		if pulsing:
+			face = face.lerp(Color.WHITE, 0.3 * (0.5 + 0.5 * sin(_pulse_t * TAU * PULSE_RATE)))
+		Hud.fill_poly(self, pts, face)
 		ink = Color(Palette.BG, 1.0)
 	else:
 		if active:

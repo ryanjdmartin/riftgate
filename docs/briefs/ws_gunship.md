@@ -131,7 +131,8 @@ the Ballistic row's anchor (five at 3 a weapon tie the Armadillo's armour 15 tod
 
 ## Waits on
 
-The stock pass's tags on components, and a hangar that shows what each fitted weapon adds.
+Nothing for its design: the stock pass's tags landed on 22 October. Played, it wants a hangar
+that shows what each fitted weapon adds.
 
 ## What the session hands back
 

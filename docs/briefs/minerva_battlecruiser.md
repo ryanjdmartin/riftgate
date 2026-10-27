@@ -27,16 +27,16 @@ size classes (section 7).
 - **Heat**: every gun pays its own heat, so a broadside costs their sum; cold guns make cheap
   broadsides, and the dark rounds are the vent rounds.
 - **Riders** fire once a gun, so nothing doubles (the strikes sketch's hole).
-- **Locked: a loader**, equipment on itself: every dark entry on its die comes back. It reads
+- **Locked: a loader**, spent on itself: every dark entry on its die comes back. It reads
   the dark state and shortens the cycle when it shows.
-- **Builds**: how many guns go in the broadside against how much equipment carries it through
-  the reload, hot against cold; any maker's gun is a route in. The rule it bends is that a die
+- **Builds**: how many guns go in the broadside against how many shields, vents and buffs carry it
+  through the reload, hot against cold; any maker's gun is a route in. The rule it bends is that a die
   acts once, on the entry showing; it reads its own dark entries, which nothing reads; its
   price is the cooldown.
 - **The frame**: an assault flyer, slow; placeholders hull 160, shield 40, armour 10, heat 100,
   cooling 10, six hardpoints and the loader.
-- **Holes raised with it**: it waits on the cooldown property's engine and the dark entry's
-  look; the die must show the broadside's total over a foe, and its heat sum, before the drag;
+- **Holes raised with it**: the cooldown property's engine and the dark entry's look, which it
+  waited on, are built; the die must show the broadside's total over a foe, and its heat sum, before the drag;
   against a swarm it is an ordinary gun platform paying a cooldown tax; a gun that cannot reach
   the foe holds and stays live; only the first gun cashes a Shock; a half-dark die eats the
   team's rerolls; the bot has to learn to hold a broadside.

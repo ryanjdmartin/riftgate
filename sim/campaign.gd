@@ -19,14 +19,20 @@ extends RefCounted
 ##                  closes; the city opens no new rift for QUIET_TURNS; the battle's salvage
 ##                  banks; the boss drops a research token of its faction; the host maker
 ##                  owes an offer
+##   third boss     a domain's FINAL_AFTER-th boss beaten sets its final: every standing
+##                  city's rift it leads turns final at once, its hero the boss, and so does
+##                  every rift it leads after
+##   won final      the domain is beaten: it leads no new rift and guests none, and every
+##                  standing city's rift it leads closes too, that city quiet for QUIET_TURNS,
+##                  its gate as it stood and nothing paid (a free reprieve)
 ##   gate fallen    the city falls; the battle's salvage is lost; its rift stays open and
 ##                  its horde drains the capital every turn from then on
 ##   team wiped     the horde strikes the gate unopposed for WIPE_PHASES; at zero the city
 ##                  falls as above, otherwise it stands wounded, the rift stays, the salvage
 ##                  is kept; no token, no offer
-##   every machine  hull and cracked components repair free; a destroyed hardpoint
-##                  component is gone, a destroyed fixed one rebuilt; a wreck also loses its
-##                  cracked components and sits out SHOP_BATTLES battles, unless rushed
+##   every machine  hull repairs free; a destroyed hardpoint component is gone, a
+##                  destroyed fixed one rebuilt; a wreck sits out SHOP_BATTLES battles,
+##                  unless rushed
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
 ##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
@@ -101,7 +107,7 @@ var tokens: Array = []            # research tokens, by the faction whose boss d
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
 var bosses_ended: Dictionary = {}    # faction id -> the bosses its battles ended on this run, by foe id, so the next draws another
-var finals_won: Array = []        # factions thinned: they lead no new rift
+var finals_won: Array = []        # factions beaten (their final won): they lead and guest no new rift
 var party: Dictionary = {}        # faction id -> the hero dealt it at the run's start (its final; promoted, its column at the finale)
 var battle: Battle = null
 var battle_city: String = ""
@@ -125,7 +131,9 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 	var start: Array = team
 	if start.is_empty():
 		start = tender(db, seed_arg)
-		_shuffle(start)
+		var pick := RandomNumberGenerator.new()
+		pick.seed = seed_arg * 4813 + 5   # the pick's own stream, so it never reads the offer's draws nor moves the run's
+		_shuffle(start, pick)
 		start = start.slice(0, START_MACHINES)
 	for cid in start:
 		add_machine(str(cid))
@@ -141,10 +149,13 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 ## START_MACHINES of them. The Arsenal never offers; a maker with no tier-one chassis
 ## offers nothing, and a chassis the engine cannot field yet (its passive or a locked piece
 ## planned; ContentDB.chassis_runnable) is never dealt, so a maker whose only tier one is a
-## draft offers nothing until it lands. The same seed always offers the same machines.
+## draft offers nothing until it lands. The same seed always offers the same machines, drawn on
+## a stream of its own, as the party's (the mechanics audit, 25 October: on the run's own
+## stream the runner's pick of three reread Minerva's offer, so the Armadillo started every run
+## it was offered, and the offer told where the first rifts would open).
 static func tender(content: ContentDB, seed_arg: int) -> Array:
 	var r := RandomNumberGenerator.new()
-	r.seed = seed_arg
+	r.seed = seed_arg * 6151 + 29
 	var tier_one := content.chassis_of_tier(1)
 	var out: Array = []
 	for mk in content.city_makers():
@@ -201,9 +212,9 @@ static func deal_party(content: ContentDB, seed_arg: int) -> Dictionary:
 	return out
 
 
-func _shuffle(a: Array) -> void:
+func _shuffle(a: Array, r: RandomNumberGenerator) -> void:
 	for i in range(a.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
+		var j := r.randi_range(0, i)
 		var t = a[i]
 		a[i] = a[j]
 		a[j] = t
@@ -308,6 +319,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		team.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout))
 	var c: City = cities[city_id]
 	var b := Battle.new(rng.randi_range(1, 1 << 30))
+	b.tier = tier()
 	b.guest = str(c.rift.get("guest", ""))
 	var lead := str(c.rift.get("faction", ""))
 	if c.capital:
@@ -315,11 +327,10 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		b.lineup = finale_line()
 	elif bool(c.rift.get("final", false)) and db.foes.has(str(party.get(lead, ""))):
 		# A domain's final: its dealt hero commands the rift, in its rank, the domain's wildlife
-		# in the other columns (its first pack's foe), and the final counts when the hero falls.
+		# in the other columns (the tier's own units, unnamed here), and the final counts when
+		# the hero falls.
 		b.lineup = [str(party[lead])]
-		var spawn := db.spawn_table(lead)
-		if not spawn.is_empty():
-			b.escort = [str(spawn[0][0]), b.columns - 1]
+		b.escort = ["", b.columns - 1]
 	else:
 		# A boss its domain has not ended on this run (the bible's section 9: three a domain
 		# before its hero, drawn without repeats).
@@ -355,7 +366,7 @@ func finish_battle() -> Dictionary:
 			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
-		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital}
+		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": [], "finals": []}
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
 	# battle's end and never shown while it is fought, 7 October: one less number on the
 	# screen, and no visible count to farm against.)
@@ -368,7 +379,7 @@ func finish_battle() -> Dictionary:
 		var wreck := u.hull <= 0 or not b.field.units.has(u)
 		if wreck:
 			wrecked.append(m)
-		report["lost"].append_array(_after_battle(m, u, wreck))
+		report["lost"].append_array(_after_battle(m, u))
 	for m in wrecked:
 		report["wrecked"].append(m.uid)
 	# The city.
@@ -401,6 +412,9 @@ func finish_battle() -> Dictionary:
 		# so the battle is won when it does (the Thief's Flee, when it lands, is the exception).
 		if final and not c.capital and not finals_won.has(faction):
 			finals_won.append(faction)
+			report["closed"] = _close_beaten(faction)
+		elif int(bosses_beaten[faction]) >= FINAL_AFTER and not finals_won.has(faction):
+			report["finals"] = _set_finals(faction)
 	elif c.gate <= 0:
 		report["result"] = "fell"
 		_fall(c)
@@ -494,27 +508,66 @@ func _fielded(b: Battle, uid: int) -> Unit:
 	return null
 
 
-## What a battle left a machine with (section 3, the hangar row): hull and cracks repair
-## free and a destroyed fixed component is rebuilt, since both are the chassis's; a
-## destroyed hardpoint component is gone; a wreck loses its cracked ones too. Returns the
-## component ids lost.
-func _after_battle(m: Machine, u: Unit, wreck: bool) -> Array:
-	var fixed_n: int = db.chassis.get(m.chassis, {}).get("fixed", []).size()
+## What a battle left a machine with (section 3, the hangar row): hull repairs free and a
+## destroyed fixed component is rebuilt, since both are the chassis's; a destroyed hardpoint
+## component is gone, a wreck's as any machine's. Returns the component ids lost.
+func _after_battle(m: Machine, u: Unit) -> Array:
+	if u.die == null:
+		return []
+	var r := after_battle_loadout(db, m.chassis, u)
+	m.loadout = r[0]
+	return r[1]
+
+
+## The rule above for any machine's die (the quick campaign's too): [the hardpoint components
+## it keeps, in die order; the ones gone for good].
+static func after_battle_loadout(content: ContentDB, chassis_id: String, u: Unit) -> Array:
+	var fixed_n: int = content.chassis.get(chassis_id, {}).get("fixed", []).size()
 	var kept: Array = []
 	var lost: Array = []
-	if u.die == null:
-		return lost
 	for idx in range(fixed_n, u.die.faces.size()):
 		var f: Face = u.die.faces[idx]
 		if f.component.is_empty():
 			continue   # an empty hardpoint: nothing was there
 		var destroyed := f.kind == Face.Kind.BLANK and not f.empty and not f.disabled
-		if destroyed or (wreck and f.cracked):
+		if destroyed:
 			lost.append(f.component)
 		else:
 			kept.append(f.component)
-	m.loadout = kept
-	return lost
+	return [kept, lost]
+
+
+## A beaten domain's other rifts close with its final (Ryan, 26 October: "if a domain gets
+## beat, other rifts for that domain should close"): every standing city whose rift it leads is
+## free of it, quiet for QUIET_TURNS as a won city is ("if that is too easy then we take it
+## away"), its gate as it stood, since only a win restores one, and nothing paid, a reprieve
+## and no battle. A rift it only guests keeps it, and a fallen city's rift is no front, so it
+## stays as it is. Returns the cities freed.
+func _close_beaten(faction: String) -> Array:
+	var closed: Array = []
+	for c in cities.values():
+		if c.capital or c.fallen or c.rift.is_empty() or str(c.rift.get("faction", "")) != faction:
+			continue
+		c.rift = {}
+		c.quiet = QUIET_TURNS
+		closed.append(c.id)
+	return closed
+
+
+## A domain's final is set by its third boss beaten (FINAL_AFTER; Ryan, 26 October: "If the
+## final is set, then all open rifts should change to show the final as the boss in the mission
+## select"): every standing city's rift it leads turns final at once, its dealt hero the boss
+## shown, so no rift opened before then brings a plain boss after; the ones it opens later are
+## dealt final (_roll_rift). The capital's rift is the finale, and a fallen city's is no front.
+## Returns the cities turned.
+func _set_finals(faction: String) -> Array:
+	var turned: Array = []
+	for c in cities.values():
+		if c.capital or c.fallen or c.rift.is_empty() or str(c.rift.get("faction", "")) != faction or bool(c.rift.get("final", false)):
+			continue
+		c.rift["final"] = true
+		turned.append(c.id)
+	return turned
 
 
 func _fall(c: City) -> void:
@@ -580,7 +633,8 @@ func _open_rifts() -> void:
 
 
 ## A rift's factions (6 October: rolled when the rift opens, never fixed to a city). The
-## lead is any faction not yet thinned; a guest, from GUEST_TIER, any other faction.
+## lead is any faction not yet beaten; a guest, from GUEST_TIER, any other faction not beaten
+## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts").
 func _roll_rift() -> Dictionary:
 	var all: Array = db.factions.keys()
 	var leads: Array = []
@@ -594,7 +648,7 @@ func _roll_rift() -> Dictionary:
 	if tier() >= GUEST_TIER:
 		var others: Array = []
 		for f in all:
-			if str(f) != lead:
+			if str(f) != lead and not finals_won.has(f):
 				others.append(f)
 		if not others.is_empty():
 			guest = str(others[rng.randi_range(0, others.size() - 1)])

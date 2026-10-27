@@ -181,7 +181,7 @@ static func blow(layers: Array) -> String:
 ## A hit, a block or a kill ("hit", "block", "kill") in a maker's metal; Minerva's steel, the
 ## baseline, for a maker without one.
 static func struck(kind: String, maker: String) -> String:
-	return "%s_%s" % [kind, maker if MAKERS.has(maker) else "minerva"]
+	return "%s_%s" % [kind, maker if MAKERS.has(maker) else MAKERS[0]]
 
 
 ## A family's blow ("hit", "heavy") or arrival ("spawn"); the Risen's for an unknown family.
