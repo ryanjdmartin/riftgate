@@ -417,14 +417,24 @@ static func hopper_bonus(u, f: Face) -> int:
 ## stack on a weapon's blow) and its armour off the blow. A shock is left out, the
 ## foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
+## A split entry's strike takes its share of the roll: the roll divided among the strikes it
+## serves, rounded down and never below one while the roll is one or more (Ryan, 27 October:
+## "rounded down, min 1", so a Twin Autoguns' 1 strikes 1 twice where it struck 0 twice); a roll
+## of nothing shares nothing. One strike takes the whole roll.
+static func split_share(roll: int, split: int) -> int:
+	if split <= 1:
+		return roll
+	return maxi(1, roll / split) if roll > 0 else 0
+
+
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
 		return [0, 0]
 	var add := heat_bonus(ms, f) + f.missing_bonus(target) + f.consume_bonus(target) + hopper_bonus(ms.unit, f)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
-		# A split entry (the Skua's) shows a strike's share of the roll, rounded down.
-		var d := int(Effects.attack(ms.unit, f, (v + add) / maxi(1, f.split), 0, target)["damage"])
+		# A split entry (the Skua's) shows a strike's share of the roll, rounded down, never below one.
+		var d := int(Effects.attack(ms.unit, f, split_share(v + add, f.split), 0, target)["damage"])
 		if target != null:
 			if not f.is_debuff():
 				d += Effects.damage_taken_add(target, ms.unit)
@@ -2176,7 +2186,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if s == 0:
 				roll += eaten * f.per_consumed   # a consumer's point a stack, on its one blow
 			rolled_total += roll
-		var rolled := roll / split   # a strike's share, rounded down
+		var rolled := split_share(roll, split)   # a strike's share, rounded down, never below one
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
@@ -2947,7 +2957,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
 				roll = rng.randi_range(f.power, f.power_max)
 			roll += fired + from_hopper
-		var rolled := roll / split   # a split entry's strike takes its share of the roll, rounded down
+		var rolled := split_share(roll, split)   # a split entry's strike takes its share of the roll, rounded down, never below one
 		var modded := Effects.attack(ms.unit, f, rolled, f.heat if s == 0 else 0, null)
 		if s == 0:
 			heat_total += int(modded["heat"])   # heat once a spend

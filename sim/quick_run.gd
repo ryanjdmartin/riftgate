@@ -17,8 +17,8 @@ extends RefCounted
 ##                 the boss with its formation; BATTLES of them, a tier every TIER_EVERY, then
 ##                 the finale, whose last fight is the party's line alone
 ##   a formation   a domain's whole spawn list in one fight, the lead's and the guest's in turn;
-##                 an elite is the lead's other bench hero, the one the party was not dealt,
-##                 leading the lead's formation (a stand-in until the elites land)
+##                 an elite's slot holds the lead's formation alone until the elites land (the
+##                 bench hero that stood in went on 27 October)
 ##   a fight       the squad's machines still standing, their damage carried from the last and
 ##                 their heat from zero; no withdrawal; won, one field recharge before the next;
 ##                 every machine wrecked, the run is over
@@ -71,7 +71,7 @@ var roster: Array = []            # Machine
 var squad: Array = []             # roster uids, up to SQUAD, in the order they deploy
 var components: Dictionary = {}   # the stores: component id -> copies unfitted (the basics are never counted: free and without limit)
 var modules: Dictionary = {}      # the stores: module id -> copies unfitted
-var party: Dictionary = {}        # domain -> its dealt hero (the finale's line; the other bench hero leads its elite fights)
+var party: Dictionary = {}        # domain -> its dealt hero (the finale's line)
 var bosses_ended: Dictionary = {} # domain -> the bosses beaten this run, so the next draws another (the campaign's rule)
 var finals_won: Array = []        # domains whose final was won: their hero leaves the finale's line, as in the campaign
 ## The formations' density by tier: each spawn entry's strength scaled, at least one (the ramp's
@@ -348,10 +348,10 @@ func _boss_encounter(t: int) -> Dictionary:
 
 
 ## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
-## an elite's hero, the boss or a final's hero before the domain's formation; the finale's line,
-## as the campaign fields it. A boss, a final's hero and the finale's line stand at the battle's
-## tier and bring its escort after them, as the campaign's boss unit does (ContentDB.BOSS_TIERS);
-## an elite, a stand-in, does not.
+## an elite's lead (none yet), the boss or a final's hero before the domain's formation; the
+## finale's line, as the campaign fields it. A boss, a final's hero and the finale's line stand
+## at the battle's tier and bring its escort after them, as the campaign's boss unit does
+## (ContentDB.BOSS_TIERS); an elite does not.
 func encounter_foes(enc: Dictionary) -> Array:
 	var out: Array = []
 	var kind := str(enc.get("kind", ""))
@@ -393,13 +393,11 @@ func formation_foes(domain: String) -> Array:
 	return out
 
 
-## The elite a domain fields until the elites land (Ryan, 25 October: use what we've got): its
-## other bench hero, the one the party was not dealt. Empty when its bench has no other, and
-## the encounter is its formation alone.
-func elite_of(domain: String) -> String:
-	for h in db.bench_of(domain):
-		if str(h) != str(party.get(domain, "")):
-			return str(h)
+## The elite a domain fields: none until the elites land, so the slot holds the lead's formation
+## alone and the Fracture count stands. The domain's other bench hero stood in from 25 October
+## (Ryan: use what we've got) until 27 October (Ryan: the bench hero "obviously shouldn't stay
+## as a stand-in elite, that's just a can of worms"); the elites take the slot when they land.
+func elite_of(_domain: String) -> String:
 	return ""
 
 

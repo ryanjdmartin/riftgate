@@ -1757,3 +1757,13 @@ each loses. Whether the half stands, with the fresh start's thinner tier-one for
 answer it, or the player's area stays whole, is Ryan's (section 12's quick campaign question);
 the halving's own exit (a plus too strong where back ranks stand) was written for the other
 direction.
+
+**The same 40 runs with the bench-hero stand-in out and the Skua's floor of one** (27 October,
+Ryan's calls of the day, `docs/quick_run.md` as committed): an elite's slot holds the lead's
+formation alone, so the first battle is three formations and the boss. One run of 40 leaves it
+(10 fall at a formation, 7 at the formation in the elite's slot, 22 at the boss); the tier-one
+formations are won 87% in 7.3 rounds leaving 63% hull, the boss's fight with its formation 15%
+of 26 from 59% of the squad's hull (the branch's 73% of 30 from 52%). So the stand-in hid the
+boss fight: with it out, most trios reach the boss and lose there, the halving's cost showing on
+the one fight a tier-one battle cannot avoid. The Skua's floor moves no quick campaign number
+anyone can read at 40 runs; its own row is the next entry.

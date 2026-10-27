@@ -5520,7 +5520,8 @@ func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_weapons() -> void
 
 ## A weapon's hit spends a Shock, cashes Cryo and lays a weapon's lay whatever it dealt (Ryan,
 ## 25 October: "The important part is that it was a damaging weapon"); a debuff does none
-## of it. Under a split a printed 1 strikes 0, twice.
+## of it. Under a split a printed 1 strikes 1, twice (never below one, 27 October), and the
+## foe's armour takes each to nothing.
 func test_a_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -> void:
 	var passive := {"id": "split_lays", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2},
@@ -5532,6 +5533,7 @@ func test_a_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -
 		m.grant_passive(passive)
 		sk.add_mech(m)
 		var g := _ghoul(100, 10)
+		g.armour = 2   # a strike of 1, doubled by the shock or not, comes to nothing on it
 		sk.add_foes([g])
 		sk.begin()
 		sk.start_round()
@@ -5546,14 +5548,14 @@ func test_a_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -
 			assert_eq(Effects.stacks_of(g, "cryoed"), 2, "and the Cryo")
 			assert_eq(Effects.stacks_of(g, "vitriol"), 0, "and lays no weapon's lay")
 		else:
-			assert_false(Effects.has(g, "shocked"), "a weapon's 0 spends the shock")
+			assert_false(Effects.has(g, "shocked"), "a weapon's blow the armour takes to nothing spends the shock")
 			assert_eq(Effects.stacks_of(g, "cryoed"), 0, "and cashes the Cryo")
 			assert_eq(ms.heat, 8 - 2 * sk.cryo_cool(), "cooling its hitter")
 			assert_eq(Effects.stacks_of(g, "vitriol"), 2, "and lays the weapon's lay on each strike")
 
 
 ## Flak on a weapon's blow of 0 (Ryan, 25 October: "Flak and overcharge exist in part
-## to get past armour"): a split 1 strikes twice at 0, and each strike takes the foe's Flak
+## to get past armour"): a split 1 strikes twice at 1 (never below one, 27 October), and each strike takes the foe's Flak
 ## before its armour comes off, on the die over the foe, in the bot's read and in the blow; a
 ## debuff's blow stays nothing.
 func test_a_weapons_blow_of_0_takes_the_foes_flak_before_its_armour() -> void:
@@ -5580,11 +5582,11 @@ func test_a_weapons_blow_of_0_takes_the_foes_flak_before_its_armour() -> void:
 			assert_true(sk.assign(0, g), "the debuff spent")
 			assert_eq(g.hp, 100, "and it deals nothing")
 		else:
-			assert_eq(shown.number_text(), "0", "a 1 halved is 0")
-			assert_eq(sk.shown_number(ms, shown, g), [2, 2] as Array[int], "over the foe a strike shows its 0 and the 3 Flak, the armour off")
-			assert_eq(pol.expected_damage(ms, shown, g), 4.0, "and the bot reads both strikes")
+			assert_eq(shown.number_text(), "1", "a 1 halved is 1, never below one")
+			assert_eq(sk.shown_number(ms, shown, g), [3, 3] as Array[int], "over the foe a strike shows its 1 and the 3 Flak, the armour off")
+			assert_eq(pol.expected_damage(ms, shown, g), 6.0, "and the bot reads both strikes")
 			assert_true(sk.assign(0, g), "the gun spent")
-			assert_eq(g.hp, 96, "each strike of 0 takes the Flak, then loses the armour: 2 twice")
+			assert_eq(g.hp, 94, "each strike of 1 takes the Flak, then loses the armour: 3 twice")
 
 
 func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:
@@ -7215,7 +7217,7 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 
 
 ## Roll once, then split (Ryan, 24 October): a rolled weapon's two strikes share one roll, each
-## taking half of it, rounded down, never a roll of their own.
+## taking half of it, rounded down and never below one, never a roll of their own.
 func test_a_split_rolled_weapon_rolls_once_and_halves_it() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
@@ -7232,12 +7234,12 @@ func test_a_split_rolled_weapon_rolls_once_and_halves_it() -> void:
 		sk.add_foes([foe])
 		sk.begin()
 		sk.start_round()
-		assert_eq(sk.shown_number(sk.mechs[0], sk.shown_face(sk.mechs[0], gun)), [0, 4] as Array[int], "the die shows a strike's share of 1 to 9")
+		assert_eq(sk.shown_number(sk.mechs[0], sk.shown_face(sk.mechs[0], gun)), [1, 4] as Array[int], "the die shows a strike's share of 1 to 9, never below one")
 		assert_true(sk.assign(0, foe), "fired, seed %d" % seed_value)
 		var hit := re.search("\n".join(sk.log))
 		assert_true(hit != null, "the log says the roll")
 		var rolled := int(hit.get_string(1))
-		assert_eq(100 - foe.hp, 2 * (rolled / 2), "seed %d: a roll of %d struck twice at %d" % [seed_value, rolled, rolled / 2])
+		assert_eq(100 - foe.hp, 2 * maxi(1, rolled / 2), "seed %d: a roll of %d struck twice at %d" % [seed_value, rolled, maxi(1, rolled / 2)])
 
 
 ## The spray (the Skua's Flechette Pod, built 25 October): the first strike lands on the foe it is
@@ -7484,11 +7486,11 @@ func test_a_weapons_mine_of_0_takes_the_foes_flak() -> void:
 	assert_true(sk.assign(1, weak), "a slot emptied")
 	assert_true(sk.assign(0, Vector2i(0, 0)), "the split 1 laid there")
 	var shots := sk.mines_at(Vector2i(0, 0))
-	assert_true(shots.size() == 2 and int(shots[0]["damage"]) == 0 and int(shots[1]["damage"]) == 0, "two shots of 0: %s" % str(shots))
+	assert_true(shots.size() == 2 and int(shots[0]["damage"]) == 1 and int(shots[1]["damage"]) == 1, "two shots of 1, a split 1 never below one: %s" % str(shots))
 	Effects.stack(boss, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
-	assert_eq(Policy.make(Policy.GREEDY).pull_score(sk, boss), 4.0, "the bot reads each shot's 0 with the 3 Flak, the armour off")
+	assert_eq(Policy.make(Policy.GREEDY).pull_score(sk, boss), 6.0, "the bot reads each shot's 1 with the 3 Flak, the armour off")
 	assert_true(sk.assign(2, boss), "the pull on the boss")
-	assert_eq(boss.hp, 296, "each takes the Flak, then loses the armour: 2 twice")
+	assert_eq(boss.hp, 294, "each takes the Flak, then loses the armour: 3 twice")
 
 
 ## The Syrinx Drone (Ryan's go, 21 October): the foe carries it, and the next weapon to kill it,

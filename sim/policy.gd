@@ -995,7 +995,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
 	var damaging := not f.is_debuff()
 	for v in rolls:
-		var dmg: int = (v + fired) / maxi(1, f.split)
+		var dmg: int = Skirmish.split_share(v + fired, f.split)   # a split's share, rounded down, never below one
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		if area:
 			dmg /= 2   # a foe a Spread or Penetrate reaches past the target takes half the blow (26 October)

@@ -869,7 +869,8 @@ static func ceiling_bonus(u, face: Face) -> int:
 
 ## How many strikes each roll of an entry spent at a foe is split into (split_strikes, on_attack; the Skua's
 ## Split-cycle Breech, built 25 October): the weapon strikes that many times as often, each roll
-## of its number divided among the strikes it serves, rounded down, and every buff, passive and
+## of its number divided among the strikes it serves, rounded down and never below one (Ryan,
+## 27 October; Skirmish.split_share), and every buff, passive and
 ## foe's condition counts on each strike. A debuff has no number to divide and fires as often
 ## all the same, its riders landing on each strike (Ryan, 25 October: "Debuff should fire twice
 ## regardless of damage. That's kind of the whole point"). 1 for anything spent on a machine.
@@ -1784,7 +1785,7 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
-		"split_strikes": body = "strikes twice at half, rounded down" if vs == "2" else "strikes ×%s at its share of the roll, rounded down" % vs
+		"split_strikes": body = "strikes twice at half, rounded down, never below one" if vs == "2" else "strikes ×%s at its share of the roll, rounded down, never below one" % vs
 		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
 		"lay_mines": body = "every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"

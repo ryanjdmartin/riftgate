@@ -738,8 +738,10 @@ func number_text() -> String:
 		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
 	if split > 1:
 		# A split entry (the Skua's): a strike's share of the roll, rounded down.
-		var lo := power / split
-		var hi := power_max / split
+		# A strike's share, rounded down and never below one while the number is one or more
+		# (Skirmish.split_share; Ryan, 27 October).
+		var lo := (maxi(1, power / split) if power > 0 else 0)
+		var hi := (maxi(1, power_max / split) if power_max > 0 else 0)
 		return "%d–%d" % [lo, hi] if is_ranged() and hi != lo else str(lo)
 	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
 

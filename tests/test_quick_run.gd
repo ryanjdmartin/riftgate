@@ -89,11 +89,8 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 		for e in enc:
 			if e["kind"] == "elite":
 				assert_eq(e["domain"], r.lead, "an elite is the lead's")
-				assert_true(r.db.bench_of(r.lead).has(str(e["foe"])), "its hero from the lead's bench")
-				assert_ne(str(e["foe"]), str(r.party.get(r.lead, "")), "never the hero the party was dealt")
-				var foes: Array = r.encounter_foes(e)
-				assert_true(foes[0].hero, "the hero leads")
-				assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size(), "beside the lead's formation")
+				assert_eq(str(e.get("foe", "")), "", "nothing stands in for it until the elites land (Ryan, 27 October)")
+				assert_eq(r.encounter_foes(e).size(), r.formation_foes(r.lead).size(), "the lead's formation holds the slot")
 
 
 func test_the_guest_joins_from_tier_two_and_takes_every_other_formation() -> void:
@@ -184,14 +181,11 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 		var content: Dictionary = r.db.foes[str(boss["foe"])]
 		assert_eq(foes[0].hp_max, roundi(int(content["hp"]) * float(ContentDB.boss_tier(t)["hp"])), "the boss's HP at the tier")
 		assert_eq(foes[0].attack, int(content["attack"]) + int(ContentDB.boss_tier(t)["attack"]), "its attack at the tier")
-		for e in r.encounters:
-			if e["kind"] == "elite" and r.db.foes.has(str(e.get("foe", ""))):
-				assert_eq(r.encounter_foes(e)[0].hp_max, int(r.db.foes[str(e["foe"])]["hp"]), "an elite's stand-in stays as it is")
 	assert_true(counts[0] < counts[2], "more at tier three than at tier one")
 	for e in r.encounters:
 		if e["kind"] == "formation" or e["kind"] == "elite":
 			var plain: int = r.encounter_foes(e).size()
-			assert_eq(plain, r.formation_foes(str(e["domain"])).size() + (1 if e["kind"] == "elite" and r.db.foes.has(str(e.get("foe", ""))) else 0), "no escort outside a boss fight")
+			assert_eq(plain, r.formation_foes(str(e["domain"])).size(), "no escort outside a boss fight, and no stand-in in an elite's slot")
 
 
 func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws() -> void:

@@ -59,7 +59,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
-  halved, rounded down, and struck twice; the Pod's spray), its rows read the same day: mid-field
+  halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
@@ -85,12 +85,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - The quick campaign (25 October): battles without the map, headless, saved, on screen with the
   game's first hangar, run by `tools/quick_run.gd`. Its first runs (`docs/quick_run.md`,
   `docs/measurements.md`, 40 runs a rung) find a cliff at the first battle for a starting trio
-  (34 to 36 runs of 40 lost there, 19 of them at the elite stand-in, the bench hero leading a
-  whole formation, which reads harder than the tier's boss) and a plateau after it while the
-  enemy has no tiers: section 12's question, to read against the fresh start's compositions
-  before any lever moves. Its elite is a stand-in until the elites land (the to-do); from tier
-  two a domain's final may be a battle's boss (Ryan, 25 October), and every boss fight brings
-  the tier's escort.
+  (34 to 36 runs of 40 lost there on the branch; 39 of 40 on main's head of 27 October with the
+  bench-hero stand-in out, 22 of them at the boss, whose fight with its formation is won 15%
+  of the time from 59% of the squad's hull, where the tier-one formations are won 87%) and a
+  plateau after it while the enemy has no tiers: section 12's question, to read against the
+  fresh start's compositions before any lever moves; area at half is the rule behind the
+  cliff (the Balance bullet). Its elite slots hold the lead's formation alone until the elites
+  land (the to-do; the bench hero that stood in went on 27 October, Ryan: "a can of worms");
+  from tier two a domain's final may be a battle's boss (Ryan, 25 October), and every boss
+  fight brings the tier's escort.
 - Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
   3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
   the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
@@ -139,13 +142,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the 27th) was a bot artefact: it opened the boss's fight from the gate on its first turn, which
   no order allows; with the order rule on it (`ccr-6073bda9-p34o8q`, 26 October) it won 15%. On
   the merged head (27 October, `docs/measurements.md`) it wins 7% of its battles and no final,
-  the three-machine battles 36%, and no quick campaign run leaves its first battle (12 at a
-  formation, 22 at the elite stand-in, 6 at the boss; the tier-one formations won 77%, the
-  elite 37%, the boss 0 of 6, where the branch read 91, 65 and 73): tier one reads harder than
-  on any branch alone, and the rule is area at half, by experiment (`docs/measurements.md`, 27
-  October: with area at full the first battle is won 18%, the formations 94%, the elite 65%,
-  the boss 80%; the re-pick put back changes nothing), since the Honey Badger and the
-  Cottonmouth carried the starter trios on their area and the 26th's read saw them alone:
+  the three-machine battles 36%, and one quick campaign run of 40 leaves its first battle
+  (with the bench-hero stand-in out and the Skua's floor of one, 27 October: 10 fall at a
+  formation, 7 at the formation in the elite's slot, 22 at the boss; the tier-one formations
+  won 87%, the boss's fight with its formation 15% of 26, where the branch read 91 and 73):
+  tier one reads harder than on any branch alone, and the rule is area at half, by experiment
+  (`docs/measurements.md`, 27 October, the stand-in still in: with area at full the first
+  battle is won 18%, the formations 94%, the elite 65%, the boss 80%; the re-pick put back
+  changes nothing), since the Honey Badger and the Cottonmouth carried the starter trios on
+  their area and the 26th's read saw them alone:
   section 12's quick campaign question carries the call. The 200-seed matrix on the merged head
   (`docs/balance.md` is the 22nd's until it lands; the to-do's first engine line) reads the
   rest. The set finals (26 October) turn every rift a domain

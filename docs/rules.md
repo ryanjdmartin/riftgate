@@ -172,7 +172,8 @@ defeat when every machine is wrecked. There is no round limit.
    whatever it deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
-  each takes half the roll, rounded down.
+  each takes half the roll, rounded down and never below one (a roll of nothing shares
+  nothing).
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
@@ -658,7 +659,8 @@ and every one of them that fell is a kill).
   after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
   aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
   each strikes twice as often, each
-  roll, what the entry prints included, divided between the two strikes, rounded down, and
+  roll, what the entry prints included, divided between the two strikes, rounded down and
+  never below one, and
   every buff and the foe's conditions counting on each strike, its armour too; the die shows
   a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
   fires twice all the same, its riders landing on each strike (a Web, a Lure, a Disrupt, a
@@ -870,8 +872,8 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
-  turns. **An elite** is the lead's other bench hero, the one the party was not dealt, leading
-  the lead's formation (a stand-in until the elites land).
+  turns. **An elite**'s slot holds the lead's formation alone until the elites land (the
+  bench hero that stood in went on 27 October).
 - **A fight** takes the squad's machines still standing, their damage carried and their heat
   from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
   before the next; a wipe ends the run.
