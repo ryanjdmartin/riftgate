@@ -640,8 +640,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   shows how many wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
-Open at any point of the player's turn, but in the boss's fight, which ends in the boss's fall
-or the team's, and in the quick campaign, which has none. Withdrawing ends the turn, so heat over the maximum
+Open at any point of the player's turn, but in the boss's fight, which ends in the boss unit's
+fall, escort and all, or the team's, and in the quick campaign, which has none. Withdrawing ends the turn, so heat over the maximum
 burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
 not run, but shield past the maximum fades as the fight ends. Kills stay counted, machines
 keep their damage and shields do not refill; a pack keeps its own survivors, who return whole
@@ -771,7 +771,10 @@ a stat.
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
-  be attacked from the first turn; its death wins the battle. A fight it is in, ordered onto
+  be attacked from the first turn; its fight won wins the battle: the fight ends in victory
+  only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
+  commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
+  smallest boss, a final's hero, gets cheaper still). A fight it is in, ordered onto
   it or joined by its ring, takes every machine, wherever it stands and whether or not it has
   fought this turn; nothing moves first (ENGAGE goes straight to the reveal) and nobody
   withdraws, so it ends the battle. The unit at the rift commands
@@ -787,8 +790,9 @@ a stat.
   scale; the spawn lists do not read a unit's tier yet.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
-- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
-  (every commander of the unit at the rift).
+- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
+  falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
+  fall is a wipe.
 - Not built: city defences, the Rupture meter and its Fractures, the sealed boss, rift tiles.
 
 ## The campaign
@@ -835,7 +839,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   at a standing city around the capital turns final at once, and every rift it leads after is
   one, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
-  when the hero falls, and a won final beats the domain: it leads and guests no new rift (a
+  when the hero's fight is won, the hero and its escort down, and a won final beats the domain: it leads and guests no new rift (a
   rift it already guests keeps it), and every rift it leads at a standing city around the
   capital closes at once, a free reprieve: that city opens no rift next turn, its gate stays as it stood (only a win
   restores one) and nothing is paid. The finale is due at Convergence 12,

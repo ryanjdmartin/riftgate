@@ -1767,3 +1767,15 @@ of 26 from 59% of the squad's hull (the branch's 73% of 30 from 52%). So the sta
 boss fight: with it out, most trios reach the boss and lose there, the halving's cost showing on
 the one fight a tier-one battle cannot avoid. The Skua's floor moves no quick campaign number
 anyone can read at 40 runs; its own row is the next entry.
+
+## 27 October, the Skua's floor of one
+
+**A split strike never below one** (Ryan, 27 October: "rounded down, min 1"; `Skirmish.split_share`),
+the Skua's row alone against the 29 packs, `tools/balance.gd --rows skua`, 200 seeds a cell,
+random and greedy, 11,600 fights, read against the same row in the day's report (the floor's
+one change between them). The row moves +1.2 points for random play and +0.1 for greedy over
+the packs; four cells move five or more, three of them up (the Dire Wolves random 85 to 94, the
+Drakes random 76 to 85, the Needlers greedy 48 to 55) and the Gels greedy 45 to 40, a band's
+width. Read: a roll of 1 no longer wastes a strike, which random play felt most; the Skua's
+place among the tier ones does not move, and its start still bites with basics alone (the
+to-do's play line).

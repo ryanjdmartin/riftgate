@@ -32,8 +32,8 @@ every open rift its domain leads final), and
 `claude/playtesting-issues-08mnqj` (his playtest list, merged here on his word) takes UNDO back
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
 The rest waits on his read. The review of 27 October fixed 15 in the rules, marked 34 settled by
-the one damage state, and found 26 sharpened by the boss's fight that cannot be left (25
-October), so it is the one to read first. Line numbers are as at `a8a0e43`.
+the one damage state, and put 26 to Ryan, sharpened by the boss's fight that cannot be left (25
+October); he settled it the engine's way the same day. Line numbers are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -316,7 +316,7 @@ carrier gets its whole move back to carry the others. "UNDO MOVE restores a mach
 fights" (docs/rules.md:610), and the bible's Swallowtail row wants "reach and never a reset".
 Lean: a carrier's undo closes once any rider it set down has fought, as the rider's own would.
 
-### 26. Question: a boss killed in a fight that then wipes the team loses the battle
+### 26. Settled 27 October (Ryan: the whole escort must die, else a final's hero, the smallest boss, gets cheaper still; the code's order stands and the rules' and bible's texts say the unit falls, not the boss alone). Question: a boss killed in a fight that then wipes the team loses the battle
 A fight goes on past the last commander's fall while its escort stands, and when it ends the
 battle asks "every machine wrecked" before "the boss gone" (sim/battle.gd:729), so a team that
 kills the final's hero and is then wrecked by its escort (or its own overheat) reads as
