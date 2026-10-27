@@ -1561,6 +1561,96 @@ its hull standing after against 80%; tier three's bosses fall 60% of the time (6
 one of two as before, and battle 9 is won by two of the four runs reaching it (all three
 before). None of 40 reached the finale, as before.
 
+## 26 October, the fight-size spectrum as it stands
+
+**The sizes the fresh start's proposal sizes its compositions against** (`docs/foes_proposal.md`;
+the four-machines row's targets, section 4: a small pack one or two machines take for about a
+tenth of their hull, a formation the body's). `tools/balance.gd` with its new `--pack` cells
+(one foe type times a strength, or several together in one fight) on the merged code (`49211ca`,
+main's playtest list in: the Gel's halves a pair in its slot), 30 seeds a cell, random and
+greedy, no party, 8,400 fights. The rows: five machines alone (the Honey Badger, the Puffin, the
+Prairie Dog, the Cottonmouth, the Skua), a built pair (the Honey Badger and the Puffin), a light
+pair (the Cassowary and the Prairie Dog), the default team (the Honey Badger, the Clydesdale, the
+Kite: a tier-two trio, no starter) and that team with the Baboon. The packs: patrols (two and
+three goblins, three needlers, two wolves), five fronts with a back, the goblin pack of six, the
+Treant and two whole spawn lists. Random's wins, greedy's wins, and greedy's hull lost over every
+fight, won or not. A direction.
+
+| Pack | Badger | Puffin | Dog | Cottonmouth | Skua | Badger + Puffin | Cassowary + Dog | The trio | The four |
+|---|---|---|---|---|---|---|---|---|---|
+| Goblin x2 | 100 / 100, 0% | 83 / 100, 4% | 93 / 100, 1% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% |
+| Goblin x3 | 100 / 100, 2% | 13 / 87, 42% | 27 / 63, 65% | 97 / 100, 1% | 70 / 90, 21% | 100 / 100, 0% | 100 / 100, 1% | 100 / 100, 0% | 100 / 100, 0% |
+| Needler x3 | 90 / 100, 15% | 10 / 93, 62% | 20 / 83, 72% | 77 / 100, 3% | 83 / 100, 38% | 100 / 100, 4% | 93 / 100, 14% | 100 / 100, 0% | 100 / 100, 0% |
+| Dire Wolf x2 | 100 / 100, 0% | 57 / 100, 14% | 87 / 100, 8% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% | 100 / 100, 0% |
+| Goblin x4 + Mandragora x2 | 70 / 100, 27% | 0 / 0, 100% | 0 / 0, 100% | 30 / 100, 17% | 3 / 17, 94% | 97 / 100, 4% | 17 / 83, 51% | 100 / 100, 0% | 100 / 100, 0% |
+| Revenant x4 + Ghost x2 | 70 / 100, 24% | 0 / 0, 100% | 0 / 0, 100% | 30 / 100, 16% | 3 / 17, 94% | 97 / 100, 4% | 17 / 87, 49% | 100 / 100, 0% | 100 / 100, 0% |
+| Needler x3 + Cockatrice x2 | 77 / 100, 17% | 0 / 13, 98% | 0 / 17, 95% | 47 / 100, 30% | 57 / 90, 50% | 100 / 100, 6% | 77 / 100, 18% | 100 / 100, 1% | 100 / 100, 0% |
+| Bomb x2 + Drake x2 | 33 / 57, 64% | 0 / 0, 100% | 0 / 0, 100% | 67 / 100, 1% | 7 / 57, 74% | 100 / 100, 5% | 47 / 93, 44% | 100 / 100, 0% | 100 / 100, 0% |
+| Salamander x3 + Drake x2 | 7 / 13, 93% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 13 / 90, 44% | 0 / 0, 100% | 100 / 100, 0% | 100 / 100, 0% |
+| Goblin x6 | 43 / 87, 37% | 0 / 0, 100% | 0 / 0, 100% | 50 / 100, 5% | 3 / 10, 96% | 93 / 100, 4% | 13 / 77, 63% | 100 / 100, 0% | 100 / 100, 0% |
+| The Treant | 0 / 63, 88% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 3, 100% | 70 / 100, 8% | 10 / 100, 11% | 100 / 100, 0% | 100 / 100, 0% |
+| The Meadow formation (15) | 3 / 20, 96% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 93, 60% | 0 / 0, 100% | 100 / 100, 4% | 100 / 100, 1% |
+| The Peak formation (9) | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 0 / 0, 100% | 3 / 13, 96% | 0 / 0, 100% | 87 / 100, 6% | 100 / 100, 1% |
+
+Read: the spectrum is steep, and a size is a fight for one squad and free for the next. A patrol
+of two is free for any machine alone. Three of a swarm type are the lone light machine's fight
+(random losing where greedy wins: the Puffin 13 / 87 at 42% of its hull, the Prairie Dog 27 / 63
+at 65%, the Skua 70 / 90 at 21%) and free for a heavy (the Honey Badger and the Cottonmouth at 1
+to 2%), whose fight is the pack of six (87 at 37%; the Cottonmouth 100 at 5%). A front and a back
+of six cost a lone heavy a quarter (random 70, greedy 100), wall every lone light (0 / 0), cost
+the built pair 4% and the light pair half (17 / 83 to 87 at 49 to 51%), and cost the trio and
+the four nothing. The Peak's pairs are the hardest for their size: three salamanders and two
+drakes wall every lone machine (the Honey Badger 7 / 13 at 93%) and take 44% off the built pair
+(13 / 90), two bombs and two drakes 64% off the lone Badger. A whole spawn list costs this trio 4
+to 6% (random 87 to 100) and the four 1%, the built pair 60 to 96% and the light pair everything.
+So the body's formation at a tenth of a four's hull is more than today's whole spawn list for a
+tier-two squad, and the proposal's tier table thins tier one's formations for a starter trio and
+thickens tier three's. The Gel's pair moved one cell against the probe run before the merge: the
+Meadow formation (the trio 90 / 100 at 12% before, 100 / 100 at 4% now; the lone Badger 0 / 0 to
+3 / 20), the Gel a wall whose Engulf no longer breaches and whose halves step up in place.
+
+## 26 October, the campaign bot moving as one, and the persona
+
+**The runner work the fresh start's session built without waiting** (`docs/foes_proposal.md`,
+its last section): the campaign bot's squad moving as one (every machine toward the pack nearest
+the squad, every machine in range fighting it, a caught machine's allies walking into range of
+the hunters before the catch opens; `--solo` the old walk, each machine toward its own nearest
+enemy), the fight bot's withdrawing persona on it (`--withdraw N`, a catch always fought out),
+and a rule the bot had been missing once main's boss row landed: a fight needs an order, a
+machine with an action left within attack range of the pack, and only then the boss's fight
+brings every machine; without it the bot opened the boss's fight from the gate on its first turn
+and won 41% of battles in one fight, 571 fights in 570 battles, a bot artefact and no read.
+`tools/campaign_run.gd` at 40 runs from seed 1, greedy, on the merged code (`49211ca`): the squad
+as one (`docs/campaign_run.md`), the old walk, and the squad as one withdrawing under half its
+fighters' hull. Directions.
+
+| Read | Battles | Won | Wiped | Battles by squad size (one, two, three machines), and won | Fights | Alone (1 of 1), won | The whole squad (3 of 3), won | Withdrawn from |
+|---|---|---|---|---|---|---|---|---|
+| The squad as one | 416 | 15% | 84% | 167, 165, 84; 0, 8, 60% | 1,049 | 416, 32% | 81, 96% | |
+| The old walk | 397 | 13% | 86% | 164, 158, 75; 0, 6, 54% | 976 | 419, 33% | 58, 98% | |
+| As one, withdrawing under 50% | 388 | 14% | 85% | 156, 152, 80; 0, 7, 56% | 1,135 | 507, 21% | 81, 97% | 186 (16%) |
+
+Every run lost on each read, 3.8 cities fallen a run, the finale reached by 25 to 32 runs of 40
+and won by none. Before the merge, on this branch's base (`ef91382`, the same seeds): the old walk
+377 battles, 1% won, 97% wiped, the three-machine battles won 13%, 913 fights, 465 of them alone;
+the squad as one 385 and 2%, 466 alone; as one with allies joining a catch 393 and 4%, 458 alone,
+the three-machine battles 23%; the old walk withdrawing under 50% 361 and 2%, a quarter of its
+fights left.
+
+Read: the lone fights are the roster's, not the walk's. Four battles in five are fought by one or
+two machines, wrecks sitting out with no spares (section 3's roster row), and the squad walking as
+one moves the alone fights by none (465 to 466 before the merge, 419 to 416 after) and the
+whole-squad fights by a third (58 to 81). What moved the battles won from 1% to 13 to 15% is
+main's boss row: once a machine stands in range of the boss every machine joins its fight,
+whatever its turn, so a trio that reaches the boss fights it together, and the three-machine
+battles are won 54 to 60% against 13 to 23% before. The same read says why the proposal's seal
+matters: without it the boss's fight is the battle's first decision and not its last. The
+persona buys the plain player nothing (14% against 15%, the first city falling a turn sooner),
+since a pack withdrawn from walks on to the gate and the bot fights it again next turn; it leaves
+a sixth of its fights, a fifth of the lone ones. So the campaign report reads the spiral the
+economy answers (the inflow of machines) and the boss row, and the fights' shape is the quick
+campaign's to read (`claude/quick-campaign-mode-pafhiv`) until a run can field a squad.
+
 ## 26 October, the rally at once
 
 **The rally landing at once, its intents counted** (the bible's rally row, section 5).
