@@ -383,7 +383,8 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
+- **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target, a spray's on
+  each strike's own foe; a blow that kills leaves nothing to burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
   a special at every machine passes it by; it still cools by its cooling, and ticks and
@@ -617,7 +618,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
-  on it bursts at the end of its action, skipped or not.
+  on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or Phased) loses its blow
+  alone: its countdown gathers, a special on its own side acts, and the turn goes on to the foes
+  after it.
 - **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), standing as a
   pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
   opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow

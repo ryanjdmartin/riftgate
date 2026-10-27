@@ -152,7 +152,7 @@ corrupt-all specials walk `live_mechs()` (sim/skirmish.gd:2237, :2243), so a mac
 Mooring Screens Phased still takes Eruption's Scorched and Diamond Dust's Corrupted. Phased
 "cannot be targeted" (docs/rules.md:312). Fix: skip Phased there too.
 
-### 8. Bug: a sprayed spend's Primed burn all lands on the first foe
+### 8. Fixed 27 October (laid blow by blow on each strike's own foe; a kill leaves nothing to burn). Bug: a sprayed spend's Primed burn all lands on the first foe
 A Primed machine's Burning is summed over the strikes and laid on `target` after the loop
 (sim/skirmish.gd:1925), so a Skua's Flechette Pod whose strikes fell on three foes puts every
 stack on the first, a corpse when the first strike killed it. Primed lays its stacks "on its
@@ -191,7 +191,7 @@ carries silence yet.
 Guarded core's ×0 is never shown, where the screen's own comment expects "the zero its die
 shows" (game/skirmish/skirmish_screen.gd:1128). No boss in parts in content yet.
 
-### 13. Bug, rare: the enemy's turn ends early when no machine is targetable
+### 13. Fixed 27 October (the turn goes on; a foe with nobody to strike loses its blow alone, its specials on its own side acting). Bug, rare: the enemy's turn ends early when no machine is targetable
 `_foe_turn` returns false when its re-pick finds no machine (sim/skirmish.gd:1433), and the
 turn breaks there (:1408): every foe after it skips its statuses' tick (Burning, Numbed, an
 Armoured from its brace that should drop), its web, its countdown, and its specials that act
@@ -218,7 +218,7 @@ Volatile spend, the Tithe Coupling's price, an overheat), so a Tithe Coupling be
 Overcharges every spend. Either the text says "each time it loses hull", or the effect reads
 blows only.
 
-### 17. Bug: Siphon heat fires no heat-gain passive
+### 17. Fixed 27 October (through `_add_heat`). Bug: Siphon heat fires no heat-gain passive
 The Siphon's heat a blow is added straight to the gauge (sim/skirmish.gd:3151) rather than
 through `_add_heat`, so an on-heat-gain passive (the Boundary-layer Bleed's shield) never
 answers it. Every other heat in the fight goes through `_add_heat`.

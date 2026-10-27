@@ -1756,14 +1756,11 @@ func _enemy_turn() -> void:
 		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
 		# that stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
-		var more := true
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
-			more = _foe_turn(f)
+			_foe_turn(f)
 		if moves:
 			Effects.remove(f, "kindled")
 		_web_burst(f)
-		if not more:
-			break
 	_acted.clear()
 	_clear_dead()
 	for ms in mechs:
@@ -1774,14 +1771,14 @@ func _enemy_turn() -> void:
 
 ## One foe's action in the enemy's turn: its pick (or a new one, its machine gone), its
 ## countdown gathering, its blow at one machine or at every machine, or its special in place of
-## a blow; then a self-destruct spends it. False when no machine stands to act on, which ends
-## the turn.
-func _foe_turn(f: Foe) -> bool:
+## a blow; then a self-destruct spends it. With no machine standing to strike (every one
+## fallen or Phased) only its blow is lost: its countdown gathers, a special on its own side
+## acts, and the turn goes on to the foes after it, whose ticks, webs and specials are their
+## own (the mechanics audit's 13, 27 October).
+func _foe_turn(f: Foe) -> void:
 	var t := f.target as MechState
 	if t == null or not t.alive() or is_phased(t):
 		t = _repick(f)   # its machine fell, or is Phased: the next in line
-	if t == null:
-		return false
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
 	if not f.pending.is_empty():
 		if f.charge > 0:
@@ -1793,7 +1790,7 @@ func _foe_turn(f: Foe) -> bool:
 			f.charge -= 1
 			var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
 			log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
-			return true
+			return
 		f.pending = {}   # it lands now
 	if f.hits_all():
 		# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
@@ -1807,19 +1804,26 @@ func _foe_turn(f: Foe) -> bool:
 				continue   # out of the fight until the round's end
 			_strike(f, m)
 	else:
+		if t == null:
+			# Nobody to strike: a special on its own side still acts, a blow has nowhere to land.
+			if not f.attacks():
+				_foe_acts(f, null)
+			else:
+				log.append("%s has no machine to strike" % f.display_name)
+			return
 		if _screened.has(t):
 			log.append("%s's blow is lost in the static" % f.display_name)
-			return true
+			return
 		if not f.attacks():
 			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
-			return true
+			return
 		_strike(f, t)
 	if f.has_keyword(f.action, "self_destruct") and f.alive():
 		# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 		f.hp = 0
 		f.stays_down = true
 		log.append("%s bursts, and is gone" % f.display_name)
-	return true
+	return
 
 
 ## The web bursts at the end of the webbed foe's action (the funnel-web's Web Bomb, Ryan's go,
@@ -2121,7 +2125,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var rolled_total := 0
 	var heat_total := 0
 	var vent := 0
-	var extra_burn := 0
 	var armoured_total := 0   # what the primary target's armour took off, for the log
 	var touched: Array = []    # every foe the blows reached and left alive, for a lure or a disrupt
 	var gained := {}           # foe -> the statuses this spend put on it, told once each at the end (an application, never a stack or a strike)
@@ -2196,7 +2199,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		dmg = modded["damage"]
 		if s == 0:
 			heat_total += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
-		extra_burn += modded["burn"]
 		vent += modded["vent"]
 		var landed := dmg
 		for foe in hit:
@@ -2299,6 +2301,12 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				_note_status(gained, foe, "flakked")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
+		# A Primed machine's Burning lands blow by blow, on each strike's own foe (the mechanics
+		# audit's 8, 27 October): a spray's strikes burn the foes they fell on, and a kill leaves
+		# nothing to burn.
+		if int(modded["burn"]) > 0 and aimed.alive():
+			Effects.stack(aimed, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", int(modded["burn"])) * doubled)
+			_note_status(gained, aimed, "burning")
 		total += landed
 		if f.spray:
 			sprayed.append("%s %d" % [aimed.display_name, landed])
@@ -2310,9 +2318,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in webbed:
 		var caught := web_catch(foe)
 		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
-	if extra_burn > 0:
-		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn) * doubled)
-		_note_status(gained, target, "burning")
 	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
 	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
 	# never feeds the shot it is part of.
@@ -2559,6 +2564,9 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
+	if t == null and effect in ["burn", "disable", "silence", "dispel"]:
+		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
+		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 	_seq += 1
 	match effect:
@@ -3657,7 +3665,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	# the overheat has settled, so it is next round's fuel or next turn's burn.
 	var siphoned := Effects.heat_per_blow(ms.unit)
 	if siphoned > 0 and ms.alive():
-		ms.heat += siphoned
+		_add_heat(ms, siphoned)   # through the heat path, so a passive on heat gained answers it (the audit's 17)
 		log.append("%s siphons the blow: +%d heat" % [ms.unit.display_name, siphoned])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)

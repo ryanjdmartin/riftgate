@@ -7927,3 +7927,66 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 	assert_eq(sk.shown_face(ms, maxi_gun).heat, 5 + sc, "the die shows its 5 and the scorch's extra")
 	assert_true(sk.assign(0, sk.front[0]), "spent")
 	assert_eq(ms.heat, 5 + sc, "and the spend adds them, once")
+
+
+## A Primed machine's Burning lands blow by blow on each strike's own foe (the mechanics audit's
+## 8, 27 October): a spray whose first strike kills lays nothing on the corpse and burns the foes
+## the strikes after it fell on.
+func test_a_primed_sprays_burn_lands_on_each_strikes_own_foe() -> void:
+	var pod := Face.attack(5, L)
+	pod.strikes = 3
+	pod.spray = true
+	var sk := Skirmish.new(1, 1)
+	var s := _mech("S", Die.single(pod), 40, 100)
+	sk.add_mech(s)
+	var front_foe := _ghoul(4, 10)
+	var behind := _archer(100, 10)
+	sk.add_foes([front_foe, behind])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(s, "primed", 1, "test", sk.round)
+	assert_true(sk.assign(0, front_foe), "sprayed at the front foe")
+	assert_false(front_foe.alive(), "the first strike kills it")
+	assert_eq(Effects.stacks_of(front_foe, "burning"), 0, "a corpse burns for nothing")
+	assert_eq(behind.hp, 90, "the two strikes after it fall on the foe behind")
+	assert_eq(Effects.stacks_of(behind, "burning"), 2, "and burn it, a stack a strike")
+
+
+## The enemy's turn goes on past a foe with no machine to strike (the audit's 13, 27 October):
+## every machine Phased, the first foe's blow is lost and the second still ticks its Burning.
+func test_the_enemy_turn_goes_on_when_no_machine_can_be_struck() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
+	sk.add_mech(a)
+	var first := _ghoul(100, 10)
+	var second := _ghoul(100, 10)
+	sk.add_foes([first, second])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(a, "phased", 1, "test", sk.round)
+	Effects.stack(second, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	sk.end_round()
+	assert_eq(a.hull + a.shield, 140, "nothing reaches the Phased machine")
+	assert_eq(second.hp, 97, "the second foe's Burning ticked: the turn went on past the first")
+	assert_eq(Effects.stacks_of(second, "burning"), 2, "and a stack faded")
+	assert_true("\n".join(sk.log).contains("no machine to strike"), "the log says the first had nobody to strike")
+
+
+## The Siphon's heat goes through the heat path every other heat takes (the audit's 17, 27
+## October), so a passive that answers heat gained answers it.
+func test_the_siphons_heat_fires_the_on_heat_gain_passives() -> void:
+	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "reaches_all": true, "heat_per_blow": 10})
+	var flywheel := {"id": "flywheel", "name": "Flywheel", "description": "", "effects": [
+		{"trigger": "on_heat_gain", "effect": "add_shield", "value": 5}]}
+	var sk := Skirmish.new(1, 2)
+	var u := _mech("A", Die.single(siphon), 40, 200)
+	u.shield = 10
+	u.grant_passive(flywheel)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _archer(100, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.front[0]), "the Siphon is spent")
+	sk.end_round()
+	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each")
+	assert_eq(u.shield, 25, "and each siphoned blow stood up the flywheel's 5 shield")
