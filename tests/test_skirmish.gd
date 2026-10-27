@@ -366,11 +366,7 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	s3.begin()
 	s3.start_round()
 	assert_true(s3._when_holds(hc, {"when": "others_on_field"}), "another stands with it")
-	assert_true(s3._when_holds(hc, {"when": "few_waiting"}), "one waits, which is few")
-	s3.reinforcements.append(_ghoul(30, 10))
-	s3.reinforcements.append(_ghoul(30, 10))
-	assert_false(s3._when_holds(hc, {"when": "few_waiting"}), "three wait: not few")
-	assert_true(s3._when_holds(hc, {"when": "few_waiting", "foe": "nobody"}), "none of a named foe waits")
+	assert_false(Foe.WHENS.has("few_waiting"), "no condition counts the pool (Ryan, 26 October: a summoner needs none)")
 	assert_false(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "whole")
 	hc.hp = 80
 	assert_true(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "missing the value")

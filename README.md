@@ -135,15 +135,20 @@ PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the
 Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
 opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
 `python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
-`%LOCALAPPDATA%\Programs\Godot`; Python 3.13, since Windows' own `python3` is a Microsoft Store
-stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
+`%LOCALAPPDATA%\Programs\Godot`, self-contained: the `._sc_` file beside it keeps its settings,
+export templates and debug keystore in `editor_data` there; Python 3.13, since Windows' own
+`python3` is a Microsoft Store stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
 `BPY_PYTHON` points lowforge at `.bpy` (Python 3.11 with `bpy==5.0.1`; `.bpy/` and
 `tools/soundforge/.venv-piper/` sit in `.git/info/exclude`); and `PYTHONUTF8=1` is set, since
 the tools open text without naming an encoding and Windows would read it as cp1252. Python
 writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
 the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
-`fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card).
+`fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
+desktop app is a packaged Windows app: what its sessions write under `AppData` lands in a
+private copy only Claude's own processes see (`AppData\Local\Programs` excepted), which is why
+the SDK and Godot's data live where every shell sees them; check a new install from a terminal
+tab, which sees what your own shells see.
 
 ```sh
 # first run, and after adding PNGs or a class_name: the import and the script class cache
@@ -309,14 +314,16 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
 # a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
-# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 46 on
-# every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them), record it in picks.json. A flaw his
+# Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 42 on
+# every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them, and --keep-glow X0 Y0 X1 Y1
+# keeps white-hot light the background's white inside that box of the render, Surtr's blade and blaze), record it in picks.json. A flaw his
 # note names is tried first with `forge.py fix` (the edit model on the picked source, four candidates into out/<foe>_fix). Rebuild the
 # page for a round with `forge.py phone --tags <the round's tags> --only` and republish out/phone/index.html to that URL with `root`
 # set, its new renders/ in `files` and the last round's renders as null (two publishes when the two pass 255 files); a republish keeps
 # the picks. Every candidate's source render lived only in tools/foeforge/out on Ryan's Mac (git-ignored); the seventh round's
-# were force-added under it (fb45141, 19 October), so its picks cut and its page rebuilds on any machine. Rendering needs the Mac.
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags bossart10 heroart16 chibi_heroart16 --keys surtr_bossart10 bourgeon_bossart10 augur_heroart16 augur_chibi_heroart16   # the boss art round's seventh sets (19 October) as a phone page in out/phone (status has the link)
+# were force-added under it (fb45141, 19 October), and once they were cut (26 October) only the Augur's stayed, for her next pass (the
+# rest: git show fb45141). Rendering needs the Mac.
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --only --tags heroart16 chibi_heroart16 --keys augur_heroart16 augur_chibi_heroart16   # the Augur's seventh-round sets (19 October), where her next pass starts, as a phone page in out/phone
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py fix tools/foeforge/picks/sandworm.png sandworm "its head has no eyes at all"   # one fix, four candidates
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi --variants --tag takesF   # a hero's chibi from its takes (drop --chibi for the boss register)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
@@ -365,8 +372,8 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # screen. Sizes and touch are the phone's own, the frame rate is the browser's.
 # Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
 # from the Godot release, unzip, and put its `templates` folder at
-# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on Windows,
-# %APPDATA%\Godot\export_templates\4.7.2.stable). On Windows the first serve asks Windows
+# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on the Windows PC,
+# editor_data\export_templates\4.7.2.stable beside the Godot executable). On Windows the first serve asks Windows
 # Firewall to let Python take connections: allow it on private networks.
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 
@@ -376,18 +383,18 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
 # (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
-# On Windows, where it is set up now: the SDK at %LOCALAPPDATA%\Android\Sdk (Google's
+# On Windows, where it is set up now: the SDK at ~/Android/Sdk, out of AppData (Google's
 # command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
 # build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
 # names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
 # unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
-# other software opens .jar files with stays the default), and the keystore at
-# %APPDATA%\Godot\keystores\debug.keystore. The export needs no NDK (no Gradle build). A phone
+# other software opens .jar files with stays the default), and the keystore in Godot's
+# editor_data\keystores. The export needs no NDK (no Gradle build). A phone
 # holding a build signed on the Mac refuses this machine's until that build is uninstalled.
 tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
 # after a crash on the phone: the abort and its backtrace; and the app's memory while it
 # runs (Native Heap and EGL/GL mtrack are the columns that climb when something leaks;
-# on Windows, adb is %LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe)
+# on the Windows PC, adb is ~/Android/Sdk/platform-tools/adb)
 ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash | grep -A 12 "Abort message"
 ~/Library/Android/sdk/platform-tools/adb shell dumpsys meminfo com.publabs.riftgate
 ```

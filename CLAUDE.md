@@ -22,6 +22,10 @@ Every other command (models, foes, sound, screenshots, the phone, the pages) is 
 On the Windows desk machine (since 19 October) they all run as written from Git Bash; from
 PowerShell, `& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`. The README's Running
 section says what is set up there and what cannot run (foeforge's renders need the Mac).
+There the Claude app is a packaged Windows app: anything a session writes under `AppData`
+(`AppData\Local\Programs` excepted) goes to a private copy that Ryan's own shells never see,
+though the session's own commands do. Install shared tools elsewhere, and check from a
+terminal tab, which sees what his shells see.
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.
 

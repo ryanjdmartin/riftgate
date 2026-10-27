@@ -1316,3 +1316,18 @@ func test_an_area_weapon_brackets_a_pair_as_one_slot() -> void:
 	assert_true(s._slot_views[0][0].highlight and s._twin_views[0][0].highlight, "each half bracketed on its own")
 	s._drag_from = -1
 	s.free()
+
+
+## A foe ready to get back up that burns down in the enemy's turn stands again in its slot, and
+## the screen plays its fall and its return after the turn (26 October).
+func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
+	var s := _screen(5)
+	var foe: Foe = s.sk.front[0]
+	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 5, Effects.DECAY_TICK)
+	foe.hp = 1
+	s._end_turn_now()
+	assert_true(s.sk.field_foes().has(foe), "it stood again")
+	assert_eq(foe.hp, foe.hp_max, "whole")
+	assert_false(Effects.has(foe, "risen"), "its charge spent")
+	s.free()

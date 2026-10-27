@@ -1,5 +1,5 @@
 {
- "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --glow for a coloured glow, --height 46 on every chibi so the party stands at one scale; pockets of pure white key by default since 14 October). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note. fix.from is the render a fix edited; a source under out/<foe>_hand is a PIL edit by a session, its prompt.txt saying what was done.",
+ "_about": "Ryan's picks, each source render kept beside this file at full size for later fixes. The first pass is of 9 October; on 13 October he picked the wildlife again from the battle-pose takes (the original sets retired) and changed four heroes; later that day every hero was re-picked from the diversity pass (one take drawn as chibi and boss) except the Summoner, whose takes were redrawn without fire. role: sprite (cut into art/foes at its frame), chibi (a hero's sprite for its domain's final, cut at 36x48), promoted (the boss register for the hero's promoted form, waiting on its entry). prompt is what rendered it; candidate is the seed, which in a takes set is also the take's number in design.variants. cut is the cutter's options that pick needed (--tol 90 for a grey ground shadow, --glow for a coloured glow, --height 42 on every chibi so the party stands at one scale, keep_glow for white-hot light the background's colour; pockets of pure white key by default since 14 October). note is Ryan's phone note on the pick, verbatim: what to fix. marked holds candidates he set aside for another use, with his note. fix.from is the render a fix edited; a source under out/<foe>_hand is a PIL edit by a session, its prompt.txt saying what was done.",
  "picks": {
   "goblin": {
    "foe": "goblin",
@@ -496,6 +496,83 @@
     "asked": "a composite: the skull of fixhand4 3 (the bolder jaw and nose bone) pasted onto fixhand4 2 by a content mask, then a close image-to-image pass at 0.9 (candidate 3, the second pass)"
    },
    "note": "Ryan's pick of 19 October after six rounds: his first pick (the flourish, bossart 4) lacked the hand on the arm bent across his chest; an added arm and a cape grip through the edit model missed, image to image from the pick landed the hand (fixhand3 3); 2's head and boots onto 3 by the edit model (fixhand4 2); its jaw and nose bone from 3, where the edit model's skull was 'way too much, full of artifacts', so a composite of the aligned siblings closed at 0.9. The Marsh's boss; cut at the common frame as the draft sizes it"
+  },
+  "surtr": {
+   "foe": "surtr",
+   "role": "sprite",
+   "candidate": 5,
+   "source": "out/surtr_bossart10/surtr_5.png",
+   "kept": "picks/surtr.png",
+   "prompt": "surtr_3.png: A towering giant whose whole body is living flame over a dim core of black slag, its head a sharply drawn mask of darker fire within the blaze with two deep black pits for eyes, a great sword of fire held out in a clear clenched fist, a visible hilt and crossguard between the fingers and the blade, the face a dark shape in the fire. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Surtr, a monster of the Summoner's rune circle.  A towering elite, twice the height of a common foe. Light: lit from inside, fire against darkness.",
+   "fix": {
+    "from": "out/surtr_bossart9/surtr_2.png",
+    "asked": "a composite: the blade cut by its mask, turned five degrees clockwise about its base and moved right onto the grip's line by hand (out/surtr_bossart10/layout_blade.png, never shown raw), closed by image to image at 0.9 (candidate 3), then that pass's sword column pasted back onto his pick so his head stays as picked"
+   },
+   "cut": {
+    "keep_glow": [
+     [
+      150,
+      55,
+      345,
+      340
+     ],
+     [
+      85,
+      125,
+      125,
+      495
+     ],
+     [
+      330,
+      560,
+      400,
+      715
+     ]
+    ]
+   },
+   "note": "Ryan's pick of 26 October after seven rounds (a body made of fire, a head of flame in place of the skull, a sword in a fist with a hilt, then a blade on that grip): his sixth-round pick (bossart9 2, \"so close\") with its blade on the grip's line. His white-hot blade, chest and thigh and the blaze round his face are the background's white, so the cut keeps them by box (keep_glow); the white between his sword arm and his body stays keyed. The Summoner's summon in Ifrit's place, cut at the massive frame ahead of its moment on the skirmish screen"
+  },
+  "bourgeon": {
+   "foe": "bourgeon",
+   "role": "sprite",
+   "candidate": 1,
+   "source": "out/bourgeon_bossart10/bourgeon_1.png",
+   "kept": "picks/bourgeon.png",
+   "prompt": "bourgeon_2.png: A tall gaunt humanoid plant creature of thin knotted vines and green bark, long spindly arms and legs with no muscles, a narrow chest and thin shoulders, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, thin vines whipping from its shoulders, its arms spread, every limb thin as a sapling. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Floraison, a monster of the grasslands.  A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
+   "fix": {
+    "from": "out/bourgeon_bossart6/bourgeon_2.png",
+    "asked": "the two eyes inside the maw painted out by hand with the maw's own black (an erase over dark, nothing re-rendered)"
+   },
+   "cut": {
+    "tol": 90
+   },
+   "note": "Ryan's pick of 26 October after nine rounds: his lanky pick (bossart6 2) with the eyes inside its maw painted out, after the edit model and two head swaps by composite missed (cut off or blurred at phone scale). Its prompt is rebuilt from the drafts' take 2 at 3b9a60a5, the set's prompt.txt having kept only 3 and 4. Cut at tol 90 for the render's grey ground shadow; the maw's pink rim takes the body's tan at sixteen colours. Art ahead of content: nothing loads it until its kit lands"
+  },
+  "augur": {
+   "foe": "augur",
+   "role": "promoted",
+   "candidate": 9,
+   "source": "out/augur_heroart16/augur_9.png",
+   "kept": "picks/augur_promoted.png",
+   "prompt": "source: tools/foeforge/out/augur_heroart16/layout_nosmoke.png\n\nEdit this 16-bit SNES JRPG battle sprite. Keep everything else exactly as it is: the same figure, pose, proportions, colours, one-pixel dark outline, shading and painterly pixel art style, on the same solid flat pure white background. Change only this: the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are",
+   "fix": {
+    "from": "out/augur_heroart16/layout_nosmoke.png",
+    "asked": "the crescent of the upper blade is reversed: it now hangs on the inner side of the shaft and curves in toward her, its long edge facing the middle of the picture; the spearhead, the shaft, her grip, her face and everything else stay exactly as they are"
+   },
+   "note": "Ryan's pick of 26 October, and she needs another pass (his words: \"the augur will need another pass at some point since she's still not correct\"; the to-do). His sixth-round lean (heroart9 1) with the smoke erased by hand (layout_nosmoke) and the upper crescent turned inward by the edit model, seed 9 (3 the other of six seeds that landed). Every render of hers that survives is under out/augur_heroart9, out/augur_heroart16 and their chibi sets, kept in git for that pass"
+  },
+  "augur_chibi": {
+   "foe": "augur",
+   "role": "chibi",
+   "candidate": 18,
+   "source": "out/augur_chibi_heroart16/augur_18.png",
+   "kept": "picks/augur_chibi.png",
+   "prompt": "augur_18.png: 16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a lean young woman with olive skin and a long black braid, bare-headed, in a sleeveless fitted leather vest of dark green laced up the front over a grey long-sleeved shirt, a wide belt hung with a cord of carved bone charms, close-fitting dark trousers tucked into knee-high boots, her legs plain to see from belt to boot, carrying a double-ended scythe staff: a long wooden pole with a great curved reaper's blade at the top end and an identical great curved reaper's blade at the bottom end, both blades long thin crescents, the staff gripped in her right hand on the viewer's right, its upper blade high in the top right corner above her right shoulder, that blade's crescent on the inner side of the shaft, curving in toward her, its long edge toward the middle of the picture, the shaft slanting down to the LEFT behind her back, tilted about forty degrees from upright, so that the lower blade comes out low on the viewer's left behind her legs, the whole staff a diagonal from the top right down to the bottom left; her left hand raised and empty, no smoke anywhere.",
+   "image": "out/augur_chibi_heroart16/layout_flip2.png",
+   "cut": {
+    "height": 42
+   },
+   "note": "Ryan's pick of 26 October, and she needs another pass (his words: \"the augur will need another pass at some point since she's still not correct\"; the to-do). His chibi lean (chibi_heroart9 2) with the smoke erased by hand and the upper head reflected across the shaft's axis by hand (layout_flip2), closed by image to image at 0.85, seed 18; the edit model never turned the chibi's axe head. She stands the party's height, slighter than the rest (a smaller head, her staff across the frame)"
   }
  },
  "reference": {

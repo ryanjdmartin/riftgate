@@ -1162,14 +1162,6 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			return f.hp * 2 <= f.hp_max
 		"missing_hull":
 			return f.hp <= f.hp_max - maxi(1, int(a.get("value", 0)))
-		"few_waiting":
-			# Fewer than two of the foe a summon calls (or of anyone, when it names none) wait.
-			var who := str(a.get("foe", ""))
-			var n := 0
-			for r in reinforcements:
-				if who.is_empty() or r.content_id == who:
-					n += 1
-			return n < 2
 		"back_behind":
 			if f.rank != 0 or f.column < 0 or f.column >= columns:
 				return false

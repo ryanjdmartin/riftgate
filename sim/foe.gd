@@ -63,9 +63,9 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "few_waiting", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
+const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
 const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
+	"below_half": "when below half", "missing_hull": "when hurt",
 	"back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
