@@ -1919,3 +1919,55 @@ number a piece, Spread N and Penetrate N, the neighbours taking N before their o
 armour, Claude's lean: the bible's own exit ("the lever is its number") made the rule, no
 rounding, each carrier's price its own (the drum's and the Beam's 4 spreading 2 or 3, the Claw's
 and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbers content's.
+
+## 27 October, the trios against thinner formations, and the Knight's first read
+
+**Formations thinned, for the trio** (the same day, for the quick campaign question and the
+three-or-four question). `tools/balance.gd` on main's head after the Zombie Knight's line
+(`b9f85c7d`, area at half as built), 200 seeds a cell, random and greedy, three trio rows (the
+starting team; the Armadillo, the Cassowary and the Puffin without an area piece; the Honey
+Badger, the Cottonmouth and the Puffin with two) against each formation at two thirds and at
+half of its size (`--pack`; the Meadow 10 and 8 foes of 15, the Waste 6 and 5 of 9, the Marsh 7
+and 6 of 11, the Peak 6 and 5 of 9), and the Marsh at its new full size, 14,400 fights. Then
+`tools/quick_run.gd` at 40 runs, greedy, the stand-in out, with tier one's formations at two
+thirds and at half (`--density 0.67,1,1` and `0.5,1,1`; the Marsh list before the Knight, as
+the committed run at half above).
+
+Won, random / greedy, then the greedy win's rounds and hull, at two thirds and at half:
+
+| Row | Meadow | Waste | Marsh | Peak |
+|---|---|---|---|---|
+| The starting team | 100 / 100 (3.9 r, 2%), 100 / 100 (3.2 r, 1%) | 100 / 100 (2.3 r, 2%), 100 / 100 (2.1 r, 5%) | 95 / 100 (2.9 r, 3%), 99 / 100 (2.4 r, 2%) | 100 / 100 (2.7 r, 1%), 100 / 100 (2.3 r, 0%) |
+| A trio, no area | 68 / 100 (10.5 r, 14%), 94 / 100 (8.3 r, 8%) | 82 / 100 (6.6 r, 10%), 100 / 100 (4.1 r, 3%) | 9 / 89 (10.6 r, 55%, 3.1 lost), 18 / 92 (10.1 r, 49%, 2.9 lost) | 48 / 99 (10.6 r, 37%), 71 / 100 (8.1 r, 19%) |
+| A trio, two carriers | 100 / 100 (4.2 r, 1%), 100 / 100 (3.3 r, 0%) | 98 / 100 (2.5 r, 4%), 100 / 100 (2.1 r, 4%) | 59 / 100 (4.1 r, 20%, 1.6 lost), 73 / 100 (3.7 r, 18%, 1.5 lost) | 96 / 100 (3.2 r, 2%), 97 / 100 (2.9 r, 1%) |
+
+Against the formations whole (the entry above, the Marsh at its old fifteen) the trio without
+area read 1 / 100 on the Meadow for 40% of its hull, 27 / 100 on the Waste for 30%, 0 / 87 on
+the Marsh for 70% and 0 / 14 on the Peak for 96%, the trio with two carriers 77, 86, 51 and 36
+by random play at 4 to 10% of its hull.
+
+The quick campaign at tier one thinned, half area, the first battle won 55% at two thirds (16
+runs fall at its boss, 2 at a formation) and 70% at half (12 at its boss), from 3% whole; the
+tier-one formations won 99% in 3.8 rounds leaving 94% hull and 100% in 3.3 leaving 96%; the
+tier-one boss fights 82% of 100 at two thirds; the squad's hull as the boss fight opens 85% and
+88%. The runs then play out (4.97 and 6.35 battles a run; none and three reach the finale, none
+won), tier two and three the same enemy as tier one, since no tier is the foes' yet.
+
+**The Zombie Knight's first read.** The Marsh at its new full size (the Revenant ×6, the Zombie
+Knight ×2, the Ghost ×3), the same rows: the starting team 42 / 99 (5.1 rounds, 23% hull, 0.66
+components lost), the trio without area 0 / 0, the trio with two carriers 2 / 77 (9.1 rounds,
+74% hull, 4.3 components lost); the old fifteen read 89 / 100 at 8%, 0 / 87 at 70% and 51 / 100
+at 6%. Thinned to seven, the Marsh still costs the trio without area 55% of its hull and three
+components. The Knight is the Marsh's one armoured foe at 8 HP, armour 1 and a breaching blow of
+6: a massive foe's blow on a rank-and-file body (the scales row: the rank and file's blows 2 or
+3), and every one of its blows reaches a tier one's 20 to 24 hull past the shield and injures
+at a quarter of it, so the pair is an injury mill for a trio. Its numbers were never read before
+today, since it never spawned; a placeholder like every number, Ryan's to move.
+
+Read. The fights' size is the bigger lever on the trio's chain by far: a third off tier one's
+formations takes the first battle from 3% to 55% at half area, where area whole took it to 28%,
+and the thinned formations sit where the bands want a trio, random play losing some and greedy
+winning nearly all for a few points of hull, except the Marsh, which the Knight's blow sets
+apart. The fours were not run against the thinned fights, since whole formations are already
+free for them (the entry above), so the thinned sizes are a trio's fights and the whole ones
+nobody's: section 12's three-or-four question.

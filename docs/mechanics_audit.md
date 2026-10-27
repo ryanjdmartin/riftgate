@@ -231,7 +231,7 @@ Overcharged) don't pass through `_stacks_from` (sim/skirmish.gd:1279, :1287; `Ef
 The Stoker is a hardpoint piece, so a Stingray at 10 heat can carry it and burns itself 1, not
 3.
 
-### 19. Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
+### 19. Open (Ryan, 27 October: elaborate, a rule may be missing). Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
 A consumer's point a stack is added to the roll (sim/skirmish.gd:1809), and the roll reaches
 every foe the blow does. "One blow on one foe (no strikes past one, no area)"
 (docs/rules.md:266), and the validator holds the authored face to it, but the Cottonmouth's
@@ -239,6 +239,23 @@ drum grants Spread at the front and Penetrate at the back, so its Backdraft Char
 burning target's stacks to its neighbours too (Burning 4: 8 on all three). A Coriolis
 Accelerator through the drum carries the aimed foe's missing-HP bonus to the area the same way
 (item 9's kind).
+
+The rule that is missing (27 October): the rules say what a blow is (the number, the attacker's
+modifiers, each foe's own) and that the foes past the aimed one take half of it, but never
+which parts of "the number" are the blow's and which are the aimed foe's. Three things the
+engine reads off the aimed foe ride to the neighbours as computed for it: the stacks a consumer
+eats and their bonus (this item), the target's missing hull (the Coriolis; the rules' step 1
+even folds it into "the number"), and a condition on the foe (item 9: the Tensor's "a foe
+carrying any status", the Rangefinder's rank). The validator's "no area" on a consumer guards
+the authored face only; a passive that grants area at the spend (the drum) steps past it. Two
+readings, either a one-line rule: (a) a blow is read for each foe it reaches as if that foe were
+the one aimed at, the entry's number and the machine's own adds the same for all (the roll,
+heat fired, hopper loads, Overcharged), what reads the foe read on each (a condition on it, its
+missing HP, its own Flak, Shock and armour), and what the spend consumes the aimed foe's alone;
+or (b) the shared blow is the number and the machine's unconditional adds, and anything read
+off a foe is the aimed foe's alone. (a) matches the Tensor's text and the Ambush's rule; (b) is
+cheaper to run. A printed number a piece for the area (Spread N, section 12) makes both moot:
+the neighbours' blow is then N, nothing of the aimed foe's riding.
 
 ### 20. Question: the winning turn is free of heat
 END TURN's costs (Burning's tick, the overheat, the seal's heat) never land on the turn a
@@ -453,6 +470,8 @@ domains landed (9 October, `5d9ff746`) and never held the Knight. Fixed on main,
 Marsh sends the Revenant ×6, the Zombie Knight ×2 and the Ghost ×3, the armoured pair sized as
 the Waste's Antlions, so the Marsh formation is eleven foes where it was fifteen and the balance
 matrix gains a Zombie Knight ×2 cell; the report of 27 October predates both.
+Its first read the same day (`docs/measurements.md`, the trios against thinner formations): the
+pair's breaching 6 makes the Marsh formation an injury mill for a trio; its numbers are Ryan's.
 
 ### 38. Text: the promoted forms show their heroes' codex
 A promoted entry sets no codex and takes its hero's (`_resolve_promotions`,
