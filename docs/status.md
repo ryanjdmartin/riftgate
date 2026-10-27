@@ -156,7 +156,12 @@ merged on 21 October are paused, each resuming from its briefs:
   starfighter Needletail good, so two riffs (the lance, with the designator as the needle's tip;
   the dart, a faceted diamond body); the swap taken as a stab (the Puffin on the boat, the Storm
   Petrel on the Puffin's hull with a bow plate and a front riot shield); the Lun the wrong
-  reference, so the Giant Petrel as a flying-wing hovercraft and as a catamaran. His picks next.
+  reference, so the Giant Petrel as a flying-wing hovercraft and as a catamaran. His reads of 27
+  October (the fourth round, `kestrel_looks3.py`): the diamond body with the lance's nose and tail
+  for the Needletail (his tilt-jet question open in chat); the jaeger less bird and his twin swing
+  for the Skua, the drop-tip cut; the flying wing over the catamaran, held; the swap's second
+  stab (no bow plate, the field as rails and pylons, St. Elmo's port in the nose; the Puffin's
+  plates kept as wings and amplifiers). His picks next, then the picks built with their acts.
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
