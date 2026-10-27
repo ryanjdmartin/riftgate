@@ -1831,3 +1831,91 @@ half, lands harder than its read said: on every area carrier alone, on the trios
 campaign (above), and nowhere else. The 23 October grids by stage (`tools/stock_loop.py`, the
 starter trios and the endgame fours) were not rerun and predate all of it; this report is the
 baseline for the rows it holds until the fresh start lands.
+
+## 27 October, area at half, the forms on the teams
+
+**The halving read on teams, in three forms** (Ryan, 27 October: does the half make sense at
+this scale, and does the fall it caused say single-target is too weak). `tools/balance.gd` on
+three copies of main's head (`71ab3d7`, before the Zombie Knight's line, so the Marsh formation
+is its fifteen), 200 seeds a cell, random and greedy, five team rows against the four formations
+and the two swarms of six, 14,400 fights a form: area at half as built; half rounded up
+(`(dmg + 1) / 2` at the engine's two sites and in the bot's valuation); and whole (every foe
+reached taking the blow, as before 26 October), the bot valuing each form as the engine runs it.
+The rows: the starting team (the Honey Badger, the Clydesdale, the Kite: the Claw, the Enfilade
+Beam and the Airburst Shell); a four without an area piece (the Armadillo, the Cassowary, the
+Skua, the Puffin); a four with two carriers (the Honey Badger, the Cottonmouth, the Cassowary,
+the Puffin); a trio without (the Armadillo, the Cassowary, the Puffin); a trio with (the Honey
+Badger, the Cottonmouth, the Puffin). Then `tools/quick_run.gd` at 40 runs, greedy, in the
+whole and the rounded-up copies, beside the committed run at half (the stand-in out, above).
+
+The arithmetic at this scale first. The rank and file stand at 2 to 6 HP (3 the Goblin's and
+the Revenant's, 4 most of the rest) and the area pieces blow 1 to 5: the Claw 2 to 4, the Plow
+2 to 5, the Enfilade Beam and the drum's shot 4, the Airburst Shell 1 to 2, the Flakshot 1. A
+neighbour's blow, mean, whole / half rounded down / rounded up: the Claw 3.0 / 1.3 / 1.7, the
+Plow 3.5 / 1.5 / 2.0, the Beam and the drum 4 / 2 / 2, the Airburst 1.5 / 0.5 / 1.0, the
+Flakshot 1 / 0 / 1. The chance a neighbour at 3 HP dies to it: the Claw 67% whole and 0 under
+either half, the Plow 75%, 0 and 25%, the Beam and the drum 100%, 0 and 0. So at single digits
+a half-blow kills no rank and file at full HP (the Beam's 2 on a Needler the one exception),
+whichever way it rounds: the halving removes the neighbours' kills and leaves wounded foes for
+the next die, where at the old scale (11 October, above: the Claw's and the Plow's spread at
+half cost the Badger three points, 45 / 69 to 42 / 66) it took a share of a foe that took three
+blows anyway.
+
+Won, random / greedy, half, then rounded up, then whole (a cell that reads the same under every
+form is given once):
+
+| Row | Goblins x6 | Revenants x6 | Meadow formation | Waste | Marsh | Peak |
+|---|---|---|---|---|---|---|
+| The starting team | 100 / 100 | 100 / 100 | 99 / 100, 98 / 100, 100 / 100 | 99 / 100, 99 / 100, 100 / 100 | 89 / 100, 89 / 100, 94 / 100 | 81 / 100, 85 / 100, 89 / 100 |
+| A four, no area | 100 / 100 | 100 / 100 | 99 / 100 | 100 / 100 | 80 / 100 | 70 / 100 |
+| A four, two carriers | 100 / 100 | 100 / 100 | 99 / 100, 99 / 100, 100 / 100 | 100 / 100 | 93 / 100, 93 / 100, 97 / 100 | 89 / 100, 91 / 100, 96 / 100 |
+| A trio, no area | 97 / 100 | 97 / 100 | 1 / 100 | 27 / 100 | 0 / 87 | 0 / 14 |
+| A trio, two carriers | 99 / 100 | 99 / 100 | 77 / 100, 77 / 100, 91 / 100 | 86 / 100, 87 / 100, 95 / 100 | 51 / 100, 50 / 100, 73 / 100 | 36 / 100, 39 / 100, 60 / 100 |
+
+Rounds to win and hull lost, greedy, on the rows the form moves (half, rounded up, whole): the
+starting team on the Meadow 6.0 rounds and 7%, 6.0 and 7%, 5.2 and 4%, on the Marsh 5.7 and 8%,
+5.6 and 7%, 4.7 and 4%; the four with two carriers on the Meadow 5.3 and 0%, 5.2, 4.2 and 0%, on
+the Marsh 4.8, 4.8, 3.6, on the Peak 4.1 and 2%, 4.0, 3.1 and 0%; the trio with two carriers on
+the Meadow 6.1 and 4%, 6.0, 4.6 and 1%, on the Marsh 5.6 and 6%, 5.5, 3.9 and 0%, on the Peak
+4.8 and 10% with 0.36 components lost, 4.8, 3.7 and 3% with 0.10. The rows without an area piece
+do not move by a fight: the four without wins every formation at 100% greedy in 4.5 to 8.0
+rounds for 3 to 14% of its hull (the Peak the 14%, 0.6 components lost); the trio without takes
+9 to 17 rounds where it wins and bleeds 30% on the Waste, 40% on the Meadow, 70% on the Marsh and
+96% on the Peak, which it wins 14% of.
+
+The quick campaign, 40 runs, greedy, the stand-in out, half (the committed run), rounded up,
+whole: the first battle won 3%, 8%, 28% (its boss fight 1 of 23, 3 of 21, 11 of 27; whole, four
+runs reach the finale and one wins); runs falling at a formation 10, 14, 9, at the elite's slot
+7, 5, 4, at the boss 22, 18, 16; the tier-one formations won 87% in 7.3 rounds leaving 63%
+hull, 83% in 6.6 leaving 64%, 93% in 5.1 leaving 83%; the squad's hull as the boss fight opens
+59%, 64%, 70%; the tier-one boss fights won 15% of 26, 32% of 28, 73% of 60. Past the first
+battle the enemy is the same at every tier (no tiers on its side yet), and tier two's formations
+are won 100% leaving 85 to 96% hull under every form.
+
+Read. The half walls no four: with an area piece or without, a stock four beats every formation
+and swarm at 100% on the greedy rung in a single fight from full hull, for 3 to 14% of its hull,
+and random play beats them 70 to 100%, the too-easy side of the bands and not a wall; the form
+changes how fast an area four wins (a round or two of four to six) and what it bleeds (a few
+points), never whether. So the halving does not say single-target is too weak: the no-area rows
+read the same under every form, and they read easy. Where the forms part is the trio: with two
+carriers a formation costs it 4 to 10% of its hull at half and 0 to 3% whole, and the Marsh and
+the Peak sit in a decision band at half (random 51 and 36, greedy 100) that whole area lifts
+toward too easy (73 and 60); without a carrier a trio bleeds a third to all of its hull on a
+formation under every form. The quick campaign's first battle is three formations and the
+boss's on a trio with no mend, so each fight's rounds compound into the cliff, and whole area
+hides it by tempo, a fight of four rounds in place of six, the hull kept for the next. The cliff
+is the trio's against the fights' size (section 4's four-machines row: a formation is the
+squad's fight) and the boss fight's (the whole formation beside the boss and its escort), the
+sizes the foes' fresh start sets, not the rule's. The half does what it was meant to for the
+aim and the carriers (the aim matters, the Cottonmouth's swarm cells left the no-decision band
+on the 26th), but at single digits it is not a half: it zeroes the neighbours' kills, and
+rounding up mends nothing (the first battle 3% to 8%, the cells by 0 to 4 points). The scales
+row's own argument, an amp a point a stack so that blows stay at 2 to 6 rather than 1 to 3, is
+the argument against a ratio on the blow at this scale: a halved 2 to 6 is the 1 to 3 the scale
+was built to avoid. The forms, Ryan's to pick (section 12's quick campaign question): the half
+kept, the fresh start's fight sizes answering the trio; whole, the carriers must-picks again
+(the 23 October grid) and the aim moot on a swarm; rounded up, measured as nothing; or a printed
+number a piece, Spread N and Penetrate N, the neighbours taking N before their own statuses and
+armour, Claude's lean: the bible's own exit ("the lever is its number") made the rule, no
+rounding, each carrier's price its own (the drum's and the Beam's 4 spreading 2 or 3, the Claw's
+and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbers content's.
