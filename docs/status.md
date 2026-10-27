@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 674 tests, 64,906 checks, green on `claude/affectionate-goldberg-8e3mkh` with main
+- Tests: 676 tests, 64,908 checks, green on `claude/affectionate-goldberg-8e3mkh` with main
   merged in (27 October), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -173,8 +173,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.318, and so is the live (26 October,
-  the page's version 335, from `claude/affectionate-goldberg-8e3mkh`: Volatile a printed cost and
+  `docs/design-bible.html` after every change. This file is v0.319, and so is the live (27 October,
+  the page's version 336, from `claude/affectionate-goldberg-8e3mkh`: the bot kept on the hand
+  sum, by measurement; before it Volatile a printed cost and
   the shield cost, its Volatile keyword row taken out of the table by hand, the script not run
   (it would write this branch's older tables back); before it a pick made again going to the
   next machine in line whatever the foe's aim, merged onto another session's republish of 18:53 (the heat rows and

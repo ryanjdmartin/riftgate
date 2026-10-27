@@ -1448,3 +1448,17 @@ its rally needs others on the field. The Meadow formation moves on four greedy c
 one down: the Honey Badger's 20 to 37, Wainwright & Sutler's team's 40 to 57, the Nemesis's 0
 to 3, the Wild Boar's 83 to 73. No cell turns into a wall or goes easy for random
 play. A direction at 30 seeds.
+
+## 27 October, the bot on the copy
+
+Whether the greedy should read the round preview's copy (Skirmish.preview_round) in place of the
+hand-summed forecast, which misses a heal, a last act and a spill. Timed in a cloud session on
+a four-machine team (Badger, Clydesdale, Sparrowhawk, Armadillo) against six goblins and three
+wolves, six seeds, eight rounds each (18 rounds played): the greedy spends 145 ms a round and
+reads 391 forecasts a round, at 0.19 ms each; a copy's play costs 2.42 ms a call on the same
+fight. Read through the copy, a round would cost about a second, some seven times what it does,
+and the matrix at 200 seeds (hours on one core) a day. Most of the 391 are what-ifs with a
+parameter (a shield added, a status granted, a face in hand) the copy does not take, so moving
+the baseline reads alone would leave the bot reading two truths. Decision: the bot keeps the
+hand sum (the bible's round preview row); the exit is a cell whose band the greedy misreads for
+a heal or a last act, when a memoised copy, one play a decision point, is the first thing to try.
