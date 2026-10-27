@@ -156,6 +156,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the week landing where it was meant to, and area at half landing harder than its read of the
   26th said: the Honey Badger's, the Wild Boar's and the Musk Ox's formation cells and the
   Cottonmouth's finals go back to the 22nd's bands with area whole, and nothing else moves them.
+  The Marsh's list holds the Zombie Knight ×2 since 27 October where its second Revenant line
+  stood (the audit's 37, an oversight from the domains' landing), so the matrix's Marsh formation
+  (fifteen foes there, eleven now) and its missing Zombie Knight ×2 cell predate it.
   Gel x4 alone is a free pack for most of the roster since the Gel became a wall; its work is
   inside a formation. The set finals (26 October) turn every rift a domain
   leads final at once; the rally at once moves no cell of the packs that field it out of its

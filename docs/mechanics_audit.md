@@ -442,13 +442,17 @@ ended", docs/rules.md:686).
 
 ## Content and shown text
 
-### 37. Bug or intent: the Zombie Knight never appears in a run
+### 37. Fixed 27 October (Ryan: "a mistake or oversight"; the second Revenant line is the Knight's, ×2, a placeholder like every strength). Bug or intent: the Zombie Knight never appears in a run
 The Marsh's spawn list is the Revenant ×6, the Revenant ×6 again, the Ghost ×3
 (content/factions.json:45), and nothing else deals the Knight, so no run, final escort or
 balance cell meets it; only the harness's pack picker fields it. The bible's domain table gives
 the Marsh's wildlife as "Revenant, Ghost, Zombie Knight", its niche "the Marsh's one armoured
 foe", and the rules cite "the Zombie Knight's 8 HP" (docs/rules.md:183). If the second Revenant
-was meant to be the Knight, it's a one-word fix.
+was meant to be the Knight, it's a one-word fix. It was: the list was written so on the day the
+domains landed (9 October, `5d9ff746`) and never held the Knight. Fixed on main, 27 October: the
+Marsh sends the Revenant ×6, the Zombie Knight ×2 and the Ghost ×3, the armoured pair sized as
+the Waste's Antlions, so the Marsh formation is eleven foes where it was fifteen and the balance
+matrix gains a Zombie Knight ×2 cell; the report of 27 October predates both.
 
 ### 38. Text: the promoted forms show their heroes' codex
 A promoted entry sets no codex and takes its hero's (`_resolve_promotions`,
