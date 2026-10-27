@@ -1971,3 +1971,17 @@ winning nearly all for a few points of hull, except the Marsh, which the Knight'
 apart. The fours were not run against the thinned fights, since whole formations are already
 free for them (the entry above), so the thinned sizes are a trio's fights and the whole ones
 nobody's: section 12's three-or-four question.
+
+**A fixed number by shape, the neighbours always taking 2** (the same day, the same five team
+rows and six packs at 200 seeds, `mini(dmg, 2)` at the engine's two sites and in the bot's
+valuation; the quick campaign at 40 runs beside it). It reads as the half does: no greedy cell
+moves, the rounds move by a tenth at most, and the random cells by 0 to 6 points on the trio
+with two carriers alone (the Meadow 77 to 79, the Waste 86 to 91, the Peak 36 to 42); the
+quick campaign's first battle is won 5% (3% at half, 8% rounded up, 28% whole), the tier-one
+formations 83% in 6.6 rounds leaving 65% hull. Read: a 2 on the neighbours is what the halving
+already deals from the pieces that carry area (their halves are 1 or 2), so the number a form
+gives the neighbours matters only at the swarm's kill threshold, 3 for the Goblin and the
+Revenant: below it every form is a softening and reads as the half, at it a form reads as whole
+on that class. A number a piece is therefore a dial with two settings on today's rank and file,
+a softening (1 or 2) or a kill (3), and a tier's dial rather than a fine one; the fights' size
+remains the lever on the trio's chain.
