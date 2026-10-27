@@ -161,7 +161,13 @@ merged on 21 October are paused, each resuming from its briefs:
   for the Needletail (his tilt-jet question open in chat); the jaeger less bird and his twin swing
   for the Skua, the drop-tip cut; the flying wing over the catamaran, held; the swap's second
   stab (no bow plate, the field as rails and pylons, St. Elmo's port in the nose; the Puffin's
-  plates kept as wings and amplifiers). His picks next, then the picks built with their acts.
+  plates kept as wings and amplifiers). His reads later that day (the fifth round, `kestrel_looks4.py`):
+  the jaeger from its second cut with a jet nose, the wings low and the fin back and taller; the
+  scissor rebuilt round a hub; the Needletail for its two modes, in fast, mark, hover and dodge,
+  out fast (the existing direction with folding wings, and a tail-sitter); the Puffin's skirt to
+  the nose and its booster drawn in; the Storm Petrel's port an intake, its nose carried, its
+  cheeks; and the flying wing airborne, since he may give it to the Lammergeier and the
+  catamaran to the Giant Petrel. His picks next, then the picks built with their acts.
 - 23 October, Ryan's reads of the stock pass's bands settled (his "I think your suggestions are
   sound", of Claude's leans): the kill time read on a squad of four and the gap on built teams
   (the bible's tests row), the free wins left to the foes' fresh start (section 4's four-machines
