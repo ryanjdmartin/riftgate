@@ -252,8 +252,12 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the screen first. Skirmish: codex, mechcodex, pair (a Gel's halves in its slot, RIFTGATE_FOES=gel:2,goblin:3), hold, confirm, lock, repick (a foe whose machine falls first, a second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
+# poses the screen first. Skirmish: codex, mechcodex, pair and pair_spread (a Gel's halves in its slot, and a
+# Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die's; RIFTGATE_HOLD_ENTRY=<place>
+# picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
+# and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
+# second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the button under the eye opens it), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
@@ -408,7 +412,8 @@ statuses and warning signs: a broken shield when incoming damage will break it, 
 a hit that big may injure a component, a skull when the round would wreck it, a thermometer
 when the current face would overheat. The gauges pulse over the part about to change and the
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
-die to lock it, hold a die to see every face on it, drag a die onto a foe to spend an attack
+die to lock it, hold a die to read the entry showing (its effects a line each, every keyword
+explained; double-tap the machine for the whole die), drag a die onto a foe to spend an attack
 face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
 Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
 entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.

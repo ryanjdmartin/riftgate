@@ -709,15 +709,16 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 	var foe := db.make_foe("revenant")
 	var entry := db.codex_for_foe(foe)
 	var atk := int(db.foes["revenant"]["attack"])
-	assert_true(entry["actions"].contains("CLAW // ATTACK %d" % atk), "codex lists the implemented action with the resulting number (alone on the field: no kin)")
-	assert_true(entry["actions"].contains("for %d:" % atk), "and fills {damage} into the text")
+	var said := _moves_text(db, entry)
+	assert_true(said.contains("CLAW\nAttack %d" % atk), "codex lists the implemented move, its name then its blow at its own number: %s" % said)
+	assert_true(said.contains("for %d:" % atk), "and fills {damage} into the text")
 	var caster := db.codex_for_foe(db.make_foe("ghost"))
-	assert_true(caster["actions"].contains("RAISE // BUFF"), "and lists a buff, live since 30 September")
+	assert_true(_moves_text(db, caster).contains("RAISE\nBuff"), "and lists a buff, live since 30 September: %s" % _moves_text(db, caster))
 	var planned: Dictionary = db.foes["revenant"].duplicate(true)
 	planned["actions"] = Array(planned["actions"]).duplicate(true)
 	planned["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "planned"})
 	db.foes["revenant"] = planned
-	assert_false(db.codex_for_foe(db.make_foe("revenant"))["actions"].contains("SOMEDAY"), "a planned action stays hidden")
+	assert_false(_moves_text(db, db.codex_for_foe(db.make_foe("revenant"))).contains("SOMEDAY"), "a planned action stays hidden")
 	ContentDB.reset_cache()
 	assert_eq(entry["flavour"], db.foes["revenant"]["flavour"], "codex quotes the foe, not the faction")
 
@@ -837,7 +838,11 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	var u := db.make_mech("finned")
 	assert_eq(u.cooling, 15, "the chassis's cooling plus the component's")
 	var codex := db.codex_for_unit(u)
-	assert_true(str(codex["passive"]).contains("FINS (Finned Sink): Cooling +5."), "the codex names the passive and its component")
+	assert_eq(codex["face_rules"][0], ["Fins: Cooling +5."], "the codex prints a component's passive on its row")
+	assert_false(str(codex["passive"]).contains("Fins"), "never as the machine's own")
+	for item in codex["stat_items"]:
+		if str(item[0]) == "cooling":
+			assert_eq(StatBlock.value_text(item), "10 (+5▲)", "its cooling the chassis's, the change the component makes beside it")
 	var sink: Face = u.die.faces[0]
 	assert_eq(sink.component, "fins_pack", "the first entry is the component")
 	assert_eq(Effects.explain(u, sink).size(), 1, "the die row names it")
@@ -1080,7 +1085,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	assert_true(bad_plate, "a lure on a shield is refused")
 	var built := db.build_face(gun["face"])
 	assert_true(built.has(Face.Keyword.LURE) and built.has(Face.Keyword.DISRUPT), "and the weapon builds with both")
-	# The shipped lure: an entry of no damage that lures with a spread, in the Badger's stock.
+	# The shipped lure: a debuff that lures with a spread, in the Badger's stock.
 	var klaxon := db.build_face(db.components["proximity_klaxon"]["face"])
 	assert_true(klaxon.is_attack() and klaxon.power == 0 and klaxon.has(Face.Keyword.LURE) and klaxon.has(Face.Keyword.CLEAVE), "the klaxon lures and does nothing else")
 
@@ -1227,12 +1232,13 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 			hits += 1
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
 	var entry := db.codex_for_foe(db.make_foe("bone_dragon"))
-	assert_true(entry["actions"].contains("REGEN // DEFEND"), "the codex lists the defend")
+	var said := _moves_text(db, entry)
+	assert_true(said.contains("REGEN\nDefend · Target: Self"), "the codex lists the defend, aimed at itself: %s" % said)
 	var regrow := 0
 	for a in db.foes["bone_dragon"]["actions"]:
 		if str(a["id"]) == "regen":
 			regrow = int(a["value"])
-	assert_true(entry["actions"].contains("Regrows %d HP" % regrow), "with its number filled in")
+	assert_true(said.contains("Regrows %d HP" % regrow), "with its number filled in")
 
 
 func test_every_component_names_a_silhouette_class() -> void:
@@ -1294,10 +1300,9 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	g.kin = 3
 	assert_eq(g.damage(), int(db.foes["revenant"]["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
 	var entry := db.codex_for_foe(g)
-	assert_true(entry["actions"].contains("+%d A KIN" % swarm), "the codex says the swarm: %s" % entry["actions"])
-	assert_true(entry["stats"].contains("ARM") or true, "stats read")
+	assert_true(_moves_text(db, entry).contains("Attack %d (+%d a kin standing)" % [int(db.foes["revenant"]["attack"]), swarm]), "the codex says the swarm, at its own number with no kin: %s" % _moves_text(db, entry))
 	var maw := db.codex_for_foe(db.make_foe("sandworm"))
-	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
+	assert_true(_moves_text(db, maw).contains("When below half"), "the codex says a move's condition: %s" % _moves_text(db, maw))
 	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes["sandworm"]["armour"])), "and the boss's armour")
 
 
@@ -1320,6 +1325,15 @@ func test_the_codex_plate_lists_the_traits() -> void:
 	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
 	for e in db.validate():
 		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)
+
+
+## A foe's codex moves as the plate prints them, a line each (EntryReadout.codex_move_lines).
+func _moves_text(db: ContentDB, entry: Dictionary) -> String:
+	var out: Array[String] = []
+	for a in entry["moves"]:
+		for l in EntryReadout.codex_move_lines(entry["foe"], a, db):
+			out.append(str(l["text"]))
+	return "\n".join(out)
 
 
 ## A fresh database the test may edit (the default one is shared and cached).
@@ -1482,12 +1496,17 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 			gun = f
 			break
 	assert_eq(int(Effects.attack(u, gun, 10, 10)["heat"]), 2 * int(Effects.attack(plain, gun, 10, 10)["heat"]), "and the text runs")
-	var rows: Array = db.codex_for_unit(u)["passive_rows"]
+	var codex := db.codex_for_unit(u)
 	var found := false
-	for r in rows:
-		if str(r[0]).begins_with("TEST MODULE (MODULE): Hull +30, armour +5, move -10. Its weapons run twice as hot."):
-			found = r[1] == "module"
-	assert_true(found, "the codex names it as a module, with its lines and its text: %s" % str(rows))
+	for e in codex["effects"]:
+		if str(e["name"]) == "TEST MODULE" and str(e["note"]) == "MODULE":
+			found = str(e["kind"]) == "module" and str(e["text"]) == "Hull +30, armour +5, move -10. Its weapons run twice as hot."
+	assert_true(found, "the codex lists it among the active effects as a module, with its lines and its text: %s" % str(codex["effects"]))
+	var read := {}
+	for item in codex["stat_items"]:
+		read[str(item[0]).get_slice(" ", 0)] = StatBlock.value_text(item)
+	assert_eq(read["hull"], "%d (+30▲)" % int(plain.base["hull"]), "its hull the chassis's, the module's change in a bracket, up")
+	assert_eq(read["move"], "%d (-10▼)" % int(plain.base["move"]), "and a drawback down")
 
 
 func test_a_machine_wears_no_more_modules_than_its_slots() -> void:
@@ -1856,7 +1875,7 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 	side["passive"]["effects"] = [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "middle"}]
 	db.chassis["test_rank_bad"] = side
 	var errs := db.validate()
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_drum_bad") and e.contains("rewrite_weapon fires every weapon as one shot")), "a rewrite with no reach is refused")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_drum_bad") and e.contains("rewrite_weapon fires every weapon and debuff as one shot")), "a rewrite with no reach is refused")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")
 
 

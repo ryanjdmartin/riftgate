@@ -474,9 +474,9 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq(pol.equipment_score(sk, ms, ms, scrub), pol.equipment_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, scrub), pol.machine_spend_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
 	Effects.corrupt_entry(m, 2, "foe:x", 2)
-	assert_true(pol.equipment_score(sk, ms, ms, scrub) > pol.equipment_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
+	assert_true(pol.machine_spend_score(sk, ms, ms, scrub) > pol.machine_spend_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
 	Effects.disable_entry(m, 2, "cooldown", sk.round)
 	var before := pol.cleanse_score(sk, ms)
 	Effects.disable_entry(m, 2, "foe:x", sk.round + 1)
@@ -650,8 +650,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.equipment_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
-	assert_eq(pol.equipment_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
+	assert_true(pol.machine_spend_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
 	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
 	assert_eq(pol.barrier_score(sk, ms), 0.0, "a second Barrier adds nothing")
 	var s2 := Skirmish.new(1)
@@ -664,8 +664,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	s2.begin()
 	s2.start_round()
 	var ns: Skirmish.MechState = s2.mechs[0]
-	assert_true(pol.equipment_score(s2, ns, ns, ward) > pol.equipment_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
-	assert_true(pol.equipment_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > pol.machine_spend_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
+	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
 
 
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
@@ -998,7 +998,7 @@ func test_the_planner_places_a_setup_where_the_next_round_cashes_it() -> void:
 
 ## Blind play (the bible's section 2: "a team that spends each die on the nearest foe"; the rung
 ## since 22 October): every weapon on the nearest foe, the front rank before the back and left
-## before right, whatever a kill elsewhere would give; every piece of equipment on its own
+## before right, whatever a kill elsewhere would give; every shield, vent and buff on its own
 ## machine; a die held only where its heat would burn the machine.
 func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	var sk := Skirmish.new(2, 2)

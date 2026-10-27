@@ -23,9 +23,9 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH }
-## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
-## equipment (a shield, a vent) targets self and allies by default, and content may narrow
-## one to self only or allies only, so the design space stays open.
+## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
+## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
+## narrow one to self only or allies only, so the design space stays open.
 enum Target { SELF_ALLY, SELF, ALLY, FOE }
 
 const KIND_NAMES := {
@@ -45,13 +45,19 @@ const KEYWORD_NAMES := {
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
+## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
+## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
+const KEYWORD_STATUS := {
+	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
+	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",
+}
 const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
 ## content to this. Lure and disrupt (2 October) are attack keywords: they ride on any
-## foe-targeted entry, a damage weapon, a status weapon or an entry that does nothing else.
+## entry aimed at a foe, a weapon or equipment, whatever else it does.
 ## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
 ## Shocked.
 const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
@@ -60,9 +66,9 @@ const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
 ## round's end. A vent has nothing to pass.
 const SHIELD_ONLY_KEYWORDS := [Keyword.OVERSHIELD]
 ## Keywords about the spend itself, not its target, so any kind of component may carry
-## them: rapid (equipment too since 9 October, the Wake Diffuser first) gives the machine its
-## turn back whatever the component did. Volatile rode here until 26 October, when it became a
-## cost printed beside the heat (`volatile`, below), a keyword no longer.
+## them: rapid (on a vent or a shield too since 9 October, the Wake Diffuser first) gives the
+## machine its turn back whatever the component did. Volatile rode here until 26 October, when
+## it became a cost printed beside the heat (`volatile`, below), a keyword no longer.
 const ANY_KEYWORDS := [Keyword.RAPID]
 
 
@@ -95,7 +101,7 @@ var component: String = ""    # the component this entry is (content id); "" for
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
 var disabled: bool = false    # a stand-in for an entry a status has switched off: blank for now, the real one is untouched
-var targets: int = Target.SELF_ALLY   # equipment: whom it may be spent on; an attack is always FOE
+var targets: int = Target.SELF_ALLY   # a shield, a vent or a buff: whom it may be spent on; an attack is always FOE
 var buff_status: String = ""  # a buff: the engine status it grants (Effects.STATUS id), with...
 var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
@@ -131,7 +137,7 @@ var spends_magazine: bool = false   # an attack: every ammo in the magazine as a
 var random_targets: bool = false    # an attack: each strike at a random live foe, the target the die is dropped on only the gesture
 var spray: bool = false       # an attack: its first strike lands where it is spent, each after it on a random foe in reach at that moment, a kill clearing its slot at once (the Skua's Flechette Pod, 25 October)
 var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
-var reloads_ammo: int = 0     # equipment: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
+var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
@@ -275,7 +281,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.devours = maxi(0, int(d.get("devours", 0)))
 		if Array(d.get("keywords", [])).has("devour"):
 			f.devours = maxi(1, f.devours)
-		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn weapon one stack when it says none
+		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
 		var g = d.get("gates", {})
@@ -291,7 +297,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
-	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK   # an attack: every foe; equipment: every machine it may land on
+	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK   # an attack: every foe; a piece spent on machines: every machine it may land on
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
@@ -416,7 +422,7 @@ func add_keyword(kw: int) -> void:
 	if kw > Keyword.NONE and not keywords.has(kw):
 		keywords.append(kw)
 	if kw == Keyword.BURN and burn <= 0:
-		burn = 1   # a Burn weapon says its stacks; one when nothing says (a synthetic entry, an old save)
+		burn = 1   # a Burn entry says its stacks; one when nothing says (a synthetic entry, an old save)
 	if kw == Keyword.CRYO and cryo <= 0:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
@@ -461,31 +467,39 @@ func is_attack() -> bool:
 	return kind == Kind.ATTACK
 
 
-## The two component types (Ryan, 26 September): a weapon is spent on a foe and need not
-## deal damage; equipment is spent on a machine. A blank is neither.
+## A weapon (Ryan, 26 October): an attack that deals damage, spent on a foe within its reach.
+## Its hits are what "hitting a foe with a weapon" reads, a blow of 0 included.
 func is_weapon() -> bool:
-	return kind == Kind.ATTACK
+	return kind == Kind.ATTACK and not is_debuff()
 
 
-## A debuff (Ryan, 20 and 21 October, the die's kinds): a weapon of no damage, the setters
-## and the swap, whatever its keywords. It prints no number and deals none under any effect
-## (Effects.attack holds it at nothing), its heat still a weapon's and its keywords its whole
+## A debuff (Ryan, 20 and 21 October, the die's kinds): equipment aimed at a foe, dealing no
+## damage (26 October: a weapon deals damage; a buff or a debuff is equipment), the setters and
+## the swap, whatever its keywords. It prints no number and deals none under any effect
+## (Effects.attack holds it at nothing), its heat paid as a weapon's and its keywords its whole
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
 	return kind == Kind.ATTACK and power_max <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
 
 
+## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
+## spent on a machine, or a debuff, spent on a foe; it deals no damage.
 func is_equipment() -> bool:
+	return kind == Kind.BUFF or is_debuff()
+
+
+## Spent on a machine (itself, an ally, or either, as it says): a shield, a vent or a buff.
+func on_machines() -> bool:
 	return kind == Kind.SHIELD or kind == Kind.VENT or kind == Kind.BUFF
 
 
 func can_target_self() -> bool:
-	return is_equipment() and (targets == Target.SELF_ALLY or targets == Target.SELF)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.SELF)
 
 
 func can_target_ally() -> bool:
-	return is_equipment() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
 
 
 ## Rolled: the face rolls when spent. A flat face involves no roll, whatever feeds its number.
@@ -643,10 +657,81 @@ func cost_text() -> String:
 	return (" (-%d hull)" % volatile if volatile > 0 else "") + (" (-%d shield)" % shield_cost if shield_cost > 0 else "")
 
 
-## A Rapid entry's spin as its text says it, and the Siphon's two rules.
+## A Rapid entry's spin as its text says it, and the Siphon's two rules. Equipment that reaches
+## every ally says so in its own words ("on every ally"), never "reaches every foe".
 func spin_text() -> String:
-	return (" spins the die" if spins else "") + (" reaches every foe" if reaches_all else "") \
-		+ (" +%d heat a blow taken this round" % heat_per_blow if heat_per_blow > 0 else "")
+	var out := ""
+	for p in _spin_phrases():
+		out += " " + p
+	return out
+
+
+func _spin_phrases() -> Array[String]:
+	var out: Array[String] = []
+	if spins:
+		out.append("spins the die")
+	if reaches_all and kind == Kind.ATTACK:
+		out.append("reaches every foe")
+	if heat_per_blow > 0:
+		out.append("+%d heat a blow taken this round" % heat_per_blow)
+	return out
+
+
+## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
+## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
+## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
+## with no vent of its own is that vent's number, not a rule.
+func rule_phrases() -> Array[String]:
+	var out: Array[String] = []
+	if kind == Kind.BLANK:
+		return out
+	if kind == Kind.ATTACK:
+		if vents_all:
+			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
+		if power_per_missing > 0:
+			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
+		if not consumes.is_empty():
+			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
+		if self_burn > 0:
+			out.append("Burning %d on itself" % self_burn)
+		if devours > 0:
+			out.append("Overcharged ×%d a kill" % devours)
+		if fills_hopper > 0:
+			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
+		if fires_hopper > 0:
+			out.append("fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper])
+	else:
+		if reloads_ammo > 0 and power > 0:
+			out.append("reloads %d ammo" % reloads_ammo)
+		if vents > 0:
+			out.append("cools %d" % vents)
+		if cools_all:
+			out.append("cools to nothing")
+	if braces > 0:
+		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
+	if not rolls_again_on.is_empty():
+		out.append("spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
+	if kind == Kind.ATTACK:
+		if resets_on_kill:
+			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
+		if pulls_mines:
+			out.append("gathers every mine into its slot")
+		if drones:
+			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
+		if spends_magazine:
+			out.append("a strike for every ammo in the magazine")
+		if random_targets:
+			out.append("at random live foes")
+		if spray:
+			out.append("sprays the rest in reach")
+		if ammo_per_foe_hit > 0:
+			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
+	if printed_cooldown():
+		out.append(cooldown_text().strip_edges())
+	out.append_array(_spin_phrases())
+	if not charged.is_empty():
+		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
+	return out
 
 
 ## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid
@@ -750,7 +835,7 @@ func describe() -> String:
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if resets_on_kill:
-				s += " a kill brings every weapon back and it acts again"
+				s += " a kill brings back every entry its cooldowns darkened and it acts again"
 			if pulls_mines:
 				s += " gathers every mine into its slot"
 			if drones:

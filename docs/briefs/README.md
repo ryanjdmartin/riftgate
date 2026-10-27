@@ -330,7 +330,7 @@ in its brief; the full rounds are in git (above).
   from the jellyfish by pattern (the jellyfish changes the move and purges; this moves the blow
   in time and target).
 - The burrow, grown on the spider and moved here (Claude, 17 October; Ryan: "hilarious", and
-  "is this actually a broken ability, shuffling all intents away?"): equipment on itself,
+  "is this actually a broken ability, shuffling all intents away?"): spent on itself,
   every foe aiming at it re-picks. Broken on the spider (with Rapid it deletes the ambush
   limit, a locked piece feeding only its own passive; alone, blows lost would be a free stun)
   and a reverse Lure without the choice for the ally; sound as the time-shifter's shift with the

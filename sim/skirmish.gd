@@ -90,6 +90,7 @@ var class_tally: Dictionary = {}
 var taken_by_rank: Dictionary = {}
 var _chaining := false
 var _salvo_strike := false   # a strike of the Musk Ox's salvo, paid for by the whole magazine at the spend
+var _blast_strike := false   # a vent's blast: one weapon hit inside the vent's spend, whose heat, ammo and tallies are the spend's
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -278,7 +279,7 @@ func live_mechs() -> Array[MechState]:
 	return out
 
 
-## The live machines a foe may pick or a teammate may land equipment on: a Phased one is neither
+## The live machines a foe may pick or a teammate may land a shield, a vent or a buff on: a Phased one is neither
 ## (the Swallowtail's Mooring Screens, 21 October).
 func targetable_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
@@ -376,7 +377,7 @@ func pending_heat(ms: MechState) -> int:
 	if f == null or ms.assigned:
 		return 0
 	if not f.is_attack():
-		return f.heat if f.is_equipment() else 0   # equipment's printed heat (the Musk Ox's quick reload)
+		return f.heat if f.on_machines() else 0   # a printed heat on a piece spent on machines (the Musk Ox's quick reload)
 	if ammo_price_of(ms, f) > 0:
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
 	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
@@ -411,7 +412,7 @@ static func hopper_bonus(u, f: Face) -> int:
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
 ## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
 ## to that foe: its missing hull, conditions on it (a status it carries), its Flak (a point a
-## stack on a damaging weapon's blow, a 0 included) and its armour off the blow. A shock is left out, the
+## stack on a weapon's blow) and its armour off the blow. A shock is left out, the
 ## foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
@@ -714,7 +715,7 @@ static func corrupt_bite() -> int:
 	return Effects.status_value("corrupted", "corrupt_bite")
 
 
-## The heat a damaging weapon's hit sheds for its hitter for each stack of Cryo it spends on a foe:
+## The heat a weapon's hit sheds for its hitter for each stack of Cryo it spends on a foe:
 ## the Cryo status's own number (the stock pass's engine, 22 October; a constant before).
 static func cryo_cool() -> int:
 	return Effects.status_value("cryoed", "cool_hitter")
@@ -752,7 +753,7 @@ static func spend_bite(u, f: Face) -> int:
 ## asks the same question with that much more shield standing (a shield component about
 ## to be spent here), for whoever weighs one; `overshield` lets it pass the maximum, as a
 ## component with that keyword would. `aimed`, the foe a dragged die is held over, folds in
-## what that spend cashes there: a damaging weapon's hit on a Cryo foe cools the hitter after its own
+## what that spend cashes there: a weapon's hit on a Cryo foe cools the hitter after its own
 ## heat lands (Ryan, 16 October: the net on the heat bar, never the die).
 func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false, aimed: Foe = null) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
@@ -768,7 +769,6 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	hull -= volatile
 	var incoming := 0
 	var component_risk := false
-	var standing := shield
 	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
 	# Breaching Plow, the Siphon) and a Siphon's heat a blow, a second Siphon renewing the first.
 	var spent := spend_face(ms) if with_face and not ms.assigned and ms.face() != null else null
@@ -808,14 +808,13 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
 		"heat_after": heat_after,   # the gauge after the round: settled at the cap, then the foes' heat
 		"overheat": over,
-		"breaks_shield": standing > 0 and shield <= 0,
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}
 
 
-## The heat a damaging spend of the entry showing would cash off Cryo foes, aimed at `over`:
-## every stack on every foe it reaches, at the Cryo rate. Nothing for an entry of no damage or
+## The heat a weapon spend of the entry showing would cash off Cryo foes, aimed at `over`:
+## every stack on every foe it reaches, at the Cryo rate. Nothing for equipment or
 ## without a foe in hand.
 func cryo_cash(ms: MechState, over: Foe) -> int:
 	var f := ms.face()
@@ -853,11 +852,11 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	return out
 
 
-## Machines a piece of equipment may be spent on: itself, its allies, or both, as the
+## Machines a shield, a vent or a buff may be spent on: itself, its allies, or both, as the
 ## component says (Ryan, 26 September: not every shield reaches an ally). Live machines only.
-func equipment_targets_for(ms: MechState, f: Face) -> Array[MechState]:
+func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	var out: Array[MechState] = []
-	if f == null or not f.is_equipment() or shield_short(ms, f):
+	if f == null or not f.on_machines() or shield_short(ms, f):
 		return out
 	for who in live_mechs():
 		if who != ms and is_phased(who):
@@ -873,7 +872,7 @@ func equipment_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 ## Phased): every one it may target, the yet-to-act alone for a grant that needs it.
 func reached_machines(ms: MechState, f: Face) -> Array[MechState]:
 	var out: Array[MechState] = []
-	for who in equipment_targets_for(ms, f):
+	for who in machine_targets_for(ms, f):
 		if f.not_acted and who.assigned:
 			continue
 		out.append(who)
@@ -900,15 +899,15 @@ func charge_lands(ms: MechState) -> bool:
 	var cf := ms.face().charged_form()
 	if cf.is_attack():
 		return not targets_for_face(ms, cf).is_empty() or not slot_targets(ms, Effects.effective_face(ms.unit, cf)).is_empty()
-	if cf.is_equipment():
+	if cf.on_machines():
 		var eff := Effects.effective_face(ms.unit, cf)
 		if cf.reaches_all:
 			if cf.not_acted:
-				for who in equipment_targets_for(ms, eff):
+				for who in machine_targets_for(ms, eff):
 					if who != ms and who.assigned:
 						return false   # an ally has acted: the whole team or nobody
 			return not reached_machines(ms, eff).is_empty()
-		return not equipment_targets_for(ms, eff).is_empty()
+		return not machine_targets_for(ms, eff).is_empty()
 	return false
 
 
@@ -988,7 +987,7 @@ func reach_of(ms: MechState, f: Face) -> int:
 ## The component as the player should see it and as the resolver spends it: a copy carrying
 ## the effective reach and any keyword a passive grants. The die keeps the real one. An
 ## attack also shows the heat a spend adds through every live source (a Scorched machine's
-## weapons run hotter, 13 October; the Sparrowhawk's double): the game does the arithmetic.
+## weapons and debuffs run hotter, 13 October; the Sparrowhawk's double): the game does the arithmetic.
 ## Over a target, the keywords its rank grants too (the Cottonmouth's drum: Spread at the
 ## front, Penetrate at the back), as the spend will carry them.
 func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
@@ -1187,7 +1186,7 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 	return true
 
 
-## The live machines showing an intact weapon: what a foe that aims at the armed looks for.
+## The live machines showing an intact weapon or debuff: what a foe that aims at the armed looks for.
 func _armed_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for ms in targetable_mechs():
@@ -1381,7 +1380,7 @@ func can_reroll() -> bool:
 ## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
 ## shield and vent. Returns false if the assignment is not legal.
 ## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
-## null for equipment): the checks `assign` makes before it acts, changing nothing. The
+## null for a shield, a vent or a buff): the checks `assign` makes before it acts, changing nothing. The
 ## screen asks it while a die is dragged, for the hover over a valid target.
 func can_assign(mech_index: int, target) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
@@ -1395,8 +1394,8 @@ func can_assign(mech_index: int, target) -> bool:
 		return slot_targets(ms, f).has(target)
 	if f.is_attack():
 		return target is Foe and targets_for_face(ms, raw).has(target)
-	if f.is_equipment():
-		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
+	if f.on_machines():
+		return machine_targets_for(ms, f).has(target if target is MechState else ms)
 	return false
 
 
@@ -1413,8 +1412,8 @@ func can_spend(mech_index: int) -> bool:
 	var f := Effects.effective_face(ms.unit, raw)
 	if f.is_attack():
 		return not targets_for_face(ms, raw).is_empty() or not slot_targets(ms, f).is_empty()
-	if f.is_equipment():
-		return not equipment_targets_for(ms, f).is_empty()
+	if f.on_machines():
+		return not machine_targets_for(ms, f).is_empty()
 	return false
 
 
@@ -1445,7 +1444,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	# tap the second): another foe or an empty slot, never a massive foe.
 	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second):
 		return false
-	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):
+	if f.on_machines() and not machine_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
 	# A shield cost (Ryan, 26 October: "if you don't have the shield, the face cannot be played,
 	# and overshield does cheat it out at the cost of using two actions for one effect"): taken
@@ -1492,7 +1491,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
 		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
-	var killed := 0        # the foes a weapon spend felled, chains and spills included (a kill trigger, the reset gun)
+	var killed := 0        # the foes a weapon spend or a vent's blast felled, chains and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
 	match f.kind:
 		Face.Kind.BLANK:
@@ -1528,8 +1527,11 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
 			# blasts nothing, and so does an ally's vent on it.
 			if blast > 0:
-				_blast(ms, blast)
+				var falls_before := _falls
+				_blast(mech_index, ms, blast)
 				blasted = true
+				killed = _falls - falls_before
+				_after_kills(ms, killed)
 			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
 			# shield on the same machine, through its shield gain and the spender's passives
 			# for an ally it shields, sized on the heat the vent left.
@@ -1574,14 +1576,15 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
 			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
-			# the pipeline); every weapon spend counts, and spends the machine's Spun Up whole.
+			# the pipeline); every spend at a foe counts, and a weapon's spends the machine's Spun
+			# Up whole, equipment leaving it (Ryan, 26 October: "Spun up only interacts with damage").
 			if Effects.nth_shot_due(ms.unit):
 				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
 			var falls_before := _falls
 			var exposed_before := target is Foe and Effects.has(target, "exposure")
 			if target is Vector2i:
 				# An empty slot (the Lammergeier's, 21 October): the pull gathers every mine there;
-				# any other weapon lays its shot as a mine.
+				# any other weapon or debuff lays its shot as a mine.
 				mine_tally["slot_spends"] += 1
 				if f.pulls_mines:
 					_spend_heat(ms, f)
@@ -1600,20 +1603,15 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 					if f.drones and target.alive():
 						free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
-			if killed > 0:
-				_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))   # a kill by its own guns (the Swallowtail's)
-			# A kill trigger (the Kite's heat tax, 21 October): after an attack that killed, once
-			# however many fell.
-			if killed > 0 and ms.alive():
-				_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
+			_after_kills(ms, killed)
 			if f.has(Face.Keyword.SWAP) and target is Foe and target.alive():
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
-			if Effects.remove(ms.unit, "spun_up"):
+			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
-	if f.is_equipment():
-		_equipment_after(ms, f, target)
+	if f.on_machines():
+		_machine_spend_after(ms, f, target)
 	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
 	# entry Braces its owner until the round's end, so the plate stands behind the charge
 	# through the enemy's turn and is gone when the next round opens.
@@ -2031,8 +2029,8 @@ func _seal_heat() -> void:
 
 
 ## The form change (the Armadillo's Lockdown, Ryan's framework of 15 October, his go 20
-## October): a shield spent on itself seals the machine, a vent or a weapon that deals damage
-## opens it; a shield on an ally, a buff, and a weapon of no damage (its lures) leave the form
+## October): a shield spent on itself seals the machine, a vent or a weapon opens it; a shield
+## on an ally and equipment (a buff, a debuff: its lures) leave the form
 ## as it is. The seal is one chip carrying the passive's armour; the heat clock and the
 ## stopped cooling read it.
 func _shift_form(ms: MechState, f: Face, target) -> void:
@@ -2094,10 +2092,10 @@ func withdraw() -> bool:
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real: Face = null) -> void:
 	if real == null:
 		real = ms.face()
-	# A forging machine's damaging gun pays ammo for the heat its own spend would make (the Musk
+	# A forging machine's weapon pays ammo for the heat its own spend would make (the Musk
 	# Ox's Desublimation Forge): a chain link it cannot pay for is never fired. The salvo's
 	# strikes are paid for by the whole magazine, at the spend.
-	var forged := ammo_price_of(ms, f) > 0
+	var forged := not _blast_strike and ammo_price_of(ms, f) > 0
 	if forged and not _salvo_strike:
 		var price := ammo_price_of(ms, f)
 		if ms.ammo < price:
@@ -2152,7 +2150,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in judged:
 		if f.has(Face.Keyword.SUPPRESS) and not Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, foe):
 			shut[foe] = [Face.Keyword.SUPPRESS]
-	var thawed := 0   # Cryo stacks this spend's hits with a damaging weapon spent, cooling the hitter after its heat lands
+	var thawed := 0   # Cryo stacks this spend's weapon hits spent, cooling the hitter after its heat lands
 	var split := maxi(1, f.split)    # the strikes one roll serves (the Skua's Split-cycle Breech; Effects.split_of)
 	var roll := 0                    # the roll the strikes of one split share
 	var aimed := target              # the strike's own foe: the target, or where a spray's strike fell
@@ -2194,6 +2192,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			# Area by shape (Ryan, 11 and 12 October; built 26 October): the foe the strike is aimed
+			# at takes the blow, every other foe its Spread or Penetrate reaches half of it, rounded
+			# down, before its own statuses and armour.
+			var blow := dmg if foe == aimed else dmg / 2
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
 			var spills := f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive()
@@ -2203,16 +2205,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				# more, its armour included, and the strike's whole number goes on behind it; with
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess.
-				_spill(ms, f, foe, dmg, hit, not f.is_debuff())
+				_spill(ms, f, foe, blow, hit, not f.is_debuff())
 				if foe == aimed:
 					landed = dmg
 				continue
 			# What the foe takes of the blow: its own statuses read last (its Flak adds to a
-			# damaging weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
+			# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
 			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
 			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, dmg, ms.unit, not f.is_debuff())
+			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff())
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
@@ -2224,14 +2226,14 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe == aimed:
 				landed = taken
 				armoured_total += foe_armoured
-			# A damaging weapon's blow spends a shock, even one that deals nothing (Ryan, 25
-			# October: "The important part is that it was a damaging weapon"); a debuff (a lure, a
-			# probe) leaves it standing.
+			# A weapon's blow spends a shock, even one that deals nothing (Ryan, 25 October: "The
+			# important part is that it was a damaging weapon"); equipment (a lure, a probe) leaves
+			# it standing.
 			if not f.is_debuff() and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
-			# unless the passive asks for a damaging weapon's hit (the Ambush's Vitriol, its text
-			# says so, whatever the hit dealt: Ryan, 25 October); a strike on a foe an earlier one
+			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
+			# Ryan, 25 October); a strike on a foe an earlier one
 			# killed lays nothing on it.
 			if was_alive and lays.has(foe):
 				for pair in lays[foe]:
@@ -2267,10 +2269,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 				_note_status(gained, foe, "webbed")
 				webbed.append(foe)
-			# Cryo (20 October): a damaging weapon's hit spends every stack the foe carries, whatever
-			# it dealt (Ryan, 25 October), and the hitter cools for them once the spend's own heat has
-			# landed (below); a debuff spends none. Then the blow's own Cryo lands, after the cash, so
-			# a damaging Cryo weapon never eats what it lays.
+			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
+			# October), and the hitter cools for them once the spend's own heat has landed (below);
+			# equipment spends none. Then the blow's own Cryo lands, after the cash, so a Cryo
+			# weapon never eats what it lays.
 			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
 				thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
@@ -2278,7 +2280,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo) * doubled, Effects.DECAY_NONE)
 				_note_status(gained, foe, "cryoed")
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
-			# number in stacks, whatever the blow dealt, after the blow, so the blow that lays it
+			# number in stacks, after the blow, so the blow that lays it
 			# never feeds on it; a later strike of the same spend does.
 			if f.has(Face.Keyword.FLAK) and foe.alive():
 				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.status_decay(Effects.STATUS["flakked"]))
@@ -2334,6 +2336,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		how = "rolled %d, " % rolled_total + how
 	if f.spray:
 		log.append("%s sprays %s (%s)%s" % [ms.unit.display_name, ", ".join(sprayed), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
+	elif _blast_strike:
+		log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, target.display_name, total, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	else:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
@@ -2342,13 +2346,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
 	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
-	if f.power > 0 or f.power_max > 0:   # a lure or a probe deals nothing: it is no spend of damage
+	if (f.power > 0 or f.power_max > 0) and not _blast_strike:   # a lure or a probe deals nothing: it is no spend of damage; a blast is no spend of its own
 		_tally_reach(reach, dealt, aimed_back, heat_total)
 		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	if forged:
 		heat_total = 0 if _salvo_strike else Effects.debuff_heat(ms.unit, f)   # the forge took the gun's own heat; a foe's debuff still heats it
+	if _blast_strike:
+		heat_total = 0   # the vent's spend paid its own heat, once
 	_add_heat(ms, heat_total)
 	# The Shrapnel Recuperator's refund: ammo back for every foe its blows reached.
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
@@ -2371,29 +2377,46 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 
 
 ## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
-## one blow of the machine's on a live foe drawn from the seeded stream, back rank included,
-## through the damage pipeline (the machine's adds and multiplies, then the foe's own: its
-## Flak, a Shocked doubling spent, its armour). A kill clears its slot as any blow's does. The
-## round preview's copy draws nothing: a lone foe takes it for sure, else it is held back.
-func _blast(ms: MechState, amount: int) -> void:
+## one flat blow of the machine's on a live foe drawn from the seeded stream, back rank
+## included. The vent is a weapon too on that machine (Effects.kinds_of; Ryan, 26 October:
+## "Vent blast should obviously proc cryo, that's the point of tagging it with weapon. It
+## shouldn't need exceptions in code"), so the blow is a weapon's hit and resolves as every
+## weapon's does (_resolve_attack): the machine's pipeline, the foe's Flak, a Shocked doubling
+## spent, its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a
+## drone's mine, and its kills fire the machine's kill rules (_after_kills). It is one hit inside
+## the vent's spend, so the spend's heat, ammo and tallies stay the vent's, paid once. A kill
+## clears its slot as any blow's does. The round preview's copy draws nothing: a lone foe takes
+## it for sure, else the blast is held back and noted.
+func _blast(mech_index: int, ms: MechState, amount: int) -> void:
 	var live := blast_targets()
 	if live.is_empty() or amount <= 0:
 		return
 	if previewing and live.size() > 1:
-		preview_notes.append({"kind": "blast", "mech": mechs.find(ms)})
+		preview_notes.append({"kind": "blast", "mech": mech_index})
 		return
 	var foe: Foe = live[0] if previewing else live[rng.randi_range(0, live.size() - 1)]
-	var shot := Face.attack(amount, Face.Reach.INDIRECT)   # the blast as a blow, for the pipeline
-	var dmg := int(Effects.attack(ms.unit, shot, amount, 0, foe)["damage"])
-	var taken := Effects.damage_taken(foe, dmg, ms.unit, true)   # a blast is a damaging blow
-	var armoured := mini(taken, foe.armour_total())
-	taken -= armoured
-	foe.hp -= taken
-	if Effects.remove(foe, "shocked"):   # a blast is a damaging blow, whatever it dealt
-		log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-	log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, foe.display_name, taken, " (armour -%d)" % armoured if armoured > 0 else ""])
-	last_blast = {"mech": mechs.find(ms), "foe": foe, "dealt": taken}
-	_clear_dead()
+	var shot := blast_shot(amount)
+	var hp_before := foe.hp
+	var was := _blast_strike
+	_blast_strike = true
+	_resolve_attack(mech_index, ms, shot, foe, shot)
+	_blast_strike = was
+	last_blast = {"mech": mech_index, "foe": foe, "dealt": hp_before - foe.hp}
+
+
+## The blast as the blow it is: flat, Indirect, the heat the vent took off.
+static func blast_shot(amount: int) -> Face:
+	return Face.attack(amount, Face.Reach.INDIRECT)
+
+
+## A spend's kills, its weapon's or its vent's blast's: the muster its guns earn (the
+## Swallowtail's) and the kill trigger (the Kite's heat tax, 21 October), once however many fell.
+func _after_kills(ms: MechState, killed: int) -> void:
+	if killed <= 0:
+		return
+	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
+	if ms.alive():
+		_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
 
 
 ## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13
@@ -2424,7 +2447,7 @@ func blast_targets() -> Array[Foe]:
 func blast_number(ms: MechState, amount: int, foe: Foe = null) -> int:
 	if amount <= 0:
 		return 0
-	return shown_number(ms, Face.attack(amount, Face.Reach.INDIRECT), foe)[0]
+	return shown_number(ms, blast_shot(amount), foe)[0]
 
 
 ## The foes a Lure entry spent on `aimed` would turn on this machine, as the arrows show them:
@@ -2708,7 +2731,7 @@ func _act_again(ms: MechState, f: Face) -> void:
 
 ## What this gun costs its machine in ammo now (the Musk Ox's Desublimation Forge, Ryan's go of
 ## 21 October): the whole magazine for the salvo, at least one; the forge's price for any other
-## damaging gun; nothing on a machine that forges nothing, or for anything but a damaging gun.
+## weapon; nothing on a machine that forges nothing, or for anything but a weapon.
 func ammo_price_of(ms: MechState, f: Face) -> int:
 	if ms == null or ms.ammo_max <= 0 or f == null or not f.is_attack():
 		return 0
@@ -2745,11 +2768,11 @@ func _reload(ms: MechState, n: int, why: String) -> void:
 		log.append("%s reloads %d from %s: %d of %d" % [ms.unit.display_name, add, why, ms.ammo, ms.ammo_max])
 
 
-## What equipment does beside its kind: a printed heat lands on its spender (the Musk Ox's quick
+## What a piece spent on a machine does beside its kind: a printed heat lands on its spender (the Musk Ox's quick
 ## reload, Rapid with heat its limiter); and a forging machine reloads, what the entry says (the
 ## quick reload, which the Forge counts as no vent), else the Forge's own for a vent or a shield
 ## it spends on itself.
-func _equipment_after(ms: MechState, f: Face, target) -> void:
+func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 	if f.heat > 0 and ms.alive():
 		_add_heat(ms, f.heat)
 	if ms.ammo_max <= 0:
@@ -2859,8 +2882,8 @@ func _muster(ms: MechState, points: int) -> void:
 
 # ---------------------------------------------------------------- mines
 
-## The empty slots this entry may be spent on (the Lammergeier's, 21 October): a weapon of a
-## machine that lays mines, or a pull, under the reach rules as if a foe stood there, Direct a
+## The empty slots this entry may be spent on (the Lammergeier's, 21 October): a weapon or a
+## debuff of a machine that lays mines, or a pull, under the reach rules as if a foe stood there, Direct a
 ## front slot or a back slot whose front is empty, Indirect any; a massive foe fills its
 ## column. A Swap and the Syrinx Drone take a foe: a slot holds none to move or carry it.
 func slot_targets(ms: MechState, f: Face) -> Array:
@@ -2900,7 +2923,7 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 		"flak": _stacks_from(ms, "flakked", f.flak) * doubled if f.has(Face.Keyword.FLAK) and not plain else 0}
 
 
-## A weapon laid as a mine (the Fuse-delayed Bay): each strike a shot, its number as rolled and
+## A weapon or a debuff laid as a mine (the Fuse-delayed Bay): each strike a shot, its number as rolled and
 ## modified now, read as a blow's is (what heat fired and the hopper add, then the machine's
 ## modifiers) with no foe's, none standing there; the shots wait behind what is already laid.
 ## The spend's heat lands now and the hopper's loads are spent.
@@ -3007,7 +3030,7 @@ func _mine_spender(shot: Dictionary) -> MechState:
 ## damage taken (a Shocked foe takes double, spending the shock) and its armour, then the shot's
 ## keywords acting as on a blow: Spread its rank neighbours too and Penetrate the other rank of
 ## its column (a cluster), Spillover past a front kill, Burning, a stun, a web, Cryo (cashed
-## for its spender, as any damaging weapon's hit cashes it), Flak, Shock, Exposed, and Chain, a kill
+## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, a kill
 ## repeating its spender's attack on the next foe in reach, rolled and paying heat again. A
 ## kill on a foe carrying the Syrinx Drone leaves the shot in its slot again.
 func _mine_hit(foe: Foe, shot: Dictionary) -> void:
@@ -3046,13 +3069,13 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 				shut.append(t)
 	for t in hit:
 		var hp_before := t.hp
-		var blow := dmg
+		var blow := dmg if t == foe else dmg / 2   # area by shape: the arrival takes the shot, the others reached half
 		var eaten := Effects.stacks_of(t, eat) if not eat.is_empty() and t == foe else 0
 		if eaten > 0:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
 			Effects.remove(t, eat)
 			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
-		var weapon := bool(shot.get("weapon", blow > 0))   # a damaging weapon's shot, whatever it deals
+		var weapon := bool(shot.get("weapon", blow > 0))   # a weapon's shot, a blow of 0 included; equipment's is none
 		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
@@ -3190,8 +3213,8 @@ func _drone_mine(foe: Foe, shot: Dictionary) -> void:
 
 
 ## The rounds an entry goes dark once this machine spends it, this one included: its own
-## cooldown (Rapid's switch-off one) or the one its machine's passives grant every weapon (the
-## Kite's two), the longer.
+## cooldown (Rapid's switch-off one) or the one its machine's passives grant every weapon and
+## debuff (the Kite's two), the longer.
 func cooldown_of(ms: MechState, f: Face) -> int:
 	if f == null:
 		return 0
@@ -3277,8 +3300,8 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
-## `whole`: a later strike's whole number, a damaging weapon's, which lands as its blow even at
-## 0 (its Flak added); a kill's excess of 0 carries nothing.
+## `whole`: a later strike's whole number, a weapon's, which lands as its blow even at 0 (its
+## Flak added); a kill's excess of 0 carries nothing.
 func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
@@ -3378,7 +3401,7 @@ static func _note_status(gained: Dictionary, foe: Foe, status_id: String) -> voi
 ## on_foe_status passive answers. The Baboon's Pocket Paradox, a meter since 10 October
 ## (Ryan): the foe gains Paradox, deepened like any status its machine applies, and at the
 ## machine's count it is Suppressed and the Paradox clears. Paradox never counts, and the
-## Suppressed it causes is never told, so it never feeds itself; a weapon's Suppressed does
+## Suppressed it causes is never told, so it never feeds itself; a Suppress keyword's does
 ## count. Numbed is a resistance, not a status.
 func _foe_gained_status(foe: Foe, status_id: String) -> void:
 	if status_id == "paradox" or status_id == "numbed" or not foe.alive():
@@ -3702,7 +3725,7 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows, at
 ## random unless the foe carries an aim (24 October). Anything, uniform; the exposed, weighted
 ## by the hull its blow would reach, so a shield standing lowers the draw and a shield down
-## raises it; heat, the hottest machine; the armed, a machine showing an intact weapon; the
+## raises it; heat, the hottest machine; the armed, a machine showing an intact weapon or debuff; the
 ## buffed, the most stacks of buffs (each of those two the exposed when no machine qualifies);
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a

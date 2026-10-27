@@ -1435,6 +1435,36 @@ report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen 
 3.75) carry everything landed since 22 October, the targeting at random and the doubled heat
 among it, and say nothing about the fix. A direction at 40 runs.
 
+## 26 October, area at half
+
+**Spread and Penetrate at half** (built 26 October, `2018722`: the foe a strike is aimed at takes
+the blow, every other foe its Spread or Penetrate reaches half, rounded down, before its own
+Flak, Shock and armour; a mine's spread the same). The nine runnable tier ones alone against the
+twenty packs, as the 25 October table above, `tools/balance.gd`, 200 seeds a cell, random and
+greedy, no party, 72,000 fights: won, random / greedy, before and after.
+
+| Row | Every pack | Rank and file (12) | The four big foes | The four formations | Hull lost (greedy) |
+|---|---|---|---|---|---|
+| Honey Badger | 43 / 67 → 38 / 63 | 72 / 95 → 64 / 92 | 0 / 37 → 0 / 37 | 0 / 11 → 0 / 1 | 53% → 58% |
+| Cottonmouth | 38 / 55 → 31 / 49 | 63 / 91 → 52 / 82 | 0 / 0 | 0 / 0 | 51% → 61% |
+| Prairie Dog | 11 / 21 → 8 / 19 | 18 / 35 → 13 / 32 | 0 / 0 | 0 / 0 | 85% → 86% |
+
+The other six (the Skua, the Baboon, the Armadillo, the Stingray, the Cassowary, the Puffin)
+read the same to the fight: their stock carries no area. By pack: the Cottonmouth's drum, Spread
+at the front and Penetrate at the back on every shot, lost the swarms it had cleared at full: the
+Goblin and Revenant sixes 40 / 100 to 10 / 62, the Salamander's three 16 / 96 to 11 / 62, the
+Bomb's four 79 / 100 to 37 / 96, each a round or more slower. The Badger lost its two formations
+(the Waste's 32 to 4%, the Marsh's 12 to 0) and half its Gel wins (58 to 32%); random play on its
+swarms fell from 44 to 26%, greedy from 93 to 90. The Prairie Dog's small packs a few points
+each, its Needlers 8 to 0%.
+
+Read: the rule moves the three machines that carry area and nothing else, and moves them where
+it was meant to, on the swarms. In bands, the Cottonmouth's swarms were cells random play came
+close to and greedy play never lost (no decision); at half they hold one (random 10%, greedy
+62%). The Badger's formations go back to the walls every other tier one meets alone. The
+earlier read of Spread at half (the area-by-shape run above: the Badger 45/69 to 42/66 at 40
+seeds) holds in direction; the Cottonmouth, whose every shot carries area, did not exist then.
+
 ## 26 October, the rally at once
 
 **The rally landing at once, its intents counted** (the bible's rally row, section 5).

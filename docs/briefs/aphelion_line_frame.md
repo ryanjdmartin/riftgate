@@ -163,13 +163,13 @@ section is Claude's, for him to move, and every number is a placeholder.
   formation machine first, which suits "a battle rhythm", but a different claim from the 15
   October one.
 - **A break the die forces** loses the ramp through no choice of the player's. It is rare with
-  three weapons on the die and the team's three rerolls. The alternative for Ryan: only spending equipment
-  (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
+  three weapons on the die and the team's three rerolls. The alternative for Ryan: only spending a shield, a
+  vent or a buff (the parry excepted) breaks it, and a turn with no weapon showing holds the count.
 - **Decision density.** Once the combo is up, its payoffs take away the reasons to break it,
   and in the Marsh nothing attacks the die or heats it (the Meadow drains rerolls, the Waste
   disables, the Peak scorches and corrupts), so there it is a stat line that grows. The
   decisions left are the team's: rerolls spent on its die rather than an ally's, and allies
-  cooling or shielding it (an ally's equipment spent on it never breaks it). The double-edged
+  cooling or shielding it (an ally's shield, vent or buff spent on it never breaks it). The double-edged
   form has its decision built in and was undersold on 15 October.
 - **The second in-fight shield regen** beside the Goshawk's (the first hole below), read by
   pattern in context (Ryan, 16 October): its regen is paid only while it attacks every round,
@@ -233,8 +233,8 @@ and what it grants buffs, slept by a silence and silenced a turn by a purge.
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
 to the model session; what stays open:
 
-1. What breaks it: a turn ended without a weapon spent (Ryan's), or only equipment spent (the
-   review's alternative, so the die never takes the ramp away).
+1. What breaks it: a turn ended without a weapon spent (Ryan's), or only a shield, a vent or a buff
+   spent (the review's alternative, so the die never takes the ramp away).
 2. The thresholds' numbers against these fight lengths, now that strikes and area pieces climb
    the count, and the cooling kept under the weapons' heat.
 3. The parry: a self-Barrier, cooldown 2, keeping the combo (proposed), or Rapid against the

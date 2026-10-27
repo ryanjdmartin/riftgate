@@ -36,6 +36,7 @@ var STRIP_H := 226.0
 var BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const LOG_LINES := 4
+const DETAILS_PAD := 14.0   # the readout panel's margin, round its lines
 
 var battle: Battle
 ## Save the battle after every change (user://battle.json, `SaveGame`), so it resumes where
@@ -50,7 +51,7 @@ var _map: BattleMapView
 var _resolve_btn: HudButton
 var _clear_btn: HudButton
 var _details: HudPanel
-var _details_label: Label
+var _details_entry: EntryReadout   # the held thing's lines, as the fight's holds read
 var _board: OrdersBoard
 var _tuner: MapTuner = null
 var _scan: ScanBar = null
@@ -248,7 +249,7 @@ func _build() -> void:
 
 	# The readout lives in one place, docked over the bottom of the map (thumbs, not a
 	# mouse: Ryan, 21 September), and a tap on it dismisses it.
-	_details = HudPanel.new(14.0)
+	_details = HudPanel.new(DETAILS_PAD)
 	_details.mouse_filter = Control.MOUSE_FILTER_STOP
 	_details.visible = false
 	_details.custom_minimum_size = Vector2(W - 24.0, STRIP_H - 12.0)   # fills its strip (Ryan, 29 September: short, it looked odd)
@@ -263,10 +264,9 @@ func _build() -> void:
 			_refresh()
 			_details.accept_event())
 	add_child(_details)
-	_details_label = Hud.label("", 16, Palette.INK)
-	_details_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	_details_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	_details.add_child(_details_label)
+	_details_entry = EntryReadout.new()
+	_details_entry.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_details.add_child(_details_entry)
 	_build_log_full()
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
@@ -487,7 +487,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		# The gate is selectable for its integrity (Ryan, 22 September).
 		_select(null)
 		_map.gate_selected = true
-		_show_details(gate_text(battle.field), Vector2.ZERO)
+		_show_details(gate_lines(battle.field))
 		_refresh()
 		Sound.play("map_select")
 		return
@@ -512,11 +512,8 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		Sound.play("map_select")
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
-		var t: int = battle.field.map.terrain[h]
-		# Each way of moving's word for this ground (decided 2 October), then the horde's rule.
-		var text := "%s\n%s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.ground_words(t)]
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
-		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
+		_show_details(ground_lines(battle.field.map.terrain[h]))
 		Sound.play("map_select")
 	else:
 		_select(null)
@@ -596,41 +593,110 @@ func _refuse() -> void:
 
 
 func _on_unit_held(u: Unit) -> void:
-	var text := ""
-	if u.is_player():
-		text = "%s\nshield %d/%d · hull %d/%d · move %d · %d of %d action%s left" % [u.display_name, u.shield, u.shield_max, u.hull, u.hull_max, u.movespeed,
-			battle.actions_left(u), Battlefield.actions_for(u), "" if Battlefield.actions_for(u) == 1 else "s"]
-		if u.damaged_component_count() > 0:
-			text += "\n%d damaged component%s" % [u.damaged_component_count(), "" if u.damaged_component_count() == 1 else "s"]
-	else:
-		var db := ContentDB.load_default()
-		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
-		if u.is_boss:
-			# The boss's size is its own (content), apart from its being the boss (15 October); a
-			# final's hero brings its wildlife, and the finale's line is the party.
-			var boss_id := BattleMapView.foe_sprite_id(u)
-			var massive := int(db.foes.get(boss_id, {}).get("size", 1)) >= 2
-			var brings := ""
-			if u.lineup.size() > 1:
-				brings = " · %d of the party" % u.lineup.size()
-			if u.strength > 0:
-				brings += " · with %s ×%d" % [str(db.foes.get(u.foe_id, {}).get("name", u.foe_id)), u.strength]
-			text = "%s\nboss%s%s · ring %d · %s" % [u.display_name, " · massive" if massive else "", brings, u.zone, _behaviour_text(u)]
-		else:
-			text = "%s\n%s ×%d · move %d · ring %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, _behaviour_text(u)]
-	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
+	_show_details(mech_lines(u) if u.is_player() else pack_lines(u))
 
 
-## What a pack is doing, in the hold's words: the two behaviours (bible section 5).
-func _behaviour_text(u: Unit) -> String:
+## A machine's readout on the map (Ryan, 26 October: the map's readouts looked like blocks of
+## text; they read as the fight's holds do): its name, its shield and hull as gauges with their
+## numbers, a maximum anything moved coloured with its arrow, its move as the codex has it (the
+## base, the change beside it), its actions left, and a chip for its damaged components.
+func mech_lines(u: Unit) -> Array:
+	var out: Array = [_title(u.display_name)]
+	out.append(EntryReadout.bar_line("Shield", u.shield, u.shield_max, int(u.base["shield"]), Palette.SHIELD))
+	out.append(EntryReadout.bar_line("Hull", u.hull, u.hull_max, int(u.base["hull"]), Palette.HULL))
+	var n := Battlefield.actions_for(u)
+	out.append(EntryReadout.parts_line("effect", [EntryReadout.word("Move")] + ContentDB.stat_parts(int(u.base["move"]), u.movespeed)
+		+ [EntryReadout.word("·"), EntryReadout.word("%d of %d action%s left" % [battle.actions_left(u), n, "" if n == 1 else "s"])]))
+	var damaged := u.damaged_component_count()
+	if damaged > 0:
+		out.append(EntryReadout.chip_line("crack", Palette.HUD, "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"]))
+	return out
+
+
+## A pack's readout the same way: its name, its foe and strength, its move and its ring, then
+## what it is doing. The boss's: its name as the boss, its size (its own in content, apart from
+## its being the boss, 15 October) and ring, what it brings (a final's hero its wildlife, the
+## finale's line the party), and its holding the rift.
+func pack_lines(u: Unit) -> Array:
+	var db := ContentDB.load_default()
+	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
+	if not u.is_boss:
+		return [_title(u.display_name), _words([foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]), _behaviour_line(u)]
+	var out: Array = [_title(u.display_name, "Boss")]
+	var stats: Array[String] = []
+	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:
+		stats.append_array(["Massive", "·"])
+	stats.append_array(["Ring", str(u.zone)])
+	out.append(_words(stats))
+	var brings: Array[String] = []
+	if u.lineup.size() > 1:
+		brings.append("%d of the party" % u.lineup.size())
+	if u.strength > 0:
+		brings.append("%s ×%d" % [foe_name, u.strength])
+	if not brings.is_empty():
+		out.append(_said("With", ", ".join(brings)))
+	out.append(_behaviour_line(u))
+	return out
+
+
+## What a pack is doing (the two behaviours, bible section 5), its verb in bold as a chip's
+## name is.
+func _behaviour_line(u: Unit) -> Dictionary:
 	if u.is_boss:
-		return "holds the rift"
+		return _said("Holds", "the rift")
 	match u.behaviour:
 		"hunt":
 			var prey := battle.field.unit_by_id(u.prey)
-			return "hunts the %s: %s" % [u.hunts, prey.display_name if prey != null else "nobody yet"]
+			return _said("Hunts", "the %s: %s" % [u.hunts, prey.display_name if prey != null else "nobody yet"])
 		_:
-			return "marching on the gate"
+			return _said("Marches", "on the gate")
+
+
+## A readout's first line: the name, and beside it what kind of thing it is where that says
+## something (the boss, the gate, the ground).
+static func _title(name: String, kind: String = "") -> Dictionary:
+	return {"style": "title", "text": name.to_upper(), "type": kind, "parts": [], "place": ""}
+
+
+## A line of plain words.
+static func _words(list: Array) -> Dictionary:
+	var parts: Array = []
+	for t in list:
+		parts.append(EntryReadout.word(str(t)))
+	return EntryReadout.parts_line("effect", parts)
+
+
+## A line whose first words are bold, as a chip's name is: what it is, then what it says.
+static func _said(head: String, rest: String) -> Dictionary:
+	return EntryReadout.parts_line("effect", [{"text": head, "trend": 0, "gain": false, "bold": true}, EntryReadout.word(rest)])
+
+
+## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, a line
+## for each word of moving with the ways it holds for (decided 2 October), the slow step's
+## price said, then the horde's rule.
+static func ground_lines(t: int) -> Array:
+	var db := ContentDB.load_default()
+	var id := str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
+	var out: Array = [_title(str(db.vocabulary.get(id, {}).get("name", id)), "Ground")]
+	for pair in BattleMap.ground_ways(t):
+		var ways: Array[String] = []
+		for way in pair[1]:
+			ways.append(str(db.vocabulary.get(way, {}).get("name", EntryReadout.capital(way))))
+		var said := ", ".join(ways)
+		match str(pair[0]):
+			"slow":
+				out.append(_said("Slow:", said + " (the step ends the move)"))
+			"wall":
+				out.append(_said("Impassable:", said))
+			_:
+				out.append(_said(EntryReadout.capital(str(pair[0])) + ":", said))
+	out.append(EntryReadout.text_line("effect", "Packs cross it" if BattleMap.move_cost(t, []) != BattleMap.WALL else "Packs never enter it"))
+	return out
+
+
+## A refused order's readout: what stopped it, then what to do.
+static func notice_lines(title: String, text: String) -> Array:
+	return [_title(title), EntryReadout.text_line("effect", text)]
 
 
 func _on_hold_released() -> void:
@@ -708,9 +774,13 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 
 
 ## The gate's readout and codex entry. The text is the rule, not lore: CARE's voice for
-## the projector is Ryan's to write.
-static func gate_text(f: Battlefield) -> String:
-	return "THE GATE\nintegrity %d/%d\nfield projector · a pack on the apron strikes it" % [f.gate_hp, f.gate_hp_max]
+## the projector is Ryan's to write. The readout's gauge is the map's bar under the gate, its
+## colour the bar's.
+static func gate_lines(f: Battlefield) -> Array:
+	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
+	return [_title("The Gate", "Field projector"),
+		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.ENEMY),
+		EntryReadout.text_line("effect", "A pack on the apron strikes it")]
 
 
 static func gate_codex_entry(f: Battlefield) -> Dictionary:
@@ -739,12 +809,14 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 	return entry
 
 
-## Readout beside a point on the screen, kept inside the frame.
-func _show_details(text: String, _near: Vector2) -> void:
-	_details_label.text = text
+## The readout, docked over the strip under the map (thumbs, not a mouse): the held thing's
+## lines at the panel's width. Lines taller than the strip grow it up over the map.
+func _show_details(lines: Array) -> void:
+	_details_entry.set_lines(lines, W - 24.0 - 2.0 * DETAILS_PAD)
 	_details.visible = true
-	_details.size = Vector2(W - 24.0, STRIP_H - 12.0)
-	_details.position = Vector2(12.0, STRIP_Y + 6.0)
+	var h := maxf(STRIP_H - 12.0, _details_entry.custom_minimum_size.y + 2.0 * DETAILS_PAD)
+	_details.size = Vector2(W - 24.0, h)
+	_details.position = Vector2(12.0, STRIP_Y + 6.0 + (STRIP_H - 12.0) - h)
 
 
 # ---------------------------------------------------------------- the turn
@@ -930,12 +1002,12 @@ func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
 		"refused":
 			Sound.play("ui_back")
 			if not battle.forced.is_empty():
-				_show_details("A HUNTER'S CATCH COMES FIRST\norder machines onto the hunter, then ENGAGE", Vector2.ZERO)
+				_show_details(notice_lines("A hunter's catch comes first", "Order machines onto the hunter, then ENGAGE"))
 			_refresh()
 			return
 		"out_of_reach":
 			Sound.play("ui_back")
-			_show_details("OUT OF REACH\n%s cannot get within %d of it this turn" % [m.display_name, m.attack_range], Vector2.ZERO)
+			_show_details(notice_lines("Out of reach", "%s cannot get within %d of it this turn" % [m.display_name, m.attack_range]))
 			_refresh()
 			return
 		"no_room":

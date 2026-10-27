@@ -92,15 +92,15 @@ One pointer each; the proposal is in the brief named.
   21 October): the Storm Petrel, a hovercraft at 50, the kit as written; the burn is every
   shot's, through the passive, and the lock the lure alone.
 - **The interceptor** had no kit; its first Ryan read as thin and its second as possibly
-  overdesigned with a good nugget (20 October). The third: a weapon of no damage is Rapid once
+  overdesigned with a good nugget (20 October). The third: a debuff is Rapid once
   a round, so every control piece of every maker is a cantrip on it; its lock the designator,
-  a weapon of no damage with Indirect reach that paints a foe for the team's Direct guns this
+  a debuff with Indirect reach that paints a foe for the team's Direct guns this
   round; the dive's price benched; a tilt-jet. The fourth round (late that day): the mark is
   Exposed, the game's own word (the vocabulary's formation entry, the engine's one reach
   check), reach alone, its on-hit half declined as Flak's kind and the armour clause benched;
   the gate widened to buffs, the die's glyph deciding (a shield or vent that also buffs wears
   a chip and is excluded); the foes' aim word flagged for renaming. The fifth: Ryan took
-  Exposed as reach and armour counting for nothing, and no number on a weapon of no damage;
+  Exposed as reach and armour counting for nothing, and no number on a debuff;
   the duration evaluated (the round's, as Expose 1; a foe's statuses tick at its turn whether
   it acts or skips, so "until it acts" buys nothing) and his die kinds answered (Direct,
   Indirect, Debuff, Buff, Shield, Vent, the blank a drawing; the Debuff glyph wears its reach;

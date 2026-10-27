@@ -62,7 +62,7 @@ func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	# The jack swapped for a vent: still no mount touched.
 	die.faces[5] = db.build_face(db.components["coolant_jacket"]["face"])
 	die.faces[5].component = "coolant_jacket"
-	assert_eq(MechView3D.mount_plan(die, stock, db), [], "equipment without a shape shows nowhere")
+	assert_eq(MechView3D.mount_plan(die, stock, db), [], "a component without a shape shows nowhere")
 	# The rack (die entry 4, mount 2) refitted with a Kestrel gun, the autoguns emptied: the
 	# next shaped entry is the vent, which takes no mount, so mount 3 goes bare.
 	die.faces[3] = db.build_face(db.components["enfilade_beam"]["face"])
