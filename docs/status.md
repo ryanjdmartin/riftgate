@@ -50,9 +50,10 @@ another session's work, unmerged and landing by merging main in: `ccr-170f6d81-4
 die's hold as text, Flak on every blow, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv`
 (one damage state, bosses at their tier, area at half), `ccr-6073bda9-p34o8q` (the foes' fresh
 start proposed, `docs/foes_proposal.md`), `ccr-7effd31a-u5z4gw` (the Hold The Line pair) and
-`ccr-c04908be-3r43xf` (27 October: the pricing run's method and driver, the synergy map and
-the roster's synergy holes, `docs/pricing_proposal.md`; docs and Python tools only, the suite
-untouched and not run there, since that cloud session could not fetch Godot). Fully
+`ccr-c04908be-3r43xf` (27 October: the pricing run's method and driver, the run made and read
+(`docs/measurements.md`), the synergy map and the roster's synergy holes,
+`docs/pricing_proposal.md`, and the session-start hook that fetches Godot for cloud sessions;
+docs, Python tools and the hook only, the suite green there). Fully
 merged, so to delete from the desk machine or GitHub, since a cloud session may not delete one:
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
@@ -66,7 +67,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
-  follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
+  follows from its brief, and the Storm Petrel's once Ryan marks the pricing proposal (its run read 27 October, Claude's
+  lean the guns' heat standing); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -129,7 +131,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Giant Petrel's engine and the Storm Petrel's, after the pricing run (their briefs).
+- The Giant Petrel's engine and the Storm Petrel's, the latter once Ryan marks the pricing
+  proposal (its run read 27 October, the guns' heat standing by Claude's lean; their briefs).
 - The elites on Ryan's definition of 23 and 24 October, a guaranteed miniboss event mid-battle
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
@@ -148,15 +151,18 @@ to-do's Ryan list).
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
-   the hitter in hand (the to-do); the Lammergeier's stock. The run's method and driver are
-   built (27 October, `docs/pricing_proposal.md`, `tools/pricing_run.py`: every stocked piece by
-   knock-out, every slottable component through the same hardpoint of five benches, every
-   module on them, and the guns' heat by steps, 393 variants, about two and a half hours on
-   four cores); the run itself is the desk machine's (`python3 tools/pricing_run.py run
-   prices`), then its summary read against the proposal's rules, the deltas it names read
-   again at 200 seeds, and Ryan's marks on the proposal's section 6 (the benches, the heat
-   lean, the holes). The roster's synergy holes are its section 5, from the generated map
-   (`tools/synergy_map.py`).
+   the hitter in hand (the to-do); the Lammergeier's stock. The run was made and read on 27
+   October (`tools/pricing_run.py`, 393 variants, 188,640 fights in a cloud session;
+   `docs/measurements.md`): every row wins these cells, so it reads on rounds and hull; tier
+   one's two outlier guns (the Arc Fault Cannon, the Overclocked Railgun) sit above tier two's
+   band, the Ram Frame is the universal module on its +24 hull line, equipment and the setups
+   price not at all under the greedy on these packs, the Probe, the Condenser and the Ammit's
+   loop are verdicts on the bot, and the heat classes hold (a class up moves the hot kits alone).
+   Next: Ryan's marks on `docs/pricing_proposal.md`'s section 6, the harder bench for equipment
+   and the setups (the formations and the breaching bosses, the planner beside the greedy), an
+   Indirect bench for the Rangefinder, the 200-seed reads on the deltas the marks name, then the
+   fills through `tools/stock_fills.py`. The roster's synergy holes are the proposal's section
+   5, from the generated map (`tools/synergy_map.py`).
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and

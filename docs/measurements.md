@@ -1462,3 +1462,248 @@ parameter (a shield added, a status granted, a face in hand) the copy does not t
 the baseline reads alone would leave the bot reading two truths. Decision: the bot keeps the
 hand sum (the bible's round preview row); the exit is a cell whose band the greedy misreads for
 a heal or a last act, when a memoised copy, one play a decision point, is the first thing to try.
+
+## 27 October, the pricing run
+
+**The pricing run's first pass** (`docs/pricing_proposal.md`, the method and its reads;
+`tools/pricing_run.py run prices`, the content and the engine as at main's `e59691d`, this
+branch adding tools and docs alone): 393 variants, each one balance-runner process on the
+records' four team rows as `--team` rows and on the Arsenal bench's row (the Nemesis, the Ammit,
+the Puffin), against the sixteen big fights but the finale (the four massive foes, the four
+formations, the eight finals), greedy play at 30 seeds a cell, 188,640 fights, about three
+hours on a cloud session's four cores. Every stocked piece knocked out of its row (51), every
+slottable component (48) through the same hardpoint of five benches (240), every module on
+them (85) and three heat loops on the four team rows (12). A direction, read on the rounds to
+win and the hull lost, since every row wins 99 to 100% of these cells.
+
+The rows as stocked, greedy: the mean win rate over the sixteen packs, the mean rounds of the
+fights won, the hull lost, the peak heat as a turn ended, the overheats and the damaging dice
+held for heat a fight:
+
+| Row | Win | Rounds | Hull | Peak | Overheats | Held |
+|---|---|---|---|---|---|---|
+| The default team (Honey Badger, Clydesdale, Kite) | 100 | 3.1 | 5% | 80% | 0.21 | 0.11 |
+| Minerva's team (Honey Badger, Armadillo, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
+| Kestrel's team (Kite, Buzzard, Puffin) | 100 | 2.9 | 8% | 93% | 0.29 | 0.07 |
+| Wainwright & Sutler's team (Clydesdale, Prairie Dog, Dingo) | 99.6 | 5.9 | 18% | 33% | 0.13 | 0.04 |
+| The Arsenal bench's row (Nemesis, Ammit, Puffin) | 100 | 4.5 | 10% | 69% | 0.17 | 0.04 |
+
+**The knock-outs.** Ten of the 51 move their row by a fifth of a round or two points of hull;
+the other 41 read as their row (the stock's shields and vents among them, every one):
+
+| Row | Machine | Piece out | Its stock share | Rounds | Hull |
+|---|---|---|---|---|---|
+| Wainwright & Sutler's | Dingo | Airburst Shell | 13% | 5.9 to 6.6 | 18 to 23% |
+| The default team | Kite | Transonic Rifle | 13% | 3.1 to 3.8 | 5 to 7% |
+| Wainwright & Sutler's | Clydesdale | Enfilade Beam | 8% | 5.9 to 6.4 | 18 to 23% |
+| Kestrel's | Kite | Transonic Rifle | 22% | 2.9 to 3.4 | 8 to 9% |
+| Kestrel's | Buzzard | Arc Fault Cannon | 10% | 2.9 to 3.4 | 8 to 10% |
+| Kestrel's | Buzzard | Overclocked Railgun | 10% | 2.9 to 3.2 | 8 to 9% |
+| Wainwright & Sutler's | Clydesdale | Maxigun | 9% | 5.9 to 6.1 | 18 to 20% |
+| Kestrel's | Puffin | Laser Carbine | 11% | 2.9 to 3.2 | 8 to 10% |
+| Minerva's | Armadillo | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
+| Wainwright & Sutler's | Prairie Dog | Halo Shield | 8% | 5.9 to 5.6 | 18 to 20% |
+
+**The ladders.** Each candidate's rounds and hull against the bench's stock row, and its share
+of the row's spends; hot marks a peak at the maximum or a quarter of an overheat a fight more
+than stock, dead a share under 5%:
+
+| Tier | Piece | Kind | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis | Mean |
+|---|---|---|---|---|---|---|---|---|
+| 0 | Twin Autoguns | dir 1-3, heat 0 | +0.0 r, -0% hull, 5% dead | +0.0 r, +0% hull, 25% | +0.2 r, +1% hull, 28% | +0.5 r, +2% hull, 16% | +0.0 r, -0% hull, 13% | +0.14 |
+| 0 | Ankle Mortar | ind 1-3, heat 1 | +0.0 r, -0% hull, 5% dead | +0.0 r, +0% hull, 16% | +0.2 r, +1% hull, 14% | +0.5 r, +2% hull, 4% dead | +0.0 r, -0% hull, 2% dead | +0.14 |
+| 0 | Coolant Jacket | vent 4 | +0.0 r, -0% hull, 2% dead | +0.2 r, -1% hull, 5% dead | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.0 r, -0% hull, 3% dead | +0.19 |
+| 0 | Rivet Gun | dir 2, heat 0 | +0.0 r, +0% hull, 3% dead | -0.1 r, -2% hull, 11% | +0.1 r, +0% hull, 10% | +0.5 r, +2% hull, 2% dead | -0.0 r, -0% hull, 2% dead | +0.09 |
+| 0 | Laser Carbine | dir 3, heat 2 | +0.0 r, -0% hull, 7% | -0.5 r, -3% hull, 15% | +0.0 r, +0% hull, 11% | +0.5 r, +2% hull, 17% | +0.0 r, -0% hull, 15% | -0.01 |
+| 0 | Bleed Valve | vent 6 | +0.0 r, -0% hull, 5% | +0.2 r, -0% hull, 1% dead | +0.3 r, +2% hull, 8% | +0.5 r, +2% hull, 9% | +0.0 r, +0% hull, 1% dead | +0.19 |
+| 0 | Halo Shield | shield 6 | +0.0 r, -0% hull, 1% dead | +0.3 r, -2% hull, 16% | +0.2 r, +1% hull, 7% | +0.5 r, +2% hull, 6% | +0.2 r, -0% hull, 9% | +0.26 |
+| 0 | Canopy | shield 8 | +0.0 r, -0% hull, 2% dead | +0.2 r, -1% hull, 4% dead | +0.3 r, +1% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.1 r, -0% hull, 2% dead | +0.21 |
+| 1 | Shotfire Rack | ind 2-4, heat 2 | +0.0 r, +0% hull, 9% | -0.4 r, -3% hull, 17% | +0.1 r, -0% hull, 15% | +0.5 r, +2% hull, 7% | +0.0 r, +0% hull, 5% dead | +0.03 |
+| 1 | Slugthrower | dir 2-5, heat 1 | +0.0 r, +0% hull, 10% | -0.5 r, -3% hull, 17% | +0.0 r, -0% hull, 16% | +0.4 r, +2% hull, 7% | +0.0 r, -0% hull, 7% | -0.00 |
+| 1 | Enfilade Beam | dir 4, heat 2, penetrate | -0.1 r, -0% hull, 15% | -1.0 r, -6% hull, 25% | -0.1 r, -0% hull, 13% | +0.3 r, +1% hull, 8% | -0.1 r, -1% hull, 6% | -0.18 |
+| 1 | Howitzer | ind 2-5, heat 1 | +0.0 r, +0% hull, 17% | -0.6 r, -4% hull, 24% | +0.0 r, -0% hull, 16% | +0.4 r, +2% hull, 7% | +0.0 r, -0% hull, 7% | -0.01 |
+| 1 | Incendiary Shells | ind 1-3, heat 1, burn | -0.1 r, -0% hull, 12% | -0.7 r, -3% hull, 22% | +0.0 r, -0% hull, 15% | +0.5 r, +2% hull, 5% dead | -0.0 r, -0% hull, 5% dead | -0.06 |
+| 1 | Overclocked Railgun | dir 10, heat 8, breach | -0.3 r, -1% hull, 11% | -1.9 r, -7% hull, 17% hot | -0.2 r, -1% hull, 24% | +0.3 r, +2% hull, 18% hot | -0.3 r, -0% hull, 8% hot | -0.49 |
+| 1 | Arc Fault Cannon | dir 4, heat 2, chain | -0.2 r, -1% hull, 11% | -1.7 r, -8% hull, 19% | -0.3 r, -1% hull, 25% | +0.0 r, +0% hull, 10% | -0.4 r, -1% hull, 8% | -0.51 |
+| 1 | Proximity Klaxon | ind 0, heat 1, lure cleave | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 3% dead | +0.3 r, +2% hull, 2% dead | +0.5 r, +2% hull, 2% dead | +0.1 r, -0% hull, 2% dead | +0.21 |
+| 1 | Overcharge Coil | buff  | -0.0 r, -0% hull, 3% dead | -0.1 r, -0% hull, 11% | +0.2 r, +2% hull, 9% | +0.5 r, +2% hull, 1% dead | -0.0 r, -0% hull, 1% dead | +0.11 |
+| 1 | Radiator Sail | vent 5 | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 2% dead | +0.3 r, +2% hull, 2% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, -0% hull, 1% dead | +0.19 |
+| 1 | Plasma Arquebus | dir 2-4, heat 2 | +0.0 r, +0% hull, 9% | -0.4 r, -3% hull, 16% | +0.1 r, -0% hull, 15% | +0.5 r, +2% hull, 6% | +0.0 r, +0% hull, 10% | +0.03 |
+| 1 | Blazethrower | dir 3, heat 3, burn | -0.1 r, -0% hull, 8% | -1.2 r, -6% hull, 17% | -0.1 r, -0% hull, 12% | +0.4 r, +2% hull, 7% | -0.0 r, -0% hull, 18% | -0.20 |
+| 1 | Phased Sublimator | vent 4, cleanse | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 2% dead | +0.3 r, +2% hull, 3% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, -0% hull, 1% dead | +0.19 |
+| 1 | Polarity Projector | dir 0, heat 2, shock | -0.0 r, -0% hull, 3% dead | +0.1 r, +0% hull, 9% | +0.0 r, +1% hull, 10% | +0.5 r, +2% hull, 2% dead | +0.0 r, +0% hull, 3% dead | +0.13 |
+| 1 | Shoring Jack | buff  | +0.0 r, -0% hull, 1% dead | +0.4 r, +0% hull, 5% | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.0 r, -0% hull, 2% dead | +0.24 |
+| 1 | Oblation Mantle | shield 10 | +0.0 r, -0% hull, 0% dead | +0.2 r, -1% hull, 3% dead | +0.3 r, +2% hull, 1% dead | +0.5 r, +2% hull, 1% dead | +0.1 r, +0% hull, 2% dead | +0.22 |
+| 1 | Retribution Thurible | buff  | -0.0 r, -0% hull, 1% dead | +0.1 r, -1% hull, 3% dead | +0.2 r, +2% hull, 5% dead | +0.5 r, +2% hull, 1% dead | -0.0 r, -0% hull, 3% dead | +0.16 |
+| 1 | Maxigun | dir 1-2, heat 1 | +0.0 r, -0% hull, 18% | -0.7 r, -4% hull, 27% | +0.0 r, -0% hull, 15% | +0.5 r, +2% hull, 8% | -0.0 r, -1% hull, 6% | -0.05 |
+| 1 | Wake Diffuser | vent 3 | +0.0 r, -0% hull, 1% dead | +0.3 r, -0% hull, 6% | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 1% dead | +0.1 r, -0% hull, 2% dead | +0.23 |
+| 1 | Thermal Ray | dir 6, heat 6 | -0.1 r, -0% hull, 9% | -1.3 r, -6% hull, 17% | -0.1 r, -1% hull, 14% | +0.4 r, +3% hull, 9% hot | -0.1 r, -0% hull, 7% | -0.23 |
+| 1 | Transonic Rifle | dir 5, heat 4 | -0.0 r, -0% hull, 22% | -1.1 r, -5% hull, 18% | -0.1 r, -0% hull, 34% | +0.4 r, +2% hull, 29% | -0.0 r, -0% hull, 7% | -0.17 |
+| 1 | Airburst Shell | ind 1-2, heat 1, cleave flak | -0.0 r, -0% hull, 8% | -0.7 r, -4% hull, 28% | +0.0 r, +0% hull, 14% | +0.4 r, +2% hull, 5% dead | -0.0 r, -0% hull, 3% dead | -0.07 |
+| 1 | Blast Door | buff  | +0.1 r, -2% hull, 5% dead | +0.5 r, -7% hull, 12% | +0.3 r, -2% hull, 10% | +0.6 r, +0% hull, 4% dead | +0.4 r, -2% hull, 6% | +0.36 |
+| 1 | Decoherence Veil | buff  | +0.1 r, -2% hull, 4% dead | +0.4 r, -4% hull, 5% | +0.2 r, -1% hull, 6% | +0.5 r, +1% hull, 2% dead | +0.2 r, -0% hull, 3% dead | +0.27 |
+| 2 | Suppression Battery | ind 1-3, heat 2, suppress | +0.0 r, -0% hull, 4% dead | -0.1 r, -2% hull, 15% | +0.2 r, +1% hull, 14% | +0.5 r, +2% hull, 4% dead | -0.0 r, +0% hull, 2% dead | +0.11 |
+| 2 | Coriolis Accelerator | dir 3, heat 1 | -0.1 r, -0% hull, 9% | -1.0 r, -5% hull, 16% | -0.1 r, -0% hull, 13% | +0.4 r, +2% hull, 7% | -0.0 r, -0% hull, 6% | -0.14 |
+| 2 | Laminar Deflector | shield 6, rapid | -0.0 r, -0% hull, 1% dead | +0.1 r, -4% hull, 7% | +0.2 r, +1% hull, 3% dead | +0.5 r, +2% hull, 2% dead | -0.0 r, -1% hull, 3% dead | +0.16 |
+| 2 | Corona Shield | shield 6, cleanse | +0.0 r, -0% hull, 1% dead | +0.3 r, -2% hull, 8% | +0.2 r, +1% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.2 r, -0% hull, 4% dead | +0.26 |
+| 2 | Pulse Vacillator | dir 2, heat 2, rapid | -0.0 r, -0% hull, 3% dead | -0.2 r, -3% hull, 11% | +0.1 r, +0% hull, 9% | +0.4 r, +2% hull, 2% dead | -0.1 r, -0% hull, 2% dead | +0.03 |
+| 2 | Meteor Artillery | ind 5, heat 6, burn | -0.1 r, -0% hull, 9% | -1.7 r, -7% hull, 18% | -0.2 r, -1% hull, 14% | +0.3 r, +2% hull, 9% hot | -0.2 r, -1% hull, 7% | -0.39 |
+| 2 | Entropy Condenser | vent 10 | +0.0 r, -0% hull, 0% dead | +0.2 r, -0% hull, 0% dead | +0.3 r, +2% hull, 0% dead | +0.5 r, +2% hull, 0% dead | +0.0 r, +0% hull, 0% dead | +0.19 |
+| 2 | Aurora Lattice | buff  | +0.0 r, -0% hull, 1% dead | +0.2 r, +0% hull, 3% dead | +0.3 r, +2% hull, 3% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, +0% hull, 1% dead | +0.20 |
+| 2 | Differentiation Probe | ind 0, heat 2, disrupt | +0.1 r, -0% hull, 4% dead | +0.9 r, -1% hull, 10% | +0.2 r, +1% hull, 6% hot | +0.6 r, +2% hull, 3% hot dead | +0.5 r, +0% hull, 5% | +0.46 |
+| 2 | Tesla Gauntlets | dir 4, heat 3, shock | -0.2 r, -1% hull, 9% | -1.3 r, -6% hull, 18% | -0.2 r, -1% hull, 15% | +0.3 r, +1% hull, 9% | -0.1 r, -0% hull, 8% | -0.31 |
+| 2 | Cyclic Cannon | dir 2, heat 3 | -0.1 r, -0% hull, 10% | -1.6 r, -7% hull, 19% | -0.1 r, -0% hull, 14% | +0.4 r, +2% hull, 9% | -0.1 r, -1% hull, 8% | -0.29 |
+| 2 | Flak Cannon | dir 3, heat 2, flak | -0.1 r, -0% hull, 8% | -1.1 r, -6% hull, 17% | -0.1 r, -0% hull, 12% | +0.5 r, +2% hull, 7% | -0.1 r, -0% hull, 6% | -0.18 |
+| 2 | Stoker | dir 3, heat 1, burn | -0.1 r, -0% hull, 8% | -1.2 r, -6% hull, 18% | -0.1 r, -0% hull, 12% | +0.5 r, +2% hull, 7% | -0.0 r, -0% hull, 6% | -0.20 |
+| 2 | Backdraft Charge | dir 2, heat 2, suppress | +0.0 r, -0% hull, 3% dead | -0.1 r, -2% hull, 12% | +0.1 r, +0% hull, 10% | +0.5 r, +2% hull, 2% hot dead | +0.0 r, -0% hull, 2% dead | +0.10 |
+| 3 | Umbra Inducer | dir 3, heat 0, suppress | +0.0 r, +0% hull, 7% | -0.6 r, -1% hull, 15% | +0.1 r, +2% hull, 12% | +0.5 r, +3% hull, 6% | +0.1 r, +1% hull, 7% | +0.03 |
+| 3 | Gravity Knuckles | dir 5, heat 4, burn | -0.1 r, -1% hull, 9% | -1.8 r, -8% hull, 19% | -0.2 r, -1% hull, 14% | +0.4 r, +2% hull, 9% | -0.2 r, -1% hull, 8% | -0.40 |
+
+Guns alone, each tier's rounds against stock, the best and the worst on each bench:
+
+| Tier | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis |
+|---|---|---|---|---|---|
+| 0 | +0.0 to +0.0 over 4 | -0.5 to +0.0 over 4 | +0.0 to +0.2 over 4 | +0.5 to +0.5 over 4 | -0.0 to +0.0 over 4 |
+| 1 | -0.3 to +0.0 over 13 | -1.9 to -0.4 over 13 | -0.3 to +0.1 over 13 | +0.0 to +0.5 over 13 | -0.4 to +0.0 over 13 |
+| 2 | -0.2 to +0.0 over 9 | -1.7 to -0.1 over 9 | -0.2 to +0.2 over 9 | +0.3 to +0.5 over 9 | -0.2 to +0.0 over 9 |
+| 3 | -0.1 to +0.0 over 2 | -1.8 to -0.6 over 2 | -0.2 to +0.1 over 2 | +0.4 to +0.5 over 2 | -0.2 to +0.1 over 2 |
+
+**The module ladder**, each module fitted alone to the bench machine:
+
+| Tier | Module | Stats and text | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis | Mean |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Ablative Plating | hull +8, armour +1, move -10 | -0.0 r, -1% hull | -0.0 r, -2% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -2% hull | +0.00 |
+| 1 | Boundary-layer Bleed | cooling +1; Each time its heat climbs, it stands up 1 shield. | +0.0 r, -0% hull | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.0 r, -0% hull | +0.0 r, -0% hull | +0.00 |
+| 1 | Flak Skirt | hull +6 | +0.0 r, -0% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -1% hull | -0.00 |
+| 1 | Field Radiators | heat +4, cooling +1 | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.0 r, -0% hull | +0.0 r, -1% hull | +0.0 r, -0% hull | +0.00 |
+| 1 | Susceptibility Tensor | shield +4; Its blows deal 1 more to a foe carrying any status. | -0.0 r, -0% hull | -0.5 r, -4% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.0 r, -1% hull | -0.09 |
+| 2 | Ram Frame | hull +24; Its Direct blows aimed at the front rank deal 1 more. | -0.1 r, -2% hull | -0.8 r, -7% hull | -0.1 r, -3% hull | -0.1 r, -3% hull | -0.2 r, -4% hull | -0.26 |
+| 2 | Spall Liner | move -10, heat -4; Taking hull damage stands up 2 shield. | -0.0 r, -0% hull | -0.0 r, -1% hull | +0.0 r, -0% hull | +0.0 r, +1% hull hot | +0.0 r, +0% hull | +0.01 |
+| 2 | Muzzle Velocity Booster | Its rolled weapons reach 1 higher. | -0.0 r, -0% hull | -0.2 r, -1% hull | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.1 r, +0% hull | -0.05 |
+| 2 | Tactical Databank | Its rolled weapons' lowest roll is 1 higher. | -0.1 r, -0% hull | -0.2 r, -1% hull | -0.1 r, -1% hull | +0.0 r, +0% hull | +0.1 r, +0% hull | -0.05 |
+| 2 | Artillery Rangefinder | Its Indirect blows aimed at the back rank deal 1 more. | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.00 |
+| 2 | Phase Conjugator | shield +4; An ally it shields is Armoured 1 for the round. | -0.0 r, -0% hull | +0.1 r, -1% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, -0% hull | +0.02 |
+| 2 | Ward Plate | shield +8, armour +1 | -0.0 r, -0% hull | +0.0 r, -2% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, -1% hull | +0.02 |
+| 2 | Grievance Reliquary | hull +4; Taking hull damage Overcharges it, a stack a blow. | -0.0 r, -0% hull | -0.0 r, -1% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | -0.0 r, -1% hull | -0.01 |
+| 2 | Trim Tabs | heat -4; Rerolling only its own die is free once a round. | -0.0 r, -0% hull | -0.1 r, -1% hull | -0.0 r, -0% hull | -0.0 r, +1% hull hot | +0.0 r, +1% hull | -0.02 |
+| 3 | Thrust Overboost | move +20, shield +12; Its weapons run twice as hot. | +0.0 r, -0% hull | +0.1 r, -1% hull | -0.0 r, -2% hull | +0.2 r, +4% hull hot | +0.5 r, +4% hull hot | +0.15 |
+| 3 | Exotic-matter Shell | shield +16, heat +6; Every blow on it lands 2 harder. | -0.0 r, +0% hull | +0.1 r, +1% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, +0% hull | +0.02 |
+| 3 | Tithe Coupling | hull +20, shield +12; Every component it spends costs 3 hull. | +0.4 r, +4% hull | +1.2 r, +7% hull | +0.2 r, +0% hull | +0.2 r, +7% hull | -0.6 r, +9% hull | +0.29 |
+
+**The heat ladder**, the four team rows with every attack a class hotter (step: 0 to 1, 1 to
+2, 2 to 3, 3 to 4, 4 to 6, 6 to 8, 8 to 10), the eleven heat-0 attacks alone at 1 (cold1), and
+cooling 0 on every chassis (cooling0):
+
+| Row | Variant | Win | Rounds | Hull | Peak | Hot rounds | Over | Burned | Held | Damage held | Heat left |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| the default team | stock | 100.0 | 3.1 | 5% | 80% | 0.8 | 0.21 | 0.7 | 0.11 | 0.6 | 29% |
+| Minerva Heavy Works team | stock | 100.0 | 4.9 | 7% | 31% | 0.1 | 0.05 | 0.2 | 0.01 | 0.0 | 14% |
+| Kestrel Dynamics team | stock | 100.0 | 2.9 | 8% | 93% | 1.0 | 0.29 | 1.0 | 0.07 | 0.4 | 43% |
+| Wainwright & Sutler team | stock | 99.6 | 5.9 | 18% | 33% | 0.3 | 0.13 | 0.3 | 0.04 | 0.1 | 16% |
+| the default team | step | 100.0 | 3.1 | 6% | 102% | 1.9 | 0.35 | 1.0 | 0.19 | 0.9 | 48% |
+| the default team | cold1 | 100.0 | 3.1 | 5% | 89% | 1.0 | 0.22 | 0.9 | 0.12 | 0.6 | 34% |
+| the default team | cooling0 | 100.0 | 3.1 | 5% | 95% | 1.4 | 0.20 | 0.8 | 0.13 | 0.6 | 45% |
+| Minerva Heavy Works team | step | 100.0 | 4.9 | 7% | 55% | 0.3 | 0.10 | 0.3 | 0.01 | 0.0 | 32% |
+| Minerva Heavy Works team | cold1 | 100.0 | 4.9 | 7% | 35% | 0.1 | 0.06 | 0.2 | 0.01 | 0.0 | 20% |
+| Minerva Heavy Works team | cooling0 | 100.0 | 4.9 | 7% | 47% | 0.3 | 0.09 | 0.3 | 0.01 | 0.0 | 29% |
+| Kestrel Dynamics team | step | 100.0 | 3.0 | 10% | 116% | 2.1 | 0.56 | 2.4 | 0.16 | 0.9 | 57% |
+| Kestrel Dynamics team | cold1 | 100.0 | 2.9 | 8% | 97% | 1.2 | 0.29 | 1.1 | 0.08 | 0.4 | 47% |
+| Kestrel Dynamics team | cooling0 | 100.0 | 3.0 | 9% | 103% | 1.6 | 0.31 | 1.2 | 0.10 | 0.5 | 53% |
+| Wainwright & Sutler team | step | 99.4 | 6.0 | 18% | 67% | 0.8 | 0.22 | 0.5 | 0.08 | 0.2 | 38% |
+| Wainwright & Sutler team | cold1 | 99.6 | 5.9 | 18% | 35% | 0.3 | 0.15 | 0.4 | 0.03 | 0.1 | 19% |
+| Wainwright & Sutler team | cooling0 | 99.0 | 5.9 | 19% | 61% | 0.6 | 0.20 | 0.5 | 0.06 | 0.1 | 35% |
+
+Read:
+
+- **The benches are too strong for most of the read.** Four rows win these cells in 2.9 to
+  4.9 rounds for 5 to 10% of their hull, so one hardpoint moves them by a third of a round at
+  most and a shield has nothing to save; Wainwright & Sutler's row (5.9 rounds, 18% hull) is
+  the one bench with room, and it carries the ladder: tier one's guns take 0.4 to 1.9 rounds
+  off it, tier two's 0.1 to 1.7, tier three's 0.6 to 1.8. The 23 October reads said the same
+  of a trio against today's packs (the formations and the two breaching bosses are its fights,
+  the rest free); the pricing run says it of a bench. Equipment and the setup pieces need a
+  harder bench (the formations and the breaching bosses alone, with the planner, or the fresh
+  start's compositions) before any of their numbers moves.
+- **Tier one's ceiling is tier two's.** The Arc Fault Cannon (1.7 rounds off the car, 0.5 off
+  the Nemesis's row, 0.51 off the five benches' mean) and the Overclocked Railgun (1.9, 0.3,
+  0.49) sit at or above every tier-two gun (the Meteor Artillery 1.7 and 0.39, the Cyclic Cannon
+  1.6 and 0.29, the Tesla Gauntlets 1.3 and 0.31) and the tier-three Gravity Knuckles (1.8 and
+  0.40); the next tier-one guns (the Thermal Ray 1.3, the Blazethrower 1.2, the Transonic Rifle
+  1.1) sit with tier two's; the rolled tier-one guns (the Slugthrower, the Howitzer, the
+  Shotfire Rack, the Arquebus, the Maxigun, the Incendiary Shells, the Airburst Shell) take 0.4
+  to 0.7 off the car and nothing elsewhere, a tier above the basics (0.0 to 0.5) and below the
+  flat hot guns, which is the heat row's rolled-range price. So a tier-two gun buys no kill
+  time a tier-one gun does not: the ladder's steps are heat and shape, not tiers.
+- **Heat prices show where heat bites.** On the car (maximum 12, cooling 1) the Railgun peaks
+  at 107% with 0.51 overheats a fight (0.13 stock), the Meteor Artillery and the Thermal Ray at
+  89% with 0.28, the Transonic Rifle 66%, the Gravity Knuckles 63%; on the Buzzard (maximum 14)
+  its stock Arc Fault Cannon is the best piece in its slot by 0.3 rounds over anything, the
+  cool gun that chains, and every warmer candidate holds dice for heat (0.21 to 0.27 a fight
+  against 0.07), the Railgun at 105% and 0.58 overheats, the Thermal Ray and the Meteor at 100%.
+  The Stoker reads as the Blazethrower on every bench (1.2 rounds off the car each, 0.20 off
+  the mean each) at a third of the heat.
+- **Equipment is dead under the greedy on these packs.** Every shield, vent and buff reads 1 to
+  8% of the row's spends and 0.2 to 0.5 rounds behind the stock gun on every bench; the one
+  that reads is the Blast Door (0.4 rounds slower, 2 to 7 points of hull saved: a Barrier
+  trades a round for hull), the Halo Shield and the Decoherence Veil behind it on the car. The
+  Entropy Condenser is never spent (0% on all five), the Oblation Mantle, the Radiator Sail,
+  the Phased Sublimator, the Wake Diffuser, the Shoring Jack, the Retribution Thurible, the
+  Aurora Lattice and the Proximity Klaxon 1 to 5%. A verdict on the greedy's valuation and the
+  benches' ease before any price (the proposal's rule 3; the to-do's valuation line).
+- **The Differentiation Probe reads worse than an empty hardpoint** on four benches (0.9
+  rounds slower on the car, 0.46 on the mean): a Disrupt moving foes onto the move that costs
+  the row more, or spends wasted; the bot's reading of a Disrupt first, then the jellyfish's
+  session.
+- **The setups on the car**, beside the Dingo's harpoon and its Flak: the Flak Cannon 1.1
+  rounds off at 17%, the Overcharge Coil 0.1 off at 11%, the Polarity Projector 0.1 on at 9%,
+  the Suppression Battery 0.1 off at 15%, the Backdraft Charge 0.1 off at 12%; the Umbra
+  Inducer 0.6 off at 15%, below every tier-two gun on kill time, as a stun is (its worth is the
+  turn it buys, which rounds do not count: the finals' hull is its read).
+- **The modules.** The Ram Frame is the first module on every bench (0.1 to 0.8 rounds and 2
+  to 7 points of hull off, 0.26 off the mean), the universal pick the modules row forbids, the
+  catalogue's biggest stat line (hull +24, a placeholder that waited on this run) beside a
+  point on every Direct blow at the front, strikes included. The Artillery Rangefinder reads
+  nothing on any bench by construction: no bench machine stocks an Indirect gun, so its mirror
+  needs an Indirect bench (the Clydesdale's or the Cottonmouth's slot). The Susceptibility
+  Tensor reads where setups exist (0.5 rounds and 4 points off the car, beside Flak and a
+  Shock; nothing elsewhere); the Booster and the Databank read alike on the car's rolled guns
+  (0.2 off) and nothing on the flat kits, the mirror of 11 October again; the stat modules (the
+  Ablative Plating, the Flak Skirt, the Field Radiators, the Ward Plate, the Boundary-layer
+  Bleed) move no rounds and a point or two of hull, as the Spall Liner, the Phase Conjugator,
+  the Grievance Reliquary and the Trim Tabs do; the Thrust Overboost costs the hot benches (0.2
+  to 0.5 rounds and 4 points of hull on the Buzzard and the Nemesis) and pays the Puffin its
+  shield; the Exotic-matter Shell reads as nothing; the Tithe Coupling is a loss on four
+  benches (0.2 to 1.2 rounds and 4 to 7 points of hull on) and on the Nemesis the one module
+  that trades hull for rounds (0.6 off for 10 points on), the rage loop spinning on its own
+  bites.
+- **The Ammit's loop** (the proposal's hole E), fitted by hand on the Arsenal row since the
+  ladder fits the bench machine, the Nemesis:
+
+| The Ammit fitted with | Win | Rounds | Hull | Peak | Overheats | The Talons' share | The Mantle's | The Condenser's |
+|---|---|---|---|---|---|---|---|---|
+| nothing (the row as stocked) | 100 | 4.5 | 10% | 69% | 0.17 | 22% | 1% | 0% |
+| the Grievance Reliquary | 100 | 4.4 | 9% | 69% | 0.14 | 22% | 1% | 0% |
+| the Reliquary and the Tithe Coupling | 100 | 4.9 | 15% | 73% | 0.19 | 11% | 1% | 0% |
+| the Tithe Coupling | 99.2 | 5.6 | 18% | 82% | 0.38 | 7% | 2% | 0% |
+| (the Nemesis with the Tithe, from the module ladder) | 100 | 3.9 | 20% | 81% | 0.26 | | 1% | 0% |
+
+  The Reliquary alone reads as stock: the greedy spends the Mantle 1% and the Condenser 0% of
+  the row's spends, so nothing bites. With the Tithe beside it the row is slower (4.9 rounds,
+  15% hull): the greedy halves the Ammit's Talons spends (22 to 11%) under a 3-hull price it
+  reads as a cost, and never feeds the loop (7.2 rounds on the Treant against 4.8, 7.6 on the
+  Wyvern against 4.9, the formations a few tenths quicker for twice the hull); the Tithe alone
+  5.6 and 18%. Under the greedy the Ammit's permanence never spins, a verdict on the bot's
+  horizon (a stack a spend that pays over the rounds after) before any verdict on the loop,
+  the planner's read next; the Nemesis's rage loop spins today, at a price in hull.
+- **The heat ladder.** A class up on every attack doubles the hot rows' overheats (Kestrel's
+  0.29 to 0.56 a fight, its peak 93 to 116%, its hull burned 1.0 to 2.4; the default team's 0.21
+  to 0.35 and 80 to 102%) and leaves the cold rows cold (Minerva's peak 31 to 55%, 0.05 to 0.10
+  overheats, nothing held; Wainwright & Sutler's 33 to 67%, 0.13 to 0.22), and no row's wins or
+  rounds move; the cold basics at 1 move the peaks 2 to 9 points and nothing else; cooling 0
+  warms every row, the hot one to 103%, as on 22 October. The greedy answers heat by holding a
+  die, never by venting: the Coolant Jacket's share rises from 0.9 to 2.5% to 1.2 to 4.0% under
+  a class up, the rows' vents and shields together from 7 to 12% to 8 to 13%, while the dice
+  held for heat nearly double. So the heat row's test holds on the hot kits (met, and met harder
+  a class up), the cold rows pay in their numbers and reach no heat even a class hotter, and
+  the Jacket's job is a question for a bot that vents before the overheat (the to-do's heat
+  report) before it is one for the basics' heat.

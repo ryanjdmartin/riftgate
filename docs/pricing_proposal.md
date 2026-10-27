@@ -12,12 +12,12 @@ bible rows, fills through `tools/stock_fills.py` and the to-do's catalogue line,
 retires (git keeps it). Everything here is Ryan's to move; the numbers are placeholders until
 they are measured.
 
-**Status, 27 October**: the method and its driver are built (`tools/pricing_run.py`, a dry run
-checked: 393 variants, 188,640 fights); the run itself has not been made. The cloud session
-that built it could not fetch Godot (the download was refused), so the run is the desk
-machine's, about two and a half hours on four cores at a guessed rate, or a cloud session's
-once it may fetch the binary. The synergy map (section 4) is generated from content by
-`tools/synergy_map.py` and is current; the holes (section 5) are Claude's read of it.
+**Status, 27 October**: the method and its driver are built (`tools/pricing_run.py`) and the
+run was made the same day in the cloud session (393 variants, 188,640 fights, about three hours
+on four cores; the run and its tables in `docs/measurements.md`, 27 October, the pricing run);
+what it says is section 2, the heat read section 3, and the structure for Ryan's marks section
+6. The synergy map (section 4) is generated from content by `tools/synergy_map.py` and is
+current; the holes (section 5) are Claude's read of it, hole E measured.
 
 **Read first**: the bible's balance rows (section 11: "Every stat and passive has a price,
 measured"; "A component is balanced against the components of its tier; a chassis alone is a
@@ -112,42 +112,89 @@ python3 tools/pricing_run.py summarise prices          # build/pricing/prices/su
 python3 tools/pricing_run.py run heat --parts heat --policies random,greedy   # the heat ladder alone, with the decision read
 ```
 
-## 2. What the records already say
+## 2. What the run says
 
-The directions the run starts from, from the bands of 22 October and the reads since
-(`docs/measurements.md`, `docs/balance.md`):
+The run as made (`docs/measurements.md`, 27 October: the stock rows, the knock-outs, the
+cross-bench ladder table, the tiers' bands, the module ladder, the heat ladder, the Ammit's
+fits). A direction at 30 seeds; every row wins 99 to 100% of these cells, so the reads are the
+rounds to win, the hull lost, the pick shares and the heat columns.
 
-- **Heat bites five kits and is decoration on the rest.** Greedy, the hottest machine as a turn
-  ends: the Nemesis 94% of its maximum (0.50 overheats and 0.17 dice held a fight), the Kite 92%
-  (0.29, 0.18), the Buzzard 87%, the Whip Scorpion 78%, the Stingray 74% (0.16 held), the
-  Lammergeier 56%; every other kit 6 to 44% (the Honey Badger 28%, the Clydesdale 30%). The
-  heat row's test is met on the hot kits; the cold kits are cold by their numbers, which is the
-  row's own rule (a cold build pays in a rolled range, a short reach, a lower number or fewer
-  strikes). What is open is the slack on the kits between (the Lammergeier, the Clydesdale's
-  d9 at heat 0 to 2) and whether the basics' heat 0 leaves the Coolant Jacket with no job.
-- **The pick shares name the dead entries.** The Ammit's Entropy Condenser 0%, the Dingo's
-  Combat Translocator 1%, the Lammergeier's Syrinx Drone, Lorentz Contractor and Polarity
-  Projector 2 to 3%, the Coolant Jacket 1 to 6% on ten kits (14% on the Musk Ox, whose forge
-  turns a vent into ammo, 33% on the Whip Scorpion, whose vents are its guns), the Kite's Bleed
-  Valve 18%.
-- **The bot's Shock price was a fault, fixed** (23 October): priced at a share of the team's
-  average blow, the Polarity Projector was spent 0.07 to 0.11 times a fight on the Honey Badger
-  and 0.3 on the Puffin; priced at the biggest blow an ally still to act shows, 0.29 to 0.49 and
-  0.55 to 0.62. The ladders run on the fixed bot; a setup piece's share is read on it, never on
-  the bands of 22 October.
-- **A flat buff rides on strikes** (25 October, the Skua's rows): the Overcharge Coil in the
-  Puffin's Coolant Jacket's place took the Skua pair's big-foe wins from nine-round losses to
-  nine-round wins, the Prairie Dog's pair doubled its big-foe wins, the Cottonmouth's one-strike
-  drum gained nothing. The Coil's ladder delta on the Puffin bench reads the same.
-- **The heat loops of 22 October**: cooling 0 warmed every kit a little and moved no row's wins
-  or rounds; the maxima (16 to 12, 20 to 14) heated the hot kits and left the cold ones cold,
-  and were kept. The foes' heat doubled since (24 October): the Peak's formation fell from 88 to
-  69% won for the starter trios, the cold Honey Badger trios paying 0 to 9% of their hull to
-  heat and the hottest starters walled on the greedy bot; Ryan's play judges it (the to-do).
-- **The reach and the shapes** (`docs/balance.md`): Indirect's premium is the back rank alone
-  since danger close retired; a rolled spend and a flat one are read side by side there, and
-  the ladders' benches split Direct (the tank, the car, the flyer) from where Indirect pays
-  (the formations and the finals, a back rank each).
+1. **The benches are too strong for most of the read.** Four rows win these sixteen fights in
+   2.9 to 4.9 rounds for 5 to 10% of their hull, so one hardpoint moves them by a third of a
+   round at most and a shield has nothing to save; Wainwright & Sutler's row (5.9 rounds, 18%
+   hull) carries the ladder. Guns price by kill time there; equipment and the setup pieces do
+   not price on this run at all (below). The next run is a harder bench: the four formations
+   and the two breaching bosses alone, the planner beside the greedy (the setups' rung), on
+   Wainwright & Sutler's row and a starter trio without a carry, or the fresh start's
+   compositions once they exist.
+2. **Tier one's ceiling is tier two's.** The Arc Fault Cannon and the Overclocked Railgun (1.7
+   and 1.9 rounds off the car, 0.5 off the five benches' mean) sit at or above every tier-two
+   gun (the Meteor Artillery, the Cyclic Cannon, the Tesla Gauntlets) and the tier-three Gravity
+   Knuckles; the next tier-one guns (the Thermal Ray, the Blazethrower, the Transonic Rifle) sit
+   with tier two's, and the rolled tier-one guns a step above the basics. A tier-two gun buys no
+   kill time a tier-one gun does not: for guns the ladder's steps are heat and shape, not tiers,
+   where the tiers row says a component's tier is power. The Stoker reads as the Blazethrower
+   on every bench at a third of the heat, which is that row's power in another coin.
+3. **Heat prices show where heat bites, and nowhere else.** The Railgun pays half an overheat a
+   fight on the car and holds the Buzzard's dice; the Thermal Ray and the Meteor sit at the
+   maximum on the hot kits; the Buzzard's cool Arc Fault Cannon is the best piece in its own
+   slot by a third of a round. The heat ladder (section 3) says a class up on every attack
+   doubles the hot rows' overheats and leaves the cold rows cold, with no row's rounds moved.
+4. **Equipment is dead under the greedy on these packs.** Every shield, vent and buff reads 1
+   to 8% of a row's spends and a fifth to a half of a round behind the stock gun; the Entropy
+   Condenser is never spent on any bench, and the Oblation Mantle, the Radiator Sail, the
+   Phased Sublimator, the Wake Diffuser, the Shoring Jack, the Retribution Thurible, the Aurora
+   Lattice and the Proximity Klaxon 1 to 5%. The one with a read is the Blast Door (a round
+   slower for 2 to 7 points of hull saved), the Barrier's shape working as decided. The setups
+   on the car read small (the Flak Cannon 1.1 rounds off at 17%, the Overcharge Coil 0.1 at
+   11%, the Suppression Battery and the Backdraft Charge 0.1 at 12 to 15%, the Polarity
+   Projector 0.1 on at 9%), so the Backdraft's and the Battery's numbers (the to-do) wait on
+   the harder bench too.
+5. **Three verdicts on the bot before any price.** The Differentiation Probe reads worse than
+   an empty hardpoint on four benches (a Disrupt the greedy spends onto moves that cost the row
+   more); the Condenser's 0% is the greedy never venting unless an overheat threatens (the heat
+   ladder: it holds dice instead); the Ammit's loop never spins because the greedy halves the
+   Ammit's spends under the Tithe's price rather than feed a stack a spend that pays later. The
+   to-do's valuation line (a Disrupt, a vent that costs hull, a loop two rounds out) comes
+   before those three pieces' numbers; the planner is the rung to read them on.
+6. **The modules.** The Ram Frame is the first module on every bench, the universal pick the
+   modules row forbids, with the catalogue's biggest stat line (hull +24, the placeholder this
+   run was to set) beside a point on every Direct blow at the front, strikes included; the
+   Artillery Rangefinder read nothing because no bench machine stocks an Indirect gun (the
+   method's one hole: its mirror needs an Indirect bench); the Tensor reads beside setups, the
+   Booster and the Databank alike on rolled guns and not at all on flat ones; the stat modules
+   move a point or two of hull; the Tithe Coupling is a loss on four benches and the Nemesis's
+   one trade of hull for rounds.
+7. **The knock-outs.** Ten of 51 move their row by a fifth of a round or two points of hull:
+   the Dingo's Airburst Shell, the Kite's Transonic Rifle, the Clydesdale's Enfilade Beam and
+   Maxigun, the Buzzard's Arc Fault Cannon and Railgun, the Puffin's Laser Carbine, the
+   Armadillo's Twin Autoguns; every stock's shields and vents read as their row, and the
+   Prairie Dog's Halo Shield out makes its row quicker. On these packs the stocks' equipment is
+   filler to the greedy; the stock's question, with the harder bench.
+
+The structure for the marks (Claude's leans; nothing lands before them, and a delta a number
+lands on is read again at 200 seeds):
+
+- **The two outliers of tier one.** Three ways: (a) the Arc Fault Cannon and the Railgun to
+  tier two, which takes them out of the Buzzard's and the Lammergeier's stocks (the Kestrel
+  line's call, 21 October); (b) tier two's guns up a point each (the Meteor to 6, the Cyclic
+  Cannon's strikes to 2 to 3, the Tesla Gauntlets to 5), which moves nine numbers to answer
+  two pieces; (c) the tiers kept as the tiers row has them (tier two "most of the synergy
+  pieces", tier three the chase) and the two priced by their own levers: the Chain's rework for
+  the Arc Fault Cannon (section 12: "the kill and repeat is janky at best and snowbally at
+  worst", and the run reads the snowball, the cannon chaining through every pack with rank and
+  file), and the Railgun's heat as its price, which it pays (half an overheat a fight on a
+  12-maximum kit, a held die on a 14). Claude's lean: (c).
+- **The Ram Frame's hull line comes down to the catalogue's band**, from +24 to about +8 (the
+  Ablative Plating's +8, the Flak Skirt's +6, the Reliquary's +4), so the module is its text;
+  the Artillery Rangefinder takes the same line and is read on an Indirect bench (the
+  Clydesdale's Howitzer slot in Wainwright & Sutler's row) before either lands.
+- **No equipment or setup number moves on this run.** The harder bench first.
+- **The heat classes stand** (section 3), and with them the guns' heat the Storm Petrel's
+  brief waited on: its engine session is free to run on today's heats once these marks are in,
+  its hole (2 shield a spend on basics alone) read on them.
+- **The pool's size** (section 12's 50 to 75 against 40): the run adds no pressure to grow it;
+  the dead pieces are the bot's before they are the pool's.
 
 ## 3. The heat pricing
 
@@ -161,31 +208,35 @@ stock pass set by niche (its retired brief): a rolled basic cold or cool (0 or 1
 warm (2), a keyword piece warm to hot (2 to 4), a big flat gun very hot (6 or 8), a Rapid piece
 paying heat as its price.
 
-What the run reads for it:
+What the run read (`docs/measurements.md`, the heat ladder):
 
-- **The heat ladder's three loops**, each on the four team rows against the rows as stocked:
-  `step` (every attack a class up: 0 to 1, 1 to 2, 2 to 3, 3 to 4, 4 to 6, 6 to 8, 8 to 10)
-  asks whether the kits between move from slack into the budget without walling the hot ones,
-  and which cold kits start to pay; `cold1` (the heat-0 attacks alone at 1: the Twin Autoguns,
-  the Rivet Gun, the Chainsaw Claw, the Breaching Plow, the Flakshot, the Afterburner, the Siphon,
-  the Expenditure, the Pinion Driver, the Umbra Inducer and the Syrinx Drone) asks whether a
-  cold floor of 1 gives the Coolant Jacket a job on the cold kits without a wall; `cooling0`
-  re-reads the 22 October loop on the doubled foe heat. The reads are the heat section's
-  columns (the peak, the hot rounds, the overheats and the hull they burned, the dice held and
-  the damage held back, the heat left at the end) beside the wins and rounds.
-- **The heat columns on every ladder variant**: a candidate's heat priced on the Buzzard bench,
-  where it bites, beside its delta on the cold benches, where it is free.
-- **The Storm Petrel's gate**: its weapons burn shield in place of heat, so the guns' heat the run
-  settles is its price list, and its brief's hole (2 a spend on basics alone) is read on it.
+- **A class up on every attack** (`step`: 0 to 1, 1 to 2, 2 to 3, 3 to 4, 4 to 6, 6 to 8, 8
+  to 10) doubles the hot rows' overheats (Kestrel's 0.29 to 0.56 a fight, its peak 93 to 116%,
+  its hull burned 1.0 to 2.4; the default team's 0.21 to 0.35) and leaves the cold rows cold
+  (Minerva's peak 31 to 55% with nothing held, Wainwright & Sutler's 33 to 67%), with no row's
+  wins or rounds moved: heat is a price the hot kits pay in hull, and the cold rows do not reach
+  it even a class hotter, since their price is their numbers.
+- **The cold basics at 1** (`cold1`: the eleven heat-0 attacks) move the peaks 2 to 9 points
+  and nothing else: no Jacket's job appears, because the greedy answers heat by holding a die
+  (the dice held nearly double under a class up) and never by venting (the Jacket's share 0.9
+  to 2.5% stock, 1.2 to 4.0% a class up). The Jacket's job is a question for a bot that vents
+  before the overheat (the to-do's heat report) before it is one for the basics' heat.
+- **Cooling 0** warms every row, the hot one to 103%, as the 22 October loop read.
+- **The heat columns on the ladders**: on the car (maximum 12) the Railgun peaks at 107% with
+  0.51 overheats a fight (0.13 stock), the Meteor and the Thermal Ray 89% and 0.28, the
+  Transonic Rifle 66%; on the Buzzard (maximum 14) every warmer candidate than its Arc Fault
+  Cannon holds dice (0.21 to 0.27 a fight against 0.07), the Railgun at 105% and 0.58, the
+  Thermal Ray and the Meteor at the maximum. A gun's heat is a real price on the kits that
+  carry it and free on the cold rows, which is the heat row's design.
 
-Claude's lean, for the marks, and nothing moves before the loops are read: keep the class
-ladder (0, 1, 2, 4, 6, 8) and move pieces between classes rather than invent steps, so the
-player reads six heats and not twenty; the basics stay cold unless `cold1` reads as the
-Jacket's job without a wall on the starter trios; the hot flat guns (the Transonic Rifle at 4,
-the Thermal Ray at 6, the Railgun at 8) are the ladder's anchors, a point of heat for a point
-of number above the warm basic's 3; a vent's number follows the guns it answers (a Jacket of 4
-is one warm spend or two cool ones). The foes' side stays the fresh start's (the status's item
-3), and Ryan's play on the Peak decides whether the doubled stacks hold.
+Claude's lean, for the marks: the class ladder stands (0, 1, 2, 4, 6, 8), pieces moved between
+classes rather than new steps, so the player reads six heats and not twenty; the basics stay
+cold (`cold1` bought nothing); the hot flat guns (the Transonic Rifle at 4, the Thermal Ray at
+6, the Railgun at 8) are the anchors, a point of heat for a point of number above the warm
+basic's 3, and the run reads them paying; no gun's heat moves on this run, and a vent's number
+follows the guns it answers. The Storm Petrel's price list is the guns' heat as it stands, so
+its engine session is free once these marks are in. The foes' side stays the fresh start's (the
+status's item 3), and Ryan's play on the Peak decides whether the doubled stacks hold.
 
 ## 4. The synergy map
 
@@ -328,12 +379,16 @@ Quintessence Tap keeps every stack for the battle. So the Ammit with the Reliqua
 Oblation Mantle or the Entropy Condenser buys a permanent point on all four Talons for 3 hull a
 spend, and with the Tithe Coupling every spend does: 32 hull (52 with the Tithe) is up to
 seventeen stacks. The Nemesis with the Mantle (rage a bite) is the Arsenal's intended pair; the
-Ammit's permanence is the question. Measure: the Nemesis bench's module ladder reads the
-Reliquary and the Tithe on its row (the Ammit is in it), and one fit variant by hand (the
-Ammit with both, `--fit ammit=grievance_reliquary,tithe_coupling`). If the Reliquary reads as
-the Ammit's must-pick, the price is its trigger (a foe's blow, never a bite) or a cap on the
-Tap, never the Reliquary's cut: the modules row forbids the universal pick, and the Arsenal's
-self-cost is its identity.
+Ammit's permanence is the question. Measured (27 October, `docs/measurements.md`): under the greedy the
+loop never spins. The Reliquary alone on the Ammit reads as stock (the bot spends the Mantle
+1% and the Condenser 0%, so nothing bites); with the Tithe beside it the row is slower (4.9
+rounds against 4.5, 15% hull against 10), since the greedy halves the Ammit's Talons spends
+under a 3-hull price it reads as a cost and never feeds a stack a spend that pays later; the
+Nemesis with the Tithe spins its rage loop (3.9 rounds for 20% hull). A verdict on the bot's
+horizon first (the planner's read next); if the loop then reads as the Ammit's must-pick, the
+price is the Reliquary's trigger (a foe's blow, never a bite) or a cap on the Tap, never the
+Reliquary's cut: the modules row forbids the universal pick, and the Arsenal's self-cost is its
+identity.
 
 **F. The modules read no tag, and two tags cannot carry a pair.** Every module's rule reads a
 reach, a roll, a status, a shield granted, hull damage or heat; none reads a tag, by the
@@ -376,15 +431,22 @@ the engine's own payoff; the dedicated readers are the Backdraft (Burning) and t
 
 ## 6. Open for Ryan
 
-1. The benches: the five as proposed, or his own; a sixth for Indirect (a Cottonmouth or a
-   Musk Ox bench) if the Rangefinder's read wants one.
-2. The knock-out's form: the hardpoint left empty (the piece's whole worth) or the basic of its
-   kind in its place (the tier's premium); both are a flag away, the first the default.
-3. Whether tier three joins the ladders (two pieces today; tier three is the chase, so its band
-   is its own) and whether the rank-and-file packs join the benches' packs (`--packs all`: the
-   area and Chain pieces read there, at 100% wins and in rounds alone).
-4. The heat pricing's lean (section 3): the class ladder kept, pieces moved between classes.
-5. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
-   E's price if the loop converges; F's pairs as the catalogue session's list.
-6. Who runs it: the desk machine (the command in section 1), or a cloud session allowed to
-   fetch Godot (the download was refused in this one).
+1. The two outliers of tier one, the Arc Fault Cannon and the Overclocked Railgun (section 2):
+   to tier two and out of the Buzzard's and the Lammergeier's stocks, tier two's guns up a point,
+   or kept and priced by their own levers (the Chain's rework, the Railgun's heat): Claude's
+   lean the last.
+2. The Ram Frame's hull line, +24 to about +8, and the Artillery Rangefinder read on an
+   Indirect bench (the Clydesdale's Howitzer slot) with the same line before either lands.
+3. The harder bench for equipment and the setup pieces (the four formations and the two
+   breaching bosses alone, the planner beside the greedy, on Wainwright & Sutler's row and a
+   starter trio without a carry), which also reads the Backdraft Charge's and the Suppression
+   Battery's numbers; or the fresh start's compositions first.
+4. The heat classes kept and no gun's heat moved (section 3), so the Storm Petrel's engine
+   session may run on today's heats.
+5. The bot's valuation lines before the dead pieces' numbers: a Disrupt (the Probe reads worse
+   than an empty hardpoint), a vent that costs hull (the Condenser's 0%), and a loop that pays
+   later (the Ammit's), read on the planner.
+6. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
+   E answered for now by the bot's horizon (above); F's pairs as the catalogue session's list.
+7. Whole runs by hand on the pieces the marks name (the campaign runner, four minutes a
+   variant), and the 200-seed reads on the deltas a number lands on.
