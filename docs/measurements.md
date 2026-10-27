@@ -1708,3 +1708,33 @@ parameter (a shield added, a status granted, a face in hand) the copy does not t
 the baseline reads alone would leave the bot reading two truths. Decision: the bot keeps the
 hand sum (the bible's round preview row); the exit is a cell whose band the greedy misreads for
 a heal or a last act, when a memoised copy, one play a decision point, is the first thing to try.
+
+## 27 October, the reports on the merged head
+
+**The two short reports rerun on main as it stands after the review's merges** (`3e1d083`: the
+round preview and the next-in-line re-pick, the rally at once, Volatile a cost, area at half,
+Flak on a 0, the one damage state, the bosses at their tier and the campaign bot moving as one,
+together for the first time). `tools/quick_run.gd` at 40 runs from seed 1, greedy, and
+`tools/campaign_run.gd` at 40 runs from seed 1, greedy, no persona. Directions.
+
+The quick campaign (`docs/quick_run.md`): no run leaves its first battle (40 of 40, where the
+branch's run of 26 October lost 34 there and six runs reached tier two): 12 fall at a formation,
+22 at the elite stand-in and 6 at the boss. By fight at tier one: formations won 77% in 7.6
+rounds leaving 58% hull (91%, 5.8 rounds and 75% on the branch), the elite 37% leaving 14% (65%,
+45%), the boss 0 of 6 (73% of 30). The squad opens its boss fight at 53% hull as before (52%), so
+the shift is in the fights and not in the attrition before them.
+
+The campaign (`docs/campaign_run.md`): no run won, 39 of 40 reaching the finale; battles won 7%
+(15% on the fresh start's bot of 26 October, before the merges; 1 to 2% before the boss row),
+the three-machine battles 36% (54 to 60%), the whole squad's fights 93% (96 to 98%); 0.49
+components destroyed a battle and 1.42 a won battle on one damage state (0.67 and 0.35 on the
+two states, the 26th's report); no final fought (one on the 26th), since three bosses of one
+domain fall in no run.
+
+Read: tier one reads harder for the greedy bot on the merged head than on any branch alone, by
+more than any one of the merged rules moved when measured by itself (the rally at once at 30
+seeds, area at half at 200 on the tier ones alone, Flak on a 0 on no measured row, next in line
+unmeasured). Which rule, or their sum, is the 200-seed matrix's to say (running as this entry is
+written; its deltas against `docs/balance.md` of 22 October and the tier-one tables of 25 and 26
+October). Until it does, no band read on the branches stands, and the quick campaign's
+first-battle question (section 12) is read on these numbers.
