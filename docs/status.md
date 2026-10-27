@@ -137,17 +137,16 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   campaign's plain player wins none of 40 runs (both section 12's). The 39% of battles that
   player won after the playtest list's boss fight (26 October, the report main carried until
   the 27th) was a bot artefact: it opened the boss's fight from the gate on its first turn, which
-  no order allows; with the order rule on it (`ccr-6073bda9-p34o8q`, 26 October,
-  `docs/measurements.md`) it wins 15% of its battles where it won 1 to 2%, the three-machine
-  battles 54 to 60%, since a trio that reaches the boss fights it together, and a battle is no
-  rush on the boss, who stands across the field. The set finals (26 October) turn every rift a
-  domain leads final at once, so a run meets more finals (the 26th's report read 23 in 40 runs
-  where 13 were, won 86%, on the artefact bot: the count waits on the rerun); the rally at once
-  moves no cell of the packs that field it out of its band (`docs/measurements.md`, 30 seeds, a
-  direction). `docs/campaign_run.md` as committed is the 26th's run on the fixed bot before the
-  set finals and the rally at once, and `docs/quick_run.md` the quick campaign's branch's run:
-  neither was run on main as it now stands, and nor was `docs/balance.md` (22 October), so every
-  band read since then predates one change or another (the to-do's first engine line). Since 24 October a foe picks at random unless its threat calls for an aim, every
+  no order allows; with the order rule on it (`ccr-6073bda9-p34o8q`, 26 October) it won 15%. On
+  the merged head (27 October, `docs/measurements.md`) it wins 7% of its battles and no final,
+  the three-machine battles 36%, and no quick campaign run leaves its first battle (12 at a
+  formation, 22 at the elite stand-in, 6 at the boss; the tier-one formations won 77%, the
+  elite 37%, the boss 0 of 6, where the branch read 91, 65 and 73): tier one reads harder than
+  on any branch alone, by more than any merged rule moved when measured by itself, and the
+  200-seed matrix on the merged head says which (`docs/balance.md` is the 22nd's until it
+  lands; the to-do's first engine line). The set finals (26 October) turn every rift a domain
+  leads final at once; the rally at once moves no cell of the packs that field it out of its
+  band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
   formations read a few points easier for it, and their pressure is the balancing's to restore.
   The foes' heat doubled the same day as its first cut: the Peak's formation fell from 88% won
