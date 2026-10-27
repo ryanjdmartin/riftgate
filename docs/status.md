@@ -21,10 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 676 tests, 64,908 checks, green on main at `e59691d` (27 October, before the five
-  merges of the Branches section, which have not run the suite: the cloud session's download of
-  Godot was refused by its permission classifier, so the first desk-machine session runs it before
-  anything else, the to-do's first engine line, then fast-forwards main). About a minute in a
+- Tests: 709 tests, 65,920 checks, green on main's head (27 October, after the review's five
+  merges, run in the cloud session once Ryan allowed its download of Godot), about a minute in a
   cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -47,12 +45,12 @@ damage state, the bosses at their tier), `ccr-6073bda9-p34o8q` (the foes' fresh 
 the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth rounds, which the
 status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
 (the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
-changes to the skirmish (each merge commit says how it was resolved); the suite has not run on
-the result (the Tests line). Main takes this branch as a fast-forward (`git merge --ff-only`)
-once the suite is green on it, or on Ryan's word; every branch named here is then fully merged,
-to delete from the desk machine or GitHub along with `claude/affectionate-goldberg-8e3mkh`,
-`claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`, `claude/eager-newton-sf947u` and
-`claude/friendly-cannon-kyk9v4` (a cloud session may not delete one). Every other branch was
+changes to the skirmish (each merge commit says how it was resolved); the suite ran green on
+the result (the Tests line) and main took this branch as a fast-forward the same day. Every
+branch named here is fully merged, to delete from the desk machine or GitHub along with
+`claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
+`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -174,9 +172,8 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First, on the desk machine: the suite on main's head, then the three reports
-rerun (the to-do's first engine line), since no number read since 22 October was read on the
-content as it now stands.
+to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
+line), since no number read since 22 October was read on the content as it now stands.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
