@@ -22,11 +22,14 @@ are in `README.md`.
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
 - Tests: 676 tests, 64,908 checks, green on main (27 October, `claude/affectionate-goldberg-8e3mkh`
-  landed), about a minute in a cloud session. A cloud session fetches Godot 4.7's Linux
-  build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`; in Auto mode the download goes in a command of its
-  own and the unpacking and first run in another, since one line that fetches and runs it is
-  refused, 27 October), uses `xvfb-run` for screenshots (with
+  landed), about a minute in a cloud session. A cloud session gets Godot 4.7's Linux build
+  and the project's first import from the repository's session-start hook
+  (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October, on
+  `ccr-c04908be-3r43xf` until it lands on main; the GitHub release asset
+  `godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session
+  without the hook fetches it by hand, the download in a command of its own and the unpacking
+  and first run in another, since Auto mode refuses one line that fetches and runs it), uses
+  `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites

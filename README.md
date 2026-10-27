@@ -149,7 +149,11 @@ export templates and debug keystore in `editor_data` there; Python 3.13, since W
 the tools open text without naming an encoding and Windows would read it as cp1252. Python
 writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
-the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
+the Prairie Dog's four textures, as in a cloud session: restore them. A cloud session sets
+none of this up by hand: the repository's session-start hook (`.claude/hooks/session-start.sh`,
+registered in `.claude/settings.json`; 27 October) fetches Godot 4.7.2's Linux build into
+`~/bin`, puts it on the path and runs the first import with the textures restored, before the
+session's first command, once in a container. foeforge's `generate` and
 `fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
 desktop app is a packaged Windows app: what its sessions write under `AppData` lands in a
 private copy only Claude's own processes see (`AppData\Local\Programs` excepted), which is why
