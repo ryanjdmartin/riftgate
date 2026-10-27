@@ -1420,6 +1420,50 @@ through plate, the brief's claim: the Coil turns the big foes from the pair's sl
 nine-round ones. A tier one in the middle of the field, neither weak nor a must-pick; Ryan's play
 decides whether its start bites.
 
+## 25 October, formations back to back
+
+**How many complete formations a squad gets through in a row** (Ryan's quick campaign of 25
+October as first proposed, `git show 2b64715:docs/quick_campaign_proposal.md`: battles of four,
+six and eight fights before the boss,
+every one a formation or an elite, nothing healed until the boss falls). `tools/chain_probe.gd`
+on the content at `a8a0e43`: a squad fights one domain's formation (its whole spawn list in one
+fight, as the balance report's formation cells) up to nine times in a row, hull, shield, cracks
+and wrecks carried and heat starting each fight at zero, greedy play, never withdrawing; each
+chain with no shield back between fights (every machine fought, so no field recharge) and with
+one field recharge (a map turn's walk to the next pack). The squads: every trio a tender deals
+(44 since the Skua, stock) at 2 seeds a domain, every four (24, stock) at 3, and the five endgame
+fours of 23 October (`tools/endgame_fours.py --json`) at 5. The share of chains still winning
+after the k-th formation, and the hull they have left (a wreck counting nothing):
+
+| Squad | Between fights | 1 | 2 | 4 | 6 | 8 |
+|---|---|---|---|---|---|---|
+| Starter trios (352 chains each) | no shield back | 85% (76%) | 63% (60%) | 32% (48%) | 14% (40%) | 6% (39%) |
+| | a field recharge | 87% (74%) | 64% (68%) | 43% (58%) | 29% (59%) | 19% (61%) |
+| Starter fours (288) | no shield back | 100% (93%) | 98% (81%) | 84% (68%) | 70% (60%) | 56% (55%) |
+| | a field recharge | 100% (93%) | 98% (86%) | 89% (79%) | 80% (75%) | 71% (71%) |
+| Endgame fours (100) | no shield back | 100% (98%) | 100% (96%) | 100% (89%) | 100% (83%) | 99% (76%) |
+| | a field recharge | 100% (97%) | 100% (95%) | 100% (91%) | 100% (86%) | 97% (84%) |
+| The same, half again as dense (`--density 1.5`) | a field recharge | 100% (95%) | 100% (90%) | 99% (80%) | 95% (73%) | 90% (66%) |
+| The same, double (`--density 2`) | a field recharge | 100% (91%) | 100% (82%) | 94% (68%) | 75% (64%) | 66% (60%) |
+
+By domain, the Meadow is the starters' wall: a stock four wins four of its formations in a row
+67% of the time (76% with the recharge), the Waste's 100%. By machine, the Cottonmouth carries
+(the trios with it win four in a row 85% and 95%, the fours with it eight 95% and 97%) and the
+Cassowary and the Prairie Dog least (their trios 4% and 9% without the recharge), as the trios'
+reads of 23 October had it. The survivors' hull reads high late because the chains that last are
+the strong pairings. Denser formations take longer as well as more: 4.2 rounds a fight for the
+endgame fours, 6.4 at half again as dense, 8.4 at double.
+
+Read: a trio cannot carry a battle of formations: more than half the stock trios fall before the
+fourth. A fourth machine about halves each fight's cost (section 4's four-machines row) and takes
+most stock fours through four (84 to 89%) and half or more through eight. The field recharge is
+worth five to fifteen points on a starter squad; on a built one it moves the hull left (76% to
+84% after eight), not the wins. A four fitted to tier two loses about a thirtieth of its hull a
+formation and leaves eight with three quarters of it or more; every tier draws the same lists
+today (the curve row), so only the formation's density presses it, half again as dense taking it
+to 90% through eight and double to 66%. A direction: 2 to 5 seeds a cell over many cells, greedy
+only.
+
 ## 25 October, the mechanics audit's fixes
 
 **The tender on its own stream** (`docs/mechanics_audit.md`, item 33). `tools/campaign_run.gd`,
@@ -1434,6 +1478,102 @@ the new streams puts every machine at about three starts in four offers over 4,0
 report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen a run against
 3.75) carry everything landed since 22 October, the targeting at random and the doubled heat
 among it, and say nothing about the fix. A direction at 40 runs.
+
+## 25 October, the quick campaign's first runs
+
+**Whole quick runs, the mode as Ryan decided it that day** (the bible's quick campaign row;
+`docs/rules.md`'s quick campaign part): `tools/quick_run.gd` at 40 runs from seed 1, each
+starting with three different draft chassis at random, the plain player picking the loot by
+tier and fitting it the same way, once on the greedy rung (`docs/quick_run.md`, 129 s in four
+parts) and once on the planner (563 s), on the content and engine at `f7c1fa0`.
+Every fight a complete formation, an elite (each domain's other bench hero leading its
+formation) or the boss with its formation, the enemy the same at every tier. A direction.
+
+| Read | Greedy | Planner |
+|---|---|---|
+| Runs won | 1 of 40 | 1 of 40 |
+| Runs lost in the first battle | 34 (its elite 15, a formation 10, its boss 9) | 35 (15, 8, 12) |
+| The first battle won | 15% | 13% |
+| Battles 2 to 8 won, by the runs that passed the first | 80 to 100% (4 to 6 runs) | 100% (5 runs) |
+| The squad's hull as the boss fight opened, battles 2 to 10 | 76 to 96% | 70 to 98% |
+| Battles 11 and 12 won; hull before the boss | 67%, 100%; 62%, 56% | 80%, 75%; 58%, 48% |
+| The finale | 2 reached, 1 won | 3 reached, 1 won |
+| The kit at battle 7 (a squad's hardpoint pieces of tiers 0 / 1 / 2 / 3, and modules) | 0 / 6.5 / 8.5 / 1.2, 1.0 | 0 / 6.4 / 8.6 / 1.2, 1.4 |
+
+By fight on the greedy rung: a tier-one formation won 90% (5.0 rounds, the squad at 73% of its
+hull after), a tier-one elite 72% (49%), a tier-one boss 73% (47%); from tier two every
+formation and elite 97 to 100%, the bosses 91 to 94%. The Meadow is the hardest lead (38% of its
+battles won), the Marsh and the Peak the easiest (71 and 70%); the Cottonmouth's runs won the
+most battles (3.7 a run), the Puffin's none.
+
+Read: the first battle is a cliff and the middle a plateau, alike on both rungs, so it is the
+shape and not the bot. A starting trio meets three complete formations, an elite and a boss with
+its formation with no heal, which the chain probe of the same day reads as a trio's wall; the
+few runs through it field four from the first offer and win nearly everything to tier three,
+since the loot ramps their kit while the enemy keeps the first battle's tiers. Tier three's
+bosses and the finale press again. What moves it is section 12's (the bible's quick campaign
+question).
+
+## 25 October, one damage state's threshold
+
+**An injury that destroys outright, at four thresholds** (Ryan, 25 October: "Cracked is gone"):
+`tools/balance.gd -- --policies greedy --seeds 30 --noparty` in four parts, once on the two
+states as they stood (at `54e064a`) and once for each threshold with `--injury N` and the one
+state; every machine alone and the four team rows against the twenty packs and formations, the
+components destroyed a fight (gone for good when the fight is won). A direction, 30 seeds a cell.
+
+| Injury | Alone: destroyed a fight | Alone: a won fight | Alone: won | Teams: destroyed a fight | Teams: won |
+|---|---|---|---|---|---|
+| Two states at a quarter (before) | 0.108 | 0.006 | 45.7% | 0.019 | 100% |
+| One state at a quarter | 0.500 | 0.046 | 45.3% | 0.223 | 99.9% |
+| One state at a third | 0.162 | 0.004 | 46.0% | 0.123 | 99.9% |
+| One state at two fifths | 0.079 | 0.004 | 46.0% | 0.099 | 99.9% |
+| One state at half | 0.008 | 0.000 | 46.0% | 0.031 | 100% |
+
+Read: no threshold moves a win rate, as on 12 October, and only half keeps a squad's losses near
+the two states' (0.031 a team fight against 0.019). Half was set and retired the same day (Ryan:
+"a unit has to lose half it's hull to lose a component? Ergo the maximum components a unit can
+lose is...1? ... It's not about win rate, it's about forcing player choices and balancing
+compositions"): the threshold is set by what it asks of the player, so it stands at a quarter,
+where every injury now destroys (0.22 a team fight, about a piece every four or five, against
+0.02 on the two states). What that costs a run is the economy pass's to read against the inflow
+(section 10's guard: about one a won battle). The wreck's old price, its cracked components,
+goes with the state (Ryan: being wrecked and out for a battle is the price). Bible section 7's
+damage-state row.
+
+The quick campaign's greedy runs rerun on the one state at a quarter, with the bosses' escort
+by tier and the finals drawn as bosses from tier two (`docs/quick_run.md` at `a34f2cc`, 40 runs
+from seed 1, 94 s in four parts): 36 runs of 40 lost in the first battle (34 on the two states, the first
+runs above), none won (1): the same cliff, inside 40 runs' noise. A squad loses 0.15 to 1.75
+pieces for good a battle through tier one (0.12 to 0.50 on the two states) and 0.5 to 1.3
+after; the finals turned up ten times (eight at tier two, all won, the squad keeping 80% of its
+hull; two at tier three, one won).
+
+## 26 October, the bosses at their tier
+
+**The quick campaign with a boss, a final's hero and the finale's line at the battle's tier**
+(the bible's section 9 boss row; the placeholders: HP ×1.25 and ×1.5, attack +1 and +2, an escort
+of two and four of the domain's units of the tier): `tools/quick_run.gd` at 40 runs from seed 1,
+greedy, 160 s in four parts (`docs/quick_run.md`), against the same runs before (`a34f2cc`). A
+direction. The first battle's cliff is untouched (36 runs of 40 lost there, its boss at tier one
+as before). The finals at tier two are still all won (10 of 10) but cost the squad more, 56% of
+its hull standing after against 80%; tier three's bosses fall 60% of the time (67%), its finals
+one of two as before, and battle 9 is won by two of the four runs reaching it (all three
+before). None of 40 reached the finale, as before.
+
+## 26 October, the rally at once
+
+**The rally landing at once, its intents counted** (the bible's rally row, section 5).
+`tools/balance.gd -- --seeds 30 --packs "wolf x3,magma_golem x1,meadow formation"`, every row,
+random and greedy, on this entry's commit against the same run with its change stashed; the
+change carries the greedy bot's read of a rallier (its threat is what its rally adds to the
+blows after it), so the delta is the rule and the bot together. Dire Wolf x3 holds its band on
+every row (the largest moves 3 to 6 points, inside a cell's band at 30 seeds: the Kite's
+random 93 to 90, the Prairie Dog's greedy 73 to 67). The Magma Elemental alone does not move:
+its rally needs others on the field. The Meadow formation moves on four greedy cells, three up and
+one down: the Honey Badger's 20 to 37, Wainwright & Sutler's team's 40 to 57, the Nemesis's 0
+to 3, the Wild Boar's 83 to 73. No cell turns into a wall or goes easy for random
+play. A direction at 30 seeds.
 
 ## 26 October, area at half
 
@@ -1464,20 +1604,6 @@ close to and greedy play never lost (no decision); at half they hold one (random
 62%). The Badger's formations go back to the walls every other tier one meets alone. The
 earlier read of Spread at half (the area-by-shape run above: the Badger 45/69 to 42/66 at 40
 seeds) holds in direction; the Cottonmouth, whose every shot carries area, did not exist then.
-
-## 26 October, the rally at once
-
-**The rally landing at once, its intents counted** (the bible's rally row, section 5).
-`tools/balance.gd -- --seeds 30 --packs "wolf x3,magma_golem x1,meadow formation"`, every row,
-random and greedy, on this entry's commit against the same run with its change stashed; the
-change carries the greedy bot's read of a rallier (its threat is what its rally adds to the
-blows after it), so the delta is the rule and the bot together. Dire Wolf x3 holds its band on
-every row (the largest moves 3 to 6 points, inside a cell's band at 30 seeds: the Kite's
-random 93 to 90, the Prairie Dog's greedy 73 to 67). The Magma Elemental alone does not move:
-its rally needs others on the field. The Meadow formation moves on four greedy cells, three up and
-one down: the Honey Badger's 20 to 37, Wainwright & Sutler's team's 40 to 57, the Nemesis's 0
-to 3, the Wild Boar's 83 to 73. No cell turns into a wall or goes easy for random
-play. A direction at 30 seeds.
 
 ## 27 October, the bot on the copy
 

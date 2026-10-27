@@ -805,23 +805,13 @@
    }
   },
   {
-   "id": "cracked_component",
-   "category": "status",
-   "name": "Cracked component",
-   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of maximum hull, the machine's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, keeps any cooldown it prints, and still provides its passive bonuses and abilities. A shield prevents an injury only by absorbing enough of the blow, and a blow a Barrier takes never injures. A cracked component stays cracked across skirmishes and battles until repaired in the hangar.",
-   "status": "implemented",
-   "design": {
-    "holes": "The threshold is a placeholder. Repair cost and the hangar screen are not built."
-   }
-  },
-  {
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "Machine status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
+   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built."
    }
   },
   {
@@ -1138,7 +1128,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
+   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1288,10 +1278,10 @@
    "id": "cooldown",
    "category": "component_property",
    "name": "Cooldown",
-   "codex": "A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the turns left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown, and a crack keeps it.",
+   "codex": "A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the turns left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown.",
    "status": "implemented",
    "design": {
-    "holes": "A crack keeps it, a price as heat is. The city's battlefield abilities count their own cooldowns in phases."
+    "holes": "A price as heat is. The city's battlefield abilities count their own cooldowns in phases."
    }
   },
   {
@@ -1381,14 +1371,14 @@
    "codex": "Kit inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working.",
    "status": "implemented",
    "design": {
-    "holes": "Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar screen."
+    "holes": "Fitted in the harness and the quick campaign's hangar: the campaign's roster, the loot that drops them and its hangar wait for the economy pass and the hangar screen."
    }
   },
   {
    "id": "on_injury",
    "category": "trigger",
    "name": "On injury",
-   "codex": "Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed).",
+   "codex": "Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed).",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1428,7 +1418,7 @@
    "id": "breach",
    "category": "keyword",
    "name": "Breach",
-   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of maximum hull it injures a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
+   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
    "status": "implemented",
    "design": {
     "holes": ""

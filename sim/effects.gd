@@ -350,7 +350,7 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
 ## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once"]
+const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -778,8 +778,6 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 	match str(eff.get("when", "")):
 		"":
 			return true
-		"component_cracked":
-			return face != null and face.cracked
 		"rolled":
 			return face != null and face.is_ranged()
 		"reach_direct":
@@ -987,8 +985,8 @@ static func damage_taken_add(u, source = null) -> int:
 
 ## A component's reach as it is right now: its own, unless a live set_reach holds. Static
 ## reach rules are read against the component itself (never against effective reach, which
-## would loop), so they may key on cracked but not on reach. The first live modifier in
-## override order (shortest scope, latest granted) wins.
+## would loop), so they may key on the component (rolled, a tag) but not on reach. The first
+## live modifier in override order (shortest scope, latest granted) wins.
 static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
@@ -1428,7 +1426,7 @@ static func hull_per_spend(u) -> int:
 	return maxi(0, n)
 
 
-## Does the pipeline hold a cracked component short of destruction?
+## Does the pipeline hold an injured component short of destruction (the Honey Badger's)?
 static func no_destroy(u, face: Face) -> bool:
 	for pair in _taking_part(u, "on_injury", face):
 		if str(pair[0].get("effect", "")) == "no_destroy":
@@ -1803,7 +1801,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"vent_heat": body = "sheds %s heat" % vs
 		"add_ceiling": body = "rolls reach %s higher" % vs
 		"add_floor": body = "the lowest roll %s higher" % vs
-		"no_destroy": body = "cracked components are never destroyed"
+		"no_destroy": body = "components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
 		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
 		"multiply_stat": body = "%s ×%s" % [str(eff.get("stat", "")), vs]
@@ -1868,7 +1866,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
 	match str(eff.get("when", "")):
-		"component_cracked": lead += "cracked components: "
 		"rolled": lead += "rolled weapons: "
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "

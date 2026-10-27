@@ -71,6 +71,9 @@ func _apply_pose() -> void:
 	if _node is BattleScreen:
 		_apply_battle_pose()
 		return
+	if _node is QuickRunScreen:
+		_apply_quick_pose()
+		return
 	if not (_node is SkirmishScreen):
 		return
 	var s: SkirmishScreen = _node
@@ -455,6 +458,51 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(m.pos)
 			s._on_hex_tapped(boss.pos)
 			s._engage()
+
+## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
+## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows
+## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open, no
+## withdrawal), track (between fights, one won), rewards (the boss down, a card chosen), over.
+func _apply_quick_pose() -> void:
+	var s: QuickRunScreen = _node
+	var r := s.run
+	if _pose == "draft":
+		return
+	for id in QuickRun.draft_choices(r.db).slice(0, QuickRun.START_MACHINES):
+		s._toggle_pick(str(id))
+	if _pose == "picked":
+		return
+	s._on_primary()
+	for it in r.pool(2):
+		if it["kind"] == "component":
+			r.components[str(it["id"])] = 1
+			break
+	r.modules[str(r.db.modules.keys()[0])] = 1
+	s._refresh()
+	match _pose:
+		"chooser":
+			var m: QuickRun.Machine = r.roster[0]
+			s._open_hardpoint(m.uid, 0, r.db.chassis[m.chassis].get("fixed", []).size())
+		"fight":
+			s._on_primary()
+			s._on_primary()
+		"track", "rewards", "over":
+			r.start_battle()
+			var sk := r.open_fight()
+			r.units[0].hull = r.units[0].hull_max / 2
+			r.units[1].shield = 1
+			sk.outcome = Skirmish.Outcome.VICTORY if _pose != "over" else Skirmish.Outcome.DEFEAT
+			sk.state = Skirmish.State.DONE
+			r.finish_fight()
+			if _pose == "rewards":
+				while r.state == QuickRun.BATTLE:
+					var next := r.open_fight()
+					next.outcome = Skirmish.Outcome.VICTORY
+					next.state = Skirmish.State.DONE
+					r.finish_fight()
+				s._choice = 1
+			s._refresh()
+
 
 func _tick() -> void:
 	_frames += 1

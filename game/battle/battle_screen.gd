@@ -599,7 +599,7 @@ func _on_unit_held(u: Unit) -> void:
 ## A machine's readout on the map (Ryan, 26 October: the map's readouts looked like blocks of
 ## text; they read as the fight's holds do): its name, its shield and hull as gauges with their
 ## numbers, a maximum anything moved coloured with its arrow, its move as the codex has it (the
-## base, the change beside it), its actions left, and a chip for its damaged components.
+## base, the change beside it), its actions left, and a chip for its destroyed components.
 func mech_lines(u: Unit) -> Array:
 	var out: Array = [_title(u.display_name)]
 	out.append(EntryReadout.bar_line("Shield", u.shield, u.shield_max, int(u.base["shield"]), Palette.SHIELD))
@@ -609,7 +609,7 @@ func mech_lines(u: Unit) -> Array:
 		+ [EntryReadout.word("·"), EntryReadout.word("%d of %d action%s left" % [battle.actions_left(u), n, "" if n == 1 else "s"])]))
 	var damaged := u.damaged_component_count()
 	if damaged > 0:
-		out.append(EntryReadout.chip_line("crack", Palette.HUD, "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"]))
+		out.append(EntryReadout.chip_line("crack", Palette.HUD, "%d destroyed component%s: blank for the battle" % [damaged, "" if damaged == 1 else "s"]))
 	return out
 
 

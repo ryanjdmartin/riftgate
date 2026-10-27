@@ -8,7 +8,7 @@ extends RefCounted
 ##
 ## The rules, as the pools' file states them and Ryan settled them:
 ##   chance       a hook speaks on a trigger with its chance; an information hook (a machine
-##                lost, a component damaged or destroyed, the two heat marks, a loss) every time.
+##                lost, a component destroyed, the two heat marks, a loss) every time.
 ##   pools        a hook draws from its own pool and any it merges (a Horde foe falling draws
 ##                the generic foe-down pool too; every unit committed, the moves' pool too).
 ##   variety      a shuffle bag per hook: nothing repeats until the bag is spent.
@@ -17,8 +17,8 @@ extends RefCounted
 ##   spacing      one line at a time, never overlapping, SPACING seconds after the last one
 ##                ends; a line that waited STALE seconds is dropped unsaid, except an
 ##                information line, which waits only for the line in progress and INFO_GAP.
-##   one a hook   a hook already waiting is not queued twice (three cracks in one enemy turn
-##                say "component damaged" once).
+##   one a hook   a hook already waiting is not queued twice (three components destroyed in one
+##                enemy turn say "component destroyed" once).
 ##   pre-emption  a loss clears the queue, cuts a line in progress and speaks at once (the
 ##                player's hands are off the controls anyway); the skirmish's win clears the
 ##                queue, so the final kill never gets a heat warning after it, and the victory

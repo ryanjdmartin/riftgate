@@ -26,7 +26,8 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
-const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
+const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
+static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -114,8 +115,9 @@ var joined_fallen: Dictionary = {}
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
 var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
-## The boss's fight (Ryan, 25 October: "the player is committed to closing the rift or getting
-## scrapped trying"): no withdrawal, so it ends in the boss's fall or the team's.
+## A fight nobody withdraws from, so it ends in the foes' fall or the team's: a battle's boss
+## fight (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped
+## trying") and every quick campaign fight (no withdrawal there, the same day).
 var committed := false
 ## The twin slot (Ryan, 26 October: the Gel's halves "should exist as a pair taking the place of
 ## one unit"): Vector2i(rank, column) -> the right-hand half, the left standing in front or back
@@ -1191,7 +1193,7 @@ func _armed_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for ms in targetable_mechs():
 		var face := ms.face()
-		if face != null and face.is_attack() and not face.cracked:
+		if face != null and face.is_attack():
 			out.append(ms)
 	return out
 
@@ -3594,11 +3596,11 @@ func _settle_heat() -> void:
 
 ## One blow. The honest shield (Ryan, 14 October; built 21 October): the shield absorbs its
 ## number and the excess reaches the hull. A blow that reaches the hull loses the chassis's
-## armour first, so small hits bounce off a heavy machine, and it injures a component when
-## what gets through is at least a quarter of max hull. One breach (22 October): a breach
-## ignores the shield, which stands, and the armour, so the whole blow reaches the hull. A
-## Barrier takes the next blow whole; a Ward turns a breach away. A shield sized to a
-## telegraphed blow, or a Barrier, is the counterplay.
+## armour first, so small hits bounce off a heavy machine, and it destroys a component when
+## what gets through reaches the injury threshold, a share of max hull (INJURY_MIN_HULL_PCT).
+## One breach (22 October): a breach ignores the shield, which stands, and the armour, so the
+## whole blow reaches the hull. A Barrier takes the next blow whole; a Ward turns a breach
+## away. A shield sized to a telegraphed blow, or a Barrier, is the counterplay.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if is_phased(ms):
 		return   # a Phased machine takes no damage (ticks and overheats are its own, and land elsewhere)
@@ -3672,17 +3674,17 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	var armoured := mini(armour, through) if through > 0 and not breach else 0
 	through -= armoured
 	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield,
-	# past a breach, on bare hull (the shield row: a quarter of the hull in one blow injures).
-	var injures := through > 0 and through * 100 >= hull_max * CRACK_MIN_HULL_PCT
+	# past a breach, on bare hull (the injury row: a share of the hull in one blow injures).
+	var injures := through > 0 and through * 100 >= hull_max * injury_pct
 	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach}
 
 
-## The injury rolls the die and hits the component it lands on. An intact component cracks:
-## keywords and unique effect are gone, the basic action stays. A cracked component is
-## destroyed: blank. A destroyed component or an empty hardpoint takes the blow and nothing
-## happens, so a mech with little left to break shrugs off more of them. The damage lives on
-## the unit and persists until repaired in the hangar. (Decided 17 September: one threshold,
-## one roll.) A passive may say no_destroy on_injury: then a cracked component holds.
+## The injury rolls the die and destroys the component it lands on: blank, until the hangar
+## mends it (one state, Ryan, 25 October: "Cracked is gone"). A destroyed component or an empty
+## hardpoint takes the blow and nothing happens, so a mech with little left to break shrugs
+## off more of them. The damage lives on the unit and persists until repaired in the hangar.
+## (Decided 17 September: one threshold, one roll.) A passive may say no_destroy on_injury:
+## then the component holds.
 func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
 		return ""
@@ -3692,9 +3694,8 @@ func apply_injury(ms: MechState) -> String:
 	return _injure_entry(ms, ms.die.roll(rng))
 
 
-## The injury on one entry: intact cracks, cracked is destroyed (unless a passive holds it),
-## blank shrugs it off. The die's roll picks the entry for a hull hit; a foe's unmake picks
-## the one showing. Returns what happened: "cracked", "destroyed", or "" for nothing.
+## The injury on one entry: a component is destroyed (unless a passive holds it), a blank
+## shrugs it off. Returns what happened: "destroyed", or "" for nothing.
 func _injure_entry(ms: MechState, idx: int) -> String:
 	if idx < 0 or idx >= ms.die.faces.size():
 		return ""
@@ -3702,24 +3703,19 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 	if f.kind == Face.Kind.BLANK:
 		log.append("%s: the blow lands on %s; nothing left to break" % [ms.unit.display_name, "an empty hardpoint" if f.empty else "a destroyed component"])
 		return ""
-	var originals: Dictionary = ms.unit.damaged_faces
 	var what := f.describe()
-	if f.cracked:
-		if Effects.no_destroy(ms.unit, f):
-			log.append("%s: %s holds, cracked but not destroyed" % [ms.unit.display_name, what])
-			return ""
-		var d := Face.blank()
-		d.component = f.component
-		ms.die.faces[idx] = d
-		destroyed += 1
-		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
-		return "destroyed"
-	originals[idx] = f.duplicate_face()
-	var c := f.duplicate_face()
-	c.crack()
-	ms.die.faces[idx] = c
-	log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
-	return "cracked"
+	if Effects.no_destroy(ms.unit, f):
+		log.append("%s: %s holds, never destroyed" % [ms.unit.display_name, what])
+		return ""
+	var originals: Dictionary = ms.unit.damaged_faces
+	if not originals.has(idx):
+		originals[idx] = f.duplicate_face()
+	var d := Face.blank()
+	d.component = f.component
+	ms.die.faces[idx] = d
+	destroyed += 1
+	log.append("%s: a component is destroyed (%s)" % [ms.unit.display_name, what])
+	return "destroyed"
 
 
 ## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows, at

@@ -1002,7 +1002,7 @@ func _refresh(save: bool = true) -> void:
 	_end_btn.set_pulse(assigning and not left)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	if sk.committed and _withdraw_btn.text != "NO RETREAT":
-		_withdraw_btn.text = "NO RETREAT"   # the boss's fight: closing the rift or scrapped trying
+		_withdraw_btn.text = "NO RETREAT"   # the boss's fight and the quick campaign's: a fall ends it
 		_withdraw_btn.queue_redraw()
 	_refresh_arrows()
 	_refresh_prey()
@@ -1444,7 +1444,7 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["reroll", "×%d" % ms.free_rerolls, "A free reroll of this die alone this round: lock the others and press REROLL", Palette.HUD])
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
-		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
+		rows.append(["crack", str(damaged), "%d destroyed component%s" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
 	# An on_foe_status passive is live all fight, so it reads here as an active effect (Ryan,
 	# 28 September); its count is the chip (the Paradox meter, 10 October).
 	var meter := Effects.paradox(ms.unit)
@@ -1493,7 +1493,7 @@ func _mech_rows(i: int) -> Array:
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY, "preview"])
 		elif bool(fc["component_risk"]):
-			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY, "preview"])
+			rows.append(["crack", "!", "A hit that big destroys a component: the die is rolled", Palette.ENEMY, "preview"])
 		# The shield-break chip went on 26 October (Ryan: "It's clutter, the bar previews are more
 		# than enough"). Every status the round will land on it (Ryan, 26 October: "All incoming
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
@@ -1642,7 +1642,7 @@ func _on_die_tapped(i: int) -> void:
 
 
 ## What holds on die entry `i` now, for its hold: a cooldown with its turns left (Ryan, 26
-## October: "On Cooldown (X turns left)"), a foe's switch-off, its corruption, a crack. A
+## October: "On Cooldown (X turns left)"), a foe's switch-off, its corruption. A
 ## stepping die's next chamber is its cylinder's arrow.
 func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
 	var out: Array[String] = []
@@ -1656,8 +1656,6 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
 	var rot := Effects.corrupt_stacks(ms.unit, i)
 	if rot > 0:
 		out.append("Corrupted" + (" ×%d" % rot if rot > 1 else ""))
-	if f.cracked:
-		out.append("Cracked")
 	return out
 
 
@@ -2521,7 +2519,7 @@ func _announce(name: String) -> void:
 ## Heard as the family's blow (its heavy blow from HEAVY_DAMAGE), then what took it: a
 ## standing shield (the shield hit), the shield breaking, the armour turning it on bare hull
 ## (the maker's block), or the hull (the maker's hit), and a machine that falls its maker's
-## kill. Jenny: a component damaged or destroyed. A machine the blow fells dies at the end of
+## kill. Jenny: a component destroyed. A machine the blow fells dies at the end of
 ## the turn (`_land_death`), not here.
 func _land_blow(h: Array) -> void:
 	var fv: UnitView = h[0]
@@ -2546,8 +2544,6 @@ func _land_blow(h: Array) -> void:
 		pass   # its death comes at the end of the turn
 	elif injury == "destroyed":
 		Sound.say_after(landed + VOICE_AFTER_BLOW, "component_destroyed")
-	elif injury == "cracked":
-		Sound.say_after(landed + VOICE_AFTER_BLOW, "component_damaged")
 	var t2 := create_tween()
 	t2.tween_interval(landed)
 	t2.tween_callback(func() -> void:

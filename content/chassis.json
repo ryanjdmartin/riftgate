@@ -76,7 +76,7 @@
    "passive": {
     "id": "reinforced_skeleton",
     "name": "Reinforced Skeleton",
-    "description": "Legendary Minervan strength. Components can be cracked but never destroyed.",
+    "description": "Legendary Minervan strength. Its components are never destroyed.",
     "effects": [
      {
       "trigger": "on_injury",

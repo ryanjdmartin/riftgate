@@ -81,6 +81,7 @@ var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of (a boss's escort)
 var strength: int = 6        # how many foes the pack holds (a boss: its escort, none for a boss alone)
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
+var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS)
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
@@ -97,7 +98,7 @@ var passive: Dictionary = {}     # the chassis passive as content, for the codex
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
 
-## Damaged components. A cracked or destroyed component is damaged and stays that way across
+## Damaged components. A destroyed component is damaged and stays that way across
 ## skirmishes and battles until repaired in the hangar. Maps a die entry index to the
 ## original, undamaged component.
 var damaged_faces: Dictionary = {}
