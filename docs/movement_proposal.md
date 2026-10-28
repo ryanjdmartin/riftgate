@@ -197,6 +197,61 @@ One line each, with the rule that kills it, so Ryan can overrule the rule.
 - Ryan's play decides feel: the harness with `RIFTGATE_MAP_KIND` for each type, the Badlands and
   the Flooded first, since they are the two that still read.
 
+## Flyers and hovers as the best pieces (Ryan's concern, 28 October)
+
+Ryan, 28 October: "how do we stop flyers and hovers from taking over the game as the best
+pieces. Especially when right now in the current active and designed roster backlog, they are
+quite prevalent." Eleven of the 24 chassis cross something (six flyers, five hovers), and the
+backlog adds more (Kestrel's last two, Aphelion's line, the Arsenal's Minos on hoverjets).
+
+What the records and the numbers say:
+
+- C narrows the gap; it does not widen it. Under the table a flyer already has no bad ground
+  ("flyers exempt") and crosses crags, so nothing changes for it. A hover loses its fast water
+  and its slow rough and ruins. A ground machine loses its stops and keeps only walls. In the
+  survey's terms the flyer's reach after two phases stays at 62% and a ground machine's rises
+  from 31% toward it, since the only hexes it cannot stand on are water and crags, a fifth of a
+  mixed map (the rerun measures it); at equal move, wheels lose their 3.8 phases to the rift and
+  run at 6 like the rest. The concern is the game's as it stands; C makes it smaller.
+- Crossing buys a flank and a refuge, not tempo: the survey's phases to the rift are 6.0 for a
+  flyer and 6.0 for a walker at the same move. Tempo is move, and move follows size: of the
+  eleven crossers five are lights, the class with the thinnest hull, and two are assaults at a
+  move of 2 (the Swallowtail, the Giant Petrel). The depth lives in the skirmish, and nothing in
+  it reads the ground or the way of moving (the skirmish's terrain is its backdrop and a header
+  word).
+- A squad moves as one at its slowest machine's pace, so a crosser in a mixed squad uses its
+  crossing only by detaching, and a machine alone meets walls (the stock pass's bands);
+  concentration halves the hull a fight costs with every machine added. An all-crosser squad, a
+  Kestrel tender, crosses as one: that is the maker's identity, paid in its kits.
+- The refuge is the one thing C makes exclusive. Today every machine can end a move in water
+  (tracks ford it, walkers and wheels stop in it) out of a ring-one hunter's reach; under C that
+  is the hover's and the flyer's. A hunter keeps its lock until the machine is gone and never
+  strikes the gate, so a flyer two hexes into a lake neutralises a hunter for the battle. The
+  same holds today for every machine on water and for a flyer over crags.
+
+The levers, least rule first (a map rule alone is weak; a one-off exception for balance is a
+symptom):
+
+1. Price it where balance is read. The stock pass sets a chassis's numbers by size and role,
+   never by way, so a flyer and a walker of one size and role cost the same and the flyer
+   crosses. The pricing run (the stock pass's tail, the to-do) can price the crossing in salvage
+   and Favour, or a crossing chassis takes a step under its size's fill (wings are weight: a
+   point of hull or armour). Read by the runner's solo value beside team value, the
+   four-machines row's own measure, and by Ryan's play.
+2. Give the sky to the foes too. Five foes have wings or float (the Cockatrice, the Ghost, the
+   Bone Dragon, the Bomb, the Drake), and the fresh start's elites add the Bone Wyvern and the
+   Reaper. A winged pack crossing water and crags as a flyer does takes the refuge from a flyer
+   without touching the ground machines, and is parity, not the bonus the Final Fantasy rule
+   forbids. The Bomb is a hunter already.
+3. A hunter whose prey it cannot reach picks again, so no pack is neutralised by a lake.
+4. The Rupture meter as the fresh start proposes it: a detachment's kills add little meter, so
+   picking off small packs with flyers is not the optimal play.
+5. Not a map rule on the crossers (no attacking from water, a price to cross): that is the
+   table again, in another form.
+
+Claude's lean: 1 and 2, with 3 whichever way 2 goes, and nothing before the pricing run and
+the fresh start read it, since the gap is smaller under C than today.
+
 ## Questions for Ryan
 
 1. Water is a wall to ground machines (Claude's lean: yes; ground to everyone would give every
@@ -207,3 +262,6 @@ One line each, with the rule that kills it, so Ryan can overrule the rule.
 4. The map types: five names as looks, or three that read.
 5. The Giant Petrel and the Storm Petrel: slow and amphibious, and fast and amphibious, or a
    passive that gives one of them its water speed.
+6. The crossing's price: in the hangar by the pricing run, as a step under the size's fill, by
+   the foes' wings, or left until the runs read it (Claude's lean: the pricing run and the
+   wings).
