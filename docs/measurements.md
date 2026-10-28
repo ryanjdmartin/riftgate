@@ -2279,3 +2279,82 @@ entry above): the Enfilade Beam's 3 kills what it reaches, the 2s soften, an Ove
 sixth shot lifting a 2 to a kill. So the carriers chip as Ryan asked of the big hitters, no
 form walls a four, and a dedicated trash-clearer is a piece at N 3 or more; the numbers are
 the lever, each piece's own, read on the bands as the foes' fresh start sets the fights' size.
+
+## 28 October, the pricing run's area carriers on the numbered area
+
+**The car bench rerun on the merged head** (main's `a34a3cc` merged into the pricing run's
+branch: the numbered area, the blow's order, the Marsh's Zombie Knight pair; `tools/pricing_run.py
+run area28 --benches prairie_dog --pieces ... --modules ...`): the four team rows as stocked, and
+fourteen candidates and four modules on the Prairie Dog's first hardpoint in Wainwright &
+Sutler's row, greedy at 30 seeds against the sixteen big fights, 10,560 fights; then the
+Howitzer and the Meteor Artillery with Splash 1 and 2 as what-ifs by hand (`--set` on the
+keywords and the number, the Meteor's Burn kept), 1,920 fights. A direction, read beside the
+27 October run's same variants.
+
+The rows as stocked, the 27 October run against the merged head (win, rounds, hull lost):
+
+| Row | 27 October | 28 October, the merged head |
+|---|---|---|
+| The default team | 100, 3.1, 5% | 99.8, 3.2, 7% |
+| Minerva's team | 100, 4.9, 7% | 100, 5.3, 11% |
+| Kestrel's team | 100, 2.9, 8% | 100, 2.9, 9% |
+| Wainwright & Sutler's team | 99.6, 5.9, 18% | 93.5, 6.1, 24% |
+
+The candidates on the car, each against its own run's stock row (rounds, hull, the candidate's
+share), and its peak heat and overheats on the merged head:
+
+| Candidate | Kind | 27 October | 28 October | Peak, overheats |
+|---|---|---|---|---|
+| Twin Autoguns (stock) | Direct 1 to 3, heat 0 | +0.0 r, +0% hull, 25% | +0.0 r, +0% hull, 24% | 35%, 0.18 |
+| Laser Carbine | Direct 3, heat 2 | -0.5 r, -3%, 15% | -0.6 r, -2%, 14% | 37%, 0.19 |
+| Howitzer | Indirect 2 to 5, heat 1 | -0.6 r, -4%, 24% | -0.5 r, -4%, 24% | 33%, 0.12 |
+| Maxigun | Direct 1 to 2 x3, heat 1 | -0.7 r, -4%, 27% | -0.7 r, -4%, 26% | 33%, 0.13 |
+| Airburst Shell | Indirect 1 to 2, heat 1, Spread 1, Flak 1 | -0.7 r, -4%, 28% | -0.6 r, -4%, 26% | 34%, 0.12 |
+| Enfilade Beam | Direct 4, heat 2, Penetrate 3 | -1.0 r, -6%, 25% | -1.0 r, -6%, 24% | 37%, 0.10 |
+| Flak Cannon | Direct 3, heat 2, Flak 2 | -1.1 r, -6%, 17% | -1.2 r, -6%, 17% | 37%, 0.17 |
+| Tesla Gauntlets | Direct 4, heat 3, Shock | -1.3 r, -6%, 18% | -1.4 r, -7%, 18% | 50%, 0.14 |
+| Cyclic Cannon | Direct 2 x4, heat 3 | -1.6 r, -7%, 19% | -1.7 r, -8%, 19% | 49%, 0.13 |
+| Arc Fault Cannon | Direct 4, heat 2, Chain | -1.7 r, -8%, 19% | -1.7 r, -10%, 18% | 55%, 0.16 |
+| Meteor Artillery | Indirect 5, heat 6, Burn 3 | -1.7 r, -7%, 18% | -1.8 r, -9%, 17% | 88%, 0.31 |
+| Overclocked Railgun | Direct 10, heat 8, Breach | -1.9 r, -7%, 17% | -2.0 r, -11%, 16% | 107%, 0.52 |
+| Proximity Klaxon | Indirect debuff, heat 1, Lure, Spread | +0.2 r, -1%, 3% | +0.2 r, +1%, 3% | 36%, 0.20 |
+| Overcharge Coil | a buff, Overcharged 2 | -0.1 r, -0%, 11% | -0.1 r, -0%, 10% | 35%, 0.18 |
+| Ram Frame (module) | +1 on Direct blows at the front | -0.8 r, -7% | -0.8 r, -9% | 32%, 0.10 |
+| Susceptibility Tensor (module) | +1 on a foe carrying a status | -0.5 r, -4% | -0.4 r, -3% | 33%, 0.13 |
+| Muzzle Velocity Booster (module) | rolled weapons reach 1 higher | -0.2 r, -1% | -0.2 r, -1% | 35%, 0.16 |
+| Tactical Databank (module) | rolled weapons' lowest roll 1 higher | -0.2 r, -1% | -0.1 r, -1% | 34%, 0.16 |
+
+The what-ifs on the car, against the merged head's stock row (6.1 rounds, 24% hull):
+
+| The shell with a Splash | Rounds | Hull | Share | Peak |
+|---|---|---|---|---|
+| Howitzer, Splash 1 | 5.3 (-0.9) | 18% (-6) | 24% | 32% |
+| Howitzer, Splash 2 | 5.0 (-1.2) | 16% (-8) | 25% | 31% |
+| Meteor Artillery, Burn 3 and Splash 1 | 3.7 (-2.4) | 10% (-13) | 19% | 87% |
+| Meteor Artillery, Burn 3 and Splash 2 | 3.7 (-2.4) | 9% (-14) | 20% | 88% |
+| Meteor Artillery, Splash 1 alone (its Burn dropped, a first run's slip) | 4.9 (-1.2) | 16% (-7) | 16% | 87% |
+| Meteor Artillery, Splash 2 alone | 4.8 (-1.3) | 16% (-8) | 16% | 89% |
+
+Read:
+
+- The rows read a little harder on the merged head, the Marsh's Knight pair most of it
+  (Wainwright & Sutler's row 99.6 to 93.5% won, 18 to 24% hull; Minerva's 4.9 to 5.3 rounds),
+  and every candidate's delta against its own stock row holds within a tenth of a round and a
+  point or two of hull: the numbered area (the Beam's Penetrate 3, the Airburst's Spread 1 in
+  place of the half) and the blow's order move no rank on the car, so the 27 October ladders
+  stand as directions on the merged head. The Ram Frame reads two points of hull more under the
+  order (its point on every area foe as on every strike), the Tensor a point less; the Railgun
+  four points of hull more.
+- The Howitzer with Splash 1 takes 0.9 rounds and 6 points of hull off the row, with Splash 2
+  1.2 and 8, from 0.5 and 4 plain: a chip at the neighbours moves a tier-one shell into tier
+  two's band on kill time at heat 1, the number the lever.
+- The Meteor Artillery with Splash 1 or 2 takes 2.4 rounds and 13 to 14 points off, the
+  biggest delta any piece has read on this bench, and the same at both numbers: its riders
+  land on every foe struck (the blow's order), so a Splash on it is Burn 3 on up to five foes
+  and the rank and file die to the fire whatever N is; without its Burn (the slip) a Splash of
+  1 or 2 reads 1.2 and 1.3, a plain shell's step. On the Meteor the rider is the lever, not the
+  number. Claude's lean for section 12's shells question: the Howitzer carries Splash 1 (the
+  chip Ryan named for the big hitters), the Meteor none while Burn rides every foe struck, or
+  Splash 1 at Burn 2 as the next what-if, since an area fire is a piece of its own (the
+  pricing proposal's hole A asks for fire's second reader, not a bigger first setter); Ryan's
+  to move.

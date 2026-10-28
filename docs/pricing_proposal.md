@@ -227,6 +227,15 @@ rounds to win, the hull lost, the pick shares and the heat columns.
    Armadillo's Twin Autoguns; every stock's shields and vents read as their row, and the
    Prairie Dog's Halo Shield out makes its row quicker. On these packs the stocks' equipment is
    filler to the greedy; the stock's question, with the harder bench.
+8. **The rerun on the merged head** (section 0; `docs/measurements.md`, 28 October): the rows
+   read a little harder with the Marsh's Knights (Wainwright & Sutler's 99.6 to 93.5% won, 18
+   to 24% hull), and every candidate's delta on the car holds within a tenth of a round and a
+   point or two of hull under the numbered area and the blow's order, so the ladders stand;
+   the Ram Frame reads two points of hull more (its point on every area foe). The Splash
+   what-ifs: the Howitzer at Splash 1 takes 0.9 rounds off the row (0.5 plain), at Splash 2
+   1.2, a tier-one shell at tier two's kill time for heat 1; the Meteor Artillery at Splash 1
+   or 2 takes 2.4 off, the most of any piece on this bench, the same at both numbers, because
+   its Burn 3 rides every foe struck: on the Meteor the rider is the lever, not the number.
 
 The structure for the marks (Claude's leans, rewritten 28 October on Ryan's direction; nothing
 lands before them, and a delta a number lands on is read again at 200 seeds):
@@ -525,8 +534,11 @@ the engine's own payoff; the dedicated readers are the Backdraft (Burning) and t
 2. The Ram Frame's hull line, +24 to about +8, and the Artillery Rangefinder read on an
    Indirect bench (the Clydesdale's Howitzer slot) with the same line before either lands.
 3. The Howitzer's and the Meteor Artillery's Splash (section 12's shells question), read as
-   what-ifs on the car bench at Splash 1 and 2 (`docs/measurements.md`, 28 October): which
-   number, or none.
+   what-ifs on the car bench (section 2, item 8): Claude's lean the Howitzer at Splash 1, the
+   chip you named, and the Meteor at none while its Burn rides every foe struck (a Splash on it
+   is a fire on five foes, the strongest piece on the bench at either number), or Splash 1 at
+   Burn 2 as the next what-if; an area fire is a piece of its own, and hole A asks for fire's
+   second reader rather than a bigger first setter.
 4. The next run: the ladders per tier on the fresh start's formations and recolours once the
    ladder lands, with the planner beside the greedy for the equipment and the setups, on
    Wainwright & Sutler's row and a starter trio without a carry; the 200-seed reads on the
