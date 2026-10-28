@@ -1498,12 +1498,6 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
 			score += float(Skirmish.corrupt_bite() * a.rider(a.action, "corrupt")) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
-		# A silence mutes the machine's keywords for the round (28 October); a purge takes what a
-		# die face bought for the rounds it would have run and sleeps the rest for a turn.
-		if a.has_keyword(a.action, "silence"):
-			score += _raw_attack_mean(who) * 0.5
-		if a.has_keyword(a.action, "dispel"):
-			score += _purge_stakes(who)
 	# A special's rider lands on it too, and the Ward turns that away as well (Ryan, 25 October:
 	# "Should stop all riders, even from non-damaging attacks"): a Stoke's Burning, a Stone's
 	# switch-off, a silence or a purge on its pick; an Eruption's Scorched and a Diamond Dust's
@@ -1825,11 +1819,46 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 	if sk != null and sk.rallies_now(f):
 		return float(sk.rally_worth(f))
+	if sk != null and not f.is_suppressed() and str(f.action.get("effect", "")) == "cleanse":
+		return _cleanse_worth(f, sk)
 	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
 	var machines: int = sk.live_mechs().size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
 	return float(blow * f.strikes() * machines)
+
+
+## What a cleanser's move would take off its side this round (28 October), each mark at what
+## laying it is worth (placeholders): a Shock the biggest blow a machine still to act shows on
+## that foe, Flak its stacks for every machine still to act, Burning its stacks, every other mark
+## a point.
+static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
+	var marked := sk.cleanse_target(f)
+	if marked == null:
+		return 0.0
+	var to_act: Array = []
+	for ms in sk.live_mechs():
+		if not ms.assigned:
+			to_act.append(ms)
+	var worth := 0.0
+	for id in Effects.TEAM_MARKS:
+		if not Effects.has(marked, id):
+			continue
+		match id:
+			"shocked":
+				var best := 0.0
+				for ms in to_act:
+					var of := sk.spend_face(ms)
+					if of != null and of.is_attack() and sk.targets_for_face(ms, of).has(marked):
+						best = maxf(best, float(of.average()))
+				worth += best
+			"flakked":
+				worth += float(Effects.stacks_of(marked, id) * to_act.size())
+			"burning":
+				worth += float(Effects.stacks_of(marked, id))
+			_:
+				worth += 1.0
+	return worth
 
 
 func _tally(f: Face) -> void:

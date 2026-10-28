@@ -240,6 +240,22 @@ func test_keyword_cap_is_enforced() -> void:
 	assert_true(hit, "four keywords on an authored face is reported")
 
 
+## A silence and a purge are specials, never riders (28 October): the validator refuses either
+## on a blow and in a last act.
+func test_a_silence_or_a_purge_rides_no_blow() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"][0]["keywords"] = ["silence"]
+	db.foes["hushed"] = f
+	var g: Dictionary = db.foes["revenant"].duplicate(true)
+	g["on_death"] = {"blow": {"name": "Last Rites", "factor": 1, "strikes": 1, "keywords": ["dispel"]}}
+	db.foes["rites"] = g
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hushed") and e.contains("a special, never a rider")), "a silence on a blow is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
+
+
 func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

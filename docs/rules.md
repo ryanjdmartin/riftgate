@@ -630,7 +630,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
   or a passive's grant until the start of the player's turn; never a last act's), cleanse
-  (every mark the team laid off one of its own, never Numbed or Suppressed; planned), each on
+  (every mark the team laid, Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
+  and the Drone, off the most-marked of its own, itself included, the first in strike order on
+  a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), each on
   its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a Phased machine by. No foe in content

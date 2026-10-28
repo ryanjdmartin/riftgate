@@ -7007,6 +7007,43 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	assert_true(Effects.has(w, "overcharged"), "the Ward turned the purge away")
 
 
+## A foe's cleanse (28 October, the Marsh's lever): every mark the team laid comes off the
+## most-marked of its own, itself included; Numbed and Suppressed stay; a foe carrying only
+## Numbed is no target; and a special never fires twice running while another move is open.
+func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() -> void:
+	var sk := Skirmish.new(1, 3)
+	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
+	sk.add_mech(u)
+	var healer := _caster("cleanse", "defend", "ally_marked")
+	var a := _ghoul(500, 1)
+	var b := _ghoul(500, 1)
+	sk.add_foes([healer, a, b])
+	sk.begin()
+	assert_eq(sk.cleanse_target(healer), null, "nothing marked: no target")
+	assert_false(sk.legal_actions(healer).any(func(x) -> bool: return str(x.get("effect", "")) == "cleanse"), "and its condition fails")
+	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_TICK)
+	assert_eq(sk.cleanse_target(healer), null, "Numbed alone is no mark")
+	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS["flakked"]))
+	Effects.stack(b, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(a, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(sk.cleanse_target(healer), b, "the most marked of its own")
+	sk.start_round()
+	Effects.grant_for_rounds(b, Effects.STATUS["suppressed"], "mech", sk.round + 1)
+	assert_eq(str(healer.action.get("effect", "")), "cleanse", "it announces the cleanse")
+	assert_true(healer.acts_on_nobody(), "aimed at no machine")
+	sk.end_round()
+	for id in ["burning", "flakked", "shocked"]:
+		assert_false(Effects.has(b, id), "%s gone" % id)
+	assert_true(Effects.has(b, "numbed"), "Numbed stays: nothing removes it")
+	assert_true(Effects.has(b, "suppressed"), "and Suppressed stays: the stun is sure")
+	assert_true(Effects.has(a, "cryoed"), "the other's mark stays: one foe a cleanse")
+	assert_true("\n".join(sk.log).contains("loses burning"), "the log says what went")
+	# Never twice running while another move is open.
+	healer.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}, healer.actions[0]]
+	assert_false(sk.legal_actions(healer).any(func(x) -> bool: return str(x.get("effect", "")) == "cleanse"), "the round after, the cleanse is not open")
+
+
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places, no damage; a
 ## foe pulled into the front stands exposed to Direct fire; a massive foe never moves.

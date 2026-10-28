@@ -426,7 +426,7 @@
    "id": "silence",
    "category": "foe",
    "name": "Silence",
-   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away.",
+   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
@@ -436,7 +436,7 @@
    "id": "dispel",
    "category": "foe",
    "name": "Purge",
-   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on loses every buff a die face bought, every stack, for good; what a store, a form or a passive grants sleeps until the start of its turn, after that turn's start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away.",
+   "codex": "Foe move of its own, never a rider on a blow, and never a last act's. The machine it lands on loses every buff a die face bought, every stack, for good; what a store, a form or a passive grants sleeps until the start of its turn, after that turn's start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Who carries it is section 12's question. The id stays dispel. By source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own."
@@ -446,7 +446,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""

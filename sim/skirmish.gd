@@ -1208,7 +1208,25 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 				if Effects.buff_stacks(ms.unit) > 0:
 					return true
 			return false
+		"ally_marked":
+			return cleanse_target(f) != null
 	return true
+
+
+## The foe a cleanse lands on (28 October): the one on its side, itself included, carrying the
+## most of the team's marks (each status one), the first in strike order on a tie; null when
+## none carries one.
+func cleanse_target(f: Foe) -> Foe:
+	var best: Foe = null
+	var most := 0
+	for o in field_foes():
+		if not o.alive():
+			continue
+		var n := Effects.team_marks(o)
+		if n > most:
+			best = o
+			most = n
+	return best
 
 
 ## The live machines showing an intact weapon or debuff: what a foe that aims at the armed looks for.
@@ -1922,16 +1940,13 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
-		if f.has_keyword(f.action, "silence") and t.alive():
-			_silence(t, f)
-		if f.has_keyword(f.action, "dispel") and t.alive():
-			_purge(t, f)
 
 
-## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable, a
-## corrupt, a silence or a purge (the breach is the Ward's too, in _damage_mech).
+
+## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
+## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt", "silence", "dispel"]:
+	for kw in ["scorch", "burn", "disable", "corrupt"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return false
@@ -2781,6 +2796,16 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			elif t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
+		"cleanse":
+			# A foe's cleanse (28 October, the Marsh's lever: "debuffs are hard here"): every mark
+			# the team laid off the most-marked of its own, itself included; never Numbed, never
+			# Suppressed, never a buff.
+			var marked := cleanse_target(f)
+			if marked == null:
+				log.append("%s: %s, and none of its own carries a mark" % [f.display_name, str(a.get("name", "cleanses"))])
+			else:
+				var gone := Effects.clear_marks(marked)
+				log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
 		"silence":
 			# A caster's silence (17 October; keywords alone, 28 October): no blow, the machine
 			# Silenced through its next round.

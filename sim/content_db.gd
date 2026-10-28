@@ -1649,6 +1649,14 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				var effect := str(a.get("effect", ""))
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
+				# A cleanse (28 October) takes every mark the team laid, so it says no number, and
+				# its condition, if any, is the one it needs.
+				if effect == "cleanse":
+					if a.has("value"):
+						errs.append("%s: a cleanse takes every mark the team laid: no value" % aw)
+					for w in Foe.whens_of(a):
+						if str(w) != "ally_marked":
+							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
 				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
@@ -1682,7 +1690,9 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
 					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
 				for k in a.get("keywords", []):
-					if not Foe.ATTACK_KEYWORDS.has(str(k)):
+					if Foe.SPECIALS_ONLY.has(str(k)):
+						errs.append("%s: '%s' is a special, never a rider on a blow (28 October)" % [aw, k])
+					elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
 				# A rider that lays stacks says how many (24 October, as the player's Burn N does).
 				for k in Foe.NUMBERED_RIDERS:
@@ -1783,7 +1793,9 @@ func _validate_foes(errs: Array[String]) -> void:
 					errs.append("%s: on_death blow is an attack: a name, a positive factor, strikes at least 1" % where)
 				elif b is Dictionary:
 					for k in b.get("keywords", []):
-						if not Foe.ATTACK_KEYWORDS.has(str(k)):
+						if Foe.SPECIALS_ONLY.has(str(k)):
+							errs.append("%s: on_death blow: '%s' is a special, never a rider, and a last act never purges (28 October)" % [where, k])
+						elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 							errs.append("%s: on_death blow: unknown attack keyword '%s'" % [where, k])
 			if od is Dictionary and od.has("blow") and not od.has("summon"):
 				pass

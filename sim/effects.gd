@@ -1543,6 +1543,31 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
+## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
+## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
+## buff.
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "syrinx_drone"]
+
+
+## How many of the team's marks a foe carries, each status one mark.
+static func team_marks(u) -> int:
+	var n := 0
+	for id in TEAM_MARKS:
+		if has(u, id):
+			n += 1
+	return n
+
+
+## A foe's cleanse: every mark the team laid on it goes. Returns the names that went.
+static func clear_marks(u) -> Array[String]:
+	var gone: Array[String] = []
+	for id in TEAM_MARKS:
+		if has(u, id):
+			remove(u, id)
+			gone.append(str(STATUS[id]["name"]))
+	return gone
+
+
 ## Was this buff bought by a die face (28 October): a buff component's spend ("buff:", or
 ## "buff" for an entry with no component) or a braces rule's ("brace:")? A purge takes these for
 ## good; what the machine is (a form, a passive's or a module's grant, a store's effect) it puts
