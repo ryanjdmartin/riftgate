@@ -67,9 +67,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   twelve deep above the skin,
   the Storm Petrel's arch on feet with two-thirds sleeves; the Skua's five acts,
   the run and the stoops flown as a banked circle and a figure eight on the map (the Kite's
-  helpers under a height profile, `_over_ground`) after Ryan's phone frames showed the keyed
-  forty units as bobbing in its hex and the bigger keyed cut as janky, the roll with the
-  hands spread; Ryan's picks from
+  helpers under a spline height profile with the nose rate-limited, `_over_ground`) after
+  Ryan's phone frames showed the keyed forty units as bobbing in its hex, the bigger keyed cut
+  as janky and the first flown cut as flicking, the roll with the hands spread; Ryan's picks
+  from
   five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
   the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
   his next session's, the to-do; the scissor swing wing tried again the same day as a look for
@@ -280,9 +281,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 135 (28 October, from
+  acts on a reloaded page). At the page's version 136 (28 October, from
   `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
-  models and rigs after Ryan's seven rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
+  models and rigs after Ryan's eight rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
   Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
   file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.

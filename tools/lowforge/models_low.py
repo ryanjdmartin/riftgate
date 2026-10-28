@@ -3464,10 +3464,13 @@ def skua(b):
     # the first third, the hands sweeping back as it rolls into a dive on the far side, the pods
     # firing twice at the bottom, climbing out and sinking back onto its hex as the hands
     # spread to brake.
-    run = _over_ground(_survey_circle(r=60.0, bank=42.0, vmax=130.0, rise=0.0), [(0.0, 0.0), (0.3, 34.0), (0.4, 34.0), (0.56, -10.0), (0.74, 18.0), (1.0, 0.0)])
+    run = _over_ground(_survey_circle(r=60.0, bank=42.0, vmax=130.0, rise=0.0),
+                       [(0.0, 0.0), (0.08, 2.0), (0.2, 16.0), (0.34, 34.0), (0.46, 22.0), (0.6, -8.0), (0.76, 8.0), (0.9, 5.0), (1.0, 0.0)])
     at = lambda u: _time_at(run, u)
-    b.act("strafing_run", run[-1][0], {"wing_l": [(at(0.34), 0.0), (at(0.42), SW), (at(0.62), SW), (at(0.72), 0.0), (at(0.84), -8.0), (at(0.95), -8.0), (run[-1][0], 0.0)],
-                                       "wing_r": [(at(0.34), 0.0), (at(0.42), -SW), (at(0.62), -SW), (at(0.72), 0.0), (at(0.84), 8.0), (at(0.95), 8.0), (run[-1][0], 0.0)]},
+    # The hands sweep over a fifth of the way round and spread as slowly: an aircraft's
+    # surfaces move, never flick (Ryan, 28 October).
+    b.act("strafing_run", run[-1][0], {"wing_l": [(at(0.26), 0.0), (at(0.46), SW), (at(0.62), SW), (at(0.78), 0.0), (at(0.9), -8.0), (run[-1][0], 0.0)],
+                                       "wing_r": [(at(0.26), 0.0), (at(0.46), -SW), (at(0.62), -SW), (at(0.78), 0.0), (at(0.9), 8.0), (run[-1][0], 0.0)]},
           body=run, places=("map",),
           glow=[(["pod_collar"], [(at(0.5), 0.0), (at(0.53), 18.0), (at(0.56), 1.0), (at(0.59), 18.0), (at(0.62), 1.0), (at(0.68), 0.0)]),
                 (boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
@@ -3481,10 +3484,10 @@ def skua(b):
     # each side, each lobe lifting and then stooping at its far end with the hands half swept
     # and a burst from the pods at the bottom, crossing its hex at speed between them.
     eight = _over_ground(_figure_eight(radius=44.0, bank=-44.0, vmax=140.0, rise=0.0),
-                         [(0.0, 0.0), (0.13, 8.0), (0.25, -14.0), (0.37, 6.0), (0.5, 0.0), (0.63, 8.0), (0.75, -14.0), (0.87, 6.0), (1.0, 0.0)])
+                         [(0.0, 0.0), (0.1, 6.0), (0.18, 8.0), (0.25, -14.0), (0.32, -6.0), (0.4, 6.0), (0.5, 0.0), (0.6, 6.0), (0.68, 8.0), (0.75, -14.0), (0.82, -6.0), (0.9, 6.0), (1.0, 0.0)])
     et = lambda u: _time_at(eight, u)
-    b.act("harry", eight[-1][0], {"wing_l": [(et(0.14), 0.0), (et(0.22), 34.0), (et(0.34), 8.0), (et(0.5), 0.0), (et(0.64), 0.0), (et(0.72), 34.0), (et(0.84), 8.0), (et(0.95), 0.0)],
-                                  "wing_r": [(et(0.14), 0.0), (et(0.22), -34.0), (et(0.34), -8.0), (et(0.5), 0.0), (et(0.64), 0.0), (et(0.72), -34.0), (et(0.84), -8.0), (et(0.95), 0.0)]},
+    b.act("harry", eight[-1][0], {"wing_l": [(et(0.06), 0.0), (et(0.2), 34.0), (et(0.3), 34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), 34.0), (et(0.8), 34.0), (et(0.94), 0.0)],
+                                  "wing_r": [(et(0.06), 0.0), (et(0.2), -34.0), (et(0.3), -34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), -34.0), (et(0.8), -34.0), (et(0.94), 0.0)]},
           body=eight, places=("map",),
           glow=[(["pod_collar"], [(et(0.23), 0.0), (et(0.25), 14.0), (et(0.28), 0.0), (et(0.73), 0.0), (et(0.75), 14.0), (et(0.78), 0.0)]),
                 (boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
@@ -5239,32 +5242,49 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
 
 
-def _over_ground(keys, profile, gain=1.4):
+def _over_ground(keys, profile, gain=1.0, pitch_cap=40.0, pitch_rate=55.0):
     """A flown path (the circle's or the eight's keys) given a height along its way: `profile`
-    is (share of the way, height) control points, eased between, and the nose follows the
-    slope, `gain` times the true angle so a dive reads from above. Keys as the path's."""
+    is (share of the way, height) control points, a Catmull-Rom spline through them so the
+    height and its slope run smooth through every point (eased segments flicked the nose at
+    each point: Ryan, 28 October), and the nose follows the slope, `gain` times the true
+    angle, smoothed over its neighbours, capped at `pitch_cap` and never turning faster than
+    `pitch_rate` degrees a second (an aircraft's nose comes round, it never flicks: Ryan, the
+    same day), so a pull-out spreads over the keys before and after it. Keys as the path's."""
     pts = [list(k) for k in keys]
     seg = [0.0]
     for a, b in zip(pts, pts[1:]):
         seg.append(seg[-1] + math.hypot(b[1] - a[1], b[2] - a[2]))
     total = seg[-1] or 1.0
+    cp = [(0.0, profile[0][1])] + list(profile) + [(profile[-1][0] + (profile[-1][0] - profile[-2][0]), profile[-1][1])]
 
     def height(u):
-        for (u0, h0), (u1, h1) in zip(profile, profile[1:]):
+        for i in range(1, len(cp) - 2):
+            (u0, h0), (u1, h1) = cp[i], cp[i + 1]
             if u0 <= u <= u1:
                 t = (u - u0) / (u1 - u0) if u1 > u0 else 1.0
-                t = t * t * (3.0 - 2.0 * t)
-                return h0 + (h1 - h0) * t
+                hm, hn = cp[i - 1][1], cp[i + 2][1]
+                return 0.5 * ((2.0 * h0) + (-hm + h1) * t + (2.0 * hm - 5.0 * h0 + 4.0 * h1 - hn) * t * t + (-hm + 3.0 * h0 - 3.0 * h1 + hn) * t * t * t)
         return profile[-1][1] if u > profile[-1][0] else profile[0][1]
 
     hs = [height(d / total) for d in seg]
+    raw = []
+    for i in range(len(pts)):
+        lo, hi = max(0, i - 1), min(len(pts) - 1, i + 1)
+        ds = seg[hi] - seg[lo]
+        raw.append(gain * math.degrees(math.atan2(hs[hi] - hs[lo], ds)) if ds > 1e-6 else 0.0)
+    want = []
+    for i in range(len(pts)):
+        win = raw[max(0, i - 2):i + 3]
+        want.append(max(-pitch_cap, min(pitch_cap, sum(win) / len(win))))
+    for order in (range(1, len(pts)), range(len(pts) - 2, -1, -1)):   # forward, then back, so the limit leans on neither side
+        for i in order:
+            j = i - 1 if order.step > 0 else i + 1
+            room = pitch_rate * abs(pts[i][0] - pts[j][0])
+            want[i] = max(want[j] - room, min(want[j] + room, want[i]))
     out = []
     for i, k in enumerate(pts):
         k[3] = round(hs[i], 3)
-        lo, hi = max(0, i - 1), min(len(pts) - 1, i + 1)
-        ds = seg[hi] - seg[lo]
-        if ds > 1e-6:
-            k[5] = round(k[5] + gain * math.degrees(math.atan2(hs[hi] - hs[lo], ds)), 3)
+        k[5] = round(k[5] + want[i], 3)
         out.append(tuple(k))
     return out
 
