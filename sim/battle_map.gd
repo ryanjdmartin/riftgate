@@ -537,22 +537,20 @@ static func spend(t: int, traits: Array, left: int) -> int:
 	return c if c <= left else -1
 
 
-## The terrain's word for every way of moving, for the terrain tap and the codex: the ways
-## grouped by word, then the horde's rule.
-static func ground_words(t: int) -> String:
+## The terrain's word for every way of moving, for the terrain tap: [word, ways] a word, fastest
+## first, each way of moving under the word it gets (the horde's rule is move_cost with no traits).
+static func ground_ways(t: int) -> Array:
 	var by_word := {}
 	for w in WAYS:
 		var word := move_word(t, [w])
 		if not by_word.has(word):
 			by_word[word] = []
 		by_word[word].append(w)
-	var parts: Array[String] = []
+	var out: Array = []
 	for word in ["fast", "normal", "slow", "wall"]:
 		if by_word.has(word):
-			parts.append("%s for %s" % [word, ", ".join(by_word[word])])
-	var horde := move_cost(t, [])
-	parts.append("packs cross" if horde != WALL else "packs never enter")
-	return " · ".join(parts)
+			out.append([word, by_word[word]])
+	return out
 
 
 ## The ground of a hex on or beside the field: the margin columns exist to be seen, not

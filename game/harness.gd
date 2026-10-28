@@ -32,6 +32,8 @@ var _summary: Label
 var _battle_btn: Button
 var _fight_btn: Button
 var _resume_btn: Button
+var _quick_btn: Button
+var _quick_resume_btn: Button
 
 
 func _ready() -> void:
@@ -128,6 +130,15 @@ func _build_menu() -> void:
 	_resume_btn.visible = SaveGame.exists()
 	more.add_child(_resume_btn)
 	more.add_child(_button("Battlefield viewer", _on_map, 52, 18))
+	# The quick campaign (Ryan, 25 October): a run of battles without the map, seeded by SETUP's seed.
+	var quick := HBoxContainer.new()
+	quick.add_theme_constant_override("separation", 12)
+	col.add_child(quick)
+	_quick_btn = _button("Quick campaign", _on_quick, 52, 18)
+	quick.add_child(_quick_btn)
+	_quick_resume_btn = _button("Resume quick campaign", _on_quick_resume, 52, 18)
+	_quick_resume_btn.visible = SaveGame.quick_exists()
+	quick.add_child(_quick_resume_btn)
 
 	_select_tab(_tab)
 	_refresh_summary()
@@ -679,6 +690,27 @@ func _on_map() -> void:
 	_show(m)
 
 
+## A new quick campaign on SETUP's seed (the saved one, if any, is replaced at its first pick).
+func _on_quick() -> void:
+	setup.save()
+	_show_quick(QuickRun.new(setup.seed_value))
+
+
+func _on_quick_resume() -> void:
+	var r := SaveGame.load_quick()
+	if r != null:
+		_show_quick(r)
+
+
+func _show_quick(r: QuickRun) -> void:
+	var screen := QuickRunScreen.new()
+	screen.run = r
+	screen.autosave_enabled = true
+	screen.back_requested.connect(_back)
+	screen.quit_requested.connect(_back)
+	_show(screen)
+
+
 func _show(node: Node) -> void:
 	if OS.has_feature("web"):
 		# On a phone's browser (tools/phone.sh) the button press is the gesture that lets
@@ -695,6 +727,7 @@ func _back() -> void:
 		_current.queue_free()
 		_current = null
 	_resume_btn.visible = SaveGame.exists()
+	_quick_resume_btn.visible = SaveGame.quick_exists()
 	_menu.visible = true
 
 

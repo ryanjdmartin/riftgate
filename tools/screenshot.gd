@@ -5,9 +5,11 @@ extends SceneTree
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
-## mechcodex, hold (a die's readout), confirm (the end-turn question), lock, rage (the rage's
-## roll again mid-burst), heat (Burning and Scorched on the first machine), repick (a foe whose
-## machine falls before it acts, a second arrow dashed to the machine it will strike).
+## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
+## showing), mechhold and foehold (the first machine's and the first foe's), confirm (the
+## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
+## Scorched on the first machine), repick (a foe whose machine falls before it acts, a second
+## arrow dashed to the machine it will strike).
 
 var _frames := 0
 var _vp: SubViewport
@@ -69,6 +71,9 @@ func _apply_pose() -> void:
 	if _node is BattleScreen:
 		_apply_battle_pose()
 		return
+	if _node is QuickRunScreen:
+		_apply_quick_pose()
+		return
 	if not (_node is SkirmishScreen):
 		return
 	var s: SkirmishScreen = _node
@@ -94,7 +99,17 @@ func _apply_pose() -> void:
 				s._drag_from = 0
 			s._refresh()
 		"hold":
+			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
+			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
+			var at := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
+			if at >= 0 and at < s.sk.mechs[1].die.faces.size():
+				s.sk.mechs[1].face_index = at
+				s._refresh()
 			s._on_die_held(1)
+		"mechhold":
+			s._on_mech_held(0)
+		"foehold":
+			s._on_foe_held(s._foe_view_for(s.sk.front[0]))
 		"confirm":
 			s._on_end_turn()
 		"lock":
@@ -111,6 +126,8 @@ func _apply_pose() -> void:
 			# One of the feed's analysis events, started now (RIFTGATE_SHOT_FRAME=20 for the
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))
+		"keywords":
+			s._open_menu("keywords")   # as the button under the eye opens it
 		"menu", "settings", "quit":
 			s._open_menu()
 			if _pose != "menu":
@@ -209,7 +226,7 @@ func _apply_pose() -> void:
 ## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -226,6 +243,19 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
+		"boss":
+			s._on_unit_held(b.boss)
+		"ground":
+			# Nothing in hand, a tap on the first open water (else ruins): what the ground is.
+			var pick := Vector2i(-9999, -9999)
+			for want in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS]:
+				for h in b.field.map.all_hexes():
+					if b.field.map.terrain.get(h, -1) == want and b.field.unit_at(h) == null and not b.field.map.is_structure(h):
+						pick = h
+						break
+				if pick != Vector2i(-9999, -9999):
+					break
+			s._on_hex_tapped(pick)
 		"plan_play":
 			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
 			for i in range(mini(2, b.mechs().size())):
@@ -360,7 +390,7 @@ func _apply_battle_pose() -> void:
 		"resolve":
 			s._on_end_turn()
 		"gate":
-			# The gate tapped: its footprint and the hexes it can be attacked from.
+			# The gate tapped: its footprint, the hexes it can be attacked from and its readout.
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
@@ -428,6 +458,51 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(m.pos)
 			s._on_hex_tapped(boss.pos)
 			s._engage()
+
+## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
+## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows
+## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open, no
+## withdrawal), track (between fights, one won), rewards (the boss down, a card chosen), over.
+func _apply_quick_pose() -> void:
+	var s: QuickRunScreen = _node
+	var r := s.run
+	if _pose == "draft":
+		return
+	for id in QuickRun.draft_choices(r.db).slice(0, QuickRun.START_MACHINES):
+		s._toggle_pick(str(id))
+	if _pose == "picked":
+		return
+	s._on_primary()
+	for it in r.pool(2):
+		if it["kind"] == "component":
+			r.components[str(it["id"])] = 1
+			break
+	r.modules[str(r.db.modules.keys()[0])] = 1
+	s._refresh()
+	match _pose:
+		"chooser":
+			var m: QuickRun.Machine = r.roster[0]
+			s._open_hardpoint(m.uid, 0, r.db.chassis[m.chassis].get("fixed", []).size())
+		"fight":
+			s._on_primary()
+			s._on_primary()
+		"track", "rewards", "over":
+			r.start_battle()
+			var sk := r.open_fight()
+			r.units[0].hull = r.units[0].hull_max / 2
+			r.units[1].shield = 1
+			sk.outcome = Skirmish.Outcome.VICTORY if _pose != "over" else Skirmish.Outcome.DEFEAT
+			sk.state = Skirmish.State.DONE
+			r.finish_fight()
+			if _pose == "rewards":
+				while r.state == QuickRun.BATTLE:
+					var next := r.open_fight()
+					next.outcome = Skirmish.Outcome.VICTORY
+					next.state = Skirmish.State.DONE
+					r.finish_fight()
+				s._choice = 1
+			s._refresh()
+
 
 func _tick() -> void:
 	_frames += 1

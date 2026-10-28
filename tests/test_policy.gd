@@ -474,9 +474,9 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq(pol.equipment_score(sk, ms, ms, scrub), pol.equipment_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, scrub), pol.machine_spend_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
 	Effects.corrupt_entry(m, 2, "foe:x", 2)
-	assert_true(pol.equipment_score(sk, ms, ms, scrub) > pol.equipment_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
+	assert_true(pol.machine_spend_score(sk, ms, ms, scrub) > pol.machine_spend_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
 	Effects.disable_entry(m, 2, "cooldown", sk.round)
 	var before := pol.cleanse_score(sk, ms)
 	Effects.disable_entry(m, 2, "foe:x", sk.round + 1)
@@ -650,8 +650,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.equipment_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
-	assert_eq(pol.equipment_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
+	assert_true(pol.machine_spend_score(sk, ms, ms, wall) > 0.0, "a Barrier against a blow of sixty is worth the forty it keeps off the hull")
+	assert_eq(pol.machine_spend_score(sk, ms, ms, ward), 0.0, "and a Ward against a plain blow nothing")
 	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
 	assert_eq(pol.barrier_score(sk, ms), 0.0, "a second Barrier adds nothing")
 	var s2 := Skirmish.new(1)
@@ -664,8 +664,8 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	s2.begin()
 	s2.start_round()
 	var ns: Skirmish.MechState = s2.mechs[0]
-	assert_true(pol.equipment_score(s2, ns, ns, ward) > pol.equipment_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
-	assert_true(pol.equipment_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > pol.machine_spend_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
+	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
 
 
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
@@ -998,7 +998,7 @@ func test_the_planner_places_a_setup_where_the_next_round_cashes_it() -> void:
 
 ## Blind play (the bible's section 2: "a team that spends each die on the nearest foe"; the rung
 ## since 22 October): every weapon on the nearest foe, the front rank before the back and left
-## before right, whatever a kill elsewhere would give; every piece of equipment on its own
+## before right, whatever a kill elsewhere would give; every shield, vent and buff on its own
 ## machine; a die held only where its heat would burn the machine.
 func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	var sk := Skirmish.new(2, 2)
@@ -1045,3 +1045,40 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var lead: Foe = sk.front[1]
 	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
 	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")
+
+
+## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,
+## 28 October): its shape's number through the firer's modifiers, judged on that foe, then its
+## own statuses and armour; and a consumer gives up every foe's stacks it eats, each its own.
+func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
+	var sk := Skirmish.new(1, 3)
+	var sweep := Face.attack(6, L, K.CLEAVE)
+	sweep.cleave = 2
+	var m := _mech("A", Die.single(sweep), 40, 100)
+	m.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status"}]})
+	sk.add_mech(m)
+	var marked := _ghoul(100)
+	var aim := _ghoul(100)
+	var plain := _ghoul(100)
+	sk.add_foes([marked, aim, plain])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.new()
+	assert_eq(pol.damage_outcomes(ms, sweep, aim), [[6.0, 1.0]], "the clean target: the roll alone")
+	assert_eq(pol.damage_outcomes(ms, sweep, marked, -1.0, true, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
+	assert_eq(pol.damage_outcomes(ms, sweep, plain, -1.0, true, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
+	var before := pol.attack_score(sk, ms, sweep, aim)
+	sweep.cleave = 4
+	assert_true(pol.attack_score(sk, ms, sweep, aim) > before, "a bigger Spread is worth more")
+	# A consumer through a Spread: every foe it strikes eats its own, so the ticks each gives up count.
+	var charge := Face.attack(2, L, K.CLEAVE)
+	charge.cleave = 1
+	charge.consumes = "burning"
+	var dry := charge.duplicate_face()
+	dry.consumes = ""
+	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
+	assert_true(lost > 0.0, "the neighbour's Burning eaten costs the ticks it would have dealt: %f" % lost)

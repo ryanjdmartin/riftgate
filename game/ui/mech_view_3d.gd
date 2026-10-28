@@ -239,7 +239,7 @@ static func shape_model(shape: String, maker: String) -> String:
 
 ## What a machine's mounts must change to show its fitted die instead of the chassis's
 ## stock loadout (the rule, 30 September): the model's pins are gun mounts, hp_1 onward,
-## and the die's shaped components (a weapon, or equipment that looks like one) take them
+## and the die's shaped components (a weapon, or anything else that looks like one) take them
 ## in the die's order; a component with no shape (armour, a vent) takes a die entry and no
 ## mount. One row [k, component, shape, maker] per mount whose component is not the one
 ## the stock loadout put there, with an empty component for a mount left bare (the stock

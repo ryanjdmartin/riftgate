@@ -93,6 +93,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
+		"splash":
+			# Splash (28 October): the plus round the target, Spread's row and Penetrate's column at
+			# one number. A solid core with four arms standing off it, a burst, so it reads apart
+			# from Spread's three bars, Penetrate's arrow and the crosshair's ringed cross.
+			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
@@ -270,7 +277,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
-			# Heat rising off a barrel: Scorched, every weapon running hotter (13 October).
+			# Heat rising off a barrel: Scorched, every weapon and debuff running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
 			for i in range(3):
 				var x := -s * 0.55 + i * s * 0.55
@@ -444,7 +451,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BUFF:
 			return "buff"
 		_:
-			# A debuff (a weapon of no damage) wears its reach frame with the status mark inside.
+			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
 				return "debuff_indirect" if face.is_debuff() else "indirect"
 			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags

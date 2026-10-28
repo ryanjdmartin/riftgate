@@ -112,7 +112,7 @@ func test_the_lines_table_is_whole() -> void:
 	assert_true(not table.is_empty(), "art/audio/voice/lines.json is shipped (voice_lines.py ship)")
 	var hooks: Dictionary = table.get("hooks", {})
 	for hook in ["die_spent", "foe_down", "foe_down_undead", "foe_down_demonic", "foe_down_eldritch", "shield", "buff",
-			"heat_vented", "heat_high", "overheat", "machine_lost", "component_damaged", "component_destroyed",
+			"heat_vented", "heat_high", "overheat", "machine_lost", "component_destroyed",
 			"resolve_all", "resolve_move", "contact", "engage", "boss", "gate", "loss_gate", "victory", "codex",
 			"refuse", "battle_open"]:
 		assert_true(hooks.has(hook), "the game's hook %s has lines" % hook)
@@ -127,7 +127,7 @@ func test_the_lines_table_is_whole() -> void:
 		var sig := str(h.get("signal", ""))
 		if not sig.is_empty():
 			assert_true(Sound.NAMES.has(sig), "%s's signal %s is a named sound" % [hook, sig])
-	for hook in ["machine_lost", "component_damaged", "component_destroyed", "heat_high", "overheat", "loss_gate"]:
+	for hook in ["machine_lost", "component_destroyed", "heat_high", "overheat", "loss_gate"]:
 		assert_true(bool(hooks[hook].get("info", false)), "%s is information" % hook)
 
 

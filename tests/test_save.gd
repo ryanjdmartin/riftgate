@@ -238,12 +238,12 @@ func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
 func test_damage_and_statuses_survive_the_trip() -> void:
 	var b := _battle(4)
 	var m: Unit = b.mechs()[0]
-	# A cracked entry, a destroyed one, a battle reward and a skirmish status, by hand.
+	# Two destroyed entries, a battle reward and a skirmish status, by hand.
 	var original: Face = m.die.faces[0].duplicate_face()
 	m.damaged_faces[0] = original
-	var cracked: Face = m.die.faces[0].duplicate_face()
-	cracked.crack()
-	m.die.faces[0] = cracked
+	var first := Face.blank()
+	first.component = original.component
+	m.die.faces[0] = first
 	var gone := Face.blank()
 	gone.component = m.die.faces[1].component
 	m.damaged_faces[1] = m.die.faces[1].duplicate_face()
@@ -255,9 +255,9 @@ func test_damage_and_statuses_survive_the_trip() -> void:
 	m.shield = 7
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var bm: Unit = back.field.unit_by_id(m.id)
-	assert_true(bm.die.faces[0].cracked, "the crack")
-	assert_eq(bm.die.faces[0].keywords.size(), 0, "with its keywords gone")
-	assert_eq(bm.die.faces[1].kind, Face.Kind.BLANK, "the destroyed entry is blank")
+	assert_eq(bm.die.faces[0].kind, Face.Kind.BLANK, "the first destroyed entry is blank")
+	assert_eq(bm.die.faces[0].component, original.component, "and remembers what it was")
+	assert_eq(bm.die.faces[1].kind, Face.Kind.BLANK, "the second too")
 	assert_eq(bm.die.faces[1].component, gone.component, "and remembers what it was")
 	assert_eq(bm.damaged_component_count(), 2, "two to repair")
 	assert_eq(bm.damaged_faces[0].to_dict(), original.to_dict(), "the original kept for the hangar")

@@ -89,6 +89,9 @@ var with_boss := true
 ## every commander has fallen. Empty keeps the lead faction's boss alone.
 var lineup: Array = []
 var escort: Array = []
+## The battle's tier, 0 to 2 (the campaign's, set before setup; 0 in the harness): its boss unit
+## stands at it, its commanders' numbers and its escort following (ContentDB.BOSS_TIERS).
+var tier: int = 0
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -99,7 +102,7 @@ var foes_killed: int = 0
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
 var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current action, taken back with an undo
 ## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
-## still reads their dice (a wreck loses its cracked and destroyed components).
+## still reads their dice (a wreck loses its destroyed components).
 var wrecks: Array[Unit] = []
 
 
@@ -165,9 +168,13 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()
 		boss = Unit.boss(0, named, Vector2i.ZERO, faction, Unit.BOSS_MOVE)
 		boss.lineup = lineup.duplicate()
-		if escort.size() >= 2 and db.foes.has(str(escort[0])):
-			boss.foe_id = str(escort[0])
+		if escort.size() >= 2:
+			# A named escort foe is a hand-tailored escort; unnamed, the tier's own units.
+			if db.foes.has(str(escort[0])):
+				boss.foe_id = str(escort[0])
 			boss.strength = maxi(0, int(escort[1]))
+		boss.boss_tier = tier
+		boss.strength += ContentDB.escort_at(tier)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	state = State.PLAN

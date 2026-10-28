@@ -31,7 +31,11 @@ the intents count it), 5 (a silence on buffs alone here; Cracked gone on
 every open rift its domain leads final), and
 `claude/playtesting-issues-08mnqj` (his playtest list, merged here on his word) takes UNDO back
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
-The rest waits on his read. Line numbers are as at `a8a0e43`.
+The rest waits on his read. The review of 27 October fixed 15 in the rules, marked 34 settled by
+the one damage state, and put 26 to Ryan, sharpened by the boss's fight that cannot be left (25
+October); he settled it the engine's way the same day. On 27 October he had 8, 13 and 17 fixed,
+and on 28 October his blow order (the bible's blow row, built with Spread N, Penetrate N and
+Splash N) fixed 9 and 19. Line numbers are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -150,7 +154,7 @@ corrupt-all specials walk `live_mechs()` (sim/skirmish.gd:2237, :2243), so a mac
 Mooring Screens Phased still takes Eruption's Scorched and Diamond Dust's Corrupted. Phased
 "cannot be targeted" (docs/rules.md:312). Fix: skip Phased there too.
 
-### 8. Bug: a sprayed spend's Primed burn all lands on the first foe
+### 8. Fixed 27 October (laid blow by blow on each strike's own foe; a kill leaves nothing to burn). Bug: a sprayed spend's Primed burn all lands on the first foe
 A Primed machine's Burning is summed over the strikes and laid on `target` after the loop
 (sim/skirmish.gd:1925), so a Skua's Flechette Pod whose strikes fell on three foes puts every
 stack on the first, a corpse when the first strike killed it. Primed lays its stacks "on its
@@ -158,7 +162,7 @@ target" (docs/rules.md:311), each blow's own. An ally's Aurora Lattice reaches t
 Fix: lay it on each strike's own foe. (A Spread's neighbours get none, which the rules allow
 and the status's "every blow it lands" leaves open.)
 
-### 9. Text: conditions on the target are judged on the aimed foe for the whole area
+### 9. Fixed 28 October (the blow's order: a condition on the foe is read on each foe struck, the firer's modifiers on every blow). Text: conditions on the target are judged on the aimed foe for the whole area
 The attacker's modifiers are read once a strike against the foe aimed at
 (sim/skirmish.gd:1817) and the same blow goes to every foe it reaches. So the Susceptibility
 Tensor ("its blows deal 1 more to a foe carrying any status") gives a Spread's clean
@@ -189,7 +193,7 @@ carries silence yet.
 Guarded core's ×0 is never shown, where the screen's own comment expects "the zero its die
 shows" (game/skirmish/skirmish_screen.gd:1128). No boss in parts in content yet.
 
-### 13. Bug, rare: the enemy's turn ends early when no machine is targetable
+### 13. Fixed 27 October (the turn goes on; a foe with nobody to strike loses its blow alone, its specials on its own side acting). Bug, rare: the enemy's turn ends early when no machine is targetable
 `_foe_turn` returns false when its re-pick finds no machine (sim/skirmish.gd:1433), and the
 turn breaks there (:1408): every foe after it skips its statuses' tick (Burning, Numbed, an
 Armoured from its brace that should drop), its web, its countdown, and its specials that act
@@ -204,7 +208,7 @@ not only at 1. One or the other moves. Its neighbour "when hurt" (`missing_hull`
 sim/skirmish.gd:909) needs the move's own value missing, which is right for a regrow and
 wrong for a brace: the Sandworm's Burrow (armour 3) reads 3 HP lost as its threshold.
 
-### 15. Text: the Drake's Stoke picks at random
+### 15. Fixed 27 October (the rules' line). Text: the Drake's Stoke picks at random
 "The Drake's Stoke sets the hottest machine burning" (docs/rules.md:460), but neither the
 Drake nor Stoke carries the heat aim since the 24 October random baseline, so it burns a
 machine at random. The rules line is stale (or Stoke takes `aim: heat`, as the Black Mage's
@@ -216,7 +220,7 @@ Volatile spend, the Tithe Coupling's price, an overheat), so a Tithe Coupling be
 Overcharges every spend. Either the text says "each time it loses hull", or the effect reads
 blows only.
 
-### 17. Bug: Siphon heat fires no heat-gain passive
+### 17. Fixed 27 October (through `_add_heat`). Bug: Siphon heat fires no heat-gain passive
 The Siphon's heat a blow is added straight to the gauge (sim/skirmish.gd:3151) rather than
 through `_add_heat`, so an on-heat-gain passive (the Boundary-layer Bleed's shield) never
 answers it. Every other heat in the fight goes through `_add_heat`.
@@ -229,7 +233,7 @@ Overcharged) don't pass through `_stacks_from` (sim/skirmish.gd:1279, :1287; `Ef
 The Stoker is a hardpoint piece, so a Stingray at 10 heat can carry it and burns itself 1, not
 3.
 
-### 19. Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
+### 19. Fixed 28 October (Ryan's blow order, reading (a) with a consumer eating each foe's own: each foe struck reads its own missing hull and stacks, and the neighbours' number is the area keyword's N). Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
 A consumer's point a stack is added to the roll (sim/skirmish.gd:1809), and the roll reaches
 every foe the blow does. "One blow on one foe (no strikes past one, no area)"
 (docs/rules.md:266), and the validator holds the authored face to it, but the Cottonmouth's
@@ -237,6 +241,23 @@ drum grants Spread at the front and Penetrate at the back, so its Backdraft Char
 burning target's stacks to its neighbours too (Burning 4: 8 on all three). A Coriolis
 Accelerator through the drum carries the aimed foe's missing-HP bonus to the area the same way
 (item 9's kind).
+
+The rule that is missing (27 October): the rules say what a blow is (the number, the attacker's
+modifiers, each foe's own) and that the foes past the aimed one take half of it, but never
+which parts of "the number" are the blow's and which are the aimed foe's. Three things the
+engine reads off the aimed foe ride to the neighbours as computed for it: the stacks a consumer
+eats and their bonus (this item), the target's missing hull (the Coriolis; the rules' step 1
+even folds it into "the number"), and a condition on the foe (item 9: the Tensor's "a foe
+carrying any status", the Rangefinder's rank). The validator's "no area" on a consumer guards
+the authored face only; a passive that grants area at the spend (the drum) steps past it. Two
+readings, either a one-line rule: (a) a blow is read for each foe it reaches as if that foe were
+the one aimed at, the entry's number and the machine's own adds the same for all (the roll,
+heat fired, hopper loads, Overcharged), what reads the foe read on each (a condition on it, its
+missing HP, its own Flak, Shock and armour), and what the spend consumes the aimed foe's alone;
+or (b) the shared blow is the number and the machine's unconditional adds, and anything read
+off a foe is the aimed foe's alone. (a) matches the Tensor's text and the Ambush's rule; (b) is
+cheaper to run. A printed number a piece for the area (Spread N, section 12) makes both moot:
+the neighbours' blow is then N, nothing of the aimed foe's riding.
 
 ### 20. Question: the winning turn is free of heat
 END TURN's costs (Burning's tick, the overheat, the seal's heat) never land on the turn a
@@ -314,7 +335,7 @@ carrier gets its whole move back to carry the others. "UNDO MOVE restores a mach
 fights" (docs/rules.md:610), and the bible's Swallowtail row wants "reach and never a reset".
 Lean: a carrier's undo closes once any rider it set down has fought, as the rider's own would.
 
-### 26. Question: a boss killed in a fight that then wipes the team loses the battle
+### 26. Settled 27 October (Ryan: the whole escort must die, else a final's hero, the smallest boss, gets cheaper still; the code's order stands and the rules' and bible's texts say the unit falls, not the boss alone). Question: a boss killed in a fight that then wipes the team loses the battle
 A fight goes on past the last commander's fall while its escort stands, and when it ends the
 battle asks "every machine wrecked" before "the boss gone" (sim/battle.gd:729), so a team that
 kills the final's hero and is then wrecked by its escort (or its own overheat) reads as
@@ -323,7 +344,11 @@ death wins the battle" (docs/rules.md:638), and the end conditions carry no orde
 (docs/rules.md:645). Withdrawing right after the kill would have won. The same when the hero
 burns to death at the start of the enemy's turn and its escort wipes the team in it; at the
 finale the order can lose the run after the whole party has fallen. Ryan's precedence to set;
-lean: the boss's death wins, as the rule reads.
+lean: the boss's death wins, as the rule reads. Sharpened on 25 October, after this was
+written: the boss's fight takes every machine and cannot be left (section 4's boss row), so
+the withdrawal that would have won is gone, and the escort the fight goes on against grows
+with the tier (two more at tier two, four at tier three, 26 October). The precedence is the
+only answer left, and the order in `Battle._check_outcome` is a one-line change.
 
 ### 27. Text: flyers hold nothing, and the rules never say so
 A pack walks under a flyer (`can_block()` is false for a flyer, sim/unit.gd:217;
@@ -400,7 +425,7 @@ start table to the run: the Honey Badger 9, the Armadillo 20, the Puffin 28, the
 
 Fix: give the tender a stream of its own, as the party has; the runner's pick too.
 
-### 34. Question: the Honey Badger's "never destroyed" piles up cracks for a wreck to take
+### 34. Settled 25 October (one damage state: no crack to bank; the Badger's passive now holds off every injury until its identity session, the to-do's line). Question: the Honey Badger's "never destroyed" piles up cracks for a wreck to take
 "Components can be cracked but never destroyed" holds in the fight, so a Badger's cracks never
 turn into losses there; but a wreck "also loses its cracked components" (docs/rules.md:676),
 and `_after_battle` never asks the passive (sim/campaign.gd:511). A wrecked Badger loses every
@@ -436,13 +461,19 @@ ended", docs/rules.md:686).
 
 ## Content and shown text
 
-### 37. Bug or intent: the Zombie Knight never appears in a run
+### 37. Fixed 27 October (Ryan: "a mistake or oversight"; the second Revenant line is the Knight's, ×2, a placeholder like every strength). Bug or intent: the Zombie Knight never appears in a run
 The Marsh's spawn list is the Revenant ×6, the Revenant ×6 again, the Ghost ×3
 (content/factions.json:45), and nothing else deals the Knight, so no run, final escort or
 balance cell meets it; only the harness's pack picker fields it. The bible's domain table gives
 the Marsh's wildlife as "Revenant, Ghost, Zombie Knight", its niche "the Marsh's one armoured
 foe", and the rules cite "the Zombie Knight's 8 HP" (docs/rules.md:183). If the second Revenant
-was meant to be the Knight, it's a one-word fix.
+was meant to be the Knight, it's a one-word fix. It was: the list was written so on the day the
+domains landed (9 October, `5d9ff746`) and never held the Knight. Fixed on main, 27 October: the
+Marsh sends the Revenant ×6, the Zombie Knight ×2 and the Ghost ×3, the armoured pair sized as
+the Waste's Antlions, so the Marsh formation is eleven foes where it was fifteen and the balance
+matrix gains a Zombie Knight ×2 cell; the report of 27 October predates both.
+Its first read the same day (`docs/measurements.md`, the trios against thinner formations): the
+pair's breaching 6 makes the Marsh formation an injury mill for a trio; its numbers are Ryan's.
 
 ### 38. Text: the promoted forms show their heroes' codex
 A promoted entry sets no codex and takes its hero's (`_resolve_promotions`,

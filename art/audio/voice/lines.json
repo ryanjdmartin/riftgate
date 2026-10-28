@@ -366,23 +366,6 @@
    "merge": [],
    "signal": ""
   },
-  "component_damaged": {
-   "chance": 1.0,
-   "info": true,
-   "lines": [
-    {
-     "file": "line_component_damaged",
-     "text": "component damaged"
-    },
-    {
-     "file": "line_hardpoint_hit",
-     "text": "hardpoint hit"
-    }
-   ],
-   "personality": [],
-   "merge": [],
-   "signal": ""
-  },
   "component_destroyed": {
    "chance": 1.0,
    "info": true,
@@ -394,6 +377,14 @@
     {
      "file": "line_hardpoint_lost",
      "text": "hardpoint lost"
+    },
+    {
+     "file": "line_component_damaged",
+     "text": "component damaged"
+    },
+    {
+     "file": "line_hardpoint_hit",
+     "text": "hardpoint hit"
     }
    ],
    "personality": [],

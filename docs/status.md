@@ -21,8 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 676 tests, 64,908 checks, green on main (27 October, `claude/affectionate-goldberg-8e3mkh`
-  landed), about a minute in a cloud session. A cloud session gets Godot 4.7's Linux build
+- Tests: 721 tests, 66,041 checks, green on main's head (28 October, the Kestrel models' eight
+  rounds of notes merged as a fast-forward onto the numbered area and the blow's order, the
+  glow-parts test tightened to the rig's own rule), about four minutes in a cloud session, twenty on a slow one. A cloud session gets Godot 4.7's Linux build
   and the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October, on
   `ccr-c04908be-3r43xf` until it lands on main; the GitHub release asset
@@ -38,34 +39,60 @@ are in `README.md`.
 
 ## Branches
 
-Main took `claude/affectionate-goldberg-8e3mkh` on 27 October (Ryan's go: "merge in and clean
-up", then "Merge into main"), a fast-forward with main merged into it first. On main's 26
-October (the playtest list, the boss art round) it added: the mechanics audit (`docs/mechanics_audit.md`) and its fixes, a beaten domain's rifts
-closing and a set final turning every open rift final, the rally at once under a pulsing chip,
-the round preview (the rest of the round played on a copy for the gauges, the warnings, the foes'
-bars and every status on its way, each a pulsing chip, the skull among them), a pick made again
-going to the next machine in line and a Disrupt keeping a standing pick, and Volatile a printed
-cost beside a shield cost that locks the entry while the shield is short. Live beside main, each
-another session's work, unmerged and landing by merging main in: `ccr-170f6d81-465jnr` (the
-die's hold as text, Flak on every blow, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv`
-(one damage state, bosses at their tier, area at half), `ccr-6073bda9-p34o8q` (the foes' fresh
-start proposed, `docs/foes_proposal.md`), `ccr-7effd31a-u5z4gw` (the Hold The Line pair) and
-`ccr-c04908be-3r43xf` (27 October: the pricing run's method and driver, the run made and read
-(`docs/measurements.md`), the synergy map and the roster's synergy holes,
-`docs/pricing_proposal.md`, and the session-start hook that fetches Godot for cloud sessions;
-docs, Python tools and the hook only, the suite green there). Fully
-merged, so to delete from the desk machine or GitHub, since a cloud session may not delete one:
+The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
+beside main into it, since two sessions had each expected main to take theirs on the 26th and
+neither merged the other: `ccr-170f6d81-465jnr` (Ryan's go of 26 October: the die's hold, the
+units' holds and the codex as text, the keywords list, area at half, Flak on a weapon's blow of
+0, the weapon and equipment words, the vent's blast as a weapon's hit, Spun Up spent by a weapon
+alone, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv` (the quick campaign, one
+damage state, the bosses at their tier), `ccr-6073bda9-p34o8q` (the foes' fresh start proposed,
+`docs/foes_proposal.md`; the campaign bot moving as one with its withdrawing persona; `--pack` on
+the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth rounds, which the
+status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
+(the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
+changes to the skirmish (each merge commit says how it was resolved); the suite ran green on
+the result (the Tests line) and main took this branch as a fast-forward the same day. The
+models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
+rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
+28th and main took it as a fast-forward that evening on his word ("clean up and merge into
+main"). Live beside main, each landing by merging main in: `ccr-6073bda9-p34o8q` again, which
+took main the evening of the 28th and carries the ladder's build on top (the three verbs, the
+foes' buffs, the player's Purge, the recolours by tier, their sprites and the read at 30 seeds;
+its own status says so), and `ccr-c04908be-3r43xf` (27 and 28 October: the pricing run's method
+and driver, the run made and read, `docs/measurements.md`, the synergy map and the roster's
+synergy holes, `docs/pricing_proposal.md`, the session-start hook that fetches Godot for cloud
+sessions, and main merged in on the 28th with the proposal reviewed against the numbered area,
+the blow's order and the ladder's design goals; docs, Python tools and the hook). Every other
+branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`ccr-7d865127-wr1ko2`, `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4`. Every other branch was merged
-into main and deleted (22 October).
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
+`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
+merged into main and deleted (22 October).
 
 ## The design sessions
 
 Each resumes from its briefs; `docs/briefs/README.md`'s table says what each waits on.
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
-  halved, rounded down, and struck twice; the Pod's spray), its rows read the same day: mid-field
+  `docs/briefs/kestrel_line.md`). Its models' second round landed 28 October and took two
+  rounds of his notes the same day (the Storm Petrel's field strips, sparks, beaded arch and
+  emitters clear of the guns; the Puffin's plates near plumb with lit rims, its amplify's glow
+  found dead, a prefix the rig never matches, and the build refusing one since; the
+  Lammergeier's launcher nacelles, riding the wing's upper skin, their tube mouths holes cut through the face plate and bored
+  twelve deep above the skin,
+  the Storm Petrel's arch on feet with two-thirds sleeves; the Skua's five acts,
+  the run and the stoops flown as a banked circle and a figure eight on the map (the Kite's
+  helpers under a spline height profile with the nose rate-limited, `_over_ground`) after
+  Ryan's phone frames showed the keyed forty units as bobbing in its hex, the bigger keyed cut
+  as janky and the first flown cut as flicking, the roll with the hands spread; Ryan's picks
+  from
+  five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
+  the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
+  his next session's, the to-do; the scissor swing wing tried again the same day as a look for
+  one of the two unspecced designs, two F-14 pairs on their own pivots that open into an X and
+  beat as an ornithopter and close into a blade, `docs/looks/kestrel_ornithopter.png`; parked as
+  a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
+  halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's once Ryan marks the pricing proposal (its run read 27 October, Claude's
   lean the guns' heat standing); the last two, the Magpie (a working name, a support engine)
@@ -86,16 +113,48 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
+  Since 27 October main also holds, from the branches above, the quick campaign on screen with
+  the game's first hangar, the die's, the units' and the map's holds as text with the keywords
+  list, area at half, one damage state and the bosses at their tier.
+- The quick campaign (25 October): battles without the map, headless, saved, on screen with the
+  game's first hangar, run by `tools/quick_run.gd`. Its first runs (`docs/quick_run.md`,
+  `docs/measurements.md`, 40 runs a rung) find a cliff at the first battle for a starting trio
+  (34 to 36 runs of 40 lost there on the branch; 39 of 40 on main's head of 27 October with the
+  bench-hero stand-in out, 22 of them at the boss, whose fight with its formation is won 15%
+  of the time from 59% of the squad's hull, where the tier-one formations are won 87%) and a
+  plateau after it while the enemy has no tiers: section 12's question, to read against the
+  fresh start's compositions before any lever moves; area at half is the rule behind the
+  cliff (the Balance bullet). Its elite slots hold the lead's formation alone until the elites
+  land (the to-do; the bench hero that stood in went on 27 October, Ryan: "a can of worms");
+  from tier two a domain's final may be a battle's boss (Ryan, 25 October), and every boss
+  fight brings the tier's escort.
+- Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
+  3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
+  the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
+  unit's `tier` in content, one by default: no unit has another yet), in the campaign and the
+  quick campaign; the rank and file never scale. The campaign counts its tiers from the
+  Convergence (tier two from 4, tier three from 8, the finale at 12 on tier three's step); every
+  number a placeholder.
+- Injuries (25 October): one damage state, Ryan's "Cracked is gone". An injury destroys the
+  entry the die lands on, at a quarter of the maximum hull, the threshold set by what it asks of
+  the player (half was tried and retired within the day: a machine could lose but one piece); a
+  wreck loses only what was destroyed. The Honey Badger's "never destroyed" now holds off every
+  injury until its identity session lands (Ryan: later; the to-do), so until then it is the one
+  machine no blow can strip. The quick runs on the bot destroy about one to one and a half
+  pieces a battle in tiers one and two (`docs/quick_run.md`), at or past section 10's "about one
+  a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
+  economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 80 components,
   32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
   heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge but six (the Cassowary, the Cottonmouth, the Whip
-  Scorpion, the Swallowtail, the Musk Ox and the Lammergeier, which draw the Badger's); the four
-  Kestrel models of 23 October are Claude's first cut, in a second round of looks on Ryan's
-  notes (the to-do). Since 25 October every machine's parts are welded at load by material
+- Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
+  Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
+  Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
+  to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
+  until Ryan's next session (the to-do). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -113,13 +172,52 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
   but the finale; nothing sits between, so the middle of the curve is the foes' fresh start's.
   The coordination gap reads 1.0 to 1.3 on built teams against the tests' about 2, and the
-  campaign's plain player wins none of 40 runs (both section 12's). Since the playtest list's
-  boss fight (every machine goes in, with no withdrawal) its battles are mostly one fight, the
-  boss's, joined by its ring within about four phases: it wins 39% of its battles where it won
-  2%, a run lasting fourteen turns where it lasted nine (`docs/campaign_run.md`, 40 runs, a
-  direction), so until the Rupture's seal lands a battle can be a straight rush on the boss.
-  Since the set finals (26 October) a run fights about twice the finals (23 in 40 runs where
-  13 were), winning 86%; the rally at once moves no cell of the packs that field it out of its
+  campaign's plain player wins none of 40 runs (both section 12's). The 39% of battles that
+  player won after the playtest list's boss fight (26 October, the report main carried until
+  the 27th) was a bot artefact: it opened the boss's fight from the gate on its first turn, which
+  no order allows; with the order rule on it (`ccr-6073bda9-p34o8q`, 26 October) it won 15%. On
+  the merged head (27 October, `docs/measurements.md`) it wins 7% of its battles and no final,
+  the three-machine battles 36%, and one quick campaign run of 40 leaves its first battle
+  (with the bench-hero stand-in out and the Skua's floor of one, 27 October: 10 fall at a
+  formation, 7 at the formation in the elite's slot, 22 at the boss; the tier-one formations
+  won 87%, the boss's fight with its formation 15% of 26, where the branch read 91 and 73):
+  tier one reads harder than on any branch alone, and the rule is area at half, by experiment
+  (`docs/measurements.md`, 27 October, the stand-in still in: with area at full the first
+  battle is won 18%, the formations 94%, the elite 65%, the boss 80%; the re-pick put back
+  changes nothing), since the Honey Badger and the Cottonmouth carried the starter trios on
+  their area and the 26th's read saw them alone:
+  section 12's quick campaign question carries the call. The 200-seed matrix on the merged head
+  (`docs/balance.md`, 27 October; its read in `docs/measurements.md`) finds every move a rule of
+  the week landing where it was meant to, and area at half landing harder than its read of the
+  26th said: the Honey Badger's, the Wild Boar's and the Musk Ox's formation cells and the
+  Cottonmouth's finals go back to the 22nd's bands with area whole, and nothing else moves them.
+  The Marsh's list holds the Zombie Knight ×2 since 27 October where its second Revenant line
+  stood (the audit's 37, an oversight from the domains' landing), so the matrix's Marsh formation
+  (fifteen foes there, eleven now) and its missing Zombie Knight ×2 cell predate it.
+  Read again on the team rows in three forms, half, half rounded up and whole (27 October,
+  `docs/measurements.md`): the half walls no four, with area or without (greedy wins every
+  formation at 100% for 3 to 14% hull in a single fight), and moves an area four's rounds, not
+  its wins; a trio without area bleeds 30 to 96% of its hull on a formation under every form,
+  so the quick campaign's cliff is the trio's chain against the fights' size, which whole area
+  hides by tempo (28% of trios pass the first battle whole, 8% rounded up, 3% at half); at
+  single digits a half-blow kills no rank and file; a fixed 2 on the neighbours reads as the
+  half (the same day), since a number tells only at the swarm's kill threshold of 3. Ryan's
+  call, 28 October: Spread N, Penetrate N and Splash N, with the blow's order read for each
+  foe struck (the bible's rows), built the same day with each carrier's N a placeholder from
+  Claude's proposals and the Kite's double kept on the printed number; read on the team rows the
+  same day (`docs/measurements.md`): between the half and whole, nearer the half, the rows
+  without area the same fight for fight, a neighbour's number telling at the rank and file's
+  kill threshold of 3 (the Enfilade Beam's), the 2s softening. The quick campaign is an
+  experiment, not a feature (Ryan, 28 October): its reads above are history, not grounds.
+  The fights' size is the bigger lever (the same day): tier one's formations a third thinner
+  take the quick campaign's first battle from 3% to 55% at half area, half thinner to 70%, and
+  thinned formations are a trio's decision band in the matrix; the Zombie Knight pair's first
+  read makes the Marsh formation an injury mill for a trio (its breaching 6 is a massive foe's
+  blow on a rank-and-file body: Ryan's number to move). Three or four is section 12's question
+  since the 27th (Ryan: revisit it).
+  Gel x4 alone is a free pack for most of the roster since the Gel became a wall; its work is
+  inside a formation. The set finals (26 October) turn every rift a domain
+  leads final at once; the rally at once moves no cell of the packs that field it out of its
   band (`docs/measurements.md`, 30 seeds, a direction). Since 24 October a foe picks at random unless its threat calls for an aim, every
   rank and file today, the baseline the numbers are balanced on, and no foe over-commits: the
   formations read a few points easier for it, and their pressure is the balancing's to restore.
@@ -146,7 +244,8 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list).
+to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
+line), since no number read since 22 October was read on the content as it now stands.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
@@ -195,41 +294,26 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.319, and so is the live (27 October,
-  the page's version 336, from `claude/affectionate-goldberg-8e3mkh`: the bot kept on the hand
-  sum, by measurement; before it Volatile a printed cost and
-  the shield cost, its Volatile keyword row taken out of the table by hand, the script not run
-  (it would write this branch's older tables back); before it a pick made again going to the
-  next machine in line whatever the foe's aim, merged onto another session's republish of 18:53 (the heat rows and
-  the Cassowary's); before it the settled re-pick drawn as a second arrow, merged onto the
-  republish of 18:18 (the Kite, Cottonmouth, Whip Scorpion, Kestrel and Lammergeier rows); before it a Disrupt from a move aimed at no one picking
-  afresh and every warning chip pulsing, merged onto the republish of 17:36, which reworked the
-  status and keyword tables and the Burn, Stun, heat and die-entry rows; before it the pick smart
-  as it is made and never after, a Disrupt keeping a standing pick, the chips beside the skull; before it
-  the settled re-picks and the incoming chips, merged onto another session's republish of 16:47, which retired the
-  shield-break warning and rewrote the hold, colour and codex rows; before it the round preview, merged
-  onto another session's republish of 15:34, which built area at half and rewrote the hold, drag
-  and codex rows; before it this branch's tick preview, rally at once, chip pulse and set finals,
-  merged onto the quick campaign's republish of 15:17 (main's Gel clause) and the live v0.300,
-  `ccr-6073bda9-p34o8q`'s file, which carried the day's other branches: `ccr-170f6d81-465jnr`'s
-  and the quick campaign's rows, a boss scaled to its tier, the die's hold showing the entry
-  alone, area at half). So this file holds
-  those branches' rows and tables ahead of their code, which lands with them:
-  `tools/pages/bible_tables.py` run here before they land writes this branch's older tables back
-  (its Kindled row here was checked identical to what the script writes). The
-  version numbers on the publishing branch's file and the live agree after every publish. Before
-  republishing, read the live page; if another session moved it, publish a three-way merge onto
-  it (`git merge-file` with the last-published file as the base, the wrapper's first line and
-  its trailing `</body></html>` stripped from the saved live source).
+  `docs/design-bible.html` after every change. This file and the live page are v0.339 (the
+  page's version 351, published 28 October from `ccr-7d865127-wr1ko2` as a three-way merge onto
+  another session's v0.338 (version 350): the Skua's motion row, its run and stoops flown paths
+  on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
+  the area session's v0.333). The version numbers on the publishing branch's
+  file and the live agree after every publish. Before republishing, read the live page; if
+  another session moved it, publish a three-way merge onto it (`git merge-file` with the
+  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  stripped from the saved live source). With every branch landed, the file holds no rows ahead
+  of code, and the tables script may run freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 117 (26 October, from
-  `claude/affectionate-goldberg-8e3mkh`: the Howl's and Stoke the Forge's text and Kindled's codex
-  and table entry, each file a three-way merge onto the live one another session published at noon with
-  the quick campaign's foes note and `ccr-170f6d81-465jnr`'s vocabulary wording, since the
-  branches' content differs until they land; the page itself identical on every branch, and
-  `edits` empty). Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. Every file the page reads is fetched with a
+  stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
+  acts on a reloaded page). At the page's version 136 (28 October, from
+  `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
+  models and rigs after Ryan's eight rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
+  Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
+  file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

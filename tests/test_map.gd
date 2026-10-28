@@ -65,8 +65,8 @@ func test_words_by_way_of_moving() -> void:
 	assert_eq(M.way_of(["defense", "wheeled"]), "wheeled", "the way of moving is found among the traits")
 	assert_eq(M.way_of(["defense"]), "", "no way of moving is the horde's rule")
 	assert_eq(M.move_word(T.WATER, ["walker"]), "slow", "the word for the codex")
-	assert_true(M.ground_words(T.WATER).contains("packs never enter"), "the terrain tap says what the horde does")
-	assert_true(M.ground_words(T.RUINS).contains("slow for tracked, wheeled, hover"), "the ways grouped by word: %s" % M.ground_words(T.RUINS))
+	assert_true(M.ground_ways(T.RUINS).has(["slow", ["tracked", "wheeled", "hover"]]), "the ways grouped by word: %s" % str(M.ground_ways(T.RUINS)))
+	assert_eq(M.ground_ways(T.MOUNTAIN), [["normal", ["flyer"]], ["wall", ["tracked", "walker", "wheeled", "hover"]]], "fastest first, every way once")
 
 
 func test_spend_ends_the_move_on_a_slow_hex() -> void:

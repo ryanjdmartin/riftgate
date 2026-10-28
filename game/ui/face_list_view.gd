@@ -3,8 +3,9 @@ extends Control
 
 ## Every face of a die in a column: a small face on the left, its description to the right.
 ## The current face is bracketed and drawn bright; the rest are dimmed. Each row opens on the
-## entry's place on its die, a grey Roman numeral as on the die itself. Used by the die's hold
-## readout and by the codex.
+## entry's place on its die, a grey Roman numeral as on the die itself. The codex draws one
+## entry's tile at a time (`tiles_only`), its lines beside it an EntryReadout (26 October); the
+## die's hold shows the entry showing alone (EntryReadout, 25 October).
 
 const ROW := 54.0
 const MINI := 44.0
@@ -13,8 +14,11 @@ const LINE := 19.0        # a description's line height when it takes two
 
 var faces: Array = []     # Face
 var current: int = -1
-var columns: int = 1      # the codex runs two columns; the die readout one
+var columns: int = 1
 var labels: Array = []    # optional, one per face: the component's name above its description
+var first_place: int = 1  # the first face's place on its die
+var tiles_only := false   # the numeral and the tile, no description (the codex's rows)
+var numerals: bool = true # each row's place on its die; off for a list of pieces that are no die (the quick campaign's stores and picks)
 
 
 func _init() -> void:
@@ -49,8 +53,9 @@ func _draw() -> void:
 		var column := i / rows
 		var x0 := float(column) * col_w + offsets[column]      # fill down the first column, then the next
 		var y := float(i % rows) * ROW
-		draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + 1), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
-				Color(Palette.MUTED, 1.0 if i == current else 0.75))
+		if numerals:
+			draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + first_place), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
+					Color(Palette.MUTED, 1.0 if i == current else 0.75))
 		x0 += GUTTER
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current
@@ -88,8 +93,8 @@ func _draw() -> void:
 			Glyphs.draw(self, Glyphs.primary_for(f), rect.position + Vector2(10.0, 10.0), 10.0, col, 1.4)
 			var num := f.number_text()
 			draw_string(mono, Vector2(rect.position.x, rect.position.y + 35.0), num, HORIZONTAL_ALIGNMENT_CENTER, MINI, 13 if f.is_ranged() else 17, col)
-			if f.cracked:
-				draw_line(rect.position + Vector2(6.0, MINI - 6.0), rect.position + Vector2(MINI - 6.0, 6.0), Palette.ENEMY, 1.5)
+		if tiles_only:
+			continue
 		var ink := Palette.INK if cur else Palette.MUTED
 		if i < labels.size() and not str(labels[i]).is_empty():
 			draw_string(mono, Vector2(x0 + MINI + 22.0, y + 21.0), str(labels[i]), HORIZONTAL_ALIGNMENT_LEFT, col_w - GUTTER - MINI - 26.0, 11, Color(Palette.HUD, 0.8 if cur else 0.5))

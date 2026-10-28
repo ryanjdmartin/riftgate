@@ -76,7 +76,7 @@
    "passive": {
     "id": "reinforced_skeleton",
     "name": "Reinforced Skeleton",
-    "description": "Legendary Minervan strength. Components can be cracked but never destroyed.",
+    "description": "Legendary Minervan strength. Its components are never destroyed.",
     "effects": [
      {
       "trigger": "on_injury",
@@ -173,7 +173,7 @@
    "passive": {
     "id": "disabled_regulators",
     "name": "Disabled Weapon Regulators",
-    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, 2 hotter, and goes dark for two rounds. Each attack that kills makes its shots 1 hotter for the fight.",
+    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, and every weapon and equipment it aims at a foe runs 2 hotter and goes dark for two rounds. Each attack that kills makes its shots 1 hotter for the fight.",
     "effects": [
      {
       "trigger": "on_attack",
@@ -286,7 +286,7 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn. A vent or a damaging weapon opens it.",
+    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn. A vent or a weapon opens it.",
     "effects": [
      {
       "trigger": "static",
@@ -730,7 +730,7 @@
    "passive": {
     "id": "ambush",
     "name": "Ambush",
-    "description": "Its hits with a damaging weapon on a foe showing no intent on it lay Vitriol, a stack a hit; at its action the foe loses 10% of its current HP a stack.",
+    "description": "Its weapon hits on a foe showing no intent on it lay Vitriol, a stack a hit; at its action the foe loses 10% of its current HP a stack.",
     "effects": [
      {
       "trigger": "on_attack",
@@ -840,7 +840,7 @@
    "passive": {
     "id": "adaptive_munitions_drum",
     "name": "Adaptive Munitions Drum",
-    "description": "Every weapon it fires leaves the drum as the drum's shot: Indirect, 4, heat 3, with the weapon's own keywords. Aimed at the back rank the shot punches through (Penetrate); aimed at the front rank it sprays (Spread).",
+    "description": "Every weapon and equipment it aims at a foe leaves the drum as the drum's shot: Indirect, 4, heat 3, with its own keywords. Aimed at the back rank the shot punches through (Penetrate 2); aimed at the front rank it sprays (Spread 2).",
     "effects": [
      {
       "trigger": "static",
@@ -855,14 +855,16 @@
       "effect": "grant_keyword",
       "value": "penetrate",
       "when": "target_rank",
-      "rank": "back"
+      "rank": "back",
+      "number": 2
      },
      {
       "trigger": "static",
       "effect": "grant_keyword",
       "value": "cleave",
       "when": "target_rank",
-      "rank": "front"
+      "rank": "front",
+      "number": 2
      }
     ]
    },
@@ -978,7 +980,7 @@
    "tier": 3,
    "design": {
     "fantasy": "Ryan's mobile artillery, 21 October: \"a cross between a Big Bertha, a M270 MLRS, and/or a truck-mounted MEADS launcher. Big. Big wheels. Massive launchers and massive artillery cannons\"; the \"high-tech\" Wainwright & Sutler design, \"where they tried to resolve their inherent bias against energy weapons\". Wide (Ryan: \"Wide is good\"): the old cannon on the centreline, the high-tech guns on flank sponsons, a rack of glowing cells feeding them, the musk ox's ring of horns facing out.",
-    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Spread and Penetrate on every strike."
+    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Splash on every strike."
    },
    "codex": "",
    "hull": 44,
@@ -1008,7 +1010,7 @@
    "passive": {
     "id": "desublimation_forge",
     "name": "Desublimation Forge",
-    "description": "Its damaging guns fire forged ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1. The forge makes 1 each round; a vent it spends on itself adds 3, a shield 2.",
+    "description": "Its weapons fire forged ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1. The forge makes 1 each round; a vent it spends on itself adds 3, a shield 2.",
     "effects": [
      {
       "trigger": "static",
@@ -1027,7 +1029,7 @@
   {
    "id": "lammergeier",
    "name": "Lammergeier",
-   "designation": "K-19 Mk I Tandem-Wing Minelayer",
+   "designation": "K-19 Mk I Flying-Wing Minelayer",
    "maker": "kestrel",
    "tier": 3,
    "design": {
@@ -1061,7 +1063,7 @@
    "passive": {
     "id": "fuse_delayed_bay",
     "name": "Fuse-delayed Bay",
-    "description": "Its weapons may be spent on an empty slot in the enemy's formation, as if a foe stood there. The shot waits there, and whoever steps in takes every shot waiting, in laid order, before it acts.",
+    "description": "Every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, as if a foe stood there. The shot waits there, and whoever steps in takes every shot waiting, in laid order, before it acts.",
     "effects": [
      {
       "trigger": "static",
@@ -1107,7 +1109,7 @@
    "passive": {
     "id": "split_cycle_breech",
     "name": "Split-cycle Breech",
-    "description": "Every weapon the Skua fires strikes twice at half: its number, as rolled, halves, rounded down, and every buff, passive and foe's condition counts on each strike.",
+    "description": "Every weapon and equipment the Skua aims at a foe strikes twice at half: its number, as rolled, halves, rounded down and never below one, and every buff, passive and foe's condition counts on each strike.",
     "effects": [
      {
       "trigger": "on_attack",
@@ -1197,7 +1199,7 @@
    "passive": {
     "id": "quick_turn_avionics_relay",
     "name": "Quick-turn Avionics Relay",
-    "description": "A debuff or a buff is Rapid on the Needletail, once a round.",
+    "description": "Equipment is Rapid on the Needletail, once a round: a buff or a debuff.",
     "effects": [
      {
       "trigger": "static",

@@ -46,11 +46,15 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (a foe action, a passive, a component or a vocabulary term): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
-- Equipment words (decided 18 September): a **component** is one piece of equipment and
-  exactly one entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the
-  model); a chassis's **fixed** components are built in and use no hardpoint; an empty
-  hardpoint is a blank entry, nothing fills it. Shown text never says "face" (the player
-  sees no polyhedron); `Face` is the engine's name for one die entry.
+- Kit words (decided 18 September): a **component** is one piece of kit and exactly one
+  entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
+  chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a
+  blank entry, nothing fills it. Shown text never says "face" (the player sees no
+  polyhedron); `Face` is the engine's name for one die entry. A component is a **weapon**
+  (it deals damage), a **shield**, a **vent** or **equipment** (a buff or a debuff, dealing
+  none; Ryan, 26 October), so text never says "damaging weapon": a trigger is damaging a foe
+  with a weapon, hitting a foe with a weapon, or hitting a foe with a weapon or equipment.
+  The engine's `Kind.ATTACK` is a weapon and a debuff alike (`is_weapon()`, `is_attack()`).
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
@@ -162,3 +166,5 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
+- The quick campaign is an experiment, not a feature (Ryan, 28 October): no decision reads its
+  runs and no balance call cites them, until he says that changes.

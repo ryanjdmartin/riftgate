@@ -23,22 +23,32 @@ skirmish.
   Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
-  order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die, and
-  down the hold and the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
+  beside its name in the hold, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
   undamaged machine is reliable.
-- **Components**: a **weapon** is spent on a foe and need not deal damage; **equipment** (a
-  shield, a vent or a buff) is spent on a machine: itself and allies by default, or self
-  only, or allies only, as its chip says. A component has a number (or none), heat, strikes,
-  up to three authored keywords, and may carry a passive. A **fixed** component is built
-  into its chassis, uses no hardpoint, is never a blueprint and has no tier.
+- **Components** come in four kinds, as the die's main icon shows them: a **weapon** deals
+  damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
+  none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
+  **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
+  default, or self only, or allies only, as its chip says. A passive may make a piece count as
+  a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
+  too there, and the blast is a weapon's hit): the hold shows the kind on the machine, the
+  codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
+  and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
+  component has a number (or none), heat, strikes, up to three authored keywords, and may
+  carry a passive. A **fixed** component is built into its chassis, uses no hardpoint, is
+  never a blueprint and has no tier.
+- **Hits**: a rule reads one of three: damaging a foe with a weapon (its blow dealt
+  something); hitting a foe with a weapon (any blow of a weapon, a blow of 0 included); hitting
+  a foe with a weapon or equipment (anything spent on it, a debuff included).
 - **Rolled or flat**: a rolled weapon shows a range and rolls in it when spent; a flat weapon
   is one number with no roll, however many things feed it (heat fired, missing hull, buffs,
   armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
   its reach. There are no crits and no weapon classes.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
-  the only tags a component may wear) are build flavour shown in the codex only (not built:
-  the codex does not list them yet). A tag carries no rule of its own; a module or passive may
-  read one. Every weapon wears its tags by its fantasy, equipment none, but five locked ones the stock
+  the only tags a component may wear) are build flavour, shown on its hold's last line and
+  beside its name in its codex row. A tag carries no rule of its own; a module or passive may
+  read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today (which
   blows lunge on screen).
@@ -46,7 +56,8 @@ skirmish.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
-  Fitted in the harness only (not in the run yet). Catalogue: `content/modules.json`.
+  Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
+  `content/modules.json`.
 - **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
   starts with every basic's blueprint. Every other component carries its tier, one to three,
   and a chassis stocks only components below its own tier, so a tier-one chassis stocks
@@ -59,7 +70,7 @@ skirmish.
   the Laser Carbine, warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
   bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
   bigger).
-- **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
+- **Damage states**: a component is intact or destroyed, for the whole battle.
 
 ## The skirmish
 
@@ -100,43 +111,44 @@ defeat when every machine is wrecked. There is no round limit.
   lock holds it. The die shows its next entry beside it, and its hold and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
   showing included, the one piece that breaks the reroll rule, so it may land on itself and
-  be spent again. Every sixth weapon spend of the
-  fight counts double, its damage and the stacks it lays; the count shows as six pips under
-  the heat bar, the sixth lit when it is next, and equipment and spins are no shots.
-- **The Quick-turn Avionics Relay** (the Needletail's passive): a setup, a debuff or a buff
+  be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
+  its damage and the stacks it lays; the count shows as six pips under the heat bar, the sixth
+  lit when it is next, and a shield, a vent, a buff and a spin are no shots.
+- **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
   unspent at the round's end are banked, up to three, and spent in a later round like any
   reroll.
-- **Spending**: drag a die onto a target: a weapon onto a foe in reach, equipment onto a
-  machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
+- **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
+  vent or a buff onto a machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
-- **Equipment**: a shield adds its number up to the target's maximum; a vent removes its
+- **On a machine**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
   that shields, the vent first, then the shield, sized on the heat the vent left, so the
   Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Overcharged).
-- **A debuff** is a weapon of no damage (a setter, a swap), spent on a foe in reach like any
-  weapon: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
-  Up, Primed's burn), and its heat is a weapon's. The die's kinds: Direct, Indirect, Debuff,
+- **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
+  weapon is: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
+  Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect, Debuff,
   Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
   debuff the frame with the status mark inside and no number (the crosshair's ring with its
   cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
   down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
   buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
-  weapon as its shot of 4, so a debuff through the drum is a gun.
+  weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
+  weapon.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
   any foe carrying Exposed.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
-  explosives carry Spread and Penetrate is open: no shell carries both, and the Musk Ox's two
-  locked guns do).
+  explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
+  do).
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
   (a Gel's halves step up into it at once, below).
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): its weapons may be spent on an empty slot in
-  the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
+  aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
   to move or carry it. The shot waits there, its number as rolled and modified when laid
   (each strike a shot), with its keywords, behind what already waits; its heat lands now.
@@ -150,15 +162,29 @@ defeat when every machine is wrecked. There is no round limit.
   Volatile acted at the spend. Nothing expires.
 
 ### A blow
-1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
-   the target's missing hull adds.
-2. The attacker's modifiers: adds, then multiplies, then floors.
-3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
-   then loses its armour off it. A damaging weapon's blow takes them whatever it deals, a 0
-   included (the Skua's halved 1); a debuff's blow stays nothing.
+Every foe a strike reaches takes a blow of its own, read in one order:
+1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
+   foe its area reaches, the number of the shape it stands in (Spread's beside the target,
+   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints
+   from its firer: what heat fired adds (Vents all) and the hopper's loads.
+2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
+   the foe read on that foe (a status it carries, its rank).
+3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
+   blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
+   (Shocked doubles it); then its armour comes off. A weapon's blow takes them whatever it
+   deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing. Its riders land
+   on every foe struck.
+- Every blow of a strike is read before any of them lands, so a kill in it (the talons'
+  Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
+  reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
+  any strike lands.
+- A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
+  other foe its keywords reach there, each through its spender's modifiers when it was laid
+  with no foe in hand, then each foe's own as it lands.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
-  each takes half the roll, rounded down.
+  each takes half the roll, rounded down and never below one (a roll of nothing shares
+  nothing).
 - A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
   rolled range by its value before the roll, never past the top; a flat weapon gains
   nothing.
@@ -167,9 +193,40 @@ defeat when every machine is wrecked. There is no round limit.
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
+- **Holding the die** shows the entry showing, alone, its marks as text: its place and name,
+  what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
+  codex, then a line a mark: its number as the die prints it, its heat, its target, then its
+  keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
+  written-out grant's line last, then its tags. A number the live sources moved off the
+  component's own is coloured, green where the change is good for its unit and red where it
+  is bad (more heat, a smaller blow), always relative to the unit and never the player, with
+  its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
+  and its extra strike each say so. No source is listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
+  the pause menu and behind the button under the eye, gives every reach, keyword, rule and
+  status the dice and chips print, with its codex line.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
+- **Holding a machine or a foe** shows it the way the die's hold shows an entry: its name;
+  its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
+  has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
+  armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
+  beside it ("Armour 2 (+1▲)"); every chip on it with what it does, and the round's warnings
+  (an overheat, a wreck, an injury's risk); then a foe's intent a line a mark: its move's name,
+  its blow as it will land read against its own, the machine it is aimed at by name, when it
+  lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
+  and up. A suppressed foe shows no intent.
+- **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
+  effect: its numbers, each its chassis's or its kind's own with the change its loadout and
+  the battle make in a bracket beside it, the change green up or red down with its arrow
+  ("20 (+18▲)"); its passive;
+  its active effects, what else it carries between fights (a module, a battle's reward, a
+  status the battle keeps), each named with its source; then its die in one column, each
+  component a row (its tile, its name, its type as its icon shows it, Weapon, Shield, Vent, or
+  Equipment for a buff or a debuff, and its tags, then the hold's marks joined into three
+  lines: its number, heat and target; its keywords; its own rules and its passive's), at the
+  component's own numbers; a foe's moves the same way, at its own numbers, its last act
+  last; then its lore and its quote.
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (its
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
@@ -188,7 +245,7 @@ defeat when every machine is wrecked. There is no round limit.
   warning (the overheat, an injury, the destroyed chip itself) pulses the same way, a
   prediction like any other. A Lure in hand shows its turn before it is spent: the foes it
   would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
-  the round as the lure would leave it.
+  the round as the lure would leave it (the Siphon's heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
   to 24 heroes, 80 to 100 for the bosses' slate (not built; the four massive foes standing in
@@ -206,16 +263,19 @@ defeat when every machine is wrecked. There is no round limit.
   October by hand at the same scale; placeholders until play.
 
 ### Player keywords
-- **Spread** (id `cleave`): also hits the target's neighbours in its rank.
-- **Penetrate**: also hits the other rank of the target's column.
+- **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N
+  where the target takes the roll (a blow, above).
+- **Penetrate N**: also hits the other rank of the target's column, which takes N.
+- **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
+  number are written Splash. A weapon's area keyword carries its number; a debuff's carries
+  none, its effects reaching those foes and its blow nothing.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
   foes' rider below. The Overclocked Railgun carries it.
-- **Burn** (with a number): each foe hit gains that many stacks of Burning, whatever the
-  blow dealt (Burn 3: three stacks).
+- **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
+  stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
-  machine's hit with a damaging weapon on a foe carrying Cryo spends every stack, whatever the
-  hit dealt, and cools the hitter 2 a stack, after the spend's own heat lands; a debuff spends
-  none.
+  machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
+  a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
@@ -244,9 +304,9 @@ defeat when every machine is wrecked. There is no round limit.
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
-  its machine fires, the Kite's two; the longer stands): once spent, the entry is dark for
-  that many rounds, this one included, shown on the die with the rounds left; the die may
-  land on it, and a dark entry does nothing. No cleanse lifts it, and a crack keeps it.
+  and equipment its machine aims at a foe, the Kite's two; the longer stands): once spent, the entry is dark for
+  that many rounds, this one included, shown on the die with the turns left; the die may
+  land on it, and a dark entry does nothing. No cleanse lifts it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
@@ -265,7 +325,7 @@ defeat when every machine is wrecked. There is no round limit.
   drop it; the second targets light; tap one to spend it; a hold reads as ever; drag the die
   again to move it or set it back.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
-  of Flak after the blow, whatever it dealt (Flak 2: two stacks), so the blow that lays it never
+  of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
 - **Costs** are printed on the entry beside its heat, never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
@@ -275,7 +335,7 @@ defeat when every machine is wrecked. There is no round limit.
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
   condition on its play, and the pattern for any to come.
-- **Cleanse** (equipment, today): the machine it lands on loses Burning, Scorched,
+- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Burning, Scorched,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as
   the fight ends, mid-turn or by a withdrawal, so it never leaves the fight.
@@ -285,15 +345,17 @@ them with a star): **Vents all** fires the whole heat gauge into the shot, addin
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
 then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
 rule, no word of its own): each foe it kills gives its owner a stack of Overcharged. **Missing HP** adds its bonus for every
-step of HP the target is missing, both numbers on the entry (the Coriolis Accelerator: +1 per
-5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
+step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
+modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
+Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
 Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as the
 die is spent and before the spend's own riders, so a spend never opens its own gate; the die
 held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
-lands. Suppress alone carries a gate. **Consumes**: the blow eats every stack of the status the
-entry names on its target and deals a point more a stack eaten, before the multiplies, the
-die over the foe showing the number with the stacks in; one blow on one foe (no strikes past
-one, no area); a mine laid from it eats its arrival's. The Suppression Battery's Suppress is
+lands. Suppress alone carries a gate. **Consumes**: the first blow on each foe it strikes eats every stack of the status
+the entry names on that foe and deals it a point more a stack eaten, after the attacker's
+modifiers and before the foe's own, so an area consumer spikes only the foes carrying the status; the die over the foe
+showing the number with the stacks in; one blow on each foe (no strikes past one); a mine laid
+from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
 prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
@@ -338,7 +400,8 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
+- **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target, a spray's on
+  each strike's own foe; a blow that kills leaves nothing to burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
   a special at every machine passes it by; it still cools by its cooling, and ticks and
@@ -358,8 +421,8 @@ On a machine:
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
 - **Rallied** (buff): the team has one reroll more this round.
-- **Spun Up** (buff): its next weapon spend deals +2 a stack, then every stack is spent, by a
-  weapon of no damage too; carried between turns until a weapon spends it.
+- **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
+  stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
   round for three rounds; it stacks, each grant keeping its own end.
@@ -378,13 +441,13 @@ On a machine:
   the skirmish, never decays, and nothing cleanses it.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
-  a weapon that deals damage opens it; a shield on an ally, a buff and a weapon of no damage
-  leave the form as it is. An ally's vent still cools it. One seal, however many shields.
+  a weapon opens it; a shield on an ally and equipment leave the form as it is. An ally's
+  vent still cools it. One seal, however many shields.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +1 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
-- **Scorched** (debuff, from a foe's scorch): every weapon the machine fires runs 1 hotter a
-  stack, until the end of the player's turn, when every stack goes, so it never piles up.
+- **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
+  foe runs 1 hotter a stack, until the end of the player's turn, when every stack goes, so it never piles up.
   Cleansable.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
@@ -403,9 +466,8 @@ On a foe:
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
-- **Shocked** (debuff): the next team blow of a damaging weapon deals double, spending the
-  shock whatever the blow dealt (a vent's blast and a mine's shot of a damaging weapon too); a
-  debuff leaves it standing; it never stacks.
+- **Shocked** (debuff): the next team blow of a weapon deals double, spending the shock (a
+  vent's blast and a weapon's mine too); equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.
@@ -415,25 +477,25 @@ On a foe:
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
-  either way. It never decays. The Suppressed a Paradox causes adds none; a weapon's
-  Suppressed does.
+  either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
+  keyword's does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
-  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per hit
-  with a damaging weapon, whatever the hit dealt, as its text says; a web or a lure lays none.
+  then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
+  weapon hit, as its text says; a web or a lure lays none.
 - **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
   this round's action, or with none standing there its left-hand one, which has acted and
   loses its next (Numbed may resist, each for itself; a foe already suppressed gains nothing,
-  as from any second suppress; each half feeds the Paradox as a weapon's Suppressed does).
+  as from any second suppress; each half feeds the Paradox as the Suppress keyword's does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
-- **Cryo** (debuff): a hit on it with a damaging weapon spends every stack, whatever it dealt,
-  and cools the hitter 2 a stack; a debuff spends none. It never fades on its own.
-- **Flak** (debuff): every blow of a damaging weapon it takes deals a point more a stack, a
-  blow of 0 included, before its multiplies and its armour (a Shocked foe takes blow plus Flak,
-  doubled); a debuff's blow stays nothing. The stacks halve at the end of each round, rounded
+- **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
+  equipment spends none. It never fades on its own.
+- **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
+  multiplies and its armour (a Shocked foe takes blow plus Flak, doubled); a debuff's blow
+  stays nothing. The stacks halve at the end of each round, rounded
   down.
 - **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,
   and its next move hits harder by the rally's value, an add before the move's factor as
@@ -466,8 +528,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0), and
-  Armoured adds to it (a brace: buff equipment, the Breaching Plow, the Siphon) until the
-  round's end, the Armadillo's seal until a vent or a damaging weapon opens it.
+  Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
+  round's end, the Armadillo's seal until a vent or a weapon opens it.
   Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
@@ -481,7 +543,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
-- **Ammo** (the Musk Ox's Desublimation Forge): its damaging guns spend ammo instead
+- **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
@@ -490,26 +552,27 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
-  live foe with Spread and Penetrate, the magazine its price and no heat; its quick reload,
+  live foe with Splash, the magazine its price and no heat; its quick reload,
   Rapid, adds 2 for 3 heat, and the Forge counts it as no vent.
-- A piece of equipment that prints heat (the quick reload) adds it to its spender as it is
-  spent.
+- A shield, a vent or a buff that prints heat (the quick reload) adds it to its spender as it
+  is spent.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it
-  or a cleanse takes it off; Scorched, the softer, heats only the weapons the machine fires
-  in the turn that follows, so equipment or a cool weapon plays round it. A foe's burn leaves Burning and its scorch
-  leaves Scorched, a stack a blow; the Drake's Stoke sets the hottest machine burning, and
+  or a cleanse takes it off; Scorched, the softer, heats only the weapons and equipment the
+  machine aims at a foe in the turn that follows, so a shield, a vent, a buff or a cool weapon plays
+  round it. A foe's burn leaves Burning and its scorch
+  leaves Scorched, a stack a blow; the Drake's Stoke sets one machine burning, picked as its
+  target is (at random since 24 October: no foe but the Black Mage carries the heat aim), and
   the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
   machine.
 
 ### Injury
-- A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
-  its hull (a breach's whole blow included) rolls the machine's die: an intact entry cracks, a
-  cracked one is destroyed, a blank shrugs it off. A shield absorbs its share first and what
-  reaches the hull counts; a Barrier's blow never does. Bites and overheats never injure.
-- **Cracked**: keeps its number, heat, cooldown, action and passive; loses its keywords.
+- A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
+  hull (a breach's whole blow included) rolls the machine's die: the entry it lands on is
+  destroyed, a blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
+  Barrier's blow never does. Bites and overheats never injure.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
-  Badger's components are never destroyed.
+  Badger's components are never destroyed, so an injury passes it by.
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
@@ -526,7 +589,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
   aim, as its threat calls for: exposed (weighted by the hull its blows would reach
   plus half the shield they would break), heat (the hottest machine), armed (a machine
-  showing an intact weapon, the exposed when none does), focus (its rank shares one pick),
+  showing an intact weapon or debuff, the exposed when none does), focus (its rank shares one pick),
   buffed (the machine carrying the most stacks of buffs, the exposed when none does). The
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
@@ -572,12 +635,15 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
-  on it bursts at the end of its action, skipped or not.
+  on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or Phased) loses its blow
+  alone: its countdown gathers, a special on its own side acts, and the turn goes on to the foes
+  after it.
 - **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), standing as a
   pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
   opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
-  that reaches the slot (Spread, Penetrate, a mine's) reaches both halves, aimed at one of them
-  or beside; a single-target blow, a Spillover included, the one it is spent on. The slot is
+  that reaches the slot (Spread, Penetrate, Splash, a mine's) reaches both halves, aimed at one
+  of them or beside, each half taking the number of the shape it stands in (the aimed half's
+  twin the row's, or the column's when the entry reaches no row); a single-target blow, a Spillover included, the one it is spent on. The slot is
   full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
   while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
   Swap moves the pair together and never swaps a half with its twin. When one falls the other
@@ -595,8 +661,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   shows how many wait for each rank, and the massive ones apart, in its right gutter.
 
 ### Withdrawal
-Open at any point of the player's turn, but in the boss's fight, which ends in the boss's fall
-or the team's. Withdrawing ends the turn, so heat over the maximum
+Open at any point of the player's turn, but in the boss's fight, which ends in the boss unit's
+fall, escort and all, or the team's, and in the quick campaign, which has none. Withdrawing ends the turn, so heat over the maximum
 burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
 not run, but shield past the maximum fades as the fight ends. Kills stay counted, machines
 keep their damage and shields do not refill; a pack keeps its own survivors, who return whole
@@ -608,40 +674,49 @@ and every one of them that fell is a kill).
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, chains and spills included). No trigger feeds itself.
-- A passive may double a weapon's printed number before its buffs, what the entry prints
-  included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
-  after it (the Kite's), and may grant a cooldown to every weapon its machine fires. It may
-  split every damaging weapon instead (the Skua's): the weapon strikes twice as often, each
-  roll, what the entry prints included, divided between the two strikes, rounded down, and
+  this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
+- A passive may double a weapon's printed number before its buffs, on every blow, what the
+  entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
+  added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
+  it) after those, undoubled (the Kite's), and may grant a cooldown to every weapon and equipment its machine
+  aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
+  each strikes twice as often, each
+  roll, what the entry prints included, divided between the two strikes, rounded down and
+  never below one, and
   every buff and the foe's conditions counting on each strike, its armour too; the die shows
   a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
   fires twice all the same, its riders landing on each strike (a Web, a Lure, a Disrupt, a
   Shock, an Expose and a Swap still land once a spend).
-- Conditions: the component is cracked; the weapon is rolled; the reach is direct or
+- Conditions: the weapon is rolled; the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
   when aimed at another machine, Suppressed, or on a special that acts on nobody in
   particular; read at the spend, before the spend's own riders, each foe reached judged
-  alone); the rank the spend is aimed at (the Cottonmouth's), and on an attack's own effects its
-  reach with it (the Ram Frame's Direct blows at the front rank, the Artillery Rangefinder's
-  Indirect blows at the back, a point each); the striker carries a status (the Prairie Dog's fight
+  alone); the rank the spend is aimed at (the Cottonmouth's grants, judged on the aim), and on
+  an attack's own effects the rank of each foe struck with the spend's reach beside it (the Ram
+  Frame's Direct blows at the front rank, the Artillery Rangefinder's Indirect blows at the
+  back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 1 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
   the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
-  included, unless the passive's text asks for a damaging weapon's hit (the funnel-web's
-  Vitriol).
+  included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
-  changed is what is spent, shown and weighed, while the die keeps the real one. The
-  Cottonmouth's replaces every weapon's shot whole, first, under every other change (Indirect,
-  a flat 4, heat 3, one blow, Ballistic, the weapon's keywords, rules and tags kept),
-  Penetrate when aimed at the back rank and Spread at the front, shown on the die over the foe
+  changed is what is spent, shown and weighed, while the die keeps the real one. A numbered
+  keyword's grant says its number, and on an entry already carrying the keyword the grant's
+  number replaces the entry's own (the drum forces the weapon into its shape, and adds only the
+  keywords and effects it lacks). The
+  Cottonmouth's replaces the shot of every weapon and equipment it aims at a foe whole, first,
+  under every other change (Indirect,
+  a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
+  Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
   it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
-  live foe, back rank included, for the heat it took off, as its own blow through the
-  pipeline, the foe's Flak, Shocked and armour applying (a vent on an ally blasts nothing, an
-  ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
+  live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
+  that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,
+  its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a drone's
+  mine, the machine's kill trigger), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
+  an ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in
@@ -689,6 +764,12 @@ a stat.
   regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
   is ordered, is caught, or can neither move nor reach a pack where it stands, the button
   pulses.
+- **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
+  it in the strip under the map, as the fight's holds read: a machine's shield and hull as
+  gauges, its move and actions left, a chip for its damaged components; a pack's foe and
+  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground's
+  word for each way of moving, a line a word, and whether packs enter it. A refused order
+  says what stopped it there too.
 - **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
   range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
   second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
@@ -716,17 +797,28 @@ a stat.
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
 - **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
-  be attacked from the first turn; its death wins the battle. A fight it is in, ordered onto
+  be attacked from the first turn; its fight won wins the battle: the fight ends in victory
+  only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
+  commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
+  smallest boss, a final's hero, gets cheaper still). A fight it is in, ordered onto
   it or joined by its ring, takes every machine, wherever it stands and whether or not it has
   fought this turn; nothing moves first (ENGAGE goes straight to the reveal) and nobody
   withdraws, so it ends the battle. The unit at the rift commands
-  it: the lead domain's boss, a final's hero with its escort (the domain's first pack's foe,
-  one for each other column), or the finale's line; it stands while one of its commanders
-  does and holds the rift whatever its escort.
+  it: the lead domain's boss, a final's hero with its escort (one for each other column), or
+  the finale's line; it stands while one of its commanders does and holds the rift whatever
+  its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
+  to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
+  finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
+  ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
+  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
+  of the tier (a unit's tier is content's, one by default), else of the highest tier under it,
+  round robin in spawn order and never massive; a named escort is kept. The rank and file never
+  scale; the spawn lists do not read a unit's tier yet.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
-- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss dies
-  (every commander of the unit at the rift).
+- **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
+  falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
+  fall is a wipe.
 - Not built: city defences, the Rupture meter and its Fractures, the sealed boss, rift tiles.
 
 ## The campaign
@@ -754,10 +846,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
-- **After a battle**: hull and cracks mend free; a destroyed hardpoint component is gone, a
-  destroyed fixed one rebuilt; a wreck also loses its cracked components and sits out the next
-  turn unless rushed (100 Favour). Fitting and stripping are instant; the capital's gate
-  repairs at 5 salvage a point.
+- **After a battle**: hull mends free; a destroyed hardpoint component is gone, a destroyed
+  fixed one rebuilt; a wreck sits out the next turn unless rushed (100 Favour). Fitting and
+  stripping are instant; the capital's gate repairs at 5 salvage a point.
 - **Turn end**: each unfought open rift bleeds its city 50 (falling it at zero); each fallen
   city drains the capital 25; the Convergence rises 1; rifts open at standing cities that are
   not quiet, up to 2 + tier (tier = the Convergence ÷ 4, rounded down, so two rifts at first,
@@ -774,7 +865,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   at a standing city around the capital turns final at once, and every rift it leads after is
   one, fought
   against the domain's dealt hero in its rank with the domain's wildlife beside it; it is won
-  when the hero falls, and a won final beats the domain: it leads and guests no new rift (a
+  when the hero's fight is won, the hero and its escort down, and a won final beats the domain: it leads and guests no new rift (a
   rift it already guests keeps it), and every rift it leads at a standing city around the
   capital closes at once, a free reprieve: that city opens no rift next turn, its gate stays as it stood (only a win
   restores one) and nothing is paid. The finale is due at Convergence 12,
@@ -791,6 +882,44 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   far).
 - Not built: building from blueprints, offers, procurement, loot on the map, modules in the
   run, Sponsorship, livery, the mission map, draft and hangar screens.
+
+## The quick campaign
+
+A run of battles with no map and no cities, Slice and Dice's flow (`sim/quick_run.gd`; the
+harness's Quick campaign). The campaign's rules hold where this part says nothing.
+
+- **Start**: three different tier-one chassis, picked freely from every one the engine can
+  field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
+  dealt as in the campaign. The eight basics are free and without limit.
+- **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
+  drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
+  Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
+  elites: a formation first, then elites and formations in turn, the elites left over at the
+  end. Then the boss with its formation and the tier's escort, at the tier's numbers, as the
+  campaign's boss unit stands: one of the lead's bosses its battles have not ended on this run,
+  or from tier two its final, its dealt hero leading the lead's formation, drawn as one more
+  boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
+  fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
+  whose final was won leaving its column to a standing domain's boss, as in the campaign.
+- **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
+  turns. **An elite**'s slot holds the lead's formation alone until the elites land (the
+  bench hero that stood in went on 27 October).
+- **A fight** takes the squad's machines still standing, their damage carried and their heat
+  from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
+  before the next; a wipe ends the run.
+- **The boss's fall**: the campaign's after-battle rule without the shop (hull mends; a
+  destroyed hardpoint component is gone, a destroyed fixed one rebuilt). Then, each one of three
+  and one taken: a loot pick for each fight before the boss (components and modules: a tier-one
+  battle's of tier one; a tier-two's of tiers one and two, a tier three now and then; a
+  tier-three's mostly tier two, tier three oftener); the boss's token, components of the
+  battle's tier, its modules filling in where it has fewer than three (tier three has two); and
+  an offer from a maker drawn from all five: a chassis of its own at or under the battle's tier
+  that the roster lacks (bringing its stock), a component of the tier (else the highest under it
+  the maker makes) and a module at or under it.
+- **The hangar**, between battles only: up to four machines of the roster, in the order they
+  deploy; any component from the stores on any hardpoint and any module in any slot, what comes
+  off going back to the stores.
+- The run saves after every change and resumes where it stood, a fight under way included.
 
 ## Content conventions
 

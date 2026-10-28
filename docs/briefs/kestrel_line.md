@@ -92,15 +92,15 @@ One pointer each; the proposal is in the brief named.
   21 October): the Storm Petrel, a hovercraft at 50, the kit as written; the burn is every
   shot's, through the passive, and the lock the lure alone.
 - **The interceptor** had no kit; its first Ryan read as thin and its second as possibly
-  overdesigned with a good nugget (20 October). The third: a weapon of no damage is Rapid once
+  overdesigned with a good nugget (20 October). The third: a debuff is Rapid once
   a round, so every control piece of every maker is a cantrip on it; its lock the designator,
-  a weapon of no damage with Indirect reach that paints a foe for the team's Direct guns this
+  a debuff with Indirect reach that paints a foe for the team's Direct guns this
   round; the dive's price benched; a tilt-jet. The fourth round (late that day): the mark is
   Exposed, the game's own word (the vocabulary's formation entry, the engine's one reach
   check), reach alone, its on-hit half declined as Flak's kind and the armour clause benched;
   the gate widened to buffs, the die's glyph deciding (a shield or vent that also buffs wears
   a chip and is excluded); the foes' aim word flagged for renaming. The fifth: Ryan took
-  Exposed as reach and armour counting for nothing, and no number on a weapon of no damage;
+  Exposed as reach and armour counting for nothing, and no number on a debuff;
   the duration evaluated (the round's, as Expose 1; a foe's statuses tick at its turn whether
   it acts or skips, so "until it acts" buys nothing) and his die kinds answered (Direct,
   Indirect, Debuff, Buff, Shield, Vent, the blank a drawing; the Debuff glyph wears its reach;
@@ -132,7 +132,7 @@ One pointer each; the proposal is in the brief named.
   Kite row; its brief retired to git). The to-do's stock pass line and the bible's
   stock-pass row moved with the go.
 - **The bomber**'s go (Ryan, 21 October): the Lammergeier since that evening (the Magpie
-  before, the name moving to the support engine), a heavy tandem-wing flyer; its mark the
+  before, the name moving to the support engine), a heavy flyer, a flying wing since 27 October (the tandem wing of its go ditched); its mark the
   Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,
   else gives it Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
   mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
@@ -379,7 +379,7 @@ The bench for either, one line each:
 
 - Designations, in Kestrel's pattern (the codex's stamped tag, so shown text): K-13 Mk I
   Swing-Wing Strafer, K-15 Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet
-  Spotter (the interceptor), K-19 Mk I Tandem-Wing Minelayer (the Magpie), K-21 Mk I
+  Spotter (the interceptor), K-19 Mk I Flying-Wing Minelayer (the Magpie), K-21 Mk I
   Ground-Effect Flagship (the Giant Petrel, beside the Puffin's Ground-Effect Escort). The
   Kite keeps K-7 and takes Mk IV with its rework, so its Interceptor parts from the new
   machine's Spotter.
@@ -422,7 +422,7 @@ Decided:
   kept (the Kite).
 - **Designations** (Claude's, on Ryan's word): K-13 Mk I Swing-Wing Strafer (the Skua), K-15
   Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet Spotter (the Needletail),
-  K-19 Mk I Tandem-Wing Minelayer (the Lammergeier), K-21 Mk I Ground-Effect Flagship (the
+  K-19 Mk I Flying-Wing Minelayer (the Lammergeier), K-21 Mk I Ground-Effect Flagship (the
   Giant Petrel); the Kite K-7 Mk IV with its rework.
 - **The stock pieces** (Claude's, on Ryan's word): the Cyclic Cannon, the Transonic Rifle,
   Trim Tabs (the stock holes above).

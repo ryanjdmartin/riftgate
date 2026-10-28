@@ -35,7 +35,7 @@ Every number a placeholder; the name and the look Ryan's.
   again. One line. Each pass pays its weapon's heat; nothing else limits it but the rerolls,
   three a round and never banked. The rules it bends: a die is spent once a round, and a
   reroll touches only unspent dice. It reads the team's rerolls, which nothing reads.
-- **The throttle**, its lock: equipment on itself, Rapid with a cooldown of one, heat 20: the
+- **The throttle**, its lock: spent on itself, Rapid with a cooldown of one, heat 20: the
   team gains a reroll this round. The maverick pushes the engines, so a pass can be bought
   with heat, and the overheat at the end of the turn is the accident.
 - **The round, as played.** Roll. Spend rerolls on the team's dice if they need it. Spend the
@@ -107,7 +107,7 @@ Every number a placeholder; the name and the look Ryan's.
   alike; the growth resets as the round opens. The roll is the bet: lock the die and keep what
   shows, or leave it unlocked and let it ride the team's rerolls, each one a new entry (never
   the one showing) and 10 more. **The throttle**, a lock: Rapid with a cooldown of one, heat
-  10, equipment on itself that does nothing but roll the die again (a roll, so 10 more) and
+  10, spent on itself, doing nothing but roll the die again (a roll, so 10 more) and
   act again: the maverick's own push, once a round, free of the team's rerolls. **The main
   battery**, a lock: rolled 10 to 30, Direct, heat 10, counting the round's growth twice, dark
   for two rounds after it fires, so the die carries a bust face while it reloads (a roll onto
@@ -207,8 +207,8 @@ Every number a placeholder; the name and the look Ryan's.
   by its pieces, but the machines that want Rapid most are other makers'. The platform's claim
   to make the weak Rapid pieces good is shared with the Cassowary (a Rapid piece steps it to
   its double) and the line frame (fuel), in three shapes (growth, stepping, combo), which is
-  Ryan's rule; the levers if it crowds: the platform as the home of multi-hit equipment rather
-  than the Rapid chaser, or its growth counting team rerolls only.
+  Ryan's rule; the levers if it crowds: the platform as the home of multi-hit shields and vents
+  rather than the Rapid chaser, or its growth counting team rerolls only.
 
 ## The fifth round (20 October)
 
@@ -253,7 +253,7 @@ Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
   held, and spent like any reroll in a later round; and each time its die rolls again in a
   round, every entry on it grows by 10 for the round, on every strike. The own free reroll
   leaves the passive for the Kestrel reroll module (one idea a passive). The second lock, the
-  launch (working name): equipment on an ally, heat 10, and that ally's die rolls again now,
+  launch (working name): spent on an ally, heat 10, and that ally's die rolls again now,
   a plain roll never onto the entry showing, the mothership relaunching a jet; a spend that
   gives a look instead of cashing the growth. Four hardpoints, a d6, fewer guns than the
   bench of six: its guns are bets, and the capital's work is the economy. A hover, assault:
@@ -330,7 +330,7 @@ end are banked, up to three held, and spent in a later round like any reroll. Th
 banked or fresh, may be spent on an ally whose die is spent: its die rolls again and it acts
 again.
 
-**The first lock, the launch** (working name): equipment, allies only: a shield of 20, and
+**The first lock, the launch** (working name): a shield, allies only, of 20, and
 that ally's die rolls again now, never onto the entry showing. A look with a bubble.
 
 **The second lock, the flare** (working name): a vent of 20 on itself, and the team gains a
@@ -402,7 +402,7 @@ pace with it.
     is the decision: roll for the Hot-Pit, or bank for it. On the screen: drag the Petrel's die
     onto a spent ally; the ally's spent die lights as the target, the counter drops by three,
     the ally's die flips and it acts.
-  - **The roll, the launch** (support; as the seventh round): equipment, allies only, a shield of
+  - **The roll, the launch** (support; as the seventh round): a shield, allies only, of
     20, and that ally's die rolls again now, never onto the entry showing: a look with a bubble
     for the ally whose roll is bad, the pool untouched. A full action of the Petrel.
   - **The team rerolls, the battery** (offensive; a working name: the ekranoplan's launchers on

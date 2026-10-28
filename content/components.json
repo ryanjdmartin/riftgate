@@ -1,5 +1,5 @@
 {
- "_about": "Components: the equipment a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the kit a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -21,6 +21,7 @@
     "keywords": [
      "cleave"
     ],
+    "cleave": 2,
     "heat": 0,
     "fills_hopper": 1
    },
@@ -155,6 +156,7 @@
     "keywords": [
      "penetrate"
     ],
+    "penetrate": 3,
     "heat": 2
    },
    "passive": null,
@@ -544,7 +546,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A siren and a strobe on a plate of armour. Everything in earshot comes for it.",
-    "niche": "The accessible lure (damage redirection is common, never a tank's lock): an Indirect entry of no damage with Spread, so a rank turns on its machine for the round."
+    "niche": "The accessible lure (damage redirection is common, never a tank's lock): an Indirect debuff with Spread, so a rank turns on its machine for the round."
    },
    "face": {
     "kind": "attack",
@@ -571,7 +573,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
-    "niche": "The Armadillo's locked pair: an Indirect weapon of no damage with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's hit with a damaging weapon spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
+    "niche": "The Armadillo's locked pair: an Indirect debuff with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
    },
    "face": {
     "kind": "attack",
@@ -612,6 +614,7 @@
     "keywords": [
      "cleave"
     ],
+    "cleave": 2,
     "heat": 0,
     "braces": 2
    },
@@ -641,6 +644,7 @@
      "cleave",
      "flak"
     ],
+    "cleave": 1,
     "flak": 1,
     "heat": 0
    },
@@ -1143,7 +1147,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A probe lobbed into the formation. Whatever the thing it lands beside was about to do, it now differentiates.",
-    "niche": "The first Disrupt in the pool: an indirect entry of no damage that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship."
+    "niche": "The first Disrupt in the pool: an indirect debuff that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship."
    },
    "face": {
     "kind": "attack",
@@ -1193,7 +1197,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "It projects polarity. Nobody at Aphelion will say what that means, and the next thing to hit the target hits twice as hard.",
-    "niche": "The first Shock: a line entry of no damage that sets up a doubled blow for the team; Shocked is a status, so it feeds the Baboon's Pocket Paradox."
+    "niche": "The first Shock: a line debuff that sets up a doubled blow for the team; Shocked is a status, so it feeds the Baboon's Pocket Paradox."
    },
    "face": {
     "kind": "attack",
@@ -1601,17 +1605,17 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Splash), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 1,
     "keywords": [
-     "cleave",
-     "penetrate",
+     "splash",
      "flak"
     ],
+    "splash": 1,
     "flak": 1,
     "heat": 2,
     "ammo_per_foe_hit": 1
@@ -1631,16 +1635,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
-    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
+    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Splash, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
     "keywords": [
-     "cleave",
-     "penetrate"
+     "splash"
     ],
+    "splash": 1,
     "heat": 0,
     "spends_magazine": true,
     "random_targets": true
@@ -1932,6 +1936,7 @@
      "cleave",
      "flak"
     ],
+    "cleave": 1,
     "flak": 1,
     "heat": 1
    },
