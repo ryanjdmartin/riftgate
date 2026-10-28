@@ -21,9 +21,10 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 709 tests, 65,920 checks, green on main's head (27 October, after the review's five
-  merges, run in the cloud session once Ryan allowed its download of Godot), about a minute in a
-  cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 709 tests, 65,962 checks, green on `ccr-7821127e-kwj874` (28 October, the movement
+  landing), about forty seconds in a cloud session; one skirmish test calls a function that no
+  longer exists and the runner still counts it passing (`tests/test_skirmish.gd`, its
+  `equipment_targets_for`; the to-do). A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,6 +34,9 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`ccr-7821127e-kwj874` (28 October) holds the movement landing (moves in hexes, the proposal, its
+build and its records) beside main, for Ryan to merge.
 
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
@@ -77,16 +81,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
-- Map movement (Ryan, 27 and 28 October: the move points and the terrain table "add confusion and
-  overhead for no strategic gain"; his calls, movement in hexes with binary ground, a move in one
-  go, the crossing priced by the pricing run, winged packs crossing, a hunter that cannot ring
-  its prey picking again; his seven calls of 28 October made: water the one priced ground at two of
-  a ground machine's move, hover walled by crags, the moves as tens over ten, the five map types
-  standing until his six shapes land, the winged five, the Kestrel hovers amphibious, the re-pick
-  holding): `docs/movement_proposal.md` is the build spec, the rule, the build file by file, the
-  content with every move listed, the tests and the records; its section 10 is the map shapes, a
-  generator session after it. Built in a session of its own next. Nothing in the engine or the
-  content has changed.
+- Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
+  confusion and overhead for no strategic gain"; landed 28 October on `ccr-7821127e-kwj874`, the
+  proposal retired with it): a move is a count of hexes given in one go, ground is ground, water
+  the one priced hex (two of a ground machine's move, always enterable with what is left), crags
+  the flyer's; the five winged foes cross both, and a hunter that cannot ring its prey picks
+  again; the gauge and the stop sign gone (the bible's section 4 rows, v0.328). Measured the same
+  day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
+  reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
+  bands hold, its three-machine battles won more (a direction: the squad no longer split by
+  slow ground). Next for the map: the six shapes (`docs/briefs/map_shapes.md`, three questions in
+  section 12) and the crossing's price in the pricing run (the to-do).
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
@@ -209,7 +214,8 @@ to-do's Ryan list). First: the three reports rerun on main's head (the to-do's f
 line), since no number read since 22 October was read on the content as it now stands.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content.
+   retired once its decisions are rows and content; the map shapes' generator session among
+   them once Ryan has answered its brief.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's

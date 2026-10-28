@@ -284,6 +284,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
 | `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
+| `map_shapes.md` | direction (Ryan, 28 October: the five map types reworked into six shapes, a river, a fjord, badlands, open steppe, a ruined city, a gorge); Claude's read and three questions in the brief | the battlefield | none | Ryan's three answers, then a generator session of its own (the movement rule it builds on landed 28 October) |
 | `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), retired 23 October (`git show a550c2e:docs/briefs/stock_pass.md`): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method | all | 0 to 3 | nothing here: the name pass and the pricing run are the to-do's |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward

@@ -1919,3 +1919,41 @@ number a piece, Spread N and Penetrate N, the neighbours taking N before their o
 armour, Claude's lean: the bible's own exit ("the lever is its number") made the rule, no
 rounding, each carrier's price its own (the drum's and the Beam's 4 spreading 2 or 3, the Claw's
 and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbers content's.
+
+## 28 October, movement in hexes
+
+The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
+count of hexes, ground is ground, water the one priced hex, a move in one go, winged packs, a
+hunter picking again), measured on the landing's head.
+
+**The map survey** (`tools/map_survey.gd`, 200 seeds, `docs/map_survey.md`). The maps are the
+same maps: every ground's share, the water, the horde's crossings and its route are unchanged
+seed for seed, since the generator reads only the horde's rule, which is unchanged. Phases to
+the rift from the best lane at move 3 (move 30 on 8 October): every way of moving 6.0, where
+wheels took 3.8 (their fast open ground) and hover 5.6; the packs 8.0 at their 2, as before.
+Reach after two phases at the survey's reference moves (tracked 3, walker 3, wheeled 5, hover 4,
+flyer 5, the moves of 8 October in hexes): tracks 32% (31), walkers 32% (32), wheels 52% (61),
+hover 44% (38), flyers 62% (62); making the horde's narrowest crossing by phase two, tracks 32
+of 200 maps (30), walkers 32 (32), wheels 113 (166), hover 60 (69), flyers 115 (115). The map types at move 3 read the same
+way (every phase count 6.0; reach on Badlands the lowest for the ground ways, 29/29/48/40/62,
+and Flooded 33/33/55/47/62). Read: the trip north no longer reads the way of moving at all,
+and reach is the move and the walls: the ground ways read alike at equal move, hover above
+them by the water it crosses, the flyer above hover by the crags, which is the order the rule
+sets. Wheels lose the most (their fast ground was the one large difference the table made);
+hover gains rough and ruins and loses its fast water, so it reaches more of the field and makes
+the crossing on a few maps fewer. A note on the method: the survey's reach is at its reference moves
+because its reader of the content's moves looks for a `chassis` key the file no longer has (it
+holds `entries`), so it has fallen back to those moves since before 8 October; the content's
+biggest moves are walker 4 and hover 5.
+
+**The campaign run** (`tools/campaign_run.gd`, 40 runs from seed 1, the greedy rung,
+`docs/campaign_run.md`), against the 27 October run on the merged head. The bands hold: no run
+won (none before), 38 of 40 reach the finale (39), 399 battles won 7% (7%), held after a wipe
+62% (62%), fell 30% (29%), 92% ending in a team wipe (92%). One cell moved past its band: the
+three-machine battles, won 54% of 50 (36% of 57). The fights inside them say why: lone fights
+in a three-machine battle fell from 42 to 17 and fights with two of three rose from 35 to 61,
+since no slow hex splits the squad as it walks onto a pack (the bot moves the squad as one onto
+the nearest pack, and under the table a walker stopped in water or tracks in ruins arrived a
+turn behind). Components destroyed per battle 0.65 (0.49) and hardpoints filled at the end 48%
+(59%) moved the other way, more machines being in the fights that hurt; wrecks rushed 23 (36).
+A direction at 40 runs, not a band: the rule's effect on a squad moving together, not a bug.

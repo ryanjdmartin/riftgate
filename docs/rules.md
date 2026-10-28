@@ -717,17 +717,17 @@ a stat.
   horde a crossing three hexes wide or more and one water feature (a river with fords, or a
   lake band); the two rows before the gate are never water or crags. Five map types: Mixed
   Ground, Open Steppe, Rubble Field, Badlands, Flooded. Height is landscape; no rule reads it.
-- **Ways of moving** (each chassis has one): a fast hex costs 5, a normal hex 10; a slow hex
-  takes whatever move is left and ends the move (lit with a dashed edge and a stop sign);
-  crags are walls except to flyers. Tracked:
-  ruins slow. Walker: water slow. Wheeled: open fast; rough, ruins and water slow. Hover:
-  water fast; rough and ruins slow. Flyer: everything normal. Machines never enter or cross
-  another unit's hex.
+- **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
+  way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
+  and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
+  everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
+  always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
+  Crags are a wall to all but a flyer. Machines never enter or cross another unit's hex.
 - **Setup**: up to four machines on the row before the gate; the lead domain's spawn list as
   packs three to five rows below the rift; the boss one row below the rift.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): move, in pieces if
-  wanted, then may fight; a fight ends the action however it ends. A selected machine lights
+  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
+  then it may fight; a fight ends the action however it ends. A selected machine lights
   the hexes its move reaches, and in red the hexes past them within its attack range: where it
   could attack from. A move is planned: its route shows from where the machine stands, and the
   next move or order reads from the route's end. UNDO takes back the last move or order,
@@ -741,8 +741,8 @@ a stat.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's foe and
-  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground's
-  word for each way of moving, a line a word, and whether packs enter it. A refused order
+  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground:
+  who crosses it, who wades it and who cannot, and whether packs enter it. A refused order
   says what stopped it there too.
 - **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
   range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
@@ -752,9 +752,10 @@ a stat.
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
   it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
   Pressure does not tick: it ticks on the map alone.
-- **Packs**: one foe type times a strength. They treat every land hex as normal and water and
-  crags as walls; moves 20 (fast 30, massive 10); rings 1 (front rank), 3 (back rank), 2
-  (massive). They walk round machines and other packs; the walk shown is the walk played. The
+- **Packs**: one foe type times a strength. They cross every land hex and never enter water or
+  crags; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb, the Drake)
+  crosses both as a flyer does and may stand there; moves 2 (fast 3, the Thief 4, massive 1);
+  rings 1 (front rank), 3 (back rank), 2 (massive). They walk round machines and other packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
@@ -762,11 +763,14 @@ a stat.
   the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
   hunter with the hunter's picture and a target. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
-  move first, others in range may join.
+  move first, others in range may join. A hunter whose prey stands where no hex it can reach
+  puts it inside its ring (a flyer over crags, a hovercraft out in a lake) picks another by its
+  caveat among the machines it can reach, and the new lock holds; with none to pick, it walks
+  as near as it gets.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
   it are lifted in place when it moves and travel as a ring round it, so they never block its
-  way; it lands them as a block, each where it rode from the carrier, keeping whatever move and
-  action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
+  way; it lands them as a block, each where it rode from the carrier, keeping their action, and
+  their move if they have not moved. A stop where a rider would land on a hex it cannot stand on (off the field,
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
