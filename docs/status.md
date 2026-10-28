@@ -183,7 +183,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
   the stock pass had left on old kit), to judge running (the to-do). A model may hold a form
   while its machine carries the status of the same name (the Armadillo's seal;
-  `RIFTGATE_SEAL_DEBUG=1`). Since 25 October every machine's parts are welded at load by material
+  `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -342,28 +342,29 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.343 (the
-  page's version 355, published 28 October from `ccr-7821127e-kwj874`: the movement rows of
-  section 4, the scales row's move and the silhouette row with them, section 12's built list and
-  the shapes' questions at v0.342 (version 354, onto main's v0.341 unchanged), then the hero
-  row's map line). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.344 (the
+  page's version 356, published 28 October from `claude/charming-rubin-h954bp` onto main's
+  v0.343 unchanged: the mounts' record and width, the rebuilds' settled looks, the Armadillo's
+  seal, the Whip Scorpion's legs, the Kite's two hits in section 12, and the lines they
+  superseded). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). With every branch landed, the file holds no rows ahead
-  of code, and the tables script may run freely again.
+  stripped from the saved live source). Until `claude/charming-rubin-h954bp` lands, the live page
+  holds its rows ahead of main's code (the model rebuilds), so a session on main merges onto it
+  rather than publishing main's file; the tables script may run freely (its tables came out
+  unchanged on the branch).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 140 (28 October, from
-  `ccr-7821127e-kwj874`: at 139, onto 138, moves in hexes in `content/chassis.json`,
-  `content/foes.json` (its thirteen winged foes with them), `content/modules.json` and
-  `content/vocabulary.json`, the motion port's pace keyed by hexes and the codex's move a plain
-  count; at 140 `content/foes.json` again, the heroes without a move and the wolves at 4, and
-  the foe line shown without a move it lacks; every other file identical to the live page's,
-  `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 141 (28 October, from
+  `claude/charming-rubin-h954bp`, onto 140 unchanged: the thirteen rebuilt models and every
+  sidecar with its pins' record, the renders of the twelve whose geometry moved, the old ones
+  to before, the pins, the Stingray's design text in `content/chassis.json`, the motion port
+  holding a form (the Armadillo's seal, under Forms) and the mounts' stock read from the pins'
+  record; every other file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

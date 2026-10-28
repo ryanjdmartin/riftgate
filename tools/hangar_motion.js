@@ -212,6 +212,57 @@ class Rig {
       if (n.isMesh && labelled(n.name, part)) for (const m of [].concat(n.material)) if (m.map) this.treadMats.push([m, m.map.offset.x]);
     });
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
+    this.setupForms(side.forms || {});
+  }
+  // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
+  // status of the same name (the Armadillo's seal), their tracks as curves over their turn and
+  // their lit parts with the light each has at rest.
+  setupForms(fs) {
+    this.forms = {}; this.formOn = {}; this.formT = {}; this.formRot = {}; this.formSlide = {};
+    for (const [name, f] of Object.entries(fs || {})) {
+      const duration = Math.max(0.01, f.duration ?? 0.6), curves = {}, glow = [];
+      for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, "smooth");
+      for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, m.emissiveIntensity, g.k ?? -1]);
+      this.forms[name] = {duration, curves, glow};
+      this.formOn[name] = false; this.formT[name] = 0;
+    }
+  }
+  // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
+  // same way, from wherever it is; while one is in or turning, no act that moves one of its
+  // joints is chosen, and one playing when the form is taken stops.
+  setForm(name, on) {
+    if (!this.forms[name] || this.formOn[name] === on) return;
+    this.formOn[name] = on;
+    if (on && this.current && Rig.keysAny(this.current, this.forms[name].curves)) this.endAct();
+  }
+  formHeld(name) { return !!this.formOn[name]; }
+  heldJoints() {
+    const out = {};
+    for (const [name, f] of Object.entries(this.forms)) if (this.formOn[name] || this.formT[name] > 0) for (const jn of Object.keys(f.curves)) out[jn] = true;
+    return out;
+  }
+  static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
+  // Turn every form toward held or let go (MechRig._forms_step), and what they add to each joint
+  // and to their lit parts' light; true while one is turning.
+  formsStep(delta) {
+    let turning = false;
+    for (const [name, f] of Object.entries(this.forms)) {
+      const want = this.formOn[name] ? f.duration : 0, t = this.formT[name];
+      if (t !== want) { this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true; }
+    }
+    if (!turning) return false;
+    this.formRot = {}; this.formSlide = {};
+    for (const [name, f] of Object.entries(this.forms)) {
+      const t = this.formT[name];
+      for (const [jn, c] of Object.entries(f.curves)) {
+        const v = curveAt(c, t);
+        this.formRot[jn] = add3(this.formRot[jn] || v3(), v3(v[0], v[1], v[2]));
+        if (v.length >= 6) this.formSlide[jn] = add3(this.formSlide[jn] || v3(), v3(v[3], v[4], v[5]));
+      }
+      const k = t / f.duration;
+      for (const [m, base, gk] of f.glow) m.emissiveIntensity = base * Math.max(0, 1 + gk * k);
+    }
+    return true;
   }
   // Move by this gait from now on: the sidecar's own, or one of its options.
   useGait(g) {
@@ -231,7 +282,7 @@ class Rig {
     this.startOffset = 0; this.mainOffset = 0; this.handing = false;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
+  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -248,8 +299,12 @@ class Rig {
   choose() {
     if (!this.acts.length) return null;
     if (this.debug && this.debug !== "1") { const a = this.acts.find(x => x.name === this.debug); if (a) return a; }
-    if (this.acts.length === 1) return this.acts[0];
-    const pool = this.acts.filter(a => a.name !== this.lastAct);
+    // A held form keeps its joints: no act that moves one plays while it is in (the sealed
+    // Armadillo presents no guns it has sunk).
+    const held = this.heldJoints(), here = this.acts.filter(a => !Rig.keysAny(a, held));
+    if (!here.length) return null;
+    if (here.length === 1) return here[0];
+    const pool = here.filter(a => a.name !== this.lastAct);
     return pool[Math.floor(this.random() * pool.length) % pool.length];
   }
   play(name) { const a = this.acts.find(x => x.name === name); if (!a) return false; this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true; }
@@ -328,6 +383,7 @@ class Rig {
     let moved = false, left = delta;
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
+    if (this.formsStep(delta)) moved = true;   // the held forms turn on their own clock
     for (const [name, r] of Object.entries(this.spinners)) {
       const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
       this.spun[name] = ((s % 360) + 360) % 360; moved = true;
@@ -355,7 +411,8 @@ class Rig {
   // The blows alone, for a paused stage: a blow always plays out (Ryan, 5 October: they only
   // played while an act was running, since a paused stage advanced nothing).
   tickStrikes(delta) {
-    if (!this.strikes.length) return;
+    const turning = this.formsStep(delta);   // a form held or let go on a paused stage turns all the same
+    if (!this.strikes.length) { if (turning) this.pose(); return; }
     for (const st of this.strikes) st.t += delta;
     this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
     this.pose();
@@ -386,13 +443,13 @@ class Rig {
   }
   pose() {
     for (const [name, j] of Object.entries(this.joints)) {
-      let deg = add3(this.actRot[name] || v3(), this.gaitRot[name] || v3());
+      let deg = add3(add3(this.actRot[name] || v3(), this.gaitRot[name] || v3()), this.formRot[name] || v3());
       for (const st of this.strikes) if (st.joint === name) deg = add3(deg, mul3(st.vec, Rig.envelope(st)));
       deg = clampDegrees(deg, this.meta[name].limits);
       if (name in this.spun) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: deg[k] + this.spun[name]}; }
       const r = this.rest[name], e = eulerOf(deg);
       j.rotation.set(r.x + e.x, r.y + e.y, r.z + e.z, "YXZ");
-      const o = offsetOf(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3())), p = this.restPos[name];
+      const o = offsetOf(add3(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3()), this.formSlide[name] || v3())), p = this.restPos[name];
       j.position.set(p.x + o.x, p.y + o.y, p.z + o.z);
     }
     const bo = offsetOf(add3(this.bodyActSlide, this.bodyMoveSlide)), be = eulerOf(add3(this.bodyActRot, this.bodyMoveRot));
@@ -962,6 +1019,12 @@ class Stage {
     if (!this.rig) return;
     this.gaitName = name && this.rig.gaitOptions[name] ? name : "";
     this.rig.useGait(this.gaitName ? this.rig.gaitOptions[this.gaitName] : (this.side.gait || {}));
+    this.emit();
+  }
+  // Hold one of the sidecar's forms or let it go, as the status of its name would in the game.
+  setForm(name, on) {
+    if (!this.rig) return;
+    this.rig.setForm(name, on);
     this.emit();
   }
   setLoop(name) {

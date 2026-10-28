@@ -469,9 +469,10 @@ def clydesdale(b):
                 b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
                 _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
                 _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
-    # The shock barrage (hp_6): a rack of tubes on the deck's left between the turret and
-    # the breech, pitched up; the class shape, since nothing was modelled there.
-    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8, carries="suppression_battery")   # aft a bit (Ryan, 1 October)
+    # The Airburst Shell (hp_6; the shock barrage's mount until the stock pass of 22 October):
+    # a rack of tubes on the deck's left between the turret and the breech, pitched up; the
+    # class shape, since nothing was modelled there.
+    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8, carries="airburst_shell")   # aft a bit (Ryan, 1 October)
     # Ablative plating: two bolted slabs each flank, standing proud of the hull; the heat
     # sink across the tail, its stack up through the bed. Detail, no mounts: armour and
     # vents show nowhere (the rule, 30 September).
