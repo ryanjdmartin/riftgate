@@ -429,7 +429,7 @@
    "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store."
+    "holes": "Who carries it is section 12's question. Decided 28 October (the bible's section 5 row): it mutes the machine's keywords and never its buffs, cast with no condition and aimed at the armed; the engine sleeps the buffs until the build with the ladder, and this text follows the build. Never a rider: a special."
    }
   },
   {
@@ -439,7 +439,7 @@
    "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. The id stays dispel. It takes no store; a store's active effect, when one exists, is silenced for a turn instead, since the store would grant it again."
+    "holes": "Who carries it is section 12's question. The id stays dispel. Decided 28 October (the bible's section 5 row): it takes what a die face bought for good and sleeps a store's, a form's or a passive's grant until the start of the player's turn after its start resolves; the Ammit's kept stacks are its passive's own and stay; never a rider, never a last act's; this text follows the build."
    }
   },
   {
@@ -1691,7 +1691,7 @@
    "codex": "Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
    "status": "implemented",
    "design": {
-    "holes": "Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).",
+    "holes": "Its stores are untouched. Decided 28 October (the bible's section 5 row): the keywords muted and the buffs left, Volatile being a cost now; the engine runs the 26 October form (buffs alone) until the build with the ladder, and this text follows it.",
     "table": {
      "kind": "debuff",
      "on": "machine",

@@ -201,8 +201,10 @@ The tasks are the to-do's; this is the index of what waits.
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
   (`docs/heroes_proposal.md`).
-- The planned foe moves, Silence's and Purge's carriers (section 12), and Purge as our keyword
-  (its carriers and numbers open).
+- The planned foe moves; the three verbs decided 28 October (silence mutes keywords, purge
+  takes what a die face bought and sleeps a form's grant until the player's turn, the foe's
+  cleanse takes the team's marks off its own) built with the ladder, their carriers once Ryan
+  marks it (section 12); Purge as our keyword with its widened reach (the proposal's section 10).
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
@@ -225,7 +227,11 @@ line), since no number read since 22 October was read on the content as it now s
    threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together.
+   reports and measures the fights a team fights together. With it, on Ryan's marks of 28
+   October: the ladder of recolours by tier (HP the general ramp, the damage's shape each
+   domain's identity, a guest from tier two), the enemy's buffs crossing (Primed, Barrier,
+   Ward, Regenerating) for the player's Purge, and the three verbs (the proposal's sections 9
+   to 11).
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
@@ -249,10 +255,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.336 (the
-  page's version 348, published 28 October from `ccr-6073bda9-p34o8q` onto v0.335, which the
-  live page held: section 3's never-inflate row an aspiration with the measured floor, and the
-  recolour tier closed as a repaint, a name and a number; no content changed, so no tables). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.338 (the
+  page's version 350, published 28 October from `ccr-6073bda9-p34o8q` onto v0.337, the models
+  session's cell on the live page carried: the three verbs decided, the player's Purge widened, the domains' levers as
+  a lean, section 3's row carrying HP as the ramp and damage as the identity; no shown content
+  changed). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`

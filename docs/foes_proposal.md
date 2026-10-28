@@ -45,7 +45,8 @@ One line each, so that nothing below re-opens a settled point by accident; each 
   default), a named escort kept for the hand-tailored ones to come; the rank and file never
   scale (section 9's boss row and section 3's escalation row, Ryan, 25 and 26 October; built
   on `claude/quick-campaign-mode-pafhiv`).
-- The quick campaign: battles without the map, a test bed first (section 3, Ryan, 25 October).
+- The quick campaign: battles without the map, an experiment and not a feature (section 3,
+  Ryan, 25 and 28 October: no decision reads its runs).
   A battle's fights are as many as the Rupture's Fractures with the elites folded in, every one
   a complete formation, then the boss with its formation, no heal and no withdrawal; the enemy
   the same at every tier "until the foes' fresh start", the elite stood in by the domain's other
@@ -86,13 +87,19 @@ The reads this proposal answers, each in `docs/measurements.md` unless named oth
   fights, and the finale is a wall. An endgame four fitted to tier two meets nothing but the
   finale: every pack is free at 0 to 6% of its hull. Every tier draws the same spawn lists at
   the same density, so a run's later battles field what its first did.
-- **The quick campaign's cliff and plateau** (25 and 26 October, `docs/quick_run.md` on its
-  branch): a starting trio falls in its first battle in 34 to 36 runs of 40, on the greedy rung
-  and the planner alike, since every fight is a complete formation with no heal (a stock trio
-  wins four formations in a row a third of the time, the chain probe of 25 October); the runs
-  that pass it win nearly every battle to tier three, the loot ramping their kit while the enemy
-  keeps the first battle's lists. The enemy's side of the curve is the hole, and the row says
-  so: "the enemy the same at every tier until the foes' fresh start".
+- **The trio's wall is the formation's size, and the enemy has no tiers** (27 October, the
+  matrix's team rows at 200 seeds): a stock four beats every formation as it stands at 100% on
+  the greedy rung for 3 to 14% of its hull, with an area piece or without; a trio sits in a
+  decision band on the Meadow and the Waste and is walled on the Marsh and the Peak; formations
+  a third thinner are a trio's decision band. Every tier draws the same lists at the same
+  density, so a run's later battles field what its first did: the enemy's side of the curve is
+  the hole. (The quick campaign's runs are not grounds: an experiment, Ryan, 28 October.)
+- **A tier's units need a floor** (28 October, the matrix grouped by chassis tier): the rank
+  and file at their one set of numbers cost a tier-one machine with its stock kit half its hull
+  a fight and a tier three a third, and the content's weapon numbers barely move by tier where
+  its hull does, so the late tiers' power is options and synergy; section 3's row is an
+  aspiration now, and a tier's units carry the numbers that keep them a fight (section 9
+  below).
 - **A fight is one pack, mostly, because the squad is one machine, mostly** (26 October, this
   session's reads): four of the campaign runner's battles in five are fought by one or two
   machines, wrecks sitting out with no spares (section 3's roster row), so two fights in five
@@ -100,8 +107,8 @@ The reads this proposal answers, each in `docs/measurements.md` unless named oth
   main's boss row moved is the battles won, from 1% to 15%: a trio that reaches the boss fights
   it together, every machine in whatever its turn, so the boss's fight is the first decision a
   trio makes and the one it wins; the seal (section 4 below) is what makes it the last. The
-  campaign report reads the roster's spiral and the boss row, not the fights' shape; the quick
-  campaign reads the fights.
+  campaign report reads the roster's spiral and the boss row, not the fights' shape; the
+  matrix's composed cells read the fights.
 - **Formations are the only decision, and they read easier at random** (24 October): the
   formations' pressure is the balancing's to restore, and an advanced foe's aim is a lever on
   top.
@@ -199,17 +206,18 @@ from. Placeholders, by the three tiers:
 
 A rift's cycle at a pressure peak deals the domain's next composition fitting the tier, patrols
 and formations alternating, the guest's alternating with the lead's from tier 2 as today. The
-quick campaign's battle is the same table without the patrols, the timer and the start: its
-fights are the tier's formations and elites, as many as the Fractures, in turn. Section 3's
-escalation row holds: nothing here raises a rank-and-file number. What rises is count,
-density, who comes and how soon, and the boss's numbers as its row says.
+quick campaign's battle is the same table without the patrols, the timer and the start, a
+convenience and never a read. Section 3's row (28 October): a tier's units carry their own
+numbers, HP the general ramp and the damage's shape the domain's identity, by the ladder of
+section 9 below; what rises besides is count, density, who comes and how soon, and the boss's
+numbers as its row says.
 
-The first battle's cliff is this table's first column: a trio's three fights at tier one are
-three compositions of six to nine tier-one units, not three whole spawn lists, which the
-quick campaign's question of 26 October ("tier one's formations thinner") asks and the
-starter grids of 23 October size (a nine-foe formation cost a starter trio 19% of its hull in
-six rounds, a fifteen-foe one 43 to 48% in nine). Claude's lean on that question: the enemy's
-tiers through the compositions before a fourth machine at the start.
+A trio's first fights are this table's first column: compositions of six to nine tier-one
+units, not whole spawn lists, which the matrix sizes (formations a third thinner are a trio's
+decision band, 27 October; a nine-foe formation cost a starter trio 19% of its hull in six
+rounds and a fifteen-foe one 43 to 48% in nine, 23 October). Four is kept (Ryan, 28 October;
+section 12's three-or-four question), so the first column is sized for a four with a
+detachment away.
 
 ### 4. The Rupture meter, the Fractures and the seal
 
@@ -356,12 +364,11 @@ Open).
 
 ### 8. The bots and the test bed
 
-The quick campaign is the fresh start's test bed by Ryan's own row: it fields a squad fighting
-every fight together, its fights are the Fracture count with the elites folded in, and it
-waits on the enemy's tiers. The compositions land there first, the tier's formations and
-elites dealt in place of the whole spawn list and the bench hero, and its report by tier
-(`docs/quick_run.md`: the fights won, the rounds, the hull left after, by kind and tier) reads
-the curve directly: the first battle's cliff should become a slope and the plateau a climb.
+The test bed is the balance runner: its composed cells (`--pack` today, the content's
+compositions as rows of cells on the go) by domain and tier at 200 seeds, against the squads
+each tier fields, read as bands; the matrix's team rows are where the fights' size has been
+read so far. The quick campaign is an experiment (Ryan, 28 October): the compositions may be
+dealt there as a convenience, and nothing is read from it.
 
 The campaign runner reads the map's half (the patrols, the detachments, the meter, the seal,
 the elites' arrivals, the gate), and its player is a floor. Built this session, the last
@@ -370,6 +377,112 @@ Its reads (below) say the campaign's spiral is the roster's, which the economy a
 read of the fights' shape is asked of it until a run can field a squad. Next, with the go: it
 reads the meter (Fractures reached a battle, turns to the Rupture, the stall guard's share),
 the elites (fought, the gate they took) and the fights by size.
+
+### 9. The ladder: a tier's units (28 October)
+
+Ryan's calls: the roster fills by tier with placeholder monsters or classic palette swaps "so
+that ramp balance can begin", ideally with more threatening mechanics as well as more stats,
+"but for now a numbers race is kind of what we need"; never-inflate is an aspiration, since
+"with component tiers and synergy payoffs, inflation is just a matter of course for some
+units"; HP and damage go up, "but each domain's identity should also sharpen as the tiers
+rise, with guest appearances preventing the player from building a hard counter for a domain
+and steamrolling it"; a recolour by hue is fine with a modified name, no other marker. The
+measured floor is in `docs/measurements.md` (28 October): by the chassis tier alone, the rank
+and file at one set of numbers cost a tier one half its hull a fight and a tier three a third.
+
+**Two layers of numbers**, every one a placeholder. The floor is the general ramp, the
+fight's length; the identity is the domain's dial on top, and the one the player must answer
+differently (the Peak's spike by the shield and the Barrier, the Waste's breach by hull and
+tempo, the Meadow's volume by area and armour, the Marsh's returns by kill order, burst and the
+Purge). Ryan's read (28 October): "enemy damage is more skewed towards a domain identity, and
+HP is more of a general ramp tool"; Claude's agreement with two refinements, the Meadow's ramp
+is count rather than HP, and armour is the wall's number whoever fields it.
+
+| | Tier 2 | Tier 3 |
+|---|---|---|
+| The floor, every domain | HP ×1.25, rounded up; a blow +1 | HP ×1.5, rounded up; a blow +2 |
+| The Meadow, volume | the floor's HP at ×1 and strength +1 a member instead; a wall's armour 1 | HP ×1.25, strength +2, the swarm's add +1; a wall's armour 3 |
+| The Waste, fixed damage and theft | breach on one more type; a burrow that is a Barrier | the big blow +2 more; theft on two types |
+| The Marsh, hard to keep down | HP ×1.5 in the floor's place; one type regenerating; the healer's cleanse | HP ×2; a reraise on an ally, a sanctuary's Ward, a delayed heal |
+| The Peak, the telegraphed spike | the spike +2 more on the telegraphed move; scorch on one more type | the spike +4; a stoke that primes its allies; countdowns |
+
+The floor is set against the tier's kit and the area numbers its pieces print: a unit at the
+rank and file's kill threshold of 3 dies to the column once the tier's pieces carry a Spread 3,
+so a tier's units sit above the numbers the tier's area prints (the 28 October area read).
+Which number rises is read on the bands, never chased.
+
+**The ladder**, working names for Ryan's marks, every twist a mechanic the engine already runs
+(a rider, an aim, a condition, a special, a countdown, a last act), a content line each; a bare
+recolour keeps the numbers alone. The names follow the genre's own ladders in plain words (the
+series' coinages take names of ours, section 1).
+
+| Base | Tier 2 | Tier 3 |
+|---|---|---|
+| Goblin | Goblin Guard, braces | Goblin Captain, rallies its own |
+| Dire Wolf | Warg, hunts the weakest | Alpha Warg, its howl rallies the pack |
+| Gel | Bubble Gel, armour 1 | Metal Gel, armour 3 and little HP: Flak and Overcharged are its answer |
+| Mandragora | Mandrake, its scream costs two rerolls | Alraune, its scream disables the showing entry |
+| Needler | Barbed Needler, two strikes | Great Needler, a countdown of two then one big breach |
+| Antlion | Pit Antlion, its burrow a Barrier (the sand swallows the next blow) | Antlion Queen, a swallow that breaches after a one-round countdown |
+| Cockatrice | Basilisk, aims at the armed | Gorgon, its stone corrupts the entry |
+| Revenant | Wight, regenerating when hurt | Lich, readies an ally to get back up, and a delayed heal |
+| Ghost | Spectre, drains a reroll | Wraith, its bolt corrupts |
+| Zombie Knight | Death Knight, braces every ally | Dread Knight, a blow as it falls |
+| Bomb | Grenade, its self-destruct hits every machine | Balloon, a one-round countdown then every machine, scorching |
+| Salamander | Fire Lizard, scorch 2 | Magma Lizard, a stoke that primes its allies |
+| Drake | Wyvern, its blow breaches | Red Dragon, a breath that scorches every machine, aimed at the hottest |
+
+**How it lands.** A recolour is an entry generated from the marked table (its `tier`, its
+numbers from the two layers, its twist, a one-line codex), its sprite the base's shifted to a
+hue the three colourblind simulations keep apart from the base's, lightness with it, written
+beside the base's art; a placeholder monster, where a role has no base to repaint, is an entry
+with no art, drawn as the views' placeholder shape. The spawn lists carry each entry's tiers;
+a rift deals the battle's tier with the tier below as filler (a tier-two Meadow formation:
+Goblin Guards and Wargs with Gels and Mandragoras); the escorts draw by tier already. A guest's
+members stand in a formation from tier two (section 3's row), one or two of them, so a hard
+counter meets another domain's question. The nine boss sprites with no content (the slate's
+and the Reaper's) fill the finals' rule, not the ramp, and stay where they are.
+
+### 10. The enemy's buffs and the player's Purge (28 October)
+
+Ryan: "having more than one purpose for a player purge is important though. Enemies can
+certainly carry offensive buffs such as primed in addition to kindled on more units, and
+defense buffs like barrier, ward, Regen, or a delayed heal or something, shouldn't be out of
+the question. Whatever you think adds healthy depth." The test for each buff below: it crosses
+under the machines' own word (section 6's convention), a telegraphed special grants it and a
+chip shows it, it has an answer beside the purge so a Purge is a decision and never the one
+key, and it sharpens a domain's identity.
+
+| Buff on a foe | Granted by | The answer beside the purge | Whose lean |
+|---|---|---|---|
+| Kindled | a rally (built) | kill, suppress or disrupt the rallier; the intent counts it | the Meadow, the Peak |
+| Armoured | a brace, a brace all (built) | Expose, breach, wait it out | the Waste, the Marsh |
+| Getting Back Up | a reraise, its own or an ally's (built) | kill it twice; a mine in its slot | the Marsh |
+| Primed | a stoke that primes its allies: their blows leave Burning | Ward on the target; kill the stoker; vents | the Peak |
+| Barrier | a mirage, a shell, a burrow: the next weapon blow deals nothing | pop it with a cheap blow, a 1 or a split gun's strike, then hit; a debuff pops nothing | the Waste; the Peak's shelled boss |
+| Ward | a sanctuary: no mark the team lays lands this round, the damage does | wait a round; damage anyway | the Marsh's healer |
+| Regenerating | regrows N at each of its actions for three rounds | burst; kill order | the Marsh; the Meadow's treants |
+
+Never purged: Numbed (the buff nothing removes) and Guarded (the parts' rule). A delayed heal
+is a countdown, held by Suppress and broken by Disrupt, so it needs no buff. The player's
+**Purge**: a keyword on any entry aimed at a foe, every buff above gone from every foe the
+entry reaches; on a capstone's blow (the jellyfish's EMP) or alone on a debuff piece,
+Indirect, one at tier two by lean, so the die asks "strip it or shoot". Read on its pick share
+against the packs that carry buffs once the ladder lands.
+
+### 11. The three verbs, decided (28 October)
+
+Silence mutes a machine's keywords through its next round and leaves its buffs (the enemy's
+question to the keyword build); Purge takes every buff a die face bought for good and sleeps a
+store's, a form's or a passive's grant until the start of the player's turn after its start
+resolves, the Ammit's kept stacks its passive's own, never a last act's (the question to the
+stack); a foe's Cleanse takes every mark the team laid off one of its own, never Numbed or
+Suppressed (the question to the status build, the Marsh's). Specials only, telegraphed, each
+a one-round window with an answer on the die (the Ward, an ally's Cleanse, the caster's
+death, the timing of a spend). Leans: the Waste purges, the Marsh cleanses, the Meadow's
+shaman silences, the Peak burns; a boss anywhere may carry any. The rows are the bible's
+section 5 and section 9; the engine work is the build list's; the carriers are Ryan's marks on
+the ladder.
 
 ## A battle, as proposed
 
@@ -401,9 +514,21 @@ The sim first, headless and tested, then the runners, then the screen's pieces.
   survivors by member; the placement at setup by the tier's counts, compositions spaced so
   their rings do not chain; the spawn cycle dealing compositions. The harness's composed enemy
   side and the runner's `--pack` cells are compositions already.
-- **The quick campaign dealing compositions** (`sim/quick_run.gd`): the tier's formations in
-  place of the whole spawn list, the content's elites in place of the bench hero, the boss's
-  escort composition where one is written.
+- **The ladder** (section 9; `content/foes.json`, `content/factions.json`, `tools/`): the
+  recolours generated from the marked table, each with its `tier`, its numbers and its twist;
+  the spawn lists carrying tiers and the rift dealing the battle's tier with the tier below as
+  filler; the recolour script (a hue shift the three simulations keep apart, lightness with it,
+  the base's sprite to `art/foes/<id>_combat.png` and `_map.png`); the quick run dealing the
+  same, as a convenience.
+- **The three verbs** (section 11; `sim/effects.gd`, `sim/skirmish.gd`, the validator): the
+  silence's mute of keywords back from the 21st's code, its buffs left; the purge taking what a
+  die face bought and sleeping a store's, a form's or a passive's grant until the start of the
+  player's turn after its start resolves, the Ammit's kept stacks its passive's own; the foe's
+  cleanse special; a Last Act never purges, and the validator refuses a silence or a purge as a
+  rider.
+- **The enemy's buffs and the player's Purge** (section 10): Primed, Barrier, Ward and
+  Regenerating on foes under the same words, granted by specials; the Purge keyword on an entry
+  aimed at a foe, taking every buff a foe carries but Numbed and Guarded.
 - **The rift's tier and the ramp** (`sim/campaign.gd`, `sim/battle.gd`): a rift keeps the tier
   it opened at; the battle reads the tier for what comes and the Convergence for the counts
   and the timer, each a table of placeholders in one place, the quick campaign's battle tier
@@ -414,7 +539,7 @@ The sim first, headless and tested, then the runners, then the screen's pieces.
   weight (Anathema recorded beside the count of three bosses, which still decides the final).
 - **The elites** (content and `sim/`): the first set as Ryan marks it; the blitz's gate blow;
   an enemy Shock rider if he wants one.
-- **The runners**: the quick run's report by tier as it stands; the campaign report's meter,
+- **The runners**: the campaign report's meter,
   elite and fight-size reads; the balance runner's composition cells by domain and tier
   (`--pack` today, the content's compositions as rows of cells on the go).
 - **The screen**: the meter bar with its Fracture notches under the gate's, the SEALED mark on
@@ -424,14 +549,18 @@ The sim first, headless and tested, then the runners, then the screen's pieces.
 - **The records**: the bible's rows (section 4's pacing row to Decided as far as Ryan takes it,
   section 9's roster and elites rows, the pack's definition, the quick campaign's row losing
   its stand-ins), `docs/rules.md`, the vocabulary (Composition, Patrol, Formation, Menace, the
-  Rupture meter's entries from planned to implemented), the to-do and the status.
+  Rupture meter's entries from planned to implemented; Silence's, Silenced's and Purge's shown
+  text to the decided forms; the foe's Cleanse and the crossed buffs), the to-do and the
+  status.
 
 ## How it is measured
 
-- The quick campaign at 40 runs a rung, by tier (`tools/quick_run.gd`): the first battle won
-  by more than one trio in ten without a fourth machine, the middle no longer a plateau of
-  wins at 97 to 100%, tier three's bosses and the finale still pressing; the squad's hull
-  standing as the boss fight opens at 60 to 80% spent across the battle.
+- The matrix's composed cells by domain and tier at 200 seeds: each tier's compositions
+  against the squads that tier fields (the starter trios and fours at tier one, fours fitted to
+  tier two and three), the tests the grids'; the ladder read as bands, a tier's units a fight
+  for the tier's kit and no cell random play wins with the tier's kit; the Purge's and the
+  Ward's pick share against the packs that carry buffs and purges, the buff pieces' against a
+  purging pack, and the Ammit's row against one (the to-do).
 - The grids of 23 October rerun by stage: every starter trio against the tier-1 compositions
   (patrols, formations, the elites, the boss with its escort) and the five endgame fours against
   the tier-3 ones, random and greedy at 30 seeds as a direction, the bands at 200. The tests:
@@ -452,8 +581,8 @@ Each with Claude's lean; a question answered in chat lands as a row and leaves t
    together? Lean: one hex.
 2. The curve's form (`docs/curve_proposal.md`): the tier and the ramp, or the deepening rift.
    The engine built here serves either; the table in section 3 is written for the first.
-3. The quick campaign's first battle: the enemy's tiers through the compositions (lean), a
-   fourth machine at the start, or the trio's wall kept as the mode's stress?
+3. The ladder's marks (section 9): the names, the twists, the two layers' placeholders, and
+   which recolours come first.
 4. The elites' moment on the map: a Fracture (lean), Rift Pressure's tick, or a turn count?
 5. The sealed boss: joins no fight while sealed (lean), or joins and takes no damage?
 6. The stall guard: the Rupture also comes once the field is clear (lean), or the player waits
@@ -471,8 +600,10 @@ Each with Claude's lean; a question answered in chat lands as a row and leaves t
 12. Menace as the one weight for the meter, Anathema and salvage, by the formula or by a number
     on each foe?
 13. One rider on one advanced foe a domain: the Ghost's curse, the shaman's Hex; and enemy
-    Shock on the shaman or the Reaper, telegraphed, or none.
-14. The density and the timer by tier, after the quick run has read the placeholders.
+    Shock on the shaman or the Reaper, telegraphed, or none (a silence and a purge are
+    specials, never riders: decided).
+14. The enemy's buffs (section 10): the set as proposed, which foe grants which, and the
+    player's Purge as a debuff piece at tier two beside the jellyfish's EMP.
 
 ## The bench
 
@@ -481,9 +612,8 @@ only the idea.
 
 - A formation as two packs, a front and a back, walking together: no peel and no decision while
   they stand adjacent, drift when they part, and the pack row (one sprite, one badge) stands.
-- Inflating the rank and file by tier (HP or blows rising with the Convergence): section 3's
-  escalation row; the ramp is count, density and who comes, and the boss row's scaling is the
-  bosses', heroes' and the line's alone.
+- The same unit scaled in place by tier or ramp (a goblin at 5 HP and then at 50): section 3's
+  row, Ryan's "that's lame"; a tier's units are their own, with their numbers and names.
 - The boss joining fights while sealed, immune: section 2's never-helpless row (a blow source
   nothing in the fight can answer), and the boss row's every-machine rule.
 - A Rift Pressure tick per fight or per round fought: section 4's clock row, retired 13
@@ -498,8 +628,14 @@ only the idea.
   hole): density and count are the ramp's, so one composition a peak.
 - Hiding a composition's back rank in battle until scouted: the exact preview (section 3's
   sensor row); scouting is the campaign layer's.
-- The recolour tier (Gel, Bubble Gel, Metal Gel) as a bigger number: section 9's Open row
-  against the escalation row; a recolour that changes behaviour is a new foe and free.
+- A silence or a purge as a rider on a foe's blow: a tax with no decision (28 October);
+  specials only.
+- One enemy verb for keywords and buffs alike, nothing permanent: the domains could not differ,
+  and the stack question needs the bought buffs gone.
+- A player silence: Suppress holds a special and Disrupt turns one; control stays scarce.
+- Another marker on a recolour beside its hue and its name (a ring, a chevron): Ryan, 28
+  October, "don't need another marker", the colour sufficiently different and checked by the
+  three simulations.
 - Anathema deciding a domain's final today: section 3's three-bosses row stands; the tally is
   recorded beside the count until Ryan judges the count against it (section 9's Rec row).
 - A roles system the engine reads (a stat or a rule by role): one rule set for foes (section

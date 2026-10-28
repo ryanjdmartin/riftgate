@@ -269,8 +269,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
 - **Overcharged a kill** (implemented): A spread that kills two feeds twice; a chain feeds on every link.
 - **Rapid** (implemented): Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
-- **Silence** (implemented): Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store.
-- **Purge** (implemented): Who carries it is section 12's question. The id stays dispel. It takes no store; a store's active effect, when one exists, is silenced for a turn instead, since the store would grant it again.
+- **Silence** (implemented): Who carries it is section 12's question. Decided 28 October (the bible's section 5 row): it mutes the machine's keywords and never its buffs, cast with no condition and aimed at the armed; the engine sleeps the buffs until the build with the ladder, and this text follows the build. Never a rider: a special.
+- **Purge** (implemented): Who carries it is section 12's question. The id stays dispel. Decided 28 October (the bible's section 5 row): it takes what a die face bought for good and sleeps a store's, a form's or a passive's grant until the start of the player's turn after its start resolves; the Ammit's kept stacks are its passive's own and stay; never a rider, never a last act's; this text follows the build.
 - **Overshield** (implemented): Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word and the foes' default aim.
 - **Syrinx Drone** (implemented): A status the team put on the foe, so the Paradox counts it.
@@ -345,7 +345,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
-- **Silenced** (implemented): Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).
+- **Silenced** (implemented): Its stores are untouched. Decided 28 October (the bible's section 5 row): the keywords muted and the buffs left, Volatile being a cost now; the engine runs the 26 October form (buffs alone) until the build with the ladder, and this text follows it.
 - **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.

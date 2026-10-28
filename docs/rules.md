@@ -387,10 +387,11 @@ keyword chip.
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
-it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store
-grants is a buff and shows as one: a Silence sleeps it, and a Purge silences it for a turn
-instead of taking it, since the store would grant it again (not built: no store grants one
-yet). The hopper has no cap yet, so it shows as a chip.
+it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store,
+a form or a passive grants is a buff and shows as one: no Silence touches it, and a Purge takes
+it until the start of the player's turn, after the turn's start resolves, since its source
+grants it again (not built: no store grants one yet, and the seal's armour is one status with
+its form). The hopper has no cap yet, so it shows as a chip.
 
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -452,11 +453,16 @@ On a machine:
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
-- **Silenced** (debuff, a foe's silence): its buffs (a kept Overcharged too) count for
-  nothing through its next round, then wake. Its components' keywords act as ever (a Volatile
-  still bites), and its stores fill and spend as ever. Cleansable; a Ward turns the silence
-  away. A foe's purge takes every buff, every stack; its stores and its passives stay; a Ward
-  turns it away too.
+- **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
+  round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
+  Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count
+  and its stores fill and spend as ever. Cleansable, an ally's Cleanse the way; a Ward turns
+  the silence away. (Decided 28 October, built with the ladder: until then the engine sleeps
+  its buffs and leaves its keywords.) A foe's purge takes every buff a die face bought, every
+  stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
+  turn and comes back at the start of the player's turn after its start resolves; the stores
+  stay, and the Ammit's kept Overcharged is its passive's own and stays; a Ward turns it away
+  too (the return not built).
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
@@ -607,8 +613,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   type, times the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
-  Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), silence
-  (Silenced), purge (every buff gone, the stores kept; a hero's or a boss's),
+  Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
@@ -621,10 +626,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   summon,
   rally (Kindled at its value on every other foe on the field, at once), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
-  disable, silence, purge (each on its target, no blow). A Ward turns away every one of them
-  that lands on its machine, a scorch all's and a corrupt all's share included, and a scorch all
-  or a corrupt all passes a Phased machine by. No foe in content carries a silence or a purge
-  yet.
+  disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
+  or a passive's grant until the start of the player's turn; never a last act's), cleanse
+  (every mark the team laid off one of its own, never Numbed or Suppressed; planned), each on
+  its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  every one of them that lands on its machine, a scorch all's and a corrupt all's share
+  included, and a scorch all or a corrupt all passes a Phased machine by. No foe in content
+  carries a silence, a purge or a cleanse yet.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.
