@@ -1072,6 +1072,13 @@ func start_round() -> void:
 	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
+	# What a purge put to sleep wakes now, the turn's start resolved (28 October: the cooling,
+	# the roll and the round-start passives first, "a mild punishment"), and before the foes
+	# draw, so they pick against the machine as it stands.
+	for ms in live_mechs():
+		var woke := Effects.wake(ms.unit)
+		if not woke.is_empty():
+			log.append("%s's %s return%s" % [ms.unit.display_name, ", ".join(woke), "s" if woke.size() == 1 else ""])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then the pick by
@@ -2013,10 +2020,18 @@ func _silence(t: MechState, f: Foe) -> void:
 	log.append("%s silences %s: its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
-## A purge: every buff the machine carries goes, every stack; its stores stay (Ryan, 21 October).
+## A purge (by source, 28 October): what a die face bought goes for good, what the machine is
+## sleeps until the player's turn, the kept and the stores stay.
 func _purge(t: MechState, f: Foe) -> void:
-	var gone := Effects.purge(t.unit)
-	log.append("%s purges %s%s" % [f.display_name, t.unit.display_name, ": " + ", ".join(gone) + " gone" if not gone.is_empty() else ", and finds nothing to take"])
+	var r := Effects.purge(t.unit)
+	var gone: Array = r["gone"]
+	var slept: Array = r["slept"]
+	var said: Array[String] = []
+	if not gone.is_empty():
+		said.append(", ".join(gone) + " gone")
+	if not slept.is_empty():
+		said.append(", ".join(slept) + " asleep until its turn")
+	log.append("%s purges %s%s" % [f.display_name, t.unit.display_name, ": " + "; ".join(said) if not said.is_empty() else ", and finds nothing to take"])
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and

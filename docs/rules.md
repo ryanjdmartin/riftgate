@@ -388,10 +388,13 @@ A **store** is a capped resource a machine fills and spends (the Muster, the rag
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
 it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store,
-a form or a passive grants is a buff and shows as one: no Silence touches it, and a Purge takes
-it until the start of the player's turn, after the turn's start resolves, since its source
-grants it again (not built: no store grants one yet, and the seal's armour is one status with
-its form). The hopper has no cap yet, so it shows as a chip.
+a form or a passive grants is a buff and shows as one: no Silence touches it, and a Purge puts
+it to sleep until the start of the player's turn, after the turn's start resolves (the cooling,
+the roll and the round-start passives), and before the foes draw, since its source grants it
+again; asleep it takes part in nothing, its clocks running, and its chip shows half lit on a
+dashed edge. A form's price keeps biting while it sleeps: the Armadillo's seal sleeps its
+armour, and its cooling stays stopped. No store grants an active effect yet. The hopper has no
+cap yet, so it shows as a chip.
 
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -461,7 +464,7 @@ On a machine:
   stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
   turn and comes back at the start of the player's turn after its start resolves; the stores
   stay, and the Ammit's kept Overcharged is its passive's own and stays; a Ward turns it away
-  too (the return not built).
+  too. A die face bought it when a buff component's spend or a braces rule granted it.
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
 

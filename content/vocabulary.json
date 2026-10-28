@@ -436,10 +436,10 @@
    "id": "dispel",
    "category": "foe",
    "name": "Purge",
-   "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away.",
+   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on loses every buff a die face bought, every stack, for good; what a store, a form or a passive grants sleeps until the start of its turn, after that turn's start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. The id stays dispel. Decided 28 October (the bible's section 5 row): it takes what a die face bought for good and sleeps a store's, a form's or a passive's grant until the start of the player's turn after its start resolves; the Ammit's kept stacks are its passive's own and stay; never a rider, never a last act's; this text follows the build."
+    "holes": "Who carries it is section 12's question. The id stays dispel. By source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own."
    }
   },
   {

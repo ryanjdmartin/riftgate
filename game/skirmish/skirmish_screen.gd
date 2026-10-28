@@ -77,6 +77,9 @@ static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
 ## RIFTGATE_PREVIEW_DEBUG=1: every foe showing a blow wears the pulsing preview chip of a rally on
 ## its way (+1 where none is coming, its number unchanged), to judge the pulse running.
 static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
+## RIFTGATE_SLEEP_DEBUG=1: every buff on a machine is drawn as a purge leaves it asleep (half its
+## light on a dashed edge, still), to judge the look running (28 October; placeholders).
+static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 var _rage_debug_at := -10.0
 
@@ -966,7 +969,7 @@ func _refresh(save: bool = true) -> void:
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
-			v.statuses.append([r[0], r[1], r[3]])
+			v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
 		v.queue_refresh()
 		var d := _dice[i]
 		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
@@ -1482,7 +1485,15 @@ func _mech_rows(i: int) -> Array:
 		var glyph := status_glyph(id)
 		var colour := _chip_colour(id)
 		var stacks := int(total[id])
+		if SLEEP_DEBUG and (Effects.STATUS.get(id, {}).get("tags", []) as Array).has("buff"):
+			rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: asleep until your turn" % str(d[0]), colour, "asleep"])
+			continue
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
+	# A buff a purge put to sleep (28 October): its chip half lit on a dashed edge, still, until
+	# the player's turn wakes it.
+	for a in Effects.asleep(ms.unit):
+		var sid := str(a[3])
+		rows.append([status_glyph(sid), ("×%d" % int(a[2])) if int(a[2]) > 1 else "", "%s: asleep until your turn" % str(a[0]), _chip_colour(sid), "asleep"])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:

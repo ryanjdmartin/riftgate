@@ -1166,6 +1166,22 @@ func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 ## add to its weapons this turn (about one; it goes at the turn's end), the bites its
 ## Corrupted entries would take over the rounds to come, and the entries a foe switched off,
 ## at the die's own mean for each.
+## What a purge on this machine would cost it (28 October): the stacks a die face bought, for
+## the rounds they would have run, and the machine's own, asleep for a turn; a kept stack or one
+## already asleep, nothing.
+func _purge_stakes(who: Skirmish.MechState) -> float:
+	var bought := 0
+	var own := 0
+	for m in who.unit.modifiers:
+		if not Effects.purgeable(m) or m.slept or Effects.keeps(who.unit, m.id):
+			continue
+		if Effects.bought(m):
+			bought += maxi(1, m.stacks)
+		else:
+			own += maxi(1, m.stacks)
+	return float(bought) * BANK_WEIGHT * CLEANSE_ROUNDS + float(own) * BANK_WEIGHT
+
+
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
 	var tick := int(Effects.tick_preview(who.unit, true)["heat"])
@@ -1482,12 +1498,12 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
 			score += float(Skirmish.corrupt_bite() * a.rider(a.action, "corrupt")) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
-		# A silence sleeps the machine's buffs for the round, a purge takes them: the stacks at
-		# stake, a purge's for the rounds they would have run.
+		# A silence mutes the machine's keywords for the round (28 October); a purge takes what a
+		# die face bought for the rounds it would have run and sleeps the rest for a turn.
 		if a.has_keyword(a.action, "silence"):
-			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
+			score += _raw_attack_mean(who) * 0.5
 		if a.has_keyword(a.action, "dispel"):
-			score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
+			score += _purge_stakes(who)
 	# A special's rider lands on it too, and the Ward turns that away as well (Ryan, 25 October:
 	# "Should stop all riders, even from non-damaging attacks"): a Stoke's Burning, a Stone's
 	# switch-off, a silence or a purge on its pick; an Eruption's Scorched and a Diamond Dust's
@@ -1506,10 +1522,10 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 					score += _raw_attack_mean(who) / float(n)
 			"silence":
 				if on_it:
-					score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
+					score += _raw_attack_mean(who) * 0.5
 			"dispel":
 				if on_it:
-					score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
+					score += _purge_stakes(who)
 			"scorch_all":
 				score += float(scorch * value) * BANK_WEIGHT
 			"corrupt_all":

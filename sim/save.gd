@@ -326,6 +326,7 @@ static func _modifier_dict(m: Effects.Modifier) -> Dictionary:
 		"id": m.id, "name": m.name, "description": m.description, "source": m.source,
 		"component": m.component, "scope": m.scope, "expires_round": m.expires_round,
 		"tags": m.tags, "effects": m.effects, "seq": m.seq, "stacks": m.stacks, "decay": m.decay,
+		"slept": m.slept,
 	}
 
 
@@ -344,6 +345,7 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 	m.seq = int(d.get("seq", 0))
 	m.stacks = int(d.get("stacks", 1))
 	m.decay = int(d.get("decay", Effects.DECAY_NONE))
+	m.slept = bool(d.get("slept", false))
 	# Grant order decides override ties; the counter carries on past the loaded ones.
 	Effects._seq = maxi(Effects._seq, m.seq)
 	return m

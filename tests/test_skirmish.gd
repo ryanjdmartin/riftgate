@@ -6909,44 +6909,102 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 	assert_false(Effects.has(w, "silenced"), "the Ward turned the silence away")
 
 
-## Purge (Ryan, 17 October; built 21 October): every buff the machine carries goes, every
-## stack, the kept ones too; its stores stay (Ryan, 21 October: a store is a resource) and so do
-## its passives; a Ward turns it away. A purge as a move needs no blow, and a foe that aims at
-## the buffed picks the machine carrying the most buffs.
-func test_a_purge_takes_every_buff_keeps_the_stores_and_aims_at_the_buffed() -> void:
+## A purger: its one move a purge, aimed at the buffed and cast where a machine carries one.
+func _purger() -> Foe:
+	var f := Foe.make("priest", 500, 1)
+	f.actions = [{"id": "purge", "name": "Purge", "kind": "debuff", "effect": "dispel", "weight": 1, "aim": "buffed", "when": "machine_buffed", "text": ""}]
+	f.action = f.actions[0]
+	return f
+
+
+## Purge (Ryan, 17 and 21 October; by source since his words of 27 and 28 October): what a die
+## face bought goes for good, every stack; what the machine is (a form, a passive's grant)
+## sleeps for the rest of the enemy's turn and wakes at the start of the player's turn after its
+## start resolves, a form's price biting meanwhile; a kept stack is its passive's own and stays,
+## drawing no purger; the stores and the passives stay; a Ward turns it away; a save in between
+## keeps the sleep.
+func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
 	u.grant_passive({"id": "test_pass", "name": "Pass", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]})
 	sk.add_mech(u)
-	sk.add_foes([_storm(1, 1, ["dispel"])])
+	sk.add_foes([_purger()])
 	sk.begin()
-	sk.start_round()
-	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 4, Effects.DECAY_HALF)
 	Effects.stack(u, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["rage"], Effects.BATTLE, "mech", 2, Effects.DECAY_NONE)
+	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.buff_stacks(u), 0, "every buff gone")
-	assert_false(Effects.has(u, "overcharged"), "its Overcharged among them")
+	assert_false(Effects.has(u, "overcharged"), "the Coil's Overcharged is gone")
+	assert_true(Effects.asleep(u).is_empty(), "for good: nothing of it sleeps")
 	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "rage")], [3, 2], "the stores stay, the battle's rage too")
 	assert_eq(u.armour, 5, "the passive stays")
-	assert_true("\n".join(sk.log).contains("purges A"), "the log says so")
-	# As a move, aimed at the buffed.
-	var s2 := Skirmish.new(3, 1)
-	var plain := _mech("P", Die.single(Face.attack(10, L)), 40, 200)
-	var stacked := _mech("S", Die.single(Face.attack(10, L)), 40, 200)
-	s2.add_mech(plain)
-	s2.add_mech(stacked)
-	var priest := Foe.make("priest", 500, 10)
-	priest.actions = [{"id": "purge", "name": "Purge", "kind": "debuff", "effect": "dispel", "weight": 1, "aim": "buffed", "when": "machine_buffed", "text": ""}]
-	priest.action = priest.actions[0]
-	s2.add_foes([priest])
+	assert_eq(u.hull, 200, "no blow")
+	assert_true("\n".join(sk.log).contains("purges A: Overcharged gone"), "the log says what went")
+	sk.start_round()
+	assert_false(Effects.has(u, "overcharged"), "and nothing comes back")
+	# The seal sleeps: its armour gone for the enemy's turn, its price (the cooling it stops)
+	# biting, and back after the next round's start.
+	var s2 := Skirmish.new(1, 2)
+	var shield := Face.shield(20)
+	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)
+	m.cooling = 5
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+	s2.add_mech(m)
+	var hitter := _archer(500, 12)   # the back rank strikes after the front, so after the purge
+	s2.add_foes([_purger(), hitter])
 	s2.begin()
-	Effects.stack(stacked, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 2, Effects.DECAY_HALF)
 	s2.start_round()
-	assert_eq(priest.target, s2.mechs[1], "it aims at the machine carrying the most")
+	var ms: Skirmish.MechState = s2.mechs[0]
+	ms.face_index = 0
+	assert_true(s2.assign(0, null), "a shield on itself")
+	assert_true(Effects.is_sealed(m) and m.armour == 10, "seals it, armour 10")
+	m.shield = 0
 	s2.end_round()
-	assert_eq(Effects.buff_stacks(stacked), 0, "and takes them")
-	assert_eq(plain.hull, 200, "no blow")
+	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter at the end of its turn")
+	assert_eq(m.armour, 0, "the purge put the seal's armour to sleep")
+	assert_eq(m.hull, 200 - 12, "so the blow after it reached the hull whole")
+	assert_true(Effects.is_sealed(m), "the form stands")
+	assert_eq(Effects.asleep(m).size(), 1, "one buff asleep")
+	assert_true("\n".join(s2.log).contains("Sealed asleep until its turn"), "the log says it sleeps")
+	var saved: Skirmish = SaveGame.clone_skirmish(s2)
+	var mc: Unit = saved.mechs[0].unit
+	assert_true(Effects.is_sealed(mc) and mc.armour == 0 and Effects.asleep(mc).size() == 1, "a save in between keeps it asleep")
+	s2.start_round()
+	assert_eq(ms.heat, 15, "its cooling still stopped at the round's start: the price bites while it sleeps")
+	assert_eq(m.armour, 10, "and the armour is back once the turn's start resolves")
+	assert_true(Effects.asleep(m).is_empty(), "nothing asleep")
+	assert_true("\n".join(s2.log).contains("D's Sealed returns"), "the log says it returns")
+	saved.start_round()
+	assert_eq(mc.armour, 10, "the saved fight wakes it the same way")
+	# A kept stack is the passive's own: it stays, and draws no purger.
+	var s3 := Skirmish.new(3, 1)
+	var keeper := _mech("K", Die.single(Face.attack(10, L)), 40, 200)
+	keeper.grant_passive({"id": "tap", "name": "Tap", "description": "", "effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
+	var plain := _mech("P", Die.single(Face.attack(10, L)), 40, 200)
+	s3.add_mech(keeper)
+	s3.add_mech(plain)
+	var priest := _purger()
+	s3.add_foes([priest])
+	s3.begin()
+	Effects.stack(keeper, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 5, Effects.DECAY_HALF)
+	Effects.stack(plain, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 1, Effects.DECAY_HALF)
+	assert_eq(Effects.buff_stacks(keeper), 0, "the kept stacks count for no purger")
+	s3.start_round()
+	assert_eq(priest.target, s3.mechs[1], "it aims at the one a purge can reach")
+	assert_true(Effects.purge(keeper)["gone"].is_empty() and Effects.stacks_of(keeper, "overcharged") == 5, "and a purge on the keeper takes nothing")
+	# A Ward turns it away.
+	var s4 := Skirmish.new(1, 1)
+	var w := _mech("W", Die.single(Face.attack(10, L)), 40, 200)
+	s4.add_mech(w)
+	s4.add_foes([_purger()])
+	s4.begin()
+	Effects.stack(w, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 2, Effects.DECAY_HALF)
+	s4.start_round()
+	Effects.grant_buff(w, "ward", 1, "test", s4.round)
+	s4.end_round()
+	assert_true(Effects.has(w, "overcharged"), "the Ward turned the purge away")
 
 
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend

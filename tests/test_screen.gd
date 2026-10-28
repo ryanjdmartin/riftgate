@@ -950,6 +950,35 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	s.free()
 
 
+## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
+## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
+## a chip on its way pulses there as on a foe.
+func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.blank())
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 1)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var seal := Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	var r := Effects.purge(m)
+	assert_eq(r["slept"], ["Sealed"], "the seal sleeps")
+	s._refresh()
+	var rows: Array = s._mech_rows(0).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "asleep")
+	assert_eq(rows.size(), 1, "one chip asleep")
+	if rows.size() == 1:
+		assert_true(str(rows[0][2]).contains("asleep until your turn"), "its hold line says so")
+	var kinds: Array = s._mech_views[0].statuses.map(func(st) -> String: return str(st[3]) if st.size() >= 4 else "")
+	assert_true(kinds.has("asleep"), "and the machine's view draws it asleep")
+	Effects.wake(m)
+	s._refresh()
+	assert_true(s._mech_rows(0).all(func(row) -> bool: return row.size() < 5 or str(row[4]) != "asleep"), "awake, it is a plain chip again")
+	assert_true(seal != null, "the seal was granted")
+	s.free()
+
+
 ## A foe whose machine falls before it acts strikes the pick it will make (26 October: no pick is
 ## open): its own arrow stays on its pick, the intent whatever reads it still needs, and a second,
 ## dashed the way a lure's turn is drawn, goes to the machine its blow lands on.

@@ -374,6 +374,7 @@ class Modifier:
 	var seq: int = 0               # grant order, for override ties
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
+	var slept: bool = false        # put to sleep by a purge (28 October): it takes part in nothing, its clocks running, until the player's turn wakes it
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
@@ -734,7 +735,10 @@ static func end_battle(u) -> void:
 ## Live modifiers after suppression, shortest scope first, latest granted first within a
 ## scope: the order overrides are resolved in.
 static func live(u) -> Array:
-	var all: Array = u.modifiers.duplicate()
+	var all: Array = []
+	for m in u.modifiers:
+		if not m.slept:
+			all.append(m)   # a buff a purge put to sleep takes part in nothing until it wakes
 	all.sort_custom(func(a, b) -> bool: return a.scope > b.scope or (a.scope == b.scope and a.seq > b.seq))
 	var off := {}
 	for m in all:
@@ -1314,7 +1318,12 @@ static func sealed_status(armour: int, heat: int) -> Dictionary:
 
 
 static func is_sealed(u) -> bool:
-	return has(u, "sealed")
+	# The form stands while a purge sleeps its armour (28 October): its price, the cooling it
+	# stops, keeps biting, so a slept seal still reads sealed.
+	for m in u.modifiers:
+		if m.id == "sealed" and m.stacks > 0:
+			return true
+	return false
 
 
 ## The chance, percent, that an ally slips out under this machine's screen when the team
@@ -1534,31 +1543,69 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
-## The stacks of buffs a machine carries, silenced or not: what a foe that aims at the buffed
-## reads.
+## Was this buff bought by a die face (28 October): a buff component's spend ("buff:", or
+## "buff" for an entry with no component) or a braces rule's ("brace:")? A purge takes these for
+## good; what the machine is (a form, a passive's or a module's grant, a store's effect) it puts
+## to sleep instead.
+static func bought(m) -> bool:
+	return m.source == "buff" or m.source.begins_with("buff:") or m.source.begins_with("brace:")
+
+
+## The stacks of buffs a purge can reach on a machine: what a foe that aims at the buffed reads,
+## and what a purger's condition asks (28 October). Neither a kept one (the Ammit's Overcharged,
+## its passive's own) nor one already asleep counts.
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
-		if purgeable(m):
+		if purgeable(m) and not m.slept and not keeps(u, m.id):
 			n += maxi(1, m.stacks)
 	return n
 
 
-## A purge (the enemy's Purge, a hero's or a boss's, 17 October; built 21 October): every buff
-## on the machine goes, every stack, the kept ones included (they last the battle and never
-## between battles); its stores stay (Ryan, 21 October). Returns the names of what went, once
-## each.
-static func purge(u) -> Array[String]:
+## A purge (the enemy's Purge; Ryan, 17 and 21 October; by source since 27 and 28 October):
+## every buff a die face bought goes, every stack, for good; what a store, a form or a passive
+## grants sleeps for the rest of the enemy's turn and wakes at the start of the player's turn
+## after its start resolves (wake, Skirmish.start_round); a kept one is the passive's own and
+## stays (Ryan: "overcharge never decays and cannot be purged"); the stores stay. Returns
+## {"gone": names, "slept": names}, once each.
+static func purge(u) -> Dictionary:
 	var gone: Array[String] = []
+	var slept: Array[String] = []
 	var keep: Array = []
 	for m in u.modifiers:
-		if purgeable(m):
+		if not purgeable(m) or m.slept or keeps(u, m.id):
+			keep.append(m)
+		elif bought(m):
 			if not gone.has(m.name):
 				gone.append(m.name)
 		else:
+			m.slept = true
 			keep.append(m)
+			if not slept.has(m.name):
+				slept.append(m.name)
 	u.modifiers = keep
-	return gone
+	return {"gone": gone, "slept": slept}
+
+
+## Every buff a purge put to sleep wakes (the start of the player's turn, after its start has
+## resolved). Returns the names that woke, once each.
+static func wake(u) -> Array[String]:
+	var woke: Array[String] = []
+	for m in u.modifiers:
+		if m.slept:
+			m.slept = false
+			if not woke.has(m.name):
+				woke.append(m.name)
+	return woke
+
+
+## The buffs asleep on a machine, for the chips: [name, description, stacks, id] each.
+static func asleep(u) -> Array:
+	var out: Array = []
+	for m in u.modifiers:
+		if m.slept:
+			out.append([m.name, m.description, m.stacks, m.id])
+	return out
 
 
 ## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
