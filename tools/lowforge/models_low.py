@@ -3908,14 +3908,20 @@ def lammergeier(b):
         x0, x1 = s * 10.5, s * 23.5
         def ring(y_at, zb, zt):
             return [(x0, y_at(x0), zb), (x1, y_at(x1), zb), (x1, y_at(x1), zt - 0.9), (x1 * 0.92 + x0 * 0.08, y_at(x1), zt), (x0 * 0.92 + x1 * 0.08, y_at(x0), zt), (x0, y_at(x0), zt - 0.9)]
-        _rings(b, [ring(lambda x: le(17.0) - 14.0, Z - 3.3, Z + 3.3), ring(lambda x: le(x) - 5.0, Z - 2.9, Z + 3.1), ring(lambda x: le(x) + 0.6, Z - 2.0, Z + 2.6)], "steel.dark", "drone_pod")
-        # Each tube's mouth follows the face's rake and stands a touch proud of it, in the
-        # nacelle's dark (Ryan, 28 October: a square mouth through a raked face left hull-coloured
-        # chunks clipping through the box).
+        back, face = ring(lambda x: le(17.0) - 14.0, Z - 3.3, Z + 3.3), ring(lambda x: le(x) + 0.6, Z - 2.0, Z + 2.6)
+        _rings(b, [back, ring(lambda x: le(x) - 5.0, Z - 2.9, Z + 3.1), face], "steel.dark", "drone_pod", cap=False)
+        _face(b, back, "steel.dark", "drone_pod")
+        # The tubes are bored through the face: each mouth a hole in the face plate, flush with
+        # it and following its rake, the bore twelve deep in the hull's lighter plate so its far
+        # wall catches the light (Ryan, 28 October: a mouth on the face read as an end cap, not
+        # a hole; before that, square ends through the raked face had clipped).
+        mouths = []
         for k in range(2):
             x = s * (14.0 + 6.0 * k)
-            _tube(b, (x, le(x) - 12.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.dark", "drone_tube", floor_material="amber.ember", floor_depth=0.8,
-                  rake=lambda v, x=x: le(v.x) - le(x))   # bored twelve deep (Ryan, 28 October: an end cap is no tube)
+            rake = lambda v, x=x: le(v.x) - le(x)
+            _tube(b, (x, le(x) - 12.0, TZ), (x, le(x) + 0.6, TZ), 2.1, 1.6, 8, "steel.plate", "drone_tube", floor_material="amber.ember", floor_depth=0.8, rake=rake)
+            mouths.append([(x + 2.1 * math.cos(i * math.pi / 4.0), le(x + 2.1 * math.cos(i * math.pi / 4.0)) + 0.6, TZ + 2.1 * math.sin(i * math.pi / 4.0)) for i in range(8)])
+        _plate(b, face, mouths, "steel.dark", "drone_pod")
     # The Lorentz Contractor's dish on a dorsal pylon aft of the body's crown.
     uy, uz = -10.0, deck(-10.0)
     b.loft([(-6.0, rect(0.0, 4.0, uz - 0.4, uz + 3.0)), (-14.0, rect(0.0, 3.0, uz - 0.4, uz + 3.6))], "steel.dark", "contractor_mast")
@@ -4132,6 +4138,27 @@ def _fuse(w, top, bottom):
 def _wing(b, root, tip, material, label):
     """A wing as a loft between two sections given in full 3D."""
     return _rings(b, [root, tip], material, label)
+
+
+def _face(b, pts, material, label):
+    """One flat polygon through 3D points: a cap over an open loft."""
+    bm = bmesh.new()
+    bm.faces.new([bm.verts.new(Vector(p)) for p in pts])
+    return b._finish(bm, material, label)
+
+
+def _plate(b, outer, holes, material, label):
+    """A flat polygon with holes in it, as 3D points: the outer outline and each hole's ring,
+    tessellated (mathutils), so a bore shows as a true hole in a face rather than a disc on
+    it (the Lammergeier's launchers)."""
+    from mathutils.geometry import tessellate_polygon
+    polys = [[Vector(p) for p in outer]] + [[Vector(p) for p in h] for h in holes]
+    flat = [v for poly in polys for v in poly]
+    bm = bmesh.new()
+    verts = [bm.verts.new(v) for v in flat]
+    for tri in tessellate_polygon(polys):
+        bm.faces.new([verts[i] for i in tri])
+    return b._finish(bm, material, label)
 
 
 def _rings(b, rings, material, label, frame=None, cap=True):
