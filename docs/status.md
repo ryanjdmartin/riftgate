@@ -80,10 +80,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - Map movement (Ryan, 27 and 28 October: the move points and the terrain table "add confusion and
   overhead for no strategic gain"; his calls, movement in hexes with binary ground, a move in one
   go, the crossing priced by the pricing run, winged packs crossing, a hunter that cannot ring
-  its prey picking again): `docs/movement_proposal.md` is the build spec, its section 1 the
-  decisions made and the seven open calls (water priced or a wall first) with every option spelled
-  out, the rest the rule, the build file by file, the content, the tests and the records. It is
-  built in a session of its own once he has answered the seven. Nothing in the engine or the
+  its prey picking again; his seven calls of 28 October made: water the one priced ground at two of
+  a ground machine's move, hover walled by crags, the moves as tens over ten, the five map types
+  standing until his six shapes land, the winged five, the Kestrel hovers amphibious, the re-pick
+  holding): `docs/movement_proposal.md` is the build spec, the rule, the build file by file, the
+  content with every move listed, the tests and the records; its section 10 is the map shapes, a
+  generator session after it. Built in a session of its own next. Nothing in the engine or the
   content has changed.
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
