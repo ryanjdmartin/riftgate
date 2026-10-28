@@ -21,9 +21,11 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 721 tests, 66,041 checks, green on main's head (28 October, the Kestrel models' eight
-  rounds of notes merged as a fast-forward onto the numbered area and the blow's order, the
-  glow-parts test tightened to the rig's own rule), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 724 tests, 66,629 checks, green on `claude/charming-rubin-h954bp` (28 October, the
+  model rebuilds of Ryan's brief on main's head; 721 tests, 66,041 checks on main's head before
+  them), about four minutes in a cloud session, twenty on a slow one. The shield-cost test on main
+  called a function renamed away (`equipment_targets_for`, now `machine_targets_for`) and
+  stopped there unseen; fixed on the branch, its last checks run. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -140,7 +142,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
-  until Ryan's next session (the to-do). Since 25 October every machine's parts are welded at load by material
+  until Ryan's next session (the to-do). Since 28 October (Ryan's brief, the branch above) a
+  model names the component each pin's stock part is and the game wears a die against that
+  record, so a stock that moves on shows class shapes until the model follows; every model has
+  as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
+  stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
+  and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
+  the stock pass had left on old kit), to judge running (the to-do). A model may hold a form
+  while its machine carries the status of the same name (the Armadillo's seal;
+  `RIFTGATE_SEAL_DEBUG=1`). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -223,7 +233,9 @@ The tasks are the to-do's; this is the index of what waits.
 - The planned foe moves, Silence's and Purge's carriers (section 12), and Purge as our keyword
   (its carriers and numbers open).
 - The Honey Badger's rework, once its numbers are settled (its brief).
-- The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
+- The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
+  Scorpion on six or eight legs, the Swallowtail, the Musk Ox); the Kite's Pinion Driver as two
+  hits waits on Ryan's answer to its catches (section 12).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 
 ## Next, in order

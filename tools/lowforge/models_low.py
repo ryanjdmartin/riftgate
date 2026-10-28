@@ -1624,8 +1624,10 @@ def funnel_web(b):
     a four-legged walker that does spider-like things (Ryan, 14 and 17 October: a little
     spider takes down a big thing with venom). Four cuts on 19 October, each on Ryan's notes:
     a war machine, not a mechanical spider (the first: the legs under the mass, more leg to
-    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's low
-    quad (the second: the larger boiler spider's likely shape) but the Revenant's and the Doom
+    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's quad
+    (the second; the note that called it the larger boiler spider's likely shape was logged
+    wrong, Ryan, 28 October: the Scorpion stands tall, and the Whip Scorpion walks on six or
+    eight legs) but the Revenant's and the Doom
     Arachnotron's legs under a turret, sides as well as a top and a front for the weapons, a
     diminutive little death machine; the legs going down, up and down so the thighs clear the
     body (the third; leggy is fine); and this, the fourth: the body in W&S's military camp,
