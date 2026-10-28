@@ -3458,12 +3458,15 @@ def skua(b):
     # and up off its hex, wings over at the top with the hands sweeping back, dives steeply
     # forward and down on its foe, the pods firing twice at the bottom, pulls up hard and
     # climbs away rolled over, the hands spreading to brake it back onto its hex.
-    b.act("strafing_run", 5.6, {"wing_l": [(0.9, 0.0), (1.5, SW), (3.0, SW), (3.7, -8.0), (4.4, -8.0), (5.1, 0.0)],
-                                "wing_r": [(0.9, 0.0), (1.5, -SW), (3.0, -SW), (3.7, 8.0), (4.4, 8.0), (5.1, 0.0)]},
-          body=[(0.3, 0.0, 0.0, 0.0), (1.0, 0.0, -16.0, 12.0, 0.0, 14.0, 0.0), (1.6, 4.0, -8.0, 20.0, -8.0, -12.0, -34.0), (2.3, -2.0, 18.0, 4.0, 4.0, -40.0, -12.0),
-                (2.7, -5.0, 34.0, -8.0, 2.0, -22.0, 0.0), (3.1, -4.0, 44.0, -5.0, 0.0, 12.0, 22.0), (3.7, 2.0, 34.0, 12.0, -8.0, 32.0, 46.0), (4.4, 1.0, 12.0, 7.0, -2.0, 10.0, 12.0),
-                (5.6, 0.0, 0.0, 0.0)],
-          glow=[(["pod_collar"], [(2.45, 0.0), (2.55, 18.0), (2.7, 1.0), (2.85, 18.0), (3.0, 1.0), (3.3, 0.0)]), (boosters, [(0.5, 0.0), (1.2, 9.0), (3.8, 9.0), (4.8, 0.0)])])
+    # At the Kite's loop's scale (Ryan, 28 October, on the phone: a run of forty-odd units read
+    # as bobbing and swaying, never leaving its hex): it climbs a hex back and high, dives
+    # through its hex a full hex on, climbs out past it and arcs back over the top.
+    b.act("strafing_run", 6.2, {"wing_l": [(0.9, 0.0), (1.5, SW), (3.2, SW), (3.9, -8.0), (4.8, -8.0), (5.6, 0.0)],
+                                "wing_r": [(0.9, 0.0), (1.5, -SW), (3.2, -SW), (3.9, 8.0), (4.8, 8.0), (5.6, 0.0)]},
+          body=[(0.3, 0.0, 0.0, 0.0), (1.0, 0.0, -34.0, 26.0, 0.0, 24.0, 0.0), (1.6, 8.0, -24.0, 50.0, -12.0, -12.0, -42.0), (2.3, -2.0, 18.0, 22.0, 6.0, -62.0, -16.0),
+                (2.8, -8.0, 62.0, -12.0, 2.0, -36.0, 0.0), (3.2, -8.0, 92.0, -10.0, 0.0, 10.0, 26.0), (3.8, 4.0, 112.0, 22.0, -12.0, 44.0, 54.0), (4.5, 12.0, 76.0, 46.0, -40.0, 24.0, 40.0),
+                (5.2, 6.0, 26.0, 22.0, -20.0, 6.0, 12.0), (6.2, 0.0, 0.0, 0.0)],
+          glow=[(["pod_collar"], [(2.55, 0.0), (2.65, 18.0), (2.8, 1.0), (2.95, 18.0), (3.1, 1.0), (3.4, 0.0)]), (boosters, [(0.5, 0.0), (1.2, 9.0), (4.2, 9.0), (5.4, 0.0)])])
     # The barrel roll, the Kite's, the hands spread (Ryan, 28 October: the wings stay extended
     # for a barrel roll): a dip and a kick to gather, once round on the fuselage and past, back
     # short of level and settled.
@@ -3471,11 +3474,12 @@ def skua(b):
           body=_barrel_roll(t0=0.4, t1=1.6, over=28.0, duration=3.2, surge=8.0),
           glow=[(boosters, [(0.2, 0.0), (0.5, 8.0), (1.7, 8.0), (2.5, 0.0)])])
     # Harrying: the jaeger's stoops, one wide to the left and one to the right, half swept,
-    # rolled far over into each with a burst from the pods at the bottom.
-    b.act("harry", 5.0, {"wing_l": [(0.4, 0.0), (0.9, 34.0), (1.6, 8.0), (2.5, 34.0), (3.3, 8.0), (4.2, 0.0)], "wing_r": [(0.4, 0.0), (0.9, -34.0), (1.6, -8.0), (2.5, -34.0), (3.3, -8.0), (4.2, 0.0)]},
-          body=[(0.4, 0.0, 0.0, 0.0), (1.0, -16.0, 10.0, -5.0, 16.0, -16.0, -50.0), (1.6, -20.0, 8.0, 3.0, 10.0, 10.0, -20.0), (2.0, -6.0, 2.0, 2.0, 0.0, 4.0, 0.0),
-                (2.6, 16.0, 10.0, -5.0, -16.0, -16.0, 50.0), (3.3, 20.0, 8.0, 3.0, -10.0, 10.0, 20.0), (3.9, 4.0, 2.0, 1.0, 0.0, 3.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
-          glow=[(["pod_collar"], [(0.9, 0.0), (1.0, 14.0), (1.2, 0.0), (2.5, 0.0), (2.6, 14.0), (2.8, 0.0)]), (boosters, [(0.4, 0.0), (0.8, 7.0), (3.4, 7.0), (4.2, 0.0)])])
+    # rolled far over into each with a burst from the pods at the bottom; a hex wide each way
+    # and a half hex down (the same note: bigger).
+    b.act("harry", 5.4, {"wing_l": [(0.4, 0.0), (0.9, 34.0), (1.7, 8.0), (2.7, 34.0), (3.6, 8.0), (4.6, 0.0)], "wing_r": [(0.4, 0.0), (0.9, -34.0), (1.7, -8.0), (2.7, -34.0), (3.6, -8.0), (4.6, 0.0)]},
+          body=[(0.4, 0.0, 0.0, 0.0), (1.0, -44.0, 24.0, -16.0, 24.0, -30.0, -64.0), (1.7, -56.0, 20.0, 8.0, 14.0, 18.0, -26.0), (2.2, -14.0, 4.0, 6.0, 0.0, 6.0, 0.0),
+                (2.8, 44.0, 24.0, -16.0, -24.0, -30.0, 64.0), (3.6, 56.0, 20.0, 8.0, -14.0, 18.0, 26.0), (4.3, 10.0, 4.0, 2.0, 0.0, 4.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
+          glow=[(["pod_collar"], [(0.9, 0.0), (1.0, 14.0), (1.2, 0.0), (2.7, 0.0), (2.8, 14.0), (3.0, 0.0)]), (boosters, [(0.4, 0.0), (0.8, 7.0), (3.7, 7.0), (4.6, 0.0)])])
     # The loop, the Kite's, on the map only: it backs off, runs in with the hands swept and
     # pulls up through a full circle, over on its back and down, and brakes onto its hex a
     # whole turn on.
