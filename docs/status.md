@@ -156,6 +156,26 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   "she's still not correct"; the to-do). The cloud session that cut those three could not fetch
   Godot; their six `.import` files were written and committed on the desk machine the same day,
   the suite green there (644 tests).
+- The ladder (28 October, `ccr-6073bda9-p34o8q`; its brief retired: `git show
+  26c54c7:docs/briefs/foes_ladder.md`): the enemy's three verbs (Silence muting keywords, Purge
+  taking what a die face bought and sleeping the machine's own grants until its turn, a foe's
+  Cleanse), Primed, Barrier, Ward and Regenerating on the foes from specials of their own, the
+  player's Purge (`dispel`) and its piece, the Null Field Emitter, and twenty-six recolours on
+  the thirteen base types with the spawn lists by tier and their sprites (`tools/recolour.py`).
+  Read at 30 seeds (`docs/measurements.md`, a direction): each tier's formation costs every
+  squad more than the one under it; the tier-three rank and file read easier than tier one's in
+  the Waste, the Marsh and the Peak, their lists sending them one or two at a time, random play
+  winning 38 to 46% of them there; the Marsh's tier three walls even a four (its knights), and
+  the Waste's and the Peak's ask a four nothing. Every number is Ryan's to move. Calls the build
+  made where the brief was silent, his to confirm: a purge's sleeping buffs wake after the
+  round's start and before the foes draw; a Shock is spent on the blow a foe's Barrier eats
+  (his rule of 25 October), and a spill's or a mine's damage pops one; a cleanse's most-marked
+  counts each status once; a buff with no component behind it counts as bought; Regenerating
+  regrows on a suppressed foe; a laid shot carries the Purge; Primed wears its own glyph on both
+  sides (the flame's core lit) and Regenerating a heart with a plus, so neither reads as Burning
+  or Getting Back Up on a foe; the Null Field Emitter's shape a dish and its tag `arc` (the
+  brief gave none and "Arc"); a machine's incoming chips pulse as a foe's do; and the six
+  recolours' move counts, section 12's question.
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free

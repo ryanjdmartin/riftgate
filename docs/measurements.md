@@ -2076,3 +2076,85 @@ measured against the tier's kit, and the question is what makes the tier (the bi
 3 row, rewritten the same day). The area numbers sharpen it: a neighbour's Spread 2 or 3 tells
 at the rank and file's kill threshold of 3, so a tier whose units stay at 2 to 4 HP dies to
 the column once the tier's pieces carry area.
+
+## 28 October, the ladder at 30 seeds
+
+**The ladder's first read** (its brief's section F, `git show 26c54c7:docs/briefs/foes_ladder.md`),
+a direction and called one: `tools/balance.gd` at 30 seeds a cell, random and greedy, every
+row, on the branch's head (`ccr-6073bda9-p34o8q`, the ladder's content as landed; the layout
+fix after it moves no number). Three runs, four parts each: the ladder's 34 new cells (a pack
+cell for each of the twenty-six recolours at its strength in its own tier's list, and the
+formation of each domain at tiers two and three), 55,080 fights in 1,462 s; tier one's 17
+cells at the same seeds for the baseline, since the 27 October matrix's Marsh formation
+predates the Zombie Knight, 27,540 fights in 764 s; and the file's first four machines (the
+Honey Badger, the Clydesdale, the Sparrowhawk and the Baboon, the default team with the
+Baboon) on the twelve formations, 720 fights in 142 s.
+
+The formations by tier, as the lists send them:
+
+| Domain | Tier | Foes | HP | Armour | Base attack |
+|---|---|---|---|---|---|
+| Meadow | 1 / 2 / 3 | 15 / 19 / 22 | 58 / 74 / 90 | 0 / 2 / 11 | 39 / 63 / 94 |
+| Waste | 1 / 2 / 3 | 9 / 10 / 10 | 30 / 41 / 49 | 0 / 0 / 0 | 33 / 43 / 51 |
+| Marsh | 1 / 2 / 3 | 11 / 12 / 12 | 46 / 71 / 98 | 2 / 2 / 3 | 33 / 44 / 57 |
+| Peak | 1 / 2 / 3 | 9 / 10 / 11 | 42 / 57 / 73 | 0 / 0 / 0 | 57 / 73 / 84 |
+
+The rank and file, each domain's pack cells at a tier (tier one its bases, tiers two and three
+its recolours of that tier), every single machine meaned by its chassis tier, greedy won / hull
+lost over every fight, and random's wins on the tier-one rows:
+
+| Domain | Tier | Chassis tier 1 | Chassis tier 2 | Chassis tier 3 | Random, tier 1 |
+|---|---|---|---|---|---|
+| Meadow | 1 | 64% / 50% | 81% / 33% | 86% / 35% | 46% |
+| Meadow | 2 | 65% / 56% | 88% / 28% | 98% / 24% | 33% |
+| Meadow | 3 | 25% / 87% | 67% / 55% | 58% / 70% | 7% |
+| Waste | 1 | 67% / 49% | 79% / 39% | 92% / 33% | 47% |
+| Waste | 2 | 52% / 65% | 73% / 49% | 68% / 49% | 31% |
+| Waste | 3 | 76% / 47% | 90% / 24% | 97% / 22% | 46% |
+| Marsh | 1 | 39% / 70% | 58% / 57% | 53% / 58% | 25% |
+| Marsh | 2 | 24% / 87% | 48% / 69% | 39% / 75% | 10% |
+| Marsh | 3 | 47% / 59% | 58% / 48% | 62% / 49% | 38% |
+| Peak | 1 | 44% / 70% | 76% / 43% | 75% / 46% | 28% |
+| Peak | 2 | 38% / 79% | 67% / 47% | 69% / 55% | 19% |
+| Peak | 3 | 60% / 56% | 85% / 31% | 85% / 33% | 40% |
+
+By cell, the tier-one rows' random and greedy wins: the easy end the Lich ×1 (97% and 100%),
+the Balloon ×2 (83 and 99: its burst spends it, and the pack goes with it), the Basilisk ×2
+(76 and 99), the Great Needler ×2 (54 and 91: three HP a needler), the Antlion Queen ×1 (53
+and 81); the walls the Death Knight ×2 and the Dread Knight ×2 (0 for every single machine of
+every tier), the Fire Lizard ×3 (0, and 22% for a tier two), the Pit Antlion ×2 (7 and 46),
+the Wight ×4 (9 and 52) and the Metal Gel ×3 (6 and 44).
+
+The formations, greedy won / hull lost (no single machine of any tier wins a formation at tier
+two or three, the Goshawk's 7% on the Meadow's tier two the most):
+
+| Squad | Meadow 1 / 2 / 3 | Waste 1 / 2 / 3 | Marsh 1 / 2 / 3 | Peak 1 / 2 / 3 |
+|---|---|---|---|---|
+| The default team | 100/6, 100/16, 13/98 | 100/7, 100/15, 93/31 | 97/18, 60/78, 0/100 | 100/8, 100/25, 70/71 |
+| Minerva's team | 100/4, 100/15, 33/94 | 100/4, 100/32, 97/55 | 100/46, 53/90, 0/100 | 100/11, 97/43, 13/96 |
+| Kestrel's team | 100/12, 97/25, 0/100 | 100/10, 100/29, 93/43 | 100/17, 27/91, 0/100 | 100/7, 90/49, 70/70 |
+| Wainwright & Sutler's team | 100/21, 70/72, 0/100 | 100/18, 70/79, 13/98 | 13/97, 0/100, 0/100 | 87/45, 20/94, 3/99 |
+| The default team with the Baboon | 100/1, 100/5, 90/57 | 100/3, 100/8, 100/9 | 100/10, 100/32, 0/100 | 100/2, 100/7, 100/19 |
+
+The cleansers against the Ammit and the Cassowary (greedy won / hull lost): the Ammit takes
+the Spectre ×3 at 100% for 31% and the Wraith ×2 at 100% for 39%; the Cassowary 17% for 97%
+and 3% for 100%. No purging pack exists, so the Ammit's kept Overcharged waits on one (the
+to-do's line).
+
+Read against the brief's bands. A tier's formation costs every squad more than the tier
+under it in every domain, as it should. The rank and file do not: a tier two's cells cost a
+tier-one machine more than tier one's in the Waste, the Marsh and the Peak and about the same
+in the Meadow, but tier three's cost less than tier one's in all three and random play wins
+38 to 46% of them there (the band: none), since those lists send a tier-three unit one or two
+at a time (the Lich, the Antlion Queen, the Great Needlers, the Balloons), where tier two's
+send two to four. The Meadow, whose dial is its count, sends three and four at tier three and
+reads as the band asks. The formations at tier three wall every single machine, as asked; for
+the four they are a fight in the Meadow (90% for 57%) and nothing in the Waste (100% for 9%)
+or the Peak (100% for 19%), and a wall in the Marsh (0%), whose Dread Knights (16 HP, armour,
+a breaching 8, a last act and a Reraise) and Death Knight (12 HP, the guard on every foe) make
+it what the Zombie Knight pair began (the status's injury mill). The numbers that would move
+each, for Ryan's word and moved by none of these runs: the tier-three strengths (the Lich ×1
+and the Antlion Queen ×1 to two or three, the Great Needler ×2 and the Balloon ×2 to four), or
+the Waste's and the Peak's tier-three HP above the floor; the Marsh's knights (their HP, 12 and
+16, or the Dread Knight ×2 to one, or the Marsh's tier-three dial ×2 to the floor's ×1.5); and
+the Balloon's burst spending a pack that a lone machine then wins.
