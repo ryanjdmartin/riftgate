@@ -2894,3 +2894,61 @@ Read:
   none of the ladder's rank and file, the kill-time test's arithmetic again (the area row).
   The Transonic Rifle at heat 4 on the car's die runs 1.2 rounds slower on fights this long
   (the peak 69%, 0.67 overheats), the one cell where heat 4 reads on a cold die.
+
+## 28 October, the heat knee by the maximum
+
+**The maxima lever, read as a what-if** (`tools/pricing_run.py run heatmax10 --parts vanillaheat
+--benches prairie_dog --set chassis/prairie_dog/heat_max=10` and the same at 8; content
+untouched; the merged head with the pass's fills): Ryan's question of the evening, what heat
+buys and how to make it threatening but fun, and the bench's first step, the maxima before any
+new rule. The vanilla heat grid of the vanilla ladder (the heatless flat Direct at 3, 5 and 7
+across heat 0 to 8 in the Prairie Dog's slot of Wainwright & Sutler's row, the sixteen big
+fights but the finale, greedy at 30 seeds) with the Prairie Dog's maximum at 10 and at 8
+against its 12, the other machines' as they are; 34 variants a run, 18 minutes each. A
+direction. The stock row reads the same at every maximum (5.9 rounds, 22% hull), since its
+Twin Autoguns carry no heat.
+
+At the maximum of 12 (the vanilla ladder's grid, for the comparison; rounds off stock, hull off
+stock, share, peak, overheats, dice held):
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -3%, 14%, 34%, 0.17, 0.03 | -0.6 r, -2%, 14%, 37%, 0.19, 0.04 | -0.6 r, -2%, 13%, 60%, 0.22, 0.05 | -0.3 r, -1%, 12%, 79%, 0.29, 0.11 | -0.2 r, -1%, 9%, 82%, 0.41, 0.19 |
+| 5 | -1.2 r, -7%, 18%, 32%, 0.10, 0.01 | -1.2 r, -7%, 18%, 37%, 0.12, 0.03 | -1.2 r, -6%, 18%, 67%, 0.20, 0.03 | -1.0 r, -5%, 15%, 87%, 0.30, 0.06 | -0.8 r, -3%, 12%, 95%, 0.55, 0.10 hot |
+| 7 | -1.7 r, -10%, 19%, 30%, 0.08, 0.02 | -1.7 r, -9%, 19%, 35%, 0.10, 0.02 | -1.7 r, -9%, 19%, 65%, 0.18, 0.03 | -1.6 r, -8%, 17%, 90%, 0.33, 0.05 | -1.3 r, -6%, 14%, 104%, 0.61, 0.07 hot |
+
+At 10:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -2%, 14%, 34%, 0.15, 0.04 | -0.4 r, -2%, 14%, 40%, 0.19, 0.05 | -0.3 r, -1%, 13%, 68%, 0.23, 0.08 | -0.2 r, -1%, 11%, 84%, 0.52, 0.14 hot | -0.1 r, -0%, 8%, 86%, 0.32, 0.21 |
+| 5 | -1.1 r, -7%, 18%, 31%, 0.12, 0.01 | -1.1 r, -6%, 18%, 40%, 0.16, 0.02 | -1.1 r, -6%, 17%, 75%, 0.25, 0.04 | -0.8 r, -4%, 14%, 96%, 0.68, 0.09 hot | -0.5 r, -3%, 10%, 97%, 0.37, 0.16 |
+| 7 | -1.6 r, -9%, 19%, 30%, 0.09, 0.02 | -1.6 r, -9%, 19%, 39%, 0.12, 0.01 | -1.6 r, -8%, 19%, 75%, 0.23, 0.03 | -1.3 r, -7%, 16%, 99%, 0.67, 0.06 hot | -1.0 r, -5%, 12%, 104%, 0.41, 0.12 hot |
+
+At 8:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -2%, 14%, 34%, 0.17, 0.04 | -0.4 r, -2%, 14%, 45%, 0.20, 0.05 | -0.3 r, -1%, 13%, 78%, 0.31, 0.09 | -0.1 r, -1%, 9%, 87%, 0.43, 0.21 | +0.0 r, -0%, 7%, 99%, 0.35, 0.20 |
+| 5 | -1.1 r, -7%, 18%, 32%, 0.14, 0.01 | -1.1 r, -6%, 18%, 47%, 0.18, 0.02 | -0.9 r, -5%, 16%, 86%, 0.41, 0.04 | -0.7 r, -3%, 13%, 102%, 0.57, 0.12 hot | -0.4 r, -3%, 9%, 108%, 0.40, 0.16 hot |
+| 7 | -1.6 r, -9%, 19%, 30%, 0.10, 0.01 | -1.6 r, -9%, 19%, 46%, 0.14, 0.02 | -1.5 r, -8%, 18%, 87%, 0.36, 0.03 | -1.2 r, -6%, 15%, 111%, 0.64, 0.07 hot | -0.9 r, -5%, 10%, 116%, 0.45, 0.16 hot |
+
+Read:
+
+- **The knee moves with the maximum, a class a step.** At 12 heat 2 and 4 are free and heat 6
+  takes 0.2 rounds back; at 10 heat 4 is still free in rounds (the peak 68 to 75%, the fourth
+  round's overheat past most fights) and heat 6 takes 0.3 back with 0.67 overheats a fight;
+  at 8 heat 4 takes 0.1 to 0.2 back (the peak 78 to 87%), heat 6 0.4 and heat 8 0.7, the
+  peaks past the maximum. So the warm classes bite on a cold die only at 8, which is the Musk
+  Ox's number and a third under the fleet's.
+- **In vanilla points**: at 8, heat 4 costs about half a point, heat 6 a point and a half,
+  heat 8 two and a half; at 10 nothing, one, and two; at 12 nothing, two thirds, and one and a
+  half. The hot guns' allowance over their floor (the Transonic 1.5 at heat 4, the Thermal Ray
+  2.5 at heat 6, the Railgun at 8 about 3.5 with Breach) is paid in full only at a maximum of
+  8, and at 10 the Transonic's heat is still free on a cold die.
+- **A global 8 is the blunt end.** Kestrel's row already peaks at 128% with 1.6 overheats a
+  fight on the tiered formations at its 14; a fleet at 8 would overheat the hot kits every
+  round, so the bite for the warm classes on cold dice costs the hot kits their play. The
+  selective levers are the bench's next steps: a soft zone above two thirds of the maximum, the
+  cooling, or the maxima by chassis (the stock pass already sets the Kite's 10 and the Musk
+  Ox's 8), each a what-if the driver's `--set` can read the same way.
