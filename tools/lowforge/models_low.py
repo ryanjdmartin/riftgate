@@ -3739,10 +3739,15 @@ def storm_petrel(b):
     # The projector arch over the canopy: a thin lit arch, dark at rest, under eight sleeves
     # of plate that leave its light showing between them (Ryan, 28 October: the glow ran
     # along the arch's underside, hidden).
-    pts = [Vector((-9.0 * math.cos(math.pi * k / 8.0), 0.0, deck(0.0) + 1.0 + 8.0 * math.sin(math.pi * k / 8.0))) for k in range(9)]
-    for p0, p1 in zip(pts, pts[1:]):
+    # Its feet stand on the deck (Ryan, 28 October: the arch floated), the sleeves about two
+    # thirds of each span (his notes: longer than half, shorter than most), the end sleeves run
+    # down into the feet.
+    pts = [Vector((-9.0 * math.cos(math.pi * k / 8.0), 0.0, deck(0.0) + 0.4 + 8.0 * math.sin(math.pi * k / 8.0))) for k in range(9)]
+    for fx in (-9.0, 9.0):
+        b.box(fx - 1.3, fx + 1.3, -1.3, 1.3, deck(0.0) - 0.6, deck(0.0) + 1.4, "steel.plate", "arch_foot")
+    for i, (p0, p1) in enumerate(zip(pts, pts[1:])):
         _beam(b, tuple(p0), tuple(p1), _poly(0.55, 6), _poly(0.55, 6), "amber.ember", "projector_glow")
-        _beam(b, tuple(p0.lerp(p1, 0.09)), tuple(p0.lerp(p1, 0.91)), _poly(1.05, 6), _poly(1.05, 6), "steel.plate", "projector_arch")   # the sleeves cover most of the band (Ryan, 28 October: longer)
+        _beam(b, tuple(p0.lerp(p1, 0.0 if i == 0 else 0.17)), tuple(p0.lerp(p1, 1.0 if i == 7 else 0.83)), _poly(1.05, 6), _poly(1.05, 6), "steel.plate", "projector_arch")
 
     def nac_top(y):
         """The nacelle's top: the deck carried out over the booster, sloping down with the
@@ -3909,8 +3914,8 @@ def lammergeier(b):
         # chunks clipping through the box).
         for k in range(2):
             x = s * (14.0 + 6.0 * k)
-            _tube(b, (x, le(x) - 8.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.dark", "drone_tube", floor_material="amber.ember", floor_depth=5.5,
-                  rake=lambda v, x=x: le(v.x) - le(x))
+            _tube(b, (x, le(x) - 12.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.dark", "drone_tube", floor_material="amber.ember", floor_depth=0.8,
+                  rake=lambda v, x=x: le(v.x) - le(x))   # bored twelve deep (Ryan, 28 October: an end cap is no tube)
     # The Lorentz Contractor's dish on a dorsal pylon aft of the body's crown.
     uy, uz = -10.0, deck(-10.0)
     b.loft([(-6.0, rect(0.0, 4.0, uz - 0.4, uz + 3.0)), (-14.0, rect(0.0, 3.0, uz - 0.4, uz + 3.6))], "steel.dark", "contractor_mast")
