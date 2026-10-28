@@ -809,13 +809,16 @@ def armadillo(b):
     it, the Badger's way (the first pass's head, with a smaller cockpit: Ryan, 30
     September). The weapons come out of round ports in the shell like a Blastoise: each
     port is a hollow of chassis with the mount at its floor, so a fitted gun rises out of
-    it. Mounts (the loadout's order): hp_1 the left rear port (Rivet Gun), hp_2 the right
-    rear port (Slug Cannon), hp_3 the hatch behind them, pitched forward (Missile Rack),
-    hp_4 and hp_5 two forward ports flanking the cowl, level with the ground, cut back
-    into the step behind the front band, bare; the plating on the flanks and the stack at
-    the tail are detail. The ports are real holes: b.cut subtracts them from the bands
-    before export. The Lockdown Shutters are
-    the ports' stripe rims (fixed, no pin)."""
+    it. Mounts, the four weapon ports (Ryan, 15 October: "the 4 weapons ports are the 4
+    hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
+    Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
+    flanking the cowl, level with the ground, cut back into the step behind the front band,
+    bare; the plating on the flanks and the stack at the tail are detail. The ports are real
+    holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
+    carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
+    canister rack that lifts out of it to fire, each canister's nose cold glass and a beacon
+    on its rim (the beep). The ports' striped rims are the Lockdown Shutters', the look of the
+    seal."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
@@ -888,11 +891,13 @@ def armadillo(b):
                     _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
                     _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="slugthrower"):
-                    _beam(b, tuple(mount), tuple(mount + DV * 23.0), _poly(3.0, 6), _poly(2.8, 6), "steel.dark", "slug_barrel")
-                    _beam(b, tuple(mount + DV * 23.0), tuple(mount + DV * 26.5), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
-    # The hatch behind the ports: a missile cell in a stripe frame, pitched forward with
-    # the ports so a cannon fitted there is a hull gun (hp_3).
+                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns"):
+                    for xo in (-2.4, 2.4):   # the pair inside the port's bore, no wider than a fitted pair
+                        off = Vector((xo, 0.0, 0.0))
+                        _beam(b, tuple(mount + off), tuple(mount + off + DV * 18.0), _poly(1.9, 6), _poly(1.9, 6), "steel.dark", "autogun_barrel")
+                        _beam(b, tuple(mount + off + DV * 18.0), tuple(mount + off + DV * 20.0), _poly(2.3, 6), _poly(2.1, 6), "steel.plate", "autogun_muzzle")
+    # The hatch behind the ports: a rack in a stripe frame, pitched forward with the ports,
+    # the Cryo Flingers' (no pin since the rework: the four ports are the hardpoints).
     # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
     # (Ryan, 1 October).
     # A square channel through the shell along the cell's own line, the cell sliding and
@@ -903,19 +908,24 @@ def armadillo(b):
     HB, DV, R2 = Vector((0.0, -34.0, Z0 + 20.0)), Vector(D), math.sqrt(2.0)
     b.cut(band_obs, tuple(HB + DV * 0.5), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
     _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.3, phase=math.pi / 4)
-    with b.joint("elev_cell", (0.0, -32.0, Z0 + 22.0), limits=(-4.0, 28.0)):   # the cell tilts up and back on its hatch
-        with b.socket("hp_3", (0.0, -26.0, Z0 + 28.0), forward=D, scale=1.2, carries="shotfire_rack"):
-            # The tubes on the cell's face alone (Ryan, 5 October: the missile tile showed on
-            # every side once the cell lifted out): a panel body and one face, the tile fitted
-            # to it whole.
-            _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "missile_cell")
-            UP, RT = Vector((0.0, -0.7071, 0.7071)), Vector((1.0, 0.0, 0.0))
-            _missile_face(b, Vector((0.0, -24.5, Z0 + 29.5)) + DV * 0.05 - RT * 6.5 - UP * 6.5, UP, RT, DV, 13.0)
+    with b.joint("elev_cell", (0.0, -32.0, Z0 + 22.0), limits=(-4.0, 28.0)):   # the rack tilts up and back on its hatch
+        # The Cryo Flingers' twin rack (fixed, no pin): a panel body, two canister tubes side
+        # by side in its face, each canister's nose cold glass deep in its mouth and a beacon
+        # on its rim that blinks when the rack lifts (Ryan, 18 October: "a sticky cryo canister
+        # with a really annoying beep or something").
+        _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "flinger_rack")
+        UP, RT = Vector((0.0, -0.7071, 0.7071)), Vector((1.0, 0.0, 0.0))
+        FACE = Vector((0.0, -24.5, Z0 + 29.5))
+        for xo in (-3.2, 3.2):
+            c = FACE + RT * xo
+            _tube(b, tuple(c - DV * 3.0), tuple(c + DV * 1.2), 3.0, 2.4, 8, "steel.dark", "flinger_tube", floor_material="glass.glass", floor_depth=1.5)
+            bc = c + UP * 3.4 + DV * 0.6
+            b.box(bc.x - 0.7, bc.x + 0.7, bc.y - 0.7, bc.y + 0.7, bc.z - 0.7, bc.z + 0.7, "amber.light", "beacon")
     # Two forward ports flanking the cowl: level with the ground, cut straight back into
     # the step behind the front band (the fifth band's front face stands seven above the
     # sixth's crown), so a gun comes out of that plate and runs forward over the cowl's
-    # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_4, hp_5).
-    for s, n in ((-1.0, 4), (1.0, 5)):
+    # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_3, hp_4).
+    for s, n in ((-1.0, 3), (1.0, 4)):
         px = s * 14.0
         # Lowered so the collar sits inside the plate behind the cowl, its wall run back
         # into the band (Ryan, 1 October: the tube and the body did not meet).
@@ -983,18 +993,20 @@ def armadillo(b):
         "elev_r": [(3.4, 0.0), (4.2, 28.0), (5.4, 27.0), (6.2, 0.0)],
         "elev_cell": cell(3.1, 4.4, 5.4, 6.6),
     })
+    blink = lambda t0, t1: [(round(t0 + k * 0.45 + d, 2), v) for k in range(int((t1 - t0) / 0.45)) for d, v in ((0.0, 0.0), (0.05, 12.0), (0.18, 0.0))]
     b.act("present_guns", 8.8, tracks, body=body,
-          glow=[(["lamp"], [(3.2, 0.0), (3.8, 8.0), (5.6, 8.0), (6.2, 0.0)])])   # the cowl lamps burn: the guns are up
+          glow=[(["lamp"], [(3.2, 0.0), (3.8, 8.0), (5.6, 8.0), (6.2, 0.0)]),   # the cowl lamps burn: the guns are up
+                (["beacon"], blink(3.6, 6.2))])   # and the canisters beep while the rack is out
     # Crouch (Ryan, 5 October: the knee bend of the old present_guns as an act of its own):
     # it sinks low and level on its planted feet, settles, and stands.
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
                             [(1.4, 0.0, -8.0, -0.6), (2.0, 0.0, -8.6, -0.8), (3.8, 0.0, -9.0, -0.8), (5.0, 0.0, 0.0, 0.0)])
     b.act("crouch", 5.4, tracks, body=body)
-    b.act("weapons_check", 6.6, {   # each port gun rises and drops in turn, then the cell lifts out of its hatch and tilts
+    b.act("weapons_check", 6.6, {   # each port gun rises and drops in turn, then the rack lifts out of its hatch and tilts, its canisters beeping
         "elev_l": [(1.0, 28.0), (1.6, 27.0), (2.4, -10.0), (2.9, 0.0)],
         "elev_r": [(2.0, 0.0), (3.0, 28.0), (3.6, 27.0), (4.4, -10.0), (4.9, 0.0)],
         "elev_cell": cell(3.6, 4.7, 5.3, 6.4),
-    })
+    }, glow=[(["beacon"], blink(4.0, 6.2))])
     b.act("stamp", 5.6, {   # a forefoot lifts high and stamps down, then a hind one, the shell dropping onto each
         "hip_fr": [(0.9, 30.0), (1.8, 31.0), (2.1, 0.0)],
         "knee_fr": [(0.9, -44.0), (1.8, -45.0), (2.1, 0.0)],

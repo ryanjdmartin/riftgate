@@ -114,7 +114,8 @@ func test_plan_for_reads_the_models_record_else_contents_stock() -> void:
 
 func test_every_model_names_what_each_of_its_pins_carries() -> void:
 	# lowforge refuses a rigged model whose pin names nothing (bl_low.py's rig()); here the
-	# record and the model's pins agree, so the engine never guesses a model's kit.
+	# record and the model's pins agree, and a model has as many pins as its chassis has
+	# hardpoints, so a hardpoint count that moves fails here until the model follows.
 	var db := ContentDB.load_default()
 	for id in db.chassis.keys():
 		if not MechView3D.has_model(str(id)):
@@ -125,6 +126,7 @@ func test_every_model_names_what_each_of_its_pins_carries() -> void:
 			continue
 		var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
 		var pins := MechView3D.pins_of(model)
+		assert_eq(pins.size(), int(db.chassis[id].get("hardpoints", 0)), "%s: a pin for every hardpoint, no more (the content's count)" % id)
 		assert_eq((rec as Array).size(), pins.size(), "%s: a record for every pin" % id)
 		for n in pins.keys():
 			assert_true(int(n) >= 1 and int(n) <= (rec as Array).size(), "%s: hp_%d is recorded" % [id, int(n)])
