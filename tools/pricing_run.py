@@ -11,7 +11,11 @@ folder, never docs/balance.md.
   python3 tools/pricing_run.py run <name> [options]    into build/pricing/<name>/; a variant whose JSON is there is skipped, so a killed run resumes
   python3 tools/pricing_run.py summarise <name>        summary.md from the JSONs there, a partial run included
 
-Options: --parts knockouts,ladders,modules,heat (every part by default); --benches id,id (the
+Options: --parts knockouts,ladders,modules,heat (every part by default; vanilla and vanillaheat are
+asked for by name: the vanilla ladder, a flat heatless gun of each shape reshaped from a basic
+no bench row stocks at every number from 2 to 10, and the same vanilla at 3, 5 and 7 across the
+heat classes, for the knee where a kit starts paying; Ryan, 28 October: price heat empirically
+from heatless vanillas, and a rolled gun is its mean); --benches id,id (the
 ladders' and the modules' benches, BENCHES below, every one by default); --tiers 0,1,2,3 (the
 ladders' candidates); --seeds 30; --policies greedy (random,greedy adds the decision read at
 twice the cost); --packs big (the sixteen big fights but the finale, the default: the four
@@ -53,6 +57,18 @@ BENCHES = OrderedDict([
     ('goshawk', ('goshawk', 2, ['sparrowhawk', 'goshawk', 'puffin'])),            # a hot flyer's gun slot (the Arc Fault Cannon): a gun's heat is priced where heat bites
     ('nemesis', ('nemesis', 0, ['nemesis', 'ammit', 'puffin'])),                  # an Arsenal bruiser's slot (the Plasma Arquebus) beside the Ammit: the hull-damage loops read here
 ])
+# The vanilla ladder (Ryan, 28 October: vanillas exist in the pool, "sometimes you just need a
+# big stick"; the baseline is heatless, heat priced from it, a rolled gun its mean): a flat
+# heatless gun of each shape, reshaped by --set from a basic no bench row stocks, so the row's
+# other dice stay as they are. The summary reports every real piece in vanilla points, the
+# heatless number that reads as it does on the bench.
+VANILLA = OrderedDict([
+    ('flat Direct', 'rivet_gun'),       # the Rivet Gun at the number, heat 0
+    ('flat Indirect', 'shotfire_rack'),  # the Shotfire Rack made flat at the number, heat 0 (the Ankle Mortar sits in the car's row)
+])
+VANILLA_NUMBERS = [2, 3, 4, 5, 6, 7, 8, 10]
+VANILLA_HEAT_NUMBERS = [3, 5, 7]
+VANILLA_HEATS = [0, 2, 4, 6, 8]
 # The heat ladder's steps: every attack piece's heat mapped a step up the heat row's classes
 # (cold 0, cool 1, warm 2, hot 4, very hot 6 and 8), the cold basics alone, and cooling 0.
 HEAT_STEP = {0: 1, 1: 2, 2: 3, 3: 4, 4: 6, 6: 8, 8: 10}
@@ -207,6 +223,23 @@ def variants(db, opts):
                     continue
                 out.append({'id': 'module:%s:%s' % (b, m['id']), 'part': 'modules', 'row': ids, 'bench': b, 'chassis': cid,
                             'module': m['id'], 'tier': int(m['tier']), 'args': ['--fit', '%s=%s' % (cid, m['id'])]})
+    if 'vanilla' in opts.parts or 'vanillaheat' in opts.parts:
+        for b in benches:
+            cid, slot, ids = BENCHES[b]
+            load = list(db.chassis[cid].get('loadout', []))
+            for shape, base in VANILLA.items():
+                for other in ids:
+                    if base in db.chassis[other].get('loadout', []) or base in db.chassis[other].get('fixed', []):
+                        raise SystemExit('the vanilla base %s is stocked on %s in the %s bench\'s row: it would reshape that die too' % (base, other, b))
+                grid = [(n, 0) for n in VANILLA_NUMBERS] if 'vanilla' in opts.parts else []
+                if 'vanillaheat' in opts.parts:
+                    grid += [(n, h) for n in VANILLA_HEAT_NUMBERS for h in VANILLA_HEATS if (n, h) not in grid]
+                for n, h in grid:
+                    fitted = load[:slot] + [base] + load[slot + 1:]
+                    args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n), '--set', 'components/%s/face/power_max=%d' % (base, n),
+                                                       '--set', 'components/%s/face/heat=%d' % (base, h), '--set', 'components/%s/face/keywords=[]' % base]
+                    out.append({'id': 'vanilla:%s:%s:%d:%d' % (b, base, n, h), 'part': 'vanilla', 'row': ids, 'bench': b, 'chassis': cid,
+                                'shape': shape, 'base': base, 'number': n, 'heat': h, 'args': args})
     if 'heat' in opts.parts:
         attacks = [e for e in db.components.values() if e.get('face', {}).get('kind') == 'attack' and e.get('status') != 'planned']
         steps = {
@@ -553,6 +586,61 @@ def summarise(db, opts):
             L.append('| %d | %s | %s | %s | %s | %s%% | %s | %s%% | %s |' % (v['tier'], m['name'], text, fmt(r['win']), fmt(r['rounds']), fmt(r['hull'], 0),
                                                                      delta_text(r, s), fmt(r['peak'], 0), fmt(r['overheats'], 2)))
         L.append('')
+    # the vanilla ladder: the heatless curve by shape, the number-by-heat grid, and every real piece in vanilla points
+    for b in p['benches']:
+        cid, slot, ids = p['benches'][b]
+        van = [v for v in vs if v['part'] == 'vanilla' and v.get('bench') == b and reads.get(v['id'])]
+        if not van:
+            continue
+        s = stock.get('+'.join(ids))
+        L.append('## Vanillas on the %s (with %s)' % (db.name(cid), ' and '.join(db.name(x) for x in ids if x != cid)))
+        L.append('')
+        L.append('A flat gun of each shape with no keyword, reshaped from a basic the row does not stock, in the bench hardpoint: its number against stock at heat 0, then the number-by-heat grid for the knee where this kit starts paying for heat. Read: rounds off the stock row and hull, the share, the peak heat and the overheats.')
+        L.append('')
+        shapes = OrderedDict()
+        for v in van:
+            shapes.setdefault(v['shape'], {})[(v['number'], v['heat'])] = reads[v['id']]
+        for shape, grid in shapes.items():
+            heats = sorted({h for (_, h) in grid})
+            nums = sorted({n for (n, _) in grid})
+            L.append('**%s** (rounds off stock, hull off stock, share; hot where the peak reaches the maximum or the overheats rise a quarter a fight):' % shape)
+            L.append('')
+            L.append('| Number | ' + ' | '.join('heat %d' % h for h in heats) + ' |')
+            L.append('|---|' + '---|' * len(heats))
+            for n in nums:
+                cells = []
+                for h in heats:
+                    r = grid.get((n, h))
+                    if not r:
+                        cells.append('-'); continue
+                    hot = ' hot' if (r['peak'] >= 100 or (s and r['overheats'] >= s['overheats'] + 0.25)) else ''
+                    cells.append('%+.1f r, %+.0f%%, %.0f%%%s' % (r['rounds'] - s['rounds'], r['hull'] - s['hull'], r['share'].get(VANILLA[shape], 0), hot))
+                L.append('| %d | %s |' % (n, ' | '.join(cells)))
+            L.append('')
+        # vanilla points: the heatless flat Direct curve, the number whose rounds match each real piece's
+        curve = sorted((n, r['rounds'] - s['rounds']) for (n, h), r in shapes.get('flat Direct', {}).items() if h == 0)
+        lad = [v for v in vs if v['part'] == 'ladders' and v.get('bench') == b and reads.get(v['id'])]
+        if curve and lad:
+            def points(d):
+                if d >= curve[0][1]:
+                    return '%d or under' % curve[0][0]
+                for (n0, d0), (n1, d1) in zip(curve, curve[1:]):
+                    if d1 <= d <= d0:
+                        return '%.1f' % (n0 + (n1 - n0) * (d0 - d) / (d0 - d1)) if d0 != d1 else '%d' % n0
+                return 'over %d' % curve[-1][0]
+            L.append('**The real pieces in vanilla points**, the heatless flat Direct number that takes the same rounds off this row, beside the piece\'s own number and heat; the difference is what its keywords, shape and heat buy or cost here:')
+            L.append('')
+            L.append('| Piece | Its number, heat, keywords | Rounds off stock | Vanilla points | Share | Peak |')
+            L.append('|---|---|---|---|---|---|')
+            for v in sorted(lad, key=lambda v: reads[v['id']]['rounds']):
+                r = reads[v['id']]; e = db.components[v['piece']]; f = e['face']
+                kws = ' '.join(kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', []))
+                num = '%s%s' % (f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '')
+                if int(f.get('strikes', 1) or 1) > 1:
+                    num += ' x%d' % f['strikes']
+                L.append('| %s | %s, heat %s%s | %+.1f | %s | %.0f%% | %.0f%% |' % (e['name'], num, f.get('heat', 0), (', ' + kws) if kws else '',
+                                                                               r['rounds'] - s['rounds'], points(r['rounds'] - s['rounds']), r['share'].get(v['piece'], 0), r['peak']))
+            L.append('')
     # the heat ladder
     heat = [v for v in vs if v['part'] == 'heat']
     if heat:
