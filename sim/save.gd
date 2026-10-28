@@ -321,6 +321,7 @@ static func _modifier_dict(m: Effects.Modifier) -> Dictionary:
 		"id": m.id, "name": m.name, "description": m.description, "source": m.source,
 		"component": m.component, "scope": m.scope, "expires_round": m.expires_round,
 		"tags": m.tags, "effects": m.effects, "seq": m.seq, "stacks": m.stacks, "decay": m.decay,
+		"slept": m.slept,
 	}
 
 
@@ -339,6 +340,7 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 	m.seq = int(d.get("seq", 0))
 	m.stacks = int(d.get("stacks", 1))
 	m.decay = int(d.get("decay", Effects.DECAY_NONE))
+	m.slept = bool(d.get("slept", false))
 	# Grant order decides override ties; the counter carries on past the loaded ones.
 	Effects._seq = maxi(Effects._seq, m.seq)
 	return m
@@ -476,6 +478,9 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 			shot["keywords"] = kws
 			for key in ["damage", "seq", "burn", "cryo", "flak"]:
 				shot[key] = int(shot.get(key, 0))
+			for key in ["row", "column"]:
+				if shot.has(key):
+					shot[key] = int(shot[key])   # its area numbers (28 October); a shot laid before them has none, and its area lands half (Skirmish._mine_hit)
 			shot["mech"] = int(shot.get("mech", -1))
 			shot["by"] = str(shot.get("by", ""))
 			var fd: Dictionary = shot.get("face", {})

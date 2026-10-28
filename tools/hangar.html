@@ -344,8 +344,12 @@ function toast(msg) {
 }
 function setStatus(msg, warn = false) { const s = $("#status"); s.textContent = msg; s.classList.toggle("warn", warn); }
 
+// Every file the page reads is fetched past every cache: the browser's (no-store) and any
+// cache between (a stamp on the URL), so a republish shows at once (28 October: a stale
+// rig would play an older round's acts).
+const fresh = (path) => path + (path.includes("?") ? "&" : "?") + "v=" + Date.now();
 async function fetchJson(path) {
-  const r = await fetch(path, {cache: "no-store"});
+  const r = await fetch(fresh(path), {cache: "no-store"});
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
   return r.json();
 }
@@ -727,8 +731,9 @@ function faceLine(f) {
   return bits.join(" · ");
 }
 function kwChip(k, cls = "kw", num = 0) { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k) + (num ? ` ${num}` : "")); }
-// A numbered keyword's number, as the face carries it beside the keyword (Burn 2, Volatile 3).
-const KW_NUMBER = {burn: "burn", cryo: "cryo", flak: "flak", volatile: "volatile"};
+// A numbered keyword's number, as the face carries it beside the keyword (Burn 2, Volatile 3,
+// Spread 2: the area keywords numbered since 28 October).
+const KW_NUMBER = {burn: "burn", cryo: "cryo", flak: "flak", volatile: "volatile", cleave: "cleave", penetrate: "penetrate", splash: "splash"};
 function kwNumber(f, k) { return KW_NUMBER[k] ? Number(f[KW_NUMBER[k]] || 0) : 0; }
 // An entry's place on its die as the game prints it: a Roman numeral, from one.
 function roman(n) {

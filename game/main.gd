@@ -46,7 +46,7 @@ func _build(s: int) -> void:
 	field = Battlefield.new(map)
 	var db := ContentDB.load_default()
 	field.spawn_faction = db.default_faction()
-	field.spawn_table = db.spawn_table(field.spawn_faction)
+	field.spawn_table = db.spawn_table(field.spawn_faction, 1)   # the map viewer shows tier one
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	var gate_o := Hex.axial_to_offset(map.gate)

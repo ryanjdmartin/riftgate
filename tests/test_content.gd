@@ -148,12 +148,71 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 
 func test_spawn_table_lists_the_factions_formation() -> void:
 	var db := _db()
-	var table := db.spawn_table("marsh")
+	var table := db.spawn_table("marsh", 1)
 	assert_eq(table.size(), 3, "three packs come through together")
 	assert_eq(table[0][0], "revenant", "ghouls first")
 	assert_eq(table[2][0], "ghost", "necromancers behind them")
 	assert_eq(table[2][1], 3, "three of them")
 	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
+
+
+## The spawn lists by tier (the ladder's brief, D3; 28 October): every domain a list at each tier,
+## a tier past the lists taking the highest under it and one below them the first; the validator
+## asks every domain for a "1", keys "1" to "3" and a list under each.
+func test_the_spawn_lists_go_by_tier() -> void:
+	var db := ContentDB.new()   # its own copy: lists are dropped below
+	db.load_dir(ContentDB.DIR)
+	for fid in db.factions.keys():
+		for t in [1, 2, 3]:
+			assert_false(db.spawn_table(str(fid), t).is_empty(), "%s has a tier-%d list" % [fid, t])
+		assert_eq(db.spawn_table(str(fid), 0), db.spawn_table(str(fid), 1), "below the lists, the first")
+		assert_eq(db.spawn_table(str(fid), 5), db.spawn_table(str(fid), 3), "past them, the highest")
+	var fid := str(db.factions.keys()[0])
+	var lists: Dictionary = db.factions[fid]["spawn"]
+	assert_ne(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier's list is its own")
+	lists.erase("2")
+	assert_eq(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier with none takes the highest under it")
+	lists.erase("1")
+	lists["4"] = [{"foe": str(db.spawn_table(fid, 3)[0][0]), "strength": 1}]
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("tier-one list")), "a domain without a tier-one list is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("'4' is no tier's list")), "and a key that is no tier")
+	db.factions[fid]["spawn"] = [{"foe": str(db.spawn_table(fid, 3)[0][0]), "strength": 1}]
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("the lists by tier")), "and the old flat list")
+
+
+## Every move of every foe a domain sends, at every tier, runs in a fight (the ladder's brief, D;
+## 28 October): its condition set aside, each implemented move is its only one for two rounds, a
+## countdown's included, on a machine that outlasts it.
+func test_every_move_of_every_spawned_foe_runs_in_a_fight() -> void:
+	var db := ContentDB.load_default()
+	var seen := {}
+	for fid in db.factions.keys():
+		for t in [1, 2, 3]:
+			for e in db.spawn_table(str(fid), t):
+				seen[str(e[0])] = true
+	for id in seen.keys():
+		for a in db.foes[id].get("actions", []):
+			if str(a.get("status", "")) != "implemented":
+				continue
+			var sk := Skirmish.new(1, 3)
+			var m := db.make_mech(str(db.chassis.keys()[0]), 1, Vector2i.ZERO)
+			m.hull = 999
+			m.hull_max = 999
+			sk.add_mech(m)
+			var f := db.make_foe(id)
+			f.hp = maxi(1, f.hp_max / 2)   # below half and hurt, for the moves that wait on it
+			var move: Dictionary = a.duplicate(true)
+			move.erase("when")
+			f.actions = [move]
+			sk.add_foes([f, db.make_foe(id)])
+			sk.begin()
+			for r in range(3):
+				if sk.outcome != Skirmish.Outcome.NONE:
+					break
+				sk.start_round()
+				sk.end_round()
+			assert_true(sk.log.size() > 0, "%s's %s runs" % [id, str(a.get("id", ""))])
 
 
 func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
@@ -166,7 +225,7 @@ func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
 	big["id"] = "massive_rank_and_file"
 	big["name"] = "Massive Rank and File"
 	db.foes["massive_rank_and_file"] = big
-	db.factions[fid]["spawn"].append({"foe": "massive_rank_and_file", "strength": 2})
+	db.factions[fid]["spawn"]["1"].append({"foe": "massive_rank_and_file", "strength": 2})
 	assert_true(db.validate().is_empty(), "a massive foe in a spawn list validates: %s" % str(db.validate()))
 	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 1, 2, "massive_rank_and_file"))
 	assert_eq(foes.size(), 2, "two from strength two")
@@ -218,6 +277,49 @@ func test_keyword_cap_is_enforced() -> void:
 	assert_true(hit, "four keywords on an authored face is reported")
 
 
+## A silence and a purge are specials, never riders (28 October): the validator refuses either
+## on a blow and in a last act.
+func test_a_silence_or_a_purge_rides_no_blow() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"][0]["keywords"] = ["silence"]
+	db.foes["hushed"] = f
+	var g: Dictionary = db.foes["revenant"].duplicate(true)
+	g["on_death"] = {"blow": {"name": "Last Rites", "factor": 1, "strikes": 1, "keywords": ["dispel"]}}
+	db.foes["rites"] = g
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hushed") and e.contains("a special, never a rider")), "a silence on a blow is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
+
+
+## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
+## their number, 1 or more; a Barrier and a Ward say none.
+func test_a_foes_buff_specials_say_their_number_or_none() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var cases := {
+		"stoker": {"kind": "buff", "effect": "prime"},
+		"knitter": {"kind": "defend", "effect": "regenerate", "value": 0},
+		"shelter": {"kind": "defend", "effect": "barrier", "value": 2},
+		"hallow": {"kind": "buff", "effect": "ward_all", "value": 1},
+		"fine": {"kind": "buff", "effect": "prime", "value": 2},
+	}
+	for id in cases:
+		var f: Dictionary = db.foes["revenant"].duplicate(true)
+		var a := {"id": "move", "name": "Move", "text": "", "status": "implemented", "weight": 1}
+		a.merge(cases[id])
+		f["actions"].append(a)
+		db.foes[id] = f
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe stoker") and e.contains("prime says its number")), "a priming with no number is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe knitter") and e.contains("regenerate says its number")), "a regrowth of nothing is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe shelter") and e.contains("barrier takes no value")), "a Barrier with a number is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hallow") and e.contains("ward_all takes no value")), "a Ward with a number is reported")
+	var fine: Array = errs.filter(func(e) -> bool: return e.begins_with("foe fine"))
+	assert_eq(fine, [], "a priming that says its number passes")
+
+
 func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -247,7 +349,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	assert_true(db.validate().is_empty(), "a human-sized boss validates: %s" % str(db.validate()))
 	var b := db.make_foe("small_boss")
 	assert_true(b.boss and not b.is_massive(), "the content makes it the boss, and it stands one slot high")
-	assert_false(db.make_foe(str(db.spawn_table(fid)[0][0])).boss, "its rank and file are no boss")
+	assert_false(db.make_foe(str(db.spawn_table(fid, 1)[0][0])).boss, "its rank and file are no boss")
 	var hero_id := ""
 	for id in db.foes.keys():
 		if bool(db.foes[id].get("hero", false)):
@@ -260,7 +362,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 			refused = true
 	assert_true(refused, "a hero named the boss is refused")
 	# A list of bosses (three a domain once the slate lands, 22 October): each once, none a hero.
-	var boss_id := str(db.spawn_table(fid)[0][0])
+	var boss_id := str(db.spawn_table(fid, 1)[0][0])
 	db.factions[fid]["boss"] = ["small_boss", boss_id]
 	assert_true(db.validate().is_empty(), "a list of bosses validates: %s" % str(db.validate()))
 	assert_eq(Array(db.bosses_of(fid)), ["small_boss", boss_id], "read in content order")
@@ -617,6 +719,7 @@ func test_breach_is_a_weapon_keyword_the_foes_share() -> void:
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["tier"] = 1
 	gun["face"]["keywords"] = ["breach"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	db.components["breacher"] = gun
 	var plate: Dictionary = db.components["halo_shield"].duplicate(true)
 	plate["tier"] = 1
@@ -780,6 +883,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	db.components["scrubber"] = scrubber
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["cleanse"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
@@ -884,12 +988,14 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 
 
 ## The gated stuns' fields (22 October): a gate maps a keyword the entry carries (Suppress
-## today) to a condition on the foe in hand; a consumer eats a foe status on one blow.
+## today) to a condition on the foe in hand; a consumer eats a foe status on one blow on each
+## foe it strikes, an area one each foe's own (the blow's order, 28 October).
 func test_gates_and_consumers_validate() -> void:
 	var db := _fresh()
 	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	base["tier"] = 1
 	base["face"].erase("keywords")
+	base["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	var flak_gate := {"suppress": {"when": "target_status", "status": "flakked"}}
 	var cases := {
 		"test_battery": [{"keywords": ["suppress"], "gates": flak_gate}, ""],
@@ -900,7 +1006,8 @@ func test_gates_and_consumers_validate() -> void:
 		"test_gate_status": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "numbed"}}}, "a status the team puts on a foe"],
 		"test_gate_count": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "stacks": 2}}}, "a positive count of the status it names"],
 		"test_eat_odd": [{"consumes": "numbed"}, "names a status the team puts on a foe"],
-		"test_eat_wide": [{"keywords": ["cleave"], "consumes": "burning"}, "one blow on one foe"],
+		"test_eat_wide": [{"keywords": ["cleave"], "cleave": 1, "consumes": "burning"}, ""],   # each foe it strikes eats its own (the blow's order, 28 October)
+		"test_eat_twice": [{"strikes": 2, "consumes": "burning"}, "one blow on each foe"],
 		"test_eat_stray": [{"per_consumed": 2}, "only beside consumes"],
 	}
 	for id in cases:
@@ -932,6 +1039,7 @@ func test_a_weapon_that_burns_its_firer_validates() -> void:
 	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	base["tier"] = 1
 	base["face"]["keywords"] = []
+	base["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	var cases := {
 		"test_stoker": [{"keywords": ["burn"], "burn": 2, "self_burn": 1}, ""],
 		"test_fire_none": [{"self_burn": 0}, "a positive number of stacks"],
@@ -1049,6 +1157,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	db.load_dir(ContentDB.DIR)
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["lure", "disrupt"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
@@ -1269,8 +1378,12 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			# A hero has three moves (decided 9 October); one may still be planned, so two run.
 			assert_true(f.actions.size() >= 2 and f.actions.size() <= 3, "%s, a hero, has two or three moves running" % id)
 			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
-		else:
+		elif int(db.foes[id].get("tier", 1)) <= 1:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
+		else:
+			# A tier-two or tier-three recolour carries up to three, the twist the third (Ryan,
+			# 28 October: the ladder's move counts, section 5's one rule set row).
+			assert_true(f.actions.size() >= 1 and f.actions.size() <= 3, "%s, of tier two or three, has one to three moves" % id)
 	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
 	var swarm := int(g.actions[0].get("swarm", 0))
@@ -1917,7 +2030,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db.foes["test_hero_up2"]["id"] = "test_hero_up2"
 	assert_true(refusals.call("a hero has one promoted form"), "a second class change for one hero: refused")
 	db.foes.erase("test_hero_up2")
-	whole["promotes"] = str(db.spawn_table(fid)[0][0])
+	whole["promotes"] = str(db.spawn_table(fid, 1)[0][0])
 	assert_true(refusals.call("which is no hero"), "a class change of the rank and file: refused")
 	whole["promotes"] = "test_hero"
 	db.foes.erase("test_hero_up")
@@ -1953,3 +2066,76 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	assert_false(capped.call(), "with the one-off named in its design, allowed")
 	four["effects"].append({"trigger": "on_attack", "effect": "add_damage", "value": 1})
 	assert_true(db.validate().any(func(e): return e.begins_with("chassis %s" % cid) and e.contains("passive has 5 effects")), "the lift is one, never more")
+
+
+## Area by shape, numbered (Ryan, 28 October): a weapon's Spread, Penetrate or Splash says what
+## each foe past its target takes; a debuff's says none; Splash is the row and the column at one
+## number, so it never rides beside either, and the two at one number are Splash; a reach over
+## every foe is a debuff's.
+func test_the_area_keywords_say_their_number() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	base["tier"] = 1
+	base["face"]["keywords"] = []
+	base["face"].erase("penetrate")
+	var cases := {
+		"test_spread_bare": [{"keywords": ["cleave"]}, "a weapon with Spread says what each foe past its target takes"],
+		"test_spread_n": [{"keywords": ["cleave"], "cleave": 2}, ""],
+		"test_stray_n": [{"penetrate": 2}, "rides with the Penetrate keyword"],
+		"test_splash_n": [{"keywords": ["splash"], "splash": 1}, ""],
+		"test_splash_beside": [{"keywords": ["splash", "cleave"], "splash": 1, "cleave": 2}, "never rides beside Spread or Penetrate"],
+		"test_plus_one_number": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 2}, "are Splash"],
+		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
+		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
+		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
+		"test_wide_weapon": [{"reaches_all": true}, "a reach over every foe is a debuff's"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var f := db.build_face(db.components["test_splash_n"]["face"])
+	assert_true(f.has(Face.Keyword.SPLASH) and f.splash == 1, "Splash builds with its number")
+	assert_eq(Face.from_dict(f.to_dict()).splash, 1, "and survives the round trip a save makes")
+	assert_eq(Face.from_dict(db.build_face(db.components["test_debuff_area"]["face"]).to_dict()).to_dict().has("cleave"), false, "a debuff's area writes no number")
+	for id in db.components.keys():
+		var face: Dictionary = db.components[id].get("face", {})
+		if id.begins_with("test_") or str(face.get("status", "")) == "planned":
+			continue
+		for name in ["cleave", "penetrate", "splash"]:
+			if Array(face.get("keywords", [])).has(name) and not db.build_face(face).is_debuff():
+				assert_true(int(face.get(name, 0)) > 0, "%s's %s carries its number" % [id, name])
+
+
+## A grant of a numbered keyword may say its number, an area keyword's must (the drum's Spread 2
+## and Penetrate 2, Ryan, 28 October); a keyword with no number takes none.
+func test_a_numbered_keywords_grant_says_its_number() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.modules["ram_frame"].duplicate(true)
+	var cases := {
+		"test_grant_spread": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 2}, ""],
+		"test_grant_bare": [{"trigger": "static", "effect": "grant_keyword", "value": "penetrate"}, "says what each foe past the target takes"],
+		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "splash", "number": 0}, "a positive number for a numbered keyword"],
+	}
+	for id in cases:
+		var m: Dictionary = base.duplicate(true)
+		m["text"] = {"description": "A test.", "effects": [cases[id][0]]}
+		db.modules[id] = m
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.contains(id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])

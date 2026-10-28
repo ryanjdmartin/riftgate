@@ -21,6 +21,7 @@
     "keywords": [
      "cleave"
     ],
+    "cleave": 2,
     "heat": 0,
     "fills_hopper": 1
    },
@@ -155,6 +156,7 @@
     "keywords": [
      "penetrate"
     ],
+    "penetrate": 3,
     "heat": 2
    },
    "passive": null,
@@ -612,6 +614,7 @@
     "keywords": [
      "cleave"
     ],
+    "cleave": 2,
     "heat": 0,
     "braces": 2
    },
@@ -641,6 +644,7 @@
      "cleave",
      "flak"
     ],
+    "cleave": 1,
     "flak": 1,
     "heat": 0
    },
@@ -1601,17 +1605,17 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread and Penetrate), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Splash), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 1,
     "keywords": [
-     "cleave",
-     "penetrate",
+     "splash",
      "flak"
     ],
+    "splash": 1,
     "flak": 1,
     "heat": 2,
     "ammo_per_foe_hit": 1
@@ -1631,16 +1635,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
-    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Spread and Penetrate, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
+    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Splash, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
     "keywords": [
-     "cleave",
-     "penetrate"
+     "splash"
     ],
+    "splash": 1,
     "heat": 0,
     "spends_magazine": true,
     "random_targets": true
@@ -1932,6 +1936,7 @@
      "cleave",
      "flak"
     ],
+    "cleave": 1,
     "flak": 1,
     "heat": 1
    },
@@ -2104,6 +2109,30 @@
    },
    "passive": null,
    "tags": []
+  },
+  {
+   "id": "null_field_emitter",
+   "name": "Null Field Emitter",
+   "maker": "aphelion",
+   "tier": 2,
+   "shape": "dish",
+   "tags": [
+    "arc"
+   ],
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "heat": 2,
+    "keywords": [
+     "dispel"
+    ]
+   },
+   "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
+   "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",
+   "design": {
+    "fantasy": "The Science Vessel's EMP, slottable: Aphelion's physics nonsense unwriting the enemy's state. The jellyfish's EMP, when it lands, carries the same keyword on a blow with Disrupt (the bible's Aphelion row).",
+    "niche": "The strip-it-or-shoot decision at tier two, Indirect so it reaches the commander in the back; stocked by nobody, a blueprint found."
+   }
   }
  ]
 }

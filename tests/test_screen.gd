@@ -199,6 +199,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var ms: Skirmish.MechState = s.sk.mechs[1]
 	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3, 5)
 	gun.burn = 2
+	gun.cleave = 2
 	gun.strikes = 2
 	gun.spray = true
 	gun.component = str(db.components.keys()[0])
@@ -218,7 +219,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -296,6 +297,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
 	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3, 5)
 	gun.burn = 2
+	gun.cleave = 2
 	gun.strikes = 2
 	gun.spray = true
 	gun.component = str(db.components.keys()[0])
@@ -304,7 +306,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -945,6 +947,72 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	assert_true(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview" and str(r[0]) == "burn"), "and the Burn on its way beside it")
 	s._drag_from = -1
 	s._drag_over = null
+	s.free()
+
+
+## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
+## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
+## a chip on its way pulses there as on a foe.
+func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.blank())
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 1)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var seal := Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	var r := Effects.purge(m)
+	assert_eq(r["slept"], ["Sealed"], "the seal sleeps")
+	s._refresh()
+	var rows: Array = s._mech_rows(0).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "asleep")
+	assert_eq(rows.size(), 1, "one chip asleep")
+	if rows.size() == 1:
+		assert_true(str(rows[0][2]).contains("asleep until your turn"), "its hold line says so")
+	var kinds: Array = s._mech_views[0].statuses.map(func(st) -> String: return str(st[3]) if st.size() >= 4 else "")
+	assert_true(kinds.has("asleep"), "and the machine's view draws it asleep")
+	Effects.wake(m)
+	s._refresh()
+	assert_true(s._mech_rows(0).all(func(row) -> bool: return row.size() < 5 or str(row[4]) != "asleep"), "awake, it is a plain chip again")
+	assert_true(seal != null, "the seal was granted")
+	s.free()
+
+
+## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
+## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
+## Regenerating's heart never Getting Back Up's star, the Barrier's wall and the Ward's struck ring.
+func test_a_foes_four_buffs_wear_their_own_chips() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
+	Effects.grant(foe, Effects.primed_foe(2, "foe:caster"))
+	Effects.stack(foe, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	Effects.stack(foe, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	Effects.grant(foe, Effects.regenerating(4))
+	var by := {}
+	for r in s._foe_rows(foe):
+		by[str(r[0])] = r
+	for g in ["primed", "barrier", "ward", "regenerating"]:
+		assert_true(by.has(g), "a %s chip" % g)
+	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	if by.has("primed"):
+		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
+		assert_true(str(by["primed"][2]).contains("2 Burning"), "and says what its move leaves")
+	if by.has("regenerating"):
+		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
+		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock")
+	if by.has("barrier"):
+		assert_true(str(by["barrier"][2]).contains("weapon"), "a foe's Barrier says a weapon's blow pops it")
+	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
 	s.free()
 
 

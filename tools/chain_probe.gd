@@ -130,7 +130,7 @@ func _chain(sq: Array, fac: String, recharge: bool, seed_value: int) -> Dictiona
 		for u in live:
 			sk.add_mech(u)
 		var foes: Array = []
-		for e in db.spawn_table(fac):
+		for e in db.spawn_table(fac, 1):
 			for n in range(maxi(1, roundi(int(e[1]) * density))):
 				foes.append(db.make_foe(str(e[0])))
 		sk.add_foes(foes)

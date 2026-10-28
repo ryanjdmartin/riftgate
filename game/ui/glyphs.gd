@@ -53,8 +53,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
 		"silence":
-			# Silenced (21 October): a voice's three arcs struck through, its buffs asleep for the
-			# round.
+			# Silenced (21 October; keywords alone, 28 October): a voice's three arcs struck
+			# through, its keywords muted through its next round.
 			for k in range(3):
 				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
 			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)
@@ -93,6 +93,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
+		"splash":
+			# Splash (28 October): the plus round the target, Spread's row and Penetrate's column at
+			# one number. A solid core with four arms standing off it, a burst, so it reads apart
+			# from Spread's three bars, Penetrate's arrow and the crosshair's ringed cross.
+			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
@@ -103,6 +110,28 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
 				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1), c + Vector2(0, -s),
 			]), color, width)
+		"primed":
+			# Primed (28 October, the same chip on both sides): Burn's hollow flame with its core
+			# lit, a blow primed to set fire, so on a foe it never reads as the team's Burning,
+			# which keeps the bare hollow flame.
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
+				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1), c + Vector2(0, -s),
+			]), color, width)
+			ci.draw_colored_polygon(PackedVector2Array([
+				c + Vector2(0, -s * 0.2), c + Vector2(s * 0.32, s * 0.4), c + Vector2(0, s * 0.72), c + Vector2(-s * 0.32, s * 0.4),
+			]), color)
+		"regenerating":
+			# Regenerating (28 October): the heart's outline with a plus inside it, HP regrown at
+			# each action, so it never reads as Getting Back Up's star.
+			draw(ci, "heart", c, size, color, width)
+			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.02), c + Vector2(s * 0.3, -s * 0.02), color, width)
+			ci.draw_line(c + Vector2(0, -s * 0.32), c + Vector2(0, s * 0.28), color, width)
+		"dispel", "purge":
+			# Purge (the player's keyword, 28 October; a placeholder, judged running): the buff's
+			# arrow struck through, every buff the foe carries unmade.
+			draw(ci, "buff", c, size * 0.8, color, width)
+			ci.draw_line(c + Vector2(-s * 0.85, s * 0.85), c + Vector2(s * 0.85, -s * 0.85), color, width * 1.2)
 		"suppress":
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)
 			ci.draw_line(c + Vector2(-s * 0.65, s * 0.65), c + Vector2(s * 0.65, -s * 0.65), color, width)
@@ -258,7 +287,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"burning":
 			# Burning on a machine (Ryan, 13 October: a glyph of its own): Burn's flame filled solid,
 			# the heat glyph's thermometer cut out of it, since on metal the fire is heat. The hollow
-			# flame stays Burn's, a foe's Burning's and Primed's, the bare thermometer the overheat's.
+			# flame stays Burn's and a foe's Burning's (Primed wears it with its core lit since 28
+			# October), the bare thermometer the overheat's.
 			var flame := PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
 				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1),
@@ -406,13 +436,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine", "primed":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile", "silence":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

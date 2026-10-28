@@ -6,7 +6,7 @@ extends TestCase
 ## only the drawing needs a window.
 
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
-	"skua", "needletail", "storm_petrel", "giant_petrel"]
+	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -108,10 +108,10 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 			else:
 				var found := false
 				for mi in model.find_children("*", "MeshInstance3D", true, false):
-					if str(mi.name).begins_with(str(part)):
+					if MechRig.labelled(str(mi.name), str(part)):
 						found = true
 						break
-				assert_true(found, "%s: a mesh named %s* carries the glow" % [id, part])
+				assert_true(found, "%s: a mesh labelled %s carries the glow (the label whole, never a prefix)" % [id, part])
 		model.free()
 
 

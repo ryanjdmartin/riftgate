@@ -98,7 +98,12 @@
   "whip_scorpion": null,
   "swallowtail": null,
   "musk_ox": null,
-  "lammergeier": null,
+  "lammergeier": [
+   1,
+   2,
+   3,
+   4
+  ],
   "skua": [
    1,
    2,

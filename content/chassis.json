@@ -840,7 +840,7 @@
    "passive": {
     "id": "adaptive_munitions_drum",
     "name": "Adaptive Munitions Drum",
-    "description": "Every weapon and equipment it aims at a foe leaves the drum as the drum's shot: Indirect, 4, heat 3, with its own keywords. Aimed at the back rank the shot punches through (Penetrate); aimed at the front rank it sprays (Spread).",
+    "description": "Every weapon and equipment it aims at a foe leaves the drum as the drum's shot: Indirect, 4, heat 3, with its own keywords. Aimed at the back rank the shot punches through (Penetrate 2); aimed at the front rank it sprays (Spread 2).",
     "effects": [
      {
       "trigger": "static",
@@ -855,14 +855,16 @@
       "effect": "grant_keyword",
       "value": "penetrate",
       "when": "target_rank",
-      "rank": "back"
+      "rank": "back",
+      "number": 2
      },
      {
       "trigger": "static",
       "effect": "grant_keyword",
       "value": "cleave",
       "when": "target_rank",
-      "rank": "front"
+      "rank": "front",
+      "number": 2
      }
     ]
    },
@@ -978,7 +980,7 @@
    "tier": 3,
    "design": {
     "fantasy": "Ryan's mobile artillery, 21 October: \"a cross between a Big Bertha, a M270 MLRS, and/or a truck-mounted MEADS launcher. Big. Big wheels. Massive launchers and massive artillery cannons\"; the \"high-tech\" Wainwright & Sutler design, \"where they tried to resolve their inherent bias against energy weapons\". Wide (Ryan: \"Wide is good\"): the old cannon on the centreline, the high-tech guns on flank sponsons, a rack of glowing cells feeding them, the musk ox's ring of horns facing out.",
-    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Spread and Penetrate on every strike."
+    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Splash on every strike."
    },
    "codex": "",
    "hull": 44,
@@ -1027,7 +1029,7 @@
   {
    "id": "lammergeier",
    "name": "Lammergeier",
-   "designation": "K-19 Mk I Tandem-Wing Minelayer",
+   "designation": "K-19 Mk I Flying-Wing Minelayer",
    "maker": "kestrel",
    "tier": 3,
    "design": {

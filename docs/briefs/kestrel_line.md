@@ -132,7 +132,7 @@ One pointer each; the proposal is in the brief named.
   Kite row; its brief retired to git). The to-do's stock pass line and the bible's
   stock-pass row moved with the go.
 - **The bomber**'s go (Ryan, 21 October): the Lammergeier since that evening (the Magpie
-  before, the name moving to the support engine), a heavy tandem-wing flyer; its mark the
+  before, the name moving to the support engine), a heavy flyer, a flying wing since 27 October (the tandem wing of its go ditched); its mark the
   Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,
   else gives it Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
   mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
@@ -379,7 +379,7 @@ The bench for either, one line each:
 
 - Designations, in Kestrel's pattern (the codex's stamped tag, so shown text): K-13 Mk I
   Swing-Wing Strafer, K-15 Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet
-  Spotter (the interceptor), K-19 Mk I Tandem-Wing Minelayer (the Magpie), K-21 Mk I
+  Spotter (the interceptor), K-19 Mk I Flying-Wing Minelayer (the Magpie), K-21 Mk I
   Ground-Effect Flagship (the Giant Petrel, beside the Puffin's Ground-Effect Escort). The
   Kite keeps K-7 and takes Mk IV with its rework, so its Interceptor parts from the new
   machine's Spotter.
@@ -422,7 +422,7 @@ Decided:
   kept (the Kite).
 - **Designations** (Claude's, on Ryan's word): K-13 Mk I Swing-Wing Strafer (the Skua), K-15
   Mk I Air-Cushion Picket (the Storm Petrel), K-17 Mk I Tilt-Jet Spotter (the Needletail),
-  K-19 Mk I Tandem-Wing Minelayer (the Lammergeier), K-21 Mk I Ground-Effect Flagship (the
+  K-19 Mk I Flying-Wing Minelayer (the Lammergeier), K-21 Mk I Ground-Effect Flagship (the
   Giant Petrel); the Kite K-7 Mk IV with its rework.
 - **The stock pieces** (Claude's, on Ryan's word): the Cyclic Cannon, the Transonic Rifle,
   Trim Tabs (the stock holes above).

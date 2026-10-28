@@ -874,7 +874,7 @@ class Stage {
     this.isShape = shape;
     this.fits = {};
     this.note.textContent = "Loading " + id.replace("shapes/", "").replace(/_/g, " ") + "…";
-    const side = shape ? Promise.resolve({}) : fetch("hangar/models/" + id + ".rig.json", {cache: "no-store"}).then(r => {
+    const side = shape ? Promise.resolve({}) : fetch("hangar/models/" + id + ".rig.json?v=" + Date.now(), {cache: "no-store"}).then(r => {
       if (!r.ok) throw new Error("hangar/models/" + id + ".rig.json: " + r.status);
       return r.json();
     });
@@ -939,7 +939,7 @@ class Stage {
   // policy refuses that fetch ("Failed to fetch", 3 October). The plugin hands the parser an
   // image-element loader instead, which the policy allows for blob: images.
   async loadModel(id) {
-    const r = await fetch("hangar/models/" + id + ".model.json", {cache: "no-store"});
+    const r = await fetch("hangar/models/" + id + ".model.json?v=" + Date.now(), {cache: "no-store"});   // past any cache between, as the page's fetchJson
     if (!r.ok) throw new Error("hangar/models/" + id + ".model.json: " + r.status);
     const text = await r.text();
     const T = window.THREE;

@@ -33,7 +33,9 @@ every open rift its domain leads final), and
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
 The rest waits on his read. The review of 27 October fixed 15 in the rules, marked 34 settled by
 the one damage state, and put 26 to Ryan, sharpened by the boss's fight that cannot be left (25
-October); he settled it the engine's way the same day. Line numbers are as at `a8a0e43`.
+October); he settled it the engine's way the same day. On 27 October he had 8, 13 and 17 fixed,
+and on 28 October his blow order (the bible's blow row, built with Spread N, Penetrate N and
+Splash N) fixed 9 and 19. Line numbers are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -152,7 +154,7 @@ corrupt-all specials walk `live_mechs()` (sim/skirmish.gd:2237, :2243), so a mac
 Mooring Screens Phased still takes Eruption's Scorched and Diamond Dust's Corrupted. Phased
 "cannot be targeted" (docs/rules.md:312). Fix: skip Phased there too.
 
-### 8. Bug: a sprayed spend's Primed burn all lands on the first foe
+### 8. Fixed 27 October (laid blow by blow on each strike's own foe; a kill leaves nothing to burn). Bug: a sprayed spend's Primed burn all lands on the first foe
 A Primed machine's Burning is summed over the strikes and laid on `target` after the loop
 (sim/skirmish.gd:1925), so a Skua's Flechette Pod whose strikes fell on three foes puts every
 stack on the first, a corpse when the first strike killed it. Primed lays its stacks "on its
@@ -160,7 +162,7 @@ target" (docs/rules.md:311), each blow's own. An ally's Aurora Lattice reaches t
 Fix: lay it on each strike's own foe. (A Spread's neighbours get none, which the rules allow
 and the status's "every blow it lands" leaves open.)
 
-### 9. Text: conditions on the target are judged on the aimed foe for the whole area
+### 9. Fixed 28 October (the blow's order: a condition on the foe is read on each foe struck, the firer's modifiers on every blow). Text: conditions on the target are judged on the aimed foe for the whole area
 The attacker's modifiers are read once a strike against the foe aimed at
 (sim/skirmish.gd:1817) and the same blow goes to every foe it reaches. So the Susceptibility
 Tensor ("its blows deal 1 more to a foe carrying any status") gives a Spread's clean
@@ -191,7 +193,7 @@ carries silence yet.
 Guarded core's ×0 is never shown, where the screen's own comment expects "the zero its die
 shows" (game/skirmish/skirmish_screen.gd:1128). No boss in parts in content yet.
 
-### 13. Bug, rare: the enemy's turn ends early when no machine is targetable
+### 13. Fixed 27 October (the turn goes on; a foe with nobody to strike loses its blow alone, its specials on its own side acting). Bug, rare: the enemy's turn ends early when no machine is targetable
 `_foe_turn` returns false when its re-pick finds no machine (sim/skirmish.gd:1433), and the
 turn breaks there (:1408): every foe after it skips its statuses' tick (Burning, Numbed, an
 Armoured from its brace that should drop), its web, its countdown, and its specials that act
@@ -218,7 +220,7 @@ Volatile spend, the Tithe Coupling's price, an overheat), so a Tithe Coupling be
 Overcharges every spend. Either the text says "each time it loses hull", or the effect reads
 blows only.
 
-### 17. Bug: Siphon heat fires no heat-gain passive
+### 17. Fixed 27 October (through `_add_heat`). Bug: Siphon heat fires no heat-gain passive
 The Siphon's heat a blow is added straight to the gauge (sim/skirmish.gd:3151) rather than
 through `_add_heat`, so an on-heat-gain passive (the Boundary-layer Bleed's shield) never
 answers it. Every other heat in the fight goes through `_add_heat`.
@@ -231,7 +233,7 @@ Overcharged) don't pass through `_stacks_from` (sim/skirmish.gd:1279, :1287; `Ef
 The Stoker is a hardpoint piece, so a Stingray at 10 heat can carry it and burns itself 1, not
 3.
 
-### 19. Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
+### 19. Fixed 28 October (Ryan's blow order, reading (a) with a consumer eating each foe's own: each foe struck reads its own missing hull and stacks, and the neighbours' number is the area keyword's N). Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
 A consumer's point a stack is added to the roll (sim/skirmish.gd:1809), and the roll reaches
 every foe the blow does. "One blow on one foe (no strikes past one, no area)"
 (docs/rules.md:266), and the validator holds the authored face to it, but the Cottonmouth's
@@ -239,6 +241,23 @@ drum grants Spread at the front and Penetrate at the back, so its Backdraft Char
 burning target's stacks to its neighbours too (Burning 4: 8 on all three). A Coriolis
 Accelerator through the drum carries the aimed foe's missing-HP bonus to the area the same way
 (item 9's kind).
+
+The rule that is missing (27 October): the rules say what a blow is (the number, the attacker's
+modifiers, each foe's own) and that the foes past the aimed one take half of it, but never
+which parts of "the number" are the blow's and which are the aimed foe's. Three things the
+engine reads off the aimed foe ride to the neighbours as computed for it: the stacks a consumer
+eats and their bonus (this item), the target's missing hull (the Coriolis; the rules' step 1
+even folds it into "the number"), and a condition on the foe (item 9: the Tensor's "a foe
+carrying any status", the Rangefinder's rank). The validator's "no area" on a consumer guards
+the authored face only; a passive that grants area at the spend (the drum) steps past it. Two
+readings, either a one-line rule: (a) a blow is read for each foe it reaches as if that foe were
+the one aimed at, the entry's number and the machine's own adds the same for all (the roll,
+heat fired, hopper loads, Overcharged), what reads the foe read on each (a condition on it, its
+missing HP, its own Flak, Shock and armour), and what the spend consumes the aimed foe's alone;
+or (b) the shared blow is the number and the machine's unconditional adds, and anything read
+off a foe is the aimed foe's alone. (a) matches the Tensor's text and the Ambush's rule; (b) is
+cheaper to run. A printed number a piece for the area (Spread N, section 12) makes both moot:
+the neighbours' blow is then N, nothing of the aimed foe's riding.
 
 ### 20. Question: the winning turn is free of heat
 END TURN's costs (Burning's tick, the overheat, the seal's heat) never land on the turn a
@@ -453,6 +472,8 @@ domains landed (9 October, `5d9ff746`) and never held the Knight. Fixed on main,
 Marsh sends the Revenant ×6, the Zombie Knight ×2 and the Ghost ×3, the armoured pair sized as
 the Waste's Antlions, so the Marsh formation is eleven foes where it was fifteen and the balance
 matrix gains a Zombie Knight ×2 cell; the report of 27 October predates both.
+Its first read the same day (`docs/measurements.md`, the trios against thinner formations): the
+pair's breaching 6 makes the Marsh formation an injury mill for a trio; its numbers are Ryan's.
 
 ### 38. Text: the promoted forms show their heroes' codex
 A promoted entry sets no codex and takes its hero's (`_resolve_promotions`,

@@ -1920,6 +1920,253 @@ armour, Claude's lean: the bible's own exit ("the lever is its number") made the
 rounding, each carrier's price its own (the drum's and the Beam's 4 spreading 2 or 3, the Claw's
 and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbers content's.
 
+## 27 October, the trios against thinner formations, and the Knight's first read
+
+**Formations thinned, for the trio** (the same day, for the quick campaign question and the
+three-or-four question). `tools/balance.gd` on main's head after the Zombie Knight's line
+(`b9f85c7d`, area at half as built), 200 seeds a cell, random and greedy, three trio rows (the
+starting team; the Armadillo, the Cassowary and the Puffin without an area piece; the Honey
+Badger, the Cottonmouth and the Puffin with two) against each formation at two thirds and at
+half of its size (`--pack`; the Meadow 10 and 8 foes of 15, the Waste 6 and 5 of 9, the Marsh 7
+and 6 of 11, the Peak 6 and 5 of 9), and the Marsh at its new full size, 14,400 fights. Then
+`tools/quick_run.gd` at 40 runs, greedy, the stand-in out, with tier one's formations at two
+thirds and at half (`--density 0.67,1,1` and `0.5,1,1`; the Marsh list before the Knight, as
+the committed run at half above).
+
+Won, random / greedy, then the greedy win's rounds and hull, at two thirds and at half:
+
+| Row | Meadow | Waste | Marsh | Peak |
+|---|---|---|---|---|
+| The starting team | 100 / 100 (3.9 r, 2%), 100 / 100 (3.2 r, 1%) | 100 / 100 (2.3 r, 2%), 100 / 100 (2.1 r, 5%) | 95 / 100 (2.9 r, 3%), 99 / 100 (2.4 r, 2%) | 100 / 100 (2.7 r, 1%), 100 / 100 (2.3 r, 0%) |
+| A trio, no area | 68 / 100 (10.5 r, 14%), 94 / 100 (8.3 r, 8%) | 82 / 100 (6.6 r, 10%), 100 / 100 (4.1 r, 3%) | 9 / 89 (10.6 r, 55%, 3.1 lost), 18 / 92 (10.1 r, 49%, 2.9 lost) | 48 / 99 (10.6 r, 37%), 71 / 100 (8.1 r, 19%) |
+| A trio, two carriers | 100 / 100 (4.2 r, 1%), 100 / 100 (3.3 r, 0%) | 98 / 100 (2.5 r, 4%), 100 / 100 (2.1 r, 4%) | 59 / 100 (4.1 r, 20%, 1.6 lost), 73 / 100 (3.7 r, 18%, 1.5 lost) | 96 / 100 (3.2 r, 2%), 97 / 100 (2.9 r, 1%) |
+
+Against the formations whole (the entry above, the Marsh at its old fifteen) the trio without
+area read 1 / 100 on the Meadow for 40% of its hull, 27 / 100 on the Waste for 30%, 0 / 87 on
+the Marsh for 70% and 0 / 14 on the Peak for 96%, the trio with two carriers 77, 86, 51 and 36
+by random play at 4 to 10% of its hull.
+
+The quick campaign at tier one thinned, half area, the first battle won 55% at two thirds (16
+runs fall at its boss, 2 at a formation) and 70% at half (12 at its boss), from 3% whole; the
+tier-one formations won 99% in 3.8 rounds leaving 94% hull and 100% in 3.3 leaving 96%; the
+tier-one boss fights 82% of 100 at two thirds; the squad's hull as the boss fight opens 85% and
+88%. The runs then play out (4.97 and 6.35 battles a run; none and three reach the finale, none
+won), tier two and three the same enemy as tier one, since no tier is the foes' yet.
+
+**The Zombie Knight's first read.** The Marsh at its new full size (the Revenant ×6, the Zombie
+Knight ×2, the Ghost ×3), the same rows: the starting team 42 / 99 (5.1 rounds, 23% hull, 0.66
+components lost), the trio without area 0 / 0, the trio with two carriers 2 / 77 (9.1 rounds,
+74% hull, 4.3 components lost); the old fifteen read 89 / 100 at 8%, 0 / 87 at 70% and 51 / 100
+at 6%. Thinned to seven, the Marsh still costs the trio without area 55% of its hull and three
+components. The Knight is the Marsh's one armoured foe at 8 HP, armour 1 and a breaching blow of
+6: a massive foe's blow on a rank-and-file body (the scales row: the rank and file's blows 2 or
+3), and every one of its blows reaches a tier one's 20 to 24 hull past the shield and injures
+at a quarter of it, so the pair is an injury mill for a trio. Its numbers were never read before
+today, since it never spawned; a placeholder like every number, Ryan's to move.
+
+Read. The fights' size is the bigger lever on the trio's chain by far: a third off tier one's
+formations takes the first battle from 3% to 55% at half area, where area whole took it to 28%,
+and the thinned formations sit where the bands want a trio, random play losing some and greedy
+winning nearly all for a few points of hull, except the Marsh, which the Knight's blow sets
+apart. The fours were not run against the thinned fights, since whole formations are already
+free for them (the entry above), so the thinned sizes are a trio's fights and the whole ones
+nobody's: section 12's three-or-four question.
+
+**A fixed number by shape, the neighbours always taking 2** (the same day, the same five team
+rows and six packs at 200 seeds, `mini(dmg, 2)` at the engine's two sites and in the bot's
+valuation; the quick campaign at 40 runs beside it). It reads as the half does: no greedy cell
+moves, the rounds move by a tenth at most, and the random cells by 0 to 6 points on the trio
+with two carriers alone (the Meadow 77 to 79, the Waste 86 to 91, the Peak 36 to 42); the
+quick campaign's first battle is won 5% (3% at half, 8% rounded up, 28% whole), the tier-one
+formations 83% in 6.6 rounds leaving 65% hull. Read: a 2 on the neighbours is what the halving
+already deals from the pieces that carry area (their halves are 1 or 2), so the number a form
+gives the neighbours matters only at the swarm's kill threshold, 3 for the Goblin and the
+Revenant: below it every form is a softening and reads as the half, at it a form reads as whole
+on that class. A number a piece is therefore a dial with two settings on today's rank and file,
+a softening (1 or 2) or a kill (3), and a tier's dial rather than a fine one; the fights' size
+remains the lever on the trio's chain.
+
+## 28 October, area numbered, on the team rows
+
+**Spread N, Penetrate N and Splash N with the blow's order, built** (Ryan, 28 October; the
+build of `3215b987`, its internal design notes aside). `tools/balance.gd`, 200 seeds a cell,
+random and greedy, the five team rows of the 27 October forms entry against the four
+formations and the two swarms of six, 14,400 fights, the carriers at the numbers content holds
+(the Claw and the Plow Spread 2, the Enfilade Beam Penetrate 3, the Airburst Shell and the
+Flakshot Repeater Spread 1, the Musk Ox's two guns Splash 1, the drum Spread 2 and Penetrate 2).
+The Marsh formation holds the Zombie Knight pair since 27 October, so its cell is read against
+the half on main's head before the build (`2b1ace78`, 2,400 fights), which repeats the Knight's
+first read above to the fight; the other cells against the 27 October forms entry, whose content
+differs from today's in the Marsh alone.
+
+The rows without an area piece (the four of the Armadillo, the Cassowary, the Skua and the
+Puffin; the trio without the Skua) read the same in every cell, wins, rounds and hull, fight for
+fight: the blow read for each foe struck leaves single-target play, the Skua's spray among it,
+as it was.
+
+Won, random / greedy, at half, numbered, whole (whole not run on today's Marsh):
+
+| Row | Meadow formation | Waste formation | Marsh formation | Peak formation |
+|---|---|---|---|---|
+| The starting team | 99, 100, 100 / 100 | 99, 100, 100 / 100 | 42, 46 / 99, 100 | 81, 87, 89 / 100 |
+| A four, two carriers | 99, 99, 100 / 100 | 100 / 100 | 15, 15 / 100 | 89, 92, 96 / 100 |
+| A trio, two carriers | 77, 79, 91 / 100 | 86, 91, 95 / 100 | 2, 2 / 77, 85 | 36, 42, 60 / 100 |
+
+The swarms of six are won by every area row at 99 to 100% under every form, in 2.0 to 2.3
+greedy rounds. Greedy rounds and hull lost, half, numbered, whole: the starting team on the
+Meadow 6.0 and 7%, 5.8 and 6%, 5.2 and 4%, on the Peak 4.1 and 7%, 4.1 and 7%, 3.7 and 6%, on
+the Marsh (with the Knights) 5.1 and 23% with 0.66 components lost, 4.8 and 17% with 0.50; the
+four with two carriers on the Peak 4.1, 4.0, 3.1 rounds, on the Marsh 7.0 and 42% with 4.5
+components lost, 6.4 and 36% with 4.0; the trio with two carriers on the Meadow 6.1 and 4%, 6.0
+and 3%, 4.6 and 1%, on the Peak 4.8 and 10%, 4.7 and 9%, 3.7 and 3%, on the Marsh 9.1 and 74%
+with 4.3 components lost, 8.0 and 62% with 3.7. Pick share does not move under any form (the
+Claw 12 to 14% of a row's spends, the Enfilade Beam 6 to 7%, the Airburst Shell 2 to 3%).
+
+Read. At these numbers the area sits between the half and whole, nearer the half: the random
+rung gains 0 to 6 points on a formation where whole gained up to 24, the greedy rounds fall by
+a tenth or two where whole took a round off, and a carrier row's hull on a formation moves a
+point or two; only the Marsh, where every blow counts against the Knights, moves further (a
+trio's greedy wins 77% to 85%, its hull 74% to 62%). The trio with two carriers reads exactly
+the fixed-2 read of 27 October on its random cells (79, 91, 42), its two carriers being Spread 2
+pieces, so the firer's adds and each foe's own reads move no cell there. The neighbours' number
+tells at the rank and file's kill threshold, 3 for the Goblin and the Revenant (the fixed-2
+entry above): the Enfilade Beam's 3 kills what it reaches, the 2s soften, an Overcharged or a
+sixth shot lifting a 2 to a kill. So the carriers chip as Ryan asked of the big hitters, no
+form walls a four, and a dedicated trash-clearer is a piece at N 3 or more; the numbers are
+the lever, each piece's own, read on the bands as the foes' fresh start sets the fights' size.
+
+## 28 October, the rank and file against the chassis tiers
+
+**A grouping of the 27 October matrix** (`docs/balance.md`, 200 seeds a cell, every chassis
+with its stock kit, no new run), on Ryan's question of 28 October: do tier-two units need
+bigger numbers than tier one's on average just to stay relevant? Each chassis row's greedy
+cells against the twelve rank-and-file packs (Goblin x6 to Drake x2) and against the four
+formations, meaned by the chassis's tier; rounds to win over the packs won, hull lost over
+every fight of the cell, won or not.
+
+| Chassis tier | Rows | Won, rank and file | Rounds to win | Hull lost a fight | Won, formations |
+|---|---|---|---|---|---|
+| 1 | 9 | 59% | 6.3 | 56% | 0% |
+| 2 | 9 | 78% | 4.3 | 38% | 7% |
+| 3 | 4 | 84% | 5.6 | 37% | 4% |
+
+By row, won / rounds / hull lost: tier one, the Honey Badger 98% / 4.7 / 27%, the Cottonmouth
+87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Armadillo 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
+the Stingray 49 / 5.8 / 56, the Cassowary 39 / 7.1 / 74, the Puffin 37 / 7.0 / 76, the Prairie
+Dog 32 / 9.5 / 77; tier two, the Wild Boar 99 / 4.9 / 22, the Nemesis 98 / 3.7 / 23, the Whip
+Scorpion 98 / 4.1 / 32, the Buzzard 96 / 2.9 / 15, the Clydesdale 90 / 5.1 / 38, the Kite 72 /
+3.0 / 32, the Funnel-web 64 / 6.4 / 51, the Needletail 54 / 3.7 / 56, the Dingo 32 / 5.2 / 78;
+tier three, the Ammit 92 / 4.8 / 43, the Lammergeier 86 / 2.9 / 23, the Musk Ox 83 / 6.1 / 37,
+the Swallowtail 76 / 8.8 / 47.
+
+What the content holds by tier, the same day: a weapon's power times its strikes (a rolled
+one at its middle) means 2.2 at tier zero, 3.5 at tier one, 3.2 at tier two and 4.0 at tier
+three (4, 15, 10 and 2 pieces; the locked pieces 2.0 over 24); a chassis's hull means 26 at
+tier one, 29 at tier two and 39 at tier three, its shield 10, 10 and 13.
+
+Read. By the chassis tier alone, with the kit the stock pass gave each, the rank and file at
+their one set of numbers go from a fight a tier one wins three times in five for half its hull
+to one a tier three wins five times in six for a third; and the tiers' kit buys options more
+than numbers (the weapon means barely move, the hull by half), so the late tiers' power is
+keywords and synergy, which a stock loadout on a lone machine does not yet show, and the gap
+only widens once the runner fits tier-two and tier-three pieces (the prices-and-tiers pass).
+Every tier loses alone to a formation (a wall for one machine of any tier), so the formation
+read is the fours'. So yes: a tier's units need a floor above tier one's to stay a fight,
+measured against the tier's kit, and the question is what makes the tier (the bible's section
+3 row, rewritten the same day). The area numbers sharpen it: a neighbour's Spread 2 or 3 tells
+at the rank and file's kill threshold of 3, so a tier whose units stay at 2 to 4 HP dies to
+the column once the tier's pieces carry area.
+
+## 28 October, the ladder at 30 seeds
+
+**The ladder's first read** (its brief's section F, `git show 26c54c7:docs/briefs/foes_ladder.md`),
+a direction and called one: `tools/balance.gd` at 30 seeds a cell, random and greedy, every
+row, on the branch's head (`ccr-6073bda9-p34o8q`, the ladder's content as landed; the layout
+fix after it moves no number, and the Red Dragon's Stoke, dropped after it on Ryan's call of
+the same day, moves only the Peak's tier-three cells, read again at 200 seeds). Three runs, four parts each: the ladder's 34 new cells (a pack
+cell for each of the twenty-six recolours at its strength in its own tier's list, and the
+formation of each domain at tiers two and three), 55,080 fights in 1,462 s; tier one's 17
+cells at the same seeds for the baseline, since the 27 October matrix's Marsh formation
+predates the Zombie Knight, 27,540 fights in 764 s; and the file's first four machines (the
+Honey Badger, the Clydesdale, the Sparrowhawk and the Baboon, the default team with the
+Baboon) on the twelve formations, 720 fights in 142 s.
+
+The formations by tier, as the lists send them:
+
+| Domain | Tier | Foes | HP | Armour | Base attack |
+|---|---|---|---|---|---|
+| Meadow | 1 / 2 / 3 | 15 / 19 / 22 | 58 / 74 / 90 | 0 / 2 / 11 | 39 / 63 / 94 |
+| Waste | 1 / 2 / 3 | 9 / 10 / 10 | 30 / 41 / 49 | 0 / 0 / 0 | 33 / 43 / 51 |
+| Marsh | 1 / 2 / 3 | 11 / 12 / 12 | 46 / 71 / 98 | 2 / 2 / 3 | 33 / 44 / 57 |
+| Peak | 1 / 2 / 3 | 9 / 10 / 11 | 42 / 57 / 73 | 0 / 0 / 0 | 57 / 73 / 84 |
+
+The rank and file, each domain's pack cells at a tier (tier one its bases, tiers two and three
+its recolours of that tier), every single machine meaned by its chassis tier, greedy won / hull
+lost over every fight, and random's wins on the tier-one rows:
+
+| Domain | Tier | Chassis tier 1 | Chassis tier 2 | Chassis tier 3 | Random, tier 1 |
+|---|---|---|---|---|---|
+| Meadow | 1 | 64% / 50% | 81% / 33% | 86% / 35% | 46% |
+| Meadow | 2 | 65% / 56% | 88% / 28% | 98% / 24% | 33% |
+| Meadow | 3 | 25% / 87% | 67% / 55% | 58% / 70% | 7% |
+| Waste | 1 | 67% / 49% | 79% / 39% | 92% / 33% | 47% |
+| Waste | 2 | 52% / 65% | 73% / 49% | 68% / 49% | 31% |
+| Waste | 3 | 76% / 47% | 90% / 24% | 97% / 22% | 46% |
+| Marsh | 1 | 39% / 70% | 58% / 57% | 53% / 58% | 25% |
+| Marsh | 2 | 24% / 87% | 48% / 69% | 39% / 75% | 10% |
+| Marsh | 3 | 47% / 59% | 58% / 48% | 62% / 49% | 38% |
+| Peak | 1 | 44% / 70% | 76% / 43% | 75% / 46% | 28% |
+| Peak | 2 | 38% / 79% | 67% / 47% | 69% / 55% | 19% |
+| Peak | 3 | 60% / 56% | 85% / 31% | 85% / 33% | 40% |
+
+By cell, the tier-one rows' random and greedy wins: the easy end the Lich ×1 (97% and 100%),
+the Balloon ×2 (83 and 99: its burst spends it, and the pack goes with it), the Basilisk ×2
+(76 and 99), the Great Needler ×2 (54 and 91: three HP a needler), the Antlion Queen ×1 (53
+and 81); the walls the Death Knight ×2 and the Dread Knight ×2 (0 for every single machine of
+every tier), the Fire Lizard ×3 (0, and 22% for a tier two), the Pit Antlion ×2 (7 and 46),
+the Wight ×4 (9 and 52) and the Metal Gel ×3 (6 and 44).
+
+The formations, greedy won / hull lost (no single machine of any tier wins a formation at tier
+two or three, the Goshawk's 7% on the Meadow's tier two the most):
+
+| Squad | Meadow 1 / 2 / 3 | Waste 1 / 2 / 3 | Marsh 1 / 2 / 3 | Peak 1 / 2 / 3 |
+|---|---|---|---|---|
+| The default team | 100/6, 100/16, 13/98 | 100/7, 100/15, 93/31 | 97/18, 60/78, 0/100 | 100/8, 100/25, 70/71 |
+| Minerva's team | 100/4, 100/15, 33/94 | 100/4, 100/32, 97/55 | 100/46, 53/90, 0/100 | 100/11, 97/43, 13/96 |
+| Kestrel's team | 100/12, 97/25, 0/100 | 100/10, 100/29, 93/43 | 100/17, 27/91, 0/100 | 100/7, 90/49, 70/70 |
+| Wainwright & Sutler's team | 100/21, 70/72, 0/100 | 100/18, 70/79, 13/98 | 13/97, 0/100, 0/100 | 87/45, 20/94, 3/99 |
+| The default team with the Baboon | 100/1, 100/5, 90/57 | 100/3, 100/8, 100/9 | 100/10, 100/32, 0/100 | 100/2, 100/7, 100/19 |
+
+The cleansers against the Ammit and the Cassowary (greedy won / hull lost): the Ammit takes
+the Spectre ×3 at 100% for 31% and the Wraith ×2 at 100% for 39%; the Cassowary 17% for 97%
+and 3% for 100%. No purging pack exists, so the Ammit's kept Overcharged waits on one (the
+to-do's line).
+
+Read against the brief's bands. A tier's formation costs every squad more than the tier
+under it in every domain, as it should. The rank and file do not: a tier two's cells cost a
+tier-one machine more than tier one's in the Waste, the Marsh and the Peak and about the same
+in the Meadow, but tier three's cost less than tier one's in all three and random play wins
+38 to 46% of them there (the band: none), since those lists send a tier-three unit one or two
+at a time (the Lich, the Antlion Queen, the Great Needlers, the Balloons), where tier two's
+send two to four. The Meadow, whose dial is its count, sends three and four at tier three and
+reads as the band asks. The formations at tier three wall every single machine, as asked; for
+the four they are a fight in the Meadow (90% for 57%) and nothing in the Waste (100% for 9%)
+or the Peak (100% for 19%), and a wall in the Marsh (0%), whose Dread Knights (16 HP, armour,
+a breaching 8, a last act and a Reraise) and Death Knight (12 HP, the guard on every foe) make
+it what the Zombie Knight pair began (the status's injury mill). The numbers that would move
+each, for Ryan's word and moved by none of these runs: the tier-three strengths (the Lich ×1
+and the Antlion Queen ×1 to two or three, the Great Needler ×2 and the Balloon ×2 to four), or
+the Waste's and the Peak's tier-three HP above the floor; the Marsh's knights (their HP, 12 and
+16, or the Dread Knight ×2 to one, or the Marsh's tier-three dial ×2 to the floor's ×1.5); and
+the Balloon's burst spending a pack that a lone machine then wins.
+
+The campaign report rerun once beside it, for the record (`docs/campaign_run.md`, 40 runs,
+198 s), since the tier-two and tier-three battles field the ladder now: the plain player wins
+none, as before; its tier-two battles (the report's tier 1, counting from 0) are won in none of
+160 where they were 5%, its runs end a turn sooner (8.8 turns), every city falls in every run
+(four of four), and its machines end with 39% of their hardpoints filled where they kept 59%.
+The spiral it was, a little steeper; no decision reads it.
+
 ## 28 October, movement in hexes
 
 The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
@@ -1947,13 +2194,16 @@ holds `entries`), so it has fallen back to those moves since before 8 October; t
 biggest moves are walker 4 and hover 5.
 
 **The campaign run** (`tools/campaign_run.gd`, 40 runs from seed 1, the greedy rung,
-`docs/campaign_run.md`), against the 27 October run on the merged head. The bands hold: no run
-won (none before), 38 of 40 reach the finale (39), 399 battles won 7% (7%), held after a wipe
-62% (62%), fell 30% (29%), 92% ending in a team wipe (92%). One cell moved past its band: the
-three-machine battles, won 54% of 50 (36% of 57). The fights inside them say why: lone fights
-in a three-machine battle fell from 42 to 17 and fights with two of three rose from 35 to 61,
-since no slow hex splits the squad as it walks onto a pack (the bot moves the squad as one onto
-the nearest pack, and under the table a walker stopped in water or tracks in ruins arrived a
-turn behind). Components destroyed per battle 0.65 (0.49) and hardpoints filled at the end 48%
-(59%) moved the other way, more machines being in the fights that hurt; wrecks rushed 23 (36).
-A direction at 40 runs, not a band: the rule's effect on a squad moving together, not a bug.
+`docs/campaign_run.md`), on the merged head against main's report at c8dac4e: the same runner,
+seeds and content, the movement aside. The bands hold: no run won (none), 31 of 40 reach the
+finale (33), 373 battles won 7% (5%), held after a wipe 54% (50%), fell 38% (43%), 92% ending in
+a team wipe (94%). One cell moved past its band: the three-machine battles, won 54% of 50 (35%
+of 48). The fights inside them say why: lone fights in a three-machine battle fell from 33 to
+17, fights with two of three rose from 29 to 60 and with all three from 39 to 49, since no slow
+hex splits the squad as it walks onto a pack (the bot moves the squad as one onto the nearest
+pack, and under the table a walker stopped in water or tracks in ruins arrived a turn behind).
+Wrecks rushed 23 (31); components destroyed per battle 0.78 (0.80) and hardpoints filled at the
+end 42% (39%) held. The branch's own read before the merge, against its run of 27 October,
+moved the same cell the same way (54% of 50 against 36% of 57; lone fights 42 to 17, two of
+three 35 to 61). A direction at 40 runs, not a band: the rule's effect on a squad moving
+together, not a bug.

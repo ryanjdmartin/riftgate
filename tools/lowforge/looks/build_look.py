@@ -28,10 +28,12 @@ os.chdir(LF)
 import kestrel_looks  # noqa: E402
 import kestrel_looks2  # noqa: E402
 import kestrel_looks3  # noqa: E402
+import kestrel_looks4  # noqa: E402
+import kestrel_looks5  # noqa: E402
 import models_low  # noqa: E402
 import ws_multirotor  # noqa: E402
 
-for module in (ws_multirotor, kestrel_looks, kestrel_looks2, kestrel_looks3):
+for module in (ws_multirotor, kestrel_looks, kestrel_looks2, kestrel_looks3, kestrel_looks4, kestrel_looks5):
     for n in module.LOOKS:
         setattr(models_low, n, getattr(module, n))
 runpy.run_path(os.path.join(LF, "bl_low.py"), run_name="__main__")

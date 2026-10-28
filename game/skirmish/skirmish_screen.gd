@@ -77,6 +77,9 @@ static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
 ## RIFTGATE_PREVIEW_DEBUG=1: every foe showing a blow wears the pulsing preview chip of a rally on
 ## its way (+1 where none is coming, its number unchanged), to judge the pulse running.
 static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
+## RIFTGATE_SLEEP_DEBUG=1: every buff on a machine is drawn as a purge leaves it asleep (half its
+## light on a dashed edge, still), to judge the look running (28 October; placeholders).
+static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 var _rage_debug_at := -10.0
 
@@ -318,7 +321,7 @@ static func _default_skirmish() -> Skirmish:
 	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
 	# count (heroes included), each its own pack: to see any sprite in the fight.
 	var fac := db.default_faction()
-	var table: Array = db.spawn_table(fac)
+	var table: Array = db.spawn_table(fac, 1)   # the standalone fight is tier one
 	var uid := 1
 	var foes_env := OS.get_environment("RIFTGATE_FOES")
 	if not foes_env.is_empty():
@@ -913,7 +916,7 @@ func _refresh(save: bool = true) -> void:
 			if df == null or not df.is_attack() or not (lv.highlight and rv.highlight):
 				continue
 			var ef := Effects.effective_face(dm.unit, df, p[2])
-			if not (ef.has(Face.Keyword.CLEAVE) or ef.has(Face.Keyword.PENETRATE) or ef.reaches_all):
+			if not (ef.has_area() or ef.reaches_all):
 				continue
 			lv.highlight = false
 			rv.highlight = false
@@ -966,7 +969,7 @@ func _refresh(save: bool = true) -> void:
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
-			v.statuses.append([r[0], r[1], r[3]])
+			v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
 		v.queue_refresh()
 		var d := _dice[i]
 		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
@@ -1292,6 +1295,22 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], Palette.HEAT, "preview"])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
+	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
+	# flame, the shield with its wall or its struck ring, the heart regrowing.
+	var primed := Effects.stacks_of(foe, "primed")
+	if primed > 0:
+		rows.append([_foe_glyph("primed"), "×%d" % primed, "Primed: its next move's blows each leave %d Burning on the machine they hit; the move spends it" % primed, _foe_chip_colour("primed")])
+	if Effects.has(foe, "barrier"):
+		rows.append([_foe_glyph("barrier"), "", "Barrier: the next blow of a weapon it takes deals no damage, the blow's riders landing; equipment pops nothing. Until it pops or the player's turn ends", _foe_chip_colour("barrier")])
+	if Effects.has(foe, "ward"):
+		rows.append([_foe_glyph("ward"), "", "Ward: no mark the team lays lands on it but Suppressed (no Burning, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone); damage lands. Until the player's turn ends", _foe_chip_colour("ward")])
+	var regrow := Effects.regrowth(foe)
+	if regrow > 0:
+		var left := 0
+		for m in Effects.live(foe):
+			if m.id == "regenerating":
+				left = maxi(left, m.stacks)
+		rows.append([_foe_glyph("regenerating"), "+%d" % regrow, "Regenerating: regrows %d HP at each of its actions, after its Burning and Vitriol (%d action%s to go)" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")])
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
@@ -1366,9 +1385,9 @@ static func _foe_glyph(id: String) -> String:
 
 ## A foe's status's colour on its chip, as the rows above give them.
 static func _foe_chip_colour(id: String) -> Color:
-	if id in ["burning", "vitriol", "flakked", "kindled", "shocked"]:
+	if id in ["burning", "vitriol", "flakked", "kindled", "shocked", "primed"]:
 		return Palette.HEAT
-	if id in ["webbed", "braced", "numbed", "paradox"]:
+	if id in ["webbed", "braced", "numbed", "paradox", "barrier", "ward"]:
 		return Palette.SHIELD
 	if id in ["risen", "exposure"]:
 		return Palette.ENEMY
@@ -1393,7 +1412,9 @@ static func status_glyph(id: String) -> String:
 		"braced":
 			return "shield"
 		"primed":
-			return "burn"
+			return "primed"
+		"regenerating":
+			return "regenerating"
 		"retaliate":
 			return "shocked"
 		"hopper":
@@ -1482,7 +1503,15 @@ func _mech_rows(i: int) -> Array:
 		var glyph := status_glyph(id)
 		var colour := _chip_colour(id)
 		var stacks := int(total[id])
+		if SLEEP_DEBUG and (Effects.STATUS.get(id, {}).get("tags", []) as Array).has("buff"):
+			rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: asleep until your turn" % str(d[0]), colour, "asleep"])
+			continue
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
+	# A buff a purge put to sleep (28 October): its chip half lit on a dashed edge, still, until
+	# the player's turn wakes it.
+	for a in Effects.asleep(ms.unit):
+		var sid := str(a[3])
+		rows.append([status_glyph(sid), ("×%d" % int(a[2])) if int(a[2]) > 1 else "", "%s: asleep until your turn" % str(a[0]), _chip_colour(sid), "asleep"])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:
