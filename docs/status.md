@@ -168,7 +168,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   half (the same day), since a number tells only at the swarm's kill threshold of 3. Ryan's
   call, 28 October: Spread N, Penetrate N and Splash N, with the blow's order read for each
   foe struck (the bible's rows), built the same day with each carrier's N a placeholder from
-  Claude's proposals and the Kite's double kept on the printed number. The quick campaign is an
+  Claude's proposals and the Kite's double kept on the printed number; read on the team rows the
+  same day (`docs/measurements.md`): between the half and whole, nearer the half, the rows
+  without area the same fight for fight, a neighbour's number telling at the rank and file's
+  kill threshold of 3 (the Enfilade Beam's), the 2s softening. The quick campaign is an
   experiment, not a feature (Ryan, 28 October): its reads above are history, not grounds.
   The fights' size is the bigger lever (the same day): tier one's formations a third thinner
   take the quick campaign's first battle from 3% to 55% at half area, half thinner to 70%, and
