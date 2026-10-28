@@ -18,7 +18,8 @@ heat classes, for the knee where a kit starts paying; Ryan, 28 October: price he
 from heatless vanillas, and a rolled gun is its mean); --benches id,id (the
 ladders' and the modules' benches, BENCHES below, every one by default); --tiers 0,1,2,3 (the
 ladders' candidates); --seeds 30; --policies greedy (random,greedy adds the decision read at
-twice the cost); --packs big (the sixteen big fights but the finale, the default: the four
+twice the cost); --packs big (the sixteen big fights but the finale, the default; tiers, tier2 or tier3 for the ladder's
+formations by tier since 28 October: the four
 massive foes, the four formations, the eight finals), rank_and_file (the twelve wildlife packs),
 all (both), or pack ids as the runner names them; --jobs N (processes at once, the cores by
 default); --knock blank|basic (a knock-out leaves the hardpoint empty, or fits the basic of the
@@ -111,8 +112,11 @@ class Content:
         return rows
 
     def packs(self, which):
-        """Pack ids as the runner names them: a massive boss 'id x1', a domain 'id formation', a hero 'id final'."""
-        big, trash = [], []
+        """Pack ids as the runner names them: a massive boss 'id x1', a domain 'id formation' (tier one's; since the
+        ladder, 28 October, 'id formation tier 2' and 'tier 3' from the spawn lists by tier), a hero 'id final'.
+        'big' is the sixteen fights but the finale on tier one's formations; 'tiers' the tier-two and tier-three
+        formations (eight); 'tier2' or 'tier3' one of them; 'rank_and_file' every pack; 'all' everything; or ids."""
+        big, tiers, trash = [], {}, []
         for f in self.factions:
             b = f.get('boss')
             for boss in (b if isinstance(b, list) else [b]):
@@ -120,22 +124,31 @@ class Content:
                     big.append('%s x1' % boss)
         for f in self.factions:
             spawn = f.get('spawn', [])
-            if len(spawn) >= 2:
-                big.append('%s formation' % f['id'])
-            for e in spawn:
-                pid = '%s x%d' % (e['foe'], e['strength'])
-                if e['foe'] in self.foes and pid not in trash:
-                    trash.append(pid)
+            lists = spawn if isinstance(spawn, dict) else {'1': spawn}
+            for tier, lst in sorted(lists.items(), key=lambda kv: str(kv[0])):
+                if len(lst) >= 2:
+                    if str(tier) == '1':
+                        big.append('%s formation' % f['id'])
+                    else:
+                        tiers.setdefault(str(tier), []).append('%s formation tier %s' % (f['id'], tier))
+                for e in lst:
+                    pid = '%s x%d' % (e['foe'], e['strength'])
+                    if e['foe'] in self.foes and pid not in trash:
+                        trash.append(pid)
         for f in self.factions:
             for h in f.get('bench', []):
                 if h in self.foes:
                     big.append('%s final' % h)
         if which == 'big':
             return big
+        if which == 'tiers':
+            return [p for tier in sorted(tiers) for p in tiers[tier]]
+        if which in ('tier2', 'tier3'):
+            return tiers.get(which[-1], [])
         if which == 'rank_and_file':
             return trash
         if which == 'all':
-            return big + trash
+            return big + [p for tier in sorted(tiers) for p in tiers[tier]] + trash
         return [p.strip() for p in which.split(',') if p.strip()]
 
     def slottable(self, tiers):

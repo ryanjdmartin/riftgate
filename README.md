@@ -287,7 +287,8 @@ python3 tools/endgame_fours.py endgame30
 # against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
 # as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
-# --packs all, --policies random,greedy, --knock basic (the basic of the piece's kind in place of an empty hardpoint),
+# --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
+# the piece's kind in place of an empty hardpoint),
 # --pieces and --modules to narrow the ladders, --set path=json on every variant (a module's line, a rule's what-if)
 python3 tools/pricing_run.py plan
 python3 tools/pricing_run.py run prices
