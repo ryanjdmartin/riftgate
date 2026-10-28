@@ -2034,3 +2034,45 @@ entry above): the Enfilade Beam's 3 kills what it reaches, the 2s soften, an Ove
 sixth shot lifting a 2 to a kill. So the carriers chip as Ryan asked of the big hitters, no
 form walls a four, and a dedicated trash-clearer is a piece at N 3 or more; the numbers are
 the lever, each piece's own, read on the bands as the foes' fresh start sets the fights' size.
+
+## 28 October, the rank and file against the chassis tiers
+
+**A grouping of the 27 October matrix** (`docs/balance.md`, 200 seeds a cell, every chassis
+with its stock kit, no new run), on Ryan's question of 28 October: do tier-two units need
+bigger numbers than tier one's on average just to stay relevant? Each chassis row's greedy
+cells against the twelve rank-and-file packs (Goblin x6 to Drake x2) and against the four
+formations, meaned by the chassis's tier; rounds to win over the packs won, hull lost over
+every fight of the cell, won or not.
+
+| Chassis tier | Rows | Won, rank and file | Rounds to win | Hull lost a fight | Won, formations |
+|---|---|---|---|---|---|
+| 1 | 9 | 59% | 6.3 | 56% | 0% |
+| 2 | 9 | 78% | 4.3 | 38% | 7% |
+| 3 | 4 | 84% | 5.6 | 37% | 4% |
+
+By row, won / rounds / hull lost: tier one, the Honey Badger 98% / 4.7 / 27%, the Cottonmouth
+87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Armadillo 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
+the Stingray 49 / 5.8 / 56, the Cassowary 39 / 7.1 / 74, the Puffin 37 / 7.0 / 76, the Prairie
+Dog 32 / 9.5 / 77; tier two, the Wild Boar 99 / 4.9 / 22, the Nemesis 98 / 3.7 / 23, the Whip
+Scorpion 98 / 4.1 / 32, the Buzzard 96 / 2.9 / 15, the Clydesdale 90 / 5.1 / 38, the Kite 72 /
+3.0 / 32, the Funnel-web 64 / 6.4 / 51, the Needletail 54 / 3.7 / 56, the Dingo 32 / 5.2 / 78;
+tier three, the Ammit 92 / 4.8 / 43, the Lammergeier 86 / 2.9 / 23, the Musk Ox 83 / 6.1 / 37,
+the Swallowtail 76 / 8.8 / 47.
+
+What the content holds by tier, the same day: a weapon's power times its strikes (a rolled
+one at its middle) means 2.2 at tier zero, 3.5 at tier one, 3.2 at tier two and 4.0 at tier
+three (4, 15, 10 and 2 pieces; the locked pieces 2.0 over 24); a chassis's hull means 26 at
+tier one, 29 at tier two and 39 at tier three, its shield 10, 10 and 13.
+
+Read. By the chassis tier alone, with the kit the stock pass gave each, the rank and file at
+their one set of numbers go from a fight a tier one wins three times in five for half its hull
+to one a tier three wins five times in six for a third; and the tiers' kit buys options more
+than numbers (the weapon means barely move, the hull by half), so the late tiers' power is
+keywords and synergy, which a stock loadout on a lone machine does not yet show, and the gap
+only widens once the runner fits tier-two and tier-three pieces (the prices-and-tiers pass).
+Every tier loses alone to a formation (a wall for one machine of any tier), so the formation
+read is the fours'. So yes: a tier's units need a floor above tier one's to stay a fight,
+measured against the tier's kit, and the question is what makes the tier (the bible's section
+3 row, rewritten the same day). The area numbers sharpen it: a neighbour's Spread 2 or 3 tells
+at the rank and file's kill threshold of 3, so a tier whose units stay at 2 to 4 HP dies to
+the column once the tier's pieces carry area.

@@ -813,7 +813,8 @@ a stat.
   three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
   of the tier (a unit's tier is content's, one by default), else of the highest tier under it,
   round robin in spawn order and never massive; a named escort is kept. The rank and file never
-  scale; the spawn lists do not read a unit's tier yet.
+  scale in place: a tier's units are their own, each with its numbers and its name; the spawn
+  lists do not read a unit's tier yet.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
