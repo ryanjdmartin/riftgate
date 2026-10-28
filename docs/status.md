@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 737 tests, 66,630 checks, green on `ccr-7821127e-kwj874` with main merged (28 October:
-  main's ladder and the movement landing together; main alone 737 and 66,570), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 738 tests, 66,637 checks, green on main with the movement landing (28 October; main's
+  head 737 and 66,570 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -33,9 +33,11 @@ are in `README.md`.
 
 ## Branches
 
-`ccr-7821127e-kwj874` (28 October) holds the movement landing (moves in hexes, the proposal, its
-build and its records), with main merged into it the same evening (the ladder: its 26 recolours'
-moves in hexes, the cockatrice, ghost, bomb and drake lines winged), so main takes it cleanly.
+`ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
+its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
+hexes, the cockatrice, ghost, bomb and drake lines winged), then the heroes without a map move,
+the faster wolves and the battlefield viewer's deletion, and main took it as a fast-forward that
+night on Ryan's word ("clean up and merge into main").
 
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
@@ -59,8 +61,8 @@ the read at 30 seeds and the move counts settled), and main took it as a fast-fo
 night on the same word. Every branch named here is fully
 merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
-`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
+its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -105,8 +107,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 ## How things stand
 
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
-  confusion and overhead for no strategic gain"; landed 28 October on `ccr-7821127e-kwj874`, the
-  proposal retired with it): a move is a count of hexes given in one go, ground is ground, water
+  confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
+  with it): a move is a count of hexes given in one go, ground is ground, water
   the one priced hex (two of a ground machine's move, always enterable with what is left), crags
   the flyer's; the winged foes (five and their eight recolours) cross both, and a hunter that cannot ring its prey picks
   again; the gauge and the stop sign gone (the bible's section 4 rows, v0.342). Measured the same
@@ -120,6 +122,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
+  map) is gone (Ryan, 28 October): the battle screen shows all it did.
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
@@ -155,9 +159,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
-  (their passives and four locked pieces planned, so never dealt); 80 components,
-  32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
-  heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
+  (their passives and four locked pieces planned, so never dealt); 81 components,
+  32 of them locked; 17 modules; four domains with 44 wildlife (18 at tier one, their bosses
+  among them, and the ladder's 26 recolours) and 8 heroes with their promoted forms; 6 foe moves
+  planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
 - Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
@@ -275,8 +280,10 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
-line), since no number read since 22 October was read on the content as it now stands.
+to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
+to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
+numbered keywords and the blow's order; the campaign report and the map survey are main's head's
+(28 October).
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content; the map shapes' generator session among
