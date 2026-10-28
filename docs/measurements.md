@@ -2158,3 +2158,10 @@ and the Antlion Queen ×1 to two or three, the Great Needler ×2 and the Balloon
 the Waste's and the Peak's tier-three HP above the floor; the Marsh's knights (their HP, 12 and
 16, or the Dread Knight ×2 to one, or the Marsh's tier-three dial ×2 to the floor's ×1.5); and
 the Balloon's burst spending a pack that a lone machine then wins.
+
+The campaign report rerun once beside it, for the record (`docs/campaign_run.md`, 40 runs,
+198 s), since the tier-two and tier-three battles field the ladder now: the plain player wins
+none, as before; its tier-two battles (the report's tier 1, counting from 0) are won in none of
+160 where they were 5%, its runs end a turn sooner (8.8 turns), every city falls in every run
+(four of four), and its machines end with 39% of their hardpoints filled where they kept 59%.
+The spiral it was, a little steeper; no decision reads it.
