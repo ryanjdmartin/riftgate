@@ -3454,15 +3454,20 @@ def skua(b):
     # k the light added over rest.
     boosters = ["booster_ring", "exhaust"]
     SW = 52.0   # the hands' full sweep
-    # The strafing run: the hands sweep back, it rolls in and dives hard on its foe, the pods
-    # fire twice at the bottom, and it pulls up and away in a climbing turn.
-    b.act("strafing_run", 5.0, {"wing_l": [(0.3, 0.0), (0.8, SW), (3.6, SW), (4.4, 0.0)], "wing_r": [(0.3, 0.0), (0.8, -SW), (3.6, -SW), (4.4, 0.0)]},
-          body=[(0.3, 0.0, 0.0, 0.0), (0.9, 2.0, 6.0, 3.0, -6.0, -4.0, -32.0), (1.6, -4.0, 18.0, -6.0, 4.0, -24.0, -10.0), (2.1, -6.0, 26.0, -8.0, 6.0, -12.0, 0.0),
-                (2.8, -4.0, 30.0, 3.0, 10.0, 20.0, 38.0), (3.6, 0.0, 18.0, 7.0, 4.0, 10.0, 20.0), (4.3, 0.0, 6.0, 2.0, 0.0, 3.0, 4.0), (5.0, 0.0, 0.0, 0.0)],
-          glow=[(["pod_collar"], [(1.5, 0.0), (1.6, 18.0), (1.75, 1.0), (1.9, 18.0), (2.05, 1.0), (2.4, 0.0)]), (boosters, [(0.3, 0.0), (0.8, 8.0), (3.0, 8.0), (3.8, 0.0)])])
-    # The barrel roll, the Kite's, with the hands swept for it: a dip and a kick to gather, once
-    # round on the fuselage and past, back short of level and settled.
-    b.act("barrel_roll", 3.2, {"wing_l": [(0.2, 0.0), (0.6, SW), (2.2, SW), (2.9, 0.0)], "wing_r": [(0.2, 0.0), (0.6, -SW), (2.2, -SW), (2.9, 0.0)]},
+    # The strafing run (Ryan, 28 October: the first cut "just kind of wiggles"): it climbs back
+    # and up off its hex, wings over at the top with the hands sweeping back, dives steeply
+    # forward and down on its foe, the pods firing twice at the bottom, pulls up hard and
+    # climbs away rolled over, the hands spreading to brake it back onto its hex.
+    b.act("strafing_run", 5.6, {"wing_l": [(0.9, 0.0), (1.5, SW), (3.0, SW), (3.7, -8.0), (4.4, -8.0), (5.1, 0.0)],
+                                "wing_r": [(0.9, 0.0), (1.5, -SW), (3.0, -SW), (3.7, 8.0), (4.4, 8.0), (5.1, 0.0)]},
+          body=[(0.3, 0.0, 0.0, 0.0), (1.0, 0.0, -16.0, 12.0, 0.0, 14.0, 0.0), (1.6, 4.0, -8.0, 20.0, -8.0, -12.0, -34.0), (2.3, -2.0, 18.0, 4.0, 4.0, -40.0, -12.0),
+                (2.7, -5.0, 34.0, -8.0, 2.0, -22.0, 0.0), (3.1, -4.0, 44.0, -5.0, 0.0, 12.0, 22.0), (3.7, 2.0, 34.0, 12.0, -8.0, 32.0, 46.0), (4.4, 1.0, 12.0, 7.0, -2.0, 10.0, 12.0),
+                (5.6, 0.0, 0.0, 0.0)],
+          glow=[(["pod_collar"], [(2.45, 0.0), (2.55, 18.0), (2.7, 1.0), (2.85, 18.0), (3.0, 1.0), (3.3, 0.0)]), (boosters, [(0.5, 0.0), (1.2, 9.0), (3.8, 9.0), (4.8, 0.0)])])
+    # The barrel roll, the Kite's, the hands spread (Ryan, 28 October: the wings stay extended
+    # for a barrel roll): a dip and a kick to gather, once round on the fuselage and past, back
+    # short of level and settled.
+    b.act("barrel_roll", 3.2,
           body=_barrel_roll(t0=0.4, t1=1.6, over=28.0, duration=3.2, surge=8.0),
           glow=[(boosters, [(0.2, 0.0), (0.5, 8.0), (1.7, 8.0), (2.5, 0.0)])])
     # Harrying: the jaeger's stoops, one wide to the left and one to the right, half swept,
@@ -3564,17 +3569,21 @@ def puffin(b):
             _rings(b, [[tuple(Vector((hx, HY + u, hz)) + d * v + n * off) for (u, v) in OUT] for off in (-0.45, 0.45)], "livery.livery2", "plate")
             cu, cv = sum(u for u, v in OUT) / len(OUT), sum(v for u, v in OUT) / len(OUT)
             boss = Vector((hx, HY + cu, hz)) + d * cv
-            _disc(b, tuple(boss + n * 0.55), tuple(n), 2.2, 6, "steel.dark", "boss_" + side)
-            _disc(b, tuple(boss + n * 0.65), tuple(n), 1.3, 6, "amber.engine", "amp_boss_" + side)
+            _disc(b, tuple(boss + n * 0.55), tuple(n), 2.2, 6, "steel.dark", "boss")
+            _disc(b, tuple(boss + n * 0.65), tuple(n), 1.3, 6, "amber.engine", "amp_boss")
             (u0, v0), (u1, v1) = OUT[2], OUT[3]
-            _beam(b, tuple(Vector((hx, HY + u0, hz)) + d * (v0 + 0.5)), tuple(Vector((hx, HY + u1, hz)) + d * (v1 + 0.5)), _sq(1.4, 0.7), _sq(1.4, 0.7), "amber.engine", "amp_edge_" + side)
+            _beam(b, tuple(Vector((hx, HY + u0, hz)) + d * (v0 + 0.5)), tuple(Vector((hx, HY + u1, hz)) + d * (v1 + 0.5)), _sq(1.4, 0.7), _sq(1.4, 0.7), "amber.engine", "amp_edge")
             # The amplifier's rim: a lit line round the plate's outer edge, dark at rest, and
             # the discs underneath light with it when the plate stands up (Ryan, 28 October).
+            # A label a glow names matches whole (amp_rim, never amp_rim_l by its prefix), so
+            # only the discs carry a side, for the sideslip.
             for (ua, va), (ub, vb) in zip(OUT[1:4], OUT[2:5]):
-                _beam(b, tuple(Vector((hx, HY + ua, hz)) + d * (va - 0.4) + n * 0.5), tuple(Vector((hx, HY + ub, hz)) + d * (vb - 0.4) + n * 0.5), _sq(0.8, 0.5), _sq(0.8, 0.5), "amber.ember", "amp_rim_" + side)
-            for (u, v) in ((8.0, 5.2), (-1.0, 6.8), (-9.5, 5.6)):
+                _beam(b, tuple(Vector((hx, HY + ua, hz)) + d * (va - 0.4) + n * 0.5), tuple(Vector((hx, HY + ub, hz)) + d * (vb - 0.4) + n * 0.5), _sq(0.8, 0.5), _sq(0.8, 0.5), "amber.ember", "amp_rim")
+            # The discs inside the plate's outline (Ryan, 28 October: the forward one stuck out
+            # of the plate's leading edge).
+            for (u, v) in ((5.4, 4.8), (-1.5, 6.9), (-9.5, 5.6)):
                 c = Vector((hx, HY + u, hz)) + d * v
-                _disc(b, tuple(c - n * 0.55), tuple(-n), 2.4, 8, "steel.dark", "repulsor_ring_" + side)
+                _disc(b, tuple(c - n * 0.55), tuple(-n), 2.4, 8, "steel.dark", "repulsor_ring")
                 _disc(b, tuple(c - n * 0.7), tuple(-n), 1.6, 8, "amber.engine", "repulsor_" + side)
     # The pods under the foredeck's edges; the shoulder mounts aft of the canopy.
     for s in (-1.0, 1.0):
@@ -3605,6 +3614,7 @@ def puffin(b):
     # body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k).
     boosters = ["booster_ring", "exhaust"]
     amps = ["amp_edge", "amp_boss", "projector_core", "prow_band"]
+    reps = ["repulsor_l", "repulsor_r"]
     UP = 82.0   # the plates folded up for a fight, near plumb (Ryan, 28 October: more vertical)
     # Amplify: the plates fold up from level, the dish swings round, the amplifiers and the
     # band beat and hold; the plates lower again as the repulsors.
@@ -3612,13 +3622,13 @@ def puffin(b):
                            "projector": [(0.5, 0.0), (1.6, 60.0), (3.6, 60.0), (4.6, 0.0)]},
           body=[(0.4, 0.0, 0.0, 0.0), (1.3, 0.0, 0.0, -1.2), (3.6, 0.0, 0.0, -1.2), (4.6, 0.0, 0.0, 0.0)],
           glow=[(amps + ["amp_rim"], [(1.0, 0.0), (1.4, 26.0), (1.7, 6.0), (2.0, 30.0), (3.6, 30.0), (4.4, 0.0)]),
-                (["repulsor", "lift_nozzle"], [(1.1, 0.0), (1.5, 18.0), (3.6, 18.0), (4.5, 0.0)])])
+                (reps + ["lift_nozzle"], [(1.1, 0.0), (1.5, 18.0), (3.6, 18.0), (4.5, 0.0)])])
     # The hop: up hard on the nozzles and the repulsors, the plates flapping with it, a roll at
     # the top, down onto a squash and a bounce.
     b.act("lift_hop", 4.6, {"plate_l": [(0.5, 0.0), (1.2, -16.0), (1.8, 12.0), (2.6, 0.0)], "plate_r": [(0.5, 0.0), (1.2, 16.0), (1.8, -12.0), (2.6, 0.0)]},
           body=[(0.5, 0.0, 0.0, -2.0, 0.0, 0.0, 0.0), (1.2, 0.0, 0.0, 16.0, 0.0, 6.0, 12.0), (1.8, 0.0, 0.0, 14.0, 0.0, -4.0, -10.0), (2.5, 0.0, 0.0, -3.0, 0.0, 0.0, 0.0),
                 (2.9, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0), (3.4, 0.0, 0.0, -1.0), (4.6, 0.0, 0.0, 0.0)],
-          glow=[(["lift_nozzle", "repulsor"], [(0.3, 0.0), (0.6, 10.0), (1.2, 10.0), (1.8, 3.0), (2.5, 8.0), (3.2, 0.0)])])
+          glow=[(["lift_nozzle"] + reps, [(0.3, 0.0), (0.6, 10.0), (1.2, 10.0), (1.8, 3.0), (2.5, 8.0), (3.2, 0.0)])])
     # The sideslip: it slips to the left on its repulsors, the left plate dipping and its discs
     # flaring, the nose swinging after, and straight on across to the right.
     b.act("sideslip", 4.8, {"plate_l": [(0.6, 0.0), (1.0, -14.0), (1.7, -10.0), (2.4, 0.0), (3.0, 10.0), (3.7, 6.0), (4.4, 0.0)],
@@ -3634,7 +3644,7 @@ def puffin(b):
     # Movement: the plates lie level as the repulsors, lit with the booster; the nose down a
     # touch; it oversteers through its corners like the Puffin always has, never banking (a
     # hovercraft keeps flat).
-    b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + ["repulsor"], "k": 5.0}, rock=3.0)
+    b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)
 
 puffin.maker = "kestrel"
@@ -3726,10 +3736,13 @@ def storm_petrel(b):
             secs.append((y, _mirror([(hw + 0.5, zc - 2.3), (hw + 0.9, zc - 2.3), (hw + 0.9, zc - 0.7), (hw + 0.5, zc - 0.7)], s)))
         b.loft(secs, "steel.vent", "flank_louvres")
     _boat_cab(b, deck, [(18.0, 6.0, 0.6), (12.0, 11.0, 3.0), (4.0, 12.6, 4.0), (-5.0, 12.0, 3.6), (-11.0, 10.0, 2.6)], 8.0)
-    for (mat, r, lab, drop) in (("steel.plate", 1.0, "projector_arch", 0.0), ("amber.ember", 0.5, "projector_glow", 0.8)):
-        pts = [(-9.0 * math.cos(math.pi * k / 8.0), 0.0, deck(0.0) + 1.0 + 8.0 * math.sin(math.pi * k / 8.0) - drop) for k in range(9)]
-        for p0, p1 in zip(pts, pts[1:]):
-            _beam(b, p0, p1, _poly(r, 6), _poly(r, 6), mat, lab)
+    # The projector arch over the canopy: a thin lit arch, dark at rest, under eight sleeves
+    # of plate that leave its light showing between them (Ryan, 28 October: the glow ran
+    # along the arch's underside, hidden).
+    pts = [Vector((-9.0 * math.cos(math.pi * k / 8.0), 0.0, deck(0.0) + 1.0 + 8.0 * math.sin(math.pi * k / 8.0))) for k in range(9)]
+    for p0, p1 in zip(pts, pts[1:]):
+        _beam(b, tuple(p0), tuple(p1), _poly(0.55, 6), _poly(0.55, 6), "amber.ember", "projector_glow")
+        _beam(b, tuple(p0.lerp(p1, 0.24)), tuple(p0.lerp(p1, 0.76)), _poly(1.05, 6), _poly(1.05, 6), "steel.plate", "projector_arch")
 
     def nac_top(y):
         """The nacelle's top: the deck carried out over the booster, sloping down with the
@@ -3752,12 +3765,15 @@ def storm_petrel(b):
             hw, zc = w / 2.0 + out, (z0 + z1) / 2.0
             rail.append((y, _mirror([(hw + 0.9, zc), (hw - 0.1, zc + 1.0), (hw - 0.8, zc), (hw - 0.1, zc - 1.0)], s)))
         b.loft(list(reversed(rail)), "amber.ember", "field_rail")
-        for ey in (4.0, -16.0):
+        # The emitters ahead of and behind the tub, clear of a gun's muzzle and its breech,
+        # low pylons in the hull's colour on the cheek's top (Ryan, 28 October: the pylon ahead
+        # of the tub was a livery chunk in the way of the mount).
+        for ey in (13.0, -21.0):
             w, hz0, hz1 = at(ey)
-            out = _lerp_at([(y, o) for (y, o, z0, z1) in CHEEK], ey)[0]
+            out, ctop = _lerp_at([(y, o, z1) for (y, o, z0, z1) in CHEEK], ey)
             ex = s * (w / 2.0 + out - 2.6)
-            b.loft([(ey - 2.4, rect(ex, 2.4, 16.0, 18.4)), (ey + 2.4, rect(ex, 2.4, 16.0, 18.4))], "livery.livery", "emitter_pylon")
-            b.loft([(ey - 2.0, rect(ex, 2.2, 18.4, 19.6)), (ey + 2.0, rect(ex, 2.2, 18.4, 19.6))], "amber.ember", "emitter")
+            b.loft([(ey - 2.4, rect(ex, 2.4, ctop - 0.6, ctop + 1.6)), (ey + 2.4, rect(ex, 2.4, ctop - 0.6, ctop + 1.6))], "steel.plate", "emitter_pylon")
+            b.loft([(ey - 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8)), (ey + 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8))], "amber.ember", "emitter")
         tx = s * (at(-10.0)[0] / 2.0 + 5.0)
         b.box(tx - 2.0, tx + 2.0, -12.0, -7.0, 16.2, 17.4, "steel.panel", "mount")
         b.stock("hp_%d" % (1 if s < 0 else 3), (tx, -7.0, 18.6), "barrel" if s < 0 else "twin_barrel", scale=0.5)
@@ -3770,7 +3786,7 @@ def storm_petrel(b):
             return _mirror([(10.0 * K, 8.6), (x_out, 8.6), (x_out, t - 1.6), (x_out - 1.6, t), (10.0 * K, t)], s)
         b.loft([(-6.0 * K, nac(-6.0 * K, 22.2 * K)), (-20.0 * K, nac(-20.0 * K, 22.0 * K)), (-33.0 * K, nac(-33.0 * K, 21.2 * K))], "steel.plate", "nacelle")
         b.prism("y", bx, -20.5 * K, bz, br, 31.0 * K, "steel.dark", 6, "booster", phase=math.pi / 6)
-        b.prism("y", bx, -31.5 * K, bz, br + 0.3, 3.6, "livery.livery", 6, "booster_band", phase=math.pi / 6)
+        b.prism("y", bx, -31.5 * K, bz, br + 0.08, 3.6, "livery.livery", 6, "booster_band", phase=math.pi / 6)   # paint on the drum, not a chunk proud of it
         b.loft([(-5.0 * K, hexagon(bx, bz, 12.0 * K, 10.6 * K)), (-4.4 * K, hexagon(bx, bz, 10.6 * K, 9.4 * K))], "bore.dark", "intake")
         b.prism("y", bx, -4.8 * K, bz, 7.2 * K, 1.2, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
         hx0, hx1 = min(s * 13.0 * K, s * 19.0 * K), max(s * 13.0 * K, s * 19.0 * K)
@@ -3877,15 +3893,17 @@ def lammergeier(b):
         b.prism("y", x, ty - 5.0, bz, br + 0.4, 1.6, "amber.engine", 6, "booster_ring", phase=math.pi / 6)
         b.loft([(ty - 5.8, _hexr(x, bz, br + 0.2)), (ty - 6.3, _hexr(x, bz, br - 0.6))], "amber.exhaust", "exhaust")
         b.loft([(ty + 2.0, [(xx + x, z) for (xx, z) in _case(12.0, bz - 2.0, bz + 2.0, 1.0)]), (ty + 7.0, [(xx + x, z) for (xx, z) in _case(13.0, bz - 2.5, bz + 3.2, 1.2)])], "livery.livery", "booster_band")
-    # The Syrinx Drone's launchers: a pod on each leading-edge root, its face raked with the
-    # edge, two tubes recessed in it over lit floors (Ryan, 28 October: the tubes let into the
-    # bare edge showed the wing's skin inside them).
-    TZ = Z + 2.9
+    # The Syrinx Drone's launchers: a nacelle on each leading-edge root that carries the
+    # wing's full thickness forward to a blunt face raked with the edge, top and bottom, the
+    # two tubes let into the face over lit floors (Ryan, 28 October: the tubes let into the
+    # bare edge showed the wing's skin inside them, and a pod sat on the wing's top read as a
+    # box stuck on).
+    TZ = Z + 0.3
     for s in (-1.0, 1.0):
         x0, x1 = s * 10.5, s * 23.5
-        back = le(17.0) - 12.0
-        ring = lambda y_at, dz: [(x0, y_at(x0), Z + 0.2 + dz), (x1, y_at(x1), Z + 0.2 + dz), (x1, y_at(x1), TZ + 2.0), (x1 * 0.92 + x0 * 0.08, y_at(x1), TZ + 2.8), (x0 * 0.92 + x1 * 0.08, y_at(x0), TZ + 2.8), (x0, y_at(x0), TZ + 2.0)]
-        _rings(b, [ring(lambda x: back, 0.0), ring(lambda x: le(x) + 0.6, 0.0)], "steel.dark", "drone_pod")
+        def ring(y_at, zb, zt):
+            return [(x0, y_at(x0), zb), (x1, y_at(x1), zb), (x1, y_at(x1), zt - 0.9), (x1 * 0.92 + x0 * 0.08, y_at(x1), zt), (x0 * 0.92 + x1 * 0.08, y_at(x0), zt), (x0, y_at(x0), zt - 0.9)]
+        _rings(b, [ring(lambda x: le(17.0) - 14.0, Z - 3.3, Z + 3.3), ring(lambda x: le(x) - 5.0, Z - 2.9, Z + 3.1), ring(lambda x: le(x) + 0.6, Z - 2.0, Z + 2.6)], "steel.dark", "drone_pod")
         for k in range(2):
             x = s * (14.0 + 6.0 * k)
             _tube(b, (x, le(x) - 8.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.plate", "drone_tube", floor_material="amber.ember", floor_depth=5.5)

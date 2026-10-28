@@ -232,7 +232,8 @@
     },
     {
      "parts": [
-      "repulsor",
+      "repulsor_l",
+      "repulsor_r",
       "lift_nozzle"
      ],
      "keys": [
@@ -407,7 +408,8 @@
     {
      "parts": [
       "lift_nozzle",
-      "repulsor"
+      "repulsor_l",
+      "repulsor_r"
      ],
      "keys": [
       [
@@ -861,7 +863,8 @@
    "parts": [
     "booster_ring",
     "exhaust",
-    "repulsor"
+    "repulsor_l",
+    "repulsor_r"
    ],
    "k": 5.0
   },
@@ -892,7 +895,6 @@
   "lift_nozzle",
   "projector_core",
   "prow_band",
-  "repulsor",
   "repulsor_l",
   "repulsor_r"
  ]
