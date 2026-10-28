@@ -21,8 +21,8 @@ guesses where it is silent.
 - **D1. Move is a count of hexes.** Every chassis's and foe's move is its move in tens over
   ten; a step is one hex (section 2).
 - **D2. Ground is binary, by side and by crossing.** Open ground, rough and ruins are ground to
-  everyone; crags are a wall to all but a flyer; water is the one priced ground (open question
-  Q1 sets its price). Rough and ruins are landscape like height: no rule reads them.
+  everyone; crags are a wall to all but a flyer; water is the one priced ground (Q1: two
+  of a ground machine's move). Rough and ruins are landscape like height: no rule reads them.
 - **D3. Tracks, wheels and legs differ only in look and sound.** A way of moving stays in
   content, one a chassis, as the model's shape and motion, its footfall and its codex word,
   like a tag: no rule of its own, and a passive or a module may read it as a one-off. Ryan,
@@ -37,90 +37,51 @@ guesses where it is silent.
 - **D6. Not a map rule on the crossers** (no attacking from water, no price to cross): the
   table again in another form.
 
-### Open: Ryan's calls before the build
+### Ryan's calls (28 October)
 
-Each option is complete; the builder takes the chosen letter and nothing else. Claude's lean
-is marked, with its reason; the reasons for each side are in section 9.
+Every call is made; the build takes these and nothing else.
 
-- **Q1. Water.**
-  - **A (lean): the one priced ground.** A water hex costs a ground machine (tracked, walker,
-    wheeled) two of its move, and it can always enter one with whatever move it has left
-    (`spend = min(2, left)` when `left >= 1`), so a move of 2 wades one hex a turn, 3 and 4
-    wade two, 5 wades three. A hovercraft and a flyer cross it at one. Packs never enter it;
-    a winged pack crosses it at one. Reason: it narrows the hover's edge without pricing
-    anything, keeps water a cost in time as the 2 October row wanted, and shows nothing.
-  - **B: a wall to ground machines.** Water is crossed by hovercraft, flyers and winged packs
-    at one and by nobody else. The squad crosses a river at its fords, where the horde does.
-- **Q2. Hover over crags.**
-  - **A (lean): a wall.** Crags are crossed by flyers and winged packs alone, so the Badlands
-    stay the flyer's map.
-  - **B: crossed.** A hovercraft crosses crags at one as a flyer does.
-- **Q3. The moves.**
-  - **A (lean): the tens over ten.** Chassis: 2 for the Honey Badger, the Baboon, the
-    Armadillo, the Nemesis, the Whip Scorpion, the Swallowtail, the Musk Ox and the Giant
-    Petrel; 3 for the Clydesdale, the Wild Boar, the Ammit and the Funnel Web; 4 for the Dingo,
-    the Goshawk, the Stingray, the Puffin, the Cassowary and the Lammergeier; 5 for the
-    Sparrowhawk, the Prairie Dog, the Cottonmouth, the Skua, the Storm Petrel and the
-    Needletail. Foes: 2 by default; 3 for the Dire Wolf, the Needler, the Bomb, the Martial
-    Artist and the Lancer; 4 for the Thief; 1 for the massive four (the Treant, the Sandworm,
-    the Bone Dragon, the Magma Golem); the boss patrols 1. Modules: Ablative Plating −1, Spall
-    Liner −1, Thrust Overboost +2. Reason: placeholders the pricing run reads; nothing else
-    moves.
-  - **B: by size.** Light 4, medium 3, heavy 3, assault 2, every chassis, the Lammergeier
-    included; foes and modules as in A.
-- **Q4. The map types.**
-  - **A (lean): the five stay as they are.** Generators, names and the harness picker
-    untouched; only the bible's reading changes: the intel is the walls, so Badlands is the
-    flyer's map and Flooded the hover's and the flyer's, and Rubble Field and Open Steppe are
-    looks. Reason: the generators exist and differ in water and crags too; the mission map is
-    not built, so nothing reads the names yet.
-  - **B: fold to three.** `rubble` and `steppe` leave `BattleMap.KINDS`, the harness picker,
-    `RIFTGATE_MAP_KIND`, the survey's comparison and the bible's row; `mixed`, `badlands` and
-    `flooded` stay.
-- **Q5. The winged packs** (lever 2's list).
-  - **A (lean): the five whose sprites fly or float.** The Cockatrice, the Ghost, the Bone
-    Dragon, the Bomb and the Drake. The fresh start adds its own (the Bone Wyvern, the Reaper)
-    when they land.
-  - **B: Ryan's own list**, named in his answer.
-- **Q6. The Giant Petrel and the Storm Petrel** (both planned, never dealt).
-  - **A (lean): amphibious at their moves, no passive.** Their briefs' hover lines are
-    rewritten to the new rule now (section 5); the Giant Petrel is slow and crosses water, the
-    Storm Petrel fast and crosses water; their engine sessions decide nothing about ground.
-  - **B: leave the briefs' lines**, marked as waiting on this proposal, for their sessions.
-- **Q7. The re-pick holds** (lever 3's form).
-  - **A (lean): the new lock holds.** A hunter that picks again keeps the new prey as it keeps
-    any prey, until that machine is gone or it too cannot be ringed. Reason: "the lock the
-    player sees holds" (section 5's hunter row).
-  - **B: the first prey comes back.** The re-pick is for the one walk; each turn the hunter
-    reads its first prey again and returns to it the moment it can be ringed.
+- **Q1, water: A.** The one priced ground: a water hex costs a ground machine (tracked,
+  walker, wheeled) two of its move, and it can always enter one with whatever move it has left
+  (`spend = min(2, left)` when `left >= 1`), so a move of 2 wades one hex a turn, 3 and 4 wade
+  two, 5 wades three. A hovercraft and a flyer cross it at one. Packs never enter it; a winged
+  pack crosses it at one.
+- **Q2, hover over crags: A.** A wall; crags are crossed by flyers and winged packs alone.
+- **Q3, the moves: A.** The tens over ten, every chassis and foe as the lists in section 5
+  give them; the three modules −1, −1 and +2.
+- **Q4, the map types: A now, the shapes next.** The five generators, names and the harness
+  picker stand through this build, and only the bible's reading changes (the intel is the
+  walls). Ryan's rework of the types into six shapes (a river, a fjord, badlands, open steppe,
+  a ruined city, a gorge) is section 10, a generator session of its own after this one lands.
+- **Q5, the winged packs: A.** The Cockatrice, the Ghost, the Bone Wyvern, the Bomb and the
+  Drake; the fresh start adds its own winged elites (the Reaper among them) when they land.
+- **Q6, the Giant Petrel and the Storm Petrel: A.** Amphibious at their moves, no passive;
+  their briefs' hover lines rewritten now (section 5).
+- **Q7, the re-pick: A.** The new lock holds.
 
 ## 2. The rule, as `docs/rules.md` will state it
 
-Written under the leans (Q1A, Q2A, Q3A, Q4A, Q5A, Q6A, Q7A); each other letter's wording is
-in brackets at the sentence it changes. The builder pastes these over the battlefield
-section's matching bullets, present tense, no dates.
+Under Ryan's calls above. The builder pastes these over the battlefield section's matching
+bullets, present tense, no dates.
 
 - **Moving** (replaces "Ways of moving"): a machine's move is a count of hexes, each step one
   hex, and a chassis has one way of moving (tracked, walker, wheeled, hover or flyer), which
   is its look and its footfall and never a rule of its own. Open ground (plain, road), rough
   and ruins are ground to everyone. Water: a ground machine wades it, a water hex costing two
   of its move, and it can always enter one with whatever move it has left; a hovercraft and a
-  flyer cross it at one [Q1B: water is crossed by a hovercraft and a flyer and is a wall to a
-  ground machine]. Crags are a wall to all but a flyer [Q2B: to all but a flyer and a
-  hovercraft]. Machines never enter or cross another unit's hex.
+  flyer cross it at one. Crags are a wall to all but a flyer. Machines never enter or cross another unit's hex.
 - **A turn**: "Each machine has one action (the Dingo two): one move, in one go, then it may
   fight; a fight ends the action however it ends." The rest of the bullet stands (the lit
   reach, the red band, the planned route, UNDO, ENGAGE and END TURN, the pulse).
 - **The readout**: the ground's line becomes "the ground: who crosses it, who wades it and
   who cannot, and whether packs enter it".
 - **Packs**: "They cross every land hex and never enter water or crags; a winged pack (the
-  Cockatrice, the Ghost, the Bone Dragon, the Bomb, the Drake) crosses both as a flyer does
+  Cockatrice, the Ghost, the Bone Wyvern, the Bomb, the Drake) crosses both as a flyer does
   and may stand there; moves 2 (fast 3, the Thief 4, massive 1); rings 1 (front rank), 3 (back
   rank), 2 (massive)." The rest stands.
 - **Hunters**, appended: "A hunter whose prey stands where no hex it can reach puts it inside
   its ring (a flyer over crags, a hovercraft out in a lake) picks another by its caveat among
-  the machines it can reach, and the new lock holds [Q7B: for that walk alone; it returns to
-  its first prey the turn it can be ringed]; with none to pick, it walks as near as it gets."
+  the machines it can reach, and the new lock holds; with none to pick, it walks as near as it gets."
 - **The carry**: "keeping their action, and their move if they have not moved" in place of
   "keeping whatever move and action they had".
 - **The boss**: "patrols its ring of the rift" stands; its step is one hex.
@@ -132,7 +93,7 @@ What the rule means at the edges, so nobody guesses:
 - A move of 0 (a move of 2 under two −1 modules) lights nothing and cannot move; `nothing_left`
   treats it as a machine that cannot move, as it does today.
 - A ground machine may end its move in water and stand there; next turn it wades on at two a
-  hex. A hovercraft and a flyer may stand on water, a flyer on crags [Q2B: a hovercraft too].
+  hex. A hovercraft and a flyer may stand on water, a flyer on crags.
 - Entering water with exactly one move left is allowed and spends the one. With no move left
   nothing is entered.
 - Reach is still the cheapest-cost search (Dijkstra) over step costs of 1 and 2, bounded by
@@ -174,9 +135,8 @@ What the rule means at the edges, so nobody guesses:
     `Packs cross it`.
   - rough: the same lines under its name; ruins: the same.
   - water: `Wade: tracked, walker, wheeled (two move a hex)`, `Cross: hover, flyer`, then
-    `Packs never enter it; a winged pack crosses it`. [Q1B: `Wall: tracked, walker, wheeled`
-    in place of the wade line.]
-  - mountain (shown as the vocabulary names it): `Cross: flyer` [Q2B: `flyer, hover`],
+    `Packs never enter it; a winged pack crosses it`.
+  - mountain (shown as the vocabulary names it): `Cross: flyer`,
     `Wall: tracked, walker, wheeled, hover`, then `Packs never enter it; a winged pack crosses
     it`.
   The way names are the vocabulary's shown names, as `ground_lines` reads them today.
@@ -197,8 +157,7 @@ stops and reports it rather than guessing.
   entry a word, each `[water, crags]` as a step cost or `WALL`:
   `"tracked": [WADE, WALL]`, `"walker": [WADE, WALL]`, `"wheeled": [WADE, WALL]`,
   `"hover": [STEP, WALL]`, `"flyer": [STEP, STEP]`, `"winged": [STEP, STEP]`,
-  `"": [WALL, WALL]` (the horde's rule, no trait). [Q1B: the three ground ways `[WALL, WALL]`.
-  Q2B: `"hover": [STEP, STEP]`.] `way_of` learns `winged` as a sixth word it returns for a
+  `"": [WALL, WALL]` (the horde's rule, no trait). `way_of` learns `winged` as a sixth word it returns for a
   pack carrying it (it is not in `WAYS`).
 - `static func step_cost(t: int, traits: Array) -> int`: `STEP` for plain, road, rough and
   ruins whatever the traits; the table's water or crags entry otherwise.
@@ -229,7 +188,6 @@ stops and reports it rather than guessing.
   the caveat as `pick_prey` keys them) gives the walk's prey, or null to keep the current
   one. The walk is planned for the walk's prey, `w.prey` carries it, and `sq.prey` is set
   from `w.prey` in `enemy_turn` when the walk plays, with a log line "X loses Y and hunts Z".
-  [Q7B: `enemy_turn` leaves `sq.prey` as it was; the re-pick is read afresh each plan.]
 - `pick_prey`: unchanged; its key block is shared with `_repick` (lift it into a helper).
 - `can_stand`, `_walkable`, `_landable`: unchanged; they read `passable`, and a winged pack's
   trait flows through them. `Unit.can_block` reads the machines' `flyer` only, so a winged
@@ -310,14 +268,76 @@ chassis's `traits`.
 
 ## 5. The build: content, tools, pages, records
 
+### The moves, as they stand (Q3A)
+
+Every chassis, its move today and in hexes; the shown names as content prints them.
+
+| Chassis | Maker | Tier | Size | Way | Move today | Hexes |
+|---|---|---|---|---|---|---|
+| Honey Badger | Minerva | 1 | heavy | tracked | 20 | 2 |
+| Baboon | Aphelion | 1 | medium | walker | 20 | 2 |
+| Armadillo | Minerva | 1 | assault | walker | 20 | 2 |
+| Nemesis | the Arsenal | 2 | heavy | walker | 20 | 2 |
+| Whip Scorpion | Wainwright & Sutler | 2 | heavy | walker | 20 | 2 |
+| Swallowtail | Wainwright & Sutler | 3 | assault | flyer | 20 | 2 |
+| Musk Ox | Wainwright & Sutler | 3 | assault | wheeled | 20 | 2 |
+| Giant Petrel (planned) | Kestrel | 3 | assault | hover | 20 | 2 |
+| Clydesdale | Wainwright & Sutler | 2 | assault | walker | 30 | 3 |
+| Wild Boar | Minerva | 2 | heavy | tracked | 30 | 3 |
+| Ammit | the Arsenal | 3 | medium | walker | 30 | 3 |
+| Funnel-web | Wainwright & Sutler | 2 | medium | walker | 30 | 3 |
+| Dingo | Wainwright & Sutler | 2 | light | wheeled | 40 | 4 |
+| Buzzard | Kestrel | 2 | medium | flyer | 40 | 4 |
+| Stingray | Aphelion | 1 | medium | hover | 40 | 4 |
+| Puffin | Kestrel | 1 | light | hover | 40 | 4 |
+| Cassowary | Wainwright & Sutler | 1 | medium | walker | 40 | 4 |
+| Lammergeier | Kestrel | 3 | heavy | flyer | 40 | 4 |
+| Kite | Kestrel | 2 | light | flyer | 50 | 5 |
+| Prairie Dog | Wainwright & Sutler | 1 | light | wheeled | 50 | 5 |
+| Cottonmouth | Wainwright & Sutler | 1 | light | hover | 50 | 5 |
+| Skua | Kestrel | 1 | light | flyer | 50 | 5 |
+| Storm Petrel (planned) | Kestrel | 1 | medium | hover | 50 | 5 |
+| Needletail | Kestrel | 2 | light | flyer | 50 | 5 |
+
+Every foe that carries a move (the eight without one take the default, 2):
+
+| Foe | Domain | Behaviour | Ring | Move today | Hexes |
+|---|---|---|---|---|---|
+| Goblin | Meadow | hunts the nearest | 1 | 20 | 2 |
+| Dire Wolf | Meadow | hunts the slowest | 1 | 30 | 3 |
+| Gel, Half-Gel | Meadow | push | 1 | 20 | 2 |
+| Mandragora | Meadow | push | 3 | 20 | 2 |
+| Treant (massive) | Meadow | push | 2 | 10 | 1 |
+| Needler | Waste | hunts the nearest | 1 | 30 | 3 |
+| Antlion | Waste | hunts the slowest | 1 | 20 | 2 |
+| Cockatrice (winged) | Waste | push | 3 | 20 | 2 |
+| Sandworm (massive) | Waste | push | 2 | 10 | 1 |
+| Revenant | Marsh | hunts the nearest | 1 | 20 | 2 |
+| Ghost (winged) | Marsh | push | 3 | 20 | 2 |
+| Zombie Knight | Marsh | push | 1 | 20 | 2 |
+| Bone Wyvern (massive, winged) | Marsh | push | 2 | 10 | 1 |
+| Bomb (winged) | Peak | hunts the nearest | 1 | 30 | 3 |
+| Salamander | Peak | push | 1 | 20 | 2 |
+| Drake (winged) | Peak | push | 3 | 20 | 2 |
+| Magma Elemental (massive) | Peak | push | 2 | 10 | 1 |
+| The Warrior | Meadow | hunts the strongest | 2 | 20 | 2 |
+| The Martial Artist | Meadow | hunts the nearest | 2 | 30 | 3 |
+| The Thief | Waste | hunts the slowest | 2 | 40 | 4 |
+| The Lancer | Waste | hunts the strongest | 2 | 30 | 3 |
+| The Cleric, the Augur | Marsh | push | 3 | 20 | 2 |
+| The Black Mage, the Summoner | Peak | push | 3 | 20 | 2 |
+
+A boss patrols 1 (`Unit.BOSS_MOVE`); the engine's defaults are `MECH_MOVE` 3 and `PACK_MOVE`
+2. Modules: Ablative Plating −1, Spall Liner −1, Thrust Overboost +2.
+
 ### Content
 
-- `content/chassis.json`: every `movespeed` as Q3 lists it (24 entries). Its `_about`'s
+- `content/chassis.json`: every `movespeed` as the table above gives it (24 entries). Its `_about`'s
   movespeed sentence becomes: "movespeed is the move in hexes, a step a hex; water costs a
   ground machine two and a hovercraft or a flyer one, crags are the flyer's alone, and the
   way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one) is the
   model, the footfall and a word a passive may read, never a rule (bible section 4)."
-- `content/foes.json`: every `movespeed` as Q3 lists it (the 26 that carry one); `"winged":
+- `content/foes.json`: every `movespeed` as the table above gives it (the 26 that carry one); `"winged":
   true` on Q5's foes; the `_about`'s "On the map" sentence becomes: "On the map: zone is the
   pack's ring in hexes (default 1), behaviour push (default; toward the gate) or hunt (one
   machine, locked at spawn; hunts names the caveat: nearest, weakest, strongest, slowest,
@@ -335,17 +355,14 @@ chassis's `traits`.
   - rough: "Forest and scrub. Every machine and pack crosses it."
   - ruins: "Rubble. Every machine and pack crosses it."
   - water: "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft
-    and flyers cross it at full pace. Packs never enter it; a winged pack crosses it." [Q1B:
-    "Hovercraft and flyers cross it; tracks, walkers and wheels cannot. Packs never enter it;
-    a winged pack crosses it."]
-  - mountain: "Impassable, except to flyers and winged packs." [Q2B: "and hovercraft".]
+    and flyers cross it at full pace. Packs never enter it; a winged pack crosses it."
+  - mountain: "Impassable, except to flyers and winged packs."
   - flyer: "Crosses everything, water and crags included. Packs walk under it but never stop
     on its hex."
-  - hover: "Skims water at full pace; crags stop it." [Q2B: "Skims water and crags at full
-    pace."]
-  - walker: "Legs. Wades water at half pace." [Q1B: "Legs. Water and crags stop it."]
-  - tracked: "Tracks. Wades water at half pace." [Q1B likewise.]
-  - wheeled: "Wheels. Wades water at half pace." [Q1B likewise.]
+  - hover: "Skims water at full pace; crags stop it."
+  - walker: "Legs. Wades water at half pace."
+  - tracked: "Tracks. Wades water at half pace."
+  - wheeled: "Wheels. Wades water at half pace."
 - `tools/stock_fills.py`: the three modules' `move` fills to −1, −1 and +2 (the script is
   idempotent on the branch and must not put the tens back).
 - Regenerate `docs/vocabulary.md` (`tools/export_vocabulary.gd`).
@@ -411,9 +428,7 @@ chassis's `traits`.
   version and republish by the status's Pages procedure, the live page read first):
   - Section 4, the ground row ("Each way of moving calls each ground fast, normal or slow
     ..."), rewritten Decided: move is a count of hexes and ground is ground, water the one
-    priced hex (two of a ground machine's move, always enterable with what is left [Q1B: a
-    wall to a ground machine]); hover and flyers cross it, crags are the flyer's [Q2B: and the
-    hover's]; rough and ruins are landscape; a way of moving is the model, the footfall and a
+    priced hex (two of a ground machine's move, always enterable with what is left); hover and flyers cross it, crags are the flyer's; rough and ruins are landscape; a way of moving is the model, the footfall and a
     word a passive may read, never a rule (Ryan, 28 October: no reason beyond visual variety).
     Retired: the per-way table of fast, normal and slow with its stop (2 October): the form
     that failed is the table, and the test it failed is Ryan's play of 27 October ("confusion
@@ -431,7 +446,8 @@ chassis's `traits`.
     Retired: the pip gauge (3 October) and the stop sign (25 October) with the fast and slow
     hexes they showed; move rewards, if rewards ever come, in hexes.
   - Section 4, the map-types row: the reading in Q4A's words ("the name is the intel, and the
-    intel is the walls"); [Q4B: the three types, the two retired with the reason].
+    intel is the walls"), and Ryan's direction of 28 October as its Open tail: the five become
+    six shapes (section 10), a generator session of its own.
   - Section 4, the planned-moves row: its Open line closed, Decided: a move is given in one
     go (Ryan, 28 October), what moving in pieces bought (a look at the red band after a step)
     the band shows before the move.
@@ -449,7 +465,7 @@ chassis's `traits`.
   left" (landed by removal); the pricing-run line gains "and the crossing's price (the
   movement proposal, lever 1)"; the fresh start's line gains "its winged elites cross as the
   five do".
-- `docs/briefs/kestrel_gun_platform.md` and `docs/briefs/kestrel_shield_spender.md`: [Q6A]
+- `docs/briefs/kestrel_gun_platform.md` and `docs/briefs/kestrel_shield_spender.md`:
   each hover line rewritten to "a hover: crosses water at full pace where a ground machine
   wades, crags stop it" and the Giant Petrel's "fast-looking, slow, and fast only on water"
   to "fast-looking, slow, and amphibious"; `docs/briefs/minerva_siege_battery.md`: the passive
@@ -494,7 +510,7 @@ What this lands kills, one line each with the rule that kills it, so Ryan can ov
 - Slow ground as a stop (tracks on ruins, walkers in water, wheels and hover off their
   ground): killed by one ground; the stop sign was what the player asked the meaning of.
 - Tracks fording water at full pace (Minerva's tracked machines): killed by one rule for every
-  ground machine; every ground machine wades [Q1B: fords at the fords].
+  ground machine; every ground machine wades.
 - Water as a refuge for everyone: today any machine can end a move in water out of a ring-one
   hunter's reach; under Q1A it still can, under Q1B it is the hover's and the flyer's, and
   levers 2 and 3 take its worth either way.
@@ -558,3 +574,71 @@ Kept short, since the bible rows carry it once it lands.
   brief that did was the siege battery's pitch, which already carried an alternative. What the
   records say of a tag and a theme (no rule of its own; a lean, never a rule; a map rule alone
   is weak) is what the ways become.
+
+## 10. The map shapes: the second session (Ryan, 28 October)
+
+Ryan, on Q4: "I would prefer to rework them into shapes. So heavy water that runs
+horizontally (aka, river crossings with fords), heavy water that runs vertically (a fjord), a
+mix of small ponds and grouped crags breaking the battlefield into winding paths (Badlands),
+Relatively clear (Open Steppe), heavy crags using the ruins tile that run horizontally with
+gaps (ruined city), heavy crags that run vertically (gorge or ravines)." Claude's read: it
+works, and better than the five, because each shape tests exactly one of the two things the
+new rule prices, so the name is the intel and the intel is the shape. It is a generator
+session after the movement session lands, with its own survey run and Ryan's eye on the maps.
+
+### What each shape tests
+
+- **River** (heavy water across the field, with fords): packs funnel through the fords, which
+  are the horde's guaranteed crossing; a ground squad holds a ford or wades (a two-wide river
+  takes a move of 2 two turns, a move of 4 one); hover and flyers cross anywhere. Tests the
+  crossing held and the wade.
+- **Fjord** (heavy water down the field): two lanes for packs; a ground squad changes lanes by
+  wading; hover and flyers freely; a hunter on the far side re-picks. Tests lane choice and a
+  detachment across water.
+- **Badlands** (small ponds and grouped crags, winding paths): packs wind, flyers go straight,
+  hover crosses the ponds, ground machines wade them. Tests everything at once and the
+  longest walks.
+- **Open Steppe** (relatively clear): no lanes; the baseline the others are read against.
+- **Ruined City** (crag bands across the field with gaps, on a ruins base): packs and ground
+  squads funnel through the gaps; flyers and winged packs go over. The 3D map already draws a
+  crag on a ruins base as dead skyscrapers (`Map3D._crag`, `crag_base`), so the look costs no
+  art. Tests the gaps held and the flyer's one exclusive crossing.
+- **Gorge** (crag walls down the field): lanes with no wading; a lane is changed only round a
+  wall's ends; flyers and winged packs cross. Tests the hardest lane commitment and the
+  re-pick across walls.
+
+### What stands and what the generator needs
+
+- The crossing guarantee stands as it is (three disjoint horde routes, `_ensure_ground_path`
+  carving where a shape closes the field), so a band across the field is given its gaps by
+  design (two or three hexes each, placed by seed) and checked by the guarantee; a wall down
+  the field cuts nothing, and a lane a machine could plug alone is already what the guarantee
+  forbids. The "one real water feature" clause of the field row retires: a shape has its own
+  features, and three shapes have no water.
+- Every shape keeps the rift's mouth and the rows around the boss's ring clear (rows 0 to 3),
+  the team's ground and the two rows before the gate clear of water and crags (as today), the
+  gate's and the rift's neighbours open, and the roads as art (a city's streets).
+- New laying: a band of water or crags across the field with gaps; a band down the field (the
+  fjord, the gorge's walls), one or two, placed by seed, running from row 4 to the team's
+  ground; ponds (the `puddles_t` field, grown to two or three hexes); grouped crags (the ridge
+  noise with a higher threshold, clustered). The horizontal river with fords exists
+  (`_lay_feature`); the lake band retires. Thickness and count are the shape's knobs in
+  `BattleMap.KINDS`, every number a placeholder: a river two to three thick with one or two
+  fords; a fjord two to three wide; city bands one to two thick with one or two gaps; one or
+  two gorge walls one thick.
+- The survey (`tools/map_survey.gd`, `--type` each shape) measures each: the ground shares,
+  the horde's narrowest crossing and its route length (today 19 to 20 hexes; a winding
+  Badlands that doubles it changes the pacing, since Rift Pressure fills at 12), and the
+  phases and reach by way; `--show SEED` prints a map as text for Ryan's eye, and the harness
+  with `RIFTGATE_MAP_KIND` shows it on screen.
+- The campaign picks a shape by the rift's seed, every shape alike, until a domain lean is
+  decided (a Lean row, never an exclusion: the Marsh toward water, the Peak toward crags); the
+  front card shows the shape's name once the mission map exists.
+
+### Questions for Ryan, for the shapes session
+
+1. The names, as the front card will show them: RIVER (or RIVER CROSSING), FJORD, BADLANDS,
+   OPEN STEPPE, RUINED CITY, GORGE (or RAVINES).
+2. Mixed Ground: retired (Claude's lean: the six replace the five, and the campaign draws by
+   seed), or kept as a seventh for the harness.
+3. Domain leans toward shapes, now or later (Claude's lean: later, from play).
