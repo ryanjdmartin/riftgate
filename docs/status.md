@@ -298,8 +298,12 @@ line), since no number read since 22 October was read on the content as it now s
    Frame at +8 a third of a round, the Rangefinder its hull on tier one's formations; the
    ladder's tier-two and tier-three formations are walls for the stock trios, Wainwright &
    Sutler's row winning 29% of them, so the Rangefinder's rule is the per-tier ladders' read
-   with a tier-matched kit). Open in section 12: the Chain's rework (the Arc Fault waits on it) and
-   whether heat below 6 should bite (the maxima or the overheat's cost). Next: a persona that
+   with a tier-matched kit). Chain decided the same evening (the conductor, the bible's Chain row; its build a to-do
+   line). Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
+   maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
+   component priced in heat, hull or shield, the basics too; passive cooling the lever that
+   makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
+   question, the heat session on the to-do. Next: a persona that
    shields and vents before the overheat and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
