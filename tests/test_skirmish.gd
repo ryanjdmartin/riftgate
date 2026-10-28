@@ -8213,8 +8213,9 @@ func test_a_mine_carries_its_area_numbers_as_laid() -> void:
 
 
 ## A numbered grant (the drum's, Ryan, 28 October) gives the keyword its number; on an entry
-## already carrying it, the higher of the two stands.
-func test_a_numbered_grant_raises_a_lower_number_and_keeps_a_higher() -> void:
+## already carrying it, the grant's number replaces the entry's own (Ryan: the drum "forces the
+## weapon into its own shape"; the higher of the two would be "gaming the build").
+func test_a_numbered_grant_sets_the_keywords_number() -> void:
 	var sk := Skirmish.new(1, 3)
 	var light := Face.attack(4, L, K.CLEAVE)
 	light.cleave = 1
@@ -8229,7 +8230,7 @@ func test_a_numbered_grant_raises_a_lower_number_and_keeps_a_higher() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var mid: Foe = sk.front[1]
 	assert_eq(sk.shown_face(ms, light, mid).cleave, 7, "a Spread 1 fired through the drum at the front sprays at the drum's 7")
-	assert_eq(sk.shown_face(ms, heavy, mid).cleave, 9, "a Spread 9 keeps its own")
+	assert_eq(sk.shown_face(ms, heavy, mid).cleave, 7, "a Spread 9 leaves the drum at the drum's 7 too: the drum's shape, never the higher")
 	var plain := sk.shown_face(ms, ms.die.faces[2], sk.back[1])
 	assert_true(plain.has(K.PENETRATE) and plain.penetrate == 7 and not plain.has(K.CLEAVE), "a plain gun at the back punches through at the drum's 7")
 	assert_eq(Effects.effect_text(DRUM_PASSIVE["effects"][2]), "aimed at the front rank: gains spread 7", "the grant's text carries its number")

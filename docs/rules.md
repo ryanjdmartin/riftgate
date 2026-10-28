@@ -704,8 +704,9 @@ and every one of them that fell is a kill).
   included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. A numbered
-  keyword's grant says its number, and on an entry already carrying the keyword the higher
-  of the two stands. The
+  keyword's grant says its number, and on an entry already carrying the keyword the grant's
+  number replaces the entry's own (the drum forces the weapon into its shape, and adds only the
+  keywords and effects it lacks). The
   Cottonmouth's replaces the shot of every weapon and equipment it aims at a foe whole, first,
   under every other change (Indirect,
   a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),

@@ -246,8 +246,8 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.334 (the
-  page's version 346, published 28 October from `ccr-24cae16e-ryhv1v` merged onto the models
+  `docs/design-bible.html` after every change. This file and the live page are v0.335 (the
+  page's version 347, published 28 October from `ccr-24cae16e-ryhv1v` merged onto the models
   session's versions from `ccr-7d865127-wr1ko2`, which the live page held: the numbered area
   and the blow's order built, the struck foe's reads after the firer's multiplies, onto that
   branch's Kestrel models, settled looks, idle acts and the Skua's acts, so its merge into main
