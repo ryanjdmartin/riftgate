@@ -1045,3 +1045,40 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var lead: Foe = sk.front[1]
 	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
 	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")
+
+
+## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,
+## 28 October): its shape's number through the firer's modifiers, judged on that foe, then its
+## own statuses and armour; and a consumer gives up every foe's stacks it eats, each its own.
+func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
+	var sk := Skirmish.new(1, 3)
+	var sweep := Face.attack(6, L, K.CLEAVE)
+	sweep.cleave = 2
+	var m := _mech("A", Die.single(sweep), 40, 100)
+	m.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status"}]})
+	sk.add_mech(m)
+	var marked := _ghoul(100)
+	var aim := _ghoul(100)
+	var plain := _ghoul(100)
+	sk.add_foes([marked, aim, plain])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.new()
+	assert_eq(pol.damage_outcomes(ms, sweep, aim), [[6.0, 1.0]], "the clean target: the roll alone")
+	assert_eq(pol.damage_outcomes(ms, sweep, marked, -1.0, true, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
+	assert_eq(pol.damage_outcomes(ms, sweep, plain, -1.0, true, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
+	var before := pol.attack_score(sk, ms, sweep, aim)
+	sweep.cleave = 4
+	assert_true(pol.attack_score(sk, ms, sweep, aim) > before, "a bigger Spread is worth more")
+	# A consumer through a Spread: every foe it strikes eats its own, so the ticks each gives up count.
+	var charge := Face.attack(2, L, K.CLEAVE)
+	charge.cleave = 1
+	charge.consumes = "burning"
+	var dry := charge.duplicate_face()
+	dry.consumes = ""
+	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
+	assert_true(lost > 0.0, "the neighbour's Burning eaten costs the ticks it would have dealt: %f" % lost)

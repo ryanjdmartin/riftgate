@@ -33,7 +33,9 @@ every open rift its domain leads final), and
 last-first to the turn's start or the last fight, which closes 23, 24 and 25 by construction.
 The rest waits on his read. The review of 27 October fixed 15 in the rules, marked 34 settled by
 the one damage state, and put 26 to Ryan, sharpened by the boss's fight that cannot be left (25
-October); he settled it the engine's way the same day. Line numbers are as at `a8a0e43`.
+October); he settled it the engine's way the same day. On 27 October he had 8, 13 and 17 fixed,
+and on 28 October his blow order (the bible's blow row, built with Spread N, Penetrate N and
+Splash N) fixed 9 and 19. Line numbers are as at `a8a0e43`.
 
 Start here, the ones that change play most:
 1. A Gel's halves and a Ghost's summons count as their pack: a withdrawal or a lost fight
@@ -160,7 +162,7 @@ target" (docs/rules.md:311), each blow's own. An ally's Aurora Lattice reaches t
 Fix: lay it on each strike's own foe. (A Spread's neighbours get none, which the rules allow
 and the status's "every blow it lands" leaves open.)
 
-### 9. Text: conditions on the target are judged on the aimed foe for the whole area
+### 9. Fixed 28 October (the blow's order: a condition on the foe is read on each foe struck, the firer's modifiers on every blow). Text: conditions on the target are judged on the aimed foe for the whole area
 The attacker's modifiers are read once a strike against the foe aimed at
 (sim/skirmish.gd:1817) and the same blow goes to every foe it reaches. So the Susceptibility
 Tensor ("its blows deal 1 more to a foe carrying any status") gives a Spread's clean
@@ -231,7 +233,7 @@ Overcharged) don't pass through `_stacks_from` (sim/skirmish.gd:1279, :1287; `Ef
 The Stoker is a hardpoint piece, so a Stingray at 10 heat can carry it and burns itself 1, not
 3.
 
-### 19. Open (Ryan, 27 October: elaborate, a rule may be missing). Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
+### 19. Fixed 28 October (Ryan's blow order, reading (a) with a consumer eating each foe's own: each foe struck reads its own missing hull and stacks, and the neighbours' number is the area keyword's N). Bug, small: the Cottonmouth's Spread carries a consumer's bonus to the neighbours
 A consumer's point a stack is added to the roll (sim/skirmish.gd:1809), and the roll reaches
 every foe the blow does. "One blow on one foe (no strikes past one, no area)"
 (docs/rules.md:266), and the validator holds the authored face to it, but the Cottonmouth's

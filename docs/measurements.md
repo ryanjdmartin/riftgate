@@ -1985,3 +1985,52 @@ Revenant: below it every form is a softening and reads as the half, at it a form
 on that class. A number a piece is therefore a dial with two settings on today's rank and file,
 a softening (1 or 2) or a kill (3), and a tier's dial rather than a fine one; the fights' size
 remains the lever on the trio's chain.
+
+## 28 October, area numbered, on the team rows
+
+**Spread N, Penetrate N and Splash N with the blow's order, built** (Ryan, 28 October; the
+build of `3215b987`, its internal design notes aside). `tools/balance.gd`, 200 seeds a cell,
+random and greedy, the five team rows of the 27 October forms entry against the four
+formations and the two swarms of six, 14,400 fights, the carriers at the numbers content holds
+(the Claw and the Plow Spread 2, the Enfilade Beam Penetrate 3, the Airburst Shell and the
+Flakshot Repeater Spread 1, the Musk Ox's two guns Splash 1, the drum Spread 2 and Penetrate 2).
+The Marsh formation holds the Zombie Knight pair since 27 October, so its cell is read against
+the half on main's head before the build (`2b1ace78`, 2,400 fights), which repeats the Knight's
+first read above to the fight; the other cells against the 27 October forms entry, whose content
+differs from today's in the Marsh alone.
+
+The rows without an area piece (the four of the Armadillo, the Cassowary, the Skua and the
+Puffin; the trio without the Skua) read the same in every cell, wins, rounds and hull, fight for
+fight: the blow read for each foe struck leaves single-target play, the Skua's spray among it,
+as it was.
+
+Won, random / greedy, at half, numbered, whole (whole not run on today's Marsh):
+
+| Row | Meadow formation | Waste formation | Marsh formation | Peak formation |
+|---|---|---|---|---|
+| The starting team | 99, 100, 100 / 100 | 99, 100, 100 / 100 | 42, 46 / 99, 100 | 81, 87, 89 / 100 |
+| A four, two carriers | 99, 99, 100 / 100 | 100 / 100 | 15, 15 / 100 | 89, 92, 96 / 100 |
+| A trio, two carriers | 77, 79, 91 / 100 | 86, 91, 95 / 100 | 2, 2 / 77, 85 | 36, 42, 60 / 100 |
+
+The swarms of six are won by every area row at 99 to 100% under every form, in 2.0 to 2.3
+greedy rounds. Greedy rounds and hull lost, half, numbered, whole: the starting team on the
+Meadow 6.0 and 7%, 5.8 and 6%, 5.2 and 4%, on the Peak 4.1 and 7%, 4.1 and 7%, 3.7 and 6%, on
+the Marsh (with the Knights) 5.1 and 23% with 0.66 components lost, 4.8 and 17% with 0.50; the
+four with two carriers on the Peak 4.1, 4.0, 3.1 rounds, on the Marsh 7.0 and 42% with 4.5
+components lost, 6.4 and 36% with 4.0; the trio with two carriers on the Meadow 6.1 and 4%, 6.0
+and 3%, 4.6 and 1%, on the Peak 4.8 and 10%, 4.7 and 9%, 3.7 and 3%, on the Marsh 9.1 and 74%
+with 4.3 components lost, 8.0 and 62% with 3.7. Pick share does not move under any form (the
+Claw 12 to 14% of a row's spends, the Enfilade Beam 6 to 7%, the Airburst Shell 2 to 3%).
+
+Read. At these numbers the area sits between the half and whole, nearer the half: the random
+rung gains 0 to 6 points on a formation where whole gained up to 24, the greedy rounds fall by
+a tenth or two where whole took a round off, and a carrier row's hull on a formation moves a
+point or two; only the Marsh, where every blow counts against the Knights, moves further (a
+trio's greedy wins 77% to 85%, its hull 74% to 62%). The trio with two carriers reads exactly
+the fixed-2 read of 27 October on its random cells (79, 91, 42), its two carriers being Spread 2
+pieces, so the firer's adds and each foe's own reads move no cell there. The neighbours' number
+tells at the rank and file's kill threshold, 3 for the Goblin and the Revenant (the fixed-2
+entry above): the Enfilade Beam's 3 kills what it reaches, the 2s soften, an Overcharged or a
+sixth shot lifting a 2 to a kill. So the carriers chip as Ryan asked of the big hitters, no
+form walls a four, and a dedicated trash-clearer is a piece at N 3 or more; the numbers are
+the lever, each piece's own, read on the bands as the foes' fresh start sets the fights' size.

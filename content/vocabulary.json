@@ -173,20 +173,30 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank, for half the blow.",
+   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file."
    }
   },
   {
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Player keyword. Also hits the other rank of the target's column, for half the blow.",
+   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the roll: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
+   }
+  },
+  {
+   "id": "splash",
+   "category": "keyword",
+   "name": "Splash",
+   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the roll: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
+   "status": "implemented",
+   "design": {
+    "holes": "Spread and Penetrate at one number, one chip on the die (Ryan, 28 October: Splash N back 'for the sake of display simplicity'); the validator refuses the two at one number and Splash beside either. Its number rides on the entry (splash)."
    }
   },
   {

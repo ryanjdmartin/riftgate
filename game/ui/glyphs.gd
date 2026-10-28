@@ -93,6 +93,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
+		"splash":
+			# Splash (28 October): the plus round the target, Spread's row and Penetrate's column at
+			# one number. A solid core with four arms standing off it, a burst, so it reads apart
+			# from Spread's three bars, Penetrate's arrow and the crosshair's ringed cross.
+			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
