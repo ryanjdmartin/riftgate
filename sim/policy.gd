@@ -1185,9 +1185,9 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += float(bite) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 			if Effects.is_entry_disabled(who.unit, i) and Effects.cleansable_disable(who.unit, i):
 				score += _raw_attack_mean(who) * CLEANSE_ROUNDS / float(n)
-	# Silenced: the buffs it sleeps wake now.
+	# Silenced: the keywords it muted come back (28 October: a silence mutes keywords alone).
 	if Effects.has(who.unit, "silenced"):
-		score += float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT
+		score += _raw_attack_mean(who) * 0.5 if not who.assigned else 0.0
 	return score
 
 

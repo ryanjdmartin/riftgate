@@ -426,10 +426,10 @@
    "id": "silence",
    "category": "foe",
    "name": "Silence",
-   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away.",
+   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. Decided 28 October (the bible's section 5 row): it mutes the machine's keywords and never its buffs, cast with no condition and aimed at the armed; the engine sleeps the buffs until the build with the ladder, and this text follows the build. Never a rider: a special."
+    "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
    }
   },
   {
@@ -1688,10 +1688,10 @@
    "id": "silenced",
    "category": "status",
    "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
+   "codex": "Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away.",
    "status": "implemented",
    "design": {
-    "holes": "Its stores are untouched. Decided 28 October (the bible's section 5 row): the keywords muted and the buffs left, Volatile being a cost now; the engine runs the 26 October form (buffs alone) until the build with the ladder, and this text follows it.",
+    "holes": "Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.",
     "table": {
      "kind": "debuff",
      "on": "machine",

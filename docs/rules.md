@@ -457,8 +457,7 @@ On a machine:
   round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count
   and its stores fill and spend as ever. Cleansable, an ally's Cleanse the way; a Ward turns
-  the silence away. (Decided 28 October, built with the ladder: until then the engine sleeps
-  its buffs and leaves its keywords.) A foe's purge takes every buff a die face bought, every
+  the silence away. A foe's purge takes every buff a die face bought, every
   stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
   turn and comes back at the start of the player's turn after its start resolves; the stores
   stay, and the Ammit's kept Overcharged is its passive's own and stays; a Ward turns it away

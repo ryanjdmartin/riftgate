@@ -2004,13 +2004,13 @@ func _set_slot(at: Vector2i, f: Foe) -> void:
 		back[at.y] = f
 
 
-## Silenced (Ryan, 17 and 18 October; built 21 October): its buffs count for nothing through
-## its next round, its keywords and stores untouched (Ryan, 21 and 26 October), as a foe's
-## Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
+## Silenced (Ryan, 17 and 18 October; built 21 October; keywords alone since 28 October): its
+## components' keywords are muted through its next round, its buffs and stores untouched, as a
+## foe's Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
 ## machine's next.
 func _silence(t: MechState, f: Foe) -> void:
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["silenced"], "foe:" + f.content_id, round + 1)
-	log.append("%s silences %s: its buffs sleep through its next round" % [f.display_name, t.unit.display_name])
+	log.append("%s silences %s: its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
 ## A purge: every buff the machine carries goes, every stack; its stores stay (Ryan, 21 October).
@@ -2767,7 +2767,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
 		"silence":
-			# A caster's silence (17 October): no blow, the machine Silenced for the round.
+			# A caster's silence (17 October; keywords alone, 28 October): no blow, the machine
+			# Silenced through its next round.
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "silences")), t.unit.display_name])
 			else:

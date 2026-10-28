@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -262,15 +262,16 @@ const STATUS := {
 	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
 	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
 	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
-	# The enemy's answer to a stacked machine (Ryan, 17 and 18 October; built 21 October): a
-	# foe's silence leaves the machine Silenced through its next round, every buff it carries
-	# counting for nothing (the pipeline's suppress turns them off). Its components' keywords
-	# act (Ryan, 26 October, on the mechanics audit: buffs alone, so a Volatile bites and a
-	# silence is never an upgrade), and its stores fill and spend as ever (Ryan, 21 October: a
-	# store is a resource, and a balance lever if silence does not hurt enough). It costs
-	# time, never ability. Cleansable; a Ward turns it away.
-	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its buffs count for nothing through its next round.", "stacking": "renew",
-		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "suppress", "value": "buff"}]},
+	# The enemy's question to the keyword build (Ryan, 27 and 28 October: silence "makes sense
+	# to only disable (positive) keywords, and not touch buffs"; built with the ladder): a foe's
+	# silence leaves the machine Silenced through its next round, its components' keywords
+	# muted, printed and granted alike (a Rapid acts once, a Spread lands one blow, its own
+	# Cleanse is a plain shield); its buffs count and its stores fill and spend as ever.
+	# Volatile is a cost since 26 October, so nothing a silence mutes is a price. It costs time,
+	# never ability. Cleansable (an ally's Cleanse); a Ward turns it away. Retired: buffs alone
+	# (25 and 26 October), a one-round purge that returns.
+	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its components' keywords are muted through its next round.", "stacking": "renew",
+		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
 	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
 		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
@@ -1094,9 +1095,17 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		return null
 	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
-	var granted := granted_keywords(u, base, target)
-	var printed := granted_keywords(u, base, target, true)
-	var numbers := granted_numbers(u, base, target)
+	# Silenced (28 October): the entry acts without its keywords, printed and granted alike,
+	# while the die keeps the real ones; its numbers, heat and costs stand.
+	var muted := keywords_muted(u)
+	var granted: Array[int] = []
+	var printed: Array[int] = []
+	var numbers := {}
+	if not muted:
+		granted = granted_keywords(u, base, target)
+		printed = granted_keywords(u, base, target, true)
+		numbers = granted_numbers(u, base, target)
+	var mutes := muted and (not base.keywords.is_empty() or not base.printed.is_empty())
 	# A numbered grant on a keyword the entry already carries sets its number (the drum's shape).
 	var raised := {}
 	for kw in numbers.keys():
@@ -1105,9 +1114,12 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
 	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1 and not mutes:
 		return face
 	var c := base.duplicate_face() if base == face else base
+	if mutes:
+		c.keywords.clear()
+		c.printed.clear()
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
@@ -1504,7 +1516,17 @@ static func stack_multiplier(u, face: Face, target = null) -> int:
 	return mult
 
 
-## Is this modifier one a silence turns off and a purge takes: a buff (a kept Overcharged
+## Are this machine's components' keywords muted (Silenced, 21 October; again 28 October)? Its
+## entries are spent, shown and weighed without them, granted ones too, while the die keeps the
+## real ones.
+static func keywords_muted(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "mute_keywords":
+			return true
+	return false
+
+
+## Is this modifier one a purge reaches: a buff (a kept Overcharged
 ## too), never a store (Ryan, 21 October: a store is a capped resource, as heat and the
 ## magazine are, so the rage, the hopper and the Muster stay), a passive, a module's rule or a
 ## count?
@@ -1695,7 +1717,7 @@ static func quick_turn_live(u, face: Face) -> bool:
 	if face == null:
 		return false
 	var base := rewritten(u, face)
-	if base.has(Face.Keyword.RAPID):
+	if base.has(Face.Keyword.RAPID) or keywords_muted(u):
 		return false
 	for pair in _taking_part(u, "static", base, null):
 		var eff: Dictionary = pair[0]
@@ -1866,6 +1888,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
+		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
