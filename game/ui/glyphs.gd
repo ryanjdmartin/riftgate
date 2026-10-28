@@ -127,6 +127,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			draw(ci, "heart", c, size, color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.02), c + Vector2(s * 0.3, -s * 0.02), color, width)
 			ci.draw_line(c + Vector2(0, -s * 0.32), c + Vector2(0, s * 0.28), color, width)
+		"dispel", "purge":
+			# Purge (the player's keyword, 28 October; a placeholder, judged running): the buff's
+			# arrow struck through, every buff the foe carries unmade.
+			draw(ci, "buff", c, size * 0.8, color, width)
+			ci.draw_line(c + Vector2(-s * 0.85, s * 0.85), c + Vector2(s * 0.85, -s * 0.85), color, width * 1.2)
 		"suppress":
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)
 			ci.draw_line(c + Vector2(-s * 0.65, s * 0.65), c + Vector2(s * 0.65, -s * 0.65), color, width)
@@ -437,7 +442,7 @@ static func colour_for(id: String) -> Color:
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

@@ -7222,6 +7222,86 @@ func test_a_foes_regeneration_regrows_after_its_ticks_for_three_actions() -> voi
 	assert_false(dying.alive(), "a foe its Burning kills regrows nothing")
 
 
+## The player's Purge (the ladder's brief, C; 28 October): every foe the entry reaches loses every
+## buff it carries but Numbed and Guarded, the four a foe's specials grant among them, after the
+## blow and with the riders, equipment's included; a Barrier the weapon's blow pops is gone first,
+## and a foe the blow kills stays down.
+func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(0, I, [K.DISPEL])), 40, 200)
+	var b := _mech("B", Die.single(Face.attack(10, L, [K.DISPEL])), 40, 200)
+	var c := _mech("C", Die.single(Face.attack(10, L, [K.DISPEL])), 40, 200)
+	for m in [a, b, c]:
+		sk.add_mech(m)
+	var caster := Foe.make("caster", 500, 1)
+	var g := _ghoul(500, 3)
+	var h := _ghoul(5, 2)
+	sk.add_foes([caster, g, h])
+	sk.begin()
+	sk.start_round()
+	var act := func(who: Foe, effect: String, kind: String, value: int) -> void:
+		who.action = {"id": effect, "name": effect.capitalize(), "kind": kind, "effect": effect, "weight": 1, "text": ""}
+		if value > 0:
+			who.action["value"] = value
+		sk._foe_acts(who, sk.mechs[0])
+	# Every buff a foe can carry on the caster: its own specials', and a stoker's and a rallier's.
+	act.call(caster, "barrier", "defend", 0)
+	act.call(caster, "regenerate", "defend", 3)
+	act.call(caster, "brace", "defend", 2)
+	act.call(caster, "revive_once", "buff", 0)
+	act.call(g, "ward_all", "buff", 0)
+	act.call(g, "prime", "buff", 2)
+	act.call(g, "rally", "buff", 3)
+	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
+	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)
+	for id in Effects.FOE_PURGED:
+		assert_true(Effects.has(caster, id), "the caster carries %s" % id)
+	assert_true(sk.assign(0, caster), "a Purge of equipment")
+	for id in Effects.FOE_PURGED:
+		assert_false(Effects.has(caster, id), "%s gone" % id)
+	assert_true(Effects.has(caster, "numbed"), "Numbed stays: a resistance")
+	assert_true(Effects.has(caster, "guarded"), "and Guarded: its parts' lock")
+	assert_true("\n".join(sk.log).contains("A purges"), "the log says what went")
+	# A weapon's Purge: the blow first, so the Barrier takes it, then the rest goes.
+	act.call(g, "barrier", "defend", 0)
+	act.call(g, "brace", "defend", 2)
+	var before := g.hp
+	assert_true(sk.assign(1, g), "a Purge on a gun")
+	assert_eq(g.hp, before, "the Barrier takes the blow")
+	assert_false(Effects.has(g, "barrier") or Effects.has(g, "braced") or Effects.has(g, "ward"), "and the Purge takes the rest")
+	# A foe the blow kills stays down.
+	act.call(h, "revive_once", "buff", 0)
+	Effects.remove(h, "ward")
+	assert_true(sk.assign(2, h), "a killing Purge")
+	sk._clear_dead()
+	assert_false(h.alive(), "it stays down")
+	assert_false("\n".join(sk.log).contains("gets back up"), "no return")
+
+
+## A laid Purge (28 October): the shot carries the keyword, and the foe it lands on loses its buffs.
+func test_a_laid_purge_purges_the_foe_it_lands_on() -> void:
+	var pull := Face.attack(0, I)
+	pull.pulls_mines = true
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("Bomber", Die.single(Face.attack(0, I, [K.DISPEL])), 40, 100)
+	a.grant_passive(MINER)
+	sk.add_mech(a)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
+	var weak := _ghoul(10, 0)
+	var boss := _ghoul(300, 0)
+	sk.add_foes([weak, boss])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(boss, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:revenant", 2, Effects.DECAY_ROUND)
+	Effects.stack(boss, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(1, weak), "a slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "the Purge laid there")
+	assert_true(sk.assign(2, boss), "the pull on the boss")
+	assert_false(Effects.has(boss, "braced") or Effects.has(boss, "risen"), "the shot purges it")
+	assert_true("\n".join(sk.log).contains("a mine of Bomber's purges"), "the log says so")
+
+
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places, no damage; a
 ## foe pulled into the front stands exposed to Direct fire; a massive foe never moves.

@@ -715,6 +715,52 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	assert_eq(pol.attack_score(sk, a, gun, g2), bare_gun, "and a plain gun as it was")
 
 
+## The bot's worth of the player's Purge (the ladder's brief, C; 28 October; placeholders), by
+## what the foe carries: Getting Back Up its maximum HP whatever the blow does, a Barrier the
+## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
+## Armoured its stacks for each allied blow to come, Kindled its value, Primed 2 a stack,
+## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
+## score carries it.
+func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 3)
+	var null_field := Face.attack(0, I, [K.DISPEL])
+	var gun := Face.attack(10, L, [K.DISPEL])
+	sk.add_mech(_mech("A", Die.single(null_field), 40, 200))
+	sk.add_mech(_mech("B", Die.single(Face.attack(12, L)), 40, 200))
+	var g := _ghoul(100, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var a: Skirmish.MechState = sk.mechs[0]
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a bare foe: nothing")
+	Effects.stack(g, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.0), 100.0, "Getting Back Up: its maximum HP, whatever the blow")
+	Effects.remove(g, "risen")
+	Effects.stack(g, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "a Barrier: the biggest weapon blow an ally still to act shows on it")
+	assert_eq(pol.purge_worth(sk, a, gun, g, 1.0), 0.0, "nothing when its own weapon's blow pops it")
+	Effects.remove(g, "barrier")
+	Effects.stack(g, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:revenant", 2, Effects.DECAY_ROUND)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
+	Effects.remove(g, "braced")
+	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Kindled: its value")
+	Effects.remove(g, "kindled")
+	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 4.0, "Primed: 2 a stack")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.5), 2.0, "at the odds the foe outlives the blow")
+	Effects.remove(g, "primed")
+	Effects.grant(g, Effects.regenerating(4))
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "Regenerating: its value for each of three actions left")
+	Effects.remove(g, "regenerating")
+	Effects.stack(g, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing")
+	var bare := pol.attack_score(sk, a, null_field, g)
+	Effects.grant(g, Effects.primed_foe(5, "foe:caster"))
+	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
+
+
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
 ## the share of the die's rolls it would have shown; Rapid's switch-off costs nothing.
 func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:

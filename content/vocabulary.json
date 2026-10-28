@@ -434,12 +434,12 @@
   },
   {
    "id": "dispel",
-   "category": "foe",
+   "category": "keyword",
    "name": "Purge",
-   "codex": "Foe move of its own, never a rider on a blow, and never a last act's. The machine it lands on loses every buff a die face bought, every stack, for good; what a store, a form or a passive grants sleeps until the start of its turn, after that turn's start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away.",
+   "codex": "On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses every buff it carries but Numbed and Guarded, after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A machine's Ward turns it away; a foe's Ward is one of the buffs it takes.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. The id stays dispel. By source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own."
+    "holes": "One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Kindled, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
    }
   },
   {

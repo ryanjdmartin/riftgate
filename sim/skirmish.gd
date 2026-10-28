@@ -1213,6 +1213,14 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 	return true
 
 
+## The player's Purge on one foe (28 October): every buff it carries but Numbed and Guarded,
+## told when anything went.
+func _purge_foe(by: String, foe: Foe) -> void:
+	var gone := Effects.purge_foe(foe)
+	if not gone.is_empty():
+		log.append("%s purges %s: %s" % [by, foe.display_name, ", ".join(gone)])
+
+
 ## A foe's Barrier (28 October): the next weapon blow it takes deals nothing, the blow's riders
 ## landing; a debuff pops nothing. True when this blow was the one it took.
 func _barrier_eats(foe: Foe, weapon: bool) -> bool:
@@ -2380,6 +2388,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if f.has(Face.Keyword.FLAK) and foe.alive():
 				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.status_decay(Effects.STATUS["flakked"]))
 				_note_status(gained, foe, "flakked", turned)
+			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
+			# after the blow and with the riders, equipment's included; a foe the blow killed loses
+			# its Getting Back Up, so it stays down.
+			if f.has(Face.Keyword.DISPEL) and was_alive:
+				_purge_foe(ms.unit.display_name, foe)
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		# A Primed machine's Burning lands blow by blow, on each strike's own foe (the mechanics
@@ -3323,6 +3336,8 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if weapon and Effects.remove(t, "shocked"):
 			log.append(("%s: the shock is spent on the Barrier" % t.display_name) if barred else ("%s: the shock lands, %d doubled" % [t.display_name, blow]))
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
+		if not t.alive() and kws.has(Face.Keyword.DISPEL):
+			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t)   # a foe its shot killed stays down
 		if not t.alive():
 			if Effects.has(t, "syrinx_drone"):
 				var again := shot.duplicate(true)
@@ -3351,6 +3366,8 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if int(shot.get("flak", 0)) > 0:
 			Effects.stack(t, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", int(shot["flak"]), Effects.status_decay(Effects.STATUS["flakked"]))
 			_note_status(gained, t, "flakked", turned)
+		if kws.has(Face.Keyword.DISPEL):
+			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t)   # every foe the entry reaches, a laid shot's arrival included (28 October)
 		touched.append(t)
 	for t in webbed:
 		var caught := web_catch(t)

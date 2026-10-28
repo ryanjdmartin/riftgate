@@ -291,6 +291,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   conditions allow, keeping its pick while the machine stands and is not Phased; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
+- **Purge** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter): every foe the
+  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Getting
+  Back Up, Primed, Barrier, Ward, Regenerating), after the blow and with the riders, a debuff's
+  included, so a foe the blow kills stays down and a Barrier the blow pops is gone already; a
+  laid shot purges the foe it lands on.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the

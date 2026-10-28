@@ -503,6 +503,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
+	if f.has(Face.Keyword.DISPEL):
+		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
+		# the target's at the odds it outlives the blow, its Getting Back Up whatever.
+		for foe in sk.reached_by(f, target):
+			if foe == target or foe.alive():
+				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
 	# Flak (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (flak_score).
 	if f.has(Face.Keyword.FLAK):
@@ -608,6 +614,42 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			p *= _kill_odds(link, n.hp)
 	score -= heat_cost(sk, ms, f, uses)
 	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
+
+
+## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
+## Getting Back Up the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
+## the rest at the odds the foe outlives the blow (`lives`): a Barrier the biggest weapon blow an
+## ally still to act shows on it (nothing when the spend's own weapon pops it first), Armoured
+## its stacks for each allied blow still to land on it this round, Kindled its value, Primed 2 a
+## stack, Regenerating its value for each action it has left, a Ward nothing.
+func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives: float) -> float:
+	if foe == null:
+		return 0.0
+	var allied_blows := 0
+	for other in sk.live_mechs():
+		if other == ms or other.assigned:
+			continue
+		var of := sk.spend_face(other)
+		if of != null and of.is_weapon() and sk.targets_for_face(other, of).has(foe):
+			allied_blows += maxi(1, of.strikes)
+	var back := 0.0
+	var rest := 0.0
+	for m in Effects.live(foe):
+		match m.id:
+			"risen":
+				back = float(foe.hp_max)
+			"barrier":
+				if not f.is_weapon():
+					rest += barrier_stakes(sk, foe, ms)
+			"braced":
+				rest += float(m.stacks * Effects.braced_armour() * allied_blows)
+			"kindled", "regenerating":
+				for eff in m.effects:
+					if str(eff.get("effect", "")) in ["add_attack", "regrow"]:
+						rest += float(int(eff.get("value", 0)) * m.stacks)
+			"primed":
+				rest += PRIMED_WORTH * float(m.stacks)
+	return back + lives * rest
 
 
 ## The heat this entry adds, on top of what the gauge already holds: whatever ends the turn
@@ -1863,11 +1905,12 @@ static func _foe_buff_worth(f: Foe, sk: Skirmish) -> float:
 
 
 ## What a Barrier on a foe stands to take (28 October): the biggest blow of a weapon a machine
-## still to act shows on it, the blow it would eat.
-static func barrier_stakes(sk: Skirmish, foe: Foe) -> float:
+## still to act shows on it, the blow it would eat; `except` the machine asking, when an ally's
+## blow is the question (a Purge's worth).
+static func barrier_stakes(sk: Skirmish, foe: Foe, except: Skirmish.MechState = null) -> float:
 	var best := 0.0
 	for ms in sk.live_mechs():
-		if ms.assigned:
+		if ms.assigned or ms == except:
 			continue
 		var of := sk.spend_face(ms)
 		if of != null and of.is_weapon() and sk.targets_for_face(ms, of).has(foe):

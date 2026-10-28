@@ -1620,6 +1620,27 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
+## The buffs the player's Purge takes off a foe (28 October): every one it carries but Numbed,
+## a resistance, and Guarded, its parts' lock. The ids are the engine's (braced is Armoured,
+## risen Getting Back Up).
+const FOE_PURGED := ["braced", "kindled", "risen", "primed", "barrier", "ward", "regenerating"]
+
+
+## The player's Purge on a foe (28 October): every buff of FOE_PURGED gone, every stack, whatever
+## granted it. Returns the names that went, once each.
+static func purge_foe(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if FOE_PURGED.has(m.id):
+			if not gone.has(m.name):
+				gone.append(m.name)
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
