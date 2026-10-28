@@ -447,9 +447,8 @@ ended", docs/rules.md:686).
   the Summoner) draws a fresh pick and the fight runs apart from the unbroken one. The screen's
   die locks clear on a resume too.
 - The harness fields only a faction's first boss whatever boss is chosen (sim/harness_setup.gd
-  :191), latent until a domain has two; the map viewer's sample packs are made with a move of
-  2 and never moved (sim/loadouts.gd:91; since moves went to hexes on 28 October, 2 is two hexes
-  and they walk).
+  :191), latent until a domain has two; the map viewer's sample packs were made with a move of
+  2 and never moved (the viewer deleted 28 October, Ryan: the battle screen shows all it did).
 - The profile's pool takes the eight basics every run starts with (sim/profile.gd:25), where the
   pool is "blueprint ids found in any run"; a finale won credits the capital's rolled domain
   with a boss beaten, and so a beaten domain in the codex (sim/campaign.gd:395); `absorb` has no

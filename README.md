@@ -56,7 +56,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
     edited from there) and SETUP (seed, map type, HUD colour). Battle plays the whole loop
     with the packs as its formation and its rift's cycle; Fight chains them all with the
-    boss into one skirmish; Resume battle (while a save exists) and the map viewer below;
+    boss into one skirmish; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
     What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the turn around it, the panel
@@ -74,7 +74,6 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
     welded at load, a mesh a material in each moving group, for the draw calls), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
-  - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
@@ -173,7 +172,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # run the test suite (about four minutes)
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd
 
-# run the harness: a battle, a skirmish, a saved battle and the map viewer
+# run the harness: a battle, a skirmish, a saved battle and the quick campaign
 godot --path .
 
 # the hangar page: the codex, the content editor, the names and the renders in one artifact
@@ -519,10 +518,6 @@ screen pauses and holds the settings (display colour, brightness, move pace, ene
 glitch, scan bar, fine map, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
-
-In the map viewer: drag to scroll the taller-than-screen battlefield, tap without dragging
-for the next seed. The gate and rift are three hexes wide and a three-hex boss walks the
-north. Escape returns to the harness.
 
 If a headless tool script errors before it calls quit(), Godot keeps running, so every
 headless run sits in a watchdog: `perl -e 'alarm N; exec @ARGV'`, since macOS has no `timeout`.
