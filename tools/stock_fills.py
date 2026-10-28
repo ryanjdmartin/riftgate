@@ -175,9 +175,9 @@ open(R + 'content/foes.json', 'w', encoding='utf-8').write(text)
 
 # ---- modules (section 5)
 M = {
- 'ablative_plating': ({'hull': 8, 'armour': 1, 'move': -10}, None), 'ram_frame': ({'hull': 24}, None),
- 'spall_liner': ({'move': -10, 'heat': -4}, [2]), 'boundary_layer_bleed': ({'cooling': 1}, [1]), 'muzzle_velocity_booster': ({}, [1]),
- 'thrust_overboost': ({'move': 20, 'shield': 12}, [2]), 'flak_skirt': ({'hull': 6}, None), 'field_radiators': ({'heat': 4, 'cooling': 1}, None),
+ 'ablative_plating': ({'hull': 8, 'armour': 1, 'move': -1}, None), 'ram_frame': ({'hull': 24}, None),
+ 'spall_liner': ({'move': -1, 'heat': -4}, [2]), 'boundary_layer_bleed': ({'cooling': 1}, [1]), 'muzzle_velocity_booster': ({}, [1]),
+ 'thrust_overboost': ({'move': 2, 'shield': 12}, [2]), 'flak_skirt': ({'hull': 6}, None), 'field_radiators': ({'heat': 4, 'cooling': 1}, None),
  'tactical_databank': ({}, [1]), 'artillery_rangefinder': ({}, None), 'phase_conjugator': ({'shield': 4}, ['stacks', 1]),
  'susceptibility_tensor': ({'shield': 4}, [1]), 'exotic_matter_shell': ({'shield': 16, 'heat': 6}, [2]), 'ward_plate': ({'shield': 8, 'armour': 1}, None),
  'grievance_reliquary': ({'hull': 4}, None), 'tithe_coupling': ({'hull': 20, 'shield': 12}, [3]),

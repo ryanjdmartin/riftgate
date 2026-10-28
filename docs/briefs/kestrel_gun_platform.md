@@ -47,8 +47,8 @@ Every number a placeholder; the name and the look Ryan's.
   attacking, so the order is the player's, and a reroll kept for a late fix is a pass not
   flown.
 - **Frame.** Heavy or assault, hover (the ekranoplan, a giant ground-effect plane with a
-  battery on its back, fast on water and slow on rough ground) or a flyer (the gunship, its
-  guns down one side); move 20; hull 120, shield 80, field recharge 20, heat 120, cooling 10,
+  battery on its back; a hover crosses water at full pace where a ground machine wades, crags
+  stop it) or a flyer (the gunship, its guns down one side); move 20 (2 hexes since 28 October); hull 120, shield 80, field recharge 20, heat 120, cooling 10,
   armour 0; six hardpoints beside the throttle, a d7; two module slots.
 - **Stock**, stand-ins, tier-two pieces since a tier three stocks below its tier, cold and
   hot both: the Twin Autoguns, the Howitzer, the Slugthrower, the Maxigun, the Arc Fault
@@ -257,8 +257,9 @@ Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
   a plain roll never onto the entry showing, the mothership relaunching a jet; a spend that
   gives a look instead of cashing the growth. Four hardpoints, a d6, fewer guns than the
   bench of six: its guns are bets, and the capital's work is the economy. A hover, assault:
-  the ekranoplan, water fast and rough ground slow, so the river every map guarantees is its
-  road, the irony twice (fast-looking, slow, and fast only on water). Why it is a capital and
+  the ekranoplan, a hover: it crosses water at full pace where a ground machine wades, crags
+  stop it, so the river every map guarantees is its road, the irony twice (fast-looking, slow,
+  and amphibious). Why it is a capital and
   not more guns: it bends a rule the player has learned (rerolls never bank; the tiers row's
   sort for a tier three), it reads a resource nobody reads, it changes the team's play more
   than its own, and its ceiling is the team's nerve, not its stock. Why it is Kestrel: rerolls
@@ -321,8 +322,9 @@ Kestrel multi-strike gun (flat and hot) as a payoff of its own maker's.
 Every number a placeholder, the name and the look Ryan's, the stock by kind.
 
 **The frame.** Kestrel's capital ship: assault, a hover (Ryan, 20 October), the ekranoplan, a
-giant ground-effect plane with a battery on its back, fast on water and slow on rough ground
-and ruins; move 20, fast-looking and slow. Hull 120, shield 100, field recharge 20, heat
+giant ground-effect plane with a battery on its back; a hover: it crosses water at full pace
+where a ground machine wades, crags stop it (the movement rule of 28 October; amphibious, no
+passive for its water, the movement proposal's Q6); move 2, fast-looking and slow. Hull 120, shield 100, field recharge 20, heat
 maximum 120, cooling 10, armour 0. Four hardpoints beside two locks, a d6; two module slots.
 
 **The passive**, as the codex would print it: rerolls the team has not spent at the round's

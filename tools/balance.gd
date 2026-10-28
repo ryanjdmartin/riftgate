@@ -19,7 +19,9 @@ extends SceneTree
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
 ## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
-## names, "treant x1", "meadow formation", "finale", or "big" for every big fight and
+## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
+## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
+## "finale", or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
 ## any number of them, so pairs and fours can be read beside the trios), --pack foe:n[+foe:n]
@@ -357,11 +359,22 @@ func _build_matrix() -> void:
 			continue
 		rows.append({"id": "team:" + "+".join(team_ids), "name": "Team (%s)" % ", ".join(_names(team_ids)), "chassis": team_ids})
 	for fac in db.factions.keys():
-		for entry in db.spawn_table(fac):
+		for entry in db.spawn_table(fac, 1):
 			var pid := "%s x%d" % [entry[0], entry[1]]
 			if _has_pack(pid) or not db.foes.has(entry[0]):
 				continue
 			packs.append({"id": pid, "name": "%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), entry[1]], "foe": str(entry[0]), "strength": int(entry[1])})
+	# The ladder's recolours (the ladder's brief, F; 28 October): a rank-and-file cell for every
+	# recolour at its strength in its own tier's list, beside today's cells.
+	for fac in db.factions.keys():
+		for t in [2, 3]:
+			for entry in db.spawn_table(fac, t):
+				var fid := str(entry[0])
+				if not db.foes.has(fid) or int(db.foes[fid].get("tier", 1)) != t:
+					continue
+				var pid := "%s x%d" % [fid, entry[1]]
+				if not _has_pack(pid):
+					packs.append({"id": pid, "name": "%s x%d" % [str(db.foes[fid].get("name", fid)), entry[1]], "foe": fid, "strength": int(entry[1])})
 	for fac in db.factions.keys():
 		for boss in db.bosses_of(str(fac)):
 			if _has_pack(boss + " x1"):
@@ -392,16 +405,21 @@ func _build_matrix() -> void:
 	# The mixed cells (the to-do, 2 October): every pack a faction sends through the rift in
 	# one fight, a front and a back together, which is where targeting, spillover and the
 	# Databank can be read at all.
+	# One a tier since the ladder (its brief, F; 28 October): "meadow formation" is tier one's,
+	# as before, and "meadow formation tier 2" and "tier 3" the lists of those tiers.
 	for fac in db.factions.keys():
-		var mix: Array = []
-		var names: Array[String] = []
-		for entry in db.spawn_table(fac):
-			if db.foes.has(entry[0]):
-				mix.append([str(entry[0]), int(entry[1])])
-				names.append("%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), int(entry[1])])
-		if mix.size() < 2:
-			continue
-		packs.append({"id": fac + " formation", "name": "%s formation (%s)" % [str(db.factions[fac].get("name", fac)), ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
+		for t in [1, 2, 3]:
+			var mix: Array = []
+			var names: Array[String] = []
+			for entry in db.spawn_table(fac, t):
+				if db.foes.has(entry[0]):
+					mix.append([str(entry[0]), int(entry[1])])
+					names.append("%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), int(entry[1])])
+			if mix.size() < 2:
+				continue
+			var tier_id := "" if t == 1 else " tier %d" % t
+			var tier_name := "" if t == 1 else ", tier %d" % t
+			packs.append({"id": fac + " formation" + tier_id, "name": "%s formation%s (%s)" % [str(db.factions[fac].get("name", fac)), tier_name, ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
 	# The party's cells (21 October, the bible's section 9; --noparty drops them): each bench hero's final as
 	# the campaign fields it, the hero with its domain's first pack in the other columns, and
 	# the finale's line, a column a domain, each domain's first bench hero promoted.
@@ -409,7 +427,7 @@ func _build_matrix() -> void:
 		var line: Array = []
 		var called: Array[String] = []
 		for fac in db.factions.keys():
-			var spawn := db.spawn_table(fac)
+			var spawn := db.spawn_table(fac, 1)
 			var bench := db.bench_of(str(fac))
 			for h in bench:
 				var mix: Array = [[h, 1]]

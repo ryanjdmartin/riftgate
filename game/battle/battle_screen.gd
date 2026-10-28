@@ -539,8 +539,6 @@ func _on_route_drag_started(u: Unit) -> void:
 	_draft_unit = u
 	_drag_target = null
 	_map.draft = []
-	_map.draft_move = battle.moves_left(u)
-	_map.draft_spend = Vector2i(0, 0)
 	Sound.play("map_select")
 
 
@@ -560,7 +558,6 @@ func _on_route_drag_to(h: Vector2i) -> void:
 		return
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
-	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
 	_map.draft_land = battle.draft_landing(_draft_unit, _map.draft)   # a carrier's block at the end, marked where it does not fit
 	_map.queue_redraw()   # silent while it grows (the console's rule: no clicky ticks with no story)
 
@@ -572,7 +569,6 @@ func _on_route_drag_ended(commit: bool) -> void:
 	_draft_unit = null
 	_drag_target = null
 	_map.draft = []
-	_map.draft_spend = Vector2i(-1, 0)
 	_map.draft_land = {}
 	if u != null and commit and target != null:
 		_order_attack(u, target, draft)
@@ -621,7 +617,10 @@ func pack_lines(u: Unit) -> Array:
 	var db := ContentDB.load_default()
 	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 	if not u.is_boss:
-		return [_title(u.display_name), _words([foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]), _behaviour_line(u)]
+		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
+		if u.traits.has("winged"):
+			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
+		return [_title(u.display_name), _words(parts), _behaviour_line(u)]
 	var out: Array = [_title(u.display_name, "Boss")]
 	var stats: Array[String] = []
 	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:
@@ -671,9 +670,10 @@ static func _said(head: String, rest: String) -> Dictionary:
 	return EntryReadout.parts_line("effect", [{"text": head, "trend": 0, "gain": false, "bold": true}, EntryReadout.word(rest)])
 
 
-## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, a line
-## for each word of moving with the ways it holds for (decided 2 October), the slow step's
-## price said, then the horde's rule.
+## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, then a
+## line for each word the crossing table gives it, read from the table so it never disagrees
+## with the rule (Ryan, 28 October: a step a hex, water waded at two, crags the flyer's), the
+## ways under each by their shown names; then the packs' rule.
 static func ground_lines(t: int) -> Array:
 	var db := ContentDB.load_default()
 	var id := str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
@@ -684,13 +684,16 @@ static func ground_lines(t: int) -> Array:
 			ways.append(str(db.vocabulary.get(way, {}).get("name", EntryReadout.capital(way))))
 		var said := ", ".join(ways)
 		match str(pair[0]):
-			"slow":
-				out.append(_said("Slow:", said + " (the step ends the move)"))
+			"wade":
+				out.append(_said("Wade:", said + " (two move a hex)"))
 			"wall":
-				out.append(_said("Impassable:", said))
+				out.append(_said("Wall:", said))
 			_:
-				out.append(_said(EntryReadout.capital(str(pair[0])) + ":", said))
-	out.append(EntryReadout.text_line("effect", "Packs cross it" if BattleMap.move_cost(t, []) != BattleMap.WALL else "Packs never enter it"))
+				out.append(_said("Cross:", "every machine" if (pair[1] as Array).size() == BattleMap.WAYS.size() else said))
+	var packs := "Packs cross it"
+	if not BattleMap.passable(t, []):
+		packs = "Packs never enter it; a winged pack crosses it" if BattleMap.passable(t, ["winged"]) else "Packs never enter it"
+	out.append(EntryReadout.text_line("effect", packs))
 	return out
 
 
@@ -806,6 +809,8 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
 	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	if u.traits.has("winged"):
+		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry
 
 
@@ -881,7 +886,7 @@ func _on_end_turn() -> void:
 		if m.is_static() or not m.alive():
 			continue
 		free += 1
-		if battle.action_from.has(m.id) or int(battle.spent.get(m.id, 0)) > 0 or battle.orders.has(m.id):
+		if battle.moved.has(m.id) or int(battle.spent.get(m.id, 0)) > 0 or battle.orders.has(m.id):
 			committed += 1
 	if committed > 0:
 		Sound.say("resolve_all" if committed == free else "resolve_move")

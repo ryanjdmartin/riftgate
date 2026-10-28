@@ -426,27 +426,27 @@
    "id": "silence",
    "category": "foe",
    "name": "Silence",
-   "codex": "Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away.",
+   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store."
+    "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
    }
   },
   {
    "id": "dispel",
-   "category": "foe",
+   "category": "keyword",
    "name": "Purge",
-   "codex": "Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away.",
+   "codex": "On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses every buff it carries but Numbed and Guarded, after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A machine's Ward turns it away; a foe's Ward is one of the buffs it takes.",
    "status": "implemented",
    "design": {
-    "holes": "Who carries it is section 12's question. The id stays dispel. It takes no store; a store's active effect, when one exists, is silenced for a turn instead, since the store would grant it again."
+    "holes": "One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Kindled, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
    }
   },
   {
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -594,15 +594,15 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "Machine status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by a buff for the rounds it says.",
+   "codex": "Status, on either side. Every blow it lands leaves a stack of Burning per stack of Primed. On a machine, a buff grants it for the rounds it says. On a foe, a stoker's move primes every other foe on the field at its value, and its next move spends it, whatever it is: a foe acting after the stoker spends it this turn, one that has acted carries it to its next move. A machine's Ward turns its Burning away, as it does any rider.",
    "status": "implemented",
    "design": {
     "holes": "A placeholder name.",
     "table": {
      "kind": "buff",
-     "on": "machine",
+     "on": "both",
      "stacks": "Yes: a Burning stack a blow per stack",
-     "lasts": "The buff's rounds"
+     "lasts": "A machine's the buff's rounds; a foe's its next move"
     }
    }
   },
@@ -898,10 +898,10 @@
    "id": "movespeed",
    "category": "battlefield",
    "name": "Movespeed",
-   "codex": "Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost.",
+   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone.",
    "status": "implemented",
    "design": {
-    "holes": "Every chassis's move is a placeholder set by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it."
+    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October)."
    }
   },
   {
@@ -1018,7 +1018,7 @@
    "id": "plain",
    "category": "terrain",
    "name": "Plain",
-   "codex": "Open ground. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "codex": "Open ground. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1028,7 +1028,7 @@
    "id": "road",
    "category": "terrain",
    "name": "Road",
-   "codex": "Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "codex": "Open ground, the same as plain: the road is art. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1038,7 +1038,7 @@
    "id": "rough",
    "category": "terrain",
    "name": "Rough",
-   "codex": "Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "codex": "Forest and scrub. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1048,7 +1048,7 @@
    "id": "ruins",
    "category": "terrain",
    "name": "Ruins",
-   "codex": "Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "codex": "Rubble. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": "No skirmish condition yet; what terrain does in a fight is section 12's question."
@@ -1058,7 +1058,7 @@
    "id": "water",
    "category": "terrain",
    "name": "Water",
-   "codex": "Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it.",
+   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": "No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde."
@@ -1068,7 +1068,7 @@
    "id": "mountain",
    "category": "terrain",
    "name": "Mountain",
-   "codex": "Impassable except for flyers, which cross at normal pace. Packs go around.",
+   "codex": "Impassable, except to flyers and winged packs.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1078,7 +1078,7 @@
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",
-   "codex": "Normal pace over every ground, mountains included. Packs walk under it but never stop on its hex.",
+   "codex": "Crosses everything, water and crags included. Packs walk under it but never stop on its hex.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1088,7 +1088,7 @@
    "id": "hover",
    "category": "trait",
    "name": "Hover",
-   "codex": "Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move.",
+   "codex": "Skims water at full pace; crags stop it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1098,7 +1098,7 @@
    "id": "walker",
    "category": "trait",
    "name": "Walker",
-   "codex": "Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move.",
+   "codex": "Legs. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1108,7 +1108,7 @@
    "id": "tracked",
    "category": "trait",
    "name": "Tracked",
-   "codex": "Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move.",
+   "codex": "Tracks. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1118,7 +1118,7 @@
    "id": "wheeled",
    "category": "trait",
    "name": "Wheeled",
-   "codex": "Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move.",
+   "codex": "Wheels. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1488,7 +1488,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing or curing one of its own, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, setting a machine burning, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine burning, silencing or purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "A foe's whole brain is its weighted draw and its aim; none plans ahead."
@@ -1688,10 +1688,10 @@
    "id": "silenced",
    "category": "status",
    "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away.",
+   "codex": "Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away.",
    "status": "implemented",
    "design": {
-    "holes": "Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).",
+    "holes": "Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.",
     "table": {
      "kind": "debuff",
      "on": "machine",
@@ -1720,15 +1720,15 @@
    "id": "barrier",
    "category": "status",
    "name": "Barrier",
-   "codex": "Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once.",
+   "codex": "Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, so it never injures, until the round's end; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "",
     "table": {
      "kind": "buff",
-     "on": "machine",
+     "on": "both",
      "stacks": "No",
-     "lasts": "Until the next blow a foe lands on it, or the round's end"
+     "lasts": "A machine's until the next blow a foe lands on it, or the round's end; a foe's until a weapon's blow pops it, or the end of the player's next turn"
     }
    }
   },
@@ -1736,15 +1736,15 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Machine status. No rider a foe lays lands on this machine this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it but Suppressed (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
-    "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.",
+    "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.",
     "table": {
      "kind": "buff",
-     "on": "machine",
+     "on": "both",
      "stacks": "No",
-     "lasts": "The round"
+     "lasts": "A machine's the round; a foe's until the end of the player's next turn"
     }
    }
   },
@@ -1794,15 +1794,15 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Machine status, the Storm Petrel's. It regains 2 shield at the start of each round for three rounds. Each grant keeps its own clock, so two grants regain 4 a round until the first runs out.",
-   "status": "planned",
+   "codex": "Status, from a foe's own move. It regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. Each grant keeps its own clock.",
+   "status": "implemented",
    "design": {
-    "holes": "Planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender. The number is a placeholder.",
+    "holes": "The machine half, the Storm Petrel's, is planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender: it regains 2 shield at the start of each round for three rounds, each grant its own clock, so two grants regain 4 a round until the first runs out. The numbers are placeholders.",
     "table": {
      "kind": "buff",
-     "on": "machine",
+     "on": "both",
      "stacks": "Yes: each grant its own clock",
-     "lasts": "Three rounds from its grant"
+     "lasts": "A foe's three of its actions; a machine's three rounds from its grant (planned)"
     }
    }
   },

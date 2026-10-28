@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 5   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October)
+const VERSION := 6   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal)
 
 
 # ---------------------------------------------------------------- the file
@@ -56,10 +56,9 @@ static func to_dict(b: Battle) -> Dictionary:
 		for h in f["hunters"]:
 			hunters.append(h.id)
 		forced.append({"prey": f["prey"].id, "hunters": hunters})
-	var moved := {}
-	for uid in b.action_from.keys():
-		var a: Array = b.action_from[uid]
-		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
+	var moved: Array = []
+	for uid in b.moved.keys():
+		moved.append(int(uid))
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -73,9 +72,8 @@ static func to_dict(b: Battle) -> Dictionary:
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
-		"move_left": _int_keys(b.move_left),
 		"fought": _int_keys(b.fought),
-		"action_from": moved,
+		"moved": moved,
 		"history": b.history,   # the turn's undo, in order: snapshots kept JSON's way already
 		"planned": b.planned,   # and the moves not yet played on the map
 		"forced": forced,
@@ -143,13 +141,10 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.field.foe_profiles = b.db.pack_profiles()
 	for uid in d.get("spent", {}).keys():
 		b.spent[int(str(uid))] = int(d["spent"][uid])
-	for uid in d.get("move_left", {}).keys():
-		b.move_left[int(str(uid))] = int(d["move_left"][uid])
 	for uid in d.get("fought", {}).keys():
 		b.fought[int(str(uid))] = true
-	for uid in d.get("action_from", {}).keys():
-		var a: Array = d["action_from"][uid]
-		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
+	for uid in d.get("moved", []):
+		b.moved[int(uid)] = true
 	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's
 	# floats and string keys themselves (Battle._restore, Battle.plan_pieces).
 	b.history = (d.get("history", []) as Array).duplicate(true)
@@ -326,6 +321,7 @@ static func _modifier_dict(m: Effects.Modifier) -> Dictionary:
 		"id": m.id, "name": m.name, "description": m.description, "source": m.source,
 		"component": m.component, "scope": m.scope, "expires_round": m.expires_round,
 		"tags": m.tags, "effects": m.effects, "seq": m.seq, "stacks": m.stacks, "decay": m.decay,
+		"slept": m.slept,
 	}
 
 
@@ -344,6 +340,7 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 	m.seq = int(d.get("seq", 0))
 	m.stacks = int(d.get("stacks", 1))
 	m.decay = int(d.get("decay", Effects.DECAY_NONE))
+	m.slept = bool(d.get("slept", false))
 	# Grant order decides override ties; the counter carries on past the loaded ones.
 	Effects._seq = maxi(Effects._seq, m.seq)
 	return m
@@ -598,7 +595,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 4   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October)
+const RUN_VERSION := 5   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:

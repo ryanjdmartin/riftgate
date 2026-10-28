@@ -2034,3 +2034,198 @@ entry above): the Enfilade Beam's 3 kills what it reaches, the 2s soften, an Ove
 sixth shot lifting a 2 to a kill. So the carriers chip as Ryan asked of the big hitters, no
 form walls a four, and a dedicated trash-clearer is a piece at N 3 or more; the numbers are
 the lever, each piece's own, read on the bands as the foes' fresh start sets the fights' size.
+
+## 28 October, the rank and file against the chassis tiers
+
+**A grouping of the 27 October matrix** (`docs/balance.md`, 200 seeds a cell, every chassis
+with its stock kit, no new run), on Ryan's question of 28 October: do tier-two units need
+bigger numbers than tier one's on average just to stay relevant? Each chassis row's greedy
+cells against the twelve rank-and-file packs (Goblin x6 to Drake x2) and against the four
+formations, meaned by the chassis's tier; rounds to win over the packs won, hull lost over
+every fight of the cell, won or not.
+
+| Chassis tier | Rows | Won, rank and file | Rounds to win | Hull lost a fight | Won, formations |
+|---|---|---|---|---|---|
+| 1 | 9 | 59% | 6.3 | 56% | 0% |
+| 2 | 9 | 78% | 4.3 | 38% | 7% |
+| 3 | 4 | 84% | 5.6 | 37% | 4% |
+
+By row, won / rounds / hull lost: tier one, the Honey Badger 98% / 4.7 / 27%, the Cottonmouth
+87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Armadillo 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
+the Stingray 49 / 5.8 / 56, the Cassowary 39 / 7.1 / 74, the Puffin 37 / 7.0 / 76, the Prairie
+Dog 32 / 9.5 / 77; tier two, the Wild Boar 99 / 4.9 / 22, the Nemesis 98 / 3.7 / 23, the Whip
+Scorpion 98 / 4.1 / 32, the Buzzard 96 / 2.9 / 15, the Clydesdale 90 / 5.1 / 38, the Kite 72 /
+3.0 / 32, the Funnel-web 64 / 6.4 / 51, the Needletail 54 / 3.7 / 56, the Dingo 32 / 5.2 / 78;
+tier three, the Ammit 92 / 4.8 / 43, the Lammergeier 86 / 2.9 / 23, the Musk Ox 83 / 6.1 / 37,
+the Swallowtail 76 / 8.8 / 47.
+
+What the content holds by tier, the same day: a weapon's power times its strikes (a rolled
+one at its middle) means 2.2 at tier zero, 3.5 at tier one, 3.2 at tier two and 4.0 at tier
+three (4, 15, 10 and 2 pieces; the locked pieces 2.0 over 24); a chassis's hull means 26 at
+tier one, 29 at tier two and 39 at tier three, its shield 10, 10 and 13.
+
+Read. By the chassis tier alone, with the kit the stock pass gave each, the rank and file at
+their one set of numbers go from a fight a tier one wins three times in five for half its hull
+to one a tier three wins five times in six for a third; and the tiers' kit buys options more
+than numbers (the weapon means barely move, the hull by half), so the late tiers' power is
+keywords and synergy, which a stock loadout on a lone machine does not yet show, and the gap
+only widens once the runner fits tier-two and tier-three pieces (the prices-and-tiers pass).
+Every tier loses alone to a formation (a wall for one machine of any tier), so the formation
+read is the fours'. So yes: a tier's units need a floor above tier one's to stay a fight,
+measured against the tier's kit, and the question is what makes the tier (the bible's section
+3 row, rewritten the same day). The area numbers sharpen it: a neighbour's Spread 2 or 3 tells
+at the rank and file's kill threshold of 3, so a tier whose units stay at 2 to 4 HP dies to
+the column once the tier's pieces carry area.
+
+## 28 October, the ladder at 30 seeds
+
+**The ladder's first read** (its brief's section F, `git show 26c54c7:docs/briefs/foes_ladder.md`),
+a direction and called one: `tools/balance.gd` at 30 seeds a cell, random and greedy, every
+row, on the branch's head (`ccr-6073bda9-p34o8q`, the ladder's content as landed; the layout
+fix after it moves no number, and the Red Dragon's Stoke, dropped after it on Ryan's call of
+the same day, moves only the Peak's tier-three cells, read again at 200 seeds). Three runs, four parts each: the ladder's 34 new cells (a pack
+cell for each of the twenty-six recolours at its strength in its own tier's list, and the
+formation of each domain at tiers two and three), 55,080 fights in 1,462 s; tier one's 17
+cells at the same seeds for the baseline, since the 27 October matrix's Marsh formation
+predates the Zombie Knight, 27,540 fights in 764 s; and the file's first four machines (the
+Honey Badger, the Clydesdale, the Sparrowhawk and the Baboon, the default team with the
+Baboon) on the twelve formations, 720 fights in 142 s.
+
+The formations by tier, as the lists send them:
+
+| Domain | Tier | Foes | HP | Armour | Base attack |
+|---|---|---|---|---|---|
+| Meadow | 1 / 2 / 3 | 15 / 19 / 22 | 58 / 74 / 90 | 0 / 2 / 11 | 39 / 63 / 94 |
+| Waste | 1 / 2 / 3 | 9 / 10 / 10 | 30 / 41 / 49 | 0 / 0 / 0 | 33 / 43 / 51 |
+| Marsh | 1 / 2 / 3 | 11 / 12 / 12 | 46 / 71 / 98 | 2 / 2 / 3 | 33 / 44 / 57 |
+| Peak | 1 / 2 / 3 | 9 / 10 / 11 | 42 / 57 / 73 | 0 / 0 / 0 | 57 / 73 / 84 |
+
+The rank and file, each domain's pack cells at a tier (tier one its bases, tiers two and three
+its recolours of that tier), every single machine meaned by its chassis tier, greedy won / hull
+lost over every fight, and random's wins on the tier-one rows:
+
+| Domain | Tier | Chassis tier 1 | Chassis tier 2 | Chassis tier 3 | Random, tier 1 |
+|---|---|---|---|---|---|
+| Meadow | 1 | 64% / 50% | 81% / 33% | 86% / 35% | 46% |
+| Meadow | 2 | 65% / 56% | 88% / 28% | 98% / 24% | 33% |
+| Meadow | 3 | 25% / 87% | 67% / 55% | 58% / 70% | 7% |
+| Waste | 1 | 67% / 49% | 79% / 39% | 92% / 33% | 47% |
+| Waste | 2 | 52% / 65% | 73% / 49% | 68% / 49% | 31% |
+| Waste | 3 | 76% / 47% | 90% / 24% | 97% / 22% | 46% |
+| Marsh | 1 | 39% / 70% | 58% / 57% | 53% / 58% | 25% |
+| Marsh | 2 | 24% / 87% | 48% / 69% | 39% / 75% | 10% |
+| Marsh | 3 | 47% / 59% | 58% / 48% | 62% / 49% | 38% |
+| Peak | 1 | 44% / 70% | 76% / 43% | 75% / 46% | 28% |
+| Peak | 2 | 38% / 79% | 67% / 47% | 69% / 55% | 19% |
+| Peak | 3 | 60% / 56% | 85% / 31% | 85% / 33% | 40% |
+
+By cell, the tier-one rows' random and greedy wins: the easy end the Lich ×1 (97% and 100%),
+the Balloon ×2 (83 and 99: its burst spends it, and the pack goes with it), the Basilisk ×2
+(76 and 99), the Great Needler ×2 (54 and 91: three HP a needler), the Antlion Queen ×1 (53
+and 81); the walls the Death Knight ×2 and the Dread Knight ×2 (0 for every single machine of
+every tier), the Fire Lizard ×3 (0, and 22% for a tier two), the Pit Antlion ×2 (7 and 46),
+the Wight ×4 (9 and 52) and the Metal Gel ×3 (6 and 44).
+
+The formations, greedy won / hull lost (no single machine of any tier wins a formation at tier
+two or three, the Goshawk's 7% on the Meadow's tier two the most):
+
+| Squad | Meadow 1 / 2 / 3 | Waste 1 / 2 / 3 | Marsh 1 / 2 / 3 | Peak 1 / 2 / 3 |
+|---|---|---|---|---|
+| The default team | 100/6, 100/16, 13/98 | 100/7, 100/15, 93/31 | 97/18, 60/78, 0/100 | 100/8, 100/25, 70/71 |
+| Minerva's team | 100/4, 100/15, 33/94 | 100/4, 100/32, 97/55 | 100/46, 53/90, 0/100 | 100/11, 97/43, 13/96 |
+| Kestrel's team | 100/12, 97/25, 0/100 | 100/10, 100/29, 93/43 | 100/17, 27/91, 0/100 | 100/7, 90/49, 70/70 |
+| Wainwright & Sutler's team | 100/21, 70/72, 0/100 | 100/18, 70/79, 13/98 | 13/97, 0/100, 0/100 | 87/45, 20/94, 3/99 |
+| The default team with the Baboon | 100/1, 100/5, 90/57 | 100/3, 100/8, 100/9 | 100/10, 100/32, 0/100 | 100/2, 100/7, 100/19 |
+
+The cleansers against the Ammit and the Cassowary (greedy won / hull lost): the Ammit takes
+the Spectre ×3 at 100% for 31% and the Wraith ×2 at 100% for 39%; the Cassowary 17% for 97%
+and 3% for 100%. No purging pack exists, so the Ammit's kept Overcharged waits on one (the
+to-do's line).
+
+Read against the brief's bands. A tier's formation costs every squad more than the tier
+under it in every domain, as it should. The rank and file do not: a tier two's cells cost a
+tier-one machine more than tier one's in the Waste, the Marsh and the Peak and about the same
+in the Meadow, but tier three's cost less than tier one's in all three and random play wins
+38 to 46% of them there (the band: none), since those lists send a tier-three unit one or two
+at a time (the Lich, the Antlion Queen, the Great Needlers, the Balloons), where tier two's
+send two to four. The Meadow, whose dial is its count, sends three and four at tier three and
+reads as the band asks. The formations at tier three wall every single machine, as asked; for
+the four they are a fight in the Meadow (90% for 57%) and nothing in the Waste (100% for 9%)
+or the Peak (100% for 19%), and a wall in the Marsh (0%), whose Dread Knights (16 HP, armour,
+a breaching 8, a last act and a Reraise) and Death Knight (12 HP, the guard on every foe) make
+it what the Zombie Knight pair began (the status's injury mill). The numbers that would move
+each, for Ryan's word and moved by none of these runs: the tier-three strengths (the Lich ×1
+and the Antlion Queen ×1 to two or three, the Great Needler ×2 and the Balloon ×2 to four), or
+the Waste's and the Peak's tier-three HP above the floor; the Marsh's knights (their HP, 12 and
+16, or the Dread Knight ×2 to one, or the Marsh's tier-three dial ×2 to the floor's ×1.5); and
+the Balloon's burst spending a pack that a lone machine then wins.
+
+The campaign report rerun once beside it, for the record (`docs/campaign_run.md`, 40 runs,
+198 s), since the tier-two and tier-three battles field the ladder now: the plain player wins
+none, as before; its tier-two battles (the report's tier 1, counting from 0) are won in none of
+160 where they were 5%, its runs end a turn sooner (8.8 turns), every city falls in every run
+(four of four), and its machines end with 39% of their hardpoints filled where they kept 59%.
+The spiral it was, a little steeper; no decision reads it.
+
+## 28 October, movement in hexes
+
+The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
+count of hexes, ground is ground, water the one priced hex, a move in one go, winged packs, a
+hunter picking again), measured on the landing's head.
+
+**The map survey** (`tools/map_survey.gd`, 200 seeds, `docs/map_survey.md`). The maps are the
+same maps: every ground's share, the water, the horde's crossings and its route are unchanged
+seed for seed, since the generator reads only the horde's rule, which is unchanged. Phases to
+the rift from the best lane at move 3 (move 30 on 8 October): every way of moving 6.0, where
+wheels took 3.8 (their fast open ground) and hover 5.6; the packs 8.0 at their 2, as before.
+Reach after two phases at the survey's reference moves (tracked 3, walker 3, wheeled 5, hover 4,
+flyer 5, the moves of 8 October in hexes): tracks 32% (31), walkers 32% (32), wheels 52% (61),
+hover 44% (38), flyers 62% (62); making the horde's narrowest crossing by phase two, tracks 32
+of 200 maps (30), walkers 32 (32), wheels 113 (166), hover 60 (69), flyers 115 (115). The map types at move 3 read the same
+way (every phase count 6.0; reach on Badlands the lowest for the ground ways, 29/29/48/40/62,
+and Flooded 33/33/55/47/62). Read: the trip north no longer reads the way of moving at all,
+and reach is the move and the walls: the ground ways read alike at equal move, hover above
+them by the water it crosses, the flyer above hover by the crags, which is the order the rule
+sets. Wheels lose the most (their fast ground was the one large difference the table made);
+hover gains rough and ruins and loses its fast water, so it reaches more of the field and makes
+the crossing on a few maps fewer. A note on the method: the survey's reach is at its reference moves
+because its reader of the content's moves looks for a `chassis` key the file no longer has (it
+holds `entries`), so it has fallen back to those moves since before 8 October; the content's
+biggest moves are walker 4 and hover 5.
+
+**The campaign run** (`tools/campaign_run.gd`, 40 runs from seed 1, the greedy rung,
+`docs/campaign_run.md`), on the merged head against main's report at c8dac4e: the same runner,
+seeds and content, the movement aside. The bands hold: no run won (none), 31 of 40 reach the
+finale (33), 373 battles won 7% (5%), held after a wipe 54% (50%), fell 38% (43%), 92% ending in
+a team wipe (94%). One cell moved past its band: the three-machine battles, won 54% of 50 (35%
+of 48). The fights inside them say why: lone fights in a three-machine battle fell from 33 to
+17, fights with two of three rose from 29 to 60 and with all three from 39 to 49, since no slow
+hex splits the squad as it walks onto a pack (the bot moves the squad as one onto the nearest
+pack, and under the table a walker stopped in water or tracks in ruins arrived a turn behind).
+Wrecks rushed 23 (31); components destroyed per battle 0.78 (0.80) and hardpoints filled at the
+end 42% (39%) held. The branch's own read before the merge, against its run of 27 October,
+moved the same cell the same way (54% of 50 against 36% of 57; lone fights 42 to 17, two of
+three 35 to 61). A direction at 40 runs, not a band: the rule's effect on a squad moving
+together, not a bug.
+
+**The Dire Wolf's line at 4** (Ryan, the same day: it "can be faster"; the Dire Wolf, the Warg
+and the Alpha Warg from 3; the heroes' dead moves dropped with it, which no run reads). The
+campaign run on that head (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the merged head's: no band moved. The Meadow's battles won 13% of 83 (12% of 79), fell 40%
+(40%), wiped 86% (87%); the whole, won 7% (7%), held after a wipe 52% (54%), fell 40% (38%);
+the three-machine battles 50% of 52 (54% of 50). A direction at 40 runs: a faster wolf moves no
+cell this bot reads.
+
+**The map survey's reader fixed** (the same day; the to-do's line, found while measuring the
+landing): the reach table now reads each way's biggest move in content through ContentDB, as
+its report always said (tracked 3, walker 4, wheeled 5, hover 5, flyer 5), where its own reader
+of the file had looked for a key the file no longer has and fallen back, silently, to reference
+moves (walker 3, hover 4) since before 8 October; a way no chassis takes now stops the survey.
+Rerun at 200 seeds (`docs/map_survey.md`): the maps, the phases to the rift and the tracked,
+wheeled and flyer rows are the same; walkers at 4 reach 42% of the field after two phases (32%
+at 3) and make the horde's narrowest crossing by phase two on 59 of 200 maps (32); hover at 5
+reaches 54% (44% at 4) and makes it on 115 (60). At equal move the order the rule sets holds:
+at 5, wheels 52% and 113 maps, hover 54% and 115, flyers 62% and 115, hover's edge over the
+ground the water and the flyer's the crags. The map types read alike (walker and hover reach:
+Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
+Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.

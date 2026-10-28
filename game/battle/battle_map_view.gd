@@ -85,8 +85,6 @@ var _pinch_d := 0.0                 # the fingers' distance when the pinch last 
 var _pinching := false
 var route_drawing := false          # the screen allows a route to be drawn from a machine (planning, nothing playing)
 var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
-var draft_spend := Vector2i(-1, 0)  # what it has spent and what a slow last step took (Battle.draft_spend), for the gauge at its end; x -1 shows none
-var draft_move: int = 0             # the move the draft spends from: what the machine has left this action
 var draft_land: Dictionary = {}     # a carrier's block at the draft's end (Battle.draft_landing): {"to": rider -> hex, "bad": [hexes]}; empty when it carries nobody
 var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
 var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
@@ -416,20 +414,12 @@ func _draw() -> void:
 			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
 	_draw_rift(map)
 
-	# Where the selected mech may end its move. A slow hex for it (water for a walker,
-	# rubble for tracks) is an end hex: it can be entered with any move left and the step
-	# ends the move, so it wears a dashed edge where the others are solid (decided 2
-	# October; structure, never hue, since Ryan is colourblind) and a stop sign in its middle
-	# (Ryan, 25 October: the dashes alone did not say what they meant).
+	# Where the selected mech may end its move: every hex alike, lit under one solid edge (Ryan,
+	# 28 October: a move is given in one go and the map draws reach and nothing else).
 	for h in destinations.keys():
 		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
 		draw_colored_polygon(pts, Color(hud, 0.26))
-		if selected != null and BattleMap.move_cost(map.terrain[h], selected.traits) == BattleMap.SLOW:
-			for i in range(6):
-				_dashed_line(pts[i], pts[(i + 1) % 6], Color(hud, 0.9), HEX_SIZE * 0.16)
-			_stop_mark(center(h), HEX_SIZE * 0.24, hud)
-		else:
-			Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
+		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
 	# Where the selected machine could attack from past its move (Ryan, 25 October: "not only its
 	# available move spaces, but its available attacking spaces at the edge of that move, in
@@ -551,9 +541,8 @@ func _draw() -> void:
 		var ic := center(inspected)
 		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
 
-	# The route being drawn by hand: the same line, heavier, with the machine's move as a
-	# gauge at its end that the route drains (decided 2 October: the player never does
-	# arithmetic, so no numbers).
+	# The route being drawn by hand: the same line, heavier, ringed where it ends. It never
+	# leaves the lit reach, so its end needs no gauge (Ryan, 28 October: a move in one go).
 	if _route_drag != null and not draft.is_empty():
 		var prev := center(_route_drag.pos)
 		for step in draft:
@@ -577,11 +566,9 @@ func _draw() -> void:
 			else:
 				Hud.stroke_poly(self, pts, hud, 3.0)
 		if not bad.is_empty():
-			# In the move gauge's place: the stop is no move, so what it would spend is moot.
+			# The stop is no move: struck through and tagged.
 			_strike(prev, HEX_SIZE * 0.42, Palette.ENEMY)
 			_plaque(prev + Vector2(0.0, -HEX_SIZE * 1.0), "NO ROOM", Palette.ENEMY, 2.5)
-		elif draft_spend.x >= 0:
-			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(draft_move if draft_move > 0 else _route_drag.movespeed, draft_spend), hud)
 
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
 	# tagged; they come first on the player's turn.
@@ -850,78 +837,6 @@ func _plaque_rect(at: Vector2, sz: Vector2) -> Rect2:
 	var right := (size.x - 4.0 - scroll_x) / zoom
 	var x := clampf(at.x, left + sz.x * 0.5, right - sz.x * 0.5) if right - left > sz.x else at.x
 	return Rect2(Vector2(x, at.y) - sz * 0.5, sz)
-
-
-## The move gauge's cells: one per 5 of move, two to a pip, a pip being one normal hex and
-## a half one fast hex. A cell is LEFT, SPENT by the route's steps, or STOPPED: taken by a
-## slow last step, which spends whatever is left (Battle.draft_spend). It fills from the
-## left like every gauge on the HUD, so the route drains it from the right.
-enum Cell { LEFT, SPENT, STOPPED }
-const GAUGE_PIP := Vector2(20.0, 28.0)   # a pip on the map, before zoom: big, since a finger sits beside it
-const GAUGE_GAP := 6.0
-
-
-static func gauge_cells(move: int, spend: Vector2i) -> Array[int]:
-	var out: Array[int] = []
-	var n := int(ceil(float(maxi(move, 0)) / float(BattleMap.FAST)))
-	for i in range(n):
-		var from_end := (n - 1 - i) * BattleMap.FAST
-		if from_end < spend.x:
-			out.append(Cell.SPENT)
-		elif from_end < spend.x + spend.y:
-			out.append(Cell.STOPPED)
-		else:
-			out.append(Cell.LEFT)
-	return out
-
-
-## The gauge on its plaque, told apart by structure, never hue (Ryan is colourblind): a pip
-## still to spend is solid, a spent one an empty outline, and one a slow step took is
-## hatched, so a route that ended on rubble with move to spare never reads as one that ran
-## its move out. The hatching rhymes with the dashed edge a slow end hex wears.
-func _move_gauge(at: Vector2, cells: Array[int], col: Color) -> void:
-	var pips := (cells.size() + 1) / 2
-	if pips == 0:
-		return
-	var pad := 5.0
-	var sz := Vector2(pips * GAUGE_PIP.x + (pips - 1) * GAUGE_GAP + pad * 2.0, GAUGE_PIP.y + pad * 2.0)
-	var rect := _plaque_rect(at, sz)
-	draw_rect(rect, Palette.BG, true)
-	draw_rect(rect, col, false, 2.0)
-	var half := GAUGE_PIP.x * 0.5
-	for p in range(pips):
-		var pip := Rect2(rect.position + Vector2(pad + p * (GAUGE_PIP.x + GAUGE_GAP), pad), GAUGE_PIP)
-		var live := false
-		for k in range(2):
-			var i := p * 2 + k
-			if i >= cells.size():
-				continue
-			var cell := Rect2(pip.position + Vector2(k * half, 0.0), Vector2(half, GAUGE_PIP.y)).grow(-1.5)
-			match cells[i]:
-				Cell.LEFT:
-					draw_rect(cell, col, true)
-					live = true
-				Cell.STOPPED:
-					_hatch(cell, col, 2.5)
-					live = true
-		# A pip's outline is bright while any of it counts and faint once it is all spent,
-		# and the split between its halves shows where a fast hex would end.
-		draw_rect(pip, Color(col, 1.0 if live else 0.45), false, 2.0 if live else 1.5)
-		if cells.size() > p * 2 + 1:
-			draw_line(pip.position + Vector2(half, 2.0), pip.position + Vector2(half, GAUGE_PIP.y - 2.0), Color(Palette.BG, 0.9), 1.0)
-
-
-## Diagonal stripes across a rect, clipped to it.
-func _hatch(r: Rect2, col: Color, width: float) -> void:
-	var box := PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
-	var step := 5.0
-	var x := r.position.x - r.size.y
-	while x < r.end.x:
-		var line := PackedVector2Array([Vector2(x, r.end.y), Vector2(x + r.size.y, r.position.y)])
-		for seg in Geometry2D.intersect_polyline_with_polygon(line, box):
-			if seg.size() >= 2:
-				draw_line(seg[0], seg[seg.size() - 1], col, width)
-		x += step
 
 
 func _draw_tags() -> void:
@@ -1308,17 +1223,6 @@ func _hunted_tag(prey: Unit, hunters: Array) -> void:
 			draw_colored_polygon(PackedVector2Array([Vector2(rect.end.x - 10.0, rect.end.y), Vector2(rect.end.x, rect.end.y - 8.0), tip]), Palette.ENEMY)
 
 
-## A stop sign: an octagon on its own dark plate with a bar across it, the end of a move.
-func _stop_mark(c: Vector2, r: float, col: Color) -> void:
-	var oct := PackedVector2Array()
-	for k in range(8):
-		var a := TAU * (float(k) + 0.5) / 8.0
-		oct.append(c + Vector2(cos(a), sin(a)) * r)
-	draw_colored_polygon(oct, Color(Palette.BG, 0.88))
-	Hud.stroke_poly(self, oct, col, 2.5)
-	draw_line(c + Vector2(-r * 0.55, 0.0), c + Vector2(r * 0.55, 0.0), col, 4.0)
-
-
 ## The target: a ring of three dashes turning, four ticks closing on a hot centre.
 func _target_mark(c: Vector2, r: float) -> void:
 	for k in range(3):
@@ -1488,13 +1392,14 @@ func _attack_reach() -> int:
 # ---------------------------------------------------------------- the movement phase
 
 const MOVE_SECONDS_PER_HEX := 0.22   # the packs' step: the fastest anything moves (Ryan, 22 September); they are pictures with nothing to show
-## A machine's step at full speed, seconds a hex, by its move (Ryan, 5 October: the walkers
-## plod better at the third pass's pace, but the 20s and 30s want to be slower and the 40s
-## and 50s faster, so the pace is a table rather than one step slowed in proportion). Between
-## the tens it runs straight; past the ends it holds.
-const MECH_PACE := {10: 2.8, 20: 1.9, 30: 1.25, 40: 0.55, 50: 0.42, 60: 0.36}
+## A machine's step at full speed, seconds a hex, by its move in hexes (Ryan, 5 October: the
+## walkers plod better at the third pass's pace, but the moves of 2 and 3 want to be slower and
+## 4 and 5 faster, so the pace is a table rather than one step slowed in proportion; keyed by
+## hexes since 28 October, every machine at the pace it had). Between the keys it runs
+## straight; past the ends it holds.
+const MECH_PACE := {1: 2.8, 2: 1.9, 3: 1.25, 4: 0.55, 5: 0.42, 6: 0.36}
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
-const MOVE_REF_SPEED := 50.0         # the packs' reference: a pack this quick takes MOVE_SECONDS_PER_HEX a hex, slower ones slower
+const MOVE_REF_SPEED := 5.0          # the packs' reference, in hexes: a pack this quick takes MOVE_SECONDS_PER_HEX a hex, slower ones slower
 
 
 ## Seconds a hex at full speed for a machine of move `move` (MECH_PACE).

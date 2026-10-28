@@ -182,8 +182,9 @@ weapon's keywords and number by steps, which is the new piece.
    telegraph hunter) are the bench.
 2. The two turrets: their numbers, their reach (the rear's height read as a reach), what
    "double-barreled" means on the die.
-3. The passive: Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the
-   slowest move, or the charge as the passive and the map rule elsewhere.
+3. The passive: ~~Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the
+   slowest move~~ no penalties remain (the movement proposal, 28 October: ground is ground and
+   water the one priced hex); the charge as the passive stands.
 4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too).
 5. Its numbers and its way of moving.
 

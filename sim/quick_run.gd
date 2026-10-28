@@ -385,7 +385,7 @@ func escort_foes(domain: String) -> Array:
 func formation_foes(domain: String) -> Array:
 	var out: Array = []
 	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
-	for e in db.spawn_table(domain):
+	for e in db.spawn_table(domain, tier() + 1):   # the battle's tier's list (28 October), tier() counting 0 to 2
 		if not db.foes.has(str(e[0])):
 			continue
 		for i in range(maxi(1, roundi(int(e[1]) * d))):

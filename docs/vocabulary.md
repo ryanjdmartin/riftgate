@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 152 implemented, 6 planned, 0 idea.
+Status: 153 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -95,7 +95,8 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Corrupted on the component the target's die is showing (Corrupt 2: two): it deals damage to its owner whenever spent, a bite a stack. | implemented |
-| **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
+| **Purge** | On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses every buff it carries but Numbed and Guarded, after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A machine's Ward turns it away; a foe's Ward is one of the buffs it takes. | implemented |
+| **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed. | implemented |
 | **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round, or as the fight ends. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
 | **Breach** | A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour. | implemented |
 
@@ -113,7 +114,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Sealed** | Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is. An ally's vent still cools it. | implemented |
 | **Cryo** | Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own. | implemented |
 | **Armoured** | Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (a buff, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action. | implemented |
-| **Primed** | Machine status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by a buff for the rounds it says. | implemented |
+| **Primed** | Status, on either side. Every blow it lands leaves a stack of Burning per stack of Primed. On a machine, a buff grants it for the rounds it says. On a foe, a stoker's move primes every other foe on the field at its value, and its next move spends it, whatever it is: a foe acting after the stoker spends it this turn, one that has acted carries it to its next move. A machine's Ward turns its Burning away, as it does any rider. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Machine status. It cannot act, take damage or be targeted until the round's end: a blow or a move at every machine passes it by. Granted only to a machine that has not acted this round. | implemented |
@@ -130,12 +131,12 @@ Status: 152 implemented, 6 planned, 0 idea.
 | **Scorched** | Machine status, from a foe's scorch: every weapon and equipment it aims at a foe runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending a shield, a vent, a buff or a cool weapon plays round it. Can be cleansed. | implemented |
 | **Kindled** | Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
-| **Silenced** | Machine status, from a foe's silence: its buffs count for nothing through its next round, then wake. Its components' keywords act as ever (a Volatile still bites) and its stores fill and spend as ever. Can be cleansed; a Ward turns the silence away. | implemented |
+| **Silenced** | Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
-| **Barrier** | Machine status. The next blow a foe lands on this machine deals no damage, so it never injures; its riders land. Until the round's end. Never granted to every ally at once. | implemented |
-| **Ward** | Machine status. No rider a foe lays lands on this machine this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end. | implemented |
+| **Barrier** | Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, so it never injures, until the round's end; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn. | implemented |
+| **Ward** | Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it but Suppressed (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), and a turned mark feeds no Paradox, until the end of the player's next turn. | implemented |
 | **Rallied** | Machine status, the Swallowtail's Reveille Horn: its team has one reroll more this round. | implemented |
-| **Regenerating** | Machine status, the Storm Petrel's. It regains 2 shield at the start of each round for three rounds. Each grant keeps its own clock, so two grants regain 4 a round until the first runs out. | planned |
+| **Regenerating** | Status, from a foe's own move. It regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. Each grant keeps its own clock. | implemented |
 
 ## Formation
 
@@ -154,7 +155,7 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
+| **Movespeed** | Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone. | implemented |
 | **Walk** | The map shows where every pack will walk on the enemy's turn, worked out from where your machines stand now: a pusher toward the gate, a hunter toward its prey. Packs go round your machines; nothing you do stops one, and nothing a pack does reacts to your plan. | implemented |
 | **Fight** | Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn. | implemented |
 | **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A machine whose passive grants a second action has two before it is spent. | implemented |
@@ -171,22 +172,22 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Plain** | Open ground. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
-| **Road** | Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
-| **Rough** | Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
-| **Ruins** | Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
-| **Water** | Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it. | implemented |
-| **Mountain** | Impassable except for flyers, which cross at normal pace. Packs go around. | implemented |
+| **Plain** | Open ground. Every machine and pack crosses it. | implemented |
+| **Road** | Open ground, the same as plain: the road is art. Every machine and pack crosses it. | implemented |
+| **Rough** | Forest and scrub. Every machine and pack crosses it. | implemented |
+| **Ruins** | Rubble. Every machine and pack crosses it. | implemented |
+| **Water** | Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it. | implemented |
+| **Mountain** | Impassable, except to flyers and winged packs. | implemented |
 
 ## Trait
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Normal pace over every ground, mountains included. Packs walk under it but never stop on its hex. | implemented |
-| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. | implemented |
-| **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
-| **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
-| **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
+| **Flyer** | Crosses everything, water and crags included. Packs walk under it but never stop on its hex. | implemented |
+| **Hover** | Skims water at full pace; crags stop it. | implemented |
+| **Walker** | Legs. Wades water at half pace. | implemented |
+| **Tracked** | Tracks. Wades water at half pace. | implemented |
+| **Wheeled** | Wheels. Wades water at half pace. | implemented |
 | **City defense** | A static player-side unit. Not on the field yet. | planned |
 
 ## Trigger
@@ -225,15 +226,14 @@ Status: 152 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Silence** | Foe keyword, on a blow or as a move of its own. The machine it lands on is Silenced: its buffs count for nothing through its next round. A Ward turns it away. | implemented |
-| **Purge** | Foe keyword, a hero's or a boss's, on a blow or as a move of its own. The machine it lands on loses every buff it carries (a kept Overcharged too), every stack; its stores and its passives stay. A Ward turns it away. | implemented |
+| **Silence** | Foe move of its own, never a rider on a blow. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away. | implemented |
 | **Aim** | Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act: at random, unless the foe carries an aim. The foes never pile onto a machine their blows would already wreck while another stands. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon or debuff. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
 | **Every Machine** | A blow at every machine: each of its strikes lands on every machine in the fight in turn, so no aim and no lure moves it, and the number shown is what each machine takes. A shield saves only the machine it stands on; the answers that stop the whole blow are aimed at the striker: kill it, suppress it, disrupt it. | implemented |
 | **Last Act** | A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after. | implemented |
 | **Parts** | A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all. | implemented |
 | **Countdown** | A move that gathers before it lands: announced as the round opens, it lands the stated number of rounds later, its warning chip counting down the whole time. Nothing hits while it gathers. Suppress holds it a round, Disrupt breaks it off, and killing the foe ends it. | implemented |
-| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, regrowing or curing one of its own, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, setting a machine burning, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine burning, silencing or purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): every weapon and equipment it aims at a foe runs hotter. | implemented |
 
 ## Rules
@@ -269,8 +269,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
 - **Overcharged a kill** (implemented): A spread that kills two feeds twice; a chain feeds on every link.
 - **Rapid** (implemented): Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
-- **Silence** (implemented): Who carries it is section 12's question. Cast only where a machine carries a buff (the move's machine_buffed condition), aimed at the buffed; it touches no store.
-- **Purge** (implemented): Who carries it is section 12's question. The id stays dispel. It takes no store; a store's active effect, when one exists, is silenced for a turn instead, since the store would grant it again.
+- **Silence** (implemented): Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says.
+- **Purge** (implemented): One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Kindled, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question.
 - **Overshield** (implemented): Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word and the foes' default aim.
 - **Syrinx Drone** (implemented): A status the team put on the foe, so the Paradox counts it.
@@ -294,7 +294,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
 - **Reinforcements** (implemented): How elites arrive is section 12's question.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
-- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it.
+- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October).
 - **Walk** (implemented): A pack with no way to the gate waits, and the map says so.
 - **Carry** (implemented): A landing animation or a redistribution on landing may come later.
 - **Ring** (implemented): Rings are content on the foe type, placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it.
@@ -345,9 +345,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
-- **Silenced** (implemented): Its stores are untouched (a lever if silence does not hurt enough); a store's active effect, when one exists, is a buff and sleeps with them. Its keywords act (Ryan, 26 October: buffs alone, on the mechanics audit's question; it had muted them since 21 October, when a muted Volatile made a silence an upgrade).
-- **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by.
+- **Silenced** (implemented): Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.
+- **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
-- **Regenerating** (planned): Planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender. The number is a placeholder.
+- **Regenerating** (implemented): The machine half, the Storm Petrel's, is planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender: it regains 2 shield at the start of each round for three rounds, each grant its own clock, so two grants regain 4 a round until the first runs out. The numbers are placeholders.
 - **Ammo** (implemented): Never a buff, so no Silence or Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down.

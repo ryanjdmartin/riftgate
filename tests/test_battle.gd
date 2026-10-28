@@ -75,8 +75,8 @@ func test_setup_places_team_formation_and_boss() -> void:
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
-	var a := str(db.spawn_foes(str(facs[0]))[0])
-	var c := str(db.spawn_foes(str(facs[1]))[0])
+	var a := str(db.spawn_foes(str(facs[0]), 1)[0])
+	var c := str(db.spawn_foes(str(facs[1]), 1)[0])
 	var b := Battle.new(3)
 	b.formation = [[a, 2], [c, 5], [a, 1]]
 	b.with_boss = false
@@ -118,24 +118,25 @@ func test_route_to_reaches_every_reachable_hex() -> void:
 	assert_true(b.field.route_to(m, m.pos).is_empty(), "no route to itself")
 
 
-func test_a_machine_moves_at_once_and_keeps_what_is_left_of_its_move() -> void:
+## A move is given in one go (Ryan, 28 October): one move an action, the whole of it, so a
+## machine that moved short of its move cannot move again until a fight spends the action.
+func test_a_machine_moves_once_an_action() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
+	assert_true(b.move_to(m, b.map.rift).is_empty(), "the rift is out of reach")
 	var near := Vector2i(-99, -99)
 	for h in b.destinations_for(m).keys():
 		if int(b.destinations_for(m)[h]) < m.movespeed:
 			near = h
 			break
 	assert_true(near != Vector2i(-99, -99), "a hex short of its whole move")
-	var cost := int(b.destinations_for(m)[near])
 	var route := b.move_to(m, near)
 	assert_false(route.is_empty(), "the move is taken")
 	assert_eq(m.pos, near, "it is there at once")
-	assert_eq(b.moves_left(m), m.movespeed - cost, "with the rest of its move")
-	assert_eq(b.actions_left(m), 1, "a move spends no action")
-	for h in b.destinations_for(m).keys():
-		assert_true(int(b.destinations_for(m)[h]) <= b.moves_left(m), "and it can go on only as far as is left")
-	assert_true(b.move_to(m, b.map.rift).is_empty(), "the rift is out of reach")
+	assert_true(b.moved.has(m.id), "and it has moved this action")
+	assert_false(b.can_move(m), "so it cannot move again")
+	assert_true(b.destinations_for(m).is_empty(), "nothing is lit")
+	assert_eq(b.actions_left(m), 1, "a move spends no action: it may still fight")
 
 
 func test_undo_puts_a_machine_back_with_its_whole_move() -> void:
@@ -150,7 +151,8 @@ func test_undo_puts_a_machine_back_with_its_whole_move() -> void:
 	assert_eq(b.undo(), m, "undone, and the machine it was about handed back")
 	assert_eq(m.pos, start, "back where it was")
 	assert_eq(m.facing, facing, "facing as it was")
-	assert_eq(b.moves_left(m), m.movespeed, "its whole move again")
+	assert_true(b.can_move(m), "its whole move again")
+	assert_false(b.moved.has(m.id), "unmoved")
 	assert_false(b.can_undo(), "and nothing more to undo")
 	assert_true(b.planned.is_empty(), "nor any plan")
 
@@ -244,11 +246,11 @@ func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 	assert_true(b.nothing_left(), "every action spent")
 	b.spent.clear()
 	for m in b.mechs():
-		b.move_left[m.id] = 0
+		b.moved[m.id] = true
 	var a: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, a)
-	assert_false(b.nothing_left(), "no move left, but a pack in reach of the first")
+	assert_false(b.nothing_left(), "every machine moved, but a pack in reach of the first")
 	assert_true(b.order(a, sq), "ordered onto it")
 	for m in b.mechs():
 		if m != a and b.in_range_from(m, m.pos, sq):
@@ -357,7 +359,7 @@ func test_a_second_action_fights_twice_a_turn() -> void:
 	b.finish_skirmish()
 	assert_eq(b.actions_left(m), 1, "one action left")
 	assert_false(b.destinations_for(m).is_empty(), "it can move again, its move whole")
-	assert_eq(b.moves_left(m), m.movespeed, "the second action's move")
+	assert_false(b.moved.has(m.id), "the second action's move, unspent")
 	var sq2: Unit = b.field.packs()[0]
 	_engage(b, sq2, m)
 	assert_true(b.attack(sq2, [m]) != null, "and fight again")
@@ -597,65 +599,19 @@ func test_a_drawn_route_is_walked_as_drawn() -> void:
 	draft = b.draft_step(m, draft, dest)
 	if draft.size() != 2:
 		return   # the detour does not fit this machine's move on this map; nothing to test
-	assert_eq(b.draft_cost(m, draft), b.field.route_cost(m, draft), "the draft's cost is the route's cost")
+	assert_true(b.field.route_cost(m, draft, m.movespeed) >= 0, "the draft is a route it can walk")
 	assert_eq(b.field.route_to(m, dest).size(), 1, "where the tap would have gone straight there")
 	assert_eq(b.draft_step(m, draft, n1), [n1], "back onto a drawn hex cuts the draft to it")
 	assert_true(b.draft_step(m, draft, m.pos).is_empty(), "back onto the machine clears it")
-	var cost := b.draft_cost(m, draft)
 	assert_true(b.move_along(m, draft), "the drawn route is walked")
 	assert_eq(m.pos, dest, "to its end")
-	assert_eq(b.moves_left(m), m.movespeed - cost, "spending what the drawn way costs")
+	assert_true(b.moved.has(m.id), "and that is its move this action")
+	assert_false(b.can_move(m), "in one go")
 
 
-func test_the_gauge_tells_a_slow_stop_from_a_spent_move() -> void:
-	# Decided 3 October: the move gauge the drawn route drains. A slow last step takes
-	# whatever move is left, and the gauge says so apart from the steps' own spending.
-	var b := _battle()
-	var m: Unit = null
-	var slow_ground := -1
-	for c in b.mechs():
-		for t in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS, BattleMap.Terrain.ROUGH]:
-			if BattleMap.move_cost(t, c.traits) == BattleMap.SLOW:
-				m = c
-				slow_ground = t
-				break
-		if m != null:
-			break
-	assert_true(m != null, "the team has a machine with a slow ground")
-	var n1 := Vector2i(-99, -99)
-	var n2 := Vector2i(-99, -99)
-	for a in Hex.neighbors(m.pos):
-		if not b.field.can_stand(m, a):
-			continue
-		for d in Hex.neighbors(a):
-			if d != m.pos and not Hex.are_adjacent(m.pos, d) and b.field.can_stand(m, d):
-				n1 = a
-				n2 = d
-				break
-		if n2 != Vector2i(-99, -99):
-			break
-	assert_true(n2 != Vector2i(-99, -99), "two free hexes in a line")
-	b.field.map.terrain[n1] = BattleMap.Terrain.PLAIN
-	b.field.map.terrain[n2] = slow_ground
-	var open_cost := BattleMap.move_cost(BattleMap.Terrain.PLAIN, m.traits)
-	assert_eq(b.draft_spend(m, []), Vector2i(0, 0), "nothing drawn spends nothing")
-	assert_eq(b.draft_spend(m, [n1]), Vector2i(open_cost, 0), "an open step spends its price and stops nothing")
-	assert_eq(b.draft_spend(m, [n1, n2]), Vector2i(open_cost, m.movespeed - open_cost), "the slow step takes the rest")
-	# The cells: one per 5 of move, filling from the left, so what is left comes first, then
-	# what the slow step took, then what the steps spent.
-	var C := BattleMapView.Cell
-	assert_eq(BattleMapView.gauge_cells(40, Vector2i(10, 30)), [C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.SPENT, C.SPENT], "a slow step after one hex")
-	assert_eq(BattleMapView.gauge_cells(40, Vector2i(40, 0)), [C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT], "the move run out")
-	assert_eq(BattleMapView.gauge_cells(30, Vector2i(15, 0)), [C.LEFT, C.LEFT, C.LEFT, C.SPENT, C.SPENT, C.SPENT], "a fast hex is half a pip")
-	assert_eq(BattleMapView.gauge_cells(0, Vector2i(0, 0)).size(), 0, "no move, no gauge")
-
-
-func test_a_draft_never_outruns_the_move_left() -> void:
+func test_a_draft_never_outruns_the_move() -> void:
 	var b := _battle()
 	var c: Unit = b.mechs()[1]
-	var first: Vector2i = b.destinations_for(c).keys()[0]
-	b.move_to(c, first)
-	var left := b.moves_left(c)
 	var draft: Array = []
 	var cur := c.pos
 	for i in range(c.movespeed + 3):
@@ -670,8 +626,9 @@ func test_a_draft_never_outruns_the_move_left() -> void:
 					break
 		if not stepped:
 			break
-	var cost := b.draft_cost(c, draft)
-	assert_true(cost >= 0 and cost <= left, "the draft fits the move left: cost %d of %d" % [cost, left])
+	assert_false(draft.is_empty(), "a route was drawn")
+	var cost := b.field.route_cost(c, draft, c.movespeed)
+	assert_true(cost >= 0 and cost <= c.movespeed, "the draft fits the move: cost %d of %d" % [cost, c.movespeed])
 	assert_false(b.move_along(c, []), "an empty draft walks nowhere")
 
 
@@ -874,7 +831,7 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 			fid = str(f)
 			break
 	var hero := str(db.bench_of(fid)[0])
-	var escort := str(db.spawn_table(fid)[0][0])
+	var escort := str(db.spawn_table(fid, 1)[0][0])
 	var b := Battle.new(3)
 	b.lineup = [hero]
 	b.escort = [escort, 3]
@@ -924,8 +881,8 @@ func _fell(sk: Skirmish, which: Callable, n: int) -> void:
 
 ## The carry (the Swallowtail's Muster Deck, Ryan's go of 21 October; the block on his word of
 ## that evening), on a synthetic passive: the machines beside the carrier are lifted in place and
-## land as a block round its stop, each where it rode from it, their move and action as they
-## were; their hexes never block its way; a stop the block does not fit is no destination and no
+## land as a block round its stop, each where it rode from it, their action as it was and their
+## move unspent; their hexes never block its way; a stop the block does not fit is no destination and no
 ## move, and the map is told which hex fails; an undo puts them back, and is refused once a
 ## rider has moved on its own.
 func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> void:
@@ -943,7 +900,7 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 	rider.pos = line[1]
 	var d: Vector2i = line[1] - line[0]
 	assert_eq(b.riders_of(carrier), [rider] as Array[Unit], "the machine beside it rides")
-	var rider_move := b.moves_left(rider)
+	var rider_moved := b.moved.has(rider.id)
 	var dests := b.destinations_for(carrier)
 	assert_true(dests.has(line[2]), "its riders' hexes never block its way")
 	for h in dests.keys():
@@ -952,7 +909,7 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 	assert_eq(route, [line[1], line[2]] as Array[Vector2i], "the shortest way, over the rider")
 	assert_eq(rider.pos, line[2] + d, "the rider lands where it rode from the carrier")
 	assert_eq(b.last_carry, [[rider.id, line[1], line[3]]], "the map is told the ring's move")
-	assert_eq(b.moves_left(rider), rider_move, "its move as it was")
+	assert_eq(b.moved.has(rider.id), rider_moved, "its move as it was: riding is not moving")
 	assert_eq(b.actions_left(rider), 1, "and its action")
 	assert_eq(b.shown_positions()[rider.id][0], line[1], "the rider shown where it rode from until the plan plays")
 	assert_eq(b.undo(), carrier, "the carrier's move undone")
@@ -1028,7 +985,7 @@ func _carry_line(b: Battle, carrier: Unit, rider: Unit, third: Unit) -> Array:
 					break
 				# The carrier stands on the first and the third and passes over the second, on
 				# open ground; the rider stands on the second and the fourth.
-				if k <= 2 and (not BattleMap.passable(b.field.map.terrain[h], carrier.traits) or BattleMap.move_cost(b.field.map.terrain[h], carrier.traits) == BattleMap.SLOW):
+				if k <= 2 and BattleMap.step_cost(b.field.map.terrain[h], carrier.traits) != BattleMap.STEP:
 					ok = false
 					break
 				if (k == 1 or k == 3) and not BattleMap.passable(b.field.map.terrain[h], rider.traits):

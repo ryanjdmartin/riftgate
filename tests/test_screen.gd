@@ -9,9 +9,9 @@ func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	var sk := Skirmish.new(seed_value)
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		sk.add_mech(db.make_mech(id))
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 20, 4, "revenant")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 2, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 20, 2, "ghost")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 2, 2, "ghost")
 	sk.add_foes(db.foes_for(necros), necros)
 	if massive != null:
 		sk.add_foes([massive])
@@ -591,9 +591,9 @@ func test_screen_lays_out_four_columns() -> void:
 	for id in ["badger", "clydesdale"]:
 		sk.add_mech(db.make_mech(id))
 	# Ranks hold: four front-rank ghouls fill the front, four back-rank necromancers the back.
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 20, 4, "revenant")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 2, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 20, 4, "ghost")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 2, 4, "ghost")
 	sk.add_foes(db.foes_for(necros), necros)
 	var s := SkirmishScreen.new()
 	s.setup(sk)
@@ -947,6 +947,72 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	assert_true(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview" and str(r[0]) == "burn"), "and the Burn on its way beside it")
 	s._drag_from = -1
 	s._drag_over = null
+	s.free()
+
+
+## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
+## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
+## a chip on its way pulses there as on a foe.
+func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.blank())
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 1)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var seal := Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	var r := Effects.purge(m)
+	assert_eq(r["slept"], ["Sealed"], "the seal sleeps")
+	s._refresh()
+	var rows: Array = s._mech_rows(0).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "asleep")
+	assert_eq(rows.size(), 1, "one chip asleep")
+	if rows.size() == 1:
+		assert_true(str(rows[0][2]).contains("asleep until your turn"), "its hold line says so")
+	var kinds: Array = s._mech_views[0].statuses.map(func(st) -> String: return str(st[3]) if st.size() >= 4 else "")
+	assert_true(kinds.has("asleep"), "and the machine's view draws it asleep")
+	Effects.wake(m)
+	s._refresh()
+	assert_true(s._mech_rows(0).all(func(row) -> bool: return row.size() < 5 or str(row[4]) != "asleep"), "awake, it is a plain chip again")
+	assert_true(seal != null, "the seal was granted")
+	s.free()
+
+
+## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
+## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
+## Regenerating's heart never Getting Back Up's star, the Barrier's wall and the Ward's struck ring.
+func test_a_foes_four_buffs_wear_their_own_chips() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
+	Effects.grant(foe, Effects.primed_foe(2, "foe:caster"))
+	Effects.stack(foe, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	Effects.stack(foe, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	Effects.grant(foe, Effects.regenerating(4))
+	var by := {}
+	for r in s._foe_rows(foe):
+		by[str(r[0])] = r
+	for g in ["primed", "barrier", "ward", "regenerating"]:
+		assert_true(by.has(g), "a %s chip" % g)
+	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	if by.has("primed"):
+		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
+		assert_true(str(by["primed"][2]).contains("2 Burning"), "and says what its move leaves")
+	if by.has("regenerating"):
+		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
+		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock")
+	if by.has("barrier"):
+		assert_true(str(by["barrier"][2]).contains("weapon"), "a foe's Barrier says a weapon's blow pops it")
+	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
 	s.free()
 
 

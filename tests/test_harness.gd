@@ -31,7 +31,7 @@ func test_the_defaults_are_the_contents() -> void:
 	assert_true(s.loadouts.is_empty(), "in stock")
 	var fac := db.default_faction()
 	var table: Array = []
-	for e in db.spawn_table(fac):
+	for e in db.spawn_table(fac, 1):
 		table.append([str(e[0]), int(e[1])])
 	assert_eq(s.packs, table, "against the first faction's spawn list")
 	assert_eq(s.boss, str(db.factions[fac]["boss"]), "and its boss")
@@ -95,7 +95,7 @@ func test_a_battle_takes_the_packs_the_boss_and_the_guest() -> void:
 	var db := _db()
 	var facs: Array = db.factions.keys()
 	var s := HarnessSetup.defaults(db)
-	var a := str(db.spawn_foes(str(facs[0]))[0])
+	var a := str(db.spawn_foes(str(facs[0]), 1)[0])
 	s.packs = [[a, 2]]
 	s.boss = str(db.factions[facs[1]]["boss"])
 	s.guest = str(facs[2]) if facs.size() > 2 else ""

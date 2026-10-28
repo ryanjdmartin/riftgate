@@ -21,11 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 724 tests, 66,629 checks, green on `claude/charming-rubin-h954bp` (28 October, the
-  model rebuilds of Ryan's brief on main's head; 721 tests, 66,041 checks on main's head before
-  them), about four minutes in a cloud session, twenty on a slow one. The shield-cost test on main
-  called a function renamed away (`equipment_targets_for`, now `machine_targets_for`) and
-  stopped there unseen; fixed on the branch, its last checks run. A cloud session fetches Godot 4.7's Linux
+- Tests: 741 tests, 67,220 checks, green on `claude/charming-rubin-h954bp` (28 October, the
+  model rebuilds of Ryan's brief with main merged in; 738 tests, 66,637 checks on main's head,
+  the movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -35,6 +33,17 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/charming-rubin-h954bp` (28 October) carries the model rebuilds of Ryan's brief of that
+day (the pins' record and the game's plan against it, thirteen models rebuilt to their stock,
+the Armadillo's seal) and took main the same evening (the movement landing and the ladder, up
+to `12e5d6d`); unmerged, for main to take on Ryan's word.
+
+`ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
+its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
+hexes, the cockatrice, ghost, bomb and drake lines winged), then the heroes without a map move,
+the faster wolves and the battlefield viewer's deletion, and main took it as a fast-forward that
+night on Ryan's word ("clean up and merge into main").
 
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
@@ -52,10 +61,14 @@ the result (the Tests line) and main took this branch as a fast-forward the same
 models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
 rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
 28th and main took it as a fast-forward that evening on his word ("clean up and merge into
-main"). Every branch named here is fully merged, to delete from the desk machine or GitHub along with
+main"). `ccr-6073bda9-p34o8q` took main the same evening, carried the ladder's build on top
+(the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites,
+the read at 30 seeds and the move counts settled), and main took it as a fast-forward that
+night on the same word. Every branch named here is fully
+merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
-`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
+its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -99,6 +112,24 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
+  confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
+  with it): a move is a count of hexes given in one go, ground is ground, water
+  the one priced hex (two of a ground machine's move, always enterable with what is left), crags
+  the flyer's; the winged foes (five and their eight recolours) cross both, and a hunter that cannot ring its prey picks
+  again; the gauge and the stop sign gone (the bible's section 4 rows, v0.342). Measured the same
+  day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
+  reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
+  bands hold, its three-machine battles won more (a direction: the squad no longer split by
+  slow ground). Next for the map: the six shapes (`docs/briefs/map_shapes.md`, three questions in
+  section 12) and the crossing's price in the pricing run (the to-do).
+- The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
+  it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
+  validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
+  (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
+  compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
+  map) is gone (Ryan, 28 October): the battle screen shows all it did.
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
@@ -120,7 +151,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
   the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
   unit's `tier` in content, one by default: no unit has another yet), in the campaign and the
-  quick campaign; the rank and file never scale. The campaign counts its tiers from the
+  quick campaign; the rank and file never scale in place, a tier's units being their own (the
+  bible's section 3 row, 28 October). The campaign counts its tiers from the
   Convergence (tier two from 4, tier three from 8, the finale at 12 on tier three's step); every
   number a placeholder.
 - Injuries (25 October): one damage state, Ryan's "Cracked is gone". An injury destroys the
@@ -133,16 +165,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
-  (their passives and four locked pieces planned, so never dealt); 80 components,
-  32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
-  heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
+  (their passives and four locked pieces planned, so never dealt); 81 components,
+  32 of them locked; 17 modules; four domains with 44 wildlife (18 at tier one, their bosses
+  among them, and the ladder's 26 recolours) and 8 heroes with their promoted forms; 6 foe moves
+  planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
 - Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
   Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
-  until Ryan's next session (the to-do). Since 28 October (Ryan's brief, the branch above) a
+  until Ryan's next session (the to-do). Since 28 October (Ryan's brief, `claude/charming-rubin-h954bp`) a
   model names the component each pin's stock part is and the game wears a die against that
   record, so a stock that moves on shows class shapes until the model follows; every model has
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
@@ -163,6 +196,27 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   "she's still not correct"; the to-do). The cloud session that cut those three could not fetch
   Godot; their six `.import` files were written and committed on the desk machine the same day,
   the suite green there (644 tests).
+- The ladder (28 October, `ccr-6073bda9-p34o8q`; its brief retired: `git show
+  26c54c7:docs/briefs/foes_ladder.md`): the enemy's three verbs (Silence muting keywords, Purge
+  taking what a die face bought and sleeping the machine's own grants until its turn, a foe's
+  Cleanse), Primed, Barrier, Ward and Regenerating on the foes from specials of their own, the
+  player's Purge (`dispel`) and its piece, the Null Field Emitter, and twenty-six recolours on
+  the thirteen base types with the spawn lists by tier and their sprites (`tools/recolour.py`).
+  Read at 30 seeds (`docs/measurements.md`, a direction): each tier's formation costs every
+  squad more than the one under it; the tier-three rank and file read easier than tier one's in
+  the Waste, the Marsh and the Peak, their lists sending them one or two at a time, random play
+  winning 38 to 46% of them there; the Marsh's tier three walls even a four (its knights), and
+  the Waste's and the Peak's ask a four nothing. Every number is Ryan's to move. Calls the build
+  made where the brief was silent, his to confirm: a purge's sleeping buffs wake after the
+  round's start and before the foes draw; a Shock is spent on the blow a foe's Barrier eats
+  (his rule of 25 October), and a spill's or a mine's damage pops one; a cleanse's most-marked
+  counts each status once; a buff with no component behind it counts as bought; Regenerating
+  regrows on a suppressed foe; a laid shot carries the Purge; Primed wears its own glyph on both
+  sides (the flame's core lit) and Regenerating a heart with a plus, so neither reads as Burning
+  or Getting Back Up on a foe; the Null Field Emitter's shape a dish and its tag `arc` (the
+  brief gave none and "Arc"); and a machine's incoming chips pulse as a foe's do. The six
+  recolours' move counts are settled (Ryan, 28 October): tiers two and three carry up to
+  three moves, the twist the third, and the Red Dragon dropped its Stoke.
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
@@ -230,8 +284,9 @@ The tasks are the to-do's; this is the index of what waits.
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
   (`docs/heroes_proposal.md`).
-- The planned foe moves, Silence's and Purge's carriers (section 12), and Purge as our keyword
-  (its carriers and numbers open).
+- The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
+  silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
+  Purge on a capstone's blow (its chassis session).
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
   Scorpion on six or eight legs, the Swallowtail, the Musk Ox); the Kite's Pinion Driver as two
@@ -241,11 +296,14 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
-line), since no number read since 22 October was read on the content as it now stands.
+to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
+to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
+numbered keywords and the blow's order; the campaign report and the map survey are main's head's
+(28 October).
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content.
+   retired once its decisions are rows and content; the map shapes' generator session among
+   them once Ryan has answered its brief.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
@@ -256,7 +314,11 @@ line), since no number read since 22 October was read on the content as it now s
    threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together.
+   reports and measures the fights a team fights together. Its first part, the ladder, built
+   28 October on `ccr-6073bda9-p34o8q` (the recolours by tier, the three verbs, the enemy's
+   buffs and the player's Purge; read at 30 seeds, `docs/measurements.md`): next its 200-seed
+   matrix on the desk machine (the to-do). The rest of the fresh start waits on his marks on the proposal's questions
+   1 to 13.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
@@ -280,11 +342,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.339 (the
-  page's version 351, published 28 October from `ccr-7d865127-wr1ko2` as a three-way merge onto
-  another session's v0.338 (version 350): the Skua's motion row, its run and stoops flown paths
-  on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
-  the area session's v0.333). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.343 (the
+  page's version 355, published 28 October from `ccr-7821127e-kwj874`: the movement rows of
+  section 4, the scales row's move and the silhouette row with them, section 12's built list and
+  the shapes' questions at v0.342 (version 354, onto main's v0.341 unchanged), then the hero
+  row's map line). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -295,11 +357,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 136 (28 October, from
-  `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
-  models and rigs after Ryan's eight rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
-  Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
-  file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 140 (28 October, from
+  `ccr-7821127e-kwj874`: at 139, onto 138, moves in hexes in `content/chassis.json`,
+  `content/foes.json` (its thirteen winged foes with them), `content/modules.json` and
+  `content/vocabulary.json`, the motion port's pace keyed by hexes and the codex's move a plain
+  count; at 140 `content/foes.json` again, the heroes without a move and the wolves at 4, and
+  the foe line shown without a move it lacks; every other file identical to the live page's,
+  `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
