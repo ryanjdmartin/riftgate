@@ -327,6 +327,12 @@ class Tiles:
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
+        elif kind == "spark":
+            # St. Elmo's fire banked down: the corona at a third of its light, for the port's
+            # sparks that rest dim and crackle lit (Ryan, 28 October: the lit corona read as a
+            # white block, and lighting it further showed nothing).
+            img = 0.32 * np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
         elif kind == "corona":
             # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue-white,
             # near uniform like the lit tile, so a small part reads the same wherever the world
@@ -362,6 +368,17 @@ def hexagon(cx, cz, w, h):
 def diamond(cx, cz, w, h):
     return [(cx + w / 2, cz), (cx, cz + h / 2), (cx - w / 2, cz), (cx, cz - h / 2)]
 
+
+def _labelled(name, label):
+    """Whether an object carries `label`: the label itself, or the label with Blender's or the
+    importer's numbering ("tread.001", "tread_001"), never another label that merely starts
+    the same ("tread_deck"). MechRig.labelled and the hangar's labelled() are the same rule."""
+    if name == label:
+        return True
+    if not name.startswith(label):
+        return False
+    rest = name[len(label):]
+    return rest[:1] in ("_", ".") and rest[1:].isdigit()
 
 class Build:
     """Parts as separate objects, each one material (one tile), all facets flat."""
@@ -863,6 +880,16 @@ class Build:
         for the weld, which must keep those parts apart."""
         glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
                             | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
+        # or the label with the importer's numbering), never a prefix: "repulsor" lights no
+        # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
+        names = {ob.name for ob in self.objects}
+        for part in glow_parts:
+            if part.startswith("joint_") or part.startswith("hp_"):
+                continue
+            if not any(_labelled(n, part) for n in names):
+                near = sorted({n for n in names if n.startswith(part)})
+                raise ValueError("%s: a glow names %r, which labels no part%s" % (self.name, part, " (a label matches whole, not by its prefix: %s)" % ", ".join(near[:4]) if near else ""))
         out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
         if self.gait_options:

@@ -21,8 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 721 tests, 65,988 checks, green (28 October, with the numbered area and the blow's
-  order), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 721 tests, 66,041 checks, green on main's head (28 October, the Kestrel models' eight
+  rounds of notes merged as a fast-forward onto the numbered area and the blow's order, the
+  glow-parts test tightened to the rig's own rule), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -45,13 +46,14 @@ the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth 
 status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
 (the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
 changes to the skirmish (each merge commit says how it was resolved); the suite ran green on
-the result (the Tests line) and main took this branch as a fast-forward the same day. Every
-branch named here is fully merged, to delete from the desk machine or GitHub along with
+the result (the Tests line) and main took this branch as a fast-forward the same day. The
+models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
+rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
+28th and main took it as a fast-forward that evening on his word ("clean up and merge into
+main"). Every branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and `ccr-24cae16e-ryhv1v`, whose
-work of 28 October (the numbered area, the blow's order, the drum's shape) main took as fast-forwards
-the same day, so it is fully merged too (a cloud session may not delete one). `ccr-7d865127-wr1ko2`
-has moved on since, the Kestrel models session's, its own to merge. Every other branch was
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
+`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -59,7 +61,24 @@ merged into main and deleted (22 October).
 Each resumes from its briefs; `docs/briefs/README.md`'s table says what each waits on.
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
+  `docs/briefs/kestrel_line.md`). Its models' second round landed 28 October and took two
+  rounds of his notes the same day (the Storm Petrel's field strips, sparks, beaded arch and
+  emitters clear of the guns; the Puffin's plates near plumb with lit rims, its amplify's glow
+  found dead, a prefix the rig never matches, and the build refusing one since; the
+  Lammergeier's launcher nacelles, riding the wing's upper skin, their tube mouths holes cut through the face plate and bored
+  twelve deep above the skin,
+  the Storm Petrel's arch on feet with two-thirds sleeves; the Skua's five acts,
+  the run and the stoops flown as a banked circle and a figure eight on the map (the Kite's
+  helpers under a spline height profile with the nose rate-limited, `_over_ground`) after
+  Ryan's phone frames showed the keyed forty units as bobbing in its hex, the bigger keyed cut
+  as janky and the first flown cut as flicking, the roll with the hands spread; Ryan's picks
+  from
+  five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
+  the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
+  his next session's, the to-do; the scissor swing wing tried again the same day as a look for
+  one of the two unspecced designs, two F-14 pairs on their own pivots that open into an X and
+  beat as an ornithopter and close into a blade, `docs/looks/kestrel_ornithopter.png`; parked as
+  a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
@@ -118,10 +137,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge but six (the Cassowary, the Cottonmouth, the Whip
-  Scorpion, the Swallowtail, the Musk Ox and the Lammergeier, which draw the Badger's); the four
-  Kestrel models of 23 October are Claude's first cut, in a second round of looks on Ryan's
-  notes (the to-do). Since 25 October every machine's parts are welded at load by material
+- Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
+  Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
+  Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
+  to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
+  until Ryan's next session (the to-do). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -257,11 +277,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.338 (the
-  page's version 350, published 28 October from `ccr-6073bda9-p34o8q` onto v0.337, the models
-  session's cell on the live page carried: the three verbs decided, the player's Purge widened, the domains' levers as
-  a lean, section 3's row carrying HP as the ramp and damage as the identity; no shown content
-  changed). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.339 (the
+  page's version 351, published 28 October from `ccr-7d865127-wr1ko2` as a three-way merge onto
+  another session's v0.338 (version 350): the Skua's motion row, its run and stoops flown paths
+  on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
+  the area session's v0.333). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -270,16 +290,13 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 117 (26 October, from
-  `claude/affectionate-goldberg-8e3mkh`). Checked against main on 27 October, after every branch
-  landed: of its 165 files, 162 are byte-identical with main's (the page itself, the wrapper's
-  first line and its trailing `</body></html>` stripped from the saved live source, every model,
-  rig, render and the other content files), and three differ, `content/chassis.json`,
-  `content/components.json` and `content/vocabulary.json` (the week's content: the Skua's text,
-  the vocabulary's strikes and cooldown codexes, the Volatile cost); `edits` was empty. Their
-  republish (the page with those three in `files`) was refused by the session's permission on the
-  27th, so it is the to-do's: the next session with the page publishes `tools/hangar.html` to the
-  URL with those three paths alone, `edits` read first. Its database (Ryan's saved edits,
+  before it is replaced and `edits` read first. Every file the page reads is fetched with a
+  stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
+  acts on a reloaded page). At the page's version 136 (28 October, from
+  `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
+  models and rigs after Ryan's eight rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
+  Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
+  file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

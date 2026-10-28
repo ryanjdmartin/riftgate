@@ -406,8 +406,8 @@
    }
   },
   "puffin": {
-   "when": "Eighth pass, 5 October.",
-   "note": "Ryan on the trials: go with both 4 and 5, and it is good. So the sleek chined hull keeps its narrower, lower deck, pinched waist and tall swept fins, the skirt is two thirds its old height so it reads as a rim, and a cobalt stripe runs along the chine from the prow back to the nacelles, the prow's colour carried down the flank. The third picture is from behind.",
+   "when": "The swap, the amplify lit for real, 28 October.",
+   "note": "Ryan's swap (26 October: the Storm Petrel's first cut, a speedboat with a mast, reads as a research boat, which is the Puffin): the long chined boat at the light size, the skirt bow to stern, the hull thicker amidships with its bottom rising to the prow and the stern (his notes of the 27th), the Ionizer's dish down on its mast's yoke, the side plates hinged low at the chine and level under way as repulsors (their undersides carrying the lit discs), folding up in a fight as shield amplifiers (the last picture, the amplify act), one booster drawn in over the afterdeck. Ryan's notes on the landing (28 October): the plates fold nearer plumb, and the amplify lights a rim round each plate's edge with the strips, the bosses, the discs underneath and the nozzles, hot. His second notes (no glow seen; the forward disc stuck out of the plate's edge; the discs should glow): the amplify's lights had been named by a prefix the rig never matches, so nothing lit; named whole now, the rims, the strips, the bosses, the discs and the nozzles all blaze (the last picture), the build refuses a glow that labels no part, and the forward disc sits inside the plate's outline.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -418,20 +418,28 @@
      "alt": "puffin, rear"
     },
     {
-     "file": "puffin/puffin_from_behind.png",
-     "alt": "puffin, from behind and above"
+     "file": "puffin/puffin_above.png",
+     "alt": "puffin, from above"
+    },
+    {
+     "file": "puffin/puffin_amplify.png",
+     "alt": "puffin, the plates folded up to amplify"
     }
    ],
    "before": {
-    "summary": "Before: seventh pass, 5 October (the sleek hull with the full skirt and no stripe)",
+    "summary": "Before: the eighth pass, 5 October (the wide low hull on two giant boosters, the base the Storm Petrel took).",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, seventh pass, front"
+      "alt": "puffin, before, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, seventh pass, rear"
+      "alt": "puffin, before, rear"
+     },
+     {
+      "file": "puffin/before_puffin_from_behind.png",
+      "alt": "puffin, before, from behind and above"
      }
     ]
    }
@@ -480,8 +488,8 @@
    }
   },
   "skua": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Skua is the line's one conventional jet: a long nose with the canopy forward, gloves running back to the wing pivots, two booster nacelles set wide under a flat deck, two fins near plumb (the Buzzard's and the Puffin's cant far out), all-moving tailplanes, and cobalt wings spread at twenty degrees at rest that sweep back for the run and spread past rest to brake; the Flechette Pod a dorsal pod behind the canopy, its honeycomb face forward, its collar lit twice by the strafing run. Its acts: the strafing run, a sweep and dash, harrying in two diving darts, a landing flare. On the move its wings sweep back as it gathers speed and spread as it slows. Ryan's to judge running.",
+   "when": "Second round, the jaeger; its run a flown circle, 28 October.",
+   "note": "Ryan's pick from five rounds of looks (23 to 27 October, docs/looks/kestrel_skua*.png): the jaeger, the seabird's wings as the swing. A short deep fuselage into one booster, a jet's straight nose with the bird's dark cap (his last note: the bent tip at the nose ditched), the fixed arms flat from low on the flank to a wrist drum and the long hands swinging from it, the white flash across their roots, a V tail, two streamers, the fin carried back over the booster and tall, the Flechette Pod twin pods on the spine. The last picture is the strafing run, the hands swept. Ryan's notes on the landing (28 October: the strafing run and the sweep-dash read the same; it wants the Kite's treatment, bigger animations): five acts like the Kite's, the strafing run rolling in and diving hard with the pods firing at the bottom, the Kite's barrel roll with the hands swept, the stoops wider and rolled far over, the Kite's loop on the map only, and the flare nose-high with the hands rocking. The last picture is the strafing run's dive. His second notes the same day (the run \"just kind of wiggles\"; the wings stay extended for a barrel roll): the strafing run now climbs back and up off its hex, wings over with the hands sweeping back, dives steeply on its foe with the pods firing twice at the bottom, and climbs away rolled over with the hands spreading to brake; the barrel roll flies with the hands spread. The last picture is the run's bottom. His third notes, from the phone (the run read as bobbing and swaying, never leaving its hex; the five acts and the wings-out roll confirmed): the run and the stoops at the Kite's loop's scale, the run climbing a hex back and high, diving through its hex a full hex on and arcing back over the top, the stoops a hex wide each way. His fourth (the keyed run and stoops janky, sudden changes of direction, a reverse back to the start): both flown as paths, on the map only like the Kite's circle and eight: the run one banked circle beside its hex, climbing, diving on the far side with the pods firing, sinking back onto its hex; the stoops a figure eight over its hex, each lobe lifting and stooping at its far end. The last picture is the dive's bottom. His fifth (less jerky, no flicks): the height runs on a spline, the nose turns no faster than fifty-five degrees a second, and the hands sweep over a fifth of the way round.",
    "images": [
     {
      "file": "skua/skua_front.png",
@@ -497,9 +505,30 @@
     },
     {
      "file": "skua/skua_strafing_run.png",
-     "alt": "skua, the strafing run, wings swept"
+     "alt": "skua, the strafing run"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the first cut, 23 October (the conventional swing-wing jet, Ryan: an F-14 poly for poly).",
+    "images": [
+     {
+      "file": "skua/before_skua_front.png",
+      "alt": "skua, before, front"
+     },
+     {
+      "file": "skua/before_skua_rear.png",
+      "alt": "skua, before, rear"
+     },
+     {
+      "file": "skua/before_skua_above.png",
+      "alt": "skua, before, from above"
+     },
+     {
+      "file": "skua/before_skua_strafing_run.png",
+      "alt": "skua, before, the strafing run, wings swept"
+     }
+    ]
+   }
   },
   "needletail": {
    "when": "First cut, 23 October.",
@@ -524,26 +553,47 @@
    ]
   },
   "storm_petrel": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Storm Petrel is a long narrow chined hull with a wave-piercing bow, one big booster on the centreline astern (the Puffin's two giant boosters ride its flanks on a wide blunt hull), two cobalt riot plates with chrome rims hinged along the deck and carried raised, their leading edges swept, like the bird's wings held up as it patters, a field strip and an emitter on each banked dark at rest; St. Elmo's Regenerator a mast amidships with St. Elmo's fire at its masthead and yardarms. Its acts: shields up (both plates to a wall, the field lit), the whack, St. Elmo's fire, pattering forward in three hops. On the move its plates draw up and it drifts flat through its corners. Ryan's to judge running.",
+   "when": "The swap, the field lit, the arch sleeved, 28 October.",
+   "note": "Ryan's swap: the Puffin's wide hull with the two giant boosters, at the medium size, for the shield off-tank; his notes of the 27th (\"great\"): the nose snubbed so the port doubled, the louvred vent housings back on the booster covers and vents on the prow's top and flanks. No plate: the Riot Field is the four emitter pylons on the cheeks, the lit rails along their creases and the arch over the canopy; St. Elmo's fire is the open port in the nose, a chine-shaped mouth with the corona inside (the last picture, the st_elmo act). Ryan's notes on the landing (28 October: more lit areas, much brighter when lit; the corona a white block whose act showed nothing; more livery): lit strips along the flanks and caps on the fin tips join the rails, the emitters and the arch, all far hotter when the field is up; St. Elmo's fire is a small core deep in the mouth with eight sparks round the lip and a ring inside it, dim at rest, that crackle white one after another as the hull heaves and shudders; a cobalt chine stripe, a prow panel, booster bands and the emitter pylons in the livery. His second notes: the emitter pylon ahead of each tub was a livery chunk in the way of the mount, so the emitters stand clear ahead of the muzzle and behind the breech, low and in the hull's colour; the arch's glow ran along its underside, hidden, so the arch is now a thin lit line under eight sleeves of plate with the light showing between them; the booster bands lie flush as paint. His third: the sleeves longer, covering most of the band. His fourth: the sleeves about two thirds of each span, and the arch on feet that stand on the deck (it floated).",
    "images": [
     {
      "file": "storm_petrel/storm_petrel_front.png",
-     "alt": "storm petrel, front"
+     "alt": "storm_petrel, front"
     },
     {
      "file": "storm_petrel/storm_petrel_rear.png",
-     "alt": "storm petrel, rear"
+     "alt": "storm_petrel, rear"
     },
     {
      "file": "storm_petrel/storm_petrel_above.png",
-     "alt": "storm petrel, from above"
+     "alt": "storm_petrel, from above"
     },
     {
-     "file": "storm_petrel/storm_petrel_shields_up.png",
-     "alt": "storm petrel, shields up"
+     "file": "storm_petrel/storm_petrel_st_elmo.png",
+     "alt": "storm_petrel, St. Elmo's fire in the port"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the first cut, 23 October (the long narrow hull under two raised riot plates and a mast, the base the Puffin took).",
+    "images": [
+     {
+      "file": "storm_petrel/before_storm_petrel_front.png",
+      "alt": "storm petrel, front"
+     },
+     {
+      "file": "storm_petrel/before_storm_petrel_rear.png",
+      "alt": "storm petrel, rear"
+     },
+     {
+      "file": "storm_petrel/before_storm_petrel_above.png",
+      "alt": "storm petrel, from above"
+     },
+     {
+      "file": "storm_petrel/before_storm_petrel_shields_up.png",
+      "alt": "storm petrel, shields up"
+     }
+    ]
+   }
   },
   "giant_petrel": {
    "when": "First cut, 23 October.",
@@ -564,6 +614,28 @@
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
      "alt": "giant petrel, the salvo, its battery raised"
+    }
+   ]
+  },
+  "lammergeier": {
+   "when": "First model, the flying wing, the launcher nacelles on the skin, 28 October.",
+   "note": "The chrome chevron drawn as a hovercraft for the Giant Petrel (the third round, docs/looks/kestrel_giant.png), given to the Lammergeier airborne on Ryan's thought of 27 October (\"looks good but careful on the weapon mount placement so they don't clip\"): a deeper centre body with the canopy forward and the bomb bay under it on a lit seam, four booster drums across the trailing edge, the Syrinx Drone's tubes in the leading edge's roots, the Lorentz Contractor's dish on a dorsal pylon, the mounts on the wing in the bays between the drums. The last picture is the lay_mines act. 28 October: the drone tubes sit in a pod on each leading-edge root, its face raked with the edge, so the wing's skin no longer shows inside them (Ryan's note). His second notes (the pods did not work as meant): each is now a nacelle on the leading-edge root that carries the wing's full thickness forward to a blunt raked face, top and bottom, the two tubes let into the face. His third (the box was fine; the hull-coloured tube ends clipping through its raked face were the mistake): each tube's mouth follows the face's rake, a touch proud of it, in the nacelle's dark. His fourth: the tubes bored twelve deep (an end cap is no tube). His fifth (the mouths read as end caps, not inset): each mouth is a hole cut through the face plate, the bore flush in it in the lighter plate so its far wall catches the light. His sixth (the open bores showed the wing's skin again, which the caps had hidden: the skin climbs over the bore's depth): the nacelle rides on the wing's upper skin, its underside following the skin's rise from the edge, the tubes above the skin the whole way. His seventh: the bores dark, not the hull's light plate.",
+   "images": [
+    {
+     "file": "lammergeier/lammergeier_front.png",
+     "alt": "lammergeier, front"
+    },
+    {
+     "file": "lammergeier/lammergeier_rear.png",
+     "alt": "lammergeier, rear"
+    },
+    {
+     "file": "lammergeier/lammergeier_above.png",
+     "alt": "lammergeier, from above"
+    },
+    {
+     "file": "lammergeier/lammergeier_lay_mines.png",
+     "alt": "lammergeier, laying mines"
     }
    ]
   }
