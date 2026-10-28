@@ -258,16 +258,19 @@ line), since no number read since 22 October was read on the content as it now s
    price not at all under the greedy on these packs, the Probe, the Condenser and the Ammit's
    loop are verdicts on the bot, and the heat classes hold (a class up moves the hot kits alone).
    Reviewed 28 October (the proposal's section 0) against the numbered area, the blow's order
-   and the ladder's design goals: what the tiers buy (the bible's section 3 row) and Ryan's
-   direction that tier two and three must feel worth upgrading to, especially shields and
-   vents, so the run's finding is the step the content lacks, measured (a gun's number times
-   its strikes 4.1 at tier one and 3.6 at tier two, the shields and vents flat or backwards),
-   and the structure for the marks is the tier steps with the equipment ramp first; the area
-   carriers and the modules that read every blow were rerun on the merged head. Next: Ryan's
-   marks on `docs/pricing_proposal.md`'s section 6, then the ladders per tier on the fresh
-   start's formations and recolours once the ladder lands (the planner beside the greedy for
-   equipment and the setups), an Indirect bench for the Rangefinder, the 200-seed reads on the
-   deltas the marks name, then the fills through `tools/stock_fills.py`. The roster's synergy
+   and the ladder's design goals, the area carriers rerun on the merged head; then reframed on
+   Ryan's words of the same day (the bible's effectiveness row): a piece is priced by its
+   effectiveness in vanilla points and never its number, the baseline a vanilla at each tier
+   (real pieces, the big stick, low on the scale), heat priced up from the heatless vanilla by
+   the knee where a kit starts paying, a rolled gun its mean (the heat row's rolled-range price
+   retired). The vanilla ladder ran that evening on the cold bench and the hot one (124
+   variants, `docs/measurements.md`, 28 October): a vanilla point buys a third of a round up to 6 and a seventh past it on the car and the shape is free there; the hot bench reads keywords and no number; heat 2 and 4 are free on a cold die, heat 6 a point, heat 8 two, and heat on a hot die costs hull; a rolled gun reads a third of a point under its mean and a strikes gun a point under its total; Flak 2 two points, Burn 2 two and a third, the Chain nearly three, the Shock one and a half; the floors leaned at 2, 3.5, 5 and 7, half a round a tier. Next: Ryan's
+   marks on `docs/pricing_proposal.md`'s section 6 (the scale and the floors, the heat
+   allowance by class, the keywords' prices), then the planner and a persona that shields and
+   vents before the overheat for the equipment ramp he wants first, the ladders per tier on the
+   fresh start's formations and recolours once the ladder lands, a warm third bench for the
+   knee and an Indirect bench for the Rangefinder, the 200-seed reads on the deltas the marks
+   name, then the fills through `tools/stock_fills.py`. The roster's synergy
    holes are the proposal's section 5, from the generated map (`tools/synergy_map.py`).
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,

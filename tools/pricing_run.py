@@ -453,7 +453,13 @@ def face_text(f):
     if int(f.get('strikes', 1) or 1) > 1:
         num += ' x%d' % f['strikes']
     kws = [kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', [])]
-    extra = ['%s %s' % (k, f[k]) for k in f if k not in FACE_PLAIN and k not in f.get('keywords', [])]
+    def flat(v):
+        if isinstance(v, dict):
+            return ', '.join('%s: %s' % (k, flat(x)) if isinstance(x, dict) else '%s %s' % (k, flat(x)) for k, x in v.items())
+        if isinstance(v, list):
+            return ' '.join(flat(x) for x in v)
+        return str(v)
+    extra = ['%s %s' % (k, flat(f[k])) for k in f if k not in FACE_PLAIN and k not in f.get('keywords', [])]
     return '%s, heat %s%s' % (num, f.get('heat', 0), (', ' + ' '.join(kws + extra)) if kws or extra else '')
 
 
@@ -630,7 +636,10 @@ def summarise(db, opts):
         # vanilla points: the heatless flat Direct curve, the number whose rounds match each real piece's
         curve = sorted((n, r['rounds'] - s['rounds']) for (n, h), r in shapes.get('flat Direct', {}).items() if h == 0)
         lad = [v for v in vs if v['part'] == 'ladders' and v.get('bench') == b and reads.get(v['id'])]
-        if curve and lad:
+        if curve and lad and abs(curve[-1][1] - curve[0][1]) < 0.5:
+            L.append('The heatless curve is flat on this bench (%.1f rounds between %d and %d): the row wins without this slot, so a number is no read here and vanilla points are not given; what beats the vanilla here is a keyword that reaches a second foe or amplifies the row.' % (curve[0][1] - curve[-1][1], curve[0][0], curve[-1][0]))
+            L.append('')
+        elif curve and lad:
             def points(d):
                 if d >= curve[0][1]:
                     return '%d or under' % curve[0][0]

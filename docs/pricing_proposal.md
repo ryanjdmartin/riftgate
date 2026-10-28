@@ -275,49 +275,129 @@ rounds to win, the hull lost, the pick shares and the heat columns.
    or 2 takes 2.4 off, the most of any piece on this bench, the same at both numbers, because
    its Burn 3 rides every foe struck: on the Meteor the rider is the lever, not the number.
 
-The structure for the marks (Claude's leans, rewritten 28 October on Ryan's direction; nothing
-lands before them, and a delta a number lands on is read again at 200 seeds):
+9. **The vanilla ladder** (`docs/measurements.md`, 28 October, the vanilla ladder: 124
+   variants on the car and the Buzzard, 44 minutes). On the car a heatless flat gun in the
+   Prairie Dog's slot takes 0.1 rounds off at 2, 0.5 at 3, 0.9 at 4, 1.2 at 5, 1.6 at 6, 1.7
+   at 7, 1.9 at 8 and 2.2 at 10: a point buys a third of a round up to 6 and a seventh past
+   it, the knee where a blow kills any of the rank and file outright, and the flat Indirect
+   reads the same at every number, so the shape is free there. On the Buzzard every vanilla
+   at every number and heat reads 0.2 to 0.4 rounds behind its stock Arc Fault Cannon: the hot
+   bench reads no number, only the keywords that reach a second foe or amplify the row (the
+   Chain, the Shock, the Breach, Burn 3, Penetrate 3 beat every vanilla there). A rolled gun
+   reads a third of a point under its mean (the Slugthrower 3.2 for 3.5, the Howitzer 3.0 for
+   3.5, the Arquebus 2.8 for 3.0) and a strikes gun a point under its total (the Maxigun 3.5
+   for 4.5, the Cyclic Cannon 6.8 for 8), so Ryan's asymptote holds within the threshold a
+   kill needs. The keywords on the car: Flak 2 buys 2.0 vanilla points, Burn 2 2.3, Burn 3
+   2.7, the Chain 2.7, the Shock 1.4, Penetrate 3 0.3, the Breach about 1, the Coriolis's rule
+   1.2. The heat grid: heat 2 and 4 cost nothing on the cold die, heat 6 a point, heat 8 two
+   (a quarter of a big gun's number), and on the hot die heat costs hull and no rounds
+   (section 3). The whole pool's attacks in vanilla points on the car are the measurements'
+   roster table, and the structure below is read off it.
 
-- **A tier is a step on the plain number, the keywords beside it.** The fill the loops read:
-  a flat Direct gun 3 at tier zero, 4 to 5 at tier one, 6 to 7 at tier two and 8 to 10 at tier
-  three at the same heat class (the scales row's 1 to 6, big guns to 10, the capstone 12), a
-  rolled gun's middle the same step, a keyword gun a point under the plain one of its tier; so
-  tier two is more number for the same heat, which is what "worth it to upgrade" means on a hot
-  kit, and the heat classes stand (section 3). The two outliers of tier one then sit inside the
-  band or above it: the Railgun at 10 is tier three's number on a tier-one piece, so it moves
-  up a tier or its heat stays its price (it pays: half an overheat a fight on a 12-maximum kit),
-  Ryan's call; the Arc Fault Cannon's lever stays the Chain's rework (section 12).
-- **The equipment ramp first**, Ryan's "especially to shield and vent": a shield's number by
-  tier 6 and 8 at zero, 10 at one, 12 at two, 16 at three (the scales row's 6 to 16), a keyword
-  shield two under the plain one of its tier (so the Laminar Deflector and the Corona Shield
-  at 10, the Oblation Mantle's 10 at tier one its Volatile's price); a vent 4 and 6, then 6,
-  8 and 10 (the Condenser's 10 the capstone, paid in hull; the Sail and the Diffuser a step
-  under); a buff's stacks or rounds a step a tier (the Coil 2 at one, a tier-two Overcharge 3).
-  What it buys the economy: a found tier-two shield replaces the basic by its number, which
-  today it does not.
-- **The enemy's floor follows the tier's kit** (section 0): the ladders are read per tier on
-  the fresh start's formations and recolours, the tier's pieces on the tier's fights, and the
+The structure for the marks (Claude's leans, rewritten 28 October on Ryan's frame: a piece's
+effectiveness, gauged from vanillas, heat priced from the heatless baseline, a rolled gun its
+mean; nothing lands before his marks, and a delta a number lands on is read again at 200 seeds):
+
+- **One scale for every piece, vanilla points** (item 9: on the car a point buys a third of a
+  round up to 6 and a seventh past it, the shape free; the hot bench reads reach alone). A tier
+  is a band on that scale and never a number: its vanilla at the floor, its keyword pieces above
+  the floor by what the keyword buys, its hot pieces above it by what their heat pays for, and
+  the top of a tier the floor of the next. So a found tier-two piece beats the tier-one piece in
+  the same slot on effectiveness whatever the two numbers say, which is the pressure on the
+  economy Ryan wants, and a tier-two shield that shields 4 and grants 4 Overcharged is a
+  tier-two piece by what the four stacks are worth on the row's blows, never by its 4.
+- **The floors, from the vanilla ladder.** In vanilla points on the car, the pool's attacks as
+  they stand (`docs/measurements.md`, 28 October, the roster table): tier zero 2 to 3.1 (the
+  Rivet Gun 2.2, the Laser Carbine 3.1, the Twin Autoguns and the Ankle Mortar 2 or under); tier
+  one 2.8 to 3.5 for its rolled and strikes guns (the Arquebus and the Shotfire Rack 2.8, the
+  Howitzer 3.0, the Slugthrower and the Airburst 3.2, the Incendiary Shells 3.4, the Maxigun
+  3.5), 4.3 for the Enfilade Beam, 4.9 to 5.3 for the hot flat guns and the Blazethrower, and
+  two outliers at 6.7 (the Arc Fault Cannon) and 8.8 (the Railgun); tier two 4.2 to 5.4 for the
+  Coriolis, the Flak Cannon, the Stoker and the Tesla, 6.8 and 7.2 for the Cyclic Cannon and the
+  Meteor, 2.1 to 2.4 for the Vacillator, the Backdraft and the Battery (setups the greedy
+  wastes, item 5); tier three 7.7 (the Knuckles) and 3.2 (the Umbra, a stun rounds do not
+  count). Claude's lean for the floors, the heatless vanilla of each tier: 2, 3.5, 5 and 7,
+  which on the car is 0.1, 0.7, 1.2 and 1.7 rounds off, about half a round a tier, an even ramp
+  in kill time rather than in points since the curve flattens past 6; today's tier one and two
+  already sit on those floors (the rolled guns at 3, the keyword pieces at 5), and the pieces
+  off them are the questions: the Arc Fault at tier two's top, the Railgun at tier three's, the
+  Coriolis under tier two's floor, tier two's three setups under tier zero's. The alternative,
+  2, 4, 6 and 8, steps 0.8, 0.7 and then 0.3 rounds, the last step lost to the knee on today's
+  packs; on the tiered formations, with more hull to chew, the curve stretches right and that
+  step returns, which is the tiered read's to say. "Fairly low": a floor is the least a tier's
+  piece reads, the plain big stick a build takes for reliability and never the best piece of its
+  tier; the step between floors is the kill time a tier buys with no keyword at all, and it is
+  read as a step on the car, where there is room, before it is one on the tiered formations.
+- **Heat, priced from the knee** (the grid is section 3): on a cold die heat 2 and 4 cost
+  nothing at any number, heat 6 costs 0.6 to 0.7 vanilla points (the third round's overheat, the
+  heat row's test) and heat 8 0.9 at 3, 1.3 at 5 and 2.0 at 7, a quarter of the number; on a hot
+  die heat costs hull and no rounds. So the allowance on today's kits: heat 1 and 2 are free and
+  flavour like the roll (a cool gun is soft cooling on a hot die, the heat row's spectrum, and
+  that is their place); heat 4 is free on a cold die and a few points of hull on a hot one, half
+  a point at most; heat 6 buys a point; heat 8 buys two, a quarter of a big gun's number. A heat
+  class buys a piece that many vanilla points above its tier's floor on the kit that pays for
+  it; on a kit that does not, the same piece reads that much ahead for nothing, which is the
+  slack the heat row forbids and the maxima and the cooling answer (the stock pass's loops),
+  never the piece's price. The classes stand as the rungs (0, 1, 2, 4, 6, 8) and each rung's
+  allowance is the knee's, measured on the two kits here (the knee is the die's other heat, not
+  the maximum: every chassis but the Kite and the Musk Ox carries 12 or 14 with cooling 1), with
+  a third, a warm one (the Clydesdale's nine-piece die in its Howitzer slot, the Indirect bench
+  the Rangefinder wants too), the check before the fills. The heat floors the proposal carried
+  before were arbitrary (Ryan); these are measured.
+- **A rolled gun is its mean.** The five rolled guns read a third of a point under their means
+  on the car (the Slugthrower 3.2 for 3.5, the Howitzer 3.0 for 3.5, the Arquebus 2.8 for 3.0,
+  the Twin Autoguns 2 or under for 2) and the strikes guns a point under their totals (the
+  Maxigun 3.5 for 4.5, the Cyclic Cannon 6.8 for 8), the armour and the overkill each strike
+  pays: a rolled gun is its mean less a third of a point for the threshold a kill needs, a
+  strikes gun its total less a point. So a rolled range is flavour priced at its middle (Ryan:
+  it makes "bullets and explosions more believable"; across a run the roll flattens to its
+  mean), the threshold effects second order, and the heat row's line that a cold build "pays
+  somewhere else, in a rolled range" is no longer a price: a cold build pays in a lower number,
+  a shorter reach or fewer strikes. The bible's heat row is amended so (28 October, on his word;
+  section 6 asks him to say if he wants the clause back), and the reroll stays the player's tool
+  against the roll, not the gun's price.
+- **The keywords in vanilla points.** On the car: Flak 2 buys 2.0 points (the Flak Cannon 5.0
+  for its 3, beside the Dingo's and the Clydesdale's guns); Burn 2 buys 2.3 (the Stoker and the
+  Blazethrower 5.3 for their 3, at heat 1 and 3 alike) and Burn 3 2.7 (the Knuckles 7.7 for 5;
+  the Meteor 7.2 after heat 6's 0.7); the Chain 2.7 (the Arc Fault 6.7 for 4); the Shock 1.4
+  (the Tesla 5.4 for 4, beside the Maxigun's strikes); Penetrate 3 0.3 (the Enfilade 4.3 for 4:
+  the line holds no second foe at the car's reach, though on the Buzzard it is a piece no
+  vanilla matches); the Breach about 1 (the Railgun 8.8 for 10 less heat 8's 2); the Coriolis's
+  point a missing five 1.2; the Airburst's Cleave 1 and Flak 1 together 1.7 over its mean of
+  1.5. So a Flak stack is about a point and a Burn stack a little under one, a Chain nearly
+  three, a Shock one and a half beside strikes. A keyword's price is the piece's vanilla points
+  less its own number, on the bench whose row reads it; a setup's price is read beside its
+  reader (the Flak beside the Dingo's guns, the Shock beside the strikes) and is nothing without
+  one, which is a build's question and never the keyword's. Ryan's examples price straight: a
+  1-damage Splash 1 weapon with Flak 4 is one point of its own and four stacks on every foe
+  reached, each a point on every later blow the row lands there; a 4 shield that grants 4
+  Overcharged is 4 hull kept and four points on the next weapon spent. The area keywords are the
+  hard ones, as Ryan expected: an area piece's points are the fight's shape (Splash N is N on
+  every foe in reach, so the formations' and the Marsh's, and nothing on a massive foe), so it
+  is priced on the formation cells alone (`--packs`) with its number set where its massive-foe
+  read sits at its tier's floor; and a rider on an area blow lands on every foe struck (the
+  Meteor's Burn 3, item 8), so an area fire is priced as a fire times the foes reached, a piece
+  of its own.
+- **Equipment is priced in two currencies, and the bot reads neither yet.** A shield's number is
+  hull kept, a vent's is heat bought back, a buff's stacks are vanilla points on the blows that
+  read them; the greedy spends none of them on these benches (item 4), so no equipment number
+  moves on this run. The equipment ramp Ryan wants first ("especially to shield and vent") is
+  read on the planner and a persona that shields and vents before the overheat, on the tiered
+  formations, where a shield has hull to keep: the next run's first part.
+- **The enemy's floor follows the tier's kit** (section 0): the ladders are read per tier on the
+  fresh start's formations and recolours, the tier's pieces on the tier's fights, and the
   recolours' numbers set where a tier-N kit meets them as a fight (the fresh start's own
-  measurement, the 200-seed matrix with the ladder's cells on the to-do). The two ramps are set
-  together, never one against today's enemy: the run read on the tier-one enemy says a step
-  lands as kill time, which is the lever; whether it is the right size is the tiered read's.
+  measurement). The two ramps are set together, never one against today's enemy: the vanilla
+  ladder on the tier-one enemy says what a point buys in kill time, which is the lever; whether
+  a tier's step is the right size is the tiered read's.
 - **The Ram Frame's hull line comes down to the catalogue's band**, from +24 to about +8 (the
   Ablative Plating's +8, the Flak Skirt's +6, the Reliquary's +4), so the module is its text;
-  under the blow's order its point lands on every area blow too, so the rerun on the merged
-  head (below) is its read; the Artillery Rangefinder takes the same line and is read on an
-  Indirect bench (the Clydesdale's Howitzer slot in Wainwright & Sutler's row) before either
-  lands.
-- **No equipment or setup number moves on this run.** The pressure to replace equipment Ryan
-  wants needs two things the run lacks: a bot that spends equipment (the planner, or a
-  cautious persona that vents and shields before the overheat) and fights where a shield
-  saves hull (the tiered formations; the Marsh with its Knights already walls a trio). The
-  equipment ramp above is set by its numbers and read there.
-- **The heat classes stand** (section 3), and with them the guns' heat the Storm Petrel's
-  brief waited on: its engine session is free to run on today's heats once these marks are in,
-  its hole (2 shield a spend on basics alone) read on them; a tier step on a gun's number at
-  the same class is more shield burnt a spend on that machine, its own read.
-- **The pool's size** (section 12's 50 to 75 against 41): the run adds no pressure to grow it;
-  the dead pieces are the bot's before they are the pool's.
+  under the blow's order its point lands on every area blow too (item 8); the Artillery
+  Rangefinder takes the same line and is read on an Indirect bench (the Clydesdale's Howitzer
+  slot in Wainwright & Sutler's row) before either lands.
+- **The pool's size** (section 12's 50 to 75 against 41): the run adds no pressure to grow it; a
+  heatless vanilla a tier a maker is a real piece in it ("sometimes you just need a big stick"),
+  and the dead pieces are the bot's before they are the pool's.
 
 ## 3. The heat pricing
 
@@ -351,15 +431,35 @@ What the run read (`docs/measurements.md`, the heat ladder):
   Cannon holds dice (0.21 to 0.27 a fight against 0.07), the Railgun at 105% and 0.58, the
   Thermal Ray and the Meteor at the maximum. A gun's heat is a real price on the kits that
   carry it and free on the cold rows, which is the heat row's design.
+- **The vanilla heat grid** (`docs/measurements.md`, 28 October, the vanilla ladder): the same
+  heatless vanilla at 3, 5 and 7 across heat 0, 2, 4, 6 and 8 on the car (maximum 12, cooling 1)
+  and on the Buzzard (maximum 14, cooling 1). On the car heat 2 and 4 move nothing at 3, 5 or 7
+  (the peak 37 to 67%, the overheats a tenth a fight over stock); heat 6 takes 0.2 rounds back
+  (the peak 79 to 90%, 0.3 overheats, the third round's overheat the row's test names); heat 8
+  takes 0.3 to 0.4 back and reads hot (the peak 95 to 104%, 0.4 to 0.6 overheats, a fifth of the
+  dice held at 3). On the Buzzard no cell moves the rounds (0.3 to 0.4 behind stock at every
+  heat), the overheats climb from 0.31 to 0.53 a fight and the hull lost from 1 to 3 points:
+  heat on a hot die is paid in hull.
 
-Claude's lean, for the marks: the class ladder stands (0, 1, 2, 4, 6, 8), pieces moved between
-classes rather than new steps, so the player reads six heats and not twenty; the basics stay
-cold (`cold1` bought nothing); the hot flat guns (the Transonic Rifle at 4, the Thermal Ray at
-6, the Railgun at 8) are the anchors, a point of heat for a point of number above the warm
-basic's 3, and the run reads them paying; no gun's heat moves on this run, and a vent's number
-follows the guns it answers. The Storm Petrel's price list is the guns' heat as it stands, so
-its engine session is free once these marks are in. The foes' side stays the fresh start's (the
-status's item 3), and Ryan's play on the Peak decides whether the doubled stacks hold.
+Claude's lean, for the marks (rewritten 28 October on Ryan's frame): heat is a budget with a
+knee, not a slope, and its price is read where a single piece's heat is the die's heat, the
+cold car, since on a hot die the slot barely fires and heat is paid in hull. The empirical
+price of a class is the vanilla points it costs past the knee: heat 1, 2 and 4 nothing on a
+cold die (heat 4 a few points of hull on a hot one), heat 6 a point (the third round's
+overheat, the row's test), heat 8 two, or a quarter of a big gun's number. A piece is allowed
+that many points above its tier's heatless floor for the class it pays, and no more, since on
+a cold kit the same piece reads that far ahead for free (the slack the heat row forbids; the
+maxima and the cooling are its answer, the stock pass's loops, never the piece's number: at a
+maximum of 10 a heat-4 gun overheats by its third round and the warm classes start to pay,
+which is the one global lever if Ryan wants heat 4 felt). The class ladder stands (0, 1, 2, 4,
+6, 8), pieces moved between classes rather than new steps, so the player reads six heats and
+not twenty; the basics stay cold (`cold1` bought nothing); no gun's heat moves on this run,
+and a vent's number follows the guns it answers. The heat row's "pays somewhere else, in a
+rolled range" is retired as a price on Ryan's word (a rolled gun is its mean; section 2), the
+row keeping its other prices (a lower number, a short reach, fewer strikes). The Storm
+Petrel's price list is the guns' heat as it stands, so its engine session is free once these
+marks are in. The foes' side stays the fresh start's (the status's item 3), and Ryan's play on
+the Peak decides whether the doubled stacks hold.
 
 ## 4. The synergy map
 
@@ -564,30 +664,39 @@ the engine's own payoff; the dedicated readers are the Backdraft (Burning) and t
 
 ## 6. Open for Ryan
 
-1. The tier steps (section 2's structure, on your direction of the 28th): a step on the plain
-   number a tier at the same heat class, the equipment ramp first (shields 6 and 8, 10, 12,
-   16; vents 4 and 6, 6, 8, 10; a keyword piece a step under), the guns' step (3; 4 to 5; 6 to
-   7; 8 to 10); the Railgun up a tier or kept at its heat price; and whether the fills land
-   before the tiered read or with it.
-2. The Ram Frame's hull line, +24 to about +8, and the Artillery Rangefinder read on an
+1. The scale and the floors (section 2's structure, on your frame of the 28th): a tier a band
+   in vanilla points with its heatless vanilla at the floor, Claude's lean 2, 3.5, 5 and 7
+   (half a round a tier on the car; or 2, 4, 6 and 8, whose last step the knee eats on today's
+   packs); whether the steps are the size you want, and whether the fills land before the
+   tiered read or with it.
+2. The heat allowance by class, from the knee: heat 1, 2 and 4 free on a cold die (heat 4 a
+   few points of hull on a hot one), heat 6 a point, heat 8 two or a quarter of a big gun's
+   number; the cold kit's free ride answered by the maxima and the cooling rather than the
+   piece's number (a maximum of 10 makes heat 4 pay); and a warm third bench, the
+   Clydesdale's Howitzer slot, as the check before the fills.
+3. A rolled gun is its mean less a third of a point, so the heat row's "pays somewhere else,
+   in a rolled range" is retired as a price (the bible row amended today on your word; say so
+   if you want the clause back), and each rolled gun's range is set so its middle sits at its
+   vanilla points.
+4. The keywords' prices in vanilla points (Flak 2 two, Burn 2 two and a third, Burn 3 and the
+   Chain nearly three, the Shock one and a half, the Breach about one, Penetrate 3 a third on
+   the car and the piece no vanilla matches on the Buzzard), the Flak's read beside its reader;
+   the area pieces priced on the formation cells; and the Howitzer's and the Meteor
+   Artillery's Splash (section 12's shells question, item 8): Claude's lean the Howitzer at
+   Splash 1, the chip you named, and the Meteor at none while its Burn rides every foe struck,
+   or Splash 1 at Burn 2 as the next what-if; hole A asks for fire's second reader rather than
+   a bigger first setter.
+5. The Ram Frame's hull line, +24 to about +8, and the Artillery Rangefinder read on an
    Indirect bench (the Clydesdale's Howitzer slot) with the same line before either lands.
-3. The Howitzer's and the Meteor Artillery's Splash (section 12's shells question), read as
-   what-ifs on the car bench (section 2, item 8): Claude's lean the Howitzer at Splash 1, the
-   chip you named, and the Meteor at none while its Burn rides every foe struck (a Splash on it
-   is a fire on five foes, the strongest piece on the bench at either number), or Splash 1 at
-   Burn 2 as the next what-if; an area fire is a piece of its own, and hole A asks for fire's
-   second reader rather than a bigger first setter.
-4. The next run: the ladders per tier on the fresh start's formations and recolours once the
-   ladder lands, with the planner beside the greedy for the equipment and the setups, on
-   Wainwright & Sutler's row and a starter trio without a carry; the 200-seed reads on the
-   deltas the marks name; whole runs by hand on the pieces named.
-5. The heat classes kept and no gun's heat moved (section 3), so the Storm Petrel's engine
-   session may run on today's heats.
-6. The bot's valuation lines before the dead pieces' numbers: a Disrupt (the Probe reads worse
+6. The next run: the planner and a persona that shields and vents before the overheat, for
+   the equipment ramp you want first; the ladders per tier on the fresh start's formations and
+   recolours once the ladder lands; the 200-seed reads on the deltas the marks name; whole
+   runs by hand on the pieces named.
+7. The bot's valuation lines before the dead pieces' numbers: a Disrupt (the Probe reads worse
    than an empty hardpoint), a vent that costs hull (the Condenser's 0%), a loop that pays
    later (the Ammit's), and equipment spent before the overheat, read on the planner; and the
    Ammit's kept Overcharged at single digits against a purging pack (your note of the 28th,
    the fresh start's to-do line).
-7. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
+8. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
    E answered for now by the bot's horizon; F's pairs as the catalogue session's list; H's
    Purge as the setters' first counter, read once the ladder lands.

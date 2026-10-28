@@ -2358,3 +2358,177 @@ Read:
   Splash 1 at Burn 2 as the next what-if, since an area fire is a piece of its own (the
   pricing proposal's hole A asks for fire's second reader, not a bigger first setter); Ryan's
   to move.
+
+## 28 October, the vanilla ladder
+
+**The vanilla ladder** (`tools/pricing_run.py run vanilla28 --parts vanilla,vanillaheat,ladders
+--benches prairie_dog,goshawk --pieces ...`, the merged head of the 28th; the method in
+`docs/pricing_proposal.md`, section 1, the scale): Ryan's frame of the 28th, a piece priced by
+its effectiveness and never its number, the baseline a vanilla at each tier, heat priced up
+from the heatless vanilla, a rolled gun its mean. A flat heatless gun reshaped by `--set` from
+a basic no bench row stocks (the Rivet Gun for the Direct, the Shotfire Rack made flat for the
+Indirect) in the bench hardpoint at every number from 2 to 10, so the row's other dice stay as
+they are; the same vanilla at 3, 5 and 7 across heat 0, 2, 4, 6 and 8; and twenty real guns in
+the same slot, each read in vanilla points, the heatless flat Direct number that takes the same
+rounds off the row. Two benches: the Prairie Dog's first hardpoint in Wainwright & Sutler's row
+(the cold car, maximum 12, cooling 1, the one bench with room) and the Buzzard's third in
+Kestrel's row (the hot flyer, maximum 14, cooling 1, where heat bites). The sixteen big fights
+but the finale, greedy at 30 seeds a cell: 124 variants, 59,520 fights, about 44
+minutes on a cloud session's four cores. A direction, read on the rounds to win and the hull
+lost, since both rows win these cells.
+
+**The heatless curve**, a flat gun of each shape at heat 0 in the bench hardpoint: rounds off
+the stock row, hull off it, and the vanilla's share of the row's spends (the car's stock row
+6.1 rounds and 24% hull, the Buzzard's 2.9 and 8%):
+
+| Number | flat Indirect, Prairie Dog | flat Indirect, Buzzard | flat Direct, Prairie Dog | flat Direct, Buzzard |
+|---|---|---|---|---|
+| 2 | -0.0 r, -1%, 11% | +0.4 r, +2%, 2% | -0.1 r, -1%, 11% | +0.4 r, +2%, 2% |
+| 3 | -0.5 r, -3%, 14% | +0.4 r, +2%, 5% | -0.5 r, -3%, 14% | +0.4 r, +2%, 5% |
+| 4 | -0.9 r, -6%, 16% | +0.4 r, +2%, 9% | -0.9 r, -5%, 16% | +0.4 r, +2%, 8% |
+| 5 | -1.2 r, -7%, 18% | +0.3 r, +2%, 9% | -1.2 r, -7%, 18% | +0.3 r, +2%, 9% |
+| 6 | -1.5 r, -9%, 19% | +0.3 r, +2%, 10% | -1.6 r, -9%, 19% | +0.3 r, +1%, 10% |
+| 7 | -1.7 r, -10%, 19% | +0.3 r, +2%, 10% | -1.7 r, -10%, 19% | +0.3 r, +1%, 10% |
+| 8 | -1.9 r, -10%, 19% | +0.3 r, +1%, 11% | -1.9 r, -11%, 19% | +0.3 r, +1%, 11% |
+| 10 | -2.2 r, -13%, 19% | +0.2 r, +1%, 10% | -2.2 r, -13%, 20% | +0.2 r, +1%, 10% |
+
+**The heat grid on the car** (flat Direct; the flat Indirect reads the same within a tenth of
+a round in every cell): rounds off stock, hull off stock, share, the peak heat as a turn ended,
+the overheats and the dice held for heat a fight, hot where the peak reaches the maximum or the
+overheats rise a quarter a fight over stock (0.13):
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -3%, 14%, 34%, 0.17, 0.03 | -0.6 r, -2%, 14%, 37%, 0.19, 0.04 | -0.6 r, -2%, 13%, 60%, 0.22, 0.05 | -0.3 r, -1%, 12%, 79%, 0.29, 0.11 | -0.2 r, -1%, 9%, 82%, 0.41, 0.19 |
+| 5 | -1.2 r, -7%, 18%, 32%, 0.10, 0.01 | -1.2 r, -7%, 18%, 37%, 0.12, 0.03 | -1.2 r, -6%, 18%, 67%, 0.20, 0.03 | -1.0 r, -5%, 15%, 87%, 0.30, 0.06 | -0.8 r, -3%, 12%, 95%, 0.55, 0.10 hot |
+| 7 | -1.7 r, -10%, 19%, 30%, 0.08, 0.02 | -1.7 r, -9%, 19%, 35%, 0.10, 0.02 | -1.7 r, -9%, 19%, 65%, 0.18, 0.03 | -1.6 r, -8%, 17%, 90%, 0.33, 0.05 | -1.3 r, -6%, 14%, 104%, 0.61, 0.07 hot |
+
+**The heat grid on the Buzzard** (flat Direct; the Indirect the same), the stock row's
+overheats 0.29 and its held dice 0.07:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | +0.4 r, +2%, 5%, 95%, 0.38, 0.20 | +0.4 r, +2%, 5%, 96%, 0.41, 0.21 | +0.4 r, +2%, 5%, 97%, 0.43, 0.24 | +0.4 r, +3%, 4%, 99%, 0.46, 0.22 | +0.4 r, +3%, 3%, 100%, 0.49, 0.22 |
+| 5 | +0.3 r, +2%, 9%, 92%, 0.32, 0.22 | +0.3 r, +2%, 9%, 93%, 0.36, 0.20 | +0.3 r, +2%, 9%, 97%, 0.38, 0.19 | +0.4 r, +2%, 8%, 101%, 0.43, 0.21 hot | +0.4 r, +3%, 7%, 100%, 0.49, 0.21 hot |
+| 7 | +0.3 r, +1%, 10%, 89%, 0.32, 0.20 | +0.3 r, +2%, 10%, 91%, 0.36, 0.19 | +0.3 r, +2%, 10%, 95%, 0.39, 0.20 | +0.3 r, +2%, 9%, 100%, 0.44, 0.21 hot | +0.3 r, +3%, 8%, 102%, 0.51, 0.20 hot |
+
+**The pool's attacks in vanilla points on the car**, the heatless flat Direct number that takes
+the same rounds off the row: the twenty guns of this run, the area carriers rerun on the merged
+head (28 October, above) and the rest from the 27 October run (its stock row 5.9 rounds and 18%
+hull; the rerun found every delta holding within a tenth of a round), each converted with
+today's curve:
+
+| Tier | Piece | Its number, heat, keywords | Rounds off stock | Vanilla points | Share | Run |
+|---|---|---|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | -0.6 r, -2% hull | 3.1 | 14% | vanilla28 |
+| 0 | Rivet Gun | 2, heat 0 | -0.1 r, -2% hull | 2.2 | 11% | 27th |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.0 r, +0% hull | 2 or under | 24% | vanilla28 |
+| 0 | Ankle Mortar | 1-3, heat 1 | +0.0 r, +0% hull | 2 or under | 16% | 27th |
+| 1 | Overclocked Railgun | 10, heat 8, breach | -2.0 r, -11% hull | 8.8 | 16% | vanilla28 |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | -1.7 r, -10% hull | 6.7 | 18% | vanilla28 |
+| 1 | Thermal Ray | 6, heat 6 | -1.3 r, -7% hull | 5.3 | 17% | vanilla28 |
+| 1 | Blazethrower | 3, heat 3, burn 2 | -1.3 r, -6% hull | 5.3 | 17% | vanilla28 |
+| 1 | Transonic Rifle | 5, heat 4 | -1.2 r, -6% hull | 4.9 | 18% | vanilla28 |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | -1.0 r, -6% hull | 4.3 | 24% | vanilla28 |
+| 1 | Maxigun | 1-2 x3, heat 1 | -0.7 r, -4% hull | 3.5 | 26% | vanilla28 |
+| 1 | Incendiary Shells | 1-3, heat 1, burn 2 | -0.7 r, -3% hull | 3.4 | 22% | 27th |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | -0.6 r, -4% hull | 3.2 | 26% | vanilla28 |
+| 1 | Slugthrower | 2-5, heat 1 | -0.6 r, -3% hull | 3.2 | 17% | vanilla28 |
+| 1 | Howitzer | 2-5, heat 1 | -0.5 r, -4% hull | 3.0 | 24% | vanilla28 |
+| 1 | Plasma Arquebus | 2-4, heat 2 | -0.4 r, -2% hull | 2.8 | 16% | vanilla28 |
+| 1 | Shotfire Rack | 2-4, heat 2 | -0.4 r, -3% hull | 2.8 | 17% | 27th |
+| 1 | Polarity Projector | debuff 0, heat 2, shock | +0.1 r, +0% hull | 2 or under | 9% | 27th |
+| 1 | Proximity Klaxon | debuff 0, heat 1, lure cleave | +0.2 r, +1% hull | 2 or under | 3% | area28 |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | -1.8 r, -9% hull | 7.2 | 17% | vanilla28 |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | -1.7 r, -8% hull | 6.8 | 19% | vanilla28 |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | -1.4 r, -7% hull | 5.4 | 18% | vanilla28 |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | -1.3 r, -6% hull | 5.3 | 17% | vanilla28 |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | -1.2 r, -6% hull | 5.0 | 17% | vanilla28 |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | -1.0 r, -5% hull | 4.2 | 16% | vanilla28 |
+| 2 | Pulse Vacillator | 2, heat 2, rapid | -0.2 r, -3% hull | 2.4 | 11% | 27th |
+| 2 | Backdraft Charge | 2, heat 2, suppress gates suppress: when target_status, status burning, stacks 2 consumes burning per_consumed 1 | -0.1 r, -2% hull | 2.2 | 12% | 27th |
+| 2 | Suppression Battery | 1-3, heat 2, suppress gates suppress: when target_status, status flakked | -0.1 r, -2% hull | 2.1 | 15% | 27th |
+| 2 | Differentiation Probe | debuff 0, heat 2, disrupt | +0.9 r, -1% hull | 2 or under | 10% | 27th |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | -1.9 r, -9% hull | 7.7 | 18% | vanilla28 |
+| 3 | Umbra Inducer | 3, heat 0, suppress volatile 3 | -0.6 r, -1% hull | 3.2 | 15% | 27th |
+
+**The same twenty on the Buzzard**, where the heatless curve is flat (0.2 rounds between 2 and
+10: the slot fires a tenth of the time and the row wins in 2.9 rounds), so no vanilla points,
+only the rounds against stock, the share and the peak:
+
+| Tier | Piece | Its number, heat, keywords | Rounds off stock | Share | Peak |
+|---|---|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | +0.4 | 17% | 96% |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.4 | 16% | 98% |
+| 1 | Overclocked Railgun | 10, heat 8, breach | +0.2 | 19% | 104% |
+| 1 | Thermal Ray | 6, heat 6 | +0.4 | 9% | 100% |
+| 1 | Transonic Rifle | 5, heat 4 | +0.3 | 30% | 97% |
+| 1 | Maxigun | 1-2 x3, heat 1 | +0.4 | 8% | 94% |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | +0.0 | 10% | 93% |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | +0.3 | 8% | 92% |
+| 1 | Howitzer | 2-5, heat 1 | +0.4 | 7% | 96% |
+| 1 | Slugthrower | 2-5, heat 1 | +0.4 | 7% | 96% |
+| 1 | Blazethrower | 3, heat 3, burn 2 | +0.4 | 7% | 96% |
+| 1 | Plasma Arquebus | 2-4, heat 2 | +0.4 | 6% | 97% |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | +0.3 | 3% | 97% |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | +0.3 | 10% | 94% |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | +0.3 | 9% | 100% |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | +0.2 | 9% | 92% |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | +0.4 | 7% | 93% |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | +0.4 | 7% | 94% |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | +0.4 | 7% | 94% |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | +0.3 | 9% | 95% |
+
+**The rolled and strikes guns against their means** (the middle of the range times the strikes):
+
+| Piece | Its number, heat | Mean | Prairie Dog points | Buzzard points |
+|---|---|---|---|---|
+| Slugthrower | 2-5, heat 1 | 3.5 | 3.2 | 3.9 |
+| Twin Autoguns | 1-3, heat 0 | 2.0 | 2 or under | 2 or under |
+| Howitzer | 2-5, heat 1 | 3.5 | 3.0 | 4.2 |
+| Plasma Arquebus | 2-4, heat 2 | 3.0 | 2.8 | 3.9 |
+| Maxigun | 1-2 x3, heat 1 | 4.5 | 3.5 | 4.0 |
+| Cyclic Cannon | 2 x4, heat 3 | 8.0 | 6.8 | 6.3 |
+
+Read:
+
+- **A vanilla point buys a third of a round up to 6 and a seventh past it on the car.** The
+  heatless flat gun takes 0.1 rounds off at 2, 0.5 at 3, 0.9 at 4, 1.2 at 5, 1.6 at 6, then 1.7
+  at 7, 1.9 at 8 and 2.2 at 10, the hull 1 to 13%: the knee sits where a blow kills any of the
+  rank and file outright (their HP 2 to 6), and past it a point buys kill time only on the
+  massive foes and the heroes. The flat Indirect reads the same at every number, so the shape
+  is free on this bench and a reach price is the fight's, not the piece's.
+- **The hot bench reads no number.** On the Buzzard every vanilla at every number and heat
+  reads 0.2 to 0.4 rounds behind its stock Arc Fault Cannon, with 2 to 11% of the row's spends:
+  the third gun on a hot die fires a tenth of the time, and the row wins in 2.9 rounds without
+  it. What beats the vanilla there is a keyword that reaches a second foe or amplifies the row:
+  the Chain (level with stock, the one piece that is), the Shock and the Breach (0.2 behind),
+  Burn 3 and Penetrate 3 (0.3). The hot bench prices reach and nothing else.
+- **Heat's knee on a cold die is 6, the heat row's third round.** Heat 2 and 4 move nothing at
+  3, 5 or 7 (the peak 37 to 67%); heat 6 takes 0.2 rounds back at every number (the peak 79 to
+  90%, 0.3 overheats a fight), 0.6 to 0.7 vanilla points; heat 8 takes 0.3 to 0.4 back and reads
+  hot (the peak 95 to 104%, 0.4 to 0.6 overheats), 0.9 points at 3, 1.3 at 5 and 2.0 at 7, a
+  quarter of the number: a die of 7 held for heat forgoes more than a die of 3. On the Buzzard
+  no heat cell moves the rounds; the overheats climb from 0.31 to 0.53 a fight and the hull lost
+  from 1 to 3 points, so a hot die pays a third gun's heat in hull however small its number.
+- **A rolled gun is its mean, less a third of a point.** The Slugthrower reads 3.2 for a mean
+  of 3.5, the Howitzer 3.0 for 3.5, the Arquebus 2.8 for 3.0, the Twin Autoguns 2 or under for
+  2: the threshold a kill needs, the roll's low end wasting a point. A strikes gun reads a point
+  under its total (the Maxigun 3.5 for 4.5, the Cyclic Cannon 6.8 for 8), the armour and the
+  overkill each strike pays alone. Ryan's asymptote holds within that.
+- **The keywords in vanilla points on the car**: Flak 2 buys 2.0 (the Flak Cannon 5.0 for its
+  3, beside the Dingo's and the Clydesdale's guns), Burn 2 2.3 (the Stoker and the Blazethrower
+  5.3 for their 3 at heat 1 and 3 alike), Burn 3 2.7 (the Knuckles 7.7 for 5; the Meteor 7.2
+  after heat 6's 0.7), the Chain 2.7 (the Arc Fault 6.7 for 4), the Shock 1.4 (the Tesla 5.4
+  for 4, beside the Maxigun's strikes), Penetrate 3 0.3 (the Enfilade 4.3 for 4: no second foe
+  in the line at the car's reach), the Breach about 1 (the Railgun 8.8 for 10, less heat 8's
+  2), the Coriolis's point a missing five 1.2, the Airburst's Cleave 1 and Flak 1 together 1.7
+  over its mean of 1.5. Tier two's three setups (the Vacillator, the Backdraft, the Battery)
+  read 2.1 to 2.4, under tier zero, the greedy's valuation before their price.
+- **The tiers on the scale**: tier zero 2 to 3.1; tier one 2.8 to 3.5 for its rolled and
+  strikes guns, 4.3 for the Enfilade, 4.9 to 5.3 for the hot flat guns and the Blazethrower,
+  the Arc Fault 6.7 and the Railgun 8.8 outliers; tier two 4.2 to 5.4 for its keyword pieces,
+  the Cyclic 6.8 and the Meteor 7.2; tier three the Knuckles 7.7. The tiers overlap end to
+  end, as the 27 October run said in numbers; in vanilla points the mass of each tier sits a
+  point and a half above the last (3, 5, 7 for tiers one to three), which is the floors the
+  proposal leans to (2, 3.5, 5, 7: half a round a tier on the car).
