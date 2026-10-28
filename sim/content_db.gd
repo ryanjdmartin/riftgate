@@ -1649,6 +1649,11 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				var effect := str(a.get("effect", ""))
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
+				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
+				if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
+					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
+				if (effect == "barrier" or effect == "ward_all") and a.has("value"):
+					errs.append("%s: %s takes no value" % [aw, effect])
 				# A cleanse (28 October) takes every mark the team laid, so it says no number, and
 				# its condition, if any, is the one it needs.
 				if effect == "cleanse":

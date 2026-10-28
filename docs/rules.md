@@ -404,8 +404,10 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target, a spray's on
-  each strike's own foe; a blow that kills leaves nothing to burn.
+- **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
+  target, a spray's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
+  from a stoker's priming, is spent by its next move, whatever it is, on Kindled's clock, and a
+  machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
   a special at every machine passes it by; it still cools by its cooling, and ticks and
@@ -428,15 +430,24 @@ On a machine:
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Regenerating** (buff, the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
+- **Regenerating** (buff, on either side): a foe's, from its own special, regrows its value in HP
+  at each of its next three actions, after its Burning and Vitriol have ticked (a suppressed
+  foe's included), so a foe its tick kills regrows nothing; each grant keeps its own clock. A
+  machine's (the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
   round for three rounds; it stacks, each grant keeping its own end.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
+  A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
+  the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
+  or the end of the player's next turn.
 - **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
   move of its own (breach, burn, scorch, disable, corrupt, silence, purge), so its shield
   absorbs a breach like any blow; a blow's damage lands. Until the round's end. The Decoherence
-  Veil grants it, self or ally.
+  Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
+  the team lays lands on it but Suppressed (Burning, Flak, Cryo, Vitriol, Shocked, Exposed,
+  Webbed, the Paradox, the Syrinx Drone), so a turned mark feeds no Paradox; the damage lands;
+  until the end of the player's next turn.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
   never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
@@ -632,11 +643,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   or a passive's grant until the start of the player's turn; never a last act's), cleanse
   (every mark the team laid, Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
   and the Drone, off the most-marked of its own, itself included, the first in strike order on
-  a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), each on
-  its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
+  Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
+  every foe on the field, itself included), prime (Primed at its value on every other foe on the
+  field, at once), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a Phased machine by. No foe in content
-  carries a silence, a purge or a cleanse yet.
+  carries a silence, a purge, a cleanse, a barrier, a ward all, a prime or a regenerate yet.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.

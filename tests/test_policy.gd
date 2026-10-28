@@ -668,6 +668,53 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
 
 
+## The bot's read of a foe's four buffs (the ladder's brief, B; 28 October; placeholders): a
+## sheltering foe threatens the biggest weapon blow a machine still to act shows on it, a warding
+## one nothing, a stoker 2 a stack on every other foe it primes, a knitter its value for each of
+## three actions, a primed foe its blow and 2 a stack; a Barrier eats a weapon's first blow in the
+## damage read, and a Ward leaves the marks a blow would lay worth nothing.
+func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(10, L)
+	var torch := Face.attack(10, L, [K.BURN])
+	torch.burn = 3
+	sk.add_mech(_mech("A", Die.single(gun), 40, 200))
+	sk.add_mech(_mech("B", Die.single(torch), 40, 200))
+	var caster := Foe.make("caster", 500, 1)
+	var g1 := _ghoul(500, 10)
+	var g2 := _ghoul(500, 10)
+	sk.add_foes([caster, g1, g2])
+	sk.begin()
+	sk.start_round()
+	var moves := {"barrier": ["defend", 0], "ward_all": ["buff", 0], "prime": ["buff", 2], "regenerate": ["defend", 4]}
+	var worth := {}
+	for effect in moves:
+		caster.action = {"id": effect, "name": effect, "kind": moves[effect][0], "effect": effect, "weight": 1, "text": ""}
+		if int(moves[effect][1]) > 0:
+			caster.action["value"] = int(moves[effect][1])
+		worth[effect] = Policy._threat_now(caster, sk)
+	assert_eq(worth["barrier"], 10.0, "a Barrier: the biggest weapon blow a machine still to act shows on it")
+	assert_eq(worth["ward_all"], 0.0, "a Ward: nothing")
+	assert_eq(worth["prime"], 8.0, "a priming: 2 a stack, two stacks on each of two others")
+	assert_eq(worth["regenerate"], 12.0, "a regrowth: its value for each of three actions")
+	var plain := Policy._threat_now(g1, sk)
+	Effects.grant(g1, Effects.primed_foe(3, "foe:caster"))
+	assert_eq(Policy._threat_now(g1, sk), plain + 6.0, "a primed foe threatens its blow and 2 a stack")
+	var a: Skirmish.MechState = sk.mechs[0]
+	var b: Skirmish.MechState = sk.mechs[1]
+	Effects.stack(g1, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	assert_eq(pol.expected_damage(a, gun, g1), 0.0, "a Barrier eats a weapon's first blow")
+	var twice := Face.attack(10, L)
+	twice.strikes = 2
+	assert_eq(pol.expected_damage(a, twice, g1), 10.0, "and the second lands")
+	var bare := pol.attack_score(sk, b, torch, g2)
+	var bare_gun := pol.attack_score(sk, a, gun, g2)
+	Effects.stack(g2, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	assert_true(pol.attack_score(sk, b, torch, g2) < bare, "a Ward leaves the Burn worth nothing")
+	assert_eq(pol.attack_score(sk, a, gun, g2), bare_gun, "and a plain gun as it was")
+
+
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
 ## the share of the die's rolls it would have shown; Rapid's switch-off costs nothing.
 func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:

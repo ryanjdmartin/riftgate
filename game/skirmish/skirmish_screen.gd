@@ -1295,6 +1295,22 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], Palette.HEAT, "preview"])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
+	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
+	# flame, the shield with its wall or its struck ring, the heart regrowing.
+	var primed := Effects.stacks_of(foe, "primed")
+	if primed > 0:
+		rows.append([_foe_glyph("primed"), "×%d" % primed, "Primed: its next move's blows each leave %d Burning on the machine they hit; the move spends it" % primed, _foe_chip_colour("primed")])
+	if Effects.has(foe, "barrier"):
+		rows.append([_foe_glyph("barrier"), "", "Barrier: the next blow of a weapon it takes deals no damage, the blow's riders landing; equipment pops nothing. Until it pops or the player's turn ends", _foe_chip_colour("barrier")])
+	if Effects.has(foe, "ward"):
+		rows.append([_foe_glyph("ward"), "", "Ward: no mark the team lays lands on it but Suppressed (no Burning, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone); damage lands. Until the player's turn ends", _foe_chip_colour("ward")])
+	var regrow := Effects.regrowth(foe)
+	if regrow > 0:
+		var left := 0
+		for m in Effects.live(foe):
+			if m.id == "regenerating":
+				left = maxi(left, m.stacks)
+		rows.append([_foe_glyph("regenerating"), "+%d" % regrow, "Regenerating: regrows %d HP at each of its actions, after its Burning and Vitriol (%d action%s to go)" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")])
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
@@ -1369,9 +1385,9 @@ static func _foe_glyph(id: String) -> String:
 
 ## A foe's status's colour on its chip, as the rows above give them.
 static func _foe_chip_colour(id: String) -> Color:
-	if id in ["burning", "vitriol", "flakked", "kindled", "shocked"]:
+	if id in ["burning", "vitriol", "flakked", "kindled", "shocked", "primed"]:
 		return Palette.HEAT
-	if id in ["webbed", "braced", "numbed", "paradox"]:
+	if id in ["webbed", "braced", "numbed", "paradox", "barrier", "ward"]:
 		return Palette.SHIELD
 	if id in ["risen", "exposure"]:
 		return Palette.ENEMY
@@ -1396,7 +1412,9 @@ static func status_glyph(id: String) -> String:
 		"braced":
 			return "shield"
 		"primed":
-			return "burn"
+			return "primed"
+		"regenerating":
+			return "regenerating"
 		"retaliate":
 			return "shocked"
 		"hopper":

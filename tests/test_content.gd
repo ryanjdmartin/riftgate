@@ -256,6 +256,33 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
+## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
+## their number, 1 or more; a Barrier and a Ward say none.
+func test_a_foes_buff_specials_say_their_number_or_none() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var cases := {
+		"stoker": {"kind": "buff", "effect": "prime"},
+		"knitter": {"kind": "defend", "effect": "regenerate", "value": 0},
+		"shelter": {"kind": "defend", "effect": "barrier", "value": 2},
+		"hallow": {"kind": "buff", "effect": "ward_all", "value": 1},
+		"fine": {"kind": "buff", "effect": "prime", "value": 2},
+	}
+	for id in cases:
+		var f: Dictionary = db.foes["revenant"].duplicate(true)
+		var a := {"id": "move", "name": "Move", "text": "", "status": "implemented", "weight": 1}
+		a.merge(cases[id])
+		f["actions"].append(a)
+		db.foes[id] = f
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe stoker") and e.contains("prime says its number")), "a priming with no number is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe knitter") and e.contains("regenerate says its number")), "a regrowth of nothing is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe shelter") and e.contains("barrier takes no value")), "a Barrier with a number is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hallow") and e.contains("ward_all takes no value")), "a Ward with a number is reported")
+	var fine: Array = errs.filter(func(e) -> bool: return e.begins_with("foe fine"))
+	assert_eq(fine, [], "a priming that says its number passes")
+
+
 func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

@@ -7044,6 +7044,184 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 	assert_false(sk.legal_actions(healer).any(func(x) -> bool: return str(x.get("effect", "")) == "cleanse"), "the round after, the cleanse is not open")
 
 
+## A foe's Barrier (the ladder's brief, B; 28 October): its special shelters itself, aimed at
+## no machine; the next blow of a weapon it takes deals nothing and pops it, the blow's riders
+## landing and its Shock spent; equipment pops nothing; unpopped, it goes at the end of the
+## player's next turn.
+func test_a_foes_barrier_takes_the_next_weapon_blow_and_lasts_to_the_players_turn_end() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(0, L, [K.SHOCK])), 40, 200)
+	var b := _mech("B", Die.single(Face.attack(10, L, [K.BURN])), 40, 200)
+	var c := _mech("C", Die.single(Face.attack(10, L)), 40, 200)
+	for m in [a, b, c]:
+		sk.add_mech(m)
+	var shelter := _caster("barrier", "defend")
+	sk.add_foes([shelter])
+	sk.begin()
+	sk.start_round()
+	assert_true(shelter.acts_on_nobody(), "a Barrier is aimed at no machine")
+	sk.end_round()
+	assert_true(Effects.has(shelter, "barrier"), "it shelters itself")
+	assert_true("\n".join(sk.log).contains("the next weapon blow on it deals nothing"), "the log says what it does")
+	sk.start_round()
+	assert_true(Effects.has(shelter, "barrier"), "it stands through the player's turn")
+	assert_true(sk.assign(0, shelter), "a probe")
+	assert_true(Effects.has(shelter, "barrier"), "equipment pops nothing")
+	assert_true(Effects.has(shelter, "shocked"), "and its mark lands")
+	var before := shelter.hp
+	assert_true(sk.assign(1, shelter), "a torch")
+	assert_eq(shelter.hp, before, "the weapon's blow deals nothing")
+	assert_false(Effects.has(shelter, "barrier"), "and pops it")
+	assert_true(Effects.has(shelter, "burning"), "the blow's rider lands")
+	assert_false(Effects.has(shelter, "shocked"), "and the blow spends the Shock")
+	assert_true("\n".join(sk.log).contains("Barrier takes the blow"), "the log says so")
+	assert_true(sk.assign(2, shelter), "the next gun")
+	assert_eq(shelter.hp, before - 10, "lands whole")
+	sk.end_round()
+	assert_true(Effects.has(shelter, "barrier"), "it shelters again")
+	shelter.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}]
+	sk.start_round()
+	assert_true(Effects.has(shelter, "barrier"), "unpopped through the player's turn")
+	sk.end_round()
+	assert_false(Effects.has(shelter, "barrier"), "and gone when the player's turn ends")
+
+
+## A foe's Ward (the ladder's brief, B; 28 October): its special wards every foe on the field,
+## itself included; no mark the team lays lands (Burning, Flak, Shock, the Paradox), Suppressed
+## excepted, since Numbed stays the one stun resistance; the damage lands; the spend tells it
+## once; a passive's lay is turned too; it goes at the end of the player's next turn.
+func test_a_foes_ward_turns_the_teams_marks_away_and_lets_suppressed_land() -> void:
+	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 3}]}
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(5, L, [K.BURN, K.SHOCK, K.FLAK])
+	gun.strikes = 2
+	var a := _mech("A", Die.single(gun), 40, 200)
+	a.grant_passive(meter)
+	var b := _mech("B", Die.single(Face.attack(0, L, [K.SUPPRESS])), 40, 200)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var hallow := _caster("ward_all", "buff")
+	var g := _ghoul(500, 1)
+	sk.add_foes([hallow, g])
+	sk.begin()
+	sk.start_round()
+	assert_true(hallow.acts_on_nobody(), "a Ward is aimed at no machine")
+	sk.end_round()
+	assert_true(Effects.has(hallow, "ward") and Effects.has(g, "ward"), "every foe on the field, itself included")
+	sk.start_round()
+	var before := g.hp
+	assert_true(sk.assign(0, g), "a gun of three marks, twice")
+	assert_eq(g.hp, before - 10, "the damage lands, and no Flak feeds the second blow")
+	for id in ["burning", "shocked", "flakked", "paradox"]:
+		assert_false(Effects.has(g, id), "no %s" % id)
+	assert_eq("\n".join(sk.log).count("Ward turns away"), 1, "the spend tells it once")
+	assert_true(sk.assign(1, g), "a Suppress")
+	assert_true(g.is_suppressed(), "Suppressed lands")
+	assert_false(Effects.has(g, "paradox"), "and the Paradox it would feed is turned away")
+	Effects.stack(g, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
+	assert_false(Effects.has(g, "vitriol"), "a lay from anywhere is turned")
+	sk.end_round()
+	hallow.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}]
+	sk.start_round()
+	assert_true(Effects.has(hallow, "ward"), "granted again, it stands through the player's turn")
+	sk.end_round()
+	assert_false(Effects.has(hallow, "ward") or Effects.has(g, "ward"), "and goes when the player's turn ends")
+	sk.start_round()
+	assert_true(sk.assign(0, g), "the gun again")
+	assert_true(Effects.has(g, "burning") and Effects.has(g, "flakked"), "its marks land once the Ward is gone")
+
+
+## Primed on a foe (the ladder's brief, B; 28 October): a stoker primes every other foe on the
+## field at its value; one acting after it this turn leaves that much Burning on the machine its
+## blow hits and spends it; one that acted carries it to its next move; a machine's Ward turns
+## it away as a rider.
+func test_a_stoker_primes_the_others_and_their_next_move_leaves_burning() -> void:
+	var sk := Skirmish.new(1, 2)
+	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 400)
+	sk.add_mech(u)
+	var stoker := _caster("prime", "buff")
+	stoker.actions[0]["value"] = 2
+	var early := _ghoul(500, 12)   # the heaviest blow stands left and strikes first
+	var late := _archer(500, 3)    # the back rank strikes after the front
+	sk.add_foes([stoker, early, late])
+	sk.begin()
+	sk.start_round()
+	assert_true(stoker.acts_on_nobody(), "a priming is aimed at no machine")
+	sk.end_round()
+	assert_false(Effects.has(stoker, "primed"), "every other foe, never itself")
+	assert_eq(Effects.stacks_of(early, "primed"), 2, "one that acted carries it to its next move")
+	assert_false(Effects.has(late, "primed"), "one acting after it spends it this turn")
+	assert_eq(Effects.stacks_of(u, "burning_mech"), 2, "its blow leaving its stacks of Burning")
+	assert_true("\n".join(sk.log).contains("primed, sets A burning ×2"), "the log says so")
+	stoker.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}]
+	sk.start_round()
+	Effects.remove(u, "burning_mech")
+	sk.end_round()
+	assert_false(Effects.has(early, "primed"), "its next move spends it")
+	assert_eq(Effects.stacks_of(u, "burning_mech"), 2, "and leaves its Burning")
+	Effects.grant(early, Effects.primed_foe(3, "foe:caster"))
+	assert_true(Skirmish._rides(early), "a primed blow carries a rider a Ward turns")
+	sk.start_round()
+	Effects.remove(u, "burning_mech")
+	Effects.stack(u, Effects.STATUS["ward"], Effects.ROUNDS, "buff", 1, Effects.DECAY_NONE, sk.round)
+	sk.end_round()
+	assert_false(Effects.has(u, "burning_mech"), "a warded machine takes no priming's Burning")
+	assert_false(Effects.has(early, "primed"), "and the move still spends it")
+
+
+## Regenerating on a foe (the ladder's brief, B; 28 October): its special knits itself, a
+## regrowth of its value at each of its next three actions, after its Burning and Vitriol have
+## ticked, so a burn is a race and never a wall: a foe the tick kills regrows nothing. A
+## suppressed foe regrows too, its ticks being its own.
+func test_a_foes_regeneration_regrows_after_its_ticks_for_three_actions() -> void:
+	var sk := Skirmish.new(1, 2)
+	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 400)
+	sk.add_mech(u)
+	var knit := _caster("regenerate", "defend")
+	knit.actions[0]["value"] = 4
+	var dying := _ghoul(500, 1)
+	sk.add_foes([knit, dying])
+	sk.begin()
+	sk.start_round()
+	assert_true(knit.acts_on_nobody(), "a regrowth is aimed at no machine")
+	sk.end_round()
+	assert_eq(Effects.regrowth(knit), 4, "it regrows its value at each action")
+	knit.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}]
+	knit.hp = 498
+	Effects.stack(knit, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	var burn := 3 * _rule("burning", "tick_hp")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(knit.hp, mini(500, 498 - burn + 4), "the regrowth comes after the tick")
+	assert_true("\n".join(sk.log).contains("regenerates"), "the log says so")
+	knit.hp = 400
+	sk.start_round()
+	Effects.grant_for_rounds(knit, Effects.STATUS["suppressed"], "mech", sk.round)
+	var ticks := int(Effects.tick_preview(knit)["hp"])
+	sk.end_round()
+	assert_eq(knit.hp, 400 - ticks + 4, "a suppressed foe regrows too")
+	sk.start_round()
+	ticks = int(Effects.tick_preview(knit)["hp"])
+	var at := knit.hp
+	sk.end_round()
+	assert_eq(knit.hp, at - ticks + 4, "its third action")
+	assert_false(Effects.has(knit, "regenerating"), "and then it is gone")
+	sk.start_round()
+	at = knit.hp
+	ticks = int(Effects.tick_preview(knit)["hp"])
+	sk.end_round()
+	assert_eq(knit.hp, at - ticks, "nothing regrown at the fourth")
+	# A race, never a wall: the tick that kills comes first.
+	var m := Effects.regenerating(10)
+	Effects.grant(dying, m)
+	dying.hp = 2
+	Effects.stack(dying, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 5)
+	sk.start_round()
+	sk.end_round()
+	assert_false(dying.alive(), "a foe its Burning kills regrows nothing")
+
+
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places, no damage; a
 ## foe pulled into the front stands exposed to Direct fire; a massive foe never moves.

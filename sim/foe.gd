@@ -255,6 +255,10 @@ func strikes() -> int:
 ##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
 ##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
 ##           Suppressed, never a buff
+##           barrier: a Barrier on itself, the next weapon blow it takes dealing nothing, until
+##           popped or the end of the player's next turn (28 October)
+##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
+##           actions after its ticks (28 October)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
@@ -262,6 +266,10 @@ func strikes() -> int:
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
+##           prime: Primed `value` on every other foe on the field, its next move's blows each
+##           leaving that much Burning on the machine they hit (28 October)
+##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
+##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
 ##           turn (Stoke; direct heat retired 13 October)
@@ -270,14 +278,14 @@ func strikes() -> int:
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
-	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally"],
+	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all"],
 	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "revive_once", "revive_once_ally", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick

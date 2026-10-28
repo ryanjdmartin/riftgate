@@ -61,7 +61,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
-	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
+	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat"],
@@ -279,9 +279,19 @@ const STATUS := {
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
 	# nothing leaves it standing (Skirmish._damage_mech spends it). A Ward turns away every rider
 	# a foe's blows lay on it that round, a breach included, so its shield absorbs the needle; the
-	# damage lands. Neither stacks, and both go at the round's end (a buff's grant).
+	# damage lands. Neither stacks, and both go at the round's end (a buff's grant). On a foe
+	# (28 October), from its own specials, they last until the end of the player's next turn in
+	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
+	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
+	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
+	# never a wall; a stack an action left, three from the grant, each grant its own clock
+	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield) is
+	# planned until its engine session. A buff the player's Purge takes.
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
+		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
@@ -317,6 +327,69 @@ static func kindled(value: int) -> Dictionary:
 	d["effects"][0]["value"] = value
 	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
 	return d
+
+
+## Regenerating at a move's own value (28 October): a grant of its own, three of its owner's
+## actions on its clock (a stack an action, lost at each tick), its value the regrowth each.
+static func regenerating(value: int, actions: int = 3) -> Modifier:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["effects"][0]["value"] = value
+	d["description"] = filled(str(STATUS["regenerating"]["description"]), d["effects"])
+	var m := make(d, SKIRMISH, "regenerate")
+	m.stacks = maxi(1, actions)
+	m.decay = DECAY_TICK
+	return m
+
+
+## The HP a foe regrows at its action: every Regenerating grant's value, once each, whatever
+## its stacks (they count the actions left).
+static func regrowth(u) -> int:
+	var n := 0
+	for m in live(u):
+		if m.id == "regenerating":
+			for eff in m.effects:
+				if str(eff.get("effect", "")) == "regrow":
+					n += int(eff.get("value", 0))
+	return n
+
+
+## Primed on a foe at a stoker's value (28 October): its next move's blows each leave that much
+## Burning on the machine they hit, as a Burn rider would, and the move spends it, whatever it
+## is (Kindled's clock); a grant of its own, so two stokings add.
+static func primed_foe(value: int, source: String) -> Modifier:
+	var d: Dictionary = STATUS["primed"].duplicate(true)
+	d["description"] = "Its next move's blows each leave %d Burning on the machine they hit; the move spends it." % maxi(1, value)
+	var m := make(d, SKIRMISH, source)
+	m.stacks = maxi(1, value)
+	return m
+
+
+## A Barrier and a Ward on a foe (28 October): the machines' statuses in the foe's own words,
+## since a foe's lasts until the end of the player's next turn, its Barrier pops on a weapon's
+## blow alone and its Ward turns the team's marks, Suppressed excepted.
+static func foe_barrier() -> Dictionary:
+	var d: Dictionary = STATUS["barrier"].duplicate(true)
+	d["description"] = "The next blow of a weapon it takes deals no damage; the blow's riders land, and equipment pops nothing. Until it pops or the player's turn ends."
+	return d
+
+
+static func foe_ward() -> Dictionary:
+	var d: Dictionary = STATUS["ward"].duplicate(true)
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Burning, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone. Damage lands. Until the player's turn ends."
+	return d
+
+
+## The end of the player's turn for a foe (28 October): what lasts until the end of the player's
+## next turn (a foe's Barrier and Ward, granted in the enemy's turn, decaying with the turn) goes.
+static func player_turn_end_foe(u) -> void:
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_TURN_ALL)
+
+
+## Does a Ward turn this mark away (28 October)? A foe under a Ward takes none of the team's
+## marks (TEAM_MARKS), Suppressed excepted, since Numbed stays the one stun resistance; a mark
+## id only ever lands on a foe, so a machine's Ward is never asked.
+static func turns_mark(u, id: String) -> bool:
+	return TEAM_MARKS.has(id) and has(u, "ward")
 
 
 ## The armour one stack of Armoured adds (its add_stat): one, since 18 October.
@@ -434,6 +507,8 @@ static func _record(u, m: Modifier, n: int) -> void:
 
 ## A timed effect: gone after the end of `round`.
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
+	if turns_mark(u, str(passive.get("id", ""))):
+		return null   # a foe's Ward turns the team's mark away (28 October)
 	var held := _held(u, passive, ROUNDS, 1, round)
 	if held != null:
 		return held
@@ -476,6 +551,8 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
 ## where it came from"): the grant's own scope and decay give way.
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
+	if turns_mark(u, str(passive.get("id", ""))):
+		return null   # a foe's Ward turns the team's mark away (28 October)
 	if keeps(u, str(passive.get("id", ""))):
 		scope = BATTLE
 		decay = DECAY_NONE

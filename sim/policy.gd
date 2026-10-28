@@ -59,6 +59,8 @@ const MINE_PULL_SHARE := 0.5     # the odds a shot no arrival will take is cashe
 const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average blow, at the odds an arrival takes the slot its kill empties, as a share
 const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
 const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
+const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Burning its next move leaves, a placeholder
+const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -468,6 +470,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			for foe in hit:
 				if Effects.has(foe, "shocked") and f.is_debuff():
 					continue
+				if Effects.turns_mark(foe, "shocked"):
+					continue   # its Ward turns the Shock away (28 October)
 				var left := maxf(0.0, float(foe.hp) - mean)
 				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, shock_cash(sk, ms, foe))
 	if f.has(Face.Keyword.SPILLOVER) and target.rank == 0 and not target.is_massive():
@@ -523,6 +527,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		for pair in lays:
 			if bool(pair[2]) and f.is_debuff():
 				continue
+			if Effects.turns_mark(foe, str(pair[0])):
+				continue   # its Ward turns the lay away (28 October)
 			score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
 			if foe == target:
 				laid_apps += 1
@@ -531,7 +537,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
-	if f.has(Face.Keyword.BURN):
+	if f.has(Face.Keyword.BURN) and not Effects.turns_mark(target, "burning"):
 		# Burn N leaves N stacks that tick N, N-1, ... 1 over the actions to come (Ryan, 18
 		# October: a numbered keyword, a damage point a stack); the tick is read from the status.
 		# Every strike lays its stacks, so a split or multi-strike gun's add up first.
@@ -581,7 +587,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 		else:
 			score += expose_score(sk, target)
-		if not Effects.has(target, "syrinx_drone"):
+		if not Effects.has(target, "syrinx_drone") and not Effects.turns_mark(target, "syrinx_drone"):
 			var waits := 1.0 if waiting_for(sk, 0 if target.is_massive() else target.rank) > 0 else 0.0
 			score += DRONE_WEIGHT * _team_raw_attack_mean(sk) * maxf(waits, pull_on_team(sk) * MINE_PULL_SHARE)
 	if f.devours > 0:
@@ -798,7 +804,7 @@ static func _field_hp(sk: Skirmish) -> float:
 ## fades (one a live machine, this round's rest and the next), and for a back-rank foe its
 ## formation hides, its kill and threat brought into Direct reach, as a share.
 func expose_score(sk: Skirmish, foe: Foe) -> float:
-	if foe == null or not foe.alive() or Effects.has(foe, "exposure"):
+	if foe == null or not foe.alive() or Effects.has(foe, "exposure") or Effects.turns_mark(foe, "exposure"):
 		return 0.0
 	var blows := float(sk.live_mechs().size())
 	var score := float(foe.armour_total()) * blows * HULL_WEIGHT * EXPOSE_WEIGHT
@@ -815,7 +821,7 @@ func expose_score(sk: Skirmish, foe: Foe) -> float:
 ## it: half, or a stack less), a blow a machine on the target and half that elsewhere. Damage
 ## in hand, at FLAK_WEIGHT.
 func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: float, is_target: bool) -> float:
-	if f == null or not f.has(Face.Keyword.FLAK) or left <= 0.0:
+	if f == null or not f.has(Face.Keyword.FLAK) or left <= 0.0 or Effects.turns_mark(foe, "flakked"):
 		return 0.0
 	var stacks := f.flak + Effects.extra_stacks(ms.unit, "flakked", ms.heat)
 	var now := float(maxi(0, f.strikes - 1))
@@ -1014,6 +1020,8 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	var w := 1.0 / rolls.size()
 	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
 	var damaging := not f.is_debuff()
+	# A foe's Barrier (28 October) takes the first blow of a weapon whole, an area's included.
+	var barred := damaging and target != null and Effects.has(target, "barrier")
 	for v in rolls:
 		var dmg: int = Skirmish.split_share(v + fired, f.split)   # a split's share, rounded down, never below one
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"]) + own   # the firer's modifiers, judged on this foe, then its own reads
@@ -1023,9 +1031,11 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		var arm := target.armour_for(f) if target != null else 0
 		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and damaging else 0) - arm)
 		if not aimed:
-			out.append([float(later) * n, w])
+			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])
 			continue
 		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
+		if barred:
+			first = 0
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
 	return out
 
@@ -1340,7 +1350,7 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 ## each at the odds Numbed lets the burst land; nothing on a foe already suppressed, which
 ## gains nothing from a second, and nothing on a foe already webbed.
 func web_score(sk: Skirmish, target: Foe) -> float:
-	if Effects.has(target, "webbed"):
+	if Effects.has(target, "webbed") or Effects.turns_mark(target, "webbed"):
 		return 0.0
 	var score := 0.0
 	if not target.is_suppressed():
@@ -1592,8 +1602,8 @@ static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
 			continue
 		adds += meter[0]
 		at = meter[1] if at == 0 else mini(at, meter[1])
-	if at <= 0 or apps <= 0 or not target.alive():
-		return 0.0
+	if at <= 0 or apps <= 0 or not target.alive() or Effects.turns_mark(target, "paradox"):
+		return 0.0   # a Ward turns the Paradox itself away (28 October)
 	var need := maxi(1, at - Effects.stacks_of(target, "paradox"))
 	return minf(1.0, float(apps * adds) / float(need)) * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
 
@@ -1819,13 +1829,50 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 	if sk != null and sk.rallies_now(f):
 		return float(sk.rally_worth(f))
-	if sk != null and not f.is_suppressed() and str(f.action.get("effect", "")) == "cleanse":
-		return _cleanse_worth(f, sk)
+	if sk != null and not f.is_suppressed():
+		match str(f.action.get("effect", "")):
+			"cleanse":
+				return _cleanse_worth(f, sk)
+			"barrier", "ward_all", "prime", "regenerate":
+				return _foe_buff_worth(f, sk)
 	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
 	var machines: int = sk.live_mechs().size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
-	return float(blow * f.strikes() * machines)
+	# A primed foe's move leaves Burning on what it hits (28 October), 2 a stack (a placeholder).
+	return float(blow * f.strikes() * machines) + PRIMED_WORTH * float(Effects.stacks_of(f, "primed"))
+
+
+## What a foe's buff special grants, as the bot reads it (28 October; placeholders): a Barrier
+## the biggest weapon blow a machine still to act shows on the foe it shelters, a Ward nothing,
+## Primed 2 a stack on every other foe it primes, Regenerating its value for each of its actions.
+static func _foe_buff_worth(f: Foe, sk: Skirmish) -> float:
+	var value := maxi(1, int(f.action.get("value", 0)))
+	match str(f.action.get("effect", "")):
+		"barrier":
+			return barrier_stakes(sk, f)
+		"prime":
+			var primed := 0
+			for other in sk.field_foes():
+				if other != f and other.alive():
+					primed += 1
+			return PRIMED_WORTH * float(value * primed)
+		"regenerate":
+			return float(value * REGEN_ACTIONS)
+	return 0.0   # a Ward: nothing (the brief's placeholder)
+
+
+## What a Barrier on a foe stands to take (28 October): the biggest blow of a weapon a machine
+## still to act shows on it, the blow it would eat.
+static func barrier_stakes(sk: Skirmish, foe: Foe) -> float:
+	var best := 0.0
+	for ms in sk.live_mechs():
+		if ms.assigned:
+			continue
+		var of := sk.spend_face(ms)
+		if of != null and of.is_weapon() and sk.targets_for_face(ms, of).has(foe):
+			best = maxf(best, float(of.average()))
+	return best
 
 
 ## What a cleanser's move would take off its side this round (28 October), each mark at what
