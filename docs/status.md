@@ -265,10 +265,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.338 (the
-  page's version 350, published 28 October from `ccr-7d865127-wr1ko2` onto its own v0.337, a
-  three-way merge onto another session's v0.336 (version 348): the Skua's motion row, its run
-  and stoops flown paths on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
+  `docs/design-bible.html` after every change. This file and the live page are v0.339 (the
+  page's version 351, published 28 October from `ccr-7d865127-wr1ko2` as a three-way merge onto
+  another session's v0.338 (version 350): the Skua's motion row, its run and stoops flown paths
+  on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
   the area session's v0.333). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
