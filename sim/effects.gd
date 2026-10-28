@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -61,7 +61,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
-	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
+	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat"],
@@ -262,15 +262,16 @@ const STATUS := {
 	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
 	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
 	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
-	# The enemy's answer to a stacked machine (Ryan, 17 and 18 October; built 21 October): a
-	# foe's silence leaves the machine Silenced through its next round, every buff it carries
-	# counting for nothing (the pipeline's suppress turns them off). Its components' keywords
-	# act (Ryan, 26 October, on the mechanics audit: buffs alone, so a Volatile bites and a
-	# silence is never an upgrade), and its stores fill and spend as ever (Ryan, 21 October: a
-	# store is a resource, and a balance lever if silence does not hurt enough). It costs
-	# time, never ability. Cleansable; a Ward turns it away.
-	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its buffs count for nothing through its next round.", "stacking": "renew",
-		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "suppress", "value": "buff"}]},
+	# The enemy's question to the keyword build (Ryan, 27 and 28 October: silence "makes sense
+	# to only disable (positive) keywords, and not touch buffs"; built with the ladder): a foe's
+	# silence leaves the machine Silenced through its next round, its components' keywords
+	# muted, printed and granted alike (a Rapid acts once, a Spread lands one blow, its own
+	# Cleanse is a plain shield); its buffs count and its stores fill and spend as ever.
+	# Volatile is a cost since 26 October, so nothing a silence mutes is a price. It costs time,
+	# never ability. Cleansable (an ally's Cleanse); a Ward turns it away. Retired: buffs alone
+	# (25 and 26 October), a one-round purge that returns.
+	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its components' keywords are muted through its next round.", "stacking": "renew",
+		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
 	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
 		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
@@ -278,9 +279,19 @@ const STATUS := {
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
 	# nothing leaves it standing (Skirmish._damage_mech spends it). A Ward turns away every rider
 	# a foe's blows lay on it that round, a breach included, so its shield absorbs the needle; the
-	# damage lands. Neither stacks, and both go at the round's end (a buff's grant).
+	# damage lands. Neither stacks, and both go at the round's end (a buff's grant). On a foe
+	# (28 October), from its own specials, they last until the end of the player's next turn in
+	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
+	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
+	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
+	# never a wall; a stack an action left, three from the grant, each grant its own clock
+	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield) is
+	# planned until its engine session. A buff the player's Purge takes.
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
+		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
@@ -316,6 +327,69 @@ static func kindled(value: int) -> Dictionary:
 	d["effects"][0]["value"] = value
 	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
 	return d
+
+
+## Regenerating at a move's own value (28 October): a grant of its own, three of its owner's
+## actions on its clock (a stack an action, lost at each tick), its value the regrowth each.
+static func regenerating(value: int, actions: int = 3) -> Modifier:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["effects"][0]["value"] = value
+	d["description"] = filled(str(STATUS["regenerating"]["description"]), d["effects"])
+	var m := make(d, SKIRMISH, "regenerate")
+	m.stacks = maxi(1, actions)
+	m.decay = DECAY_TICK
+	return m
+
+
+## The HP a foe regrows at its action: every Regenerating grant's value, once each, whatever
+## its stacks (they count the actions left).
+static func regrowth(u) -> int:
+	var n := 0
+	for m in live(u):
+		if m.id == "regenerating":
+			for eff in m.effects:
+				if str(eff.get("effect", "")) == "regrow":
+					n += int(eff.get("value", 0))
+	return n
+
+
+## Primed on a foe at a stoker's value (28 October): its next move's blows each leave that much
+## Burning on the machine they hit, as a Burn rider would, and the move spends it, whatever it
+## is (Kindled's clock); a grant of its own, so two stokings add.
+static func primed_foe(value: int, source: String) -> Modifier:
+	var d: Dictionary = STATUS["primed"].duplicate(true)
+	d["description"] = "Its next move's blows each leave %d Burning on the machine they hit; the move spends it." % maxi(1, value)
+	var m := make(d, SKIRMISH, source)
+	m.stacks = maxi(1, value)
+	return m
+
+
+## A Barrier and a Ward on a foe (28 October): the machines' statuses in the foe's own words,
+## since a foe's lasts until the end of the player's next turn, its Barrier pops on a weapon's
+## blow alone and its Ward turns the team's marks, Suppressed excepted.
+static func foe_barrier() -> Dictionary:
+	var d: Dictionary = STATUS["barrier"].duplicate(true)
+	d["description"] = "The next blow of a weapon it takes deals no damage; the blow's riders land, and equipment pops nothing. Until it pops or the player's turn ends."
+	return d
+
+
+static func foe_ward() -> Dictionary:
+	var d: Dictionary = STATUS["ward"].duplicate(true)
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Burning, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone. Damage lands. Until the player's turn ends."
+	return d
+
+
+## The end of the player's turn for a foe (28 October): what lasts until the end of the player's
+## next turn (a foe's Barrier and Ward, granted in the enemy's turn, decaying with the turn) goes.
+static func player_turn_end_foe(u) -> void:
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_TURN_ALL)
+
+
+## Does a Ward turn this mark away (28 October)? A foe under a Ward takes none of the team's
+## marks (TEAM_MARKS), Suppressed excepted, since Numbed stays the one stun resistance; a mark
+## id only ever lands on a foe, so a machine's Ward is never asked.
+static func turns_mark(u, id: String) -> bool:
+	return TEAM_MARKS.has(id) and has(u, "ward")
 
 
 ## The armour one stack of Armoured adds (its add_stat): one, since 18 October.
@@ -373,6 +447,7 @@ class Modifier:
 	var seq: int = 0               # grant order, for override ties
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
+	var slept: bool = false        # put to sleep by a purge (28 October): it takes part in nothing, its clocks running, until the player's turn wakes it
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
@@ -432,6 +507,8 @@ static func _record(u, m: Modifier, n: int) -> void:
 
 ## A timed effect: gone after the end of `round`.
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
+	if turns_mark(u, str(passive.get("id", ""))):
+		return null   # a foe's Ward turns the team's mark away (28 October)
 	var held := _held(u, passive, ROUNDS, 1, round)
 	if held != null:
 		return held
@@ -474,6 +551,8 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
 ## where it came from"): the grant's own scope and decay give way.
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
+	if turns_mark(u, str(passive.get("id", ""))):
+		return null   # a foe's Ward turns the team's mark away (28 October)
 	if keeps(u, str(passive.get("id", ""))):
 		scope = BATTLE
 		decay = DECAY_NONE
@@ -733,7 +812,10 @@ static func end_battle(u) -> void:
 ## Live modifiers after suppression, shortest scope first, latest granted first within a
 ## scope: the order overrides are resolved in.
 static func live(u) -> Array:
-	var all: Array = u.modifiers.duplicate()
+	var all: Array = []
+	for m in u.modifiers:
+		if not m.slept:
+			all.append(m)   # a buff a purge put to sleep takes part in nothing until it wakes
 	all.sort_custom(func(a, b) -> bool: return a.scope > b.scope or (a.scope == b.scope and a.seq > b.seq))
 	var off := {}
 	for m in all:
@@ -1094,9 +1176,17 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		return null
 	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
-	var granted := granted_keywords(u, base, target)
-	var printed := granted_keywords(u, base, target, true)
-	var numbers := granted_numbers(u, base, target)
+	# Silenced (28 October): the entry acts without its keywords, printed and granted alike,
+	# while the die keeps the real ones; its numbers, heat and costs stand.
+	var muted := keywords_muted(u)
+	var granted: Array[int] = []
+	var printed: Array[int] = []
+	var numbers := {}
+	if not muted:
+		granted = granted_keywords(u, base, target)
+		printed = granted_keywords(u, base, target, true)
+		numbers = granted_numbers(u, base, target)
+	var mutes := muted and (not base.keywords.is_empty() or not base.printed.is_empty())
 	# A numbered grant on a keyword the entry already carries sets its number (the drum's shape).
 	var raised := {}
 	for kw in numbers.keys():
@@ -1105,9 +1195,12 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
 	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1 and not mutes:
 		return face
 	var c := base.duplicate_face() if base == face else base
+	if mutes:
+		c.keywords.clear()
+		c.printed.clear()
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
@@ -1302,7 +1395,12 @@ static func sealed_status(armour: int, heat: int) -> Dictionary:
 
 
 static func is_sealed(u) -> bool:
-	return has(u, "sealed")
+	# The form stands while a purge sleeps its armour (28 October): its price, the cooling it
+	# stops, keeps biting, so a slept seal still reads sealed.
+	for m in u.modifiers:
+		if m.id == "sealed" and m.stacks > 0:
+			return true
+	return false
 
 
 ## The chance, percent, that an ally slips out under this machine's screen when the team
@@ -1504,7 +1602,17 @@ static func stack_multiplier(u, face: Face, target = null) -> int:
 	return mult
 
 
-## Is this modifier one a silence turns off and a purge takes: a buff (a kept Overcharged
+## Are this machine's components' keywords muted (Silenced, 21 October; again 28 October)? Its
+## entries are spent, shown and weighed without them, granted ones too, while the die keeps the
+## real ones.
+static func keywords_muted(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "mute_keywords":
+			return true
+	return false
+
+
+## Is this modifier one a purge reaches: a buff (a kept Overcharged
 ## too), never a store (Ryan, 21 October: a store is a capped resource, as heat and the
 ## magazine are, so the rage, the hopper and the Muster stay), a passive, a module's rule or a
 ## count?
@@ -1512,31 +1620,115 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
-## The stacks of buffs a machine carries, silenced or not: what a foe that aims at the buffed
-## reads.
+## The buffs the player's Purge takes off a foe (28 October): every one it carries but Numbed,
+## a resistance, and Guarded, its parts' lock. The ids are the engine's (braced is Armoured,
+## risen Getting Back Up).
+const FOE_PURGED := ["braced", "kindled", "risen", "primed", "barrier", "ward", "regenerating"]
+
+
+## The player's Purge on a foe (28 October): every buff of FOE_PURGED gone, every stack, whatever
+## granted it. Returns the names that went, once each.
+static func purge_foe(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if FOE_PURGED.has(m.id):
+			if not gone.has(m.name):
+				gone.append(m.name)
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
+## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
+## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
+## buff.
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "syrinx_drone"]
+
+
+## How many of the team's marks a foe carries, each status one mark.
+static func team_marks(u) -> int:
+	var n := 0
+	for id in TEAM_MARKS:
+		if has(u, id):
+			n += 1
+	return n
+
+
+## A foe's cleanse: every mark the team laid on it goes. Returns the names that went.
+static func clear_marks(u) -> Array[String]:
+	var gone: Array[String] = []
+	for id in TEAM_MARKS:
+		if has(u, id):
+			remove(u, id)
+			gone.append(str(STATUS[id]["name"]))
+	return gone
+
+
+## Was this buff bought by a die face (28 October): a buff component's spend ("buff:", or
+## "buff" for an entry with no component) or a braces rule's ("brace:")? A purge takes these for
+## good; what the machine is (a form, a passive's or a module's grant, a store's effect) it puts
+## to sleep instead.
+static func bought(m) -> bool:
+	return m.source == "buff" or m.source.begins_with("buff:") or m.source.begins_with("brace:")
+
+
+## The stacks of buffs a purge can reach on a machine: what a foe that aims at the buffed reads,
+## and what a purger's condition asks (28 October). Neither a kept one (the Ammit's Overcharged,
+## its passive's own) nor one already asleep counts.
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
-		if purgeable(m):
+		if purgeable(m) and not m.slept and not keeps(u, m.id):
 			n += maxi(1, m.stacks)
 	return n
 
 
-## A purge (the enemy's Purge, a hero's or a boss's, 17 October; built 21 October): every buff
-## on the machine goes, every stack, the kept ones included (they last the battle and never
-## between battles); its stores stay (Ryan, 21 October). Returns the names of what went, once
-## each.
-static func purge(u) -> Array[String]:
+## A purge (the enemy's Purge; Ryan, 17 and 21 October; by source since 27 and 28 October):
+## every buff a die face bought goes, every stack, for good; what a store, a form or a passive
+## grants sleeps for the rest of the enemy's turn and wakes at the start of the player's turn
+## after its start resolves (wake, Skirmish.start_round); a kept one is the passive's own and
+## stays (Ryan: "overcharge never decays and cannot be purged"); the stores stay. Returns
+## {"gone": names, "slept": names}, once each.
+static func purge(u) -> Dictionary:
 	var gone: Array[String] = []
+	var slept: Array[String] = []
 	var keep: Array = []
 	for m in u.modifiers:
-		if purgeable(m):
+		if not purgeable(m) or m.slept or keeps(u, m.id):
+			keep.append(m)
+		elif bought(m):
 			if not gone.has(m.name):
 				gone.append(m.name)
 		else:
+			m.slept = true
 			keep.append(m)
+			if not slept.has(m.name):
+				slept.append(m.name)
 	u.modifiers = keep
-	return gone
+	return {"gone": gone, "slept": slept}
+
+
+## Every buff a purge put to sleep wakes (the start of the player's turn, after its start has
+## resolved). Returns the names that woke, once each.
+static func wake(u) -> Array[String]:
+	var woke: Array[String] = []
+	for m in u.modifiers:
+		if m.slept:
+			m.slept = false
+			if not woke.has(m.name):
+				woke.append(m.name)
+	return woke
+
+
+## The buffs asleep on a machine, for the chips: [name, description, stacks, id] each.
+static func asleep(u) -> Array:
+	var out: Array = []
+	for m in u.modifiers:
+		if m.slept:
+			out.append([m.name, m.description, m.stacks, m.id])
+	return out
 
 
 ## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
@@ -1695,7 +1887,7 @@ static func quick_turn_live(u, face: Face) -> bool:
 	if face == null:
 		return false
 	var base := rewritten(u, face)
-	if base.has(Face.Keyword.RAPID):
+	if base.has(Face.Keyword.RAPID) or keywords_muted(u):
 		return false
 	for pair in _taking_part(u, "static", base, null):
 		var eff: Dictionary = pair[0]
@@ -1866,6 +2058,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
+		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]

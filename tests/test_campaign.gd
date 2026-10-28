@@ -375,13 +375,13 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 	for e in b.field.spawn_table:
 		if db.faction_of_foe(str(e[0])) == str(facs[1]):
 			guest_foes += 1
-	assert_eq(guest_foes, db.spawn_table(str(facs[1])).size(), "every guest pack is in the cycle")
+	assert_eq(guest_foes, db.spawn_table(str(facs[1]), 1).size(), "every guest pack is in the cycle")
 	var formation := 0
 	for u in b.field.packs():
 		if not u.is_boss:
 			formation += 1
 			assert_eq(db.faction_of_foe(u.foe_id), str(facs[0]), "the field's formation is the lead's foes")
-	assert_eq(formation, db.spawn_table(str(facs[0])).size(), "and only the lead's: a guest never doubles the field")
+	assert_eq(formation, db.spawn_table(str(facs[0]), 1).size(), "and only the lead's: a guest never doubles the field")
 	# A guest pack the rift sends wears its own faction.
 	b.field.rift_pressure = b.field.rift_pressure_max - 1
 	b.field._spawn_index = 1
@@ -569,7 +569,7 @@ func _park(b: Battle, sq: Unit, m: Unit, hunting: bool) -> void:
 func test_the_bots_persona_withdraws_from_a_fight_it_is_losing() -> void:
 	var db := ContentDB.load_default()
 	var fac := db.default_faction()
-	var foe := str(db.spawn_foes(fac)[0])
+	var foe := str(db.spawn_foes(fac, 1)[0])
 	var b := Battle.new(4)
 	b.with_boss = false
 	b.formation = [[foe, 8]]
@@ -865,12 +865,16 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	var db := ContentDB.load_default()
 	var faction := str(db.factions.keys()[0])
 	var boss_id := str(db.bosses_of(faction)[0])
-	var spawn_foes: Array = []
-	for e in db.spawn_table(faction):
-		if not spawn_foes.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
-			spawn_foes.append(str(e[0]))
+	var units_at := func(t: int) -> Array:
+		var out: Array = []
+		for e in db.spawn_table(faction, t + 1):
+			if not out.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
+				out.append(str(e[0]))
+		return out
+	var spawn_foes: Array = units_at.call(2)
 	var hp: Array = []
 	for t in range(ContentDB.BOSS_TIERS.size()):
+		var units: Array = units_at.call(t)
 		var b := Battle.new(3)
 		b.tier = t
 		b.setup([], faction)
@@ -887,8 +891,8 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 		var escorts := foes.filter(func(f) -> bool: return f.escorts)
 		assert_eq(escorts.size(), ContentDB.escort_at(t), "unpacked beside the boss")
 		for i in range(escorts.size()):
-			assert_eq(escorts[i].content_id, spawn_foes[i % spawn_foes.size()], "its domain's units of the tier, round robin")
-			assert_eq(escorts[i].hp_max, int(db.foes[spawn_foes[i % spawn_foes.size()]]["hp"]), "the rank and file never inflated")
+			assert_eq(escorts[i].content_id, units[i % units.size()], "its domain's units of the tier, round robin")
+			assert_eq(escorts[i].hp_max, int(db.foes[units[i % units.size()]]["hp"]), "the rank and file never inflated")
 	assert_true(hp[0] < hp[1] and hp[1] < hp[2], "a harder boss each tier")
 	# A named escort is a hand-tailored one, kept whole.
 	var named := Battle.new(3)
@@ -909,20 +913,50 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	assert_eq(b2.boss.boss_tier, 2, "and its boss stands at it")
 
 
-## An escort's units are the tier's own (content `tier`), else the highest tier under it.
-func test_an_escort_is_drawn_from_its_tiers_units() -> void:
-	var db := ContentDB.new()   # its own copy: a unit is moved to tier two below
+## A battle fields its domain's spawn list at its tier (the ladder's brief, D3; 28 October): the
+## formation on the map is the lead's list at the tier, and the rift's cycle carries it and the
+## guest's at the same tier.
+func test_a_battle_fields_the_spawn_list_of_its_tier() -> void:
+	var db := ContentDB.load_default()
+	var facs: Array = db.factions.keys()
+	for t in range(3):
+		var b := Battle.new(3)
+		b.tier = t
+		b.guest = str(facs[1])
+		b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
+		var lead := db.spawn_table(str(facs[0]), t + 1)
+		var guest := db.spawn_table(str(facs[1]), t + 1)
+		var cycle: Array = b.field.spawn_table.map(func(e) -> String: return str(e[0]))
+		for e in lead + guest:
+			assert_true(cycle.has(str(e[0])), "tier %d's %s in the rift's cycle" % [t + 1, str(e[0])])
+		var formation: Array = []
+		for u in b.field.packs():
+			if not u.is_boss:
+				formation.append(u.foe_id)
+		assert_eq(formation.size(), lead.size(), "tier %d's formation is the lead's list" % (t + 1))
+		for fid in formation:
+			assert_true(lead.any(func(e) -> bool: return str(e[0]) == fid), "%s is in tier %d's list" % [fid, t + 1])
+
+
+## An escort's units are the foes of its domain's spawn list at the battle's tier (the ladder's
+## brief, D3, 28 October), else of the highest tier's list under it; a unit's own `tier` decides
+## nothing.
+func test_an_escort_is_drawn_from_its_tiers_list() -> void:
+	var db := ContentDB.new()   # its own copy: a tier's list is dropped below
 	db.load_dir(ContentDB.DIR)
 	var faction := str(db.factions.keys()[0])
-	var units: Array = []
-	for e in db.spawn_table(faction):
-		if not units.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
-			units.append(str(e[0]))
-	assert_true(units.size() >= 2, "a domain with two units to choose from")
-	db.foes[str(units[1])]["tier"] = 2
-	for f in db.escort_units(faction, 0, 4):
-		assert_ne(f.content_id, str(units[1]), "tier one draws no tier-two unit")
-	for f in db.escort_units(faction, 1, 4):
-		assert_eq(f.content_id, str(units[1]), "tier two draws its own")
-	for f in db.escort_units(faction, 2, 4):
-		assert_eq(f.content_id, str(units[1]), "tier three, with none of its own, the highest under it")
+	for t in range(3):
+		var units: Array = []
+		for e in db.spawn_table(faction, t + 1):
+			if not units.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
+				units.append(str(e[0]))
+		var drawn: Array = db.escort_units(faction, t, units.size()).map(func(f) -> String: return f.content_id)
+		assert_eq(drawn, units, "tier %d draws its own list, in spawn order" % (t + 1))
+	var lists: Dictionary = db.factions[faction]["spawn"]
+	var tier_two: Array = db.spawn_table(faction, 2)
+	lists.erase("3")
+	assert_eq(db.spawn_table(faction, 3), tier_two, "a tier with no list takes the highest under it")
+	assert_eq(db.escort_units(faction, 2, 1)[0].content_id, str(tier_two[0][0]), "and its escort with it")
+	var first: Dictionary = db.foes[str(tier_two[0][0])]
+	first["tier"] = 3
+	assert_eq(db.escort_units(faction, 1, 1)[0].content_id, str(tier_two[0][0]), "a unit's own tier decides nothing")

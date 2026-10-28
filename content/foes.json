@@ -1,5 +1,5 @@
 {
-  "_about": "Enemies inside a skirmish: the domains' wildlife and the heroes (bible section 9; the names are working names until play moves them, the numbers placeholders at the single-digit scale since the stock pass's landing (22 October): HP 2 to 6 for the rank and file, 30 to 40 massive, 12 to 24 heroes, 80 to 100 bosses, a blow 1 to 6 and a boss's 6 to 10; docs/rules.md). hp is a foe's HP, the foes' word (a machine has hull). Enemy damage is static and telegraphed exactly; only the player's rolled faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column, at any tier. tier (1 to 3, one by default) is a unit's tier: a boss's escort is drawn from its domain's units of the battle's tier (bible section 9's boss row); the spawn lists do not read it yet (the curve's form, docs/curve_proposal.md). hero marks one of the party: human-sized, the domain's final, dealt from the domain's bench at the campaign's start; a hero is never in a spawn list. promotes names the hero a massive entry is the class change of, its promoted form fought at the finale (bible section 9): the entry holds what the class change adds (size 2, rank front, its armour, its one move more under actions, a move with one of the hero's ids taking that move's place) and everything else, its name included, is its hero's, read as the content loads. armour (default 0) comes off every blow that lands on the foe, flat, never off Burning, Vitriol or a breaching weapon. No foe resists a suppress by nature: Numbed, from a suppress that lands, is the only resistance. aim is the sense a foe's target pick follows, each foe on its own as the round opens: anything (the default, at random, the baseline the numbers are balanced on), and where a foe's threat calls for one, exposed (weighted toward the machine its blows would hurt most), heat (the hottest machine), armed (a machine showing an intact weapon), focus (the rank shares one pick), buffed (the machine carrying the most stacks). A move may carry its own aim. The foes pick in the order they strike and never over-commit: a machine the blows already picked would wreck is passed over while another stands. on_death {summon, count, pair}: destroyed, the foe splits, that many of the named foe stepping up at once under its pack, the first into the slot it fell from and the rest into the nearest empty slots of their rank, any with no room into the pool; with pair (the Gel, count 2) both halves stand as a pair in its own slot, one slot to the formation (an area blow reaching both, a single-target blow one, no mine laid there while either stands); an arrival's round is over (no intent, acting from the next round), and a split goes one deep; on_death {blow} is a last act, landed the moment it falls. parts, guard and regrow_parts make a core in parts. Player-facing text: codex (what the codex says), flavour (an in-world quote), and each action's text. Every move wears the genre's name where the genre has one (Protect, Cure, Fire, Steal, Self-Destruct) while the engine's words stay ours; the plaque announces a named move when it lands (bible section 9). design is internal and never shown: fantasy (the pitch, the source of the homage), niche (the tactical problem the foe poses), sprite and variants (the art's briefs), and notes only where something is still owed. actions is the foe's roster of moves, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and a planned move may name an effect the engine lacks (flee, interpose, retaliate). Rank and file have one or two moves, a boss or a hero three, the third a signature that opens on a condition. A move may carry when, one word or a list meaning any (below_half, missing_hull, back_behind, others_on_field, ally_hurt, machine_buffed, ally_unready); a move whose condition fails is not rolled, and a special never fires twice running when anything else is open. A defend, buff or debuff names an effect the engine runs (Foe.ACTION_EFFECTS: brace with value (the armour it adds, in stacks of Armoured, a point a stack; brace_all the same on every foe through the next round), regrow with value, regrow_ally (the most hurt of its own); revive_once, revive_once_ally (Reraise on one of its own), summon with foe and count, rally with value; drain_rerolls, burn with value (stacks of Burning on its target), disable, scorch_all with value (stacks of Scorched on every machine), corrupt_all with value (stacks of Corrupted on the entry every machine shows), silence, dispel (Purge)) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. On the map: zone is the pack's ring in hexes (default 1), behaviour push (default; toward the gate) or hunt (one machine, locked at spawn; hunts names the caveat: nearest, weakest, strongest, slowest), movespeed in tens (default 20; foes move binary, water and crags walls; bosses patrol at 10). An implemented attack scales the base attack: factor (default 1.0), strikes (default 1; each a separate blow), swarm (so much more per other foe of its type on the field), countdown (it gathers that many rounds and lands later), keywords (breach: the blow ignores the shield and the armour, the whole of it reaching the hull; scorch: stacks of Scorched; burn: stacks of Burning; disable and corrupt act on the entry the machine's die shows; scorch, burn and corrupt each say their stacks a blow beside the keyword, as the player's Burn does (\"scorch\": 2); self_destruct: the blow spends the striker; all: the blow lands on every machine), weight (default 1; attacks weigh 2 to a special's 1). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left.",
+  "_about": "Enemies inside a skirmish: the domains' wildlife and the heroes (bible section 9; the names are working names until play moves them, the numbers placeholders at the single-digit scale since the stock pass's landing (22 October): HP 2 to 6 for the rank and file, 30 to 40 massive, 12 to 24 heroes, 80 to 100 bosses, a blow 1 to 6 and a boss's 6 to 10; docs/rules.md). hp is a foe's HP, the foes' word (a machine has hull). Enemy damage is static and telegraphed exactly; only the player's rolled faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column, at any tier. tier (1 to 3, one by default) is the rung of its line a unit stands on: a recolour is a base type in a new hue under a new name, its own foe type with its own numbers and a twist (the Goblin Guard and the Goblin Captain on the Goblin), carrying its tier; which units come is the domain's spawn list at the battle's tier (content/factions.json), a boss's escort included, so the field never reads this. hero marks one of the party: human-sized, the domain's final, dealt from the domain's bench at the campaign's start; a hero is never in a spawn list. promotes names the hero a massive entry is the class change of, its promoted form fought at the finale (bible section 9): the entry holds what the class change adds (size 2, rank front, its armour, its one move more under actions, a move with one of the hero's ids taking that move's place) and everything else, its name included, is its hero's, read as the content loads. armour (default 0) comes off every blow that lands on the foe, flat, never off Burning, Vitriol or a breaching weapon. No foe resists a suppress by nature: Numbed, from a suppress that lands, is the only resistance. aim is the sense a foe's target pick follows, each foe on its own as the round opens: anything (the default, at random, the baseline the numbers are balanced on), and where a foe's threat calls for one, exposed (weighted toward the machine its blows would hurt most), heat (the hottest machine), armed (a machine showing an intact weapon), focus (the rank shares one pick), buffed (the machine carrying the most stacks). A move may carry its own aim. The foes pick in the order they strike and never over-commit: a machine the blows already picked would wreck is passed over while another stands. on_death {summon, count, pair}: destroyed, the foe splits, that many of the named foe stepping up at once under its pack, the first into the slot it fell from and the rest into the nearest empty slots of their rank, any with no room into the pool; with pair (the Gel, count 2) both halves stand as a pair in its own slot, one slot to the formation (an area blow reaching both, a single-target blow one, no mine laid there while either stands); an arrival's round is over (no intent, acting from the next round), and a split goes one deep; on_death {blow} is a last act, landed the moment it falls. parts, guard and regrow_parts make a core in parts. Player-facing text: codex (what the codex says), flavour (an in-world quote), and each action's text. Every move wears the genre's name where the genre has one (Protect, Cure, Fire, Steal, Self-Destruct) while the engine's words stay ours; the plaque announces a named move when it lands (bible section 9). design is internal and never shown: fantasy (the pitch, the source of the homage), niche (the tactical problem the foe poses), sprite and variants (the art's briefs), and notes only where something is still owed. actions is the foe's roster of moves, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and a planned move may name an effect the engine lacks (flee, interpose, retaliate). Rank and file have one or two moves, a boss or a hero three, the third a signature that opens on a condition. A move may carry when, one word or a list meaning any (below_half, missing_hull, back_behind, others_on_field, ally_hurt, machine_buffed, ally_unready, ally_marked); a move whose condition fails is not rolled, and a special never fires twice running when anything else is open. A defend, buff or debuff names an effect the engine runs (Foe.ACTION_EFFECTS: brace with value (the armour it adds, in stacks of Armoured, a point a stack; brace_all the same on every foe through the next round), regrow with value, regrow_ally (the most hurt of its own); revive_once, revive_once_ally (Reraise on one of its own), summon with foe and count, rally with value; drain_rerolls, burn with value (stacks of Burning on its target), disable, scorch_all with value (stacks of Scorched on every machine), corrupt_all with value (stacks of Corrupted on the entry every machine shows), silence, dispel (Purge); cleanse (every mark the team laid off the most-marked of its own, no value), barrier (a Barrier on itself, no value), regenerate with value (Regenerating on itself), ward_all (a Ward on every foe on the field, no value), prime with value (Primed on every other foe)) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. On the map: zone is the pack's ring in hexes (default 1), behaviour push (default; toward the gate) or hunt (one machine, locked at spawn; hunts names the caveat: nearest, weakest, strongest, slowest), movespeed in tens (default 20; foes move binary, water and crags walls; bosses patrol at 10). An implemented attack scales the base attack: factor (default 1.0), strikes (default 1; each a separate blow), swarm (so much more per other foe of its type on the field), countdown (it gathers that many rounds and lands later), keywords (breach: the blow ignores the shield and the armour, the whole of it reaching the hull; scorch: stacks of Scorched; burn: stacks of Burning; disable and corrupt act on the entry the machine's die shows; scorch, burn and corrupt each say their stacks a blow beside the keyword, as the player's Burn does (\"scorch\": 2); self_destruct: the blow spends the striker; all: the blow lands on every machine), weight (default 1; attacks weigh 2 to a special's 1). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left.",
   "entries": [
     {
       "id": "goblin", "name": "Goblin", "faction": "meadow",
@@ -12,6 +12,28 @@
       "flavour": "They don't run. They don't have to. You'll get tired first."
     },
     {
+      "id": "goblin_guard", "name": "Goblin Guard", "faction": "meadow", "tier": 2,
+      "design": { "fantasy": "The genre's second goblin, the one with the shield. Tier two of the goblin line." },
+      "codex": "A goblin that found a shield. It braces when it is not stabbing, so the swarm takes a blow more to clear.",
+      "hp": 3, "attack": 3, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 1, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other guard standing.", "status": "implemented" },
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" }
+      ],
+      "flavour": "Gate order one still stands. Add: some of the green ones carry doors now."
+    },
+    {
+      "id": "goblin_captain", "name": "Goblin Captain", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "The goblin chieftain, the commander in the crowd. Tier three of the goblin line." },
+      "codex": "The goblin that shouts. It stands at the back and rallies the rest, so the swarm hits harder while it lives.",
+      "hp": 4, "attack": 4, "rank": "back", "zone": 3, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 1, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other captain standing.", "status": "implemented" },
+        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+      ],
+      "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
+    },
+    {
       "id": "wolf", "name": "Dire Wolf", "faction": "meadow",
       "design": { "sprite": "a lean grey wolf, hackles up and teeth bared, mid-lunge, on four legs", "variants": ["a lean grey wolf with a ragged black mane down its spine, stalking forward low to the ground on four legs with its head down and its lips peeled back from long fangs", "a lean grey wolf with a torn ear and old scars across its muzzle, leaping forward mid-lunge with its forelegs reaching and its jaws wide open", "a big grey wolf in a spiked iron collar trailing a broken chain, braced on four legs with its head thrown back mid-howl and its hackles raised", "a gaunt grey wolf with a pale chest and a ridge of bristling fur, crouched on four legs and coiled to spring, its head thrust low and its teeth bared in a snarl"], "fantasy": "The pack that runs down the straggler, in every forest the genre has.", "niche": "A hunter of the slowest, fast, in threes. Whoever lags is caught, and the pack howls each other on." },
       "codex": "Runs in threes and picks the slowest machine on the field. It is faster than anything you own but the cars, and once it has caught something it does not let go until it is dead.",
@@ -21,6 +43,28 @@
         { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
       ],
       "flavour": "You hear them before the sensors do."
+    },
+    {
+      "id": "warg", "name": "Warg", "faction": "meadow", "tier": 2,
+      "design": { "fantasy": "The dire wolf's bigger cousin, the hunter of the hurt. Tier two of the wolf line." },
+      "codex": "A bigger wolf that picks the weakest machine on the field and runs it down.",
+      "hp": 4, "attack": 4, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "weakest",
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+      ],
+      "flavour": "The wolves learned which of us limps."
+    },
+    {
+      "id": "alpha_warg", "name": "Alpha Warg", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "The alpha, the pack's commander. Tier three of the wolf line." },
+      "codex": "The pack's leader. Its howl lifts every foe on the field, and it hunts the weakest machine.",
+      "hp": 5, "attack": 5, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "weakest",
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+      ],
+      "flavour": "When the big one howls, kill it or shield everyone. There is no third option."
     },
     {
       "id": "gel", "name": "Gel", "faction": "meadow",
@@ -44,6 +88,27 @@
       "flavour": "Told you."
     },
     {
+      "id": "bubble_gel", "name": "Bubble Gel", "faction": "meadow", "tier": 2,
+      "design": { "fantasy": "The genre's second slime, the bubbly one. Tier two of the gel line: a wall that walls small blows." },
+      "codex": "A gel with a skin. Small blows slide off it, and it splits into halves like any gel.",
+      "hp": 5, "attack": 4, "armour": 1, "rank": "front", "zone": 1, "movespeed": 20,
+      "on_death": { "summon": "gel_half", "count": 2, "pair": true },
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+      ],
+      "flavour": "It is not harder to kill. It is harder to scratch."
+    },
+    {
+      "id": "metal_gel", "name": "Metal Gel", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "The metal slime, the genre's armoured joke made a wall. Tier three of the gel line; no split, since the plate is the whole of it." },
+      "codex": "A gel of living metal: little inside it, but three points of plate on every blow. Flak and Overcharged are the answer, or one big blow.",
+      "hp": 3, "attack": 5, "armour": 3, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+      ],
+      "flavour": "Field note: shooting it is like shooting the gate. Hit it with something that counts."
+    },
+    {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
       "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die." },
       "codex": "A root with a face, and it screams. Stands behind the crowd and shrieks the fight out of your dice: a scream costs the team a reroll next round.",
@@ -53,6 +118,28 @@
         { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team one reroll next round.", "status": "implemented" }
       ],
       "flavour": "Earplugs are issued. Earplugs do not help."
+    },
+    {
+      "id": "mandrake", "name": "Mandrake", "faction": "meadow", "tier": 2,
+      "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line." },
+      "codex": "A mandragora with lungs. Its scream costs the team two rerolls.",
+      "hp": 4, "attack": 4, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
+        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 2, "weight": 1, "text": "Costs the team two rerolls next round.", "status": "implemented" }
+      ],
+      "flavour": "The screaming is not the attack. The screaming is what it does to your plan."
+    },
+    {
+      "id": "alraune", "name": "Alraune", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line." },
+      "codex": "The flowering root. Its shriek switches off the component a machine's die is showing.",
+      "hp": 5, "attack": 5, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
+        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
+      ],
+      "flavour": "Pretty, from a distance. Keep the distance."
     },
     {
       "id": "treant", "name": "Treant", "faction": "meadow",
@@ -79,6 +166,27 @@
       "flavour": "Appendix K: do not take your eyes off the cactus."
     },
     {
+      "id": "barbed_needler", "name": "Barbed Needler", "faction": "waste", "tier": 2,
+      "design": { "fantasy": "The cactuar's barbed cousin: the Waste's theft of entries on the rank and file. Tier two of the needler line." },
+      "codex": "A needler whose needles stay in. Its blow goes through the shield and corrupts the component the machine is showing.",
+      "hp": 3, "attack": 4, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "needles", "name": "Needles", "kind": "attack", "weight": 2, "keywords": ["breach", "corrupt"], "corrupt": 1, "text": "Exactly {damage} barbed needles, through the shield; the one it is showing bites when spent.", "status": "implemented" }
+      ],
+      "flavour": "Count the needles. Then count the ones you cannot find."
+    },
+    {
+      "id": "great_needler", "name": "Great Needler", "faction": "waste", "tier": 3,
+      "design": { "fantasy": "The giant cactuar and its thousand needles, a countdown. Tier three of the needler line." },
+      "codex": "The big one. It gathers for two rounds and then puts every needle through the shield at once. Kill it, suppress it, or shield what it has picked.",
+      "hp": 3, "attack": 5, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "needles", "name": "Needles", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "Exactly {damage} needles, through the shield.", "status": "implemented" },
+        { "id": "thousand_needles", "name": "Thousand Needles", "kind": "attack", "factor": 2, "countdown": 2, "weight": 1, "keywords": ["breach"], "text": "Gathers for two rounds, then {damage} needles through the shield at once.", "status": "implemented" }
+      ],
+      "flavour": "If it starts counting, you have two rounds."
+    },
+    {
       "id": "antlion", "name": "Antlion", "faction": "waste",
       "design": { "sprite": "a giant sand-coloured insect with huge curved mandibles and six spindly legs, crouched low and half buried in a mound of loose sand", "variants": ["a giant sand-coloured insect with huge curved mandibles, rearing up out of a funnel of loose sand with its front legs raised and its mandibles spread wide, six spindly legs", "a giant sand-coloured insect with a bloated striped abdomen and huge curved mandibles, lunging forward low on six spindly legs with sand spraying from its feet", "a giant sand-coloured insect with a spiked armoured carapace and huge serrated mandibles, dug half into a mound of loose sand with only its head, front legs and jaws thrust out", "a giant pale sand-coloured insect with long bristly legs and a flat armoured head, its huge curved mandibles snapping shut, crouched low on six spindly legs and coiled to spring"], "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and braces when hurt. The slow machine wants company." },
       "codex": "Waits under the sand for whatever is slowest and does not let go. Hurt it and it digs in, and what is dug in is hard to hit.",
@@ -90,6 +198,29 @@
       "flavour": "The sand moved. Nobody else saw the sand move."
     },
     {
+      "id": "pit_antlion", "name": "Pit Antlion", "faction": "waste", "tier": 2,
+      "design": { "fantasy": "The pit's antlion: breach on one more Waste type, and the burrow that is a Barrier. Tier two of the antlion line." },
+      "codex": "An antlion whose jaws go through the shield, and whose burrow swallows the next blow whole. Pop the barrier with a cheap blow, then hit it.",
+      "hp": 8, "attack": 7, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
+      "actions": [
+        { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "Jaws close on the hull for {damage}, through the shield.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "barrier", "weight": 1, "when": "below_half", "text": "Sinks into the sand: the next weapon blow on it deals nothing.", "status": "implemented" }
+      ],
+      "flavour": "The sand moved. Then the sand had jaws."
+    },
+    {
+      "id": "antlion_queen", "name": "Antlion Queen", "faction": "waste", "tier": 3,
+      "design": { "fantasy": "The antlion grown to a queen: the Waste's big fixed blow on a countdown. Tier three of the antlion line." },
+      "codex": "The queen of the pit. Its swallow is announced a round ahead and goes through the shield; hurt, it digs in behind three points of plate.",
+      "hp": 9, "attack": 8, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
+      "actions": [
+        { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
+        { "id": "swallow", "name": "Swallow", "kind": "attack", "factor": 1.25, "countdown": 1, "weight": 1, "keywords": ["breach"], "text": "Rears for a round, then swallows a machine for {damage}, through the shield.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+      ],
+      "flavour": "Everything in the badlands is something's lunch. This is the something."
+    },
+    {
       "id": "cockatrice", "name": "Cockatrice", "faction": "waste",
       "design": { "sprite": "a horse-sized monster with a rooster's head and crimson comb, a cruel hooked beak and glowing eyes, a scaled lizard body, leathery bat wings and a long serpent tail", "variants": ["a cockatrice with a rooster's head and crimson comb above a coiled scaly serpent body, rearing up to strike with its beak open and its wings flared", "a cockatrice like a giant scaly rooster on clawed lizard legs, mid-charge with its head low and thrust forward and its serpent tail lashing behind", "a gaunt stone-grey cockatrice, half bird and half lizard, crouched low and hissing with its wings half spread like a cloak", "a cockatrice with iridescent green and gold plumage, leaping forward with its talons raised, its bat wings spread wide and its serpent tail curled"], "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off whatever a machine's die is showing." },
       "codex": "A bird with a lizard's tail that stands behind the others and stares. What it stares at stops working: whatever the machine's die is showing is stone until its next turn.",
@@ -99,6 +230,28 @@
         { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
       ],
       "flavour": "Don't look at it. No, the other way."
+    },
+    {
+      "id": "basilisk", "name": "Basilisk", "faction": "waste", "tier": 2,
+      "design": { "fantasy": "The basilisk, the gaze that picks the armed. Tier two of the cockatrice line." },
+      "codex": "A cockatrice with an eye for weapons: it aims at a machine showing an intact gun, and its stone switches the gun off.",
+      "hp": 5, "attack": 4, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
+      "actions": [
+        { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+      ],
+      "flavour": "It looks at what you are pointing at it. Then that stops working."
+    },
+    {
+      "id": "gorgon", "name": "Gorgon", "faction": "waste", "tier": 3,
+      "design": { "fantasy": "The gorgon, theft of entries by corruption on the back rank. Tier three of the cockatrice line." },
+      "codex": "The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off.",
+      "hp": 6, "attack": 5, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
+      "actions": [
+        { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A beak like a pick, for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+      ],
+      "flavour": "The Waste takes what you have. This one takes it and leaves it in you."
     },
     {
       "id": "sandworm", "name": "Sandworm", "faction": "waste",
@@ -124,6 +277,29 @@
       "flavour": "They don't run. They don't have to. You'll get tired first."
     },
     {
+      "id": "wight", "name": "Wight", "faction": "marsh", "tier": 2,
+      "design": { "fantasy": "The wight, the Marsh's hard-to-keep-down on the rank and file: Regenerating as a foe's buff. Tier two of the revenant line." },
+      "codex": "A revenant that knits itself back together. Hurt, it regrows a little at each action for three rounds: burst it, or purge the mending.",
+      "hp": 5, "attack": 3, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "claw", "name": "Claw", "kind": "attack", "swarm": 1, "weight": 2, "text": "Tears at anything in reach for {damage}: more for every other wight standing.", "status": "implemented" },
+        { "id": "grave_mend", "name": "Grave Mend", "kind": "defend", "effect": "regenerate", "value": 2, "weight": 1, "when": "missing_hull", "text": "Knits itself: regrows {value} at each of its next three actions.", "status": "implemented" }
+      ],
+      "flavour": "You can hear it mending. Finish it before it finishes."
+    },
+    {
+      "id": "lich", "name": "Lich", "faction": "marsh", "tier": 3,
+      "design": { "fantasy": "The lich, the Marsh's commander. Tier three of the revenant line. Its Dark Rite, a delayed heal on a countdown, is planned until the engine has a special with a countdown (Ryan, 28 October, mentioned a delayed heal; not built here)." },
+      "codex": "The dead that commands the dead. It readies an ally to get back up once, and strikes from the back. Reach it, or purge what it readies.",
+      "hp": 6, "attack": 4, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "soul_bolt", "name": "Soul Bolt", "kind": "attack", "weight": 2, "text": "A bolt of cold for {damage}.", "status": "implemented" },
+        { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once_ally", "weight": 1, "when": "ally_unready", "text": "Readies one of its own, never itself: the next time it falls it gets back up, whole, once.", "status": "implemented" },
+        { "id": "dark_rite", "name": "Dark Rite", "kind": "defend", "effect": "regrow_all", "value": 3, "countdown": 2, "weight": 1, "text": "A rite that lands two rounds on: every foe on its side regrows {value}.", "status": "planned" }
+      ],
+      "flavour": "It does not fight. It makes sure the others do not stop."
+    },
+    {
       "id": "ghost", "name": "Ghost", "faction": "marsh",
       "design": { "sprite": "a hooded floating ghost in a tattered robe holding up a lantern with a pale green flame, no feet", "variants": ["a hooded floating ghost in a long tattered grey robe, swooping forward with a lantern of pale green flame swung out ahead of it on a chain, its robe trailing away to wisps where its feet should be", "a hooded floating ghost in tattered burial linen wound with rusted chains, holding a lantern of pale green flame high overhead and reaching out with a bare bony hand, no feet", "a tall hooded floating ghost in a tattered black mourning robe and a torn veil, hunched forward and holding a lantern of pale green flame low before it, its long sleeves trailing, no feet", "a hooded floating ghost in a tattered robe stitched with faded grave runes, rearing back with its arms spread and a lantern of pale green flame blazing in one hand, two glowing eyes in its empty hood, no feet"], "fantasy": "A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.", "niche": "It hides behind the wall and keeps the wall standing. Reach it, or chew through." },
       "codex": "Keeps to the back rank behind a wall of the dead and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
@@ -135,6 +311,30 @@
       "flavour": "Kill the one holding the light."
     },
     {
+      "id": "spectre", "name": "Spectre", "faction": "marsh", "tier": 2,
+      "design": { "fantasy": "The spectre, the Marsh's cleanser: the domain's lever (Ryan, 28 October, 'debuffs are hard here'). Tier two of the ghost line." },
+      "codex": "A ghost that keeps its dead clean. Its hallow strips the burns, flak and shocks the team has laid on one of its own: kill it first, or cash the marks before it acts.",
+      "hp": 6, "attack": 4, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
+        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "text": "Raises a revenant into an empty place at once, or into the pool when the line is full.", "status": "implemented" },
+        { "id": "hallow", "name": "Hallow", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": "Takes every mark the team laid off the most-marked of its own.", "status": "implemented" }
+      ],
+      "flavour": "Debuffs are hard here. Write that on the gate."
+    },
+    {
+      "id": "wraith", "name": "Wraith", "faction": "marsh", "tier": 3,
+      "design": { "fantasy": "The wraith, the Ghost's curse (the proposal's rider on one advanced foe a domain) and the cleanse together. Tier three of the ghost line." },
+      "codex": "The spectre's elder. Its bolt corrupts the component a machine is showing, it raises the dead, and it keeps them clean of the team's marks.",
+      "hp": 8, "attack": 5, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A bolt of grave-light for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
+        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "text": "Raises a revenant into an empty place at once, or into the pool when the line is full.", "status": "implemented" },
+        { "id": "hallow", "name": "Hallow", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": "Takes every mark the team laid off the most-marked of its own.", "status": "implemented" }
+      ],
+      "flavour": "Three jobs, one ghost. Reach it."
+    },
+    {
       "id": "zombie_knight", "name": "Zombie Knight", "faction": "marsh",
       "design": { "sprite": "a rotting knight in heavy black plate and a torn cape, a greatsword as long as it is tall", "variants": ["a rotting knight in heavy black plate and a torn cape, lunging forward with a greatsword as long as it is tall dragged back for a sweeping cut, a small helmed head set low between hunched armoured shoulders", "a rotting knight in dented black plate with a horned helm and a cape torn to ribbons, mid-stride with a greatsword as long as it is tall raised overhead in both hands, a small helmed head set low between hunched armoured shoulders", "a rotting knight in black plate split open at the chest over bare ribs and a tattered crimson cape, rising out of a crouch and wrenching a greatsword as long as it is tall up out of the ground, a small helmed head set low between hunched armoured shoulders", "a rotting knight in heavy black plate under a ragged hooded mantle, two glowing eyes in the shadow of the hood, striding forward with a greatsword as long as it is tall held level across its body, a small head set low between hunched armoured shoulders", "a huge rotting knight in heavy black plate and a torn crimson cape, striding forward and dragging an enormous greatsword behind it in one gauntleted fist, the blade trailing along the ground behind its heels, a small helmed head set low between massive armoured shoulders", "a huge rotting knight in heavy black plate split open over bare ribs, a torn cape, hauling an enormous greatsword behind it in a reverse one-handed grip so the blade drags along the ground behind it, a small helmed head set low between massive armoured shoulders", "a huge rotting knight in dented black plate and a horned helm, leaning forward mid-stride with an enormous greatsword gripped in one fist and dragged point-down behind it, its torn cape streaming back over the blade, a small head set low between massive armoured shoulders", "a huge rotting knight in heavy black plate, a torn crimson cape, an enormous greatsword as tall as itself trailing behind it from one lowered fist, its tip scraping the ground, a small helmed head set low between massive armoured shoulders", "the same huge rotting knight in dented black plate and a horned helm, leaning forward mid-stride, its torn cape, gripping in one fist an even longer and thicker claymore held low across the front of its legs, the massive blade angled only a little below horizontal with its point reaching far out to the side"], "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and Suppress or Disrupt on its telegraphed Reraise if you have one." },
       "codex": "A knight that died in its armour and kept the armour. Hits hard, takes little, and the first time you put it down it gets back up.",
@@ -144,6 +344,30 @@
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
       ],
       "flavour": "It saluted. Then it got up again."
+    },
+    {
+      "id": "death_knight", "name": "Death Knight", "faction": "marsh", "tier": 2,
+      "design": { "fantasy": "The death knight, the Marsh's guard ('this guy protects his allies'). Tier two of the zombie knight line." },
+      "codex": "A zombie knight that guards the rest: its grave guard armours every foe on the field through the next round, and it gets back up once.",
+      "hp": 12, "attack": 7, "armour": 1, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "cleaver", "name": "Cleaver", "kind": "attack", "keywords": ["breach"], "weight": 2, "text": "A sword longer than it is tall, for {damage}.", "status": "implemented" },
+        { "id": "grave_guard", "name": "Grave Guard", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on its side is Armoured +{value} through the next round.", "status": "implemented" },
+        { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
+      ],
+      "flavour": "The knight stands in front. Everything behind it is harder to hurt while it does."
+    },
+    {
+      "id": "dread_knight", "name": "Dread Knight", "faction": "marsh", "tier": 3,
+      "design": { "fantasy": "The dread knight, the Marsh's last act carrier (the engine's Last Act, no carrier until now). Tier three of the zombie knight line." },
+      "codex": "A knight that strikes as it falls: its death throes land a blow the moment it dies, before anything else. Shield up before the kill. It gets back up once, too.",
+      "hp": 16, "attack": 8, "armour": 1, "rank": "front", "zone": 1, "movespeed": 20,
+      "on_death": { "blow": { "name": "Death Throes", "factor": 1, "strikes": 1 } },
+      "actions": [
+        { "id": "cleaver", "name": "Cleaver", "kind": "attack", "keywords": ["breach"], "weight": 2, "text": "A sword longer than it is tall, for {damage}.", "status": "implemented" },
+        { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
+      ],
+      "flavour": "It dies the way it fought. Twice, if you let it."
     },
     {
       "id": "bone_dragon", "name": "Bone Wyvern", "faction": "marsh",
@@ -170,6 +394,28 @@
       "flavour": "If it starts to swell, you have already made the wrong call."
     },
     {
+      "id": "grenade", "name": "Grenade", "faction": "peak", "tier": 2,
+      "design": { "fantasy": "The genre's own ladder, Bomb to Grenade to Balloon: the burst at every machine. Tier two of the bomb line." },
+      "codex": "A bomb that bursts on everyone: hurt, its self-destruct lands on every machine in the fight, through the shield. Kill it whole, or suppress it.",
+      "hp": 5, "attack": 9, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "flare_up", "name": "Flare Up", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A lick of fire for {damage}. It scorches.", "status": "implemented" },
+        { "id": "self_destruct", "name": "Self-Destruct", "kind": "attack", "factor": 0.5, "weight": 3, "keywords": ["breach", "self_destruct", "all"], "when": "below_half", "text": "Bursts for {damage} on every machine, through the shield, and is gone.", "status": "implemented" }
+      ],
+      "flavour": "The small ones you shield against. The grenade you kill before it gets the idea."
+    },
+    {
+      "id": "balloon", "name": "Balloon", "faction": "peak", "tier": 3,
+      "design": { "fantasy": "The balloon, the last of the bomb line: the countdown on the burst. Tier three of the bomb line." },
+      "codex": "The bomb that swells. Its burst is announced a round ahead, then lands on every machine, through the shield and scorching. One round to kill it, suppress it, or shield everyone.",
+      "hp": 6, "attack": 10, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "flare_up", "name": "Flare Up", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A lick of fire for {damage}. It scorches.", "status": "implemented" },
+        { "id": "self_destruct", "name": "Self-Destruct", "kind": "attack", "factor": 0.5, "countdown": 1, "weight": 3, "keywords": ["breach", "self_destruct", "all", "scorch"], "scorch": 2, "when": "below_half", "text": "Swells for a round, then bursts for {damage} on every machine, through the shield and scorching, and is gone.", "status": "implemented" }
+      ],
+      "flavour": "It is not getting bigger. It is getting closer to done."
+    },
+    {
       "id": "salamander", "name": "Salamander", "faction": "peak",
       "design": { "sprite": "a long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales, flames running along its spine", "variants": ["a long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales and flames running along its spine, its head raised and its jaws open to bite", "a long low dark red lizard with a crest of jagged black horns and flames running along its spine, rearing its front half up off the ground and hissing, its tail curled behind it", "a long low red lizard armoured in plates of cooled black lava with glowing cracks between them, lunging forward close to the ground with its jaws wide and smoke trailing from its nostrils", "a long low orange-red lizard with a frill around its neck spread wide like a fan of flame, crouched low on all four legs with glowing lava cracks across its scales, its tail lashing"], "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide, a foe-side retaliate, is planned: it waits on section 12's question of Retaliate for the foes' counters." },
       "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
@@ -181,6 +427,27 @@
       "flavour": "Do not pet the lizard."
     },
     {
+      "id": "fire_lizard", "name": "Fire Lizard", "faction": "peak", "tier": 2,
+      "design": { "fantasy": "The fire lizard, the Peak's heat on more of its rank and file. Tier two of the salamander line." },
+      "codex": "A salamander that scorches deeper: three stacks a bite, so every gun the machine fires next turn runs three hotter.",
+      "hp": 8, "attack": 6, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 3, "text": "A burning bite for {damage}. It scorches, ×3.", "status": "implemented" }
+      ],
+      "flavour": "The bite is the small problem. The next turn is the big one."
+    },
+    {
+      "id": "magma_lizard", "name": "Magma Lizard", "faction": "peak", "tier": 3,
+      "design": { "fantasy": "The magma lizard, the Peak's primer: Primed as a foe's buff. Tier three of the salamander line." },
+      "codex": "A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Burning. Kill it first, or Ward what they are aimed at.",
+      "hp": 9, "attack": 7, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
+        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe's next blow leaves {value} Burning.", "status": "implemented" }
+      ],
+      "flavour": "One of them is the match. Find the match."
+    },
+    {
       "id": "drake", "name": "Drake", "faction": "peak",
       "design": { "sprite": "a small winged red dragon breathing fire, on its hind legs, wings half spread", "variants": ["a small winged red dragon on its hind legs, rearing back with its wings spread wide and its neck arched, a gout of fire pouring from its jaws", "a small winged red dragon with a crest of swept-back horns, crouched low on all fours with its wings half spread, smoke and embers curling from its open jaws", "a small lean winged red dragon with black-tipped wings, hovering mid-wingbeat and breathing a stream of fire down and ahead of it", "a small winged red dragon with gold-edged scales, up on its hind legs with its chest swelled and glowing as it draws in breath, wings half spread", "a small winged red dragon in flight seen from the side, both leathery bat wings spread wide and matching, each with four long finger bones ending in a sharp point and a hooked claw at the top joint, its hind legs dangling loosely beneath it with the toes drooping down, a straight gout of fire pouring forward from its jaws", "a small winged red dragon hovering mid-wingbeat, both bat wings raised high and matching, each with four finger bones and a sharp pointed tip, its hind legs hanging down with the toes drooping, breathing a straight stream of fire ahead of it", "a small lean winged red dragon with black-tipped wings in flight, both wings spread level and matching, four finger bones each, its hind legs trailing beneath it with drooping toes, a straight gout of fire from its open jaws", "a small winged red dragon with gold-edged scales swooping forward, both bat wings spread wide and matching with a claw at each top joint, its hind legs hanging loosely with the toes drooping down, a straight jet of fire from its jaws", "the same small winged red dragon in flight, both bat wings spread wide, exactly two forelegs and two hind legs hanging beneath it with drooping toes, breathing one long straight gout of fire forward from its jaws"], "fantasy": "A small dragon that breathes over the front rank. Artillery with wings.", "niche": "Heat from the back rank: the breath scorches and the stoke sets a machine burning. Lure it onto a cold machine, suppress it, or reach it with indirect fire." },
       "codex": "Stands at the back and breathes fire over the front rank; the front rank exists so it can. What it hits runs hot.",
@@ -190,6 +457,30 @@
         { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 4, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
+    },
+    {
+      "id": "wyvern", "name": "Wyvern", "faction": "peak", "tier": 2,
+      "design": { "fantasy": "The wyvern, the Peak's telegraphed spike on the rank and file. Tier two of the drake line." },
+      "codex": "A drake that dives: beside its breath and its stoke, a blow through the shield at half again its bite. The spike the Barrier is for.",
+      "hp": 5, "attack": 6, "rank": "back", "zone": 3, "movespeed": 20,
+      "actions": [
+        { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
+        { "id": "dive", "name": "Dive", "kind": "attack", "factor": 1.5, "weight": 1, "keywords": ["breach"], "text": "Drops on a machine for {damage}, through the shield.", "status": "implemented" },
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 4, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
+      ],
+      "flavour": "When it climbs, it is not leaving."
+    },
+    {
+      "id": "red_dragon", "name": "Red Dragon", "faction": "peak", "tier": 3,
+      "design": { "fantasy": "The red dragon, the Peak's capstone of the rank and file: the aim at heat, the scorch on everyone, the countdown. Tier three of the drake line." },
+      "codex": "The dragon. It goes for the hottest machine, scorches everyone at once, and its crush is announced a round ahead. Cool the machine it wants, shield it, or kill the dragon.",
+      "hp": 6, "attack": 7, "rank": "back", "zone": 3, "movespeed": 20, "aim": "heat",
+      "actions": [
+        { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
+        { "id": "crush", "name": "Crush", "kind": "attack", "factor": 1.4, "countdown": 1, "weight": 1, "text": "Rears for a round, then comes down on a machine for {damage}.", "status": "implemented" },
+        { "id": "flame_breath", "name": "Flame Breath", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "text": "Fire over every machine: every machine scorched, ×{value}.", "status": "implemented" }
+      ],
+      "flavour": "Every fire cave has one. This is why the cave is empty."
     },
     {
       "id": "magma_golem", "name": "Magma Elemental", "faction": "peak",

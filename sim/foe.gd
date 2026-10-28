@@ -63,12 +63,13 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready"]
+const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready", "ally_marked"]
 const WHEN_TEXT := {
 	"below_half": "when below half", "missing_hull": "when hurt",
 	"back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
+	"ally_marked": "when one of its own carries a mark the team laid",
 }
 
 
@@ -251,6 +252,13 @@ func strikes() -> int:
 ##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
 ##           brace_all: Armoured, `value` stacks, on every foe in the fight through the next
 ##           round (Protect, 15 October: until its next action, as the player sees it)
+##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
+##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
+##           Suppressed, never a buff
+##           barrier: a Barrier on itself, the next weapon blow it takes dealing nothing, until
+##           popped or the end of the player's next turn (28 October)
+##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
+##           actions after its ticks (28 October)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
@@ -258,6 +266,10 @@ func strikes() -> int:
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
+##           prime: Primed `value` on every other foe on the field, its next move's blows each
+##           leaving that much Burning on the machine they hit (28 October)
+##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
+##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
 ##           turn (Stoke; direct heat retired 13 October)
@@ -266,14 +278,14 @@ func strikes() -> int:
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
-	"defend": ["brace", "regrow", "regrow_ally", "brace_all"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally"],
+	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all"],
 	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "revive_once", "revive_once_ally", "summon", "rally", "drain_rerolls", "scorch_all", "corrupt_all"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
@@ -307,10 +319,11 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-## silence: the machine hit is Silenced, its buffs counting for nothing through its next
-## round; dispel (Purge since 20 October, its id kept): the machine hit loses every buff, its
-## stores kept (Ryan, 17, 18 and 21 October; built 21 October).
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all"]
+## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
+## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all"]
+## The specials that may never ride a blow (28 October).
+const SPECIALS_ONLY := ["silence", "dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Burn N: Scorch 2 lays two stacks a blow).
 const NUMBERED_RIDERS := ["scorch", "burn", "corrupt"]

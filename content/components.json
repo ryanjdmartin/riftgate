@@ -2112,6 +2112,30 @@
    },
    "passive": null,
    "tags": []
+  },
+  {
+   "id": "null_field_emitter",
+   "name": "Null Field Emitter",
+   "maker": "aphelion",
+   "tier": 2,
+   "shape": "dish",
+   "tags": [
+    "arc"
+   ],
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "heat": 2,
+    "keywords": [
+     "dispel"
+    ]
+   },
+   "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
+   "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",
+   "design": {
+    "fantasy": "The Science Vessel's EMP, slottable: Aphelion's physics nonsense unwriting the enemy's state. The jellyfish's EMP, when it lands, carries the same keyword on a blow with Disrupt (the bible's Aphelion row).",
+    "niche": "The strip-it-or-shoot decision at tier two, Indirect so it reaches the commander in the back; stocked by nobody, a blueprint found."
+   }
   }
  ]
 }

@@ -75,8 +75,8 @@ func test_setup_places_team_formation_and_boss() -> void:
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
-	var a := str(db.spawn_foes(str(facs[0]))[0])
-	var c := str(db.spawn_foes(str(facs[1]))[0])
+	var a := str(db.spawn_foes(str(facs[0]), 1)[0])
+	var c := str(db.spawn_foes(str(facs[1]), 1)[0])
 	var b := Battle.new(3)
 	b.formation = [[a, 2], [c, 5], [a, 1]]
 	b.with_boss = false
@@ -874,7 +874,7 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 			fid = str(f)
 			break
 	var hero := str(db.bench_of(fid)[0])
-	var escort := str(db.spawn_table(fid)[0][0])
+	var escort := str(db.spawn_table(fid, 1)[0][0])
 	var b := Battle.new(3)
 	b.lineup = [hero]
 	b.escort = [escort, 3]

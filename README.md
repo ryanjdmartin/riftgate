@@ -106,7 +106,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
   generates enemy candidates with an image model and cuts one into `art/foes/` (the combat
-  sprites come from here, not the sheet); `soundforge/` builds every sound and the
+  sprites come from here, not the sheet); `recolour.py` writes a recolour's two sprites from its
+  base's by a hue shift (the ladder's palette swaps, its table the hues the three colourblind
+  simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
   over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
   hangar page, one artifact with four tabs (the codex, the content editor, the names list, and
@@ -198,8 +200,10 @@ perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabu
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
 
-# the balance report: every chassis alone and the starting team against every pack, against
-# each faction's whole formation in one fight and against the party (each bench hero's final with
+# the balance report: every chassis alone and the starting team against every pack (tier one's lists,
+# and since 28 October a cell for every recolour at its tier's strength, "goblin_guard x4"), against
+# each faction's whole formation in one fight at each tier ("meadow formation" tier one's, "meadow
+# formation tier 2" and "tier 3" the ladder's) and against the party (each bench hero's final with
 # its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting
@@ -403,6 +407,13 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/out/rift/rift_3.png  # three frames into art/terrain/rift.png
+
+# a recolour's sprites from its base's (the ladder's palette swaps, 28 October): a hue shift on the
+# saturated pixels, the greys tinted where a tint is given, the outline, the whites and the alpha kept;
+# --all rewrites every recolour in its table (a base's sprite changed, or a pair taking a lightness step).
+# Then the import. Runs anywhere with numpy and Pillow (the spriter venv has both).
+tools/spriter/.venv/bin/python tools/recolour.py goblin goblin_guard --hue 240 --light 0.8 --tint 0.45
+tools/spriter/.venv/bin/python tools/recolour.py --all
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall

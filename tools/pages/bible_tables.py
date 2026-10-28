@@ -37,11 +37,12 @@ FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "ho
 FACE_FIELDS_ON_FOES = {"drones": ["syrinx_drone", "exposure"]}   # the Syrinx Drone: its own status, and Exposed on a foe not yet Exposed
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine")}   # stack_status names its own, on the machine
-FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
+FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted"}   # a silence is a special since 28 October, never a rider
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
-                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen"}
+                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
+                       "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating"}   # the ladder's (28 October)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt"}
 VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
@@ -66,8 +67,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
-                 "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away."}
-SHARED = ["burn", "breach"]   # our keyword and the foes' rider share the word, each with a row
+                 "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",
+                 "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
+SHARED = ["burn", "breach", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
 KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
@@ -286,7 +288,7 @@ def keyword_rows(t, vocab, words):
     for key in FOE_ONLY:
         c = t.keywords.get(key, empty)
         word = words.get(key, {})
-        name = {"burn": "Burn (a foe's)", "breach": "Breach (a foe's)"}.get(key, word.get("name", key))
+        name = {"burn": "Burn (a foe's)", "breach": "Breach (a foe's)", "dispel": "Purge (a foe's)"}.get(key, word.get("name", key))
         if word.get("status", "implemented") != "implemented":
             name += " (planned)"
         who = ", ".join(sorted(the(n) for n in c["foes"]))

@@ -164,7 +164,7 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			lays.append(parts_line("effect", line, "kw"))
 		elif k == Face.Keyword.RAPID:
 			after.append(text_line("effect", label, "kw"))
-		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP]:
+		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP, Face.Keyword.DISPEL]:
 			lays.append(text_line("effect", label, "kw"))
 		elif Face.AREA_KEYWORDS.has(k) and not f.is_debuff():
 			# Area by shape, numbered (Ryan, 28 October): what each foe past the target takes, its

@@ -45,7 +45,7 @@ var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing, "asleep" a buff a purge put to sleep, still at half light
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
@@ -493,6 +493,13 @@ func _draw() -> void:
 			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
 			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
 			col = Color(col, 0.3 + 0.7 * beat)
+			_draw_dashed(rect, col, 2.0)
+		elif ch.size() >= 4 and ch[3] == "asleep":
+			# A buff a purge put to sleep (28 October): half its light on a dashed edge, still, so
+			# "asleep" reads by structure and by standing still beside the preview's pulse, never
+			# by hue (placeholders, judged running: RIFTGATE_SLEEP_DEBUG=1).
+			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+			col = Color(col, 0.5)
 			_draw_dashed(rect, col, 2.0)
 		else:
 			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)

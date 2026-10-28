@@ -512,7 +512,6 @@ func pack_profiles() -> Dictionary:
 ## the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
-	var fac: Dictionary = factions.get(sq.faction, {})
 	if sq.is_boss:
 		var lead: Array = sq.lineup if not sq.lineup.is_empty() else bosses_of(sq.faction).slice(0, 1)
 		for cid in lead:
@@ -535,9 +534,9 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			return out
 	var fid := sq.foe_id
 	if fid.is_empty():
-		var spawn: Array = fac.get("spawn", [])
+		var spawn := spawn_table(sq.faction, 1)   # a pack that names no foe: the first of today's list
 		if not spawn.is_empty():
-			fid = str(spawn[0].get("foe", ""))
+			fid = str(spawn[0][0])
 	if foes.has(fid):
 		for i in range(sq.strength):
 			var f := make_foe(fid)
@@ -578,35 +577,19 @@ func scale_boss(f: Foe, t: int) -> void:
 	f.attack += int(s["attack"])
 
 
-## A unit's tier (content `tier`, 1 to 3, one by default): what a boss's escort is drawn from.
-func foe_tier(foe_id: String) -> int:
-	return clampi(int(foes.get(foe_id, {}).get("tier", 1)), 1, 3)
-
-
 ## A boss's escort from its domain's units of the tier (Ryan, 26 October: "Make sure that boss
 ## escorts are composed of units from the tier. I expect they will be hand tailored at some point
-## though"): the domain's spawn-list foes of the battle's tier, else of the highest tier under it
-## that has any, in spawn order and round robin, n of them; never a massive foe, the columns
-## being few. Empty when the domain has none.
+## though"): the foes of the domain's spawn list at the battle's tier (`t` counting 0 to 2, the
+## list the tier's, since 28 October), in spawn order and round robin, n of them; never a massive
+## foe, the columns being few. Empty when the domain has none.
 func escort_units(faction_id: String, t: int, n: int) -> Array[Foe]:
 	var out: Array[Foe] = []
-	var by_tier := {}
-	for e in factions.get(faction_id, {}).get("spawn", []):
-		var fid := str(e.get("foe", ""))
-		if not foes.has(fid) or int(foes[fid].get("size", 1)) > 1 or is_boss(fid):
-			continue
-		var ft := foe_tier(fid)
-		if ft > t + 1:
-			continue
-		var list: Array = by_tier.get(ft, [])
-		if not list.has(fid):
-			list.append(fid)
-		by_tier[ft] = list
 	var units: Array = []
-	for ft in range(t + 1, 0, -1):
-		if by_tier.has(ft):
-			units = by_tier[ft]
-			break
+	for e in spawn_table(faction_id, t + 1):
+		var fid := str(e[0])
+		if not foes.has(fid) or int(foes[fid].get("size", 1)) > 1 or is_boss(fid) or units.has(fid):
+			continue
+		units.append(fid)
 	if units.is_empty():
 		return out
 	for i in range(n):
@@ -725,10 +708,10 @@ func default_faction() -> String:
 	return str(factions.keys()[0]) if not factions.is_empty() else ""
 
 
-## The distinct foe ids in a faction's spawn list, in order: rank and file first.
-func spawn_foes(faction_id: String) -> Array:
+## The distinct foe ids in a faction's spawn list at a tier, in order: rank and file first.
+func spawn_foes(faction_id: String, tier: int) -> Array:
 	var out: Array = []
-	for entry in spawn_table(faction_id):
+	for entry in spawn_table(faction_id, tier):
 		if not out.has(entry[0]):
 			out.append(entry[0])
 	return out
@@ -776,12 +759,26 @@ func make_boss(uid: int, faction_id: String, boss_id: String = "") -> Unit:
 	return Unit.boss(uid, boss_name, Vector2i.ZERO, faction_id)
 
 
-## The packs a faction sends through the rift together, as [[foe_id, strength], ...].
-func spawn_table(faction_id: String) -> Array:
+## The packs a faction sends through the rift together at a tier (1 to 3, the shown number), as
+## [[foe_id, strength], ...] (the ladder's brief, D3, 28 October): the faction's `spawn` is keyed
+## by the tier as a string, and a tier with no list takes the highest tier's under it.
+func spawn_table(faction_id: String, tier: int) -> Array:
 	var out: Array = []
-	for e in factions.get(faction_id, {}).get("spawn", []):
+	for e in _spawn_list(factions.get(faction_id, {}), tier):
 		out.append([str(e.get("foe", "")), int(e.get("strength", 1))])
 	return out
+
+
+## A faction's spawn entries at a tier, as content writes them ({foe, strength} each): the tier's
+## own list, else the highest tier's under it; nothing when it has none.
+static func _spawn_list(fac: Dictionary, tier: int) -> Array:
+	var lists = fac.get("spawn", {})
+	if not (lists is Dictionary):
+		return []
+	for t in range(clampi(tier, 1, 3), 0, -1):
+		if lists.has(str(t)) and lists[str(t)] is Array:
+			return lists[str(t)]
+	return []
 
 
 func faction_of_foe(foe_id: String) -> String:
@@ -1649,6 +1646,19 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				var effect := str(a.get("effect", ""))
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
+				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
+				if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
+					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
+				if (effect == "barrier" or effect == "ward_all") and a.has("value"):
+					errs.append("%s: %s takes no value" % [aw, effect])
+				# A cleanse (28 October) takes every mark the team laid, so it says no number, and
+				# its condition, if any, is the one it needs.
+				if effect == "cleanse":
+					if a.has("value"):
+						errs.append("%s: a cleanse takes every mark the team laid: no value" % aw)
+					for w in Foe.whens_of(a):
+						if str(w) != "ally_marked":
+							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
 				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
@@ -1682,7 +1692,9 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
 					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
 				for k in a.get("keywords", []):
-					if not Foe.ATTACK_KEYWORDS.has(str(k)):
+					if Foe.SPECIALS_ONLY.has(str(k)):
+						errs.append("%s: '%s' is a special, never a rider on a blow (28 October)" % [aw, k])
+					elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
 				# A rider that lays stacks says how many (24 October, as the player's Burn N does).
 				for k in Foe.NUMBERED_RIDERS:
@@ -1783,7 +1795,9 @@ func _validate_foes(errs: Array[String]) -> void:
 					errs.append("%s: on_death blow is an attack: a name, a positive factor, strikes at least 1" % where)
 				elif b is Dictionary:
 					for k in b.get("keywords", []):
-						if not Foe.ATTACK_KEYWORDS.has(str(k)):
+						if Foe.SPECIALS_ONLY.has(str(k)):
+							errs.append("%s: on_death blow: '%s' is a special, never a rider, and a last act never purges (28 October)" % [where, k])
+						elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 							errs.append("%s: on_death blow: unknown attack keyword '%s'" % [where, k])
 			if od is Dictionary and od.has("blow") and not od.has("summon"):
 				pass
@@ -1808,9 +1822,21 @@ func _validate_factions(errs: Array[String]) -> void:
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
 				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
-		var spawn: Array = f.get("spawn", [])
-		if spawn.is_empty():
-			errs.append("%s: empty spawn list" % where)
+		# The spawn lists by tier (28 October): keyed "1" to "3", every domain a "1".
+		var lists = f.get("spawn", {})
+		var spawn: Array = []
+		if not (lists is Dictionary):
+			errs.append("%s: spawn is the lists by tier, keyed \"1\" to \"3\"" % where)
+		else:
+			for key in lists.keys():
+				if not ["1", "2", "3"].has(str(key)) or not (lists[key] is Array):
+					errs.append("%s: spawn's '%s' is no tier's list (\"1\" to \"3\", each a list)" % [where, str(key)])
+				elif (lists[key] as Array).is_empty():
+					errs.append("%s: tier %s's spawn list is empty" % [where, str(key)])
+				else:
+					spawn.append_array(lists[key])
+			if not lists.has("1"):
+				errs.append("%s: spawn needs a tier-one list, \"1\"" % where)
 		for e in spawn:
 			if not (e is Dictionary) or not foes.has(str(e.get("foe", ""))):
 				errs.append("%s: spawn entry names unknown foe %s" % [where, str(e)])
