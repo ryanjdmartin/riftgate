@@ -227,11 +227,13 @@ line), since no number read since 22 October was read on the content as it now s
    threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together. With it, on Ryan's marks of 28
-   October: the ladder of recolours by tier (HP the general ramp, the damage's shape each
-   domain's identity, a guest from tier two), the enemy's buffs crossing (Primed, Barrier,
-   Ward, Regenerating) for the player's Purge, and the three verbs (the proposal's sections 9
-   to 11).
+   reports and measures the fights a team fights together. Its first part is ready to build
+   on Ryan's go of 28 October, with no open question inside its scope:
+   `docs/briefs/foes_ladder.md`, the ladder of recolours by tier (HP the general ramp, the
+   damage's shape each domain's identity), the three verbs, the enemy's buffs crossing for the
+   player's Purge and the matrix's cells by tier; every number, name and rule is in the brief,
+   and what it fences off is asked, never guessed. The rest of the fresh start waits on his
+   marks on the proposal's questions 1 to 13.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,

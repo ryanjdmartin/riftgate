@@ -386,89 +386,35 @@ that ramp balance can begin", ideally with more threatening mechanics as well as
 "with component tiers and synergy payoffs, inflation is just a matter of course for some
 units"; HP and damage go up, "but each domain's identity should also sharpen as the tiers
 rise, with guest appearances preventing the player from building a hard counter for a domain
-and steamrolling it"; a recolour by hue is fine with a modified name, no other marker. The
-measured floor is in `docs/measurements.md` (28 October): by the chassis tier alone, the rank
-and file at one set of numbers cost a tier one half its hull a fight and a tier three a third.
+and steamrolling it"; a recolour by hue is fine with a modified name, no other marker. His go
+on the ladder as proposed, 28 October ("Ok, this seems good"). The measured floor is in
+`docs/measurements.md` (28 October).
 
-**Two layers of numbers**, every one a placeholder. The floor is the general ramp, the
-fight's length; the identity is the domain's dial on top, and the one the player must answer
-differently (the Peak's spike by the shield and the Barrier, the Waste's breach by hull and
-tempo, the Meadow's volume by area and armour, the Marsh's returns by kill order, burst and the
-Purge). Ryan's read (28 October): "enemy damage is more skewed towards a domain identity, and
-HP is more of a general ramp tool"; Claude's agreement with two refinements, the Meadow's ramp
-is count rather than HP, and armour is the wall's number whoever fields it.
-
-| | Tier 2 | Tier 3 |
-|---|---|---|
-| The floor, every domain | HP ×1.25, rounded up; a blow +1 | HP ×1.5, rounded up; a blow +2 |
-| The Meadow, volume | the floor's HP at ×1 and strength +1 a member instead; a wall's armour 1 | HP ×1.25, strength +2, the swarm's add +1; a wall's armour 3 |
-| The Waste, fixed damage and theft | breach on one more type; a burrow that is a Barrier | the big blow +2 more; theft on two types |
-| The Marsh, hard to keep down | HP ×1.5 in the floor's place; one type regenerating; the healer's cleanse | HP ×2; a reraise on an ally, a sanctuary's Ward, a delayed heal |
-| The Peak, the telegraphed spike | the spike +2 more on the telegraphed move; scorch on one more type | the spike +4; a stoke that primes its allies; countdowns |
-
-The floor is set against the tier's kit and the area numbers its pieces print: a unit at the
-rank and file's kill threshold of 3 dies to the column once the tier's pieces carry a Spread 3,
-so a tier's units sit above the numbers the tier's area prints (the 28 October area read).
-Which number rises is read on the bands, never chased.
-
-**The ladder**, working names for Ryan's marks, every twist a mechanic the engine already runs
-(a rider, an aim, a condition, a special, a countdown, a last act), a content line each; a bare
-recolour keeps the numbers alone. The names follow the genre's own ladders in plain words (the
-series' coinages take names of ours, section 1).
-
-| Base | Tier 2 | Tier 3 |
-|---|---|---|
-| Goblin | Goblin Guard, braces | Goblin Captain, rallies its own |
-| Dire Wolf | Warg, hunts the weakest | Alpha Warg, its howl rallies the pack |
-| Gel | Bubble Gel, armour 1 | Metal Gel, armour 3 and little HP: Flak and Overcharged are its answer |
-| Mandragora | Mandrake, its scream costs two rerolls | Alraune, its scream disables the showing entry |
-| Needler | Barbed Needler, two strikes | Great Needler, a countdown of two then one big breach |
-| Antlion | Pit Antlion, its burrow a Barrier (the sand swallows the next blow) | Antlion Queen, a swallow that breaches after a one-round countdown |
-| Cockatrice | Basilisk, aims at the armed | Gorgon, its stone corrupts the entry |
-| Revenant | Wight, regenerating when hurt | Lich, readies an ally to get back up, and a delayed heal |
-| Ghost | Spectre, drains a reroll | Wraith, its bolt corrupts |
-| Zombie Knight | Death Knight, braces every ally | Dread Knight, a blow as it falls |
-| Bomb | Grenade, its self-destruct hits every machine | Balloon, a one-round countdown then every machine, scorching |
-| Salamander | Fire Lizard, scorch 2 | Magma Lizard, a stoke that primes its allies |
-| Drake | Wyvern, its blow breaches | Red Dragon, a breath that scorches every machine, aimed at the hottest |
-
-**How it lands.** A recolour is an entry generated from the marked table (its `tier`, its
-numbers from the two layers, its twist, a one-line codex), its sprite the base's shifted to a
-hue the three colourblind simulations keep apart from the base's, lightness with it, written
-beside the base's art; a placeholder monster, where a role has no base to repaint, is an entry
-with no art, drawn as the views' placeholder shape. The spawn lists carry each entry's tiers;
-a rift deals the battle's tier with the tier below as filler (a tier-two Meadow formation:
-Goblin Guards and Wargs with Gels and Mandragoras); the escorts draw by tier already. A guest's
-members stand in a formation from tier two (section 3's row), one or two of them, so a hard
-counter meets another domain's question. The nine boss sprites with no content (the slate's
-and the Reaper's) fill the finals' rule, not the ramp, and stay where they are.
+The shape: two layers of numbers, the floor the general ramp (the fight's length) and the
+identity each domain's dial on top (the Peak's spike by the shield and the Barrier, the
+Waste's breach by hull and tempo, the Meadow's volume by area and armour, the Marsh's returns
+by kill order, burst and the Purge); Ryan's read, "enemy damage is more skewed towards a domain
+identity, and HP is more of a general ramp tool", with two refinements agreed, the Meadow's
+ramp count rather than HP and armour the wall's number whoever fields it. Thirteen base types,
+two recolours each, every twist a mechanic the engine runs. The spec is the build brief's,
+`docs/briefs/foes_ladder.md`: every entry, every number, the spawn lists by tier, the sprites'
+hues and the engine's readers, so nothing of it is written twice.
 
 ### 10. The enemy's buffs and the player's Purge (28 October)
 
 Ryan: "having more than one purpose for a player purge is important though. Enemies can
 certainly carry offensive buffs such as primed in addition to kindled on more units, and
 defense buffs like barrier, ward, Regen, or a delayed heal or something, shouldn't be out of
-the question. Whatever you think adds healthy depth." The test for each buff below: it crosses
-under the machines' own word (section 6's convention), a telegraphed special grants it and a
-chip shows it, it has an answer beside the purge so a Purge is a decision and never the one
-key, and it sharpens a domain's identity.
-
-| Buff on a foe | Granted by | The answer beside the purge | Whose lean |
-|---|---|---|---|
-| Kindled | a rally (built) | kill, suppress or disrupt the rallier; the intent counts it | the Meadow, the Peak |
-| Armoured | a brace, a brace all (built) | Expose, breach, wait it out | the Waste, the Marsh |
-| Getting Back Up | a reraise, its own or an ally's (built) | kill it twice; a mine in its slot | the Marsh |
-| Primed | a stoke that primes its allies: their blows leave Burning | Ward on the target; kill the stoker; vents | the Peak |
-| Barrier | a mirage, a shell, a burrow: the next weapon blow deals nothing | pop it with a cheap blow, a 1 or a split gun's strike, then hit; a debuff pops nothing | the Waste; the Peak's shelled boss |
-| Ward | a sanctuary: no mark the team lays lands this round, the damage does | wait a round; damage anyway | the Marsh's healer |
-| Regenerating | regrows N at each of its actions for three rounds | burst; kill order | the Marsh; the Meadow's treants |
-
-Never purged: Numbed (the buff nothing removes) and Guarded (the parts' rule). A delayed heal
-is a countdown, held by Suppress and broken by Disrupt, so it needs no buff. The player's
-**Purge**: a keyword on any entry aimed at a foe, every buff above gone from every foe the
-entry reaches; on a capstone's blow (the jellyfish's EMP) or alone on a debuff piece,
-Indirect, one at tier two by lean, so the die asks "strip it or shoot". Read on its pick share
-against the packs that carry buffs once the ladder lands.
+the question. Whatever you think adds healthy depth." The test for each buff that crosses: it
+crosses under the machines' own word (section 6's convention), a telegraphed special grants it
+and a chip shows it, it has an answer beside the purge so a Purge is a decision and never the
+one key, and it sharpens a domain's identity. Four cross: Primed (the Peak's stoker), Barrier
+(the Waste's burrow), Ward (the Marsh's hallow) and Regenerating (the Marsh's wight), beside
+the Kindled, Armoured and Getting Back Up the foes carry already; never Numbed, never Guarded;
+a delayed heal is a countdown, so it needs no buff. The player's Purge is a keyword on any
+entry aimed at a foe, on a capstone's blow (the jellyfish's EMP) or alone on a debuff piece
+at tier two, so the die asks "strip it or shoot". The semantics, the specials, the piece and
+the bot's valuations are the brief's (`docs/briefs/foes_ladder.md`, sections B and C).
 
 ### 11. The three verbs, decided (28 October)
 
@@ -481,8 +427,9 @@ Suppressed (the question to the status build, the Marsh's). Specials only, teleg
 a one-round window with an answer on the die (the Ward, an ally's Cleanse, the caster's
 death, the timing of a spend). Leans: the Waste purges, the Marsh cleanses, the Meadow's
 shaman silences, the Peak burns; a boss anywhere may carry any. The rows are the bible's
-section 5 and section 9; the engine work is the build list's; the carriers are Ryan's marks on
-the ladder.
+section 5 and section 9; the engine work is the brief's (`docs/briefs/foes_ladder.md`, section
+A); the first carriers are the ladder's (the Spectre's hallow; a silence and a purge carrier
+wait on the shaman and the Waste's casters, Ryan's marks).
 
 ## A battle, as proposed
 
