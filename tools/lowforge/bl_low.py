@@ -389,6 +389,7 @@ class Build:
         self.materials = {}
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
+        self.carries = {}   # hp_<n> -> the component its stock part is, "" a bare mount: the rig sidecar's pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
@@ -590,12 +591,18 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=()):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
         stock component's objects: parented under the pin, keeping their world transform,
-        so MechView3D.mount() hides them when another component is fitted."""
+        so MechView3D.mount() hides them when another component is fitted. `carries` is the
+        content id of the component those parts are, "" for a bare mount: the sidecar lists
+        it (rig()'s pins), and the engine compares a machine's fitted die against it, never
+        against content's stock, so a stock that moves on shows its class shapes until the
+        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one."""
+        if name.startswith("hp_"):
+            self.carries[name] = carries
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -890,18 +897,25 @@ class Build:
             if not any(_labelled(n, part) for n in names):
                 near = sorted({n for n in names if n.startswith(part)})
                 raise ValueError("%s: a glow names %r, which labels no part%s" % (self.name, part, " (a label matches whole, not by its prefix: %s)" % ", ".join(near[:4]) if near else ""))
-        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
-               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+        # What each pin's stock part is (pin()'s `carries`): every pin names one, so the engine
+        # never guesses a model's kit from content.
+        unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
+        if unnamed:
+            raise ValueError("%s: %s name no component they carry (b.socket/b.stock/b.pin carries=, \"\" for a bare mount)" % (self.name, ", ".join(unnamed)))
+        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
+               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
+               "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
         if self.gait_options:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
         return out
 
-    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
-        """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
-        block and pins it: every object made in the block hangs under the pin."""
-        return _Socket(self, name, at, forward, scale)
+    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+        """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
+        component inside the block and pins it: every object made in the block hangs under
+        the pin. `carries` names the component it is (pin())."""
+        return _Socket(self, name, at, forward, scale, carries)
 
     def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
         """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
@@ -915,12 +929,13 @@ class Build:
         self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
         for ob in self.objects[start:]:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale)
+        return self.pin(name, at, forward, scale, carries="")
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
-        swapped component will sit there, so the machine is judged wearing one."""
+        swapped component will sit there, so the machine is judged wearing one. `carries`
+        names the component (pin()); its class is `shape`."""
         import models_low
         start = len(self.objects)
         models_low.SHAPES[shape](self, 1.0)
@@ -928,12 +943,12 @@ class Build:
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts)
+        return self.pin(name, at, forward, scale, parts, carries=carries)
 
 
 class _Socket:
-    def __init__(self, b, name, at, forward, scale):
-        self.b, self.name, self.at, self.forward, self.scale = b, name, at, forward, scale
+    def __init__(self, b, name, at, forward, scale, carries=None):
+        self.b, self.name, self.at, self.forward, self.scale, self.carries = b, name, at, forward, scale, carries
 
     def __enter__(self):
         self.start = len(self.b.objects)
@@ -941,7 +956,7 @@ class _Socket:
 
     def __exit__(self, *exc):
         if exc[0] is None:
-            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:])
+            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries)
         return False
 
 

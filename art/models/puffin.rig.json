@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/puffin.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/puffin.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "projector": {
    "axis": "yaw",
@@ -897,5 +897,11 @@
   "prow_band",
   "repulsor_l",
   "repulsor_r"
- ]
+ ],
+ "pins": {
+  "hp_1": "halo_shield",
+  "hp_2": "",
+  "hp_3": "twin_autoguns",
+  "hp_4": "laser_carbine"
+ }
 }

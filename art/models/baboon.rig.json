@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/baboon.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/baboon.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "hip_l": {
    "axis": "pitch",
@@ -6582,5 +6582,13 @@
   "hp_4",
   "hp_5",
   "rack_port"
- ]
+ ],
+ "pins": {
+  "hp_1": "umbra_inducer",
+  "hp_2": "umbra_inducer",
+  "hp_3": "pulse_repeater",
+  "hp_4": "pulse_repeater",
+  "hp_5": "zenith_emitter",
+  "hp_6": ""
+ }
 }

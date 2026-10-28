@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/clydesdale.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/clydesdale.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "head": {
    "axis": "yaw",
@@ -55722,6 +55722,17 @@
   "emitter",
   "lamp"
  ],
+ "pins": {
+  "hp_1": "twin_autoguns",
+  "hp_2": "twin_autoguns",
+  "hp_3": "enfilade_beam",
+  "hp_4": "ankle_mortar",
+  "hp_5": "howitzer",
+  "hp_6": "suppression_battery",
+  "hp_7": "",
+  "hp_8": "",
+  "hp_9": ""
+ },
  "gait_options": {
   "trot": {
    "stride": 55.0,

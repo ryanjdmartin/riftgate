@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/funnel_web.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/funnel_web.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "yaw_fl": {
    "axis": "yaw",
@@ -79796,5 +79796,11 @@
  "glow_parts": [
   "lamp",
   "web_tube_floor"
- ]
+ ],
+ "pins": {
+  "hp_1": "maxigun",
+  "hp_2": "howitzer",
+  "hp_3": "twin_autoguns",
+  "hp_4": "laminar_deflector"
+ }
 }

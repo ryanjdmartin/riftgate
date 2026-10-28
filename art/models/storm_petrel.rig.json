@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/storm_petrel.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/storm_petrel.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {},
  "acts": [
   {
@@ -906,5 +906,11 @@
   "spark_6",
   "spark_7",
   "spark_ring"
- ]
+ ],
+ "pins": {
+  "hp_1": "laser_carbine",
+  "hp_2": "ankle_mortar",
+  "hp_3": "twin_autoguns",
+  "hp_4": ""
+ }
 }

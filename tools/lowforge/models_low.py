@@ -79,7 +79,7 @@ def badger(b):
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (cx, -6.0, 55.0), limits=(-80.0, 80.0)):
             b.prism("z", cx, -6.0, 57.0, 4.4, 4.0, "steel.plate", 8, "gimbal", phase=math.pi / 8)
             if s < 0:
-                with b.socket("hp_2", (cx, -6.0, 59.0)):   # on the gimbal's centre (Ryan, 1 October)
+                with b.socket("hp_2", (cx, -6.0, 59.0), carries="twin_autoguns"):   # on the gimbal's centre (Ryan, 1 October)
                     b.box(cx - 3.0, cx + 3.0, -10.0, -2.0, 58.0, 61.0, "steel.panel", "receiver")
                     for s2 in (-1.0, 1.0):
                         b.prism("y", cx + s2 * 2.4, 11.0, 59.5, 1.8, 26.0, "steel.dark", 6, "autogun")
@@ -144,7 +144,7 @@ def badger(b):
     # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
     # whole rather than a slice of them.
     b.prism("z", 7.0, -13.0, 41.0, 8.0, 2.0, "steel.dark", 8, "ring")
-    with b.socket("hp_1", (7.0, -12.0, 49.0)):   # no joint: a missile box there has no business spinning (Ryan, 1 October); hp_1 since 6 October
+    with b.socket("hp_1", (7.0, -12.0, 49.0), carries="shotfire_rack"):   # no joint: a missile box there has no business spinning (Ryan, 1 October); hp_1 since 6 October
         b.box(0.0, 14.0, -22.0, -4.0, 42.0, 56.0, "steel.panel", "turret")
         # The tubes on the front alone, one face fitted to the tile (Ryan, 5 October: a slab
         # of missile tile showed the tubes on its edges and back too).
@@ -234,7 +234,7 @@ def sparrowhawk(b):
     # September: two nose hardpoints, sleeker than one): hp_1 the left, the Overclocked
     # Railgun; hp_2 the right, the Coriolis Accelerator.
     for s in (-1.0, 1.0):
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 4.5, 24.0, -1.0), scale=0.5):
+        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 4.5, 24.0, -1.0), scale=0.5, carries="overclocked_railgun" if s < 0 else "coriolis_accelerator"):
             b.prism("y", s * 4.5, 36.0, -1.0, 1.3, 26.0, "steel.dark", 6, "nose_gun")
             b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
     # Canopy: far back, low, faired into the spine rather than a bubble.
@@ -257,14 +257,14 @@ def sparrowhawk(b):
         _wing(b, root, tip, "livery.livery", "wing")
         if s < 0:
             # The Arc Projector's pod on the left tip (hp_3): two prongs off the pod's nose.
-            with b.socket("hp_3", (s * 32.0, 14.0, -4.8), scale=0.5):
+            with b.socket("hp_3", (s * 32.0, 14.0, -4.8), scale=0.5, carries="arc_projector"):
                 b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
                 for s2 in (-1.0, 1.0):
                     b.prism("y", s * 32.0 + s2 * 1.2, 24.0, -4.8, 0.7, 8.0, "steel.dark", 6, "prong")
         else:
             # The Deflector's pod on the right tip (hp_4): a projector, its dish on the
             # pod's nose (a shield projector is gun-shaped enough to take a mount).
-            with b.socket("hp_4", (s * 32.0, 14.0, -4.8), scale=0.5):
+            with b.socket("hp_4", (s * 32.0, 14.0, -4.8), scale=0.5, carries="laminar_deflector"):
                 b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
                 b.prism("y", s * 32.0, 21.6, -4.8, 3.2, 1.2, "steel.plate", 8, "dish")
                 b.prism("y", s * 32.0, 22.5, -4.8, 1.2, 0.8, "amber.engine", 8, "dish_core")
@@ -378,7 +378,7 @@ def clydesdale(b):
         b.box(min(s * 12.0, s * 13.5), max(s * 12.0, s * 13.5), 44.0, 49.0, 30.0, 35.0, "amber.light", "lamp")
     for s, k in ((-1.0, 7), (1.0, 8)):
         b.box(min(s * 12.0, s * 14.5), max(s * 12.0, s * 14.5), 42.0, 48.0, 22.0, 28.0, "steel.panel", "cheek_bracket")
-        b.pin("hp_%d" % k, (s * 14.5, 48.0, 25.0))
+        b.pin("hp_%d" % k, (s * 14.5, 48.0, 25.0), carries="")
     head.__exit__(None, None, None)
     raised.__exit__(None, None, None)
     # The legs: a hip cuff on the flank, a hinge pin, a thigh angling out and (fore pair)
@@ -435,7 +435,7 @@ def clydesdale(b):
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 12.0, 51.0), limits=(0.0, 110.0) if s < 0 else (-110.0, 0.0)):   # each turret traverses, outward only (the limit holds the view to it)
             b.box(tx - 5.0, tx + 5.0, 7.0, 17.0, 51.0, 61.0, "steel.panel", "turret")
             b.box(tx - 2.0, tx + 2.0, 17.0, 18.0, 58.0, 60.0, "amber.light", "sight")
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 12.0, 58.0)):
+            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 12.0, 58.0), carries="twin_autoguns"):
                 for s2 in (-1.0, 1.0):
                     b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
     # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
@@ -443,7 +443,7 @@ def clydesdale(b):
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
     b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
     with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the lance pivots at the breech: it kicks on a shot, and lifts
-        with b.socket("hp_3", (0.0, -15.0, 57.0)):
+        with b.socket("hp_3", (0.0, -15.0, 57.0), carries="enfilade_beam"):
             _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
             b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
             _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
@@ -456,7 +456,7 @@ def clydesdale(b):
     b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
     with b.joint("turret_mortar", (-13.0, -24.0, 51.0), limits=(0.0, 150.0)):   # outward only, like the turrets
         with b.joint("elev_mortar", (-13.0, -24.0, 53.0), limits=(-12.0, 20.0)):   # the tube's elevation, inside the traverse (the joint pass)
-            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866)):   # the same height as the howitzer's mount (Ryan, 1 October)
+            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866), carries="ankle_mortar"):   # the same height as the howitzer's mount (Ryan, 1 October)
                 _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
                 _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
     # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
@@ -464,13 +464,13 @@ def clydesdale(b):
     b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
     with b.joint("turret_howitzer", (12.5, -14.0, 51.0), limits=(-150.0, 0.0)):
         with b.joint("elev_howitzer", (12.5, -14.0, 55.0), limits=(-15.0, 20.0)):   # the barrel's elevation at the breech
-            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5)):
+            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5), carries="howitzer"):
                 b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
                 _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
                 _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
     # The shock barrage (hp_6): a rack of tubes on the deck's left between the turret and
     # the breech, pitched up; the class shape, since nothing was modelled there.
-    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8)   # aft a bit (Ryan, 1 October)
+    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8, carries="suppression_battery")   # aft a bit (Ryan, 1 October)
     # Ablative plating: two bolted slabs each flank, standing proud of the hull; the heat
     # sink across the tail, its stack up through the bed. Detail, no mounts: armour and
     # vents show nowhere (the rule, 30 September).
@@ -651,7 +651,7 @@ def baboon(b):
         b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
         side = "l" if s < 0 else "r"
         with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the projector elevates on its mount
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0 + Z0)):
+            with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0 + Z0), carries="umbra_inducer"):
                 b.prism("y", px, 12.0, 63.0 + Z0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
                 b.prism("y", px, 23.0, 63.0 + Z0, 2.2, 3.0, "amber.engine", 6, "emitter")
         # The arm: the elbow back and out behind the shoulder, the forearm forward and
@@ -684,13 +684,13 @@ def baboon(b):
         # mount on the left (hp_6).
         gx = wrist[0] + s * 9.5
         b.box(min(gx - 2.5, gx + 2.5), max(gx - 2.5, gx + 2.5), wrist[1] - 5.0, wrist[1] + 5.0, wrist[2] - 13.0, wrist[2] - 7.0, "steel.plate", "repeater_mount")
-        with b.socket("hp_%d" % (3 if s > 0 else 4), (gx, wrist[1] + 5.0, wrist[2] - 10.0)):
+        with b.socket("hp_%d" % (3 if s > 0 else 4), (gx, wrist[1] + 5.0, wrist[2] - 10.0), carries="pulse_repeater"):
             b.prism("y", gx, wrist[1] + 5.0, wrist[2] - 10.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
             b.prism("y", gx, wrist[1] + 14.5, wrist[2] - 10.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
         top = (wrist[0], wrist[1] + 1.0, wrist[2] - 3.5)
         if s > 0:
             b.box(top[0] - 3.5, top[0] + 3.5, top[1] - 5.0, top[1] + 3.0, top[2], top[2] + 3.0, "steel.plate", "emitter_mount")
-            with b.socket("hp_5", (top[0], top[1] + 3.0, top[2] + 3.0)):
+            with b.socket("hp_5", (top[0], top[1] + 3.0, top[2] + 3.0), carries="zenith_emitter"):
                 b.prism("y", top[0], top[1] + 12.0, top[2] + 3.0, 2.6, 20.0, "steel.dark", 6, "zenith_emitter")
                 b.prism("y", top[0], top[1] + 22.5, top[2] + 3.0, 1.8, 1.5, "amber.engine", 6, "emitter_tip")
         else:
@@ -882,11 +882,11 @@ def armadillo(b):
         # the mount, the socket inside it.
         with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(mount), limits=(-12.0, 28.0)):
             if kind == "rivet":
-                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2):
+                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun"):
                     _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
                     _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2):
+                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="slugthrower"):
                     _beam(b, tuple(mount), tuple(mount + DV * 23.0), _poly(3.0, 6), _poly(2.8, 6), "steel.dark", "slug_barrel")
                     _beam(b, tuple(mount + DV * 23.0), tuple(mount + DV * 26.5), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
     # The hatch behind the ports: a missile cell in a stripe frame, pitched forward with
@@ -902,7 +902,7 @@ def armadillo(b):
     b.cut(band_obs, tuple(HB + DV * 0.5), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
     _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.3, phase=math.pi / 4)
     with b.joint("elev_cell", (0.0, -32.0, Z0 + 22.0), limits=(-4.0, 28.0)):   # the cell tilts up and back on its hatch
-        with b.socket("hp_3", (0.0, -26.0, Z0 + 28.0), forward=D, scale=1.2):
+        with b.socket("hp_3", (0.0, -26.0, Z0 + 28.0), forward=D, scale=1.2, carries="shotfire_rack"):
             # The tubes on the cell's face alone (Ryan, 5 October: the missile tile showed on
             # every side once the cell lifted out): a panel body and one face, the tile fitted
             # to it whole.
@@ -927,7 +927,7 @@ def armadillo(b):
         # fitted there lies in a trough instead of running into the shell (Ryan, 1
         # October: the barrels would have clipped the band in front).
         b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
-        b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2)
+        b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
     b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
@@ -1118,7 +1118,7 @@ def wild_boar(b):
         with b.joint("elev", (0.0, 8.0, 37.0), limits=(-6.0, 22.0)):   # the mantlet and both guns elevate together (the joint pass)
             b.box(-15.0, 15.0, 8.0, 14.0, 33.0, 41.0, "steel.plate", "mantlet")
             for s in (-1.0, 1.0):
-                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0)):
+                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), carries="slugthrower"):
                     b.prism("y", s * 9.0, 32.0, 37.0, 2.8, 40.0, "steel.dark", 6, "gun")
                     b.prism("y", s * 9.0, 51.0, 37.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
         b.box(-4.0, 4.0, -20.0, -14.0, 42.0, 44.0, "steel.plate", "hatch")
@@ -1128,7 +1128,7 @@ def wild_boar(b):
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
     # October: the turret must look able to turn).
     with b.joint("elev_pod", (-TX - 1.0, -23.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
-        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0)):
+        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0), carries="shotfire_rack"):
             b.box(-TX - 8.0, -TX + 6.0, -30.0, -16.2, TH + 9.0, TH + 23.0, "steel.panel", "missile_box")
             _missile_face(b, (-TX - 8.0, -16.15, TH + 9.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 14.0)
     # Ablative plating on the outer faces of the treads and the blowout stack at the hull's
@@ -1332,7 +1332,7 @@ def prairie_dog(b):
         shape_barrel(b, 0.7)
         for ob in b.objects[start:]:
             ob.matrix_world = Matrix.Translation(Vector((-8.8, -9.0, 33.0 + L)))
-        b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7)
+        b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7, carries="twin_autoguns")
     # The mast, out of the tail's centre, lower: a post, a sensor head, a red light.
     b.prism("z", 0.0, -27.0, 28.5 + L, 1.2, 11.0, "steel.dark", 4, "mast")   # rooted in the roof; a little shorter (Ryan, 1 October)
     with b.joint("sensor", (0.0, -27.0, 34.0 + L), limits=(-75.0, 75.0)):   # the head turns on its mast (the joint pass)
@@ -1350,7 +1350,7 @@ def prairie_dog(b):
     b.box(-1.5, 1.5, -34.0, -30.0, 8.0 + L, 10.0 + L, "steel.dark", "hitch")
     # The launcher on the rear-left corner (hp_2): the class rack, its tube face one whole
     # tile (the hand-built box showed a quarter of the tile: Ryan, 1 October).
-    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "rack", scale=0.6)
+    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "rack", scale=0.6, carries="incendiary_shells")
     # The third mount (hp_3) is bare on the rear-right corner, the launcher's twin.
     b.pad("hp_3", (10.0, -26.0, 26.0 + L), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
@@ -1456,13 +1456,13 @@ def dingo(b):
         for s in (-1.0, 1.0):
             b.prism("x", s * 13.0, -20.0, 18.0, 4.0, 2.0, "steel.plate", 8, "capacitor_cap")
     # The nose guns: two ports in the raked front either side of the visor (hp_1).
-    with b.socket("hp_1", (0.0, 24.0, 10.5), scale=0.6):
+    with b.socket("hp_1", (0.0, 24.0, 10.5), scale=0.6, carries="twin_autoguns"):
         for s in (-1.0, 1.0):
             b.prism("y", s * 6.0, 30.0, 10.5, 1.4, 16.0, "steel.dark", 6, "autogun")
     # The pocket mortar on the rear deck beside the drum, pitched up over the tail (hp_2).
     b.prism("z", 10.0, -28.0, 18.5, 2.6, 1.5, "steel.dark", 8, "mortar_base")
     with b.joint("elev_mortar", (10.0, -28.0, 19.0), limits=(-6.0, 28.0)):   # the tube elevates on its base
-        with b.socket("hp_2", (10.0, -26.0, 23.0), forward=(0.0, 0.406, 0.914), scale=0.6):
+        with b.socket("hp_2", (10.0, -26.0, 23.0), forward=(0.0, 0.406, 0.914), scale=0.6, carries="ankle_mortar"):
             _beam(b, (10.0, -28.0, 19.0), (10.0, -24.0, 28.0), _poly(2.4, 6), _poly(2.7, 6), "steel.panel", "mortar")
     # The coolant tanks low on both flanks, a drum with a grille and a dump valve each:
     # detail. The third mount (hp_3) is bare on the rear-left deck, the mortar's twin.
@@ -1662,13 +1662,13 @@ def funnel_web(b):
         # receivers sunk into them.
         for s, k, shape in ((-1.0, 1, "barrel"), (1.0, 3, "twin_barrel")):
             b.box(min(s * 3.5, s * 12.5), max(s * 3.5, s * 12.5), 28.0, 31.5, 44.0, 51.0, "steel.dark", "mantlet")
-            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75)
+            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75, carries="maxigun" if k == 1 else "twin_autoguns")
         # The roof's one mount (hp_2): the howitzer on a low pedestal aft of the pods (the
         # seventh notes: not in line with the side mounts), on its elevation, the torso twist
         # its traverse.
         b.box(-5.0, 5.0, -19.0, -9.0, 63.0, 68.0, "steel.dark", "top_mount")   # sunk into the roof (the eighth notes: a gap showed)
         with b.joint("elev_top", (0.0, -14.0, 68.0), limits=(-8.0, 30.0)):
-            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
+            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9, carries="howitzer")
         # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
         # on its front, what it carries on an elevation and never a traverse (the fourth
         # notes: the torso twist aims them). The left pod carries the Web Bomb (fixed, no
@@ -1692,7 +1692,7 @@ def funnel_web(b):
                             _tube(b, tuple(P0 + off), tuple(P0 + off + D * 9.3), 2.1, 1.65, 6, "steel.dark", "web_tube", floor_material="amber.light", floor_depth=7.0)
             else:
                 with b.joint("elev_r", (px, 4.0, 56.5), limits=(-10.0, 30.0)):
-                    b.stock("hp_4", (s * 25.5, 8.0, 56.5), "dish", scale=0.85)
+                    b.stock("hp_4", (s * 25.5, 8.0, 56.5), "dish", scale=0.85, carries="laminar_deflector")
 
     # Idle acts (the builder's rules: curves a part runs on through, held poses that drift,
     # every gun turning slowly and not far with a pause before it turns back). Degrees and
@@ -1851,7 +1851,7 @@ def goshawk(b):
             pz = wz - 1.0 - r - 2.0   # the pod hangs clear under the wing on a pylon
             b.box(s * px - 1.2, s * px + 1.2, -1.0, 7.0, pz + r - 0.5, wz - 0.6, "steel.plate", "pylon")
             n = (1 if s < 0 else 2) if k == 0 else (3 if s < 0 else 4)
-            with b.socket("hp_%d" % n, (s * px, 6.0, pz), scale=0.7):
+            with b.socket("hp_%d" % n, (s * px, 6.0, pz), scale=0.7, carries={1: "laser_carbine", 2: "coriolis_accelerator", 3: "arc_projector", 4: "laminar_deflector"}[n]):
                 b.prism("y", s * px, 3.0, pz, r, 18.0, "steel.dark", 6, "pod")
                 if n == 3:
                     for s2 in (-1.0, 1.0):   # the Arc Projector's prongs
@@ -2047,7 +2047,7 @@ def nemesis(b):
     for s, n in ((-1.0, 3), (1.0, 4)):
         b.prism("y", s * 12.0, 12.5, 73.0, 3.6, 2.0, "steel.dark", 8, "port_ring", phase=math.pi / 8)
         b.prism("y", s * 12.0, 12.6, 73.0, 2.6, 1.6, "bore.dark", 8, "port_throat", phase=math.pi / 8)
-        b.pin("hp_%d" % n, (s * 12.0, 13.5, 73.0))
+        b.pin("hp_%d" % n, (s * 12.0, 13.5, 73.0), carries="")
     # The helm: hooded, low between the shoulders, a visor slit and two horns.
     b.box(-8.0, 8.0, -7.0, 12.0, 82.0, 92.0, "steel.panel", "helm")   # runs back to meet the traps
     b.loft([(-4.0, rect(0.0, 18.0, 90.0, 94.0)), (14.0, rect(0.0, 14.0, 88.0, 92.0))], "steel.plate", "hood")
@@ -2067,7 +2067,7 @@ def nemesis(b):
     _spike(b, (32.0, 0.0, 84.0), (36.0, -2.0, 92.0), 1.8, "steel.dark", "pauldron_spike_r")
     # The Meteor Artillery behind the right shoulder: two tubes pitched up (hp_2).
     with b.joint("elev_meteor", (27.0, -16.0, 76.0), limits=(-18.0, 16.0)):   # the tubes elevate on the rack (the joint pass)
-        with b.socket("hp_2", (27.0, -14.0, 80.0), forward=(0.0, 0.33, 0.944)):
+        with b.socket("hp_2", (27.0, -14.0, 80.0), forward=(0.0, 0.33, 0.944), carries="meteor_artillery"):
             b.box(20.0, 34.0, -20.0, -12.0, 64.0, 78.0, "steel.panel", "rack")
             for x in (24.0, 30.0):
                 _beam(b, (x, -16.0, 76.0), (x, -9.0, 96.0), _poly(3.2, 6), _poly(3.6, 6), "steel.dark", "meteor_tube")
@@ -2115,7 +2115,7 @@ def nemesis(b):
     # The waist cannon (hp_1): a mount on the right of the waist, the Plasma Carbine
     # forward off it (Ryan, 30 September: on the waist, not the hip).
     b.box(13.0, 23.0, -7.0, 5.0, 51.0, 59.0, "steel.plate", "waist_mount")
-    with b.socket("hp_1", (18.0, 5.0, 55.0)):
+    with b.socket("hp_1", (18.0, 5.0, 55.0), carries="plasma_arquebus"):
         b.prism("y", 18.0, 17.0, 55.0, 3.0, 24.0, "steel.dark", 6, "plasma_carbine")
         b.prism("y", 18.0, 29.5, 55.0, 2.2, 1.5, "amber.engine", 6, "carbine_tip")
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
@@ -2372,7 +2372,7 @@ def ammit(b):
         px = s * 6.5
         _beam(b, (px, 24.0, 47.0), (px, 30.0, 45.0), _poly(3.0, 8), _poly(3.0, 8), "steel.dark", "throat_port")
         _beam(b, (px, 29.0, 45.3), (px, 31.0, 44.7), _poly(2.2, 8), _poly(2.2, 8), "bore.dark", "port_throat")
-        b.pin("hp_%d" % n, (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316))
+        b.pin("hp_%d" % n, (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316), carries="")
     # The back panel (the Ward Plate, detail): a rectangular plate lying flat on the back's
     # slope from the shoulders to the tail, the shoulder cannons sitting on it and pointing
     # up the slope, so panel and guns lie parallel to the back (Ryan, 30 September).
@@ -2388,11 +2388,11 @@ def ammit(b):
         # Each shoulder cannon elevates along the plate (the joint pass).
         with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(gun), limits=(-12.0, 18.0)):
             if s > 0:
-                with b.socket("hp_1", tuple(gun), forward=tuple(U)):
+                with b.socket("hp_1", tuple(gun), forward=tuple(U), carries="plasma_arquebus"):
                     _beam(b, gun, gun + U * 26.0, _poly(2.6, 6), _poly(2.6, 6), "steel.dark", "plasma_carbine")
                     _beam(b, gun + U * 26.0, gun + U * 27.5, _poly(2.0, 6), _poly(2.0, 6), "amber.engine", "carbine_tip")
             else:
-                with b.socket("hp_2", tuple(gun), forward=tuple(U)):
+                with b.socket("hp_2", tuple(gun), forward=tuple(U), carries="blazethrower"):
                     _beam(b, gun - U * 8.0, gun + U * 2.0, _poly(3.6, 8), _poly(3.6, 8), "steel.dark", "fuel_tank")
                     _beam(b, gun + U * 2.0, gun + U * 19.0, _poly(2.0, 6), _poly(2.0, 6), "steel.dark", "nozzle")
                     _beam(b, gun + U * 19.0, gun + U * 20.5, _poly(2.6, 6), _poly(2.6, 6), "amber.engine", "pilot_flame")
@@ -2897,7 +2897,7 @@ def stingray(b):
         b.prism("y", px, 24.0, pz, 2.0, 24.0, "steel.dark", 6, "wing_pod")   # y 12 to 36; the wing's leading edge is near y 34 here
         b.prism("y", px, 36.4, pz, 2.3, 1.2, "steel.plate", 6, "pod_collar")
         if name == "hp_4":
-            with b.socket(name, (px, 37.0, pz), scale=0.7):
+            with b.socket(name, (px, 37.0, pz), scale=0.7, carries="aurora_lattice"):
                 lattice(px, 37.0, pz)
         else:
             b.pad(name, (px, 37.0, pz), scale=0.7, size=(3.6, 1.4))
@@ -2926,12 +2926,12 @@ def stingray(b):
     for s in (-1.0, 1.0):
         px, py, pz = tip_pod(s)
         if s < 0:
-            with b.socket("hp_1", (px, py, pz), scale=0.8):   # the flare pods point forward like every gun (Ryan, 5 October: pitched up read wrong), stacked over the tip
+            with b.socket("hp_1", (px, py, pz), scale=0.8, carries="incendiary_shells"):   # the flare pods point forward like every gun (Ryan, 5 October: pitched up read wrong), stacked over the tip
                 for s2 in (-1.0, 1.0):
                     _beam(b, (px, py - 1.5, pz + s2 * 1.4), (px, py + 7.5, pz + s2 * 1.4), _poly(1.2, 6), _poly(1.4, 6), "steel.dark", "flare_pod")
                     b.prism("y", px, py + 7.9, pz + s2 * 1.4, 0.9, 0.8, "amber.engine", 6, "pod_mouth")
         else:
-            with b.socket("hp_2", (px, py, pz), scale=0.8):
+            with b.socket("hp_2", (px, py, pz), scale=0.8, carries="pulse_repeater"):
                 b.prism("y", px, py + 8.0, pz, 1.4, 16.0, "steel.dark", 6, "pulse_repeater")
                 b.prism("y", px, py + 16.4, pz, 1.0, 1.2, "amber.engine", 6, "repeater_tip")
         forewing_pod(s, "hp_4" if s > 0 else "hp_5")
@@ -2947,7 +2947,7 @@ def stingray(b):
                "steel.plate", "turret_dome", Matrix.Translation((0.0, -10.0, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
         b.box(-2.8, 2.8, -8.4, -1.0, gz + 3.2, gz + 6.9, "steel.dark", "emitter_slot")
         b.prism("z", 0.0, -10.0, gz + 8.0, 1.8, 0.8, "amber.engine", 8, "dome_light", phase=math.pi / 8)
-        with b.socket("hp_3", (0.0, -8.0, gz + 5.0)):   # the pin sits back inside the dome, so a fitted gun comes out of the slot
+        with b.socket("hp_3", (0.0, -8.0, gz + 5.0), carries="zenith_emitter"):   # the pin sits back inside the dome, so a fitted gun comes out of the slot
             b.prism("y", 0.0, 4.0, gz + 5.0, 2.0, 24.0, "steel.dark", 6, "zenith_emitter")
             b.prism("y", 0.0, 16.6, gz + 5.0, 1.5, 1.4, "amber.engine", 6, "emitter_tip")
 
@@ -3120,7 +3120,7 @@ def needletail(b):
             _disc(b, (nx, ny, nz - 12.5), (0.0, 0.0, -1.0), 4.5, 6, "amber.exhaust", "exhaust", phase=math.pi / 6)
         # The mounts under the stubs, the gun's barrel and the dish out ahead of the leading edge.
         b.box(s * 12.5 - 0.7, s * 12.5 + 0.7, -8.0, 2.0, -2.2, -0.6, "steel.plate", "pylon")
-        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 12.5, 1.0, -3.0), "barrel" if s < 0 else "dish", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 12.5, 1.0, -3.0), "barrel" if s < 0 else "dish", scale=0.5, carries="transonic_rifle" if s < 0 else "overcharge_coil")
     b.pad("hp_3", (0.0, -10.0, -3.8), scale=0.5, size=(4.0, 1.2))
     # The X tail: four small cobalt fins on the boom ahead of the needle.
     for k in range(4):
@@ -3286,7 +3286,7 @@ def giant_petrel(b):
         with b.joint(name, (0.0, ty, tz + 1.0), axis="yaw", limits=(-75.0, 75.0)):
             b.loft([(tz + 0.8, _poly(5.8, 8, math.pi / 8)), (tz + 3.6, _poly(5.4, 8, math.pi / 8)), (tz + 5.4, _poly(3.6, 8, math.pi / 8))],
                    "steel.plate", "turret_house", Matrix.Translation((0.0, ty, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
-            b.stock(pin, (0.0, ty + 2.0, tz + 3.2), kind, scale=0.8)
+            b.stock(pin, (0.0, ty + 2.0, tz + 3.2), kind, scale=0.8, carries={"hp_1": "overclocked_railgun", "hp_2": "twin_autoguns"}[pin])
     b.pad("hp_3", (8.5, 6.0, deck(6.0) + 1.0), scale=0.8, size=(4.4, 1.4))
 
     # Idle acts (four, loud, never in step; a capital's heavy servos). Degrees and seconds; a body
@@ -3444,7 +3444,7 @@ def skua(b):
     # under the belly.
     for s in (-1.0, 1.0):
         b.box(s * 10.0 - 0.7, s * 10.0 + 0.7, -2.0, 5.0, -2.4, -0.4, "steel.plate", "pylon")
-        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
     b.pad("hp_3", (0.0, -10.0, -5.0), scale=0.5, size=(5.0, 1.4))
 
     # Idle acts (five, like the Kite's, loud and never in step; Ryan, 28 October: the strafing
@@ -3604,7 +3604,7 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 20.0, 8.2), scale=0.5):
+        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 20.0, 8.2), scale=0.5, carries="halo_shield" if s < 0 else ""):
             b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
             if s < 0:
                 b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")
@@ -3612,7 +3612,7 @@ def puffin(b):
         rx, ry = s * 6.5, -22.0
         dz = deck(ry)
         b.loft([(ry - 6.0, rect(rx, 2.6, dz - 0.6, dz + 1.0)), (ry + 5.0, rect(rx, 3.8, dz - 0.6, dz + 2.0))], "steel.panel", "shoulder_fairing")
-        b.stock("hp_3" if s > 0 else "hp_4", (rx, ry + 5.5, dz + 1.3), "twin_barrel" if s > 0 else "barrel", scale=0.5)
+        b.stock("hp_3" if s > 0 else "hp_4", (rx, ry + 5.5, dz + 1.3), "twin_barrel" if s > 0 else "barrel", scale=0.5, carries="twin_autoguns" if s > 0 else "laser_carbine")
     # The booster drawn in: its mouth over the afterdeck, its exhaust just past the stern.
     BY, BZ, BR = -27.0, 12.6, 6.0
     b.prism("y", 0.0, BY, BZ, BR, 24.0, "steel.dark", 6, "booster", phase=math.pi / 6)
@@ -3796,7 +3796,7 @@ def storm_petrel(b):
             b.loft([(ey - 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8)), (ey + 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8))], "amber.ember", "emitter")
         tx = s * (at(-10.0)[0] / 2.0 + 5.0)
         b.box(tx - 2.0, tx + 2.0, -12.0, -7.0, 16.2, 17.4, "steel.panel", "mount")
-        b.stock("hp_%d" % (1 if s < 0 else 3), (tx, -7.0, 18.6), "barrel" if s < 0 else "twin_barrel", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 3), (tx, -7.0, 18.6), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
         # The nacelles and the giant boosters, the Puffin's grown to the size: the deck carried
         # over each drum, the louvred vent housing on its top, the drum's mouth ahead as the
         # intake, its lit ring and exhaust past the stern.
@@ -3819,7 +3819,7 @@ def storm_petrel(b):
         b.prism("y", bx, -36.9 * K, bz, 6.9 * K, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
         b.loft([(-37.6 * K, hexagon(bx, bz, 11.2 * K, 9.8 * K)), (-38.1 * K, hexagon(bx, bz, 10.0 * K, 8.6 * K))], "amber.exhaust", "exhaust")
     b.box(-6.5, -2.5, -26.0, -22.0, deck(-24.0) - 0.6, deck(-24.0) + 0.9, "steel.panel", "mount")
-    b.stock("hp_2", (-4.5, -22.0, deck(-24.0) + 2.0), "rack", scale=0.5)
+    b.stock("hp_2", (-4.5, -22.0, deck(-24.0) + 2.0), "rack", scale=0.5, carries="ankle_mortar")
     b.pad("hp_4", (4.5, -24.0, deck(-24.0) + 1.0), scale=0.5, size=(4.0, 1.4))
     # Two canted fins on the afterdeck, tall and swept back.
     fh, fy0, fy1 = 14.0, -48.0, -39.0
@@ -3951,16 +3951,16 @@ def lammergeier(b):
     # drums (x 32, where the drum at 20 reaches 25.8 and the rack's class at its scale 27.1), the
     # outer pair on the outer wing past the outer drums (x 57, where the drum at 44 reaches 49.8
     # and the dish's class 51.9); the drone tubes end at y 31 and more, the inner mounts at 10.
-    for s, pin, kind in ((-1.0, "hp_1", "rack"), (1.0, "hp_2", "barrel")):
+    for s, pin, kind, cid in ((-1.0, "hp_1", "rack", "incendiary_shells"), (1.0, "hp_2", "barrel", "enfilade_beam")):
         tx, ty = s * 32.0, 10.0
         tz = Z + thick(tx) * 0.5
         b.box(tx - 1.8, tx + 1.8, ty - 3.0, ty + 1.0, tz - 0.4, tz + 1.0, "steel.panel", "mount")
-        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7)
-    for s, pin, kind in ((-1.0, "hp_3", "dish"), (1.0, "hp_4", "twin_barrel")):
+        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7, carries=cid)
+    for s, pin, kind, cid in ((-1.0, "hp_3", "dish", "polarity_projector"), (1.0, "hp_4", "twin_barrel", "arc_fault_cannon")):
         tx, ty = s * 57.0, 6.0
         tz = Z + thick(tx) * 0.5
         b.box(tx - 1.8, tx + 1.8, ty - 3.0, ty + 1.0, tz - 0.4, tz + 1.0, "steel.panel", "mount")
-        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7)
+        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7, carries=cid)
     for s in (-1.0, 1.0):
         a = math.radians(s * 30.0)
         _rings(b, [[(s * 70.0, 10.0, Z), (s * 70.4, 6.0, Z), (s * 70.0, 2.0, Z), (s * 69.6, 6.0, Z)],

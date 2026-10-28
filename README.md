@@ -115,7 +115,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
-  numbers; written by lowforge, read by `mech_rig.gd`), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
+  numbers, what each hardpoint's stock part is; written by lowforge, read by `mech_rig.gd`
+  and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.

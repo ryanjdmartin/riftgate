@@ -6,7 +6,9 @@ extends SceneTree
 ## Rendered bare, without the display's outline (RIFTGATE_OUTLINE_KEEP=1 keeps it).
 ## RIFTGATE_FIT="1:lance,4:blazethrower" hangs components' silhouette classes on the mounts in
 ## place of the stock parts ("2:" bares a socket), to judge a swap; a class on its own is
-## a model too: <chassis> shapes/barrel_minerva.
+## a model too: <chassis> shapes/barrel_minerva. RIFTGATE_FIT=stock wears what the game puts on
+## a fresh machine (MechView3D.plan_for): the stock in content against what the model's pins
+## were built carrying, so a stale part shows as its class shape.
 
 var _frames := 0
 var _view: MechView3D
@@ -32,7 +34,10 @@ func _init() -> void:
 		frame = Vector2i(int(args[4]), int(args[5]))
 	var plan: Array = []
 	var fit := OS.get_environment("RIFTGATE_FIT")
-	if not fit.is_empty():
+	if fit == "stock":
+		var db := ContentDB.load_default()
+		plan = MechView3D.plan_for(db.make_mech(chassis), db) if db.chassis.has(chassis) else []
+	elif not fit.is_empty():
 		plan = MechView3D.plan_from_spec(fit, ContentDB.load_default())
 	_view = MechView3D.make(chassis, maker, "clean", "badger", yaw, frame, false, {}, plan)
 	if OS.get_environment("RIFTGATE_OUTLINE_KEEP") != "1":

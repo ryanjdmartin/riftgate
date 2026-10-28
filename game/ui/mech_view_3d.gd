@@ -95,7 +95,7 @@ const SPIN_SPEED := 0.7           # radians per second
 var rig := MechRig.new()
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
 var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
-var plan: Array = []              # what the pins wear instead of their stock (mount_plan rows), applied in _setup
+var plan: Array = []              # what the pins wear instead of their built parts (plan_for's rows), applied in _setup
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 
 var _inner: SubViewport
@@ -237,15 +237,28 @@ static func shape_model(shape: String, maker: String) -> String:
 	return "shapes/%s_%s" % [shape, maker]
 
 
-## What a machine's mounts must change to show its fitted die instead of the chassis's
-## stock loadout (the rule, 30 September): the model's pins are gun mounts, hp_1 onward,
-## and the die's shaped components (a weapon, or anything else that looks like one) take them
-## in the die's order; a component with no shape (armour, a vent) takes a die entry and no
-## mount. One row [k, component, shape, maker] per mount whose component is not the one
-## the stock loadout put there, with an empty component for a mount left bare (the stock
-## part hides and nothing replaces it). Empty when the die is the stock kit, which every
-## machine's is today.
+## What a machine's mounts must change to show its fitted die instead of a stock loadout
+## (the rule, 30 September): the model's pins are gun mounts, hp_1 onward, and the die's
+## shaped components (a weapon, or anything else that looks like one) take them in the die's
+## order; a component with no shape (armour, a vent) takes a die entry and no mount. One row
+## [k, component, shape, maker] per mount whose component is not the one the stock loadout put
+## there, with an empty component for a mount left bare (the stock part hides and nothing
+## replaces it). Empty when the die is the stock kit.
 static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
+	var stock_mounts: Array = []
+	for cid in stock:
+		if _shaped(str(cid), db):
+			stock_mounts.append(str(cid))
+	return pins_plan(die, stock_mounts, db)
+
+
+## The same against what each pin was built carrying, in pin order ("" a bare mount;
+## pin_record): a pin whose built part is another component wears the fitted one's class
+## shape, and a pin the die leaves without one is bared. So a stock that has moved on since
+## the model was built shows its own class shapes, never the parts of the old one (Ryan's go,
+## 28 October), and a model that numbers a bare mount among its guns still mounts the die in
+## the die's order.
+static func pins_plan(die: Die, pins: Array, db: ContentDB) -> Array:
 	var out: Array = []
 	if die == null:
 		return out
@@ -255,13 +268,9 @@ static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
 			continue
 		if _shaped(f.component, db):
 			fitted.append(f.component)
-	var stock_mounts: Array = []
-	for cid in stock:
-		if _shaped(str(cid), db):
-			stock_mounts.append(str(cid))
-	for k in range(maxi(fitted.size(), stock_mounts.size())):
+	for k in range(maxi(fitted.size(), pins.size())):
 		var want := str(fitted[k]) if k < fitted.size() else ""
-		var have := str(stock_mounts[k]) if k < stock_mounts.size() else ""
+		var have := str(pins[k]) if k < pins.size() else ""
 		if want == have:
 			continue
 		if want.is_empty():
@@ -278,10 +287,32 @@ static func _shaped(cid: String, db: ContentDB) -> bool:
 	return not shape.is_empty() and shape != ContentDB.SHAPE_NONE
 
 
-## The plan for a unit against its chassis's stock loadout in content.
+## What each of a model's pins was built carrying, hp_1 first: a component's id, or "" for a
+## bare mount (lowforge's `carries`, the sidecar's `pins`). Null when its sidecar names none.
+static func pin_record(model_id: String) -> Variant:
+	var pins = MechRig.load_sidecar(model_id).get("pins", null)
+	if not (pins is Dictionary):
+		return null
+	var out: Array = []
+	for key in pins.keys():
+		var tag := MechRig.parse_tag(str(key))
+		if tag.is_empty() or str(tag[0]) != "hp":
+			continue
+		var n := int(tag[1])
+		while out.size() < n:
+			out.append("")
+		out[n - 1] = "" if pins[key] == null else str(pins[key])
+	return out
+
+
+## The plan for a unit: against what its model's pins were built carrying, or, for a model
+## whose sidecar names none, its chassis's stock loadout in content.
 static func plan_for(u: Unit, db: ContentDB) -> Array:
 	if u == null or db == null:
 		return []
+	var pins = pin_record(u.chassis_id)
+	if pins != null:
+		return pins_plan(u.die, pins, db)
 	var stock: Array = db.chassis.get(u.chassis_id, {}).get("loadout", [])
 	return mount_plan(u.die, stock, db)
 
@@ -305,32 +336,43 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 
 ## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
 func _apply_plan() -> void:
-	for row in plan:
-		if row.size() < 4:
+	wear(hardpoints, plan, mode, paint, token, hide_detail, model_id)
+
+
+## A model's pins by number (1 -> the hp_1 node), found by name as the rig finds them.
+static func pins_of(root: Node) -> Dictionary:
+	var out := {}
+	for c in root.get_children():
+		var tag := MechRig.parse_tag(str(c.name))
+		if not tag.is_empty() and str(tag[0]) == "hp":
+			out[int(tag[1])] = c
+		out.merge(pins_of(c))
+	return out
+
+
+## Wear a plan on a model's pins (`hardpoints`: the pin's number to its node, as the rig finds
+## them): each row hides the pin's stock part and hangs its component's class shape there in
+## that component's own metal, or leaves the socket bare. Shared with the map, which builds
+## its machines without a view (Map3D).
+static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Dictionary = {}, as_token: bool = false, drop_detail: bool = true, model_name: String = "") -> void:
+	for row in rows:
+		if row.size() < 4 or not pins.has(int(row[0])):
 			continue
-		var n := int(row[0])
+		var pin: Node3D = pins[int(row[0])]
+		for c in pin.get_children():
+			if c is Node3D:
+				(c as Node3D).visible = false
 		if str(row[1]).is_empty():
-			hide_stock(n)
-		elif not mount_shape(n, str(row[2]), str(row[3])):
-			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], row[2], n, model_id])
-
-
-## Hang a silhouette class on a pin in a maker's metal; false when the pin or the shape's
-## model is missing.
-func mount_shape(n: int, shape: String, maker: String) -> bool:
-	var id := shape_model(shape, maker)
-	if not has_model(id):
-		return false
-	return mount(n, load("res://art/models/%s.glb" % id), maker)
-
-
-## Bare a socket: the stock part hides and nothing replaces it (an empty hardpoint).
-func hide_stock(n: int) -> void:
-	if not hardpoints.has(n):
-		return
-	for c in (hardpoints[n] as Node3D).get_children():
-		if c is Node3D:
-			c.visible = false
+			continue
+		var id := shape_model(str(row[2]), str(row[3]))
+		if not has_model(id):
+			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], row[2], int(row[0]), model_name])
+			continue
+		var part: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		part.set_meta("mounted", true)
+		pin.add_child(part)
+		toon(part, str(row[3]), look, paint_arg, as_token, drop_detail)
+		MechWeld.weld(part)
 
 
 var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)

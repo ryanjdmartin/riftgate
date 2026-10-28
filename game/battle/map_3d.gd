@@ -1339,10 +1339,12 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 
 
-func _model(id: String, maker: String, paint: Dictionary = {}, outline: bool = true) -> Node3D:
+func _model(id: String, maker: String, paint: Dictionary = {}, outline: bool = true, plan: Array = []) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
 	MechView3D.toon(node, maker, "clean", paint, false)
+	# The fitted die on the pins before the outline, as the skirmish wears it (MechView3D.plan_for).
+	MechView3D.wear(MechView3D.pins_of(node), plan, "clean", paint, false, true, id)
 	if outline:
 		TraceLines.silhouette_through_all(node)   # a machine keeps its outline behind the wall
 	else:
@@ -1518,7 +1520,7 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := ContentDB.load_default().maker_of(u.chassis_id)
 		var model_id := MechView3D.model_for(u.chassis_id)
-		var node := _model(model_id, maker, u.paint)
+		var node := _model(model_id, maker, u.paint, true, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [])
 		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's

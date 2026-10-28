@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {},
  "acts": [
   {
@@ -1977,5 +1977,11 @@
  "glow_parts": [
   "booster_ring",
   "exhaust"
- ]
+ ],
+ "pins": {
+  "hp_1": "overclocked_railgun",
+  "hp_2": "coriolis_accelerator",
+  "hp_3": "arc_projector",
+  "hp_4": "laminar_deflector"
+ }
 }
