@@ -64,7 +64,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   `docs/briefs/kestrel_line.md`). Its models' second round landed 28 October (Ryan's picks from
   five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
   the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
-  his next session's, the to-do). The Skua fielded since its engine of 25 October (each roll
+  his next session's, the to-do; the scissor swing wing tried again the same day as a look for
+  one of the two unspecced designs, two F-14 pairs on their own pivots that open into an X and
+  beat as an ornithopter and close into a blade, `docs/looks/kestrel_ornithopter.png`). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
