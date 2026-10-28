@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 737 tests, 66,570 checks, green on `ccr-6073bda9-p34o8q` with the ladder (28 October;
+- Tests: 737 tests, 66,570 checks, green on main with the ladder (28 October;
   main's head 721 and 66,041 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -49,10 +49,11 @@ the result (the Tests line) and main took this branch as a fast-forward the same
 models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
 rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
 28th and main took it as a fast-forward that evening on his word ("clean up and merge into
-main"). `ccr-6073bda9-p34o8q` took main the same evening and carries the ladder's build on top
-(the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites and
-the read at 30 seeds), unmerged, for main to take. Every other branch named here is fully
-merged, to delete from the desk machine or GitHub along with
+main"). `ccr-6073bda9-p34o8q` took main the same evening, carried the ladder's build on top
+(the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites,
+the read at 30 seeds and the move counts settled), and main took it as a fast-forward that
+night on the same word. Every branch named here is fully
+merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
 `ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
