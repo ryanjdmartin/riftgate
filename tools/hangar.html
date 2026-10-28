@@ -344,8 +344,12 @@ function toast(msg) {
 }
 function setStatus(msg, warn = false) { const s = $("#status"); s.textContent = msg; s.classList.toggle("warn", warn); }
 
+// Every file the page reads is fetched past every cache: the browser's (no-store) and any
+// cache between (a stamp on the URL), so a republish shows at once (28 October: a stale
+// rig would play an older round's acts).
+const fresh = (path) => path + (path.includes("?") ? "&" : "?") + "v=" + Date.now();
 async function fetchJson(path) {
-  const r = await fetch(path, {cache: "no-store"});
+  const r = await fetch(fresh(path), {cache: "no-store"});
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
   return r.json();
 }

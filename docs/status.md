@@ -275,7 +275,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 129 (28 October, from
+  before it is replaced and `edits` read first. Every file the page reads is fetched with a
+  stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
+  acts on a reloaded page). At the page's version 130 (28 October, from
   `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
   models and rigs after Ryan's three rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
   Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
