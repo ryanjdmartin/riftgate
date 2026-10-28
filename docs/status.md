@@ -319,11 +319,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.342 (the
-  page's version 354, published 28 October from `ccr-7821127e-kwj874`: the movement rows of
+  `docs/design-bible.html` after every change. This file and the live page are v0.343 (the
+  page's version 355, published 28 October from `ccr-7821127e-kwj874`: the movement rows of
   section 4, the scales row's move and the silhouette row with them, section 12's built list and
-  the shapes' questions; the live page was main's v0.341 (version 353) unchanged, so no merge
-  was needed). The version numbers on the publishing branch's
+  the shapes' questions at v0.342 (version 354, onto main's v0.341 unchanged), then the hero
+  row's map line). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -334,11 +334,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 139 (28 October, from
-  `ccr-7821127e-kwj874` onto 138: moves in hexes in `content/chassis.json`, `content/foes.json`
-  (its thirteen winged foes with them), `content/modules.json` and `content/vocabulary.json`,
-  the motion port's pace keyed by hexes and the codex's move a plain count; every other file
-  identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 140 (28 October, from
+  `ccr-7821127e-kwj874`: at 139, onto 138, moves in hexes in `content/chassis.json`,
+  `content/foes.json` (its thirteen winged foes with them), `content/modules.json` and
+  `content/vocabulary.json`, the motion port's pace keyed by hexes and the codex's move a plain
+  count; at 140 `content/foes.json` again, the heroes without a move and the wolves at 4, and
+  the foe line shown without a move it lacks; every other file identical to the live page's,
+  `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
