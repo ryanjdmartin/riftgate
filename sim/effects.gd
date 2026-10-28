@@ -1031,9 +1031,11 @@ static func granted_keywords(u, face: Face, target = null, printed_only: bool = 
 
 ## The numbers a live passive's grants give a numbered keyword on this component (`number` on a
 ## grant_keyword: the Cottonmouth's drum, Spread 2 at the front rank and Penetrate 2 at the back;
-## Ryan, 28 October), keyword -> number, its `when` honoured as the grant's: a keyword the
-## component already carries keeps the higher of its own and the grant's. A grant with no number
-## gives none (an area keyword it adds then says one, as a synthetic entry does).
+## Ryan, 28 October), keyword -> number, its `when` honoured as the grant's: the grant's number
+## replaces the component's own (Ryan: the drum "forces the weapon into its own shape", so a
+## Spread 1 shell leaves it at the drum's 2, never the higher of the two, "as that's gaming the
+## build"). A grant with no number gives none (an area keyword it adds then says one, as a
+## synthetic entry does), and changes nothing on a keyword the component already carries.
 static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 	var out := {}
 	if face == null or face.kind == Face.Kind.BLANK:
@@ -1095,10 +1097,10 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var granted := granted_keywords(u, base, target)
 	var printed := granted_keywords(u, base, target, true)
 	var numbers := granted_numbers(u, base, target)
-	# A numbered grant raises a keyword the entry already carries only past its own number.
+	# A numbered grant on a keyword the entry already carries sets its number (the drum's shape).
 	var raised := {}
 	for kw in numbers.keys():
-		if base.has(kw) and int(numbers[kw]) > base.number_of(kw):
+		if base.has(kw) and int(numbers[kw]) != base.number_of(kw):
 			raised[kw] = numbers[kw]
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)

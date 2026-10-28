@@ -8040,8 +8040,9 @@ func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own(
 	assert_eq(right.hp, 100 - (2 + 1) * 2 * 2, "the other: the same blow, its own Shock doubling it last")
 	assert_false(Effects.has(right, "shocked"), "and the shock spent")
 	# The Kite's double stays on the printed number (Ryan, 28 October: his reading, doubling after
-	# the firer's flat adds, is its buff if it ever needs one): what the entry prints is doubled,
-	# each foe's own read of it with it (the hull it is missing), and the buffs land once after.
+	# the firer's flat adds, is its buff if it ever needs one): what the entry prints from its
+	# firer is doubled, the buffs land once after, and each foe's own read (the hull it is
+	# missing) after those, undoubled (Ryan's chain: the struck unit's reads after the firer's multiplies).
 	var s2 := Skirmish.new(1, 3)
 	var gun := Face.attack(6, L, K.CLEAVE)
 	gun.cleave = 2
@@ -8061,7 +8062,7 @@ func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own(
 	hurt.hp = 90
 	assert_true(s2.assign(0, aim), "at the unhurt middle")
 	assert_eq(aim.hp, 100 - (6 * 2 + 1), "the printed 6 doubled, the buff once after: missing nothing, it adds nothing")
-	assert_eq(hurt.hp, 90 - ((2 + 10 / 5) * 2 + 1), "the hurt neighbour: its Spread 2 and its own missing hull, doubled, the buff once")
+	assert_eq(hurt.hp, 90 - (2 * 2 + 1 + 10 / 5), "the hurt neighbour: its Spread 2 doubled, the buff once, then its own missing hull, undoubled")
 	assert_eq(whole.hp, 100 - (2 * 2 + 1), "the whole one: its Spread 2 doubled, the buff once")
 
 
@@ -8112,7 +8113,9 @@ func test_a_consumer_eats_each_foe_struck_its_own() -> void:
 	charge.cleave = 1
 	charge.consumes = "burning"
 	charge.per_consumed = 1
-	sk.add_mech(_mech("A", Die.single(charge), 40, 100))
+	var m := _mech("A", Die.single(charge), 40, 100)
+	m.grant_passive({"id": "test_double", "name": "Double", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 2}]})
+	sk.add_mech(m)
 	var burning := _ghoul(100)
 	var aim := _ghoul(100)
 	var cold := _ghoul(100)
@@ -8121,9 +8124,9 @@ func test_a_consumer_eats_each_foe_struck_its_own() -> void:
 	sk.start_round()
 	Effects.stack(burning, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
 	assert_true(sk.assign(0, aim), "the charge at the cold middle")
-	assert_eq(aim.hp, 98, "the target eats nothing: its blow alone")
-	assert_eq(burning.hp, 100 - (1 + 3), "the burning neighbour: its Spread 1 and a point a stack it carried")
-	assert_eq(cold.hp, 99, "the cold one: its Spread 1")
+	assert_eq(aim.hp, 96, "the target eats nothing: its blow alone, doubled by the firer")
+	assert_eq(burning.hp, 100 - (1 * 2 + 3), "the burning neighbour: its Spread 1 doubled, then a point a stack it carried, undoubled (the struck unit's reads after the firer's multiplies)")
+	assert_eq(cold.hp, 98, "the cold one: its Spread 1, doubled")
 	assert_false(Effects.has(burning, "burning"), "its stacks eaten")
 	assert_true("\n".join(sk.log).contains("consumes Burning ×3 on"), "the log says whose")
 
@@ -8210,8 +8213,9 @@ func test_a_mine_carries_its_area_numbers_as_laid() -> void:
 
 
 ## A numbered grant (the drum's, Ryan, 28 October) gives the keyword its number; on an entry
-## already carrying it, the higher of the two stands.
-func test_a_numbered_grant_raises_a_lower_number_and_keeps_a_higher() -> void:
+## already carrying it, the grant's number replaces the entry's own (Ryan: the drum "forces the
+## weapon into its own shape"; the higher of the two would be "gaming the build").
+func test_a_numbered_grant_sets_the_keywords_number() -> void:
 	var sk := Skirmish.new(1, 3)
 	var light := Face.attack(4, L, K.CLEAVE)
 	light.cleave = 1
@@ -8226,7 +8230,7 @@ func test_a_numbered_grant_raises_a_lower_number_and_keeps_a_higher() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var mid: Foe = sk.front[1]
 	assert_eq(sk.shown_face(ms, light, mid).cleave, 7, "a Spread 1 fired through the drum at the front sprays at the drum's 7")
-	assert_eq(sk.shown_face(ms, heavy, mid).cleave, 9, "a Spread 9 keeps its own")
+	assert_eq(sk.shown_face(ms, heavy, mid).cleave, 7, "a Spread 9 leaves the drum at the drum's 7 too: the drum's shape, never the higher")
 	var plain := sk.shown_face(ms, ms.die.faces[2], sk.back[1])
 	assert_true(plain.has(K.PENETRATE) and plain.penetrate == 7 and not plain.has(K.CLEAVE), "a plain gun at the back punches through at the drum's 7")
 	assert_eq(Effects.effect_text(DRUM_PASSIVE["effects"][2]), "aimed at the front rank: gains spread 7", "the grant's text carries its number")
