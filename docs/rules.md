@@ -259,8 +259,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
-  multiple of its blow, to 16). Move alone keeps steps of 5, since a hex costs 5
-  or 10. The content's numbers are the stock pass's fills as its loops moved them
+  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 2 to 5).
+  The content's numbers are the stock pass's fills as its loops moved them
   (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines of 23
   October by hand at the same scale; placeholders until play.
 

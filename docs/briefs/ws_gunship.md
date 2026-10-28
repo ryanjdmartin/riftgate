@@ -41,7 +41,7 @@ Ryan's calls of 13 October, as the proposal recorded them:
 - **Numbers, never mechanics**: stats, or what reads like them on the die; no rerolls, no new
   rules on any row.
 - **The fives and tens are magnitudes**: the rule meant the scale, not the step, so the rows
-  can be sized finely; move alone keeps steps of 5, a hex costing 5 or 10 (now in the rules).
+  can be sized finely; a move is a count of hexes (28 October; the rules).
 - **Offence as a raised roll**: a higher top or bottom roll, never a straight damage buff, from
   a tag whose weapons seldom roll. In today's stock every rolled weapon is kinetic and every
   energy weapon flat, so Arc, flat by its pieces, raises the highest roll of the others (the
