@@ -297,11 +297,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.339 (the
-  page's version 351, published 28 October from `ccr-7d865127-wr1ko2` as a three-way merge onto
-  another session's v0.338 (version 350): the Skua's motion row, its run and stoops flown paths
-  on the map; before it this branch's v0.334 (version 345) carried the Skua's second notes onto
-  the area session's v0.333). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.340 (the
+  page's version 352, published 28 October from `ccr-6073bda9-p34o8q`: the ladder built, its
+  rows' Built notes, section 12's built list and move-count question, the generated tables; the
+  live page was main's v0.339 (version 351) unchanged, so no merge was needed). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -312,11 +311,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 136 (28 October, from
-  `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
-  models and rigs after Ryan's eight rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
-  Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
-  file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 137 (28 October, from
+  `ccr-6073bda9-p34o8q` onto 136, the Kestrel round's models and rigs: the ladder's
+  `content/foes.json` with the 26 recolours and the new specials, `content/factions.json` with
+  the spawn lists by tier, `content/components.json` with the Null Field Emitter and
+  `content/vocabulary.json` with the four buffs on both sides and Purge; every other file
+  identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
