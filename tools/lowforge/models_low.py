@@ -3903,13 +3903,17 @@ def lammergeier(b):
     # two tubes let into the face over lit floors (Ryan, 28 October: the tubes let into the
     # bare edge showed the wing's skin inside them, and a pod sat on the wing's top read as a
     # box stuck on).
-    TZ = Z + 0.3
+    # The nacelle rides on the wing's upper skin, its underside following the skin's rise from
+    # the edge, and the tubes run above the skin the whole way (Ryan, 28 October, the fifth
+    # time round: the wing's skin showed through the bores whenever they were open, since
+    # the skin climbs 2.4 over the bore's depth; the caps had hidden it).
+    TZ = Z + 4.2
     for s in (-1.0, 1.0):
         x0, x1 = s * 10.5, s * 23.5
         def ring(y_at, zb, zt):
             return [(x0, y_at(x0), zb), (x1, y_at(x1), zb), (x1, y_at(x1), zt - 0.9), (x1 * 0.92 + x0 * 0.08, y_at(x1), zt), (x0 * 0.92 + x1 * 0.08, y_at(x0), zt), (x0, y_at(x0), zt - 0.9)]
-        back, face = ring(lambda x: le(17.0) - 14.0, Z - 3.3, Z + 3.3), ring(lambda x: le(x) + 0.6, Z - 2.0, Z + 2.6)
-        _rings(b, [back, ring(lambda x: le(x) - 5.0, Z - 2.9, Z + 3.1), face], "steel.dark", "drone_pod", cap=False)
+        back, face = ring(lambda x: le(17.0) - 14.0, Z + 1.8, Z + 7.0), ring(lambda x: le(x) + 0.6, Z - 0.4, Z + 6.4)
+        _rings(b, [back, ring(lambda x: le(x) - 5.0, Z + 0.6, Z + 6.8), face], "steel.dark", "drone_pod", cap=False)
         _face(b, back, "steel.dark", "drone_pod")
         # The tubes are bored through the face: each mouth a hole in the face plate, flush with
         # it and following its rake, the bore twelve deep in the hull's lighter plate so its far
