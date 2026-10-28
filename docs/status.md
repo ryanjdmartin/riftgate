@@ -58,7 +58,10 @@ merged into main and deleted (22 October).
 Each resumes from its briefs; `docs/briefs/README.md`'s table says what each waits on.
 
 - Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Skua fielded since its engine of 25 October (each roll
+  `docs/briefs/kestrel_line.md`). Its models' second round landed 28 October (Ryan's picks from
+  five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
+  the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
+  his next session's, the to-do). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
   follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
@@ -116,10 +119,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge but six (the Cassowary, the Cottonmouth, the Whip
-  Scorpion, the Swallowtail, the Musk Ox and the Lammergeier, which draw the Badger's); the four
-  Kestrel models of 23 October are Claude's first cut, in a second round of looks on Ryan's
-  notes (the to-do). Since 25 October every machine's parts are welded at load by material
+- Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
+  Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
+  Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
+  to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
+  until Ryan's next session (the to-do). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
