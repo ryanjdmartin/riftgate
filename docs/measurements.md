@@ -2082,7 +2082,8 @@ the column once the tier's pieces carry area.
 **The ladder's first read** (its brief's section F, `git show 26c54c7:docs/briefs/foes_ladder.md`),
 a direction and called one: `tools/balance.gd` at 30 seeds a cell, random and greedy, every
 row, on the branch's head (`ccr-6073bda9-p34o8q`, the ladder's content as landed; the layout
-fix after it moves no number). Three runs, four parts each: the ladder's 34 new cells (a pack
+fix after it moves no number, and the Red Dragon's Stoke, dropped after it on Ryan's call of
+the same day, moves only the Peak's tier-three cells, read again at 200 seeds). Three runs, four parts each: the ladder's 34 new cells (a pack
 cell for each of the twenty-six recolours at its strength in its own tier's list, and the
 formation of each domain at tiers two and three), 55,080 fights in 1,462 s; tier one's 17
 cells at the same seeds for the baseline, since the 27 October matrix's Marsh formation

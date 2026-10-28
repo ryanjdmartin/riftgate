@@ -1403,10 +1403,9 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 		elif int(db.foes[id].get("tier", 1)) <= 1:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
 		else:
-			# The ladder's recolours carry the moves its brief gave them, three or four on six of
-			# them (28 October), against section 5's one or two for the rank and file: Ryan's to
-			# rule (section 12), so only the floor is held here until he does.
-			assert_true(f.actions.size() >= 1, "%s has a move" % id)
+			# A tier-two or tier-three recolour carries up to three, the twist the third (Ryan,
+			# 28 October: the ladder's move counts, section 5's one rule set row).
+			assert_true(f.actions.size() >= 1 and f.actions.size() <= 3, "%s, of tier two or three, has one to three moves" % id)
 	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
 	var swarm := int(g.actions[0].get("swarm", 0))

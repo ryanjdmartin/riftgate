@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 737 tests, 66,572 checks, green on `ccr-6073bda9-p34o8q` with the ladder (28 October;
+- Tests: 737 tests, 66,570 checks, green on `ccr-6073bda9-p34o8q` with the ladder (28 October;
   main's head 721 and 66,041 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -174,8 +174,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   regrows on a suppressed foe; a laid shot carries the Purge; Primed wears its own glyph on both
   sides (the flame's core lit) and Regenerating a heart with a plus, so neither reads as Burning
   or Getting Back Up on a foe; the Null Field Emitter's shape a dish and its tag `arc` (the
-  brief gave none and "Arc"); a machine's incoming chips pulse as a foe's do; and the six
-  recolours' move counts, section 12's question.
+  brief gave none and "Arc"); and a machine's incoming chips pulse as a foe's do. The six
+  recolours' move counts are settled (Ryan, 28 October): tiers two and three carry up to
+  three moves, the twist the third, and the Red Dragon dropped its Stoke.
 - Balance, read by stage (Ryan, 23 October; `docs/measurements.md`): a starter trio's fights
   are the Peak's, the Marsh's and the Meadow's formations, the Magma Elemental and the Sandworm,
   the rest free and the finale a wall; an endgame four fitted to tier two finds every pack free
@@ -271,8 +272,7 @@ line), since no number read since 22 October was read on the content as it now s
    reports and measures the fights a team fights together. Its first part, the ladder, built
    28 October on `ccr-6073bda9-p34o8q` (the recolours by tier, the three verbs, the enemy's
    buffs and the player's Purge; read at 30 seeds, `docs/measurements.md`): next its 200-seed
-   matrix on the desk machine (the to-do) and Ryan's word on the six recolours' move counts
-   (section 12). The rest of the fresh start waits on his marks on the proposal's questions
+   matrix on the desk machine (the to-do). The rest of the fresh start waits on his marks on the proposal's questions
    1 to 13.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
@@ -297,9 +297,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.340 (the
-  page's version 352, published 28 October from `ccr-6073bda9-p34o8q`: the ladder built, its
-  rows' Built notes, section 12's built list and move-count question, the generated tables; the
+  `docs/design-bible.html` after every change. This file and the live page are v0.341 (the
+  page's version 353, published 28 October from `ccr-6073bda9-p34o8q`: the ladder built, its
+  rows' Built notes, section 12's built list, the move counts settled, the generated tables; the
   live page was main's v0.339 (version 351) unchanged, so no merge was needed). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the

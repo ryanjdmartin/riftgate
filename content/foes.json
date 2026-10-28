@@ -478,8 +478,7 @@
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
         { "id": "crush", "name": "Crush", "kind": "attack", "factor": 1.4, "countdown": 1, "weight": 1, "text": "Rears for a round, then comes down on a machine for {damage}.", "status": "implemented" },
-        { "id": "flame_breath", "name": "Flame Breath", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "text": "Fire over every machine: every machine scorched, ×{value}.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 5, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
+        { "id": "flame_breath", "name": "Flame Breath", "kind": "debuff", "effect": "scorch_all", "value": 2, "weight": 1, "text": "Fire over every machine: every machine scorched, ×{value}.", "status": "implemented" }
       ],
       "flavour": "Every fire cave has one. This is why the cave is empty."
     },
