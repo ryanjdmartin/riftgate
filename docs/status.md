@@ -165,9 +165,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   its wins; a trio without area bleeds 30 to 96% of its hull on a formation under every form,
   so the quick campaign's cliff is the trio's chain against the fights' size, which whole area
   hides by tempo (28% of trios pass the first battle whole, 8% rounded up, 3% at half); at
-  single digits a half-blow kills no rank and file, so the forms are section 12's question,
-  Claude's lean a printed number a piece; a fixed 2 on the neighbours reads as the half (the
-  same day), since a number tells only at the swarm's kill threshold of 3.
+  single digits a half-blow kills no rank and file; a fixed 2 on the neighbours reads as the
+  half (the same day), since a number tells only at the swarm's kill threshold of 3. Ryan's
+  call, 28 October: Spread N, Penetrate N and Splash N, with the blow's order read for each
+  foe struck (the bible's rows; the build is next in order). The quick campaign is an
+  experiment, not a feature (Ryan, 28 October): its reads above are history, not grounds.
   The fights' size is the bigger lever (the same day): tier one's formations a third thinner
   take the quick campaign's first battle from 3% to 55% at half area, half thinner to 70%, and
   thinned formations are a trio's decision band in the matrix; the Zombie Knight pair's first
@@ -205,11 +207,17 @@ Each a session of its own, with what it reads first; Ryan's play tasks run besid
 to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
 line), since no number read since 22 October was read on the content as it now stands.
 
-1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
+1. **Area as numbered keywords and the blow's order** (Ryan, 28 October; the bible's area and
+   blow rows): Spread N, Penetrate N and Splash N on the die, each carrier's N set in content
+   (Claude's proposals in chat, Ryan's to move), the firer's modifiers on every blow and each
+   foe struck read for itself, the half retired; the Kite's doubling (section 12) settled first.
+   Reads the mechanics audit's 9 and 19. Tests, the vocabulary, the hangar's chip numbers, the
+   rules rewritten in place.
+2. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
-2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
+3. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
-3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
+4. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
    Fractures follow, once Ryan picks its form). Builds compositions with a front and a back
@@ -218,15 +226,15 @@ line), since no number read since 22 October was read on the content as it now s
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
    reports and measures the fights a team fights together.
-4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
+5. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
    the fours again, prices and tier ladders (the to-do's engine line), the heat report, and
    Ryan's play deciding feel.
-5. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has its
+6. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has its
    shape is a run he can play; the go, the stock pass and the balancing come first, Ryan, 14
    October): a prototype hangar, the mission map and the draft.
-6. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
+7. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
@@ -241,11 +249,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.329 (the
-  page's version 340; the area forms' read of 27 October on version 337, published 27 October from `ccr-24cae16e-ryhv1v` onto v0.319, which the
-  live page still held: the review's rows, the finals row with Ryan's reason, the Skua's floor
-  of one and the area row's reads; the tables regenerated by `tools/pages/bible_tables.py` on
-  the merged content, which changed nothing). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.331 (the
+  page's version 342, published 28 October from `ccr-24cae16e-ryhv1v` as a three-way merge onto
+  the models session's v0.330, which the live page held: Ryan's area and blow's-order calls
+  and the quick campaign's standing, onto the Kestrel, Lammergeier and settled-looks rows and
+  the motion table; the tables regenerated by `tools/pages/bible_tables.py`, which changed
+  nothing). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`

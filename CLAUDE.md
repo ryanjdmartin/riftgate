@@ -166,3 +166,5 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
+- The quick campaign is an experiment, not a feature (Ryan, 28 October): no decision reads its
+  runs and no balance call cites them, until he says that changes.
