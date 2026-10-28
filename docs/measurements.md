@@ -2215,3 +2215,17 @@ the merged head's: no band moved. The Meadow's battles won 13% of 83 (12% of 79)
 (40%), wiped 86% (87%); the whole, won 7% (7%), held after a wipe 52% (54%), fell 40% (38%);
 the three-machine battles 50% of 52 (54% of 50). A direction at 40 runs: a faster wolf moves no
 cell this bot reads.
+
+**The map survey's reader fixed** (the same day; the to-do's line, found while measuring the
+landing): the reach table now reads each way's biggest move in content through ContentDB, as
+its report always said (tracked 3, walker 4, wheeled 5, hover 5, flyer 5), where its own reader
+of the file had looked for a key the file no longer has and fallen back, silently, to reference
+moves (walker 3, hover 4) since before 8 October; a way no chassis takes now stops the survey.
+Rerun at 200 seeds (`docs/map_survey.md`): the maps, the phases to the rift and the tracked,
+wheeled and flyer rows are the same; walkers at 4 reach 42% of the field after two phases (32%
+at 3) and make the horde's narrowest crossing by phase two on 59 of 200 maps (32); hover at 5
+reaches 54% (44% at 4) and makes it on 115 (60). At equal move the order the rule sets holds:
+at 5, wheels 52% and 113 maps, hover 54% and 115, flyers 62% and 115, hover's edge over the
+ground the water and the flyer's the crags. The map types read alike (walker and hover reach:
+Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
+Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.

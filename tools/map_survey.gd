@@ -30,9 +30,8 @@ var move := 3
 var out_path := OUT
 var show := 0
 var kind := "mixed"
-## Each way of moving's move in content today, for the reach table (the survey reads the
-## chassis files for them; these are the fallbacks).
-var moves := {"tracked": 3, "walker": 3, "wheeled": 5, "hover": 4, "flyer": 5}
+## Each way of moving's biggest move in content, for the reach table (_read_moves).
+var moves := {}
 
 
 func _init() -> void:
@@ -61,7 +60,9 @@ func _init() -> void:
 		push_error("no such map kind: " + kind + " (" + ", ".join(BattleMap.KINDS.keys()) + ")")
 		quit(1)
 		return
-	_read_moves()
+	if not _read_moves():
+		quit(1)
+		return
 	if show != 0:
 		print(_picture(BattleMap.generate(w, h, show, kind)))
 	else:
@@ -73,23 +74,22 @@ func _init() -> void:
 	quit()
 
 
-## The biggest move each way of moving has in content, so the reach table reads the game
-## as it stands.
-func _read_moves() -> void:
-	var f := FileAccess.open("res://content/chassis.json", FileAccess.READ)
-	if f == null:
-		return
-	var parsed = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary) or not parsed.has("chassis"):
-		return
-	var best := {}
-	for c in parsed["chassis"]:
+## The biggest move each way of moving has in content, read through ContentDB as the game
+## reads it, so the reach table reads the game as it stands. A way no chassis takes stops the
+## survey: a reader of the file by hand looked for a key the file no longer had and fell back,
+## silently, to reference moves for three weeks (found 28 October).
+func _read_moves() -> bool:
+	var db := ContentDB.load_default()
+	for id in db.chassis.keys():
+		var c: Dictionary = db.chassis[id]
 		var way := BattleMap.way_of(c.get("traits", []))
-		if way.is_empty():
-			continue
-		best[way] = maxi(int(best.get(way, 0)), int(c.get("movespeed", 0)))
-	for way in best.keys():
-		moves[way] = best[way]
+		if WAYS.has(way):
+			moves[way] = maxi(int(moves.get(way, 0)), int(c.get("movespeed", Unit.MECH_MOVE)))
+	for way in WAYS:
+		if not moves.has(way):
+			push_error("map_survey: no chassis in content moves by '%s', so it has no reach to read" % way)
+			return false
+	return true
 
 
 func _survey() -> String:
