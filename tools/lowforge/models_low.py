@@ -211,23 +211,29 @@ def sparrowhawk(b):
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
-    bone body predated the palettes). Mounts (30 September, the loadout's order): hp_1 and
-    hp_2 the nose guns (Overclocked Railgun, Coriolis Accelerator), hp_3 the left wing pod (Arc
-    Projector, two prongs), hp_4 the right wing pod (Deflector, a projector's dish); every
-    socket at half scale, the machine being small."""
+    bone body predated the palettes). Since its rework (21 October) it carries the Pinion
+    Driver locked and two hardpoints, and Ryan, 28 October: "both wingtips be the 'Pinion
+    Drivers'... Then the nose mounts are the hardpoints. Then the wingtips can maintain a
+    streamlined symmetrical appearance based on what the drivers look like." So a matched
+    driver at each tip, fixed, no pin: a chrome nacelle along the tip, a long dark rail out of
+    a toothed collar (the pinion, a wing's flight feathers and a gear), its muzzle lit; and the
+    nose mounts either side of the nosecone, hp_1 the stock's Transonic Rifle as its class,
+    hp_2 bare (the Bleed Valve shows nowhere), at half scale, the machine being small."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
     b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
             (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
-    # Twin nose guns, one either side of the nosecone, the first two mounts (Ryan, 30
-    # September: two nose hardpoints, sleeker than one): hp_1 the left, the Overclocked
-    # Railgun; hp_2 the right, the Coriolis Accelerator.
+    # The nose mounts, one either side of the nosecone on its fairing (Ryan, 30 September:
+    # two nose hardpoints, sleeker than one; 28 October: the nose mounts are the hardpoints):
+    # hp_1 the left, the stock's Transonic Rifle as its class; hp_2 the right, bare.
     for s in (-1.0, 1.0):
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 4.5, 24.0, -1.0), scale=0.5, carries="overclocked_railgun" if s < 0 else "coriolis_accelerator"):
-            b.prism("y", s * 4.5, 36.0, -1.0, 1.3, 26.0, "steel.dark", 6, "nose_gun")
-            b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
+        b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
+        if s < 0:
+            b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
+        else:
+            b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -239,26 +245,21 @@ def sparrowhawk(b):
         b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
     # section: the leading edge is one line), the root's trailing edge running back into
-    # the boosters; a weapon pod and gun at each tip. The root sits inside the fuselage
+    # the boosters; a Pinion Driver at each tip. The root sits inside the fuselage
     # (Ryan, 6 October, the ninth notes: the wings did not quite meet the fuselage at the
     # front, where it narrows to 7.3 either side of the centreline and the root stood at 8).
     for s in (-1.0, 1.0):
         root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 6.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
-        if s < 0:
-            # The Arc Projector's pod on the left tip (hp_3): two prongs off the pod's nose.
-            with b.socket("hp_3", (s * 32.0, 14.0, -4.8), scale=0.5, carries="arc_projector"):
-                b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
-                for s2 in (-1.0, 1.0):
-                    b.prism("y", s * 32.0 + s2 * 1.2, 24.0, -4.8, 0.7, 8.0, "steel.dark", 6, "prong")
-        else:
-            # The Deflector's pod on the right tip (hp_4): a projector, its dish on the
-            # pod's nose (a shield projector is gun-shaped enough to take a mount).
-            with b.socket("hp_4", (s * 32.0, 14.0, -4.8), scale=0.5, carries="laminar_deflector"):
-                b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
-                b.prism("y", s * 32.0, 21.6, -4.8, 3.2, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", s * 32.0, 22.5, -4.8, 1.2, 0.8, "amber.engine", 8, "dish_core")
+        # The Pinion Driver at the tip, the same both sides (fixed, no pin): a chrome nacelle
+        # faired along the tip, tapering aft past the trailing edge, a toothed collar at its
+        # nose (the pinion), the rail out ahead of it and the muzzle lit.
+        tx, tz = s * 32.0, -4.8
+        b.loft([(-4.0, hexagon(tx, tz, 1.2, 1.0)), (2.0, hexagon(tx, tz, 4.0, 3.6)), (17.0, hexagon(tx, tz, 4.4, 3.8)), (21.0, hexagon(tx, tz, 3.2, 2.8))], "steel.plate", "driver")
+        b.loft([(20.6, _gear(tx, tz, 2.6, 2.0, 10)), (21.8, _gear(tx, tz, 2.6, 2.0, 10))], "steel.dark", "pinion")
+        b.prism("y", tx, 28.0, tz, 0.8, 13.0, "steel.dark", 6, "driver_rail")
+        b.prism("y", tx, 34.8, tz, 1.1, 0.8, "amber.engine", 6, "driver_muzzle")
     # Boosters: two big six-sided drums under and behind the cockpit, red glow at the back.
     for s in (-1.0, 1.0):
         b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.dark", 6, "booster", phase=math.pi / 6)
@@ -1407,10 +1408,16 @@ def dingo(b):
     Tumbler, toned down to W&S). A flat wedge of a body, and the wheels out on swing arms,
     each on its own cambered arm off the body's corners, hubs lit, so it reads as a thing
     that steps rather than rolls. The Megataser Harpoon (fixed, no pin) lies low along
-    the roof, its capacitor drum sunk into the tail. Mounts: hp_1 the nose guns (Twin
-    Autoguns), hp_2 the rear-right deck tube (Pocket Mortar), hp_3 bare on the rear-left
-    deck; the Coolant Dump takes no mount, so its tank is detail on both flanks (Ryan, 30
-    September: the rail into the drum, a vent on the tail plate, the glass along the body)."""
+    the roof, its capacitor drum sunk into the tail. The coolant tanks are detail on both
+    flanks (Ryan, 30 September: the rail into the drum, a vent on the tail plate, the glass
+    along the body). Since the stock pass and Ryan's notes of 28 October ("twin autoguns can't
+    be that wide since we don't have variable-width hardpoints... so those are actually two
+    hardpoints on the nose. Then where the burst shell used to be can be the coil thing"): the
+    two nose ports are two hardpoints, the stock's Twin Autoguns in the left as its class (hp_2)
+    and the right bare (hp_3); the Airburst Shell's rack on the rear-left deck on the old
+    tube's elevation (hp_1); and the Combat Translocator (fixed, no pin) on the rear-right
+    where the tube stood: a riveted cabinet with two prongs raised forward and a lit coil
+    between them, W&S iron that is totally not a teleporter."""
     R = 8.0
     # The wheels (the joint pass, 2 October; Ryan: the posts they hang from are casters
     # with a limited swing, so it can strafe): each on a caster joint about up at its hub,
@@ -1456,22 +1463,41 @@ def dingo(b):
         b.prism("x", 0.0, -20.0, 18.0, 7.6, 2.5, "amber.strip", 8, "capacitor_ring", phase=math.pi / 8)
         for s in (-1.0, 1.0):
             b.prism("x", s * 13.0, -20.0, 18.0, 4.0, 2.0, "steel.plate", 8, "capacitor_cap")
-    # The nose guns: two ports in the raked front either side of the visor (hp_1).
-    with b.socket("hp_1", (0.0, 24.0, 10.5), scale=0.6, carries="twin_autoguns"):
-        for s in (-1.0, 1.0):
-            b.prism("y", s * 6.0, 30.0, 10.5, 1.4, 16.0, "steel.dark", 6, "autogun")
-    # The pocket mortar on the rear deck beside the drum, pitched up over the tail (hp_2).
-    b.prism("z", 10.0, -28.0, 18.5, 2.6, 1.5, "steel.dark", 8, "mortar_base")
-    with b.joint("elev_mortar", (10.0, -28.0, 19.0), limits=(-6.0, 28.0)):   # the tube elevates on its base
-        with b.socket("hp_2", (10.0, -26.0, 23.0), forward=(0.0, 0.406, 0.914), scale=0.6, carries="ankle_mortar"):
-            _beam(b, (10.0, -28.0, 19.0), (10.0, -24.0, 28.0), _poly(2.4, 6), _poly(2.7, 6), "steel.panel", "mortar")
+    # The nose ports, either side of the visor in the raked front: two hardpoints, one gun a
+    # port (Ryan, 28 October: no variable-width hardpoints), the stock's Twin Autoguns in the
+    # left as their class (hp_2), the right a bare port (hp_3).
+    for s in (-1.0, 1.0):
+        b.prism("y", s * 6.0, 23.4, 10.5, 2.2, 1.2, "steel.dark", 6, "nose_port")
+        if s < 0:
+            b.stock("hp_2", (s * 6.0, 26.0, 10.5), "twin_barrel", scale=0.45, carries="twin_autoguns")
+        else:
+            b.pad("hp_3", (s * 6.0, 26.0, 10.5), scale=0.45, size=(3.0, 1.0))
+    # The launcher on the rear-left deck beside the drum, pitched up over the tail on the
+    # old tube's elevation (hp_1): the stock's Airburst Shell as its class.
+    b.prism("z", -10.0, -28.0, 18.5, 2.6, 1.5, "steel.dark", 8, "mortar_base")
+    with b.joint("elev_mortar", (-10.0, -28.0, 19.0), limits=(-6.0, 28.0)):   # the launcher elevates on its base
+        b.stock("hp_1", (-10.0, -26.0, 23.0), "rack", forward=(0.0, 0.406, 0.914), scale=0.5, carries="airburst_shell")
+    # The Combat Translocator on the rear-right deck where the tube stood (fixed, no pin):
+    # a riveted cabinet bolted behind the drum, two prongs raised forward off its top and a
+    # stack of lit coil rings between them; the coil crackles in its own act.
+    b.box(6.0, 14.0, -32.0, -25.5, 16.0, 23.0, "steel.panel", "coil_cabinet")
+    b.box(6.5, 13.5, -31.5, -26.0, 23.0, 24.0, "steel.plate", "coil_cap")
+    b.box(5.8, 14.2, -32.2, -31.8, 18.0, 20.0, "steel.stripe", "coil_band")
+    CD = Vector((0.0, math.cos(math.radians(30.0)), math.sin(math.radians(30.0))))
+    C0 = Vector((10.0, -28.0, 24.0))
+    for xo in (-2.2, 2.2):
+        p0 = C0 + Vector((xo, 0.0, 0.0))
+        _beam(b, tuple(p0), tuple(p0 + CD * 12.0), _poly(0.7, 6), _poly(0.45, 6), "steel.dark", "coil_prong")
+        b.prism("y", p0.x, (p0 + CD * 12.0).y, (p0 + CD * 12.0).z, 0.8, 1.0, "steel.plate", 6, "prong_tip")
+    for k in range(4):
+        c = C0 + Vector((0.0, 0.0, 0.4)) + CD * (3.5 + 2.2 * k)
+        _beam(b, tuple(c - CD * 0.35), tuple(c + CD * 0.35), _poly(1.5, 8), _poly(1.5, 8), "amber.light", "coil")
     # The coolant tanks low on both flanks, a drum with a grille and a dump valve each:
-    # detail. The third mount (hp_3) is bare on the rear-left deck, the mortar's twin.
+    # detail.
     for s in (-1.0, 1.0):
         b.prism("y", s * 17.5, -6.0, 11.0, 3.2, 18.0, "steel.plate", 8, "coolant_tank")
         b.box(min(s * 19.2, s * 17.0), max(s * 19.2, s * 17.0), -4.0, 4.0, 10.0, 12.0, "steel.vent", "tank_grille")
         b.prism("z", s * 17.5, 2.5, 7.0, 1.0, 3.0, "steel.dark", 6, "dump_valve")
-    b.pad("hp_3", (-10.0, -26.0, 21.0), scale=0.6, size=(6.0, 2.0))
     for s in (-1.0, 1.0):
         b.prism("z", s * 11.0, -29.0, 22.0, 0.5, 12.0, "steel.dark", 4, "antenna")
     chassis.__exit__(None, None, None)
@@ -1525,6 +1551,15 @@ def dingo(b):
         **{"wheel_" + w: spin([(1.85, 0.0), (2.0, -1.8), (2.6, -1.8), (2.72, 0.6), (3.15, 0.6), (3.33, 3.1), (3.65, 0.0)], ROLL) for w in ("rl", "rr")},
         **{"wheel_" + w: spin([(3.15, 0.0), (3.33, 2.5), (3.65, 0.0)], ROLL) for w in ("fl", "fr")},
     }, body=[(1.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), kick(2.0, 3.5), kick(2.55, 3.5), kick(2.72, -1.1), kick(3.15, -1.1), kick(3.33, 0.0, 2.5), kick(3.65, 0.0)], heft=0.06)
+    # The coil check (28 October, with the Translocator modelled): the coil crackles in
+    # bursts, a flicker and a hot hold, the car twitching on its casters at each burst as the
+    # antsy pilot's inputs do; nothing moves but the light and the twitch.
+    crackle = [(0.4, 0.0), (0.48, 9.0), (0.55, 1.0), (0.62, 12.0), (0.7, 2.0), (0.78, 14.0), (1.4, 14.0), (1.5, 1.0),
+               (2.2, 1.0), (2.28, 10.0), (2.34, 2.0), (2.42, 16.0), (3.0, 16.0), (3.2, 0.0)]
+    b.act("coil_check", 3.6, {
+        "chassis": [(0.45, 0.0, 0.0, 0.0), (0.6, 0.0, 0.0, 1.5), (0.8, 0.0, 0.0, -1.0), (1.0, 0.0, 0.0, 0.0),
+                    (2.25, 0.0, 0.0, 0.0), (2.4, 0.0, 0.0, -1.5), (2.6, 0.0, 0.0, 1.0), (2.8, 0.0, 0.0, 0.0)],
+    }, heft=0.06, glow=[(["coil"], crackle)])
     # A full turn on the spot (Ryan, 5 October: the paired casters could not spin it): each
     # caster square to its corner's radius, the right wheels driving forward and the left
     # back, and the car whips round once anticlockwise and rocks to a stop. The wheels'
@@ -4041,6 +4076,13 @@ def _sq(w, h):
 def _poly(r, n, phase=0.0):
     """A regular polygon profile for `_beam`."""
     return [(r * math.cos(phase + i * 2.0 * math.pi / n), r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):
+    """A toothed section as (x, z) points about (cx, cz), counter-clockwise from +y: `teeth`
+    teeth of radius r_out between roots of r_in (the Kite's pinions)."""
+    return [(cx + (r_out if k % 2 == 0 else r_in) * math.cos(phase + k * math.pi / teeth),
+             cz + (r_out if k % 2 == 0 else r_in) * math.sin(phase + k * math.pi / teeth)) for k in range(teeth * 2)]
 
 
 def _beam(b, p0, p1, ring0, ring1, material, label):

@@ -1979,9 +1979,7 @@
   "exhaust"
  ],
  "pins": {
-  "hp_1": "overclocked_railgun",
-  "hp_2": "coriolis_accelerator",
-  "hp_3": "arc_projector",
-  "hp_4": "laminar_deflector"
+  "hp_1": "transonic_rifle",
+  "hp_2": ""
  }
 }
