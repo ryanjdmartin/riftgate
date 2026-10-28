@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3hgyjql8ten3"
-path="res://.godot/imported/prairie_dog_missile.png-e1180b2044034d7376b1fd664b9f5508.ctex"
+uid="uid://crhgpo64jy7ec"
+path="res://.godot/imported/nemesis_light.png-7ff64f59a4184cb33e5f8b65f25768b7.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "65d0abd374b4ce156371d7477640325d"
+"md5": "437cb3017f16dd321e4009c6728105f8"
 }
 
 [deps]
 
-source_file="res://art/models/prairie_dog_missile.png"
-dest_files=["res://.godot/imported/prairie_dog_missile.png-e1180b2044034d7376b1fd664b9f5508.ctex"]
+source_file="res://art/models/nemesis_light.png"
+dest_files=["res://.godot/imported/nemesis_light.png-7ff64f59a4184cb33e5f8b65f25768b7.ctex"]
 
 [params]
 

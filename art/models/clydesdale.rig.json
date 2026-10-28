@@ -55723,13 +55723,13 @@
   "lamp"
  ],
  "pins": {
-  "hp_1": "twin_autoguns",
+  "hp_1": "maxigun",
   "hp_2": "twin_autoguns",
   "hp_3": "enfilade_beam",
   "hp_4": "ankle_mortar",
   "hp_5": "howitzer",
   "hp_6": "suppression_battery",
-  "hp_7": "",
+  "hp_7": "incendiary_shells",
   "hp_8": "",
   "hp_9": ""
  },

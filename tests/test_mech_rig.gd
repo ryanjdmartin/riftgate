@@ -125,7 +125,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["elev_mortar", "chassis"]],
 		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
-		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_meteor", "waist"]],
+		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_shoulder", "waist"]],
 		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
 			["shoulder_low_r", ""], ["elbow_low_r", "shoulder_low_r"], ["hand_low_r", "elbow_low_r"], ["elev_l", "waist"]],
 	}

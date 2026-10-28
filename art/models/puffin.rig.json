@@ -900,8 +900,8 @@
  ],
  "pins": {
   "hp_1": "halo_shield",
-  "hp_2": "",
-  "hp_3": "twin_autoguns",
-  "hp_4": "laser_carbine"
+  "hp_2": "twin_autoguns",
+  "hp_3": "laser_carbine",
+  "hp_4": ""
  }
 }

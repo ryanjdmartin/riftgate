@@ -1068,10 +1068,10 @@
   "vent_glow"
  ],
  "pins": {
-  "hp_1": "laser_carbine",
-  "hp_2": "coriolis_accelerator",
-  "hp_3": "arc_projector",
-  "hp_4": "laminar_deflector",
+  "hp_1": "overclocked_railgun",
+  "hp_2": "transonic_rifle",
+  "hp_3": "arc_fault_cannon",
+  "hp_4": "",
   "hp_5": ""
  }
 }

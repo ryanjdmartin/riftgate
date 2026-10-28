@@ -1547,8 +1547,8 @@
   "tread"
  ],
  "pins": {
-  "hp_1": "shotfire_rack",
-  "hp_2": "twin_autoguns",
+  "hp_1": "rivet_gun",
+  "hp_2": "",
   "hp_3": ""
  }
 }

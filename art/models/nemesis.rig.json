@@ -86,7 +86,7 @@
    "swing": false,
    "parent": ""
   },
-  "elev_meteor": {
+  "elev_shoulder": {
    "axis": "pitch",
    "limits": {
     "pitch": [
@@ -12830,7 +12830,7 @@
       0.0
      ]
     ],
-    "elev_meteor": [
+    "elev_shoulder": [
      [
       0.4,
       0.0,
@@ -19423,7 +19423,7 @@
    "glow": [
     {
      "parts": [
-      "tube_mouth"
+      "sight"
      ],
      "keys": [
       [
@@ -38926,12 +38926,12 @@
  },
  "glow_parts": [
   "core_fire",
-  "tube_mouth"
+  "sight"
  ],
  "pins": {
   "hp_1": "plasma_arquebus",
-  "hp_2": "meteor_artillery",
-  "hp_3": "",
-  "hp_4": ""
+  "hp_2": "blazethrower",
+  "hp_3": "retribution_thurible",
+  "hp_4": "oblation_ward"
  }
 }
