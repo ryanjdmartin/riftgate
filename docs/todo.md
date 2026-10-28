@@ -147,7 +147,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 
 ## Audio
 
-- [ ] Write the remaining halves (28 October, every track a pair; the bible's pair row): map halves for The Crossing, Full Bore and The Far Bank, battle halves for Night Shift and Low Ground, each on its recipe's own groove call in `tools/soundforge/pair_sketches.py`, sketched on the pair page for Ryan's A/B
+- [x] Write the remaining halves (28 October, every track a pair; the bible's pair row): map halves for The Crossing, Full Bore and The Far Bank, battle halves for Night Shift and Low Ground, each on its recipe's own groove call in `tools/soundforge/pair_sketches.py`, sketched on the pair page for Ryan's A/B the same day
 - [ ] The pairs in the game, once the halves are picked: each pair one synchronized stream, the map choosing the track and looping it about twice before the next, a fight flipping to its battle half in place over 3 s from ENGAGE and back on the field, the boss's reveal as today; each picked half into the forge's SHIP table at its level
 - [ ] Level the other five tracks against Hold The Line through the phone model
 - [ ] Boss themes for the Meadow, the Waste, the Peak and the finale, melodies proposed in chat first

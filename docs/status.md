@@ -35,8 +35,9 @@ are in `README.md`.
 
 `ccr-7effd31a-u5z4gw` stands beside main again, restarted from main's head on 28 October (its
 first round, the Hold The Line pair, merged on the 27th): Ryan's go on the pairs that day (every
-track a map half and a battle half, the bible's pair row), the remaining halves sketched on the
-pair page for his A/B, then the pairs in the game.
+track a map half and a battle half, the bible's pair row): every new half sketched the same day
+on its shipped recipe's groove call and published on the pair page for his A/B; next the pairs in
+the game, once he has heard them.
 
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
@@ -256,8 +257,9 @@ The tasks are the to-do's; this is the index of what waits.
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
-- Every track a pair (the bible's pair row, 28 October): the five halves still to write, then the
-  engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip).
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched, waiting on
+  Ryan's ear; then the engine (a pair as one synchronized stream, the map choosing the track, the
+  3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
 

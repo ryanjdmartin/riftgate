@@ -1,4 +1,4 @@
-<title>Hold The Line Pair</title>
+<title>Riftgate Track Pairs</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -73,6 +73,13 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { font-family: var(--mono); font-size: 12px; padding: 4px 9px; border: 1px solid var(--rule-strong); background: var(--surface); cursor: pointer; border-radius: 2px; }
   .chip.here { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+  .pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5em, 1fr)); gap: 6px; }
+  .pick button { border: 1px solid var(--rule-strong); background: var(--surface); padding: 8px 10px; cursor: pointer; text-align: left; display: grid; gap: 1px; border-radius: 2px; }
+  .pick .t { font-weight: 600; font-size: 15px; }
+  .pick .n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .pick button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .pick button[aria-pressed="true"] .n { color: var(--surface); }
+  .pick button[aria-pressed="true"] .t::before { content: "\25CF\00A0"; }
   .err { color: var(--accent); font-size: 14px; }
 
   /* the plain rows */
@@ -104,25 +111,26 @@
 
 <div class="page">
 <header>
-  <span class="stamp">Riftgate &middot; soundforge &middot; 24 October 2026</span>
-  <h1>Hold The Line, map and battle</h1>
-  <p class="lede">One track written once and voiced twice on one timeline. The battle version is the track as it ships. The map version is new: no drums, no gain, the map's own instruments, four decibels under. Flip between them anywhere and the music keeps its place.</p>
+  <span class="stamp">Riftgate &middot; soundforge &middot; 28 October 2026</span>
+  <h1>Every track, map and battle</h1>
+  <p class="lede">Each track written once and voiced twice on one timeline. One half of each pair ships today; the other is new. Pick a track, then flip between its map half and its battle half anywhere: the music keeps its place.</p>
 </header>
 
 <h2>The switch</h2>
-<div class="how"><p>Press play, then tap MAP or BATTLE whenever you like. The other version fades in from the same beat. The mix line under the switch shows where the crossfade is. Try it on the phone's speaker first, then once in headphones.</p></div>
+<div class="how"><p>Pick a track and press play, then tap MAP or BATTLE whenever you like. The other half fades in from the same beat over the crossfade you choose (3 seconds is the pick). The mix line under the switch shows where the crossfade is. A track loops from where the game loops it.</p></div>
 
 <div class="deck" id="deck">
-  <div class="flip" role="group" aria-label="Which version plays">
-    <button id="to-map" aria-pressed="true"><span class="big">MAP</span><span class="small">strategic</span></button>
-    <button id="to-battle" aria-pressed="false"><span class="big">BATTLE</span><span class="small">as it ships</span></button>
+  <div class="pick" role="group" aria-label="Which track" id="pick"></div>
+  <div class="flip" role="group" aria-label="Which half plays">
+    <button id="to-map" aria-pressed="true"><span class="big">MAP</span><span class="small" id="map-note">strategic</span></button>
+    <button id="to-battle" aria-pressed="false"><span class="big">BATTLE</span><span class="small" id="battle-note">the fight</span></button>
   </div>
   <div class="mix" aria-hidden="true"><span>map</span><div class="rail"><div class="thumb" id="thumb"></div></div><span>battle</span></div>
   <div class="transport">
     <button class="pp" id="pp" aria-label="Play">&#9654;</button>
-    <div class="now"><div class="sec" id="sec">A &middot; bars 1 to 16</div><div class="what" id="what">Loading&hellip;</div></div>
+    <div class="now"><div class="sec" id="sec">&nbsp;</div><div class="what" id="what">Loading&hellip;</div></div>
     <div class="seek" id="seek" aria-label="Seek"><div class="track"></div><div class="fill" id="fill"></div></div>
-    <div class="time" id="time" style="grid-column: 1 / span 2">0:00 / 4:38</div>
+    <div class="time" id="time" style="grid-column: 1 / span 2">0:00 / 0:00</div>
   </div>
   <div class="opts">
     <div class="opt"><span class="lab">Crossfade</span>
@@ -140,50 +148,41 @@
 </div>
 
 <h2>In the game</h2>
-<p>A battle as the game would play it: the map from the top, ENGAGE in the first lift (the map crossfades into the fight over three seconds), a victory, back to the field, then a hunter's catch whose fight lands in the quiet keys section and climbs into the climax. The shipped engage, cut, contact and victory sounds at their own levels, with the dips the game puts under them.</p>
+<p>Hold The Line in a battle as the game would play it: the map from the top, ENGAGE in the first lift (the map crossfades into the fight over three seconds), a victory, back to the field, then a hunter's catch whose fight lands in the quiet keys section and climbs into the climax. The shipped engage, cut, contact and victory sounds at their own levels, with the dips the game puts under them.</p>
 <div class="rows">
-  <div class="row" id="run-row" data-src="hold_run.mp4">
+  <div class="row" id="run-row" data-src="hold_the_line_run.mp4">
     <button class="btn" aria-label="Play the run">&#9654;</button>
     <div class="name">A battle, start to finish</div><div class="num" id="run-time">3:52</div>
     <div class="bar"><div class="fill"></div></div>
     <div class="chips" id="run-marks"></div>
   </div>
-  <div class="row" id="map-row" data-src="hold_map.mp4">
-    <button class="btn" aria-label="Play the map version">&#9654;</button>
-    <div class="name">The map version alone</div><div class="num" id="map-time">4:38</div>
-    <div class="note">The same as MAP above, as a plain file, if the switch will not play.</div>
-    <div class="bar"><div class="fill"></div></div>
-  </div>
 </div>
 
-<h2>What changed</h2>
-<p>Every note in the map version comes from the battle recipe: the riffs, the lifts, the seven, Ryan's tune and harmony and sub line, the climax, the solo, the descent, on the same chords. What plays them changes.</p>
+<h2>What each new half does</h2>
+<p>Every note in a new half comes from the shipped half's own recipe, on the same chords and the same bars. What plays them changes.</p>
 <div class="changes">
-  <div class="change"><div class="head"><span class="secname">A, N riff</span><span class="bars">bars 1&ndash;16, 26&ndash;29</span></div><span class="k">Battle</span><span class="v">The chug's seven-step figure, the driven bass on the riff, power chords, the drone, the kit</span><span class="k">Map</span><span class="v">The figure on the mechanical guitar, clean and muted; the soft sub on the riff from bar 5; the riff on the tine piano from bar 9; the drone throughout; the bell</span></div>
-  <div class="change"><div class="head"><span class="secname">C, L lifts</span><span class="bars">bars 18&ndash;25, 30&ndash;37</span></div><span class="k">Battle</span><span class="v">The sub's riff, then the crunch synth's; piano stabs off the beat; choir; snare and toms</span><span class="k">Map</span><span class="v">The sub's riff, then spiccato cellos over the sub; piano chords on one and three; the choir and the bell's figure in the first</span></div>
-  <div class="change"><div class="head"><span class="secname">X the seven</span><span class="bars">bars 39&ndash;50</span></div><span class="k">Battle</span><span class="v">The 7/8 riff on chug and two basses, the piano on the long beat, the held guitar walking down</span><span class="k">Map</span><span class="v">The riff on the muted guitar and the piano; the sub on each bar's root; the walk on a cello</span></div>
-  <div class="change"><div class="head"><span class="secname">U unison</span><span class="bars">bars 51&ndash;58</span></div><span class="k">Battle</span><span class="v">Chug, bass and lead in octaves over the drum solo</span><span class="k">Map</span><span class="v">The harp, the muted guitar under it, the sub held on E</span></div>
-  <div class="change"><div class="head"><span class="secname">F keys</span><span class="bars">bars 59&ndash;74</span></div><span class="k">Battle</span><span class="v">Ryan's tune on the lead, his harmony line, the sub punching, piano chords, kick and ride</span><span class="k">Map</span><span class="v">The tune on the piano, the harmony on a soft horn, his sub line held, the pad</span></div>
-  <div class="change"><div class="head"><span class="secname">S, R, Z climax</span><span class="bars">bars 77&ndash;100</span></div><span class="k">Battle</span><span class="v">The new unison riff on lead guitar, chugs and driven bass; the ringing chord; the keys; double kicks</span><span class="k">Map</span><span class="v">The riff on the harp and the muted guitar; bowed strings from the second set; the piano on the riff and the choir in the third; the drone</span></div>
-  <div class="change"><div class="head"><span class="secname">K solo</span><span class="bars">bars 102&ndash;117</span></div><span class="k">Battle</span><span class="v">The piano's solo over the crunch synth's walk, guitar and piano chords, long crashes</span><span class="k">Map</span><span class="v">The piano's solo over the walk on cellos, piano chords and bowed strings</span></div>
-  <div class="change"><div class="head"><span class="secname">J descent</span><span class="bars">bars 120&ndash;121</span></div><span class="k">Battle</span><span class="v">The gallop down on chug, bass and lead with the toms</span><span class="k">Map</span><span class="v">The gallop on the harp, the muted guitar and the piano</span></div>
-  <div class="change"><div class="head"><span class="secname">B, W, Y, V, Q turns</span><span class="bars">bars 17, 75&ndash;76, 101, 118&ndash;119</span></div><span class="k">Battle</span><span class="v">Fills and held chords</span><span class="k">Map</span><span class="v">Held chords, a cello or a horn holding the note, a backwards swell where the battle fills</span></div>
+  <div class="change"><div class="head"><span class="secname">Hold The Line</span><span class="bars">new map half</span></div><span class="k">Map</span><span class="v">No kit. The chug's figures on the ticking guitar, the sub on the riff, the riff on the tine piano, the lifts on the sub and then spiccato cellos, the unison, the climax and the descent on the harp, your keys tune on the piano with its harmony on a soft horn, the drone. The bell for the metal chime, now 3 dB down.</span></div>
+  <div class="change"><div class="head"><span class="secname">Night Shift</span><span class="bars">new battle half</span></div><span class="k">Battle</span><span class="v">The kick still on every beat, now under a full backbeat. The mechanical guitar's eighths driven into the chug and the sub's pulse doubled by the driven bass. The dark section's riff (Hold The Line's first) on chug, driven bass and crunch synth over a kick in eighths. The lead's long notes on the lead guitar. A half-time breakdown on ringing chords under the choir. The drone under every groove; the off-beat piano and the chime's hook kept.</span></div>
+  <div class="change"><div class="head"><span class="secname">Full Bore</span><span class="bars">new map half</span></div><span class="k">Map</span><span class="v">No kit. The riff on the sub with the ticking guitar on its chug, the driven bass's answers and the breakdown's line on cellos, the clean bass kept, the keys' tapped melody on the piano a little under, the synth's answer in the seven on a soft horn and its unison riff on the harp, the bell for the chime, strings where the guitars rang, the drone darker.</span></div>
+  <div class="change"><div class="head"><span class="secname">The Far Bank</span><span class="bars">new map half</span></div><span class="k">Map</span><span class="v">The orchestra without its kit, timpani or hits. The climax at one level with its leads still rotating, the closer still letting go into the loop, the bells and the backwards swells under, the choir's pulse eased.</span></div>
+  <div class="change"><div class="head"><span class="secname">Low Ground</span><span class="bars">new battle half</span></div><span class="k">Battle</span><span class="v">In its own twelve-eight. The ground (A G F E) on chugged guitar and driven bass under the cellos: a shuffle through the variations, held chords for the intro, the horn chorale and the outro, quarters in the stripped variation, full triplets in the tutti. The orchestral bass drum with a backbeat, timpani on the beats, brass on the chorale's and the tutti's beats, an orchestral hit at the tutti. Every variation's own voice kept: the bells, the harp, the horns, the violins.</span></div>
+  <div class="change"><div class="head"><span class="secname">The Crossing</span><span class="bars">new map half</span></div><span class="k">Map</span><span class="v">The orchestra without its kit, timpani, brass or hits. Your kick-chug-snare pattern and the breakdowns' chug on the ticking guitar, the plucked-string engine a little under, the horn stabs held as soft chords, the choir's pulse eased, the tuttis flat.</span></div>
 </div>
 
 <h2>What to listen for</h2>
 <ol class="ask">
-  <li>Does the map version still read as Hold The Line, and does it read as planning music rather than a quiet cover?</li>
-  <li>The ticking guitar: enough pulse for the map, or should the map have none at all?</li>
-  <li>The flip: which crossfade length, and whether it should wait for the bar line.</li>
-  <li>The second fight in the run opens in the keys section. With pairs a fight joins the track wherever the map has it, so about a third of fights open somewhere quiet. Is that fine?</li>
+  <li>The three new map halves (Full Bore, The Far Bank, The Crossing): still the track, and planning music?</li>
+  <li>The two new battle halves (Night Shift, Low Ground): do they hit like a fight and still sound like their tracks? Low Ground's twelve-eight shuffle especially.</li>
+  <li>Hold The Line's bells, 3 dB down: enough?</li>
+  <li>Anything that jumps at the flip: a voice that drops out or arrives too suddenly.</li>
 </ol>
 
 <footer>
-  <p>Built by <code>tools/soundforge/pair_sketches.py</code>. Nothing here ships: the battle version is <code>art/audio/music_hold_the_line.wav</code> as it is, and the map version lives only in this sketch. The switch plays one stereo file, the map on the left and the battle on the right, so the two never drift apart.</p>
+  <p>Built by <code>tools/soundforge/pair_sketches.py</code>. Nothing here ships yet: the shipped halves are the tracks in <code>art/audio</code> as they are, and every new half lives only in this sketch. The switch plays one stereo file a track, the map on the left and the battle on the right, so the two halves never drift apart.</p>
 </footer>
 </div>
 
-<audio id="pair" src="hold_pair.mp4" preload="auto"></audio>
+<audio id="pair" preload="auto"></audio>
 <audio id="plain" preload="none"></audio>
 
 <script>
@@ -200,7 +199,7 @@
   var secEl = document.getElementById('sec');
   var whatEl = document.getElementById('what');
   var errEl = document.getElementById('err');
-  var man = null;
+  var man = null, track = null;
   var ctx = null, gMap = null, gBattle = null;
   var fadeLen = 3, quant = 'now';
   var target = 0;                         // 0 map, 1 battle
@@ -208,6 +207,7 @@
 
   function fmt(s) { if (!isFinite(s)) return '0:00'; s = Math.floor(s); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   function showErr(msg) { errEl.textContent = msg; errEl.hidden = false; }
+  function each(sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
 
   // Where the crossfade is now, 0 (map) to 1 (battle).
   function xNow() {
@@ -241,7 +241,7 @@
   function graph() {
     if (ctx) return true;
     var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) { showErr('This browser has no Web Audio, so the switch cannot crossfade. The plain files below still play.'); return false; }
+    if (!AC) { showErr('This browser has no Web Audio, so the switch cannot crossfade.'); return false; }
     try {
       ctx = new AC();
       var src = ctx.createMediaElementSource(pair);
@@ -254,13 +254,13 @@
       gBattle.gain.value = Math.sin(target * Math.PI / 2);
       fade = {x0: target, x1: target, t0: 0, len: 0};
       return true;
-    } catch (e) { ctx = null; showErr('The switch could not start Web Audio here (' + e.message + '). The plain files below still play.'); return false; }
+    } catch (e) { ctx = null; showErr('The switch could not start Web Audio here (' + e.message + ').'); return false; }
   }
 
   function nextBar(t) {
-    if (!man) return t;
-    for (var i = 0; i < man.bar_at.length; i++) if (man.bar_at[i] > t + 0.02) return man.bar_at[i];
-    return man.length;
+    if (!track) return t;
+    for (var i = 0; i < track.bar_at.length; i++) if (track.bar_at[i] > t + 0.02) return track.bar_at[i];
+    return track.length;
   }
 
   function flip(to) {
@@ -271,14 +271,13 @@
     var x = xNow();
     var wait = 0;
     if (quant === 'bar' && !pair.paused) wait = Math.max(0, nextBar(pair.currentTime) - pair.currentTime);
-    var len = Math.abs(to - x) * fadeLen;
-    schedule(x, to, ctx.currentTime + wait, len);
+    schedule(x, to, ctx.currentTime + wait, Math.abs(to - x) * fadeLen);
   }
 
   function stopPlain() { if (!plain.paused) plain.pause(); }
 
   function playPause() {
-    if (!graph()) { return; }
+    if (!track || !graph()) return;
     if (ctx.state === 'suspended') ctx.resume();
     if (pair.paused) { stopPlain(); pair.play().catch(function (e) { showErr('Playback did not start: ' + e.message); }); }
     else pair.pause();
@@ -287,125 +286,148 @@
   pp.addEventListener('click', playPause);
   toMap.addEventListener('click', function () { flip(0); });
   toBattle.addEventListener('click', function () { flip(1); });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-fade]'), function (b) {
+  each('[data-fade]', function (b) {
     b.addEventListener('click', function () {
       fadeLen = parseFloat(b.getAttribute('data-fade'));
-      Array.prototype.forEach.call(document.querySelectorAll('[data-fade]'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      each('[data-fade]', function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
     });
   });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-quant]'), function (b) {
+  each('[data-quant]', function (b) {
     b.addEventListener('click', function () {
       quant = b.getAttribute('data-quant');
-      Array.prototype.forEach.call(document.querySelectorAll('[data-quant]'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      each('[data-quant]', function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
     });
   });
 
   function seekTo(t) { try { pair.currentTime = Math.max(0, Math.min(t, (pair.duration || t) - 0.05)); } catch (e) {} }
-  function seekFrom(e) {
+  seek.addEventListener('pointerdown', function (e) {
     var r = seek.getBoundingClientRect();
-    var d = pair.duration || (man && man.length) || 0;
+    var d = pair.duration || (track && track.length) || 0;
     if (d) seekTo((e.clientX - r.left) / r.width * d);
-  }
-  seek.addEventListener('pointerdown', function (e) { seekFrom(e); });
+  });
 
-  // The game loops the track from bar nine: so does the switch (with a small gap here that the game does not have).
-  pair.addEventListener('ended', function () { if (man) { seekTo(man.bar_at[man.loop_from_bar - 1]); pair.play(); } });
+  // The game loops a track from its loop bar (bar nine for Hold The Line and The Far Bank, the
+  // top for the rest): so does the switch, with a small gap here that the game does not have.
+  pair.addEventListener('ended', function () { if (track) { seekTo(track.bar_at[track.loop_from_bar - 1]); pair.play(); } });
   pair.addEventListener('play', function () { pp.classList.add('on'); pp.innerHTML = '&#10074;&#10074;'; pp.setAttribute('aria-label', 'Pause'); });
   pair.addEventListener('pause', function () { pp.classList.remove('on'); pp.innerHTML = '&#9654;'; pp.setAttribute('aria-label', 'Play'); });
-  pair.addEventListener('error', function () { showErr('The pair file did not load (hold_pair.mp4).'); });
+  pair.addEventListener('error', function () { if (track) showErr('The pair file did not load (' + track.id + '_pair.mp4).'); });
 
   function sectionAt(t) {
-    if (!man) return null;
-    var cur = man.sections[0];
-    man.sections.forEach(function (s) { if (s.at <= t + 0.01) cur = s; });
+    if (!track) return null;
+    var cur = track.sections[0];
+    track.sections.forEach(function (s) { if (s.at <= t + 0.01) cur = s; });
     return cur;
   }
 
   var lastSec = null;
   function tick() {
-    var t = pair.currentTime, d = pair.duration || (man && man.length) || 0;
+    var t = pair.currentTime, d = pair.duration || (track && track.length) || 0;
     timeEl.textContent = fmt(t) + ' / ' + fmt(d);
     fill.style.width = (d ? t / d * 100 : 0) + '%';
-    var x = ctx ? xNow() : target;
-    thumb.style.left = (x * 100) + '%';
+    thumb.style.left = ((ctx ? xNow() : target) * 100) + '%';
     var s = sectionAt(t);
     if (s && s !== lastSec) {
       lastSec = s;
       secEl.textContent = s.section + ' \u00b7 ' + (s.bars[0] === s.bars[1] ? 'bar ' + s.bars[0] : 'bars ' + s.bars[0] + ' to ' + s.bars[1]);
       whatEl.textContent = s.what;
-      Array.prototype.forEach.call(document.querySelectorAll('#sections .chip'), function (c) { c.classList.toggle('here', c.getAttribute('data-at') === String(s.at)); });
+      each('#sections .chip', function (c) { c.classList.toggle('here', c.getAttribute('data-at') === String(s.at)); });
     }
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
 
-  // The plain rows: the run and the map version alone, on their own player.
-  var rows = Array.prototype.slice.call(document.querySelectorAll('.row[data-src]'));
-  var current = null;
-  function markRows() {
-    rows.forEach(function (r) {
-      var on = r === current && !plain.paused;
-      r.classList.toggle('playing', r === current);
-      r.querySelector('.btn').innerHTML = on ? '&#10074;&#10074;' : '&#9654;';
+  // A track picked: its pair file on the switch, its sections on the seek line and as chips,
+  // the half that is new named under MAP or BATTLE. The flip stays where it was.
+  function choose(t, play) {
+    var wasPlaying = !pair.paused;
+    track = t;
+    lastSec = null;
+    each('#pick button', function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-id') === t.id ? 'true' : 'false'); });
+    document.getElementById('map-note').textContent = t.new === 'map' ? 'new' : 'as it ships';
+    document.getElementById('battle-note').textContent = t.new === 'battle' ? 'new' : 'as it ships';
+    each('#seek .tick', function (k) { k.remove(); });
+    t.sections.forEach(function (s) {
+      var tk = document.createElement('div');
+      tk.className = 'tick';
+      tk.style.left = (s.at / t.length * 100) + '%';
+      seek.appendChild(tk);
     });
+    var box = document.getElementById('sections');
+    box.innerHTML = '';
+    var seen = {};
+    t.sections.forEach(function (s) {
+      if (s.bars[1] - s.bars[0] < 3 || seen[s.section]) return;   // the turns and the repeats need no chip of their own
+      seen[s.section] = true;
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.setAttribute('data-at', String(s.at));
+      b.textContent = s.section + ' ' + fmt(s.at);
+      b.title = s.what;
+      b.addEventListener('click', function () { seekTo(s.at); if (pair.paused) playPause(); });
+      box.appendChild(b);
+    });
+    errEl.hidden = true;
+    pair.src = t.id + '_pair.mp4';
+    pair.load();
+    secEl.textContent = t.title;
+    whatEl.textContent = (t.new === 'map' ? 'The map half is new; the battle half ships.' : 'The battle half is new; the map half ships.') + ' ' + fmt(t.length) + ' at ' + t.bpm + ' a minute.';
+    if (play || wasPlaying) pair.addEventListener('canplay', function go() { pair.removeEventListener('canplay', go); playPause(); });
   }
-  function playRow(row, at) {
+
+  // The plain row: the run, on its own player.
+  var runRow = document.getElementById('run-row');
+  function markRun() {
+    var on = !plain.paused;
+    runRow.classList.toggle('playing', !!plain.src);
+    runRow.querySelector('.btn').innerHTML = on ? '&#10074;&#10074;' : '&#9654;';
+  }
+  function playRun(at) {
     if (!pair.paused) pair.pause();
-    if (current === row && at === undefined) { if (plain.paused) plain.play(); else plain.pause(); return; }
-    if (current === row && plain.duration) { plain.currentTime = at; plain.play(); return; }
-    current = row;
-    plain.src = row.getAttribute('data-src');
-    var go = function () { plain.removeEventListener('loadedmetadata', go); try { plain.currentTime = at || 0; } catch (e) {} plain.play(); };
-    plain.addEventListener('loadedmetadata', go);
-    plain.load();
+    if (!plain.src) {
+      plain.src = runRow.getAttribute('data-src');
+      var go = function () { plain.removeEventListener('loadedmetadata', go); try { plain.currentTime = at || 0; } catch (e) {} plain.play(); };
+      plain.addEventListener('loadedmetadata', go);
+      plain.load();
+      return;
+    }
+    if (at !== undefined) { plain.currentTime = at; plain.play(); return; }
+    if (plain.paused) plain.play(); else plain.pause();
   }
-  rows.forEach(function (row) {
-    row.querySelector('.btn').addEventListener('click', function () { playRow(row); });
-    row.querySelector('.bar').addEventListener('click', function (e) {
-      var r = e.currentTarget.getBoundingClientRect();
-      if (current === row && plain.duration) plain.currentTime = (e.clientX - r.left) / r.width * plain.duration;
-      else playRow(row, 0);
-    });
+  runRow.querySelector('.btn').addEventListener('click', function () { playRun(); });
+  runRow.querySelector('.bar').addEventListener('click', function (e) {
+    var r = e.currentTarget.getBoundingClientRect();
+    if (plain.duration) playRun((e.clientX - r.left) / r.width * plain.duration); else playRun(0);
   });
-  ['play', 'pause', 'ended'].forEach(function (ev) { plain.addEventListener(ev, markRows); });
+  ['play', 'pause', 'ended'].forEach(function (ev) { plain.addEventListener(ev, markRun); });
   plain.addEventListener('timeupdate', function () {
-    if (!current || !plain.duration) return;
-    current.querySelector('.bar .fill').style.width = (plain.currentTime / plain.duration * 100) + '%';
+    if (plain.duration) runRow.querySelector('.bar .fill').style.width = (plain.currentTime / plain.duration * 100) + '%';
   });
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     man = m;
-    var d = m.length;
-    m.sections.forEach(function (s) {
-      var tk = document.createElement('div');
-      tk.className = 'tick';
-      tk.style.left = (s.at / d * 100) + '%';
-      seek.appendChild(tk);
-    });
-    var box = document.getElementById('sections');
-    var named = {A: 'riff', C: 'lift', N: 'riff again', L: 'second lift', X: 'the seven', U: 'unison', F: 'keys', S: 'climax', R: 'climax two', Z: 'climax three', K: 'solo', J: 'descent'};
-    m.sections.forEach(function (s) {
-      if (!named[s.section]) return;
+    var pick = document.getElementById('pick');
+    m.tracks.forEach(function (t) {
       var b = document.createElement('button');
-      b.className = 'chip';
-      b.setAttribute('data-at', String(s.at));
-      b.textContent = s.section + ' ' + named[s.section] + ' ' + fmt(s.at);
-      b.addEventListener('click', function () { seekTo(s.at); if (pair.paused) playPause(); });
-      box.appendChild(b);
+      b.setAttribute('data-id', t.id);
+      b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = '<span class="t"></span><span class="n"></span>';
+      b.querySelector('.t').textContent = t.title;
+      b.querySelector('.n').textContent = 'new ' + t.new + ' half';
+      b.addEventListener('click', function () { choose(t); });
+      pick.appendChild(b);
     });
+    choose(m.tracks[0]);
     var runBox = document.getElementById('run-marks');
-    var runRow = document.getElementById('run-row');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {
       var b = document.createElement('button');
       b.className = 'chip';
       b.textContent = (e.what === 'map' ? 'the map' : RUN_LABELS[e.what] || e.what) + ' ' + fmt(e.at);
-      b.addEventListener('click', function () { playRow(runRow, Math.max(0, e.at - 3)); });
+      b.addEventListener('click', function () { playRun(Math.max(0, e.at - 3)); });
       runBox.appendChild(b);
     });
     document.getElementById('run-time').textContent = fmt(m.run.end);
-    document.getElementById('map-time').textContent = fmt(m.length);
-    lastSec = null;
-  }).catch(function () { whatEl.textContent = 'The section list did not load; the switch still plays.'; });
+  }).catch(function () { whatEl.textContent = 'The track list did not load.'; });
 })();
 </script>
