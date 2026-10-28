@@ -33,6 +33,11 @@ are in `README.md`.
 
 ## Branches
 
+`ccr-7effd31a-u5z4gw` stands beside main again, restarted from main's head on 28 October (its
+first round, the Hold The Line pair, merged on the 27th): Ryan's go on the pairs that day (every
+track a map half and a battle half, the bible's pair row), the remaining halves sketched on the
+pair page for his A/B, then the pairs in the game.
+
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
 neither merged the other: `ccr-170f6d81-465jnr` (Ryan's go of 26 October: the die's hold, the
@@ -251,6 +256,8 @@ The tasks are the to-do's; this is the index of what waits.
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
+- Every track a pair (the bible's pair row, 28 October): the five halves still to write, then the
+  engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip).
 
 ## Next, in order
 
@@ -334,5 +341,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
+  built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
+  Line's run as the game plays it.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

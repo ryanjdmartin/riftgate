@@ -28,7 +28,7 @@ Writes into tools/soundforge/out/pairs/: the map version alone; the pair as one 
 the map left and the battle right, for the listening page's live crossfade (each channel coded
 on its own, with no joint or intensity stereo, so neither leaks into the other); and a run as
 the game would play it: the battle opening on the map, an engage, the map crossfading into the
-fight over the dive, a victory and back to the field, then a hunter's contact whose fight lands
+fight over three seconds from it, a victory and back to the field, then a hunter's contact whose fight lands
 in the keys section, every effect at its shipped level under the game's dips (Sound.DIP). The
 page is pair_page.html, copied in as index.html: publish it with manifest.json and the .mp4
 files as its `files`.
@@ -59,7 +59,7 @@ MAP_LEVEL = F.LEVELS["music_night_shift"]   # the map's level, Night Shift's and
 DIP = {"contact": (-7.0, 0.7), "engage": (-9.0, 2.4), "cut": (-14.0, 1.6), "victory": (-12.0, 3.0)}
 CUT_AFTER = 2.15    # the handover: the dive and the spread (1.85 s), then the scrim's 0.3 s, then the cut
 CONTACT_AGAIN = 1.02   # the warning's second beat, 2 dB under the first
-FIELD_FADE = 2.0    # the fight back into the map
+FLIP = 3.0          # a pair's crossfade either way, from ENGAGE and from BACK TO THE FIELD (Ryan, 28 October: split the difference of 2.15 and 4)
 
 # A battle as the game plays it, in seconds of the track: the map from the top, an engage in
 # the first lift, the fight on through the seven into the drum solo, back to the field, then
@@ -151,8 +151,9 @@ def map_voices(call):
         # The unison, the climax and the descent on the harp, let ring.
         {"inst": "harp", "mode": "riff", "gain": 0.48, "octave": 1, "hold": 2.5,
          "pat": {"U": unison, "S": climax, "R": climax, "Z": climax, "J": descent}},
-        # The fight's metal chime is the map's bell, with its long echo.
-        {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.14, "echo": (3, 0.4, 3), "dur": 2.5,
+        # The fight's metal chime is the map's bell, with its long echo (down 3 dB from the first
+        # cut, Ryan, 28 October: a little loud).
+        {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.1, "echo": (3, 0.4, 3), "dur": 2.5,
          "pat": {s: p("chime_metal", s, mode="chord") for s in "ACFXWRZ"}},
         # Held chords where the battle stabs: the piano on the lifts' beats and the turn, the
         # seven's long beat, the solo's bars and its breath.
@@ -235,7 +236,7 @@ def gains(n, events):
     battle = np.zeros(n)
     for when, what in events:
         if what in ("engage", "field"):
-            x = np.clip((t - when) / (CUT_AFTER if what == "engage" else FIELD_FADE), 0.0, 1.0)
+            x = np.clip((t - when) / FLIP, 0.0, 1.0)
             battle = np.where(t >= when, x if what == "engage" else 1.0 - x, battle)
     dip = np.zeros(n)
     for when, name, _db in effects_of(events):
@@ -303,7 +304,7 @@ def main(argv):
         "bar_at": [round(float(b), 4) for b in bar_at[:-1]],
         "sections": [{"section": s, "bars": [b0, b1], "at": round(t, 2), "what": what} for s, b0, b1, t, what in runs],
         "run": {"events": [{"at": w, "what": e} for w, e in RUN], "effects": [{"at": round(w, 2), "name": nm, "db": db} for w, nm, db in effects],
-                "end": RUN_END, "engage_fade": CUT_AFTER, "field_fade": FIELD_FADE},
+                "end": RUN_END, "flip": FLIP},
         "levels": [measure("map", map_x), measure("battle", battle_x)],
     }
     with open(os.path.join(OUT, "manifest.json"), "w") as f:

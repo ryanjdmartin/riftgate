@@ -126,8 +126,8 @@
   </div>
   <div class="opts">
     <div class="opt"><span class="lab">Crossfade</span>
-      <button class="seg" data-fade="0.5" aria-pressed="false">0.5 s</button>
-      <button class="seg" data-fade="2.15" aria-pressed="true">2.15 s, the dive</button>
+      <button class="seg" data-fade="2.15" aria-pressed="false">2.15 s, the dive</button>
+      <button class="seg" data-fade="3" aria-pressed="true">3 s, the pick</button>
       <button class="seg" data-fade="4" aria-pressed="false">4 s</button>
     </div>
     <div class="opt"><span class="lab">Start the flip</span>
@@ -140,7 +140,7 @@
 </div>
 
 <h2>In the game</h2>
-<p>A battle as the game would play it: the map from the top, ENGAGE in the first lift (the map crossfades into the fight over the dive), a victory, back to the field, then a hunter's catch whose fight lands in the quiet keys section and climbs into the climax. The shipped engage, cut, contact and victory sounds at their own levels, with the dips the game puts under them.</p>
+<p>A battle as the game would play it: the map from the top, ENGAGE in the first lift (the map crossfades into the fight over three seconds), a victory, back to the field, then a hunter's catch whose fight lands in the quiet keys section and climbs into the climax. The shipped engage, cut, contact and victory sounds at their own levels, with the dips the game puts under them.</p>
 <div class="rows">
   <div class="row" id="run-row" data-src="hold_run.mp4">
     <button class="btn" aria-label="Play the run">&#9654;</button>
@@ -202,7 +202,7 @@
   var errEl = document.getElementById('err');
   var man = null;
   var ctx = null, gMap = null, gBattle = null;
-  var fadeLen = 2.15, quant = 'now';
+  var fadeLen = 3, quant = 'now';
   var target = 0;                         // 0 map, 1 battle
   var fade = {x0: 0, x1: 0, t0: 0, len: 0}; // the crossfade in flight, on the AudioContext's clock
 
