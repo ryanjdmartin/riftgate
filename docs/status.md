@@ -307,7 +307,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.341 (the
+  `docs/design-bible.html` after every change. Not yet republished from `ccr-7effd31a-u5z4gw`
+  (28 October): its file is v0.343, main's v0.341 with the pair rows (section 1's pair row, the
+  track table's halves, the boss-theme row, section 12's question), while the live page is another
+  session's v0.342 published from its own branch the same evening (section 4's movement rows: a
+  move as a count of hexes, foes binary, the map drawing reach, the crossing priced; a few rows in
+  sections 7 and 12), which main does not hold yet. Whichever lands second republishes a
+  three-way merge of the two onto the live page (they touch no row in common; the version line
+  takes the next number). Before that, the file and the live page were v0.341 (the
   page's version 353, published 28 October from `ccr-6073bda9-p34o8q`: the ladder built, its
   rows' Built notes, section 12's built list, the move counts settled, the generated tables; the
   live page was main's v0.339 (version 351) unchanged, so no merge was needed). The version numbers on the publishing branch's
