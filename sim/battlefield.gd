@@ -74,6 +74,10 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	if not sq.is_boss:
 		sq.behaviour = str(p.get("behaviour", sq.behaviour))
 		sq.hunts = str(p.get("hunts", sq.hunts))
+		# A winged foe's pack crosses water and crags as a flyer does and stands there (Ryan,
+		# 28 October, the movement proposal's lever 2); the boss is never winged.
+		if bool(p.get("winged", false)) and not sq.traits.has("winged"):
+			sq.traits.append("winged")
 	return sq
 
 
@@ -168,13 +172,13 @@ func reachable(u: Unit, budget: int = -1) -> Dictionary:
 	return dist
 
 
-## Cheapest route for `u` to `to` within its movespeed (or `budget`), as the hexes after its
+## Cheapest route for `u` to `to` within its move (or `budget`), as the hexes after its
 ## position. Empty when `to` is out of reach.
 func route_to(u: Unit, to: Vector2i, budget: int = -1) -> Array[Vector2i]:
 	return route_from(u, u.pos, u.movespeed if budget < 0 else budget, to)
 
 
-## The cheapest continuation for `u` from `from` to `to` inside `budget` move points, as
+## The cheapest continuation for `u` from `from` to `to` inside `budget` of move, as
 ## the hexes after `from`; empty when `to` is out of reach. A route drawn by hand grows by
 ## these, so a finger that skips a hex still leaves a walkable route.
 func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vector2i]:
@@ -191,9 +195,10 @@ func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vec
 	return out
 
 
-## What a route costs `u` in move points, or -1 when it is not one it can walk: every step
+## What a route costs `u` of its move, or -1 when it is not one it can walk: every step
 ## adjacent to the last and standable, each paid for out of what is left of its move (or of
-## `budget`); a slow hex takes the rest and so must be the last step.
+## `budget`); a wade entered with less than its price left takes the rest, so nothing follows
+## it.
 func route_cost(u: Unit, route: Array, budget: int = -1) -> int:
 	var cost := 0
 	var cur := u.pos
@@ -210,10 +215,10 @@ func route_cost(u: Unit, route: Array, budget: int = -1) -> int:
 	return cost
 
 
-## Dijkstra from `from`, bounded by `budget` move points. Returns [dist, prev]. `blocked`
-## hexes are not entered; `through_flyers` lets a pack pass a flyer's hex without landing.
-## A slow hex (BattleMap.SLOW) is entered with whatever is left and spends it all, so it
-## is reached at the budget and nothing is reached through it: the stop that no move buys.
+## Dijkstra from `from`, bounded by `budget` of move. Returns [dist, prev]. `blocked` hexes
+## are not entered; `through_flyers` lets a pack pass a flyer's hex without landing. A water
+## hex a ground machine wades costs two, and with one left it is still entered for the one
+## (BattleMap.spend), so it is reached at the budget and nothing is reached through it.
 func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, through_flyers: bool = false) -> Array:
 	var dist := {from: 0}
 	var prev := {}
@@ -255,22 +260,71 @@ func pick_prey(sq: Unit) -> Unit:
 	for m in mechs():
 		if Effects.never_hunted(m):
 			continue
-		var key := 0
-		match sq.hunts:
-			"weakest":
-				key = m.hull + m.shield
-			"strongest":
-				key = -(m.hull + m.shield)
-			"slowest":
-				key = m.movespeed
-			"fastest":
-				key = -m.movespeed
-			_:
-				key = unit_distance(sq, m)
+		var key := _prey_key(sq, m)
 		if best == null or key < best_key:
 			best = m
 			best_key = key
 	sq.prey = best.id if best != null else 0
+	return best
+
+
+## How a hunter's caveat ranks a machine as prey: the lowest key is picked.
+func _prey_key(sq: Unit, m: Unit) -> int:
+	match sq.hunts:
+		"weakest":
+			return m.hull + m.shield
+		"strongest":
+			return -(m.hull + m.shield)
+		"slowest":
+			return m.movespeed
+		"fastest":
+			return -m.movespeed
+	return unit_distance(sq, m)
+
+
+## Whether a hunter could ever put `prey` inside its ring, by the ground alone (Ryan, 28
+## October, the movement proposal's lever 3): some hex its own ground reaches from where it
+## stands has the prey within its ring. Every unit is ignored, since units move; a flyer over
+## crags or a hovercraft out in a lake is past a ground pack's reach however long it walks.
+func _can_ring(sq: Unit, prey: Unit) -> bool:
+	var seen := {sq.pos: true}
+	var queue: Array[Vector2i] = [sq.pos]
+	while not queue.is_empty():
+		var h: Vector2i = queue.pop_front()
+		if _distance_from(sq, h, prey) <= sq.zone:
+			return true
+		for n in Hex.neighbors(h):
+			if not seen.has(n) and _ground_for(sq, n):
+				seen[n] = true
+				queue.append(n)
+	return false
+
+
+## Whether a pack's footprint fits at `at` by the ground alone: on the field, no structure,
+## ground it can cross. No unit is read.
+func _ground_for(sq: Unit, at: Vector2i) -> bool:
+	for o in sq.footprint:
+		var h: Vector2i = at + o
+		if not map.has(h) or map.is_structure(h) or not BattleMap.passable(map.terrain[h], sq.traits):
+			return false
+	return true
+
+
+## A hunter's next prey when it cannot ring its own (lever 3): among the machines it may hunt,
+## its prey aside, the ones it can ring, ranked by its caveat as `pick_prey` ranks them, the
+## first best in field order on a tie. Null when it can ring none: it keeps its prey and walks
+## as near as it gets. The plan reads it; the lock changes only when the walk is played
+## (`enemy_turn`), and the new lock holds as any lock does.
+func _repick(sq: Unit, current: Unit) -> Unit:
+	var best: Unit = null
+	var best_key := 0
+	for m in mechs():
+		if m == current or Effects.never_hunted(m) or not _can_ring(sq, m):
+			continue
+		var key := _prey_key(sq, m)
+		if best == null or key < best_key:
+			best = m
+			best_key = key
 	return best
 
 
@@ -380,6 +434,10 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var prev: Dictionary = found[1]
 	var goal := sq.pos
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
+	if prey != null and not _can_ring(sq, prey):
+		var other := _repick(sq, prey)
+		if other != null:
+			prey = other   # this walk's prey; enemy_turn moves the lock to it as the walk plays
 	if prey != null:
 		w.prey = prey.id
 		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - sq.zone, 0), 0)
@@ -458,6 +516,14 @@ func enemy_turn() -> Dictionary:
 	var walks := plan_walks()
 	for sq in packs():
 		var w: Walk = walks[sq.id]
+		if w.prey != 0 and w.prey != sq.prey:
+			# A hunter that could not ring its prey walked for another (the re-pick): the lock
+			# moves to it now, and holds.
+			var was := unit_by_id(sq.prey)
+			var now := unit_by_id(w.prey)
+			if was != null and now != null:
+				log.append("%s loses %s and hunts %s" % [sq.display_name, was.display_name, now.display_name])
+			sq.prey = w.prey
 		if not w.path.is_empty():
 			var before: Vector2i = w.path[w.path.size() - 2] if w.path.size() >= 2 else sq.pos
 			sq.facing = _direction_index(before, w.end)

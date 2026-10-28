@@ -790,7 +790,7 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
+    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
     card.append(el("div", {class: "stats"}, ...stats.map(([id, k, v]) => el("div", {class: "stat" + (id === sorted ? " sorted" : "")}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
     if (compact) { main.append(card); continue; }
     const p = e.passive;
@@ -1283,7 +1283,7 @@ function renderModels(main) {
     } else {
       const entry = list.find(e => e.id === MOTION.id);
       MOTION.wrap.className = "motion " + (MAKER_TAB[entry.maker] || "other");
-      st.movespeed = Number(entry.movespeed) || 50;
+      st.movespeed = Number(entry.movespeed) || 5;
       st.flyer = (entry.traits || []).includes("flyer");
       st.hover = (entry.traits || []).includes("hover");   // balances on its cushion all the while, as in the game
       st.size = entry.size || "heavy";   // its class by mass sets the hex it walks over, as the map draws it

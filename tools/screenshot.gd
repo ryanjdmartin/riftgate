@@ -223,8 +223,8 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
-## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft and
-## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), carry (a
+## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft (a
+## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
@@ -269,21 +269,16 @@ func _apply_battle_pose() -> void:
 			var sq: Unit = b.field.packs()[0]
 			s._on_hex_tapped(sq.pos)
 			s._map.scroll_to_unit(sq)
-		"draft", "draftslow":
-			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
-			# stops about halfway through the move on open ground, draftslow ends on a slow hex,
-			# whose step takes the rest (the hatched pips). The first machine that has one.
+		"draft":
+			# A route being drawn by hand: it stops about halfway through the move. The first
+			# machine that has such a hex.
 			for m in b.mechs():
 				s._on_route_drag_started(m)
 				s._map._route_drag = m
 				var pick := Vector2i(-9999, -9999)
 				for h in s._map.destinations.keys():
-					var slow := BattleMap.move_cost(b.field.map.terrain[h], m.traits) == BattleMap.SLOW
 					var cost := b.field.route_cost(m, b.field.route_to(m, h))
-					if _pose == "draftslow" and slow and cost > 0 and b.draft_spend(m, b.field.route_to(m, h)).x > 0:
-						pick = h
-						break
-					if _pose == "draft" and not slow and cost >= m.movespeed / 2 and cost < m.movespeed:
+					if cost >= m.movespeed / 2 and cost < m.movespeed:
 						pick = h
 						break
 				if pick != Vector2i(-9999, -9999):
@@ -316,8 +311,7 @@ func _apply_battle_pose() -> void:
 						var h: Vector2i = line[k]
 						var o := b.field.unit_at(h) if b.field.map.has(h) else null
 						if not b.field.map.has(h) or b.field.map.is_structure(h) or (o != null and not ours.has(o)) \
-								or not BattleMap.passable(b.field.map.terrain[h], (ours[0] as Unit).traits) \
-								or BattleMap.move_cost(b.field.map.terrain[h], (ours[0] as Unit).traits) == BattleMap.SLOW:
+								or BattleMap.step_cost(b.field.map.terrain[h], (ours[0] as Unit).traits) != BattleMap.STEP:
 							ok = false
 							break
 					if ok:

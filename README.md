@@ -218,7 +218,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 
 # the map survey: 200 generated maps at the game's 9x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
-# the phases each way of moving takes to the rift at move 30 and its reach after two phases,
+# the phases each way of moving takes to the rift at move 3 and its reach after two phases,
 # then every map type compared; written to docs/map_survey.md (a few minutes). --type KIND
 # (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h for another size; --show SEED prints one map as text.
@@ -300,8 +300,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
 # plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
-# lit, the others' dashed), draft and draftslow (a route drawn by hand, its move gauge spent or
-# stopped by a slow hex), carry (a carrier's route to a stop where its rider cannot land: NO
+# lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),
+# carry (a carrier's route to a stop where its rider cannot land: NO
 # ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
 # ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and

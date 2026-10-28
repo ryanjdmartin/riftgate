@@ -607,11 +607,11 @@ class MovePath {
 // its MovePath curve; between moves the machine eases to the facing the simulation records,
 // its last step's (Map3D, REST_TURN_RATE). The hex is sized to the machine as the map fits it
 // (Map3D.SIZE_FIT: its widest extent is so many hex widths by its class by mass) and a step
-// takes the map's time for its move (BattleMapView.MECH_PACE: seconds a hex by move, straight
-// between the tens), so the pace here is the pace on the map (MechRig.map_speed).
+// takes the map's time for its move (BattleMapView.MECH_PACE: seconds a hex by its move in
+// hexes, straight between the keys), so the pace here is the pace on the map (MechRig.map_speed).
 const SIZE_FIT = {light: 0.72, medium: 0.88, heavy: 1.05, assault: 1.2};
 const fitFor = (size) => SIZE_FIT[size] || SIZE_FIT.heavy;
-const MECH_PACE = [[10, 2.8], [20, 1.9], [30, 1.25], [40, 0.55], [50, 0.42], [60, 0.36]];
+const MECH_PACE = [[1, 2.8], [2, 1.9], [3, 1.25], [4, 0.55], [5, 0.42], [6, 0.36]];
 function mechSecondsPerHex(move) {
   if (move <= MECH_PACE[0][0]) return MECH_PACE[0][1];
   for (let i = 1; i < MECH_PACE.length; i++) {
@@ -1012,7 +1012,7 @@ class Stage {
   }
   // The machine's full speed on the map in its own model units a second (MechRig.map_speed):
   // the route's step, which the map fits to it, at the map's time for its move.
-  topSpeed() { return this.route.STEP / mechSecondsPerHex(this.movespeed || 50); }
+  topSpeed() { return this.route.STEP / mechSecondsPerHex(this.movespeed || 5); }
   emitTick() { const now = performance.now(); if (!this.lastTick || now - this.lastTick > 90) { this.lastTick = now; this.emit(); } }
   strike(ranged) { if (this.rig) this.rig.strike(ranged); }
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }

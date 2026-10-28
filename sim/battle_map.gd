@@ -459,96 +459,85 @@ func all_hexes() -> Array:
 	return terrain.keys()
 
 
-## Movement by way of moving (decided 2 October, bible section 4). Each way of moving calls
-## each ground a word: FAST costs 5 a hex, NORMAL 10, SLOW can always be entered with any
-## move left and the step ends the move, WALL cannot be entered. The grounds are open (plain
-## and road are the same ground; the road is art), rough, ruins and water; a crag is a wall
-## to all but a flyer. Prices are never weighed against each other by the player: a hex is
-## one of three words, and the map draws the reach. A unit with no way of moving (every
-## pack and boss; the foes carry no trait) moves as the horde does: normal on any land,
-## water and mountains walls, since it flattens the ground it crosses (Ryan, 2 October:
-## the Final Fantasy overworld rule). A bigger move buys back any price, so a slow hex is
-## the one thing no move buys through, which is what gives each way of moving a ground
-## where it loses whatever its move.
-const FAST := 5
-const NORMAL := 10
-const SLOW := -1          # the rest of the move, however much is left
-const WALL := -2
-## A slow hex on an unbounded path (`find_path`, which only the packs use today, and nothing
-## is slow for a pack) counts as three normal hexes.
-const SLOW_PATH_COST := 30
+## Movement in hexes (Ryan, 27 and 28 October; bible section 4): a step is one hex, and the
+## ground is ground. Open ground (plain and road, the road being art), rough and ruins cost
+## everyone a step; rough and ruins are landscape like height, and no rule reads them. Water
+## is the one priced ground: a ground machine (tracked, walker, wheeled) wades it at two of
+## its move a hex and can always enter one with whatever move it has left; a hovercraft and a
+## flyer cross it at a step. Crags are a wall to all but a flyer. A pack carries no trait
+## unless its foe is winged and moves as the horde does (Ryan, 2 October: the Final Fantasy
+## overworld rule): every land hex at a step, water and crags walls; a winged pack crosses
+## both as a flyer does (28 October). A way of moving is the model, the footfall and a word a
+## passive may read; beyond this table it is never a rule.
+const STEP := 1
+const WADE := 2
+const WALL := -1
+## The machines' ways of moving, exactly one a chassis (the validator and the survey read them).
 const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
-## The table: way of moving -> [open, rough, ruins, water]. Mountains are a wall to every
-## way but the flyer, which pays normal.
-const WORDS := {
-	"tracked": [NORMAL, NORMAL, SLOW, NORMAL],
-	"walker": [NORMAL, NORMAL, NORMAL, SLOW],
-	"wheeled": [FAST, SLOW, SLOW, SLOW],
-	"hover": [NORMAL, SLOW, SLOW, FAST],
-	"flyer": [NORMAL, NORMAL, NORMAL, NORMAL],
-	"": [NORMAL, NORMAL, NORMAL, WALL],
+## The crossing table: a word -> [water, crags], each a step's cost or WALL; every other
+## ground is a STEP to everyone. "winged" is a pack's word, never a chassis's; "" is the
+## horde's rule.
+const CROSSINGS := {
+	"tracked": [WADE, WALL],
+	"walker": [WADE, WALL],
+	"wheeled": [WADE, WALL],
+	"hover": [STEP, WALL],
+	"flyer": [STEP, STEP],
+	"winged": [STEP, STEP],
+	"": [WALL, WALL],
 }
-const WORD_NAMES := {FAST: "fast", NORMAL: "normal", SLOW: "slow", WALL: "wall"}
 
 
-## The way of moving among a unit's traits, or "" for none (the horde's rule).
+## The word among a unit's traits the crossing table reads: its way of moving, "winged" for a
+## winged pack, or "" for none (the horde's rule).
 static func way_of(traits: Array) -> String:
 	for w in WAYS:
 		if traits.has(w):
 			return w
+	if traits.has("winged"):
+		return "winged"
 	return ""
 
 
-## The word for this terrain under this way of moving: FAST, NORMAL, SLOW or WALL.
-static func move_cost(t: int, traits: Array) -> int:
-	var way := way_of(traits)
+## What one step onto this terrain costs a unit with these traits: STEP, WADE or WALL.
+static func step_cost(t: int, traits: Array) -> int:
+	var row: Array = CROSSINGS[way_of(traits)]
+	if t == Terrain.WATER:
+		return int(row[0])
 	if t == Terrain.MOUNTAIN:
-		return NORMAL if way == "flyer" else WALL
-	var row: Array = WORDS[way]
-	match t:
-		Terrain.ROUGH:
-			return row[1]
-		Terrain.RUINS:
-			return row[2]
-		Terrain.WATER:
-			return row[3]
-		_:
-			return row[0]
-
-
-static func move_word(t: int, traits: Array) -> String:
-	return WORD_NAMES[move_cost(t, traits)]
+		return int(row[1])
+	return STEP
 
 
 ## Whether a unit with these traits can enter this terrain at all.
 static func passable(t: int, traits: Array) -> bool:
-	return move_cost(t, traits) != WALL
+	return step_cost(t, traits) != WALL
 
 
-## What entering this terrain spends of `left` move points, or -1 when it cannot be
-## entered: a wall, a priced hex dearer than what is left, or a slow hex with nothing left.
-## A slow hex spends everything left, which is how it ends the move.
+## What entering this terrain spends of `left` move, or -1 when it cannot be entered: a wall,
+## or no move left. A wade costs two and can always be entered with whatever is left, so a
+## step never spends more than remains (Ryan, 28 October: a move of 1 wades a hex a turn, a
+## move of 3 two).
 static func spend(t: int, traits: Array, left: int) -> int:
-	var c := move_cost(t, traits)
-	if c == WALL:
+	var c := step_cost(t, traits)
+	if c == WALL or left <= 0:
 		return -1
-	if c == SLOW:
-		return left if left > 0 else -1
-	return c if c <= left else -1
+	return mini(c, left)
 
 
-## The terrain's word for every way of moving, for the terrain tap: [word, ways] a word, fastest
-## first, each way of moving under the word it gets (the horde's rule is move_cost with no traits).
+## The terrain's word for every machine's way of moving, for the ground tap: [word, ways] for
+## "wade", "cross" and "wall" in that order, each only when some way gets it, the ways in WAYS
+## order. The packs' rule is the screen's, read from `passable` with no trait and with
+## "winged".
 static func ground_ways(t: int) -> Array:
-	var by_word := {}
+	var by_word := {"wade": [], "cross": [], "wall": []}
 	for w in WAYS:
-		var word := move_word(t, [w])
-		if not by_word.has(word):
-			by_word[word] = []
-		by_word[word].append(w)
+		var c := step_cost(t, [w])
+		var word := "wall" if c == WALL else ("wade" if c == WADE else "cross")
+		(by_word[word] as Array).append(w)
 	var out: Array = []
-	for word in ["fast", "normal", "slow", "wall"]:
-		if by_word.has(word):
+	for word in ["wade", "cross", "wall"]:
+		if not (by_word[word] as Array).is_empty():
 			out.append([word, by_word[word]])
 	return out
 
@@ -591,8 +580,7 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 			var t: int = terrain[n]
 			if not passable(t, traits):
 				continue
-			var c := move_cost(t, traits)
-			var nd := d + (SLOW_PATH_COST if c == SLOW else c)
+			var nd := d + step_cost(t, traits)
 			if not dist.has(n) or nd < dist[n]:
 				dist[n] = nd
 				prev[n] = h

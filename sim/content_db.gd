@@ -9,6 +9,7 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
+const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
@@ -501,6 +502,8 @@ func pack_profiles() -> Dictionary:
 		var f: Dictionary = foes[id]
 		var p: Dictionary = {"zone": int(f.get("zone", 1)), "behaviour": str(f.get("behaviour", "push")), "hunts": str(f.get("hunts", "nearest"))}
 		p["movespeed"] = int(f.get("movespeed", Unit.PACK_MOVE))
+		if bool(f.get("winged", false)):
+			p["winged"] = true   # its pack crosses water and crags as a flyer does (Battlefield.dress_pack)
 		out[id] = p
 	return out
 
@@ -791,42 +794,6 @@ func faction_of_foe(foe_id: String) -> String:
 # ---------------------------------------------------------------- validation
 
 ## Every rule the content must obey. Returns a list of human-readable problems; empty is clean.
-## A flag, never a refusal (Ryan, 2 October: a thematically slow wheeled APC is a valid
-## design): every pair of ground chassis of different ways of moving where one crosses at
-## least as many hexes a phase as the other on every ground and more on some, since that
-## is a move buying through the other way's identity. Two machines of one way a weight
-## class apart are not flagged: a heavier frame being slower is the point. Flyers are
-## exempt, since they pay by not blocking. `entries` defaults to the content's chassis; a
-## test passes its own.
-func movement_flags(entries: Array = []) -> Array[String]:
-	var list: Array = entries if not entries.is_empty() else chassis.values()
-	var grounds := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS, BattleMap.Terrain.WATER]
-	var rows: Array = []
-	for c in list:
-		var traits: Array = c.get("traits", [])
-		if traits.has("flyer"):
-			continue
-		var move := int(c.get("movespeed", Unit.MECH_MOVE))
-		var hexes: Array[int] = []
-		for g in grounds:
-			var cost := BattleMap.move_cost(g, traits)
-			hexes.append(1 if cost == BattleMap.SLOW else (0 if cost == BattleMap.WALL else move / cost))
-		rows.append([str(c.get("name", c.get("id", "?"))), hexes, BattleMap.way_of(traits)])
-	var out: Array[String] = []
-	for a in rows:
-		for b in rows:
-			if a == b or a[2] == b[2]:
-				continue
-			var all_ge := true
-			var some_gt := false
-			for i in range(grounds.size()):
-				all_ge = all_ge and int(a[1][i]) >= int(b[1][i])
-				some_gt = some_gt or int(a[1][i]) > int(b[1][i])
-			if all_ge and some_gt:
-				out.append("%s is at least as fast as %s on every ground (open/rough/ruins/water %s against %s)" % [a[0], b[0], str(a[1]), str(b[1])])
-	return out
-
-
 func validate() -> Array[String]:
 	var errs: Array[String] = []
 	errs.append_array(load_errors)
@@ -1545,8 +1512,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 				ways += 1
 		if ways != 1:
 			errs.append("%s: a chassis has exactly one way of moving (%s)" % [where, ", ".join(BattleMap.WAYS)])
-		if c.has("movespeed") and (int(c["movespeed"]) <= 0 or int(c["movespeed"]) % 5 != 0):
-			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		if c.has("movespeed") and (int(c["movespeed"]) < 1 or int(c["movespeed"]) > MAX_MOVE):
+			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
 		if c.has("size") and not SIZES.has(str(c["size"])):
 			errs.append("%s: size is one of %s" % [where, ", ".join(SIZES)])
 		if c.has("maker") and not makers.has(c["maker"]):
@@ -1702,8 +1669,10 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
 		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
 			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
-		if f.has("movespeed") and (int(f["movespeed"]) <= 0 or int(f["movespeed"]) % 5 != 0):
-			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		if f.has("movespeed") and (int(f["movespeed"]) < 1 or int(f["movespeed"]) > MAX_MOVE):
+			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
+		if f.has("winged") and not (f["winged"] is bool):
+			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:
 			if f.has(key):
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])

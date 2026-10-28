@@ -125,7 +125,7 @@ func _rows() -> Array:
 		elif battle.order_of(m) != null:
 			order = "> " + _short(battle.order_of(m).display_name)
 			col = Palette.HUD
-		elif battle.action_from.has(m.id):
+		elif battle.moved.has(m.id):
 			order = "MOVED"
 		elif battle.actions_left(m) < Battlefield.actions_for(m):
 			order = "ONE MORE"

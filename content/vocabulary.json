@@ -888,10 +888,10 @@
    "id": "movespeed",
    "category": "battlefield",
    "name": "Movespeed",
-   "codex": "Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost.",
+   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone.",
    "status": "implemented",
    "design": {
-    "holes": "Every chassis's move is a placeholder set by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it."
+    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October)."
    }
   },
   {
@@ -1008,7 +1008,7 @@
    "id": "plain",
    "category": "terrain",
    "name": "Plain",
-   "codex": "Open ground. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "codex": "Open ground. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1018,7 +1018,7 @@
    "id": "road",
    "category": "terrain",
    "name": "Road",
-   "codex": "Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "codex": "Open ground, the same as plain: the road is art. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1028,7 +1028,7 @@
    "id": "rough",
    "category": "terrain",
    "name": "Rough",
-   "codex": "Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "codex": "Forest and scrub. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1038,7 +1038,7 @@
    "id": "ruins",
    "category": "terrain",
    "name": "Ruins",
-   "codex": "Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "codex": "Rubble. Every machine and pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": "No skirmish condition yet; what terrain does in a fight is section 12's question."
@@ -1048,7 +1048,7 @@
    "id": "water",
    "category": "terrain",
    "name": "Water",
-   "codex": "Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it.",
+   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it.",
    "status": "implemented",
    "design": {
     "holes": "No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde."
@@ -1058,7 +1058,7 @@
    "id": "mountain",
    "category": "terrain",
    "name": "Mountain",
-   "codex": "Impassable except for flyers, which cross at normal pace. Packs go around.",
+   "codex": "Impassable, except to flyers and winged packs.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1068,7 +1068,7 @@
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",
-   "codex": "Normal pace over every ground, mountains included. Packs walk under it but never stop on its hex.",
+   "codex": "Crosses everything, water and crags included. Packs walk under it but never stop on its hex.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1078,7 +1078,7 @@
    "id": "hover",
    "category": "trait",
    "name": "Hover",
-   "codex": "Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move.",
+   "codex": "Skims water at full pace; crags stop it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1088,7 +1088,7 @@
    "id": "walker",
    "category": "trait",
    "name": "Walker",
-   "codex": "Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move.",
+   "codex": "Legs. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1098,7 +1098,7 @@
    "id": "tracked",
    "category": "trait",
    "name": "Tracked",
-   "codex": "Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move.",
+   "codex": "Tracks. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1108,7 +1108,7 @@
    "id": "wheeled",
    "category": "trait",
    "name": "Wheeled",
-   "codex": "Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move.",
+   "codex": "Wheels. Wades water at half pace.",
    "status": "implemented",
    "design": {
     "holes": ""

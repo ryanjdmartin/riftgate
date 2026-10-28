@@ -558,14 +558,15 @@ func test_the_debug_walk_runs_at_the_machine_s_own_pace_on_the_map() -> void:
 	# times a walker's on the map. A machine's full speed is its step on the map over the
 	# map's time for its move.
 	var fit := Map3D.fit_for("heavy")
-	var expect := sqrt(3.0) * 100.0 / (2.0 * fit) / BattleMapView.mech_seconds_per_hex(20.0)
-	assert_true(is_equal_approx(MechRig.map_speed(100.0, 20, fit), expect), "a slow walker's pace")
-	assert_true(MechRig.map_speed(100.0, 50, fit) > MechRig.map_speed(100.0, 20, fit) * 4.0, "a 50 runs four and a half times a 20")
-	# Ryan, 5 October: the 20s and 30s slower than the third pass's pace, the 40s and 50s faster.
-	assert_true(BattleMapView.mech_seconds_per_hex(20.0) > 1.38 and BattleMapView.mech_seconds_per_hex(30.0) > 0.92, "the 20s and 30s plod slower")
-	assert_true(BattleMapView.mech_seconds_per_hex(40.0) < 0.69 and BattleMapView.mech_seconds_per_hex(50.0) < 0.55, "the 40s and 50s run faster")
-	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(35.0), lerpf(BattleMapView.mech_seconds_per_hex(30.0), BattleMapView.mech_seconds_per_hex(40.0), 0.5)), "straight between the tens")
-	assert_true(MechRig.map_speed(100.0, 50, Map3D.fit_for("light")) > MechRig.map_speed(100.0, 50, Map3D.fit_for("assault")), "a light machine is drawn smaller, so a hex is more of itself")
+	var expect := sqrt(3.0) * 100.0 / (2.0 * fit) / BattleMapView.mech_seconds_per_hex(2.0)
+	assert_true(is_equal_approx(MechRig.map_speed(100.0, 2, fit), expect), "a slow walker's pace")
+	assert_true(MechRig.map_speed(100.0, 5, fit) > MechRig.map_speed(100.0, 2, fit) * 4.0, "a 5 runs four and a half times a 2")
+	# Ryan, 5 October: the moves of 2 and 3 slower than the third pass's pace, 4 and 5 faster
+	# (keyed by hexes since 28 October, every machine at the pace it had).
+	assert_true(BattleMapView.mech_seconds_per_hex(2.0) > 1.38 and BattleMapView.mech_seconds_per_hex(3.0) > 0.92, "the 2s and 3s plod slower")
+	assert_true(BattleMapView.mech_seconds_per_hex(4.0) < 0.69 and BattleMapView.mech_seconds_per_hex(5.0) < 0.55, "the 4s and 5s run faster")
+	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(3.5), lerpf(BattleMapView.mech_seconds_per_hex(3.0), BattleMapView.mech_seconds_per_hex(4.0), 0.5)), "straight between the keys")
+	assert_true(MechRig.map_speed(100.0, 5, Map3D.fit_for("light")) > MechRig.map_speed(100.0, 5, Map3D.fit_for("assault")), "a light machine is drawn smaller, so a hex is more of itself")
 	var pair := _rig_for("armadillo", 2)
 	var rig: MechRig = pair[0]
 	rig.top_speed = 64.0

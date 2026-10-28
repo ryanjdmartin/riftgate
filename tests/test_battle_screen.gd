@@ -234,7 +234,7 @@ func _open_line(b: Battle, ours: Array) -> Array:
 				if o != null and not ours.has(o):
 					ok = false
 					break
-				if k <= 2 and (not BattleMap.passable(b.field.map.terrain[h], carrier.traits) or BattleMap.move_cost(b.field.map.terrain[h], carrier.traits) == BattleMap.SLOW):
+				if k <= 2 and BattleMap.step_cost(b.field.map.terrain[h], carrier.traits) != BattleMap.STEP:
 					ok = false
 					break
 				if (k == 1 or k == 3) and not BattleMap.passable(b.field.map.terrain[h], rider.traits):
@@ -374,11 +374,15 @@ func test_the_ground_and_a_refusal_read_as_lines() -> void:
 	var text := ""
 	for l in water:
 		text += EntryReadout.line_text(l) + "\n"
-	assert_true(text.contains("Fast: Hover"), "a line a word, the ways under it: %s" % text)
-	assert_true(text.contains("Slow: Walker, Wheeled (the step ends the move)"), "the slow step's price said: %s" % text)
-	assert_true(text.contains("Packs never enter it"), "and what the horde does")
+	assert_true(text.contains("Wade: Tracked, Walker, Wheeled (two move a hex)"), "the ground ways wade it, the price said: %s" % text)
+	assert_true(text.contains("Cross: Hover, Flyer"), "a line a word, the ways under it: %s" % text)
+	assert_true(text.contains("Packs never enter it; a winged pack crosses it"), "and what the horde does: %s" % text)
 	var mountain := BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN)
-	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Impassable:"), "a wall reads impassable")
+	assert_eq(EntryReadout.line_text(mountain[1]), "Cross: Flyer", "a crag is the flyer's")
+	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Wall: Tracked, Walker, Wheeled, Hover"), "and a wall to the rest")
+	var rough := BattleScreen.ground_lines(BattleMap.Terrain.ROUGH)
+	assert_eq(EntryReadout.line_text(rough[1]), "Cross: every machine", "rough is ground to every machine")
+	assert_eq(EntryReadout.line_text(rough[2]), "Packs cross it", "and to the horde")
 	s._show_details(BattleScreen.notice_lines("Out of reach", "It cannot get there"))
 	assert_eq(str(s._details_entry.lines[0]["text"]), "OUT OF REACH", "a refusal's title")
 	assert_true(s._details.visible, "shown in the readout")
