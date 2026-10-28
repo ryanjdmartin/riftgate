@@ -101,6 +101,47 @@ pairs with an alternative (the charge as the passive). The differences the table
 table's own reasons. So the answer is no: the look, the sound and a hook for a passive, which is
 what the records say of a tag and a theme.
 
+### 2a. Water as the one priced ground (Ryan's suggestion, 28 October)
+
+Ryan, 28 October: "Is there any reason to make water 'slow terrain' so that ground units can
+cross it, just not optimally? i.e. it takes 2 points to enter, rounded up so that a move 1 can
+move one water tile at a time, and a move 3 can move 2 at a time ... I would only give it to
+water, and the rest of the terrain types just turn into detail and window dressing."
+
+The rule as he put it: a water hex costs a ground machine two of its move, and it can always
+enter one with whatever is left, so a move of 2 wades one hex a turn, 3 and 4 wade two, 5
+wades three. Hover and flyers cross it at full pace. Packs never enter it; winged packs cross
+it as flyers do (lever 2 below). Crags stay a wall to all but flyers. Rough and ruins are
+landscape. The engine's search is already budget-aware, so the change from binary ground is
+one constant and one clause; nothing on the map needs a mark, since the lit reach is simply
+shorter across water, and the ground tap says it in a line.
+
+The reasons for it, better ones than the trope:
+
+- It narrows the hover's edge, the concern above, without pricing anything: a hover crosses at
+  full pace where a ground machine wades, instead of crossing where it cannot go at all.
+  The flyer's crags stay the one crossing nothing else has.
+- It keeps water a cost in time for ground machines, which is what the 2 October row wanted
+  of water (a stop for walkers and wheels, a ford for tracks); binary ground turns it into a
+  funnel like crags. The Flooded map keeps a meaning for a ground squad.
+- It is closer to today's play, where no machine was ever walled by water, so the squad's
+  lanes do not change under the player's feet.
+- It shows nothing: no stop sign, no gauge, a shorter reach and one line of text.
+
+The holes:
+
+- It adds no decision. The pathfinder weighs the two against the one and the player sees a
+  shape, which is Ryan's own case against the table. What it changes is the shape of the
+  reach and the worth of a hover, not what the player chooses.
+- Two moves collapse in water under either rounding: rounded up, 3 and 4 both wade two;
+  rounded down, 2 and 3 wade one and 4 and 5 wade two.
+- It is the wedge Ryan named ("I keep wanting to add more complexity to the map, but
+  ultimately I'm doing more harm than good"). The guard is the row: water is the only priced
+  ground, and a second one reopens only for a decision the player makes on the map, never for
+  a shape of reach or a way's identity.
+
+Claude's lean: take it, with the guard, for the first two reasons. Ryan's call.
+
 ### 3. A move is one go
 
 Tap a lit hex or draw a route, and the whole move is spent; the machine may then fight or
@@ -115,8 +156,9 @@ shows before the move, since it reads the whole reach.
 - A selected machine: its reach lit under one kind of edge, the red band where it could attack
   from, the packs in it bracketed. Nothing dashed, no sign.
 - The readout: "Move 4 · 1 of 1 actions left", the base and the change as the codex has them.
-- The ground tap: "Ground: every machine and pack crosses it"; "Water: hovercraft and flyers
-  cross it; packs never enter it"; "Crags: flyers cross it; packs never enter it".
+- The ground tap: "Ground: every machine and pack crosses it"; "Water: ground machines wade it
+  at half pace; hovercraft and flyers cross it; packs never enter it, winged packs cross it";
+  "Crags: flyers cross it; packs never enter it".
 - The codex and the hangar: "move 4", in place of "40 (4 open)".
 - The front card's ground word, once the mission map exists: Badlands says the flyer's, Flooded
   says the hover's and the flyer's, the rest say what the ground looks like.
@@ -137,10 +179,11 @@ One line each, with the rule that kills it, so Ryan can overrule the rule.
   trace was the gauge's half pip and wheels making the rift in 3.8 phases.
 - Slow ground as a stop (tracks on ruins, walkers in water, wheels and hover off their ground):
   killed by binary ground; the stop sign was what the player asked the meaning of.
-- Tracks fording water (Minerva's tracked machines): killed by water as a wall to ground
-  machines; the fords are land hexes, so the river is crossed where the horde crosses it.
-- Water as a stop for everyone: today any machine can end a move in water, out of a ring-one
-  hunter's reach; under C that refuge is the hover's and the flyer's alone.
+- Tracks fording water at full pace (Minerva's tracked machines): killed by one rule for every
+  ground machine; with water priced, every ground machine fords at half pace.
+- Water as a refuge for everyone: today any machine can end a move in water, out of a ring-one
+  hunter's reach; with water a wall that refuge is the hover's and the flyer's alone, with
+  water priced it is everyone's again, and levers 2 and 3 take its worth either way.
 - The Giant Petrel's irony, "fast-looking, slow, and fast only on water" (its brief): becomes
   slow and amphibious; its water speed, if wanted, is a passive of its own, not a way's rule.
 - The Storm Petrel's river road, "water fast, so it rides the river the jets fly over" (its
@@ -252,16 +295,22 @@ symptom):
 Claude's lean: 1 and 2, with 3 whichever way 2 goes, and nothing before the pricing run and
 the fresh start read it, since the gap is smaller under C than today.
 
+Ryan, 28 October: "I think your leans are correct, include 1, 2, and 3. I keep wanting to add
+more complexity to the map, but ultimately I'm doing more harm than good." So decided: the
+crossing is priced by the pricing run and the fill, winged packs cross water and crags as a
+flyer does and stand where a flyer stands (so a ring-one winged hunter catches over water, and
+a fight may be fought there, its backdrop the water's), and a hunter whose prey it cannot
+reach picks again. Lever 2's build is the fresh start's, since it composes the packs; lever 3
+is the battlefield's and small.
+
 ## Questions for Ryan
 
-1. Water is a wall to ground machines (Claude's lean: yes; ground to everyone would give every
-   machine a refuge no ring-one hunter reaches, two hexes into any lake, and would make the
-   crossing guarantee mean nothing to the squad).
+Decided on 28 October: the crossing's price (levers 1, 2 and 3 above). Still his:
+
+1. Water: the one priced ground (his suggestion, section 2a; Claude's lean: yes, with the
+   guard), or a wall to ground machines.
 2. Hover over crags stays a wall (Claude's lean: yes, so the Badlands stay the flyer's).
 3. The moves: today's tens over ten, or a flatter spread.
 4. The map types: five names as looks, or three that read.
 5. The Giant Petrel and the Storm Petrel: slow and amphibious, and fast and amphibious, or a
    passive that gives one of them its water speed.
-6. The crossing's price: in the hangar by the pricing run, as a step under the size's fill, by
-   the foes' wings, or left until the runs read it (Claude's lean: the pricing run and the
-   wings).
