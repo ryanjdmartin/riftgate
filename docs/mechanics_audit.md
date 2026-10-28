@@ -369,9 +369,10 @@ predates the stock pass's single digits.
   which never hunts and patrols a hex a turn whatever its move (sim/battlefield.gd:74, :373),
   so its `hunt`, `hunts` and `movespeed` are dead data, and in the fight it aims at the armed.
   (Its "when it is hurt it leaves" waits on Flee, still planned.)
-- The Dire Wolf is "faster than anything you own but the cars": it moves 30, and ten machines
-  that are no car move 40 or 50 (the Kite, the Buzzard, the Stingray, the Puffin, the
-  Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel).
+- The Dire Wolf is "faster than anything you own but the cars": it moves 3, and ten machines
+  that are no car move 4 or 5 (the Kite, the Buzzard, the Stingray, the Puffin, the
+  Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel);
+  since moves went to hexes (28 October) no ground makes the cars faster either.
 
 ### 30. Text, small ones
 - The boss "patrols its ring of the rift (ring 2; a final's back-rank hero ring 3)"
