@@ -1712,6 +1712,12 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
 		if f.has("movespeed") and (int(f["movespeed"]) < 1 or int(f["movespeed"]) > MAX_MOVE):
 			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
+		# A hero only ever commands the boss unit, which patrols a hex a turn and never hunts
+		# (Ryan, 28 October, of the Thief's move: "it's a boss so it doesn't need it").
+		if bool(f.get("hero", false)):
+			for key in ["movespeed", "behaviour", "hunts"]:
+				if f.has(key):
+					errs.append("%s: a hero only commands the boss unit, which patrols a hex a turn; drop %s" % [where, key])
 		if f.has("winged") and not (f["winged"] is bool):
 			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:

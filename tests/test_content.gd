@@ -293,6 +293,34 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
+## A hero only commands the boss unit, which patrols a hex a turn and never hunts (Ryan, 28
+## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a
+## map move or a hunt on a hero, and a hunter of the rank and file keeps both.
+func test_a_hero_carries_no_map_move_or_hunt() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var hero_id := ""
+	var hunter_id := ""
+	for id in db.foes.keys():
+		var e: Dictionary = db.foes[id]
+		if hero_id.is_empty() and bool(e.get("hero", false)):
+			hero_id = str(id)
+		if hunter_id.is_empty() and not bool(e.get("hero", false)) and str(e.get("behaviour", "")) == "hunt":
+			hunter_id = str(id)
+	assert_false(hero_id.is_empty(), "the content has a hero")
+	assert_false(hunter_id.is_empty(), "and a hunter")
+	assert_false(db.foes[hero_id].has("movespeed"), "no hero carries a move")
+	var f: Dictionary = db.foes[hero_id].duplicate(true)
+	f["movespeed"] = 3
+	f["behaviour"] = "hunt"
+	f["hunts"] = "slowest"
+	db.foes["roamer"] = f
+	var errs := db.validate()
+	for key in ["movespeed", "behaviour", "hunts"]:
+		assert_true(errs.any(func(e) -> bool: return e.begins_with("foe roamer") and e.contains("drop " + key)), "a hero's %s is reported" % key)
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("a hero only")), "a hunter's are its own")
+
+
 ## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
 ## their number, 1 or more; a Barrier and a Ward say none.
 func test_a_foes_buff_specials_say_their_number_or_none() -> void:

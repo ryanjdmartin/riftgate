@@ -2207,3 +2207,11 @@ end 42% (39%) held. The branch's own read before the merge, against its run of 2
 moved the same cell the same way (54% of 50 against 36% of 57; lone fights 42 to 17, two of
 three 35 to 61). A direction at 40 runs, not a band: the rule's effect on a squad moving
 together, not a bug.
+
+**The Dire Wolf's line at 4** (Ryan, the same day: it "can be faster"; the Dire Wolf, the Warg
+and the Alpha Warg from 3; the heroes' dead moves dropped with it, which no run reads). The
+campaign run on that head (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the merged head's: no band moved. The Meadow's battles won 13% of 83 (12% of 79), fell 40%
+(40%), wiped 86% (87%); the whole, won 7% (7%), held after a wipe 52% (54%), fell 40% (38%);
+the three-machine battles 50% of 52 (54% of 50). A direction at 40 runs: a faster wolf moves no
+cell this bot reads.

@@ -115,6 +115,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   bands hold, its three-machine battles won more (a direction: the squad no longer split by
   slow ground). Next for the map: the six shapes (`docs/briefs/map_shapes.md`, three questions in
   section 12) and the crossing's price in the pricing run (the to-do).
+- The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
+  it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
+  validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
+  (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
+  compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with

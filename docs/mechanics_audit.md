@@ -364,7 +364,7 @@ times 10 divided by 3, at least 10 (sim/battlefield.gd:466; a pack of 6 strikes 
 and no machine may stand on a structure (`can_stand`, sim/battlefield.gd:128). The text
 predates the stock pass's single digits.
 
-### 29. Text: the codex's map claims for the Thief and the Dire Wolf
+### 29. Fixed 28 October (Ryan: the Thief "is a boss so it doesn't need" a move, so no hero carries a map move or a hunt and the validator refuses one; the Dire Wolf's line moves 4 and its codex no longer compares). Text: the codex's map claims for the Thief and the Dire Wolf
 - The Thief "goes for the slowest machine you have": a hero only ever commands the boss unit,
   which never hunts and patrols a hex a turn whatever its move (sim/battlefield.gd:74, :373),
   so its `hunt`, `hunts` and `movespeed` are dead data, and in the fight it aims at the armed.
@@ -448,7 +448,8 @@ ended", docs/rules.md:686).
   die locks clear on a resume too.
 - The harness fields only a faction's first boss whatever boss is chosen (sim/harness_setup.gd
   :191), latent until a domain has two; the map viewer's sample packs are made with a move of
-  2 and never move (sim/loadouts.gd:91).
+  2 and never moved (sim/loadouts.gd:91; since moves went to hexes on 28 October, 2 is two hexes
+  and they walk).
 - The profile's pool takes the eight basics every run starts with (sim/profile.gd:25), where the
   pool is "blueprint ids found in any run"; a finale won credits the capital's rolled domain
   with a boss beaten, and so a beaten domain in the codex (sim/campaign.gd:395); `absorb` has no

@@ -513,7 +513,7 @@ const FILTER_SPECS = {
     ],
     sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => e.hp), stat("attack", "Attack", e => e.attack), stat("armour", "Armour", e => e.armour ?? 0),
       stat("movespeed", "Move", e => e.movespeed), stat("zone", "Zone", e => e.zone), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
-    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}` : "", `move ${e.movespeed}`, `zone ${e.zone}`],
+    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : "", `zone ${e.zone}`],
   },
   factions: {
     noun: ["faction", "factions"], placeholder: "Name",

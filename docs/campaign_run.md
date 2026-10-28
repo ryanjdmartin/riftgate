@@ -9,14 +9,14 @@ Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measur
 | Measure | Mean | Range |
 |---|---|---|
 | Runs won | 0 of 40 | |
-| Runs that reached the finale | 31 of 40 | |
-| Turns a run | 8.93 | 8 to 10 |
+| Runs that reached the finale | 34 of 40 | |
+| Turns a run | 8.97 | 8 to 10 |
 | Cities fallen a run | 4.00 | 4 to 4 |
-| The turn the first city fell | 3.58 | 2 to 5 |
+| The turn the first city fell | 3.65 | 2 to 5 |
 | The capital's gate at the end, of 300 | 0.00 | 0 to 0 |
-| Hardpoints still filled at the end, percent | 42 | 9 to 85 |
+| Hardpoints still filled at the end, percent | 39 | 9 to 83 |
 | Turns passed with nobody ready | 3 in all | |
-| Wrecks rushed | 23 in all | |
+| Wrecks rushed | 26 in all | |
 | Battles the bot could not finish (run abandoned) | 0 | |
 
 Who started the runs (the draft's pick here is random, so this is coverage, not a preference):
@@ -48,62 +48,63 @@ The party: each hero, the runs it was dealt in, the finals fought against it and
 
 ## The battles
 
-373 battles. Won 7%, held after a wipe 54%, fell 38%; 92% of battles ended in a team wipe.
+377 battles. Won 7%, held after a wipe 52%, fell 40%; 92% of battles ended in a team wipe.
 
 | Measure | Mean | Range |
 |---|---|---|
-| Components destroyed per won battle (gone for good; the inflow has to beat this) | 1.74 | 0 to 6 |
-| Components destroyed per battle, any outcome | 0.78 | 0 to 8 |
+| Components destroyed per won battle (gone for good; the inflow has to beat this) | 1.64 | 0 to 6 |
+| Components destroyed per battle, any outcome | 0.81 | 0 to 8 |
 | Machines wrecked per battle | 1.53 | 0 to 3 |
-| Salvage banked per won battle | 154 | 100 to 240 |
+| Salvage banked per won battle | 158 | 100 to 240 |
 | Favour paid per won battle, after the gate's docking, of 100 | 100 | 100 to 100 |
-| Phases a battle | 7.85 | 3 to 20 |
+| Phases a battle | 7.96 | 3 to 23 |
 
 ## By kind, tier of the Convergence, lead faction, squad size and guest
 
 | | Battles | Won | Fell | Wiped | Destroyed per battle |
 |---|---|---|---|---|---|
-| a battle | 337 | 8% | 36% | 91% | 0.85 |
+| a battle | 339 | 8% | 38% | 91% | 0.87 |
 | a final | 2 | 0% | 50% | 100% | 0.50 |
-| the finale | 34 | 0% | 55% | 100% | 0.15 |
-| tier 0 | 160 | 16% | 14% | 83% | 1.16 |
-| tier 1 | 157 | 0% | 52% | 100% | 0.62 |
-| tier 2 | 56 | 0% | 69% | 100% | 0.14 |
-| The Marsh | 137 | 0% | 36% | 99% | 1.09 |
-| The Meadow | 79 | 12% | 40% | 87% | 0.25 |
-| The Peak | 87 | 5% | 41% | 94% | 0.67 |
-| The Waste | 70 | 15% | 37% | 84% | 0.91 |
-| 1 machines | 164 | 0% | 41% | 100% | 0.34 |
-| 2 machines | 159 | 0% | 47% | 100% | 0.70 |
-| 3 machines | 50 | 54% | 0% | 46% | 2.46 |
-| 1 machines, lead alone | 89 | 0% | 38% | 100% | 0.44 |
-| 1 machines, with a guest | 75 | 0% | 45% | 100% | 0.23 |
-| 2 machines, lead alone | 80 | 0% | 41% | 100% | 0.90 |
-| 2 machines, with a guest | 79 | 0% | 54% | 100% | 0.51 |
-| 3 machines, lead alone | 50 | 54% | 0% | 46% | 2.46 |
+| the finale | 36 | 0% | 58% | 100% | 0.25 |
+| tier 0 | 160 | 17% | 12% | 82% | 1.17 |
+| tier 1 | 157 | 0% | 56% | 100% | 0.68 |
+| tier 2 | 60 | 0% | 70% | 100% | 0.18 |
+| The Marsh | 132 | 0% | 36% | 99% | 1.11 |
+| The Meadow | 83 | 13% | 40% | 86% | 0.22 |
+| The Peak | 88 | 5% | 44% | 94% | 0.69 |
+| The Waste | 74 | 14% | 40% | 85% | 1.07 |
+| 1 machines | 165 | 0% | 43% | 100% | 0.33 |
+| 2 machines | 160 | 1% | 49% | 98% | 0.79 |
+| 3 machines | 52 | 50% | 0% | 50% | 2.38 |
+| 1 machines, lead alone | 89 | 0% | 37% | 100% | 0.40 |
+| 1 machines, with a guest | 76 | 0% | 51% | 100% | 0.24 |
+| 2 machines, lead alone | 82 | 2% | 41% | 97% | 0.98 |
+| 2 machines, with a guest | 78 | 0% | 57% | 100% | 0.60 |
+| 3 machines, lead alone | 52 | 50% | 0% | 50% | 2.38 |
 
 ## The fights
 
-748 fights. A fight holds the machines committed (those whose attack range covers the pack attacked) and every pack whose ring covers it, so a fight need not hold the whole squad; this bot walks the squad as one toward the pack nearest it, and attacks the pack the most of them can reach, so a player who splits the team fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate.
+780 fights. A fight holds the machines committed (those whose attack range covers the pack attacked) and every pack whose ring covers it, so a fight need not hold the whole squad; this bot walks the squad as one toward the pack nearest it, and attacks the pack the most of them can reach, so a player who splits the team fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate.
 
 | In the fight | Fights | Won |
 |---|---|---|
-| 1 of 1 | 351 | 19% |
-| 1 of 2 | 118 | 13% |
-| 1 of 3 | 17 | 23% |
-| 2 of 2 | 153 | 60% |
-| 2 of 3 | 60 | 85% |
-| 3 of 3 | 49 | 91% |
-| 1 machines against 1 packs | 191 | 40% |
-| 1 machines against 2 packs | 224 | 5% |
-| 1 machines against 3 packs | 58 | 0% |
-| 1 machines against 4 packs | 12 | 0% |
-| 1 machines against 5 packs | 1 | 0% |
-| 2 machines against 1 packs | 140 | 82% |
-| 2 machines against 2 packs | 56 | 44% |
-| 2 machines against 3 packs | 17 | 17% |
-| 3 machines against 1 packs | 41 | 92% |
-| 3 machines against 2 packs | 8 | 87% |
+| 1 of 1 | 356 | 21% |
+| 1 of 2 | 112 | 14% |
+| 1 of 3 | 21 | 38% |
+| 2 of 2 | 178 | 64% |
+| 2 of 3 | 62 | 80% |
+| 3 of 3 | 51 | 92% |
+| 1 machines against 1 packs | 209 | 42% |
+| 1 machines against 2 packs | 198 | 5% |
+| 1 machines against 3 packs | 64 | 0% |
+| 1 machines against 4 packs | 16 | 0% |
+| 1 machines against 5 packs | 2 | 0% |
+| 2 machines against 1 packs | 161 | 83% |
+| 2 machines against 2 packs | 66 | 45% |
+| 2 machines against 3 packs | 12 | 0% |
+| 2 machines against 4 packs | 1 | 0% |
+| 3 machines against 1 packs | 42 | 92% |
+| 3 machines against 2 packs | 9 | 88% |
 
 ## The placeholders measured
 
