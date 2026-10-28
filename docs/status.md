@@ -63,8 +63,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   rounds of his notes the same day (the Storm Petrel's field strips, sparks, beaded arch and
   emitters clear of the guns; the Puffin's plates near plumb with lit rims, its amplify's glow
   found dead, a prefix the rig never matches, and the build refusing one since; the
-  Lammergeier's launcher nacelles; the Skua's five acts, the run a dive, the roll with the
-  hands spread; Ryan's picks from
+  Lammergeier's launcher nacelles, their tube mouths raked with the face; the Skua's five acts,
+  the run a dive, the roll with the hands spread, which Ryan's third notes say he cannot see
+  move (the game's renders and the hangar's maths both show it: the branch's models are not on
+  main, and the hangar keeps a model loaded until the page reloads); Ryan's picks from
   five rounds of looks: the Skua the jaeger, the Puffin and the Storm Petrel on each other's hulls,
   the Lammergeier the flying wing; the Needletail's two modes and the Giant Petrel's catamaran
   his next session's, the to-do; the scissor swing wing tried again the same day as a look for
@@ -273,9 +275,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 128 (28 October, from
+  before it is replaced and `edits` read first. At the page's version 129 (28 October, from
   `ccr-7d865127-wr1ko2` onto the area session's 127: the Skua's, the Puffin's, the Storm Petrel's and the Lammergeier's
-  models and rigs after Ryan's two rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
+  models and rigs after Ryan's three rounds of notes, their renders and the manifest with his notes, the pins, `content/chassis.json` with the
   Lammergeier's designation and `content/factions.json` with the Zombie Knight; every other
   file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.

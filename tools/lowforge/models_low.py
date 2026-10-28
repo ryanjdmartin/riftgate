@@ -3742,7 +3742,7 @@ def storm_petrel(b):
     pts = [Vector((-9.0 * math.cos(math.pi * k / 8.0), 0.0, deck(0.0) + 1.0 + 8.0 * math.sin(math.pi * k / 8.0))) for k in range(9)]
     for p0, p1 in zip(pts, pts[1:]):
         _beam(b, tuple(p0), tuple(p1), _poly(0.55, 6), _poly(0.55, 6), "amber.ember", "projector_glow")
-        _beam(b, tuple(p0.lerp(p1, 0.24)), tuple(p0.lerp(p1, 0.76)), _poly(1.05, 6), _poly(1.05, 6), "steel.plate", "projector_arch")
+        _beam(b, tuple(p0.lerp(p1, 0.09)), tuple(p0.lerp(p1, 0.91)), _poly(1.05, 6), _poly(1.05, 6), "steel.plate", "projector_arch")   # the sleeves cover most of the band (Ryan, 28 October: longer)
 
     def nac_top(y):
         """The nacelle's top: the deck carried out over the booster, sloping down with the
@@ -3904,9 +3904,13 @@ def lammergeier(b):
         def ring(y_at, zb, zt):
             return [(x0, y_at(x0), zb), (x1, y_at(x1), zb), (x1, y_at(x1), zt - 0.9), (x1 * 0.92 + x0 * 0.08, y_at(x1), zt), (x0 * 0.92 + x1 * 0.08, y_at(x0), zt), (x0, y_at(x0), zt - 0.9)]
         _rings(b, [ring(lambda x: le(17.0) - 14.0, Z - 3.3, Z + 3.3), ring(lambda x: le(x) - 5.0, Z - 2.9, Z + 3.1), ring(lambda x: le(x) + 0.6, Z - 2.0, Z + 2.6)], "steel.dark", "drone_pod")
+        # Each tube's mouth follows the face's rake and stands a touch proud of it, in the
+        # nacelle's dark (Ryan, 28 October: a square mouth through a raked face left hull-coloured
+        # chunks clipping through the box).
         for k in range(2):
             x = s * (14.0 + 6.0 * k)
-            _tube(b, (x, le(x) - 8.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.plate", "drone_tube", floor_material="amber.ember", floor_depth=5.5)
+            _tube(b, (x, le(x) - 8.0, TZ), (x, le(x) + 1.0, TZ), 2.1, 1.6, 8, "steel.dark", "drone_tube", floor_material="amber.ember", floor_depth=5.5,
+                  rake=lambda v, x=x: le(v.x) - le(x))
     # The Lorentz Contractor's dish on a dorsal pylon aft of the body's crown.
     uy, uz = -10.0, deck(-10.0)
     b.loft([(-6.0, rect(0.0, 4.0, uz - 0.4, uz + 3.0)), (-14.0, rect(0.0, 3.0, uz - 0.4, uz + 3.6))], "steel.dark", "contractor_mast")
@@ -4021,12 +4025,14 @@ def _beam(b, p0, p1, ring0, ring1, material, label):
     return _rings(b, rings, material, label, (Vector(p0), d, side, up, None))
 
 
-def _tube(b, p0, p1, r_out, r_in, n, material, label, floor_material="bore.dark", floor_depth=0.5, floor=True, phase=0.0):
+def _tube(b, p0, p1, r_out, r_in, n, material, label, floor_material="bore.dark", floor_depth=0.5, floor=True, phase=0.0, rake=None):
     """A hollow cylinder from `p0` to `p1`, open at `p1`: an outer wall, the rim, an inner wall
     down to a dark floor just above `p0`. A recessed gun port: the mount sits on the floor
     and the barrel rises out of the mouth (Ryan, 30 September). `floor=False` leaves both
     ends open, for a rim ring over a port (its floor had been a lid over every port: Ryan,
-    1 October)."""
+    1 October). `rake`, given, is a function of a mouth vertex returning how far along the
+    tube to carry it, so the mouth follows a face that is not square to the tube (the
+    Lammergeier's launchers in their raked nacelle faces)."""
     d = (Vector(p1) - Vector(p0)).normalized()
     up = Vector((0.0, 0.0, 1.0))
     side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
@@ -4035,8 +4041,8 @@ def _tube(b, p0, p1, r_out, r_in, n, material, label, floor_material="bore.dark"
         return [Vector(p) + side * (r * math.cos(phase + i * 2.0 * math.pi / n)) + over * (r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
     bm = bmesh.new()
     o0 = [bm.verts.new(v) for v in ring(p0, r_out)]
-    o1 = [bm.verts.new(v) for v in ring(p1, r_out)]
-    i1 = [bm.verts.new(v) for v in ring(p1, r_in)]
+    o1 = [bm.verts.new(v + d * (rake(v) if rake else 0.0)) for v in ring(p1, r_out)]
+    i1 = [bm.verts.new(v + d * (rake(v) if rake else 0.0)) for v in ring(p1, r_in)]
     i0 = [bm.verts.new(v) for v in ring(Vector(p0) + d * floor_depth, r_in)]
     for k in range(n):
         k2 = (k + 1) % n
