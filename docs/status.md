@@ -61,8 +61,8 @@ foes' buffs, the player's Purge, the recolours by tier, their sprites and the re
 its own status says so), and `ccr-c04908be-3r43xf` (27 and 28 October: the pricing run's method
 and driver, the runs made and read, `docs/measurements.md`, the synergy map (`docs/synergy_map.md`)
 and the roster's synergy holes, the session-start hook that fetches Godot for cloud sessions,
-main merged in on the 28th, and the pricing pass on Ryan's go the same evening, the bible's
-pricing row and the fills; docs, Python tools, the hook and the content's numbers). Every other
+main merged in on the 28th, and the pricing pass landed on Ryan's go the same evening, the
+bible's pricing row and the fills; docs, Python tools, the hook and the content's numbers). Every other
 branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
@@ -262,10 +262,11 @@ line), since no number read since 22 October was read on the content as it now s
    6 and a seventh past it on the car, the hot bench reading keywords and no number, heat 1, 2
    and 4 free on a cold die and 6 and 8 a point and two, a hot die paying in hull, a rolled gun
    a third of a point under its mean, and the keywords' prices (Flak 2 two, Burn 2 two and a
-   third, the Chain nearly three, the Shock one and a half). On his go, the floors 2, 3.5, 5 and 7 and the fills:
+   third, the Chain nearly three, the Shock one and a half). Landed on his go: the floors 2, 3.5, 5 and 7;
    the Railgun 10 to 8, the Coriolis 3 to 4, tier one's rolled vanillas to 2-6, the Howitzer
-   Splash 1, the Ram Frame and the Rangefinder hull +8, read on the Clydesdale bench first; every landed
-   delta read again at 200 seeds. Open in section 12: the Chain's rework (the Arc Fault waits on it) and
+   Splash 1, the Ram Frame and the Rangefinder hull +8 (the Clydesdale bench: the Frame 0.4 rounds off its
+   row, the Rangefinder 0.1 until back ranks come; a nine-entry die dilutes its slot three to one
+   and never reaches its heat knee); every landed delta read again at 200 seeds. Open in section 12: the Chain's rework (the Arc Fault waits on it) and
    whether heat below 6 should bite (the maxima or the overheat's cost). Next: a persona that
    shields and vents before the overheat and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once

@@ -28,7 +28,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "hull": 24
+    "hull": 8
    },
    "text": {
     "description": "Its Direct blows aimed at the front rank deal 1 more.",
@@ -219,7 +219,9 @@
    "tier": 2,
    "codex": "",
    "flavour": "",
-   "stats": {},
+   "stats": {
+    "hull": 8
+   },
    "text": {
     "description": "Its Indirect blows aimed at the back rank deal 1 more.",
     "effects": [

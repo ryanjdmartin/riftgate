@@ -2532,3 +2532,103 @@ Read:
   end, as the 27 October run said in numbers; in vanilla points the mass of each tier sits a
   point and a half above the last (3, 5, 7 for tiers one to three), which is the floors the
   proposal leans to (2, 3.5, 5, 7: half a round a tier on the car).
+
+## 28 October, the Clydesdale bench
+
+**The warm Indirect bench** (`tools/pricing_run.py run clyde28 --parts vanilla,vanillaheat,ladders,modules
+--benches clydesdale --pieces ... --modules artillery_rangefinder,ram_frame --set
+modules/ram_frame/stats/hull=8 --set modules/artillery_rangefinder/stats/hull=8`, the merged
+head of the 28th, before the fills): the Clydesdale's Howitzer slot in Wainwright & Sutler's row,
+a nine-piece die at maximum 12 with cooling 1 whose spends run warm (the Maxigun 1, the Enfilade
+Beam 2, the shells 1), the sixth bench, added for three reads the proposal's leans asked for
+before the fills: the heat knee on a warm die beside the cold car's and the hot Buzzard's; the
+Indirect pieces in an Indirect slot (the car read the flat Indirect as the flat Direct); and the
+Artillery Rangefinder beside the Ram Frame at the hull line the pass sets (+8 each), on a
+machine whose Indirect guns the Rangefinder's rule reads. The vanilla ladder as on the car
+(heatless 2 to 10, the grid at 3, 5 and 7 across heat 0 to 8), twenty-three guns and the two
+modules: 69 variants, 33,120 fights, about 39 minutes on four cores. A direction at 30
+seeds.
+
+**The heatless curve** in the Clydesdale's Howitzer slot (rounds off the stock row, 6.1 and 24%,
+hull off it, the vanilla's share of the row's spends):
+
+| Number | flat Indirect, Clydesdale | flat Direct, Clydesdale |
+|---|---|---|
+| 2 | +0.1 r, +0%, 1% | -0.0 r, -0%, 1% |
+| 3 | -0.0 r, -0%, 6% | -0.1 r, -0%, 6% |
+| 4 | -0.3 r, -2%, 7% | -0.3 r, -2%, 7% |
+| 5 | -0.4 r, -3%, 7% | -0.4 r, -3%, 7% |
+| 6 | -0.6 r, -4%, 8% | -0.6 r, -4%, 8% |
+| 7 | -0.7 r, -4%, 8% | -0.7 r, -4%, 8% |
+| 8 | -0.8 r, -5%, 8% | -0.8 r, -5%, 8% |
+| 10 | -1.0 r, -7%, 8% | -1.0 r, -7%, 8% |
+
+**The heat grid** (flat Direct; the flat Indirect reads the same): rounds, hull, share, the peak
+heat, the overheats and the dice held a fight:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.1 r, -0%, 6%, 34%, 0.15, 0.04 | -0.0 r, -0%, 6%, 38%, 0.19, 0.05 | -0.0 r, +0%, 6%, 49%, 0.19, 0.04 | -0.1 r, +0%, 5%, 59%, 0.25, 0.06 | +0.1 r, +1%, 4%, 62%, 0.21, 0.07 |
+| 5 | -0.4 r, -3%, 7%, 34%, 0.15, 0.04 | -0.4 r, -2%, 7%, 38%, 0.19, 0.05 | -0.4 r, -2%, 7%, 52%, 0.20, 0.05 | -0.3 r, -2%, 7%, 66%, 0.28, 0.06 | -0.1 r, -1%, 5%, 72%, 0.29, 0.08 |
+| 7 | -0.7 r, -4%, 8%, 33%, 0.17, 0.04 | -0.7 r, -4%, 8%, 38%, 0.20, 0.04 | -0.7 r, -4%, 8%, 52%, 0.23, 0.05 | -0.6 r, -3%, 7%, 66%, 0.30, 0.05 | -0.5 r, -3%, 6%, 75%, 0.33, 0.05 |
+
+**The pieces on the Clydesdale**, in vanilla points by this bench's own curve (coarse: the curve
+spans a round from 2 to 10, so a point here is a tenth of a round):
+
+| Tier | Piece | Its number, heat, keywords | Clydesdale: rounds, points, share, peak |
+|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | -0.0 r, 2.6 (2.6 by shape), 6%, 38% |
+| 0 | Ankle Mortar | 1-3, heat 1 | +0.2 r, 2 or under (2 or under by shape), 4%, 35% |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.1 r, 2 or under (2 or under by shape), 26%, 35% |
+| 1 | Overclocked Railgun | 10, heat 8, breach | -1.0 r, 9.4 (9.4 by shape), 7%, 79% |
+| 1 | Thermal Ray | 6, heat 6 | -0.6 r, 5.6 (5.6 by shape), 7%, 66% |
+| 1 | Transonic Rifle | 5, heat 4 | -0.4 r, 4.8 (4.8 by shape), 7%, 52% |
+| 1 | Maxigun | 1-2 x3, heat 1 | +0.0 r, 2 or under (2 or under by shape), 16%, 35% |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | -0.7 r, 6.6 (6.6 by shape), 7%, 48% |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | -0.3 r, 4.1 (4.1 by shape), 15%, 39% |
+| 1 | Howitzer | 2-5, heat 1 | +0.0 r, 2 or under (2.7 by shape), 7%, 35% |
+| 1 | Slugthrower | 2-5, heat 1 | +0.0 r, 2 or under (2 or under by shape), 7%, 35% |
+| 1 | Blazethrower | 3, heat 3, burn 2 | -0.4 r, 4.9 (4.9 by shape), 6%, 44% |
+| 1 | Plasma Arquebus | 2-4, heat 2 | +0.0 r, 2 or under (2 or under by shape), 6%, 39% |
+| 1 | Shotfire Rack | 2-4, heat 2 | +0.0 r, 2 or under (2.7 by shape), 6%, 39% |
+| 1 | Incendiary Shells | 1-3, heat 1, burn 2 | -0.1 r, 3.2 (3.3 by shape), 12%, 34% |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | +0.1 r, 2 or under (2.0 by shape), 15%, 35% |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | -0.6 r, 6.2 (6.2 by shape), 8%, 44% |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | -0.9 r, 8.4 (8.3 by shape), 7%, 63% |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | -0.5 r, 5.3 (5.3 by shape), 7%, 45% |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | -0.4 r, 4.9 (4.9 by shape), 7%, 34% |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | -0.5 r, 5.2 (5.2 by shape), 7%, 38% |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | -0.4 r, 4.9 (4.9 by shape), 6%, 37% |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | -0.9 r, 8.7 (8.7 by shape), 7%, 50% |
+
+**The two modules at the hull line the pass sets (+8)**, fitted to the Clydesdale alone:
+
+| Module | At hull +8 | Win | Rounds | Hull | Against stock | Peak | Overheats |
+|---|---|---|---|---|---|---|---|
+| Ram Frame | hull +24; Its Direct blows aimed at the front rank deal 1 more. | 96.9 | 5.7 | 19% | win +3.3, -0.4 r, -5% hull | 33% | 0.14 |
+| Artillery Rangefinder | Its Indirect blows aimed at the back rank deal 1 more. | 95.0 | 6.0 | 21% | win +1.5, -0.1 r, -2% hull | 35% | 0.18 |
+
+Read:
+
+- **A nine-entry die dilutes its slot.** The vanilla in the Clydesdale's slot takes a tenth of
+  a round off at 4 and a round at 10, with 6 to 8% of the row's spends, where the same vanilla
+  in the Prairie Dog's three-entry slot took 0.9 and 2.2 with 16 to 20%: a piece's worth to its
+  row is its number times how often the die lands on it, so the same gun is worth a third as
+  much on a nine-entry die. The flat Indirect reads as the flat Direct here too, on the machine
+  with the Indirect guns.
+- **Heat never bites on the nine-entry die.** At 5 and 7 the slot's heat 8 takes 0.2 rounds back
+  and lifts the peak to 72 to 75%, with no overheat; the knee the car reached at heat 6 (its
+  peak 79 to 90%) is never reached here, since the slot fires a ninth of the spends. So heat's
+  price scales with how often the piece fires: the die's size is a lever beside the maxima and
+  the cooling, and a hot gun on a big die is a cool one.
+- **The order holds.** The Railgun 9.4, the Knuckles 8.7, the Meteor 8.4, the Arc Fault 6.6,
+  the Cyclic 6.2, the Thermal Ray 5.6, the Tesla 5.3, the Flak Cannon 5.2, the Blazethrower,
+  the Stoker and the Coriolis 4.9, the Transonic 4.8, the Enfilade 4.1, the Incendiary 3.2, the
+  Carbine 2.6; every rolled gun and the Maxigun at 2 or under, since a tier-one rolled gun's
+  3.5 is a tenth of a round on this slot, within the direction's noise.
+- **The Ram Frame at +8 is still the better mirror.** On the Clydesdale's strikes and its
+  Direct guns the Frame takes 0.4 rounds and 5 points of hull off the row (its point on every
+  Maxigun strike at the front); the Rangefinder at +8 takes 0.1 and 2, its back-rank rule
+  reading on the few back ranks today's fights field. Both land at +8, the module its text, and
+  the Rangefinder earns its keep once the fresh start puts back ranks in more fights (the area
+  row's own note on the column keywords).
