@@ -77,6 +77,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- Map movement (Ryan, 27 and 28 October: the move points and the terrain table "add confusion and
+  overhead for no strategic gain"; his pick, movement in hexes with binary ground, a move in one
+  go): proposed in `docs/movement_proposal.md` (the read, the design, the bench, the rows it
+  retires, the build and five questions), awaiting his marks. Nothing in the engine or the
+  content has changed.
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
