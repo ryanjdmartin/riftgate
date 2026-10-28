@@ -257,11 +257,18 @@ line), since no number read since 22 October was read on the content as it now s
    band, the Ram Frame is the universal module on its +24 hull line, equipment and the setups
    price not at all under the greedy on these packs, the Probe, the Condenser and the Ammit's
    loop are verdicts on the bot, and the heat classes hold (a class up moves the hot kits alone).
-   Next: Ryan's marks on `docs/pricing_proposal.md`'s section 6, the harder bench for equipment
-   and the setups (the formations and the breaching bosses, the planner beside the greedy), an
-   Indirect bench for the Rangefinder, the 200-seed reads on the deltas the marks name, then the
-   fills through `tools/stock_fills.py`. The roster's synergy holes are the proposal's section
-   5, from the generated map (`tools/synergy_map.py`).
+   Reviewed 28 October (the proposal's section 0) against the numbered area, the blow's order
+   and the ladder's design goals: what the tiers buy (the bible's section 3 row) and Ryan's
+   direction that tier two and three must feel worth upgrading to, especially shields and
+   vents, so the run's finding is the step the content lacks, measured (a gun's number times
+   its strikes 4.1 at tier one and 3.6 at tier two, the shields and vents flat or backwards),
+   and the structure for the marks is the tier steps with the equipment ramp first; the area
+   carriers and the modules that read every blow were rerun on the merged head. Next: Ryan's
+   marks on `docs/pricing_proposal.md`'s section 6, then the ladders per tier on the fresh
+   start's formations and recolours once the ladder lands (the planner beside the greedy for
+   equipment and the setups), an Indirect bench for the Rangefinder, the 200-seed reads on the
+   deltas the marks name, then the fills through `tools/stock_fills.py`. The roster's synergy
+   holes are the proposal's section 5, from the generated map (`tools/synergy_map.py`).
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and

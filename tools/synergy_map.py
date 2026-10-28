@@ -79,6 +79,7 @@ CURRENCIES = OrderedDict([
     ("muster", ("The Muster", "a store")),
     ("rage", ("Rage", "a store")),
     ("hopper", ("The hopper", "a store")),
+    ("foe_buff", ("A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
     ("tags", ("Tags", "a label")),
 ])
 
@@ -87,7 +88,8 @@ KEYWORDS = {
     "burn": [("burning", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "web": [("webbed", "sets"), ("suppressed", "sets")], "cryo": [("cryoed", "sets")], "flak": [("flakked", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")], "swap": [("swap", "sets"), ("rank", "sets")],
-    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "spillover": [("strikes", "sets")],
+    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
+    "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "overshield": [], "rapid": [], "breach": [], "spray": [("strikes", "sets")],
 }
@@ -124,7 +126,9 @@ CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "ra
               "target_no_intent": None}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
-FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll"}
+FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
+               "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
+               "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
 
 # The engine's own readers, where a currency pays by itself (the rules, docs/rules.md).
 ENGINE_READERS = {
@@ -166,6 +170,7 @@ ENGINE_READERS = {
     "strikes": ["each strike takes the foe's conditions and armour on its own"],
     "mine": ["whoever steps in takes every shot waiting"],
     "ammo": [], "muster": [], "rage": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
+    "foe_buff": ["each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates"],
 }
 
 
@@ -215,10 +220,13 @@ class Map:
                 if kw not in KEYWORDS:
                     self.unmapped.append("%s: keyword %s" % (e["name"], kw))
                 for cur, how in KEYWORDS.get(kw, []):
-                    self.add(cur, how, p)
+                    if kw in ("cleave", "penetrate", "splash"):
+                        self.add(cur, how, dict(p, area="%s %s" % ({"cleave": "Spread"}.get(kw, kw.capitalize()), f.get(kw, "a debuff's, no number"))))
+                    else:
+                        self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "power_max", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "burn", "flak", "cryo", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
+                         "burn", "flak", "cryo", "cleave", "penetrate", "splash", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))
@@ -323,6 +331,8 @@ class Map:
 
 def word(entry):
     s = entry["who"]
+    if entry.get("area"):
+        s += " (%s)" % entry["area"]
     if entry["kind"] == "slottable":
         s += " (tier %s)" % entry["tier"]
         if entry.get("stocked"):

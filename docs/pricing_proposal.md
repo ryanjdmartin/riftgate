@@ -16,8 +16,12 @@ they are measured.
 run was made the same day in the cloud session (393 variants, 188,640 fights, about three hours
 on four cores; the run and its tables in `docs/measurements.md`, 27 October, the pricing run);
 what it says is section 2, the heat read section 3, and the structure for Ryan's marks section
-6. The synergy map (section 4) is generated from content by `tools/synergy_map.py` and is
-current; the holes (section 5) are Claude's read of it, hole E measured.
+6. Reviewed 28 October against what landed since the run (section 0): the numbered area and
+the blow's order on main, the ladder's design goals on the fresh start's branch and Ryan's
+direction on component tiers; the area carriers and the modules that read them rerun on the
+merged head (`docs/measurements.md`, 28 October). The synergy map (section 4) is generated from
+content by `tools/synergy_map.py` and is current; the holes (section 5) are Claude's read of it,
+hole E measured.
 
 **Read first**: the bible's balance rows (section 11: "Every stat and passive has a price,
 measured"; "A component is balanced against the components of its tier; a chassis alone is a
@@ -26,6 +30,44 @@ diagnostic"), its heat row (section 5), its modules, tags and catalogue rows (se
 starter trios, the built teams, the endgame fours); `docs/balance.md` (the pick shares and the
 heat section); the retired stock pass brief (`git show a550c2e:docs/briefs/stock_pass.md`) for
 the heat classes and the first fills.
+
+## 0. What changed under the run (28 October)
+
+The run was made on main's head of the 27th (`e59691d`). Since then, on main: area is numbered
+(Spread N, Penetrate N and Splash N, the half retired: the Claw and the Plow Spread 2, the
+Enfilade Beam Penetrate 3, the Airburst Shell and the Flakshot Spread 1, the Musk Ox's two guns
+Splash 1, the drum 2 and 2; the Howitzer's and the Meteor's Splash open in section 12), the
+blow's order puts the firer's modifiers on every blow and each foe's own reads after (so a
+firer's point lands on every strike and every area foe), the Marsh formation holds the Zombie
+Knight pair, and the 200-seed report of the 27th is the baseline (`docs/measurements.md`). On
+the fresh start's branch (`ccr-6073bda9-p34o8q`, unmerged): the ladder, twenty-six recolours
+by tier with the spawn lists by tier and the runner's cells for them ("meadow formation tier
+2"), the three verbs (Silence muting keywords, Purge taking what a die face bought, a foe's
+Cleanse), four buffs crossing to the foes and the player's Purge on the Null Field Emitter.
+
+Two decisions of the 28th bear on this proposal directly:
+
+- **What the tiers buy** (the bible's section 3 row, measured on the fresh start's branch):
+  never-inflate is an aspiration; "with component tiers and synergy payoffs, inflation is just
+  a matter of course for some units", and a tier's units need "on average bigger numbers than
+  tier 1 just to stay relevant", a floor set against the tier's kit; the measurement grouped
+  the 27 October matrix by chassis tier and found the tiers' kit buying options more than
+  numbers (a weapon's number times its strikes means 2.2, 3.5, 3.2 and 4.0 at tiers zero to
+  three), which is this run's finding from the other side.
+- **Ryan's direction on component tiers** (28 October, the to-do's pricing line on that
+  branch): tier two and three "need to feel worth it to upgrade to", plain number increases
+  beside the keywords, "especially to shield and vent", since "if there isn't sufficient
+  pressure to replace equipment, the economy becomes pointless", the raw DPS arms race on both
+  sides a big factor.
+
+So the run's read that tier two buys no kill time over tier one is no longer a question of
+whether tiers are a power ladder for guns: it is the measurement of the step Ryan wants and the
+content lacks. Section 2's structure for the marks is rewritten on that (the tier steps, the
+equipment ramp first), section 1's benches become the tiers' fights once the ladder lands, and
+the area carriers and the modules that read every blow were rerun on the merged head (below).
+What stands untouched by the changes: the heat read (section 3), the dead equipment and the
+setups under the greedy, the three verdicts on the bot, the knock-outs as directions, and the
+holes but G (sharper) and H (the Purge).
 
 ## 1. What the run measures, and how
 
@@ -90,6 +132,14 @@ The reads, and what each moves (the decision rules the summary's flags stand for
    Coupling) are read on the bench where their text is a key (the Nemesis's) as well as where
    it is a price.
 
+**Once the ladder lands** (section 0), the benches read by tier: a tier's candidates on the
+tier's fights (the runner's "meadow formation tier 2" and "tier 3" cells and the recolours'
+own, `--packs`), tier one's on today's, so that "a component against its tier's others" is read
+where the tier's units set the floor; the driver's `--packs` takes the ids, and its default
+list follows the spawn lists by tier when the factions' file carries them. The Marsh formation
+holds the Zombie Knight pair since the 27th, so the four rows' Marsh cells read harder than
+the run's, as the rerun's stock rows show.
+
 The bands: 30 seeds a cell is a direction (a cell near 50% carries about 18 points, a row
 mean about 4), so the summary ranks and flags, and a delta a number lands on is read again at
 200 seeds (`--seeds 200` on the variants it names) before the fill. The caveats the bible's
@@ -127,14 +177,20 @@ rounds to win, the hull lost, the pick shares and the heat columns.
    and the two breaching bosses alone, the planner beside the greedy (the setups' rung), on
    Wainwright & Sutler's row and a starter trio without a carry, or the fresh start's
    compositions once they exist.
-2. **Tier one's ceiling is tier two's.** The Arc Fault Cannon and the Overclocked Railgun (1.7
-   and 1.9 rounds off the car, 0.5 off the five benches' mean) sit at or above every tier-two
-   gun (the Meteor Artillery, the Cyclic Cannon, the Tesla Gauntlets) and the tier-three Gravity
-   Knuckles; the next tier-one guns (the Thermal Ray, the Blazethrower, the Transonic Rifle) sit
-   with tier two's, and the rolled tier-one guns a step above the basics. A tier-two gun buys no
-   kill time a tier-one gun does not: for guns the ladder's steps are heat and shape, not tiers,
-   where the tiers row says a component's tier is power. The Stoker reads as the Blazethrower
-   on every bench at a third of the heat, which is that row's power in another coin.
+2. **Tier one's ceiling is tier two's, and the tiers do not step.** The Arc Fault Cannon and
+   the Overclocked Railgun (1.7 and 1.9 rounds off the car, 0.5 off the five benches' mean) sit
+   at or above every tier-two gun (the Meteor Artillery, the Cyclic Cannon, the Tesla
+   Gauntlets) and the tier-three Gravity Knuckles; the next tier-one guns (the Thermal Ray, the
+   Blazethrower, the Transonic Rifle) sit with tier two's, and the rolled tier-one guns a step
+   above the basics. A tier-two gun buys no kill time a tier-one gun does not, and the content
+   says why: a gun's number times its strikes means 2.2 at tier zero, 4.1 at tier one, 3.6 at
+   tier two and 4.0 at tier three on the merged head (thirteen, nine and two guns), and the
+   equipment runs flat or backwards (shields: the basics 6 and 8, the Oblation Mantle 10 at
+   tier one, the Laminar Deflector and the Corona Shield 6 at tier two; vents: the basics 4
+   and 6, the Radiator Sail 5 and the Sublimator 4 at tier one, the Condenser 10 at tier two
+   for 3 hull). The Stoker reads as the Blazethrower on every bench at a third of the heat: a
+   tier step paid in heat alone. This is the step Ryan asked for on the 28th and the content
+   lacks (section 0), measured.
 3. **Heat prices show where heat bites, and nowhere else.** The Railgun pays half an overheat a
    fight on the car and holds the Buzzard's dice; the Thermal Ray and the Meteor sit at the
    maximum on the hot kits; the Buzzard's cool Arc Fault Cannon is the best piece in its own
@@ -172,28 +228,48 @@ rounds to win, the hull lost, the pick shares and the heat columns.
    Prairie Dog's Halo Shield out makes its row quicker. On these packs the stocks' equipment is
    filler to the greedy; the stock's question, with the harder bench.
 
-The structure for the marks (Claude's leans; nothing lands before them, and a delta a number
-lands on is read again at 200 seeds):
+The structure for the marks (Claude's leans, rewritten 28 October on Ryan's direction; nothing
+lands before them, and a delta a number lands on is read again at 200 seeds):
 
-- **The two outliers of tier one.** Three ways: (a) the Arc Fault Cannon and the Railgun to
-  tier two, which takes them out of the Buzzard's and the Lammergeier's stocks (the Kestrel
-  line's call, 21 October); (b) tier two's guns up a point each (the Meteor to 6, the Cyclic
-  Cannon's strikes to 2 to 3, the Tesla Gauntlets to 5), which moves nine numbers to answer
-  two pieces; (c) the tiers kept as the tiers row has them (tier two "most of the synergy
-  pieces", tier three the chase) and the two priced by their own levers: the Chain's rework for
-  the Arc Fault Cannon (section 12: "the kill and repeat is janky at best and snowbally at
-  worst", and the run reads the snowball, the cannon chaining through every pack with rank and
-  file), and the Railgun's heat as its price, which it pays (half an overheat a fight on a
-  12-maximum kit, a held die on a 14). Claude's lean: (c).
+- **A tier is a step on the plain number, the keywords beside it.** The fill the loops read:
+  a flat Direct gun 3 at tier zero, 4 to 5 at tier one, 6 to 7 at tier two and 8 to 10 at tier
+  three at the same heat class (the scales row's 1 to 6, big guns to 10, the capstone 12), a
+  rolled gun's middle the same step, a keyword gun a point under the plain one of its tier; so
+  tier two is more number for the same heat, which is what "worth it to upgrade" means on a hot
+  kit, and the heat classes stand (section 3). The two outliers of tier one then sit inside the
+  band or above it: the Railgun at 10 is tier three's number on a tier-one piece, so it moves
+  up a tier or its heat stays its price (it pays: half an overheat a fight on a 12-maximum kit),
+  Ryan's call; the Arc Fault Cannon's lever stays the Chain's rework (section 12).
+- **The equipment ramp first**, Ryan's "especially to shield and vent": a shield's number by
+  tier 6 and 8 at zero, 10 at one, 12 at two, 16 at three (the scales row's 6 to 16), a keyword
+  shield two under the plain one of its tier (so the Laminar Deflector and the Corona Shield
+  at 10, the Oblation Mantle's 10 at tier one its Volatile's price); a vent 4 and 6, then 6,
+  8 and 10 (the Condenser's 10 the capstone, paid in hull; the Sail and the Diffuser a step
+  under); a buff's stacks or rounds a step a tier (the Coil 2 at one, a tier-two Overcharge 3).
+  What it buys the economy: a found tier-two shield replaces the basic by its number, which
+  today it does not.
+- **The enemy's floor follows the tier's kit** (section 0): the ladders are read per tier on
+  the fresh start's formations and recolours, the tier's pieces on the tier's fights, and the
+  recolours' numbers set where a tier-N kit meets them as a fight (the fresh start's own
+  measurement, the 200-seed matrix with the ladder's cells on the to-do). The two ramps are set
+  together, never one against today's enemy: the run read on the tier-one enemy says a step
+  lands as kill time, which is the lever; whether it is the right size is the tiered read's.
 - **The Ram Frame's hull line comes down to the catalogue's band**, from +24 to about +8 (the
   Ablative Plating's +8, the Flak Skirt's +6, the Reliquary's +4), so the module is its text;
-  the Artillery Rangefinder takes the same line and is read on an Indirect bench (the
-  Clydesdale's Howitzer slot in Wainwright & Sutler's row) before either lands.
-- **No equipment or setup number moves on this run.** The harder bench first.
+  under the blow's order its point lands on every area blow too, so the rerun on the merged
+  head (below) is its read; the Artillery Rangefinder takes the same line and is read on an
+  Indirect bench (the Clydesdale's Howitzer slot in Wainwright & Sutler's row) before either
+  lands.
+- **No equipment or setup number moves on this run.** The pressure to replace equipment Ryan
+  wants needs two things the run lacks: a bot that spends equipment (the planner, or a
+  cautious persona that vents and shields before the overheat) and fights where a shield
+  saves hull (the tiered formations; the Marsh with its Knights already walls a trio). The
+  equipment ramp above is set by its numbers and read there.
 - **The heat classes stand** (section 3), and with them the guns' heat the Storm Petrel's
   brief waited on: its engine session is free to run on today's heats once these marks are in,
-  its hole (2 shield a spend on basics alone) read on them.
-- **The pool's size** (section 12's 50 to 75 against 40): the run adds no pressure to grow it;
+  its hole (2 shield a spend on basics alone) read on them; a tier step on a gun's number at
+  the same class is more shield burnt a spend on that machine, its own read.
+- **The pool's size** (section 12's 50 to 75 against 41): the run adds no pressure to grow it;
   the dead pieces are the bot's before they are the pool's.
 
 ## 3. The heat pricing
@@ -286,12 +362,13 @@ the currency pays by itself.
 | A foe's missing HP | a resource | nothing | Coriolis Accelerator (tier 2) |
 | The rank a blow is aimed at | a resource | Combat Translocator (locked, Dingo) | Direct reaches the front, Indirect any; Cottonmouth's Adaptive Munitions Drum; Ram Frame (module, tier 2); Artillery Rangefinder (module, tier 2) |
 | A rolled weapon | a resource | Chainsaw Claw (locked, Honey Badger); Shotfire Rack (tier 1), stocked; Slugthrower (tier 1), stocked; Twin Autoguns (tier 0), stocked; Ankle Mortar (tier 0), stocked; Howitzer (tier 1), stocked; Incendiary Shells (tier 1), stocked; Suppression Battery (tier 2); Breaching Plow (locked, Wild Boar); Megataser Harpoon (locked, Dingo); Plasma Arquebus (tier 1), stocked; Maxigun (tier 1), stocked; Flechette Pod (locked, Skua); Spindrift Salvo (locked, Giant Petrel) [planned]; Airburst Shell (tier 1), stocked | Muzzle Velocity Booster (module, tier 2); Tactical Databank (module, tier 2) |
-| Several blows a spend | a resource | Chainsaw Claw (locked, Honey Badger); Enfilade Beam (tier 1), stocked; Proximity Klaxon (tier 1); Breaching Plow (locked, Wild Boar); Flakshot Repeater (locked, Prairie Dog); Maxigun (tier 1), stocked; Shrapnel Recuperator (locked, Musk Ox); Unrestricted Expenditure (locked, Musk Ox); Flechette Pod (locked, Skua); Airburst Shell (tier 1), stocked; Cyclic Cannon (tier 2); Wild Boar's Juggernaut Drive; Cottonmouth's Adaptive Munitions Drum; Skua's Split-cycle Breech | each strike takes the foe's conditions and armour on its own |
+| Several blows a spend | a resource | Chainsaw Claw (Spread 2) (locked, Honey Badger); Enfilade Beam (Penetrate 3) (tier 1), stocked; Proximity Klaxon (Spread a debuff's, no number) (tier 1); Breaching Plow (Spread 2) (locked, Wild Boar); Flakshot Repeater (Spread 1) (locked, Prairie Dog); Maxigun (tier 1), stocked; Shrapnel Recuperator (Splash 1) (locked, Musk Ox); Unrestricted Expenditure (Splash 1) (locked, Musk Ox); Flechette Pod (locked, Skua); Airburst Shell (Spread 1) (tier 1), stocked; Cyclic Cannon (tier 2); Wild Boar's Juggernaut Drive; Cottonmouth's Adaptive Munitions Drum; Skua's Split-cycle Breech | each strike takes the foe's conditions and armour on its own |
 | A mine | a resource | Syrinx Drone (locked, Lammergeier); Lammergeier's Fuse-delayed Bay | whoever steps in takes every shot waiting; Lorentz Contractor (locked, Lammergeier) |
 | Ammo | a store | Shrapnel Recuperator (locked, Musk Ox); Quick Reload (locked, Musk Ox); Musk Ox's Desublimation Forge | Unrestricted Expenditure (locked, Musk Ox) |
 | The Muster | a store | Swallowtail's Muster Deck | Mooring Screens (locked, Swallowtail); Spotting Flare (locked, Swallowtail); Sutler's Hoist (locked, Swallowtail); Reveille Horn (locked, Swallowtail) |
 | Rage | a store | Nemesis's Crucible Capacitor | Knuckle of Fury (locked, Nemesis) |
 | The hopper | a store | Chainsaw Claw (locked, Honey Badger) | Bullion Fragmenter (locked, Honey Badger) |
+| A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands) | on a foe | Dire Wolf's Howl (foe); Antlion's Burrow (foe); Sandworm's Burrow (foe); Zombie Knight's Reraise (foe); Magma Elemental's Stoke the Forge (foe) | each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates |
 
 Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:
 
@@ -308,7 +385,7 @@ Tags, by the slottable pieces that wear them (locked in brackets); nothing but t
 
 What the map computes (what it means is the section after the map):
 
-- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Syrinx Drone, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating.
+- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Syrinx Drone, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating, A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
 - **A foe's turn drawn (Lure)** has one slottable setter, Proximity Klaxon (tier 1).
 - **A foe's move changed (Disrupt)** has one slottable setter, Differentiation Probe (tier 2).
 - **Overcharged** has one slottable setter, Overcharge Coil (tier 1), stocked.
@@ -317,6 +394,7 @@ What the map computes (what it means is the section after the map):
 - **Retaliate** has one slottable setter, Retribution Thurible (tier 1), stocked.
 - **Barrier** has one slottable setter, Blast Door (tier 1).
 - **Ward** has one slottable setter, Decoherence Veil (tier 1).
+- **A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)** is read by nothing but its own effect.
 <!-- synergy-map:end -->
 
 ## 5. The holes, read
@@ -408,9 +486,12 @@ Flechette Pod's spray are the one casher of five currencies, where a big flat gu
 (Shocked). The two amps are two shapes by decision (the Flak row: Flak the on-hit for the many
 small blows, Shocked the multiplier one blow spends), so this is a convergence to watch, not a
 hole: if the ladders read every amp's best home as a Cyclic Cannon, the price is on the strikes
-(fewer, or a module's point counting once a spend), never on the amps. Measure: the Prairie Dog
-bench (Flak) and the Puffin bench (the Coil) ladders, and the module ladder's adds on a strike
-kit against a flat one.
+(fewer, or a module's point counting once a spend), never on the amps. Sharper since the 28th:
+the blow's order lands a firer's add on every area foe as on every strike, so an Overcharged or
+a Ram Frame's point rides a Spread 2 or a Penetrate 3 as it rides a strike, and the area pieces
+join the strike pieces as the amps' home. Measure: the Prairie Dog bench (Flak) and the Puffin
+bench (the Coil) ladders, the module ladder's adds on a strike kit against a flat one, and the
+rerun on the merged head (`docs/measurements.md`, 28 October).
 
 **H. What exists and only wants its measure.** Lure's readers are all tank-side (Armoured and
 Sealed plate, a Barrier, Retaliate, the hull-damage readers), and its one slottable setter is
@@ -419,7 +500,12 @@ is a cross-maker pair that exists, and a Lure beside a Blast Door eats one blow 
 unique to the Dingo and its readers are the rank pieces (the Ram Frame, the Rangefinder, the
 Cottonmouth's drum), cross-maker. The shield cost built on 26 October has no carrier yet (the
 to-do's Ryan line); its pair is Overshield (the Backwash Ionizer, locked) and the Storm Petrel's
-planned passive, and a candidate reads through the run by `--set` once named. The rerolls'
+planned passive, and a candidate reads through the run by `--set` once named. Purge, since the 28th on the
+fresh start's branch, is a reader the map lacked: the foes' buffs (Armoured, Kindled, Getting
+Back Up, and Primed, Barrier, Ward and Regenerating crossing to them) and the player's Purge on
+the Null Field Emitter, a tier-two Indirect debuff, each buff with an answer beside the purge
+by decision; a foe's Ward turns every mark but Suppressed away for a turn, the first counter
+every setter here shares, and the Marsh's lean. The rerolls'
 setters are Wainwright & Sutler's (the Clydesdale's director, the Horn) and Kestrel's Trim Tabs,
 their readers Wainwright & Sutler's and Minerva's (the Cassowary's step, the Muster, the
 Armadillo); reroll effects are Kestrel's lean (Ryan, 19 October), the Clydesdale's predates it,
@@ -431,22 +517,27 @@ the engine's own payoff; the dedicated readers are the Backdraft (Burning) and t
 
 ## 6. Open for Ryan
 
-1. The two outliers of tier one, the Arc Fault Cannon and the Overclocked Railgun (section 2):
-   to tier two and out of the Buzzard's and the Lammergeier's stocks, tier two's guns up a point,
-   or kept and priced by their own levers (the Chain's rework, the Railgun's heat): Claude's
-   lean the last.
+1. The tier steps (section 2's structure, on your direction of the 28th): a step on the plain
+   number a tier at the same heat class, the equipment ramp first (shields 6 and 8, 10, 12,
+   16; vents 4 and 6, 6, 8, 10; a keyword piece a step under), the guns' step (3; 4 to 5; 6 to
+   7; 8 to 10); the Railgun up a tier or kept at its heat price; and whether the fills land
+   before the tiered read or with it.
 2. The Ram Frame's hull line, +24 to about +8, and the Artillery Rangefinder read on an
    Indirect bench (the Clydesdale's Howitzer slot) with the same line before either lands.
-3. The harder bench for equipment and the setup pieces (the four formations and the two
-   breaching bosses alone, the planner beside the greedy, on Wainwright & Sutler's row and a
-   starter trio without a carry), which also reads the Backdraft Charge's and the Suppression
-   Battery's numbers; or the fresh start's compositions first.
-4. The heat classes kept and no gun's heat moved (section 3), so the Storm Petrel's engine
+3. The Howitzer's and the Meteor Artillery's Splash (section 12's shells question), read as
+   what-ifs on the car bench at Splash 1 and 2 (`docs/measurements.md`, 28 October): which
+   number, or none.
+4. The next run: the ladders per tier on the fresh start's formations and recolours once the
+   ladder lands, with the planner beside the greedy for the equipment and the setups, on
+   Wainwright & Sutler's row and a starter trio without a carry; the 200-seed reads on the
+   deltas the marks name; whole runs by hand on the pieces named.
+5. The heat classes kept and no gun's heat moved (section 3), so the Storm Petrel's engine
    session may run on today's heats.
-5. The bot's valuation lines before the dead pieces' numbers: a Disrupt (the Probe reads worse
-   than an empty hardpoint), a vent that costs hull (the Condenser's 0%), and a loop that pays
-   later (the Ammit's), read on the planner.
-6. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
-   E answered for now by the bot's horizon (above); F's pairs as the catalogue session's list.
-7. Whole runs by hand on the pieces the marks name (the campaign runner, four minutes a
-   variant), and the 200-seed reads on the deltas a number lands on.
+6. The bot's valuation lines before the dead pieces' numbers: a Disrupt (the Probe reads worse
+   than an empty hardpoint), a vent that costs hull (the Condenser's 0%), a loop that pays
+   later (the Ammit's), and equipment spent before the overheat, read on the planner; and the
+   Ammit's kept Overcharged at single digits against a purging pack (your note of the 28th,
+   the fresh start's to-do line).
+7. The holes: which of A, B and D get a line on the to-do or a brief; C to Aphelion's session;
+   E answered for now by the bot's horizon; F's pairs as the catalogue session's list; H's
+   Purge as the setters' first counter, read once the ladder lands.

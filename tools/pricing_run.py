@@ -18,7 +18,9 @@ twice the cost); --packs big (the sixteen big fights but the finale, the default
 massive foes, the four formations, the eight finals), rank_and_file (the twelve wildlife packs),
 all (both), or pack ids as the runner names them; --jobs N (processes at once, the cores by
 default); --knock blank|basic (a knock-out leaves the hardpoint empty, or fits the basic of the
-piece's kind in its place). GODOT names the binary when it is not on the path.
+piece's kind in its place); --pieces id,id (the ladders' candidates narrowed to those, after a
+rule changes under a few pieces); --modules id,id (the module ladder's likewise). GODOT names the
+binary when it is not on the path.
 
 The reads (the bible's balance rows): a candidate's worth is its row's change against the
 bench's stock, read beside its tier's others on the same hardpoint; its pick share says whether
@@ -190,6 +192,8 @@ def variants(db, opts):
             cid, slot, ids = BENCHES[b]
             load = list(db.chassis[cid].get('loadout', []))
             for e in db.slottable(opts.tiers):
+                if opts.pieces and e['id'] not in opts.pieces:
+                    continue
                 fitted = load[:slot] + [e['id']] + load[slot + 1:]
                 out.append({'id': 'ladder:%s:%s' % (b, e['id']), 'part': 'ladders', 'row': ids, 'bench': b, 'chassis': cid,
                             'piece': e['id'], 'slot': slot, 'tier': int(e['tier']), 'args': set_loadout(cid, fitted)})
@@ -198,6 +202,8 @@ def variants(db, opts):
             cid, slot, ids = BENCHES[b]
             for m in db.modules.values():
                 if (m.get('text') or {}).get('status') == 'planned':
+                    continue
+                if opts.modules and m['id'] not in opts.modules:
                     continue
                 out.append({'id': 'module:%s:%s' % (b, m['id']), 'part': 'modules', 'row': ids, 'bench': b, 'chassis': cid,
                             'module': m['id'], 'tier': int(m['tier']), 'args': ['--fit', '%s=%s' % (cid, m['id'])]})
@@ -495,8 +501,12 @@ def summarise(db, opts):
             f = e['face']
             kind = f.get('kind', 'attack')
             if kind == 'attack':
-                kind = '%s %s%s, heat %s' % (f.get('reach', ''), f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '',
-                                             f.get('heat', 0)) + (', ' + ' '.join(f.get('keywords', [])) if f.get('keywords') else '')
+                kws = []
+                for kw in f.get('keywords', []):
+                    kws.append(kw + (' %s' % f[kw] if kw in ('cleave', 'penetrate', 'splash', 'burn', 'flak', 'cryo') and kw in f else ''))
+                kind = '%s %s%s, heat %s' % ('debuff' if int(f.get('power', 0) or 0) == 0 else f.get('reach', ''), f.get('power', 0),
+                                             ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '',
+                                             f.get('heat', 0)) + (', ' + ' '.join(kws) if kws else '')
             else:
                 kind = '%s %s' % (kind, f.get('power', '')) + (', ' + ' '.join(f.get('keywords', [])) if f.get('keywords') else '')
             flags = []
@@ -592,12 +602,16 @@ def main():
     ap.add_argument('--packs', default='big')
     ap.add_argument('--jobs', type=int, default=os.cpu_count() or 4)
     ap.add_argument('--knock', choices=['blank', 'basic'], default='blank')
+    ap.add_argument('--pieces', default='', help='the ladders\' candidates narrowed to these component ids')
+    ap.add_argument('--modules', default='', help='the module ladder narrowed to these module ids')
     ap.add_argument('--verbose', action='store_true', help='plan: print each variant\'s runner arguments')
     opts = ap.parse_args()
     opts.parts = [x.strip() for x in opts.parts.split(',') if x.strip()]
     opts.benches = [x.strip() for x in opts.benches.split(',') if x.strip()]
     opts.tiers = [int(x) for x in opts.tiers.split(',') if x.strip()]
     opts.policies = [x.strip() for x in opts.policies.split(',') if x.strip()]
+    opts.pieces = [x.strip() for x in opts.pieces.split(',') if x.strip()]
+    opts.modules = [x.strip() for x in opts.modules.split(',') if x.strip()]
     db = Content()
     if opts.command == 'plan':
         errs = check(db, opts)
