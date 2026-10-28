@@ -266,7 +266,11 @@ line), since no number read since 22 October was read on the content as it now s
    the Railgun 10 to 8, the Coriolis 3 to 4, tier one's rolled vanillas to 2-6, the Howitzer
    Splash 1, the Ram Frame and the Rangefinder hull +8 (the Clydesdale bench: the Frame 0.4 rounds off its
    row, the Rangefinder 0.1 until back ranks come; a nine-entry die dilutes its slot three to one
-   and never reaches its heat knee); every landed delta read again at 200 seeds. Open in section 12: the Chain's rework (the Arc Fault waits on it) and
+   and never reaches its heat knee); every landed delta read again at 200 seeds (the Railgun
+   at 8 1.5 rounds off the car's row against 2.0 at 10, under the Knuckles and the Meteor and
+   above the Thermal Ray; the Coriolis at 4 at tier two's floor; the rolled guns at 2-6 the
+   half point meant; the Howitzer with Splash 1 a tier-one shell at tier two's kill time; the
+   Frame at +8 a third of a round, the Rangefinder nothing until back ranks). Open in section 12: the Chain's rework (the Arc Fault waits on it) and
    whether heat below 6 should bite (the maxima or the overheat's cost). Next: a persona that
    shields and vents before the overheat and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once

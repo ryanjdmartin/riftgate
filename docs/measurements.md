@@ -2632,3 +2632,61 @@ Read:
   reading on the few back ranks today's fights field. Both land at +8, the module its text, and
   the Rangefinder earns its keep once the fresh start puts back ranks in more fights (the area
   row's own note on the column keywords).
+
+## 28 October, the pricing pass's fills at 200 seeds
+
+**The landed deltas read again** (`tools/pricing_run.py run land200car --seeds 200 --parts ladders
+--benches prairie_dog --pieces ...` and `run land200clyde --seeds 200 --parts modules --benches
+clydesdale --modules ram_frame,artillery_rangefinder`, the content as the fills left it; the
+pricing row's rule that a delta a number lands on is read again at 200 seeds): the six moved
+pieces in the Prairie Dog's slot of Wainwright & Sutler's row, and the two modules at +8 on the
+Clydesdale in the same row, against that row as stocked after the fills, which carries the
+Howitzer at 2-6 with Splash 1 in the Clydesdale's stock. The sixteen big fights but the finale,
+greedy, 200 seeds a cell: 16 variants, about 53 minutes on four cores. A band, not a
+direction: a row mean at 200 seeds carries about a point and a half of win rate and a twentieth
+of a round.
+
+The row as stocked after the fills, beside its 30-seed read before them: 5.8 rounds and 21% hull
+(94.8% won) against 6.1 and 24% (93.5%), the Howitzer's Splash 1 in the Clydesdale's stock a
+third of a round off the row by itself.
+
+| Piece | Before, 30 seeds (its number; rounds off stock, hull, share) | After, 200 seeds (its number; rounds off stock, hull, share, peak, overheats) |
+|---|---|---|
+| Overclocked Railgun | 10, heat 8, Breach; -2.0 r, -11%, 16% | 8, heat 8, Breach; -1.5 r, -8%, 15%, 104%, 0.58 (hot) |
+| Coriolis Accelerator | 3, heat 1, a point a missing five; -1.0 r, -5%, 16% | 4; -1.1 r, -5%, 17%, 31%, 0.10 |
+| Howitzer | 2-5, heat 1, plain; -0.5 r, -4%, 24% (Splash 1 as a what-if -0.9) | 2-6, Splash 1; -0.8 r, -4%, 26%, 32%, 0.07 |
+| Slugthrower | 2-5, heat 1; -0.6 r, -3%, 17% | 2-6; -0.6 r, -3%, 17%, 33%, 0.13 |
+| Plasma Arquebus | 2-4, heat 2; -0.4 r, -2%, 16% | 2-6; -0.6 r, -3%, 17%, 37%, 0.13 |
+| Shotfire Rack | 2-4, heat 2; -0.4 r, -3%, 17% (the 27th) | 2-6; -0.6 r, -3%, 17%, 37%, 0.11 |
+
+The two modules at +8, fitted to the Clydesdale alone, against the same row, beside their 30-seed
+read on the Clydesdale bench before the fills:
+
+| Module | Before, 30 seeds (rounds off stock, hull, win) | After, 200 seeds (rounds off stock, hull, win) |
+|---|---|---|
+| Ram Frame, hull +8, a point on its Direct blows at the front | -0.4 r, -5%, +3.3 | -0.3 r, -3%, +2.1 |
+| Artillery Rangefinder, hull +8, a point on its Indirect blows at the back | -0.1 r, -2%, +1.5 | -0.0 r, -2%, +1.0 |
+
+Read:
+
+- **The Railgun at 8 sits where tier one's top should.** 1.5 rounds off the row against 2.0 at
+  10, still hot (the peak 104%, 0.58 overheats a fight), now under the Gravity Knuckles (1.9)
+  and the Meteor Artillery (1.8) and above the Thermal Ray (1.3) and the Transonic Rifle (1.2),
+  the two hot flat guns of its own tier: about 7 vanilla points on the ladder's curve, tier
+  three's floor rather than a point past it.
+- **The Coriolis at 4 reaches tier two's floor.** 1.1 rounds off, beside the Flak Cannon (1.2)
+  and the Stoker (1.3), where its 3 read 1.0 and sat under the Transonic; the lift bought a
+  twentieth of a round at 200 seeds, the 30-seed read of its 3 having been a tenth generous.
+- **The rolled vanillas' lift is the half point it was meant to be.** At 2-6 the Slugthrower,
+  the Arquebus and the Shotfire Rack read 0.6 rounds off alike (0.4 to 0.6 before), a tenth
+  above the tier-zero Carbine's 0.6 on the old row and level with the Maxigun; a rolled gun
+  still reads a third of a point under its mean (4 reads about 3.6), as the ladder said.
+- **The Howitzer with Splash 1 at 2-6 reads 0.8 rounds off**, a tier-one shell at tier two's kill
+  time (the Flak Cannon's 1.2, the Tesla's 1.4 above it; the Enfilade's 1.0 beside it), as the
+  what-if of the 28th said at 0.9 on the old row: the chip Ryan named, priced.
+- **The modules at +8 are their text.** The Ram Frame takes a third of a round and three points
+  of hull off the row on the Clydesdale's strikes, a tier-two module's worth and no longer the
+  universal pick (+24 took 0.8 rounds and 7 to 9 points off the car on the 27th); the
+  Rangefinder at the same line takes nothing off the rounds and two points of hull, its
+  back-rank rule waiting on the fresh start's back ranks, and until then it is the hull it
+  carries. The pair's read on a Direct kit against an Indirect one is the catalogue line's.
