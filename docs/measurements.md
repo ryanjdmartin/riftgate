@@ -2824,3 +2824,73 @@ Read:
   one's formations, with their one back-rank foe type each, so there it is the hull it carries;
   tier three's formations field three, the ladder's tier cells its next read. The pair's read on
   a Direct kit against an Indirect one is the catalogue line's.
+
+## 28 October, the Indirect bench on the ladder's tier cells
+
+**The Rangefinder and the Indirect pieces on the tiered formations** (`tools/pricing_run.py run
+tiers28 --parts ladders,modules --benches clydesdale --pieces ... --modules
+artillery_rangefinder,ram_frame --packs tiers`, the merged head with the ladder and the pass's
+fills; the driver reads the spawn lists by tier since this run): the Clydesdale's Howitzer slot
+in Wainwright & Sutler's row against the eight tiered formations alone (the Meadow's, the
+Waste's, the Marsh's and the Peak's at tier two and at tier three), where the back rank is a
+tier's weight: tier one's formations field one back-rank foe type each, tier two's one, tier
+three's three (the Goblin Captain, the Mandrake and the Alraune in the Meadow; the Basilisk and
+the Gorgon; the Lich, the Spectre and the Wraith; the Wyvern and the Red Dragon). Ten guns and
+the two modules at +8, greedy at 30 seeds: 16 variants, 3,840 fights, 15 minutes. A
+direction, and Ryan's correction of the evening: the fresh start is complete and has its ranks,
+so the Rangefinder's read waits on nothing but the cells it is read on.
+
+The four team rows as stocked on the eight tiered formations (the win rate, the rounds of the
+fights won, the hull lost, the peak heat, the overheats and the dice held a fight):
+
+| Row | Win | Rounds | Hull | Peak | Over | Held | Spends |
+|---|---|---|---|---|---|---|---|
+| the default team | 68.3 | 6.9 | 52% | 115% | 1.17 | 0.71 | Bullion Fragmenter 13%, Pinion Driver 13%, Chainsaw Claw 13%, Transonic Rifle 8%, Howitzer 8%, Bleed Valve 8% |
+| Minerva Heavy Works team | 68.3 | 9.9 | 63% | 59% | 1.09 | 0.16 | Slugthrower 13%, Canopy 13%, Bullion Fragmenter 12%, Chainsaw Claw 12%, Rivet Gun 11%, Twin Autoguns 10% |
+| Kestrel Dynamics team | 58.3 | 6.1 | 64% | 128% | 1.61 | 0.66 | Transonic Rifle 18%, Pinion Driver 15%, Bleed Valve 10%, Laser Carbine 10%, Twin Autoguns 9%, Overclocked Railgun 8% |
+| Wainwright & Sutler team | 28.8 | 9.5 | 90% | 48% | 0.60 | 0.20 | Twin Autoguns 18%, Airburst Shell 13%, Halo Shield 12%, Megataser Harpoon 9%, Flakshot Repeater 8%, Howitzer 8% |
+
+The Clydesdale's Howitzer slot on the tiered formations, each candidate against the row as
+stocked:
+
+| Tier | Candidate | Kind | Win | Rounds | Hull | Delta | Share | Peak | Over | Held | Flags |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Overclocked Railgun | direct 8, heat 8, breach | 30.0 | 9.0 | 88% | win +1.2, -0.5 r, -2% hull | 6% | 95% | 1.03 | 0.20 | hot |
+| 1 | Thermal Ray | direct 6, heat 6 | 27.9 | 9.3 | 89% | win -0.8, -0.2 r, -1% hull | 7% | 84% | 0.80 | 0.25 |  |
+| 1 | Enfilade Beam | direct 4, heat 2, penetrate 3 | 25.4 | 9.3 | 91% | win -3.3, -0.2 r, +1% hull | 16% | 54% | 0.59 | 0.19 |  |
+| 1 | Howitzer (stock) | indirect 2-6, heat 1, splash 1 | 28.8 | 9.5 | 90% | +0.0 r, +0% hull | 8% | 48% | 0.60 | 0.20 |  |
+| 1 | Shotfire Rack | indirect 2-6, heat 2 | 23.3 | 9.7 | 92% | win -5.4, +0.3 r, +2% hull | 7% | 52% | 0.57 | 0.19 |  |
+| 1 | Maxigun | direct 1-2 x3, heat 1 | 21.7 | 9.8 | 92% | win -7.1, +0.4 r, +2% hull | 15% | 47% | 0.54 | 0.20 |  |
+| 1 | Transonic Rifle | direct 5, heat 4 | 24.6 | 10.7 | 91% | win -4.2, +1.2 r, +1% hull | 7% | 69% | 0.67 | 0.23 |  |
+| 1 | Airburst Shell | indirect 1-2, heat 1, cleave 1 flak 1 | 18.8 | 9.3 | 94% | win -10.0, -0.1 r, +3% hull | 17% | 45% | 0.49 | 0.15 |  |
+| 1 | Incendiary Shells | indirect 1-3, heat 1, burn 2 | 19.2 | 9.8 | 94% | win -9.6, +0.3 r, +4% hull | 8% | 45% | 0.45 | 0.18 |  |
+| 2 | Meteor Artillery | indirect 5, heat 6, burn 3 | 26.2 | 8.9 | 90% | win -2.5, -0.6 r, +0% hull | 7% | 84% | 0.90 | 0.25 | hot, under tier 1 |
+
+The two modules at +8 on the Clydesdale alone, against the same row:
+
+| Tier | Module | Stats and text | Win | Rounds | Hull | Delta | Peak | Over |
+|---|---|---|---|---|---|---|---|---|
+| 2 | Ram Frame | hull +8; Its Direct blows aimed at the front rank deal 1 more. | 33.3 | 8.8 | 85% | win +4.6, -0.7 r, -5% hull | 48% | 0.68 |
+| 2 | Artillery Rangefinder | hull +8; Its Indirect blows aimed at the back rank deal 1 more. | 34.2 | 10.1 | 87% | win +5.4, +0.6 r, -3% hull | 49% | 0.78 |
+
+Read:
+
+- **The tiered formations are walls for the stock trios.** Wainwright & Sutler's row wins 29%
+  of them in 9.5 rounds for 90% of its hull, Kestrel's 58% at 128% peak heat and 1.6 overheats
+  a fight, Minerva's and the default team 68%: a tier-one kit against tier two's and tier
+  three's rank and file, which the ladder's own read of the 28th said (a fight that costs a
+  tier-one machine half its hull costs a tier three a third). A wall reads nothing about a
+  piece: the candidates' wins move 1 to 10 points on eight cells at 30 seeds, inside the band.
+- **The Rangefinder's rule needs a kit that can stand there.** On the wall the Rangefinder at
+  +8 reads as its hull (3 points kept) with the row half a round slower, the greedy spending
+  its Indirect guns at the back rank for the point rather than at the kill; the Ram Frame at
+  +8 reads 0.7 rounds and 5 points of hull off, its point on the Clydesdale's strikes at the
+  front. The pair's read by tier is the per-tier ladders' (the to-do): the tier's pieces and
+  modules on the tier's fights with a tier-matched kit, the endgame fours or a tier-three
+  trio, where the rows win and the rounds carry the read.
+- **The small shells fall off against bigger foes.** The Airburst Shell (1-2, Cleave 1 and Flak
+  1) and the Incendiary Shells (1-3, Burn 2) lose 10 points of wins against the Howitzer's
+  stock on these cells, where on tier one's they read beside it: a 1 or 2 with a rider kills
+  none of the ladder's rank and file, the kill-time test's arithmetic again (the area row).
+  The Transonic Rifle at heat 4 on the car's die runs 1.2 rounds slower on fights this long
+  (the peak 69%, 0.67 overheats), the one cell where heat 4 reads on a cold die.

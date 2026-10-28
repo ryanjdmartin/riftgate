@@ -295,8 +295,10 @@ line), since no number read since 22 October was read on the content as it now s
    at 8 1.5 rounds off the car's row against 2.0 at 10, under the Knuckles and the Meteor and
    above the Thermal Ray; the Coriolis at 4 at tier two's floor; the rolled guns at 2-6 the
    half point meant; the Howitzer with Splash 1 a tier-one shell at tier two's kill time; the
-   Frame at +8 a third of a round, the Rangefinder its hull on tier one's formations, read
-   again on the ladder's tier cells). Open in section 12: the Chain's rework (the Arc Fault waits on it) and
+   Frame at +8 a third of a round, the Rangefinder its hull on tier one's formations; the
+   ladder's tier-two and tier-three formations are walls for the stock trios, Wainwright &
+   Sutler's row winning 29% of them, so the Rangefinder's rule is the per-tier ladders' read
+   with a tier-matched kit). Open in section 12: the Chain's rework (the Arc Fault waits on it) and
    whether heat below 6 should bite (the maxima or the overheat's cost). Next: a persona that
    shields and vents before the overheat and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
