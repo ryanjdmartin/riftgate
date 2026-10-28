@@ -1,70 +1,333 @@
 {
-  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tiles the flattened ground paints; `bleed` is data for the map, not read yet), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained on the map. spawn lists the packs the rift sends through together (the domain's shape as it appears on the map); boss names the massive wildlife a boss unit unpacks into (the one powering the rift); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). map_kind is the generator's type the domain leans to (data, not read yet). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
-  "entries": [
-    {
-      "id": "meadow",
-      "name": "The Meadow",
-      "design": { "fantasy": "The first overworld: grass, round trees, a road that goes nowhere. The invasion's shallow end, and the first thing CARE ever classified. Dragon Quest's plains and Final Fantasy's, where the slime and the goblin live.", "signature": "Numbers that split and swarm. Dumb and many.", "answer": "Area damage, armour against volume, kill order." },
-      "bleed": "plains",
-      "map_kind": "steppe",
-      "reward_bias": "one_shot",
-      "spawn": [
-        { "foe": "goblin", "strength": 6 },
-        { "foe": "wolf", "strength": 3 },
-        { "foe": "gel", "strength": 4 },
-        { "foe": "mandragora", "strength": 2 }
-      ],
-      "boss": "treant",
-      "bench": ["warrior", "martial_artist"],
-      "flavour": "Gate order one: if it is green and it is coming at you, it is not grass."
-    },
-    {
-      "id": "waste",
-      "name": "The Waste",
-      "design": { "fantasy": "Desert and badlands: sand, dunes, bleached bones, and cacti in rows all facing the same way. The genre's fixed-damage country, where the needles ignore your armour and the thieves take what you have.", "signature": "Fixed damage that no shield answers, and theft of what you have.", "answer": "Hull and tempo over shields; redundancy on the die against theft." },
-      "bleed": "sand",
-      "map_kind": "badlands",
-      "reward_bias": "face_modifier",
-      "spawn": [
-        { "foe": "needler", "strength": 5 },
-        { "foe": "antlion", "strength": 2 },
-        { "foe": "cockatrice", "strength": 2 }
-      ],
-      "boss": "sandworm",
-      "bench": ["thief", "lancer"],
-      "flavour": "Field manual, appendix K: the cactus has never been seen to move. Do not take your eyes off the cactus."
-    },
-    {
-      "id": "marsh",
-      "name": "The Marsh",
-      "design": { "fantasy": "Swamp, graveyard, the dungeon: dead trees, tombstones, the poison swamp's purple. The genre's undead, in rusted ornate plate, with the healer who heals them standing behind.", "signature": "Hard to keep down: they regrow, get back up and are called again.", "answer": "Kill order and reach (the healer behind), burst that beats regrow." },
-      "bleed": "marsh",
-      "map_kind": "flooded",
-      "reward_bias": "one_shot",
-      "spawn": [
-        { "foe": "revenant", "strength": 6 },
-        { "foe": "zombie_knight", "strength": 2 },
-        { "foe": "ghost", "strength": 3 }
-      ],
-      "boss": "bone_dragon",
-      "bench": ["white_mage", "augur"],
-      "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
-    },
-    {
-      "id": "peak",
-      "name": "The Peak",
-      "design": { "fantasy": "Volcano and mountain, the fire cave: lava, black rock, the orange. The genre's bombs and drakes, furious rather than evil, and the mage who throws fire for a living.", "signature": "Hard hits on a telegraph, and heat.", "answer": "Shields for the telegraph, cooling, a lure onto a cold machine." },
-      "bleed": "lava",
-      "map_kind": "rubble",
-      "reward_bias": "face_modifier",
-      "spawn": [
-        { "foe": "bomb", "strength": 4 },
-        { "foe": "salamander", "strength": 3 },
-        { "foe": "drake", "strength": 2 }
-      ],
-      "boss": "magma_golem",
-      "bench": ["black_mage", "summoner"],
-      "flavour": "Recruitment poster: THEY BROUGHT FIRE. WE BROUGHT BIGGER FIRE."
-    }
-  ]
+ "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tiles the flattened ground paints; `bleed` is data for the map, not read yet), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained on the map. spawn lists the packs the rift sends through together (the domain's shape as it appears on the map), one list a tier keyed \"1\" to \"3\" (every domain a \"1\"; a tier with none takes the highest under it), the battle's tier choosing, a boss's escort included; boss names the massive wildlife a boss unit unpacks into (the one powering the rift); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). map_kind is the generator's type the domain leans to (data, not read yet). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
+ "entries": [
+  {
+   "id": "meadow",
+   "name": "The Meadow",
+   "design": {
+    "fantasy": "The first overworld: grass, round trees, a road that goes nowhere. The invasion's shallow end, and the first thing CARE ever classified. Dragon Quest's plains and Final Fantasy's, where the slime and the goblin live.",
+    "signature": "Numbers that split and swarm. Dumb and many.",
+    "answer": "Area damage, armour against volume, kill order."
+   },
+   "bleed": "plains",
+   "map_kind": "steppe",
+   "reward_bias": "one_shot",
+   "spawn": {
+    "1": [
+     {
+      "foe": "goblin",
+      "strength": 6
+     },
+     {
+      "foe": "wolf",
+      "strength": 3
+     },
+     {
+      "foe": "gel",
+      "strength": 4
+     },
+     {
+      "foe": "mandragora",
+      "strength": 2
+     }
+    ],
+    "2": [
+     {
+      "foe": "goblin",
+      "strength": 3
+     },
+     {
+      "foe": "goblin_guard",
+      "strength": 4
+     },
+     {
+      "foe": "warg",
+      "strength": 4
+     },
+     {
+      "foe": "gel",
+      "strength": 3
+     },
+     {
+      "foe": "bubble_gel",
+      "strength": 2
+     },
+     {
+      "foe": "mandrake",
+      "strength": 3
+     }
+    ],
+    "3": [
+     {
+      "foe": "goblin_guard",
+      "strength": 4
+     },
+     {
+      "foe": "goblin_captain",
+      "strength": 4
+     },
+     {
+      "foe": "alpha_warg",
+      "strength": 4
+     },
+     {
+      "foe": "bubble_gel",
+      "strength": 2
+     },
+     {
+      "foe": "metal_gel",
+      "strength": 3
+     },
+     {
+      "foe": "mandrake",
+      "strength": 2
+     },
+     {
+      "foe": "alraune",
+      "strength": 3
+     }
+    ]
+   },
+   "boss": "treant",
+   "bench": [
+    "warrior",
+    "martial_artist"
+   ],
+   "flavour": "Gate order one: if it is green and it is coming at you, it is not grass."
+  },
+  {
+   "id": "waste",
+   "name": "The Waste",
+   "design": {
+    "fantasy": "Desert and badlands: sand, dunes, bleached bones, and cacti in rows all facing the same way. The genre's fixed-damage country, where the needles ignore your armour and the thieves take what you have.",
+    "signature": "Fixed damage that no shield answers, and theft of what you have.",
+    "answer": "Hull and tempo over shields; redundancy on the die against theft."
+   },
+   "bleed": "sand",
+   "map_kind": "badlands",
+   "reward_bias": "face_modifier",
+   "spawn": {
+    "1": [
+     {
+      "foe": "needler",
+      "strength": 5
+     },
+     {
+      "foe": "antlion",
+      "strength": 2
+     },
+     {
+      "foe": "cockatrice",
+      "strength": 2
+     }
+    ],
+    "2": [
+     {
+      "foe": "needler",
+      "strength": 3
+     },
+     {
+      "foe": "barbed_needler",
+      "strength": 3
+     },
+     {
+      "foe": "pit_antlion",
+      "strength": 2
+     },
+     {
+      "foe": "basilisk",
+      "strength": 2
+     }
+    ],
+    "3": [
+     {
+      "foe": "barbed_needler",
+      "strength": 3
+     },
+     {
+      "foe": "great_needler",
+      "strength": 2
+     },
+     {
+      "foe": "pit_antlion",
+      "strength": 1
+     },
+     {
+      "foe": "antlion_queen",
+      "strength": 1
+     },
+     {
+      "foe": "basilisk",
+      "strength": 1
+     },
+     {
+      "foe": "gorgon",
+      "strength": 2
+     }
+    ]
+   },
+   "boss": "sandworm",
+   "bench": [
+    "thief",
+    "lancer"
+   ],
+   "flavour": "Field manual, appendix K: the cactus has never been seen to move. Do not take your eyes off the cactus."
+  },
+  {
+   "id": "marsh",
+   "name": "The Marsh",
+   "design": {
+    "fantasy": "Swamp, graveyard, the dungeon: dead trees, tombstones, the poison swamp's purple. The genre's undead, in rusted ornate plate, with the healer who heals them standing behind.",
+    "signature": "Hard to keep down: they regrow, get back up and are called again.",
+    "answer": "Kill order and reach (the healer behind), burst that beats regrow."
+   },
+   "bleed": "marsh",
+   "map_kind": "flooded",
+   "reward_bias": "one_shot",
+   "spawn": {
+    "1": [
+     {
+      "foe": "revenant",
+      "strength": 6
+     },
+     {
+      "foe": "zombie_knight",
+      "strength": 2
+     },
+     {
+      "foe": "ghost",
+      "strength": 3
+     }
+    ],
+    "2": [
+     {
+      "foe": "revenant",
+      "strength": 3
+     },
+     {
+      "foe": "wight",
+      "strength": 4
+     },
+     {
+      "foe": "death_knight",
+      "strength": 2
+     },
+     {
+      "foe": "spectre",
+      "strength": 3
+     }
+    ],
+    "3": [
+     {
+      "foe": "wight",
+      "strength": 4
+     },
+     {
+      "foe": "lich",
+      "strength": 1
+     },
+     {
+      "foe": "death_knight",
+      "strength": 1
+     },
+     {
+      "foe": "dread_knight",
+      "strength": 2
+     },
+     {
+      "foe": "spectre",
+      "strength": 2
+     },
+     {
+      "foe": "wraith",
+      "strength": 2
+     }
+    ]
+   },
+   "boss": "bone_dragon",
+   "bench": [
+    "white_mage",
+    "augur"
+   ],
+   "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
+  },
+  {
+   "id": "peak",
+   "name": "The Peak",
+   "design": {
+    "fantasy": "Volcano and mountain, the fire cave: lava, black rock, the orange. The genre's bombs and drakes, furious rather than evil, and the mage who throws fire for a living.",
+    "signature": "Hard hits on a telegraph, and heat.",
+    "answer": "Shields for the telegraph, cooling, a lure onto a cold machine."
+   },
+   "bleed": "lava",
+   "map_kind": "rubble",
+   "reward_bias": "face_modifier",
+   "spawn": {
+    "1": [
+     {
+      "foe": "bomb",
+      "strength": 4
+     },
+     {
+      "foe": "salamander",
+      "strength": 3
+     },
+     {
+      "foe": "drake",
+      "strength": 2
+     }
+    ],
+    "2": [
+     {
+      "foe": "bomb",
+      "strength": 2
+     },
+     {
+      "foe": "grenade",
+      "strength": 3
+     },
+     {
+      "foe": "fire_lizard",
+      "strength": 3
+     },
+     {
+      "foe": "wyvern",
+      "strength": 2
+     }
+    ],
+    "3": [
+     {
+      "foe": "grenade",
+      "strength": 2
+     },
+     {
+      "foe": "balloon",
+      "strength": 2
+     },
+     {
+      "foe": "fire_lizard",
+      "strength": 2
+     },
+     {
+      "foe": "magma_lizard",
+      "strength": 2
+     },
+     {
+      "foe": "wyvern",
+      "strength": 1
+     },
+     {
+      "foe": "red_dragon",
+      "strength": 2
+     }
+    ]
+   },
+   "boss": "magma_golem",
+   "bench": [
+    "black_mage",
+    "summoner"
+   ],
+   "flavour": "Recruitment poster: THEY BROUGHT FIRE. WE BROUGHT BIGGER FIRE."
+  }
+ ]
 }

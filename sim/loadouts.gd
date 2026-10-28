@@ -84,7 +84,7 @@ static func sample_packs(field: Battlefield, count: int, rng: RandomNumberGenera
 		if not BattleMap.passable(field.map.terrain[h], []):
 			continue
 		var fac: String = factions[rng.randi_range(0, factions.size() - 1)]
-		var table := db.spawn_table(fac)
+		var table := db.spawn_table(fac, 1)
 		if table.is_empty():
 			continue
 		var entry: Array = table[rng.randi_range(0, table.size() - 1)]

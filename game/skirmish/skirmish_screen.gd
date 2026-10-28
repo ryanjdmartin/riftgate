@@ -321,7 +321,7 @@ static func _default_skirmish() -> Skirmish:
 	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
 	# count (heroes included), each its own pack: to see any sprite in the fight.
 	var fac := db.default_faction()
-	var table: Array = db.spawn_table(fac)
+	var table: Array = db.spawn_table(fac, 1)   # the standalone fight is tier one
 	var uid := 1
 	var foes_env := OS.get_environment("RIFTGATE_FOES")
 	if not foes_env.is_empty():

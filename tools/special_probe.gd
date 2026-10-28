@@ -107,7 +107,7 @@ func _starters() -> Array:
 func _cells() -> Array:
 	var out: Array = []
 	for fac in db.factions.keys():
-		var spawn := db.spawn_table(str(fac))
+		var spawn := db.spawn_table(str(fac), 1)
 		if not spawn.is_empty():
 			var mix: Array = []
 			for e in spawn:

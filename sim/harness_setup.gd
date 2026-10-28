@@ -43,7 +43,7 @@ static func defaults(content: ContentDB = null) -> HarnessSetup:
 ## Fill the enemy side from a faction: its spawn list as the packs, its boss.
 func use_faction(faction_id: String) -> void:
 	packs = []
-	for e in db.spawn_table(faction_id):
+	for e in db.spawn_table(faction_id, 1):   # the harness fights tier one
 		packs.append([str(e[0]), int(e[1])])
 	var all := db.bosses_of(faction_id)
 	boss = all[0] if not all.is_empty() else ""

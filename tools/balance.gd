@@ -357,7 +357,7 @@ func _build_matrix() -> void:
 			continue
 		rows.append({"id": "team:" + "+".join(team_ids), "name": "Team (%s)" % ", ".join(_names(team_ids)), "chassis": team_ids})
 	for fac in db.factions.keys():
-		for entry in db.spawn_table(fac):
+		for entry in db.spawn_table(fac, 1):
 			var pid := "%s x%d" % [entry[0], entry[1]]
 			if _has_pack(pid) or not db.foes.has(entry[0]):
 				continue
@@ -395,7 +395,7 @@ func _build_matrix() -> void:
 	for fac in db.factions.keys():
 		var mix: Array = []
 		var names: Array[String] = []
-		for entry in db.spawn_table(fac):
+		for entry in db.spawn_table(fac, 1):
 			if db.foes.has(entry[0]):
 				mix.append([str(entry[0]), int(entry[1])])
 				names.append("%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), int(entry[1])])
@@ -409,7 +409,7 @@ func _build_matrix() -> void:
 		var line: Array = []
 		var called: Array[String] = []
 		for fac in db.factions.keys():
-			var spawn := db.spawn_table(fac)
+			var spawn := db.spawn_table(fac, 1)
 			var bench := db.bench_of(str(fac))
 			for h in bench:
 				var mix: Array = [[h, 1]]

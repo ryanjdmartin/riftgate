@@ -247,9 +247,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
   the round as the lure would leave it (the Siphon's heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
-  capstone 12; an amp a point a stack; foe HP 2 to 6 for rank and file, 30 to 40 massive, 12
+  capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
+  tier three, 30 to 40 massive, 12
   to 24 heroes, 80 to 100 for the bosses' slate (not built; the four massive foes standing in
-  as bosses are 32 to 40); a foe's blow 2 to 8 (the rank and file's mostly 2 or 3), a massive
+  as bosses are 32 to 40); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
+  and to 10 at tier three, a massive
   foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16, field recharge 4 to 8 (about half
   the shield a map turn out of fights), base armour 0 to 2 by role, timed armour to 4 or 5; heat
@@ -779,8 +781,8 @@ a stat.
   ruins slow. Walker: water slow. Wheeled: open fast; rough, ruins and water slow. Hover:
   water fast; rough and ruins slow. Flyer: everything normal. Machines never enter or cross
   another unit's hex.
-- **Setup**: up to four machines on the row before the gate; the lead domain's spawn list as
-  packs three to five rows below the rift; the boss one row below the rift.
+- **Setup**: up to four machines on the row before the gate; the lead domain's spawn list at the
+  battle's tier as packs three to five rows below the rift; the boss one row below the rift.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's ring. Each machine has one action (the Dingo two): move, in pieces if
   wanted, then may fight; a fight ends the action however it ends. A selected machine lights
@@ -840,11 +842,12 @@ a stat.
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
-  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's units
-  of the tier (a unit's tier is content's, one by default), else of the highest tier under it,
-  round robin in spawn order and never massive; a named escort is kept. The rank and file never
-  scale in place: a tier's units are their own, each with its numbers and its name; the spawn
-  lists do not read a unit's tier yet.
+  three. An escort it does not name (a final's wildlife, the tier's more) is the foes of its
+  domain's spawn list at the battle's tier, round robin in spawn order and never massive; a
+  named escort is kept. The rank and file never scale in place: a tier's units are their own,
+  each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
+  a twist). A domain's spawn list is one a tier, the battle's tier choosing it and a guest's by
+  the same tier; a tier with none takes the highest under it.
 - **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
   pack of the spawn cycle by the rift. Packs never escalate.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
@@ -932,7 +935,7 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
   fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
-- **A formation** is a domain's whole spawn list in one fight; the lead's and the guest's take
+- **A formation** is a domain's whole spawn list at the battle's tier in one fight; the lead's and the guest's take
   turns. **An elite**'s slot holds the lead's formation alone until the elites land (the
   bench hero that stood in went on 27 October).
 - **A fight** takes the squad's machines still standing, their damage carried and their heat

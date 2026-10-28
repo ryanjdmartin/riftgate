@@ -2597,7 +2597,7 @@ func test_a_shield_cost_is_paid_first_and_locks_the_entry_while_the_shield_is_sh
 	s3.add_foes([_ghoul(500, 10)])
 	s3.begin()
 	s3.start_round()
-	assert_true(s3.equipment_targets_for(s3.mechs[0], vent).is_empty(), "a vent short of its shield cost lands nowhere")
+	assert_true(s3.machine_targets_for(s3.mechs[0], vent).is_empty(), "a vent short of its shield cost lands nowhere")
 	assert_false(s3.can_spend(0), "and cannot be spent")
 	m3.shield = 5
 	assert_true(s3.assign(0, null), "with the shield to pay, it is spent")

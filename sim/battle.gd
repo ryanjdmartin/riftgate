@@ -122,7 +122,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
-	var lead_table: Array = db.spawn_table(faction)
+	var lead_table: Array = db.spawn_table(faction, tier + 1)   # the battle's tier's list (28 October), tier counting 0 to 2
 	if not formation.is_empty():
 		lead_table = []
 		for e in formation:
@@ -133,7 +133,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		# The guest joins the rift's cycle only, each entry carrying its own faction; the
 		# formation placed below is the lead's alone (found 6 October: placing it from the
 		# mixed table doubled the field).
-		var visitors: Array = db.spawn_table(guest)
+		var visitors: Array = db.spawn_table(guest, tier + 1)
 		var mixed: Array = []
 		for k in range(maxi(lead_table.size(), visitors.size())):
 			if k < lead_table.size():
