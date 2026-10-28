@@ -165,14 +165,15 @@ defeat when every machine is wrecked. There is no round limit.
 Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
-   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints:
-   from its firer, what heat fired adds (Vents all) and the hopper's loads; from that foe
-   alone, the hull it is missing and the stacks a consumer eats on it.
+   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints
+   from its firer: what heat fired adds (Vents all) and the hopper's loads.
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank).
-3. The foe's own: its adds (Flak), then its multiplies (Shocked doubles it), then its armour
-   comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's halved
-   1); a debuff's blow stays nothing. Its riders land on every foe struck.
+3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
+   blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
+   (Shocked doubles it); then its armour comes off. A weapon's blow takes them whatever it
+   deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing. Its riders land
+   on every foe struck.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -344,14 +345,15 @@ them with a star): **Vents all** fires the whole heat gauge into the shot, addin
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
 then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
 rule, no word of its own): each foe it kills gives its owner a stack of Overcharged. **Missing HP** adds its bonus for every
-step of HP the foe struck is missing, each foe its own, both numbers on the entry (the Coriolis
-Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
+step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
+modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
+Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
 Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as the
 die is spent and before the spend's own riders, so a spend never opens its own gate; the die
 held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
-lands. Suppress alone carries a gate. **Consumes**: each blow eats every stack of the status
-the entry names on the foe it strikes and deals that foe a point more a stack eaten, before the
-multiplies, so an area consumer spikes only the foes carrying the status; the die over the foe
+lands. Suppress alone carries a gate. **Consumes**: the first blow on each foe it strikes eats every stack of the status
+the entry names on that foe and deals it a point more a stack eaten, after the attacker's
+modifiers and before the foe's own, so an area consumer spikes only the foes carrying the status; the die over the foe
 showing the number with the stacks in; one blow on each foe (no strikes past one); a mine laid
 from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
@@ -674,8 +676,9 @@ and every one of them that fell is a kill).
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
-  entry prints included (an area's number, heat fired, hopper loads, and each foe's own missing
-  HP and stacks consumed), the buffs added once after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
+  entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
+  added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
+  it) after those, undoubled (the Kite's), and may grant a cooldown to every weapon and equipment its machine
   aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
   each strikes twice as often, each
   roll, what the entry prints included, divided between the two strikes, rounded down and

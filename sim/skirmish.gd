@@ -435,11 +435,12 @@ static func split_share(roll: int, split: int) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
 		return [0, 0]
-	var add := heat_bonus(ms, f) + f.missing_bonus(target) + f.consume_bonus(target) + hopper_bonus(ms.unit, f)
+	var add := heat_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
+	var own := (f.missing_bonus(target) + f.consume_bonus(target)) if not f.is_debuff() else 0   # the foe's own reads, flat after it (the blow's order)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
 		# A split entry (the Skua's) shows a strike's share of the roll, rounded down, never below one.
-		var d := int(Effects.attack(ms.unit, f, split_share(v + add, f.split), 0, target)["damage"])
+		var d := int(Effects.attack(ms.unit, f, split_share(v + add, f.split), 0, target)["damage"]) + own
 		if target != null:
 			if not f.is_debuff():
 				d += Effects.damage_taken_add(target, ms.unit)
@@ -2161,7 +2162,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# What each foe the spend may strike reads for itself, as the die is spent and before any
 	# strike lands (the blow's order, Ryan, 28 October; the mechanics audit's 19): the hull it is
 	# missing (the Coriolis's), and the stacks a consumer eats on it (the Backdraft Charge's), each
-	# that foe's alone, a point a stack on the first roll's blows; its stacks go as its first blow lands.
+	# that foe's alone. Both land on that foe's blow after the firer's pipeline, flat, beside its
+	# Flak (Ryan's chain: the struck unit's reads after the firer's multiplies, so the Kite's double
+	# and the sixth shot never touch them); the eaten stacks a point each on its first blow, and
+	# they go as that blow lands.
 	var reads := {}
 	for foe in judged:
 		reads[foe] = [f.missing_bonus(foe), Effects.stacks_of(foe, f.consumes) if not f.consumes.is_empty() else 0]
@@ -2196,15 +2200,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			roll = f.power
 			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
 				roll = rng.randi_range(f.power, f.power_max)
-			rolled_total += roll + own + _foe_reads(f, reads, aimed, s < split)
+			rolled_total += roll + own
 		var heat := f.heat if s == 0 else 0
 		# The blow's order (Ryan, 28 October), the strike's own foe (the target, or a spray's pick)
-		# first: the roll and what the entry prints (its firer's: the heat Vents all fired, the
-		# hopper's loads; that foe's own: the hull it is missing, the stacks it eats), a split's
-		# share of it (rounded down, never below one), then the firer's pipeline, every live
-		# modifier's adds, multiplies and floors in that order, its conditions read on that foe.
-		var modded := Effects.attack(ms.unit, f, split_share(roll + own + _foe_reads(f, reads, aimed, s < split), split), heat, aimed)
-		var dmg: int = modded["damage"]
+		# first: the roll and what the entry prints from its firer (the heat Vents all fired, the
+		# hopper's loads), a split's share of it (rounded down, never below one), then the firer's
+		# pipeline, every live modifier's adds, multiplies and floors in that order, its conditions
+		# read on that foe; then that foe's own reads, flat (_foe_reads).
+		var modded := Effects.attack(ms.unit, f, split_share(roll + own, split), heat, aimed)
+		var dmg: int = modded["damage"] + _foe_reads(f, reads, aimed, s == 0)
 		if s == 0:
 			heat_total += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
 		vent += modded["vent"]
@@ -2216,7 +2220,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		# strike, never this one's other blows.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == aimed else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own + _foe_reads(f, reads, foe, s < split), split)
+			blows[foe] = dmg if foe == aimed else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split) + _foe_reads(f, reads, foe, s == 0)
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
@@ -2610,17 +2614,20 @@ static func area_number(f: Face, shape: int) -> int:
 	return 0
 
 
-## What one foe reads for itself in a spend (the blow's order): the hull it is missing, and on
-## the first roll's blows the stacks a consumer eats on it, a point each (per_consumed). A foe
-## the spend did not judge (none in practice) is read now.
-static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first_roll: bool) -> int:
+## What one foe reads for itself in a spend (the blow's order): the hull it is missing, on
+## every blow, and on its first blow the stacks a consumer eats on it, a point each
+## (per_consumed); flat, after the firer's pipeline, beside its Flak. A debuff's blow stays
+## nothing. A foe the spend did not judge (none in practice) is read now.
+static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int:
+	if f.is_debuff():
+		return 0
 	var r: Array = reads.get(foe, [f.missing_bonus(foe), 0])
-	return int(r[0]) + (int(r[1]) * f.per_consumed if first_roll else 0)
+	return int(r[0]) + (int(r[1]) * f.per_consumed if first else 0)
 
 
-## One strike's blow on a foe past its own, before the foe's statuses and armour: its shape's
-## number with `prints` (what the entry prints from its firer, and that foe's own reads), a
-## split's share of it, through the firer's pipeline with its conditions judged on that foe.
+## One strike's blow on a foe past its own, before the foe's own reads, statuses and armour:
+## its shape's number with `prints` (what the entry prints from its firer), a split's share of
+## it, through the firer's pipeline with its conditions judged on that foe.
 func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int) -> int:
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe)["damage"])
 

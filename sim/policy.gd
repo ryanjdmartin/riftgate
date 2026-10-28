@@ -1005,16 +1005,18 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		for q in [0.0, 0.25, 0.5, 0.75, 1.0]:
 			rolls.append(f.power + int(roundf(span * q)))
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
-	fired += f.missing_bonus(target)   # and what the target's lost hull adds
-	fired += f.consume_bonus(target)   # and the stacks a consumer eats (the Backdraft Charge's)
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
+	# The foe's own reads (the blow's order, 28 October): its missing hull on every blow, and the
+	# stacks a consumer eats on it on the first, flat after the firer's pipeline, as the resolver lands them.
+	var own := f.missing_bonus(target) if not f.is_debuff() else 0   # every blow's
+	var eats := f.consume_bonus(target) if not f.is_debuff() else 0   # the first blow's alone
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	var n := float(maxi(1, f.strikes)) if strikes_on < 0.0 else strikes_on
 	var damaging := not f.is_debuff()
 	for v in rolls:
 		var dmg: int = Skirmish.split_share(v + fired, f.split)   # a split's share, rounded down, never below one
-		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])   # the firer's modifiers, judged on this foe
+		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"]) + own   # the firer's modifiers, judged on this foe, then its own reads
 		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
 		# Flak adds to every blow of a weapon, a strike of 0 included. Then its armour
 		# comes off every blow, so a braced foe is worth less to a volume weapon.
@@ -1023,7 +1025,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		if not aimed:
 			out.append([float(later) * n, w])
 			continue
-		var first := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, damaging) if target != null else dmg) - arm)
+		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
 	return out
 
