@@ -21,10 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 721 tests, 66,033 checks, green on `ccr-7d865127-wr1ko2` with main merged (28 October,
-  the numbered area and the blow's order from main, the Kestrel models' second notes and the
-  glow-parts test tightened to the rig's own rule on the branch; before it 721 tests, 65,988
-  checks, green on main's head), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 721 tests, 66,041 checks, green on main's head (28 October, the Kestrel models' eight
+  rounds of notes merged as a fast-forward onto the numbered area and the blow's order, the
+  glow-parts test tightened to the rig's own rule), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -47,8 +46,11 @@ the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth 
 status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
 (the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
 changes to the skirmish (each merge commit says how it was resolved); the suite ran green on
-the result (the Tests line) and main took this branch as a fast-forward the same day. Every
-branch named here is fully merged, to delete from the desk machine or GitHub along with
+the result (the Tests line) and main took this branch as a fast-forward the same day. The
+models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
+rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
+28th and main took it as a fast-forward that evening on his word ("clean up and merge into
+main"). Every branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
 `ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
