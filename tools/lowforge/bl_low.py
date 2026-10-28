@@ -327,6 +327,12 @@ class Tiles:
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
+        elif kind == "spark":
+            # St. Elmo's fire banked down: the corona at a third of its light, for the port's
+            # sparks that rest dim and crackle lit (Ryan, 28 October: the lit corona read as a
+            # white block, and lighting it further showed nothing).
+            img = 0.32 * np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
         elif kind == "corona":
             # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue-white,
             # near uniform like the lit tile, so a small part reads the same wherever the world
