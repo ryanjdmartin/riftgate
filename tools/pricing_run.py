@@ -442,6 +442,21 @@ def fmt(x, d=1):
     return '-' if x is None or (isinstance(x, float) and math.isnan(x)) else ('%.*f' % (d, x))
 
 
+FACE_PLAIN = ('kind', 'reach', 'power', 'power_max', 'strikes', 'heat', 'keywords')
+
+
+def face_text(f):
+    """An attack face in one line: the number (its range, its strikes), the heat, the keywords with
+    their numbers, and every other field the face carries (a Coriolis's point a missing five, a
+    Stoker's self_burn), so a piece that is no vanilla never reads as one."""
+    num = '%s%s' % (f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '')
+    if int(f.get('strikes', 1) or 1) > 1:
+        num += ' x%d' % f['strikes']
+    kws = [kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', [])]
+    extra = ['%s %s' % (k, f[k]) for k in f if k not in FACE_PLAIN and k not in f.get('keywords', [])]
+    return '%s, heat %s%s' % (num, f.get('heat', 0), (', ' + ' '.join(kws + extra)) if kws or extra else '')
+
+
 def summarise(db, opts):
     root = os.path.join(OUT, opts.name)
     plan_path = os.path.join(root, 'plan.json')
@@ -534,12 +549,7 @@ def summarise(db, opts):
             f = e['face']
             kind = f.get('kind', 'attack')
             if kind == 'attack':
-                kws = []
-                for kw in f.get('keywords', []):
-                    kws.append(kw + (' %s' % f[kw] if kw in ('cleave', 'penetrate', 'splash', 'burn', 'flak', 'cryo') and kw in f else ''))
-                kind = '%s %s%s, heat %s' % ('debuff' if int(f.get('power', 0) or 0) == 0 else f.get('reach', ''), f.get('power', 0),
-                                             ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '',
-                                             f.get('heat', 0)) + (', ' + ' '.join(kws) if kws else '')
+                kind = '%s %s' % ('debuff' if int(f.get('power', 0) or 0) == 0 else f.get('reach', ''), face_text(f))
             else:
                 kind = '%s %s' % (kind, f.get('power', '')) + (', ' + ' '.join(f.get('keywords', [])) if f.get('keywords') else '')
             flags = []
@@ -634,12 +644,8 @@ def summarise(db, opts):
             L.append('|---|---|---|---|---|---|')
             for v in sorted(lad, key=lambda v: reads[v['id']]['rounds']):
                 r = reads[v['id']]; e = db.components[v['piece']]; f = e['face']
-                kws = ' '.join(kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', []))
-                num = '%s%s' % (f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '')
-                if int(f.get('strikes', 1) or 1) > 1:
-                    num += ' x%d' % f['strikes']
-                L.append('| %s | %s, heat %s%s | %+.1f | %s | %.0f%% | %.0f%% |' % (e['name'], num, f.get('heat', 0), (', ' + kws) if kws else '',
-                                                                               r['rounds'] - s['rounds'], points(r['rounds'] - s['rounds']), r['share'].get(v['piece'], 0), r['peak']))
+                L.append('| %s | %s | %+.1f | %s | %.0f%% | %.0f%% |' % (e['name'], face_text(f), r['rounds'] - s['rounds'],
+                                                                       points(r['rounds'] - s['rounds']), r['share'].get(v['piece'], 0), r['peak']))
             L.append('')
     # the heat ladder
     heat = [v for v in vs if v['part'] == 'heat']

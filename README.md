@@ -93,8 +93,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   endgame fours up to tier two and runs them through the loop driver; `pricing_run.py` is the
   pricing run's driver (every stocked piece by knock-out, every slottable component and every
   module through the same hardpoint of five benches on the team rows, the guns' heat by steps,
-  each variant a balance-runner process with `--set` or `--fit`, summarised into
-  `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
+  and the vanilla ladder, a flat heatless gun at every number and across the heat classes, so
+  every piece reads in vanilla points; each variant a balance-runner process with `--set` or
+  `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes it into the pricing proposal; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
@@ -285,6 +286,9 @@ python3 tools/endgame_fours.py endgame30
 python3 tools/pricing_run.py plan
 python3 tools/pricing_run.py run prices
 python3 tools/pricing_run.py summarise prices
+# the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
+# cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
 # the synergy map: who sets and who reads every status and resource, from content (--write puts it into the proposal)
 python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every

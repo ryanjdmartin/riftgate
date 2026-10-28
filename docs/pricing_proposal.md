@@ -12,16 +12,23 @@ bible rows, fills through `tools/stock_fills.py` and the to-do's catalogue line,
 retires (git keeps it). Everything here is Ryan's to move; the numbers are placeholders until
 they are measured.
 
-**Status, 27 October**: the method and its driver are built (`tools/pricing_run.py`) and the
-run was made the same day in the cloud session (393 variants, 188,640 fights, about three hours
-on four cores; the run and its tables in `docs/measurements.md`, 27 October, the pricing run);
-what it says is section 2, the heat read section 3, and the structure for Ryan's marks section
-6. Reviewed 28 October against what landed since the run (section 0): the numbered area and
-the blow's order on main, the ladder's design goals on the fresh start's branch and Ryan's
-direction on component tiers; the area carriers and the modules that read them rerun on the
-merged head (`docs/measurements.md`, 28 October). The synergy map (section 4) is generated from
-content by `tools/synergy_map.py` and is current; the holes (section 5) are Claude's read of it,
-hole E measured.
+**Status, 28 October**: the method and its driver are built (`tools/pricing_run.py`) and the
+run was made on the 27th in the cloud session (393 variants, 188,640 fights, about three hours
+on four cores; the run and its tables in `docs/measurements.md`, 27 October, the pricing run),
+reviewed on the 28th against what landed since it (section 0), the area carriers rerun on the
+merged head (`docs/measurements.md`, 28 October). The same day Ryan set the frame the marks are
+read in: the metric is a piece's effectiveness and never its number, since the keywords carry
+prices too ("the real metric is average EFFECTIVENESS. A tier 2 shield that shields only 4 but
+grants 4 overcharge is a strong component. So is a 1 damage splash 1 weapon that applies 4
+flak"; "It's not a precise science, we have to best guess"), gauged from vanillas at each tier
+the way a card game prices its vanilla creatures by cost, heatless first and heat priced from
+there ("empirically estimate what each point of heat buys in terms of effectiveness 'points'"),
+a rolled gun read as its mean ("at the asymptote, a rolled gun is just a heatless flat gun
+anyway. Rolled damage is flavour"). The vanilla ladder was run that evening on the cold bench
+and the hot one (section 2, item 9; `docs/measurements.md`, 28 October, the vanilla ladder):
+what it says is section 2, the heat read section 3, the structure for Ryan's marks section 6.
+The synergy map (section 4) is generated from content by `tools/synergy_map.py` and is current;
+the holes (section 5) are Claude's read of it, hole E measured.
 
 **Read first**: the bible's balance rows (section 11: "Every stat and passive has a price,
 measured"; "A component is balanced against the components of its tier; a chassis alone is a
@@ -62,9 +69,13 @@ Two decisions of the 28th bear on this proposal directly:
 
 So the run's read that tier two buys no kill time over tier one is no longer a question of
 whether tiers are a power ladder for guns: it is the measurement of the step Ryan wants and the
-content lacks. Section 2's structure for the marks is rewritten on that (the tier steps, the
-equipment ramp first), section 1's benches become the tiers' fights once the ladder lands, and
-the area carriers and the modules that read every blow were rerun on the merged head (below).
+content lacks. Later the same day Ryan set the frame the step is read in (the status above; the
+bible's effectiveness row): a piece's effectiveness in vanilla points, never its number, so
+section 2's structure for the marks is written on that (the scale, the floors from the vanilla
+ladder, heat from the knee, a rolled gun its mean, the keywords in vanilla points, the
+equipment ramp on a bot that spends it), section 1's benches become the tiers' fights once the
+ladder lands, and the area carriers and the modules that read every blow were rerun on the
+merged head (below).
 What stands untouched by the changes: the heat read (section 3), the dead equipment and the
 setups under the greedy, the three verdicts on the bot, the knock-outs as directions, and the
 holes but G (sharper) and H (the Purge).
@@ -91,6 +102,7 @@ wall for every trio, and a wall reads nothing), greedy play at 30 seeds a cell:
 | Tier ladders | every slottable component (48: eight basics, 24 of tier one, 14 of tier two, two of tier three) in the same hardpoint of the same machine, five benches | 240 | 115,200 |
 | The module ladder | every module fitted alone to the bench machine, the same five benches | 85 | 40,800 |
 | The heat ladder | every attack a step hotter, the cold basics alone at 1, and cooling 0, on the four team rows | 12 | 5,760 |
+| The vanilla ladder (28 October, by name: `--parts vanilla,vanillaheat`) | a flat heatless gun of each shape (the Rivet Gun; the Shotfire Rack made flat) in the bench hardpoint at every number from 2 to 10, and at 3, 5 and 7 across heat 0 to 8: the scale every piece is read on, and the knee where a kit starts paying for heat; on the cold bench and the hot one | 80 | 38,400 |
 
 The benches (`BENCHES` in the driver), each a role the roster's pieces are priced on, the
 candidate going into the slot in place of the stock piece there:
@@ -102,6 +114,25 @@ candidate going into the slot in place of the stock piece there:
 | The Puffin, in Kestrel's team (with the Kite and the Buzzard) | its fourth, the Laser Carbine | a light escort beside two hot kits: equipment, ally vents and ally shields read here |
 | The Buzzard, in Kestrel's team | its third, the Arc Fault Cannon | a hot flyer (maximum 14, cooling 1, a Railgun of 8): a gun's heat is priced where heat bites |
 | The Nemesis, beside the Ammit and the Puffin | its first, the Plasma Arquebus | the Arsenal's bruiser beside the Ammit: the Volatile pieces, the Thurible and the hull-damage loops read here |
+
+**The scale** (Ryan, 28 October): a piece is priced by its effectiveness, what it does to the
+fight, never by its number, since a keyword carries a price as a number does; and the baseline
+is the vanilla, a plain number with no keyword, the way a card game's vanilla creature at each
+cost sets the price everything else at that cost is read against. The driver's fifth part is
+that ladder (`--parts vanilla,vanillaheat`): a flat heatless gun reshaped from a basic no bench
+row stocks (the Rivet Gun for the Direct, the Shotfire Rack made flat for the Indirect) in the
+bench hardpoint at every number from 2 to 10, so the row's other dice stay as they are and the
+curve is the number's alone. Every real piece is then read in **vanilla points**, the heatless
+flat number that takes the same rounds off the row as the piece does: its points less its own
+number is what its keywords and its shape buy, or cost, on that bench. The same vanilla at 3, 5
+and 7 across heat 0 to 8 finds the knee, the heat at which a kit starts paying, and past it the
+price of a heat class in vanilla points, the empirical heat price Ryan asked for in place of
+the floors the proposal carried ("entirely arbitrary"). A rolled gun is read as its mean, and
+the run checks that on the five rolled guns beside the vanillas. A heatless vanilla is a real
+piece in the pool ("Sometimes you just need a big stick to make the build reliable") and sits
+low on the scale ("otherwise the game flattens to nothing"): a tier's vanilla is the floor of
+its tier's band, and the tier's keyword pieces and hot pieces sit above it by what they offer
+and what they pay.
 
 The reads, and what each moves (the decision rules the summary's flags stand for):
 
@@ -131,6 +162,12 @@ The reads, and what each moves (the decision rules the summary's flags stand for
    the modules row forbids. The two "bad text" modules (the Exotic-matter Shell, the Tithe
    Coupling) are read on the bench where their text is a key (the Nemesis's) as well as where
    it is a price.
+7. **Vanilla points.** A piece whose points sit under its own number carries keywords that
+   cost it on this bench (a setup with no reader there, a shape the fight does not reach); one
+   whose points sit above its tier's band carries the keyword that is underpriced; a rolled gun
+   whose points sit away from its mean shows the threshold the mean hides (a kill that needs
+   the top of the range). The vanilla's own curve says what each number buys in kill time, so
+   the tiers' floors are set where the steps between them read.
 
 **Once the ladder lands** (section 0), the benches read by tier: a tier's candidates on the
 tier's fights (the runner's "meadow formation tier 2" and "tier 3" cells and the recolours'
@@ -160,6 +197,7 @@ python3 tools/pricing_run.py plan                      # the variants and their 
 python3 tools/pricing_run.py run prices                # about two and a half hours on four cores; resumable
 python3 tools/pricing_run.py summarise prices          # build/pricing/prices/summary.md, a partial run included
 python3 tools/pricing_run.py run heat --parts heat --policies random,greedy   # the heat ladder alone, with the decision read
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker   # the vanilla ladder on the cold bench and the hot one, the pieces named read in vanilla points; about 45 minutes
 ```
 
 ## 2. What the run says
