@@ -396,9 +396,10 @@ Waste's breach by hull and tempo, the Meadow's volume by area and armour, the Ma
 by kill order, burst and the Purge); Ryan's read, "enemy damage is more skewed towards a domain
 identity, and HP is more of a general ramp tool", with two refinements agreed, the Meadow's
 ramp count rather than HP and armour the wall's number whoever fields it. Thirteen base types,
-two recolours each, every twist a mechanic the engine runs. The spec is the build brief's,
-`docs/briefs/foes_ladder.md`: every entry, every number, the spawn lists by tier, the sprites'
-hues and the engine's readers, so nothing of it is written twice.
+two recolours each, every twist a mechanic the engine runs. Built 28 October from its build
+brief, retired the same day (`git show 26c54c7:docs/briefs/foes_ladder.md`: every entry,
+every number, the spawn lists by tier, the sprites' hues and the engine's readers); the
+content, `tools/recolour.py` and the bible's rows hold it now.
 
 ### 10. The enemy's buffs and the player's Purge (28 October)
 
@@ -414,7 +415,8 @@ the Kindled, Armoured and Getting Back Up the foes carry already; never Numbed, 
 a delayed heal is a countdown, so it needs no buff. The player's Purge is a keyword on any
 entry aimed at a foe, on a capstone's blow (the jellyfish's EMP) or alone on a debuff piece
 at tier two, so the die asks "strip it or shoot". The semantics, the specials, the piece and
-the bot's valuations are the brief's (`docs/briefs/foes_ladder.md`, sections B and C).
+the bot's valuations were the brief's (sections B and C, `git show 26c54c7:docs/briefs/foes_ladder.md`),
+built 28 October.
 
 ### 11. The three verbs, decided (28 October)
 
@@ -427,9 +429,10 @@ Suppressed (the question to the status build, the Marsh's). Specials only, teleg
 a one-round window with an answer on the die (the Ward, an ally's Cleanse, the caster's
 death, the timing of a spend). Leans: the Waste purges, the Marsh cleanses, the Meadow's
 shaman silences, the Peak burns; a boss anywhere may carry any. The rows are the bible's
-section 5 and section 9; the engine work is the brief's (`docs/briefs/foes_ladder.md`, section
-A); the first carriers are the ladder's (the Spectre's hallow; a silence and a purge carrier
-wait on the shaman and the Waste's casters, Ryan's marks).
+section 5 and section 9; the engine work was the brief's (section A, `git show
+26c54c7:docs/briefs/foes_ladder.md`), built 28 October; the first carriers are the ladder's
+(the Spectre's and the Wraith's hallow; a silence and a purge carrier wait on the shaman and
+the Waste's casters, Ryan's marks).
 
 ## A battle, as proposed
 

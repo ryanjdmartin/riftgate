@@ -188,8 +188,10 @@ perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabu
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
 
-# the balance report: every chassis alone and the starting team against every pack, against
-# each faction's whole formation in one fight and against the party (each bench hero's final with
+# the balance report: every chassis alone and the starting team against every pack (tier one's lists,
+# and since 28 October a cell for every recolour at its tier's strength, "goblin_guard x4"), against
+# each faction's whole formation in one fight at each tier ("meadow formation" tier one's, "meadow
+# formation tier 2" and "tier 3" the ladder's) and against the party (each bench hero's final with
 # its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting

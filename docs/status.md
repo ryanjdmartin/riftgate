@@ -21,9 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 721 tests, 66,041 checks, green on main's head (28 October, the Kestrel models' eight
-  rounds of notes merged as a fast-forward onto the numbered area and the blow's order, the
-  glow-parts test tightened to the rig's own rule), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 737 tests, 66,572 checks, green on `ccr-6073bda9-p34o8q` with the ladder (28 October;
+  main's head 721 and 66,041 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -50,7 +49,10 @@ the result (the Tests line) and main took this branch as a fast-forward the same
 models session's `ccr-7d865127-wr1ko2` (the Kestrel models' second round through Ryan's eight
 rounds of notes, the hangar's stamped fetches and the glow-parts guard) took main twice on the
 28th and main took it as a fast-forward that evening on his word ("clean up and merge into
-main"). Every branch named here is fully merged, to delete from the desk machine or GitHub along with
+main"). `ccr-6073bda9-p34o8q` took main the same evening and carries the ladder's build on top
+(the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites and
+the read at 30 seeds), unmerged, for main to take. Every other branch named here is fully
+merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
 `ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
@@ -221,10 +223,9 @@ The tasks are the to-do's; this is the index of what waits.
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
   (`docs/heroes_proposal.md`).
-- The planned foe moves; the three verbs decided 28 October (silence mutes keywords, purge
-  takes what a die face bought and sleeps a form's grant until the player's turn, the foe's
-  cleanse takes the team's marks off its own) built with the ladder, their carriers once Ryan
-  marks it (section 12); Purge as our keyword with its widened reach (the proposal's section 10).
+- The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
+  silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
+  Purge on a capstone's blow (its chassis session).
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
@@ -247,13 +248,12 @@ line), since no number read since 22 October was read on the content as it now s
    threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together. Its first part is ready to build
-   on Ryan's go of 28 October, with no open question inside its scope:
-   `docs/briefs/foes_ladder.md`, the ladder of recolours by tier (HP the general ramp, the
-   damage's shape each domain's identity), the three verbs, the enemy's buffs crossing for the
-   player's Purge and the matrix's cells by tier; every number, name and rule is in the brief,
-   and what it fences off is asked, never guessed. The rest of the fresh start waits on his
-   marks on the proposal's questions 1 to 13.
+   reports and measures the fights a team fights together. Its first part, the ladder, built
+   28 October on `ccr-6073bda9-p34o8q` (the recolours by tier, the three verbs, the enemy's
+   buffs and the player's Purge; read at 30 seeds, `docs/measurements.md`): next its 200-seed
+   matrix on the desk machine (the to-do) and Ryan's word on the six recolours' move counts
+   (section 12). The rest of the fresh start waits on his marks on the proposal's questions
+   1 to 13.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
