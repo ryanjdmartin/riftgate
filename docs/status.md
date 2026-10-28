@@ -48,8 +48,10 @@ changes to the skirmish (each merge commit says how it was resolved); the suite 
 the result (the Tests line) and main took this branch as a fast-forward the same day. Every
 branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
-`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and `ccr-24cae16e-ryhv1v`, whose
+work of 28 October (the numbered area, the blow's order, the drum's shape) main took as fast-forwards
+the same day, so it is fully merged too (a cloud session may not delete one). `ccr-7d865127-wr1ko2`
+has moved on since, the Kestrel models session's, its own to merge. Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
