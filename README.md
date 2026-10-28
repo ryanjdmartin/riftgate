@@ -96,7 +96,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   and the vanilla ladder, a flat heatless gun at every number and across the heat classes, so
   every piece reads in vanilla points; each variant a balance-runner process with `--set` or
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
-  status and resource, from content, and writes it into the pricing proposal; `turn_loop.py` models the
+  status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
@@ -139,7 +139,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
   curve and the fronts (`curve_proposal.md`), the mechanics audit of 25 October
   (`mechanics_audit.md`) and the pricing run with the roster's synergy holes
-  (`pricing_proposal.md`, 27 October), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
+  `synergy_map.md`, who sets and who reads every status and resource, generated from content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
@@ -276,20 +277,21 @@ python3 tools/stock_loop.py compare base blows
 # every hardpoint and module slot filled up to tier two, checked against the content and run through the loop driver
 # (random and greedy at 30 seeds, no campaign unless --campaign; stock_loop run options pass through)
 python3 tools/endgame_fours.py endgame30
-# the pricing run (27 October, docs/pricing_proposal.md): every stocked piece knocked out of its team row, every slottable
-# component and every module through the same hardpoint of five benches (BENCHES in the script) on the team rows, and
+# the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
+# component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
 # every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
 # against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
 # as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
-# --packs all, --policies random,greedy, --knock basic (the basic of the piece's kind in place of an empty hardpoint)
+# --packs all, --policies random,greedy, --knock basic (the basic of the piece's kind in place of an empty hardpoint),
+# --pieces and --modules to narrow the ladders, --set path=json on every variant (a module's line, a rule's what-if)
 python3 tools/pricing_run.py plan
 python3 tools/pricing_run.py run prices
 python3 tools/pricing_run.py summarise prices
 # the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
 # cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
 python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
-# the synergy map: who sets and who reads every status and resource, from content (--write puts it into the proposal)
+# the synergy map: who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
 python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
 # battle won, each rift keeping the tier it opened at; per way of choosing the front, the cities fallen, the fronts

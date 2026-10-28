@@ -59,10 +59,10 @@ main"). Live beside main, each landing by merging main in: `ccr-6073bda9-p34o8q`
 took main the evening of the 28th and carries the ladder's build on top (the three verbs, the
 foes' buffs, the player's Purge, the recolours by tier, their sprites and the read at 30 seeds;
 its own status says so), and `ccr-c04908be-3r43xf` (27 and 28 October: the pricing run's method
-and driver, the run made and read, `docs/measurements.md`, the synergy map and the roster's
-synergy holes, `docs/pricing_proposal.md`, the session-start hook that fetches Godot for cloud
-sessions, and main merged in on the 28th with the proposal reviewed against the numbered area,
-the blow's order and the ladder's design goals; docs, Python tools and the hook). Every other
+and driver, the runs made and read, `docs/measurements.md`, the synergy map (`docs/synergy_map.md`)
+and the roster's synergy holes, the session-start hook that fetches Godot for cloud sessions,
+main merged in on the 28th, and the pricing pass on Ryan's go the same evening, the bible's
+pricing row and the fills; docs, Python tools, the hook and the content's numbers). Every other
 branch named here is fully merged, to delete from the desk machine or GitHub along with
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
@@ -94,8 +94,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
-  follows from its brief, and the Storm Petrel's once Ryan marks the pricing proposal (its run read 27 October, Claude's
-  lean the guns' heat standing); the last two, the Magpie (a working name, a support engine)
+  follows from its brief, and the Storm Petrel's is free since the pricing pass landed (28 October, the guns' heat
+  standing); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -229,8 +229,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Giant Petrel's engine and the Storm Petrel's, the latter once Ryan marks the pricing
-  proposal (its run read 27 October, the guns' heat standing by Claude's lean; their briefs).
+- The Giant Petrel's engine and the Storm Petrel's, the latter free since the pricing pass
+  landed on 28 October with the guns' heat standing (their briefs).
 - The elites on Ryan's definition of 23 and 24 October, a guaranteed miniboss event mid-battle
   (the bible's tiers row), with the bosses' slate
   (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
@@ -249,29 +249,28 @@ line), since no number read since 22 October was read on the content as it now s
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
-2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
-   the hitter in hand (the to-do); the Lammergeier's stock. The run was made and read on 27
-   October (`tools/pricing_run.py`, 393 variants, 188,640 fights in a cloud session;
-   `docs/measurements.md`): every row wins these cells, so it reads on rounds and hull; tier
-   one's two outlier guns (the Arc Fault Cannon, the Overclocked Railgun) sit above tier two's
-   band, the Ram Frame is the universal module on its +24 hull line, equipment and the setups
-   price not at all under the greedy on these packs, the Probe, the Condenser and the Ammit's
-   loop are verdicts on the bot, and the heat classes hold (a class up moves the hot kits alone).
-   Reviewed 28 October (the proposal's section 0) against the numbered area, the blow's order
-   and the ladder's design goals, the area carriers rerun on the merged head; then reframed on
-   Ryan's words of the same day (the bible's effectiveness row): a piece is priced by its
-   effectiveness in vanilla points and never its number, the baseline a vanilla at each tier
-   (real pieces, the big stick, low on the scale), heat priced up from the heatless vanilla by
-   the knee where a kit starts paying, a rolled gun its mean (the heat row's rolled-range price
-   retired). The vanilla ladder ran that evening on the cold bench and the hot one (124
-   variants, `docs/measurements.md`, 28 October): a vanilla point buys a third of a round up to 6 and a seventh past it on the car and the shape is free there; the hot bench reads keywords and no number; heat 2 and 4 are free on a cold die, heat 6 a point, heat 8 two, and heat on a hot die costs hull; a rolled gun reads a third of a point under its mean and a strikes gun a point under its total; Flak 2 two points, Burn 2 two and a third, the Chain nearly three, the Shock one and a half; the floors leaned at 2, 3.5, 5 and 7, half a round a tier. Next: Ryan's
-   marks on `docs/pricing_proposal.md`'s section 6 (the scale and the floors, the heat
-   allowance by class, the keywords' prices), then the planner and a persona that shields and
-   vents before the overheat for the equipment ramp he wants first, the ladders per tier on the
-   fresh start's formations and recolours once the ladder lands, a warm third bench for the
-   knee and an Indirect bench for the Rangefinder, the 200-seed reads on the deltas the marks
-   name, then the fills through `tools/stock_fills.py`. The roster's synergy
-   holes are the proposal's section 5, from the generated map (`tools/synergy_map.py`).
+2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass, landed
+   28 October on Ryan's go ("I trust your leans for this pass"; the bible's pricing row, section
+   11; the runs in `docs/measurements.md`, 27 and 28 October). The run of the 27th read every
+   row winning its cells, tier one's two outlier guns above tier two's band, the Ram Frame the
+   universal module on +24 hull, equipment and the setups priced not at all under the greedy,
+   the Probe, the Condenser and the Ammit's loop verdicts on the bot; reviewed on the 28th
+   against the numbered area, the blow's order and the ladder's design goals; reframed on
+   Ryan's words of the 28th (the effectiveness row: a piece priced by its effectiveness in
+   vanilla points, a vanilla at each tier the baseline, heat priced up from the heatless
+   vanilla, a rolled gun its mean). The vanilla ladder read a point a third of a round up to
+   6 and a seventh past it on the car, the hot bench reading keywords and no number, heat 1, 2
+   and 4 free on a cold die and 6 and 8 a point and two, a hot die paying in hull, a rolled gun
+   a third of a point under its mean, and the keywords' prices (Flak 2 two, Burn 2 two and a
+   third, the Chain nearly three, the Shock one and a half). On his go, the floors 2, 3.5, 5 and 7 and the fills:
+   the Railgun 10 to 8, the Coriolis 3 to 4, tier one's rolled vanillas to 2-6, the Howitzer
+   Splash 1, the Ram Frame and the Rangefinder hull +8, read on the Clydesdale bench first; every landed
+   delta read again at 200 seeds. Open in section 12: the Chain's rework (the Arc Fault waits on it) and
+   whether heat below 6 should bite (the maxima or the overheat's cost). Next: a persona that
+   shields and vents before the overheat and the planner on the equipment ladders, for the
+   equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
+   the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
+   line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and

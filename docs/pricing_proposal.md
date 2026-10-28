@@ -320,8 +320,17 @@ mean; nothing lands before his marks, and a delta a number lands on is read agai
   which on the car is 0.1, 0.7, 1.2 and 1.7 rounds off, about half a round a tier, an even ramp
   in kill time rather than in points since the curve flattens past 6; today's tier one and two
   already sit on those floors (the rolled guns at 3, the keyword pieces at 5), and the pieces
-  off them are the questions: the Arc Fault at tier two's top, the Railgun at tier three's, the
-  Coriolis under tier two's floor, tier two's three setups under tier zero's. The alternative,
+  off them are the questions. The Arc Fault at tier two's top is the Chain as built, the kill
+  and repeat (section 12's rework, the ping, an on-hit striking a random foe for half, waits on
+  Kestrel's session): on the scale a ping of half on a 4 is about 5 to 5.5, a tier-two number,
+  so the Arc Fault keeps its 4 until the rework and is read again on it. The Railgun at tier
+  three's cannot move up a tier (a chassis stocks only below its own tier, and the Buzzard
+  stocks it), so its number comes down to 8, which keeps Breach and heat 8, leaves 10 and the
+  capstone 12 for tier three's finds, and still reads above the Thermal Ray. The Coriolis under
+  tier two's floor goes to 4. Tier one's rolled vanillas read as the tier-zero Carbine (3.0 to
+  3.2 against 3.1), so their means go to 4 (the Slugthrower, the Howitzer, the Arquebus and the
+  Shotfire Rack 2 to 6) and they read at the floor. Tier two's three setups stay under tier zero
+  until the bot's valuation (item 5). The alternative,
   2, 4, 6 and 8, steps 0.8, 0.7 and then 0.3 rounds, the last step lost to the knee on today's
   packs; on the tiered formations, with more hull to chew, the curve stretches right and that
   step returns, which is the tiered read's to say. "Fairly low": a floor is the least a tier's

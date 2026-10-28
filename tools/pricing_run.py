@@ -56,6 +56,7 @@ BENCHES = OrderedDict([
     ('puffin', ('puffin', 3, ['sparrowhawk', 'goshawk', 'puffin'])),              # a light escort's gun slot (the Laser Carbine) beside two hot kits, in Kestrel's team: equipment reads here
     ('goshawk', ('goshawk', 2, ['sparrowhawk', 'goshawk', 'puffin'])),            # a hot flyer's gun slot (the Arc Fault Cannon): a gun's heat is priced where heat bites
     ('nemesis', ('nemesis', 0, ['nemesis', 'ammit', 'puffin'])),                  # an Arsenal bruiser's slot (the Plasma Arquebus) beside the Ammit: the hull-damage loops read here
+    ('clydesdale', ('clydesdale', 4, ['clydesdale', 'prairie_dog', 'dingo'])),     # the warm nine-piece die's Howitzer slot: the Indirect bench (the Rangefinder, the shells) and the heat knee's warm check (28 October)
 ])
 # The vanilla ladder (Ryan, 28 October: vanillas exist in the pool, "sometimes you just need a
 # big stick"; the baseline is heatless, heat priced from it, a rolled gun its mean): a flat
@@ -258,8 +259,11 @@ def variants(db, opts):
 
 
 def runner_args(v, opts, packs):
+    extra = []
+    for s in getattr(opts, 'sets', []) or []:
+        extra += ['--set', s]
     return ['--seeds', str(opts.seeds), '--policies', ','.join(opts.policies), '--rows', row_id(v['row']),
-            '--team', ','.join(v['row']), '--packs', ','.join(packs)] + v['args']
+            '--team', ','.join(v['row']), '--packs', ','.join(packs)] + extra + v['args']
 
 
 # ------------------------------------------------------------------ the run
@@ -325,7 +329,8 @@ def run(db, opts):
     os.makedirs(root, exist_ok=True)
     vs = variants(db, opts)
     json.dump({'seeds': opts.seeds, 'policies': opts.policies, 'packs': packs, 'benches': {b: BENCHES[b] for b in BENCHES if b in opts.benches},
-               'variants': [{k: v[k] for k in v if k != 'args'} | {'args': v['args']} for v in vs], 'knock': opts.knock},
+               'variants': [{k: v[k] for k in v if k != 'args'} | {'args': v['args']} for v in vs], 'knock': opts.knock,
+               'sets': list(getattr(opts, 'sets', []) or [])},
               open(os.path.join(root, 'plan.json'), 'w', encoding='utf-8'), indent=1)
     todo = []
     for v in vs:
@@ -707,6 +712,8 @@ def main():
     ap.add_argument('--knock', choices=['blank', 'basic'], default='blank')
     ap.add_argument('--pieces', default='', help='the ladders\' candidates narrowed to these component ids')
     ap.add_argument('--modules', default='', help='the module ladder narrowed to these module ids')
+    ap.add_argument('--set', action='append', default=[], dest='sets', metavar='PATH=JSON',
+                    help='a content edit for every variant of the run, the runner\'s own --set (a module\'s line to read a bench on, a rule\'s what-if)')
     ap.add_argument('--verbose', action='store_true', help='plan: print each variant\'s runner arguments')
     opts = ap.parse_args()
     opts.parts = [x.strip() for x in opts.parts.split(',') if x.strip()]

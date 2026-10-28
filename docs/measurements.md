@@ -1988,7 +1988,7 @@ remains the lever on the trio's chain.
 
 ## 27 October, the pricing run
 
-**The pricing run's first pass** (`docs/pricing_proposal.md`, the method and its reads;
+**The pricing run's first pass** (the method and its reads in the proposal, retired 28 October into the bible's pricing row, `git show a89cfc6:docs/pricing_proposal.md`;
 `tools/pricing_run.py run prices`, the content and the engine as at main's `e59691d`, this
 branch adding tools and docs alone): 393 variants, each one balance-runner process on the
 records' four team rows as `--team` rows and on the Arsenal bench's row (the Nemesis, the Ammit,
@@ -2363,7 +2363,7 @@ Read:
 
 **The vanilla ladder** (`tools/pricing_run.py run vanilla28 --parts vanilla,vanillaheat,ladders
 --benches prairie_dog,goshawk --pieces ...`, the merged head of the 28th; the method in
-`docs/pricing_proposal.md`, section 1, the scale): Ryan's frame of the 28th, a piece priced by
+the scale, the bible's pricing row; the proposal's section 1 at `git show a89cfc6:docs/pricing_proposal.md`): Ryan's frame of the 28th, a piece priced by
 its effectiveness and never its number, the baseline a vanilla at each tier, heat priced up
 from the heatless vanilla, a rolled gun its mean. A flat heatless gun reshaped by `--set` from
 a basic no bench row stocks (the Rivet Gun for the Direct, the Shotfire Rack made flat for the
