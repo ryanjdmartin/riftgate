@@ -3458,28 +3458,36 @@ def skua(b):
     # and up off its hex, wings over at the top with the hands sweeping back, dives steeply
     # forward and down on its foe, the pods firing twice at the bottom, pulls up hard and
     # climbs away rolled over, the hands spreading to brake it back onto its hex.
-    # At the Kite's loop's scale (Ryan, 28 October, on the phone: a run of forty-odd units read
-    # as bobbing and swaying, never leaving its hex): it climbs a hex back and high, dives
-    # through its hex a full hex on, climbs out past it and arcs back over the top.
-    b.act("strafing_run", 6.2, {"wing_l": [(0.9, 0.0), (1.5, SW), (3.2, SW), (3.9, -8.0), (4.8, -8.0), (5.6, 0.0)],
-                                "wing_r": [(0.9, 0.0), (1.5, -SW), (3.2, -SW), (3.9, 8.0), (4.8, 8.0), (5.6, 0.0)]},
-          body=[(0.3, 0.0, 0.0, 0.0), (1.0, 0.0, -34.0, 26.0, 0.0, 24.0, 0.0), (1.6, 8.0, -24.0, 50.0, -12.0, -12.0, -42.0), (2.3, -2.0, 18.0, 22.0, 6.0, -62.0, -16.0),
-                (2.8, -8.0, 62.0, -12.0, 2.0, -36.0, 0.0), (3.2, -8.0, 92.0, -10.0, 0.0, 10.0, 26.0), (3.8, 4.0, 112.0, 22.0, -12.0, 44.0, 54.0), (4.5, 12.0, 76.0, 46.0, -40.0, 24.0, 40.0),
-                (5.2, 6.0, 26.0, 22.0, -20.0, 6.0, 12.0), (6.2, 0.0, 0.0, 0.0)],
-          glow=[(["pod_collar"], [(2.55, 0.0), (2.65, 18.0), (2.8, 1.0), (2.95, 18.0), (3.1, 1.0), (3.4, 0.0)]), (boosters, [(0.5, 0.0), (1.2, 9.0), (4.2, 9.0), (5.4, 0.0)])])
+    # The strafing run, on the map (its travel leaves the hex, as the Kite's circle does; Ryan,
+    # 28 October: the keyed run read as sudden changes of direction and a reverse back to its
+    # start, and a flown path never reverses): one banked circle beside its hex, climbing over
+    # the first third, the hands sweeping back as it rolls into a dive on the far side, the pods
+    # firing twice at the bottom, climbing out and sinking back onto its hex as the hands
+    # spread to brake.
+    run = _over_ground(_survey_circle(r=60.0, bank=42.0, vmax=130.0, rise=0.0), [(0.0, 0.0), (0.3, 34.0), (0.4, 34.0), (0.56, -10.0), (0.74, 18.0), (1.0, 0.0)])
+    at = lambda u: _time_at(run, u)
+    b.act("strafing_run", run[-1][0], {"wing_l": [(at(0.34), 0.0), (at(0.42), SW), (at(0.62), SW), (at(0.72), 0.0), (at(0.84), -8.0), (at(0.95), -8.0), (run[-1][0], 0.0)],
+                                       "wing_r": [(at(0.34), 0.0), (at(0.42), -SW), (at(0.62), -SW), (at(0.72), 0.0), (at(0.84), 8.0), (at(0.95), 8.0), (run[-1][0], 0.0)]},
+          body=run, places=("map",),
+          glow=[(["pod_collar"], [(at(0.5), 0.0), (at(0.53), 18.0), (at(0.56), 1.0), (at(0.59), 18.0), (at(0.62), 1.0), (at(0.68), 0.0)]),
+                (boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
     # The barrel roll, the Kite's, the hands spread (Ryan, 28 October: the wings stay extended
     # for a barrel roll): a dip and a kick to gather, once round on the fuselage and past, back
     # short of level and settled.
     b.act("barrel_roll", 3.2,
           body=_barrel_roll(t0=0.4, t1=1.6, over=28.0, duration=3.2, surge=8.0),
           glow=[(boosters, [(0.2, 0.0), (0.5, 8.0), (1.7, 8.0), (2.5, 0.0)])])
-    # Harrying: the jaeger's stoops, one wide to the left and one to the right, half swept,
-    # rolled far over into each with a burst from the pods at the bottom; a hex wide each way
-    # and a half hex down (the same note: bigger).
-    b.act("harry", 5.4, {"wing_l": [(0.4, 0.0), (0.9, 34.0), (1.7, 8.0), (2.7, 34.0), (3.6, 8.0), (4.6, 0.0)], "wing_r": [(0.4, 0.0), (0.9, -34.0), (1.7, -8.0), (2.7, -34.0), (3.6, -8.0), (4.6, 0.0)]},
-          body=[(0.4, 0.0, 0.0, 0.0), (1.0, -44.0, 24.0, -16.0, 24.0, -30.0, -64.0), (1.7, -56.0, 20.0, 8.0, 14.0, 18.0, -26.0), (2.2, -14.0, 4.0, 6.0, 0.0, 6.0, 0.0),
-                (2.8, 44.0, 24.0, -16.0, -24.0, -30.0, 64.0), (3.6, 56.0, 20.0, 8.0, -14.0, 18.0, 26.0), (4.3, 10.0, 4.0, 2.0, 0.0, 4.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
-          glow=[(["pod_collar"], [(0.9, 0.0), (1.0, 14.0), (1.2, 0.0), (2.7, 0.0), (2.8, 14.0), (3.0, 0.0)]), (boosters, [(0.4, 0.0), (0.8, 7.0), (3.7, 7.0), (4.6, 0.0)])])
+    # Harrying, on the map: the jaeger's stoops flown as a figure eight over its hex, a lobe to
+    # each side, each lobe lifting and then stooping at its far end with the hands half swept
+    # and a burst from the pods at the bottom, crossing its hex at speed between them.
+    eight = _over_ground(_figure_eight(radius=44.0, bank=-44.0, vmax=140.0, rise=0.0),
+                         [(0.0, 0.0), (0.13, 8.0), (0.25, -14.0), (0.37, 6.0), (0.5, 0.0), (0.63, 8.0), (0.75, -14.0), (0.87, 6.0), (1.0, 0.0)])
+    et = lambda u: _time_at(eight, u)
+    b.act("harry", eight[-1][0], {"wing_l": [(et(0.14), 0.0), (et(0.22), 34.0), (et(0.34), 8.0), (et(0.5), 0.0), (et(0.64), 0.0), (et(0.72), 34.0), (et(0.84), 8.0), (et(0.95), 0.0)],
+                                  "wing_r": [(et(0.14), 0.0), (et(0.22), -34.0), (et(0.34), -8.0), (et(0.5), 0.0), (et(0.64), 0.0), (et(0.72), -34.0), (et(0.84), -8.0), (et(0.95), 0.0)]},
+          body=eight, places=("map",),
+          glow=[(["pod_collar"], [(et(0.23), 0.0), (et(0.25), 14.0), (et(0.28), 0.0), (et(0.73), 0.0), (et(0.75), 14.0), (et(0.78), 0.0)]),
+                (boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
     # The loop, the Kite's, on the map only: it backs off, runs in with the hands swept and
     # pulls up through a full circle, over on its back and down, and brakes onto its hex a
     # whole turn on.
@@ -3920,14 +3928,13 @@ def lammergeier(b):
         _rings(b, [back, ring(lambda x: le(x) - 5.0, Z + 0.6, Z + 6.8), face], "steel.dark", "drone_pod", cap=False)
         _face(b, back, "steel.dark", "drone_pod")
         # The tubes are bored through the face: each mouth a hole in the face plate, flush with
-        # it and following its rake, the bore twelve deep in the hull's lighter plate so its far
-        # wall catches the light (Ryan, 28 October: a mouth on the face read as an end cap, not
+        # it and following its rake, the bore twelve deep and dark (Ryan, 28 October: a mouth on the face read as an end cap, not
         # a hole; before that, square ends through the raked face had clipped).
         mouths = []
         for k in range(2):
             x = s * (14.0 + 6.0 * k)
             rake = lambda v, x=x: le(v.x) - le(x)
-            _tube(b, (x, le(x) - 12.0, TZ), (x, le(x) + 0.6, TZ), 2.1, 1.6, 8, "steel.plate", "drone_tube", floor_material="amber.ember", floor_depth=0.8, rake=rake)
+            _tube(b, (x, le(x) - 12.0, TZ), (x, le(x) + 0.6, TZ), 2.1, 1.6, 8, "bore.dark", "drone_tube", floor_material="amber.ember", floor_depth=0.8, rake=rake)   # a dark bore (Ryan, 28 October: not the hull's light plate)
             mouths.append([(x + 2.1 * math.cos(i * math.pi / 4.0), le(x + 2.1 * math.cos(i * math.pi / 4.0)) + 0.6, TZ + 2.1 * math.sin(i * math.pi / 4.0)) for i in range(8)])
         _plate(b, face, mouths, "steel.dark", "drone_pod")
     # The Lorentz Contractor's dish on a dorsal pylon aft of the body's crown.
@@ -5230,6 +5237,49 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (round(t1 + 0.6, 3), 0.0, round(surge * 0.4, 3), 0.5, 0.0, 0.0, round(360.0 + over * 0.12, 3)),
             (round(t1 + 0.95, 3), 0.0, 0.0, 0.2, 0.0, 0.0, 360.0),
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
+
+
+def _over_ground(keys, profile, gain=1.4):
+    """A flown path (the circle's or the eight's keys) given a height along its way: `profile`
+    is (share of the way, height) control points, eased between, and the nose follows the
+    slope, `gain` times the true angle so a dive reads from above. Keys as the path's."""
+    pts = [list(k) for k in keys]
+    seg = [0.0]
+    for a, b in zip(pts, pts[1:]):
+        seg.append(seg[-1] + math.hypot(b[1] - a[1], b[2] - a[2]))
+    total = seg[-1] or 1.0
+
+    def height(u):
+        for (u0, h0), (u1, h1) in zip(profile, profile[1:]):
+            if u0 <= u <= u1:
+                t = (u - u0) / (u1 - u0) if u1 > u0 else 1.0
+                t = t * t * (3.0 - 2.0 * t)
+                return h0 + (h1 - h0) * t
+        return profile[-1][1] if u > profile[-1][0] else profile[0][1]
+
+    hs = [height(d / total) for d in seg]
+    out = []
+    for i, k in enumerate(pts):
+        k[3] = round(hs[i], 3)
+        lo, hi = max(0, i - 1), min(len(pts) - 1, i + 1)
+        ds = seg[hi] - seg[lo]
+        if ds > 1e-6:
+            k[5] = round(k[5] + gain * math.degrees(math.atan2(hs[hi] - hs[lo], ds)), 3)
+        out.append(tuple(k))
+    return out
+
+
+def _time_at(keys, u):
+    """The time a flown path reaches the share `u` of its way (by the length between keys)."""
+    seg = [0.0]
+    for a, b in zip(keys, keys[1:]):
+        seg.append(seg[-1] + math.hypot(b[1] - a[1], b[2] - a[2]))
+    want = u * seg[-1]
+    for i in range(1, len(keys)):
+        if seg[i] >= want:
+            f = (want - seg[i - 1]) / (seg[i] - seg[i - 1]) if seg[i] > seg[i - 1] else 1.0
+            return round(keys[i - 1][0] + (keys[i][0] - keys[i - 1][0]) * f, 3)
+    return keys[-1][0]
 
 
 def _survey_circle(r=66.0, bank=34.0, side=1.0, t0=0.3, vmax=110.0, rise=6.0, steps=72):
