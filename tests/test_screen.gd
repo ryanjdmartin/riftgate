@@ -199,6 +199,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var ms: Skirmish.MechState = s.sk.mechs[1]
 	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3, 5)
 	gun.burn = 2
+	gun.cleave = 2
 	gun.strikes = 2
 	gun.spray = true
 	gun.component = str(db.components.keys()[0])
@@ -218,7 +219,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -296,6 +297,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
 	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3, 5)
 	gun.burn = 2
+	gun.cleave = 2
 	gun.strikes = 2
 	gun.spray = true
 	gun.component = str(db.components.keys()[0])
@@ -304,7 +306,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}

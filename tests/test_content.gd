@@ -639,6 +639,7 @@ func test_breach_is_a_weapon_keyword_the_foes_share() -> void:
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["tier"] = 1
 	gun["face"]["keywords"] = ["breach"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	db.components["breacher"] = gun
 	var plate: Dictionary = db.components["halo_shield"].duplicate(true)
 	plate["tier"] = 1
@@ -802,6 +803,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	db.components["scrubber"] = scrubber
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["cleanse"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
@@ -906,12 +908,14 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 
 
 ## The gated stuns' fields (22 October): a gate maps a keyword the entry carries (Suppress
-## today) to a condition on the foe in hand; a consumer eats a foe status on one blow.
+## today) to a condition on the foe in hand; a consumer eats a foe status on one blow on each
+## foe it strikes, an area one each foe's own (the blow's order, 28 October).
 func test_gates_and_consumers_validate() -> void:
 	var db := _fresh()
 	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	base["tier"] = 1
 	base["face"].erase("keywords")
+	base["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	var flak_gate := {"suppress": {"when": "target_status", "status": "flakked"}}
 	var cases := {
 		"test_battery": [{"keywords": ["suppress"], "gates": flak_gate}, ""],
@@ -922,7 +926,8 @@ func test_gates_and_consumers_validate() -> void:
 		"test_gate_status": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "numbed"}}}, "a status the team puts on a foe"],
 		"test_gate_count": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "stacks": 2}}}, "a positive count of the status it names"],
 		"test_eat_odd": [{"consumes": "numbed"}, "names a status the team puts on a foe"],
-		"test_eat_wide": [{"keywords": ["cleave"], "consumes": "burning"}, "one blow on one foe"],
+		"test_eat_wide": [{"keywords": ["cleave"], "cleave": 1, "consumes": "burning"}, ""],   # each foe it strikes eats its own (the blow's order, 28 October)
+		"test_eat_twice": [{"strikes": 2, "consumes": "burning"}, "one blow on each foe"],
 		"test_eat_stray": [{"per_consumed": 2}, "only beside consumes"],
 	}
 	for id in cases:
@@ -954,6 +959,7 @@ func test_a_weapon_that_burns_its_firer_validates() -> void:
 	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	base["tier"] = 1
 	base["face"]["keywords"] = []
+	base["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	var cases := {
 		"test_stoker": [{"keywords": ["burn"], "burn": 2, "self_burn": 1}, ""],
 		"test_fire_none": [{"self_burn": 0}, "a positive number of stacks"],
@@ -1071,6 +1077,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	db.load_dir(ContentDB.DIR)
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["lure", "disrupt"]
+	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
@@ -1975,3 +1982,76 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	assert_false(capped.call(), "with the one-off named in its design, allowed")
 	four["effects"].append({"trigger": "on_attack", "effect": "add_damage", "value": 1})
 	assert_true(db.validate().any(func(e): return e.begins_with("chassis %s" % cid) and e.contains("passive has 5 effects")), "the lift is one, never more")
+
+
+## Area by shape, numbered (Ryan, 28 October): a weapon's Spread, Penetrate or Splash says what
+## each foe past its target takes; a debuff's says none; Splash is the row and the column at one
+## number, so it never rides beside either, and the two at one number are Splash; a reach over
+## every foe is a debuff's.
+func test_the_area_keywords_say_their_number() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	base["tier"] = 1
+	base["face"]["keywords"] = []
+	base["face"].erase("penetrate")
+	var cases := {
+		"test_spread_bare": [{"keywords": ["cleave"]}, "a weapon with Spread says what each foe past its target takes"],
+		"test_spread_n": [{"keywords": ["cleave"], "cleave": 2}, ""],
+		"test_stray_n": [{"penetrate": 2}, "rides with the Penetrate keyword"],
+		"test_splash_n": [{"keywords": ["splash"], "splash": 1}, ""],
+		"test_splash_beside": [{"keywords": ["splash", "cleave"], "splash": 1, "cleave": 2}, "never rides beside Spread or Penetrate"],
+		"test_plus_one_number": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 2}, "are Splash"],
+		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
+		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
+		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
+		"test_wide_weapon": [{"reaches_all": true}, "a reach over every foe is a debuff's"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var f := db.build_face(db.components["test_splash_n"]["face"])
+	assert_true(f.has(Face.Keyword.SPLASH) and f.splash == 1, "Splash builds with its number")
+	assert_eq(Face.from_dict(f.to_dict()).splash, 1, "and survives the round trip a save makes")
+	assert_eq(Face.from_dict(db.build_face(db.components["test_debuff_area"]["face"]).to_dict()).to_dict().has("cleave"), false, "a debuff's area writes no number")
+	for id in db.components.keys():
+		var face: Dictionary = db.components[id].get("face", {})
+		if id.begins_with("test_") or str(face.get("status", "")) == "planned":
+			continue
+		for name in ["cleave", "penetrate", "splash"]:
+			if Array(face.get("keywords", [])).has(name) and not db.build_face(face).is_debuff():
+				assert_true(int(face.get(name, 0)) > 0, "%s's %s carries its number" % [id, name])
+
+
+## A grant of a numbered keyword may say its number, an area keyword's must (the drum's Spread 2
+## and Penetrate 2, Ryan, 28 October); a keyword with no number takes none.
+func test_a_numbered_keywords_grant_says_its_number() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.modules["ram_frame"].duplicate(true)
+	var cases := {
+		"test_grant_spread": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 2}, ""],
+		"test_grant_bare": [{"trigger": "static", "effect": "grant_keyword", "value": "penetrate"}, "says what each foe past the target takes"],
+		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "splash", "number": 0}, "a positive number for a numbered keyword"],
+	}
+	for id in cases:
+		var m: Dictionary = base.duplicate(true)
+		m["text"] = {"description": "A test.", "effects": [cases[id][0]]}
+		db.modules[id] = m
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.contains(id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])

@@ -441,12 +441,13 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp) + spray_score
-	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, a reach over
-	# every foe): half the blow on each, through its own statuses and armour, capped at what it
-	# has left (area by shape, 26 October).
+	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, Splash's
+	# both, a reach over every foe): its shape's number through the firer's modifiers and its own
+	# reads, statuses and armour, capped at what it has left (area by shape, numbered: 28 October).
+	var shapes := sk.area_shapes(f, target)
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
-			score += _capped(damage_outcomes(ms, f, n, -1.0, true, true), n.hp)
+			score += _capped(damage_outcomes(ms, f, n, -1.0, true, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
@@ -488,10 +489,13 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += (1.0 - p_kill) * suppress_worth(sk, target) * HULL_WEIGHT * maxf(0.0, lands)
 	if not f.consumes.is_empty():
 		# A consumer gives up the ticks the stacks it eats would have dealt (the Backdraft
-		# Charge's Burning), at the odds the foe would have lived to take them.
-		var eaten := Effects.stacks_of(target, f.consumes)
-		if eaten > 0:
-			score -= (1.0 - p_kill) * dot_payout(f.consumes, eaten, int(maxf(0.0, float(target.hp) - mean))) * BURN_WEIGHT
+		# Charge's Burning), at the odds the foe would have lived to take them: every foe it
+		# strikes eats its own (the blow's order, 28 October).
+		for foe in sk.reached_by(f, target):
+			var eaten := Effects.stacks_of(foe, f.consumes)
+			if eaten > 0 and foe.alive():
+				var lives := (1.0 - p_kill) if foe == target else 1.0
+				score -= lives * dot_payout(f.consumes, eaten, int(maxf(0.0, float(foe.hp) - (mean if foe == target else 0.0)))) * BURN_WEIGHT
 	if f.has(Face.Keyword.WEB):
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
@@ -643,13 +647,21 @@ func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -
 		score += p * per * float(f.burn * (f.burn + 1)) / 2.0 * BURN_WEIGHT
 	if f.has(Face.Keyword.SHOCK):
 		score += p * minf(maxf(0.0, hp - mean), _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
-	if f.has(Face.Keyword.CLEAVE):
+	# Its area as laid (numbered, 28 October): each foe beside the slot takes the row's number,
+	# the other rank of its column the column's, through this machine's modifiers.
+	if f.reaches_row():
+		var row := _area_mean(ms, f, Skirmish.AREA_ROW)
 		for dc in [-1, 1]:
 			var c: int = slot.y + dc
 			if c >= 0 and c < sk.columns:
 				for n in sk.slot_foes(slot.x, c):   # a twin slot's pair both (the Gel's halves)
 					if n.alive():
-						score += p * minf(mean, float(n.hp))
+						score += p * minf(row, float(n.hp))
+	if f.reaches_column():
+		var col := _area_mean(ms, f, Skirmish.AREA_COLUMN)
+		for n in sk.slot_foes(1 - slot.x, slot.y):
+			if n.alive():
+				score += p * minf(col, float(n.hp))
 	score *= MINE_WEIGHT
 	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
@@ -977,10 +989,16 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## resolver applies them; the strikes multiply the blow, a split entry's (the Skua's) each
 ## taking its share of the roll, rounded down. `strikes_on` is how many of them land on this
 ## foe when not all do (a spray's share, fractional), and `aimed` whether the first is one.
-func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strikes_on: float = -1.0, aimed: bool = true, area: bool = false) -> Array:
-	f = Effects.effective_face(ms.unit, f, target)
+## `area` is the shape (Skirmish.AREA_ROW, AREA_COLUMN, AREA_ALL) of a foe past the strike's
+## target, which takes that shape's number in place of the roll, through the same order (Ryan,
+## 28 October): `f` is then the entry as aimed at the target, its grants already judged there.
+func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strikes_on: float = -1.0, aimed: bool = true, area: int = -1) -> Array:
+	if area < 0:
+		f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
-	if not f.is_ranged():
+	if area >= 0:
+		rolls.append(Skirmish.area_number(f, area))   # a foe past the target: its shape's number, flat
+	elif not f.is_ranged():
 		rolls.append(f.power)
 	else:
 		var span := f.power_max - f.power
@@ -996,9 +1014,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	var damaging := not f.is_debuff()
 	for v in rolls:
 		var dmg: int = Skirmish.split_share(v + fired, f.split)   # a split's share, rounded down, never below one
-		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
-		if area:
-			dmg /= 2   # a foe a Spread or Penetrate reaches past the target takes half the blow (26 October)
+		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])   # the firer's modifiers, judged on this foe
 		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
 		# Flak adds to every blow of a weapon, a strike of 0 included. Then its armour
 		# comes off every blow, so a braced foe is worth less to a volume weapon.
@@ -1105,8 +1121,8 @@ func ammo_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	return best * AMMO_SHARE
 
 
-## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and half
-## of it on every foe its Spread and Penetrate reach there, each capped at what it has left,
+## One salvo strike's worth (the Unrestricted Expenditure): its blow on a random live foe and its
+## area's number on every foe its Splash reaches there, each capped at what it has left,
 ## averaged over the foes it may fall on.
 func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	var live: Array[Foe] = []
@@ -1117,9 +1133,10 @@ func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		return 0.0
 	var total := 0.0
 	for t in live:
+		var shapes := sk.area_shapes(f, t)
 		for n in sk.reached_by(f, t):
 			if n.alive():
-				total += minf(_mean(damage_outcomes(ms, f, n, -1.0, true, n != t)), float(n.hp))   # half past the strike's own foe
+				total += minf(_mean(damage_outcomes(ms, f, n, -1.0, true, -1 if n == t else int(shapes.get(n, Skirmish.AREA_ALL)))), float(n.hp))   # past the strike's own foe, its shape's number
 	return total / float(live.size())
 
 
@@ -1613,9 +1630,9 @@ static func bunching_score(sk: Skirmish, ms: Skirmish.MechState, first: Foe, sec
 		if m == ms or m.assigned or m.face() == null:
 			continue
 		var f := sk.spend_face(m)
-		if f == null or not f.is_attack() or f.reaches_all or f.spends_magazine or (f.power <= 0 and f.power_max <= 0):
+		if f == null or not f.is_attack() or f.reaches_all or f.spends_magazine or f.is_debuff():
 			continue
-		areas.append([m, f, _mean_blow(m, f)])
+		areas.append([m, f])
 	if areas.is_empty():
 		return 0.0
 	var before := _widest(sk, areas)
@@ -1625,32 +1642,35 @@ static func bunching_score(sk: Skirmish, ms: Skirmish.MechState, first: Foe, sec
 
 
 ## The team's area entries at their widest: for each, over its targets, the most its spend would
-## deal to the live foes it reaches past its target (half its mean blow less each foe's armour,
-## capped at what the foe has left); an entry that reaches only its target adds nothing.
+## deal to the live foes it reaches past its target (its shape's number through its machine's
+## modifiers, every strike, less each foe's armour, capped at what the foe has left); an entry
+## that reaches only its target adds nothing.
 static func _widest(sk: Skirmish, areas: Array) -> float:
 	var total := 0.0
 	for a in areas:
 		var m: Skirmish.MechState = a[0]
 		var f: Face = a[1]
-		var blow: float = a[2]
 		var most := 0.0
 		for t in sk.targets_for_face(m, f):
 			var ef := Effects.effective_face(m.unit, f, t)
-			if not ef.has(Face.Keyword.CLEAVE) and not ef.has(Face.Keyword.PENETRATE):
+			if not ef.has_area():
 				continue
+			var shapes := sk.area_shapes(ef, t)
 			var past := 0.0
 			for foe in sk.reached_by(ef, t):
 				if foe != t and foe.alive():
-					past += minf(maxf(0.0, blow * 0.5 - float(foe.armour_total())), float(foe.hp))   # half past the target
+					past += minf(maxf(0.0, _area_mean(m, ef, int(shapes.get(foe, Skirmish.AREA_ALL))) - float(foe.armour_total())), float(foe.hp))
 			most = maxf(most, past)
 		total += most
 	return total
 
 
-## An attack entry's mean blow from its machine, every strike, before any foe.
-static func _mean_blow(m: Skirmish.MechState, f: Face) -> float:
-	var mean := int(roundf(float(f.power + f.power_max) * 0.5))
-	return float(Effects.attack(m.unit, f, mean, 0)["damage"]) * float(maxi(1, f.strikes))
+## What an area entry's spend deals a foe of one shape past its target, every strike, before
+## that foe: the shape's number with what the entry prints from its firer (heat fired, the
+## hopper), a split's share, through its machine's modifiers with no foe in hand.
+static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
+	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
+	return float(Effects.attack(m.unit, f, n, 0)["damage"]) * float(maxi(1, f.strikes))
 
 
 ## A foe's worth standing in the front rank, where Direct fire reaches it.

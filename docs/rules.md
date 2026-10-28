@@ -143,8 +143,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
   any foe carrying Exposed.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
-  explosives carry Spread and Penetrate is open: no shell carries both, and the Musk Ox's two
-  locked guns do).
+  explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
+  do).
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
   (a Gel's halves step up into it at once, below).
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
@@ -162,14 +162,24 @@ defeat when every machine is wrecked. There is no round limit.
   Volatile acted at the spend. Nothing expires.
 
 ### A blow
-1. The number: the roll, or the flat number, plus what heat fired adds (Vents all) and what
-   the target's missing hull adds.
-2. The attacker's modifiers: adds, then multiplies, then floors.
-3. Each foe hit takes it through its own modifiers (its Flak adds, then Shocked doubles it),
-   then loses its armour off it. A foe a Spread or Penetrate reaches past the one the blow is
-   aimed at takes half the blow, rounded down, before its own modifiers (a mine's spread the
-   same, past the foe it lands on); its riders land in full. A weapon's blow takes them
-   whatever it deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing.
+Every foe a strike reaches takes a blow of its own, read in one order:
+1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
+   foe its area reaches, the number of the shape it stands in (Spread's beside the target,
+   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints:
+   from its firer, what heat fired adds (Vents all) and the hopper's loads; from that foe
+   alone, the hull it is missing and the stacks a consumer eats on it.
+2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
+   the foe read on that foe (a status it carries, its rank).
+3. The foe's own: its adds (Flak), then its multiplies (Shocked doubles it), then its armour
+   comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's halved
+   1); a debuff's blow stays nothing. Its riders land on every foe struck.
+- Every blow of a strike is read before any of them lands, so a kill in it (the talons'
+  Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
+  reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
+  any strike lands.
+- A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
+  other foe its keywords reach there, each through its spender's modifiers when it was laid
+  with no foe in hand, then each foe's own as it lands.
 - Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
   each takes half the roll, rounded down and never below one (a roll of nothing shares
@@ -252,8 +262,12 @@ defeat when every machine is wrecked. There is no round limit.
   October by hand at the same scale; placeholders until play.
 
 ### Player keywords
-- **Spread** (id `cleave`): also hits the target's neighbours in its rank, for half the blow.
-- **Penetrate**: also hits the other rank of the target's column, for half the blow.
+- **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N
+  where the target takes the roll (a blow, above).
+- **Penetrate N**: also hits the other rank of the target's column, which takes N.
+- **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
+  number are written Splash. A weapon's area keyword carries its number; a debuff's carries
+  none, its effects reaching those foes and its blow nothing.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
   foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
@@ -330,15 +344,16 @@ them with a star): **Vents all** fires the whole heat gauge into the shot, addin
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
 then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
 rule, no word of its own): each foe it kills gives its owner a stack of Overcharged. **Missing HP** adds its bonus for every
-step of HP the target is missing, both numbers on the entry (the Coriolis Accelerator: +1 per
-5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
+step of HP the foe struck is missing, each foe its own, both numbers on the entry (the Coriolis
+Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
 Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as the
 die is spent and before the spend's own riders, so a spend never opens its own gate; the die
 held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
-lands. Suppress alone carries a gate. **Consumes**: the blow eats every stack of the status the
-entry names on its target and deals a point more a stack eaten, before the multiplies, the
-die over the foe showing the number with the stacks in; one blow on one foe (no strikes past
-one, no area); a mine laid from it eats its arrival's. The Suppression Battery's Suppress is
+lands. Suppress alone carries a gate. **Consumes**: each blow eats every stack of the status
+the entry names on the foe it strikes and deals that foe a point more a stack eaten, before the
+multiplies, so an area consumer spikes only the foes carrying the status; the die over the foe
+showing the number with the stacks in; one blow on each foe (no strikes past one); a mine laid
+from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
 prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
@@ -535,7 +550,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
-  live foe with Spread and Penetrate, the magazine its price and no heat; its quick reload,
+  live foe with Splash, the magazine its price and no heat; its quick reload,
   Rapid, adds 2 for 3 heat, and the Forge counts it as no vent.
 - A shield, a vent or a buff that prints heat (the quick reload) adds it to its spender as it
   is spent.
@@ -624,8 +639,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **A split** (the Gel): a dead Gel splits into two Half-Gels at once (one deep), standing as a
   pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
   opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
-  that reaches the slot (Spread, Penetrate, a mine's) reaches both halves, aimed at one of them
-  or beside; a single-target blow, a Spillover included, the one it is spent on. The slot is
+  that reaches the slot (Spread, Penetrate, Splash, a mine's) reaches both halves, aimed at one
+  of them or beside, each half taking the number of the shape it stands in (the aimed half's
+  twin the row's, or the column's when the entry reaches no row); a single-target blow, a Spillover included, the one it is spent on. The slot is
   full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
   while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
   Swap moves the pair together and never swaps a half with its twin. When one falls the other
@@ -657,9 +673,9 @@ and every one of them that fell is a kill).
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
-- A passive may double a weapon's printed number before its buffs, what the entry prints
-  included (heat fired, missing HP, hopper loads, stacks consumed), the buffs added once
-  after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
+- A passive may double a weapon's printed number before its buffs, on every blow, what the
+  entry prints included (an area's number, heat fired, hopper loads, and each foe's own missing
+  HP and stacks consumed), the buffs added once after it (the Kite's), and may grant a cooldown to every weapon and equipment its machine
   aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
   each strikes twice as often, each
   roll, what the entry prints included, divided between the two strikes, rounded down and
@@ -674,20 +690,23 @@ and every one of them that fell is a kill).
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
   when aimed at another machine, Suppressed, or on a special that acts on nobody in
   particular; read at the spend, before the spend's own riders, each foe reached judged
-  alone); the rank the spend is aimed at (the Cottonmouth's), and on an attack's own effects its
-  reach with it (the Ram Frame's Direct blows at the front rank, the Artillery Rangefinder's
-  Indirect blows at the back, a point each); the striker carries a status (the Prairie Dog's fight
+  alone); the rank the spend is aimed at (the Cottonmouth's grants, judged on the aim), and on
+  an attack's own effects the rank of each foe struck with the spend's reach beside it (the Ram
+  Frame's Direct blows at the front rank, the Artillery Rangefinder's Indirect blows at the
+  back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 1 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
   the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
   included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
-  changed is what is spent, shown and weighed, while the die keeps the real one. The
+  changed is what is spent, shown and weighed, while the die keeps the real one. A numbered
+  keyword's grant says its number, and on an entry already carrying the keyword the higher
+  of the two stands. The
   Cottonmouth's replaces the shot of every weapon and equipment it aims at a foe whole, first,
   under every other change (Indirect,
   a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
-  Penetrate when aimed at the back rank and Spread at the front, shown on the die over the foe
+  Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
   it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
   live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
   that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,

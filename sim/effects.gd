@@ -1029,6 +1029,26 @@ static func granted_keywords(u, face: Face, target = null, printed_only: bool = 
 	return out
 
 
+## The numbers a live passive's grants give a numbered keyword on this component (`number` on a
+## grant_keyword: the Cottonmouth's drum, Spread 2 at the front rank and Penetrate 2 at the back;
+## Ryan, 28 October), keyword -> number, its `when` honoured as the grant's: a keyword the
+## component already carries keeps the higher of its own and the grant's. A grant with no number
+## gives none (an area keyword it adds then says one, as a synthetic entry does).
+static func granted_numbers(u, face: Face, target = null) -> Dictionary:
+	var out := {}
+	if face == null or face.kind == Face.Kind.BLANK:
+		return out
+	for pair in _taking_part(u, "static", face, target):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "grant_keyword" or not eff.has("number"):
+			continue
+		var kw := Face.keyword_from_name(str(eff.get("value", "")))
+		if kw <= 0 or not Face.NUMBER_FIELDS.has(kw):
+			continue
+		out[kw] = maxi(int(out.get(kw, 0)), maxi(0, int(eff["number"])))
+	return out
+
+
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
 ## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend, before
@@ -1074,17 +1094,27 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var r := effective_reach(u, face)
 	var granted := granted_keywords(u, base, target)
 	var printed := granted_keywords(u, base, target, true)
+	var numbers := granted_numbers(u, base, target)
+	# A numbered grant raises a keyword the entry already carries only past its own number.
+	var raised := {}
+	for kw in numbers.keys():
+		if base.has(kw) and int(numbers[kw]) > base.number_of(kw):
+			raised[kw] = numbers[kw]
 	var ceiling := ceiling_bonus(u, base)
 	var floor_up := floor_bonus(u, base)
 	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
-	if base == face and r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
+		if numbers.has(kw):
+			c.set_number(kw, int(numbers[kw]))   # the grant's own number (the drum's Spread 2)
 		if printed.has(kw) and not c.printed.has(kw):
 			c.printed.append(kw)
+	for kw in raised.keys():
+		c.set_number(kw, int(raised[kw]))
 	c.power_max += ceiling
 	c.power = mini(c.power + floor_up, c.power_max)
 	if split > 1:
@@ -1814,6 +1844,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
+			if eff.has("number"):
+				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"seal_form": body = "a shield spent on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a vent or a weapon opens it" % [vs, str(eff.get("heat", 0))]

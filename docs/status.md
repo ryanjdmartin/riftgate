@@ -21,9 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 709 tests, 65,920 checks, green on main's head (27 October, after the review's five
-  merges, run in the cloud session once Ryan allowed its download of Godot), about a minute in a
-  cloud session. A cloud session fetches Godot 4.7's Linux
+- Tests: 721 tests, 65,988 checks, green (28 October, with the numbered area and the blow's
+  order), about four minutes in a cloud session. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -168,7 +167,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   single digits a half-blow kills no rank and file; a fixed 2 on the neighbours reads as the
   half (the same day), since a number tells only at the swarm's kill threshold of 3. Ryan's
   call, 28 October: Spread N, Penetrate N and Splash N, with the blow's order read for each
-  foe struck (the bible's rows; the build is next in order). The quick campaign is an
+  foe struck (the bible's rows), built the same day with each carrier's N a placeholder from
+  Claude's proposals and the Kite's double kept on the printed number. The quick campaign is an
   experiment, not a feature (Ryan, 28 October): its reads above are history, not grounds.
   The fights' size is the bigger lever (the same day): tier one's formations a third thinner
   take the quick campaign's first battle from 3% to 55% at half area, half thinner to 70%, and
@@ -207,17 +207,11 @@ Each a session of its own, with what it reads first; Ryan's play tasks run besid
 to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
 line), since no number read since 22 October was read on the content as it now stands.
 
-1. **Area as numbered keywords and the blow's order** (Ryan, 28 October; the bible's area and
-   blow rows): Spread N, Penetrate N and Splash N on the die, each carrier's N set in content
-   (Claude's proposals in chat, Ryan's to move), the firer's modifiers on every blow and each
-   foe struck read for itself, the half retired; the Kite's doubling (section 12) settled first.
-   Reads the mechanics audit's 9 and 19. Tests, the vocabulary, the hangar's chip numbers, the
-   rules rewritten in place.
-2. **The design sessions, from the briefs** (above): each decision a bible row, each brief
+1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
-3. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
+2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
-4. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
+3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
    pacing and four-machines rows, section 9, section 12's foe questions,
    `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
    Fractures follow, once Ryan picks its form). Builds compositions with a front and a back
@@ -226,15 +220,15 @@ line), since no number read since 22 October was read on the content as it now s
    bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
    9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
    reports and measures the fights a team fights together.
-5. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
+4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
    the fours again, prices and tier ladders (the to-do's engine line), the heat report, and
    Ryan's play deciding feel.
-6. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has its
+5. **The screens** (Ryan, 13 October: early, so the first thing built after the battle has its
    shape is a run he can play; the go, the stock pass and the balancing come first, Ryan, 14
    October): a prototype hangar, the mission map and the draft.
-7. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
+6. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
@@ -249,12 +243,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.331 (the
-  page's version 342, published 28 October from `ccr-24cae16e-ryhv1v` as a three-way merge onto
-  the models session's v0.330, which the live page held: Ryan's area and blow's-order calls
-  and the quick campaign's standing, onto the Kestrel, Lammergeier and settled-looks rows and
-  the motion table; the tables regenerated by `tools/pages/bible_tables.py`, which changed
-  nothing). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.333 (the
+  page's version 344, published 28 October from `ccr-24cae16e-ryhv1v` as a three-way merge onto
+  the models session's v0.332 from `ccr-7d865127-wr1ko2`, which the live page held: the
+  numbered area and the blow's order built, the Kite's double kept, onto that branch's Kestrel
+  models, settled looks and idle acts, so its merge into main meets these rows already in; the
+  tables regenerated by `tools/pages/bible_tables.py` for Spread, Penetrate and Splash). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`

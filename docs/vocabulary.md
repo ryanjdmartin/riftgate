@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 151 implemented, 6 planned, 0 idea.
+Status: 152 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -77,8 +77,9 @@ Status: 151 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank, for half the blow. | implemented |
-| **Penetrate** | Player keyword. Also hits the other rank of the target's column, for half the blow. | implemented |
+| **Spread** | Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing. | implemented |
+| **Penetrate** | Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the roll: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number. | implemented |
+| **Splash** | Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the roll: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number. | implemented |
 | **Spillover** | The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it. | implemented |
 | **Cryo** | Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack. | implemented |
 | **Burn** | Keyword with a number. On a player's weapon or equipment, Burn 3 means each foe hit gains three stacks of Burning. On a foe's attack the same: each blow that lands leaves that many stacks of Burning on the machine it hit. | implemented |
@@ -251,6 +252,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rift Pressure** (implemented): It does not escalate yet (section 12's pacing question).
 - **Gate Integrity** (implemented): The gate damage formula is a placeholder.
 - **Weapon** (implemented): The engine's kind is attack for a weapon and a debuff alike: a debuff is an attack of no damage (Face.is_debuff), so code asks is_weapon() for this word and is_attack() for both.
+- **Spread** (implemented): Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file.
+- **Penetrate** (implemented): Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon.
+- **Splash** (implemented): Spread and Penetrate at one number, one chip on the die (Ryan, 28 October: Splash N back 'for the sake of display simplicity'); the validator refuses the two at one number and Splash beside either. Its number rides on the entry (splash).
 - **Spillover** (implemented): The spill is plain damage: it spends a Shock and feeds the Ammit's kill rule, and carries no other keyword of the blow.
 - **Cryo** (implemented): Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder.
 - **Burn** (implemented): Its number rides on the face beside the keyword (burn), and the validator asks for it.

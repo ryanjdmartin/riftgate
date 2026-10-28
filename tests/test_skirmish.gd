@@ -88,25 +88,29 @@ func test_indirect_reaches_both_ranks_and_costs_its_firer_nothing() -> void:
 
 func test_penetrate_hits_the_column() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.PENETRATE))))
+	var lance := Face.attack(30, L, K.PENETRATE)
+	lance.penetrate = 15
+	sk.add_mech(_mech("A", Die.single(lance)))
 	sk.add_foes([_ghoul(50), _archer(50)])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[0]), "penetrate front 0")
 	assert_eq(sk.front[0].hp, 20, "front took 30")
-	assert_eq(sk.back[0].hp, 35, "back of the same column took half, 15 (area by shape, 26 October)")
+	assert_eq(sk.back[0].hp, 35, "back of the same column took its Penetrate 15 (area by shape, numbered: 28 October)")
 
 
 func test_cleave_hits_neighbours() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.CLEAVE))))
+	var sweep := Face.attack(20, L, K.CLEAVE)
+	sweep.cleave = 10
+	sk.add_mech(_mech("A", Die.single(sweep)))
 	sk.add_foes([_ghoul(50), _ghoul(50), _ghoul(50)])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[1]), "cleave the middle")
 	assert_eq(sk.front[1].hp, 30, "the target took the blow, 20")
 	for c in [0, 2]:
-		assert_eq(sk.front[c].hp, 40, "front %d took half, 10 (area by shape, 26 October)" % c)
+		assert_eq(sk.front[c].hp, 40, "front %d took its Spread 10 (area by shape, numbered: 28 October)" % c)
 
 
 func test_a_foe_aims_at_random_unless_it_carries_an_aim_such_as_the_exposed() -> void:
@@ -528,9 +532,9 @@ func test_the_hopper_fills_from_a_claw_and_a_shot_fires_a_few_loads() -> void:
 	# load in for each foe its blows reach; one that fires it takes up to its most a shot,
 	# +5 a load, and spends them, so a full hopper feeds several shots rather than one.
 	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "fills_hopper": 1})
+	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "cleave": 5, "fills_hopper": 1})
 	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	assert_eq(claw.describe(), "10 spread fills the hopper", "the claw says what it does")
+	assert_eq(claw.describe(), "10 spread 5 fills the hopper", "the claw says what it does, its Spread's number with it")
 	assert_eq(gun.describe(), "20 fires the hopper, +5 a load (3 a shot)", "and so does the gun")
 	assert_eq(Face.from_dict(gun.to_dict()).describe(), gun.describe(), "both round-trip")
 	var m := _mech("A", Die.of([claw, gun]), 500, 500)
@@ -1076,7 +1080,9 @@ func test_skirmish_reroll_moves_every_unlocked_die() -> void:
 
 func test_four_columns_fill_and_reach() -> void:
 	var sk := Skirmish.new(1, 4)
-	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.CLEAVE))))
+	var sweep := Face.attack(20, L, K.CLEAVE)
+	sweep.cleave = 10
+	sk.add_mech(_mech("A", Die.single(sweep)))
 	# Ranks hold: six front ghouls fill four front slots and two wait; four archers take the back.
 	var foes: Array = []
 	for i in range(6):
@@ -1093,7 +1099,7 @@ func test_four_columns_fill_and_reach() -> void:
 	assert_eq(sk.targets_for(0).size(), 4, "every front foe is a line target")
 	assert_true(sk.assign(0, sk.front[3]), "cleave the right edge")
 	assert_eq(sk.front[3].hp, 30, "edge took 20")
-	assert_eq(sk.front[2].hp, 40, "its one neighbour took half, 10")
+	assert_eq(sk.front[2].hp, 40, "its one neighbour took its Spread 10")
 	assert_eq(sk.front[1].hp, 50, "the far column is untouched")
 	var three := Skirmish.new(1)
 	assert_eq(three.columns, Skirmish.DEFAULT_COLUMNS, "three by default")
@@ -2601,19 +2607,20 @@ func test_a_shield_cost_is_paid_first_and_locks_the_entry_while_the_shield_is_sh
 
 func test_the_talons_kill_rule_feeds_overcharged_per_kill_and_it_halves_each_round() -> void:
 	var sk := Skirmish.new(3)
-	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "devours": 1})
+	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "cleave": 15, "devours": 1})
 	var m := _mech("A", Die.single(talon), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(15, 10), _ghoul(30, 10), _ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(talon.describe(), "30 spread Overcharged ×1 a kill", "the rule reads on the entry, in plain words (Ryan, 18 October: devour is not a thing)")
+	assert_eq(talon.describe(), "30 spread 15 Overcharged ×1 a kill", "the rule reads on the entry, in plain words (Ryan, 18 October: devour is not a thing)")
 	assert_true(talon.has_unique_rule(), "a rule printed on the entry: the die's star chip")
 	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["devour"]}).devours, 1, "an old save's devour keyword reads as the rule, a stack a kill")
 	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true}).devours, 1, "and an old save's true as one")
 	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": 2}).to_dict()["devours"], 2, "the count round-trips")
 	# Column 1 (the middle) spreads to both neighbours: the middle ghoul takes the 30 and dies, the
-	# one beside it takes half, 15, and dies too (area by shape), the big one lives.
+	# one beside it takes the Spread 15 and dies too (the kill before it feeds no blow of the same
+	# strike), the big one lives.
 	var middle: Foe = sk.front[1]
 	assert_true(sk.assign(0, middle), "spent on the middle")
 	var kills := 0
@@ -3113,6 +3120,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	var s3 := Skirmish.new(1, 2)
 	var sweep := Face.attack(10, L, [K.CLEAVE, K.SPILLOVER])
 	sweep.strikes = 3
+	sweep.cleave = 5
 	s3.add_mech(_mech("A", Die.single(sweep), 40, 100))
 	s3.add_foes([_ghoul(500, 30), _ghoul(5, 10), _archer(100, 20), _archer(100, 10)])
 	s3.begin()
@@ -3123,7 +3131,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	var safe: Foe = s3.back[1 - n_col]
 	assert_true(s3.assign(0, big), "the sweep at the big ghoul, its weak neighbour in reach")
 	assert_eq(big.hp, 500 - 3 * 10, "the big one takes all three")
-	assert_eq(past.hp, 100 - 2 * 5, "behind the neighbour, which half of 10 kills exactly: nothing past the kill, then the two later strikes' halves, 5 each (area by shape)")
+	assert_eq(past.hp, 100 - 2 * 5, "behind the neighbour, which the Spread 5 kills exactly: nothing past the kill, then the two later strikes' Spread 5 each (area by shape, numbered)")
 	assert_eq(safe.hp, 100, "behind the big one, which stands: nothing")
 
 
@@ -3188,6 +3196,7 @@ func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() 
 	var s2 := Skirmish.new(1, 1)
 	var lance := Face.attack(10, L, [K.PENETRATE, K.SPILLOVER])
 	lance.strikes = 3
+	lance.penetrate = 5
 	s2.add_mech(_mech("A", Die.single(lance), 40, 100))
 	var g2 := _ghoul(5, 10)
 	var a2 := _archer(100, 10)
@@ -3197,7 +3206,7 @@ func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() 
 	s2.start_round()
 	assert_true(s2.assign(0, g2), "three penetrating strikes of 10")
 	assert_false(g2.alive(), "the ghoul falls to the first")
-	assert_eq(a2.hp, 100 - 3 * (10 / 2 - 2), "the archer, reached past the target, takes half of every strike, less its armour, and no spill on top")
+	assert_eq(a2.hp, 100 - 3 * (5 - 2), "the archer, reached past the target, takes the Penetrate 5 of every strike, less its armour, and no spill on top")
 	assert_false("\n".join(s2.log).contains("spills over"), "nothing spills into a foe the blow already reaches")
 	# A burst without Spillover: the strikes after the kill land on the fallen ghoul and are lost.
 	var s3 := Skirmish.new(1, 1)
@@ -4603,6 +4612,7 @@ func test_a_shocking_weapon_leaves_a_charge_its_own_blow_never_spends() -> void:
 	var sk := Skirmish.new(1, 2)
 	var tesla := Face.attack(20, L, K.SHOCK)
 	tesla.add_keyword(K.CLEAVE)
+	tesla.cleave = 10
 	var a := _mech("A", Die.single(tesla), 40, 100)
 	var b := _mech("B", Die.single(Face.attack(20, L)), 40, 100)
 	sk.add_mech(a)
@@ -4612,7 +4622,7 @@ func test_a_shocking_weapon_leaves_a_charge_its_own_blow_never_spends() -> void:
 	sk.add_foes([g1, g2])
 	sk.begin()
 	sk.start_round()
-	assert_eq(tesla.describe(), "20 shock spread", "the keyword reads on the entry")
+	assert_eq(tesla.describe(), "20 shock spread 10", "the keywords read on the entry, Spread's number with it")
 	assert_true(sk.assign(0, sk.front[0]), "A punches the first ghoul")
 	assert_eq(sk.front[0].hp, 480, "the blow itself lands plain")
 	assert_true(Effects.has(sk.front[0], "shocked") and Effects.has(sk.front[1], "shocked"), "and every foe it reached is Shocked, the spread's neighbour too")
@@ -5967,6 +5977,7 @@ func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_har
 	var sk := Skirmish.new(1)
 	var spray := Face.attack(5, L, [K.CLEAVE, K.FLAK])
 	spray.flak = 2
+	spray.cleave = 2
 	var gun := Face.attack(10, L)
 	var lure := Face.attack(0, I, K.LURE)
 	sk.add_mech(_mech("A", Die.single(spray), 0, 200))
@@ -5978,7 +5989,7 @@ func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_har
 	var mid: Foe = sk.front[1]
 	assert_true(sk.assign(0, mid), "spray the middle")
 	assert_eq(mid.hp, 95, "the blow that lays the Flak never feeds on it: a plain 5")
-	assert_eq(sk.front[0].hp, 98, "the spray's neighbour takes half, 2 (area by shape, rounded down)")
+	assert_eq(sk.front[0].hp, 98, "the spray's neighbour takes its Spread 2 (area by shape, numbered)")
 	for foe in [sk.front[0], mid, sk.front[2]]:
 		assert_eq(Effects.stacks_of(foe, "flakked"), 2, "each foe hit carries Flak 2")
 	assert_true(Effects.carries_status(mid), "a status the team put on it, for the Tensor")
@@ -6421,14 +6432,14 @@ func test_every_nth_shot_doubles_its_damage_and_the_stacks_it_lays() -> void:
 
 const DRUM_PASSIVE := {"id": "test_drum", "name": "Drum", "description": "", "effects": [
 	{"trigger": "static", "effect": "rewrite_weapon", "value": 15, "reach": "indirect", "heat": 10, "tag": "ballistic"},
-	{"trigger": "static", "effect": "grant_keyword", "value": "penetrate", "when": "target_rank", "rank": "back"},
-	{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "front"}]}
+	{"trigger": "static", "effect": "grant_keyword", "value": "penetrate", "when": "target_rank", "rank": "back", "number": 7},
+	{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "target_rank", "rank": "front", "number": 7}]}
 
 
 ## The drum (the Cottonmouth's Adaptive Munitions Drum, Ryan's go of 19 October; built 21
 ## October): every weapon and debuff leaves as the drum's shot, Indirect, a flat 15, heat 10, one blow,
-## Ballistic, its own keywords kept; aimed at the front rank it sprays (Spread), at the back
-## it punches through (Penetrate); a shield fires as itself, and the die keeps the real entry.
+## Ballistic, its own keywords kept; aimed at the front rank it sprays (Spread 7), at the back
+## it punches through (Penetrate 7); a shield fires as itself, and the die keeps the real entry.
 func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(40, L, [K.BURN])
@@ -6449,10 +6460,11 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	assert_false(shot.has(K.CLEAVE) or shot.has(K.PENETRATE), "no rank keyword without a target")
 	var mid: Foe = sk.front[1]
 	assert_true(sk.shown_face(ms, ms.face(), mid).has(K.CLEAVE), "over the front rank it shows Spread")
+	assert_eq(sk.shown_face(ms, ms.face(), mid).cleave, 7, "at the grant's number")
 	assert_true(sk.shown_face(ms, ms.face(), sk.back[2]).has(K.PENETRATE), "over the back rank, Penetrate")
 	assert_true(sk.assign(0, mid), "fired at the front")
 	for f in sk.front:
-		assert_eq(f.hp, 85 if f == mid else 93, "the spray lands 15 on the target and half, 7, on each neighbour")
+		assert_eq(f.hp, 85 if f == mid else 93, "the spray lands 15 on the target and its Spread 7 on each neighbour")
 		assert_true(Effects.has(f, "burning"), "with the Burn it kept")
 	assert_eq(ms.heat, 10, "at the drum's heat")
 	assert_eq(u.shield, 40, "the front-rank spray costs its firer nothing (danger close retired)")
@@ -6464,7 +6476,7 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	var other_hp: int = sk.front[0].hp
 	assert_true(sk.assign(0, back), "fired at the back")
 	assert_eq(back.hp, 85, "the shot lands on the back foe")
-	assert_eq(sk.front[2].hp, front_hp - 7, "and punches through the front foe of its column for half")
+	assert_eq(sk.front[2].hp, front_hp - 7, "and punches through the front foe of its column for its Penetrate 7")
 	assert_eq(sk.front[0].hp, other_hp, "and no other")
 	sk.end_round()
 	sk.start_round()
@@ -7364,7 +7376,9 @@ func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid
 ## the round's turn), and a massive arrival takes both slots' shots.
 func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and_a_massive_arrival_takes_both() -> void:
 	var sk := Skirmish.new(1, 3)
-	var bay := _mech("Bomber", Die.single(Face.attack(10, L, [K.CLEAVE, K.SUPPRESS])), 40, 100)
+	var stun_mine := Face.attack(10, L, [K.CLEAVE, K.SUPPRESS])
+	stun_mine.cleave = 5
+	var bay := _mech("Bomber", Die.single(stun_mine), 40, 100)
 	bay.grant_passive(MINER)
 	sk.add_mech(bay)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
@@ -7379,7 +7393,7 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread stun mine laid there")
 	sk.end_round()
 	assert_eq(sk.foe_at(0, 1), arrival, "the arrival in the middle")
-	assert_eq([left.hp, arrival.hp, right.hp], [195, 90, 195], "the mine hits it and both its neighbours for half (area by shape)")
+	assert_eq([left.hp, arrival.hp, right.hp], [195, 90, 195], "the mine hits it and both its neighbours for its Spread 5 (area by shape, numbered)")
 	sk.start_round()
 	var hull := sk.mechs[0].unit.hull + sk.mechs[0].unit.shield + sk.mechs[1].unit.hull + sk.mechs[1].unit.shield
 	sk.end_round()
@@ -7392,9 +7406,11 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	y.grant_passive(MINER)
 	s2.add_mech(x)
 	s2.add_mech(y)
-	s2.add_mech(_mech("Killer", Die.single(Face.attack(10, I, [K.PENETRATE])), 40, 100))
+	var lance := Face.attack(10, I, [K.PENETRATE])
+	lance.penetrate = 5
+	s2.add_mech(_mech("Killer", Die.single(lance), 40, 100))
 	var g := _ghoul(10, 0)
-	var arch := _archer(5, 0)   # the Penetrate's half, 5, empties the back slot too
+	var arch := _archer(5, 0)   # the Penetrate 5 empties the back slot too
 	s2.add_foes([g, arch])
 	s2.begin()
 	var big := Foe.make("titan", 500, 0)
@@ -7451,9 +7467,11 @@ func test_the_pull_gathers_every_mine_into_its_slot_and_a_foe_there_takes_them_n
 	var c := _mech("Bomber", Die.single(Face.attack(10, I)), 40, 100)
 	c.grant_passive(MINER)
 	s2.add_mech(c)
-	s2.add_mech(_mech("Killer", Die.single(Face.attack(10, I, [K.CLEAVE])), 40, 100))
+	var sweep := Face.attack(10, I, [K.CLEAVE])
+	sweep.cleave = 5
+	s2.add_mech(_mech("Killer", Die.single(sweep), 40, 100))
 	s2.add_mech(_mech("Puller", Die.single(pull), 40, 100))
-	s2.add_foes([_ghoul(10, 0), _ghoul(5, 0), _archer(300, 0)])   # the Spread's half, 5, clears the second
+	s2.add_foes([_ghoul(10, 0), _ghoul(5, 0), _archer(300, 0)])   # the Spread 5 clears the second
 	s2.begin()
 	s2.start_round()
 	assert_true(s2.assign(1, s2.front[0]), "the front cleared")
@@ -7856,10 +7874,12 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 ## foes, Spread and Penetrate on each, the magazine its price and no heat; the quick reload,
 ## Rapid, adds its 2 for its heat, and the Forge counts it as no vent.
 func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heats() -> void:
-	var cannon := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	var cannon := Face.attack(5, I, [K.SPLASH])
+	cannon.splash = 3
 	cannon.heat = 10
 	cannon.ammo_per_foe_hit = 1
-	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	var salvo := Face.attack(5, I, [K.SPLASH])
+	salvo.splash = 3
 	salvo.spends_magazine = true
 	salvo.random_targets = true
 	var reload := Face.vent(0)
@@ -7892,7 +7912,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	var hp_after := 0
 	for f in sk.field_foes():
 		hp_after += f.hp
-	assert_true(hp_before - hp_after >= n * 5 * 2, "every ammo a strike, each reaching more than its target")
+	assert_true(hp_before - hp_after >= n * (5 + 2 * 3), "every ammo a strike, each reaching more than its target: two foes of its plus at the least, Splash 3 each")
 	assert_true("\n".join(sk.log).contains("empties the magazine: %d strikes" % n), "the log counts them")
 	sk.end_round()
 	sk.start_round()
@@ -7990,3 +8010,223 @@ func test_the_siphons_heat_fires_the_on_heat_gain_passives() -> void:
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each")
 	assert_eq(u.shield, 25, "and each siphoned blow stood up the flywheel's 5 shield")
+
+
+## Area by shape, numbered, and the blow's order (Ryan, 28 October): every foe past the target
+## takes its shape's number in place of the roll; the firer's modifiers land on every blow, its
+## adds then its multiplies (the Kite's double on the printed number before them), then each
+## foe its own statuses, its adds then its multiplies, then its armour.
+func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own() -> void:
+	var sk := Skirmish.new(1, 3)
+	var sweep := Face.attack(6, L, K.CLEAVE)
+	sweep.cleave = 2
+	var m := _mech("A", Die.single(sweep), 40, 100)
+	m.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1},
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2}]})
+	sk.add_mech(m)
+	var left := _ghoul(100)
+	var mid := _ghoul(100)
+	var right := _ghoul(100)
+	left.armour = 1
+	sk.add_foes([left, mid, right])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(left, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(right, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, mid), "the sweep at the middle")
+	assert_eq(mid.hp, 100 - (6 + 1) * 2, "the target: the roll, the firer's add, then its multiply")
+	assert_eq(left.hp, 100 - ((2 + 1) * 2 + 1 - 1), "a neighbour: Spread 2, the firer's add and multiply, then its own Flak, then its armour")
+	assert_eq(right.hp, 100 - (2 + 1) * 2 * 2, "the other: the same blow, its own Shock doubling it last")
+	assert_false(Effects.has(right, "shocked"), "and the shock spent")
+	# The Kite's double stays on the printed number (Ryan, 28 October: his reading, doubling after
+	# the firer's flat adds, is its buff if it ever needs one): what the entry prints is doubled,
+	# each foe's own read of it with it (the hull it is missing), and the buffs land once after.
+	var s2 := Skirmish.new(1, 3)
+	var gun := Face.attack(6, L, K.CLEAVE)
+	gun.cleave = 2
+	gun.power_per_missing = 1
+	gun.per_missing = 5
+	var kite := _mech("K", Die.single(gun), 40, 100)
+	kite.grant_passive({"id": "test_double", "name": "Double", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1}]})
+	s2.add_mech(kite)
+	var hurt := _ghoul(100)
+	var aim := _ghoul(100)
+	var whole := _ghoul(100)
+	s2.add_foes([hurt, aim, whole])
+	s2.begin()
+	s2.start_round()
+	hurt.hp = 90
+	assert_true(s2.assign(0, aim), "at the unhurt middle")
+	assert_eq(aim.hp, 100 - (6 * 2 + 1), "the printed 6 doubled, the buff once after: missing nothing, it adds nothing")
+	assert_eq(hurt.hp, 90 - ((2 + 10 / 5) * 2 + 1), "the hurt neighbour: its Spread 2 and its own missing hull, doubled, the buff once")
+	assert_eq(whole.hp, 100 - (2 * 2 + 1), "the whole one: its Spread 2 doubled, the buff once")
+
+
+## A condition on the foe is read on each foe struck (the mechanics audit's 9): the Tensor's
+## point lands on a marked neighbour and not on a clean target; a rank read (the Ram Frame's)
+## on each foe's own rank.
+func test_a_condition_on_the_foe_is_read_on_each_foe_struck() -> void:
+	var sk := Skirmish.new(1, 3)
+	var sweep := Face.attack(5, L, K.CLEAVE)
+	sweep.cleave = 2
+	var m := _mech("A", Die.single(sweep), 40, 100)
+	m.grant_passive({"id": "test_tensor", "name": "Tensor", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status"}]})
+	sk.add_mech(m)
+	var marked := _ghoul(100)
+	var clean := _ghoul(100)
+	var plain := _ghoul(100)
+	sk.add_foes([marked, clean, plain])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(marked, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 1)
+	assert_true(sk.assign(0, clean), "at the clean middle")
+	assert_eq(clean.hp, 95, "the clean target: no point")
+	assert_eq(marked.hp, 97, "the marked neighbour: its Spread 2 and the point")
+	assert_eq(plain.hp, 98, "the clean neighbour: its Spread 2 alone")
+	var s2 := Skirmish.new(1, 1)
+	var lance := Face.attack(5, L, K.PENETRATE)
+	lance.penetrate = 3
+	var r := _mech("R", Die.single(lance), 40, 100)
+	r.grant_passive({"id": "test_ram", "name": "Ram", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_rank", "rank": "front", "reach": "direct"}]})
+	s2.add_mech(r)
+	var front := _ghoul(100)
+	var back := _archer(100)
+	s2.add_foes([front, back])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, front), "a Direct lance at the front")
+	assert_eq(front.hp, 94, "the front foe: the blow and the front rank's point")
+	assert_eq(back.hp, 97, "the back foe it punches through: its Penetrate 3, no point, its rank the back")
+
+
+## A consumer eats each foe struck its own stacks (the mechanics audit's 19; Ryan, 28 October:
+## "If only one unit is on fire, that's the only one that gets spiked"), on its first blow.
+func test_a_consumer_eats_each_foe_struck_its_own() -> void:
+	var sk := Skirmish.new(1, 3)
+	var charge := Face.attack(2, L, K.CLEAVE)
+	charge.cleave = 1
+	charge.consumes = "burning"
+	charge.per_consumed = 1
+	sk.add_mech(_mech("A", Die.single(charge), 40, 100))
+	var burning := _ghoul(100)
+	var aim := _ghoul(100)
+	var cold := _ghoul(100)
+	sk.add_foes([burning, aim, cold])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(burning, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	assert_true(sk.assign(0, aim), "the charge at the cold middle")
+	assert_eq(aim.hp, 98, "the target eats nothing: its blow alone")
+	assert_eq(burning.hp, 100 - (1 + 3), "the burning neighbour: its Spread 1 and a point a stack it carried")
+	assert_eq(cold.hp, 99, "the cold one: its Spread 1")
+	assert_false(Effects.has(burning, "burning"), "its stacks eaten")
+	assert_true("\n".join(sk.log).contains("consumes Burning ×3 on"), "the log says whose")
+
+
+## Splash (Ryan, 28 October): the plus round the target, the row and the column at one number;
+## a twin slot reached whole, each half as the one it pairs with (the target's own beside it in
+## the row, or the column's when the entry reaches no row).
+func test_splash_reaches_the_plus_and_a_twin_takes_its_shape() -> void:
+	var sk := Skirmish.new(1, 3)
+	var burst := Face.attack(6, I, K.SPLASH)
+	burst.splash = 2
+	assert_eq(burst.describe(), "indirect 6 splash 2", "the keyword reads with its number")
+	assert_true(burst.reaches_row() and burst.reaches_column(), "the row and the column")
+	sk.add_mech(_mech("A", Die.single(burst), 40, 100))
+	sk.add_foes([_ghoul(100), _ghoul(100), _ghoul(100), _archer(100), _archer(100), _archer(100)])
+	sk.begin()
+	sk.start_round()
+	var aim: Foe = sk.front[1]
+	assert_true(sk.assign(0, aim), "at the front middle")
+	assert_eq(aim.hp, 94, "the target takes the blow")
+	assert_eq([sk.front[0].hp, sk.front[2].hp, sk.back[1].hp], [98, 98, 98], "the plus round it its Splash 2")
+	assert_eq([sk.back[0].hp, sk.back[2].hp], [100, 100], "and nothing past the plus")
+	# The Gel's pair: aimed at a half, its twin takes the row's number, or the column's.
+	var s2 := Skirmish.new(2, 3)
+	var sweep := Face.attack(3, L, K.CLEAVE)
+	sweep.cleave = 2
+	var lance := Face.attack(3, L, K.PENETRATE)
+	lance.penetrate = 1
+	s2.add_mech(_mech("A", Die.of([Face.attack(200, L), sweep, lance]), 40, 100))
+	var heavy := _ghoul(500, 20)
+	var gel := _ghoul(30, 10)
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	s2.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 2)
+	s2.add_foes([heavy, gel])
+	s2.begin()
+	s2.start_round()
+	var ms: Skirmish.MechState = s2.mechs[0]
+	ms.face_index = 0
+	s2.assign(0, gel)
+	var left: Foe = s2.front[1]
+	var right: Foe = s2.twin_of(left)
+	assert_true(right != null, "the pair stands")
+	var shapes := s2.area_shapes(sweep, left)
+	assert_eq([int(shapes.get(right, 0)), int(shapes.get(heavy, 0))], [Skirmish.AREA_ROW, Skirmish.AREA_ROW], "Spread at a half: its twin and the foe beside both in the row")
+	assert_eq(int(s2.area_shapes(lance, left).get(right, 0)), Skirmish.AREA_COLUMN, "Penetrate alone at a half: its twin takes the column's number")
+	assert_eq(Skirmish.area_number(lance, Skirmish.AREA_COLUMN), 1, "Penetrate's 1")
+
+
+## A mine carries its area numbers as laid, each through its spender's modifiers with no foe in
+## hand, as its own number is; the foes beside the arrival take the row's.
+func test_a_mine_carries_its_area_numbers_as_laid() -> void:
+	var sk := Skirmish.new(1, 3)
+	var shell := Face.attack(4, L, K.CLEAVE)
+	shell.cleave = 2
+	var bay := _mech("Bomber", Die.single(shell), 40, 100)
+	bay.grant_passive(MINER)
+	bay.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]})
+	sk.add_mech(bay)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var arrival := _ghoul(100, 0)
+	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0), _ghoul(200, 0)])
+	sk.begin()
+	sk.reinforcements.append(arrival)
+	sk.start_round()
+	var left: Foe = sk.front[0]
+	var right: Foe = sk.front[2]
+	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
+	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread mine laid there")
+	var shot: Dictionary = sk.mines[Vector2i(0, 1)][0]
+	assert_eq([int(shot["damage"]), int(shot["row"]), int(shot["column"])], [5, 3, 0], "its number and its row's, the firer's point on each; no column")
+	sk.end_round()
+	assert_eq([left.hp, arrival.hp, right.hp], [197, 95, 197], "the arrival takes the shot, its neighbours the row's 3")
+	# A shot laid before the numbers (an old save) lands half of itself on the foes past the arrival.
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	s2.add_foes([a, b, c])
+	s2.begin()
+	s2.start_round()
+	s2._mine_hit(b, {"damage": 6, "keywords": [K.CLEAVE], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0})
+	assert_eq([a.hp, b.hp, c.hp], [97, 94, 97], "the old shot's neighbours half of it")
+
+
+## A numbered grant (the drum's, Ryan, 28 October) gives the keyword its number; on an entry
+## already carrying it, the higher of the two stands.
+func test_a_numbered_grant_raises_a_lower_number_and_keeps_a_higher() -> void:
+	var sk := Skirmish.new(1, 3)
+	var light := Face.attack(4, L, K.CLEAVE)
+	light.cleave = 1
+	var heavy := Face.attack(4, L, K.CLEAVE)
+	heavy.cleave = 9
+	var u := _mech("A", Die.of([light, heavy, Face.attack(4, L)]), 40, 100)
+	u.grant_passive(DRUM_PASSIVE)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(100), _ghoul(100), _ghoul(100), _archer(100), _archer(100), _archer(100)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var mid: Foe = sk.front[1]
+	assert_eq(sk.shown_face(ms, light, mid).cleave, 7, "a Spread 1 fired through the drum at the front sprays at the drum's 7")
+	assert_eq(sk.shown_face(ms, heavy, mid).cleave, 9, "a Spread 9 keeps its own")
+	var plain := sk.shown_face(ms, ms.die.faces[2], sk.back[1])
+	assert_true(plain.has(K.PENETRATE) and plain.penetrate == 7 and not plain.has(K.CLEAVE), "a plain gun at the back punches through at the drum's 7")
+	assert_eq(Effects.effect_text(DRUM_PASSIVE["effects"][2]), "aimed at the front rank: gains spread 7", "the grant's text carries its number")

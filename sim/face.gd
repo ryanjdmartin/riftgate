@@ -22,7 +22,10 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## keyword like Burn and Cryo; each foe hit gains that many stacks of Flak.
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH }
+## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
+## foes beside the target in its rank, Penetrate N the other rank of its column, Splash N the
+## two together (the plus round it), each foe past the target taking N as its blow's number.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open.
@@ -41,7 +44,7 @@ const KEYWORD_NAMES := {
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
-	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach",
+	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -51,6 +54,15 @@ const KEYWORD_STATUS := {
 	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",
 }
+## The keywords that carry a number, each in the field of its name on the entry: the stacks a
+## rider lays (Burn, Cryo, Flak) or the blow an area keyword deals each foe past the target
+## (Spread, Penetrate, Splash; Ryan, 28 October).
+const NUMBER_FIELDS := {
+	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
+	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
+}
+## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
+const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
 const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
 }
@@ -88,6 +100,9 @@ var strikes: int = 1          # blows per use: a rapid-fire weapon lands many sm
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
 var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
+var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
+var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
+var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
@@ -283,6 +298,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
+		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
+		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
+		f.splash = maxi(0, int(d.get("splash", 0)))
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
@@ -356,6 +374,10 @@ func to_dict() -> Dictionary:
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
 		d["flak"] = flak
+	if not is_debuff():
+		for kw in AREA_KEYWORDS:
+			if has(kw) and number_of(kw) > 0:
+				d[NUMBER_FIELDS[kw]] = number_of(kw)   # a debuff's area deals nothing, so it prints no number
 	if volatile > 0:
 		d["volatile"] = volatile
 	if shield_cost > 0:
@@ -426,10 +448,52 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
+	if AREA_KEYWORDS.has(kw) and int(get(NUMBER_FIELDS[kw])) <= 0:
+		set(NUMBER_FIELDS[kw], 1)   # an area keyword says its number; one when nothing says (a synthetic entry, an old save)
 
 
 func has(kw: int) -> bool:
 	return keywords.has(kw)
+
+
+## The number a numbered keyword carries here (Burn's stacks, Spread's blow), 0 for a keyword
+## it does not carry or one with no number.
+func number_of(kw: int) -> int:
+	var field: String = NUMBER_FIELDS.get(kw, "")
+	return int(get(field)) if not field.is_empty() and has(kw) else 0
+
+
+## Sets a numbered keyword's number, never below nothing.
+func set_number(kw: int, n: int) -> void:
+	var field: String = NUMBER_FIELDS.get(kw, "")
+	if not field.is_empty():
+		set(field, maxi(0, n))
+
+
+## Area by shape (Ryan, 11 and 12 October; numbered 28 October): the row, the foes beside the
+## target in its rank, is Spread's and Splash's; the column, the other rank of its column,
+## Penetrate's and Splash's.
+func reaches_row() -> bool:
+	return has(Keyword.CLEAVE) or has(Keyword.SPLASH)
+
+
+func reaches_column() -> bool:
+	return has(Keyword.PENETRATE) or has(Keyword.SPLASH)
+
+
+func has_area() -> bool:
+	return reaches_row() or reaches_column()
+
+
+## The number a foe the row reaches takes as its blow's: Spread's or Splash's, the higher when
+## both are there (a grant beside a printed one).
+func row_number() -> int:
+	return maxi(number_of(Keyword.CLEAVE), number_of(Keyword.SPLASH))
+
+
+## The number the column's foe takes: Penetrate's or Splash's, the higher when both are there.
+func column_number() -> int:
+	return maxi(number_of(Keyword.PENETRATE), number_of(Keyword.SPLASH))
 
 
 ## The rounds this entry goes dark once spent, this one included (the cooldown row, 14
@@ -553,6 +617,9 @@ func duplicate_face() -> Face:
 	f.burn = burn
 	f.cryo = cryo
 	f.flak = flak
+	f.cleave = cleave
+	f.penetrate = penetrate
+	f.splash = splash
 	f.volatile = volatile
 	f.shield_cost = shield_cost
 	f.short = short
@@ -803,6 +870,8 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
+				if AREA_KEYWORDS.has(k) and not is_debuff():
+					s += " %d" % number_of(k)   # area by shape, numbered: what each foe past the target takes (a debuff's deals nothing)
 				if gates.has(KEYWORD_NAMES[k]):
 					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:

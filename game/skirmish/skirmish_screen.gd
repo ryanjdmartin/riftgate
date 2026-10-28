@@ -913,7 +913,7 @@ func _refresh(save: bool = true) -> void:
 			if df == null or not df.is_attack() or not (lv.highlight and rv.highlight):
 				continue
 			var ef := Effects.effective_face(dm.unit, df, p[2])
-			if not (ef.has(Face.Keyword.CLEAVE) or ef.has(Face.Keyword.PENETRATE) or ef.reaches_all):
+			if not (ef.has_area() or ef.reaches_all):
 				continue
 			lv.highlight = false
 			rv.highlight = false
