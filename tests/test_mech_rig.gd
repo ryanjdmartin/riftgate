@@ -152,6 +152,42 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	pair[1].free()
 
 
+func test_a_form_is_held_while_set_and_let_go_after() -> void:
+	# A pose a model holds while its machine carries the status of the same name (the
+	# Armadillo's seal: its guns sink and its irises shut): it turns in when set, no act that
+	# moves a joint it holds is chosen while it is in, and letting it go brings them home.
+	var with_form := ""
+	for id in MACHINES:
+		if not (MechRig.load_sidecar(id).get("forms", {}) as Dictionary).is_empty():
+			with_form = id
+			break
+	assert_false(with_form.is_empty(), "a model holds a form")
+	var pair := _rig_for(with_form)
+	var rig: MechRig = pair[0]
+	var name := str(rig.forms.keys()[0])
+	var held: Dictionary = rig.forms[name]["curves"]
+	assert_false(held.is_empty(), "%s: the form holds joints" % with_form)
+	var rest := {}
+	for jn in held.keys():
+		rest[jn] = [(rig.joints[jn] as Node3D).position, (rig.joints[jn] as Node3D).rotation]
+	rig.set_form(name, true)
+	assert_true(rig.form_held(name), "set, it is held")
+	rig.tick(float(rig.forms[name]["duration"]) + 0.5)
+	for jn in held.keys():
+		var j: Node3D = rig.joints[jn]
+		assert_true(j.position.distance_to(rest[jn][0]) > 0.5 or j.rotation.distance_to(rest[jn][1]) > 0.01, "%s: %s has turned to its held pose" % [with_form, jn])
+	for i in range(30):
+		var a := rig.choose()
+		for jn in (a.get("tracks", {}) as Dictionary).keys():
+			assert_false(held.has(jn), "%s: no act that moves a held joint is chosen (%s keys %s)" % [with_form, a.get("name", "?"), jn])
+	rig.set_form(name, false)
+	assert_false(rig.form_held(name), "let go, it is not held")
+	rig.tick(float(rig.forms[name]["duration"]) + 0.3)
+	for jn in held.keys():
+		assert_true((rig.joints[jn] as Node3D).position.distance_to(rest[jn][0]) < 0.05, "%s: %s is home once the form is let go" % [with_form, jn])
+	pair[1].free()
+
+
 func test_acts_are_picked_at_random_and_never_twice_running() -> void:
 	var pair := _rig_for("clydesdale", 5)
 	var rig: MechRig = pair[0]

@@ -397,6 +397,7 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.forms = {}        # poses held while a status lasts (see form())
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -670,24 +671,7 @@ class Build:
         for jn, keys in (tracks or {}).items():
             if jn not in self.joint_meta:
                 raise ValueError("act %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
-            axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
-            rows = []
-            for key in keys:
-                key = [float(v) for v in key]
-                if len(key) == 2:
-                    row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                    row[1 + axis_i] = key[1]
-                elif len(key) == 4:
-                    row = key + [0.0, 0.0, 0.0]
-                elif len(key) == 7:
-                    row = key
-                else:
-                    raise ValueError("act %r of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (name, self.name))
-                for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
-                    v = row[1 + ("pitch", "yaw", "roll").index(ax)]
-                    if not lo <= v <= hi:
-                        raise ValueError("act %r of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
-                rows.append(row)
+            rows = [self._row("act", name, jn, key) for key in keys]
             if jn.startswith("turret"):
                 self._turret_rule(name, jn, rows, float(duration))
             out["tracks"][jn] = rows
@@ -702,6 +686,49 @@ class Build:
             parts = [parts] if isinstance(parts, str) else list(parts)
             out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
         self.acts.append(out)
+        return out
+
+    def _row(self, kind, name, jn, key):
+        """One key of a joint's track, seven wide (t, pitch, yaw, roll, dx, dy, dz), from (t, v)
+        on the joint's own axis, (t, pitch, yaw, roll) or the whole row, held to its limits."""
+        axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+        key = [float(v) for v in key]
+        if len(key) == 2:
+            row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            row[1 + axis_i] = key[1]
+        elif len(key) == 4:
+            row = key + [0.0, 0.0, 0.0]
+        elif len(key) == 7:
+            row = key
+        else:
+            raise ValueError("%s %r of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (kind, name, self.name))
+        for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
+            v = row[1 + ("pitch", "yaw", "roll").index(ax)]
+            if not lo <= v <= hi:
+                raise ValueError("%s %r of %s asks %s for %s %g, outside its limits %g..%g" % (kind, name, self.name, jn, ax, v, lo, hi))
+        return row
+
+    def form(self, name, duration, tracks, glow=None):
+        """A pose the machine holds while it carries the status of the same name (the
+        Armadillo's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
+        map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
+        last key earlier is held on to it); MechRig turns the form in over `duration` and back
+        out the same way, holds it in between, and plays no act that moves one of its joints
+        while it is in. `glow` is a list of (parts, k): lit parts named by label and their
+        light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
+        turn."""
+        out = {"duration": float(duration), "tracks": {}, "glow": []}
+        for jn, keys in tracks.items():
+            if jn not in self.joint_meta:
+                raise ValueError("form %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
+            rows = [self._row("form", name, jn, key) for key in keys]
+            if rows[-1][0] < float(duration):
+                rows.append([float(duration)] + rows[-1][1:])
+            out["tracks"][jn] = rows
+        for parts, k in glow or []:
+            parts = [parts] if isinstance(parts, str) else list(parts)
+            out["glow"].append({"parts": parts, "k": float(k)})
+        self.forms[name] = out
         return out
 
     # A turret's traverse in an act (Ryan, 4 October, the third pass: too fast and wild; not so
@@ -886,6 +913,7 @@ class Build:
         runtime code keys on a chassis id. The names the acts' glows look up are listed
         for the weld, which must keep those parts apart."""
         glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
+                            | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
                             | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
@@ -909,6 +937,8 @@ class Build:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.forms:
+            out["forms"] = self.forms
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):

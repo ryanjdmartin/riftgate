@@ -952,6 +952,9 @@ func _refresh(save: bool = true) -> void:
 				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
+		# A form the model holds while the machine carries its status (the Armadillo's seal).
+		if i < _mech_3d.size() and _mech_3d[i] != null:
+			_mech_3d[i].hold_forms(ms.unit)
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []

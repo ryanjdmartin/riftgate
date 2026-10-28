@@ -334,6 +334,16 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 	return out
 
 
+## Hold each of the model's forms while its machine carries the status of the same name (the
+## Armadillo's Sealed: its guns sink and its ports shut), and let it go when it does not. A
+## borrowed model holds nothing.
+func hold_forms(u: Unit) -> void:
+	if u == null or rig == null or model_id != u.chassis_id:
+		return
+	for name in rig.forms.keys():
+		rig.set_form(str(name), Effects.has(u, str(name)))
+
+
 ## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
 func _apply_plan() -> void:
 	wear(hardpoints, plan, mode, paint, token, hide_detail, model_id)

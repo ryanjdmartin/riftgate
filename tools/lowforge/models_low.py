@@ -817,8 +817,12 @@ def armadillo(b):
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that lifts out of it to fire, each canister's nose cold glass and a beacon
-    on its rim (the beep). The ports' striped rims are the Lockdown Shutters', the look of the
-    seal."""
+    on its rim (the beep). The seal made real (the bible's pinned row, 20 October; the
+    brief's leans, 28 October): the Lockdown Shutters, the look of the seal, a three-leaf
+    iris in each port's mouth in the ports' stripe, drawn back into the shell while it is
+    open; held while Sealed (the form "sealed"), the port guns sink into their ports, the
+    irises shut over them and the cowl lamps go dark, the flingers' rack staying live, since
+    a sealed Armadillo still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
@@ -869,6 +873,7 @@ def armadillo(b):
     # pitched up and forward, lined by a tube with a dark floor and a stripe rim at the
     # mouth; the mount on the floor, deep, the barrel out of it (Ryan, 1 October).
     D = (0.0, 0.707, 0.707)
+    shutters = {}   # port -> [(joint, its slide home)]: the seal's irises (the form below)
     for s, kind in ((-1.0, "rivet"), (1.0, "slug")):
         px = s * 14.0
         # A shallow socket (a rack fitted deep would be invisible), but the collar's outer
@@ -879,6 +884,8 @@ def armadillo(b):
         b.cut(band_obs, p0, p1, 6.6)
         _tube(b, (px, -11.5, Z0 + 18.5), p1, 8.0, 6.4, 8, "steel.plate", "port", floor_depth=9.9)
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor=False)
+        tag = "r" + ("l" if s < 0 else "r")
+        shutters[tag] = _iris(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.4)   # just under the rim
         mount = Vector((px, -3.5, Z0 + 26.5))
         DV = Vector(D)
         # The barrels a fixed length from the mount (they had run to a fixed muzzle point
@@ -939,7 +946,10 @@ def armadillo(b):
         # fitted there lies in a trough instead of running into the shell (Ryan, 1
         # October: the barrels would have clipped the band in front).
         b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
-        b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
+        tag = "f" + ("l" if s < 0 else "r")
+        shutters[tag] = _iris(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 4.6)   # just behind the rim
+        with b.joint("sink_" + tag, (px, 24.5, ZF)):   # a gun fitted here sinks into its port as the seal turns in
+            b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
     b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
@@ -1060,6 +1070,19 @@ def armadillo(b):
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
+    # The seal (the form "sealed", held while the machine carries the status): the port guns
+    # sink into their ports (and a gun fitted in a forward port with them), then each iris
+    # slides shut over its port, and the cowl lamps go dark as it turns in ("the shell goes
+    # dark", its design note); the flingers' rack is untouched. RIFTGATE_SEAL_DEBUG=1 holds
+    # it and lets it go in turn, to judge running.
+    SINK, SINK_F, T_SINK, T_SHUT0, T_SHUT1, T_ALL = 17.0, 32.0, 0.45, 0.35, 0.85, 0.9
+    tracks = {jn: [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SINK, 0.0, 0.0, 0.0, 0.0, -0.707 * SINK, -0.707 * SINK)] for jn in ("elev_l", "elev_r")}
+    for tag in ("fl", "fr"):
+        tracks["sink_" + tag] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SINK, 0.0, 0.0, 0.0, 0.0, -SINK_F, 0.0)]
+    for leaves in shutters.values():
+        for jn, (hx, hy, hz) in leaves:
+            tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SHUT0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SHUT1, 0.0, 0.0, 0.0, hx, hy, hz)]
+    b.form("sealed", T_ALL, tracks, glow=[(["lamp"], -1.0)])
 
 armadillo.maker = "minerva"
 
@@ -4088,6 +4111,44 @@ def _sq(w, h):
 def _poly(r, n, phase=0.0):
     """A regular polygon profile for `_beam`."""
     return [(r * math.cos(phase + i * 2.0 * math.pi / n), r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _slab(b, pts, normal, thick, material, label):
+    """A flat polygon given in world space, `thick` deep along `normal` and centred on it."""
+    n = Vector(normal).normalized() * (thick / 2.0)
+    bm = bmesh.new()
+    top = [bm.verts.new(Vector(p) + n) for p in pts]
+    bot = [bm.verts.new(Vector(p) - n) for p in pts]
+    bm.faces.new(top)
+    bm.faces.new(list(reversed(bot)))
+    for i in range(len(pts)):
+        j = (i + 1) % len(pts)
+        bm.faces.new([bot[i], bot[j], top[j], top[i]])
+    return b._finish(bm, material, label)
+
+
+def _iris(b, tag, centre, axis, r, n=3, thick=0.6, material="steel.stripe"):
+    """A port's iris (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius `r`
+    about `centre`, square to `axis`, each drawn back along its own bisector by `r` so the
+    mouth stands open with the leaves hidden in the shell, each on a joint of its own
+    (`shutter_<tag>_<k>`) that a form slides home. Returns [(joint, its slide home)], world
+    units."""
+    axis = Vector(axis).normalized()
+    up = Vector((0.0, 0.0, 1.0))
+    side = Vector((1.0, 0.0, 0.0)) if abs(axis.dot(up)) > 0.999 else axis.cross(up).normalized()
+    over = side.cross(axis).normalized()
+    out = []
+    span = 2.0 * math.pi / n
+    for k in range(n):
+        a = math.pi / 2.0 + k * span   # the first leaf's bisector up the port's face
+        back = (side * math.cos(a) + over * math.sin(a)) * r
+        pts = [centre + back] + [centre + back + (side * math.cos(a - span / 2.0 + j * span / 4.0) + over * math.sin(a - span / 2.0 + j * span / 4.0)) * (r + 0.4)
+                                 for j in range(5)]
+        name = "shutter_%s_%d" % (tag, k)
+        with b.joint(name, tuple(centre + back)):
+            _slab(b, pts, axis, thick, material, "shutter")
+        out.append((name, (-back.x, -back.y, -back.z)))
+    return out
 
 
 def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):

@@ -8,7 +8,8 @@ extends SceneTree
 ## place of the stock parts ("2:" bares a socket), to judge a swap; a class on its own is
 ## a model too: <chassis> shapes/barrel_minerva. RIFTGATE_FIT=stock wears what the game puts on
 ## a fresh machine (MechView3D.plan_for): the stock in content against what the model's pins
-## were built carrying, so a stale part shows as its class shape.
+## were built carrying, so a stale part shows as its class shape. RIFTGATE_FORM=<name> renders
+## the model holding that form (the Armadillo's "sealed"), turned all the way in.
 
 var _frames := 0
 var _view: MechView3D
@@ -43,6 +44,10 @@ func _init() -> void:
 	if OS.get_environment("RIFTGATE_OUTLINE_KEEP") != "1":
 		_view.strip_silhouette()   # the viewer's renders show the machine bare (Ryan, 30 September); RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge
 	root.add_child(_view)
+	var form := OS.get_environment("RIFTGATE_FORM")
+	if not form.is_empty():
+		_view.rig.set_form(form, true)
+		_view.rig.tick(2.0)
 	process_frame.connect(_tick)
 
 
