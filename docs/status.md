@@ -311,8 +311,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 137 (28 October, from
-  `ccr-6073bda9-p34o8q` onto 136, the Kestrel round's models and rigs: the ladder's
+  acts on a reloaded page). At the page's version 138 (28 October, from
+  `ccr-6073bda9-p34o8q` onto 136, the Kestrel round's models and rigs, then the Red Dragon's trim: the ladder's
   `content/foes.json` with the 26 recolours and the new specials, `content/factions.json` with
   the spawn lists by tier, `content/components.json` with the Null Field Emitter and
   `content/vocabulary.json` with the four buffs on both sides and Purge; every other file
