@@ -949,8 +949,8 @@ func _set_intent_pair(breathe: bool) -> void:
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
 static func _intent_edged() -> bool:
 	return OS.get_environment("RIFTGATE_INTENT_EDGE") == "1"
-const ENEMY_HOT := Color("ff8a1e")    # the contact's bright: red toward orange
-const ENEMY_EDGE := Palette.ENEMY_EDGE   # the edge under every red line and border: deep red, not black
+const ENEMY_HOT := Color("ff6000")    # the contact's bright: red toward orange, no blue, under #ff8200
+const ENEMY_EDGE := Color("5a0e00")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
 
 ## The tapped pack's intent breathes between violet and the rift's pale, most of the way up
 ## and never quite down to the deep, so on any ground it passes through a colour that reads.

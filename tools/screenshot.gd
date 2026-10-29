@@ -8,7 +8,7 @@ extends SceneTree
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
-## Scorched on the first machine), repick (a foe whose machine falls before it acts, a second
+## Scorched on the first machine), foeheat (heat's orange beside the red on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike).
 
 var _frames := 0
@@ -201,6 +201,18 @@ func _apply_pose() -> void:
 			Effects.stack(u, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
 			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
+			s._refresh()
+		"foeheat":
+			# Heat's orange beside the enemy's red on the foes' chip rows, the one place the two sit
+			# side by side: Burning on the first front foe, Flak on the second, Shocked on the third.
+			var ids := ["burning", "flakked", "shocked"]
+			var k := 0
+			for foe in s.sk.front:
+				if foe == null or k >= ids.size():
+					continue
+				var st: Dictionary = Effects.STATUS[ids[k]]
+				Effects.stack(foe, st, Effects.SKIRMISH, "shot", 1 if ids[k] == "shocked" else 2, Effects.status_decay(st))
+				k += 1
 			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.

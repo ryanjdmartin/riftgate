@@ -2254,18 +2254,20 @@ session's relief is read against it.
 
 **The red read** (the decision it informs: the bible's semantic-colours row, the red lifted on
 Ryan's "Red chips everywhere need to brighten up, saturate, whatever, it's hard to see on the
-new backgrounds", and his ask to see its closeness to the heat orange). Method: the Machado
+new backgrounds", and his ask to see its closeness to the heat orange; then his try of pure red,
+"try just full ff0000 for me, please. no outlines"). Method: the Machado
 (2009) protan, deutan and tritan matrices at severity 1.0 in linear sRGB, CIELAB lightness,
 CIEDE2000 distance (ΔE), and the luminance contrast of a chip's red on its own black (the
 chip's ground over the field, #0c110a as drawn). Normal / protan / deutan / tritan:
 
 | | Lightness | On a chip's black | ΔE to the orange #ff6a00 |
 |---|---|---|---|
-| #ff1e1e (the red until now) | 54 / 42 / 61 / 53 | 5.0 / 3.2 / 6.1 / 4.8 | 15.7 / 13.8 / 6.1 / 10.2 |
-| #ff7c80 (the red since) | 68 / 61 / 71 / 64 | 7.7 / 6.2 / 8.6 / 6.9 | 22.2 / 19.4 / 14.0 / 7.5 |
+| #ff1e1e (the red until 29 October) | 54 / 42 / 61 / 53 | 5.0 / 3.2 / 6.1 / 4.8 | 15.7 / 13.8 / 6.1 / 10.2 |
+| #ff7c80 (the first try) | 68 / 61 / 71 / 64 | 7.7 / 6.2 / 8.6 / 6.9 | 22.2 / 19.4 / 14.0 / 7.5 |
+| #ff0000 (Ryan's try, that evening) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 14.7 / 14.7 / 6.8 / 13.1 |
 | #ff6a00 (the orange, for scale) | 63 / 55 / 68 / 58 | 6.7 / 5.0 / 7.7 / 5.6 | — |
 
-A red cannot saturate past #ff1e1e, so a brighter one leans toward orange (more green) or
+A red saturates little past #ff1e1e (#ff0000 is the limit), so a brighter one leans toward orange (more green) or
 toward pink (more blue). Toward orange (#ff4420, #ff5530) the worst ΔE to the orange falls to 4.0
 and 3.4 (deutan); toward pink the protan and deutan distances grow but tritan's falls, its
 orange being a pink-red (#ff6464 2.6, #ff7070 4.6); with green and blue raised together the
@@ -2283,4 +2285,24 @@ luminance contrast 1.04 and 1.28, and #ff7c80 4.9 and 7.7, so the skirmish's arr
 deep-red edge (#5a0e0e). The dark edge and the light core part from every floor between them, the
 edge on the bright ones and the core on the dark: on each floor's shades in every simulation the
 better of the two stands ΔE 22.5 or more away (the marsh, protan, the worst), and the core stands
-4.9:1 on its own edge in the worst simulation.
+4.9:1 on its own edge in the worst simulation. Bare, as Ryan's try has it, an arrow of #ff0000
+stands 8.3 and 8.6 from the meadow's and the waste's floors (deutan), its luminance contrast 1.02 and
+1.31, within half a point of the old red's.
+
+**The rule, that evening.** Ryan: "you're moving the blues as well when I ask for brighter/darker
+and so on. Reds and oranges, compose them using RG only, not B. I actually like ff6000, once we get
+past the ff8200 area it starts to get confusing whether its orange or yellow/green to me. ff30,
+ff40, ff50, ff60 are all very distinct to my particular blindness." So the red is #ff0000 and heat's
+orange #ff6000, and with no blue a red lightens only toward the orange. Normal / protan / deutan /
+tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6000 |
+|---|---|---|---|
+| #ff0000 (the red) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 12.1 / 12.2 / 5.6 / 12.2 |
+| #ff3000 (a lighter red, for scale) | 55 / 44 / 61 / 53 | 5.2 / 3.4 / 6.3 / 4.8 | 8.9 / 8.8 / 4.1 / 7.6 |
+| #ff6000 (the orange) | 61 / 53 / 66 / 56 | 6.3 / 4.6 / 7.4 / 5.3 | — |
+
+Against #ff6a00 the red stood 6.8 in deutan, so the orange's move costs 1.2 there; the orange
+stands 14.6 or more from every HUD option and the gain green in every simulation (#ff6a00, 13.6).
+The map's bright, #ff8a1e, past his line, became #ff6000, and the deep reds lost their blue
+(#7a1414 to #7a1400, ΔE 5.0; the map's edge #5a0e0e to #5a0e00, ΔE 3.5).
