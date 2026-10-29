@@ -21,9 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 741 tests, 67,220 checks, green on `claude/charming-rubin-h954bp` (28 October, the
-  model rebuilds of Ryan's brief with main merged in; 738 tests, 66,637 checks on main's head,
-  the movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 744 tests, 67,054 checks, green on `claude/charming-rubin-h954bp` (29 October, the
+  model rebuilds and Ryan's notes on them, with main merged in; 739 tests, 66,640 checks on
+  main's head, the mechanics audit), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -129,7 +129,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
-  map) is gone (Ryan, 28 October): the battle screen shows all it did.
+  map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
+  map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
+  name, the boss's patrol and ring, the fifth caveat) but the crags' shown word (its 30).
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with

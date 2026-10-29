@@ -792,7 +792,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it for a third of its strength each phase, at least ten; when its integrity is gone the field is down and the battle is lost. Machines may stand on it; nothing else may.",
+		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it every enemy turn, harder the bigger the pack and never for less than ten; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
 		"flavour": "",
 	}
 

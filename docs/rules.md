@@ -813,11 +813,11 @@ a stat.
 - **Packs**: one foe type times a strength. They cross every land hex and never enter water or
   crags; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb, the Drake, and
   their lines' recolours) crosses both as a flyer does and may stand there; moves 2 (fast 3, the Dire Wolf's line 4, massive 1);
-  rings 1 (front rank), 3 (back rank), 2 (massive). They walk round machines and other packs; the walk shown is the walk played. The
+  rings 1 (front rank), 3 (back rank), 2 (massive). They walk round grounded machines and other packs and pass under a flyer, never ending a walk on its hex, so a flyer holds no ground; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
-- **Hunters** lock one machine when they appear (nearest, weakest, strongest or slowest; never
+- **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
   hunter with the hunter's picture and a target. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
@@ -832,8 +832,8 @@ a stat.
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
-- **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3) a hex a
-  turn, whoever commands it, joins fights in its ring and can be attacked from the first turn
+- **The boss** patrols within two hexes of the rift, a hex a turn whoever commands it, joins
+  the fights its ring covers (2; a final's back-rank hero's 3) and can be attacked from the first turn
   (a hero carries no move and no hunt of its own: it only ever commands the boss unit); its fight won wins the battle: the fight ends in victory
   only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
   commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
