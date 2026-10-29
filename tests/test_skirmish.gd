@@ -1538,17 +1538,193 @@ func test_static_set_reach_sends_a_tagged_component_to_direct() -> void:
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "the mortar itself never changed")
 
 
-func test_chain_repeats_on_a_kill() -> void:
-	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.CHAIN, 10))))
-	sk.add_foes([_ghoul(30), _ghoul(30), _ghoul(90)])
+## Chain, the conductor (Ryan, 28 October; the kill and repeat retired): the blow lands on its
+## target as ever, and Chain's number on every other Shocked foe on the field, wherever it stands
+## and whatever the gun's reach; each arc is a weapon's blow, so the conductor's Shocked doubles
+## it and is spent. Heat once a spend.
+func _chain_gun(power: int = 4, chain: int = 2, heat: int = 3, more: Array = []) -> Face:
+	var kws: Array = [K.CHAIN]
+	kws.append_array(more)
+	var f := Face.attack(power, L, kws, heat)
+	f.chain = chain
+	return f
+
+
+func _shock_on(foe: Foe) -> void:
+	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+
+
+func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun())))
+	var target := _ghoul(30, 5)
+	var beside := _ghoul(30, 5)
+	var behind := _archer(30, 5)
+	var idle := _archer(30, 5)
+	sk.add_foes([target, beside, behind, idle])
 	sk.begin()
 	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0], null, "the first ghoul dies and its slot clears")
-	assert_eq(sk.front[1], null, "the chain kills the second")
-	assert_eq(sk.front[2].hp, 60, "and lands once on the third, which survives, so it stops")
-	assert_eq(sk.mechs[0].heat, 30, "heat is paid on every link, three here: that is the risk of a chain")
+	assert_true(sk.front[0] == target and sk.front[1] == beside and sk.back[0] == behind and sk.back[1] == idle, "the ranks as they arrived")
+	_shock_on(beside)
+	_shock_on(behind)
+	assert_false(sk.targets_for_face(sk.mechs[0], sk.mechs[0].face()).has(behind), "the foe behind the target is out of Direct reach")
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq(target.hp, 26, "the target takes the roll")
+	assert_eq(beside.hp, 26, "the Shocked foe beside it takes Chain 2, doubled")
+	assert_eq(behind.hp, 26, "and so does the one behind the target, out of the gun's reach")
+	assert_eq(idle.hp, 30, "a foe with no charge takes nothing")
+	assert_false(Effects.has(beside, "shocked") or Effects.has(behind, "shocked"), "each arc spends its charge")
+	assert_eq(sk.mechs[0].heat, 3, "heat once a spend; an arc adds none")
+	assert_eq("\n".join(sk.log).count("arcs to"), 2, "the log tells each arc")
+
+
+func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun())))
+	var target := _ghoul(30, 5)
+	var other := _ghoul(30, 5)
+	sk.add_foes([target, other])
+	sk.begin()
+	sk.start_round()
+	_shock_on(target)
+	_shock_on(other)
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq(target.hp, 22, "the aimed foe takes the roll, doubled by its own charge, once")
+	assert_eq(other.hp, 26, "the other conductor takes Chain 2, doubled")
+	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
+
+
+func test_chain_with_no_shocked_foe_lands_on_its_target_alone() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun())))
+	var target := _ghoul(30, 5)
+	var other := _ghoul(30, 5)
+	sk.add_foes([target, other])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq([target.hp, other.hp], [26, 30], "the target alone")
+	assert_false("\n".join(sk.log).contains("arcs to"), "no arc")
+
+
+func test_the_firers_modifiers_ride_every_arc() -> void:
+	for amp in [["add_damage", 1, 6, "(2 + 1), doubled"], ["multiply_damage", 2, 8, "(2 x 2), doubled"]]:
+		var sk := Skirmish.new(1, 2)
+		var m := _mech("A", Die.single(_chain_gun()))
+		m.grant_passive({"id": "test_amp", "name": "Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": str(amp[0]), "value": amp[1]}]})
+		sk.add_mech(m)
+		var target := _ghoul(30, 5)
+		var other := _ghoul(30, 5)
+		sk.add_foes([target, other])
+		sk.begin()
+		sk.start_round()
+		_shock_on(other)
+		assert_true(sk.assign(0, target), "the Chain gun spent")
+		assert_eq(30 - other.hp, int(amp[2]), "%s: the conductor takes %s" % [str(amp[0]), str(amp[3])])
+
+
+func test_the_riders_land_on_every_conductor() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.BURN, K.FLAK]))))
+	var target := _ghoul(30, 5)
+	var other := _ghoul(30, 5)
+	sk.add_foes([target, other])
+	sk.begin()
+	sk.start_round()
+	_shock_on(other)
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq(other.hp, 26, "the conductor's blow, before the Flak it lays")
+	assert_eq(Effects.stacks_of(other, "burning"), 1, "Burn 1 lands on the conductor")
+	assert_eq(Effects.stacks_of(other, "flakked"), 1, "and Flak 1, after its blow")
+
+
+func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
+	var gun := _chain_gun()
+	gun.devours = 1
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("A", Die.single(gun))
+	sk.add_mech(m)
+	var target := _ghoul(30, 5)
+	var weak := _ghoul(3, 5)
+	sk.add_foes([target, weak])
+	sk.begin()
+	sk.start_round()
+	_shock_on(weak)
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_false(weak.alive(), "the arc kills the conductor")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill feeds the talons' rule")
+
+
+func test_an_arc_meets_armour_unless_it_breaches() -> void:
+	for breach in [false, true]:
+		var sk := Skirmish.new(1, 2)
+		sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.BREACH] if breach else []))))
+		var target := _ghoul(30, 5)
+		var plated := _ghoul(30, 5)
+		plated.armour = 1
+		sk.add_foes([target, plated])
+		sk.begin()
+		sk.start_round()
+		_shock_on(plated)
+		assert_true(sk.assign(0, target), "the Chain gun spent")
+		assert_eq(30 - plated.hp, 4 if breach else 3, "a Breach meets no armour" if breach else "Chain 2, doubled, less armour 1")
+
+
+func test_a_conductors_barrier_takes_the_arc_and_its_charge_is_spent() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun())))
+	var target := _ghoul(30, 5)
+	var sheltered := _ghoul(30, 5)
+	sk.add_foes([target, sheltered])
+	sk.begin()
+	sk.start_round()
+	_shock_on(sheltered)
+	Effects.grant_buff(sheltered, "barrier", 1, "test", sk.round)
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq(sheltered.hp, 30, "the Barrier takes the arc whole")
+	assert_false(Effects.has(sheltered, "barrier"), "and pops")
+	assert_false(Effects.has(sheltered, "shocked"), "the charge is spent on it")
+	assert_true("\n".join(sk.log).contains("the shock is spent on the Barrier"), "the log says so")
+
+
+func test_a_silenced_machine_arcs_nothing() -> void:
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("A", Die.single(_chain_gun()))
+	sk.add_mech(m)
+	var target := _ghoul(30, 5)
+	var other := _ghoul(30, 5)
+	sk.add_foes([target, other])
+	sk.begin()
+	sk.start_round()
+	_shock_on(other)
+	Effects.grant_for_rounds(m, Effects.STATUS["silenced"], "foe:test", sk.round + 1)
+	assert_true(sk.assign(0, target), "the Chain gun spent, its keywords muted")
+	assert_eq([target.hp, other.hp], [26, 30], "the target alone")
+	assert_true(Effects.has(other, "shocked"), "the charge stands")
+
+
+func test_the_maps_list_the_conductors() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := _chain_gun()
+	sk.add_mech(_mech("A", Die.single(gun)))
+	var target := _ghoul(30, 5)
+	var beside := _ghoul(30, 5)
+	var behind := _archer(30, 5)
+	var other_back := _archer(30, 5)
+	sk.add_foes([target, beside, behind, other_back])
+	sk.begin()
+	sk.start_round()
+	_shock_on(behind)
+	var shapes := sk.area_shapes(gun, target)
+	assert_eq(shapes.size(), 1, "one foe past the target")
+	assert_eq(int(shapes.get(behind, 0)), Skirmish.AREA_CHAIN, "the Shocked foe, a conductor")
+	var hit := sk.reached_by(gun, target)
+	assert_eq(hit.size(), 2, "the target and its conductor")
+	assert_true(hit.has(target) and hit.has(behind), "both")
+	assert_false(hit.has(beside) or hit.has(other_back), "no foe without a charge")
+	assert_eq(Skirmish.area_number(gun, Skirmish.AREA_CHAIN), 2, "a conductor's number is Chain's")
+	var probe := Face.attack(0, L, [K.CHAIN])
+	assert_true(sk.conductors(probe, target).is_empty(), "a debuff conducts nothing")
 
 
 func test_stats_are_base_plus_every_live_source_in_order() -> void:
@@ -7987,28 +8163,28 @@ func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_expose
 
 ## Chain does what Chain does on a blow (Ryan, 21 October): a Chain mine that kills its arrival
 ## repeats its spender's attack on the next foe in reach, rolled and paying its heat again.
-func test_a_chain_mine_that_kills_its_arrival_repeats_the_attack() -> void:
-	var chain := Face.attack(10, L, [K.CHAIN])
-	chain.heat = 5
+func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands() -> void:
 	var sk := Skirmish.new(1, 2)
-	var m := _mech("Bomber", Die.single(chain), 40, 100)
+	var m := _mech("Bomber", Die.single(_chain_gun(4, 2, 5)), 40, 100)
 	m.grant_passive(MINER)
 	sk.add_mech(m)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
 	var weak := _ghoul(10, 0)
 	var other := _ghoul(300, 0)
-	var arrival := _ghoul(10, 0)
+	var arrival := _ghoul(30, 0)
 	sk.add_foes([weak, other, arrival])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(1, weak), "a slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "a chain mine laid")
+	assert_true(sk.assign(0, Vector2i(0, 0)), "a Chain mine laid")
 	var heat_laid := sk.mechs[0].heat
+	_shock_on(other)
 	sk.end_round()
-	assert_false(arrival.alive(), "the arrival dies on the mine")
-	assert_eq(other.hp, 290, "and the chain repeats the attack on the next foe in reach")
-	assert_true("\n".join(sk.log).contains("chains to"), "the log says so")
-	assert_eq([heat_laid, sk.mechs[0].heat], [5, 10], "the repeat pays its heat again, on the gauge until the next END TURN")
+	assert_eq(arrival.hp, 26, "the arrival takes the shot")
+	assert_eq(other.hp, 296, "and the Shocked foe takes Chain 2 as laid, doubled, as the mine lands")
+	assert_false(Effects.has(other, "shocked"), "its charge spent")
+	assert_true("\n".join(sk.log).contains("arcs to"), "the log says so")
+	assert_eq([heat_laid, sk.mechs[0].heat], [5, 5], "the lay paid its heat; the arc pays none")
 
 
 ## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that

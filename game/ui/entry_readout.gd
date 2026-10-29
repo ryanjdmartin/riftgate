@@ -166,9 +166,10 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			after.append(text_line("effect", label, "kw"))
 		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP, Face.Keyword.DISPEL]:
 			lays.append(text_line("effect", label, "kw"))
-		elif Face.AREA_KEYWORDS.has(k) and not f.is_debuff():
+		elif (Face.AREA_KEYWORDS.has(k) or k == Face.Keyword.CHAIN) and not f.is_debuff():
 			# Area by shape, numbered (Ryan, 28 October): what each foe past the target takes, its
-			# change from the component's own marked as every number's is (the drum's Spread 2).
+			# change from the component's own marked as every number's is (the drum's Spread 2);
+			# Chain's the same, what each Shocked conductor takes before its charge doubles it.
 			land.append(parts_line("effect", [word(label), num(str(f.number_of(k)), f.number_of(k), base.number_of(k))], "kw"))
 		else:
 			land.append(text_line("effect", label, "kw"))

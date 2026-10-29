@@ -386,10 +386,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "If this attack kills an enemy, repeat it on a new, valid target.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour, so its Shocked doubles it and the charge is spent. It reads Shocked and never lays it.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'; 'Don't let it charge itself'); the kill and repeat and the ping retired. Today's Shock setters shock one foe each, so the arc finds one conductor until Aphelion's spread setters exist. Its number rides on the entry (chain)."
    }
   },
   {

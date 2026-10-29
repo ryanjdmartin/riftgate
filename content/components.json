@@ -402,7 +402,8 @@
     "keywords": [
      "chain"
     ],
-    "heat": 2
+    "heat": 2,
+    "chain": 2
    },
    "passive": null,
    "tags": [

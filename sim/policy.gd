@@ -418,9 +418,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 
 # ---------------------------------------------------------------- scoring
 
-## An attack on a foe, in foe hit points: what lands (capped at what the target and any
-## neighbours have left), the kill it makes as often as the roll makes it, the links a
-## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
+## An attack on a foe, in foe hit points: what lands (capped at what the target, any
+## neighbours and a Chain's Shocked conductors have left), the kill it makes as often as the
+## roll makes it, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	var quick := Effects.quick_turn_live(ms.unit, f)
@@ -444,8 +444,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp) + spray_score
 	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, Splash's
-	# both, a reach over every foe): its shape's number through the firer's modifiers and its own
-	# reads, statuses and armour, capped at what it has left (area by shape, numbered: 28 October).
+	# both, a Chain's Shocked conductors, a reach over every foe): its shape's number through the
+	# firer's modifiers and its own reads, statuses (a conductor's Shocked doubling it) and
+	# armour, capped at what it has left (area by shape, numbered, and Chain: 28 October).
 	var shapes := sk.area_shapes(f, target)
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
@@ -600,20 +601,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A kill feeds stacks of Overcharged: what the status adds to the die's own damage, a
 		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
 		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * float(f.devours) * DEVOUR_ROUNDS
-	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
-	# link is worth its kill at the odds of reaching it.
-	var uses := 1.0
-	if f.has(Face.Keyword.CHAIN):
-		var p := p_kill
-		for n in sk.targets_for_face(ms, f):
-			if n == target or not n.alive() or p <= 0.001:
-				continue
-			uses += p
-			var link := damage_outcomes(ms, f, n)
-			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n, sk) * HULL_WEIGHT))
-			p *= _kill_odds(link, n.hp)
-	score -= heat_cost(sk, ms, f, uses)
-	return score - volatile_cost(sk, ms, f, uses) - cooldown_cost(ms, f, score)
+	score -= heat_cost(sk, ms, f)
+	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
 ## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
@@ -710,6 +699,12 @@ func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -
 		for n in sk.slot_foes(1 - slot.x, slot.y):
 			if n.alive():
 				score += p * minf(col, float(n.hp))
+	# Chain's arc as laid (28 October): the Shocked foes on the field now, each its number
+	# doubled, at the odds the shot lands while they still carry the charge.
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		var arc := 2.0 * _area_mean(ms, f, Skirmish.AREA_CHAIN)
+		for n in sk.shocked_foes(null):
+			score += p * minf(arc, float(n.hp))
 	score *= MINE_WEIGHT
 	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 

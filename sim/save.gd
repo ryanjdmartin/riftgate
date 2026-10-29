@@ -483,9 +483,9 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 			shot["keywords"] = kws
 			for key in ["damage", "seq", "burn", "cryo", "flak"]:
 				shot[key] = int(shot.get(key, 0))
-			for key in ["row", "column"]:
+			for key in ["row", "column", "chain"]:
 				if shot.has(key):
-					shot[key] = int(shot[key])   # its area numbers (28 October); a shot laid before them has none, and its area lands half (Skirmish._mine_hit)
+					shot[key] = int(shot[key])   # its area numbers and Chain's (28 October); a shot laid before them has none: its area lands half and it arcs nothing (Skirmish._mine_hit)
 			shot["mech"] = int(shot.get("mech", -1))
 			shot["by"] = str(shot.get("by", ""))
 			var fd: Dictionary = shot.get("face", {})

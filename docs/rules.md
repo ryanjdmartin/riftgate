@@ -145,6 +145,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
   explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
   do).
+- Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
+  whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
   (a Gel's halves step up into it at once, below).
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
@@ -156,17 +158,17 @@ defeat when every machine is wrecked. There is no round limit.
   arrival takes both slots'; shots still waiting when it falls wait on for the next. The
   reinforcement step places every arrival first, then the mines land left to right; any other
   way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
-  a stun takes the arrival's first action, and a Chain mine that kills repeats its spender's
-  attack on the next foe in reach, rolling and paying heat again (nothing repeats once the
-  spender is gone); Lure and Disrupt do nothing, their round being over, and Rapid and
-  Volatile acted at the spend. Nothing expires.
+  a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
+  other Shocked foe on the field as it lands; Lure and Disrupt do nothing, their round being
+  over, and Rapid and Volatile acted at the spend. Nothing expires.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
-   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints
-   from its firer: what heat fired adds (Vents all) and the hopper's loads.
+   Penetrate's in the other rank of its column, Splash's both); on every other Shocked foe on
+   the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
+   entry prints from its firer: what heat fired adds (Vents all) and the hopper's loads.
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
@@ -281,8 +283,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
-- **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
-  again, until a link fails to kill.
+- **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
+  each arc a blow of the spend, so its Shocked doubles it and is spent, and the riders land;
+  Chain reads Shocked and never lays it, and an arc adds no heat.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
@@ -706,7 +709,7 @@ and every one of them that fell is a kill).
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
+  this machine's that killed, arcs, spills and a vent's blast included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on

@@ -31,6 +31,7 @@ const REROLLS_PER_ROUND := 3
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
+const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
@@ -1552,7 +1553,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
 		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
-	var killed := 0        # the foes a weapon spend or a vent's blast felled, chains and spills included (a kill trigger, the reset gun)
+	var killed := 0        # the foes a weapon spend or a vent's blast felled, arcs and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
 	match f.kind:
 		Face.Kind.BLANK:
@@ -2279,7 +2280,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		vent += modded["vent"]
 		var landed := dmg
 		# Area by shape, numbered (Ryan, 28 October; the half retired): every other foe the strike
-		# reaches takes its shape's number (Spread's, Penetrate's, Splash's) in place of the roll,
+		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
+		# conductor, whose Shocked then doubles it as on any blow) in place of the roll,
 		# through the same order, the firer's modifiers on it and its own reads. Every blow of the
 		# strike is read before any lands, so a kill in it (the talons' Overcharged) feeds the next
 		# strike, never this one's other blows.
@@ -2291,6 +2293,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			if int(shapes.get(foe, 0)) == AREA_CHAIN:
+				log.append("%s arcs to %s" % [ms.unit.display_name, foe.display_name])   # Chain (28 October): a conductor's blow
 			var blow: int = blows[foe]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
@@ -2475,17 +2479,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		var cooled := mini(ms.heat, thawed * cryo_cool())
 		ms.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [ms.unit.display_name, thawed, cooled])
-	# Chain: a kill repeats the attack on a new valid target, heat and all (the heat is the
-	# risk, and a laser is telegraphed), until it misses a kill.
-	if f.has(Face.Keyword.CHAIN) and not target.alive():
-		for cand in targets_for_face(ms, real):
-			if cand.alive() and cand != target:
-				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
-				var was_chaining := _chaining
-				_chaining = true   # a chain is the same spend: its blows count, not a second spend
-				_resolve_attack(mech_index, ms, f, cand, real)
-				_chaining = was_chaining
-				break
 
 
 ## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
@@ -2641,15 +2634,43 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 			hit.append(other)
 	if f.has_area():
 		_with_twins(hit)   # an area blow reaches a twin slot whole
+	# Chain's conductors (28 October): every other Shocked foe on the field, after the shapes, so
+	# a foe both beside the target and Shocked takes one blow, the shape's; a twin's half only if
+	# it carries the charge itself.
+	for foe in conductors(f, target):
+		if not hit.has(foe):
+			hit.append(foe)
 	return hit
+
+
+## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
+## field alive and Shocked, wherever it stands and whatever the entry's reach, in the field's
+## order. None for an entry without Chain, or for a debuff, whose blow is nothing. Read as the
+## die is spent, before any blow lands, so a Shock the spend lays never conducts its own arc.
+func conductors(f: Face, target: Foe) -> Array[Foe]:
+	if f != null and f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		return shocked_foes(target)
+	var none: Array[Foe] = []
+	return none
+
+
+## Every foe on the field alive and Shocked but `but`, in the field's order: a Chain's
+## conductors, a mine's as it lands included.
+func shocked_foes(but: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for foe in field_foes():
+		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe):
+			out.append(foe)
+	return out
 
 
 ## The shape each foe one strike reaches past its target stands in (area by shape, numbered:
 ## Ryan, 28 October), for the number it takes in place of the roll: AREA_ROW beside the target
 ## in its rank (Spread's, Splash's), AREA_COLUMN the other rank of its column (Penetrate's,
 ## Splash's), a twin slot's other half as the half it pairs with (the target's own twin beside it
-## in the row, or the column's when the entry reaches no row), AREA_ALL any other foe a reach
-## over every foe adds. The target is not in it. The resolver and the bot read the same map.
+## in the row, or the column's when the entry reaches no row), AREA_CHAIN every other Shocked foe
+## on the field (Chain's conductors), AREA_ALL any other foe a reach over every foe adds. The
+## target is not in it. The resolver and the bot read the same map.
 func area_shapes(f: Face, target: Foe) -> Dictionary:
 	var out := {}
 	if f == null or target == null:
@@ -2672,6 +2693,9 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		var pair := twin_of(target)
 		if pair != null and not out.has(pair):
 			out[pair] = AREA_ROW if f.reaches_row() else AREA_COLUMN
+	for foe in conductors(f, target):
+		if not out.has(foe):
+			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
 			if foe != target and not out.has(foe):
@@ -2680,14 +2704,16 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
-## the column's (Penetrate's or Splash's), nothing for a foe a reach over every foe adds (the
-## Siphon's lure-all, equipment, whose blow is nothing).
+## the column's (Penetrate's or Splash's), Chain's on a conductor, nothing for a foe a reach over
+## every foe adds (the Siphon's lure-all, equipment, whose blow is nothing).
 static func area_number(f: Face, shape: int) -> int:
 	match shape:
 		AREA_ROW:
 			return f.row_number()
 		AREA_COLUMN:
 			return f.column_number()
+		AREA_CHAIN:
+			return f.number_of(Face.Keyword.CHAIN)
 	return 0
 
 
@@ -2709,15 +2735,17 @@ func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe)["damage"])
 
 
-## A shot's area numbers as a mine carries them, [the row's, the column's], each through its
-## spender's modifiers with no foe in hand, as the shot's own number is laid; nothing for a
+## A shot's area numbers as a mine carries them, [the row's, the column's, Chain's], each through
+## its spender's modifiers with no foe in hand, as the shot's own number is laid; nothing for a
 ## shape the entry does not reach.
 func _area_shot(ms: MechState, f: Face, own: int, split: int) -> Array:
-	var out := [0, 0]
+	var out := [0, 0, 0]
 	if f.reaches_row():
 		out[0] = _area_blow(ms, f, AREA_ROW, null, own, split)
 	if f.reaches_column():
 		out[1] = _area_blow(ms, f, AREA_COLUMN, null, own, split)
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		out[2] = _area_blow(ms, f, AREA_CHAIN, null, own, split)
 	return out
 
 
@@ -3141,9 +3169,9 @@ func slot_targets(ms: MechState, f: Face) -> Array:
 ## One shot as a mine carries it: the number as dealt by its spender; its keywords, every one
 ## acting as the shot lands but the spend's own (Rapid and Volatile acted at the spend, and Lure
 ## and Disrupt do nothing once their round is over); its numbered stacks, deepened as its
-## spender lays them (`extra_burn` a Primed machine's); its area numbers (`area`, the row's and
-## the column's as its spender's modifiers make them: _area_shot); and its spender and entry,
-## for a Chain that repeats the attack. Plain damage (a spill's) carries no keyword.
+## spender lays them (`extra_burn` a Primed machine's); its area numbers (`area`, the row's, the
+## column's and Chain's as its spender's modifiers make them: _area_shot); and its spender and
+## entry, for its gate and its consumer. Plain damage (a spill's) carries no keyword.
 func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra_burn: int = 0, plain: bool = false, area: Array = []) -> Dictionary:
 	var kws: Array = []
 	if not plain:
@@ -3157,8 +3185,9 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 		"burn": _stacks_from(ms, "burning", burn) * doubled if burn > 0 and not plain else 0,
 		"cryo": _stacks_from(ms, "cryoed", f.cryo) * doubled if f.has(Face.Keyword.CRYO) and not plain else 0,
 		"flak": _stacks_from(ms, "flakked", f.flak) * doubled if f.has(Face.Keyword.FLAK) and not plain else 0,
-		"row": int(area[0]) if area.size() == 2 and not plain else 0,
-		"column": int(area[1]) if area.size() == 2 and not plain else 0}
+		"row": int(area[0]) if area.size() >= 2 and not plain else 0,
+		"column": int(area[1]) if area.size() >= 2 and not plain else 0,
+		"chain": int(area[2]) if area.size() >= 3 and not plain else 0}
 
 
 ## A weapon or a debuff laid as a mine (the Fuse-delayed Bay): each strike a shot, its number as rolled and
@@ -3268,9 +3297,9 @@ func _mine_spender(shot: Dictionary) -> MechState:
 ## damage taken (a Shocked foe takes double, spending the shock) and its armour, then the shot's
 ## keywords acting as on a blow: Spread its rank neighbours too, Penetrate the other rank of its
 ## column and Splash both (a cluster), each taking the shot's number for its shape as laid, Spillover past a front kill, Burning, a stun, a web, Cryo (cashed
-## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, a kill
-## repeating its spender's attack on the next foe in reach, rolled and paying heat again. A
-## kill on a foe carrying the Syrinx Drone leaves the shot in its slot again.
+## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, its number
+## as laid on every other Shocked foe on the field as the shot lands (28 October). A kill on a
+## foe carrying the Syrinx Drone leaves the shot in its slot again.
 func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	var kws: Array = shot.get("keywords", [])
 	var by := _mine_spender(shot)
@@ -3300,6 +3329,14 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 				hit.append(t)
 				shape[t] = shape.get(x, AREA_ROW if row else AREA_COLUMN)
 		hit = hit.filter(func(x: Foe) -> bool: return x.alive())
+	# Chain (28 October): the shot arcs its number as laid to every other Shocked foe on the field
+	# as it lands, after the shapes, so a foe in both takes one blow, its shape's; a shot laid
+	# before the conductor, in an old save, carries no arc's number and arcs nothing.
+	if kws.has(Face.Keyword.CHAIN) and shot.has("chain") and bool(shot.get("weapon", true)):
+		for t in shocked_foes(foe):
+			if not hit.has(t):
+				hit.append(t)
+				shape[t] = AREA_CHAIN
 	var dmg := int(shot.get("damage", 0))
 	var gained := {}
 	var turned := {}   # foe -> the marks its Ward turned away, told once (28 October)
@@ -3319,8 +3356,14 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	for t in hit:
 		var hp_before := t.hp
 		# Area by shape, numbered: the arrival takes the shot, every other foe its shape's number
-		# as laid (a shot laid before the numbers, in an old save, half the shot).
-		var blow := dmg if t == foe else int(shot.get("row" if int(shape.get(t, AREA_ROW)) == AREA_ROW else "column", dmg / 2))
+		# as laid (a shot laid before the numbers, in an old save, half the shot), a conductor
+		# Chain's.
+		var at := int(shape.get(t, AREA_ROW))
+		var blow := dmg
+		if t != foe:
+			blow = int(shot.get("chain", 0)) if at == AREA_CHAIN else int(shot.get("row" if at == AREA_ROW else "column", dmg / 2))
+		if t != foe and at == AREA_CHAIN:
+			log.append("a mine of %s's arcs to %s" % [str(shot.get("by", "")), t.display_name])
 		var eaten := Effects.stacks_of(t, eat) if not eat.is_empty() else 0   # each foe it strikes eats its own
 		if eaten > 0:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
@@ -3387,20 +3430,6 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		var cooled := mini(by.heat, thawed * cryo_cool())
 		by.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [by.unit.display_name, thawed, cooled])
-	# Chain does what Chain does on a blow (Ryan, 21 October): the kill repeats its spender's
-	# attack on the next foe in reach, its heat landing on the spender now, on the gauge until
-	# the next END TURN; nothing repeats once the spender is gone.
-	var real: Dictionary = shot.get("face", {})
-	if kws.has(Face.Keyword.CHAIN) and not foe.alive() and by != null and not real.is_empty():
-		var again_face := Face.from_dict(real)
-		for cand in targets_for_face(by, again_face):
-			if cand.alive() and cand != foe:
-				log.append("a mine of %s's chains to %s" % [by.unit.display_name, cand.display_name])
-				var was_chaining := _chaining
-				_chaining = true
-				_resolve_attack(mechs.find(by), by, Effects.effective_face(by.unit, again_face, cand), cand, again_face)
-				_chaining = was_chaining
-				break
 
 
 ## Spillover in a mine: what the shot had past the kill of a front-rank foe carries into the
@@ -3592,7 +3621,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 ## The Soulcutter Talons' rule (28 September; built 29 September; a rule printed on its one
 ## carrier and no keyword to learn since 11 October, Ryan: "devour is not a thing"): every foe
 ## the entry kills gives its owner `per_kill` stacks of Overcharged (a spread that kills two
-## feeds twice, a chain feeds on every link). The stacks halve each round like any Overcharged;
+## feeds twice, a Chain on every conductor it kills). The stacks halve each round like any Overcharged;
 ## on the Ammit its Quintessence Tap keeps them for the battle (Effects.stack applies the keep).
 func _overcharge_on_kill(ms: MechState, foe: Foe, per_kill: int) -> void:
 	var stacks := _stacks_from(ms, "overcharged", per_kill)

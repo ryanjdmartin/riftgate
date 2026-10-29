@@ -1140,6 +1140,31 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")
 
 
+## The bot reads Chain's conductors as the resolver deals them (the conductor, 28 October): each
+## Shocked foe on the field past the target takes Chain's number, doubled by its charge; with no
+## conductor the Chain gun is a plain gun, and with two the greedy takes it over the plain one.
+func test_the_bot_reads_a_chains_conductors_doubled() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(4, L, [K.CHAIN], 3)
+	gun.chain = 2
+	var plain := Face.attack(4, L, [], 3)
+	var m := _mech("A", Die.of([gun, plain]), 40, 100)
+	sk.add_mech(m)
+	var aim := _ghoul(100)
+	var a := _ghoul(100)
+	var b := _ghoul(100)
+	sk.add_foes([aim, a, b])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.new()
+	assert_true(absf(pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)) < 0.001, "with no conductor the Chain gun is a plain gun")
+	for foe in [a, b]:
+		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[4.0, 1.0]], "a conductor: Chain 2, doubled by its charge")
+	assert_true(pol.attack_score(sk, ms, gun, aim) > pol.attack_score(sk, ms, plain, aim) + 7.0, "two conductors: the greedy takes the Chain gun")
+
+
 ## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,
 ## 28 October): its shape's number through the firer's modifiers, judged on that foe, then its
 ## own statuses and armour; and a consumer gives up every foe's stacks it eats, each its own.
