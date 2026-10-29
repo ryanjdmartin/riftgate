@@ -2166,3 +2166,86 @@ none, as before; its tier-two battles (the report's tier 1, counting from 0) are
 160 where they were 5%, its runs end a turn sooner (8.8 turns), every city falls in every run
 (four of four), and its machines end with 39% of their hardpoints filled where they kept 59%.
 The spiral it was, a little steeper; no decision reads it.
+
+## 28 October, movement in hexes
+
+The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
+count of hexes, ground is ground, water the one priced hex, a move in one go, winged packs, a
+hunter picking again), measured on the landing's head.
+
+**The map survey** (`tools/map_survey.gd`, 200 seeds, `docs/map_survey.md`). The maps are the
+same maps: every ground's share, the water, the horde's crossings and its route are unchanged
+seed for seed, since the generator reads only the horde's rule, which is unchanged. Phases to
+the rift from the best lane at move 3 (move 30 on 8 October): every way of moving 6.0, where
+wheels took 3.8 (their fast open ground) and hover 5.6; the packs 8.0 at their 2, as before.
+Reach after two phases at the survey's reference moves (tracked 3, walker 3, wheeled 5, hover 4,
+flyer 5, the moves of 8 October in hexes): tracks 32% (31), walkers 32% (32), wheels 52% (61),
+hover 44% (38), flyers 62% (62); making the horde's narrowest crossing by phase two, tracks 32
+of 200 maps (30), walkers 32 (32), wheels 113 (166), hover 60 (69), flyers 115 (115). The map types at move 3 read the same
+way (every phase count 6.0; reach on Badlands the lowest for the ground ways, 29/29/48/40/62,
+and Flooded 33/33/55/47/62). Read: the trip north no longer reads the way of moving at all,
+and reach is the move and the walls: the ground ways read alike at equal move, hover above
+them by the water it crosses, the flyer above hover by the crags, which is the order the rule
+sets. Wheels lose the most (their fast ground was the one large difference the table made);
+hover gains rough and ruins and loses its fast water, so it reaches more of the field and makes
+the crossing on a few maps fewer. A note on the method: the survey's reach is at its reference moves
+because its reader of the content's moves looks for a `chassis` key the file no longer has (it
+holds `entries`), so it has fallen back to those moves since before 8 October; the content's
+biggest moves are walker 4 and hover 5.
+
+**The campaign run** (`tools/campaign_run.gd`, 40 runs from seed 1, the greedy rung,
+`docs/campaign_run.md`), on the merged head against main's report at c8dac4e: the same runner,
+seeds and content, the movement aside. The bands hold: no run won (none), 31 of 40 reach the
+finale (33), 373 battles won 7% (5%), held after a wipe 54% (50%), fell 38% (43%), 92% ending in
+a team wipe (94%). One cell moved past its band: the three-machine battles, won 54% of 50 (35%
+of 48). The fights inside them say why: lone fights in a three-machine battle fell from 33 to
+17, fights with two of three rose from 29 to 60 and with all three from 39 to 49, since no slow
+hex splits the squad as it walks onto a pack (the bot moves the squad as one onto the nearest
+pack, and under the table a walker stopped in water or tracks in ruins arrived a turn behind).
+Wrecks rushed 23 (31); components destroyed per battle 0.78 (0.80) and hardpoints filled at the
+end 42% (39%) held. The branch's own read before the merge, against its run of 27 October,
+moved the same cell the same way (54% of 50 against 36% of 57; lone fights 42 to 17, two of
+three 35 to 61). A direction at 40 runs, not a band: the rule's effect on a squad moving
+together, not a bug.
+
+**The Dire Wolf's line at 4** (Ryan, the same day: it "can be faster"; the Dire Wolf, the Warg
+and the Alpha Warg from 3; the heroes' dead moves dropped with it, which no run reads). The
+campaign run on that head (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the merged head's: no band moved. The Meadow's battles won 13% of 83 (12% of 79), fell 40%
+(40%), wiped 86% (87%); the whole, won 7% (7%), held after a wipe 52% (54%), fell 40% (38%);
+the three-machine battles 50% of 52 (54% of 50). A direction at 40 runs: a faster wolf moves no
+cell this bot reads.
+
+**The map survey's reader fixed** (the same day; the to-do's line, found while measuring the
+landing): the reach table now reads each way's biggest move in content through ContentDB, as
+its report always said (tracked 3, walker 4, wheeled 5, hover 5, flyer 5), where its own reader
+of the file had looked for a key the file no longer has and fallen back, silently, to reference
+moves (walker 3, hover 4) since before 8 October; a way no chassis takes now stops the survey.
+Rerun at 200 seeds (`docs/map_survey.md`): the maps, the phases to the rift and the tracked,
+wheeled and flyer rows are the same; walkers at 4 reach 42% of the field after two phases (32%
+at 3) and make the horde's narrowest crossing by phase two on 59 of 200 maps (32); hover at 5
+reaches 54% (44% at 4) and makes it on 115 (60). At equal move the order the rule sets holds:
+at 5, wheels 52% and 113 maps, hover 54% and 115, flyers 62% and 115, hover's edge over the
+ground the water and the flyer's the crags. The map types read alike (walker and hover reach:
+Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
+Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.
+
+## 29 October, the map's relief
+
+**The relief read** (`tools/map_survey.gd`'s new relief table, 200 seeds of Mixed Ground at
+9x20, `docs/map_survey.md`; the decision it informs: the bible's map-types row, the relief laid
+by the shape, on Ryan's "I like the look but maybe it's a bit too much for the phone screen").
+No rule reads height, so the read is what the glass shows. The field's land (water and the
+gate, the wall and the rift aside) stands 47% at step 0, 31% at 1, 20% at 2 and 3% at 3; 55%
+of neighbouring land pairs stand at different heights (47% to 64% a map), a quarter of those
+steps two or more; 13.7 hexes a map stand alone, every land neighbour at another height (6 to
+29); and a ring of 2 wholly on the field, drawn as a pack's ring is, at each hex's height, jogs
+at 5.9 of its 12 joints (4.6 to 7.1 a map). A step is 7 units, which the 42-degree camera lifts
+7 map pixels at zoom 1 (a hex's circumradius 48 pixels to 35 units), the width of a ring's
+stroke with its dark track (6 to 7.5), so a joint one step apart jogs the outline by its whole
+width and two steps clear it. Every type reads alike (steps 52% to 55%, lone hexes 13.4 to
+14.2 a map, seeds 1 to 100), the relief being a noise of its own, decoupled from the ground. A
+scratch read earlier the same day (seeds 1000 to 1199, a script outside the tools) counted the
+gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
+7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
+session's relief is read against it.

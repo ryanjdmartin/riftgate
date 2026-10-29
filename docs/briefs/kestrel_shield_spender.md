@@ -343,7 +343,8 @@ Claude's proposal, in chat first; every number a placeholder, the name and the l
   exposed-rotor helicopter, free since Wainwright & Sutler's ten filled (the interceptor's two
   passes, or the off-tank as a flying tank); the tilt-jet with swinging nacelles (the
   interceptor); the ekranoplan, a giant ground-effect plane with a missile battery on its
-  back, hover, slow on rough ground and fast on water (the capstone: fast-looking, slow); the
+  back, hover, crossing water at full pace where a ground machine wades, crags stopping it
+  (the capstone: fast-looking, slow); the
   gunship, a big slow airframe with its guns down one side (the capstone as a flyer); the
   airship on boosters; the jet car on wheels, Kestrel's one ground machine for the Steppe.
   Silhouettes are Ryan's; the list is for matching.
@@ -385,8 +386,8 @@ the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 mo
   Also, its kit looks to me like it would be an acceptable solo unit if it needed to zoom off
   and fight a pack, so that's fine, a decent generalist for tier 1."
 - Claude, 20 October: a hovercraft at move 50, the kit below; the third Kestrel hover with the
-  Puffin and the capital. On the map it is the detachment that can also hold a front: water
-  fast, so it rides the river the jets fly over; alone against a pack it lures, plates and
+  Puffin and the capital. On the map it is the detachment that can also hold a front: a
+  hover, it crosses the river at full pace where a ground machine wades (since 28 October); alone against a pack it lures, plates and
   regens, and burns shield only when the kill is worth it, which is the generalist Ryan reads.
   The exposed-rotor helicopter goes to Aphelion (Ryan, 20 October, in the interceptor's
   round).
@@ -416,8 +417,10 @@ the line review asks of the stock pass (flat 25 at 20: 20 shield burnt for 20 mo
 Ryan's package of 19 October, whole; every number a placeholder, the name and the look Ryan's,
 the stock by kind (Ryan, 20 October: the stock pieces are placeholders until the stock pass).
 
-**The frame.** A medium hovercraft on big boosters at move 50 (Ryan, 20 October: a hovercraft,
-and fast, so Kestrel is seen to make a fast one; water fast, rough ground and ruins slow). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
+**The frame.** A medium hovercraft on big boosters at move 5 (Ryan, 20 October: a hovercraft,
+and fast, so Kestrel is seen to make a fast one; a hover crosses water at full pace where a
+ground machine wades, crags stop it, the movement rule of 28 October, amphibious with no
+passive for its water, the movement proposal's Q6). Hull 70, shield 80 (its shield is its gauge and its plate, so the roster's biggest),
 field recharge 30, heat maximum 60, cooling 5, armour 0. Four hardpoints beside the lock, a
 d5; two module slots.
 

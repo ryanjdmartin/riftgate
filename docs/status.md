@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 737 tests, 66,570 checks, green on main with the ladder (28 October;
-  main's head 721 and 66,041 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 739 tests, 66,640 checks, green on main (29 October; 737 and 66,570 before the
+  movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -34,10 +34,17 @@ are in `README.md`.
 ## Branches
 
 `ccr-7effd31a-u5z4gw` stands beside main again, restarted from main's head on 28 October (its
-first round, the Hold The Line pair, merged on the 27th): Ryan's go on the pairs that day (every
-track a map half and a battle half, the bible's pair row): every new half sketched the same day
-on its shipped recipe's groove call and published on the pair page for his A/B; next the pairs in
-the game, once he has heard them.
+first round, the Hold The Line pair, merged on the 27th), main merged into it on the 29th: Ryan's
+go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
+sketched on its shipped recipe's groove call and published on the pair page; then his notes of
+29 October on Hold The Line's two halves (round two on the same page), and the pairs in the
+game once he has heard them.
+
+`ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
+its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
+hexes, the cockatrice, ghost, bomb and drake lines winged), then the heroes without a map move,
+the faster wolves and the battlefield viewer's deletion, and main took it as a fast-forward that
+night on Ryan's word ("clean up and merge into main").
 
 The review of 27 October (this branch, `ccr-24cae16e-ryhv1v`) merged every branch that stood
 beside main into it, since two sessions had each expected main to take theirs on the 26th and
@@ -61,8 +68,8 @@ the read at 30 seeds and the move counts settled), and main took it as a fast-fo
 night on the same word. Every branch named here is fully
 merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
-`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4` and, once this session ends,
-`ccr-24cae16e-ryhv1v` (a cloud session may not delete one). Every other branch was
+`claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
+its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -106,6 +113,27 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
+  confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
+  with it): a move is a count of hexes given in one go, ground is ground, water
+  the one priced hex (two of a ground machine's move, always enterable with what is left), crags
+  the flyer's; the winged foes (five and their eight recolours) cross both, and a hunter that cannot ring its prey picks
+  again; the gauge and the stop sign gone (the bible's section 4 rows, v0.342). Measured the same
+  day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
+  reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
+  bands hold, its three-machine battles won more (a direction: the squad no longer split by
+  slow ground). Next for the map: the six shapes, named, their relief laid by the shape and free
+  to run (`docs/briefs/map_shapes.md`, Ryan's calls of 29 October), the domains' tilesets as an
+  art task and the crossing's price in the pricing run (the to-do).
+- The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
+  it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
+  validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
+  (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
+  compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
+  map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
+  map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
+  name, the boss's patrol and ring, the fifth caveat) but the crags' shown word (its 30).
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
@@ -141,9 +169,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
-  (their passives and four locked pieces planned, so never dealt); 80 components,
-  32 of them locked; 17 modules; four domains with 18 wildlife, their bosses among them, and 8
-  heroes with their promoted forms; 5 foe moves planned (a flee, an interpose, a retaliate). The
+  (their passives and four locked pieces planned, so never dealt); 81 components,
+  32 of them locked; 17 modules; four domains with 44 wildlife (18 at tier one, their bosses
+  among them, and the ladder's 26 recolours) and 8 heroes with their promoted forms; 6 foe moves
+  planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
 - Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
@@ -264,11 +293,14 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the three reports rerun on main's head (the to-do's first engine
-line), since no number read since 22 October was read on the content as it now stands.
+to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
+to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
+numbered keywords and the blow's order; the campaign report (28 October) and the map survey
+(29 October, with its relief table) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content.
+   retired once its decisions are rows and content; the map shapes' generator session among
+   them, free to run since Ryan's calls of 29 October.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
@@ -307,33 +339,35 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Not yet republished from `ccr-7effd31a-u5z4gw`
-  (28 October): its file is v0.343, main's v0.341 with the pair rows (section 1's pair row, the
-  track table's halves, the boss-theme row, section 12's question), while the live page is another
-  session's v0.342 published from its own branch the same evening (section 4's movement rows: a
-  move as a count of hexes, foes binary, the map drawing reach, the crossing priced; a few rows in
-  sections 7 and 12), which main does not hold yet. Whichever lands second republishes a
-  three-way merge of the two onto the live page (they touch no row in common; the version line
-  takes the next number). Before that, the file and the live page were v0.341 (the
-  page's version 353, published 28 October from `ccr-6073bda9-p34o8q`: the ladder built, its
-  rows' Built notes, section 12's built list, the move counts settled, the generated tables; the
-  live page was main's v0.339 (version 351) unchanged, so no merge was needed). The version numbers on the publishing branch's
-  file and the live agree after every publish. Before republishing, read the live page; if
-  another session moved it, publish a three-way merge onto it (`git merge-file` with the
-  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). With every branch landed, the file holds no rows ahead
-  of code, and the tables script may run freely again.
+  `docs/design-bible.html` after every change. This file is v0.348 (the page's version 360,
+  published 29 October from `ccr-7821127e-kwj874`: the relief laid by the shape, on v0.347 at
+  version 359, Ryan's calls on the map shapes, the walls' names, the decoration, the domains'
+  tilesets and the rift tiles as art, three-way merged onto the live v0.346 that
+  `claude/charming-rubin-h954bp` published). So this file carries
+  that branch's rows ahead of its code (the models' looks and acts, the Armadillo's seal on
+  screen) and its Strikes row in the keyword table, and the tables script, which writes the
+  tables from main's content, waits until that branch lands or it reverts that row. The
+  version numbers on the publishing branch's file and the live agree after every publish.
+  Before republishing, read the live page; if another session moved it, publish a three-way
+  merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
+  first line and its trailing `</body></html>` stripped from the saved live source). With
+  every branch landed, the file holds no rows ahead of code, and the tables script may run
+  freely again.
+  `ccr-7effd31a-u5z4gw`'s file is v0.349: this v0.348 with the pair rows (section 1's pair row,
+  the track table's halves, the boss-theme row, section 12's question), not yet republished; its
+  next publish reads the live page and three-way merges.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 138 (28 October, from
-  `ccr-6073bda9-p34o8q` onto 136, the Kestrel round's models and rigs, then the Red Dragon's trim: the ladder's
-  `content/foes.json` with the 26 recolours and the new specials, `content/factions.json` with
-  the spawn lists by tier, `content/components.json` with the Null Field Emitter and
-  `content/vocabulary.json` with the four buffs on both sides and Purge; every other file
-  identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 140 (28 October, from
+  `ccr-7821127e-kwj874`: at 139, onto 138, moves in hexes in `content/chassis.json`,
+  `content/foes.json` (its thirteen winged foes with them), `content/modules.json` and
+  `content/vocabulary.json`, the motion port's pace keyed by hexes and the codex's move a plain
+  count; at 140 `content/foes.json` again, the heroes without a move and the wolves at 4, and
+  the foe line shown without a move it lacks; every other file identical to the live page's,
+  `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

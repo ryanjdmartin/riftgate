@@ -6,8 +6,8 @@ extends SceneTree
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 ## Options: --seeds N (200), --type KIND (mixed; a key of BattleMap.KINDS for the detailed
 ## report; the comparison at the end always runs every kind), --w W --h H (Battle's default,
-## 9 by 20, the game's field), --move M (30, the reference move every way of moving is measured at; the
-## packs at their own 20), --out path (docs/map_survey.md), --show SEED (print that seed's
+## 9 by 20, the game's field), --move M (3, the reference move in hexes every way of moving is
+## measured at; the packs at their own 2), --out path (docs/map_survey.md), --show SEED (print that seed's
 ## map as text instead, of --type's kind).
 ##
 ## What it reads: each ground's share of the field, how much is water and in how many
@@ -16,8 +16,10 @@ extends SceneTree
 ## open, the phases each way of moving takes from its best lane on the team's ground to the
 ## rift's mouth with nobody in the way, and its reach: the share of the field it can stand
 ## on after two phases, and whether it makes the horde's crossing by then. Bands, not
-## decimals: the ground is right when each way of moving has somewhere it loses, the
-## kinds tell apart, and the horde's crossings stay wide.
+## decimals: the ground is right when the ground machines read alike and the crossers above
+## them (hover over water, the flyer over water and crags), the kinds tell apart, and the
+## horde's crossings stay wide. It reads the relief too, which no rule reads but every glass
+## shows (_relief).
 
 const OUT := "res://docs/map_survey.md"
 const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
@@ -25,13 +27,12 @@ const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
 var seeds := 200
 var w := Battle.DEFAULT_WIDTH   # the game's field: nine wide since 8 October
 var h := 20
-var move := 30
+var move := 3
 var out_path := OUT
 var show := 0
 var kind := "mixed"
-## Each way of moving's move in content today, for the reach table (the survey reads the
-## chassis files for them; these are the fallbacks).
-var moves := {"tracked": 30, "walker": 30, "wheeled": 50, "hover": 40, "flyer": 50}
+## Each way of moving's biggest move in content, for the reach table (_read_moves).
+var moves := {}
 
 
 func _init() -> void:
@@ -60,7 +61,9 @@ func _init() -> void:
 		push_error("no such map kind: " + kind + " (" + ", ".join(BattleMap.KINDS.keys()) + ")")
 		quit(1)
 		return
-	_read_moves()
+	if not _read_moves():
+		quit(1)
+		return
 	if show != 0:
 		print(_picture(BattleMap.generate(w, h, show, kind)))
 	else:
@@ -72,23 +75,22 @@ func _init() -> void:
 	quit()
 
 
-## The biggest move each way of moving has in content, so the reach table reads the game
-## as it stands.
-func _read_moves() -> void:
-	var f := FileAccess.open("res://content/chassis.json", FileAccess.READ)
-	if f == null:
-		return
-	var parsed = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary) or not parsed.has("chassis"):
-		return
-	var best := {}
-	for c in parsed["chassis"]:
+## The biggest move each way of moving has in content, read through ContentDB as the game
+## reads it, so the reach table reads the game as it stands. A way no chassis takes stops the
+## survey: a reader of the file by hand looked for a key the file no longer had and fell back,
+## silently, to reference moves for three weeks (found 28 October).
+func _read_moves() -> bool:
+	var db := ContentDB.load_default()
+	for id in db.chassis.keys():
+		var c: Dictionary = db.chassis[id]
 		var way := BattleMap.way_of(c.get("traits", []))
-		if way.is_empty():
-			continue
-		best[way] = maxi(int(best.get(way, 0)), int(c.get("movespeed", 0)))
-	for way in best.keys():
-		moves[way] = best[way]
+		if WAYS.has(way):
+			moves[way] = maxi(int(moves.get(way, 0)), int(c.get("movespeed", Unit.MECH_MOVE)))
+	for way in WAYS:
+		if not moves.has(way):
+			push_error("map_survey: no chassis in content moves by '%s', so it has no reach to read" % way)
+			return false
+	return true
 
 
 func _survey() -> String:
@@ -113,6 +115,11 @@ func _survey() -> String:
 	for way in WAYS:
 		reach[way] = []
 		at_cut[way] = 0
+	var levels := [0, 0, 0, 0]
+	var step_share: Array[float] = []
+	var big_share: Array[float] = []
+	var lone: Array[int] = []
+	var breaks: Array[float] = []
 	for s in range(1, seeds + 1):
 		var t := Time.get_ticks_usec()
 		var m := BattleMap.generate(w, h, s, kind)
@@ -153,7 +160,7 @@ func _survey() -> String:
 		horde_len.append(m.find_path(m.gate, m.rift, []).size())
 		for way in WAYS:
 			phases[way].append(_best_phases(m, [way], move))
-		phases["packs"].append(_best_phases(m, [], 20))
+		phases["packs"].append(_best_phases(m, [], Unit.PACK_MOVE))
 		var cut := m.horde_cut(cw + 1)
 		for way in WAYS:
 			var best := 0.0
@@ -168,10 +175,17 @@ func _survey() -> String:
 			reach[way].append(best)
 			if hit:
 				at_cut[way] += 1
+		var rel := _relief(m)
+		for e in range(4):
+			levels[e] += rel["levels"][e]
+		step_share.append(float(rel["steps"]) / maxf(1.0, float(rel["pairs"])))
+		big_share.append(float(rel["big"]) / maxf(1.0, float(rel["steps"])))
+		lone.append(rel["lone"])
+		breaks.append(float(rel["breaks"]) / maxf(1.0, float(rel["rings"])))
 	var lines: Array[String] = []
 	lines.append("# Map survey")
 	lines.append("")
-	lines.append("Generated by `tools/map_survey.gd` on %s: %d seeds at %dx%d, map type **%s** (`%s`). Phases to the rift are measured with every way of moving at move %d and the packs at their own 20, from its best lane on the team's ground (the row above the gate's apron) to the rift's mouth with nobody in the way; reach uses each way's biggest move in content. Read the bands, not the decimals. The comparison of every map type is at the end." % [Time.get_date_string_from_system(), seeds, w, h, BattleMap.KINDS[kind]["name"], kind, move])
+	lines.append("Generated by `tools/map_survey.gd` on %s: %d seeds at %dx%d, map type **%s** (`%s`). Phases to the rift are measured with every way of moving at move %d and the packs at their own %d, from its best lane on the team's ground (the row above the gate's apron) to the rift's mouth with nobody in the way; reach uses each way's biggest move in content. Read the bands, not the decimals. The comparison of every map type is at the end." % [Time.get_date_string_from_system(), seeds, w, h, BattleMap.KINDS[kind]["name"], kind, move, Unit.PACK_MOVE])
 	lines.append("")
 	lines.append("## The ground")
 	lines.append("")
@@ -219,7 +233,7 @@ func _survey() -> String:
 		for i in range(p.size()):
 			if int(p[i]) > int(phases["flyer"][i]):
 				slower += 1
-		var name: String = way if way != "packs" else "packs (the horde's rule, 20)"
+		var name: String = way if way != "packs" else "packs (the horde's rule, %d)" % Unit.PACK_MOVE
 		lines.append("| %s | %.1f | %d | %d | %d maps |" % [name, _mean_i(p), p.min(), p.max(), slower])
 	lines.append("")
 	lines.append("## Reach after two phases, at the content's moves")
@@ -232,17 +246,30 @@ func _survey() -> String:
 		var r: Array = reach[way]
 		lines.append("| %s | %d | %d%% | %d%% to %d%% | %d of %d maps |" % [way, moves[way], roundi(_mean_f(r) * 100.0), roundi(r.min() * 100.0), roundi(r.max() * 100.0), at_cut[way], seeds])
 	lines.append("")
+	lines.append("## The relief")
+	lines.append("")
+	lines.append("No rule reads height, but every glass shows it: a raised hex covers part of the hex behind it, and a pack's ring is drawn at each hex's height, so a joint between two heights jogs its outline. The field's land, water and the structures aside.")
+	lines.append("")
+	var land := float(levels[0] + levels[1] + levels[2] + levels[3])
+	lines.append("| Measure | Mean | Range |")
+	lines.append("|---|---|---|")
+	lines.append("| Land at step 0, 1, 2 and 3 | %d%%, %d%%, %d%%, %d%% | |" % [roundi(100.0 * levels[0] / land), roundi(100.0 * levels[1] / land), roundi(100.0 * levels[2] / land), roundi(100.0 * levels[3] / land)])
+	lines.append("| Neighbouring land at different heights | %d%% | %d%% to %d%% |" % [roundi(_mean_f(step_share) * 100.0), roundi(step_share.min() * 100.0), roundi(step_share.max() * 100.0)])
+	lines.append("| of those steps, two or more | %d%% | %d%% to %d%% |" % [roundi(_mean_f(big_share) * 100.0), roundi(big_share.min() * 100.0), roundi(big_share.max() * 100.0)])
+	lines.append("| Lone hexes a map (every land neighbour at another height, three at least) | %.1f | %d to %d |" % [_mean_i(lone), lone.min(), lone.max()])
+	lines.append("| A ring of 2's twelve joints that jog | %.1f | %.1f to %.1f |" % [_mean_f(breaks), breaks.min(), breaks.max()])
+	lines.append("")
 	lines.append_array(_compare())
 	return "\n".join(lines)
 
 
 ## Every map type side by side, on fewer seeds: shares, the crossing, what the guarantee
-## opened, the phases to the rift and the two-phase reach by way of moving.
+## opened, the phases to the rift, the two-phase reach by way of moving and the relief.
 func _compare() -> Array[String]:
 	var n := mini(seeds, 100)
-	var lines: Array[String] = ["## The map types compared", "", "Each type on seeds 1 to %d. Shares of the field; the horde's narrowest crossing and the hexes the guarantee opened; the phases to the rift at move %d and the reach after two phases at the content's moves, by way of moving (T tracked, W walker, Wh wheeled, H hover, F flyer)." % [n, move], ""]
-	lines.append("| Type | Open | Rough | Ruins | Water | Crags | Crossing | Opened | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F |")
-	lines.append("|---|---|---|---|---|---|---|---|---|---|")
+	var lines: Array[String] = ["## The map types compared", "", "Each type on seeds 1 to %d. Shares of the field; the horde's narrowest crossing and the hexes the guarantee opened; the phases to the rift at move %d and the reach after two phases at the content's moves, by way of moving (T tracked, W walker, Wh wheeled, H hover, F flyer); the relief, as the neighbouring land at different heights and the lone hexes a map." % [n, move], ""]
+	lines.append("| Type | Open | Rough | Ruins | Water | Crags | Crossing | Opened | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |")
+	lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
 	for k in BattleMap.KINDS.keys():
 		var sh := {}
 		var field := 0
@@ -250,6 +277,9 @@ func _compare() -> Array[String]:
 		var cw3 := 0
 		var ph := {}
 		var rc := {}
+		var pairs := 0
+		var steps := 0
+		var lone := 0
 		for way in WAYS:
 			ph[way] = 0.0
 			rc[way] = 0.0
@@ -273,6 +303,10 @@ func _compare() -> Array[String]:
 				for col in range(w):
 					best = maxf(best, float(_reach(m, Hex.offset_to_axial(col, h - BattleMap.GATE_ROWS - 1), [way], int(moves[way]), 2).size()) / float(mf))
 				rc[way] += best
+			var rel := _relief(m)
+			pairs += rel["pairs"]
+			steps += rel["steps"]
+			lone += rel["lone"]
 		var pct := func(t: int) -> String: return "%d%%" % roundi(100.0 * int(sh.get(t, 0)) / float(field))
 		var open_share := roundi(100.0 * (int(sh.get(BattleMap.Terrain.PLAIN, 0)) + int(sh.get(BattleMap.Terrain.ROAD, 0))) / float(field))
 		var phs: Array[String] = []
@@ -280,9 +314,68 @@ func _compare() -> Array[String]:
 		for way in WAYS:
 			phs.append("%.1f" % (ph[way] / n))
 			rcs.append("%d" % roundi(100.0 * rc[way] / n))
-		lines.append("| %s | %d%% | %s | %s | %s | %s | %d of %d at %d+ | %.1f | %s | %s%% |" % [BattleMap.KINDS[k]["name"], open_share, pct.call(BattleMap.Terrain.ROUGH), pct.call(BattleMap.Terrain.RUINS), pct.call(BattleMap.Terrain.WATER), pct.call(BattleMap.Terrain.MOUNTAIN), cw3, n, BattleMap.CROSSING_WIDTH, float(opened) / n, "/".join(phs), "/".join(rcs)])
+		lines.append("| %s | %d%% | %s | %s | %s | %s | %d of %d at %d+ | %.1f | %s | %s%% | %d%% | %.1f |" % [BattleMap.KINDS[k]["name"], open_share, pct.call(BattleMap.Terrain.ROUGH), pct.call(BattleMap.Terrain.RUINS), pct.call(BattleMap.Terrain.WATER), pct.call(BattleMap.Terrain.MOUNTAIN), cw3, n, BattleMap.CROSSING_WIDTH, float(opened) / n, "/".join(phs), "/".join(rcs), roundi(100.0 * steps / maxf(1.0, float(pairs))), float(lone) / n])
 	lines.append("")
 	return lines
+
+
+## The relief on the field's land (water and the structures aside): the land at each step,
+## the neighbouring pairs at different heights (of them two steps or more), the lone hexes
+## (three land neighbours at least, every one at another height), and for every ring of 2
+## wholly on the field the joints along its outline between land at different heights, each
+## a jog in a pack's ring as the map draws it (each edge at its own hex's height).
+func _relief(m: BattleMap) -> Dictionary:
+	var r := {"levels": [0, 0, 0, 0], "pairs": 0, "steps": 0, "big": 0, "lone": 0, "rings": 0, "breaks": 0}
+	var land := {}
+	for hx in m.all_hexes():
+		if not m.is_structure(hx) and int(m.elevation.get(hx, 0)) >= 0:
+			land[hx] = int(m.elevation.get(hx, 0))
+	for hx in land.keys():
+		var e: int = land[hx]
+		r["levels"][mini(e, 3)] += 1
+		var nbs := 0
+		var same := 0
+		for nb in Hex.neighbors(hx):
+			if not land.has(nb):
+				continue
+			nbs += 1
+			if land[nb] == e:
+				same += 1
+			if nb.x > hx.x or (nb.x == hx.x and nb.y > hx.y):   # each pair once
+				r["pairs"] += 1
+				if land[nb] != e:
+					r["steps"] += 1
+					if absi(int(land[nb]) - e) >= 2:
+						r["big"] += 1
+		if nbs >= 3 and same == 0:
+			r["lone"] += 1
+	for c in m.all_hexes():
+		var ring := _ring(c, 2)
+		var whole := true
+		for hx in ring:
+			if not m.has(hx) or m.is_structure(hx):
+				whole = false
+				break
+		if not whole:
+			continue
+		r["rings"] += 1
+		for i in range(ring.size()):
+			var a: Vector2i = ring[i]
+			var b: Vector2i = ring[(i + 1) % ring.size()]
+			if land.has(a) and land.has(b) and land[a] != land[b]:
+				r["breaks"] += 1
+	return r
+
+
+## The hexes `radius` from `c`, in order round the ring.
+func _ring(c: Vector2i, radius: int) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var hx: Vector2i = c + Hex.DIRECTIONS[4] * radius
+	for i in range(6):
+		for j in range(radius):
+			out.append(hx)
+			hx += Hex.DIRECTIONS[i]
+	return out
 
 
 ## The fewest phases from any start on the team's ground.
@@ -304,7 +397,7 @@ func _reach(m: BattleMap, start: Vector2i, traits: Array, budget: int, k: int) -
 
 
 ## One phase's bounded search from every hex in `from`: the hexes reached, each with its
-## cost (BattleMap.spend: a slow hex is reached with whatever is left and ends the move).
+## cost (BattleMap.spend: a wade entered with less than its price left takes the rest).
 func _one_phase(m: BattleMap, from: Dictionary, traits: Array, budget: int) -> Dictionary:
 	var dist := {}
 	var frontier: Array = []
@@ -355,8 +448,8 @@ func _bodies(m: BattleMap, water: Array[Vector2i]) -> Array:
 
 
 ## Phases from `start` until a hex beside the rift is reached, every phase a full move by
-## the words (BattleMap.spend: a slow hex is reached with whatever is left and ends the
-## move). 99 when it never arrives.
+## the crossing table (BattleMap.spend: a wade entered with less than its price left takes
+## the rest). 99 when it never arrives.
 func _phases(m: BattleMap, start: Vector2i, traits: Array, budget: int) -> int:
 	var goal := {}
 	for r in m.rift_hexes:

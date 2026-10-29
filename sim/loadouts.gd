@@ -1,7 +1,7 @@
 class_name Loadouts
 extends RefCounted
 
-## Sample dice, mechs, and packs. Placeholder numbers for prototypes and tests.
+## Sample dice, and a pack's foes. Placeholder numbers for prototypes and tests.
 ## None of these are balanced. They exist so there is something to roll.
 
 const L := Face.Reach.DIRECT
@@ -53,43 +53,6 @@ static func sparrowhawk_die() -> Die:
 	])
 
 
-## The starting team, built from content/chassis.json.
-static func sample_mechs() -> Array[Unit]:
-	var db := ContentDB.load_default()
-	var out: Array[Unit] = []
-	for id in db.default_team():
-		out.append(db.make_mech(id))
-	return out
-
-
 ## Unpack a battlefield pack into foes for a skirmish, from content/factions.json.
 static func foes_for(sq: Unit) -> Array[Foe]:
 	return ContentDB.load_default().foes_for(sq)
-
-
-## Packs placed on open ground in the north third of the map, drawn from the factions'
-## spawn lists so each is one foe type times a strength.
-static func sample_packs(field: Battlefield, count: int, rng: RandomNumberGenerator) -> Array[Unit]:
-	var db := ContentDB.load_default()
-	var out: Array[Unit] = []
-	var factions: Array = db.factions.keys()
-	var tries := 0
-	while out.size() < count and tries < 200:
-		tries += 1
-		var col := rng.randi_range(0, field.map.width - 1)
-		var row := rng.randi_range(1, maxi(1, field.map.height / 3))
-		var h := Hex.offset_to_axial(col, row)
-		if h == field.map.rift or not field.is_free(h):
-			continue
-		if not BattleMap.passable(field.map.terrain[h], []):
-			continue
-		var fac: String = factions[rng.randi_range(0, factions.size() - 1)]
-		var table := db.spawn_table(fac, 1)
-		if table.is_empty():
-			continue
-		var entry: Array = table[rng.randi_range(0, table.size() - 1)]
-		var sq := Unit.pack(0, "%s pack" % str(entry[0]), h, fac, 2, int(entry[1]), str(entry[0]))
-		sq.behaviour = "hunt" if rng.randf() < 0.2 else "push"
-		field.add_unit(sq)
-		out.append(sq)
-	return out

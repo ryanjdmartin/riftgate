@@ -11,7 +11,7 @@ rules as they are now: read it first. `docs/design-bible.html` records every dec
 ```sh
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import   # first run, and after adding PNGs or a class_name
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
-godot --path .                                     # harness: a battle, a skirmish, a saved battle and the map viewer
+godot --path .                                     # harness: a battle, a skirmish, a saved battle and the quick campaign
 perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md after a vocabulary change
 python3 tools/pages/bible_tables.py                       # the bible's buff, debuff and keyword tables, after any content change
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # the balance report into docs/balance.md (hours on one core; about two in four parts, the README's --part and --merge); --trace "row|pack|policy|seed" for one fight's log

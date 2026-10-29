@@ -36,50 +36,57 @@ func test_ground_path_always_exists() -> void:
 			assert_eq(path[path.size() - 1], m.rift, "path ends at the rift for seed %d" % s)
 
 
-func test_words_by_way_of_moving() -> void:
-	# Decided 2 October: each way of moving calls each ground fast, normal or slow, and the
-	# horde (no trait) crosses any land at normal pace with water and crags as walls.
+func test_the_crossing_table() -> void:
+	# Ryan, 27 and 28 October: a step a hex, and ground is ground. Open ground, rough and ruins
+	# are a step to everyone; water is the one priced ground, waded at two by the ground ways
+	# and crossed at one by hover and flyers; crags are the flyer's; the horde (no trait) crosses
+	# any land, water and crags walls; a winged pack crosses both as a flyer does.
 	var T := BattleMap.Terrain
 	var M := BattleMap
-	assert_eq(M.move_cost(T.PLAIN, ["wheeled"]), M.FAST, "wheels run fast on open ground")
-	assert_eq(M.move_cost(T.ROAD, ["wheeled"]), M.FAST, "a road is open ground")
-	assert_eq(M.move_cost(T.ROUGH, ["wheeled"]), M.SLOW, "wheels are slow in rough")
-	assert_eq(M.move_cost(T.WATER, ["wheeled"]), M.SLOW, "wheels are slow in water")
-	assert_eq(M.move_cost(T.RUINS, ["tracked"]), M.SLOW, "rubble throws a track")
-	assert_eq(M.move_cost(T.ROUGH, ["tracked"]), M.NORMAL, "tracks plough through forest")
-	assert_eq(M.move_cost(T.WATER, ["tracked"]), M.NORMAL, "tracks ford at normal pace")
-	assert_eq(M.move_cost(T.RUINS, ["walker"]), M.NORMAL, "legs step over rubble")
-	assert_eq(M.move_cost(T.WATER, ["walker"]), M.SLOW, "water stops a walker")
-	assert_eq(M.move_cost(T.WATER, ["hover"]), M.FAST, "hover skims water")
-	assert_eq(M.move_cost(T.RUINS, ["hover"]), M.SLOW, "hover is slow in rubble")
-	assert_eq(M.move_cost(T.MOUNTAIN, ["flyer"]), M.NORMAL, "a flyer crosses a crag at normal pace")
-	assert_eq(M.move_cost(T.WATER, ["flyer"]), M.NORMAL, "a flyer is the same everywhere")
-	assert_eq(M.move_cost(T.WATER, []), M.WALL, "water is a wall to the horde")
-	assert_eq(M.move_cost(T.RUINS, []), M.NORMAL, "the horde crosses rubble at full pace")
+	for w in M.WAYS + ["winged", ""]:
+		for t in [T.PLAIN, T.ROAD, T.ROUGH, T.RUINS]:
+			assert_eq(M.step_cost(t, [w]), M.STEP, "%s is a step for %s" % [BattleMap.TERRAIN_NAMES[t], w if w != "" else "the horde"])
+		assert_eq(M.step_cost(T.ROAD, [w]), M.step_cost(T.PLAIN, [w]), "road and plain are one ground for %s" % w)
+	for w in ["tracked", "walker", "wheeled"]:
+		assert_eq(M.step_cost(T.WATER, [w]), M.WADE, "%s wades water" % w)
+		assert_eq(M.step_cost(T.MOUNTAIN, [w]), M.WALL, "a crag is a wall to %s" % w)
+	assert_eq(M.step_cost(T.WATER, ["hover"]), M.STEP, "hover crosses water at a step")
+	assert_eq(M.step_cost(T.MOUNTAIN, ["hover"]), M.WALL, "and a crag stops it")
+	assert_eq(M.step_cost(T.WATER, ["flyer"]), M.STEP, "a flyer crosses water")
+	assert_eq(M.step_cost(T.MOUNTAIN, ["flyer"]), M.STEP, "and crags")
+	assert_eq(M.step_cost(T.WATER, ["winged"]), M.STEP, "a winged pack crosses water as a flyer does")
+	assert_eq(M.step_cost(T.MOUNTAIN, ["winged"]), M.STEP, "and crags")
+	assert_eq(M.step_cost(T.WATER, []), M.WALL, "water is a wall to the horde")
+	assert_eq(M.step_cost(T.MOUNTAIN, []), M.WALL, "and so is a crag")
 	assert_false(M.passable(T.MOUNTAIN, []), "ground cannot cross mountain")
 	assert_true(M.passable(T.MOUNTAIN, ["flyer"]), "flyer crosses mountain")
 	assert_false(M.passable(T.WATER, []), "a pack never enters water")
 	assert_true(M.passable(T.WATER, ["walker"]), "a walker may enter water")
-	for w in M.WAYS:
-		assert_eq(M.move_cost(T.ROAD, [w]), M.move_cost(T.PLAIN, [w]), "road and plain are one ground for %s" % w)
+	assert_true(M.passable(T.WATER, ["winged"]), "a winged pack may")
 	assert_eq(M.way_of(["defense", "wheeled"]), "wheeled", "the way of moving is found among the traits")
 	assert_eq(M.way_of(["defense"]), "", "no way of moving is the horde's rule")
-	assert_eq(M.move_word(T.WATER, ["walker"]), "slow", "the word for the codex")
-	assert_true(M.ground_ways(T.RUINS).has(["slow", ["tracked", "wheeled", "hover"]]), "the ways grouped by word: %s" % str(M.ground_ways(T.RUINS)))
-	assert_eq(M.ground_ways(T.MOUNTAIN), [["normal", ["flyer"]], ["wall", ["tracked", "walker", "wheeled", "hover"]]], "fastest first, every way once")
+	assert_eq(M.way_of(["winged"]), "winged", "a winged pack's word")
+	assert_false(M.WAYS.has("winged"), "and never a chassis's way of moving")
+	assert_eq(M.ground_ways(T.RUINS), [["cross", ["tracked", "walker", "wheeled", "hover", "flyer"]]], "ruins are ground to every machine")
+	assert_eq(M.ground_ways(T.WATER), [["wade", ["tracked", "walker", "wheeled"]], ["cross", ["hover", "flyer"]]], "water: the ground ways wade, the rest cross")
+	assert_eq(M.ground_ways(T.MOUNTAIN), [["cross", ["flyer"]], ["wall", ["tracked", "walker", "wheeled", "hover"]]], "a crag: the flyer crosses, every other way is walled")
 
 
-func test_spend_ends_the_move_on_a_slow_hex() -> void:
+func test_spend_wades_water_with_whatever_is_left() -> void:
+	# Q1 of the movement proposal (Ryan, 28 October): a water hex costs a ground machine two of
+	# its move and can always be entered with whatever is left, so a move of 3 wades two hexes.
 	var T := BattleMap.Terrain
 	var M := BattleMap
-	assert_eq(M.spend(T.PLAIN, ["walker"], 30), 10, "a normal hex spends 10")
-	assert_eq(M.spend(T.PLAIN, ["wheeled"], 30), 5, "a fast hex spends 5")
-	assert_eq(M.spend(T.PLAIN, ["walker"], 5), -1, "a normal hex needs 10 left")
-	assert_eq(M.spend(T.WATER, ["walker"], 30), 30, "a slow hex spends everything left")
-	assert_eq(M.spend(T.WATER, ["walker"], 5), 5, "a slow hex can be entered with any move left")
+	assert_eq(M.spend(T.PLAIN, ["walker"], 3), 1, "a step spends one")
+	assert_eq(M.spend(T.RUINS, ["wheeled"], 3), 1, "rubble is a step for wheels too")
+	assert_eq(M.spend(T.PLAIN, ["walker"], 0), -1, "nothing is entered with no move left")
+	assert_eq(M.spend(T.WATER, ["walker"], 3), 2, "a wade spends two")
+	assert_eq(M.spend(T.WATER, ["walker"], 1), 1, "and can be entered with the one left")
 	assert_eq(M.spend(T.WATER, ["walker"], 0), -1, "but not with none")
-	assert_eq(M.spend(T.WATER, [], 30), -1, "a wall cannot be entered")
-	assert_eq(M.spend(T.MOUNTAIN, ["walker"], 30), -1, "nor a crag")
+	assert_eq(M.spend(T.WATER, ["hover"], 3), 1, "a hover crosses water at one")
+	assert_eq(M.spend(T.WATER, [], 3), -1, "a wall cannot be entered")
+	assert_eq(M.spend(T.MOUNTAIN, ["walker"], 3), -1, "nor a crag")
+	assert_eq(M.spend(T.MOUNTAIN, ["flyer"], 3), 1, "but a flyer crosses it")
 	var m := BattleMap.generate(7, 14, 5)
 	assert_true(m.margin.size() > 0, "a generated map has scenery past its edges")
 	for hx in m.margin.keys():
