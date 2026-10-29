@@ -187,7 +187,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), and reworked on his seven rounds of notes of 29 October
+  the stock pass had left on old kit), and reworked on his eight rounds of notes of 29 October
   (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
@@ -373,7 +373,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. Every file the page reads is fetched with a
+  before it is replaced and `edits` read first. Its lit parts show as the phone's renderer shows them (29 October: a lit
+  tile is the tile as stored times its light, clipped, before the page's own light; it had
+  shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
   acts on a reloaded page). At the page's version 149 (29 October, from
   `claude/charming-rubin-h954bp`, onto its own 148, itself onto 147, which another session

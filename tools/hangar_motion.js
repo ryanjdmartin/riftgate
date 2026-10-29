@@ -56,7 +56,16 @@ function turnToward(facing, vel, want, rate, dt) {
   }
   return [facing, vel];
 }
-const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
+const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.toon), shown as the phone shows it (PHONE_GLOW)
+// A lit part's colour as the phone shows it (Ryan, 29 October: the Armadillo's new vent glow looked
+// "the same" here). The game's renderer on the phone (gl_compatibility) lights in sRGB space: a lit
+// tile shows as the tile as stored times its light, each channel clipped at one (measured from its
+// renders). This page lights in linear space and would decode the tile first, crushing a dark tile
+// the phone multiplies up to its colour (the vents' heat showed dull brown, golden on the phone), so a
+// lit part takes the phone's colour and only then goes into this page's linear light.
+const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
+  totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * totalEmissiveRadiance, vec3(1.0)), 1.0)).rgb;
+#endif`;
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
 
@@ -775,7 +784,8 @@ class Route {
 
 // ---------------------------------------------------------------- the stage
 // The models' own tiles, nearest sampled on flat facets; the amber role lights, as the game's
-// toon pass makes it (MechView3D.toon), each material its own so a glow is per instance.
+// toon pass makes it (MechView3D.toon), in the phone's colours (PHONE_GLOW), each material its
+// own so a glow is per instance.
 function prepareMaterials(root) {
   const T = window.THREE;
   root.traverse(n => {
@@ -784,7 +794,10 @@ function prepareMaterials(root) {
       const m = src.clone();
       m.flatShading = true; m.side = T.DoubleSide; m.roughness = 0.85; m.metalness = 0.1;
       if (m.map) { m.map = m.map.clone(); m.map.needsUpdate = true; m.map.magFilter = T.NearestFilter; m.map.minFilter = T.NearestFilter; m.map.wrapS = m.map.wrapT = T.RepeatWrapping; }
-      if ((src.name || "").startsWith("amber")) { m.emissive = new T.Color(1, 1, 1); m.emissiveMap = m.map; m.emissiveIntensity = GLOW_PAGE; m.userData.lit = true; }
+      if ((src.name || "").startsWith("amber")) {
+        m.emissive = new T.Color(1, 1, 1); m.emissiveMap = m.map; m.emissiveIntensity = GLOW_PAGE; m.userData.lit = true;
+        m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace("#include <emissivemap_fragment>", PHONE_GLOW); };
+      }
       return m;
     });
     if (n.material.length === 1) n.material = n.material[0];

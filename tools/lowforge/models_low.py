@@ -1001,7 +1001,8 @@ def armadillo(b):
     # streamlined. I meant big boxy radiators sticking out at an angle"; raised onto the rear
     # deck in "a darker colour", then "Go back to the previous iteration. Ditch the bottom long
     # vent. Put these guys right on the back panel, still tilted up, and make them bigger";
-    # then "move them down and farther apart"): two big armoured boxes in dark steel standing
+    # then "move them down and farther apart", and back "a little towards each other, and a
+    # little up"): two big armoured boxes in dark steel standing
     # out of the low half of the tail's back panel, wide apart, their louvred faces tilted up
     # as the bevel had held them, each a dark steel box with a stripe rim and its heat banked
     # in its floor (amber.heat, "way more yellow/orange" than the ember it had), heavy louvres
@@ -1015,7 +1016,7 @@ def armadillo(b):
     # panel's chamfer, so the box stands out of the panel alone; its walls run nine back into
     # the band (twelve, so low, ran out under its belly), the hollow cut through the panel
     # where the face's top lies over it.
-    RAD_X, RAD_MOUTH = 13.5, (-54.66, Z0 + 8.83)
+    RAD_X, RAD_MOUTH = 12.0, (-54.66, Z0 + 10.33)
     vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
                    wall=1.5, housing="steel.dark", back=9.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
