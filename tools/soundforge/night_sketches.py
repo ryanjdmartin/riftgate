@@ -20,9 +20,12 @@ the lead's long notes, the choir and ringing chords in the breakdown, the riff i
             off the beat, a crash and a china each phrase, a tom fill every eighth bar, the
             climax's kick and a double-kick run in D, a snare build out of the breakdown, and
             the map's own industry (knocks, ticks, clanks, glitches) over the kit.
-  bass      a driven line all through: root, its octave and fifth on the sixteenths between the
-            kick's beats, and a passing note into each chord.
-  guitar    palm-muted on the chords' roots at about half its level, in a groove (three to hear).
+  bass      a driven line all through, on the guitar's groove: the root, its octave by the and of
+            two, the fifth by the a of three, and a passing note into each chord on the bar's last
+            hit. It follows each groove in the A/B (Ryan, 29 October: every row's guitar sounded
+            alike, since the line had kept one rhythm a few dB over the guitar, and on a phone a
+            driven bass an octave down reads as the chug).
+  guitar    palm-muted on the chords' roots, in a groove (four to hear), under the line.
   synth     an arpeggio on the lead's voice through the grooves (or the chime's hook on a synth,
             or none: the A/B set).
 
@@ -82,17 +85,14 @@ FILLS = {"tom": "." * 112 + FILL_TOM, "tom2": "." * 112 + FILL_TOM2}
 
 # The guitar's grooves, one bar on each chord's root (Ryan: not straight, more of a groove).
 GROOVES = {
-    "g0": ("Straight, as the first cut", "Every eighth on the root, as the first cut had it, at the new level, for reference.", "r.r.r.r.r.r.r.r."),
+    "g0": ("Straight, as the first cut", "Every eighth on the root, as the first cut had it, for reference.", "r.r.r.r.r.r.r.r."),
     "g1": ("The hook's rhythm", "On the chime's hook: one, two, the and of two, four, a pickup.", "r...r.r.....r.r."),
-    "g2": ("Three, three, two", "Three-three-two twice in sixteenths, locked with the bass line's rhythm.", "r..r..r.r..r..r."),
+    "g2": ("Three, three, two", "Three-three-two twice in sixteenths (the full pair's).", "r..r..r.r..r..r."),
     "g3": ("The gallop", "Pairs of sixteenths pushing into the beat.", "r.rr..r.r.rr..r."),
 }
 
-# The bass line's bar: the root long on one and short on the a of one, its octave on the and of
-# two, the root on three, the fifth on its a, and a passing note into the next chord, between the
-# kick's beats. Each chord as (root, its octave, its fifth, the passing note), on the driven bass an
-# octave down (0 is E1).
-LINE_BAR = "R-.R..O.R-.F..P."
+# The bass line's notes for each chord as (root, its octave, its fifth, the passing note into the
+# next chord), on the driven bass an octave down (0 is E1).
 CHORD_NOTES = {   # by the chord's root and the next chord's root
     (0, 8): ("0", "c", "7", "7"), (8, 10): ("8", "e", "c", "9"), (10, 7): ("a", "j", "f", "8"), (7, 0): ("7", "i", "d", "l"),
     (0, 5): ("0", "c", "7", "4"), (5, 3): ("5", "f", "c", "4"), (3, -2): ("3", "e", "a", "9"), (-2, 0): ("a", "j", "f", "l"),
@@ -100,12 +100,22 @@ CHORD_NOTES = {   # by the chord's root and the next chord's root
 }
 
 
-def line(roots):
-    """The bass line over a run of bar roots (each with the next, the last wrapping to the first)."""
+def line(fig, roots):
+    """The bass line on a groove over a run of bar roots (each with the next, the last wrapping to
+    the first): a hit by the and of two takes the octave, one by the a of three the fifth, the
+    bar's last hit from beat four the passing note, the rest the root; a hit with room after it
+    holds two steps."""
+    hits = [i for i, c in enumerate(fig) if c == "r"]
     out = []
-    for i, r in enumerate(roots):
-        nr, o, f, pn = CHORD_NOTES[r, roots[(i + 1) % len(roots)]]
-        out.append(LINE_BAR.replace("R", nr).replace("O", o).replace("F", f).replace("P", pn))
+    for b, r in enumerate(roots):
+        root, octave, fifth, passing = CHORD_NOTES[r, roots[(b + 1) % len(roots)]]
+        bar = ["."] * 16
+        for j, h in enumerate(hits):
+            last = j == len(hits) - 1
+            bar[h] = passing if last and h >= 12 else octave if 6 <= h <= 7 else fifth if 11 <= h <= 13 else root
+            if (16 if last else hits[j + 1]) - h >= 3:
+                bar[h + 1] = "-"
+        out.append("".join(bar))
     return "".join(out)
 
 
@@ -136,10 +146,11 @@ def battle_round_two(call, groove="g2", synth="arp"):
     chug = {s: P.figure(fig, [P.spell(r) for r in bar_roots(call, s)]) for s in "IACDRO"}
     voices += [
         # The guitar palm-muted on the roots, a groove under the band rather than its lead.
-        {"inst": "guitar_real", "mode": "riff", "gain": 0.38, "octave": -1, "pat": chug},
-        # The line all through the grooves, the riff in D, held roots through the breakdown.
-        {"inst": "bass_real", "mode": "riff", "gain": 0.38, "hold": 0.9, "octave": -1, "params": {"drive": 3.5},
-         "pat": {s: line(bar_roots(call, s)) for s in "IACRO"}},
+        {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "pat": chug},
+        # The line all through the grooves on the guitar's rhythm, the riff in D, held roots
+        # through the breakdown; the line 3 dB under its first cut, which carried half the mix.
+        {"inst": "bass_real", "mode": "riff", "gain": 0.27, "hold": 0.9, "octave": -1, "params": {"drive": 3.5},
+         "pat": {s: line(fig, bar_roots(call, s)) for s in "IACRO"}},
         {"inst": "bass_real", "mode": "riff", "gain": 0.38, "hold": 1.1, "params": {"drive": 3.5}, "pat": {"D": riff}},
         {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 900.0}, "pat": {"D": riff}},
         {"inst": "bass_real", "mode": "riff", "gain": 0.32, "legato": True, "params": {"drive": 3.5}, "pat": {"B": p("sub_bass", "B")}},
@@ -150,11 +161,11 @@ def battle_round_two(call, groove="g2", synth="arp"):
         # Up and down two octaves of each chord in sixteenths on the lead's voice, the intro's
         # second half and every groove.
         arp = "0123432101234321"
-        voices.append({"inst": "lead", "mode": "chord", "octave": 2, "gain": 0.12, "dur": 1.4,
+        voices.append({"inst": "lead", "mode": "chord", "octave": 2, "gain": 0.16, "dur": 1.4,
                        "pat": {"I": "." * 64 + arp, "A": arp, "C": arp, "R": arp, "O": arp}})
     elif synth == "hook":
         # The chime's hook an octave under it on the FM synth, where the chime plays it.
-        voices.append({"inst": "synlead", "mode": "chord", "octave": 1, "gain": 0.2, "dur": 3.0,
+        voices.append({"inst": "synlead", "mode": "chord", "octave": 1, "gain": 0.28, "dur": 3.0,
                        "pat": {s: p("chime_metal", s, mode="chord") for s in "ARO"}})
     drums = {
         "kick": {"I": "x...x...x...x..." * 7 + "x...x...x.......", "A": GROOVE_KICK, "C": LEAD_KICK, "R": GROOVE_KICK,
@@ -217,7 +228,7 @@ def map_half():
 
 EXCERPT = "AAAAAAAA"   # the groove's eight chords, from its first bar
 SETS = [
-    {"id": "g", "half": "battle", "title": "The battle's guitar: its groove", "note": "The groove's eight bars with the round's drums, bass line and arpeggio; only the guitar's rhythm changes, at its new level, about half the first cut's.",
+    {"id": "g", "half": "battle", "title": "The battle's guitar: its groove", "note": "The groove's eight bars with the round's drums and arpeggio; the guitar's rhythm changes, and the bass line plays it with the guitar.",
      "rows": [(k, g[0], g[1], {"groove": k}) for k, g in GROOVES.items()]},
     {"id": "s", "half": "battle", "title": "The battle's synth line", "note": "The same bars on the three-three-two guitar: the bass line alone, the chime's hook on a synth, or an arpeggio.",
      "rows": [("s0", "The bass line alone", "No synth line: the line, the guitar and the drums carry it.", {"synth": None}),

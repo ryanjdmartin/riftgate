@@ -37,8 +37,9 @@ are in `README.md`.
 first round, the Hold The Line pair, merged on the 27th), main merged into it on the 29th: Ryan's
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
-29 October on Hold The Line's two halves and Night Shift's battle half, sketched as round two on
-the same page, and the pairs in the game once he has heard them.
+29 October on Hold The Line's two halves and Night Shift's battle half, sketched as further rounds
+on the same page (Hold The Line's third, Night Shift's second), and the pairs in the game once he
+has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -302,11 +303,12 @@ The tasks are the to-do's; this is the index of what waits.
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
-- Every track a pair (the bible's pair row, 28 October): the five new halves sketched, and round
-  two (29 October) on his notes: Hold The Line looping without J with K two ways, its lifts and
-  its map's voices as A/B sets; Night Shift's map intro without its front, its battle half
-  reworked (no drone, a bass line, a synth line, a guitar groove, Hold The Line's drum energy);
-  all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
+  Line on its third round (29 October: J gone, V and Q kept, K at its slower tempo reworked two
+  ways on two drum treatments, the lifts on two voices under a backing chug, his map picks: X on
+  the violins, U on the clean guitar, the drone moved to R, W low with a roll) and Night Shift on
+  its second (the map's intro without its front, the battle half with no drone, a bass line on the
+  guitar's groove, a synth line, Hold The Line's drum energy); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -357,16 +359,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.353 (the page's version 365,
-  published 29 October from `ccr-7effd31a-u5z4gw`: the pair rows, section 1's pair row with
-  round two's line that the tracks share ideas and never remix one another, the palette row's
-  drone used sparingly, the track table's halves, the boss-theme row and section 12's question,
-  onto the live v0.352 at version 364, which `ccr-7821127e-kwj874` published from main: the six
-  map shapes landed, three-way merged onto the live v0.351 that `claude/charming-rubin-h954bp`
-  published). So this file carries
-  that branch's rows ahead of its code (the models' glows, looks and acts, the Armadillo's seal
-  on screen) and its Strikes row in the keyword table, and the tables script, which writes the
-  tables from main's content, waits until that branch lands or it reverts that row. The
+  `docs/design-bible.html` after every change. This file is v0.355 (the page's version 367,
+  published 29 October from `ccr-7effd31a-u5z4gw`: Hold The Line's map picks in the track table,
+  three-way merged onto the live v0.354 at version 366 that `claude/jolly-lovelace-scn82y`
+  published, the skirmish as one field in perspective and its controls' layout option; that on
+  this branch's v0.353 at version 365, the pair rows, the palette row's drone used sparingly and
+  the tracks never remixing one another, on main's v0.352 at version 364, the six map shapes).
+  So this file carries rows ahead of their code from two branches: `claude/jolly-lovelace-scn82y`'s
+  (the skirmish's field and controls) and `claude/charming-rubin-h954bp`'s (the models' glows,
+  looks and acts, the Armadillo's seal on screen) with its Strikes row in the keyword table; the
+  tables script, which writes the tables from main's content, waits until the latter lands or
+  it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
@@ -402,7 +405,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
-  Line's run as the game plays it, and round two's pairs and A/B sets (`hold_sketches.py`,
-  `night_sketches.py`).
+  Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
+  third, `hold_sketches.py`; Night Shift's second, `night_sketches.py`), at the page's version 7.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
