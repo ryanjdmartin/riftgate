@@ -774,14 +774,16 @@ a stat.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief: River Crossing (a
-  river across, two or three hexes thick, with one ford three wide or two two wide, a crag on
-  a bank at most), Fjord (water down the field, two or three wide, a lane two wide at least
-  either side), Badlands (mesas in groups and two or three ponds, the paths winding between),
-  Open Steppe (a lone crag and a pond at most), Ruined City (one or two bands of towers
-  across, each with one gap three wide or two two wide), Gorge (one or two cliff walls down
-  the field, lanes two wide at least). A battle that names no shape draws one by its seed.
-  Every map guarantees the horde a crossing three hexes wide or more; the rift's mouth (rows
-  0 to 3) and the two rows before the gate hold no water and no wall. Height is landscape; no
+  river across, two or three hexes thick, with one or two fords three or four hexes wide in
+  all, a crag on a bank at most), Fjord (water down the field, two or three wide, a
+  lane two wide at least either side), Badlands (mesas in groups and two or three ponds, the
+  paths winding between), Open Steppe (a lone crag and a pond at most), Ruined City (one or
+  two bands of towers across, each with streets through it three or four hexes wide in all,
+  one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
+  least). A ford or a street is one to three hexes wide, with a hex of river or towers
+  between two. A battle that names no shape draws one by its seed. Every map guarantees the
+  horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
+  and the two rows before the gate hold no water and no wall. Height is landscape; no
   rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
@@ -790,7 +792,11 @@ a stat.
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
   everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
   always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
-  Walls stop all but a flyer. Machines never enter or cross another unit's hex.
+  Walls stop all but a flyer. Nobody stops on another unit's hex. A flyer and a grounded unit
+  pass each other and meet only in a fight: a flyer flies over machines and packs, and they
+  pass under it and under a winged pack. A grounded machine never passes another grounded
+  machine or a grounded pack: each move lands at once, so the next is planned from where it
+  ended and the player sequences them.
 - **Setup**: up to four machines on the row before the gate; the lead domain's spawn list at the
   battle's tier as packs three to five rows below the rift; the boss one row below the rift.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
@@ -821,10 +827,14 @@ a stat.
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
   it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
   Pressure does not tick: it ticks on the map alone.
-- **Packs**: one foe type times a strength. They cross every land hex and never enter water or
-  walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb, the Drake, and
-  their lines' recolours) crosses both as a flyer does and may stand there; moves 2 (fast 3, the Dire Wolf's line 4, massive 1);
-  rings 1 (front rank), 3 (back rank), 2 (massive). They walk round grounded machines and other packs and pass under a flyer, never ending a walk on its hex, so a flyer holds no ground; the walk shown is the walk played. The
+- **Packs**: one foe type times a strength. They cross every land hex and wade water as a
+  ground machine does, a water hex costing two of their move (entered with whatever is left),
+  and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
+  the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
+  moves 2 (fast 3, the Dire Wolf's line 4, massive 1); rings 1 (front rank), 3 (back rank), 2
+  (massive). They walk round grounded machines, through each other and under a flyer, never
+  ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
+  against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
@@ -833,7 +843,7 @@ a stat.
   hunter with the hunter's picture and a target. A hunter with its prey in its ring
   at the start of the player's turn has caught it: that fight comes first, the prey cannot
   move first, others in range may join. A hunter whose prey stands where no hex it can reach
-  puts it inside its ring (a flyer over a wall, a hovercraft out on the water) picks another by its
+  puts it inside its ring (a flyer over a wall) picks another by its
   caveat among the machines it can reach, and the new lock holds; with none to pick, it walks
   as near as it gets.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside

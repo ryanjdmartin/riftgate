@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 739 tests, 66,640 checks, green on main (29 October; 737 and 66,570 before the
-  movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 746 tests, 203,825 checks, green (29 October, the horde wading; 744 and 203,078 on
+  the six shapes), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -139,6 +139,18 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   reach 38% on the gorge and the badlands to 51% on the steppe, the hover's 47% to 62%, the
   flyer's 62% on all); the relief steps on 0% to 16% of neighbouring land where it stepped on
   55%; the campaign run moves no band. Next: Ryan's read of them running (the to-do).
+- The horde moves as the machines do (Ryan, 29 October; built the same day): a pack wades water
+  at two a hex as a ground machine does, packs pass through each other, a flyer (a machine or a
+  winged pack) and the ground pass each other, and nobody stops on another unit's hex; grounded
+  machines still block each other and the grounded packs, so the bodyblock stays and the
+  crossing guarantee binds the walls alone. A river's fords and a city band's streets are three
+  or four hexes in all, the river's one or two (four broke it into ponds) and a band's one to
+  four. Measured (`docs/measurements.md`): the horde's crossing stays three wide on every map,
+  the guarantee opens nothing on water, and only the city's reach moves (the walkers' 44% where
+  42%, its streets spread); the campaign run moves no band, the fights' sizes with it on this
+  bot, which never holds a line. Next: the hunters' change Ryan proposed (a ring of 2, "my target, or closest
+  if he's unreachable", the re-pick gone), on his word to Claude's readings (the bible's
+  section 12).
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -302,7 +314,7 @@ Each a session of its own, with what it reads first; Ryan's play tasks run besid
 to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
 to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
 numbered keywords and the blow's order; the campaign report and the map survey (both 29
-October, on the six shapes) are main's head's.
+October, on the horde wading and the streets) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
@@ -344,13 +356,19 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.352 (the page's version 364,
-  published 29 October from `ccr-7821127e-kwj874`: the six map shapes landed, three-way merged
-  onto the live v0.351 that `claude/charming-rubin-h954bp` published, on v0.348 at version 360,
-  the shape-led relief, and v0.347 at 359, Ryan's calls on the map shapes). So this file carries
-  that branch's rows ahead of its code (the models' glows, looks and acts, the Armadillo's seal
-  on screen) and its Strikes row in the keyword table, and the tables script, which writes the
-  tables from main's content, waits until that branch lands or it reverts that row. The
+  `docs/design-bible.html` after every change. This file is v0.363 (the page's version 375,
+  published 29 October from `ccr-7821127e-kwj874`: the horde wading, packs passing packs, flyers
+  and the ground passing each other, and the fords and streets three or four in all, three-way
+  merged onto the live v0.362 that `claude/charming-rubin-h954bp` published at 374, which carries
+  `claude/jolly-lovelace-scn82y`'s v0.361 (the skirmish one field in perspective with its
+  controls where the player sets them, the enemy's red pure #ff0000 on trial, heat's orange
+  #ff6000, reds and oranges in red and green alone), `ccr-7effd31a-u5z4gw`'s sound rows (every
+  track a pair) and its own notes on the rebuilds, the Armadillo's radiators and vents and the
+  desk on the phone's renderer; on v0.352 at 364, the six map shapes). So this file carries
+  those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
+  seal on screen, the skirmish's field, the reds, the tracks in pairs) and the Strikes row in
+  the keyword table, and the tables script,
+  which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
@@ -362,12 +380,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 147 (29 October, from
-  `ccr-7821127e-kwj874`: `content/vocabulary.json` with the walls' four terms and
-  `content/factions.json` with the domains' leans on the shapes, onto version 146 of
-  `claude/charming-rubin-h954bp`'s page and files, whose `index.html` it republished as it
-  stood; that branch's `content/chassis.json` carries its own Stingray note, so main's chassis
-  and foes files, whose `_about` alone moved, wait for that branch to land; `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 152 (29 October, from
+  `claude/charming-rubin-h954bp`, its rebuilds' notes, onto 151, which `ccr-7821127e-kwj874`
+  published with `content/vocabulary.json` carrying the horde's wade and the flyer's passing,
+  the file 152 kept, identical to this one, onto version 150, every other file as it stood;
+  at 147 the walls' four terms and `content/factions.json` with the domains' leans on the shapes,
+  onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
+  `content/chassis.json` carries its own Stingray note, so main's chassis and foes files, whose
+  `_about` alone moved, wait for that branch to land; `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

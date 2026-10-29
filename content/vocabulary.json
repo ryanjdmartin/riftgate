@@ -1058,10 +1058,10 @@
    "id": "water",
    "category": "terrain",
    "name": "Water",
-   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it.",
+   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it.",
    "status": "implemented",
    "design": {
-    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none), and the horde always keeps a crossing three hexes wide."
+    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
    }
   },
   {
@@ -1108,7 +1108,7 @@
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",
-   "codex": "Crosses everything, water and walls included. Packs walk under it but never stop on its hex.",
+   "codex": "Crosses everything, water and walls included. It flies over machines and packs, and they pass under it, but nothing stops on another's hex.",
    "status": "implemented",
    "design": {
     "holes": ""

@@ -696,7 +696,9 @@ static func ground_lines(t: int, word: String = "") -> Array:
 			_:
 				out.append(_said("Cross:", "every machine" if (pair[1] as Array).size() == BattleMap.WAYS.size() else said))
 	var packs := "Packs cross it"
-	if not BattleMap.passable(t, []):
+	if BattleMap.step_cost(t, []) == BattleMap.WADE:
+		packs = "Packs wade it (two move a hex); a winged pack crosses it" if BattleMap.step_cost(t, ["winged"]) == BattleMap.STEP else "Packs wade it (two move a hex)"
+	elif not BattleMap.passable(t, []):
 		packs = "Packs never enter it; a winged pack crosses it" if BattleMap.passable(t, ["winged"]) else "Packs never enter it"
 	out.append(EntryReadout.text_line("effect", packs))
 	return out

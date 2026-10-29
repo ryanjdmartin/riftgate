@@ -7,7 +7,8 @@ extends RefCounted
 ## A turn:
 ##   1. plan_walks()        where every pack will walk on the enemy's turn, against the field as
 ##                          it stands: a pusher toward the gate, a hunter toward its prey, round
-##                          the machines, which are ground the horde goes round and never a stop
+##                          the grounded machines, which are ground the horde goes round and
+##                          never a stop, through the other packs and under the flyers
 ##   2. the player's turn   (Battle) first every fight a hunter forced (forced_fights), then
 ##                          fights the player picks (attack_roster): a fight is at the pack
 ##                          attacked, every pack whose ring covers it joins, and the machines
@@ -123,20 +124,47 @@ func is_free(h: Vector2i) -> bool:
 	return map.has(h) and not map.is_structure(h) and unit_at(h) == null
 
 
+## Whether `mover` may pass the hex `occ` stands on, never stopping there (Ryan, 29 October:
+## "flyers and ground never interact except to fight", and enemies pass through enemies, since
+## "enemy units are flat sprites so it's not like they take up space"): an airborne unit passes
+## and is passed by everything, and a pack passes a pack. A grounded machine and a grounded
+## pack are each other's walls, and two grounded machines each other's (the player sequences
+## them: a move lands at once, so the next is planned from where it ended).
+static func passes(mover: Unit, occ: Unit) -> bool:
+	return mover.airborne() or occ.airborne() or (mover.is_enemy() and occ.is_enemy())
+
+
 ## Whether `u` could stand with its anchor at `at`: every footprint hex in the map, passable,
-## not a structure, and not held by another unit. Flyers are ignored as blockers only when
-## `ignore_flyers` is set (packs pass through them).
-func can_stand(u: Unit, at: Vector2i, ignore_flyers: bool = false) -> bool:
+## not a structure, and not held by another unit. Nobody stops on another unit's hex.
+func can_stand(u: Unit, at: Vector2i) -> bool:
+	if not _ground_fits(u, at):
+		return false
+	for o in u.footprint:
+		var occ := unit_at(at + o)
+		if occ != null and occ != u and not lifted.has(occ):
+			return false
+	return true
+
+
+## Whether `u` could pass through with its anchor at `at` on its way somewhere: the ground as
+## for standing, and every unit there one it passes (`passes`).
+func can_pass(u: Unit, at: Vector2i) -> bool:
+	if not _ground_fits(u, at):
+		return false
+	for o in u.footprint:
+		var occ := unit_at(at + o)
+		if occ != null and occ != u and not lifted.has(occ) and not passes(u, occ):
+			return false
+	return true
+
+
+## Every footprint hex on the field, no structure, ground `u` can enter.
+func _ground_fits(u: Unit, at: Vector2i) -> bool:
 	for o in u.footprint:
 		var h: Vector2i = at + o
 		if not map.has(h) or map.is_structure(h):
 			return false
 		if not BattleMap.passable(map.terrain[h], u.traits):
-			return false
-		var occ := unit_at(h)
-		if occ != null and occ != u and not lifted.has(occ):
-			if ignore_flyers and not occ.can_block() and occ.is_player():
-				continue
 			return false
 	return true
 
@@ -165,10 +193,13 @@ func nearest_standable(u: Unit, h: Vector2i) -> Vector2i:
 
 ## Every anchor hex a unit can end its move on, mapped to the cost of getting there: from
 ## its hex with its whole move, or with `budget` when given (a machine that has moved part of
-## its move this action has the rest).
+## its move this action has the rest). A hex it only passes (another unit's) is no end.
 func reachable(u: Unit, budget: int = -1) -> Dictionary:
 	var dist: Dictionary = _search(u, u.pos, u.movespeed if budget < 0 else budget)[0]
 	dist.erase(u.pos)
+	for h in dist.keys():
+		if not can_stand(u, h):
+			dist.erase(h)
 	return dist
 
 
@@ -179,11 +210,12 @@ func route_to(u: Unit, to: Vector2i, budget: int = -1) -> Array[Vector2i]:
 
 
 ## The cheapest continuation for `u` from `from` to `to` inside `budget` of move, as
-## the hexes after `from`; empty when `to` is out of reach. A route drawn by hand grows by
-## these, so a finger that skips a hex still leaves a walkable route.
+## the hexes after `from`; empty when `to` is out of reach or no place to stop. A route drawn
+## by hand grows by these, so a finger that skips a hex still leaves a walkable route, and one
+## over a unit it passes waits there until the finger moves on.
 func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
-	if to == from:
+	if to == from or not can_stand(u, to):
 		return out
 	var prev: Dictionary = _search(u, from, budget)[1]
 	if not prev.has(to):
@@ -196,16 +228,18 @@ func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vec
 
 
 ## What a route costs `u` of its move, or -1 when it is not one it can walk: every step
-## adjacent to the last and standable, each paid for out of what is left of its move (or of
-## `budget`); a wade entered with less than its price left takes the rest, so nothing follows
-## it.
+## adjacent to the last and one it may pass, its last one it may stop on, each paid for out of
+## what is left of its move (or of `budget`); a wade entered with less than its price left
+## takes the rest, so nothing follows it.
 func route_cost(u: Unit, route: Array, budget: int = -1) -> int:
 	var cost := 0
 	var cur := u.pos
 	var move := u.movespeed if budget < 0 else budget
-	for step in route:
-		var s: Vector2i = step
-		if not Hex.are_adjacent(cur, s) or not can_stand(u, s):
+	for i in range(route.size()):
+		var s: Vector2i = route[i]
+		if not Hex.are_adjacent(cur, s) or not can_pass(u, s):
+			return -1
+		if i == route.size() - 1 and not can_stand(u, s):
 			return -1
 		var c := BattleMap.spend(map.terrain[s], u.traits, move - cost)
 		if c < 0:
@@ -215,11 +249,12 @@ func route_cost(u: Unit, route: Array, budget: int = -1) -> int:
 	return cost
 
 
-## Dijkstra from `from`, bounded by `budget` of move. Returns [dist, prev]. `blocked` hexes
-## are not entered; `through_flyers` lets a pack pass a flyer's hex without landing. A water
-## hex a ground machine wades costs two, and with one left it is still entered for the one
-## (BattleMap.spend), so it is reached at the budget and nothing is reached through it.
-func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, through_flyers: bool = false) -> Array:
+## Dijkstra from `from`, bounded by `budget` of move, through every hex `u` may pass (an
+## airborne unit's, or a grounded one's when `u` flies: `passes`). Returns [dist, prev]; a
+## passed hex is in them, and `reachable` keeps the ends. `blocked` hexes are not entered. A
+## water hex a ground machine wades costs two, and with one left it is still entered for the
+## one (BattleMap.spend), so it is reached at the budget and nothing is reached through it.
+func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}) -> Array:
 	var dist := {from: 0}
 	var prev := {}
 	var frontier: Array = [[0, from]]
@@ -234,7 +269,7 @@ func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, thr
 		if d > dist[h]:
 			continue
 		for n in Hex.neighbors(h):
-			if not map.has(n) or blocked.has(n) or not can_stand(u, n, through_flyers):
+			if not map.has(n) or blocked.has(n) or not can_pass(u, n):
 				continue
 			var c := BattleMap.spend(map.terrain[n], u.traits, budget - d)
 			if c < 0:
@@ -336,7 +371,7 @@ const BOSS_ZONE := 2
 func _patrol_step(sq: Unit, blocked: Dictionary) -> Vector2i:
 	var options: Array[Vector2i] = []
 	for n in Hex.neighbors(sq.pos):
-		if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and not map.rift_hexes.has(n) and _walkable(sq, n, blocked) and _landable(sq, n):
+		if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and not map.rift_hexes.has(n) and _walkable(sq, n, blocked) and _landable(sq, n, blocked):
 			options.append(n)
 	if options.is_empty():
 		return sq.pos
@@ -344,9 +379,10 @@ func _patrol_step(sq: Unit, blocked: Dictionary) -> Vector2i:
 
 
 ## Every pack's walk for the enemy's turn, against the field as it stands now (bible section
-## 4, the round row). Packs plan in field order, each round where the packs before it will
-## end and where the ones after it stand now, so the walk plays as shown. The preview is this
-## call: nothing a pack does reacts to the plan, it reads where the machines stand.
+## 4, the round row). Packs plan in field order, each walking through the others but never
+## stopping where the packs before it will end or where the ones after it stand now, so the
+## walk plays as shown. The preview is this call: nothing a pack does reacts to the plan, it
+## reads where the machines stand.
 func plan_walks() -> Dictionary:
 	var out: Dictionary = {}
 	var ends: Dictionary = {}   # pack id -> the hexes it will hold, for the packs after it
@@ -374,25 +410,30 @@ func _held_by_others(sq: Unit, ends: Dictionary) -> Dictionary:
 
 
 ## Whether a pack may walk with its anchor at `at`: every footprint hex in the map, ground the
-## horde can cross, no structure, no other pack's hold, no grounded machine (a flyer is passed
-## under). Machines are ground the horde goes round, never a stop.
-func _walkable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
+## horde can cross, no structure, and no machine it does not pass (`passes`): it walks through
+## the other packs and under a flyer, and a winged pack over everything. A grounded machine is
+## ground the horde goes round, never a stop. `blocked` is for stopping (`_landable`).
+func _walkable(sq: Unit, at: Vector2i, _blocked: Dictionary) -> bool:
 	for o in sq.footprint:
 		var h: Vector2i = at + o
-		if not map.has(h) or map.is_structure(h) or blocked.has(h):
+		if not map.has(h) or map.is_structure(h):
 			return false
 		if not BattleMap.passable(map.terrain[h], sq.traits):
 			return false
 		var occ := unit_at(h)
-		if occ != null and occ != sq and occ.is_player() and occ.can_block():
+		if occ != null and occ != sq and occ.is_player() and not passes(sq, occ):
 			return false
 	return true
 
 
-## Whether a pack may stop with its anchor at `at`: walkable, and no machine there at all.
-func _landable(sq: Unit, at: Vector2i) -> bool:
+## Whether a pack may stop with its anchor at `at`: walkable, no machine there at all, and no
+## other pack's hold (`blocked`: where the packs planned before it end, where the rest stand).
+func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 	for o in sq.footprint:
-		var occ := unit_at(at + o)
+		var h: Vector2i = at + o
+		if blocked.has(h):
+			return false
+		var occ := unit_at(h)
 		if occ != null and occ != sq and occ.is_player():
 			return false
 	return true
@@ -418,8 +459,9 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 
 ## One pack's walk. A boss patrols, its escort with it. A hunter heads for the nearest hex it can reach that puts
 ## its prey inside its ring, or as near as it gets; a pusher for the nearest hex of the gate's
-## apron. It walks as far as its move goes, round machines and the other packs, never ending
-## under a flyer. A pusher with no way to the gate waits, and the map says so.
+## apron. It walks as far as its move goes, round the grounded machines, through the other
+## packs and under the flyers, never ending on another unit's hex. A pusher with no way to the
+## gate waits, and the map says so.
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
 	w.end = sq.pos
@@ -443,7 +485,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - sq.zone, 0), 0)
 		for h in dist.keys():
 			var hx: Vector2i = h
-			if not _landable(sq, hx):
+			if not _landable(sq, hx, blocked):
 				continue
 			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - sq.zone, 0), int(dist[hx]))
 			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
@@ -453,7 +495,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 		var best := 1 << 30
 		for h in dist.keys():
 			var hx: Vector2i = h
-			if on_apron(sq, hx) and _landable(sq, hx) and int(dist[hx]) < best:
+			if on_apron(sq, hx) and _landable(sq, hx, blocked) and int(dist[hx]) < best:
 				best = int(dist[hx])
 				goal = hx
 		if best == 1 << 30:
@@ -471,7 +513,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 			break
 		budget -= cost
 		walked.append(s)
-	while not walked.is_empty() and not _landable(sq, walked[walked.size() - 1]):
+	while not walked.is_empty() and not _landable(sq, walked[walked.size() - 1], blocked):
 		walked.pop_back()
 	w.path = walked
 	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos

@@ -504,15 +504,19 @@ func take_plan() -> Array:
 
 ## One step of drawing a route by hand: `draft` is the route so far (hexes after the
 ## machine's own), `h` the hex the finger has reached. Back on the machine clears; a hex
-## already on the draft cuts it back to there; anything else is joined by the cheapest
-## continuation that fits the move (a finger that skips a hex still draws a walkable route),
-## or the draft stands when nothing fits.
+## already on the draft cuts it back to there, unless it is a unit's the machine only passes;
+## anything else is joined by the cheapest continuation that fits the move (a finger that
+## skips a hex still draws a walkable route, and one over a unit waits there until it moves
+## on), or the draft stands when nothing fits.
 func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 	if h == u.pos:
 		return []
 	var at := draft.find(h)
 	if at >= 0:
-		return draft.slice(0, at + 1)
+		_lift(u)
+		var stops := field.can_stand(u, h)
+		_set_down()
+		return draft.slice(0, at + 1) if stops else draft
 	var end: Vector2i = draft[draft.size() - 1] if not draft.is_empty() else u.pos
 	_lift(u)
 	var spent_move := field.route_cost(u, draft, u.movespeed)

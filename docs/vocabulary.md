@@ -176,7 +176,7 @@ Status: 156 implemented, 5 planned, 0 idea.
 | **Road** | Open ground, the same as plain: the road is art. Every machine and pack crosses it. | implemented |
 | **Rough** | Forest and scrub. Every machine and pack crosses it. | implemented |
 | **Ruins** | Rubble. Every machine and pack crosses it. | implemented |
-| **Water** | Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it. | implemented |
+| **Water** | Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it. | implemented |
 | **Crags** | Rock spikes. Impassable, except to flyers and winged packs. | implemented |
 | **Mesas** | Flat-topped rock. Impassable, except to flyers and winged packs. | implemented |
 | **Towers** | Dead skyscrapers. Impassable, except to flyers and winged packs. | implemented |
@@ -186,7 +186,7 @@ Status: 156 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Crosses everything, water and walls included. Packs walk under it but never stop on its hex. | implemented |
+| **Flyer** | Crosses everything, water and walls included. It flies over machines and packs, and they pass under it, but nothing stops on another's hex. | implemented |
 | **Hover** | Skims water at full pace; walls stop it. | implemented |
 | **Walker** | Legs. Wades water at half pace. | implemented |
 | **Tracked** | Tracks. Wades water at half pace. | implemented |
@@ -307,7 +307,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
-- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none), and the horde always keeps a crossing three hexes wide.
+- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.

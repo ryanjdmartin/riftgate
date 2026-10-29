@@ -2281,3 +2281,27 @@ Ground: no band moved. Battles won 8% of 384 (7% of 377), held after a wipe 52% 
 phases a battle 7.87 (7.96); three-machine battles won 49% of 63 (50% of 52). The run before the
 denser badlands read the same bands (8% of 387, 53%, 38%). A direction at 40 runs: the shapes
 move nothing this bot reads, which walks the squad as one at the nearest pack.
+
+**The horde moves as the machines do, and fords and streets three or four in all** (Ryan, 29
+October; built the same day: packs wade water at two a hex, pass through each other, flyers and
+the ground pass each other, nobody stops on another unit's hex). The map survey
+(`docs/map_survey.md`, 200 seeds a shape at 9x20) against the six shapes' survey of the morning:
+the horde's crossing stays three wide or more on every map of every shape; the guarantee opens
+nothing on the river and the fjord since the horde wades (it opened half a hex a map on the
+river, where a bend narrowed a ford) and 0.3 a map on the badlands where it opened 0.5, the
+ponds no longer walls; the horde's route is 19 hexes on every shape (19.2 on the fjord and 19.1
+on the badlands before). Reach is unchanged but in the city, its streets one to four a band
+where one gap of three or two of two stood: the walkers' two-phase reach 44% where it was 42%,
+the wheels' and the hover's 54% where 53%; open ground there 21% where 16%, a street paved
+through every gap, and the towers 10% where 11%. A first laying let a river take four fords as
+a band takes four streets, and printed seed by seed (3, 7, 12, 21, 33) the river broke into
+ponds; capped at two fords it reads as it did.
+
+The campaign run on it (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the six shapes' run of the morning: no band moved. Battles won 7% of 382 (8% of 384), held
+after a wipe 53% (52%), fell 39% (38%), a team wipe 92% (90%); runs reaching the finale 34
+(34), cities fallen 3.92 a run (3.95); phases a battle 7.96 (7.87); fights 794 (796), those
+against two packs or more 354 (365); three-machine battles won 42% of 57 (49% of 63), a band of
+some twelve points at sixty battles. A direction at 40 runs: this bot walks the squad as one at
+the nearest pack and never holds a line, so what wading and passing change for a player who
+holds the streets is Ryan's play to read.

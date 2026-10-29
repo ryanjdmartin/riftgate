@@ -168,9 +168,15 @@ func is_static() -> bool:
 	return traits.has("defense")
 
 
-## Flyers engage but never hold ground.
+## A flyer or a winged pack: it and a grounded unit pass each other and never meet but in a
+## fight (Ryan, 29 October: "flyers and ground never interact except to fight").
+func airborne() -> bool:
+	return traits.has("flyer") or traits.has("winged")
+
+
+## Flyers engage but never hold ground: nobody is stopped by an airborne unit.
 func can_block() -> bool:
-	return not traits.has("flyer")
+	return not airborne()
 
 
 func alive() -> bool:
