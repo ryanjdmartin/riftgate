@@ -334,7 +334,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
-# PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
+# PNG comes out 1080 wide). The desk draws with the phone's renderer (gl_compatibility, the
+# project's setting since 29 October), so a run there shows the phone's colours.
 # RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
 # RIFTGATE_OUTLINE=<n> sets the machines' light outline thickness for a comparison (MechView3D.OUTLINE is the default).
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.

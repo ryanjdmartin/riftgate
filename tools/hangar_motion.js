@@ -58,11 +58,11 @@ function turnToward(facing, vel, want, rate, dt) {
 }
 const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.toon), shown as the phone shows it (PHONE_GLOW)
 // A lit part's colour as the phone shows it (Ryan, 29 October: the Armadillo's new vent glow looked
-// "the same" here). The game's renderer on the phone (gl_compatibility) lights in sRGB space: a lit
-// tile shows as the tile as stored times its light, each channel clipped at one (measured from its
-// renders). This page lights in linear space and would decode the tile first, crushing a dark tile
-// the phone multiplies up to its colour (the vents' heat showed dull brown, golden on the phone), so a
-// lit part takes the phone's colour and only then goes into this page's linear light.
+// "the same" here). The game's renderer (gl_compatibility, the phone's and the desk's) lights in sRGB
+// space: a lit tile shows as the tile as stored times its light, each channel clipped at one (measured
+// from its renders). This page lights in linear space and would decode the tile first, crushing a
+// dark tile the game multiplies up to its colour (the vents' heat showed dull brown), so a lit part
+// takes the game's colour and only then goes into this page's linear light.
 const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
   totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * totalEmissiveRadiance, vec3(1.0)), 1.0)).rgb;
 #endif`;

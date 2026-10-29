@@ -327,13 +327,14 @@ class Tiles:
             img = 0.28 * (np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t)
         elif kind == "heat":
             # A vent's heat banked down (Ryan, 29 October, of the Armadillo's vents: the glow
-            # "needs to lean way more yellow/orange"): one even colour, no red rim to fill a
-            # small face. The phone's renderer shows a lit tile as the tile times its light,
-            # each channel clipped at one (measured from a render: the ember's rim showed as
-            # 255, 123, 41 at an act's peak, 1.8 times eight, close to the enemy's red under a
-            # deutan view), so this is the colour at that peak (255, 204, 51, a golden orange)
-            # over 14.4, orange (176, 115, 29) halfway up and near black at rest.
-            img = np.tile(np.array([0.085, 0.0555, 0.0139], np.float32), (TILE, TILE, 1))
+            # "needs to lean way more yellow/orange", then, golden, "way too yellow"): one even
+            # colour, no red rim to fill a small face. The game's renderer (the phone's, and the
+            # desk's since that day) shows a lit tile as the tile times its light, each channel
+            # clipped at one (measured from a render: the ember's rim showed as 255, 123, 41 at
+            # an act's peak, 1.8 times eight), so this is the colour at that peak, an orange
+            # (255, 165, 33; the golden 255, 204, 51 was the yellow), over 14.4, deeper orange
+            # (165, 93, 19) halfway up and near black at rest.
+            img = np.tile(np.array([0.080, 0.0450, 0.0090], np.float32), (TILE, TILE, 1))
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)

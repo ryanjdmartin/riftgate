@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's eighth notes, 29 October.",
-   "note": "Ryan, 29 October, the eighth notes: \"rads a little towards each other, and a little up.\" The radiators' centres sit 12 off the spine (from 13.5) and 1.5 higher, their outer top corners still under the back panel's chamfers (the rear view, second; venting from the skirmish's angle, fifth, and from the front, sixth; sealed, fourth). The panel's own 3D view now lights the vents' glow as the phone does, golden orange (it showed the heat a dull brown: the page had lit every glow redder and dimmer than the phone's renderer). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's ninth notes, 29 October.",
+   "note": "Ryan, 29 October, the ninth notes: \"now that I can actually see the glow, its way too yellow.\" Every vent glows orange now, about 255, 165, 33 at the vent act's height and a deeper orange on the way up (the golden 255, 204, 51 before it; the ember's red-orange 255, 123, 41 before that read too red); the panel's 3D view shows it as the phone does, and so does the desk game, which draws with the phone's renderer since the same day (the fifth, venting from the skirmish's angle, and the sixth, from the front; the first to fourth at rest and sealed). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the seventh notes of 29 October (the radiators lower and wider apart, centres 13.5 off the spine)",
+    "summary": "Before: the eighth notes of 29 October (the glow golden, the radiators already where they are)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

@@ -17,7 +17,8 @@ are in `README.md`.
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
 - The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
   `C:\Users\jam82\Desktop\Code\riftgate`; the README's Running section says what is set up
-  there. What the Mac held outside git is gone. Of the seventh round's foeforge renders
+  there. Since 29 October it draws with the phone's renderer (gl_compatibility, the project's
+  setting; Ryan's go), so a lit part's colour there is the phone's. What the Mac held outside git is gone. Of the seventh round's foeforge renders
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
@@ -187,12 +188,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), and reworked on his eight rounds of notes of 29 October
+  the stock pass had left on old kit), and reworked on his nine rounds of notes of 29 October
   (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
   hunkering, its stack two big louvred radiators in dark steel low on the tail's back
-  panel, tilted up, and a vent on each flank that slides out, glowing golden orange as the shell
+  panel, tilted up, and a vent on each flank that slides out, glowing orange as the shell
   sinks once to vent them open and shut, and dark sealed; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of
