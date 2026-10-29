@@ -123,7 +123,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["stack_flap", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
-		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["elev_mortar", "chassis"]],
+		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["turret_rack", "chassis"], ["elev_rack", "turret_rack"]],
 		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
 		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_shoulder", "waist"]],
 		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
@@ -143,6 +143,11 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	assert_eq(rig.joint_of(rig.hardpoints[7]), "head", "the left cheek mount turns with the head")
 	assert_eq(rig.joint_of(rig.hardpoints[4]), "elev_mortar", "the mortar's socket is on its elevation, inside the traverse")
 	assert_eq(rig.joint_of(rig.joints["elev_mortar"]), "turret_mortar", "which nests in the turret")
+	pair[1].free()
+	# The Dingo's launcher rides its roof gimbal (Ryan, 29 October): the socket on the elevation, in the yoke that turns.
+	pair = _rig_for("dingo")
+	rig = pair[0]
+	assert_eq(rig.joint_of(rig.hardpoints[1]), "elev_rack", "the Dingo's launcher elevates on its gimbal")
 	pair[1].free()
 	# The lower pair of the Ammit's arms never swing on a blow; the upper pair do.
 	pair = _rig_for("ammit")

@@ -95,16 +95,27 @@
    "swing": false,
    "parent": "chassis"
   },
-  "elev_mortar": {
-   "axis": "pitch",
+  "turret_rack": {
+   "axis": "yaw",
    "limits": {
-    "pitch": [
-     -6.0,
-     28.0
+    "yaw": [
+     -30.0,
+     120.0
     ]
    },
    "swing": false,
    "parent": "chassis"
+  },
+  "elev_rack": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -8.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "turret_rack"
   }
  },
  "acts": [
@@ -1557,11 +1568,49 @@
    "heft": 0.06
   },
   {
-   "name": "mortar_check",
-   "duration": 4.4,
+   "name": "rack_check",
+   "duration": 5.6,
    "ease": "smooth",
    "tracks": {
-    "elev_mortar": [
+    "turret_rack": [
+     [
+      0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      0.0,
+      45.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.8,
+      0.0,
+      45.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      5.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_rack": [
      [
       0.4,
       0.0,
@@ -1734,7 +1783,7 @@
       0.0
      ],
      [
-      4.2,
+      4.6,
       0.0,
       0.0,
       0.0,

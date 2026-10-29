@@ -215,10 +215,13 @@ def sparrowhawk(b):
     Driver locked and two hardpoints, and Ryan, 28 October: "both wingtips be the 'Pinion
     Drivers'... Then the nose mounts are the hardpoints. Then the wingtips can maintain a
     streamlined symmetrical appearance based on what the drivers look like." So a matched
-    driver at each tip, fixed, no pin: a chrome nacelle along the tip, a long dark rail out of
-    a toothed collar (the pinion, a wing's flight feathers and a gear), its muzzle lit; and the
-    nose mounts either side of the nosecone, hp_1 the stock's Transonic Rifle as its class,
-    hp_2 bare (the Bleed Valve shows nowhere), at half scale, the machine being small."""
+    driver at each tip, fixed, no pin, each a ramjet-gun (Ryan, 29 October: "a kind of
+    mini-booster, barrel forwards with a tapered exhaust behind... Like a ramjet-gun"): a
+    chrome drum like the boosters' tapering aft to a lit exhaust, a dark inlet ahead ringed by
+    gear teeth (the pinion, a wing's flight feathers and a gear), the barrel out of the inlet's
+    centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
+    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare (the Bleed
+    Valve shows nowhere), at half scale, the machine being small."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
@@ -252,14 +255,25 @@ def sparrowhawk(b):
         root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 6.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
-        # The Pinion Driver at the tip, the same both sides (fixed, no pin): a chrome nacelle
-        # faired along the tip, tapering aft past the trailing edge, a toothed collar at its
-        # nose (the pinion), the rail out ahead of it and the muzzle lit.
+        # The Pinion Driver at the tip, the same both sides (fixed, no pin), a ramjet-gun
+        # (Ryan, 29 October: "a kind of mini-booster, barrel forwards with a tapered exhaust
+        # behind, something that looks like it gives an extra boost of speed on a kill"): a
+        # chrome six-sided drum like the boosters', a lit ring round it and its tail tapering
+        # to a lit exhaust; ahead, a dark inlet with the toothed lip (the pinion: a wing's
+        # flight feathers, and a gear), the barrel running out of its centre as a ramjet's
+        # spike, the muzzle lit.
         tx, tz = s * 32.0, -4.8
-        b.loft([(-4.0, hexagon(tx, tz, 1.2, 1.0)), (2.0, hexagon(tx, tz, 4.0, 3.6)), (17.0, hexagon(tx, tz, 4.4, 3.8)), (21.0, hexagon(tx, tz, 3.2, 2.8))], "steel.plate", "driver")
-        b.loft([(20.6, _gear(tx, tz, 2.6, 2.0, 10)), (21.8, _gear(tx, tz, 2.6, 2.0, 10))], "steel.dark", "pinion")
-        b.prism("y", tx, 28.0, tz, 0.8, 13.0, "steel.dark", 6, "driver_rail")
-        b.prism("y", tx, 34.8, tz, 1.1, 0.8, "amber.engine", 6, "driver_muzzle")
+        b.loft([(-9.0, _hexr(tx, tz, 2.0)), (-3.5, _hexr(tx, tz, 3.0)), (0.0, _hexr(tx, tz, 3.5)), (12.0, _hexr(tx, tz, 3.5))], "steel.plate", "driver")
+        b.prism("y", tx, -1.4, tz, 3.75, 1.4, "amber.engine", 6, "driver_ring", phase=math.pi / 6)
+        b.loft([(-9.0, _hexr(tx, tz, 1.85)), (-9.4, _hexr(tx, tz, 1.6))], "amber.exhaust", "driver_exhaust")
+        _tube(b, (tx, 11.5, tz), (tx, 16.5, tz), 3.5, 2.6, 6, "steel.plate", "driver_inlet", phase=math.pi / 6)
+        lip = Vector((tx, 15.9, tz))
+        for k in range(10):
+            u = Vector((math.cos(k * math.pi / 5.0), 0.0, math.sin(k * math.pi / 5.0)))
+            _beam(b, tuple(lip + u * 3.2), tuple(lip + u * 4.4), _sq(1.2, 1.2), _sq(0.8, 0.8), "steel.dark", "pinion")
+        b.loft([(12.0, _hexr(tx, tz, 1.8)), (17.5, _hexr(tx, tz, 0.95))], "steel.dark", "driver_spike")
+        b.prism("y", tx, 24.0, tz, 0.8, 13.0, "steel.dark", 6, "driver_rail")
+        b.prism("y", tx, 30.8, tz, 1.1, 0.8, "amber.engine", 6, "driver_muzzle")
     # Boosters: two big six-sided drums under and behind the cockpit, red glow at the back.
     for s in (-1.0, 1.0):
         b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.dark", 6, "booster", phase=math.pi / 6)
@@ -286,7 +300,7 @@ def sparrowhawk(b):
     # sixth: quicker, with inertia, and about the fuselage): a dip and a kick the other way to
     # gather, then once round its own length fast, a little past and back, level where it began.
     b.act("barrel_roll", 3.0, body=_barrel_roll(t0=0.35, t1=1.55, over=24.0, duration=3.0),   # once round in a second and a quarter (the seventh notes: slower)
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
     # A loop (Ryan, 5 October: the nose dip was the weakest; it needs to do a loop): it backs
     # off, runs in and pulls up through a full circle, over on its back and down, the nose
     # along the path, the boosters hot, and brakes onto its hex a whole turn on, the pose it
@@ -295,9 +309,9 @@ def sparrowhawk(b):
     # only: the skirmish's frame has no room for it, nor any reason.
     # Bigger again (the eighth notes: the map has the room), at the same pace round it.
     b.act("loop", 5.2, body=_loop(r=46.0, t0=1.4, t1=4.1, duration=5.2, back=34.0, run=22.0), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
     b.act("flare_boosters", 3.8, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 9.0, 0.0, 0.0, -6.0, 0.0), (2.5, 0.0, 12.0, 0.5, 0.0, -7.0, 0.0), (3.8, 0.0, 0.0, 0.0)],
-          glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
     # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
     # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
     # the ground, slow and smooth (the seventh notes). After the eighth (Ryan, 6 October: no
@@ -310,7 +324,7 @@ def sparrowhawk(b):
     # from rest to rest at an even rate, where it had slid into its finish.
     circle = _survey_circle()
     b.act("banked_circle", circle[-1][0], body=circle, places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
     # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
     # "I'd like to see what a figure 8 looks like"; the tenth: a smooth bank change, crossing the
     # hex on a diagonal, larger, quicker): a lobe to the left and one to the right, crossing its
@@ -320,10 +334,10 @@ def sparrowhawk(b):
     eight = _figure_eight(vmax=145.0)
     mid = round((eight[0][0] + eight[-2][0]) * 0.5, 3)   # the crossing, halfway in time (the pace is symmetric)
     b.act("figure_eight", eight[-1][0], body=eight, places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
-    # Movement: the boosters brighten, the nose drops; it banks and slides through corners
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
+    # Movement: the boosters brighten, the drivers' with them, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
-    b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
+    b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
 sparrowhawk.maker = "kestrel"
@@ -1497,10 +1511,11 @@ def dingo(b):
     be that wide since we don't have variable-width hardpoints... so those are actually two
     hardpoints on the nose. Then where the burst shell used to be can be the coil thing"): the
     two nose ports are two hardpoints, the stock's Twin Autoguns in the left as its class (hp_2)
-    and the right bare (hp_3); the Airburst Shell's rack on the rear-left deck on the old
-    tube's elevation (hp_1); and the Combat Translocator (fixed, no pin) on the rear-right
-    where the tube stood: a riveted cabinet with two prongs raised forward and a lit coil
-    between them, W&S iron that is totally not a teleporter."""
+    and the right bare (hp_3); the Airburst Shell's rack on a gimbal on the flat of the roof,
+    left of the harpoon (hp_1; Ryan, 29 October, from the rear-left deck); and the Combat
+    Translocator (fixed, no pin) on the rear-right where the tube stood: a riveted cabinet with
+    two prongs raised forward and a lit coil threaded on a core between them, W&S iron that is
+    totally not a teleporter."""
     R = 8.0
     # The wheels (the joint pass, 2 October; Ryan: the posts they hang from are casters
     # with a limited swing, so it can strafe): each on a caster joint about up at its hub,
@@ -1555,14 +1570,25 @@ def dingo(b):
             b.stock("hp_2", (s * 6.0, 26.0, 10.5), "twin_barrel", scale=0.45, carries="twin_autoguns")
         else:
             b.pad("hp_3", (s * 6.0, 26.0, 10.5), scale=0.45, size=(3.0, 1.0))
-    # The launcher on the rear-left deck beside the drum, pitched up over the tail on the
-    # old tube's elevation (hp_1): the stock's Airburst Shell as its class.
-    b.prism("z", -10.0, -28.0, 18.5, 2.6, 1.5, "steel.dark", 8, "mortar_base")
-    with b.joint("elev_mortar", (-10.0, -28.0, 19.0), limits=(-6.0, 28.0)):   # the launcher elevates on its base
-        b.stock("hp_1", (-10.0, -26.0, 23.0), "rack", forward=(0.0, 0.406, 0.914), scale=0.5, carries="airburst_shell")
+    # The launcher on a gimbal on the flat of the roof, left of the harpoon (Ryan, 29 October:
+    # "put the back quarter hardpoint on the flat part of the roof instead, still on that
+    # side of the harpoon, on a rotating gimbal"; it had stood on the rear-left deck): a
+    # turntable on the roof, a yoke turning on it, the stock's Airburst Shell as its class
+    # (hp_1) elevating between the yoke's cheeks, clear of the yoke at every elevation.
+    GX, GY, GZ = -8.0, -5.0, 25.5
+    b.prism("z", GX, GY, 19.9, 4.0, 1.4, "steel.dark", 8, "gimbal_base", phase=math.pi / 8)
+    with b.joint("turret_rack", (GX, GY, 20.6), limits=(-30.0, 120.0)):   # the gimbal's traverse, more to the left than toward the harpoon
+        b.box(GX - 5.0, GX + 5.0, GY - 1.8, GY + 1.8, 20.6, 21.4, "steel.plate", "gimbal_yoke")
+        for s in (-1.0, 1.0):
+            b.box(min(GX + s * 4.2, GX + s * 5.0), max(GX + s * 4.2, GX + s * 5.0), GY - 1.6, GY + 1.6, 21.4, GZ + 1.4, "steel.panel", "gimbal_yoke")
+            b.prism("x", GX + s * 5.3, GY, GZ, 1.0, 0.6, "steel.plate", 8, "trunnion")
+        with b.joint("elev_rack", (GX, GY, GZ), limits=(-8.0, 30.0)):   # the launcher elevates in the yoke
+            b.stock("hp_1", (GX, GY, GZ), "rack", forward=(0.0, 0.940, 0.342), scale=0.5, carries="airburst_shell")
     # The Combat Translocator on the rear-right deck where the tube stood (fixed, no pin):
     # a riveted cabinet bolted behind the drum, two prongs raised forward off its top and a
-    # stack of lit coil rings between them; the coil crackles in its own act.
+    # stack of lit coil rings between them, threaded on a core out of the cabinet (Ryan, 29
+    # October: the rings had floated between the prongs, touching nothing); the coil
+    # crackles in its own act.
     b.box(6.0, 14.0, -32.0, -25.5, 16.0, 23.0, "steel.panel", "coil_cabinet")
     b.box(6.5, 13.5, -31.5, -26.0, 23.0, 24.0, "steel.plate", "coil_cap")
     b.box(5.8, 14.2, -32.2, -31.8, 18.0, 20.0, "steel.stripe", "coil_band")
@@ -1572,8 +1598,11 @@ def dingo(b):
         p0 = C0 + Vector((xo, 0.0, 0.0))
         _beam(b, tuple(p0), tuple(p0 + CD * 12.0), _poly(0.7, 6), _poly(0.45, 6), "steel.dark", "coil_prong")
         b.prism("y", p0.x, (p0 + CD * 12.0).y, (p0 + CD * 12.0).z, 0.8, 1.0, "steel.plate", 6, "prong_tip")
+    A0 = C0 + Vector((0.0, 0.0, 0.4))   # the coil's axis
+    _beam(b, tuple(A0 - CD * 1.5), tuple(A0 + CD * 11.2), _poly(0.6, 6), _poly(0.5, 6), "steel.dark", "coil_core")
+    b.prism("y", A0.x, (A0 + CD * 11.2).y, (A0 + CD * 11.2).z, 0.9, 0.8, "steel.plate", 6, "coil_top")
     for k in range(4):
-        c = C0 + Vector((0.0, 0.0, 0.4)) + CD * (3.5 + 2.2 * k)
+        c = A0 + CD * (3.5 + 2.2 * k)
         _beam(b, tuple(c - CD * 0.35), tuple(c + CD * 0.35), _poly(1.5, 8), _poly(1.5, 8), "amber.light", "coil")
     # The coolant tanks low on both flanks, a drum with a grille and a dump valve each:
     # detail.
@@ -1624,11 +1653,14 @@ def dingo(b):
     # over and jab, kicking the tail out a few degrees about the front axle (the car's yaw with
     # the slide that keeps the front wheels put), a fine-aim jitter, the casters snap the other
     # way for a correction back past centre, another tick on the tube, then a throttle blip
-    # straightens it and the tube drops.
+    # straightens it and the tube drops. On the roof's gimbal (29 October) the launcher swings
+    # out over the left quarter as it ticks up, and comes back as it drops; the tail still
+    # lays it fine.
     kick = lambda t, yaw_deg, dy=0.0: (t, round(26.0 * math.sin(math.radians(yaw_deg)), 2), round(26.0 * (1.0 - math.cos(math.radians(yaw_deg))) + dy, 2), 0.0, yaw_deg, 0.0, 0.0)
-    b.act("mortar_check", 4.4, {   # the tube ticked up notch by notch; the rear casters snap and kick the tail over to lay it, a jitter, a correction back, a throttle blip, and down
-        "elev_mortar": [(0.4, 0.0), (0.5, 9.5), (0.58, 8.5), (0.95, 8.5), (1.05, 17.5), (1.13, 16.5), (1.5, 16.5), (1.6, 25.5), (1.68, 24.5), (2.2, 24.5),
-                        (2.26, 26.0), (2.32, 24.0), (2.38, 25.5), (2.44, 24.5), (2.85, 24.5), (2.92, 23.0), (2.98, 23.5), (3.7, 23.5), (3.8, 25.0), (4.2, 0.0)],
+    b.act("rack_check", 5.6, {   # the launcher swung out and ticked up notch by notch; the rear casters snap and kick the tail over to lay it, a jitter, a correction back, a throttle blip, and down and home
+        "turret_rack": [(0.4, 0.0), (1.8, 45.0), (3.8, 45.0), (5.2, 0.0)],
+        "elev_rack": [(0.4, 0.0), (0.5, 9.5), (0.58, 8.5), (0.95, 8.5), (1.05, 17.5), (1.13, 16.5), (1.5, 16.5), (1.6, 25.5), (1.68, 24.5), (2.2, 24.5),
+                      (2.26, 26.0), (2.32, 24.0), (2.38, 25.5), (2.44, 24.5), (2.85, 24.5), (2.92, 23.0), (2.98, 23.5), (3.7, 23.5), (3.8, 25.0), (4.6, 0.0)],
         **{"caster_" + w: [(1.75, 0.0), (1.85, -16.0), (2.6, -16.0), (2.68, 12.0), (3.15, 12.0), (3.25, 0.0)] for w in ("rl", "rr")},
         **{"caster_" + w: [(1.8, 0.0), (1.9, 5.0), (2.6, 5.0), (2.7, -3.0), (3.15, -3.0), (3.25, 0.0)] for w in ("fl", "fr")},
         **{"wheel_" + w: spin([(1.85, 0.0), (2.0, -1.8), (2.6, -1.8), (2.72, 0.6), (3.15, 0.6), (3.33, 3.1), (3.65, 0.0)], ROLL) for w in ("rl", "rr")},

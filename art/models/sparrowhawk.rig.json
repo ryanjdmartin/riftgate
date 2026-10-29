@@ -76,7 +76,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -308,7 +310,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -381,7 +385,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1089,7 +1095,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1900,7 +1908,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1952,7 +1962,9 @@
   "glow": {
    "parts": [
     "booster_ring",
-    "exhaust"
+    "exhaust",
+    "driver_ring",
+    "driver_exhaust"
    ],
    "k": 5.0
   },
@@ -1976,6 +1988,8 @@
  },
  "glow_parts": [
   "booster_ring",
+  "driver_exhaust",
+  "driver_ring",
   "exhaust"
  ],
  "pins": {
