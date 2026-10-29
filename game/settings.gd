@@ -28,18 +28,17 @@ const DISPLAY_DEFAULTS := {
 	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
+	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
 	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0), "voice": Vector2(0.0, 1.0),
 }
 static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()
-## A debug build's pick of the skirmish's look (29 October, its options judged on the phone,
-## which has no environment to set): the ground and the rows, held for the session and never
-## saved, so no test run inherits one (SkirmishScreen.look_ground and look_layout read them).
-const LOOK_GROUNDS := ["classic", "vista", "field", "window", "holo"]
-const LOOK_LAYOUTS := ["classic", "faceoff"]
-static var look := {"ground": "classic", "layout": "classic"}
+## Where the skirmish's controls sit (Ryan, 29 October: "Skirmish Controls", "bottom" or
+## "middle"): the log, dice and Reroll between the foes and the machines, or under the machines
+## with the two sides facing each other above them (SkirmishScreen.controls reads it).
+const SKIRMISH_CONTROLS := ["middle", "bottom"]
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

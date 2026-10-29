@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 744 tests, 66,716 checks, green on `claude/jolly-lovelace-scn82y` (29 October, the
-  skirmish looks' five; 739 and 66,640 on main), about four minutes in a cloud session, twenty
+- Tests: 749 tests, 66,761 checks, green on `claude/jolly-lovelace-scn82y` (29 October, the
+  skirmish's field; 739 and 66,640 on main), about four minutes in a cloud session, twenty
   on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -34,9 +34,9 @@ are in `README.md`.
 
 ## Branches
 
-`claude/jolly-lovelace-scn82y` (29 October) carries the skirmish's looks on trial
-(`docs/skirmish_looks_proposal.md`): four grounds and the face-off behind switches, the screen as
-it was by default; Ryan's pick is the to-do's, then a bible row, the other options retiring.
+`claude/jolly-lovelace-scn82y` (29 October) carries the skirmish's field, Ryan's pick of the
+looks on trial, with the Skirmish Controls setting; the other grounds, the trial's switches and
+its proposal are retired. Main can take it as it stands (the bible rows are in its file).
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -111,14 +111,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
-- The skirmish's looks (29 October, Ryan: today's background "amateurish, distracting, and
-  immersion-breaking", and he asked for layout shifts too): built behind switches on
-  `claude/jolly-lovelace-scn82y`, the default untouched. Vista (the other world as a JRPG
-  battle backdrop in each domain's palette, our ground on a floor in perspective), field (one
-  floor, the worlds meeting at a dithered seam), window (the vista as a feed) and holo (the
-  holo-table), and the face-off layout (the machines under the foes, the console below); every
-  unit casts a shadow on them. The page shows each at the phone's layout (Pages); Claude's read
-  is the face-off, its longer drag to the back rank to judge on the phone first.
+- The skirmish is one field (29 October, on `claude/jolly-lovelace-scn82y`; Ryan of the looks
+  on trial: "it's 100% field, it looks really good"): one floor seen by one level camera from
+  behind the machines, the other world painted far under the foes in the domain's palette and
+  dressed by the contact hex's ground, our ground near with the display's grid, meeting at a
+  ragged dithered seam. The foes stand on their rank's feet line (a winged one over its shadow)
+  and breathe planted at the feet; the squad stands in four fixed hexes of the grid, a smaller
+  squad's spots dashed and empty, each machine drawn by the floor's own camera and square to the
+  foes (the rear three-quarter turned left retired: "their angle is wrong for the field
+  perspective"). The layout is the saved setting Skirmish Controls (Ryan: "Leave the layout as
+  an option"), Middle by default, Bottom the machines right under the foes. The vista, window
+  and holo grounds and the overworld tiles are gone. Ryan's phone read is the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -342,14 +345,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.348 (the page's version 360,
-  published 29 October from `ccr-7821127e-kwj874`: the relief laid by the shape, on v0.347 at
-  version 359, Ryan's calls on the map shapes, the walls' names, the decoration, the domains'
-  tilesets and the rift tiles as art, three-way merged onto the live v0.346 that
-  `claude/charming-rubin-h954bp` published). So this file carries
-  that branch's rows ahead of its code (the models' looks and acts, the Armadillo's seal on
-  screen) and its Strikes row in the keyword table, and the tables script, which writes the
-  tables from main's content, waits until that branch lands or it reverts that row. The
+  `docs/design-bible.html` after every change. This file is v0.354 (the page's version 366,
+  published 29 October from `claude/jolly-lovelace-scn82y`: the skirmish's field and its
+  controls, three-way merged onto the live v0.353 at version 365, whose rows since v0.348 came
+  from other sessions: the six map shapes, the tracks as pairs, the Arsenal's lit cockpit glass,
+  the Armadillo's radiators and seal, on v0.346 from `claude/charming-rubin-h954bp`). So this
+  file carries those sessions' rows ahead of their code (the models' looks and acts, the
+  Armadillo's seal on screen, the six shapes) and the Strikes row in the keyword table, and the
+  tables script, which writes the tables from main's content, waits until they land or it
+  reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
@@ -384,8 +388,5 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
-- The skirmish's looks: https://claude.ai/artifact/6ZgqskzxdWGpe4XBoMxsoh (29 October, from
-  `claude/jolly-lovelace-scn82y`; the shots rendered from the scratch of that session, the
-  commands in the README), retired with `docs/skirmish_looks_proposal.md`.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

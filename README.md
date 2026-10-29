@@ -74,9 +74,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
     welded at load, a mesh a material in each moving group, for the draw calls), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
-    skirmish's looks on trial since 29 October (`battle_backdrop.gd`, the other world painted
-    as a battle screen's backdrop in each domain's palette; `floor_plane.gdshader`, a floor in
-    perspective with the display's grid; `docs/skirmish_looks_proposal.md`)
+    skirmish's field (29 October): `hud_backdrop.gd` lays it, `battle_backdrop.gd` paints its
+    far part, the other world as a battle screen's backdrop in each domain's palette, and
+    `floor_plane.gdshader` its near part, our ground with the display's grid, both seen by the
+    one camera that draws the machines
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
@@ -138,7 +139,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
   curve and the fronts (`curve_proposal.md`), the mechanics audit of 25 October
-  (`mechanics_audit.md`) and the skirmish's looks of 29 October (`skirmish_looks_proposal.md`),
+  (`mechanics_audit.md`),
   each retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
@@ -308,12 +309,11 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
-# The skirmish's looks on trial (29 October, docs/skirmish_looks_proposal.md; any run, the battle's fights
-# too): RIFTGATE_SKIRMISH_BG=vista|field|window|holo swaps the ground, RIFTGATE_SKIRMISH_LAYOUT=faceoff stands
-# the machines under the foes with the console below; unset, the screen as it was. A debug build's settings
-# carry the same as GROUND and LAYOUT, for the session. RIFTGATE_TERRAIN=<ground> (the standalone skirmish)
-# puts the fight on that ground, RIFTGATE_FOES on a domain's foes:
-# RIFTGATE_SKIRMISH_BG=field RIFTGATE_SKIRMISH_LAYOUT=faceoff RIFTGATE_TERRAIN=ruins RIFTGATE_FOES=revenant:4,ghost:2
+# The skirmish's controls (any run, the battle's fights too): RIFTGATE_SKIRMISH_CONTROLS=bottom|middle overrides
+# the saved Skirmish Controls setting (Middle by default: the log, dice and Reroll between the sides; Bottom: the
+# machines right under the foes, the controls below them). RIFTGATE_TERRAIN=<ground> (the standalone skirmish)
+# dresses the field for that ground, RIFTGATE_FOES puts a domain's foes on it:
+# RIFTGATE_SKIRMISH_CONTROLS=bottom RIFTGATE_TERRAIN=ruins RIFTGATE_FOES=revenant:4,ghost:2
 # and the backdrops alone, every domain on every ground, into PNGs (headless; size and horizon in art pixels):
 # perl -e 'alarm 120; exec @ARGV' godot --headless --path . -s tools/backdrop_shot.gd -- build/backdrops 540 330 86
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
@@ -472,7 +472,10 @@ tools/android.sh        # export, install, launch; `tools/android.sh log` tails 
 The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
 ranks of four, log with the intent eye at its right, dice with the wide Reroll right under
 them, mechs at the bottom with their gauges above the sprite, End turn bottom-left and
-Withdraw bottom-right. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
+Withdraw bottom-right; the setting Skirmish Controls at Bottom stands the mechs right under the
+enemies and puts the log, dice and Reroll below them. Both sides stand on one field seen from
+behind the mechs: the other world far, under the enemies, our ground near, the mechs in four
+fixed hexes of its grid (a smaller squad leaves its spots empty), each die in its mech's column. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
 statuses and warning signs: a broken shield when incoming damage will break it, a crack when
 a hit that big may destroy a component, a skull when the round would wreck it, a thermometer
@@ -501,9 +504,8 @@ on. A decided battle clears the save. Standalone scene runs and the tests never 
 
 The harness can add any faction's boss; a massive foe fills both ranks of a column. For the
 standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
-`RIFTGATE_BOSS=1` adds the faction's boss. The screen's looks are on trial (29 October):
-`RIFTGATE_SKIRMISH_BG` and `RIFTGATE_SKIRMISH_LAYOUT`, or a debug build's GROUND and LAYOUT,
-swap its ground and stand the machines under the foes (`docs/skirmish_looks_proposal.md`).
+`RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
+`RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.
 
 The screens are laid out for 720 by 1280 and the window expands its height to the phone's
 (stretch aspect `expand`): the battle screen gives the extra to the map, the skirmish

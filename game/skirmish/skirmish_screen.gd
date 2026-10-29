@@ -52,17 +52,25 @@ const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip r
 var BOTTOM_Y := 1196.0
 ## The rows' places on the 1280 design, scaled to the screen in `_build`.
 const ROWS := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "EYE_Y": 510.0, "LOG_Y": 508.0, "DIE_Y": 640.0, "REROLL_Y": 786.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
-## The screen's look while its options are judged (29 October, Ryan: "I'd like to see some
-## different options, not just for the background, but also just general layout shifts").
-## RIFTGATE_SKIRMISH_BG picks the ground: classic (the overworld's bands, as it was), vista (the
-## other world as a battle screen's backdrop over the foes, the reconstruction's floor under the
-## machines), field (one floor from the horizon to the machines' feet, the console floating on
-## it), holo (the holo-table, no painted ground) or window (the vista as a feed's framed window,
-## the holo floor under the machines). RIFTGATE_SKIRMISH_LAYOUT=faceoff stands the machines
-## right under the foes, one scene, the log, dice and Reroll under them. Unset, as it was; a
-## debug build's settings pick them too (GROUND and LAYOUT, Settings.look).
-## The face-off's rows on the 1280 design: the foes where they were, the machines under them.
-const ROWS_FACEOFF := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 498.0, "LOG_Y": 800.0, "EYE_Y": 802.0, "DIE_Y": 926.0, "REROLL_Y": 1072.0, "BOTTOM_Y": 1196.0}
+## The rows with the controls at the bottom (Ryan, 29 October: "Skirmish Controls", "bottom"
+## or "middle", Settings): the foes where they were, the machines right under them in one
+## scene, then the log, dice and Reroll. RIFTGATE_SKIRMISH_CONTROLS=bottom|middle forces it.
+const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 498.0, "LOG_Y": 800.0, "EYE_Y": 802.0, "DIE_Y": 926.0, "REROLL_Y": 1072.0, "BOTTOM_Y": 1196.0}
+## The field (Ryan, 29 October: "it's 100% field"): one floor from the horizon to the machines'
+## feet, the other world painted far under the foes and our ground near under the machines,
+## seen by one level camera that the floor, the backdrop's bands and every machine's view
+## share. It is set so a row of hexes PITCH wide runs through the machines' feet, seen
+## FIELD_THETA down there; the squad stands in SLOTS hexes of it, a smaller one leaving its
+## spots empty, so the floor never changes with the squad.
+const FIELD_THETA := 30.0
+const SLOTS := 4
+const MECH_FOOT := 214.0    # a machine's hex centre below the top of its row
+const MECH_WINDOW := Rect2(-22.0, 14.0, 220.0, 256.0)   # a machine's view in its row: the floor camera's window it is drawn through
+const MECH_FILL := 0.96     # a machine's size in hexes at its class's full share (MechView3D.SIZE_FILL)
+const FLYER_LIFT := 0.4     # hexes a flyer stands off the floor, and a hovercraft
+const HOVER_LIFT := 0.06
+const WINGED_LIFT := 16.0   # design pixels a winged foe floats over its feet line
+var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
 const LOG_LINES := 7
@@ -207,7 +215,7 @@ func _process(delta: float) -> void:
 		var v := _mech_views[i]
 		if v.size.y <= 0.0:
 			continue
-		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
+		view.set_sweep_screen((y - v.position.y - v.sprite_at.position.y) * view.density)
 
 
 ## The feed's analysis events pick from what is alive right now.
@@ -388,9 +396,10 @@ func _build() -> void:
 	H = Hud.screen_height(self)
 	for key in ROWS.keys():
 		set(key, float(ROWS[key]) * H / BASE_H)
-	if look_layout() == "faceoff":
-		for key in ROWS_FACEOFF.keys():
-			set(key, float(ROWS_FACEOFF[key]) * H / BASE_H)
+	if controls() == "bottom":
+		for key in ROWS_BOTTOM.keys():
+			set(key, float(ROWS_BOTTOM[key]) * H / BASE_H)
+	_cam = _field_camera()
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text linear; the ground bands and the sprites pin nearest on themselves
@@ -439,9 +448,9 @@ func _build() -> void:
 		for rank in range(2):
 			var v := UnitView.new()
 			v.is_enemy = true
-			v.ground_shadow = _on_floor()
-			v.empty_pad = _on_floor()
 			var y := FRONT_Y if rank == 0 else BACK_Y
+			_stand(v, y, SLOT_SIZE.y)
+			v.empty_pad = true
 			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
 			v.hold_released.connect(_on_hold_released)
@@ -452,7 +461,7 @@ func _build() -> void:
 			# stands, the left half's view taking the other.
 			var tv := UnitView.new()
 			tv.is_enemy = true
-			tv.ground_shadow = _on_floor()
+			_stand(tv, y, SLOT_SIZE.y)
 			tv.visible = false
 			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			tv.held.connect(_on_foe_held.bind(tv))
@@ -463,7 +472,7 @@ func _build() -> void:
 		var mv := UnitView.new()
 		mv.is_enemy = true
 		mv.massive = true
-		mv.ground_shadow = _on_floor()
+		_stand(mv, BACK_Y, MASSIVE_SIZE.y)
 		mv.visible = false
 		_place(mv, Vector2(_col_x(col) - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
 		mv.held.connect(_on_foe_held.bind(mv))
@@ -506,10 +515,10 @@ func _build() -> void:
 	_log = _log_label(14)
 	_log_scroll.add_child(_log)
 
-	# Dice in the middle, each centred on its mech.
+	# Dice in the middle, each centred on its mech's spot.
 	var n := sk.mechs.size()
 	for i in range(n):
-		var cx := _column_x(i, n)
+		var cx := _slot_x(i)
 		var d := DieFaceView.new()
 		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
 		d.tapped.connect(_on_die_tapped.bind(i))
@@ -532,28 +541,34 @@ func _build() -> void:
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 
-	# Mechs: gauges hugging the sprite, three-quarter sprite, chip row beneath.
+	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
-		var cx := _column_x(i, n)
+		var cx := _slot_x(i)
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := UnitView.new()
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
-		v.ground_shadow = _on_floor()
-		if ms.unit.traits.has("flyer"):
-			v.shadow_drop = 26.0
-		elif ms.unit.traits.has("hover"):
-			v.shadow_drop = 8.0
+		var db := ContentDB.load_default()
+		var fill := MECH_FILL * float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
+		var flies := ms.unit.traits.has("flyer")
+		v.ground_shadow = true
+		v.ground_at = Vector2(MECH_SIZE.x * 0.5, MECH_FOOT)
+		v.shadow_rx = fill * PITCH * (0.4 if flies else 0.5)
+		v.shadow_ratio = (_cam.row - _cam.horizon) / _cam.focal
 		# Mechs are 3D (decided 16 September); headless (and RIFTGATE_MECH3D=off) draws the
 		# placeholder shape. A chassis with no model uses the Badger's.
 		var look := MechView3D.look_setting()
 		_mech_3d.append(null)
 		if not look.is_empty():
-			var db := ContentDB.load_default()
 			var maker := db.maker_of(ms.unit.chassis_id)
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
+			var window := Rect2(Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y) + MECH_WINDOW.position, MECH_WINDOW.size)
+			var lift := FLYER_LIFT if flies else (HOVER_LIFT if ms.unit.traits.has("hover") else 0.0)
+			var view := MechView3D.make_on_floor(ms.unit.chassis_id, maker, look, {
+				"focal": _cam.focal, "height": _cam.height, "principal": Vector2(W * 0.5, _cam.horizon),
+				"at": Vector2(_slot_hex_x(i), _cam.depth), "window": window, "fill": fill, "lift": lift,
+			}, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
-			view.size_k = float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
+			v.sprite_at = MECH_WINDOW
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
 			if ms.unit.traits.has("flyer"):
@@ -667,79 +682,93 @@ func _build() -> void:
 		_menu.move_to_front()
 
 
-## The ground the look lays (Settings.LOOK_GROUNDS): the environment's, else the session's pick.
-static func look_ground() -> String:
-	var env := OS.get_environment("RIFTGATE_SKIRMISH_BG")
-	return env if not env.is_empty() else str(Settings.look["ground"])
+## Where the controls sit (Settings.SKIRMISH_CONTROLS): the environment's, else the setting.
+static func controls() -> String:
+	var env := OS.get_environment("RIFTGATE_SKIRMISH_CONTROLS")
+	if Settings.SKIRMISH_CONTROLS.has(env):
+		return env
+	var v := str(Settings.display.get("skirmish_controls", "middle"))
+	return v if Settings.SKIRMISH_CONTROLS.has(v) else "middle"
 
 
-## The rows the look lays (Settings.LOOK_LAYOUTS): the environment's, else the session's pick.
-static func look_layout() -> String:
-	var env := OS.get_environment("RIFTGATE_SKIRMISH_LAYOUT")
-	return env if not env.is_empty() else str(Settings.look["layout"])
-
-
-## The foes' ground: from above the back rank to the log, or in the face-off to the machines.
+## The foes' ground: from above the back rank to the log, or with the controls at the bottom to
+## the machines.
 func _foes_ground() -> Rect2:
 	var top := BACK_Y - 14.0
-	var bottom := (MECH_Y + 4.0) if look_layout() == "faceoff" else (LOG_Y - 10.0)
+	var bottom := (MECH_Y + 4.0) if controls() == "bottom" else (LOG_Y - 10.0)
 	return Rect2(0.0, top, W, bottom - top)
 
 
-## The grounds the look lays (look_ground), with the rules at their edges and, where the console
-## floats on a floor, its panes of glass.
+## The floor's camera (the field, above), for the rows as laid: the horizon a little above the
+## back rank's feet, the machines' hex row MECH_FOOT into theirs. focal in design pixels,
+## height and depth (to the machines' row) in hexes, shift the lattice's offset in depth so a
+## row of hex centres runs through the machines' feet: the half-offset row (centres at x = n +
+## 1/2) for an even number of spots, the other for an odd one.
+func _field_camera() -> Dictionary:
+	var horizon := BACK_Y + SLOT_SIZE.y * 0.38
+	var row := MECH_Y + MECH_FOOT
+	var d := row - horizon
+	var focal := d / tan(deg_to_rad(FIELD_THETA))
+	var depth := focal / PITCH
+	var half := 0.5 if _slot_count() % 2 == 0 else 0.0
+	var shift := depth - (roundf(depth / sqrt(3.0) - half) + half) * sqrt(3.0)
+	return {"horizon": horizon, "row": row, "focal": focal, "height": d / PITCH, "depth": depth, "shift": shift}
+
+
+## A point on the floor (x across, z deep, in hexes) on the screen.
+func _on_floor(x: float, z: float) -> Vector2:
+	return Vector2(W * 0.5 + _cam.focal * x / z, _cam.horizon + _cam.focal * _cam.height / z)
+
+
+## The squad's spots: SLOTS, or more for a bigger squad.
+func _slot_count() -> int:
+	return maxi(SLOTS, sk.mechs.size())
+
+
+## A spot's place across the floor, in hexes from the middle, and on the screen.
+func _slot_hex_x(i: int) -> float:
+	return float(i) - float(_slot_count() - 1) * 0.5
+
+
+func _slot_x(i: int) -> float:
+	return W * 0.5 + _slot_hex_x(i) * PITCH
+
+
+## A foe's view stands on its rank's feet line (or a massive one's), its shadow flattened as
+## the floor is there.
+func _stand(v: UnitView, top: float, tall: float) -> void:
+	v.ground_shadow = true
+	v.feet_y = tall - UnitView.STATUS_H
+	v.shadow_ratio = clampf((top + v.feet_y - _cam.horizon) / _cam.focal, 0.14, 0.6)
+
+
+## The field (the const block above): the other world's backdrop over the whole of it, our floor
+## laid over that below its seam (under the console's glass in the middle, at the machines'
+## backs at the bottom), the rules at its edges and the squad's hexes marked, an empty spot's
+## dashed.
 func _lay_ground(bg: HudBackdrop) -> void:
-	var faceoff := look_layout() == "faceoff"
+	var bottom := controls() == "bottom"
 	var foes := _foes_ground()
-	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
-	var mechs := Rect2(0.0, seam_y, W, BOTTOM_Y - 16.0 - seam_y)
-	if faceoff:
-		mechs = Rect2(0.0, foes.end.y, W, MECH_Y + MECH_SIZE.y + 8.0 - foes.end.y)
-	var field := foes.merge(mechs)
-	var biome := _biome()
-	# The floor's vanishing line: well above the back rank's feet, so the far land shows over
-	# its shoulders and both ranks stand on the floor.
-	var horizon := BACK_Y - foes.position.y + SLOT_SIZE.y * 0.38
-	var t := sk.terrain
-	var sd := sk.rng.seed
-	match look_ground():
-		"vista":
-			bg.grounds = [
-				[foes, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.9}],
-				[mechs, t, sd + 1, "recon", {"horizon": -mechs.size.y * 0.9, "tile_px": 150.0, "fog_top": mechs.size.y * 0.35, "grid": 0.14}],
-			]
-			bg.rules = [foes.position.y, foes.end.y, mechs.position.y, BOTTOM_Y - 16.0]
-		"field":
-			bg.grounds = [
-				[field, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.9}],
-				[field, t, sd + 1, "recon", {"horizon": horizon, "tile_px": 190.0, "foreshorten": 0.55, "seam": (foes.end.y if faceoff else (LOG_Y + DIE_Y) * 0.5) - field.position.y, "seam_band": 34.0, "grid": 0.13, "grid_fade": 220.0}],
-			]
-			bg.rules = [field.position.y, field.end.y]
-		"holo":
-			# A table seen from above it at a slant: the vanishing line far over the screen's top,
-			# so the grid reads under the back rank as well as under the machines.
-			bg.grounds = [[field, t, sd, "holo", {"horizon": -field.size.y * 0.9, "tile_px": 150.0, "foreshorten": 0.62, "grid": 0.1, "grid_fade": 200.0, "contours": 3.0}]]
-			bg.rules = [field.position.y, field.end.y]
-		"window":
-			bg.grounds = [
-				[foes, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.82, "frame": true}],
-				[mechs, t, sd + 1, "holo", {"horizon": -mechs.size.y * 0.8, "tile_px": 150.0, "fog_top": mechs.size.y * 0.3, "grid": 0.1, "contours": 3.0}],
-			]
-			bg.rules = [mechs.position.y, BOTTOM_Y - 16.0]
-		_:
-			# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
-			# world's flat bright overworld of this terrain; the mechs stand on the seam, the
-			# reconstruction's tile with the other world eating into it from above.
-			bg.grounds = [[foes, t, sd, "other"], [mechs, t, sd + 1, "seam"]]
-			bg.rules = [foes.position.y, foes.end.y, mechs.position.y, BOTTOM_Y - 16.0]
-	if look_ground() in ["field", "holo"] and not faceoff:
+	var end := (MECH_Y + MECH_SIZE.y + 8.0) if bottom else (BOTTOM_Y - 16.0)
+	var field := Rect2(0.0, foes.position.y, W, end - foes.position.y)
+	var camera := {"horizon": _cam.horizon - field.position.y, "focal": _cam.focal, "height": _cam.height, "shift": _cam.shift}
+	var backdrop := camera.duplicate()
+	backdrop.merge({"biome": _biome(), "dim": 0.9})
+	var floor := camera.duplicate()
+	floor.merge({"seam": (foes.end.y if bottom else (LOG_Y + DIE_Y) * 0.5) - field.position.y, "seam_band": 34.0, "grid": 0.14, "grid_fade": 220.0})
+	bg.grounds = [[field, sk.terrain, sk.rng.seed, "backdrop", backdrop], [field, sk.terrain, sk.rng.seed + 1, "floor", floor]]
+	bg.rules = [field.position.y, field.end.y]
+	if not bottom:
 		# The console floats on the floor: dark glass under the log and under the dice.
 		bg.glass = [Rect2(0.0, LOG_Y - 6.0, W, LOG_H + 6.0), Rect2(0.0, DIE_Y - 12.0, W, REROLL_Y + REROLL_SIZE.y + 12.0 - (DIE_Y - 12.0))]
-
-
-## Whether the look stands the units on a floor (every option but the classic bands).
-func _on_floor() -> bool:
-	return look_ground() in ["vista", "field", "holo", "window"]
+	var r := 1.0 / sqrt(3.0)
+	var corners := [Vector2(0.0, r), Vector2(0.5, r * 0.5), Vector2(0.5, -r * 0.5), Vector2(0.0, -r), Vector2(-0.5, -r * 0.5), Vector2(-0.5, r * 0.5)]
+	bg.marks = []
+	for i in range(_slot_count()):
+		var pts := PackedVector2Array()
+		for c in corners:
+			pts.append(_on_floor(_slot_hex_x(i) + c.x, _cam.depth + c.y))
+		bg.marks.append([pts, i >= sk.mechs.size()])
 
 
 ## The fight's domain, by its bleed in content: the domain most of the foes come from.
@@ -897,10 +926,6 @@ func _build_outcome() -> void:
 	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
-
-
-func _column_x(i: int, n: int) -> float:
-	return W * 0.5 + (i - (n - 1) * 0.5) * PITCH
 
 
 ## Enemy column centres: three columns at a wide pitch, four at a tight one.
@@ -1265,7 +1290,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.sprite = Sprites.combat_foe(foe.content_id)
 	v.pixel_snap = true
 	# Enemies face left, the convention; a sprite painted facing right says so in content.
-	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
+	var entry: Dictionary = ContentDB.load_default().foes.get(foe.content_id, {})
+	v.flip_h = bool(entry.get("flip", false))
+	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
@@ -1959,8 +1986,8 @@ func _open_menu(page: String = "paused") -> void:
 				BattleMapView.pace = float(value)
 			elif key == "scan" and _bg != null:
 				_bg.scan = bool(value)
-			elif key == "weld" or key == "look":
-				_build()   # the machines remade, welded or as authored, or the look changed (a debug build's comparisons)
+			elif key == "weld" or key == "skirmish_controls":
+				_build()   # the machines remade, welded or as authored (a debug build's comparison), or the controls moved
 				_refresh())
 		_menu.hud_changed.connect(func() -> void:
 			_build()

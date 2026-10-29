@@ -1180,13 +1180,16 @@ func test_the_menu_survives_a_colour_change_and_quits_to_the_host() -> void:
 
 
 func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	Settings.display["skirmish_controls"] = "middle"   # the controls between the sides: a desk machine may have saved them at the bottom
 	var s := _screen()
 	assert_true(s._eye.position.y >= s.LOG_Y - 10.0, "the eye sits in the black under the foes' ground")
 	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._eye.position.x, "the log strip stops short of it")
 	var seam := s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y + SkirmishScreen.REROLL_GAP
-	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
+	assert_true(seam <= s.MECH_Y, "Reroll clear of the machines' row")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
 	s.free()
+	Settings.display["skirmish_controls"] = was
 
 
 func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> void:

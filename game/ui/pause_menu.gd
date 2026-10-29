@@ -121,6 +121,7 @@ func _show_page(page: String) -> void:
 			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
 			_toggle("FINE MAP", "fine_map")   # the map at the glass's density: sharper, costlier; a phone judges its frame rate
+			_controls_row()
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
 			_slider("VOICE", "voice")
@@ -128,8 +129,6 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
-				_cycle("GROUND", "ground", Settings.LOOK_GROUNDS)   # the skirmish's looks of 29 October, judged on the phone
-				_cycle("LAYOUT", "layout", Settings.LOOK_LAYOUTS)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"keywords":
 			_title("KEYWORDS")
@@ -326,23 +325,25 @@ func _toggle(caption: String, key: String) -> void:
 	_rows.add_child(row)
 
 
-## A debug build's pick among the skirmish's looks (Settings.look): one button naming the
-## current option, a tap moving to the next. Held for the session, never saved.
-func _cycle(caption: String, key: String, options: Array) -> void:
+## Where the skirmish's controls sit (Settings.SKIRMISH_CONTROLS): one button an option, the
+## current one filled, as the display's colours are. A fight on screen rebuilds behind the menu.
+func _controls_row() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
-	row.add_child(_caption(caption))
-	var b := HudButton.new(str(Settings.look[key]).to_upper())
-	b.font_size = 14
-	b.custom_minimum_size = Vector2(0, 40)
-	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.pressed.connect(func() -> void:
-		var next: String = str(options[(options.find(Settings.look[key]) + 1) % options.size()])
-		Settings.look[key] = next
-		b.text = next.to_upper()
-		b.queue_redraw()
-		display_changed.emit("look", next))
-	row.add_child(b)
+	row.add_child(_caption("SKIRMISH CONTROLS"))
+	for id in Settings.SKIRMISH_CONTROLS:
+		var b := HudButton.new(str(id).to_upper())
+		b.font_size = 14
+		b.filled = str(Settings.display.get("skirmish_controls", "middle")) == id
+		b.custom_minimum_size = Vector2(0, 40)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.pressed.connect(func() -> void:
+			if str(Settings.display.get("skirmish_controls", "middle")) == id:
+				return
+			Settings.set_display("skirmish_controls", id)
+			display_changed.emit("skirmish_controls", id)
+			_show_page(_page))
+		row.add_child(b)
 	_rows.add_child(row)
 
 

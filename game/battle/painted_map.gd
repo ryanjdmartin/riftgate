@@ -4,7 +4,7 @@ extends Control
 ## The battlefield as the other world holds it: an old overworld, flat, bright, saturated,
 ## chunky marks at a coarse scale (Ryan, 20 September), drawn once into a texture the size
 ## of the whole map, one frame of two. The bleed shows it through (bleed.gdshader). The
-## drawing itself lives in TerrainArt.draw_other_hex, shared with the skirmish's ground.
+## drawing itself lives in TerrainArt.draw_other_hex.
 
 var field: Battlefield
 var origin := Vector2.ZERO

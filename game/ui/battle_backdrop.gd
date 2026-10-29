@@ -1,12 +1,12 @@
 class_name BattleBackdrop
 extends RefCounted
 
-## The other world as a JRPG battle screen's backdrop (29 October, an option for the skirmish's
-## ground behind `RIFTGATE_SKIRMISH_BG`; Ryan found the bare overworld tiles "amateurish,
-## distracting, and immersion-breaking"): a sky, the far land on the horizon and a floor in
-## perspective, in the domain's palette (keyed by its `bleed` in content) and dressed by the
-## contact hex's ground, painted once into an image at the foes' own pixel grid so they stand
-## on it in the pixels they are drawn in. Nothing in it is outlined and its values sit in a
+## The other world as a JRPG battle screen's backdrop, the far part of the skirmish's field
+## (29 October; Ryan found the bare overworld tiles "amateurish, distracting, and
+## immersion-breaking"): a sky, the far land on the horizon and a floor in perspective, the
+## floor's bands laid by the field's camera, in the domain's palette (keyed by its `bleed` in
+## content) and dressed by the contact hex's ground, painted once into an image at the foes'
+## own pixel grid so they stand on it in the pixels they are drawn in. Nothing in it is outlined and its values sit in a
 ## narrow range: the sprites carry the outlines and the contrast. Deterministic per seed;
 ## every colour and size a placeholder, judged on the phone.
 
@@ -93,11 +93,14 @@ const PALETTES := {
 
 
 ## The backdrop for one fight: `size` in art pixels, `horizon` the row the floor starts on.
-## `biome` is a domain's bleed; one with no palette paints the first.
-static func paint(biome: String, terrain: int, seed_value: int, size: Vector2i, horizon: int) -> Image:
+## `biome` is a domain's bleed; one with no palette paints the first. `rows` lays the floor's
+## bands on the floor camera's hex rows ({"k", "phase"}: the band at an art row d below the
+## horizon is floor(k / d + phase)); without it they keep a spacing of their own.
+static func paint(biome: String, terrain: int, seed_value: int, size: Vector2i, horizon: int, rows: Dictionary = {}) -> Image:
 	var img := Image.create_empty(maxi(size.x, 16), maxi(size.y, 16), false, Image.FORMAT_RGBA8)
 	var key := biome if PALETTES.has(biome) else str(PALETTES.keys()[0])
 	var p := Painter.new(img, key, terrain, seed_value, horizon)
+	p.rows = rows
 	p.run()
 	return img
 
@@ -117,6 +120,7 @@ class Painter:
 	var h: int
 	var hz: int        # the horizon's row
 	var s: float       # feature scale: 1 on a band 540 art pixels wide (the 1080 phone's)
+	var rows: Dictionary = {}   # the floor camera's hex rows for the floor's bands (paint)
 
 	func _init(i: Image, key: String, t: int, sd: int, horizon: int) -> void:
 		img = i
@@ -512,8 +516,10 @@ class Painter:
 		var stripe: float = pal.get("stripe", 0.05)
 		var span_px := float(h - hz)
 		# Bands of equal ground in perspective: the k-th at depth K/d, so they grow toward the
-		# viewer; faded out where they would be under three pixels.
-		var k := 1500.0 * s
+		# viewer (on the floor camera's hex rows when given); faded out where they would be
+		# under three pixels.
+		var k := float(rows.get("k", 1500.0 * s))
+		var phase := float(rows.get("phase", 0.0))
 		var fade0 := sqrt(3.0 * k)
 		var fade1 := sqrt(9.0 * k)
 		var last := -1
@@ -523,16 +529,16 @@ class Painter:
 			var base := f0.lerp(f1, clampf(t * 2.0, 0.0, 1.0)) if t < 0.5 else f1.lerp(f2, (t - 0.5) * 2.0)
 			# The horizon's haze over the farthest rows.
 			base = base.lerp(haze(), clampf(1.0 - t * 6.0, 0.0, 1.0) * 0.55)
-			var band := int(floorf(k / d))
+			var band := int(floorf(k / d + phase))
 			var amp := stripe * smoothstep(fade0, fade1, d)
 			var dark := base.darkened(amp)
-			if band % 2 == 1:
+			if posmod(band, 2) == 1:
 				hspan(0, w, y, dark)
 			else:
 				hspan(0, w, y, base)
 			# The edge between bands half-dithered, a row wide.
 			if band != last and last >= 0 and amp > 0.01:
-				row(0, w, y, base if band % 2 == 1 else dark, dark if band % 2 == 1 else base, 0.5)
+				row(0, w, y, base if posmod(band, 2) == 1 else dark, dark if posmod(band, 2) == 1 else base, 0.5)
 			last = band
 
 	## A lake out on the far floor, its shore short of where the back rank stands; on the Peak a
