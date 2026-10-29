@@ -289,7 +289,8 @@ python3 tools/endgame_fours.py endgame30
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
 # --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
 # the piece's kind in place of an empty hardpoint),
-# --pieces and --modules to narrow the ladders, --set path=json on every variant (a module's line, a rule's what-if)
+# --pieces and --modules to narrow the ladders, --numbers and --shapes the vanilla ladder, --bench-stocks for the benches'
+# rows' baselines alone (a narrow read at 200 seeds), --set path=json on every variant (a module's line, a rule's what-if)
 python3 tools/pricing_run.py plan
 python3 tools/pricing_run.py run prices
 python3 tools/pricing_run.py summarise prices

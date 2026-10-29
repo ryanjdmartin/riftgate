@@ -24,7 +24,10 @@ massive foes, the four formations, the eight finals), rank_and_file (the twelve 
 all (both), or pack ids as the runner names them; --jobs N (processes at once, the cores by
 default); --knock blank|basic (a knock-out leaves the hardpoint empty, or fits the basic of the
 piece's kind in its place); --pieces id,id (the ladders' candidates narrowed to those, after a
-rule changes under a few pieces); --modules id,id (the module ladder's likewise). GODOT names the
+rule changes under a few pieces); --modules id,id (the module ladder's likewise); --numbers n,n
+and --shapes direct,indirect (the vanilla ladder narrowed); --bench-stocks (stock baselines for
+the benches' rows alone, for a narrow read at 200 seeds); --set path=json (a content edit on every
+variant, the runner's own, never validated: a module's line, a rule's what-if). GODOT names the
 binary when it is not on the path.
 
 The reads (the bible's balance rows): a candidate's worth is its row's change against the
@@ -191,7 +194,10 @@ def variants(db, opts):
     """Every variant: {id, part, row (the team row's chassis), args (the runner's), and what it reads}."""
     out = []
     rows = db.team_rows()
+    bench_rows = [BENCHES[b][2] for b in BENCHES if b in opts.benches]
     for name, ids in rows.items():
+        if getattr(opts, 'bench_stocks', False) and ids not in bench_rows:
+            continue   # --bench-stocks: only the benches' rows, for a narrow read at many seeds
         out.append({'id': 'stock:' + '+'.join(ids), 'part': 'stock', 'row': ids, 'args': [], 'row_name': name})
     # A bench whose row is none of the records' team rows (the Arsenal's) gets a stock baseline of its own.
     for b in [b for b in BENCHES if b in opts.benches]:
@@ -242,12 +248,15 @@ def variants(db, opts):
             cid, slot, ids = BENCHES[b]
             load = list(db.chassis[cid].get('loadout', []))
             for shape, base in VANILLA.items():
+                if opts.shapes and shape.split()[-1].lower() not in opts.shapes:
+                    continue
                 for other in ids:
                     if base in db.chassis[other].get('loadout', []) or base in db.chassis[other].get('fixed', []):
                         raise SystemExit('the vanilla base %s is stocked on %s in the %s bench\'s row: it would reshape that die too' % (base, other, b))
-                grid = [(n, 0) for n in VANILLA_NUMBERS] if 'vanilla' in opts.parts else []
+                numbers = opts.numbers or VANILLA_NUMBERS
+                grid = [(n, 0) for n in numbers] if 'vanilla' in opts.parts else []
                 if 'vanillaheat' in opts.parts:
-                    grid += [(n, h) for n in VANILLA_HEAT_NUMBERS for h in VANILLA_HEATS if (n, h) not in grid]
+                    grid += [(n, h) for n in (opts.numbers or VANILLA_HEAT_NUMBERS) for h in VANILLA_HEATS if (n, h) not in grid]
                 for n, h in grid:
                     fitted = load[:slot] + [base] + load[slot + 1:]
                     args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n), '--set', 'components/%s/face/power_max=%d' % (base, n),
@@ -725,6 +734,9 @@ def main():
     ap.add_argument('--knock', choices=['blank', 'basic'], default='blank')
     ap.add_argument('--pieces', default='', help='the ladders\' candidates narrowed to these component ids')
     ap.add_argument('--modules', default='', help='the module ladder narrowed to these module ids')
+    ap.add_argument('--numbers', default='', help='the vanilla ladder narrowed to these numbers (2,3,...); every one by default')
+    ap.add_argument('--shapes', default='', help='the vanilla ladder narrowed to these shapes (direct, indirect); both by default')
+    ap.add_argument('--bench-stocks', action='store_true', help='stock baselines for the benches\' rows alone, not every team row')
     ap.add_argument('--set', action='append', default=[], dest='sets', metavar='PATH=JSON',
                     help='a content edit for every variant of the run, the runner\'s own --set (a module\'s line to read a bench on, a rule\'s what-if)')
     ap.add_argument('--verbose', action='store_true', help='plan: print each variant\'s runner arguments')
@@ -735,6 +747,8 @@ def main():
     opts.policies = [x.strip() for x in opts.policies.split(',') if x.strip()]
     opts.pieces = [x.strip() for x in opts.pieces.split(',') if x.strip()]
     opts.modules = [x.strip() for x in opts.modules.split(',') if x.strip()]
+    opts.numbers = [int(x) for x in opts.numbers.split(',') if x.strip()]
+    opts.shapes = [x.strip().lower() for x in opts.shapes.split(',') if x.strip()]
     db = Content()
     if opts.command == 'plan':
         errs = check(db, opts)
