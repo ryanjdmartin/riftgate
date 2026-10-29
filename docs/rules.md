@@ -175,9 +175,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
-   armour comes off. A weapon's blow takes them whatever it
-   deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing. Its riders land
-   on every foe struck.
+   armour comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's
+   halved 1); a debuff's blow stays nothing. Its riders land on every foe struck.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -392,9 +391,9 @@ not built): the ally gains Overcharged 2 and its die rolls again, which does not
 spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
-strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is spent; the engine runs it as a keyword the passive grants written out,
-so each of the Boar's weapons wears the star, the hold reading the passive's line, and no
-keyword chip.
+strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
+spent; the engine runs it as a keyword the passive grants written out, so each of the Boar's
+weapons wears the star, the hold reading the passive's line, and no keyword chip.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -528,9 +527,8 @@ On a foe:
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
-  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a debuff's blow
-  stays nothing. The stacks halve at the end of each round, rounded
-  down.
+  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
+  debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,
   and its next move hits harder by the rally's value, an add before the move's factor as
   every add is. That move spends it, whatever it is: a blow lands it, a special gains nothing
