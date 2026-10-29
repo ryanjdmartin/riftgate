@@ -355,13 +355,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.358 (the
-  page's version 370, published 29 October from `claude/charming-rubin-h954bp` onto its own v0.357
-  at 369, itself three-way merged onto the live v0.356 that `claude/jolly-lovelace-scn82y` published, which carried main's v0.352
-  (the map survey, merged onto this branch's v0.351) and the rows of `ccr-7effd31a-u5z4gw`'s sound
-  rounds and of that branch's skirmish round, so this file carries their rows ahead of their code;
-  with this branch's sixth and seventh rounds of notes on the rebuilds, the Armadillo's radiators
-  low on its back panel, its sliding side vents, their golden-orange glow and its one-sink vent). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.360 (the
+  page's version 372, published 29 October from `claude/charming-rubin-h954bp`, three-way merged
+  onto the live v0.359 that `claude/jolly-lovelace-scn82y` published at 371, the enemy's red
+  lightened to #ff7c80, itself onto this branch's v0.358 at 370; before that this branch merged
+  onto that branch's v0.356, which carried main's v0.352 (the map survey) and the rows of
+  `ccr-7effd31a-u5z4gw`'s sound rounds, so this file carries those rows ahead of their code; with
+  this branch's sixth to eighth rounds of notes on the rebuilds, the Armadillo's radiators on its
+  back panel, its sliding side vents, their golden-orange glow and its one-sink vent, and section
+  12's question on the desk's renderer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -377,12 +379,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 149 (29 October, from
-  `claude/charming-rubin-h954bp`, onto its own 148, itself onto 147, which another session
-  published with the same page, manifest and Armadillo files as this branch's 146: Ryan's seven
-  rounds of notes on the rebuilds, the last bringing the Armadillo's model with its golden-orange
-  vents, bigger side vents, lower radiators and one-sink vent act, and its renders, the old ones
-  to before; every other file as the live page had it, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 150 (29 October, from
+  `claude/charming-rubin-h954bp`, onto its own 149 and 148, those onto 147, which another session
+  published with the same page, manifest and Armadillo files as this branch's 146: Ryan's eight
+  rounds of notes on the rebuilds, the last bringing the Armadillo's radiators a little closer and
+  higher with its renders, the old ones to before, and `motion.js` lighting every glow as the
+  phone does; every other file as the live page had it, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
