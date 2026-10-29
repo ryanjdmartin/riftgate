@@ -126,7 +126,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   out between End turn and Withdraw, pressable over an open codex; a quick switch for the
   controls beside the eye, both inside the log's glass; a unit's readout a tap toggle, one at a
   time, translucent (70%) over the arrows it draws, a machine's resting on its gauges; at the
-  bottom the field down to the log and the machines lower. Ryan's phone read is the to-do's.
+  bottom the field down to the log and the machines lower. The enemy's red is #ff7c80 since his
+  third round ("Red chips everywhere need to brighten up"): twice as legible on a chip's black for a
+  protan and further from the heat orange in the worst simulation (`docs/measurements.md`), and
+  the skirmish's arrows run on the map's deep-red edge. Ryan's phone read is the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -350,13 +353,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.356 (the page's version 368,
-  published 29 October from `claude/jolly-lovelace-scn82y`: the skirmish's tap readouts,
-  KEYWORDS, the controls' switch and the machines' turn, merged onto the live v0.355 at version
-  367, another session's Hold The Line voices on this branch's v0.354 at 366, the field and its
-  controls on the live v0.353, whose rows since v0.348 came from other sessions: the six map
-  shapes, the tracks as pairs, the Arsenal's lit cockpit glass, the Armadillo's radiators and
-  seal, on v0.346 from `claude/charming-rubin-h954bp`). So this
+  `docs/design-bible.html` after every change. This file is v0.359 (the page's version 371,
+  published 29 October from `claude/jolly-lovelace-scn82y`: the lighter enemy red, merged onto
+  the live v0.358; the rows other sessions published since v0.348 ride along: the Armadillo's
+  radiators, side vents, acts and seal on screen, the Hold The Line voices, the six map shapes,
+  the tracks as pairs and the Arsenal's lit cockpit glass, on v0.346 from
+  `claude/charming-rubin-h954bp`). So this
   file carries those sessions' rows ahead of their code (the models' looks and acts, the
   Armadillo's seal on screen, the six shapes) and the Strikes row in the keyword table, and the
   tables script, which writes the tables from main's content, waits until they land or it

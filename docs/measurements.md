@@ -2249,3 +2249,38 @@ scratch read earlier the same day (seeds 1000 to 1199, a script outside the tool
 gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
 7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
 session's relief is read against it.
+
+## 29 October, the enemy's red against the heat orange
+
+**The red read** (the decision it informs: the bible's semantic-colours row, the red lifted on
+Ryan's "Red chips everywhere need to brighten up, saturate, whatever, it's hard to see on the
+new backgrounds", and his ask to see its closeness to the heat orange). Method: the Machado
+(2009) protan, deutan and tritan matrices at severity 1.0 in linear sRGB, CIELAB lightness,
+CIEDE2000 distance (ΔE), and the luminance contrast of a chip's red on its own black (the
+chip's ground over the field, #0c110a as drawn). Normal / protan / deutan / tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6a00 |
+|---|---|---|---|
+| #ff1e1e (the red until now) | 54 / 42 / 61 / 53 | 5.0 / 3.2 / 6.1 / 4.8 | 15.7 / 13.8 / 6.1 / 10.2 |
+| #ff7c80 (the red since) | 68 / 61 / 71 / 64 | 7.7 / 6.2 / 8.6 / 6.9 | 22.2 / 19.4 / 14.0 / 7.5 |
+| #ff6a00 (the orange, for scale) | 63 / 55 / 68 / 58 | 6.7 / 5.0 / 7.7 / 5.6 | — |
+
+A red cannot saturate past #ff1e1e, so a brighter one leans toward orange (more green) or
+toward pink (more blue). Toward orange (#ff4420, #ff5530) the worst ΔE to the orange falls to 4.0
+and 3.4 (deutan); toward pink the protan and deutan distances grow but tritan's falls, its
+orange being a pink-red (#ff6464 2.6, #ff7070 4.6); with green and blue raised together the
+light red's tritan lightness clears the orange's. The search (red 255, green and blue in
+steps of 4) kept the reds at 6:1 or more on the chip in every simulation, 14 or more from the
+gain green and the green HUD and 22 or more from the ink, and took the one furthest from the
+orange in its worst simulation: #ff7c80, 7.5 (tritan) where #ff1e1e was 6.1 (deutan). It costs
+the gain green (deutan 20 to 14), the green HUD (19 to 15) and the ink (protan 46 to 25). Deepening
+the orange to #ff6000 as well would take the worst to 9.4, the orange's own protan contrast on a
+chip falling from 5.0; the orange was left as it is.
+
+A red drawn straight on the field fails on the bright grounds whatever the hue: an arrow of
+#ff1e1e stood ΔE 8.1 from the meadow's and the waste's floors in the deutan simulation, its
+luminance contrast 1.04 and 1.28, and #ff7c80 4.9 and 7.7, so the skirmish's arrows took the map's
+deep-red edge (#5a0e0e). The dark edge and the light core part from every floor between them, the
+edge on the bright ones and the core on the dark: on each floor's shades in every simulation the
+better of the two stands ΔE 22.5 or more away (the marsh, protan, the worst), and the core stands
+4.9:1 on its own edge in the worst simulation.
