@@ -36,8 +36,10 @@ are in `README.md`.
 
 `claude/charming-rubin-h954bp` (28 October) carries the model rebuilds of Ryan's brief of that
 day (the pins' record and the game's plan against it, thirteen models rebuilt to their stock,
-the Armadillo's seal) and took main the same evening (the movement landing and the ladder, up
-to `12e5d6d`); unmerged, for main to take on Ryan's word.
+the Armadillo's seal) and his notes on them of the 29th (the Kite's Pinion Driver in two shots
+and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding weapons and hunkered seal
+with acts of its own), and took main each evening (to `5c23a90`, the mechanics audit);
+unmerged, for main to take on Ryan's word.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -183,9 +185,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), to judge running (the to-do). A model may hold a form
-  while its machine carries the status of the same name (the Armadillo's seal;
-  `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab). Since 25 October every machine's parts are welded at load by material
+  the stock pass had left on old kit), and reworked on his notes of 29 October (the Kite's
+  drivers as ramjet-guns, the Dingo's rear mount on a roof gimbal and its coil threaded, the
+  Armadillo's barrels bored, its weapons sliding along their lines and its seal hiding the
+  irises and hunkering), to judge running (the to-do). A model may hold a form while its
+  machine carries the status of the same name, the form carrying the whole machine and acts of
+  its own (the Armadillo's seal; `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab),
+  and a glow must name a part that can light (lowforge refuses one that cannot). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -291,8 +297,7 @@ The tasks are the to-do's; this is the index of what waits.
   Purge on a capstone's blow (its chassis session).
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
-  Scorpion on six or eight legs, the Swallowtail, the Musk Ox); the Kite's Pinion Driver as two
-  hits waits on Ryan's answer to its catches (section 12).
+  Scorpion on six or eight legs, the Swallowtail, the Musk Ox).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 
 ## Next, in order
@@ -344,11 +349,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.344 (the
-  page's version 356, published 28 October from `claude/charming-rubin-h954bp` onto main's
-  v0.343 unchanged: the mounts' record and width, the rebuilds' settled looks, the Armadillo's
-  seal, the Whip Scorpion's legs, the Kite's two hits in section 12, and the lines they
-  superseded). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.345 (the
+  page's version 357, published 29 October from `claude/charming-rubin-h954bp` onto v0.344
+  unchanged: Ryan's notes on the rebuilds, the Kite's Pinion Driver in two shots with its
+  section 12 question retired, the ramjet drivers, the Dingo's roof gimbal, threaded coil and
+  d5, the Armadillo's sliding weapons and hunkered seal with its own acts; main's v0.343 had
+  nothing newer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -361,12 +367,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 141 (28 October, from
-  `claude/charming-rubin-h954bp`, onto 140 unchanged: the thirteen rebuilt models and every
-  sidecar with its pins' record, the renders of the twelve whose geometry moved, the old ones
-  to before, the pins, the Stingray's design text in `content/chassis.json`, the motion port
-  holding a form (the Armadillo's seal, under Forms) and the mounts' stock read from the pins'
-  record; every other file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 142 (29 October, from
+  `claude/charming-rubin-h954bp`, onto 141 unchanged: Ryan's notes on the rebuilds, the
+  Armadillo's, the Kite's and the Dingo's models and sidecars, the Ammit's and the
+  Lammergeier's sidecars (their glows), the three machines' renders with the old ones to
+  before, the Pinion Driver's two shots in `content/components.json`, and the motion port's
+  forms carrying the body and acts of their own, with joints that only slide; every other file
+  identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

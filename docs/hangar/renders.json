@@ -116,8 +116,8 @@
    }
   },
   "sparrowhawk": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's brief of 28 October: the Pinion Driver a matched pair, one at each wing tip, streamlined and symmetrical, and the two nose mounts either side of the nosecone the hardpoints, the stock's Transonic Rifle on the left as its class and the right bare (the Bleed Valve, a vent, shows nowhere). The wing pods, the nose guns and the dish of the old stock are gone. Whether the Driver hits twice waits on Ryan's answer (the bible's section 12).",
+   "when": "Ryan's notes, 29 October.",
+   "note": "Ryan, 29 October: each wingtip Pinion Driver a ramjet-gun, \"a kind of mini-booster, barrel forwards with a tapered exhaust behind, something that looks like it gives an extra boost of speed on a kill\": a chrome drum like the boosters' with a lit ring, its tail tapering to a lit exhaust, a dark inlet ringed by gear teeth (the pinion), the barrel out of its centre and the muzzle lit; they burn with the boosters in every act and on the move. The Driver fires its four in two shots at half, one from each tip. The nose mounts as before: the stock's Transonic Rifle on the left as its class, the right bare.",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -129,7 +129,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the ninth notes, 6 October (the wing pods and nose guns of the old stock)",
+    "summary": "Before: the stock rebuild, 28 October (a chrome nacelle along each tip, a rail out of a toothed collar)",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan, 15 and 28 October: the four weapon ports are the four hardpoints, the stock's Rivet Gun and Twin Autoguns in the rear ports, the forward ports bare; the hatch behind them carries the two Cryo Flingers, a twin canister rack that lifts out to fire, each canister's beacon blinking. The seal made real: a three-leaf iris in each port's mouth in the ports' stripe, drawn back while open; while Sealed the port guns sink, the irises shut and the cowl lamps go dark, the rack staying live (the third picture, held sealed). Hold it under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
+   "when": "Ryan's notes, 29 October.",
+   "note": "Ryan, 29 October: the cryo barrels bored dark through the rack's face; every weapon runs in and out along its line of fire, never pitching, and a shot kicks it back along the line; the irises, which showed outside the shell, rest under each port's floor and rise to shut it once the guns have sunk; and sealed it hunkers down on its planted feet, its defensive base pose, and plays acts of its own from there (braces, rocks back and forward, vents its heat through the stack's flap, runs the rack out to beep), so no open act clips the sunk guns. The third picture is held sealed, the fourth sealed and venting. Hold it under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -184,10 +184,14 @@
     {
      "file": "armadillo/armadillo_sealed.png",
      "alt": "armadillo, sealed"
+    },
+    {
+     "file": "armadillo/armadillo_sealed_vent.png",
+     "alt": "armadillo, sealed, venting"
     }
    ],
    "before": {
-    "summary": "Before: the sixth notes, 5 October; a come-about on planted footwork, 20 October (five mounts, a missile cell in the hatch, no seal)",
+    "summary": "Before: the stock rebuild, 28 October (the rack tilting out, the iris leaves drawn back across the shell, a seal without the hunker)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -198,12 +202,8 @@
       "alt": "Earlier: armadillo, rear"
      },
      {
-      "file": "armadillo/before_armadillo_forward_ports_fitted.png",
-      "alt": "Earlier: armadillo, forward ports fitted"
-     },
-     {
-      "file": "armadillo/before_armadillo_come_about.png",
-      "alt": "Earlier: armadillo, coming about, a pair stepping"
+      "file": "armadillo/before_armadillo_sealed.png",
+      "alt": "Earlier: armadillo, sealed"
      }
     ]
    }
@@ -271,8 +271,8 @@
    }
   },
   "dingo": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan, 28 October: no mount is wider than one component, so the twin autoguns spread across the nose were two hardpoints: two nose ports either side of the visor, the stock's Twin Autoguns in the left as their class, the right bare (the Coolant Jacket shows nowhere); the Airburst Shell's rack on the rear-left deck on the old tube's elevation; and where the tube stood the Combat Translocator, a riveted cabinet with two prongs raised forward and a stack of lit coil rings, totally not a teleporter. A new act: the coil crackles in bursts and the car twitches on its casters.",
+   "when": "Ryan's notes, 29 October.",
+   "note": "Ryan, 29 October: the rear mount on the flat of the roof, still left of the harpoon, on a rotating gimbal: the Airburst Shell's rack in a yoke on a turntable, turning and elevating (its rack check swings it out over the left quarter as it ticks up, the tail still laying it fine). The Translocator's coil rings, which floated between the prongs, are threaded on a core out of the cabinet. The Translocator made its die a d5 where it was a d4 (Ryan: \"I guess that's ok\").",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -284,7 +284,7 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth round, 30 September (the wide twin autoguns and the rear tube)",
+    "summary": "Before: the stock rebuild, 28 October (the rack on the rear-left deck, the coil floating between the prongs)",
     "images": [
      {
       "file": "dingo/before_dingo_front.png",
