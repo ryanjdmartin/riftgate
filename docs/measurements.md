@@ -3032,3 +3032,123 @@ Read:
   single-target setters no N changes the picture (the arc rarely finds a charge left); a bigger N
   now would price the keyword on the one team that sequences well. The Buzzard's stock is the other
   question: it keeps a Chain gun with no Shock beside it.
+
+## 29 October, the Chain looks
+
+**Six forms of Chain and a Shock setter on the Buzzard, read as what-ifs** (Ryan's looks of the
+29th, after Chain's read: two consumption rules, two with Shock clarified, two self-fuelling; the
+code on a throwaway worktree behind one switch, never on the branch, the bot valuing each; the
+runs through `tools/pricing_run.py` with `--set` and the switch in the environment). The looks, each
+one change from Chain as built (a conductor's arc doubled by its charge and spending it):
+
+- A, keep: an arc is doubled by a conductor's charge and leaves it standing; the target as ever.
+- B, keep all: the Chain weapon never spends a charge, its target's included, though each still
+  doubles its blow.
+- C, tap: Shock clarified, for every weapon: only a targeted strike (the blow on the foe it is
+  aimed at) doubles and spends a charge, so an area blow or an arc neither doubles nor spends it;
+  an arc lands Chain's number plain on every other Shocked foe, and a target Shocked as the die is
+  spent also takes the tap beside its doubled blow.
+- D, no tap: as C, without the tap on the target.
+- E, fuel after: after the arcs, a random foe on the field (alive, not the target, not already
+  Shocked) is Shocked, from the skirmish's seeded stream.
+- F, fuel before: the same random Shock before the arcs, so a spend arcs at least once.
+
+Each look's Arc Fault Cannon (4, heat 2, Chain 2) in the Prairie Dog's slot of Wainwright &
+Sutler's row against the row as stocked and against a flat heatless vanilla 4 in the same slot,
+the keyword read in vanilla points (the gap between the vanilla's 4 and 6 the scale): on the car,
+where the Dingo's harpoon shocks one foe; on the car with the harpoon at Spread 1 (three charges a
+spend, standing in for Aphelion's spread setter); and that again under the planner at 30 seeds, a
+direction. The sixteen big fights but the finale, greedy at 200 seeds; a look that cannot move a
+row without a Chain weapon reuses the row's stock read of the 29th (the runner is deterministic),
+and C and D, which change Shock for every weapon, rerun the stock and the vanilla. Then Kestrel's
+row, which has no Shock setter, under E and F, and with the Polarity Projector on the Buzzard in
+the Transonic Rifle's place and in the Canopy's (Ryan's question: does Shock into the Afterburner
+Cannon take the build over?), greedy at 200 seeds and the planner at 30. 25 runs, about two and a
+half hours on four cores.
+
+**On the car** (greedy, 200 seeds): the row as stocked, the Arc Fault's rounds and the vanilla 4's
+against it, the keyword in vanilla points, the Arc Fault's share of the row's spends and its hull
+against stock:
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.80 | -0.76 | -0.70 | +0.2 | 16% | -4.0% |
+| A, keep: conductors doubled, never spent | 5.80 | -0.78 | -0.70 | +0.2 | 16% | -4.2% |
+| B, keep all: the Chain weapon never spends a charge | 5.80 | -0.79 | -0.70 | +0.3 | 16% | -4.2% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.80 | -0.80 | -0.71 | +0.3 | 16% | -4.1% |
+| D, no tap: as C without the tap | 5.80 | -0.77 | -0.71 | +0.2 | 16% | -4.0% |
+| E, fuel after: a random foe Shocked after the arcs | 5.80 | -0.94 | -0.70 | +0.8 | 17% | -5.3% |
+| F, fuel before: a random foe Shocked before the arcs | 5.80 | -1.23 | -0.70 | +1.8 | 17% | -7.2% |
+
+**On the car, the harpoon at Spread 1** (greedy, 200 seeds):
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.57 | -0.79 | -0.70 | +0.4 | 16% | -4.1% |
+| A, keep: conductors doubled, never spent | 5.57 | -0.85 | -0.70 | +0.6 | 16% | -4.6% |
+| B, keep all: the Chain weapon never spends a charge | 5.57 | -0.86 | -0.70 | +0.6 | 16% | -4.6% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.56 | -0.86 | -0.69 | +0.6 | 16% | -4.5% |
+| D, no tap: as C without the tap | 5.56 | -0.81 | -0.69 | +0.5 | 16% | -4.3% |
+| E, fuel after: a random foe Shocked after the arcs | 5.57 | -0.97 | -0.70 | +1.0 | 17% | -4.9% |
+| F, fuel before: a random foe Shocked before the arcs | 5.57 | -1.20 | -0.70 | +1.8 | 17% | -6.3% |
+
+**The same under the planner** (30 seeds, a direction):
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.08 | -0.71 | -0.53 | +0.7 | 16% | -3.8% |
+| A, keep: conductors doubled, never spent | 5.08 | -0.74 | -0.53 | +0.8 | 16% | -4.2% |
+| B, keep all: the Chain weapon never spends a charge | 5.08 | -0.86 | -0.53 | +1.3 | 16% | -4.8% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.08 | -0.79 | -0.57 | +0.9 | 17% | -4.3% |
+| D, no tap: as C without the tap | 5.08 | -0.72 | -0.57 | +0.6 | 17% | -3.9% |
+| E, fuel after: a random foe Shocked after the arcs | 5.08 | -0.84 | -0.53 | +1.2 | 17% | -4.6% |
+| F, fuel before: a random foe Shocked before the arcs | 5.08 | -1.03 | -0.53 | +1.9 | 18% | -5.9% |
+
+**Kestrel's row** (the Kite, the Buzzard, the Puffin; greedy, 200 seeds), with no Shock setter: as
+stocked under Chain as built and with the Arc Fault a plain 4, under E and F, and with the Polarity
+Projector on the Buzzard (the Afterburner Cannon's share 5.0% as stocked, 6.0% with the Projector
+in the Transonic Rifle's place, 4.9% in the Canopy's; the Projector's own 2.4% and 1.8%):
+
+| Row | Win | Rounds | Hull | Peak | Overheats | Top spends |
+|---|---|---|---|---|---|---|
+| as stocked, Chain as built | 99.9 | 3.40 | 11.0% | 97% | 0.41 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 8% |
+| the Arc Fault a plain 4 (vanilla 4) | 99.9 | 3.40 | 10.9% | 96% | 0.37 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Rivet Gun 9% |
+| E, fuel after | 99.9 | 3.29 | 10.4% | 95% | 0.39 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 9% |
+| F, fuel before | 99.9 | 3.21 | 9.7% | 94% | 0.35 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 9% |
+| the Polarity Projector in the Transonic Rifle's place | 99.8 | 3.47 | 11.4% | 97% | 0.46 | Pinion Driver 17%, Twin Autoguns 13%, Transonic Rifle 13%, Overclocked Railgun 12%, Laser Carbine 11%, Arc Fault Cannon 11% |
+| the Polarity Projector in the Canopy's place | 99.9 | 3.37 | 10.9% | 97% | 0.42 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 7% |
+
+The same three rows under the planner (30 seeds): as stocked 3.39 rounds and 10.3% hull, the
+Afterburner 4.7% of the spends; the Projector in the Transonic Rifle's place 3.38 rounds and 10.5%,
+the Afterburner 5.8%, the Projector 2.5%, the overheats 0.47 a fight against 0.37; in the Canopy's
+place 3.30 rounds and 9.9%, the Afterburner 4.7%, the Projector 1.8%.
+
+Read:
+
+- **How a charge is spent barely matters; how many charges there are does.** The four consumption
+  looks move the Arc Fault within a tenth of a vanilla point of Chain as built on the car (0.2 to
+  0.3 points) and within two tenths with the spread harpoon (0.5 to 0.6 against 0.4); under the
+  planner A, C and D read 0.6 to 0.9 points against 0.7. The arc is short of charges to find, not
+  of charges it keeps: another machine's doubled blow spends nearly every one first (the 29
+  October trace), and keeping a charge an arc touched does not put more of them on the field.
+- **Keep all is the one consumption look that pays, and it is the degenerate one.** Under the
+  planner B reads 1.3 points, since the Chain weapon's own target keeps its charge through every
+  spend: one charge on a boss doubles every Chain spend there until an ally's blow cashes it.
+- **Shock clarified costs the stock rows nothing.** With only a targeted strike doubling and
+  spending a charge, Wainwright & Sutler's row reads 5.80 rounds as before (5.799 to 5.804), with
+  the spread harpoon 5.57 to 5.56 and half a point of wins more: an area blow on a Shocked foe
+  rarely mattered, so the clarification stands or falls on its reading, not its balance.
+- **Self-fuelling is what moves Chain.** E reads 0.8 points on the car, 1.0 with the spread harpoon,
+  1.2 under the planner; F 1.8, 1.8 and 1.9. In Kestrel's row, with no setter at all, E takes the
+  row from 3.40 rounds to 3.29 and F to 3.21 (3.1 with the kill and repeat): the Chain gun as its
+  own setter is the only form that pays on a kit with no Shock. F pays most because it guarantees
+  an arc, a doubled blow on a random foe every spend, which is the ping retired on the 28th at
+  twice its number; E leaves the charge for the team's next targeted strike or the next arc, a
+  setup that pays later.
+- **A Shock setter on the Buzzard takes nothing over.** The Projector is spent 2% of the time under
+  the greedy and the planner alike, and the Afterburner Cannon stays at 5 to 6% of the row's spends;
+  in the Transonic Rifle's place the row is a touch slower (3.47 rounds greedy, the overheats 0.46
+  a fight against 0.41), in the Canopy's place a touch quicker (3.37; 3.30 under the planner). The
+  combo Ryan named needs the Afterburner shown and hot the round after a charge lands, which these
+  fights, won in three and a half rounds, rarely give: a play test's question, and the tiered
+  formations' once a tier-matched Kestrel kit stands on them.
