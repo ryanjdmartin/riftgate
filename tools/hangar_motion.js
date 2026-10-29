@@ -22,6 +22,7 @@ const THREE_URLS = [
 ];
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
+const RECOIL_SLIDE = 1.5;   // MechRig: world units a gun that only runs in and out of its port kicks back on a shot
 const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
@@ -186,7 +187,8 @@ class Rig {
     this.meta = {};
     for (const name of Object.keys(this.joints)) {
       const m = sm[name] || {};
-      this.meta[name] = {axis: m.axis || axisFor(name), limits: m.limits || {}, swing: m.swing ?? name.startsWith("shoulder"), parent: m.parent || ""};
+      this.meta[name] = {axis: m.axis || axisFor(name), limits: m.limits || {}, swing: m.swing ?? name.startsWith("shoulder"), parent: m.parent || "",
+        slide: Array.isArray(m.slide) && m.slide.length === 3 ? m.slide : null};   // a joint that only runs along its line (a gun in a port): that line
     }
     this.acts = (side.acts || []).filter(a => a && a.name);
     this.move = side.move || {};
@@ -215,33 +217,44 @@ class Rig {
     this.setupForms(side.forms || {});
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
-  // status of the same name (the Armadillo's seal), their tracks as curves over their turn and
-  // their lit parts with the light each has at rest.
+  // status of the same name (the Armadillo's seal), their tracks and body as curves over their
+  // turn, their lit parts with the light each has at rest, and the acts each plays while held.
   setupForms(fs) {
     this.forms = {}; this.formOn = {}; this.formT = {}; this.formRot = {}; this.formSlide = {};
+    this.formBodyRot = v3(); this.formBodySlide = v3();
     for (const [name, f] of Object.entries(fs || {})) {
       const duration = Math.max(0.01, f.duration ?? 0.6), curves = {}, glow = [];
       for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, "smooth");
+      if ((f.body || []).length) curves["@body"] = curve(f.body, duration, "smooth");
       for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, m.emissiveIntensity, g.k ?? -1]);
-      this.forms[name] = {duration, curves, glow};
+      this.forms[name] = {duration, curves, glow, acts: (f.acts || []).filter(a => a && a.name)};
       this.formOn[name] = false; this.formT[name] = 0;
     }
   }
   // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
-  // same way, from wherever it is; while one is in or turning, no act that moves one of its
-  // joints is chosen, and one playing when the form is taken stops.
+  // same way, from wherever it is; while a form turns no act starts, and one playing stops.
   setForm(name, on) {
     if (!this.forms[name] || this.formOn[name] === on) return;
     this.formOn[name] = on;
-    if (on && this.current && Rig.keysAny(this.current, this.forms[name].curves)) this.endAct();
+    if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }
-  heldJoints() {
-    const out = {};
-    for (const [name, f] of Object.entries(this.forms)) if (this.formOn[name] || this.formT[name] > 0) for (const jn of Object.keys(f.curves)) out[jn] = true;
-    return out;
-  }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
+  // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
+  // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
+  // own, less any that moves a joint a held form keeps.
+  actSet() {
+    const held = {};
+    for (const [name, f] of Object.entries(this.forms)) {
+      const on = this.formOn[name], t = this.formT[name];
+      if ((on && t < f.duration) || (!on && t > 0)) return [];
+      if (on) {
+        if (f.acts.length) return f.acts;
+        for (const jn of Object.keys(f.curves)) held[jn] = true;
+      }
+    }
+    return Object.keys(held).length ? this.acts.filter(a => !Rig.keysAny(a, held)) : this.acts;
+  }
   // Turn every form toward held or let go (MechRig._forms_step), and what they add to each joint
   // and to their lit parts' light; true while one is turning.
   formsStep(delta) {
@@ -251,17 +264,25 @@ class Rig {
       if (t !== want) { this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true; }
     }
     if (!turning) return false;
-    this.formRot = {}; this.formSlide = {};
+    this.formRot = {}; this.formSlide = {}; this.formBodyRot = v3(); this.formBodySlide = v3();
+    let settled = true;
     for (const [name, f] of Object.entries(this.forms)) {
       const t = this.formT[name];
+      if (t !== (this.formOn[name] ? f.duration : 0)) settled = false;
       for (const [jn, c] of Object.entries(f.curves)) {
         const v = curveAt(c, t);
+        if (jn === "@body") {
+          this.formBodySlide = add3(this.formBodySlide, v3(v[0], v[1], v[2]));
+          if (v.length >= 6) this.formBodyRot = add3(this.formBodyRot, v3(v[4], v[3], v[5]));   // authored (yaw, pitch, roll)
+          continue;
+        }
         this.formRot[jn] = add3(this.formRot[jn] || v3(), v3(v[0], v[1], v[2]));
         if (v.length >= 6) this.formSlide[jn] = add3(this.formSlide[jn] || v3(), v3(v[3], v[4], v[5]));
       }
       const k = t / f.duration;
       for (const [m, base, gk] of f.glow) m.emissiveIntensity = base * Math.max(0, 1 + gk * k);
     }
+    if (settled) this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());   // a pause before the new set's first act
     return true;
   }
   // Move by this gait from now on: the sidecar's own, or one of its options.
@@ -297,17 +318,20 @@ class Rig {
     return "";
   }
   choose() {
-    if (!this.acts.length) return null;
-    if (this.debug && this.debug !== "1") { const a = this.acts.find(x => x.name === this.debug); if (a) return a; }
-    // A held form keeps its joints: no act that moves one plays while it is in (the sealed
-    // Armadillo presents no guns it has sunk).
-    const held = this.heldJoints(), here = this.acts.filter(a => !Rig.keysAny(a, held));
+    const here = this.actSet();
     if (!here.length) return null;
+    if (this.debug && this.debug !== "1") { const a = here.find(x => x.name === this.debug); if (a) return a; }
     if (here.length === 1) return here[0];
     const pool = here.filter(a => a.name !== this.lastAct);
     return pool[Math.floor(this.random() * pool.length) % pool.length];
   }
-  play(name) { const a = this.acts.find(x => x.name === name); if (!a) return false; this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true; }
+  // A named act now, among those it may play first, then its own and its forms'.
+  play(name) {
+    const every = [...this.actSet(), ...this.acts, ...Object.values(this.forms).flatMap(f => f.acts)];
+    const a = every.find(x => x.name === name);
+    if (!a) return false;
+    this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true;
+  }
   start(a) {
     this.current = a; this.t = 0; this.lastAct = a.name; this.glow = [];
     this.actHeft = a.heft ?? this.heft;   // an act may ask for its own heft (MechRig._act_heft): a blow sharper than the machine's weight
@@ -395,7 +419,7 @@ class Rig {
     if (this.current) {
       this.t += dt; this.evaluateAct(); moved = true;
       if (this.t >= (this.current.duration || 0)) this.endAct(true);
-    } else if (acting && this.acts.length && !this.moving) {
+    } else if (acting && this.actSet().length && !this.moving) {
       const spent = Math.min(dt, this.waitBudget || 0); this.waitBudget -= spent; this.wait -= spent;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
     }
@@ -423,6 +447,10 @@ class Rig {
     for (const name of Object.keys(this.joints)) {
       const m = this.meta[name], axis = m.axis;
       let swing;
+      if (ranged && armed[name] && m.slide) {   // a gun that only runs in and out of its port kicks back along its line (MechRig.strike)
+        this.strikes.push({joint: name, vec: v3(), slide: v3(-m.slide[0] * RECOIL_SLIDE, -m.slide[1] * RECOIL_SLIDE, -m.slide[2] * RECOIL_SLIDE), up: 0.05, down: 0.2, t: 0});
+        continue;
+      }
       if (ranged) { if (!armed[name]) continue; swing = 5; }
       else if (!m.swing) continue;
       else swing = -29;
@@ -443,16 +471,16 @@ class Rig {
   }
   pose() {
     for (const [name, j] of Object.entries(this.joints)) {
-      let deg = add3(add3(this.actRot[name] || v3(), this.gaitRot[name] || v3()), this.formRot[name] || v3());
-      for (const st of this.strikes) if (st.joint === name) deg = add3(deg, mul3(st.vec, Rig.envelope(st)));
+      let deg = add3(add3(this.actRot[name] || v3(), this.gaitRot[name] || v3()), this.formRot[name] || v3()), kick = v3();
+      for (const st of this.strikes) if (st.joint === name) { deg = add3(deg, mul3(st.vec, Rig.envelope(st))); if (st.slide) kick = add3(kick, mul3(st.slide, Rig.envelope(st))); }
       deg = clampDegrees(deg, this.meta[name].limits);
       if (name in this.spun) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: deg[k] + this.spun[name]}; }
       const r = this.rest[name], e = eulerOf(deg);
       j.rotation.set(r.x + e.x, r.y + e.y, r.z + e.z, "YXZ");
-      const o = offsetOf(add3(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3()), this.formSlide[name] || v3())), p = this.restPos[name];
+      const o = offsetOf(add3(add3(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3()), this.formSlide[name] || v3()), kick)), p = this.restPos[name];
       j.position.set(p.x + o.x, p.y + o.y, p.z + o.z);
     }
-    const bo = offsetOf(add3(this.bodyActSlide, this.bodyMoveSlide)), be = eulerOf(add3(this.bodyActRot, this.bodyMoveRot));
+    const bo = offsetOf(add3(add3(this.bodyActSlide, this.bodyMoveSlide), this.formBodySlide)), be = eulerOf(add3(add3(this.bodyActRot, this.bodyMoveRot), this.formBodyRot));
     this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y, this.bodyRestPos.z + bo.z);
     this.body.rotation.set(this.bodyRestRot.x + be.x, this.bodyRestRot.y + be.y, this.bodyRestRot.z + be.z, "YXZ");
   }
@@ -1026,6 +1054,9 @@ class Stage {
     if (!this.rig) return;
     this.rig.setForm(name, on);
     this.emit();
+    // and again once it has turned, so the panel shows the acts it plays now
+    const f = this.rig.forms[name], rig = this.rig;
+    if (f) setTimeout(() => { if (this.rig === rig) this.emit(); }, (f.duration / Math.max(0.05, this.speedK || 1) + 0.1) * 1000);
   }
   setLoop(name) {
     this.loop = name;

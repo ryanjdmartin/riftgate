@@ -77,6 +77,7 @@ const DRIFT_UNITS := 12.0     # model units a machine with a slide of 1 drifts o
 const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar names none (`move.heft`)
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
 const FORM_DEBUG_PERIOD := 2.5  # seconds a form is held, then let go, under RIFTGATE_SEAL_DEBUG
+const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of its port kicks back along its line on a shot
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -96,11 +97,13 @@ var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes 
 var _handing := false              # whether it is rolling and the handoff counts (false standing)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
-var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve}, "glow": [[material, its light at rest, k]]}: poses held while the machine carries the status of the same name (the sidecar's forms: the Armadillo's seal)
+var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Armadillo's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
 var _form_t: Dictionary = {}       # name -> seconds into its turn: 0 let go, its duration held
 var _form_rot: Dictionary = {}     # joint -> degrees the forms add
 var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
+var _form_body_rot := Vector3.ZERO   # degrees (pitch, yaw, roll) the forms add to the body (the seal's hunker)
+var _form_body_slide := Vector3.ZERO
 var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running
 var _form_debug_t := 0.0
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
@@ -114,7 +117,7 @@ var _body_rest_pos := Vector3.ZERO
 var _body_rest_rot := Vector3.ZERO
 var _act_rot: Dictionary = {}      # joint -> degrees (pitch, yaw, roll) from the act playing
 var _act_slide: Dictionary = {}    # joint -> world-unit slide (dx, dy, dz, Blender's axes)
-var _strikes: Array = []           # [{joint, vec (degrees), up, down, t}]
+var _strikes: Array = []           # [{joint, vec (degrees), slide (world units, a gun kicking back along its line), up, down, t}]
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
@@ -454,6 +457,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 			"limits": m.get("limits", {}),
 			"swing": bool(m.get("swing", str(name).begins_with("shoulder"))),
 			"parent": str(m.get("parent", "")),
+			"slide": m.get("slide", []),   # a joint that only runs along its line (a gun in a port): that line, model axes
 		}
 	acts = []
 	for a in side.get("acts", []):
@@ -528,41 +532,41 @@ func _setup_forms(fs: Dictionary) -> void:
 		for jn in tracks.keys():
 			if joints.has(jn):
 				curves[jn] = curve(tracks[jn], duration, "smooth")
+		if not (f.get("body", []) as Array).is_empty():
+			curves[BODY] = curve(f["body"], duration, "smooth")
 		var glow: Array = []
 		for g in f.get("glow", []):
 			for part in g.get("parts", []):
 				for m in _lit_materials(str(part)):
 					glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier, float(g.get("k", -1.0))])
-		forms[name] = {"duration": duration, "curves": curves, "glow": glow}
+		var own: Array = []
+		for a in f.get("acts", []):
+			if a is Dictionary and a.has("name"):
+				own.append(a)
+		forms[name] = {"duration": duration, "curves": curves, "glow": glow, "acts": own}
 		_form_on[name] = false
 		_form_t[name] = 0.0
+	_form_body_rot = Vector3.ZERO
+	_form_body_slide = Vector3.ZERO
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
-## wherever it is (the Armadillo seals: its guns sink and its ports shut; it opens in the
-## reverse). While a form is in or turning, no act that moves one of its joints is chosen,
-## and one playing when the form is taken stops.
+## wherever it is (the Armadillo seals: its guns sink, its ports shut and it hunkers down; it
+## opens in the reverse). While a form turns no act starts, and one playing stops: held, the
+## machine plays the form's own acts, from its held pose (Ryan, 29 October: sealed, "the
+## animations set shouldn't be the same"), or else its own, less any that moves a joint the
+## form keeps.
 func set_form(name: String, on: bool) -> void:
 	if not forms.has(name) or bool(_form_on[name]) == on:
 		return
 	_form_on[name] = on
-	if on and not _current.is_empty() and _keys_any(_current, forms[name]["curves"]):
+	if not _current.is_empty():
 		_end_act()
 
 
 ## Whether a form is held (or on its way in).
 func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
-
-
-## The joints of every form that is in, or turning in or out.
-func _held_joints() -> Dictionary:
-	var out := {}
-	for name in forms.keys():
-		if bool(_form_on[name]) or float(_form_t[name]) > 0.0:
-			for jn in (forms[name]["curves"] as Dictionary).keys():
-				out[jn] = true
-	return out
 
 
 ## Whether an act keys any of these joints.
@@ -587,17 +591,29 @@ func _forms_step(delta: float) -> bool:
 		return false
 	_form_rot.clear()
 	_form_slide.clear()
+	_form_body_rot = Vector3.ZERO
+	_form_body_slide = Vector3.ZERO
+	var settled := true
 	for name in forms.keys():
 		var f: Dictionary = forms[name]
 		var t := float(_form_t[name])
+		if t != (float(f["duration"]) if bool(_form_on[name]) else 0.0):
+			settled = false
 		for jn in (f["curves"] as Dictionary).keys():
 			var v := curve_at(f["curves"][jn], t)
+			if jn == BODY:
+				_form_body_slide += Vector3(float(v[0]), float(v[1]), float(v[2]))
+				if v.size() >= 6:
+					_form_body_rot += Vector3(float(v[4]), float(v[3]), float(v[5]))   # authored (yaw, pitch, roll)
+				continue
 			_form_rot[jn] = (_form_rot.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[0]), float(v[1]), float(v[2]))
 			if v.size() >= 6:
 				_form_slide[jn] = (_form_slide.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[3]), float(v[4]), float(v[5]))
 		var p := t / float(f["duration"])
 		for g in f["glow"]:
 			(g[0] as StandardMaterial3D).emission_energy_multiplier = float(g[1]) * maxf(0.0, 1.0 + float(g[2]) * p)
+	if settled:
+		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
 	return true
 
 
@@ -683,7 +699,7 @@ func _step(dt: float) -> bool:
 		moved = true
 		if _t >= float(_current.get("duration", 0.0)):
 			_end_act()
-	elif not acts.is_empty() and not moving:   # a pilot on the move has no hands free for an act
+	elif not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act
 		var spent := minf(dt, _wait_budget)
 		_wait_budget -= spent
 		_wait -= spent
@@ -707,18 +723,16 @@ func _step(dt: float) -> bool:
 ## The next act: random among the machine's own, never the one just played (Ryan, 2
 ## October). With the debug switch naming an act, that act.
 func choose() -> Dictionary:
-	if acts.is_empty():
+	var set_now := act_set()
+	if set_now.is_empty():
 		return {}
 	if not debug.is_empty() and debug != "1":
-		for a in acts:
+		for a in set_now:
 			if str(a["name"]) == debug:
 				return a
 	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
 	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
-	# A held form keeps its joints: no act that moves one plays while it is in (the sealed
-	# Armadillo presents no guns it has sunk).
-	var held := _held_joints()
-	var here: Array = acts.filter(func(a): return (place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place)) and not _keys_any(a, held))
+	var here: Array = set_now.filter(func(a): return place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place))
 	if here.is_empty():
 		return {}
 	if here.size() == 1:
@@ -727,9 +741,34 @@ func choose() -> Dictionary:
 	return pool[_rng.randi_range(0, pool.size() - 1)]
 
 
-## Start a named act now; false when the machine has no act of that name.
+## The acts the machine may play now: none while a form turns; a form held all the way in
+## plays its own when it has any (the sealed Armadillo's, from its hunkered pose; Ryan, 29
+## October); else the machine's own, less any that moves a joint a held form keeps (the
+## sealed Armadillo presents no guns it has sunk).
+func act_set() -> Array:
+	var held := {}
+	for name in forms.keys():
+		var on := bool(_form_on[name])
+		var t := float(_form_t[name])
+		if (on and t < float(forms[name]["duration"])) or (not on and t > 0.0):
+			return []
+		if on:
+			if not (forms[name]["acts"] as Array).is_empty():
+				return forms[name]["acts"]
+			for jn in (forms[name]["curves"] as Dictionary).keys():
+				held[jn] = true
+	if held.is_empty():
+		return acts
+	return acts.filter(func(a): return not _keys_any(a, held))
+
+
+## Start a named act now, among those it may play first, then its own and its forms'; false
+## when the machine has no act of that name.
 func play(name: String) -> bool:
-	for a in acts:
+	var every: Array = act_set() + acts
+	for f in forms.values():
+		every += f["acts"]
+	for a in every:
 		if str(a["name"]) == name:
 			_start(a)
 			_evaluate_act()
@@ -850,20 +889,22 @@ func _pose() -> void:
 	for name in joints.keys():
 		var j: Node3D = joints[name]
 		var deg: Vector3 = _act_rot.get(name, Vector3.ZERO) + _gait_rot.get(name, Vector3.ZERO) + _form_rot.get(name, Vector3.ZERO)
+		var kick := Vector3.ZERO
 		for st in _strikes:
 			if st["joint"] == name:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
+				kick += (st.get("slide", Vector3.ZERO) as Vector3) * _strike_envelope(st)
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
 		if _spun.has(name):
 			deg[["pitch", "yaw", "roll"].find(str(m.get("axis", "yaw")))] += float(_spun[name])
 		j.rotation = _rest[name] + euler_of(deg)
-		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO) + _form_slide.get(name, Vector3.ZERO)
+		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO) + _form_slide.get(name, Vector3.ZERO) + kick
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
 			j.position = _rest_pos[name] + offset_of(slide)
 	if body != null:
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide)
-		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot)
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide)
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot)
 
 
 # ---------------------------------------------------------------- movement
@@ -1108,6 +1149,12 @@ func strike(ranged: bool) -> void:
 		var swing_deg: float
 		if ranged:
 			if not armed.has(name):
+				continue
+			var line: Array = m.get("slide", [])
+			if line.size() == 3:
+				# A gun that only runs in and out of its port (the Armadillo's, Ryan, 29 October:
+				# "they should only move along their axis of firing") kicks back along its line.
+				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": 0.0})
 				continue
 			swing_deg = 5.0
 		elif not bool(m.get("swing", false)):

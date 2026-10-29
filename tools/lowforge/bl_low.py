@@ -398,6 +398,7 @@ class Build:
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
         self.forms = {}        # poses held while a status lasts (see form())
+        self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -616,7 +617,7 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at, axis=None, limits=None, swing=None):
+    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
         pivot, its axes the world's. A joint inside another joint's block nests under it
@@ -633,9 +634,11 @@ class Build:
         `limits` clamp what the engine may add to the rest pose, in degrees: a (lo, hi)
         pair on the joint's own axis, or {"pitch": (lo, hi), "yaw": (lo, hi)} for more
         than one. `swing` says whether a melee blow swings this joint (the arms); unnamed,
-        a joint named shoulder_* swings. All of it goes to the rig sidecar (see rig()); the
-        engine (MechRig) reads it."""
-        return _Joint(self, name, at, axis, limits, swing)
+        a joint named shoulder_* swings. `slide`, given, is the one line the joint moves along,
+        never turning (a gun that only runs in and out of its port: the Armadillo's, Ryan, 29
+        October): every turn is held to nothing and a shot kicks it back along the line. All of
+        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it."""
+        return _Joint(self, name, at, axis, limits, swing, slide)
 
     @staticmethod
     def axis_for(name):
@@ -645,7 +648,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -658,7 +661,10 @@ class Build:
         (eased between keys) or "linear" (a wheel spinning). `heft`, if given, is the act's
         own servo time constant in place of the machine's (b.move): a blow sharper than its
         weight (Ryan, 5 October). `places` limits the act to "map" or "skirmish" (the
-        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both."""
+        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
+        given, makes it one of that form's acts, played while the form is held in place of the
+        machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
+        Armadillo's acts are its own, from its hunkered pose)."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
@@ -685,7 +691,10 @@ class Build:
         for parts, keys in glow or []:
             parts = [parts] if isinstance(parts, str) else list(parts)
             out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
-        self.acts.append(out)
+        if form is None:
+            self.acts.append(out)
+        else:
+            self.form_acts.setdefault(form, []).append(out)
         return out
 
     def _row(self, kind, name, jn, key):
@@ -708,7 +717,7 @@ class Build:
                 raise ValueError("%s %r of %s asks %s for %s %g, outside its limits %g..%g" % (kind, name, self.name, jn, ax, v, lo, hi))
         return row
 
-    def form(self, name, duration, tracks, glow=None):
+    def form(self, name, duration, tracks, glow=None, body=None):
         """A pose the machine holds while it carries the status of the same name (the
         Armadillo's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
         map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
@@ -716,8 +725,22 @@ class Build:
         out the same way, holds it in between, and plays no act that moves one of its joints
         while it is in. `glow` is a list of (parts, k): lit parts named by label and their
         light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
-        turn."""
+        turn. `body` moves the whole machine as an act's body keys do, to the held pose (the
+        sealed Armadillo hunkers down: Ryan, 29 October). Its own acts are act()'s with
+        `form` naming it."""
         out = {"duration": float(duration), "tracks": {}, "glow": []}
+        if body:
+            rows = []
+            for key in body:
+                key = [float(v) for v in key]
+                if len(key) == 4:
+                    key = key + [0.0, 0.0, 0.0]
+                if len(key) != 7:
+                    raise ValueError("form %r of %s: a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll)" % (name, self.name))
+                rows.append(key)
+            if rows[-1][0] < float(duration):
+                rows.append([float(duration)] + rows[-1][1:])
+            out["body"] = rows
         for jn, keys in tracks.items():
             if jn not in self.joint_meta:
                 raise ValueError("form %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
@@ -912,9 +935,14 @@ class Build:
         cornering numbers, written beside the glTF as art/models/<id>.rig.json so no
         runtime code keys on a chassis id. The names the acts' glows look up are listed
         for the weld, which must keep those parts apart."""
-        glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
-                            | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
-                            | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        for fname in self.form_acts:
+            if fname not in self.forms:
+                raise ValueError("%s: acts are given to a form it has not got: %s" % (self.name, fname))
+        every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
+        lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
+                     | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                     | set(self.gait_spec.get("glow", {}).get("parts", [])))
+        glow_parts = sorted(lit_parts | set(self.gait_spec.get("treads", {}).get("parts", [])))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
         # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
@@ -925,6 +953,12 @@ class Build:
             if not any(_labelled(n, part) for n in names):
                 near = sorted({n for n in names if n.startswith(part)})
                 raise ValueError("%s: a glow names %r, which labels no part%s" % (self.name, part, " (a label matches whole, not by its prefix: %s)" % ", ".join(near[:4]) if near else ""))
+            # And a part that can light: only the amber role glows in the game (MechView3D),
+            # so a glow on a plate changes nothing (the Armadillo's vent lit its unlit collar,
+            # not the ember floor inside it, which _tube labels "<label>_floor").
+            worn = {m.name.partition(".")[0] for ob in self.objects if _labelled(ob.name, part) for m in ob.data.materials if m is not None}
+            if part in lit_parts and "amber" not in worn:
+                raise ValueError("%s: a glow names %r, which wears no lit (amber) material, only %s" % (self.name, part, ", ".join(sorted(worn))))
         # What each pin's stock part is (pin()'s `carries`): every pin names one, so the engine
         # never guesses a model's kit from content.
         unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
@@ -938,7 +972,7 @@ class Build:
         if self.spins:
             out["spin"] = self.spins
         if self.forms:
-            out["forms"] = self.forms
+            out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
@@ -991,8 +1025,11 @@ class _Socket:
 
 
 class _Joint:
-    def __init__(self, b, name, at, axis=None, limits=None, swing=None):
+    def __init__(self, b, name, at, axis=None, limits=None, swing=None, slide=None):
         self.b, self.name, self.at = b, name, at
+        self.slide = [round(v, 4) for v in Vector(slide).normalized()] if slide is not None else None
+        if self.slide is not None:
+            limits = {"pitch": (0.0, 0.0), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}   # it runs along its line and never turns
         self.axis = axis or Build.axis_for(name)
         self.swing = bool(name.startswith("shoulder")) if swing is None else bool(swing)
         if self.axis not in ("pitch", "yaw", "roll"):
@@ -1010,6 +1047,8 @@ class _Joint:
             raise ValueError("joint %s of %s is made twice" % (self.name, self.b.name))
         self.b.joint_meta[self.name] = {"axis": self.axis, "limits": self.limits, "swing": self.swing,
                                         "parent": self.b._joint_stack[-1] if self.b._joint_stack else ""}
+        if self.slide is not None:
+            self.b.joint_meta[self.name]["slide"] = self.slide
         self.b._joint_stack.append(self.name)
         return self
 

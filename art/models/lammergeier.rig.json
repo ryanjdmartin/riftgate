@@ -312,7 +312,7 @@
    "glow": [
     {
      "parts": [
-      "drone_tube"
+      "drone_tube_floor"
      ],
      "keys": [
       [
@@ -525,7 +525,7 @@
   "bay_seam",
   "booster_ring",
   "contractor_core",
-  "drone_tube",
+  "drone_tube_floor",
   "exhaust"
  ],
  "pins": {

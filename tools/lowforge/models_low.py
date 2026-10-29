@@ -814,17 +814,24 @@ def armadillo(b):
     hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
-    bare; the plating on the flanks and the stack at the tail are detail. The ports are real
+    bare; the plating on the flanks and the stack at the tail are detail (the stack's rain
+    flap blows open when it vents, sealed). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
-    canister rack that lifts out of it to fire, each canister's nose cold glass and a beacon
-    on its rim (the beep). The seal made real (the bible's pinned row, 20 October; the
-    brief's leans, 28 October): the Lockdown Shutters, the look of the seal, a three-leaf
-    iris in each port's mouth in the ports' stripe, drawn back into the shell while it is
-    open; held while Sealed (the form "sealed"), the port guns sink into their ports, the
-    irises shut over them and the cowl lamps go dark, the flingers' rack staying live, since
-    a sealed Armadillo still lures; opening runs it back."""
+    canister rack that slides out of it to fire, its two barrels bored dark through the rack's
+    face (Ryan, 29 October: "the cryo barrels need to be bored in") and a beacon on each rim
+    (the beep). Every weapon only runs in and out along its line of fire, never pitching
+    (Ryan, 29 October: "remove the vertical pivot from all armadillo weapons"): the port guns
+    and the rack slide on their joints, a shot kicks them back along it. The seal made real
+    (the form "sealed", held while Sealed): the port guns sink into the shell, then an iris
+    plug in the ports' stripe rises out of each port's floor and closes it just under the rim
+    (Ryan, 29 October: the leaves drawn back across the shell showed, so they rest out of
+    sight under the floor), the cowl lamps go dark and the whole machine hunkers down on its
+    planted feet, the defensive base pose its own acts play from (Ryan, 29 October: sealed,
+    "the animations set shouldn't be the same"); the flingers' rack stays live, since a
+    sealed Armadillo still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
+    PLUG_DEEP, PLUG_DEEP_F = 12.0, 9.0   # how far down its line each port's iris plug rests, rear and fore: under the floor, out of sight in the shell
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
@@ -886,14 +893,15 @@ def armadillo(b):
         _tube(b, (px, -11.5, Z0 + 18.5), p1, 8.0, 6.4, 8, "steel.plate", "port", floor_depth=9.9)
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor=False)
         tag = "r" + ("l" if s < 0 else "r")
-        shutters[tag] = _iris(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.4)   # just under the rim
+        shutters[tag] = _plug(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.8, PLUG_DEEP)   # closes just under the rim; rests under the floor
         mount = Vector((px, -3.5, Z0 + 26.5))
         DV = Vector(D)
         # The barrels a fixed length from the mount (they had run to a fixed muzzle point
         # and grew with every push back: Ryan, 1 October).
-        # Each port gun elevates in its port (the joint pass, 2 October): a pitch joint at
-        # the mount, the socket inside it.
-        with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(mount), limits=(-12.0, 28.0)):
+        # Each port gun runs in and out of its port along its line (Ryan, 29 October: it
+        # pitched on a joint at the mount, and its barrels clipped the shell presenting): a
+        # slide joint at the mount, the socket inside it.
+        with b.joint("run_%s" % ("l" if s < 0 else "r"), tuple(mount), slide=D):
             if kind == "rivet":
                 with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun"):
                     _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
@@ -916,18 +924,21 @@ def armadillo(b):
     HB, DV, R2 = Vector((0.0, -34.0, Z0 + 20.0)), Vector(D), math.sqrt(2.0)
     b.cut(band_obs, tuple(HB + DV * 0.5), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
     _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.3, phase=math.pi / 4)
-    with b.joint("elev_cell", (0.0, -32.0, Z0 + 22.0), limits=(-4.0, 28.0)):   # the rack tilts up and back on its hatch
-        # The Cryo Flingers' twin rack (fixed, no pin): a panel body, two canister tubes side
-        # by side in its face, each canister's nose cold glass deep in its mouth and a beacon
-        # on its rim that blinks when the rack lifts (Ryan, 18 October: "a sticky cryo canister
-        # with a really annoying beep or something").
-        _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "flinger_rack")
+    with b.joint("run_rack", (0.0, -32.0, Z0 + 22.0), slide=D):   # the rack slides out of its hatch along its line (it tilted, Ryan, 29 October)
+        # The Cryo Flingers' twin rack (fixed, no pin): a panel body, two barrels side by side
+        # through its face, bored dark six deep (Ryan, 29 October: "the cryo barrels need to
+        # be bored in"; the face had capped them a hair down), a plate rim at each mouth and a
+        # beacon beside it that blinks when the rack runs out (Ryan, 18 October: "a sticky cryo
+        # canister with a really annoying beep or something").
+        rack = _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "flinger_rack")
         UP, RT = Vector((0.0, -0.7071, 0.7071)), Vector((1.0, 0.0, 0.0))
         FACE = Vector((0.0, -24.5, Z0 + 29.5))
         for xo in (-3.2, 3.2):
             c = FACE + RT * xo
-            _tube(b, tuple(c - DV * 3.0), tuple(c + DV * 1.2), 3.0, 2.4, 8, "steel.dark", "flinger_tube", floor_material="glass.glass", floor_depth=1.5)
-            bc = c + UP * 3.4 + DV * 0.6
+            b.cut([rack], tuple(c - DV * 6.0), tuple(c + DV * 0.5), 2.6)
+            _tube(b, tuple(c - DV * 6.0), tuple(c + DV * 1.2), 3.0, 2.3, 8, "bore.dark", "flinger_tube", floor_depth=0.3)
+            _tube(b, tuple(c + DV * 0.7), tuple(c + DV * 1.4), 3.3, 2.3, 8, "steel.plate", "flinger_rim", floor=False)
+            bc = c + UP * 3.9 + DV * 0.6
             b.box(bc.x - 0.7, bc.x + 0.7, bc.y - 0.7, bc.y + 0.7, bc.z - 0.7, bc.z + 0.7, "amber.light", "beacon")
     # Two forward ports flanking the cowl: level with the ground, cut straight back into
     # the step behind the front band (the fifth band's front face stands seven above the
@@ -948,8 +959,8 @@ def armadillo(b):
         # October: the barrels would have clipped the band in front).
         b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
         tag = "f" + ("l" if s < 0 else "r")
-        shutters[tag] = _iris(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 4.6)   # just behind the rim
-        with b.joint("sink_" + tag, (px, 24.5, ZF)):   # a gun fitted here sinks into its port as the seal turns in
+        shutters[tag] = _plug(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 5.0, PLUG_DEEP_F)   # closes just behind the rim; rests behind the floor
+        with b.joint("run_" + tag, (px, 24.5, ZF), slide=(0.0, 1.0, 0.0)):   # a gun fitted here runs in and out along its line, and sinks as the seal turns in
             b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
@@ -959,8 +970,16 @@ def armadillo(b):
     for s in (-1.0, 1.0):
         b.box(min(s * 29.0, s * 32.5), max(s * 29.0, s * 32.5), -10.0, 10.0, Z0 + 2.0, Z0 + 18.0, "livery.livery2", "ablative")
     b.box(-14.0, -2.0, -51.0, -50.0, Z0 + 2.0, Z0 + 12.0, "steel.vent", "tail_vents")
-    b.prism("z", 9.0, -44.0, Z0 + 24.0, 4.4, 16.0, "steel.dark", 6, "stack")
-    b.prism("z", 9.0, -44.0, Z0 + 33.0, 5.4, 2.0, "steel.plate", 6, "stack_cap")
+    b.prism("z", 9.0, -44.0, Z0 + 23.5, 4.4, 15.0, "steel.dark", 6, "stack")
+    # The cap a hollow collar, its floor an ember banked two and a half down the stack's
+    # throat, under a rain flap hinged at its back edge: the sealed shell vents its heat
+    # there (it runs hotter sealed), the flap blown open over the flaring ember, so the vent
+    # reads as the flap's motion and not by the ember's colour alone (an orange going
+    # yellow in a few pixels; the colourblind rule).
+    _tube(b, (9.0, -44.0, Z0 + 30.0), (9.0, -44.0, Z0 + 34.0), 5.4, 3.4, 6, "steel.plate", "stack_cap", floor_material="amber.ember", floor_depth=1.6)
+    FLAP = 5.7
+    with b.joint("stack_flap", (9.0, -44.0 - 0.866 * FLAP, Z0 + 34.3), axis="pitch", limits={"pitch": (0.0, 85.0), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}):
+        b.prism("z", 9.0, -44.0, Z0 + 34.3, FLAP, 0.6, "steel.dark", 6, "stack_flap")
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
     # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
@@ -969,15 +988,16 @@ def armadillo(b):
     # roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is
     # (t, k), k the light added over rest.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
-    # The missile cell rises along its own line before it tilts (Ryan, 5 October: it cut
-    # through the stripes), and sinks back after; but its base stays inside the frame, even
-    # at the tilt's far corner (Ryan, 5 October, the fifth notes: lifted eleven, it left its
-    # housing whole and floated).
-    CELL = (0.0, 3.9, 3.9)   # five and a half units up the cell's line
-    cell = lambda t0, t1, t2, t3: [(t0, 0.0), (t0 + 0.5, 0.0, 0.0, 0.0) + CELL, (t1, 22.0, 0.0, 0.0) + CELL, (t2, 21.0, 0.0, 0.0) + CELL,
-                                   (t3 - 0.5, 0.0, 0.0, 0.0) + CELL, (t3, 0.0)]
+    # Every weapon runs in and out along its line, never pitching (Ryan, 29 October: "they
+    # should only move along their axis of firing, in and out"): a port gun runs out RUN to
+    # bear, no further, its barrel's root still in the port; the rack slides LIFT up its
+    # hatch, its base still inside the frame (lifted eleven, it left its housing whole and
+    # floated: Ryan, 5 October, the fifth notes).
+    RUN, LIFT = 2.5, 7.0
+    along = lambda t, d, line=D: (t, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in line)
+    rack_out = lambda t0, t1, t2, t3: [along(t0, 0.0), along(t1, LIFT), along(t2, LIFT - 0.4), along(t3, 0.0)]
     # Present the guns as a sumo does (Ryan, 5 October): a forefoot lifts and steps out wide,
-    # then the other, the shell's front sinking between them, and every back gun comes up
+    # then the other, the shell's front sinking between them, and every back gun runs out
     # to bear; then up, and the feet step back in, one and then the other. Each foot stays
     # flat (the hips roll out and the ankles under them: _stance).
     WIDE, LIFT = 7.0, 9.0
@@ -1000,9 +1020,9 @@ def armadillo(b):
     frames += step(6.9, 7.7, "fr", WIDE, 0.0, B1, B5) + step(7.8, 8.6, "fl", WIDE, 0.0, B5, B0)
     tracks, body = _stance(legs, [(round(t, 3), pose, feet) for t, pose, feet in frames])
     tracks.update({
-        "elev_l": [(3.2, 0.0), (4.0, 28.0), (5.4, 27.0), (6.2, 0.0)],
-        "elev_r": [(3.4, 0.0), (4.2, 28.0), (5.4, 27.0), (6.2, 0.0)],
-        "elev_cell": cell(3.1, 4.4, 5.4, 6.6),
+        "run_l": [along(3.2, 0.0), along(4.0, RUN), along(5.4, RUN - 0.3), along(6.2, 0.0)],
+        "run_r": [along(3.4, 0.0), along(4.2, RUN), along(5.4, RUN - 0.3), along(6.2, 0.0)],
+        "run_rack": rack_out(3.1, 4.4, 5.4, 6.6),
     })
     blink = lambda t0, t1: [(round(t0 + k * 0.45 + d, 2), v) for k in range(int((t1 - t0) / 0.45)) for d, v in ((0.0, 0.0), (0.05, 12.0), (0.18, 0.0))]
     b.act("present_guns", 8.8, tracks, body=body,
@@ -1013,10 +1033,10 @@ def armadillo(b):
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
                             [(1.4, 0.0, -8.0, -0.6), (2.0, 0.0, -8.6, -0.8), (3.8, 0.0, -9.0, -0.8), (5.0, 0.0, 0.0, 0.0)])
     b.act("crouch", 5.4, tracks, body=body)
-    b.act("weapons_check", 6.6, {   # each port gun rises and drops in turn, then the rack lifts out of its hatch and tilts, its canisters beeping
-        "elev_l": [(1.0, 28.0), (1.6, 27.0), (2.4, -10.0), (2.9, 0.0)],
-        "elev_r": [(2.0, 0.0), (3.0, 28.0), (3.6, 27.0), (4.4, -10.0), (4.9, 0.0)],
-        "elev_cell": cell(3.6, 4.7, 5.3, 6.4),
+    b.act("weapons_check", 6.6, {   # each port gun runs out and cycles back in turn, then the rack slides up its hatch, its canisters beeping
+        "run_l": [along(1.0, 0.0), along(1.5, RUN), along(1.9, RUN), along(2.1, -0.8), along(2.5, 0.0)],
+        "run_r": [along(2.2, 0.0), along(2.7, RUN), along(3.1, RUN), along(3.3, -0.8), along(3.7, 0.0)],
+        "run_rack": rack_out(3.6, 4.7, 5.3, 6.4),
     }, glow=[(["beacon"], blink(4.0, 6.2))])
     b.act("stamp", 5.6, {   # a forefoot lifts high and stamps down, then a hind one, the shell dropping onto each
         "hip_fr": [(0.9, 30.0), (1.8, 31.0), (2.1, 0.0)],
@@ -1031,7 +1051,7 @@ def armadillo(b):
     # no head and no waist it turns its whole shell to look, the way it walks, in diagonal
     # pairs: a pair lifts, the shell turns eight degrees on the other pair, planted, and drops
     # onto the landing pair (the stamp's dip); three pairs bring it round twenty-four and a
-    # fourth squares the trailing pair up under it, the port guns rise to bear and the cowl
+    # fourth squares the trailing pair up under it, the port guns run out to bear and the cowl
     # lamps burn while it holds facing the new way; then back the same way. The shell sits
     # lower through the turn (its legs stand straight in their planes, and a planted foot
     # under a turning shell needs the slack). Each hip takes the yaw and roll that keep its
@@ -1055,7 +1075,8 @@ def armadillo(b):
     s2, k2 = come(5.3, YAW, 0.0)
     tracks, body = _footwork({leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")},
                              [(0.2, REST6), (0.5, low(0.0))] + k1 + [(5.3, low(YAW))] + k2 + [(8.8, REST6)], s1 + s2, until=9.0)
-    tracks.update({"elev_l": _dense([(3.2, 0.0), (3.8, 24.0), (5.1, 23.0), (5.8, 0.0)]), "elev_r": _dense([(3.3, 0.0), (3.9, 24.0), (5.1, 23.0), (5.8, 0.0)])})
+    tracks.update({"run_l": _dense([along(3.2, 0.0), along(3.8, RUN), along(5.1, RUN - 0.3), along(5.8, 0.0)]),
+                   "run_r": _dense([along(3.3, 0.0), along(3.9, RUN), along(5.1, RUN - 0.3), along(5.8, 0.0)])})
     b.act("come_about", 9.4, tracks, body=body, ease="linear", heft=0.12,
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
@@ -1072,18 +1093,44 @@ def armadillo(b):
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
     # The seal (the form "sealed", held while the machine carries the status): the port guns
-    # sink into their ports (and a gun fitted in a forward port with them), then each iris
-    # slides shut over its port, and the cowl lamps go dark as it turns in ("the shell goes
-    # dark", its design note); the flingers' rack is untouched. RIFTGATE_SEAL_DEBUG=1 holds
-    # it and lets it go in turn, to judge running.
-    SINK, SINK_F, T_SINK, T_SHUT0, T_SHUT1, T_ALL = 17.0, 32.0, 0.45, 0.35, 0.85, 0.9
-    tracks = {jn: [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SINK, 0.0, 0.0, 0.0, 0.0, -0.707 * SINK, -0.707 * SINK)] for jn in ("elev_l", "elev_r")}
+    # sink into the shell along their lines, past the ports' floors (and a gun fitted in a
+    # forward port with them), then each port's iris plug rises out of its floor and closes it
+    # just under the rim, the cowl lamps going dark ("the shell goes dark", its design note),
+    # while the whole machine hunkers down on its planted feet, the shell low and its brow
+    # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
+    # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
+    # as the hangar's Forms toggle does, to judge running.
+    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 23.0, 32.0, 0.45, 0.45, 0.85, 1.2
+    HUNK = (0.0, -11.0, -1.5)   # (dy, dz, pitch): low, the brow dipped
+    FWD = (0.0, 1.0, 0.0)
+    tracks = {jn: [along(0.0, 0.0), along(T_SINK, -SINK)] for jn in ("run_l", "run_r")}
     for tag in ("fl", "fr"):
-        tracks["sink_" + tag] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SINK, 0.0, 0.0, 0.0, 0.0, -SINK_F, 0.0)]
-    for leaves in shutters.values():
-        for jn, (hx, hy, hz) in leaves:
-            tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SHUT0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_SHUT1, 0.0, 0.0, 0.0, hx, hy, hz)]
-    b.form("sealed", T_ALL, tracks, glow=[(["lamp"], -1.0)])
+        tracks["run_" + tag] = [along(0.0, 0.0, FWD), along(T_SINK, -SINK_F, FWD)]
+    for jn, (hx, hy, hz) in shutters.values():
+        tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG1, 0.0, 0.0, 0.0, hx, hy, hz)]
+    eased = lambda u: u * u * (3.0 - 2.0 * u)
+    hunker = [(round(0.2 + 0.1 * k, 3),) + tuple(round(v * eased(k / 9.0), 3) for v in HUNK) for k in range(10)]   # 0.2 to 1.1 s, dense so the feet stay planted
+    limbs4 = [limb(leg) for leg in ("fl", "fr", "hl", "hr")]
+    legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
+    tracks.update(legs_t)
+    b.form("sealed", T_ALL, tracks, glow=[(["lamp"], -1.0)], body=body)
+    # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
+    # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
+    # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward
+    # again, vents its heat through the stack (it runs hotter sealed), and runs the flingers'
+    # rack out to beep, since a sealed Armadillo still lures. Each an offset over the hunker,
+    # the legs solved from the hunkered pose so the feet stay planted (_planted_over).
+    tracks, body = _planted_over(limbs4, HUNK, [(0.5, 0.0, 0.0, 0.0), (1.0, -0.6, -2.0, 0.8), (2.6, -0.6, -2.2, 0.9), (3.4, 0.0, 0.0, 0.0)])
+    b.act("brace", 3.8, tracks, body=body, form="sealed")
+    tracks, body = _planted_over(limbs4, HUNK, [(0.4, 0.0, 0.0, 0.0), (1.3, -1.2, -0.6, 1.6), (2.4, 1.0, -0.4, -1.2), (3.4, 0.3, 0.0, -0.3), (4.2, 0.0, 0.0, 0.0)])
+    b.act("rock", 4.6, tracks, body=body, form="sealed")
+    tracks, body = _planted_over(limbs4, HUNK, [(0.6, 0.0, 0.0, 0.0), (0.8, 0.0, 0.5, 0.0), (1.0, 0.0, -0.3, 0.0), (1.2, 0.0, 0.3, 0.0), (1.4, 0.0, 0.0, 0.0),
+                                                (2.2, 0.0, 0.0, 0.0), (2.4, 0.0, 0.4, 0.0), (2.6, 0.0, -0.2, 0.0), (2.8, 0.0, 0.0, 0.0)])
+    tracks["stack_flap"] = [(0.5, 0.0), (0.75, 72.0), (1.1, 58.0), (1.5, 34.0), (1.9, 30.0), (2.15, 78.0), (3.2, 70.0), (3.75, 6.0), (3.9, 0.0)]
+    b.act("vent_heat", 4.2, tracks, body=body, form="sealed", heft=0.1,
+          glow=[(["stack_cap_floor"], [(0.5, 0.0), (0.9, 6.0), (1.5, 3.0), (2.1, 7.0), (3.2, 7.0), (4.0, 0.0)])])
+    b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
+          glow=[(["beacon"], blink(1.4, 3.8))])
 
 armadillo.maker = "minerva"
 
@@ -2613,7 +2660,7 @@ def ammit(b):
             tracks["talon_low_%s_%s" % (side, w)] = [(c0, 0.0, 0.0, 0.0), (round(s0 + 0.03, 3), 36.0, 0.0, 0.0), (shut, -36.0, 0.0, 0.0), (round(t + 0.5, 3), -34.0, 0.0, 0.0),
                                                      (round(t + 0.85, 3), 0.0, 0.0, 0.0)]
     b.act("rear", 6.0, tracks, body=body, heft=0.05,
-          glow=[(["throat_slot", "eye_strip"], [(W1 - 0.15, 0.0), (W1 + 0.02, 12.0), (W1 + 0.3, 5.0), (W2 - 0.05, 4.0), (W2 + 0.02, 13.0), (W2 + 0.7, 3.0), (4.6, 0.0)])])
+          glow=[(["throat_slot"], [(W1 - 0.15, 0.0), (W1 + 0.02, 12.0), (W1 + 0.3, 5.0), (W2 - 0.05, 4.0), (W2 + 0.02, 13.0), (W2 + 0.7, 3.0), (4.6, 0.0)])])
     # The talons shown off (Ryan, 5 October, the fifth notes: the fingers more, the wave
     # less, the middle pair in it, and no turning on the feet): the torso turns on its waist
     # to one hand as it comes up before the snout, wrist cocked, and holds there while its
@@ -2701,7 +2748,7 @@ def ammit(b):
                 [(tt, *v) for tt, v in _slam(round(t - 0.06, 3), (pitch, yaw, 0.0), snap, (shut, 0.0, 0.0))] + \
                 [(back, shut, 0.0, 0.0), (round(home + 0.15, 3), pitch, yaw, 0.0), (2.9, pitch * 0.9, yaw * 0.9, 0.0), (3.7, 0.0, 0.0, 0.0)]
     b.act("threat", 4.4, tracks, body=body, heft=0.05,
-          glow=[(["throat_slot", "eye_strip"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (2.5, 10.0), (2.9, 3.0), (3.7, 0.0)])])
+          glow=[(["throat_slot"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (2.5, 10.0), (2.9, 3.0), (3.7, 0.0)])])
     # Circling (Ryan, 20 October: lateral motion for a creepy stalker, on the funnel-web's
     # planted footwork): it circles its prey with the snout kept on it, the body sliding round
     # an arc about a point ahead and turning to face it, the feet and the hands scuttling
@@ -2747,7 +2794,7 @@ def ammit(b):
             ks += [(7.5, pitch, yaw, 0.0), (8.1, 0.0, 0.0, 0.0)]
             tracks["talon_%s_%s" % (side, w)] = _dense(ks)
     b.act("circle", 8.6, tracks, body=body, ease="linear", heft=0.08,
-          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
+          glow=[(["throat_slot"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a four-limbed gait, every foot and talon planted while the body passes over it,
     # the lower arms reaching from further back under the chest; the upper arms held up out
@@ -4057,7 +4104,7 @@ def lammergeier(b):
     # small yaw after them.
     b.act("syrinx_launch", 4.4, body=[(0.6, 0.0, 0.0, 0.0), (1.0, 0.0, -2.0, 0.6, 0.0, 2.0, 0.0), (1.3, 0.0, -1.0, 0.0, -4.0, 0.0, -3.0), (1.8, 0.0, 1.0, 0.4, 4.0, -1.0, 3.0),
                                       (2.6, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
-          glow=[(["drone_tube"], [(0.7, 0.0), (0.9, 14.0), (1.1, 2.0), (1.25, 14.0), (1.5, 2.0), (2.2, 0.0)]), (boosters, [(0.6, 0.0), (1.0, 4.0), (2.4, 4.0), (3.2, 0.0)])])
+          glow=[(["drone_tube_floor"], [(0.7, 0.0), (0.9, 14.0), (1.1, 2.0), (1.25, 14.0), (1.5, 2.0), (2.2, 0.0)]), (boosters, [(0.6, 0.0), (1.0, 4.0), (2.4, 4.0), (3.2, 0.0)])])
     # The wheel: a long banked turn to the left and a shallower one back, the outer boosters
     # brighter in each.
     b.act("wheel", 5.6, {"sensor_contractor": [(0.8, 0.0), (2.2, -40.0), (4.0, 30.0), (5.2, 0.0)]},
@@ -4130,28 +4177,30 @@ def _slab(b, pts, normal, thick, material, label):
     return b._finish(bm, material, label)
 
 
-def _iris(b, tag, centre, axis, r, n=3, thick=0.6, material="steel.stripe"):
-    """A port's iris (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius `r`
-    about `centre`, square to `axis`, each drawn back along its own bisector by `r` so the
-    mouth stands open with the leaves hidden in the shell, each on a joint of its own
-    (`shutter_<tag>_<k>`) that a form slides home. Returns [(joint, its slide home)], world
+def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe"):
+    """A port's iris plug (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius
+    `r` about `centre`, square to `axis`, each a hair off the centre so the iris's seams read
+    dark, all on one joint (`shutter_<tag>`, sliding along `axis`) that rests `depth` down the
+    port's line, under its floor and out of sight in the shell. A form slides it home: it
+    rises out of the floor once the gun has sunk and closes the mouth (Ryan, 29 October: the
+    leaves drawn back across the shell showed, "it's no good like this"; a port on a sloping
+    shell has no room beside its mouth to hide them). Returns (joint, its slide home), world
     units."""
     axis = Vector(axis).normalized()
     up = Vector((0.0, 0.0, 1.0))
     side = Vector((1.0, 0.0, 0.0)) if abs(axis.dot(up)) > 0.999 else axis.cross(up).normalized()
     over = side.cross(axis).normalized()
-    out = []
+    rest = Vector(centre) - axis * depth
     span = 2.0 * math.pi / n
-    for k in range(n):
-        a = math.pi / 2.0 + k * span   # the first leaf's bisector up the port's face
-        back = (side * math.cos(a) + over * math.sin(a)) * r
-        pts = [centre + back] + [centre + back + (side * math.cos(a - span / 2.0 + j * span / 4.0) + over * math.sin(a - span / 2.0 + j * span / 4.0)) * (r + 0.4)
-                                 for j in range(5)]
-        name = "shutter_%s_%d" % (tag, k)
-        with b.joint(name, tuple(centre + back)):
+    name = "shutter_%s" % tag
+    with b.joint(name, tuple(rest), slide=tuple(axis)):
+        for k in range(n):
+            a = math.pi / 2.0 + k * span   # the first leaf's bisector up the port's face
+            tip = rest + (side * math.cos(a) + over * math.sin(a)) * 0.15
+            pts = [tip] + [tip + (side * math.cos(a - span / 2.0 + j * span / 4.0) + over * math.sin(a - span / 2.0 + j * span / 4.0)) * r
+                           for j in range(5)]
             _slab(b, pts, axis, thick, material, "shutter")
-        out.append((name, (-back.x, -back.y, -back.z)))
-    return out
+    return name, tuple(axis * depth)
 
 
 def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):
@@ -4441,6 +4490,17 @@ def _planted(limbs, body):
         if l.get("ankle"):
             tracks[l["ankle"]] = rows["ankle"]
     return tracks, [(t, 0.0, dy, dz, 0.0, pitch, 0.0) for t, dy, dz, pitch in body]
+
+
+def _planted_over(limbs, base, body):
+    """_planted for an act played over a held pose (a form's own acts: the sealed Armadillo's,
+    29 October): `base` the pose's (dy, dz, pitch), `body` the act's keys as offsets from it.
+    The legs' keys are what each offset adds to the held pose's own angles (one axis each,
+    so they add exactly in the engine), so the feet stay planted from the held pose."""
+    held, _ = _planted(limbs, [(0.0,) + tuple(base)])
+    full, _ = _planted(limbs, [(t, base[0] + dy, base[1] + dz, base[2] + p) for t, dy, dz, p in body])
+    tracks = {jn: [(t, round(v - held[jn][0][1], 3)) for t, v in rows] for jn, rows in full.items()}
+    return tracks, [(t, 0.0, dy, dz, 0.0, p, 0.0) for t, dy, dz, p in body]
 
 
 def _basis(pitch, yaw, roll):
