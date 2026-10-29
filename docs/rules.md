@@ -287,7 +287,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
   and an arc adds no heat; then one other foe at random, neither the target nor already
-  Shocked, is Shocked.
+  Shocked, is Shocked. Its footprint, like an area's, is read from the strike's own foe: an arc
+  spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
+  Shocked takes one blow, the area's.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.

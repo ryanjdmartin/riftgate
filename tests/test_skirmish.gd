@@ -1770,6 +1770,36 @@ func test_the_maps_list_the_conductors() -> void:
 	assert_true(sk.conductors(probe, target).is_empty(), "a debuff conducts nothing")
 
 
+## Chain's footprint beside an area's (Ryan, 29 October: "Chain is an AoE shape, so it doesn't proc
+## on spread/penetrate/splash procs, right?"): both are read from the strike's own foe, so an arc
+## spreads nowhere, and a foe both beside the target and Shocked takes one blow, the area's.
+func test_chain_and_spread_each_reach_from_the_target_alone() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := _chain_gun(4, 2, 3, [K.CLEAVE])
+	gun.cleave = 1
+	sk.add_mech(_mech("A", Die.single(gun)))
+	var left := _ghoul(30, 5)
+	var target := _ghoul(30, 5)
+	var right := _ghoul(30, 5)
+	var far := _archer(30, 5)
+	var mid_back := _archer(30, 5)
+	var right_back := _archer(30, 5)
+	sk.add_foes([left, target, right, far, mid_back, right_back])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[1] == target and sk.back[0] == far and sk.back[1] == mid_back, "the ranks as they arrived")
+	_shock_on(right)
+	_shock_on(far)
+	assert_true(sk.assign(0, target), "the Chain and Spread gun spent")
+	assert_eq(target.hp, 26, "the target takes the roll")
+	assert_eq(left.hp, 29, "the foe beside it takes Spread 1")
+	assert_eq(right.hp, 29, "the Shocked foe beside it takes one blow, the area's: Spread 1, never Chain's 2 too")
+	assert_eq(far.hp, 28, "the Shocked foe out of the row takes Chain 2")
+	assert_eq(mid_back.hp, 30, "the arc spreads nowhere: the conductor's neighbour takes nothing")
+	assert_eq(right_back.hp, 30, "and nothing arcs from the area's foe")
+	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc, to the one conductor out of the area")
+
+
 ## Shocked (Ryan, 29 October: "when targeted and struck by a weapon, double the damage received
 ## and remove Shock"): a weapon's strike aimed at the foe doubles and spends it; a blow that only
 ## reaches it, an area's or a spill's, neither doubles nor spends it.

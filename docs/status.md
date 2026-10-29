@@ -309,9 +309,10 @@ line), since no number read since 22 October was read on the content as it now s
    plain, Shock read only by a weapon's strike aimed at its foe, a charge on one other foe at
    random), built at once and read (`docs/measurements.md`): about 0.8 vanilla points over the
    sixteen big fights, nothing against a lone massive foe and about 2 on the formations, the
-   charge carrying it (the team cashes each one, so nothing compounds); Chain 3 and 4 add a
-   tenth of a point each, so N stays 2. Ryan affirmed the random charge the same evening
-   (lightning, free reach, it sets itself up); the Buzzard's stock is section 12's.
+   charge carrying it (the team cashes each one, so nothing compounds); a point of Chain N on
+   the Arc Fault adds about a tenth of a point, so it keeps its Chain 2. Ryan affirmed the
+   random charge the same evening (lightning, free reach, it sets itself up) and kept the
+   Buzzard's stock.
    Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
    maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
    component priced in heat, hull or shield, the basics too; passive cooling the lever that

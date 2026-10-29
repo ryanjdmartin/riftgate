@@ -3222,7 +3222,9 @@ Waste's, the Marsh's and the Peak's, the finals the eight heroes'):
 The Marsh's formation, the row's wall, at 200 seeds: won 45 times as stocked, 86 with a vanilla 4, 130
 with a vanilla 6 and 141 with the Arc Fault (with the spread harpoon 113, 139, 162 and 154).
 
-**Chain's N** (the Arc Fault at Chain 3 and 4, what-ifs):
+**The Arc Fault's Chain number** (Chain N is each weapon's own, priced as Spread's is; the Arc
+Fault, the one Chain weapon in content, at Chain 3 and 4 as what-ifs, for the worth of a point of
+N):
 
 | Bench | Chain | Win | Rounds | Hull | Off stock | In vanilla points | On the formations | Arc Fault share |
 |---|---|---|---|---|---|---|---|---|
@@ -3246,18 +3248,23 @@ Read:
 - **Chain is a weapon for a field of foes.** On a lone massive foe the Arc Fault is a plain 4 to a
   tenth of a point (nothing to charge, nothing to arc); on the finals it reads 4.8; on the four
   formations 6.2, past a vanilla 6, and 7.4 with the spread harpoon (8.6 under the planner, a
-  direction). The sixteen big fights hold four formations, so their average undersells it on the
-  fight-size spectrum the foes' fresh start brings; the ladder's tier cells are its next read.
+  direction). The sixteen big fights are a measuring set, four of them formations, so their
+  average undersells a Chain weapon wherever several foes stand; the ladder's formations by tier
+  (`--packs tiers`) would read it there.
 - **The charge carries it, not the arcs.** In the 96 traced fights the Arc Fault charged a foe on
   0.35 of its spends (0.30 with the spread harpoon; never with no other foe on the field) and arced
   on 0.06 of them (0.14), never to more than two conductors: the team's aimed strikes cash each
   charge within the round, the greedy taking a doubled blow now over an arc of 2 later, so the
   charges never pile up and nothing compounds on today's kits and bot.
-- **N is a weak lever on this form.** Chain 3 and Chain 4 add about a tenth of a point each over the
-  sixteen (4.9 and 4.9), 0.4 and 0.6 on the formations, and nothing in Kestrel's row (3.30, 3.30 and
-  3.29 rounds): N prices the arcs, and the arcs are rare while the team cashes the charges. Chain 2
-  stays content's placeholder; N moves when the arcs do, with a spread setter and a player who holds
-  the charges for them.
+- **A point of N is worth little on this form; the keyword's worth is its charge.** On the Arc
+  Fault, a 4, the keyword reads about 0.75 vanilla points at Chain 2, 0.9 at 3 and 0.95 at 4 over
+  the sixteen (2.2, 2.6 and 2.8 on the formations), and nothing moves in Kestrel's row (3.30, 3.30
+  and 3.29 rounds): a point of N adds about a tenth of a point (a third on the formations), since
+  N prices the arcs and the arcs are rare while the team cashes the charges, and the charge, which
+  no N moves, is the rest (about half a point over the sixteen and one and a half on the
+  formations, extrapolated to N 0). That is the price for any Chain weapon to come, read again
+  when a spread setter and a player who holds charges make the arcs common; the Arc Fault keeps its
+  Chain 2.
 - **Shock's reading costs the stock rows nothing.** Wainwright & Sutler's row reads 5.80 rounds and
   21.3% hull against 5.80 and 21.2% before it; with the spread harpoon 5.56 against 5.57.
 - **Kestrel's row gains a setter.** The Buzzard's Arc Fault charges for itself: the row takes 3.30
