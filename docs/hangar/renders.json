@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's sixth notes, 29 October.",
-   "note": "Ryan, 29 October, the sixth notes: \"Go back to the previous iteration. Ditch the bottom long vent. Put these guys right on the back panel, still tilted up, and make them bigger. Add new vents on the sides, on the angled slopes just in front of the back weapons. Those are small rectangular protrusions when sealed, and either slide out, or lever up using the forward edge as a pivot, to show the vent face when venting.\" The two radiators stand out of the tail's back panel side by side, bigger (16 by 13 from 14 by 11), their louvred faces at the same tilt, still in dark steel; the wide vent low on the rear face is gone. A small vent sits on each flank's chamfer just ahead of the rear ports, a dark cap on a stripe rim at rest (the first and third); venting, it slides six out of its well, five dark slats round a core that glows between them (the fifth, from the skirmish's angle, and the sixth, from the front), while the radiators throw their louvres edge on over the flaring ember; sealed, the louvres shut flat and the side vents stay home (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's seventh notes, 29 October.",
+   "note": "Ryan, 29 October, the seventh notes: \"Side vents are ok, but the glow needs to lean way more yellow/orange, and it needs to have a larger footprint to sell. Rear vents - same color change, and move them down and farther apart. During the vent animation, don't do the double knee bend. Lower down, open vents, close vents, come back up.\" Every vent glows a golden orange now (a tile of its own, amber.heat: about 255, 204, 51 at the act's height and orange on the way up, where the old ember's rim showed as 255, 123, 41); the side vents are 14 by 8 (from 10 by 6), a little down the slope, their slats thinner; the radiators sit 4.5 lower on the back panel, their centres 13.5 off the spine (from 10). The vent act sinks the shell once, opens the louvres and slides the side vents out over the flaring heat, holds, shuts them as the glow dies, and rises (the fifth, from the skirmish's angle, and the sixth, from the front, both held open; the first to fourth at rest and sealed). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes of 29 October (the dark boxes on the tail's rear deck, a wide vent low on its rear face)",
+    "summary": "Before: the sixth notes of 29 October (the radiators higher and closer on the back panel, the side vents 10 by 6, the glow the ember's red-orange)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -220,6 +220,10 @@
      {
       "file": "armadillo/before_armadillo_venting.png",
       "alt": "Earlier: armadillo, venting"
+     },
+     {
+      "file": "armadillo/before_armadillo_venting_front.png",
+      "alt": "Earlier: armadillo, venting, front"
      }
     ]
    }
