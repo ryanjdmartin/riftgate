@@ -122,14 +122,30 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
   reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
   bands hold, its three-machine battles won more (a direction: the squad no longer split by
-  slow ground). Next for the map: the six shapes, named, their relief laid by the shape and free
-  to run (`docs/briefs/map_shapes.md`, Ryan's calls of 29 October), the domains' tilesets as an
-  art task and the crossing's price in the pricing run (the to-do).
+  slow ground). The six shapes followed the next day (below); still to come for the map: the
+  domains' tilesets as an art task and the crossing's price in the pricing run (the to-do).
 - The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
   it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
+  October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
+  GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no
+  shape (the campaign's) draws one by its seed, every shape alike; Mixed Ground and the other
+  four types retired. The walls are named by what they are (crags, mesas, towers, cliffs) on the
+  ground tap, a fight's label and the skirmish's header, the vocabulary's terms tied to the map
+  by the validator, and the cliffs a new look (rock prisms, basalt-like). The decoration is
+  knee-high under walls of 40 and more, dense in the scenery and against walls and water,
+  sparse in the lanes, of the shape's kind (reeds, shingle, scree, scrub, rubble, grass), and
+  the roads lead to the fords and through the gaps or are not laid. The field is level but for
+  the badlands' mesas on their shoulders and the steppe's one rise; the scenery rises. The
+  domains' unread leans renamed onto the shapes (the Marsh's to the river, the Peak's to the
+  city), the lean itself section 12's. Measured (`docs/measurements.md`): every shape keeps the
+  horde's crossing three wide on all 200 maps; the shapes part on reach (the walkers' two-phase
+  reach 38% on the gorge and the badlands to 51% on the steppe, the hover's 47% to 62%, the
+  flyer's 62% on all); the relief steps on 0% to 16% of neighbouring land where it stepped on
+  55%; the campaign run moves no band. Next: Ryan's read of them running (the to-do).
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -290,20 +306,19 @@ The tasks are the to-do's; this is the index of what waits.
   two (29 October) on his notes: Hold The Line looping without J with K two ways, its lifts and
   its map's voices as A/B sets; Night Shift's map intro without its front, its battle half
   reworked (no drone, a bass line, a synth line, a guitar groove, Hold The Line's drum energy);
-  all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing the track, the
-  3 s flip) and each picked half into the forge's SHIP table.
+  all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
+  the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
 to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
-numbered keywords and the blow's order; the campaign report (28 October) and the map survey
-(29 October, with its relief table) are main's head's.
+numbered keywords and the blow's order; the campaign report and the map survey (both 29
+October, on the six shapes) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content; the map shapes' generator session among
-   them, free to run since Ryan's calls of 29 October.
+   retired once its decisions are rows and content.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
@@ -342,13 +357,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.348 (the page's version 360,
-  published 29 October from `ccr-7821127e-kwj874`: the relief laid by the shape, on v0.347 at
-  version 359, Ryan's calls on the map shapes, the walls' names, the decoration, the domains'
-  tilesets and the rift tiles as art, three-way merged onto the live v0.346 that
-  `claude/charming-rubin-h954bp` published). So this file carries
-  that branch's rows ahead of its code (the models' looks and acts, the Armadillo's seal on
-  screen) and its Strikes row in the keyword table, and the tables script, which writes the
+  `docs/design-bible.html` after every change. This file is v0.353 (the page's version 365,
+  published 29 October from `ccr-7effd31a-u5z4gw`: the pair rows, section 1's pair row with
+  round two's line that the tracks share ideas and never remix one another, the palette row's
+  drone used sparingly, the track table's halves, the boss-theme row and section 12's question,
+  onto the live v0.352 at version 364, which `ccr-7821127e-kwj874` published from main: the six
+  map shapes landed, three-way merged onto the live v0.351 that `claude/charming-rubin-h954bp`
+  published). So this file carries
+  that branch's rows ahead of its code (the models' glows, looks and acts, the Armadillo's seal
+  on screen) and its Strikes row in the keyword table, and the tables script, which writes the
   tables from main's content, waits until that branch lands or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
   Before republishing, read the live page; if another session moved it, publish a three-way
@@ -356,21 +373,17 @@ into this file in the same commit as its first publish; the procedures are in `R
   first line and its trailing `</body></html>` stripped from the saved live source). With
   every branch landed, the file holds no rows ahead of code, and the tables script may run
   freely again.
-  `ccr-7effd31a-u5z4gw`'s file is v0.349: this v0.348 with the pair rows (section 1's pair row,
-  the track table's halves, the boss-theme row, section 12's question), not yet republished; its
-  next publish reads the live page and three-way merges.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 140 (28 October, from
-  `ccr-7821127e-kwj874`: at 139, onto 138, moves in hexes in `content/chassis.json`,
-  `content/foes.json` (its thirteen winged foes with them), `content/modules.json` and
-  `content/vocabulary.json`, the motion port's pace keyed by hexes and the codex's move a plain
-  count; at 140 `content/foes.json` again, the heroes without a move and the wolves at 4, and
-  the foe line shown without a move it lacks; every other file identical to the live page's,
-  `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 147 (29 October, from
+  `ccr-7821127e-kwj874`: `content/vocabulary.json` with the walls' four terms and
+  `content/factions.json` with the domains' leans on the shapes, onto version 146 of
+  `claude/charming-rubin-h954bp`'s page and files, whose `index.html` it republished as it
+  stood; that branch's `content/chassis.json` carries its own Stingray note, so main's chassis
+  and foes files, whose `_about` alone moved, wait for that branch to land; `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

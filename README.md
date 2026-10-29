@@ -54,7 +54,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
     hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
-    edited from there) and SETUP (seed, map type, HUD colour). Battle plays the whole loop
+    edited from there) and SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
     with the packs as its formation and its rift's cycle; Fight chains them all with the
     boss into one skirmish; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
@@ -223,11 +223,11 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the map survey: 200 generated maps at the game's 9x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
 # the phases each way of moving takes to the rift at move 3 and its reach after two phases,
-# the relief (the steps, the lone hexes, a ring's jogs), then every map type compared; written
-# to docs/map_survey.md (about six minutes). --type KIND
-# (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
+# the relief (the steps, the lone hexes, a ring's jogs), then every map shape compared on as
+# many seeds; written to docs/map_survey.md (about fifteen minutes). --type KIND
+# (steppe, the baseline, or river, fjord, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h for another size; --show SEED prints one map as text.
-perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
 # nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
@@ -302,7 +302,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the button under the eye opens it), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
-# RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
+# RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
+# and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
 # plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
 # lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),

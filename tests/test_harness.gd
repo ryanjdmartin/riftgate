@@ -150,7 +150,7 @@ func test_the_setup_is_kept_and_checked_against_the_content() -> void:
 	assert_eq(p.size(), int(db.chassis[id]["hardpoints"]), "a loadout is padded to its hardpoints")
 	assert_eq([p[0], p[1]], [pair[1], ""], "an unknown component is an empty hardpoint")
 	assert_eq(checked.packs, [[str(s.pack_foes()[0]), HarnessSetup.MAX_STRENGTH]], "unknown foes and bosses drop out of the packs, strength is clamped")
-	assert_eq([checked.boss, checked.guest, checked.map_kind, checked.seed_value], ["", "", "mixed", 1], "and the rest falls back")
+	assert_eq([checked.boss, checked.guest, checked.map_kind, checked.seed_value], ["", "", "", 1], "and the rest falls back, the map to the shape its seed draws")
 	assert_eq(HarnessSetup.load_or_default(db, TMP).to_dict(), HarnessSetup.defaults(db).to_dict(), "nothing kept: the defaults")
 
 

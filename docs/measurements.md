@@ -2249,3 +2249,35 @@ scratch read earlier the same day (seeds 1000 to 1199, a script outside the tool
 gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
 7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
 session's relief is read against it.
+
+**The six map shapes** (Ryan's direction of 28 October and his calls of 29 October; landed the
+same day). The map survey on them (`docs/map_survey.md`, 200 seeds a shape at 9x20, the detailed
+report on Open Steppe, the baseline): every shape keeps the horde's crossing three wide or more
+on all 200 maps, the guarantee opening half a hex a map on the river (where a bend narrows a
+ford) and on the badlands, none elsewhere; the horde's route is 19 hexes on every shape (19.0 to
+19.2), since on hexes a route north lengthens only where walls run across many rows, so no
+shape lengthens the walk; every way of moving reaches the rift's mouth in 6 phases at move 3.
+The shapes part on reach, the share of the field a way can stand on two phases out from its
+best lane at its content move (walker, hover, flyer): Open Steppe 51, 62, 62%; River Crossing
+49, 62, 62; Fjord 47, 62, 62; Ruined City 42, 53, 62; Badlands 38, 47, 62; Gorge 38, 47, 62.
+Water opens the hover's gap over the walkers (13 points on the river, 15 on the fjord),
+walls the flyer's over the rest (9 to 15 points over the hover on the city, the badlands and
+the gorge, 20 to 24 over the walkers). The grounds as laid: open ground 90%, 83%, 41%, 99%, 16%
+and 85% of the field (river, fjord, badlands, steppe, city, gorge), the badlands' scrub 37% and
+the city's rubble 73%; water 10% on the river and 17% on the fjord; walls 17% on the badlands,
+11% in the city and 15% in the gorge. The relief: neighbouring land at different heights 0% on
+four shapes, 4% on the steppe (its one rise) and 16% on the badlands (the mesas' shoulders),
+against 55% on the morning's noise; no lone hex but 0.6 a map on the badlands on the survey's
+count, which reads the field alone where the generator's rule also reads the scenery beside the
+edge. A first run an hour earlier, before the badlands were made denser (four mesa groups of two
+to four where about seven of three to five stand), read their walls 8%, their walker and hover
+reach 45 and 56% and their route 19.0 like every shape's; the denser badlands match the gorge
+on reach and hold the narrowest crossings, about three hexes (a scratch read at 60 seeds).
+
+The campaign run on the shapes (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`; a
+battle that names no shape draws one by its seed) against the run of 28 October on Mixed
+Ground: no band moved. Battles won 8% of 384 (7% of 377), held after a wipe 52% (52%), fell 38%
+(40%), a team wipe 90% (92%); runs reaching the finale 34 (34), cities fallen 3.95 a run (4.00);
+phases a battle 7.87 (7.96); three-machine battles won 49% of 63 (50% of 52). The run before the
+denser badlands read the same bands (8% of 387, 53%, 38%). A direction at 40 runs: the shapes
+move nothing this bot reads, which walks the squad as one at the nearest pack.

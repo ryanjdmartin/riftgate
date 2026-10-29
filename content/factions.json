@@ -1,5 +1,5 @@
 {
-  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tiles the flattened ground paints; `bleed` is data for the map, not read yet), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained on the map. spawn lists the packs the rift sends through together (the domain's shape as it appears on the map), one list a tier keyed \"1\" to \"3\" (every domain a \"1\"; a tier with none takes the highest under it), the battle's tier choosing, a boss's escort included; boss names the massive wildlife a boss unit unpacks into (the one powering the rift); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). map_kind is the generator's type the domain leans to (data, not read yet). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
+  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tiles the flattened ground paints; `bleed` is data for the map, not read yet), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained on the map. spawn lists the packs the rift sends through together (the domain's shape as it appears on the map), one list a tier keyed \"1\" to \"3\" (every domain a \"1\"; a tier with none takes the highest under it), the battle's tier choosing, a boss's escort included; boss names the massive wildlife a boss unit unpacks into (the one powering the rift); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). map_kind is the map shape the domain leans to (BattleMap.KINDS; data, not read yet: whether a lean decides the shape, biases it or stays out is the bible's section 12, and until then a battle draws its shape by the seed). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
   "entries": [
     {
       "id": "meadow",
@@ -74,7 +74,7 @@
       "name": "The Marsh",
       "design": { "fantasy": "Swamp, graveyard, the dungeon: dead trees, tombstones, the poison swamp's purple. The genre's undead, in rusted ornate plate, with the healer who heals them standing behind.", "signature": "Hard to keep down: they regrow, get back up and are called again.", "answer": "Kill order and reach (the healer behind), burst that beats regrow." },
       "bleed": "marsh",
-      "map_kind": "flooded",
+      "map_kind": "river",
       "reward_bias": "one_shot",
       "spawn": {
         "1": [
@@ -106,7 +106,7 @@
       "name": "The Peak",
       "design": { "fantasy": "Volcano and mountain, the fire cave: lava, black rock, the orange. The genre's bombs and drakes, furious rather than evil, and the mage who throws fire for a living.", "signature": "Hard hits on a telegraph, and heat.", "answer": "Shields for the telegraph, cooling, a lure onto a cold machine." },
       "bleed": "lava",
-      "map_kind": "rubble",
+      "map_kind": "city",
       "reward_bias": "face_modifier",
       "spawn": {
         "1": [
