@@ -2305,3 +2305,19 @@ against two packs or more 354 (365); three-machine battles won 42% of 57 (49% of
 some twelve points at sixty battles. A direction at 40 runs: this bot walks the squad as one at
 the nearest pack and never holds a line, so what wading and passing change for a player who
 holds the streets is Ryan's play to read.
+
+**Hunters at a ring of two, and the machine nearest a sealed-off prey in place of the re-pick**
+(Ryan, 29 October; built the same day: every hunter's ring two at least, the Goblin Captain's
+three, one number for its catch, the fights it joins and the ring drawn; a hunter keeps its prey
+and goes for it by any route, and only when walls and machines seal the prey off takes the
+machine nearest it that a walk that turn can put inside its ring). The campaign run on it (40
+runs from seed 1, the greedy rung, `docs/campaign_run.md`) against the horde-wading run of the
+same afternoon: no outcome band moved, and the fights grew. Battles won 6% of 379 (7% of 382),
+held after a wipe 52% (53%), fell 40% (39%), a team wipe 93% (92%); runs reaching the finale 32
+(34), the first city falling on turn 3.55 (3.77); phases a battle 7.77 (7.96). Fights 733 (794),
+those against two packs or more 399 (354), 54% of them where 45% were, one machine against three
+packs or more 125 (86): a hunter at two joins the fights on the packs beside it, so the fights
+come fewer and bigger. Three-machine battles won 39% of 58 (42% of 57); components destroyed a
+won battle 1.15 (1.61). A direction at 40 runs, on a bot that walks the squad as one at the
+nearest pack and never hides a machine behind a line, so the stand-in is a case it rarely meets;
+whether the pounce is overbearing is Ryan's play to read (the bible's exit).

@@ -958,17 +958,17 @@
    "id": "engagement_zone",
    "category": "battlefield",
    "name": "Ring",
-   "codex": "Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring is how close it must be to catch its prey. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close.",
+   "codex": "Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring, two hexes at least, is also how close it must be to catch: it pounces over whatever stands between. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close.",
    "status": "implemented",
    "design": {
-    "holes": "Rings are content on the foe type, placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it."
+    "holes": "Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: \"wolfs pounce\"; the validator holds it), and one number serves its catch, the fights it joins and the ring drawn. A machine's attack range is two for every chassis, an exception only where a role earns it."
    }
   },
   {
    "id": "pack_behaviour",
    "category": "battlefield",
    "name": "Behaviour",
-   "codex": "A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), wears the target rings on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives.",
+   "codex": "A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
    "status": "implemented",
    "design": {
     "holes": "Push and hunt are the only behaviours; the hunters' caveats are placeholders."

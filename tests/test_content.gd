@@ -321,6 +321,26 @@ func test_a_hero_carries_no_map_move_or_hunt() -> void:
 	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("a hero only")), "a hunter's are its own")
 
 
+## A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
+## etc.)"): the validator refuses a hunter whose ring is under two, and passes every hunter in
+## content.
+func test_a_hunters_ring_is_two_at_least() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var hunter_id := ""
+	for id in db.foes.keys():
+		if str(db.foes[id].get("behaviour", "")) == "hunt":
+			hunter_id = str(id)
+			assert_true(int(db.foes[id].get("zone", 1)) >= ContentDB.HUNTER_RING, "%s rings two at least" % id)
+	assert_false(hunter_id.is_empty(), "the content has a hunter")
+	var f: Dictionary = db.foes[hunter_id].duplicate(true)
+	f["zone"] = 1
+	db.foes["creeper"] = f
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe creeper") and e.contains("it pounces")), "a hunter at ring one is reported")
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("it pounces")), "the content's own pass")
+
+
 ## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
 ## their number, 1 or more; a Barrier and a Ward say none.
 func test_a_foes_buff_specials_say_their_number_or_none() -> void:

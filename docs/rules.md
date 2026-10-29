@@ -832,20 +832,25 @@ a stat.
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
   moves 2 (fast 3, the Dire Wolf's line 4, massive 1); rings 1 (front rank), 3 (back rank), 2
-  (massive). They walk round grounded machines, through each other and under a flyer, never
+  (massive), a hunter's 2 at least. A ring counts hexes as the crow flies, over anything
+  between. They walk round grounded machines, through each other and under a flyer, never
   ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
   against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
 - **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
-  the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
-  hunter with the hunter's picture and a target. A hunter with its prey in its ring
-  at the start of the player's turn has caught it: that fight comes first, the prey cannot
-  move first, others in range may join. A hunter whose prey stands where no hex it can reach
-  puts it inside its ring (a flyer over a wall) picks another by its
-  caveat among the machines it can reach, and the new lock holds; with none to pick, it walks
-  as near as it gets.
+  the Prairie Dog), keep it while it stands, and walk to put it inside their ring; the machine a
+  hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
+  and the board says HUNTED BY. A hunter with what it comes for in its ring at the start of the
+  player's turn has caught it: that fight comes first, the caught machine cannot move first,
+  others in range may join. A prey that any route reaches is the only machine its hunter
+  catches, however near the others stand. A prey sealed off (no hex the hunter can walk to,
+  round walls and grounded machines, through packs and under flyers, and stand on puts it
+  inside its ring) is not safe: the hunter takes the machine that a walk this turn can put
+  inside its ring and that stands nearest the prey, its caveat breaking a tie and never one
+  that is never hunted; the tag moves to it and the pack's readout says whom it takes and why.
+  With none in reach that turn it walks as near its prey as it gets.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
   it are lifted in place when it moves and travel as a ring round it, so they never block its
   way; it lands them as a block, each where it rode from the carrier, keeping their action, and

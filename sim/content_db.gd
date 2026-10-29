@@ -10,6 +10,7 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
+const HUNTER_RING := 2              # a hunter's ring at least: it pounces (Ryan, 29 October)
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
@@ -1728,6 +1729,10 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
 		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
 			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
+		# A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
+		# etc.)"; "If it's overbearing then we send the engage range back down").
+		if str(f.get("behaviour", "push")) == "hunt" and int(f.get("zone", 1)) < HUNTER_RING:
+			errs.append("%s: a hunter's ring is %d at least; it pounces" % [where, HUNTER_RING])
 		if f.has("movespeed") and (int(f["movespeed"]) < 1 or int(f["movespeed"]) > MAX_MOVE):
 			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
 		# A hero only ever commands the boss unit, which patrols a hex a turn and never hunts

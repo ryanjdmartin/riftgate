@@ -622,7 +622,16 @@ func pack_lines(u: Unit) -> Array:
 		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
-		return [_title(u.display_name), _words(parts), _behaviour_line(u)]
+		var lines: Array = [_title(u.display_name), _words(parts), _behaviour_line(u)]
+		# Its prey sealed off, it takes the machine nearest it this turn (Ryan, 29 October:
+		# "It's just punishing hiding"), and the readout says whom and why.
+		var w: Battlefield.Walk = _map.walks.get(u.id, null) if _map != null else null
+		if w != null and w.prey != 0 and w.prey != u.prey:
+			var took := battle.field.unit_by_id(w.prey)
+			var sealed := battle.field.unit_by_id(u.prey)
+			if took != null and sealed != null:
+				lines.append(_said("Takes", "%s in its place: %s is sealed off" % [took.display_name, sealed.display_name]))
+		return lines
 	var out: Array = [_title(u.display_name, "Boss")]
 	var stats: Array[String] = []
 	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:

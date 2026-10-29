@@ -443,50 +443,113 @@ func test_a_winged_pack_crosses_water_and_crags_and_may_stop_there() -> void:
 	assert_false(f.can_stand(plain, _o(1, 5)), "and never on a crag")
 
 
-func test_a_hunter_that_cannot_ring_its_prey_picks_again() -> void:
-	# Ryan, 28 October (lever 3; the proposal's Q7, the new lock holds): a hunter whose prey
-	# stands where no hex it can reach puts it inside its ring picks again by its caveat among
-	# the machines it can ring. The plan shows the new prey; the lock moves when the walk plays.
-	# Since 29 October the horde wades water, so the refuge is a flyer over a massif of crags.
-	var f := _field()
-	var lake := _o(3, 6)
-	f.map.terrain[lake] = BattleMap.Terrain.MOUNTAIN
-	for n in Hex.neighbors(lake):
-		f.map.terrain[n] = BattleMap.Terrain.MOUNTAIN   # the prey two hexes from open ground
-	var sq := f.add_unit(Unit.pack(1, "wolves", _o(3, 2), "meadow", 3))
+## A hunter at ring two, by its caveat (Ryan, 29 October: "a minimum range of 2 instead of 1
+## (wolfs pounce, etc.)").
+func _hunter(f: Battlefield, at: Vector2i, move: int, hunts: String) -> Unit:
+	var sq := f.add_unit(Unit.pack(1, "wolves", at, "meadow", move))
 	sq.behaviour = "hunt"
-	sq.hunts = "slowest"
-	sq.zone = 1
-	var boat := f.add_unit(Unit.mech(2, "H", lake, 2))
-	boat.traits.append("flyer")
-	var slow := f.add_unit(Unit.mech(3, "K", _o(1, 10), 3))
-	slow.traits.append("walker")
-	var fast := f.add_unit(Unit.mech(4, "G", _o(5, 10), 4))
-	fast.traits.append("wheeled")
-	assert_eq(f.pick_prey(sq), boat, "the slowest is the flyer over the crags")
+	sq.hunts = hunts
+	sq.zone = 2
+	return sq
+
+
+## Crags across row 7 but for a street at columns 2 to 4, and three machines holding it.
+func _held_street(f: Battlefield) -> Array:
+	for col in [0, 1, 5, 6]:
+		f.map.terrain[_o(col, 7)] = BattleMap.Terrain.MOUNTAIN
+	var line: Array = []
+	for col in [2, 3, 4]:
+		line.append(f.add_unit(Unit.mech(10 + col, "M%d" % col, _o(col, 7), 3)))
+	return line
+
+
+func test_a_hunter_whose_prey_is_sealed_off_takes_the_machine_nearest_it() -> void:
+	# Ryan, 29 October: "my target if I can reach him, otherwise the closest machine to my target
+	# that I can reach this turn, otherwise chase my target"; reach "at all", "which should be a
+	# rare case. It's just punishing hiding". The prey is a flyer over a massif of crags three
+	# deep, past any ring of two; the hunter takes the machine standing nearest it, not the one
+	# nearest itself, and never one that is never hunted. The lock holds.
+	var f := _field()
+	var deep := _o(3, 6)
+	for col in range(7):
+		for row in range(13):
+			if Hex.distance(_o(col, row), deep) <= 2:
+				f.map.terrain[_o(col, row)] = BattleMap.Terrain.MOUNTAIN
+	var sq := _hunter(f, _o(6, 1), 4, "slowest")
+	var prey := f.add_unit(Unit.mech(2, "F", deep, 1))
+	prey.traits.append("flyer")
+	var beside := f.add_unit(Unit.mech(3, "N", _o(5, 1), 3))
+	var near := f.add_unit(Unit.mech(4, "P", _o(6, 4), 3))
+	var scout := f.add_unit(Unit.mech(5, "D", _o(5, 4), 3))
+	scout.grant_passive({"id": "scrub", "name": "Scrub", "description": "", "effects": [{"trigger": "static", "effect": "never_hunted", "value": 1}]}, "scrub")
+	assert_eq(f.pick_prey(sq), prey, "the flyer is the slowest")
+	assert_false(f.reaches(sq, prey), "no hex the hunter can stand on puts it inside a ring of two")
+	assert_true(Hex.distance(scout.pos, deep) < Hex.distance(near.pos, deep), "the scout stands nearest it")
+	assert_true(Hex.distance(beside.pos, deep) > Hex.distance(near.pos, deep), "the one beside the hunter farther")
 	var w: Battlefield.Walk = f.plan_walks()[1]
-	assert_eq(w.prey, slow.id, "it cannot ring it, so the walk hunts the slowest it can ring")
-	assert_eq(sq.prey, boat.id, "the lock stays until the walk plays")
+	assert_eq(w.prey, near.id, "it comes for the machine nearest its prey, the scout never hunted")
+	assert_eq(w.catches, near.id, "and catches it this turn")
 	f.enemy_turn()
-	assert_eq(sq.prey, slow.id, "the walk played: the lock moves")
-	assert_true(str(f.log).contains("loses H and hunts K"), "and the log says so: %s" % str(f.log))
-	boat.pos = _o(3, 9)   # back over open ground: the new lock holds all the same
-	assert_eq((f.plan_walks()[1] as Battlefield.Walk).prey, slow.id, "the new lock holds")
-	var g := _field()
-	var pond := _o(3, 6)
-	g.map.terrain[pond] = BattleMap.Terrain.MOUNTAIN
-	for n in Hex.neighbors(pond):
-		g.map.terrain[n] = BattleMap.Terrain.MOUNTAIN
-	var lone := g.add_unit(Unit.pack(1, "wolves", _o(3, 2), "meadow", 3))
-	lone.behaviour = "hunt"
-	lone.hunts = "slowest"
-	var only := g.add_unit(Unit.mech(2, "H", pond, 2))
-	only.traits.append("flyer")
-	var lw: Battlefield.Walk = g.plan_walks()[1]
-	assert_eq(lw.prey, only.id, "with nothing it can ring, it keeps its prey")
-	assert_eq(lw.catches, 0, "and catches nothing")
-	g.enemy_turn()
-	assert_eq(lone.prey, only.id, "the lock is unchanged")
+	assert_eq(sq.prey, prey.id, "the lock holds")
+	assert_true(f.log.has("wolves catches P in F's place"), "and the log says so: %s" % str(f.log))
+	var forced := f.forced_fights()
+	assert_eq(forced.size(), 1, "the fight is forced")
+	assert_eq(forced[0]["prey"], near, "on the machine it took")
+	prey.pos = _o(3, 10)   # out over open ground: its prey can be reached again
+	assert_true(f.reaches(sq, prey), "reached again")
+	assert_true(f.forced_fights().is_empty(), "so the machine beside it goes free")
+	assert_eq((f.plan_walks()[1] as Battlefield.Walk).prey, prey.id, "and it goes back to its prey")
+
+
+func test_a_prey_that_keeps_its_distance_is_chased_and_nobody_else_is_caught() -> void:
+	# Safety in speed, not hiding (Ryan, 29 October): a prey any route reaches is the only machine
+	# the hunter catches, however near the others stand.
+	var f := _field(7, 16)
+	var sq := _hunter(f, _o(3, 2), 2, "slowest")
+	var prey := f.add_unit(Unit.mech(2, "Q", _o(3, 12), 1))
+	var other := f.add_unit(Unit.mech(3, "A", _o(3, 4), 3))
+	var w: Battlefield.Walk = f.plan_walks()[1]
+	assert_eq(w.prey, prey.id, "it comes for its prey")
+	assert_eq(w.catches, 0, "too far to catch this turn")
+	f.enemy_turn()
+	assert_true(Battlefield.in_ring(sq, other), "it ends with another machine inside its ring")
+	assert_true(f.forced_fights().is_empty(), "and catches nobody: its prey can still be reached")
+
+
+func test_a_hunter_pounces_over_a_line_but_not_two_back() -> void:
+	# A ring of two reaches over one hex of anything: the machine holding a street, so a prey
+	# right behind the line is caught; two back it is sealed off, and the hunter takes the
+	# machine of the line standing nearest it, its caveat deciding a tie.
+	var f := _field()
+	var line := _held_street(f)
+	var sq := _hunter(f, _o(3, 4), 2, "slowest")
+	var prey := f.add_unit(Unit.mech(2, "Q", _o(3, 8), 1))
+	assert_true(f.reaches(sq, prey), "a hex in front of the line has it inside a ring of two")
+	var w: Battlefield.Walk = f.plan_walks()[1]
+	assert_eq(w.catches, prey.id, "so it pounces on the prey over the line")
+	prey.pos = _o(1, 9)
+	assert_false(f.reaches(sq, prey), "two back, the line seals it off")
+	w = f.plan_walks()[1]
+	assert_eq(w.catches, (line[0] as Unit).id, "the hunter takes the line's machine nearest it")
+	assert_eq(sq.prey, prey.id, "its lock unchanged")
+	prey.pos = _o(3, 9)   # as far from every machine of the line
+	(line[2] as Unit).movespeed = 2
+	w = f.plan_walks()[1]
+	assert_eq(w.catches, (line[2] as Unit).id, "a tie goes to its caveat: the slowest of them")
+
+
+func test_a_hunter_with_its_prey_sealed_and_nobody_in_reach_closes_on_it() -> void:
+	var f := _field()
+	_held_street(f)
+	var sq := _hunter(f, _o(3, 1), 1, "slowest")
+	var prey := f.add_unit(Unit.mech(2, "Q", _o(1, 9), 1))
+	var w: Battlefield.Walk = f.plan_walks()[1]
+	assert_eq(w.prey, prey.id, "nobody it can reach this turn: it keeps to its prey")
+	assert_eq(w.catches, 0, "and catches nothing")
+	assert_eq(w.path.size(), 1, "closing on it as far as its move goes")
+	f.enemy_turn()
+	assert_eq(sq.prey, prey.id, "the lock is unchanged")
+	assert_true(f.forced_fights().is_empty(), "nothing forced")
 
 
 func test_packs_wade_water_as_ground_machines_do() -> void:

@@ -478,8 +478,9 @@ func _draw() -> void:
 				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - 6.0), Color(hud, 0.8), 2.5)
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
-	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
-	# entered. A fight a hunter forced comes first, so its marks have the map until it is fought.
+	# stand now, and every hunter's tag on what it comes for (its prey, or the machine it takes
+	# when its prey is sealed off); nothing while a move plays or a fight is entered. A fight a
+	# hunter forced comes first, so its marks have the map until it is fought.
 	var hunted := {}   # prey -> the packs hunting it, for the tags drawn over the units
 	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():

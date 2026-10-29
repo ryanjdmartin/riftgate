@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 746 tests, 203,825 checks, green (29 October, the horde wading; 744 and 203,078 on
-  the six shapes), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 751 tests, 203,868 checks, green (29 October, the hunters at a ring of two; 746 and
+  203,825 on the horde wading), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -148,9 +148,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   four. Measured (`docs/measurements.md`): the horde's crossing stays three wide on every map,
   the guarantee opens nothing on water, and only the city's reach moves (the walkers' 44% where
   42%, its streets spread); the campaign run moves no band, the fights' sizes with it on this
-  bot, which never holds a line. Next: the hunters' change Ryan proposed (a ring of 2, "my target, or closest
-  if he's unreachable", the re-pick gone), on his word to Claude's readings (the bible's
-  section 12).
+  bot, which never holds a line.
+- The hunters pounce (Ryan, 29 October; built the same day): every hunter's ring is two at
+  least (the Goblin Captain's three; the validator holds it), one number for its catch, the
+  fights it joins and the ring drawn. A hunter keeps its prey and goes for it by any route; only
+  when walls and machines seal the prey off does it take the machine nearest the prey that a
+  walk that turn can ring, its tag, the board's HUNTED BY and its readout following ("It's just
+  punishing hiding"); the re-pick is gone. Measured (`docs/measurements.md`): the campaign run
+  moves no outcome band, and the fights grow, 54% of them against two packs or more where 45%
+  were. Ryan asked whether a hunter joins a fight it did not start: it does, as every pack does,
+  on Claude's lean until he says otherwise (the bible's fights-picked row). Next: his read of
+  the pounce in play (the to-do), the exit bringing the ring back down.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -313,8 +321,8 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
 to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
-numbered keywords and the blow's order; the campaign report and the map survey (both 29
-October, on the horde wading and the streets) are main's head's.
+numbered keywords and the blow's order; the campaign report (29 October, the hunters at a ring
+of two) and the map survey (29 October, the horde wading and the streets) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
@@ -356,10 +364,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.363 (the page's version 375,
-  published 29 October from `ccr-7821127e-kwj874`: the horde wading, packs passing packs, flyers
-  and the ground passing each other, and the fords and streets three or four in all, three-way
-  merged onto the live v0.362 that `claude/charming-rubin-h954bp` published at 374, which carries
+  `docs/design-bible.html` after every change. This file is v0.364 (the page's version 376,
+  published 29 October from `ccr-7821127e-kwj874`: the hunters pouncing at a ring of two and the
+  re-pick retired; on v0.363 at 375, the horde wading, packs passing packs, flyers and the ground
+  passing each other, and the fords and streets three or four in all, three-way merged onto the
+  live v0.362 that `claude/charming-rubin-h954bp` published at 374, which carries
   `claude/jolly-lovelace-scn82y`'s v0.361 (the skirmish one field in perspective with its
   controls where the player sets them, the enemy's red pure #ff0000 on trial, heat's orange
   #ff6000, reds and oranges in red and green alone), `ccr-7effd31a-u5z4gw`'s sound rows (every
@@ -380,14 +389,16 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 152 (29 October, from
-  `claude/charming-rubin-h954bp`, its rebuilds' notes, onto 151, which `ccr-7821127e-kwj874`
-  published with `content/vocabulary.json` carrying the horde's wade and the flyer's passing,
-  the file 152 kept, identical to this one, onto version 150, every other file as it stood;
+  acts on a reloaded page). At the page's version 153 (29 October, from `ccr-7821127e-kwj874`:
+  `content/foes.json` with the hunters at a ring of two and its map note current, replacing
+  that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
+  and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'
+  notes, its `index.html` and every other file kept as they stood, `edits` empty; 151 brought
+  the horde's wade and the flyer's passing;
   at 147 the walls' four terms and `content/factions.json` with the domains' leans on the shapes,
   onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
-  `content/chassis.json` carries its own Stingray note, so main's chassis and foes files, whose
-  `_about` alone moved, wait for that branch to land; `edits` empty). Its database (Ryan's saved edits,
+  `content/chassis.json` carries its own Stingray note, so main's chassis file, whose `_about`
+  alone moved, waits for that branch to land; `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

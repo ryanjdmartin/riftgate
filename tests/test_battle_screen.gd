@@ -293,6 +293,37 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s.free()
 
 
+## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
+## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
+## says whom it takes and why.
+func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
+	var s := _screen()
+	var b := s.battle
+	var hunter: Unit = b.field.packs()[0]
+	for p in b.field.packs():
+		p.behaviour = "push"
+	hunter.behaviour = "hunt"
+	var sealed: Unit = b.mechs()[0]
+	var taken: Unit = b.mechs()[1]
+	hunter.prey = sealed.id
+	var w := Battlefield.Walk.new()
+	w.end = hunter.pos
+	w.prey = taken.id
+	w.catches = taken.id
+	s._map.walks = {hunter.id: w}
+	var text := ""
+	for line in s.pack_lines(hunter):
+		text += str((line as Dictionary).get("text", "")) + " / "
+	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
+	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
+	var meets := {}
+	for row in s._board._rows():
+		meets[(row["unit"] as Unit).id] = str(row["meets"])
+	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
+	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
+	s.free()
+
+
 ## The boss's fight plays the family's theme when there is one (Ryan, 25 September).
 func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
