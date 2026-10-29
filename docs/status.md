@@ -36,7 +36,7 @@ are in `README.md`.
 
 `claude/charming-rubin-h954bp` (28 October) carries the model rebuilds of Ryan's brief of that
 day (the pins' record and the game's plan against it, thirteen models rebuilt to their stock,
-the Armadillo's seal) and his three rounds of notes on them of the 29th (the Kite's Pinion
+the Armadillo's seal) and his four rounds of notes on them of the 29th (the Kite's Pinion
 Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
 weapons, hunkered seal with acts of its own and louvred radiators, the Arsenal's lit cockpit
 glass and the Nemesis's flaring visor), and took main each evening (to `b2762d5`, the map
@@ -187,12 +187,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), and reworked on his three rounds of notes of 29 October
+  the stock pass had left on old kit), and reworked on his four rounds of notes of 29 October
   (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
-  hunkering, its stack three louvred radiators sunk in the tail, two in a bevel across its back
-  and one wide on its rear face, that vent open and seal shut; every Arsenal cockpit's glass
+  hunkering, its stack three louvred radiators, two big boxes standing out of the tail at an
+  angle and one wide on its rear face, that vent open and seal shut; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of
   its own (the Armadillo's seal; `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab),

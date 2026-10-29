@@ -832,12 +832,13 @@ def armadillo(b):
     hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
-    bare; the plating on the flanks is detail, and three armoured louvred radiators sunk in
-    the tail, two large in its bevel facing back and a wide one centred low on its rear face,
-    a tilted grille at rest, throw their louvres edge on over a flaring ember when it vents and
-    shut flat when it seals (Ryan, 29 October: the stack's rain flap read "more W&S comical
-    than heavy Minerva"; the two vents that replaced it, enlarged and "angled towards the
-    back" as radiators, the rear face's grille a wider third). The ports are real
+    bare; the plating on the flanks is detail, and three armoured louvred radiators on the
+    tail, two big boxes standing out of its top rear edge at an angle and a wide one centred
+    low on its rear face, a tilted grille at rest, throw their louvres edge on over a flaring
+    ember when it vents and shut flat when it seals (Ryan, 29 October: the stack's rain flap
+    read "more W&S comical than heavy Minerva"; the two vents that replaced it, enlarged and
+    "angled towards the back" as radiators, then "big boxy radiators sticking out at an
+    angle", the rear face's grille a wider third). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that slides out of it to fire, its two barrels bored dark through the rack's
@@ -858,18 +859,12 @@ def armadillo(b):
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
              (-5.0, 14.0, 62.0, Z0 + 28.0, 12.0), (13.0, 30.0, 56.0, Z0 + 24.0, 11.0), (29.0, 46.0, 48.0, Z0 + 17.0, 9.0)]
-    # The tail band's back bevelled (Ryan, 29 October: its vents "angled towards the back" as
-    # large radiators): its crown runs level to BEVEL_Y and slopes down to the rear face at
-    # BEVEL_Z, the radiators sunk in the slope, which faces the cameras behind it (30 and 42
-    # degrees down) nearly square.
-    BEVEL_Y, BEVEL_Z = -42.5, Z0 + 10.0
+    # The tail band square again (Ryan, 29 October): its back had been bevelled to carry the
+    # radiators sunk in the slope, and he liked the taper, to keep in mind for the next pass.
     band_obs = []
     for i, (y0, y1, w, top, c) in enumerate(bands):
         tile = "steel.panel" if i % 2 == 0 else "steel.plate"
-        secs = [(y0, _case(w, Z0 - 2.0, top, c)), (y1, _case(w, Z0 - 2.0, top, c))]
-        if i == 0:
-            secs = [(y0, _case(w, Z0 - 2.0, BEVEL_Z, c)), (BEVEL_Y, _case(w, Z0 - 2.0, top, c))] + secs[1:]
-        band_obs.append(b.loft(secs, tile, "band"))
+        band_obs.append(b.loft([(y0, _case(w, Z0 - 2.0, top, c)), (y1, _case(w, Z0 - 2.0, top, c))], tile, "band"))
     b.box(-20.0, 20.0, -48.0, 46.0, Z0 - 6.0, Z0 - 1.0, "steel.dark", "belly")
     # The cowl: the front band runs on as a lip over the cockpit bay, a hazard strip on
     # its edge; the bay a dark recess under it with a small glass slit and two lamps, out
@@ -1002,19 +997,21 @@ def armadillo(b):
     # The radiators (Ryan, 29 October: the two tail vents, "more active animated vents, more
     # rugged looking, that seal as well as the armour ports", then enlarged, "angle them
     # towards the back, turning them into large radiators", and the grille texture on the rear
-    # face replaced by "a wider centered version of the vent"): two armoured louvred vents sunk
-    # side by side in the tail's bevel and a wide one centred low on the rear face, each a dark
-    # steel box cut into the shell with a stripe rim and an ember banked in its floor, heavy
-    # louvres across it on joints. At rest the louvres stand tilted, a grille that hides the
-    # ember from the cameras behind (their thickness closes the slots); the vent act throws
-    # them edge on to those cameras (the bevel's lower edges out, the rear face's upper edges
-    # out, the way each lines up with an eye 30 to 42 degrees down), the ember flaring
-    # behind, so it reads as motion and not by the ember's colour alone; sealed, they shut
-    # flat with the ports.
-    run, rise = BEVEL_Y - bands[0][0], bands[0][3] - BEVEL_Z
-    A_BEV = math.degrees(math.atan2(rise, run))   # the bevel's slope, about 56 degrees
-    bev = (bands[0][0] + run / 2.0, BEVEL_Z + rise / 2.0)   # the middle of the slope
-    vents = [_vent(b, [band_obs[0]], (s * 8.2, bev[0], bev[1]), A_BEV, 13.0, 10.0, 4, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0) for s in (-1.0, 1.0)]
+    # face replaced by "a wider centered version of the vent"; then, sunk in a bevel, "not so
+    # streamlined. I meant big boxy radiators sticking out at an angle"): two big armoured boxes
+    # standing out of the tail's top rear edge, spread apart, their louvred faces tilted back as
+    # the bevel had held them, and a wide vent centred low on the rear face, cut into the shell.
+    # Each is a dark steel box with a stripe rim and an ember banked in its floor, heavy louvres
+    # across it on joints. At rest the louvres stand tilted, a grille that hides the ember from
+    # the cameras behind (their thickness closes the slots); the vent act throws them edge on to
+    # those cameras (the boxes' lower edges out, the rear face's upper edges out, the way each
+    # lines up with an eye 30 to 42 degrees down), the ember flaring behind, so it reads as
+    # motion and not by the ember's colour alone; sealed, they shut flat with the ports.
+    RAD = math.atan2(11.0, 7.5)   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
+    RAD_X, RAD_OUT = 10.5, 10.0   # each box's centre off the spine, and how far its mouth stands out along its face's normal from where the bevel held it
+    mouth = (-46.25 - math.sin(RAD) * RAD_OUT, Z0 + 15.5 + math.cos(RAD) * RAD_OUT)   # from the bevel's middle, out over the tail's top rear edge
+    vents = [_vent(b, None, (s * RAD_X, mouth[0], mouth[1]), math.degrees(RAD), 14.0, 11.0, 4, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
+                   wall=1.5, housing="steel.plate", back=RAD_OUT + 4.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres; its back buried in the band
     vents.append(_vent(b, [band_obs[0]], (0.0, bands[0][0], Z0 + 4.0), 90.0, 24.0, 8.0, 3, "louvre_c", 10.0, 60.0))
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
@@ -4278,17 +4275,20 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
     return name, tuple(axis * depth)
 
 
-def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5):
-    """An armoured louvred vent sunk into a face of the shell (the Armadillo's radiators:
-    Ryan, 29 October, "more integral to the overall design"): a hole cut through `cutting`,
-    lined by a dark steel box `width` by `height` with an ember banked in its floor (the part
-    a glow names, `vent_box_floor`), a stripe rim standing `proud` of the face, and `slats`
-    heavy louvres across the mouth, each on a pitch joint `<prefix><k>`, the lowest first.
-    `origin` is the mouth's centre on the face, which rises `alpha` degrees from flat toward
-    the front and faces back (90 a rear face, 0 a top). A louvre stands `rest` degrees out of
-    the face (positive lifts its upper edge out), so its joint's 0 is that rest; it shuts flat
-    at `-rest` and opens to `opens` degrees out of the face at `opens - rest`. Returns
-    [(joint, its shut swing, its open swing)], the lowest first."""
+def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0):
+    """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
+    `height` with an ember banked in its floor (the part a glow names, `vent_box_floor`), a
+    stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
+    joint `<prefix><k>`, the lowest first. Sunk into a face of the shell, a hole cut through
+    `cutting` for it, the rim standing `proud` of the face; or, given a `housing` material,
+    standing out of the shell as an armoured box in it, its walls running `back` behind the
+    mouth into the shell and nothing cut, the hollow clear of the shell (Ryan, 29 October:
+    "big boxy radiators sticking out at an angle"). `origin` is the mouth's centre, its face
+    rising `alpha` degrees from flat toward the front and facing back (90 a rear face, 0 a
+    top). A louvre stands `rest` degrees out of the face (positive lifts its upper edge out),
+    so its joint's 0 is that rest; it shuts flat at `-rest` and opens to `opens` degrees out
+    of the face at `opens - rest`. Returns [(joint, its shut swing, its open swing)], the
+    lowest first."""
     a = math.radians(alpha)
     X, U, N = Vector((1.0, 0.0, 0.0)), Vector((0.0, math.cos(a), math.sin(a))), Vector((0.0, -math.sin(a), math.cos(a)))
     o = Vector(origin)
@@ -4296,10 +4296,16 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     frame = lambda hw, hh, n: [at(-hw, -hh, n), at(hw, -hh, n), at(hw, hh, n), at(-hw, hh, n)]
     hw, hh = width / 2.0, height / 2.0
     iw, ih = hw - wall, hh - wall
-    b.cut(cutting, tuple(at(0.0, 0.0, -depth)), tuple(at(0.0, 0.0, 0.5)), 0.0, section=[(-iw - 0.2, -ih - 0.2), (iw + 0.2, -ih - 0.2), (iw + 0.2, ih + 0.2), (-iw - 0.2, ih + 0.2)])
+    if cutting:
+        b.cut(cutting, tuple(at(0.0, 0.0, -depth)), tuple(at(0.0, 0.0, 0.5)), 0.0, section=[(-iw - 0.2, -ih - 0.2), (iw + 0.2, -ih - 0.2), (iw + 0.2, ih + 0.2), (-iw - 0.2, ih + 0.2)])
     tiles = (o, N, X, U, None)
-    _rings(b, [frame(hw, hh, -depth), frame(hw, hh, proud - 0.3), frame(iw, ih, proud - 0.3), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles)
-    _rings(b, [frame(hw + rim, hh + rim, proud - 0.9), frame(hw + rim, hh + rim, proud), frame(iw, ih, proud), frame(iw, ih, proud - 0.9)], "steel.stripe", "vent_rim", tiles, cap=False)
+    if housing:   # the armoured box out of the shell, its back buried; the dark lining inside it
+        _rings(b, [frame(hw, hh, -back), frame(hw, hh, proud - 0.3)], housing, "vent_housing", tiles, cap=False)
+        _rings(b, [frame(iw, ih, proud - 0.9), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles, cap=False)
+    else:
+        _rings(b, [frame(hw, hh, -depth), frame(hw, hh, proud - 0.3), frame(iw, ih, proud - 0.3), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles)
+    _rings(b, [frame(hw, hh, proud - 0.9), frame(hw + rim, hh + rim, proud - 0.9), frame(hw + rim, hh + rim, proud), frame(iw, ih, proud), frame(iw, ih, proud - 0.9)],
+           "steel.stripe", "vent_rim", tiles, cap=False)   # a lip under it, so no slot shows between the rim and the box
     _rings(b, [frame(iw - 0.05, ih - 0.05, -depth + 0.2), frame(iw - 0.05, ih - 0.05, -depth + 0.4)], "amber.ember", "vent_box_floor", tiles)
     pitch = 2.0 * ih / slats
     th = math.radians(rest)

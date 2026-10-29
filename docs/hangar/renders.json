@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's third notes, 29 October.",
-   "note": "Ryan, 29 October, the third notes: the two tail vents enlarged and \"angled towards the back\" as large radiators, sunk side by side in a bevel cut across the tail's back, and the grille texture on the rear face replaced by a wider third centred low on it; each a dark steel box in the shell with a stripe rim and an ember in its floor, its louvres a tilted grille at rest, thrown edge on to the cameras behind over the flaring ember when it vents (the fourth picture, from the skirmish's angle), and shut flat with the ports when it seals (the third). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's fourth notes, 29 October.",
+   "note": "Ryan, 29 October, the fourth notes: \"not so streamlined. I meant big boxy radiators sticking out at an angle\". The tail band is square again (the bevel's taper liked, kept for the next pass), and the two radiators stand out of its top rear edge as big armoured boxes, spread apart, their louvred faces tilted back as the bevel held them (the third picture shows them from the side); the wide vent stays centred low on the rear face. Each a tilted grille at rest, thrown edge on to the cameras behind over the flaring ember when it vents (the fifth, from the skirmish's angle), shut flat with the ports when it seals (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -180,6 +180,10 @@
     {
      "file": "armadillo/armadillo_rear.png",
      "alt": "armadillo, rear"
+    },
+    {
+     "file": "armadillo/armadillo_side.png",
+     "alt": "armadillo, side"
     },
     {
      "file": "armadillo/armadillo_sealed.png",
@@ -191,7 +195,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the second notes of 29 October (two small louvred vents on the tail's crown, a grille texture on the rear face)",
+    "summary": "Before: the third notes of 29 October (the radiators sunk in a bevel across the tail's back)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
