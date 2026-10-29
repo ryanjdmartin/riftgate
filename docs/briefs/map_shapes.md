@@ -94,15 +94,30 @@ row); the six would each read something.
      wall stub to 32 and a mesa 46).
   4. Calm lanes, busy edges: dense dressing in the margin and against the walls, sparse in the
      open ground the squads play on.
+- **The relief is the shape's.** Ryan asked whether the 3D elevation is "Clutter, confusion,
+  or visual interest? ... I like the look but maybe it's a bit too much for the phone screen",
+  and took Claude's read ("just go ahead, sounds good"). Height stays landscape and no rule
+  reads it (the bible's look row), but today the landscape has no shape: the relief is noise
+  decoupled from the ground, so 47% of neighbouring land hexes stand at different heights,
+  about 13 hexes a map stand alone, and a pack's ring of 2, drawn at each hex's height, jogs at
+  6 or 7 of its 12 joints (a step lifts a hex 7 map pixels, the ring's whole stroke with its
+  dark track; the survey's relief table, `docs/measurements.md`). So:
+  1. At most two steps on the field; three in the margins, where nobody plays.
+  2. A step only where the shape explains it, along its landforms (the table's relief), never
+     a lone hex.
+  3. The lanes level: each shape's routes (the fords and their approaches, the paths between
+     the mesas, the city's gaps, the gorge's floors), the roads and the team's ground.
 
-| Front card | Layout | Walls | Water | Dressing |
-|---|---|---|---|---|
-| RIVER CROSSING | a river across, one or two fords | none, or a crag on a bank | the river | fields, reeds, a road to each ford |
-| FJORD | water down the field | none | the fjord | rocky shore, shingle |
-| BADLANDS | ponds and grouped mesas, winding paths | mesas | ponds | low scrub, dry ground |
-| OPEN STEPPE | relatively clear | a lone crag at most | a pond at most | grass, one road |
-| RUINED CITY | bands of towers across, with gaps | towers | none | streets, rubble |
-| GORGE | cliff walls down the field | cliffs | none | scree at the cliffs' feet |
+  The survey's relief table is the check, read against today's; the look is judged running.
+
+| Front card | Layout | Walls | Water | Dressing | Relief |
+|---|---|---|---|---|---|
+| RIVER CROSSING | a river across, one or two fords | none, or a crag on a bank | the river | fields, reeds, a road to each ford | the fields a step above the river's banks, the fords' approaches cut level |
+| FJORD | water down the field | none | the fjord | rocky shore, shingle | the shores level, the land rising in the margins |
+| BADLANDS | ponds and grouped mesas, winding paths | mesas | ponds | low scrub, dry ground | the mesas' shoulders a step up, the paths level |
+| OPEN STEPPE | relatively clear | a lone crag at most | a pond at most | grass, one road | one broad rise at most |
+| RUINED CITY | bands of towers across, with gaps | towers | none | streets, rubble | level |
+| GORGE | cliff walls down the field | cliffs | none | scree at the cliffs' feet | the cliffs' feet a step up, the floors level |
 
 Not this session's: the domains' tilesets in the painted bleed, an art task of its own (the
 to-do), and any rule on a rift tile (Ryan, 29 October: art only for now; the bible's row on
@@ -119,6 +134,8 @@ seed alone. Claude's lean: a lean from play, never an exclusion.
 The shapes in `BattleMap.KINDS` and their laying, Mixed Ground out of it, the harness picker
 and `RIFTGATE_MAP_KIND` on the new names; the walls' names in the vocabulary, on the ground tap
 and on a fight's label (by the wall's look, its `crag_base`, the gorge's cliffs a look of their
-own); the decoration's palette, placement and height gap in `Map3D`; the survey rerun at 200
-seeds a shape (its read in `docs/measurements.md`); the bible's map-types and field rows
-rewritten, `docs/rules.md`'s ground bullet, the status and the to-do; then this brief retires.
+own); the decoration's palette, placement and height gap in `Map3D`; the relief laid by the
+shape in `BattleMap` (two steps at most on the field, no lone hex, the lanes level); the
+survey rerun at 200 seeds a shape, its relief table beside today's (its read in
+`docs/measurements.md`); the bible's map-types and field rows rewritten, `docs/rules.md`'s
+ground bullet, the status and the to-do; then this brief retires.
