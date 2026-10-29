@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's fifth notes, 29 October.",
-   "note": "Ryan, 29 October, the fifth notes: \"move them higher and push them towards the front more, so they don't stick out from the back of the hull so much. Probable even further apart. The outer texture of them can be in a darker colour, not the default hull colour.\" The two radiator boxes now stand up on the tail's rear deck, either side of the rack's hatch, in dark steel with closed backs, their louvred faces at the same tilt and their lower edges a hair past the rear edge (the side view, third); the tail band stays square (the bevel's taper liked, kept for the next pass), and the wide vent stays low on the rear face. Venting throws the louvres edge on over the flaring ember (the fifth, from the skirmish's angle); sealed, they shut flat (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's sixth notes, 29 October.",
+   "note": "Ryan, 29 October, the sixth notes: \"Go back to the previous iteration. Ditch the bottom long vent. Put these guys right on the back panel, still tilted up, and make them bigger. Add new vents on the sides, on the angled slopes just in front of the back weapons. Those are small rectangular protrusions when sealed, and either slide out, or lever up using the forward edge as a pivot, to show the vent face when venting.\" The two radiators stand out of the tail's back panel side by side, bigger (16 by 13 from 14 by 11), their louvred faces at the same tilt, still in dark steel; the wide vent low on the rear face is gone. A small vent sits on each flank's chamfer just ahead of the rear ports, a dark cap on a stripe rim at rest (the first and third); venting, it slides six out of its well, five dark slats round a core that glows between them (the fifth, from the skirmish's angle, and the sixth, from the front), while the radiators throw their louvres edge on over the flaring ember; sealed, the louvres shut flat and the side vents stay home (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -192,10 +192,14 @@
     {
      "file": "armadillo/armadillo_venting.png",
      "alt": "armadillo, venting"
+    },
+    {
+     "file": "armadillo/armadillo_venting_front.png",
+     "alt": "armadillo, venting, front"
     }
    ],
    "before": {
-    "summary": "Before: the fourth notes of 29 October (the boxes standing out of the tail's top rear edge, in hull plate)",
+    "summary": "Before: the fifth notes of 29 October (the dark boxes on the tail's rear deck, a wide vent low on its rear face)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
