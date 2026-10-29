@@ -285,8 +285,8 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
 to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
-numbered keywords and the blow's order; the campaign report and the map survey are main's head's
-(28 October).
+numbered keywords and the blow's order; the campaign report (28 October) and the map survey
+(29 October, with its relief table) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content; the map shapes' generator session among

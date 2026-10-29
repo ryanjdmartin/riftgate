@@ -2229,3 +2229,23 @@ at 5, wheels 52% and 113 maps, hover 54% and 115, flyers 62% and 115, hover's ed
 ground the water and the flyer's the crags. The map types read alike (walker and hover reach:
 Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
 Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.
+
+## 29 October, the map's relief
+
+**The relief read** (`tools/map_survey.gd`'s new relief table, 200 seeds of Mixed Ground at
+9x20, `docs/map_survey.md`; the decision it informs: the bible's map-types row, the relief laid
+by the shape, on Ryan's "I like the look but maybe it's a bit too much for the phone screen").
+No rule reads height, so the read is what the glass shows. The field's land (water and the
+gate, the wall and the rift aside) stands 47% at step 0, 31% at 1, 20% at 2 and 3% at 3; 55%
+of neighbouring land pairs stand at different heights (47% to 64% a map), a quarter of those
+steps two or more; 13.7 hexes a map stand alone, every land neighbour at another height (6 to
+29); and a ring of 2 wholly on the field, drawn as a pack's ring is, at each hex's height, jogs
+at 5.9 of its 12 joints (4.6 to 7.1 a map). A step is 7 units, which the 42-degree camera lifts
+7 map pixels at zoom 1 (a hex's circumradius 48 pixels to 35 units), the width of a ring's
+stroke with its dark track (6 to 7.5), so a joint one step apart jogs the outline by its whole
+width and two steps clear it. Every type reads alike (steps 52% to 55%, lone hexes 13.4 to
+14.2 a map, seeds 1 to 100), the relief being a noise of its own, decoupled from the ground. A
+scratch read earlier the same day (seeds 1000 to 1199, a script outside the tools) counted the
+gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
+7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
+session's relief is read against it.

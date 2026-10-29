@@ -98,9 +98,9 @@ row); the six would each read something.
   or visual interest? ... I like the look but maybe it's a bit too much for the phone screen",
   and took Claude's read ("just go ahead, sounds good"). Height stays landscape and no rule
   reads it (the bible's look row), but today the landscape has no shape: the relief is noise
-  decoupled from the ground, so 47% of neighbouring land hexes stand at different heights,
-  about 13 hexes a map stand alone, and a pack's ring of 2, drawn at each hex's height, jogs at
-  6 or 7 of its 12 joints (a step lifts a hex 7 map pixels, the ring's whole stroke with its
+  decoupled from the ground, so 55% of neighbouring land hexes stand at different heights,
+  about 14 hexes a map stand alone, and a pack's ring of 2, drawn at each hex's height, jogs at
+  about 6 of its 12 joints (a step lifts a hex 7 map pixels, the ring's whole stroke with its
   dark track; the survey's relief table, `docs/measurements.md`). So:
   1. At most two steps on the field; three in the margins, where nobody plays.
   2. A step only where the shape explains it, along its landforms (the table's relief), never

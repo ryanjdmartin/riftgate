@@ -223,7 +223,8 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the map survey: 200 generated maps at the game's 9x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
 # the phases each way of moving takes to the rift at move 3 and its reach after two phases,
-# then every map type compared; written to docs/map_survey.md (a few minutes). --type KIND
+# the relief (the steps, the lone hexes, a ring's jogs), then every map type compared; written
+# to docs/map_survey.md (about six minutes). --type KIND
 # (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h for another size; --show SEED prints one map as text.
 perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
