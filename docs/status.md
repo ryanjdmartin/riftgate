@@ -115,8 +115,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
   reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
   bands hold, its three-machine battles won more (a direction: the squad no longer split by
-  slow ground). Next for the map: the six shapes (`docs/briefs/map_shapes.md`, three questions in
-  section 12) and the crossing's price in the pricing run (the to-do).
+  slow ground). Next for the map: the six shapes, named and free to run (`docs/briefs/map_shapes.md`,
+  Ryan's calls of 29 October), the domains' tilesets as an art task and the crossing's price in
+  the pricing run (the to-do).
 - The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
   it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
@@ -289,7 +290,7 @@ numbered keywords and the blow's order; the campaign report and the map survey a
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content; the map shapes' generator session among
-   them once Ryan has answered its brief.
+   them, free to run since Ryan's calls of 29 October.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
@@ -328,16 +329,19 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.343 (the page's version 355,
-  published 28 October from `ccr-7821127e-kwj874`: the movement rows of section 4 and their
-  follow-ons, onto main's v0.341 at version 354). The live page has since moved to v0.344,
-  published the same night from `claude/charming-rubin-h954bp` (the model rebuilds: this
-  file's v0.343 and that branch's rows), so the next publish from main merges onto it. The version numbers on the publishing branch's
-  file and the live agree after every publish. Before republishing, read the live page; if
-  another session moved it, publish a three-way merge onto it (`git merge-file` with the
-  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). With every branch landed, the file holds no rows ahead
-  of code, and the tables script may run freely again.
+  `docs/design-bible.html` after every change. This file is v0.347 (the page's version 359,
+  published 29 October from `ccr-7821127e-kwj874`: Ryan's calls on the map shapes, the walls'
+  names, the decoration, the domains' tilesets and the rift tiles as art, three-way merged
+  onto the live v0.346 that `claude/charming-rubin-h954bp` published). So this file carries
+  that branch's rows ahead of its code (the models' looks and acts, the Armadillo's seal on
+  screen) and its Strikes row in the keyword table, and the tables script, which writes the
+  tables from main's content, waits until that branch lands or it reverts that row. The
+  version numbers on the publishing branch's file and the live agree after every publish.
+  Before republishing, read the live page; if another session moved it, publish a three-way
+  merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
+  first line and its trailing `</body></html>` stripped from the saved live source). With
+  every branch landed, the file holds no rows ahead of code, and the tables script may run
+  freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
