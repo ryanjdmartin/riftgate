@@ -52,6 +52,17 @@ const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip r
 var BOTTOM_Y := 1196.0
 ## The rows' places on the 1280 design, scaled to the screen in `_build`.
 const ROWS := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "EYE_Y": 510.0, "LOG_Y": 508.0, "DIE_Y": 640.0, "REROLL_Y": 786.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
+## The screen's look while its options are judged (29 October, Ryan: "I'd like to see some
+## different options, not just for the background, but also just general layout shifts").
+## RIFTGATE_SKIRMISH_BG picks the ground: classic (the overworld's bands, as it was), vista (the
+## other world as a battle screen's backdrop over the foes, the reconstruction's floor under the
+## machines), field (one floor from the horizon to the machines' feet, the console floating on
+## it), holo (the holo-table, no painted ground) or window (the vista as a feed's framed window,
+## the holo floor under the machines). RIFTGATE_SKIRMISH_LAYOUT=faceoff stands the machines
+## right under the foes, one scene, the log, dice and Reroll under them. Unset, as it was; a
+## debug build's settings pick them too (GROUND and LAYOUT, Settings.look).
+## The face-off's rows on the 1280 design: the foes where they were, the machines under them.
+const ROWS_FACEOFF := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 498.0, "LOG_Y": 800.0, "EYE_Y": 802.0, "DIE_Y": 926.0, "REROLL_Y": 1072.0, "BOTTOM_Y": 1196.0}
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
 const LOG_LINES := 7
@@ -317,6 +328,11 @@ static func _default_skirmish() -> Skirmish:
 			if paints.has(id):
 				u.paint = paints[id]
 			s.add_mech(u)
+	# RIFTGATE_TERRAIN=ruins puts the fight on that ground (BattleMap.TERRAIN_NAMES), for a look.
+	var ground := OS.get_environment("RIFTGATE_TERRAIN")
+	for t in BattleMap.TERRAIN_NAMES.keys():
+		if BattleMap.TERRAIN_NAMES[t] == ground:
+			s.terrain = int(t)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
 	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
 	# count (heroes included), each its own pack: to see any sprite in the fight.
@@ -372,20 +388,15 @@ func _build() -> void:
 	H = Hud.screen_height(self)
 	for key in ROWS.keys():
 		set(key, float(ROWS[key]) * H / BASE_H)
+	if look_layout() == "faceoff":
+		for key in ROWS_FACEOFF.keys():
+			set(key, float(ROWS_FACEOFF[key]) * H / BASE_H)
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text linear; the ground bands and the sprites pin nearest on themselves
 
 	var bg := HudBackdrop.new()
-	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
-	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, seam_y, BOTTOM_Y - 16.0]
-	# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
-	# world's flat bright overworld of this terrain; the mechs stand on the seam, the
-	# reconstruction's tile with the other world eating into it from above.
-	bg.grounds = [
-		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed, "other"],
-		[Rect2(0.0, seam_y, W, BOTTOM_Y - 16.0 - seam_y), sk.terrain, sk.rng.seed + 1, "seam"],
-	]
+	_lay_ground(bg)
 	bg.scan = bool(Settings.display["scan"])   # off: no band, and the machines' traces rest as ink
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
@@ -428,6 +439,8 @@ func _build() -> void:
 		for rank in range(2):
 			var v := UnitView.new()
 			v.is_enemy = true
+			v.ground_shadow = _on_floor()
+			v.empty_pad = _on_floor()
 			var y := FRONT_Y if rank == 0 else BACK_Y
 			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
@@ -439,6 +452,7 @@ func _build() -> void:
 			# stands, the left half's view taking the other.
 			var tv := UnitView.new()
 			tv.is_enemy = true
+			tv.ground_shadow = _on_floor()
 			tv.visible = false
 			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			tv.held.connect(_on_foe_held.bind(tv))
@@ -449,6 +463,7 @@ func _build() -> void:
 		var mv := UnitView.new()
 		mv.is_enemy = true
 		mv.massive = true
+		mv.ground_shadow = _on_floor()
 		mv.visible = false
 		_place(mv, Vector2(_col_x(col) - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
 		mv.held.connect(_on_foe_held.bind(mv))
@@ -469,8 +484,9 @@ func _build() -> void:
 	# under the sprites it was lost): a screen-reading layer the size of the foes' ground.
 	var tear := TearLayer.new()
 	tear.clock = bg.time
-	tear.position = Vector2(0.0, BACK_Y - 14.0)
-	tear.size = Vector2(W, LOG_Y - 10.0 - (BACK_Y - 14.0))
+	var foes_ground := _foes_ground()
+	tear.position = foes_ground.position
+	tear.size = foes_ground.size
 	add_child(tear)
 	# The predator sense (the funnel-web, 18 October): the foes' ground and the foes on it
 	# dim while an ambusher's die is held or dragged, and the foes looking away get their eyes.
@@ -523,6 +539,11 @@ func _build() -> void:
 		var v := UnitView.new()
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
+		v.ground_shadow = _on_floor()
+		if ms.unit.traits.has("flyer"):
+			v.shadow_drop = 26.0
+		elif ms.unit.traits.has("hover"):
+			v.shadow_drop = 8.0
 		# Mechs are 3D (decided 16 September); headless (and RIFTGATE_MECH3D=off) draws the
 		# placeholder shape. A chassis with no model uses the Badger's.
 		var look := MechView3D.look_setting()
@@ -644,6 +665,96 @@ func _build() -> void:
 	_build_log_full()
 	if _menu != null:
 		_menu.move_to_front()
+
+
+## The ground the look lays (Settings.LOOK_GROUNDS): the environment's, else the session's pick.
+static func look_ground() -> String:
+	var env := OS.get_environment("RIFTGATE_SKIRMISH_BG")
+	return env if not env.is_empty() else str(Settings.look["ground"])
+
+
+## The rows the look lays (Settings.LOOK_LAYOUTS): the environment's, else the session's pick.
+static func look_layout() -> String:
+	var env := OS.get_environment("RIFTGATE_SKIRMISH_LAYOUT")
+	return env if not env.is_empty() else str(Settings.look["layout"])
+
+
+## The foes' ground: from above the back rank to the log, or in the face-off to the machines.
+func _foes_ground() -> Rect2:
+	var top := BACK_Y - 14.0
+	var bottom := (MECH_Y + 4.0) if look_layout() == "faceoff" else (LOG_Y - 10.0)
+	return Rect2(0.0, top, W, bottom - top)
+
+
+## The grounds the look lays (look_ground), with the rules at their edges and, where the console
+## floats on a floor, its panes of glass.
+func _lay_ground(bg: HudBackdrop) -> void:
+	var faceoff := look_layout() == "faceoff"
+	var foes := _foes_ground()
+	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
+	var mechs := Rect2(0.0, seam_y, W, BOTTOM_Y - 16.0 - seam_y)
+	if faceoff:
+		mechs = Rect2(0.0, foes.end.y, W, MECH_Y + MECH_SIZE.y + 8.0 - foes.end.y)
+	var field := foes.merge(mechs)
+	var biome := _biome()
+	# The floor's vanishing line: well above the back rank's feet, so the far land shows over
+	# its shoulders and both ranks stand on the floor.
+	var horizon := BACK_Y - foes.position.y + SLOT_SIZE.y * 0.38
+	var t := sk.terrain
+	var sd := sk.rng.seed
+	match look_ground():
+		"vista":
+			bg.grounds = [
+				[foes, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.9}],
+				[mechs, t, sd + 1, "recon", {"horizon": -mechs.size.y * 0.9, "tile_px": 150.0, "fog_top": mechs.size.y * 0.35, "grid": 0.14}],
+			]
+			bg.rules = [foes.position.y, foes.end.y, mechs.position.y, BOTTOM_Y - 16.0]
+		"field":
+			bg.grounds = [
+				[field, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.9}],
+				[field, t, sd + 1, "recon", {"horizon": horizon, "tile_px": 190.0, "foreshorten": 0.55, "seam": (foes.end.y if faceoff else (LOG_Y + DIE_Y) * 0.5) - field.position.y, "seam_band": 34.0, "grid": 0.13, "grid_fade": 220.0}],
+			]
+			bg.rules = [field.position.y, field.end.y]
+		"holo":
+			# A table seen from above it at a slant: the vanishing line far over the screen's top,
+			# so the grid reads under the back rank as well as under the machines.
+			bg.grounds = [[field, t, sd, "holo", {"horizon": -field.size.y * 0.9, "tile_px": 150.0, "foreshorten": 0.62, "grid": 0.1, "grid_fade": 200.0, "contours": 3.0}]]
+			bg.rules = [field.position.y, field.end.y]
+		"window":
+			bg.grounds = [
+				[foes, t, sd, "vista", {"biome": biome, "horizon": horizon, "dim": 0.82, "frame": true}],
+				[mechs, t, sd + 1, "holo", {"horizon": -mechs.size.y * 0.8, "tile_px": 150.0, "fog_top": mechs.size.y * 0.3, "grid": 0.1, "contours": 3.0}],
+			]
+			bg.rules = [mechs.position.y, BOTTOM_Y - 16.0]
+		_:
+			# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
+			# world's flat bright overworld of this terrain; the mechs stand on the seam, the
+			# reconstruction's tile with the other world eating into it from above.
+			bg.grounds = [[foes, t, sd, "other"], [mechs, t, sd + 1, "seam"]]
+			bg.rules = [foes.position.y, foes.end.y, mechs.position.y, BOTTOM_Y - 16.0]
+	if look_ground() in ["field", "holo"] and not faceoff:
+		# The console floats on the floor: dark glass under the log and under the dice.
+		bg.glass = [Rect2(0.0, LOG_Y - 6.0, W, LOG_H + 6.0), Rect2(0.0, DIE_Y - 12.0, W, REROLL_Y + REROLL_SIZE.y + 12.0 - (DIE_Y - 12.0))]
+
+
+## Whether the look stands the units on a floor (every option but the classic bands).
+func _on_floor() -> bool:
+	return look_ground() in ["vista", "field", "holo", "window"]
+
+
+## The fight's domain, by its bleed in content: the domain most of the foes come from.
+func _biome() -> String:
+	var db := ContentDB.load_default()
+	var count := {}
+	for f in sk.field_foes() + sk.reinforcements:
+		var fac := db.faction_of_foe(str(f.content_id))
+		if not fac.is_empty():
+			count[fac] = int(count.get(fac, 0)) + 1
+	var best := db.default_faction()
+	for fac in count.keys():
+		if int(count[fac]) > int(count.get(best, 0)):
+			best = fac
+	return str(db.factions.get(best, {}).get("bleed", ""))
 
 
 ## A log body: bbcode, sized by its content, filling its scroller's width.
@@ -1848,8 +1959,8 @@ func _open_menu(page: String = "paused") -> void:
 				BattleMapView.pace = float(value)
 			elif key == "scan" and _bg != null:
 				_bg.scan = bool(value)
-			elif key == "weld":
-				_build()   # the machines remade, welded or as authored (a debug build's comparison)
+			elif key == "weld" or key == "look":
+				_build()   # the machines remade, welded or as authored, or the look changed (a debug build's comparisons)
 				_refresh())
 		_menu.hud_changed.connect(func() -> void:
 			_build()

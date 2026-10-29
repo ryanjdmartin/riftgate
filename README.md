@@ -73,7 +73,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
     welded at load, a mesh a material in each moving group, for the draw calls), the feed
-    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
+    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
+    skirmish's looks on trial since 29 October (`battle_backdrop.gd`, the other world painted
+    as a battle screen's backdrop in each domain's palette; `floor_plane.gdshader`, a floor in
+    perspective with the display's grid; `docs/skirmish_looks_proposal.md`)
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
@@ -91,7 +94,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   fits the five
   endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `screenshot.gd` renders a
+  on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
+  every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -133,8 +137,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
-  curve and the fronts (`curve_proposal.md`) and the mechanics audit of 25 October
-  (`mechanics_audit.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  curve and the fronts (`curve_proposal.md`), the mechanics audit of 25 October
+  (`mechanics_audit.md`) and the skirmish's looks of 29 October (`skirmish_looks_proposal.md`),
+  each retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
@@ -303,6 +308,14 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
+# The skirmish's looks on trial (29 October, docs/skirmish_looks_proposal.md; any run, the battle's fights
+# too): RIFTGATE_SKIRMISH_BG=vista|field|window|holo swaps the ground, RIFTGATE_SKIRMISH_LAYOUT=faceoff stands
+# the machines under the foes with the console below; unset, the screen as it was. A debug build's settings
+# carry the same as GROUND and LAYOUT, for the session. RIFTGATE_TERRAIN=<ground> (the standalone skirmish)
+# puts the fight on that ground, RIFTGATE_FOES on a domain's foes:
+# RIFTGATE_SKIRMISH_BG=field RIFTGATE_SKIRMISH_LAYOUT=faceoff RIFTGATE_TERRAIN=ruins RIFTGATE_FOES=revenant:4,ghost:2
+# and the backdrops alone, every domain on every ground, into PNGs (headless; size and horizon in art pixels):
+# perl -e 'alarm 120; exec @ARGV' godot --headless --path . -s tools/backdrop_shot.gd -- build/backdrops 540 330 86
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
 # plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
 # lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),
@@ -488,7 +501,9 @@ on. A decided battle clears the save. Standalone scene runs and the tests never 
 
 The harness can add any faction's boss; a massive foe fills both ranks of a column. For the
 standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
-`RIFTGATE_BOSS=1` adds the faction's boss.
+`RIFTGATE_BOSS=1` adds the faction's boss. The screen's looks are on trial (29 October):
+`RIFTGATE_SKIRMISH_BG` and `RIFTGATE_SKIRMISH_LAYOUT`, or a debug build's GROUND and LAYOUT,
+swap its ground and stand the machines under the foes (`docs/skirmish_looks_proposal.md`).
 
 The screens are laid out for 720 by 1280 and the window expands its height to the phone's
 (stretch aspect `expand`): the battle screen gives the extra to the map, the skirmish

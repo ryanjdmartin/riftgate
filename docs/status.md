@@ -21,8 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 739 tests, 66,640 checks, green on main (29 October; 737 and 66,570 before the
-  movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 744 tests, 66,716 checks, green on `claude/jolly-lovelace-scn82y` (29 October, the
+  skirmish looks' five; 739 and 66,640 on main), about four minutes in a cloud session, twenty
+  on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -32,6 +33,10 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/jolly-lovelace-scn82y` (29 October) carries the skirmish's looks on trial
+(`docs/skirmish_looks_proposal.md`): four grounds and the face-off behind switches, the screen as
+it was by default; Ryan's pick is the to-do's, then a bible row, the other options retiring.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -106,6 +111,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The skirmish's looks (29 October, Ryan: today's background "amateurish, distracting, and
+  immersion-breaking", and he asked for layout shifts too): built behind switches on
+  `claude/jolly-lovelace-scn82y`, the default untouched. Vista (the other world as a JRPG
+  battle backdrop in each domain's palette, our ground on a floor in perspective), field (one
+  floor, the worlds meeting at a dithered seam), window (the vista as a feed) and holo (the
+  holo-table), and the face-off layout (the machines under the foes, the console below); every
+  unit casts a shadow on them. The page shows each at the phone's layout (Pages); Claude's read
+  is the face-off, its longer drag to the back rank to judge on the phone first.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -371,5 +384,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The skirmish's looks: https://claude.ai/artifact/6ZgqskzxdWGpe4XBoMxsoh (29 October, from
+  `claude/jolly-lovelace-scn82y`; the shots rendered from the scratch of that session, the
+  commands in the README), retired with `docs/skirmish_looks_proposal.md`.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

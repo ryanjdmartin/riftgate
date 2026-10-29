@@ -55,6 +55,9 @@ var used_override := Rect2()      # the drawing's extent inside the sprite, when
 var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
 var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
 var breathe_phase: float = 0.0
+var ground_shadow: bool = false   # a shadow at the feet, standing the unit on a painted floor (the skirmish's options of 29 October)
+var shadow_drop: float = 0.0      # how far under the feet the shadow falls: off the ground for what flies
+var empty_pad: bool = false       # an empty slot drawn as a place on the floor rather than a panel
 var _shatter: float = -1.0        # seconds since the shield broke on this unit; negative when idle
 const SHATTER_SECONDS := 0.55
 var _acquire: float = -1.0        # seconds since the display locked onto this unit's intent; negative when idle
@@ -382,6 +385,8 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	var sil := _silhouette()
 	var vis := _visible()
+	if sprite != null and ground_shadow:
+		_draw_shadow(Vector2(vis.get_center().x, vis.end.y - 2.0 + shadow_drop), vis.size.x * (0.4 if shadow_drop > 0.0 else 0.5), 0.2 if dead else (0.26 if shadow_drop > 0.0 else 0.4))
 	if sprite != null:
 		var frame := sil
 		if breathe and not dead:
@@ -399,6 +404,16 @@ func _draw() -> void:
 			_draw_glitched(frame)
 		else:
 			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
+	elif empty_pad:
+		# A place on the floor: a shadow with a dashed rim where a foe would stand.
+		var foot := Vector2(size.x * 0.5, sil.end.y - 6.0)
+		_draw_shadow(foot, size.x * 0.36, 0.3)
+		var rx := size.x * 0.36
+		for k in range(16):
+			if k % 2 == 0:
+				var a0 := TAU * float(k) / 16.0
+				var a1 := TAU * float(k + 1) / 16.0
+				draw_line(foot + Vector2(cos(a0) * rx, sin(a0) * rx * 0.24), foot + Vector2(cos(a1) * rx, sin(a1) * rx * 0.24), Color(0, 0, 0, 0.5), 2.0)
 	else:
 		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
 		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)
@@ -519,6 +534,15 @@ func _draw() -> void:
 
 ## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
 ## rests on its hue. The dark edge under each dash fades with the colour.
+## A flattened shadow on the floor, centred on `foot`.
+func _draw_shadow(foot: Vector2, rx: float, alpha: float) -> void:
+	var ry := maxf(3.0, rx * 0.22)
+	draw_set_transform(foot, 0.0, Vector2(1.0, ry / rx))
+	draw_circle(Vector2.ZERO, rx, Color(0, 0, 0, alpha * 0.55))
+	draw_circle(Vector2.ZERO, rx * 0.72, Color(0, 0, 0, alpha * 0.6))
+	draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 	var dash := 9.0
 	var gap := 6.0

@@ -34,6 +34,12 @@ const DISPLAY_RANGES := {
 	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0), "voice": Vector2(0.0, 1.0),
 }
 static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()
+## A debug build's pick of the skirmish's look (29 October, its options judged on the phone,
+## which has no environment to set): the ground and the rows, held for the session and never
+## saved, so no test run inherits one (SkirmishScreen.look_ground and look_layout read them).
+const LOOK_GROUNDS := ["classic", "vista", "field", "window", "holo"]
+const LOOK_LAYOUTS := ["classic", "faceoff"]
+static var look := {"ground": "classic", "layout": "classic"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.
