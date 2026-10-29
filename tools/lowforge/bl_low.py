@@ -221,7 +221,8 @@ class Tiles:
             img[18:46, 14:50, :] = np.array([1.0, 0.98, 0.85], np.float32)
         elif kind == "glass":
             # Cockpit glass: a cool blue gradient with a diagonal glint, or red for the
-            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple).
+            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple), lit there
+            # (Build.material: Ryan, 29 October).
             img = np.zeros((TILE, TILE, 3), np.float32)
             red = self.maker == "arsenal"
             for y in range(TILE):
@@ -403,9 +404,15 @@ class Build:
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
+        role, _, tile = name.partition(".")
+        if role == "glass" and self.tiles.maker == "arsenal":
+            # The Arsenal's cockpit glass glows, its red lit from within at rest (Ryan, 29
+            # October: "apply that material change to all Arsenal cockpit glass so that they
+            # all light up and have a passive glow"): the amber role is the one the game and
+            # the hangar light, so an act can flare it (the Ammit's eyes).
+            name, role = "amber." + tile, "amber"
         if name in self.materials:
             return self.materials[name]
-        role, _, tile = name.partition(".")
         mat = bpy.data.materials.new(name)
         mat.use_nodes = True
         bsdf = mat.node_tree.nodes["Principled BSDF"]

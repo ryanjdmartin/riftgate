@@ -3101,7 +3101,8 @@
    "glow": [
     {
      "parts": [
-      "throat_slot"
+      "throat_slot",
+      "eye_strip"
      ],
      "keys": [
       [
@@ -9046,7 +9047,8 @@
    "glow": [
     {
      "parts": [
-      "throat_slot"
+      "throat_slot",
+      "eye_strip"
      ],
      "keys": [
       [
@@ -65132,7 +65134,8 @@
    "glow": [
     {
      "parts": [
-      "throat_slot"
+      "throat_slot",
+      "eye_strip"
      ],
      "keys": [
       [
@@ -79429,6 +79432,7 @@
  },
  "glow_parts": [
   "carbine_tip",
+  "eye_strip",
   "pilot_flame",
   "throat_slot"
  ],

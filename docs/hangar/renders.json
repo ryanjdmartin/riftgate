@@ -116,8 +116,8 @@
    }
   },
   "sparrowhawk": {
-   "when": "Ryan's notes, 29 October.",
-   "note": "Ryan, 29 October: each wingtip Pinion Driver a ramjet-gun, \"a kind of mini-booster, barrel forwards with a tapered exhaust behind, something that looks like it gives an extra boost of speed on a kill\": a chrome drum like the boosters' with a lit ring, its tail tapering to a lit exhaust, a dark inlet ringed by gear teeth (the pinion), the barrel out of its centre and the muzzle lit; they burn with the boosters in every act and on the move. The Driver fires its four in two shots at half, one from each tip. The nose mounts as before: the stock's Transonic Rifle on the left as its class, the right bare.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October, the second notes: each tooth round a driver's inlet runs its back face aft as a strake, tapering down the drum until it meets it. The rest as the first notes left it: each Pinion Driver a ramjet-gun, a chrome drum with a lit ring tapering to a lit exhaust, the barrel out of the inlet's centre; two shots at half, one from each tip.",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -129,7 +129,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (a chrome nacelle along each tip, a rail out of a toothed collar)",
+    "summary": "Before: the first notes of 29 October (the teeth a ring round the lip)",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's notes, 29 October.",
-   "note": "Ryan, 29 October: the cryo barrels bored dark through the rack's face; every weapon runs in and out along its line of fire, never pitching, and a shot kicks it back along the line; the irises, which showed outside the shell, rest under each port's floor and rise to shut it once the guns have sunk; and sealed it hunkers down on its planted feet, its defensive base pose, and plays acts of its own from there (braces, rocks back and forward, vents its heat through the stack's flap, runs the rack out to beep), so no open act clips the sunk guns. The third picture is held sealed, the fourth sealed and venting. Hold it under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October, the second notes: the rack's bores, their floors and rims in the guns' dark steel; the stack and its rain flap (\"more W&S comical than heavy Minerva\") give way to two armoured louvred vents on the tail, mirrored, their louvres a shut grille from behind at rest, swung open over a flaring ember when it vents (the fourth picture, from the skirmish's angle), and shut flat with the ports when it seals; it never vents sealed, so its sealed acts are three (brace, rock, lure). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -186,12 +186,12 @@
      "alt": "armadillo, sealed"
     },
     {
-     "file": "armadillo/armadillo_sealed_vent.png",
-     "alt": "armadillo, sealed, venting"
+     "file": "armadillo/armadillo_venting.png",
+     "alt": "armadillo, venting"
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (the rack tilting out, the iris leaves drawn back across the shell, a seal without the hunker)",
+    "summary": "Before: the first notes of 29 October (plate rims on the bores, a stack with a rain flap that vented sealed)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -204,6 +204,10 @@
      {
       "file": "armadillo/before_armadillo_sealed.png",
       "alt": "Earlier: armadillo, sealed"
+     },
+     {
+      "file": "armadillo/before_armadillo_sealed_vent.png",
+      "alt": "Earlier: armadillo, sealed, venting"
      }
     ]
    }
@@ -271,8 +275,8 @@
    }
   },
   "dingo": {
-   "when": "Ryan's notes, 29 October.",
-   "note": "Ryan, 29 October: the rear mount on the flat of the roof, still left of the harpoon, on a rotating gimbal: the Airburst Shell's rack in a yoke on a turntable, turning and elevating (its rack check swings it out over the left quarter as it ticks up, the tail still laying it fine). The Translocator's coil rings, which floated between the prongs, are threaded on a core out of the cabinet. The Translocator made its die a d5 where it was a d4 (Ryan: \"I guess that's ok\").",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October, the second notes: the antenna that ran up through the Translocator's cabinet is gone, the one on the other side kept. As the first notes left it: the Airburst Shell's rack on its gimbal on the roof, left of the harpoon, and the coil's rings threaded on a core; the Translocator makes its die a d5 (Ryan: \"I guess that's ok\").",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -284,7 +288,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (the rack on the rear-left deck, the coil floating between the prongs)",
+    "summary": "Before: the first notes of 29 October (an antenna through the cabinet)",
     "images": [
      {
       "file": "dingo/before_dingo_front.png",
@@ -325,8 +329,8 @@
    }
   },
   "nemesis": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: the chest ports carry the stock's Retribution Thurible and Oblation Mantle as dishes, and the right shoulder's mount behind the pauldron the Blazethrower as its class, on a post that lifts it clear; the Meteor Artillery's tubes rode that mount until the stock pass (its act keeps its name).",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October: every Arsenal cockpit's glass lit, so the Nemesis's visor slit glows red at rest. The rest as the stock rebuild left it: the chest ports' Retribution Thurible and Oblation Mantle as dishes, the Blazethrower on its post behind the right pauldron.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -338,7 +342,7 @@
     }
    ],
    "before": {
-    "summary": "Before: sixth round, 1 October; a square-up and a braced meteor stance on planted footwork, 20 October (the Meteor Artillery's tubes on the shoulder)",
+    "summary": "Before: the stock rebuild, 28 October (the visor unlit glass)",
     "images": [
      {
       "file": "nemesis/before_nemesis_front.png",
@@ -347,17 +351,13 @@
      {
       "file": "nemesis/before_nemesis_rear.png",
       "alt": "Earlier: nemesis, rear"
-     },
-     {
-      "file": "nemesis/before_nemesis_square_up.png",
-      "alt": "Earlier: nemesis, squared up, the left foot stamped out"
      }
     ]
    }
   },
   "ammit": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: of the two mounts beside the vent under the jaw, the left carries the stock's Oblation Mantle as a dish, the right bare; the rest as before.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October: every Arsenal cockpit's glass lit, so the Ammit's eye strips glow red at rest and flare with the throat in its acts (they had asked for a flare that glass never gave). The rest as the stock rebuild left it: the left jaw mount the Oblation Mantle as a dish, the right bare.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -369,7 +369,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes, 5 October; a circling act on planted footwork, 20 October (both jaw mounts bare)",
+    "summary": "Before: the stock rebuild, 28 October (the eye strips unlit glass)",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -378,10 +378,6 @@
      {
       "file": "ammit/before_ammit_rear.png",
       "alt": "Earlier: ammit, rear"
-     },
-     {
-      "file": "ammit/before_ammit_circle.png",
-      "alt": "Earlier: ammit, circling its prey, a hand and a foot stepping"
      }
     ]
    }

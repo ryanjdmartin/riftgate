@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 744 tests, 67,054 checks, green on `claude/charming-rubin-h954bp` (29 October, the
+- Tests: 744 tests, 67,408 checks, green on `claude/charming-rubin-h954bp` (29 October, the
   model rebuilds and Ryan's notes on them, with main merged in; 739 tests, 66,640 checks on
   main's head, the mechanics audit), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
@@ -36,9 +36,10 @@ are in `README.md`.
 
 `claude/charming-rubin-h954bp` (28 October) carries the model rebuilds of Ryan's brief of that
 day (the pins' record and the game's plan against it, thirteen models rebuilt to their stock,
-the Armadillo's seal) and his notes on them of the 29th (the Kite's Pinion Driver in two shots
-and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding weapons and hunkered seal
-with acts of its own), and took main each evening (to `5c23a90`, the mechanics audit);
+the Armadillo's seal) and his two rounds of notes on them of the 29th (the Kite's Pinion
+Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
+weapons, hunkered seal with acts of its own and louvred vents, the Arsenal's lit cockpit
+glass), and took main each evening (to `5c23a90`, the mechanics audit);
 unmerged, for main to take on Ryan's word.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -185,10 +186,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), and reworked on his notes of 29 October (the Kite's
-  drivers as ramjet-guns, the Dingo's rear mount on a roof gimbal and its coil threaded, the
-  Armadillo's barrels bored, its weapons sliding along their lines and its seal hiding the
-  irises and hunkering), to judge running (the to-do). A model may hold a form while its
+  the stock pass had left on old kit), and reworked on his two rounds of notes of 29 October
+  (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
+  mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
+  bored and dark, its weapons sliding along their lines, its seal hiding the irises and
+  hunkering, its stack two louvred vents that vent open and seal shut; every Arsenal cockpit's
+  glass lit), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of
   its own (the Armadillo's seal; `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab),
   and a glow must name a part that can light (lowforge refuses one that cannot). Since 25 October every machine's parts are welded at load by material
