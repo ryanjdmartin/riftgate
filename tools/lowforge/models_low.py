@@ -832,10 +832,12 @@ def armadillo(b):
     hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
-    bare; the plating on the flanks is detail, and two armoured louvred vents on the tail
-    band, a little open at rest, throw their louvres wide over a flaring ember when it vents
-    and shut flat when it seals (Ryan, 29 October: the stack's rain flap read "more W&S
-    comical than heavy Minerva"). The ports are real
+    bare; the plating on the flanks is detail, and three armoured louvred radiators sunk in
+    the tail, two large in its bevel facing back and a wide one centred low on its rear face,
+    a tilted grille at rest, throw their louvres edge on over a flaring ember when it vents and
+    shut flat when it seals (Ryan, 29 October: the stack's rain flap read "more W&S comical
+    than heavy Minerva"; the two vents that replaced it, enlarged and "angled towards the
+    back" as radiators, the rear face's grille a wider third). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that slides out of it to fire, its two barrels bored dark through the rack's
@@ -846,7 +848,7 @@ def armadillo(b):
     (the form "sealed", held while Sealed): the port guns sink into the shell, then an iris
     plug in the ports' stripe rises out of each port's floor and closes it just under the rim
     (Ryan, 29 October: the leaves drawn back across the shell showed, so they rest out of
-    sight under the floor), the tail vents shut, the cowl lamps go dark and the whole machine
+    sight under the floor), the radiators shut, the cowl lamps go dark and the whole machine
     hunkers down on its planted feet, the defensive base pose its own acts play from (Ryan,
     29 October: sealed, "the animations set shouldn't be the same"), none of them a vent; the
     flingers' rack stays live, since a sealed Armadillo still lures; opening runs it back."""
@@ -856,10 +858,18 @@ def armadillo(b):
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
              (-5.0, 14.0, 62.0, Z0 + 28.0, 12.0), (13.0, 30.0, 56.0, Z0 + 24.0, 11.0), (29.0, 46.0, 48.0, Z0 + 17.0, 9.0)]
+    # The tail band's back bevelled (Ryan, 29 October: its vents "angled towards the back" as
+    # large radiators): its crown runs level to BEVEL_Y and slopes down to the rear face at
+    # BEVEL_Z, the radiators sunk in the slope, which faces the cameras behind it (30 and 42
+    # degrees down) nearly square.
+    BEVEL_Y, BEVEL_Z = -42.5, Z0 + 10.0
     band_obs = []
     for i, (y0, y1, w, top, c) in enumerate(bands):
         tile = "steel.panel" if i % 2 == 0 else "steel.plate"
-        band_obs.append(b.loft([(y0, _case(w, Z0 - 2.0, top, c)), (y1, _case(w, Z0 - 2.0, top, c))], tile, "band"))
+        secs = [(y0, _case(w, Z0 - 2.0, top, c)), (y1, _case(w, Z0 - 2.0, top, c))]
+        if i == 0:
+            secs = [(y0, _case(w, Z0 - 2.0, BEVEL_Z, c)), (BEVEL_Y, _case(w, Z0 - 2.0, top, c))] + secs[1:]
+        band_obs.append(b.loft(secs, tile, "band"))
     b.box(-20.0, 20.0, -48.0, 46.0, Z0 - 6.0, Z0 - 1.0, "steel.dark", "belly")
     # The cowl: the front band runs on as a lip over the cockpit bay, a hazard strip on
     # its edge; the bay a dark recess under it with a small glass slit and two lamps, out
@@ -986,34 +996,26 @@ def armadillo(b):
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
     b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
-    # Plating on the flanks between the hips, and a grille across the tail's rear face:
-    # detail, no mounts.
+    # Plating on the flanks between the hips: detail, no mounts.
     for s in (-1.0, 1.0):
         b.box(min(s * 29.0, s * 32.5), max(s * 29.0, s * 32.5), -10.0, 10.0, Z0 + 2.0, Z0 + 18.0, "livery.livery2", "ablative")
-    b.box(-14.0, -2.0, -51.0, -50.0, Z0 + 2.0, Z0 + 12.0, "steel.vent", "tail_vents")
-    # Two armoured vents on the tail band, either side of the spine, where the stack stood
-    # (Ryan, 29 October: its rain flap was "more W&S comical than heavy Minerva"; "less stacks
-    # but more active animated vents, more rugged looking, that seal as well as the armour
-    # ports"): a dark steel box with a stripe rim and an ember banked in its floor, three heavy
-    # louvres across it on joints. At rest they stand front edges up, so from behind, where
-    # the skirmish's camera (30 degrees down) and the map's (42) mostly sit, they read as a
-    # shut grille and the ember shows only from ahead; the vent act swings them past flat to
-    # front edges down, the slots lining up with those cameras over the flaring ember, so it
-    # reads as motion and not by the ember's colour alone; sealed, they shut flat with the
-    # ports.
-    LOUVRE = 20.0   # degrees at rest, front edges up
-    louvres = []
-    th = math.radians(LOUVRE)
-    slat = [(-(y * math.cos(th) - z * math.sin(th)), y * math.sin(th) + z * math.cos(th)) for y, z in ((-1.05, -0.3), (1.05, -0.3), (1.05, 0.3), (-1.05, 0.3))]   # _beam's (across, up): across is -y along x
-    for s in (-1.0, 1.0):
-        cx, cy = s * 10.0, -44.5
-        _tube(b, (cx, cy, Z0 + 19.5), (cx, cy, Z0 + 24.5), 4.6 * R2, 3.2 * R2, 4, "steel.dark", "vent_box", floor_material="amber.ember", floor_depth=3.4, phase=math.pi / 4)   # the ember high in the box, so a low camera sees it past the back wall
-        _tube(b, (cx, cy, Z0 + 24.0), (cx, cy, Z0 + 24.8), 4.9 * R2, 3.2 * R2, 4, "steel.stripe", "vent_rim", floor=False, phase=math.pi / 4)
-        for k, dy in enumerate((-2.1, 0.0, 2.1)):
-            name = "louvre_%s%d" % ("l" if s < 0 else "r", k + 1)
-            with b.joint(name, (cx, cy + dy, Z0 + 23.9), axis="pitch", limits={"pitch": (-60.0, 0.0), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}):
-                _beam(b, (cx - 3.1, cy + dy, Z0 + 23.9), (cx + 3.1, cy + dy, Z0 + 23.9), slat, slat, "steel.plate", "louvre")
-            louvres.append(name)
+    # The radiators (Ryan, 29 October: the two tail vents, "more active animated vents, more
+    # rugged looking, that seal as well as the armour ports", then enlarged, "angle them
+    # towards the back, turning them into large radiators", and the grille texture on the rear
+    # face replaced by "a wider centered version of the vent"): two armoured louvred vents sunk
+    # side by side in the tail's bevel and a wide one centred low on the rear face, each a dark
+    # steel box cut into the shell with a stripe rim and an ember banked in its floor, heavy
+    # louvres across it on joints. At rest the louvres stand tilted, a grille that hides the
+    # ember from the cameras behind (their thickness closes the slots); the vent act throws
+    # them edge on to those cameras (the bevel's lower edges out, the rear face's upper edges
+    # out, the way each lines up with an eye 30 to 42 degrees down), the ember flaring
+    # behind, so it reads as motion and not by the ember's colour alone; sealed, they shut
+    # flat with the ports.
+    run, rise = BEVEL_Y - bands[0][0], bands[0][3] - BEVEL_Z
+    A_BEV = math.degrees(math.atan2(rise, run))   # the bevel's slope, about 56 degrees
+    bev = (bands[0][0] + run / 2.0, BEVEL_Z + rise / 2.0)   # the middle of the slope
+    vents = [_vent(b, [band_obs[0]], (s * 8.2, bev[0], bev[1]), A_BEV, 13.0, 10.0, 4, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0) for s in (-1.0, 1.0)]
+    vents.append(_vent(b, [band_obs[0]], (0.0, bands[0][0], Z0 + 4.0), 90.0, 24.0, 8.0, 3, "louvre_c", 10.0, 60.0))
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
     # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
@@ -1113,17 +1115,18 @@ def armadillo(b):
                    "run_r": _dense([along(3.3, 0.0), along(3.9, RUN), along(5.1, RUN - 0.3), along(5.8, 0.0)])})
     b.act("come_about", 9.4, tracks, body=body, ease="linear", heft=0.12,
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
-    # Venting (Ryan, 29 October: the tail vents "more active animated", and never while
-    # sealed): each vent's louvres thrown wide twice over its flaring ember, the front slat
-    # first and the rest a beat after, the shell settling a touch on its planted feet at
-    # each dump of heat.
-    VENT = -50.0   # from 20 up to 30 down: the slots in line with the skirmish's camera behind (thrown to 70 down, they shut again to that eye)
+    # Venting (Ryan, 29 October: the vents "more active animated", and never while sealed):
+    # every radiator's louvres thrown edge on twice over its flaring ember, the lowest slat
+    # first and the rest a beat after, the shell settling a touch on its planted feet at each
+    # dump of heat. A key is a share of each louvre's own throw (the bevel's and the rear
+    # face's turn opposite ways).
+    THROW = ((0.5, 0.0), (0.8, 1.0), (1.3, 0.8), (1.7, 0.7), (2.05, 1.06), (3.2, 1.0), (3.75, 0.08), (3.95, 0.0))
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
                             [(0.6, 0.0, 0.0, 0.0), (0.85, 0.0, -0.8, 0.0), (1.2, 0.0, -0.15, 0.0), (1.5, 0.0, 0.0, 0.0),
                              (2.0, 0.0, 0.0, 0.0), (2.2, 0.0, -0.9, 0.0), (2.6, 0.0, -0.15, 0.0), (3.0, 0.0, 0.0, 0.0)])   # never above rest: the legs stand near straight
-    for k, jn in enumerate(louvres):
-        d = 0.05 * (k % 3)
-        tracks[jn] = [(round(t + d, 3), v) for t, v in ((0.5, 0.0), (0.8, VENT), (1.3, VENT + 10.0), (1.7, VENT + 15.0), (2.05, VENT - 3.0), (3.2, VENT), (3.75, -4.0), (3.95, 0.0))]
+    for vent in vents:
+        for k, (jn, shut, swing) in enumerate(vent):
+            tracks[jn] = [(round(t + 0.05 * k, 3), round(swing * f, 2)) for t, f in THROW]
     b.act("vent_heat", 4.4, tracks, body=body, heft=0.1,
           glow=[(["vent_box_floor"], [(0.5, 0.0), (0.9, 6.0), (1.5, 3.0), (2.1, 7.0), (3.2, 7.0), (4.0, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
@@ -1142,8 +1145,8 @@ def armadillo(b):
     # The seal (the form "sealed", held while the machine carries the status): the port guns
     # sink into the shell along their lines, past the ports' floors (and a gun fitted in a
     # forward port with them), then each port's iris plug rises out of its floor and closes it
-    # just under the rim as the tail vents' louvres shut flat, the cowl lamps and the vents'
-    # embers going dark ("the shell goes dark", its design note),
+    # just under the rim as the radiators' louvres shut flat, the cowl lamps and the
+    # radiators' embers going dark ("the shell goes dark", its design note),
     # while the whole machine hunkers down on its planted feet, the shell low and its brow
     # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
     # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
@@ -1156,8 +1159,9 @@ def armadillo(b):
         tracks["run_" + tag] = [along(0.0, 0.0, FWD), along(T_SINK, -SINK_F, FWD)]
     for jn, (hx, hy, hz) in shutters.values():
         tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG1, 0.0, 0.0, 0.0, hx, hy, hz)]
-    for jn in louvres:   # the tail vents shut flat as the plugs close
-        tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, -LOUVRE)]
+    for vent in vents:   # the radiators shut flat as the plugs close
+        for jn, shut, swing in vent:
+            tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, shut)]
     eased = lambda u: u * u * (3.0 - 2.0 * u)
     hunker = [(round(0.2 + 0.1 * k, 3),) + tuple(round(v * eased(k / 9.0), 3) for v in HUNK) for k in range(10)]   # 0.2 to 1.1 s, dense so the feet stay planted
     limbs4 = [limb(leg) for leg in ("fl", "fr", "hl", "hr")]
@@ -2240,7 +2244,8 @@ def nemesis(b):
         b.prism("y", s * 12.0, 12.6, 73.0, 2.6, 1.6, "bore.dark", 8, "port_throat", phase=math.pi / 8)
         b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_ward")
     # The helm: hooded, low between the shoulders, a visor slit (lit, as every Arsenal
-    # cockpit's glass is: Ryan, 29 October) and two horns.
+    # cockpit's glass is: Ryan, 29 October; it flares in the roar and its other fierce acts,
+    # the same day) and two horns.
     b.box(-8.0, 8.0, -7.0, 12.0, 82.0, 92.0, "steel.panel", "helm")   # runs back to meet the traps
     b.loft([(-4.0, rect(0.0, 18.0, 90.0, 94.0)), (14.0, rect(0.0, 14.0, 88.0, 92.0))], "steel.plate", "hood")
     b.box(-6.0, 6.0, 12.0, 13.0, 85.0, 87.0, "glass.glass", "visor")
@@ -2385,7 +2390,7 @@ def nemesis(b):
         tracks["elbow_" + side] = [(t, e2) for t, (p2, y2, r2, e2) in keys]
     tracks["waist"] = [(t, p2, 0.0, 0.0) for t, p2 in [(1.5, 2.0), (2.05, 4.0)] + _slam(2.05, 4.0, 2.3, -6.0) + [(2.5, -4.0), (4.2, -4.0), (5.0, 0.0)]]   # pitch: the waist's own axis is its yaw
     b.act("pound_fists", 6.6, tracks, body=body, heft=0.05,   # the stance widened foot by foot, then the fists wound up and slammed together before the chest, elbows out, twice, stopping dead, pressed, and the feet stepped back in
-          glow=[(["core_fire"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])
+          glow=[(["core_fire", "visor"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])   # the core and the visor flaring at each blow
     tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
     tracks.update({
         "shoulder_l": [(1.2, 60.0, 60.0, 0.0), (3.8, 62.0, 62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
@@ -2394,7 +2399,8 @@ def nemesis(b):
         "elbow_r": [(1.2, -20.0), (3.8, -22.0), (5.0, 0.0)],
     })
     b.act("roar", 5.6, tracks, body=body,   # the arms flung wide and up, the body rearing back on its planted feet, the core blazing
-          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)])])
+          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)]),
+                (["visor"], [(0.5, 0.0), (0.95, 16.0), (1.3, 11.0), (2.4, 13.0), (3.6, 11.0), (4.6, 0.0)])])   # the visor flares as it rears and burns through the roar (Ryan, 29 October: "some flare during relevant animations, like roar")
     # The meteor, angrier: it stamps into a firing stance, leaning in and turned on its mark
     # (the turn the waist's, Ryan, 5 October: the feet slid round under it),
     # the right arm flung clear and the left fist thrust at the target, the shoulder gun
@@ -2422,7 +2428,8 @@ def nemesis(b):
     b.act("raise_meteor", 5.6, tracks, body=body, ease="linear",
           glow=[(["sight"], [(0.6, 0.0), (1.0, 5.0), (1.3, 2.0), (1.6, 7.0), (1.9, 3.0), (2.2, 9.0), (2.4, 9.0), (2.5, 14.0), (2.8, 5.0), (3.3, 9.0),
                                   (3.35, 14.0), (3.7, 5.0), (4.6, 0.0)]),
-                (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)])])
+                (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)]),
+                (["visor"], [(2.45, 0.0), (2.5, 14.0), (2.9, 0.0), (3.3, 0.0), (3.35, 14.0), (3.75, 0.0)])])   # the visor flashing white-hot with each shot (a red light already at full red flares toward white: held in between it reads pink)
     # The shoulders, angrier: hunched forward, each arm wrenched round in a fast circle that
     # cracks at the bottom, the torso twisting with it on the waist (Ryan, 5 October: not the
     # whole machine pivoting on its feet) and the core flaring at each crack; then the chest
@@ -2450,7 +2457,7 @@ def nemesis(b):
         "elbow_r": [(2.25, 20.0), (3.5, 0.0), (3.95, 10.0)] + _slam(3.95, 10.0, 4.35, HITC_R[3]) + [(5.05, PRESSC_R[3]), (6.05, 0.0)],
     })
     b.act("crack_shoulders", 6.4, tracks, body=body, heft=0.07,
-          glow=[(["core_fire"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])
+          glow=[(["core_fire", "visor"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])   # the core and the visor flaring at each crack and the slam
     # Squaring up (Ryan, 20 October: lateral motion for an angry boy on planted footwork; a
     # sideways pace was built first and looked like dancing, so this instead): something comes
     # at it from its left and it squares up to it, the left foot stamping out wide and back as
@@ -2469,7 +2476,8 @@ def nemesis(b):
         tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.1, g[3]), (3.5, g[3] - 2.0), (4.6, 0.0)])
     tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.2, -4.0, 8.0, 0.0), (3.4, -5.0, 11.0, 0.0), (3.7, -3.0, 6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])   # leaning in, wound a little further round than the feet
     b.act("square_up", 5.2, tracks, body=body, ease="linear", heft=0.06,
-          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)])])
+          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)]),
+                (["visor"], [(0.9, 0.0), (1.15, 12.0), (3.4, 12.0), (4.3, 0.0)])])   # the visor glaring hotter than the core
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
     # the body passes over it, lifted and stamped down; the arms swinging evenly against the
@@ -4268,6 +4276,46 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
                            for j in range(5)]
             _slab(b, pts, axis, thick, material, "shutter")
     return name, tuple(axis * depth)
+
+
+def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5):
+    """An armoured louvred vent sunk into a face of the shell (the Armadillo's radiators:
+    Ryan, 29 October, "more integral to the overall design"): a hole cut through `cutting`,
+    lined by a dark steel box `width` by `height` with an ember banked in its floor (the part
+    a glow names, `vent_box_floor`), a stripe rim standing `proud` of the face, and `slats`
+    heavy louvres across the mouth, each on a pitch joint `<prefix><k>`, the lowest first.
+    `origin` is the mouth's centre on the face, which rises `alpha` degrees from flat toward
+    the front and faces back (90 a rear face, 0 a top). A louvre stands `rest` degrees out of
+    the face (positive lifts its upper edge out), so its joint's 0 is that rest; it shuts flat
+    at `-rest` and opens to `opens` degrees out of the face at `opens - rest`. Returns
+    [(joint, its shut swing, its open swing)], the lowest first."""
+    a = math.radians(alpha)
+    X, U, N = Vector((1.0, 0.0, 0.0)), Vector((0.0, math.cos(a), math.sin(a))), Vector((0.0, -math.sin(a), math.cos(a)))
+    o = Vector(origin)
+    at = lambda x, u, n: o + X * x + U * u + N * n
+    frame = lambda hw, hh, n: [at(-hw, -hh, n), at(hw, -hh, n), at(hw, hh, n), at(-hw, hh, n)]
+    hw, hh = width / 2.0, height / 2.0
+    iw, ih = hw - wall, hh - wall
+    b.cut(cutting, tuple(at(0.0, 0.0, -depth)), tuple(at(0.0, 0.0, 0.5)), 0.0, section=[(-iw - 0.2, -ih - 0.2), (iw + 0.2, -ih - 0.2), (iw + 0.2, ih + 0.2), (-iw - 0.2, ih + 0.2)])
+    tiles = (o, N, X, U, None)
+    _rings(b, [frame(hw, hh, -depth), frame(hw, hh, proud - 0.3), frame(iw, ih, proud - 0.3), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles)
+    _rings(b, [frame(hw + rim, hh + rim, proud - 0.9), frame(hw + rim, hh + rim, proud), frame(iw, ih, proud), frame(iw, ih, proud - 0.9)], "steel.stripe", "vent_rim", tiles, cap=False)
+    _rings(b, [frame(iw - 0.05, ih - 0.05, -depth + 0.2), frame(iw - 0.05, ih - 0.05, -depth + 0.4)], "amber.ember", "vent_box_floor", tiles)
+    pitch = 2.0 * ih / slats
+    th = math.radians(rest)
+    w, m = U * math.cos(th) + N * math.sin(th), N * math.cos(th) - U * math.sin(th)
+    prof = [(-v.y, v.z) for v in (w * (-pitch / 2.0 + 0.05) - m * (thick / 2.0), w * (pitch / 2.0 - 0.05) - m * (thick / 2.0),
+                                  w * (pitch / 2.0 - 0.05) + m * (thick / 2.0), w * (-pitch / 2.0 + 0.05) + m * (thick / 2.0))]   # _beam's (across, up): across is -y along x
+    shut, swing = -rest, opens - rest
+    lo, hi = min(shut, 1.1 * swing) - 3.0, max(shut, 1.1 * swing) + 3.0
+    out = []
+    for k in range(slats):
+        c = at(0.0, -ih + pitch * (k + 0.5), -pivot)
+        name = "%s%d" % (prefix, k + 1)
+        with b.joint(name, tuple(c), axis="pitch", limits={"pitch": (lo, hi), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}):
+            _beam(b, tuple(c - X * (iw - 0.15)), tuple(c + X * (iw - 0.15)), prof, prof, "steel.plate", "louvre")
+        out.append((name, shut, swing))
+    return out
 
 
 def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):

@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's second notes, 29 October.",
-   "note": "Ryan, 29 October, the second notes: the rack's bores, their floors and rims in the guns' dark steel; the stack and its rain flap (\"more W&S comical than heavy Minerva\") give way to two armoured louvred vents on the tail, mirrored, their louvres a shut grille from behind at rest, swung open over a flaring ember when it vents (the fourth picture, from the skirmish's angle), and shut flat with the ports when it seals; it never vents sealed, so its sealed acts are three (brace, rock, lure). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's third notes, 29 October.",
+   "note": "Ryan, 29 October, the third notes: the two tail vents enlarged and \"angled towards the back\" as large radiators, sunk side by side in a bevel cut across the tail's back, and the grille texture on the rear face replaced by a wider third centred low on it; each a dark steel box in the shell with a stripe rim and an ember in its floor, its louvres a tilted grille at rest, thrown edge on to the cameras behind over the flaring ember when it vents (the fourth picture, from the skirmish's angle), and shut flat with the ports when it seals (the third). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -191,7 +191,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the first notes of 29 October (plate rims on the bores, a stack with a rain flap that vented sealed)",
+    "summary": "Before: the second notes of 29 October (two small louvred vents on the tail's crown, a grille texture on the rear face)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -206,8 +206,8 @@
       "alt": "Earlier: armadillo, sealed"
      },
      {
-      "file": "armadillo/before_armadillo_sealed_vent.png",
-      "alt": "Earlier: armadillo, sealed, venting"
+      "file": "armadillo/before_armadillo_venting.png",
+      "alt": "Earlier: armadillo, venting"
      }
     ]
    }
@@ -329,8 +329,8 @@
    }
   },
   "nemesis": {
-   "when": "Ryan's second notes, 29 October.",
-   "note": "Ryan, 29 October: every Arsenal cockpit's glass lit, so the Nemesis's visor slit glows red at rest. The rest as the stock rebuild left it: the chest ports' Retribution Thurible and Oblation Mantle as dishes, the Blazethrower on its post behind the right pauldron.",
+   "when": "Ryan's third notes, 29 October.",
+   "note": "Ryan, 29 October: \"give the nemesis some flare during relevant animations, like roar\". Its lit visor flares white-hot in its fierce acts: blazing through the roar (the third picture, a second in), at each blow of pound_fists and each crack of crack_shoulders with the core, glaring through square_up, a flash with each meteor shot. A red light already at full red can only flare toward white, so the peaks are white and the fades pass through pink back to its resting red. RIFTGATE_ACTS_DEBUG=roar loops it.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -339,18 +339,18 @@
     {
      "file": "nemesis/nemesis_rear.png",
      "alt": "nemesis, rear"
+    },
+    {
+     "file": "nemesis/nemesis_roar.png",
+     "alt": "nemesis, roaring"
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (the visor unlit glass)",
+    "summary": "Before: the roar at the second notes of 29 October (the visor at its resting glow)",
     "images": [
      {
-      "file": "nemesis/before_nemesis_front.png",
-      "alt": "Earlier: nemesis, front"
-     },
-     {
-      "file": "nemesis/before_nemesis_rear.png",
-      "alt": "Earlier: nemesis, rear"
+      "file": "nemesis/before_nemesis_roar.png",
+      "alt": "Earlier: nemesis, roaring"
      }
     ]
    }
