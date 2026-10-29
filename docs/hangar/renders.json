@@ -171,7 +171,7 @@
   },
   "armadillo": {
    "when": "Ryan's ninth notes, 29 October.",
-   "note": "Ryan, 29 October, the ninth notes: \"now that I can actually see the glow, its way too yellow.\" Every vent glows orange now, about 255, 165, 33 at the vent act's height and a deeper orange on the way up (the golden 255, 204, 51 before it; the ember's red-orange 255, 123, 41 before that read too red); the panel's 3D view shows it as the phone does, and so does the desk game, which draws with the phone's renderer since the same day (the fifth, venting from the skirmish's angle, and the sixth, from the front; the first to fourth at rest and sealed). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "note": "Ryan, 29 October, the ninth notes: \"now that I can actually see the glow, its way too yellow.\" Every vent glows orange now, #ff7800 at the vent act's height and a deeper orange on the way up, red and green alone under the bible's colour rule, below the #ff8200 past which an orange reads to Ryan as yellow (the golden 255, 204, 51 before it; the ember's red-orange 255, 123, 41 before that read too red); the panel's 3D view shows it as the phone does, and so does the desk game, which draws with the phone's renderer since the same day (the fifth, venting from the skirmish's angle, and the sixth, from the front; the first to fourth at rest and sealed). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
