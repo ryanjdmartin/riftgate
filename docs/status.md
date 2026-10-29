@@ -354,14 +354,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.351 (the
-  page's version 363, published 29 October from `claude/charming-rubin-h954bp` onto its own
-  v0.350 at 362 and v0.349 at 361, itself onto main's v0.348 at 360, which `ccr-7821127e-kwj874` published: the
-  relief laid by the shape, on v0.347 at 359, Ryan's calls on the map shapes, the walls'
-  names, the decoration, the domains' tilesets and the rift tiles as art, three-way merged
-  onto the live v0.346 this branch published; with this branch's third to fifth rounds of
-  notes on the rebuilds, the Armadillo's radiators as dark boxes on its rear deck and the
-  Nemesis's flaring visor). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.357 (the
+  page's version 369, published 29 October from `claude/charming-rubin-h954bp`, three-way merged
+  onto the live v0.356 that `claude/jolly-lovelace-scn82y` published, which carried main's v0.352
+  (the map survey, merged onto this branch's v0.351) and the rows of `ccr-7effd31a-u5z4gw`'s sound
+  rounds and of that branch's skirmish round, so this file carries their rows ahead of their code;
+  with this branch's sixth round of notes on the rebuilds, the Armadillo's radiators on its back
+  panel and its sliding side vents). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -375,11 +374,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 146 (29 October, from
-  `claude/charming-rubin-h954bp`, onto its own 145, itself onto 144: Ryan's five rounds of
-  notes on the rebuilds, the last bringing the Armadillo's model with its radiators as dark
-  boxes on its rear deck and its renders, the old ones to before; every other file identical
-  to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 148 (29 October, from
+  `claude/charming-rubin-h954bp`, onto 147, which another session published with the same page,
+  manifest and Armadillo files as this branch's 146: Ryan's six rounds of notes on the rebuilds,
+  the last bringing the Armadillo's model with its radiators on its back panel and its sliding
+  side vents, and its renders, the old ones to before; every other file as the live page had it,
+  `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
