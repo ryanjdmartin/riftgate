@@ -433,8 +433,8 @@ func _lay_fjord(rng: RandomNumberGenerator) -> void:
 ## longest walks.
 func _lay_badlands(rng: RandomNumberGenerator) -> void:
 	var spots := _field_spots(MOUTH_ROWS, _hi())
-	for g in range(maxi(2, spots.size() / 26)):
-		_grow(rng, spots, rng.randi_range(2, 4), "mesas", 1)
+	for g in range(maxi(2, spots.size() / 15)):
+		_grow(rng, spots, rng.randi_range(3, 5), "mesas", 1)
 	var ponds := 0
 	for p in range(rng.randi_range(2, 3)):
 		if not _grow(rng, spots, rng.randi_range(2, 3), "", 1).is_empty():
