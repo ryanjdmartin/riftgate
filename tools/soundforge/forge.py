@@ -1510,6 +1510,16 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     g0 = shape(pad["swell"], run_pos(starts[b]))
                     g1 = shape(pad["swell"], run_pos(starts[e]) if e < bars else 1.0)
                     p *= np.linspace(g0, g1, len(p))
+                enter = pad.get("enter", {}).get(form[b]) if first else None
+                if enter:
+                    # Silent through the run's first bars, then up over the next: the pad arrives
+                    # inside its run with its filter's motion where it would have been (Night
+                    # Shift's intro, Ryan, 29 October: a pad from the top broke the loop's seam).
+                    def bar_t(k):
+                        return tm(starts[k]) if k < bars else tm(total)
+                    i0 = int(round((bar_t(b + enter[0]) - t0) * SR))
+                    i1 = int(round((bar_t(b + enter[0] + enter[1]) - t0) * SR))
+                    p *= np.clip((np.arange(len(p)) - i0) / float(max(1, i1 - i0)), 0.0, 1.0) ** 2
                 buf = at(buf, p, tm(starts[b] + pad.get("late", 0)), 1.0, wrap=True)
             b = e
     r = room(buf, decay=air[0], mix=air[1], cut=6000.0)

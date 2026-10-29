@@ -112,7 +112,7 @@ def roots(call, section, steps=16):
 
 def door_pattern(call, sections):
     """A crash on the first step of every run of the named sections, by the loop's own step."""
-    form = call["form"]
+    form = call["form"].replace(" ", "")   # a recipe may pass its form spaced (groove strips it)
     steps, starts, _ = F._bars(form, call.get("meter"))
     total = sum(steps)
     doors = [starts[b] for b in range(len(form)) if form[b] in sections and (b == 0 or form[b - 1] != form[b])]

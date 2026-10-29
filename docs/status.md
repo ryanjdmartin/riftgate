@@ -37,8 +37,8 @@ are in `README.md`.
 first round, the Hold The Line pair, merged on the 27th), main merged into it on the 29th: Ryan's
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
-29 October on Hold The Line's two halves (round two on the same page), and the pairs in the
-game once he has heard them.
+29 October on Hold The Line's two halves and Night Shift's battle half, sketched as round two on
+the same page, and the pairs in the game once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -286,8 +286,11 @@ The tasks are the to-do's; this is the index of what waits.
 - The Honey Badger's rework, once its numbers are settled (its brief).
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
-- Every track a pair (the bible's pair row, 28 October): the five new halves sketched, waiting on
-  Ryan's ear; then the engine (a pair as one synchronized stream, the map choosing the track, the
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched, and round
+  two (29 October) on his notes: Hold The Line looping without J with K two ways, its lifts and
+  its map's voices as A/B sets; Night Shift's map intro without its front, its battle half
+  reworked (no drone, a bass line, a synth line, a guitar groove, Hold The Line's drum energy);
+  all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing the track, the
   3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -386,6 +389,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
-  Line's run as the game plays it.
+  Line's run as the game plays it, and round two's pairs and A/B sets (`hold_sketches.py`,
+  `night_sketches.py`).
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
