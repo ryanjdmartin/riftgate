@@ -299,8 +299,11 @@ line), since no number read since 22 October was read on the content as it now s
    ladder's tier-two and tier-three formations are walls for the stock trios, Wainwright &
    Sutler's row winning 29% of them, so the Rangefinder's rule is the per-tier ladders' read
    with a tier-matched kit). Chain decided the same evening (the conductor, the bible's Chain
-   row) and built on the 29th from its brief (retired), its read the to-do's. Heat opened the
-   same evening (Ryan: a core pillar, undervalued): the heat knee by the
+   row) and built on the 29th from its brief (retired); read the same day, it is a plain 4 on
+   today's kits (another machine's doubled blow spends nearly every charge before the arc
+   fires), about 0.7 vanilla points with a spread setter under the planner, and Kestrel's row,
+   with no Shock setter, lost the kill and repeat's pace (Chain's N and the Buzzard's stock,
+   section 12). Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
    maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
    component priced in heat, hull or shield, the basics too; passive cooling the lever that
    makes the player meet the system; vent payoffs), Claude's bench in section 12's heat

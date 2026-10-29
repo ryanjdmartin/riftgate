@@ -2952,3 +2952,83 @@ Read:
   selective levers are the bench's next steps: a soft zone above two thirds of the maximum, the
   cooling, or the maxima by chassis (the stock pass already sets the Kite's 10 and the Musk
   Ox's 8), each a what-if the driver's `--set` can read the same way.
+
+## 29 October, Chain's read
+
+**The conductor on the benches** (Chain built the same day: the bible's Chain row; `tools/pricing_run.py
+run chain29 --parts vanilla,ladders --benches prairie_dog,goshawk --pieces arc_fault_cannon
+--numbers 4,6 --shapes direct --bench-stocks --seeds 200`, then the same on the car with the Tesla
+Gauntlets on the Clydesdale in the Maxigun's place, `chain29t`, a `--set` of its loadout and a
+what-if only, a tier-two piece on a tier-two chassis; and with the Dingo's Megataser Harpoon given
+Spread 1, `chain29s`, so one spend shocks the target and its neighbours, standing in for the spread
+Shock setter Aphelion's content lacks): the Arc Fault Cannon (4, heat 2, Chain 2) in the bench
+hardpoint beside flat heatless vanillas of 4 and 6 in the same slot, each against its row as
+stocked, the sixteen big fights but the finale, greedy at 200 seeds: 16 variants, about 65 minutes
+on four cores. Then 24 formation fights traced with the spread harpoon (the Meadow's, the Waste's,
+the Marsh's and the Peak's, seeds 1 to 6), and the planner at 30 seeds, a direction, on the car and
+with the spread harpoon (`chain29p`, `chain29ps`, `--policies planner`; 8 variants, 22 minutes).
+The runner is deterministic: Wainwright & Sutler's row, which carries no Chain, reads exactly as
+it did before Chain landed (94.8% won, 5.80 rounds, 21.2% hull), so every delta here is Chain's.
+
+Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
+row as stocked, the piece's share of the row's spends, the peak heat and the overheats a fight):
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Share | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 94.8 | 5.80 | 21.2% |  |  | 35% | 0.14 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 96.5 | 5.04 | 17.2% | -0.76 r, -4.0% hull | 16% | 36% | 0.10 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 96.4 | 5.09 | 17.6% | -0.70 r, -3.6% hull | 16% | 32% | 0.09 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 97.8 | 4.50 | 14.6% | -1.30 r, -6.6% hull | 18% | 31% | 0.08 |
+| Buzzard | stock (Arc Fault Cannon) | 99.9 | 3.40 | 11.0% |  | 8% | 97% | 0.41 |
+| Buzzard | Arc Fault Cannon (4, heat 2, Chain 2) | 99.9 | 3.40 | 11.0% | +0.00 r, +0.0% hull | 8% | 97% | 0.41 |
+| Buzzard | vanilla 4 (flat, heat 0) | 99.9 | 3.40 | 10.9% | +0.00 r, -0.1% hull | 9% | 96% | 0.37 |
+| Buzzard | vanilla 6 (flat, heat 0) | 99.9 | 3.35 | 10.6% | -0.05 r, -0.4% hull | 9% | 94% | 0.36 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | stock (Twin Autoguns) | 95.9 | 5.57 | 19.9% |  |  | 45% | 0.15 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | Arc Fault Cannon (4, heat 2, Chain 2) | 97.7 | 4.77 | 15.7% | -0.80 r, -4.2% hull | 16% | 43% | 0.11 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | vanilla 4 (flat, heat 0) | 97.7 | 4.82 | 16.0% | -0.75 r, -3.9% hull | 16% | 41% | 0.10 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | vanilla 6 (flat, heat 0) | 98.5 | 4.22 | 13.2% | -1.35 r, -6.7% hull | 19% | 38% | 0.08 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 96.5 | 5.57 | 18.9% |  |  | 34% | 0.12 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.0 | 4.78 | 14.8% | -0.79 r, -4.1% hull | 16% | 35% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 97.9 | 4.87 | 15.5% | -0.70 r, -3.4% hull | 15% | 32% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 98.8 | 4.32 | 12.7% | -1.25 r, -6.2% hull | 18% | 30% | 0.05 |
+
+The planner, 30 seeds:
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Share | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 95.6 | 5.22 | 17.7% |  |  | 33% | 0.11 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 97.5 | 4.64 | 14.2% | -0.58 r, -3.5% hull | 16% | 35% | 0.07 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 97.1 | 4.69 | 15.0% | -0.53 r, -2.7% hull | 16% | 31% | 0.08 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 98.1 | 4.20 | 12.2% | -1.01 r, -5.4% hull | 18% | 30% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.5 | 5.08 | 16.5% |  |  | 32% | 0.09 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.5 | 4.37 | 12.7% | -0.71 r, -3.8% hull | 16% | 33% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.3 | 4.55 | 13.6% | -0.53 r, -2.9% hull | 16% | 30% | 0.06 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 99.0 | 4.04 | 10.6% | -1.04 r, -5.9% hull | 18% | 29% | 0.06 |
+
+Read:
+
+- **Chain 2 is a plain 4 on today's kits.** On the car the Arc Fault takes 0.76 rounds off the row
+  against a vanilla 4's 0.70 and a vanilla 6's 1.30, about 0.2 vanilla points for the keyword; the
+  kill and repeat read 6.7 points on the same bench on the 28th, 2.7 for the keyword. With the Tesla
+  Gauntlets a second Shock setter, 0.80 against 0.75; with the harpoon shocking three foes a spend,
+  0.79 against 0.70, about 0.3 points. The Arc Fault now prices at about 4.2 points, inside tier
+  one's band (floor 3.5), where the kill and repeat put it at tier two's top.
+- **The charges are spent before the arc fires.** In the 24 traced fights with the spread harpoon
+  about 80 charges were laid and the Arc Fault arced 20 times in 98 spends: nearly every charge was
+  spent first by another machine's doubled blow, since the greedy takes each spend's best trade now
+  and a Shocked foe doubles any gun's blow. The decision the Chain row names (arc now, or hold the
+  charges for the big gun) is one the greedy never makes.
+- **The planner finds some of it, with conductors to find.** With the spread harpoon the Arc Fault
+  takes 0.71 rounds off against a vanilla 4's 0.53 and a vanilla 6's 1.04, about 0.7 points for the
+  keyword; with today's single harpoon 0.58 against 0.53, about 0.2 again. So the arc pays only
+  where one spend leaves several charges and the team leaves them for it: Aphelion's spread setter
+  and a player who sequences, which the two-round planner does in part.
+- **Kestrel's row lost the kill and repeat.** The row has no Shock setter, so the Buzzard's Arc
+  Fault is a plain 4 there (it reads as a vanilla 4 in its own slot): the row as stocked takes 3.40
+  rounds and 11.0% hull a fight at 200 seeds against 3.1 and 9% before Chain landed (the fills'
+  read of the 28th), its overheats 0.41 a fight against 0.32, still winning 99.9%.
+- For Ryan (the bible's section 12): N stays content's placeholder. Claude's lean is to keep Chain 2
+  until Aphelion's spread Shock setter exists and read it again then under the planner, since with
+  single-target setters no N changes the picture (the arc rarely finds a charge left); a bigger N
+  now would price the keyword on the one team that sequences well. The Buzzard's stock is the other
+  question: it keeps a Chain gun with no Shock beside it.
