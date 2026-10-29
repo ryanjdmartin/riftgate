@@ -303,7 +303,8 @@ line), since no number read since 22 October was read on the content as it now s
    maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
    component priced in heat, hull or shield, the basics too; passive cooling the lever that
    makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
-   question, the heat session on the to-do. Next: a persona that
+   question, the heat session on the to-do with its brief (`docs/briefs/heat_pillar.md`); the
+   Chain build written out for its session (`docs/briefs/chain_conductor.md`). Next: a persona that
    shields and vents before the overheat and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
