@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 153 implemented, 5 planned, 0 idea.
+Status: 156 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -155,7 +155,7 @@ Status: 153 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone. | implemented |
+| **Movespeed** | Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; walls are the flyer's alone. | implemented |
 | **Walk** | The map shows where every pack will walk on the enemy's turn, worked out from where your machines stand now: a pusher toward the gate, a hunter toward its prey. Packs go round your machines; nothing you do stops one, and nothing a pack does reacts to your plan. | implemented |
 | **Fight** | Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn. | implemented |
 | **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A machine whose passive grants a second action has two before it is spent. | implemented |
@@ -177,14 +177,17 @@ Status: 153 implemented, 5 planned, 0 idea.
 | **Rough** | Forest and scrub. Every machine and pack crosses it. | implemented |
 | **Ruins** | Rubble. Every machine and pack crosses it. | implemented |
 | **Water** | Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it. | implemented |
-| **Mountain** | Impassable, except to flyers and winged packs. | implemented |
+| **Crags** | Rock spikes. Impassable, except to flyers and winged packs. | implemented |
+| **Mesas** | Flat-topped rock. Impassable, except to flyers and winged packs. | implemented |
+| **Towers** | Dead skyscrapers. Impassable, except to flyers and winged packs. | implemented |
+| **Cliffs** | A wall of rock. Impassable, except to flyers and winged packs. | implemented |
 
 ## Trait
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Crosses everything, water and crags included. Packs walk under it but never stop on its hex. | implemented |
-| **Hover** | Skims water at full pace; crags stop it. | implemented |
+| **Flyer** | Crosses everything, water and walls included. Packs walk under it but never stop on its hex. | implemented |
+| **Hover** | Skims water at full pace; walls stop it. | implemented |
 | **Walker** | Legs. Wades water at half pace. | implemented |
 | **Tracked** | Tracks. Wades water at half pace. | implemented |
 | **Wheeled** | Wheels. Wades water at half pace. | implemented |
@@ -294,7 +297,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
 - **Reinforcements** (implemented): How elites arrive is section 12's question.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
-- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October).
+- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October).
 - **Walk** (implemented): A pack with no way to the gate waits, and the map says so.
 - **Carry** (implemented): A landing animation or a redistribution on landing may come later.
 - **Ring** (implemented): Rings are content on the foe type, placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it.
@@ -304,7 +307,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
-- **Water** (implemented): No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde.
+- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none), and the horde always keeps a crossing three hexes wide.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.

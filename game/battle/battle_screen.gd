@@ -146,10 +146,12 @@ func _start_music() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
 ## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
-## the enemy; RIFTGATE_MAP_KIND=rubble picks the map's type (BattleMap.KINDS).
+## the enemy; RIFTGATE_MAP_KIND=gorge picks the map's shape (BattleMap.KINDS; none draws one by
+## the seed) and RIFTGATE_SEED=<n> the battle's seed (7).
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
-	var b := Battle.new(7)
+	var seed_env := OS.get_environment("RIFTGATE_SEED")
+	var b := Battle.new(int(seed_env) if seed_env.is_valid_int() else 7)
 	var team: Array = []
 	var ids: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
@@ -513,7 +515,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
-		_show_details(ground_lines(battle.field.map.terrain[h]))
+		_show_details(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
 		Sound.play("map_select")
 	else:
 		_select(null)
@@ -670,14 +672,17 @@ static func _said(head: String, rest: String) -> Dictionary:
 	return EntryReadout.parts_line("effect", [{"text": head, "trend": 0, "gain": false, "bold": true}, EntryReadout.word(rest)])
 
 
-## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, then a
-## line for each word the crossing table gives it, read from the table so it never disagrees
-## with the rule (Ryan, 28 October: a step a hex, water waded at two, crags the flyer's), the
-## ways under each by their shown names; then the packs' rule.
-static func ground_lines(t: int) -> Array:
+## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name (a wall
+## by what it is, Ryan, 29 October: crags, mesas, towers or cliffs; `word`, the map's ground_id),
+## then a line for each word the crossing table gives it, read from the table so it never
+## disagrees with the rule (Ryan, 28 October: a step a hex, water waded at two, walls the
+## flyer's), the ways under each by their shown names; then the packs' rule.
+static func ground_lines(t: int, word: String = "") -> Array:
 	var db := ContentDB.load_default()
-	var id := str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
-	var out: Array = [_title(str(db.vocabulary.get(id, {}).get("name", id)), "Ground")]
+	var id := word
+	if id.is_empty():
+		id = str(BattleMap.WALL_LOOKS[0]) if t == BattleMap.Terrain.MOUNTAIN else str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
+	var out: Array = [_title(db.term_name(id), "Ground")]
 	for pair in BattleMap.ground_ways(t):
 		var ways: Array[String] = []
 		for way in pair[1]:

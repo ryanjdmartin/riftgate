@@ -28,7 +28,7 @@ const DEFAULT_WIDTH := 9   # nine wide, the thumb's limit, so four machines can 
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1
-var map_kind := "mixed"   # the map's type (BattleMap.KINDS); set before setup, the intel the player will choose by
+var map_kind := ""   # the map's shape (BattleMap.KINDS), set before setup: the intel the player will choose by; "" draws one by the seed
 var rng := RandomNumberGenerator.new()
 var db: ContentDB
 var map: BattleMap
@@ -871,6 +871,7 @@ func foe_factory() -> Callable:
 func _build_skirmish(group: Array) -> Skirmish:
 	var sk := Skirmish.new(rng.randi(), columns)
 	sk.terrain = ground_terrain(group)
+	sk.ground = map.ground_id(ground_hex(group))
 	sk.foe_factory = foe_factory()   # a summoning action calls up content
 	for u in group:
 		if not field.units.has(u):

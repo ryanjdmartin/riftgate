@@ -575,6 +575,14 @@ func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
 	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
 	var sk := b._build_skirmish(group)
 	assert_eq(sk.terrain, BattleMap.Terrain.RUINS, "the skirmish is fought there, not on the machine's road")
+	assert_eq(sk.ground, "ruins", "and its header names that ground")
+	# A winged pack over a wall: the fight's word is the wall's look (Ryan, 29 October: walls are
+	# named by what they are), kept through a save.
+	f.map.terrain[sq.pos] = BattleMap.Terrain.MOUNTAIN
+	f.map.wall_look[sq.pos] = "towers"
+	var on_wall := b._build_skirmish(group)
+	assert_eq(on_wall.ground, "towers", "a fight over a tower says towers")
+	assert_eq(SaveGame._skirmish_from(SaveGame._skirmish_dict(on_wall, f), f).ground, "towers", "and a resumed one too")
 
 
 ## A route drawn by hand goes the way it was drawn, where a tap would take the cheapest way.

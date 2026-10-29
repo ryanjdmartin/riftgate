@@ -264,6 +264,12 @@ func module_name(module_id: String) -> String:
 	return str(modules.get(module_id, {}).get("name", module_id))
 
 
+## A vocabulary term's shown name (the ground's word on the tap, a fight's label), its id when
+## the vocabulary has none.
+func term_name(id: String) -> String:
+	return str(vocabulary.get(id, {}).get("name", id))
+
+
 func component_name(cid: String) -> String:
 	return str(components.get(cid, {}).get("name", cid))
 
@@ -830,6 +836,16 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 		if e.get("category") == "keyword" and e.get("status") == "implemented":
 			if Face.keyword_from_name(id) < 0 and not Foe.ATTACK_KEYWORDS.has(id):
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
+	# The map's ground words (each terrain's, and a wall by its look: BattleMap.ground_ids) and
+	# the vocabulary's terrain agree in both directions, so a rename on either side fails the
+	# build until the other follows.
+	var grounds := BattleMap.ground_ids()
+	for g in grounds:
+		if not vocabulary.has(g) or vocabulary[g].get("category") != "terrain":
+			errs.append("the map's ground '%s' has no terrain entry in the vocabulary" % g)
+	for id in vocabulary.keys():
+		if vocabulary[id].get("category") == "terrain" and vocabulary[id].get("status") == "implemented" and not grounds.has(id):
+			errs.append("vocabulary terrain '%s' is no ground the map shows" % id)
 
 
 ## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
@@ -1799,6 +1815,9 @@ func _validate_factions(errs: Array[String]) -> void:
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
 				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
+		# A domain's map lean names one of the map's shapes (29 October), read or not.
+		if f.has("map_kind") and not BattleMap.KINDS.has(str(f["map_kind"])):
+			errs.append("%s: map_kind '%s' is no map shape (%s)" % [where, str(f["map_kind"]), ", ".join(BattleMap.KINDS.keys())])
 		# The spawn lists by tier (28 October): keyed "1" to "3", every domain a "1".
 		var lists = f.get("spawn", {})
 		var spawn: Array = []

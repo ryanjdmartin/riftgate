@@ -898,10 +898,10 @@
    "id": "movespeed",
    "category": "battlefield",
    "name": "Movespeed",
-   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone.",
+   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; walls are the flyer's alone.",
    "status": "implemented",
    "design": {
-    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October)."
+    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October)."
    }
   },
   {
@@ -1061,14 +1061,44 @@
    "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it.",
    "status": "implemented",
    "design": {
-    "holes": "No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde."
+    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none), and the horde always keeps a crossing three hexes wide."
    }
   },
   {
-   "id": "mountain",
+   "id": "crags",
    "category": "terrain",
-   "name": "Mountain",
-   "codex": "Impassable, except to flyers and winged packs.",
+   "name": "Crags",
+   "codex": "Rock spikes. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "mesas",
+   "category": "terrain",
+   "name": "Mesas",
+   "codex": "Flat-topped rock. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "towers",
+   "category": "terrain",
+   "name": "Towers",
+   "codex": "Dead skyscrapers. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "cliffs",
+   "category": "terrain",
+   "name": "Cliffs",
+   "codex": "A wall of rock. Impassable, except to flyers and winged packs.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1078,7 +1108,7 @@
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",
-   "codex": "Crosses everything, water and crags included. Packs walk under it but never stop on its hex.",
+   "codex": "Crosses everything, water and walls included. Packs walk under it but never stop on its hex.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1088,7 +1118,7 @@
    "id": "hover",
    "category": "trait",
    "name": "Hover",
-   "codex": "Skims water at full pace; crags stop it.",
+   "codex": "Skims water at full pace; walls stop it.",
    "status": "implemented",
    "design": {
     "holes": ""

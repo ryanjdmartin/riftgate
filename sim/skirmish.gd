@@ -67,6 +67,7 @@ var mechs: Array[MechState] = []
 var packs: Array[Unit] = []
 var columns: int = DEFAULT_COLUMNS
 var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the contact hex), for the screen
+var ground: String = "plain"                 # its word for the header, a wall by its look (BattleMap.ground_id)
 var front: Array = []
 var back: Array = []
 var reinforcements: Array[Foe] = []   # foes waiting behind the formation; they step in at the reinforcement phase

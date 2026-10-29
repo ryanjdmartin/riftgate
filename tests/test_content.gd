@@ -2167,3 +2167,24 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+
+
+func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
+	# The walls named by what they are (Ryan, 29 October): every ground word the map shows has a
+	# terrain entry in the vocabulary and every implemented terrain entry is one the map shows,
+	# so a rename on either side fails the build; a domain's map lean names a shape.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_eq(db.validate(), [], "the content as it stands agrees")
+	for g in BattleMap.ground_ids():
+		assert_eq(str(db.vocabulary.get(g, {}).get("category", "")), "terrain", "%s is a terrain term" % g)
+	var towers: Dictionary = db.vocabulary["towers"]
+	db.vocabulary.erase("towers")
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("ground 'towers'")), "a look with no term is reported")
+	db.vocabulary["towers"] = towers
+	db.vocabulary["mountain"] = {"category": "terrain", "name": "Mountain", "codex": "A wall.", "status": "implemented", "design": {"holes": ""}}
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("terrain 'mountain'")), "a terrain term the map never shows is reported")
+	db.vocabulary.erase("mountain")
+	var fid := str(db.factions.keys()[0])
+	db.factions[fid]["map_kind"] = "flooded"
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("no map shape")), "a domain's lean to a retired type is reported")

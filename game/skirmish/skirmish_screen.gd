@@ -823,7 +823,7 @@ func _refresh(save: bool = true) -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_update_preview()
 	_update_round()
-	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
+	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), ContentDB.load_default().term_name(sk.ground).to_upper()]
 	_header.queue_redraw()
 	if _reserve != null:
 		_reserve.set_counts(sk.reserve_counts())
