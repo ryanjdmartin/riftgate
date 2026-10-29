@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 738 tests, 66,637 checks, green on main with the movement landing (28 October; main's
-  head 737 and 66,570 before it), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 739 tests, 66,640 checks, green on main (29 October; 737 and 66,570 before the
+  movement landing), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -123,7 +123,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
-  map) is gone (Ryan, 28 October): the battle screen shows all it did.
+  map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
+  map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
+  name, the boss's patrol and ring, the fifth caveat) but the crags' shown word (its 30).
 - Built: what the bible's section 12 lists, run as `docs/rules.md` states it (its known gaps at
   the end). The campaign's rules run headless only (`sim/campaign.gd`); no screen shows them.
   Since 27 October main also holds, from the branches above, the quick campaign on screen with
@@ -326,11 +328,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.343 (the
-  page's version 355, published 28 October from `ccr-7821127e-kwj874`: the movement rows of
-  section 4, the scales row's move and the silhouette row with them, section 12's built list and
-  the shapes' questions at v0.342 (version 354, onto main's v0.341 unchanged), then the hero
-  row's map line). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file is v0.343 (the page's version 355,
+  published 28 October from `ccr-7821127e-kwj874`: the movement rows of section 4 and their
+  follow-ons, onto main's v0.341 at version 354). The live page has since moved to v0.344,
+  published the same night from `claude/charming-rubin-h954bp` (the model rebuilds: this
+  file's v0.343 and that branch's rows), so the next publish from main merges onto it. The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`

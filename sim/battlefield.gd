@@ -622,7 +622,10 @@ func tick_pressure(ticks: int) -> bool:
 	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
 	_spawn_index += 1
 	var fac := str(entry[2]) if entry.size() > 2 else spawn_faction
-	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, fac, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
+	# Named as the setup names its packs, by the foe's shown name (the mechanics audit's 30: a
+	# spawn was named by its content id, "zombie_knight pack").
+	var shown := str(foe_profiles.get(str(entry[0]), {}).get("name", entry[0])).to_lower()
+	var sq := Unit.pack(0, "%s pack" % shown, at, fac, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 	add_unit(dress_pack(sq))
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true

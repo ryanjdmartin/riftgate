@@ -494,14 +494,16 @@ func codex_for_unit(u: Unit) -> Dictionary:
 
 
 ## What the map needs of a foe type (bible section 5): its pack's ring (the `zone` key), its
-## behaviour and caveat, and its move. Keyed by foe id, for Battlefield.foe_profiles; a
-## boss's entry serves the boss unit. Defaults are the engine's when the content says nothing.
+## behaviour and caveat, its move and its shown name. Keyed by foe id, for
+## Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults are the engine's when
+## the content says nothing.
 func pack_profiles() -> Dictionary:
 	var out: Dictionary = {}
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var p: Dictionary = {"zone": int(f.get("zone", 1)), "behaviour": str(f.get("behaviour", "push")), "hunts": str(f.get("hunts", "nearest"))}
 		p["movespeed"] = int(f.get("movespeed", Unit.PACK_MOVE))
+		p["name"] = str(f.get("name", id))
 		if bool(f.get("winged", false)):
 			p["winged"] = true   # its pack crosses water and crags as a flyer does (Battlefield.dress_pack)
 		out[id] = p

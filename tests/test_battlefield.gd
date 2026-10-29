@@ -514,6 +514,19 @@ func test_a_hunter_whose_prey_stands_in_water_closes_on_the_shore() -> void:
 	assert_eq(f.forced_fights().size(), 1, "and it has caught it")
 
 
+func test_a_rift_pressure_spawn_takes_its_foes_shown_name() -> void:
+	# The mechanics audit's 30: a spawn was named by its content id ("zombie_knight pack"), where
+	# the setup names its packs by the foe's shown name.
+	var f := _field()
+	f.foe_profiles = {"bone_hound": {"zone": 1, "behaviour": "push", "hunts": "nearest", "movespeed": 2, "name": "Bone Hound"}}
+	f.spawn_table = [["bone_hound", 3]]
+	f.spawn_faction = "marsh"
+	assert_true(f.tick_pressure(f.rift_pressure_max), "the rift spawns")
+	var sq: Unit = f.units[f.units.size() - 1]
+	assert_eq(sq.display_name, "bone hound pack", "named by its foe's shown name")
+	assert_eq(sq.foe_id, "bone_hound", "and still its foe by id")
+
+
 func test_the_boss_takes_its_move_from_content() -> void:
 	var f := _field()
 	f.foe_profiles = {"colossus": {"zone": 2, "behaviour": "push", "hunts": "nearest", "movespeed": 1}}
