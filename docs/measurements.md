@@ -3152,3 +3152,120 @@ Read:
   combo Ryan named needs the Afterburner shown and hot the round after a charge lands, which these
   fights, won in three and a half rounds, rarely give: a play test's question, and the tiered
   formations' once a tier-matched Kestrel kit stands on them.
+
+## 29 October, Chain on its form of the 29th
+
+**Ryan's pick of the looks, built, on the benches** (the looks' D and E together, built the same
+day, the bible's Chain row: Shocked read only by a weapon's strike aimed at its foe; Chain's arcs
+plain, each conductor keeping its charge; then a charge on one other foe at random, neither the
+target nor already Shocked). `tools/pricing_run.py run de29 --parts vanilla,ladders --benches
+prairie_dog --pieces arc_fault_cannon --numbers 4,6 --shapes direct --bench-stocks --seeds 200`,
+then the same with the Dingo's Megataser Harpoon at Spread 1 (`de29s`, the `--set` of the 29th's
+read), and both under the planner at 30 seeds (`de29p`, `de29ps`); Kestrel's row with vanillas 4
+and 6 in the Buzzard's Arc Fault slot (`de29b`) and with the Polarity Projector in the Transonic
+Rifle's place and in the Canopy's (`de29bpr`, `de29bpc`, a `--set` of the Buzzard's loadout; under
+the planner `de29pb`, `de29pbpr`, `de29pbpc`); then Chain 3 and Chain 4 as what-ifs (`--set
+components/arc_fault_cannon/face/chain=N`: `de29n3`, `de29n4`, `de29psn3`, `de29psn4`, `de29bn3`,
+`de29bn4`), a row without the Arc Fault reusing its stock read, the runner being deterministic.
+The sixteen big fights but the finale; about two hours on four cores. And 96 fights traced on the
+car with the Arc Fault in the Prairie Dog's slot (the sixteen, seeds 1 to 3, with and without the
+spread harpoon), counting each Arc Fault spend's arcs and charges.
+
+Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
+row as stocked, the Arc Fault's share of the row's spends, the Projector's and the Afterburner
+Cannon's, the peak heat and the overheats a fight):
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Arc Fault | Projector | Afterburner | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 94.8 | 5.80 | 21.3% |  |  |  |  | 35% | 0.14 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 98.1 | 4.87 | 15.9% | -0.94 r, -5.3% hull | 17% |  |  | 36% | 0.08 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 96.4 | 5.09 | 17.6% | -0.71 r, -3.6% hull | 16% (the vanilla) |  |  | 32% | 0.09 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 97.8 | 4.50 | 14.6% | -1.30 r, -6.7% hull | 18% (the vanilla) |  |  | 31% | 0.08 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.0 | 5.56 | 18.8% |  |  |  |  | 33% | 0.11 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.5 | 4.61 | 14.1% | -0.95 r, -4.8% hull | 17% |  |  | 35% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.1 | 4.87 | 15.6% | -0.69 r, -3.3% hull | 15% (the vanilla) |  |  | 32% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 98.8 | 4.32 | 12.6% | -1.24 r, -6.2% hull | 18% (the vanilla) |  |  | 30% | 0.05 |
+| Buzzard | stock (Arc Fault Cannon) | 99.9 | 3.30 | 10.5% |  | 9% |  | 5% | 95% | 0.39 |
+| Buzzard | vanilla 4 (flat, heat 0) | 99.9 | 3.40 | 10.9% | +0.11 r, +0.5% hull | 9% (the vanilla) |  | 5% | 96% | 0.37 |
+| Buzzard | vanilla 6 (flat, heat 0) | 99.9 | 3.35 | 10.6% | +0.05 r, +0.2% hull | 9% (the vanilla) |  | 5% | 94% | 0.36 |
+| Buzzard | the Polarity Projector in the Transonic Rifle's place | 99.8 | 3.34 | 10.6% | +0.04 r, +0.2% hull | 11% | 2% | 6% | 95% | 0.44 |
+| Buzzard | the Polarity Projector in the Canopy's place | 99.9 | 3.27 | 10.4% | -0.03 r, -0.1% hull | 7% | 2% | 5% | 95% | 0.39 |
+
+The planner, 30 seeds:
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Arc Fault | Projector | Afterburner | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 95.6 | 5.24 | 17.7% |  |  |  |  | 33% | 0.10 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 99.2 | 4.49 | 13.1% | -0.75 r, -4.6% hull | 17% |  |  | 34% | 0.06 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 97.5 | 4.69 | 14.7% | -0.55 r, -2.9% hull | 16% (the vanilla) |  |  | 31% | 0.08 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 98.3 | 4.20 | 12.1% | -1.05 r, -5.6% hull | 18% (the vanilla) |  |  | 30% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.9 | 5.08 | 16.2% |  |  |  |  | 32% | 0.09 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 99.2 | 4.25 | 11.7% | -0.83 r, -4.5% hull | 17% |  |  | 33% | 0.03 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.5 | 4.51 | 13.1% | -0.57 r, -3.0% hull | 16% (the vanilla) |  |  | 30% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 99.0 | 4.07 | 10.7% | -1.01 r, -5.5% hull | 18% (the vanilla) |  |  | 29% | 0.05 |
+| Buzzard | stock (Kestrel's row) | 100.0 | 3.24 | 9.6% |  | 9% |  | 4% | 96% | 0.36 |
+| Buzzard | the Polarity Projector in the Transonic Rifle's place | 100.0 | 3.19 | 9.6% | -0.05 r, -0.0% hull | 11% | 2% | 5% | 95% | 0.43 |
+| Buzzard | the Polarity Projector in the Canopy's place | 100.0 | 3.16 | 9.2% | -0.08 r, -0.4% hull | 7% | 2% | 4% | 95% | 0.35 |
+
+**By the kind of fight** (the Arc Fault's rounds in vanilla points: 4, plus twice its rounds past
+a vanilla 4's over a vanilla 6's, on the fights of each kind; the lone massive foes are the
+Treant, the Sandworm, the Bone Dragon and the Magma Golem, the formations the Meadow's, the
+Waste's, the Marsh's and the Peak's, the finals the eight heroes'):
+
+| Bench | A lone massive foe | The finals | The formations | All sixteen |
+|---|---|---|---|---|
+| The car, greedy 200 | 4.1 | 4.8 | 6.2 | 4.8 |
+| The car with the spread harpoon, greedy 200 | 4.1 | 4.8 | 7.4 | 4.9 |
+| The car, the planner 30 | 4.0 | 5.0 | 6.0 | 4.8 |
+| The car with the spread harpoon, the planner 30 | 4.0 | 5.1 | 8.6 | 5.2 |
+
+The Marsh's formation, the row's wall, at 200 seeds: won 45 times as stocked, 86 with a vanilla 4, 130
+with a vanilla 6 and 141 with the Arc Fault (with the spread harpoon 113, 139, 162 and 154).
+
+**Chain's N** (the Arc Fault at Chain 3 and 4, what-ifs):
+
+| Bench | Chain | Win | Rounds | Hull | Off stock | In vanilla points | On the formations | Arc Fault share |
+|---|---|---|---|---|---|---|---|---|
+| The car, greedy 200 | 2 | 98.1 | 4.87 | 15.9% | -0.94 r, -5.3% hull | 4.8 | 6.2 | 17% |
+| The car, greedy 200 | 3 | 98.2 | 4.83 | 15.7% | -0.97 r, -5.5% hull | 4.9 | 6.6 | 17% |
+| The car, greedy 200 | 4 | 98.2 | 4.81 | 15.5% | -0.99 r, -5.7% hull | 4.9 | 6.8 | 17% |
+| The car with the spread harpoon, the planner 30 | 2 | 99.2 | 4.25 | 11.7% | -0.83 r, -4.5% hull | 5.2 | 8.6 | 17% |
+| The car with the spread harpoon, the planner 30 | 3 | 99.0 | 4.22 | 11.8% | -0.86 r, -4.4% hull | 5.3 | 9.1 | 17% |
+| The car with the spread harpoon, the planner 30 | 4 | 99.0 | 4.19 | 11.7% | -0.89 r, -4.4% hull | 5.5 | 9.4 | 17% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 2 | 99.9 | 3.30 | 10.5% | -0.11 r against a vanilla 4 there | | 4.79 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 3 | 99.9 | 3.30 | 10.4% | -0.11 r against a vanilla 4 there | | 4.79 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 4 | 99.9 | 3.29 | 10.4% | -0.11 r against a vanilla 4 there | | 4.76 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+
+Read:
+
+- **The form reads as look E said.** Chain 2 is worth about 0.8 vanilla points on the car over
+  the sixteen big fights (the Arc Fault 0.94 rounds off its row against a vanilla 4's 0.71 and a
+  6's 1.30: about 4.8 points, inside tier one's band), 0.9 with the spread harpoon, 0.8 under the
+  planner and 1.2 with the spread harpoon there; look E alone read 0.8, 1.0 and 1.2. Shock's reading
+  adds nothing of its own, and the two together compound nothing.
+- **Chain is a weapon for a field of foes.** On a lone massive foe the Arc Fault is a plain 4 to a
+  tenth of a point (nothing to charge, nothing to arc); on the finals it reads 4.8; on the four
+  formations 6.2, past a vanilla 6, and 7.4 with the spread harpoon (8.6 under the planner, a
+  direction). The sixteen big fights hold four formations, so their average undersells it on the
+  fight-size spectrum the foes' fresh start brings; the ladder's tier cells are its next read.
+- **The charge carries it, not the arcs.** In the 96 traced fights the Arc Fault charged a foe on
+  0.35 of its spends (0.30 with the spread harpoon; never with no other foe on the field) and arced
+  on 0.06 of them (0.14), never to more than two conductors: the team's aimed strikes cash each
+  charge within the round, the greedy taking a doubled blow now over an arc of 2 later, so the
+  charges never pile up and nothing compounds on today's kits and bot.
+- **N is a weak lever on this form.** Chain 3 and Chain 4 add about a tenth of a point each over the
+  sixteen (4.9 and 4.9), 0.4 and 0.6 on the formations, and nothing in Kestrel's row (3.30, 3.30 and
+  3.29 rounds): N prices the arcs, and the arcs are rare while the team cashes the charges. Chain 2
+  stays content's placeholder; N moves when the arcs do, with a spread setter and a player who holds
+  the charges for them.
+- **Shock's reading costs the stock rows nothing.** Wainwright & Sutler's row reads 5.80 rounds and
+  21.3% hull against 5.80 and 21.2% before it; with the spread harpoon 5.56 against 5.57.
+- **Kestrel's row gains a setter.** The Buzzard's Arc Fault charges for itself: the row takes 3.30
+  rounds against 3.40 on the conductor of the 28th, the Arc Fault ahead of a vanilla 6 in its slot
+  (3.35); under the planner 3.24 against 3.39.
+- **The Polarity Projector on the Buzzard takes nothing over.** It is spent 2% of the time and the
+  Afterburner Cannon 5 to 6%; in the Canopy's place the row is a touch quicker (3.27 rounds greedy,
+  3.16 under the planner, against 3.30 and 3.24), in the Transonic Rifle's place the same within the
+  noise (3.34 and 3.19, its overheats 0.44 a fight against 0.39). With the Arc Fault its own setter,
+  the Buzzard's Chain gun no longer wants one beside it; whether the Shock into the Afterburner is
+  wanted on it stays a play test's question (the bible's section 12).

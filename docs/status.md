@@ -307,7 +307,11 @@ line), since no number read since 22 October was read on the content as it now s
    barely matters, self-fuelling is what moves it, Shock clarified costs nothing, and a Shock
    setter on the Buzzard takes nothing over. Ryan picked the form the same evening (the arcs
    plain, Shock read only by a weapon's strike aimed at its foe, a charge on one other foe at
-   random), built at once; its read next, then N and the Buzzard's stock (section 12).
+   random), built at once and read (`docs/measurements.md`): about 0.8 vanilla points over the
+   sixteen big fights, nothing against a lone massive foe and about 2 on the formations, the
+   charge carrying it (the team cashes each one, so nothing compounds); Chain 3 and 4 add a
+   tenth of a point each, so N stays 2. Ryan affirmed the random charge the same evening
+   (lightning, free reach, it sets itself up); the Buzzard's stock is section 12's.
    Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
    maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
    component priced in heat, hull or shield, the basics too; passive cooling the lever that
