@@ -159,8 +159,9 @@ defeat when every machine is wrecked. There is no round limit.
   reinforcement step places every arrival first, then the mines land left to right; any other
   way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
   a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
-  other Shocked foe on the field as it lands; Lure and Disrupt do nothing, their round being
-  over, and Rapid and Volatile acted at the spend. Nothing expires.
+  other Shocked foe on the field as it lands, then charges one other foe at random; Lure and
+  Disrupt do nothing, their round being over, and Rapid and Volatile acted at the spend.
+  Nothing expires.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
@@ -173,7 +174,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    the foe read on that foe (a status it carries, its rank).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
-   (Shocked doubles it); then its armour comes off. A weapon's blow takes them whatever it
+   (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
+   armour comes off. A weapon's blow takes them whatever it
    deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing. Its riders land
    on every foe struck.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
@@ -284,8 +286,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
-  each arc a blow of the spend, so its Shocked doubles it and is spent, and the riders land;
-  Chain reads Shocked and never lays it, and an arc adds no heat.
+  each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
+  and an arc adds no heat; then one other foe at random, neither the target nor already
+  Shocked, is Shocked.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
@@ -389,7 +392,7 @@ not built): the ally gains Overcharged 2 and its die rolls again, which does not
 spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
-strike of the spend whole; the engine runs it as a keyword the passive grants written out,
+strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is spent; the engine runs it as a keyword the passive grants written out,
 so each of the Boar's weapons wears the star, the hold reading the passive's line, and no
 keyword chip.
 
@@ -495,8 +498,10 @@ On a foe:
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
-- **Shocked** (debuff): the next team blow of a weapon deals double, spending the shock (a
-  vent's blast and a weapon's mine too); equipment leaves it standing; it never stacks.
+- **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
+  shock is spent (a vent's blast and a mine's shot on its arrival too); a blow that only reaches
+  it (an area's, a Chain's arc, a spill) neither doubles nor spends it, and equipment leaves it
+  standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.
@@ -523,7 +528,7 @@ On a foe:
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
-  multiplies and its armour (a Shocked foe takes blow plus Flak, doubled); a debuff's blow
+  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a debuff's blow
   stays nothing. The stacks halve at the end of each round, rounded
   down.
 - **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,

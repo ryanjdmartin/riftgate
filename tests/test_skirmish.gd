@@ -1538,10 +1538,11 @@ func test_static_set_reach_sends_a_tagged_component_to_direct() -> void:
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "the mortar itself never changed")
 
 
-## Chain, the conductor (Ryan, 28 October; the kill and repeat retired): the blow lands on its
-## target as ever, and Chain's number on every other Shocked foe on the field, wherever it stands
-## and whatever the gun's reach; each arc is a weapon's blow, so the conductor's Shocked doubles
-## it and is spent. Heat once a spend.
+## Chain, the conductor (Ryan, 28 and 29 October): the blow lands on its target as ever, and
+## Chain's number on every other Shocked foe on the field, wherever it stands and whatever the
+## gun's reach; no strike is aimed at a conductor, so its Shock neither doubles the arc nor is
+## spent. Then one other foe at random, neither the target nor already Shocked, is Shocked. Heat
+## once a spend.
 func _chain_gun(power: int = 4, chain: int = 2, heat: int = 3, more: Array = []) -> Face:
 	var kws: Array = [K.CHAIN]
 	kws.append_array(more)
@@ -1570,12 +1571,14 @@ func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> v
 	assert_false(sk.targets_for_face(sk.mechs[0], sk.mechs[0].face()).has(behind), "the foe behind the target is out of Direct reach")
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_eq(target.hp, 26, "the target takes the roll")
-	assert_eq(beside.hp, 26, "the Shocked foe beside it takes Chain 2, doubled")
-	assert_eq(behind.hp, 26, "and so does the one behind the target, out of the gun's reach")
+	assert_eq(beside.hp, 28, "the Shocked foe beside it takes Chain 2, plain: no strike is aimed at it")
+	assert_eq(behind.hp, 28, "and so does the one behind the target, out of the gun's reach")
+	assert_true(Effects.has(beside, "shocked") and Effects.has(behind, "shocked"), "each conductor keeps its charge")
 	assert_eq(idle.hp, 30, "a foe with no charge takes nothing")
-	assert_false(Effects.has(beside, "shocked") or Effects.has(behind, "shocked"), "each arc spends its charge")
+	assert_true(Effects.has(idle, "shocked"), "and is the one other foe left to charge")
 	assert_eq(sk.mechs[0].heat, 3, "heat once a spend; an arc adds none")
 	assert_eq("\n".join(sk.log).count("arcs to"), 2, "the log tells each arc")
+	assert_true("\n".join(sk.log).contains("leaves a charge on"), "and the charge")
 
 
 func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
@@ -1590,11 +1593,14 @@ func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	_shock_on(other)
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_eq(target.hp, 22, "the aimed foe takes the roll, doubled by its own charge, once")
-	assert_eq(other.hp, 26, "the other conductor takes Chain 2, doubled")
+	assert_false(Effects.has(target, "shocked"), "the strike aimed at it spends the charge")
+	assert_eq(other.hp, 28, "the other conductor takes Chain 2, plain")
+	assert_true(Effects.has(other, "shocked"), "and keeps its charge")
 	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
+	assert_false("\n".join(sk.log).contains("leaves a charge on"), "no foe left to charge: the target never is")
 
 
-func test_chain_with_no_shocked_foe_lands_on_its_target_alone() -> void:
+func test_chain_with_no_shocked_foe_lands_on_its_target_and_charges_another() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
 	var target := _ghoul(30, 5)
@@ -1603,12 +1609,34 @@ func test_chain_with_no_shocked_foe_lands_on_its_target_alone() -> void:
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq([target.hp, other.hp], [26, 30], "the target alone")
+	assert_eq([target.hp, other.hp], [26, 30], "the target alone takes a blow")
 	assert_false("\n".join(sk.log).contains("arcs to"), "no arc")
+	assert_true(Effects.has(other, "shocked") and not Effects.has(target, "shocked"), "the other foe is charged, never the target")
+
+
+func test_chain_charges_one_other_foe_at_random() -> void:
+	var picked := {}
+	for seed in range(1, 13):
+		var sk := Skirmish.new(seed, 4)
+		sk.add_mech(_mech("A", Die.single(_chain_gun())))
+		var foes: Array = [_ghoul(30, 5), _ghoul(30, 5), _ghoul(30, 5), _ghoul(30, 5)]
+		sk.add_foes(foes)
+		sk.begin()
+		sk.start_round()
+		var target: Foe = sk.front[0]
+		assert_true(sk.assign(0, target), "the Chain gun spent")
+		var charged: Array = []
+		for col in range(4):
+			if Effects.has(sk.front[col], "shocked"):
+				charged.append(col)
+		assert_eq(charged.size(), 1, "one foe charged a spend (seed %d)" % seed)
+		assert_false(charged.has(0), "never the target")
+		picked[charged[0]] = true
+	assert_eq(picked.size(), 3, "the charge falls on each of the others over the seeds: a draw, not a rule")
 
 
 func test_the_firers_modifiers_ride_every_arc() -> void:
-	for amp in [["add_damage", 1, 6, "(2 + 1), doubled"], ["multiply_damage", 2, 8, "(2 x 2), doubled"]]:
+	for amp in [["add_damage", 1, 3, "2 + 1"], ["multiply_damage", 2, 4, "2 x 2"]]:
 		var sk := Skirmish.new(1, 2)
 		var m := _mech("A", Die.single(_chain_gun()))
 		m.grant_passive({"id": "test_amp", "name": "Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": str(amp[0]), "value": amp[1]}]})
@@ -1633,7 +1661,7 @@ func test_the_riders_land_on_every_conductor() -> void:
 	sk.start_round()
 	_shock_on(other)
 	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq(other.hp, 26, "the conductor's blow, before the Flak it lays")
+	assert_eq(other.hp, 28, "the conductor's blow, before the Flak it lays")
 	assert_eq(Effects.stacks_of(other, "burning"), 1, "Burn 1 lands on the conductor")
 	assert_eq(Effects.stacks_of(other, "flakked"), 1, "and Flak 1, after its blow")
 
@@ -1645,7 +1673,7 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	var m := _mech("A", Die.single(gun))
 	sk.add_mech(m)
 	var target := _ghoul(30, 5)
-	var weak := _ghoul(3, 5)
+	var weak := _ghoul(2, 5)
 	sk.add_foes([target, weak])
 	sk.begin()
 	sk.start_round()
@@ -1667,10 +1695,10 @@ func test_an_arc_meets_armour_unless_it_breaches() -> void:
 		sk.start_round()
 		_shock_on(plated)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
-		assert_eq(30 - plated.hp, 4 if breach else 3, "a Breach meets no armour" if breach else "Chain 2, doubled, less armour 1")
+		assert_eq(30 - plated.hp, 2 if breach else 1, "a Breach meets no armour" if breach else "Chain 2, plain, less armour 1")
 
 
-func test_a_conductors_barrier_takes_the_arc_and_its_charge_is_spent() -> void:
+func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
 	var target := _ghoul(30, 5)
@@ -1683,17 +1711,31 @@ func test_a_conductors_barrier_takes_the_arc_and_its_charge_is_spent() -> void:
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_eq(sheltered.hp, 30, "the Barrier takes the arc whole")
 	assert_false(Effects.has(sheltered, "barrier"), "and pops")
-	assert_false(Effects.has(sheltered, "shocked"), "the charge is spent on it")
-	assert_true("\n".join(sk.log).contains("the shock is spent on the Barrier"), "the log says so")
+	assert_true(Effects.has(sheltered, "shocked"), "the charge stands: no strike was aimed at it")
 
 
-func test_a_silenced_machine_arcs_nothing() -> void:
+func test_a_ward_turns_a_chains_charge_away() -> void:
 	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(_chain_gun())))
+	var target := _ghoul(30, 5)
+	var warded := _ghoul(30, 5)
+	sk.add_foes([target, warded])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(warded, "ward", 1, "test", sk.round)
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_false(Effects.has(warded, "shocked"), "the one foe to charge is warded: the charge is turned away")
+	assert_true("\n".join(sk.log).contains("Ward turns away Shocked"), "the log says so")
+
+
+func test_a_silenced_machine_arcs_and_charges_nothing() -> void:
+	var sk := Skirmish.new(1, 3)
 	var m := _mech("A", Die.single(_chain_gun()))
 	sk.add_mech(m)
 	var target := _ghoul(30, 5)
 	var other := _ghoul(30, 5)
-	sk.add_foes([target, other])
+	var idle := _ghoul(30, 5)
+	sk.add_foes([target, other, idle])
 	sk.begin()
 	sk.start_round()
 	_shock_on(other)
@@ -1701,6 +1743,7 @@ func test_a_silenced_machine_arcs_nothing() -> void:
 	assert_true(sk.assign(0, target), "the Chain gun spent, its keywords muted")
 	assert_eq([target.hp, other.hp], [26, 30], "the target alone")
 	assert_true(Effects.has(other, "shocked"), "the charge stands")
+	assert_false(Effects.has(idle, "shocked"), "and no foe is charged")
 
 
 func test_the_maps_list_the_conductors() -> void:
@@ -1725,6 +1768,43 @@ func test_the_maps_list_the_conductors() -> void:
 	assert_eq(Skirmish.area_number(gun, Skirmish.AREA_CHAIN), 2, "a conductor's number is Chain's")
 	var probe := Face.attack(0, L, [K.CHAIN])
 	assert_true(sk.conductors(probe, target).is_empty(), "a debuff conducts nothing")
+
+
+## Shocked (Ryan, 29 October: "when targeted and struck by a weapon, double the damage received
+## and remove Shock"): a weapon's strike aimed at the foe doubles and spends it; a blow that only
+## reaches it, an area's or a spill's, neither doubles nor spends it.
+func test_a_shock_is_read_only_by_a_weapon_strike_aimed_at_its_foe() -> void:
+	var sk := Skirmish.new(1, 2)
+	var sweep := Face.attack(6, L, [K.CLEAVE])
+	sweep.cleave = 2
+	sk.add_mech(_mech("A", Die.single(sweep)))
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, L))))
+	var target := _ghoul(30, 5)
+	var neighbour := _ghoul(30, 5)
+	sk.add_foes([target, neighbour])
+	sk.begin()
+	sk.start_round()
+	_shock_on(neighbour)
+	assert_true(sk.assign(0, target), "a Spread spent beside the Shocked foe")
+	assert_eq(neighbour.hp, 28, "Spread 2 lands plain on it")
+	assert_true(Effects.has(neighbour, "shocked"), "and its charge stands")
+	assert_true(sk.assign(1, neighbour), "a gun aimed at it")
+	assert_eq(neighbour.hp, 18, "the strike aimed at it lands double")
+	assert_false(Effects.has(neighbour, "shocked"), "and spends the charge")
+
+
+func test_a_spill_neither_doubles_nor_spends_a_shock() -> void:
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L, [K.SPILLOVER]))))
+	var front := _ghoul(4, 5)
+	var behind := _archer(30, 5)
+	sk.add_foes([front, behind])
+	sk.begin()
+	sk.start_round()
+	_shock_on(behind)
+	assert_true(sk.assign(0, front), "the strike kills the front foe")
+	assert_eq(behind.hp, 24, "its excess, 6, spills plain into the foe behind")
+	assert_true(Effects.has(behind, "shocked"), "whose charge stands")
 
 
 func test_stats_are_base_plus_every_live_source_in_order() -> void:
@@ -3276,8 +3356,8 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	assert_true(text.contains("A spills over: 1 into archer"), "the killing strike's excess")
 	assert_eq(text.count("A spills over: 13 into archer"), 2, "and each later strike, less the archer's armour")
 	assert_eq(sk.last_roll["final"], (15 - 3) + 2 * 15, "the blow's record counts the later strikes whole, as it counts the excess")
-	# The foe behind reads its own statuses: a shock doubles the first strike that reaches it
-	# and is spent. An exact kill has nothing past it, so the shock waits for the next strike.
+	# The foe behind reads its own statuses but a Shock: a spill is aimed at nobody, so its charge
+	# neither doubles a strike nor is spent (29 October). An exact kill has nothing past it.
 	var s2 := Skirmish.new(1, 1)
 	var b2 := Face.attack(10, L, K.SPILLOVER)
 	b2.strikes = 3
@@ -3289,8 +3369,8 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	s2.start_round()
 	Effects.stack(wired, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_true(s2.assign(0, exact), "the burst at a ghoul its first strike kills exactly")
-	assert_eq(wired.hp, 100 - 2 * 10 - 10, "nothing past the exact kill; the second strike lands double, the third plain")
-	assert_false(Effects.has(wired, "shocked"), "the shock is spent")
+	assert_eq(wired.hp, 100 - 2 * 10, "nothing past the exact kill; the later strikes land plain")
+	assert_true(Effects.has(wired, "shocked"), "and the shock stands")
 	# Per foe: a spread neighbour an earlier strike killed spills its later strikes behind it,
 	# while the target that stands spills nothing.
 	var s3 := Skirmish.new(1, 2)
@@ -6147,8 +6227,9 @@ func test_a_weapons_hit_cashes_a_foes_cryo_for_the_hitters_cooling() -> void:
 
 ## Flak (Ryan's go, 19 October; built 21 October): Flak N lays N stacks on each foe hit, whatever
 ## the blow dealt, after the blow, and every blow the foe takes deals a point more a stack: an
-## add before the multiplies (a Shocked foe takes blow plus Flak, doubled) and before its
-## armour, folded into the die's number over it; a blow of nothing stays nothing.
+## add before the multiplies (a Shocked foe takes a weapon's strike aimed at it plus Flak,
+## doubled) and before its armour, folded into the die's number over it; a blow of nothing stays
+## nothing.
 func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_harder() -> void:
 	var sk := Skirmish.new(1)
 	var spray := Face.attack(5, L, [K.CLEAVE, K.FLAK])
@@ -6176,7 +6257,8 @@ func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_har
 	assert_eq(sk.front[2].hp, 98, "a blow of nothing stays nothing, Flak or not")
 	assert_eq(Effects.damage_taken(mid, 0), 0, "nothing in, nothing out")
 	Effects.stack(mid, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
-	assert_eq(Effects.damage_taken(mid, 10), 24, "adds before multiplies: a Shocked foe takes blow plus Flak, doubled")
+	assert_eq(Effects.damage_taken(mid, 10, null, true), 24, "adds before multiplies: a Shocked foe takes a weapon's strike aimed at it plus Flak, doubled")
+	assert_eq(Effects.damage_taken(mid, 10, null, true, false), 12, "a blow that only reaches it: the Flak, never the Shock")
 	mid.armour = 5
 	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), [7, 7] as Array[int], "its armour comes off after the Flak, and the shock stays on its chip")
 
@@ -8161,8 +8243,9 @@ func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_expose
 	assert_false(sk.mines.has(Vector2i(0, 1)), "and leaves no mine")
 
 
-## Chain does what Chain does on a blow (Ryan, 21 October): a Chain mine that kills its arrival
-## repeats its spender's attack on the next foe in reach, rolled and paying its heat again.
+## Chain does what Chain does on a blow (Ryan, 21 October; the conductor 28 October, its charge
+## 29 October): a Chain mine lands its number as laid on every other Shocked foe as it lands, plain,
+## each conductor keeping its charge, and pays no heat for the arc.
 func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands() -> void:
 	var sk := Skirmish.new(1, 2)
 	var m := _mech("Bomber", Die.single(_chain_gun(4, 2, 5)), 40, 100)
@@ -8181,10 +8264,36 @@ func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands()
 	_shock_on(other)
 	sk.end_round()
 	assert_eq(arrival.hp, 26, "the arrival takes the shot")
-	assert_eq(other.hp, 296, "and the Shocked foe takes Chain 2 as laid, doubled, as the mine lands")
-	assert_false(Effects.has(other, "shocked"), "its charge spent")
+	assert_eq(other.hp, 298, "and the Shocked foe takes Chain 2 as laid, plain, as the mine lands")
+	assert_true(Effects.has(other, "shocked"), "its charge stands")
 	assert_true("\n".join(sk.log).contains("arcs to"), "the log says so")
 	assert_eq([heat_laid, sk.mechs[0].heat], [5, 5], "the lay paid its heat; the arc pays none")
+
+
+## A Chain mine charges as it lands (29 October): one other foe at random, never the arrival; a
+## Ward turns the charge away, and the log tells it with the spend's other turned marks.
+func test_a_chain_mine_charges_one_other_foe_as_it_lands() -> void:
+	for warded in [false, true]:
+		var sk := Skirmish.new(1, 2)
+		var m := _mech("Bomber", Die.single(_chain_gun(4, 2, 5)), 40, 100)
+		m.grant_passive(MINER)
+		sk.add_mech(m)
+		sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
+		var weak := _ghoul(10, 0)
+		var other := _ghoul(300, 0)
+		var arrival := _ghoul(30, 0)
+		sk.add_foes([weak, other, arrival])
+		sk.begin()
+		sk.start_round()
+		assert_true(sk.assign(1, weak), "a slot emptied")
+		assert_true(sk.assign(0, Vector2i(0, 0)), "a Chain mine laid")
+		if warded:
+			Effects.grant_buff(other, "ward", 1, "test", sk.round + 1)
+		sk.end_round()
+		assert_eq(arrival.hp, 26, "the arrival takes the shot")
+		assert_false(Effects.has(arrival, "shocked"), "never charged by its own shot")
+		assert_eq(Effects.has(other, "shocked"), not warded, "a Ward turns the charge away" if warded else "the one other foe is charged")
+		assert_eq("\n".join(sk.log).contains("Ward turns away Shocked"), warded, "the log tells a turned charge" if warded else "nothing turned")
 
 
 ## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that
@@ -8611,7 +8720,8 @@ func test_the_siphons_heat_fires_the_on_heat_gain_passives() -> void:
 ## Area by shape, numbered, and the blow's order (Ryan, 28 October): every foe past the target
 ## takes its shape's number in place of the roll; the firer's modifiers land on every blow, its
 ## adds then its multiplies (the Kite's double on the printed number before them), then each
-## foe its own statuses, its adds then its multiplies, then its armour.
+## foe its own statuses, its adds then its multiplies (a Shock's never, no strike being aimed at
+## it: 29 October), then its armour.
 func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own() -> void:
 	var sk := Skirmish.new(1, 3)
 	var sweep := Face.attack(6, L, K.CLEAVE)
@@ -8633,8 +8743,8 @@ func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own(
 	assert_true(sk.assign(0, mid), "the sweep at the middle")
 	assert_eq(mid.hp, 100 - (6 + 1) * 2, "the target: the roll, the firer's add, then its multiply")
 	assert_eq(left.hp, 100 - ((2 + 1) * 2 + 1 - 1), "a neighbour: Spread 2, the firer's add and multiply, then its own Flak, then its armour")
-	assert_eq(right.hp, 100 - (2 + 1) * 2 * 2, "the other: the same blow, its own Shock doubling it last")
-	assert_false(Effects.has(right, "shocked"), "and the shock spent")
+	assert_eq(right.hp, 100 - (2 + 1) * 2, "the other: the same blow, its Shock never read, no strike being aimed at it (29 October)")
+	assert_true(Effects.has(right, "shocked"), "and the shock stands")
 	# The Kite's double stays on the printed number (Ryan, 28 October: his reading, doubling after
 	# the firer's flat adds, is its buff if it ever needs one): what the entry prints from its
 	# firer is doubled, the buffs land once after, and each foe's own read (the hull it is

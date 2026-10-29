@@ -2281,7 +2281,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		var landed := dmg
 		# Area by shape, numbered (Ryan, 28 October; the half retired): every other foe the strike
 		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
-		# conductor, whose Shocked then doubles it as on any blow) in place of the roll,
+		# conductor, whose Shock stands, no strike being aimed at it) in place of the roll,
 		# through the same order, the firer's modifiers on it and its own reads. Every blow of the
 		# strike is read before any lands, so a kill in it (the talons' Overcharged) feeds the next
 		# strike, never this one's other blows.
@@ -2310,11 +2310,12 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 					landed = blow
 				continue
 			# What the foe takes of the blow: its own statuses read last (its Flak adds to a
-			# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
-			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
+			# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe takes the
+			# strike aimed at it double, spending the shock, while a blow that only reaches it, an
+			# area's or a Chain's arc, neither doubles nor spends it: Ryan, 29 October), then its armour comes off, flat,
 			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff())
+			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff(), foe == aimed)
 			var barred := _barrier_eats(foe, not f.is_debuff())
 			if barred:
 				taken = 0   # a foe's Barrier takes the weapon's blow whole; its riders land (28 October)
@@ -2330,10 +2331,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe == aimed:
 				landed = taken
 				armoured_total += foe_armoured
-			# A weapon's blow spends a shock, even one that deals nothing (Ryan, 25 October: "The
-			# important part is that it was a damaging weapon"); equipment (a lure, a probe) leaves
-			# it standing.
-			if not f.is_debuff() and Effects.remove(foe, "shocked"):
+			# A weapon's strike aimed at the foe spends a shock, even one that deals nothing (Ryan,
+			# 25 October: "The important part is that it was a damaging weapon"; 29 October: "when
+			# targeted and struck by a weapon"); equipment (a lure, a probe) and a blow that only
+			# reaches the foe leave it standing.
+			if not f.is_debuff() and foe == aimed and Effects.remove(foe, "shocked"):
 				log.append(("%s: the shock is spent on the Barrier" % foe.display_name) if barred else ("%s: the shock lands, %d doubled" % [foe.display_name, blow]))
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
@@ -2431,6 +2433,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.has(Face.Keyword.SHOCK):
 		for foe in touched:
 			_shock(foe, ms, turned)
+	# Chain's charge (Ryan, 29 October): after its arcs, one other foe at random is Shocked.
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		_chain_charge(target, ms, ms.unit.display_name, turned, mech_index)
 	# Expose (the Needletail's Fovea Designator, 21 October): every foe reached and left
 	# standing is Exposed through the next round, a second Expose refreshing it.
 	if f.has(Face.Keyword.EXPOSE):
@@ -2641,6 +2646,30 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 		if not hit.has(foe):
 			hit.append(foe)
 	return hit
+
+
+## Chain's charge (Ryan, 29 October: "then Shock one other random non-targeted enemy that doesn't
+## already have Shock"): after a Chain spend's arcs, one foe on the field, alive, neither the
+## target nor already Shocked, drawn from the seeded stream, is Shocked; a Ward turns it away. The
+## round preview's copy draws nothing: a lone such foe takes it for sure, else it is held back and
+## noted. `by` may be null (a mine whose spender is gone); `who` names the spender in the log.
+func _chain_charge(target: Foe, by: MechState, who: String, turned, mech_index: int) -> void:
+	var pool: Array[Foe] = []
+	for foe in field_foes():
+		if foe != target and foe.alive() and not Effects.has(foe, "shocked"):
+			pool.append(foe)
+	if pool.is_empty():
+		return
+	if previewing and pool.size() > 1:
+		preview_notes.append({"kind": "charge", "mech": mech_index})
+		return
+	var foe: Foe = pool[0] if pool.size() == 1 else pool[rng.randi_range(0, pool.size() - 1)]
+	if Effects.turns_mark(foe, "shocked"):
+		_turned_away(foe, "shocked", turned, by)
+		return
+	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	log.append("%s leaves a charge on %s: Shocked" % [who, foe.display_name])
+	_foe_gained_status(foe, "shocked")
 
 
 ## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
@@ -3294,12 +3323,14 @@ func _mine_spender(shot: Dictionary) -> MechState:
 
 
 ## One mine's shot on the foe that takes it, a blow as a weapon lands one: through each foe's
-## damage taken (a Shocked foe takes double, spending the shock) and its armour, then the shot's
+## damage taken (a Shocked arrival takes double, spending the shock) and its armour, then the shot's
 ## keywords acting as on a blow: Spread its rank neighbours too, Penetrate the other rank of its
 ## column and Splash both (a cluster), each taking the shot's number for its shape as laid, Spillover past a front kill, Burning, a stun, a web, Cryo (cashed
 ## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, its number
-## as laid on every other Shocked foe on the field as the shot lands (28 October). A kill on a
-## foe carrying the Syrinx Drone leaves the shot in its slot again.
+## as laid on every other Shocked foe on the field as the shot lands, then a charge on one other
+## foe at random (28 and 29 October). The arrival is the shot's own foe: a Shock it carries doubles
+## the shot and is spent, while a foe the shot only reaches keeps its own. A kill on a foe
+## carrying the Syrinx Drone leaves the shot in its slot again.
 func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	var kws: Array = shot.get("keywords", [])
 	var by := _mine_spender(shot)
@@ -3370,13 +3401,13 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			Effects.remove(t, eat)
 			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
 		var weapon := bool(shot.get("weapon", blow > 0))   # a weapon's shot, a blow of 0 included; equipment's is none
-		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
+		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon, t == foe) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		var barred := _barrier_eats(t, weapon)
 		if barred:
 			taken = 0   # a foe's Barrier takes the shot's blow whole (28 October)
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		if weapon and Effects.remove(t, "shocked"):
+		if weapon and t == foe and Effects.remove(t, "shocked"):   # the arrival, the shot's own foe; an area's foe or an arc's keeps its shock (29 October)
 			log.append(("%s: the shock is spent on the Barrier" % t.display_name) if barred else ("%s: the shock lands, %d doubled" % [t.display_name, blow]))
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive() and kws.has(Face.Keyword.DISPEL):
@@ -3422,6 +3453,10 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if kws.has(Face.Keyword.EXPOSE):
 			Effects.grant_for_rounds(t, Effects.STATUS["exposure"], "mech", round + 1)
 			_note_status(gained, t, "exposure", turned)
+	# Chain's charge as the shot lands (29 October): one other foe at random, not the arrival,
+	# before the Ward's line, so a charge it turns away is told with the rest.
+	if kws.has(Face.Keyword.CHAIN) and shot.has("chain") and bool(shot.get("weapon", true)):
+		_chain_charge(foe, by, "a mine of %s's" % str(shot.get("by", "")), turned, int(shot.get("mech", -1)))
 	_tell_turned(turned)
 	for t in gained.keys():
 		for status_id in gained[t]:
@@ -3438,11 +3473,10 @@ func _mine_spill(foe: Foe, amount: int, hit: Array[Foe], shot: Dictionary, sourc
 	var behind: Foe = back[foe.column]
 	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var taken := maxi(0, Effects.damage_taken(behind, amount, source) - behind.armour_total())
+	var taken := maxi(0, Effects.damage_taken(behind, amount, source, false, false) - behind.armour_total())
 	if _barrier_eats(behind, true):
 		taken = 0
 	behind.hp -= taken
-	Effects.remove(behind, "shocked")
 	log.append("a mine of %s's spills over: %d into %s" % [str(shot.get("by", "")), taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		var plain := {"damage": amount, "keywords": [], "by": shot.get("by", ""), "mech": shot.get("mech", -1), "face": {}, "burn": 0, "cryo": 0, "flak": 0}
@@ -3569,7 +3603,7 @@ func _hull_damaged(ms: MechState) -> void:
 
 
 ## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
-## carries one shock, never more, until a blow spends it double. A machine's loop passive
+## carries one shock, never more, until a weapon's strike aimed at it spends it double. A machine's loop passive
 ## may catch the status like any other.
 ## Exposed on a foe through the next round (renewing, never adding): in Direct reach of every
 ## machine and its armour counting for nothing.
@@ -3597,7 +3631,8 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
 ## behind it in the column as plain damage, through that foe's own damage taken and its armour;
-## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
+## it feeds the talons' kill rule and carries no keyword of the blow, and, aimed at nobody, it
+## neither doubles on a Shock nor spends one (29 October). A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
 ## `whole`: a later strike's whole number, a weapon's, which lands as its blow even at 0 (its
@@ -3606,11 +3641,10 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole) - behind.armour_total())
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole, false) - behind.armour_total())
 	if _barrier_eats(behind, true):
 		behind_taken = 0   # the spill is the weapon's damage, so a Barrier takes it
 	behind.hp -= behind_taken
-	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		_drone_mine(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so its mine carries no keyword

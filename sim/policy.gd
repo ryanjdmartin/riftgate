@@ -420,8 +420,8 @@ func options_for(sk: Skirmish, i: int) -> Array:
 
 ## An attack on a foe, in foe hit points: what lands (capped at what the target, any
 ## neighbours and a Chain's Shocked conductors have left), the kill it makes as often as the
-## roll makes it, the burn it leaves, less the hull the heat will burn and the shield the
-## splash will cost. Suppress counts the blow it stops.
+## roll makes it, the burn it leaves and a Chain's charge, less the hull the heat will burn and
+## the shield the splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	var quick := Effects.quick_turn_live(ms.unit, f)
 	var real := f
@@ -445,12 +445,17 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var score := _capped(outcomes, target.hp) + spray_score
 	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, Splash's
 	# both, a Chain's Shocked conductors, a reach over every foe): its shape's number through the
-	# firer's modifiers and its own reads, statuses (a conductor's Shocked doubling it) and
-	# armour, capped at what it has left (area by shape, numbered, and Chain: 28 October).
+	# firer's modifiers and its own reads, statuses (a Shock never, no strike being aimed at it:
+	# 29 October) and armour, capped at what it has left (area by shape, numbered, and Chain).
 	var shapes := sk.area_shapes(f, target)
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
 			score += _capped(damage_outcomes(ms, f, n, -1.0, true, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+	# Chain's charge (29 October): after the arcs one other foe at random, neither the target nor
+	# already Shocked, is Shocked: the team's next blow aimed at it doubled, capped at what it has,
+	# averaged over the foes it may land on (a Ward's turns it away for nothing).
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		score += charge_worth(sk, ms, target)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
@@ -465,9 +470,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
 		if f.has(Face.Keyword.SHOCK):
-			# Each foe left standing takes the team's next blow double: the blow shock_cash
-			# reads, capped at what the foe will have left. A charge already on a foe this blow
-			# does not spend is worth nothing more.
+			# Each foe left standing takes the team's next strike aimed at it double: the blow
+			# shock_cash reads, capped at what the foe will have left. A charge already on a foe
+			# this blow does not spend is worth nothing more.
 			for foe in hit:
 				if Effects.has(foe, "shocked") and f.is_debuff():
 					continue
@@ -605,6 +610,24 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
+## What Chain's charge is worth (29 October): one foe drawn from those on the field, alive, not
+## `but` and not already Shocked, Shocked for the team's next blow aimed at it, each foe's worth
+## the doubled blow an ally may spend on it (shock_cash), capped at its HP, nothing for a foe whose
+## Ward turns the mark away; the mean over the draw.
+func charge_worth(sk: Skirmish, ms: Skirmish.MechState, but: Foe) -> float:
+	var pool: Array = []
+	for foe in sk.field_foes():
+		if foe != but and foe.alive() and not Effects.has(foe, "shocked"):
+			pool.append(foe)
+	if pool.is_empty():
+		return 0.0
+	var worth := 0.0
+	for foe in pool:
+		if not Effects.turns_mark(foe, "shocked"):
+			worth += minf(float(foe.hp), shock_cash(sk, ms, foe))
+	return worth / float(pool.size())
+
+
 ## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
 ## Getting Back Up the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
 ## the rest at the odds the foe outlives the blow (`lives`): a Barrier the biggest weapon blow an
@@ -699,12 +722,13 @@ func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -
 		for n in sk.slot_foes(1 - slot.x, slot.y):
 			if n.alive():
 				score += p * minf(col, float(n.hp))
-	# Chain's arc as laid (28 October): the Shocked foes on the field now, each its number
-	# doubled, at the odds the shot lands while they still carry the charge.
+	# Chain's arc as laid (28 and 29 October): the Shocked foes on the field now, each its number
+	# plain (no strike aimed at them), at the odds the shot lands; then its charge.
 	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
-		var arc := 2.0 * _area_mean(ms, f, Skirmish.AREA_CHAIN)
+		var arc := _area_mean(ms, f, Skirmish.AREA_CHAIN)
 		for n in sk.shocked_foes(null):
 			score += p * minf(arc, float(n.hp))
+		score += p * charge_worth(sk, ms, null)
 	score *= MINE_WEIGHT
 	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
@@ -1062,13 +1086,14 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	for v in rolls:
 		var dmg: int = Skirmish.split_share(v + fired, f.split)   # a split's share, rounded down, never below one
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"]) + own   # the firer's modifiers, judged on this foe, then its own reads
-		# The foe's own statuses read last: a Shocked foe takes the first blow double, and its
-		# Flak adds to every blow of a weapon, a strike of 0 included. Then its armour
-		# comes off every blow, so a braced foe is worth less to a volume weapon.
+		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
+		# (a foe past the target, an area's or an arc's, never: 29 October), and its Flak adds to
+		# every blow of a weapon, a strike of 0 included. Then its armour comes off every blow, so
+		# a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
 		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and damaging else 0) - arm)
-		if not aimed:
-			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])
+		if not aimed or area >= 0:
+			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])   # no strike aimed at it: no Shock read
 			continue
 		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
 		if barred:
@@ -1464,8 +1489,8 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)
 			"shock_on_hull_strike":
 				# Every foe about to reach this machine's hull comes out Shocked: the team's
-				# next blow on it lands double, worth about the die's own damage again, capped
-				# at what the foe has left.
+				# next strike aimed at it lands double, worth about the die's own damage again,
+				# capped at what the foe has left.
 				var walk := {"shield": who.unit.shield, "barrier": Effects.has(who.unit, "barrier")}
 				for a in sk.attackers_of(who):
 					var reaches := false
