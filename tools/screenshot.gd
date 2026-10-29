@@ -6,7 +6,7 @@ extends SceneTree
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
-## showing), mechhold and foehold (the first machine's and the first foe's), confirm (the
+## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
 ## Scorched on the first machine), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike).

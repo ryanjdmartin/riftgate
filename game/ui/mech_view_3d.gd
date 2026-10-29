@@ -17,7 +17,7 @@ const PITCH := 30.0
 const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
 const YAW_REAR := 225.0     # rear three-quarter, kept for hero shots
 const YAW_SKIRMISH := 155.0 # the old skirmish pose and the act tools': rear three-quarter facing the foes above, turned to the left (the claw side shows)
-const YAW_FIELD := 0.0      # the skirmish on its floor (29 October): square to the foes, seen from behind by the floor's camera
+const YAW_FIELD := 0.0      # the skirmish on its floor (29 October): facing the foes, seen from behind by the floor's camera; `field.turn` turns each toward the middle
 const FILL := 0.92
 ## How much of its frame a machine fills, by its class by mass (chassis `size`; Ryan, 5
 ## October: the machines' scale): the skirmish sets `size_k` from it, so the team stands in
@@ -92,7 +92,8 @@ var size_k: float = 1.0           # the share of FILL the model takes (SIZE_FILL
 ## rather than framed alone at the sprites' angle. focal (design px) and height (hexes) are the
 ## camera's, level, its centre `principal` (design px) on the horizon; `at` the hex's centre on
 ## the floor (x across, y deep, in hexes); `window` the view's rect on the screen (design px);
-## `fill` the machine's size in hexes; `lift` how far off the floor it flies.
+## `fill` the machine's size in hexes; `lift` how far off the floor it flies; `turn` the degrees
+## it turns from facing the foes, positive to its left.
 var field: Dictionary = {}
 const SPIN_SPEED := 0.7           # radians per second
 
@@ -244,7 +245,7 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 static func make_on_floor(chassis_id: String, maker: String, look: String, field_arg: Dictionary, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
-	v.yaw = YAW_FIELD
+	v.yaw = YAW_FIELD + float(field_arg.get("turn", 0.0))
 	v.field = field_arg
 	v.paint = paint_arg
 	var id := model_for(chassis_id, "")
@@ -460,7 +461,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	# tiled facets and overhangs read. The toon shader carries its own light and ignores it.
 	var sun := DirectionalLight3D.new()
 	sun.light_energy = 1.7
-	sun.rotation_degrees = Vector3(-55.0, yaw - 150.0, 0.0)
+	sun.rotation_degrees = Vector3(-55.0, (yaw if field.is_empty() else YAW_FIELD) - 150.0, 0.0)   # on the floor one sun for the squad, however each is turned
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 2000.0 if field.is_empty() else 30.0   # the floor's world is in hexes
 	_inner.add_child(sun)

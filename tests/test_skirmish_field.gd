@@ -108,14 +108,36 @@ func test_the_controls_at_the_bottom_stand_the_machines_under_the_foes() -> void
 	assert_true(s.LOG_Y >= s.MECH_Y + SkirmishScreen.MECH_SIZE.y, "the log under the machines")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice under the log")
 	assert_true(s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y <= s.BOTTOM_Y - 16.0, "Reroll clear of the bottom row")
+	assert_eq(s.MECH_Y + SkirmishScreen.MECH_SIZE.y + SkirmishScreen.MECH_LOG_GAP, s.LOG_Y, "the machines' row rests on the log")
+	var field: Rect2 = s._bg.grounds[0][0]
+	assert_true(s.LOG_Y - field.end.y <= 12.0, "the field reaches down to the log: no black over it (Ryan, 29 October)")
 	s.free()
 	Settings.display["skirmish_controls"] = was
 
 
-func test_the_squad_stands_in_fixed_hexes() -> void:
+func test_the_quick_switch_moves_the_controls() -> void:
+	# Ryan, 29 October: "a quick-switch that changes the control layout position", beside the eye.
 	var was: Variant = Settings.display.get("skirmish_controls", "middle")
-	var placed: Array = []
-	for team in [["badger", "clydesdale"], ["badger", "clydesdale", "sparrowhawk"], ["badger", "clydesdale", "sparrowhawk", "baboon"]]:
+	var s := _screen("middle")
+	assert_eq(s._switch.glyph, "controls_middle", "its glyph says where they sit")
+	var middle_y := s.MECH_Y
+	s._switch_controls()
+	assert_eq(SkirmishScreen.controls(), "bottom", "a press moves them to the bottom, saved as the setting")
+	assert_true(s.MECH_Y < middle_y, "the screen laid again around the fight")
+	assert_eq(s._switch.glyph, "controls_bottom", "the new switch says so")
+	s._switch_controls()
+	assert_eq(SkirmishScreen.controls(), "middle", "and back")
+	s.free()
+	Settings.set_display("skirmish_controls", str(was))
+
+
+func test_the_squad_stands_in_fixed_hexes() -> void:
+	# Four spots whatever the squad: a squad of one or two in the middle ones, the outer spots
+	# empty; three from the left (Ryan, 29 October). Each die in its machine's column.
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	var spots := {}
+	var four: Array = []
+	for team in [["badger"], ["badger", "clydesdale"], ["badger", "clydesdale", "sparrowhawk"], ["badger", "clydesdale", "sparrowhawk", "baboon"]]:
 		var s := _screen("middle", team)
 		var xs: Array = []
 		for i in range(team.size()):
@@ -124,17 +146,42 @@ func test_the_squad_stands_in_fixed_hexes() -> void:
 			var die_mid := s._dice[i].position.x + SkirmishScreen.DIE_SIZE * 0.5
 			assert_true(absf(die_mid - (v.position.x + SkirmishScreen.MECH_SIZE.x * 0.5)) < 0.5, "die %d in its machine's column" % i)
 			assert_eq(v.ground_at, Vector2(SkirmishScreen.MECH_SIZE.x * 0.5, SkirmishScreen.MECH_FOOT), "its shadow on its hex's centre")
-		placed.append(xs)
-		var empty := 0
-		for m in s._bg.marks:
-			if bool(m[1]):
-				empty += 1
+		spots[team.size()] = xs
+		var empty: Array = []
+		for k in range(s._bg.marks.size()):
+			if bool(s._bg.marks[k][1]):
+				empty.append(k)
 		assert_eq(s._bg.marks.size(), SkirmishScreen.SLOTS, "%d machines: the squad's spots all marked" % team.size())
-		assert_eq(empty, SkirmishScreen.SLOTS - team.size(), "%d machines: the spots no machine fills left empty" % team.size())
+		assert_eq(empty, {1: [0, 2, 3], 2: [0, 3], 3: [3], 4: []}[team.size()], "%d machines: the spots no machine fills left empty" % team.size())
+		if team.size() == 4:
+			for k in range(4):
+				four.append(s._slot_x(k) - SkirmishScreen.MECH_SIZE.x * 0.5)
 		s.free()
-	for i in range(2):
-		assert_eq(placed[0][i], placed[2][i], "machine %d keeps its spot whatever the squad's size" % i)
-	assert_eq(placed[1][2], placed[2][2], "and the third")
+	assert_eq(spots[1], [four[1]], "one machine in the left of the middle spots")
+	assert_eq(spots[2], [four[1], four[2]], "two in the middle spots")
+	assert_eq(spots[3], [four[0], four[1], four[2]], "three from the left")
+	assert_eq(spots[4], four, "four in all four")
+	Settings.display["skirmish_controls"] = was
+
+
+func test_the_machines_turn_toward_the_middle() -> void:
+	# Ryan, 29 October: "player units on the left side can face slightly to the right, and units
+	# on the right can face slightly left". MechView3D's turn is positive to the machine's left: a
+	# yaw that swings the nose (away from the camera, -Z) toward -X, the screen's left.
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	var s := _screen("middle", ["badger", "clydesdale", "sparrowhawk", "baboon"])
+	assert_eq([s._mech_turn(0), s._mech_turn(1)], [-SkirmishScreen.FIELD_TURN, -SkirmishScreen.FIELD_TURN], "the left two turn to their right")
+	assert_eq([s._mech_turn(2), s._mech_turn(3)], [SkirmishScreen.FIELD_TURN, SkirmishScreen.FIELD_TURN], "the right two to their left")
+	s.free()
+	s = _screen("middle", ["badger"])
+	assert_eq(s._mech_turn(0), -SkirmishScreen.FIELD_TURN, "a lone machine, left of the middle, to its right")
+	s.free()
+	var view := MechView3D.make_on_floor("badger", "minerva", "clean", {"focal": 900.0, "height": 4.0, "principal": Vector2(360, 100), "at": Vector2(0.5, 7.0), "window": Rect2(0, 0, 200, 240), "fill": 0.9, "turn": SkirmishScreen.FIELD_TURN})
+	assert_eq(view.yaw, MechView3D.YAW_FIELD + SkirmishScreen.FIELD_TURN, "the view takes the turn as its yaw")
+	view.free()
+	var nose := Basis(Vector3.UP, deg_to_rad(SkirmishScreen.FIELD_TURN)) * Vector3(0, 0, -1)
+	assert_true(nose.x < 0.0, "a positive yaw swings the nose to the screen's left")
+	assert_true(SkirmishScreen.FIELD_TURN > 0.0 and SkirmishScreen.FIELD_TURN <= 25.0, "slightly")
 	Settings.display["skirmish_controls"] = was
 
 

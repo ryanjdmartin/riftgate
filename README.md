@@ -305,7 +305,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the button under the eye opens it), and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as KEYWORDS opens it), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
@@ -470,12 +470,14 @@ tools/android.sh        # export, install, launch; `tools/android.sh log` tails 
 ```
 
 The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
-ranks of four, log with the intent eye at its right, dice with the wide Reroll right under
-them, mechs at the bottom with their gauges above the sprite, End turn bottom-left and
-Withdraw bottom-right; the setting Skirmish Controls at Bottom stands the mechs right under the
-enemies and puts the log, dice and Reroll below them. Both sides stand on one field seen from
-behind the mechs: the other world far, under the enemies, our ground near, the mechs in four
-fixed hexes of its grid (a smaller squad leaves its spots empty), each die in its mech's column. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
+ranks of four, log with the controls' switch and the intent eye at its right, dice with the
+wide Reroll right under them, mechs at the bottom with their gauges above the sprite, End turn
+bottom-left, KEYWORDS in the middle and Withdraw bottom-right; the setting Skirmish Controls at
+Bottom (or the switch, mid-fight) stands the mechs right under the enemies and puts the log,
+dice and Reroll below them. Both sides stand on one field seen from behind the mechs: the
+other world far, under the enemies, our ground near, the mechs in four fixed hexes of its grid
+turned a little toward the middle (a squad of one or two in the middle hexes, three from the
+left), each die in its mech's column. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
 statuses and warning signs: a broken shield when incoming damage will break it, a crack when
 a hit that big may destroy a component, a skull when the round would wreck it, a thermometer
@@ -491,9 +493,11 @@ lands and the number flashes over the target; a flat one shows its number. Rerol
 times per round, before or after attacking; a reroll lands on any other face, never the
 one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
-and then the next round's dice show. Hold a foe or a mech for its
-numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
-shows every arrow; double-tap any unit for its codex entry. Withdraw is offered at any point
+and then the next round's dice show. Tap a foe or a mech for its
+numbers, its statuses with icons and text, and the intent arrows that concern it, and tap it
+again to close it (one unit's at a time; a tap on nothing closes it too); the eye shows every
+arrow; double-tap any unit for its codex entry; KEYWORDS lists every keyword, even over an open
+codex. Withdraw is offered at any point
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written

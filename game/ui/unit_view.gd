@@ -183,6 +183,17 @@ func _silhouette() -> Rect2:
 	return Rect2(Vector2((size.x - w) * 0.5, top + (avail - h) * 0.5), Vector2(w, h))
 
 
+## The top of what the view draws over the drawing (its gauges, or the drawing itself), in its
+## own space: where a readout over the unit rests.
+func drawn_top() -> float:
+	var vis := _visible()
+	if bars.is_empty() or dead:
+		return vis.position.y
+	if bars_above:
+		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+	return vis.position.y - FLOAT_LIFT
+
+
 ## The opaque part of the drawing on screen: what gauges and chips hug.
 func _visible() -> Rect2:
 	var sil := _silhouette()

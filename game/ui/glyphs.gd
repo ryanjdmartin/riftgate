@@ -321,6 +321,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(s, 0), c + Vector2(s * 0.55, s * 0.7), c + Vector2(-s * 0.55, s * 0.7), c + Vector2(-s, 0),
 			]), color, width)
 			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
+		"controls_middle", "controls_bottom":
+			# The skirmish's controls switch (29 October): a phone's frame, the controls a solid band
+			# where they sit, a chevron toward where a press moves them.
+			var w := s * 0.62
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-w, -s), c + Vector2(w, -s), c + Vector2(w, s), c + Vector2(-w, s), c + Vector2(-w, -s),
+			]), color, width)
+			var low := id == "controls_bottom"
+			var band_y := s * 0.52 if low else -s * 0.16
+			ci.draw_rect(Rect2(c + Vector2(-w + width * 1.5, band_y), Vector2((w - width * 1.5) * 2.0, s * 0.34)), color)
+			var tip := -s * 0.62 if low else s * 0.78
+			var d := 1.0 if low else -1.0   # the chevron's arms open away from its tip
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s * 0.3, tip + s * 0.26 * d), c + Vector2(0.0, tip), c + Vector2(s * 0.3, tip + s * 0.26 * d),
+			]), color, width)
 		"prev", "next":
 			# Skip back or on: a filled triangle against a bar, the transport's own mark.
 			var d := 1.0 if id == "next" else -1.0
