@@ -68,17 +68,74 @@ row); the six would each read something.
   decided (a Lean row, never an exclusion: the Marsh toward water, the Peak toward crags); the
   front card shows the shape's name once the mission map exists.
 
-## Questions for Ryan
+## Ryan's calls (29 October)
 
-1. The names, as the front card will show them: RIVER (or RIVER CROSSING), FJORD, BADLANDS,
-   OPEN STEPPE, RUINED CITY, GORGE (or RAVINES).
-2. Mixed Ground: retired (Claude's lean: the six replace the five, and the campaign draws by
-   the seed), or kept as a seventh for the harness.
-3. Domain leans toward shapes, now or later (Claude's lean: later, from play).
+- **The names**, as the front card shows them: RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE,
+  RUINED CITY, GORGE.
+- **Mixed Ground retires** with the session: it tests nothing a shape does not test better,
+  and Open Steppe is the baseline. The campaign draws one of the six by the rift's seed.
+- **The walls are named by what they are**, one rule under every name (impassable to all but
+  a flyer and a winged pack). Ryan: "the busted skyscraper that serves as a ruins crag,
+  shouldn't be called a crag". **Crags** are the rock spikes on open ground and in water;
+  **Mesas** stand on scrub, the badlands' walls; **Towers** are the dead skyscrapers on ruins,
+  the city's; **Cliffs** are a continuous rock wall, a new look, the gorge's. The ground tap and
+  a fight's label show the name (today every wall reads "Mountain", the vocabulary's word); the
+  rules call the class impassable ground.
+- **The decoration is laid to be read.** Plain, road, scrub and ruins all play alike since the
+  landing, and every map mixes all four everywhere. Ryan: their placement, and the map types
+  they appear on, "can go a long way towards making the map less cluttered and easier to read,
+  while still looking believable". So:
+  1. A palette per shape: each uses the one or two decorative grounds that belong to it (the
+     table), never all four.
+  2. Placement that makes sense: roads lead somewhere (to the fords, through the city's gaps,
+     to the gate); reeds along the banks, scree at the cliffs' feet, rubble round the towers.
+  3. A height gap: decoration knee-high, walls tall, nothing between, measured from the ground
+     so a raised hex never lifts a tree above a wall (today a dead tree stands to 40, a ruin's
+     wall stub to 32 and a mesa 46).
+  4. Calm lanes, busy edges: dense dressing in the margin and against the walls, sparse in the
+     open ground the squads play on.
+- **The relief is the shape's.** Ryan asked whether the 3D elevation is "Clutter, confusion,
+  or visual interest? ... I like the look but maybe it's a bit too much for the phone screen",
+  and took Claude's read ("just go ahead, sounds good"). Height stays landscape and no rule
+  reads it (the bible's look row), but today the landscape has no shape: the relief is noise
+  decoupled from the ground, so 55% of neighbouring land hexes stand at different heights,
+  about 14 hexes a map stand alone, and a pack's ring of 2, drawn at each hex's height, jogs at
+  about 6 of its 12 joints (a step lifts a hex 7 map pixels, the ring's whole stroke with its
+  dark track; the survey's relief table, `docs/measurements.md`). So:
+  1. At most two steps on the field; three in the margins, where nobody plays.
+  2. A step only where the shape explains it, along its landforms (the table's relief), never
+     a lone hex.
+  3. The lanes level: each shape's routes (the fords and their approaches, the paths between
+     the mesas, the city's gaps, the gorge's floors), the roads and the team's ground.
+
+  The survey's relief table is the check, read against today's; the look is judged running.
+
+| Front card | Layout | Walls | Water | Dressing | Relief |
+|---|---|---|---|---|---|
+| RIVER CROSSING | a river across, one or two fords | none, or a crag on a bank | the river | fields, reeds, a road to each ford | the fields a step above the river's banks, the fords' approaches cut level |
+| FJORD | water down the field | none | the fjord | rocky shore, shingle | the shores level, the land rising in the margins |
+| BADLANDS | ponds and grouped mesas, winding paths | mesas | ponds | low scrub, dry ground | the mesas' shoulders a step up, the paths level |
+| OPEN STEPPE | relatively clear | a lone crag at most | a pond at most | grass, one road | one broad rise at most |
+| RUINED CITY | bands of towers across, with gaps | towers | none | streets, rubble | level |
+| GORGE | cliff walls down the field | cliffs | none | scree at the cliffs' feet | the cliffs' feet a step up, the floors level |
+
+Not this session's: the domains' tilesets in the painted bleed, an art task of its own (the
+to-do), and any rule on a rift tile (Ryan, 29 October: art only for now; the bible's row on
+the landscape twisted by the rift).
+
+## The open question
+
+A domain's lean toward shapes is section 12's (each domain names a map type its rifts lean to:
+does it decide the shape, bias it, or stay out?). Until it is answered the campaign draws by the
+seed alone. Claude's lean: a lean from play, never an exclusion.
 
 ## What the session hands back
 
-The shapes in `BattleMap.KINDS` and their laying, the harness picker and `RIFTGATE_MAP_KIND`
-on the new names, the survey rerun at 200 seeds a shape (its read in `docs/measurements.md`),
-the bible's map-types and field rows rewritten, `docs/rules.md`'s ground bullet, the status and
-the to-do; then this brief retires.
+The shapes in `BattleMap.KINDS` and their laying, Mixed Ground out of it, the harness picker
+and `RIFTGATE_MAP_KIND` on the new names; the walls' names in the vocabulary, on the ground tap
+and on a fight's label (by the wall's look, its `crag_base`, the gorge's cliffs a look of their
+own); the decoration's palette, placement and height gap in `Map3D`; the relief laid by the
+shape in `BattleMap` (two steps at most on the field, no lone hex, the lanes level); the
+survey rerun at 200 seeds a shape, its relief table beside today's (its read in
+`docs/measurements.md`); the bible's map-types and field rows rewritten, `docs/rules.md`'s
+ground bullet, the status and the to-do; then this brief retires.

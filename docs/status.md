@@ -39,8 +39,8 @@ day (the pins' record and the game's plan against it, thirteen models rebuilt to
 the Armadillo's seal) and his three rounds of notes on them of the 29th (the Kite's Pinion
 Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
 weapons, hunkered seal with acts of its own and louvred radiators, the Arsenal's lit cockpit
-glass and the Nemesis's flaring visor), and took main each evening (to `5c23a90`, the mechanics audit);
-unmerged, for main to take on Ryan's word.
+glass and the Nemesis's flaring visor), and took main each evening (to `b2762d5`, the map
+survey's relief rerun); unmerged, for main to take on Ryan's word.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -124,8 +124,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
   reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
   bands hold, its three-machine battles won more (a direction: the squad no longer split by
-  slow ground). Next for the map: the six shapes (`docs/briefs/map_shapes.md`, three questions in
-  section 12) and the crossing's price in the pricing run (the to-do).
+  slow ground). Next for the map: the six shapes, named, their relief laid by the shape and free
+  to run (`docs/briefs/map_shapes.md`, Ryan's calls of 29 October), the domains' tilesets as an
+  art task and the crossing's price in the pricing run (the to-do).
 - The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
   it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
@@ -309,12 +310,12 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
 to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
-numbered keywords and the blow's order; the campaign report and the map survey are main's head's
-(28 October).
+numbered keywords and the blow's order; the campaign report (28 October) and the map survey
+(29 October, with its relief table) are main's head's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content; the map shapes' generator session among
-   them once Ryan has answered its brief.
+   them, free to run since Ryan's calls of 29 October.
 2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
    the hitter in hand (the to-do); the Lammergeier's stock.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
@@ -353,20 +354,20 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.346 (the
-  page's version 358, published 29 October from `claude/charming-rubin-h954bp` onto its own
-  v0.345 at 357, itself onto v0.344 unchanged: Ryan's two rounds of notes on the rebuilds, the
-  Kite's Pinion Driver in two shots with its section 12 question retired, the ramjet drivers
-  and their strakes, the Dingo's roof gimbal, threaded coil and d5, the Armadillo's sliding
-  weapons, hunkered seal with its own acts and louvred vents, the Arsenal's lit cockpit glass;
-  main's v0.343 had nothing newer). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file is v0.349: main's v0.348 (the page's
+  version 360, published 29 October from `ccr-7821127e-kwj874`: the relief laid by the shape,
+  on v0.347 at 359, Ryan's calls on the map shapes, the walls' names, the decoration, the
+  domains' tilesets and the rift tiles as art, three-way merged onto the live v0.346 this
+  branch published) with this branch's third round of notes on the rebuilds (the Armadillo's
+  radiators, the Nemesis's flaring visor). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
   stripped from the saved live source). Until `claude/charming-rubin-h954bp` lands, the live page
-  holds its rows ahead of main's code (the model rebuilds), so a session on main merges onto it
-  rather than publishing main's file; the tables script may run freely (its tables came out
-  unchanged on the branch).
+  holds its rows ahead of main's code (the model rebuilds, and the Strikes row in the keyword
+  table), so a session on main merges onto it rather than publishing main's file, and main's
+  tables script waits for it; on this branch the tables script may run freely (its tables came
+  out unchanged here).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's

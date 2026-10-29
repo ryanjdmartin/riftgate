@@ -130,7 +130,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] The draft screen: the tender, take three (`Campaign.tender`, `Campaign.new(seed, team)`)
 - [ ] The wreck's death on the map, and corruption in a pack's wake, once decided
 - [x] `tools/map_survey.gd` read the content's moves from a `chassis` key that `content/chassis.json` no longer has, so its reach table had used its reference moves since before 8 October, not "each way's biggest move in content" as its report says (found 28 October): fixed the same day, the moves read through ContentDB and a way no chassis takes stopping the survey; rerun at 200 seeds (`docs/measurements.md`)
-- [ ] The map shapes (`docs/briefs/map_shapes.md`, Ryan's direction of 28 October: a river, a fjord, badlands, open steppe, a ruined city, a gorge): a generator session of its own once he has answered the brief's three questions (the bible's section 12), with the survey rerun at 200 seeds a shape
+- [ ] The map shapes (`docs/briefs/map_shapes.md`; Ryan's direction of 28 October and his calls of 29 October: RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and GORGE, Mixed Ground retiring, the walls named by what they are, the decoration laid to be read, the relief laid by the shape): a generator session of its own, free to run, with the survey rerun at 200 seeds a shape, its relief table the check
 - [x] Movement given in one go, or a clearer mark that a machine has move left (Ryan, 25 October: the gauge's boxes on a dragged route "aren't intuitive and covered by a thumb"; his "resolve the other issues then let's look at this"): landed 28 October by removal, a move in one go in hexes with the gauge and the stop sign gone (the movement proposal, retired with the landing); proposed in chat once he has played the planned moves
 
 ## Art
@@ -142,7 +142,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] New foe types from the candidates Ryan marked, once he decides them (section 12)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen
 - [ ] The heroes' boss register into the game: Ryan's picks of the diversity pass are recorded (`picks.json`, the chibis cut), and the promoted forms are entries since 21 October, so the register's art is cut for them (each wears its hero's chibi until then)
-- [ ] The four bleeds for the flattened ground
+- [ ] The four bleeds for the flattened ground, each domain its own tileset (Ryan, 29 October: "They all need their own tileset, first of all. Shouldn't all be painting green meadows"): each domain re-dresses the decorative grounds in its idiom (the factions' `bleed` key, unread today: plains, sand, marsh, lava; `TerrainArt.draw_other_hex`), water and the walls reading alike in all four; rift tiles as art alone for now (his call the same day); judged running
 - [ ] The hangar as a model; a licensed icon set (game-icons.net, CC BY) in place of the line-drawn glyphs, in one pass
 - [ ] Each component class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [x] The Armadillo's model after its landing (20 October): four hardpoints in place of five, the Cryo Flinger racks built in, and the seal made real (the ports shuttering and the guns retracting while Sealed: a slide joint and shutter geometry): landed 28 October (the four ports the hardpoints, the twin canister rack, a three-leaf iris in each port, a held form); to judge, Ryan's list
