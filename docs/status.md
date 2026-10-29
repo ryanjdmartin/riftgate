@@ -352,12 +352,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.345 (the
-  page's version 357, published 29 October from `claude/charming-rubin-h954bp` onto v0.344
-  unchanged: Ryan's notes on the rebuilds, the Kite's Pinion Driver in two shots with its
-  section 12 question retired, the ramjet drivers, the Dingo's roof gimbal, threaded coil and
-  d5, the Armadillo's sliding weapons and hunkered seal with its own acts; main's v0.343 had
-  nothing newer). The version numbers on the publishing branch's
+  `docs/design-bible.html` after every change. This file and the live page are v0.346 (the
+  page's version 358, published 29 October from `claude/charming-rubin-h954bp` onto its own
+  v0.345 at 357, itself onto v0.344 unchanged: Ryan's two rounds of notes on the rebuilds, the
+  Kite's Pinion Driver in two shots with its section 12 question retired, the ramjet drivers
+  and their strakes, the Dingo's roof gimbal, threaded coil and d5, the Armadillo's sliding
+  weapons, hunkered seal with its own acts and louvred vents, the Arsenal's lit cockpit glass;
+  main's v0.343 had nothing newer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -370,13 +371,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 142 (29 October, from
-  `claude/charming-rubin-h954bp`, onto 141 unchanged: Ryan's notes on the rebuilds, the
-  Armadillo's, the Kite's and the Dingo's models and sidecars, the Ammit's and the
-  Lammergeier's sidecars (their glows), the three machines' renders with the old ones to
-  before, the Pinion Driver's two shots in `content/components.json`, and the motion port's
-  forms carrying the body and acts of their own, with joints that only slide; every other file
-  identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 143 (29 October, from
+  `claude/charming-rubin-h954bp`, onto its own 142, itself onto 141 unchanged: Ryan's two rounds
+  of notes on the rebuilds, the Armadillo's, the Kite's, the Dingo's, the Ammit's and the
+  Nemesis's models and sidecars, the Lammergeier's sidecar (its glow), their renders with the
+  old ones to before, the Pinion Driver's two shots in `content/components.json`, and the
+  motion port's forms carrying the body and acts of their own, with joints that only slide;
+  every other file identical to the live page's, `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
