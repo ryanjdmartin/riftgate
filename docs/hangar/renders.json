@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's fourth notes, 29 October.",
-   "note": "Ryan, 29 October, the fourth notes: \"not so streamlined. I meant big boxy radiators sticking out at an angle\". The tail band is square again (the bevel's taper liked, kept for the next pass), and the two radiators stand out of its top rear edge as big armoured boxes, spread apart, their louvred faces tilted back as the bevel held them (the third picture shows them from the side); the wide vent stays centred low on the rear face. Each a tilted grille at rest, thrown edge on to the cameras behind over the flaring ember when it vents (the fifth, from the skirmish's angle), shut flat with the ports when it seals (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's fifth notes, 29 October.",
+   "note": "Ryan, 29 October, the fifth notes: \"move them higher and push them towards the front more, so they don't stick out from the back of the hull so much. Probable even further apart. The outer texture of them can be in a darker colour, not the default hull colour.\" The two radiator boxes now stand up on the tail's rear deck, either side of the rack's hatch, in dark steel with closed backs, their louvred faces at the same tilt and their lower edges a hair past the rear edge (the side view, third); the tail band stays square (the bevel's taper liked, kept for the next pass), and the wide vent stays low on the rear face. Venting throws the louvres edge on over the flaring ember (the fifth, from the skirmish's angle); sealed, they shut flat (the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -195,7 +195,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the third notes of 29 October (the radiators sunk in a bevel across the tail's back)",
+    "summary": "Before: the fourth notes of 29 October (the boxes standing out of the tail's top rear edge, in hull plate)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -204,6 +204,10 @@
      {
       "file": "armadillo/before_armadillo_rear.png",
       "alt": "Earlier: armadillo, rear"
+     },
+     {
+      "file": "armadillo/before_armadillo_side.png",
+      "alt": "Earlier: armadillo, side"
      },
      {
       "file": "armadillo/before_armadillo_sealed.png",
