@@ -313,7 +313,7 @@
    "id": "swap",
    "category": "keyword",
    "name": "Swap",
-   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
    "status": "implemented",
    "design": {
     "holes": ""

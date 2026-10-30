@@ -34,10 +34,12 @@ func test_screen_builds_and_starts_round_one() -> void:
 ## A die takes a unit's gestures (Ryan, 30 October: "change lock/unlock to hold and double-tap,
 ## and tap to inspect for dice ... That way it's standard across the board"): a tap opens its
 ## readout and a tap again closes it, one readout at a time with the units'; a double-tap or a
-## hold locks or unlocks it, the readouts left as they stood; no codex.
+## hold locks or unlocks it, the readouts left as they stand (its tap waits out the double-tap
+## window, so a double-tap's first tap never lands); no codex.
 func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	var s := _screen()
 	var d: DieFaceView = s._dice[0]
+	assert_true(d.confirm_taps, "the tray's dice wait out the double-tap window")
 	d.tapped.emit()
 	assert_eq(s._pop, {"die": 0}, "a tap opens the die's readout")
 	assert_true(s._details.visible and s._details_entry.visible, "shown, the entry's lines")
@@ -45,27 +47,101 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	assert_false(s.locked[0], "and locks nothing")
 	d.tapped.emit()
 	assert_true(s._pop.is_empty() and not s._details.visible, "a tap on it again closes it")
-	d.tapped.emit()
 	d.double_tapped.emit()
 	assert_true(s.locked[0], "a double-tap locks")
 	assert_true(d.locked, "the view shows the lock")
-	assert_true(s._pop.is_empty() and not s._details.visible, "and leaves no readout its first tap opened")
+	assert_true(s._pop.is_empty() and not s._details.visible, "and opens no readout")
 	assert_false(s._codex.visible, "no codex: the whole die is the machine's double-tap")
-	d.tapped.emit()
 	d.double_tapped.emit()
 	assert_false(s.locked[0], "a double-tap again unlocks")
 	s._on_mech_tapped(1)
-	d.tapped.emit()
-	assert_eq(s._pop, {"die": 0}, "a die's tap moves the one readout to the die")
 	d.double_tapped.emit()
-	assert_eq(s._pop, {"mech": 1}, "a double-tap puts the machine's back")
+	assert_eq(s._pop, {"mech": 1}, "a double-tap leaves the machine's readout open")
 	assert_true(s.locked[0], "and locks")
 	d.held.emit()
 	assert_false(s.locked[0], "a hold unlocks")
 	assert_eq(s._pop, {"mech": 1}, "and leaves the readout open")
 	d.held.emit()
 	assert_true(s.locked[0], "a hold again locks")
+	s._close_pop()
+	s._replay_shade.visible = true
+	d.tapped.emit()
+	assert_true(s._pop.is_empty(), "a tap landing late, as the enemy's turn replays, opens nothing")
+	s._replay_shade.visible = false
+	s._on_mech_double_tapped(0)
+	d.tapped.emit()
+	assert_true(s._pop.is_empty(), "nor one under a codex opened meanwhile")
+	s._close_codex()
 	s.free()
+
+
+## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
+## tap's work, and the face lights from the touch until the tap lands, so the beat never reads as
+## lag; a tap and then a hold or a drag is the hold or the drag. Without the wait (the waiting
+## Swap's die, whose double-tap does nothing) a tap lands at once.
+func test_a_dies_tap_waits_out_the_double_tap_window_lit() -> void:
+	var d := DieFaceView.new()
+	d.confirm_taps = true
+	var count := {"tap": 0, "double": 0, "held": 0, "drag": 0}
+	d.tapped.connect(func() -> void: count["tap"] += 1)
+	d.double_tapped.connect(func() -> void: count["double"] += 1)
+	d.held.connect(func() -> void: count["held"] += 1)
+	d.drag_started.connect(func() -> void: count["drag"] += 1)
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	press.global_position = Vector2(50, 50)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.global_position = Vector2(50, 50)
+	d._gui_input(press)
+	assert_true(d._lit(), "lit the moment it is touched")
+	d._gui_input(release)
+	assert_eq(count["tap"], 0, "a tap waits out the window")
+	assert_true(d._lit(), "the face lit while it waits")
+	d._process(0.0)
+	assert_eq(count["tap"], 0, "still waiting inside the window")
+	d._tap_due = 0.0   # the window run out
+	d._process(0.0)
+	assert_eq(count["tap"], 1, "then it lands")
+	assert_false(d._lit(), "and the light goes")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	d._gui_input(release)
+	assert_eq(count["double"], 1, "two quick taps are a double-tap")
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq(count["tap"], 1, "and its first tap never lands")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	d._press_at -= 1.0   # held past the hold's time
+	d._process(0.0)
+	d._gui_input(release)
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq([count["held"], count["tap"]], [1, 1], "a tap and then a hold is the hold")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	var move := InputEventMouseMotion.new()
+	move.global_position = Vector2(50, 90)
+	d._gui_input(move)
+	d._gui_input(release)
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq([count["drag"], count["tap"]], [1, 1], "a tap and then a drag is the drag")
+	d.confirm_taps = false
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	assert_eq(count["tap"], 2, "without the wait a tap lands at once")
+	d.free()
 
 
 func test_reroll_skips_locked_and_spent_dice() -> void:
@@ -1527,8 +1603,8 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 
 ## A Swap's two targets on the screen (Ryan, 21 October): drop the die on the first target and
 ## it waits there, the second targets lit; a tap on one spends it; a tap on the die reads it;
-## dragging the die again picks it back up; a reroll or the turn's end sets it back in the tray
-## first.
+## a tap on nothing sets it back, once no readout is open (30 October); dragging the die again
+## picks it back up; a reroll or the turn's end sets it back in the tray first.
 func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
@@ -1569,6 +1645,17 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	t._ghost.held.emit()
 	assert_eq(t._pop, {"die": 0}, "a hold opens it too: a die being spent has nothing to lock")
 	assert_false(t.locked[0], "and locks nothing")
+	var nothing := InputEventMouseButton.new()
+	nothing.button_index = MOUSE_BUTTON_LEFT
+	nothing.pressed = true
+	t._gui_input(nothing)
+	assert_true(t._pop.is_empty() and not t._pending.is_empty(), "a tap on nothing closes the readout first, the Swap still waiting")
+	t._gui_input(nothing)
+	assert_true(t._pending.is_empty(), "a second sets the Swap back")
+	assert_false(t._ghost.visible, "the die gone from its first target")
+	assert_false(tm.assigned, "home in the tray, unspent")
+	assert_eq(t._dice[0].modulate.a, 1.0, "and shown there")
+	t._begin_second(0, t.sk.targets_for(0)[0])
 	t._on_ghost_drag_started()
 	assert_true(t._pending.is_empty() and t._drag_from == 0, "dragging it again picks it back up")
 	assert_true(t._pop.is_empty() and not t._details.visible, "and the die in hand closes its readout")

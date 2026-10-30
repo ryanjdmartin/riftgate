@@ -102,6 +102,7 @@ static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 ## light on a dashed edge, still), to judge the look running (28 October; placeholders).
 static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
+const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
 var _rage_debug_at := -10.0
 
 var sk: Skirmish
@@ -283,7 +284,6 @@ var _log_seen: int = 0
 ## index}, a mined empty slot's {"mine": Vector2i(rank, col)} or a die's {"die": index}; empty,
 ## none.
 var _pop: Dictionary = {}
-var _tap_undo: Dictionary = {}   # a die's last tap, for a double-tap to undo: the die, the readout open before it, when
 const POP_ALPHA := 0.7   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent")
 const POP_GAP := 4.0      # a machine's readout over its gauges
 var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
@@ -531,8 +531,12 @@ func _build() -> void:
 		var cx := _slot_x(_mech_slot(i))
 		var d := DieFaceView.new()
 		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
+		# A tap reads the die once the double-tap window has passed, so a double-tap, which locks,
+		# never flashes the readout open (Ryan, 30 October: "Yeah, agreed to all"); the face lights
+		# from the touch so the beat never reads as lag. A hold locks too.
+		d.confirm_taps = true
 		d.tapped.connect(_on_die_tapped.bind(i))
-		d.double_tapped.connect(_on_die_double_tapped.bind(i))
+		d.double_tapped.connect(_toggle_lock.bind(i))
 		d.held.connect(_toggle_lock.bind(i))
 		d.drag_started.connect(_on_drag_started.bind(i))
 		d.drag_moved.connect(_on_drag_moved)
@@ -1823,26 +1827,16 @@ func _flash_roll(fv: UnitView) -> void:
 ## A tap on a die reads it, as a tap on a unit does (Ryan, 30 October: "change lock/unlock to
 ## hold and double-tap, and tap to inspect for dice ... That way it's standard across the
 ## board"): its readout opens, a tap on it again closes it, a tap on another die or unit moves it
-## there. The readout stays open, so its terms take a tap too. A hold or a double-tap locks.
+## there. The readout stays open, so its terms take a tap too. A hold or a double-tap locks, and
+## leaves the readouts as they stand. A tap lands a beat late, so one that lands as the enemy's
+## turn replays, or under a codex opened meanwhile, is dropped.
 func _on_die_tapped(i: int) -> void:
-	_tap_undo = {"die": i, "pop": _pop.duplicate(), "at": Time.get_ticks_msec()}
+	if _replay_shade.visible or _codex.is_open():
+		return
 	if _pop == {"die": i}:
 		_close_pop()
 	else:
 		_open_pop({"die": i})
-
-
-## A double-tap locks or unlocks the die, and leaves the readouts as they stood before it: its
-## first tap's opening or closing is undone.
-func _on_die_double_tapped(i: int) -> void:
-	if int(_tap_undo.get("die", -1)) == i and Time.get_ticks_msec() - int(_tap_undo.get("at", 0)) <= int(DieFaceView.DOUBLE_TAP_SECONDS * 1000.0) + 100:
-		var was: Dictionary = _tap_undo["pop"]
-		if was.is_empty():
-			_close_pop()
-		elif was != _pop:
-			_open_pop(was, false)
-	_tap_undo = {}
-	_toggle_lock(i)
 
 
 ## A die locked or unlocked, for the reroll to keep or roll: while the player assigns, a live die
@@ -1960,11 +1954,10 @@ func _pop_for(v: UnitView) -> Dictionary:
 	return {}
 
 
-func _open_pop(what: Dictionary, sound: bool = true) -> void:
+func _open_pop(what: Dictionary) -> void:
 	var die := _pop.has("die") or what.has("die")
 	_pop = what
-	if sound:
-		Sound.play("hold")
+	Sound.play("hold")
 	if die:
 		_refresh(false)   # the marks and a lure's preview read the die whose readout is open, or let it go
 	else:
@@ -2022,10 +2015,15 @@ func _show_pop() -> void:
 		_show_details(_mine_text(at.x, at.y, shots), _slot_views[at.x][at.y])
 
 
-## A tap on nothing (the ground, the black) closes an open readout.
+## A tap on nothing (the ground, the black) closes an open readout; with none open, it sets a
+## waiting Swap back in the tray (Ryan, 30 October), so closing the die's readout never throws
+## the Swap away.
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_close_pop()
+		if not _pop.is_empty():
+			_close_pop()
+		elif not _pending.is_empty():
+			_send_second_home()
 
 
 ## A machine's hold (Ryan, 26 October: "the hold press on an ally or enemy should follow a
@@ -2417,6 +2415,38 @@ func _cancel_second() -> void:
 	_ghost.visible = false
 	_ghost.can_drag = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+## A tap on nothing sets the waiting Swap back (Ryan, 30 October): the die flies home to its place
+## in the tray, unspent, with a drop on nowhere's sound. A copy flies, so the die is free to be
+## picked up again the moment it is home.
+func _send_second_home() -> void:
+	var i: int = _pending["mech"]
+	var from := _ghost.position
+	_cancel_second()
+	Sound.play("die_drop")
+	_refresh(false)
+	if not is_inside_tree():
+		return
+	var d := _dice[i]   # as the refresh above drew it
+	var fly := DieFaceView.new()
+	fly.animate = false
+	fly.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fly.set_face(d.face, d.shown_number)
+	fly.slot = d.slot
+	fly.corrupted = d.corrupted
+	fly.blast = d.blast
+	fly.charged = d.charged
+	fly.dark = d.dark
+	fly.position = from
+	fly.size = DieFaceView.view_size()
+	add_child(fly)
+	d.modulate.a = 0.0   # in flight until it lands
+	var tw := create_tween()
+	tw.tween_property(fly, "position", d.position, HOME_FLIGHT).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(func() -> void:
+		fly.queue_free()
+		_refresh(false))
 
 
 ## Two drop targets the same (a Foe, a MechState, an empty slot's Vector2i, or null), compared by

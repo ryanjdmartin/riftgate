@@ -25,10 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 849 tests, 208,158 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, the foes'
+- Tests: 850 tests, 208,176 checks, green on main (30 October: main's head, the foes'
   move-order fix of `claude/zealous-wright-ixxo3l` in it, then the passive line in ink, the keywords
   in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, and the dice's
-  gestures, on Godot 4.8-beta2), about four minutes
+  gestures, all from `claude/jolly-lovelace-scn82y`, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -50,19 +50,21 @@ Godot 4.8-beta2, the enemy in violet, the backdrops on the map's palettes, the l
 light), and main took it as a fast-forward on 30 October on Ryan's word ("merge into main
 please").
 
-`claude/jolly-lovelace-scn82y` (29 and 30 October) carries `claude/brave-cori-fr18de`'s bosses'
-slate since 30 October (merged for its terms, so main takes the two together), and carried the skirmish's field with the
+`claude/jolly-lovelace-scn82y` (29 and 30 October) carried `claude/brave-cori-fr18de`'s bosses'
+slate from 30 October (merged for its terms, so main took the two together), and the skirmish's field with the
 Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
 with AA MODE, the enemy in the rift's violet with heat reddened and harm a red-red, the fight's
 backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what is in play; it
 took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
 `claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
 inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
-this into main"); its bible is v0.407 (the page's 419). Past main since, for main on his word:
-the codex's passive line in ink; the keywords in their colour with their icons, a tap opening
-each; main's six commits after it landed merged in; the slate, merged in for its terms, with
-the foe moves' keywords in the list; and the dice's gestures (a tap reads a die, a double-tap or a
-hold locks it), KEYWORDS gone from the field to the menu.
+this into main"), then again that evening as a fast-forward ("Do those, then clean up and push to
+main") with what it carried since: the codex's passive line in ink; the keywords in their colour
+with their icons, a tap opening each; main's six commits after it landed merged in; the slate,
+merged in for its terms, with the foe moves' keywords in the list; and the dice's gestures (a tap
+reads a die once the double-tap window passes, a double-tap or a hold locks it, a tap on the
+ground sends a waiting Swap home), KEYWORDS gone from the field to the menu. Its bible is v0.408
+(the page's 420).
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -84,7 +86,7 @@ evening ("build what can be built, and specify exactly what you need to flesh th
 including any holes"); its bible is v0.401 (the page's version 413), three-way merged onto the
 live v0.400, and its hangar the page's version 171. `claude/jolly-lovelace-scn82y` merged it on
 30 October for its terms (Ryan: "Fix the missing ones now, that's this sessions job, the other
-one doesn't have your context"), so main takes it with that branch.
+one doesn't have your context"), and main took the two together that evening.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -240,9 +242,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   call on the dice ("can we just change lock/unlock to hold and double-tap, and tap to inspect for
   dice? That way it's standard across the board"; "And yes remove keywords button"): a tap reads a
   die as it reads a unit, its readout one with the units' and open until closed, so its terms take
-  a tap; a double-tap or a hold locks or unlocks, the readouts left as they stood; the waiting
+  a tap; a double-tap or a hold locks or unlocks, the readouts left as they stand; the waiting
   Swap's die reads on a tap or a hold; KEYWORDS left the bottom row, the list in MENU alone, and
-  the codex's panel runs to the foot again.
+  the codex's panel runs to the foot again. His two follow-ups, agreed the same evening ("Yeah,
+  agreed to all"): a die's tap lands once the double-tap window (0.3 s) passes, the face lit from
+  the touch meanwhile, so a double-tap's lock never flashes the readout; and a tap on the ground
+  sends a waiting Swap home (the first closing an open readout), since only the drag back had set
+  it back, unseen; the Swap's keywords-list line says so.
 - The bosses' slate, seven of twelve (30 October, on Ryan's word; `docs/bosses_proposal.md`, its
   sections on what landed, what each waiting boss needs and the calls on what landed; the
   bible's section 9 rows): Rotbloom and Floraison in the Meadow, Gilgamesh and the Fallen
@@ -663,9 +669,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.407 (the
-  page's version 419, published 30 October from `claude/jolly-lovelace-scn82y`: the dice's
-  gestures and KEYWORDS retired, onto its own v0.406 at 418, the keywords list's
+  `docs/design-bible.html` after every change. This file and the live page are v0.408 (the
+  page's version 420, published 30 October from `claude/jolly-lovelace-scn82y`: the die's tap
+  waiting out the double-tap window and a tap on the ground setting a Swap back, onto its own
+  v0.407 at 419, the dice's gestures and KEYWORDS retired, onto its own v0.406 at 418, the keywords list's
   heading for a foe's move keywords, onto the live v0.405 at 417, which another session published
   with the halo for lit parts on trial on the Buzzard; under it this branch's v0.404 at 416, the
   keywords in their colour with their icons and a tap's tip, three-way merged onto the live v0.403

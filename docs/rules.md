@@ -205,9 +205,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
   and its extra strike each say so. No source is listed. A tap on it again closes it, and it
-  is one readout with the units' (below): a tap on another die or a unit moves it, and a
-  double-tap leaves the readouts as they stood. The whole die is in the codex (double-tap the
-  machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
+  is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
+  lands once the double-tap window (0.3 s) has passed with no second tap, the die lit from the
+  touch until it does, so a double-tap only locks and leaves the readouts as they stand; a tap
+  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
+  the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
   list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
   entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
@@ -351,7 +353,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
   front stands exposed to Direct fire). On the screen: drag the die to the first target and
   drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
-  again to move it or set it back.
+  again to move it or set it back. A tap on the ground sets it back too, the die flying home,
+  once no readout is open: the first such tap closes the open readout.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.

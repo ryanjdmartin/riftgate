@@ -125,6 +125,19 @@ func _apply_pose() -> void:
 			s._on_end_turn()
 		"lock":
 			s._toggle_lock(0)
+		"touch":
+			# The first die lit as its tap waits out the double-tap window (30 October).
+			s._dice[0]._tap_due = 1.0e12
+			s._dice[0].queue_redraw()
+		"swaphome":
+			# A Swap waiting on its first target, then a tap on nothing sending it home (30 October):
+			# RIFTGATE_SHOT_FRAME=6 or so catches the die in flight.
+			var ms: Skirmish.MechState = s.sk.mechs[0]
+			ms.die.faces[ms.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+			s._refresh()
+			_later(1, func() -> void:
+				s._begin_second(0, s.sk.targets_for(0)[0])
+				_later(2, func() -> void: s._send_second_home()))
 			s._toggle_all_arrows(true)
 		"acquire":
 			# The display locking onto every intent, mid-collapse (RIFTGATE_SHOT_FRAME=10).
