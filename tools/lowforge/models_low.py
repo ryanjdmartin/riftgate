@@ -949,10 +949,13 @@ def armadillo(b):
     # its lower part, floored dark deep in the shell. The sleeve runs down its line until its
     # back edge is buried in the lower deck behind the step (it began where its back edge hung
     # over both decks, a slot under it into the cut: Ryan, 30 October, "the rack has a rear cut
-    # that I'm not sure is supposed to be that big").
+    # that I'm not sure is supposed to be that big"), that run down a skirt in the livery under
+    # the stripe (the same day: "that's now a lot of hazard stripe in one area. I don't mind
+    # the extension, but maybe this is a good place for livery instead").
     HB, DV, R2 = Vector((0.0, -34.0, Z0 + 20.0)), Vector(D), math.sqrt(2.0)
     b.cut(band_obs, tuple(HB - DV * 8.0), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
-    _tube(b, tuple(HB - DV * 8.0), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.3, phase=math.pi / 4)
+    _tube(b, tuple(HB - DV * 8.0), tuple(HB + DV * 0.5), 8.5 * R2, 7.4 * R2, 4, "livery.livery2", "hatch_skirt", floor_depth=0.3, phase=math.pi / 4)
+    _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.0, floor=False, phase=math.pi / 4)
     with b.joint("run_rack", (0.0, -32.0, Z0 + 22.0), slide=D):   # the rack slides out of its hatch along its line (it tilted, Ryan, 29 October)
         # The Cryo Flingers' twin rack (fixed, no pin): a panel body, two barrels side by side
         # through its face, bored six deep (Ryan, 29 October: "the cryo barrels need to be bored
@@ -1019,12 +1022,13 @@ def armadillo(b):
     # Each box straddles its corner: its face's top edge about five above the deck and two and
     # a half in from the panel, its foot five behind it (five toward the front: Ryan, 30
     # October, "maybe 2 units", then "3 more further forward"); its top runs over the deck to
-    # the next band, and its outer wall stands flush with the band's flank ("move them apart
-    # so that they're flush with the outer face of the back segment"), over the whole
-    # chamfer, so it sits on the hull as a unit bolted there, clear of the rack's hatch and its
-    # slide; its walls run thirteen back, its far end two clear of the hind hip's cuff. The
-    # louvred hollow dips into the corner, cut there.
-    RAD_X, RAD_MOUTH = 17.0, (-50.66, Z0 + 20.73)   # the housing's outer wall at the flank, 25 off the spine
+    # the next band, and its outer wall stands flush with that next band's flank, two out past
+    # the tail's own ("move them apart so that they're flush with the outer face of the back
+    # segment", then "flush with the next biggest segment instead"), over the whole chamfer,
+    # so it sits on the hull as a unit bolted there, clear of the rack's hatch and its slide;
+    # its walls run thirteen back, its far end two clear of the hind hip's cuff. The louvred
+    # hollow dips into the corner, cut there.
+    RAD_X, RAD_MOUTH = 19.0, (-50.66, Z0 + 20.73)   # the housing's outer wall at the next band's flank, 27 off the spine
     vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
                    wall=1.5, housing="steel.dark", back=13.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in

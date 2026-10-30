@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's sixth notes, 30 October.",
-   "note": "Ryan, 30 October: \"move them apart so that they're flush with the outer face of the back segment\", and \"the rack has a rear cut that I'm not sure is supposed to be that big\". The radiators' outer walls now stand flush with the tail band's flanks (centres 17 off the spine, from 13.5), over the whole chamfer, their walls thirteen deep so each far end keeps two clear of the hind hip's cuff. The rack's striped collar began too high: its back edge hung over both decks, a slot under it into the hatch's cut; it now runs down its line until that edge is buried in the lower deck, its base a striped skirt between the radiators (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's seventh notes, 30 October.",
+   "note": "Ryan, 30 October: \"bring the rads out so they're flush with the next biggest segment instead. And that's now a lot of hazard stripe in one area. I don't mind the extension, but maybe this is a good place for livery instead.\" The radiators' outer walls now stand flush with the next band's flanks (centres 19 off the spine, from 17), two out past the tail's own over the whole chamfer, their far ends still two clear of the hind hips' cuffs. The rack's collar keeps its stripe above the decks' step; the length run down into the lower deck last round is now a skirt in the livery, the military green of the flank plates (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes of 30 October (the radiators 13.5 off the spine, the rack's collar hanging over the decks behind)",
+    "summary": "Before: the sixth notes of 30 October (the radiators flush with the tail band's flanks, the rack's collar striped down into the deck)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
