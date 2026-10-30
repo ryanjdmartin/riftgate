@@ -8,10 +8,11 @@ extends Control
 ## top-right, the entry's place on its die top-left. A locked die gets bracket corners and a
 ## LOCKED readout. A unique effect adds a star chip.
 ##
-## Gestures:
-##   tap   -> `tapped`         lock or unlock
-##   hold  -> `held` / `hold_released`   show details while the finger stays down
-##   drag  -> `drag_started` / `drag_moved(pos)` / `drag_ended(pos)`   spend the face on a target
+## Gestures (the skirmish's, Ryan, 30 October):
+##   tap         -> `tapped`          read the die: its readout opens, or closes
+##   double-tap  -> `double_tapped`   lock or unlock (its first tap is a `tapped` too)
+##   hold        -> `held` / `hold_released`   lock or unlock
+##   drag        -> `drag_started` / `drag_moved(pos)` / `drag_ended(pos)`   spend the face on a target
 
 signal tapped
 signal double_tapped
@@ -47,7 +48,7 @@ var blast: int = 0             # a vent's blast on its own machine (the Whip Sco
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
 var dead: bool = false
-var can_tap: bool = true     # tap locks
+var can_tap: bool = true     # a tap reads the die
 var can_drag: bool = true    # drag spends
 var animate: bool = true
 

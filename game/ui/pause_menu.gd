@@ -17,8 +17,10 @@ extends Control
 ## (Ryan, 25 September: on the page itself, not a settings item).
 ##
 ## KEYWORDS (Ryan, 26 October: "We need a keywords list in the pause menu"): every term the
-## dice and the chips print, by kind, each with its codex line, in a scroller; the skirmish's
-## button under the eye opens it straight, and then CLOSE (or a tap outside) resumes.
+## dice and the chips print, by kind, each with its codex line, in a scroller. In play a term in
+## shown text takes a tap for its own line (KeywordTip), so the list lives here alone (Ryan, 30
+## October: "if we have contextual help that can get repurposed or removed and just live in the
+## menu"; "And yes remove keywords button").
 ##
 ## COLOURS, a debug build's page under SETTINGS (Ryan, 30 October: "put in a whole colour wheel
 ## or hex entry"; then "simplified to only what we need"): the colours that carry a meaning and
@@ -53,7 +55,6 @@ var _music_next: HudButton
 var _music_loop := "?"    # the loop the plate shows; "?" so the first poll draws it
 var _page := "paused"
 var _busy := false
-var _direct := false      # opened straight on a page (the keywords button): its BACK closes
 var _list: ScrollContainer = null   # the keywords or colours page's scroller, sized to the glass in _fit
 var _peeking := false     # the colours page's PEEK: the menu hidden until a tap
 var _peek_tag: HudPanel
@@ -71,7 +72,7 @@ func _init() -> void:
 	_scrim.gui_input.connect(func(e: InputEvent) -> void:
 		if _peeking and e is InputEventMouseButton and e.pressed:
 			_peek(false)
-		elif e is InputEventMouseButton and e.pressed and (_page == "paused" or _direct) and not _busy:
+		elif e is InputEventMouseButton and e.pressed and _page == "paused" and not _busy:
 			close())
 	add_child(_scrim)
 	_panel = HudPanel.new(24.0)
@@ -97,11 +98,10 @@ func _init() -> void:
 	add_child(_mask)
 
 
-## Open on `page`: PAUSED from MENU, or straight on KEYWORDS from the skirmish's button.
-func open(page: String = "paused") -> void:
+## Open on PAUSED, from MENU.
+func open() -> void:
 	_music_loop = "?"
-	_direct = page != "paused"
-	_show_page(page)
+	_show_page("paused")
 	visible = true
 	Sound.play("menu_open")
 	Sound.duck(true)
@@ -161,10 +161,7 @@ func _show_page(page: String) -> void:
 			_title("KEYWORDS")
 			_list = _keywords_list()
 			_rows.add_child(_list)
-			if _direct:
-				_button("CLOSE", close, true, "")
-			else:
-				_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
+			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")
 			var l := Hud.label("Leave for the harness. A battle is kept where it stands.", 18, Palette.MUTED)

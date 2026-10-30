@@ -73,7 +73,6 @@ const WINGED_LIFT := 16.0   # design pixels a winged foe floats over its feet li
 const FIELD_TURN := 15.0    # degrees a machine turns toward the middle, those left of it to the right and those right of it to the left
 var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
-const KEYS_W := 180.0       # KEYWORDS between End turn and Withdraw
 const MECH_LOG_GAP := 18.0  # with the controls at the bottom, from the machines' row to the log
 const PITCH := 172.0
 const LOG_LINES := 7
@@ -112,7 +111,6 @@ var show_all_arrows: bool = false
 var _header: HudButton
 var _sub_label: Label
 var _eye: HudButton
-var _keys: HudButton                 # the keywords list, between End turn and Withdraw (Ryan, 26 and 29 October)
 var _switch: HudButton               # the controls' quick switch, left of the eye
 var _log: RichTextLabel
 var _log_scroll: ScrollContainer
@@ -157,7 +155,7 @@ var _arrows: ArrowLayer
 var _details: HudPanel
 var _details_label: Label
 var _details_entry: EntryReadout     # the die's hold: the entry showing, its effects listed (Ryan, 25 October)
-var _details_ring: CylinderView      # a stepping die's chambers in its hold (the Cassowary's)
+var _details_ring: CylinderView      # a stepping die's chambers in its readout (the Cassowary's)
 var _roll_label: Label
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
@@ -166,7 +164,6 @@ var _plaque: Plaque = null           # the other world's window: a foe's named m
 var _plaque_debug_at := 0.0
 var _prey: PreyLayer = null          # the predator sense: the foes' ground dimmed, eyes on the foes looking away
 var _reserve: ReserveView = null     # the reinforcements waiting, by rank, in the formation's right gutter
-var _hold_die: int = -1              # the die being held, for the sense
 
 
 var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
@@ -281,10 +278,12 @@ var _replay_shade: Control            # swallows taps while the enemy's turn rep
 var _fx: FeedFX = null                # the display's rare analysis events
 var _drag_from: int = -1
 var _log_seen: int = 0
-## The unit whose readout a tap left open, one at a time (Ryan, 29 October: "a tap toggle, only
-## one unit popup allowed at a time"): {"foe": Foe}, {"mech": index} or a mined empty slot's
-## {"mine": Vector2i(rank, col)}; empty, none.
+## The unit or die whose readout a tap left open, one at a time (Ryan, 29 October: "a tap toggle,
+## only one unit popup allowed at a time"; a die's too, 30 October): {"foe": Foe}, {"mech":
+## index}, a mined empty slot's {"mine": Vector2i(rank, col)} or a die's {"die": index}; empty,
+## none.
 var _pop: Dictionary = {}
+var _tap_undo: Dictionary = {}   # a die's last tap, for a double-tap to undo: the die, the readout open before it, when
 const POP_ALPHA := 0.7   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent")
 const POP_GAP := 4.0      # a machine's readout over its gauges
 var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
@@ -509,7 +508,7 @@ func _build() -> void:
 	tear.size = foes_ground.size
 	add_child(tear)
 	# The predator sense (the funnel-web, 18 October): the foes' ground and the foes on it
-	# dim while an ambusher's die is held or dragged, and the foes looking away get their eyes.
+	# dim while an ambusher's die is read or dragged, and the foes looking away get their eyes.
 	_prey = PreyLayer.new()
 	_prey.position = tear.position
 	_prey.size = tear.size
@@ -533,9 +532,8 @@ func _build() -> void:
 		var d := DieFaceView.new()
 		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
 		d.tapped.connect(_on_die_tapped.bind(i))
-		d.double_tapped.connect(_on_die_tapped.bind(i))   # a quick second tap is a tap: no die codex (Ryan, 22 September), hold shows everything
-		d.held.connect(_on_die_held.bind(i))
-		d.hold_released.connect(_on_hold_released)
+		d.double_tapped.connect(_on_die_double_tapped.bind(i))
+		d.held.connect(_toggle_lock.bind(i))
 		d.drag_started.connect(_on_drag_started.bind(i))
 		d.drag_moved.connect(_on_drag_moved)
 		d.drag_ended.connect(_on_drag_ended)
@@ -652,12 +650,11 @@ func _build() -> void:
 	_ghost = DieFaceView.new()
 	_ghost.animate = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ghost.can_tap = false
 	_ghost.drag_started.connect(_on_ghost_drag_started)
 	_ghost.drag_moved.connect(_on_drag_moved)
 	_ghost.drag_ended.connect(_on_drag_ended)
+	_ghost.tapped.connect(_on_ghost_tapped)
 	_ghost.held.connect(_on_ghost_held)
-	_ghost.hold_released.connect(_on_hold_released)
 	_ghost.modulate = Color.WHITE   # solid: with its slot emptied, this is the die itself
 	_ghost.visible = false
 	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
@@ -687,14 +684,6 @@ func _build() -> void:
 	dv.add_child(_details_entry)
 
 	_build_codex()
-	# The keywords list (Ryan, 26 October: "an accessible overlay with a button that's somehow
-	# always visible"; 29 October: spelt out, between End turn and Withdraw, "pressable even when a
-	# codex is opened"): the pause menu's KEYWORDS page opened straight, its CLOSE resuming. Laid
-	# after the codex, so it stands over the codex's shade, whose panel stops short of this row.
-	_keys = HudButton.new("KEYWORDS", _open_menu.bind("keywords"))
-	_keys.font_size = 16
-	_keys.tooltip_text = "Every keyword, reach and rule"
-	_place(_keys, Vector2(W * 0.5 - KEYS_W * 0.5, BOTTOM_Y), Vector2(KEYS_W, BOTTOM_BTN.y))
 	_build_confirm()
 	_build_outcome()
 	_build_log_full()
@@ -893,7 +882,6 @@ func _toggle_log_full() -> void:
 func _build_codex() -> void:
 	# Codex: a double-tap opens it; a tap anywhere outside closes it (`CodexBox`).
 	_codex = CodexBox.new()
-	_codex.bottom = H - BOTTOM_Y + 12.0   # the panel clear of the bottom row, where KEYWORDS stays pressable
 	add_child(_codex)
 
 
@@ -1161,7 +1149,7 @@ func _refresh(save: bool = true) -> void:
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
-		d.can_tap = assigning and ms.alive() and not ms.assigned
+		d.can_tap = ms.alive() and _pending.get("mech", -1) != i   # a tap reads the die, spent too; the pending one's is its ghost's
 		d.can_drag = assigning and ms.alive() and not ms.assigned and _pending.get("mech", -1) != i
 		# While a die is dragged, the one under the finger is the die: its slot goes empty
 		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
@@ -1203,7 +1191,7 @@ func _forecast_for(i: int) -> Dictionary:
 
 
 ## The lure preview (the Whip Scorpion's Siphon, 22 October): while a die whose entry Lures is
-## dragged over a foe it may be spent on, or held or dragged anywhere when it reaches every foe,
+## dragged over a foe it may be spent on, or read or dragged anywhere when it reaches every foe,
 ## the foes it would turn draw their arrows dashed to its machine, and the round preview reads the
 ## round as the lure would leave it (_update_round): the lured blows, the brace, the heat a
 ## Siphon drinks from them.
@@ -1211,7 +1199,7 @@ func _update_preview() -> void:
 	_turns = []
 	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
 		return
-	var i := _drag_from if _drag_from >= 0 else _hold_die
+	var i := _drag_from if _drag_from >= 0 else _read_die()
 	if i < 0 or i >= sk.mechs.size():
 		return
 	var ms: Skirmish.MechState = sk.mechs[i]
@@ -1222,7 +1210,7 @@ func _update_preview() -> void:
 ## The round preview for this refresh (Skirmish.preview_round; Ryan, 26 October: it accounts for
 ## everything that will happen but chance and the player's own choices, and "Die faces only apply
 ## to the preview when hovered over a valid target"): the die in hand counts dragged over somewhere
-## it may be spent, or held or dragged anywhere when its Lure reaches every foe (any foe it turns
+## it may be spent, or read or dragged anywhere when its Lure reaches every foe (any foe it turns
 ## is its target, its pieces dealing no damage). Nothing while a Swap waits on its second target.
 func _update_round() -> void:
 	_round = {}
@@ -1234,7 +1222,7 @@ func _update_round() -> void:
 		hm = _drag_from
 		ht = _drag_over
 	elif not _turns.is_empty():
-		hm = _drag_from if _drag_from >= 0 else _hold_die
+		hm = _drag_from if _drag_from >= 0 else _read_die()
 		ht = _turns[0]
 	_round = sk.preview_round(hm, ht)
 
@@ -1720,7 +1708,7 @@ func _refresh_arrows() -> void:
 	var inv := _arrows.get_global_transform().affine_inverse()
 	# During a lure preview every blow its machine would take shows: the foes on it already
 	# solid, the ones the lure would turn dashed (below).
-	var lurer := (_drag_from if _drag_from >= 0 else _hold_die) if not _turns.is_empty() else -1
+	var lurer := (_drag_from if _drag_from >= 0 else _read_die()) if not _turns.is_empty() else -1
 	for foe in sk.field_foes():
 		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
 		# its pick means nothing, and the ambush read says so too (Foe.intent_on, 18 October).
@@ -1832,7 +1820,34 @@ func _flash_roll(fv: UnitView) -> void:
 
 # ---------------------------------------------------------------- gestures
 
+## A tap on a die reads it, as a tap on a unit does (Ryan, 30 October: "change lock/unlock to
+## hold and double-tap, and tap to inspect for dice ... That way it's standard across the
+## board"): its readout opens, a tap on it again closes it, a tap on another die or unit moves it
+## there. The readout stays open, so its terms take a tap too. A hold or a double-tap locks.
 func _on_die_tapped(i: int) -> void:
+	_tap_undo = {"die": i, "pop": _pop.duplicate(), "at": Time.get_ticks_msec()}
+	if _pop == {"die": i}:
+		_close_pop()
+	else:
+		_open_pop({"die": i})
+
+
+## A double-tap locks or unlocks the die, and leaves the readouts as they stood before it: its
+## first tap's opening or closing is undone.
+func _on_die_double_tapped(i: int) -> void:
+	if int(_tap_undo.get("die", -1)) == i and Time.get_ticks_msec() - int(_tap_undo.get("at", 0)) <= int(DieFaceView.DOUBLE_TAP_SECONDS * 1000.0) + 100:
+		var was: Dictionary = _tap_undo["pop"]
+		if was.is_empty():
+			_close_pop()
+		elif was != _pop:
+			_open_pop(was, false)
+	_tap_undo = {}
+	_toggle_lock(i)
+
+
+## A die locked or unlocked, for the reroll to keep or roll: while the player assigns, a live die
+## not yet spent.
+func _toggle_lock(i: int) -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
 	var ms: Skirmish.MechState = sk.mechs[i]
@@ -1843,7 +1858,7 @@ func _on_die_tapped(i: int) -> void:
 	_refresh()
 
 
-## What holds on die entry `i` now, for its hold: a cooldown with its turns left (Ryan, 26
+## What holds on die entry `i` now, for its readout: a cooldown with its turns left (Ryan, 26
 ## October: "On Cooldown (X turns left)"), a foe's switch-off, its corruption. A
 ## stepping die's next chamber is its cylinder's arrow.
 func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
@@ -1869,8 +1884,12 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 	return out
 
 
-func _on_die_held(i: int) -> void:
+## A die's readout over its place in the tray, as its machine stands now: false when there is
+## nothing to read (a wreck's die).
+func _show_die(i: int) -> bool:
 	var ms: Skirmish.MechState = sk.mechs[i]
+	if not ms.alive():
+		return false
 	# The entry showing, alone (Ryan, 25 October: "only show the visible component"; 26
 	# October: "it just turns the iconography into text"): its place and name, what holds on
 	# it now, its codex, a line for each mark on the die, a number the live sources moved
@@ -1886,12 +1905,10 @@ func _on_die_held(i: int) -> void:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit))
-	_details.fill_alpha = 1.0   # over the log's lines: a readout of text reads over nothing
-	_details.queue_redraw()
-	_show_details("", _dice[i], ring, entry)   # held, it takes the panel from a unit's readout until it is let go
-	Sound.play("hold")
-	_hold_die = i
-	_refresh(false)   # the marks and a lure's preview read the held die
+	if entry.is_empty() and ring.is_empty():
+		return false
+	_show_details("", _dice[i], ring, entry)
+	return true
 
 
 ## A tap on a foe (or on a mined empty slot) opens its readout, a tap on it again closes it, a
@@ -1943,31 +1960,49 @@ func _pop_for(v: UnitView) -> Dictionary:
 	return {}
 
 
-func _open_pop(what: Dictionary) -> void:
+func _open_pop(what: Dictionary, sound: bool = true) -> void:
+	var die := _pop.has("die") or what.has("die")
 	_pop = what
-	Sound.play("hold")
-	_show_pop()
-	_refresh_arrows()
+	if sound:
+		Sound.play("hold")
+	if die:
+		_refresh(false)   # the marks and a lure's preview read the die whose readout is open, or let it go
+	else:
+		_show_pop()
+		_refresh_arrows()
 
 
 func _close_pop() -> void:
 	if _pop.is_empty():
 		return
+	var die := _pop.has("die")
 	_pop = {}
-	if _hold_die < 0:
-		_details.visible = false
-	_refresh_arrows()
+	_details.visible = false
+	if die:
+		_refresh(false)   # its marks and its lure's preview go with it
+	else:
+		_refresh_arrows()
 
 
-## The open readout drawn again over its unit as the unit stands now (after a blow, a swap, a
-## new round), translucent so the arrows it brings show under it; its unit gone, it closes. A
-## held die's readout keeps the panel while it is held.
+## The die whose readout is open, or -1: the marks and the lure's preview read it as the die in
+## hand, as they read a dragged one.
+func _read_die() -> int:
+	return int(_pop.get("die", -1))
+
+
+## The open readout drawn again over its unit or its die as it stands now (after a blow, a swap,
+## a reroll, a new round), a unit's translucent so the arrows it brings show under it; its unit
+## gone, or its die's machine, it closes.
 func _show_pop() -> void:
-	if _pop.is_empty() or _hold_die >= 0:
+	if _pop.is_empty():
 		return
-	_details.fill_alpha = POP_ALPHA
+	_details.fill_alpha = 1.0 if _pop.has("die") else POP_ALPHA   # a die's over the log's lines: a readout of text reads over nothing
 	_details.queue_redraw()
-	if _pop.has("foe"):
+	if _pop.has("die"):
+		if not _show_die(int(_pop["die"])):
+			_pop = {}   # the refresh that drew it lets the marks go
+			_details.visible = false
+	elif _pop.has("foe"):
 		var foe: Foe = _pop["foe"]
 		var v := _foe_view_for(foe)
 		if v == null:
@@ -2077,9 +2112,7 @@ func _on_mech_double_tapped(i: int) -> void:
 
 ## Fill and show the codex (see `CodexBox` for the entry keys).
 func _open_codex(entry: Dictionary) -> void:
-	_details.visible = false
-	_pop = {}
-	_refresh_arrows()
+	_close_pop()
 	_codex.open(entry)
 
 
@@ -2089,8 +2122,8 @@ func _close_codex() -> void:
 
 var _menu: PauseMenu = null
 
-## The pause menu, on PAUSED from MENU or straight on `page` (the keywords button).
-func _open_menu(page: String = "paused") -> void:
+## The pause menu, on PAUSED from MENU.
+func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, value: Variant) -> void:
@@ -2107,7 +2140,7 @@ func _open_menu(page: String = "paused") -> void:
 		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
 	_menu.move_to_front()
-	_menu.open(page)
+	_menu.open()
 
 
 func _toggle_all_arrows(on: bool) -> void:
@@ -2123,20 +2156,7 @@ func _switch_controls() -> void:
 	_refresh()
 
 
-## A die (or the waiting Swap's) let go: its readout goes, and a unit's left open comes back.
-func _on_hold_released() -> void:
-	_details.visible = false
-	var was_die := _hold_die >= 0
-	_hold_die = -1
-	if was_die:
-		_refresh(false)   # a held die's preview lets go of the gauges too; the unit's readout returns with it
-	else:
-		_show_pop()
-		_refresh_arrows()
-		_refresh_prey()
-
-
-## The predator sense (Ryan, 17 October; the funnel-web's row, 18 October): while a die is held
+## The predator sense (Ryan, 17 October; the funnel-web's row, 18 October): while a die is read
 ## or dragged on a machine whose passive reads a foe's intent on it (the funnel-web's Ambush),
 ## the foes' ground dims and the foes the entry showing can reach that show no intent on the
 ## machine get their eyes. RIFTGATE_PREY_DEBUG=1 keeps it on.
@@ -2147,7 +2167,7 @@ func _refresh_prey() -> void:
 	if not blast.is_empty():
 		_prey.show_marks(blast["rects"], "blast", blast["labels"])
 		return
-	var i := _drag_from if _drag_from >= 0 else _hold_die
+	var i := _drag_from if _drag_from >= 0 else _read_die()
 	var force := false
 	if i < 0 and PREY_DEBUG:
 		for j in range(sk.mechs.size()):
@@ -2161,7 +2181,7 @@ func _refresh_prey() -> void:
 		_prey.hide_marks()
 		return
 	var foes := prey_for(i, force)
-	if foes.is_empty() and not (PREY_DEBUG and _drag_from < 0 and _hold_die < 0):
+	if foes.is_empty() and not (PREY_DEBUG and _drag_from < 0 and _read_die() < 0):
 		_prey.hide_marks()
 		return
 	var rects: Array = []
@@ -2176,11 +2196,11 @@ func _refresh_prey() -> void:
 
 
 ## The blast's marks (the Whip Scorpion's, 22 October): while a vent die on a machine whose vents
-## blast is held, or dragged anywhere but over an ally, every foe the blast may land on (the draw
+## blast is read, or dragged anywhere but over an ally, every foe the blast may land on (the draw
 ## is over every live foe) is marked with what it would deal there. Nothing for any other die,
 ## or a vent with nothing to fire. RIFTGATE_BLAST_DEBUG=1 keeps them on.
 func _blast_marks() -> Dictionary:
-	var i := _drag_from if _drag_from >= 0 else _hold_die
+	var i := _drag_from if _drag_from >= 0 else _read_die()
 	var forced := false
 	if i < 0 and BLAST_DEBUG:
 		for j in range(sk.mechs.size()):
@@ -2235,6 +2255,7 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 
 
 func _on_drag_started(i: int) -> void:
+	_drop_die_pop()
 	_drag_from = i
 	_drag_over = null
 	Sound.play("die_pick")
@@ -2249,6 +2270,12 @@ func _on_drag_started(i: int) -> void:
 	_refresh()
 
 
+
+## A die picked up closes a die's readout: the drag reads the die in hand. The caller refreshes.
+func _drop_die_pop() -> void:
+	if _pop.has("die"):
+		_pop = {}
+		_details.visible = false
 func _on_drag_moved(global_pos: Vector2) -> void:
 	if not _ghost.visible:
 		return
@@ -2304,7 +2331,7 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 
 ## A Swap dropped on its first target (Ryan, 21 October): the die sits over that foe, the
 ## second targets light (every other foe that moves, every empty slot), and a tap on one
-## spends it; dragging the die again picks it back up; a hold reads as ever.
+## spends it; dragging the die again picks it back up; a tap reads it as ever.
 func _begin_second(i: int, primary: Foe) -> void:
 	_pending = {"mech": i, "primary": primary}
 	var fv := _foe_view_for(primary)
@@ -2325,16 +2352,23 @@ func _on_ghost_drag_started() -> void:
 		return
 	var i: int = _pending["mech"]
 	_pending = {}
+	_drop_die_pop()
 	_drag_from = i
 	_drag_over = null
 	Sound.play("die_pick")
 	_refresh()
 
 
-## A hold on the pending die reads its die, as a hold on the die in the tray does.
-func _on_ghost_held() -> void:
+## A tap on the pending die reads it, as a tap on the die in the tray does; a hold opens its
+## readout too, as a hold on a unit does (it is being spent: there is nothing to lock).
+func _on_ghost_tapped() -> void:
 	if not _pending.is_empty():
-		_on_die_held(int(_pending["mech"]))
+		_on_die_tapped(int(_pending["mech"]))
+
+
+func _on_ghost_held() -> void:
+	if not _pending.is_empty() and _pop != {"die": int(_pending["mech"])}:
+		_open_pop({"die": int(_pending["mech"])})
 
 
 ## A tap on a slot while a Swap waits for its second target: the foe there, or the empty slot,

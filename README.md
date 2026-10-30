@@ -355,11 +355,11 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, termtip (the first machine's codex with the
 # first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
-# Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die's; RIFTGATE_HOLD_ENTRY=<place>
+# Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
@@ -538,7 +538,7 @@ tools/android.sh        # export, install, launch; `tools/android.sh log` tails 
 The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
 ranks of four, log with the controls' switch and the intent eye at its right, dice with the
 wide Reroll right under them, mechs at the bottom with their gauges above the sprite, End turn
-bottom-left, KEYWORDS in the middle and Withdraw bottom-right; the setting Skirmish Controls at
+bottom-left and Withdraw bottom-right; the setting Skirmish Controls at
 Bottom (or the switch, mid-fight) stands the mechs right under the enemies and puts the log,
 dice and Reroll below them. Both sides stand on one field seen from behind the mechs: the
 other world far, under the enemies, our ground near, the mechs in four fixed hexes of its grid
@@ -549,11 +549,12 @@ statuses and warning signs: a broken shield when incoming damage will break it, 
 a hit that big may destroy a component, a skull when the round would wreck it, a thermometer
 when the current face would overheat. The gauges pulse over the part about to change and the
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
-die to lock it, hold a die to read the entry showing (its effects a line each, every keyword
-explained; double-tap the machine for the whole die), drag a die onto a foe to spend an attack
-face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
-Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
-entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.
+die to read the entry showing (its effects a line each, each term tappable for what it means;
+tap again to close it; double-tap the machine for the whole die), double-tap or hold a die to
+lock it, drag a die onto a foe to spend an attack face or onto a mech to spend a shield or vent
+face; valid targets light up while dragging. Read or drag an ambusher's die (the funnel-web's)
+and the foes' ground dims: the foes its entry can reach that show no intent on it get pulsing
+eyes, the ones its blows bite.
 Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
 lands and the number flashes over the target; a flat one shows its number. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
@@ -561,9 +562,9 @@ one showing; a copy of it may come up. End turn runs the enemy: its turn replays
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
 and then the next round's dice show. Tap a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it, and tap it
-again to close it (one unit's at a time; a tap on nothing closes it too); the eye shows every
-arrow; double-tap any unit for its codex entry; KEYWORDS lists every keyword, even over an open
-codex. Withdraw is offered at any point
+again to close it (one readout at a time, a die's included; a tap on nothing closes it too);
+the eye shows every arrow; double-tap any unit for its codex entry; MENU's KEYWORDS lists every
+keyword. Withdraw is offered at any point
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written

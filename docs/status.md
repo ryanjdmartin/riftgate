@@ -25,10 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 850 tests, 208,093 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, the foes'
+- Tests: 849 tests, 208,158 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, the foes'
   move-order fix of `claude/zealous-wright-ixxo3l` in it, then the passive line in ink, the keywords
-  in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, on Godot
-  4.8-beta2), about four minutes
+  in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, and the dice's
+  gestures, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -58,10 +58,11 @@ backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what
 took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
 `claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
 inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
-this into main"); its bible is v0.406 (the page's 418). Past main since, for main on his word:
+this into main"); its bible is v0.407 (the page's 419). Past main since, for main on his word:
 the codex's passive line in ink; the keywords in their colour with their icons, a tap opening
-each; main's six commits after it landed merged in; and the slate, merged in for its terms, with
-the foe moves' keywords in the list.
+each; main's six commits after it landed merged in; the slate, merged in for its terms, with
+the foe moves' keywords in the list; and the dice's gestures (a tap reads a die, a double-tap or a
+hold locks it), KEYWORDS gone from the field to the menu.
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -177,8 +178,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   perspective"). The layout is the saved setting Skirmish Controls (Ryan: "Leave the layout as
   an option"), Middle by default, Bottom the machines right under the foes. The vista, window
   and holo grounds and the overworld tiles are gone. His second round that day, built: a squad
-  of one or two in the middle hexes; the machines turned 15° toward the middle; KEYWORDS spelt
-  out between End turn and Withdraw, pressable over an open codex; a quick switch for the
+  of one or two in the middle hexes; the machines turned 15° toward the middle; a quick switch for the
   controls beside the eye, both inside the log's glass; a unit's readout a tap toggle, one at a
   time, translucent (70%) over the arrows it draws, a machine's resting on its gauges; at the
   bottom the field down to the log and the machines lower. His third round asked the red chips to
@@ -236,9 +236,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   each with an icon (Steal, Every Machine and Parts new), the engine's own words (its aim, menace)
   kept out; the slate's swallowed machine's dashed edge drawn round the machine, the field's views
   being wider than their machines, and its boss test reading a domain's first boss of the list
-  (it had errored after its first check, unseen, since a domain's bosses became a list). His
-  thought, open: the KEYWORDS button retired to the menu, and the dice's gestures with it (tap to
-  inspect, hold or double-tap to lock), in discussion.
+  (it had errored after its first check, unseen, since a domain's bosses became a list). Then his
+  call on the dice ("can we just change lock/unlock to hold and double-tap, and tap to inspect for
+  dice? That way it's standard across the board"; "And yes remove keywords button"): a tap reads a
+  die as it reads a unit, its readout one with the units' and open until closed, so its terms take
+  a tap; a double-tap or a hold locks or unlocks, the readouts left as they stood; the waiting
+  Swap's die reads on a tap or a hold; KEYWORDS left the bottom row, the list in MENU alone, and
+  the codex's panel runs to the foot again.
 - The bosses' slate, seven of twelve (30 October, on Ryan's word; `docs/bosses_proposal.md`, its
   sections on what landed, what each waiting boss needs and the calls on what landed; the
   bible's section 9 rows): Rotbloom and Floraison in the Meadow, Gilgamesh and the Fallen
@@ -659,8 +663,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.406 (the
-  page's version 418, published 30 October from `claude/jolly-lovelace-scn82y`: the keywords list's
+  `docs/design-bible.html` after every change. This file and the live page are v0.407 (the
+  page's version 419, published 30 October from `claude/jolly-lovelace-scn82y`: the dice's
+  gestures and KEYWORDS retired, onto its own v0.406 at 418, the keywords list's
   heading for a foe's move keywords, onto the live v0.405 at 417, which another session published
   with the halo for lit parts on trial on the Buzzard; under it this branch's v0.404 at 416, the
   keywords in their colour with their icons and a tap's tip, three-way merged onto the live v0.403

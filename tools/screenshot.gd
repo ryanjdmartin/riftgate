@@ -109,13 +109,14 @@ func _apply_pose() -> void:
 				s._drag_from = 0
 			s._refresh()
 		"hold":
-			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
-			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
+			# The second machine's die read, a tap (its readout). RIFTGATE_HOLD_ENTRY=<place> (from
+			# 1) shows that entry of its die first, to read any piece's (with RIFTGATE_TEAM to
+			# choose the machine).
 			var at := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
 			if at >= 0 and at < s.sk.mechs[1].die.faces.size():
 				s.sk.mechs[1].face_index = at
 				s._refresh()
-			s._on_die_held(1)
+			s._on_die_tapped(1)
 		"mechhold":
 			s._on_mech_held(0)
 		"foehold":
@@ -123,7 +124,7 @@ func _apply_pose() -> void:
 		"confirm":
 			s._on_end_turn()
 		"lock":
-			s._on_die_tapped(0)
+			s._toggle_lock(0)
 			s._toggle_all_arrows(true)
 		"acquire":
 			# The display locking onto every intent, mid-collapse (RIFTGATE_SHOT_FRAME=10).
@@ -137,7 +138,8 @@ func _apply_pose() -> void:
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))
 		"keywords":
-			s._open_menu("keywords")   # as the button under the eye opens it
+			s._open_menu()
+			s._menu._show_page("keywords")   # as the menu's KEYWORDS opens it
 		"menu", "settings", "quit", "colours":
 			s._open_menu()
 			if _pose != "menu":
