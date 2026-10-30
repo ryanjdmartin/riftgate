@@ -100,50 +100,57 @@ func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
 	assert_eq(MechView3D.joint_axis("shoulder_l"), Vector3(1, 0, 0), "a limb swings about the axle line")
 
 
-func test_a_models_textures_read_their_mipmaps_unless_the_smoothing_is_off() -> void:
+func test_a_models_textures_read_their_mipmaps() -> void:
 	# Ryan, 30 October: "a lot of aliasing on models" on the phone. A machine drawn small on
 	# the map read one texel of its 64-pixel tiles a screen pixel and sparkled; nearest from
-	# its mipmaps keeps the texels up close and the calm far off. AA off draws as before.
-	var filters := func() -> Array:
-		var node: Node = (load("res://art/models/%s.glb" % MechView3D.stand_in()) as PackedScene).instantiate()
-		MechView3D.toon(node, ContentDB.load_default().makers.keys()[0], "toon")
-		var seen: Array = []
-		for child in node.find_children("*", "MeshInstance3D", true, false):
-			var mi: MeshInstance3D = child
-			for i in range(mi.get_surface_override_material_count()):
-				var m := mi.get_surface_override_material(i)
-				if m is StandardMaterial3D and (m as StandardMaterial3D).albedo_texture != null and not seen.has(m.texture_filter):
-					seen.append(m.texture_filter)
-		node.free()
-		return seen
-	Settings.display["aa"] = true
-	assert_true(Hud.smoothing(), "the smoothing is on by default")
-	assert_eq(filters.call(), [BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS], "every textured part reads its mipmaps")
-	if OS.is_debug_build():   # the tests' build always is; a release build smooths whatever is saved
-		Settings.display["aa"] = false
-		assert_false(Hud.smoothing() or Hud.fxaa(), "the AA toggle off turns it all off (the phone's switch)")
-		assert_eq(filters.call(), [BaseMaterial3D.TEXTURE_FILTER_NEAREST], "and the textures read nearest as before")
-		Settings.display["aa"] = true
-	OS.set_environment("RIFTGATE_AA", "off")
-	assert_false(Hud.smoothing(), "RIFTGATE_AA=off turns it off for a run")
+	# its mipmaps keeps the texels up close and the calm far off, in every AA mode.
+	var node: Node = (load("res://art/models/%s.glb" % MechView3D.stand_in()) as PackedScene).instantiate()
+	MechView3D.toon(node, ContentDB.load_default().makers.keys()[0], "toon")
+	var seen: Array = []
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		for i in range(mi.get_surface_override_material_count()):
+			var m := mi.get_surface_override_material(i)
+			if m is StandardMaterial3D and (m as StandardMaterial3D).albedo_texture != null and not seen.has(m.texture_filter):
+				seen.append(m.texture_filter)
+	node.free()
+	assert_eq(seen, [BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS], "every textured part reads its mipmaps")
+
+
+func test_the_aa_mode_sets_the_msaa_and_the_fxaa() -> void:
+	# The player's AA MODE (Ryan, 30 October: "Can we add an AA mode setting, not just for
+	# debug?"), MSAA 4x by default, a phone's too: Godot 4.8 fixed the Compatibility renderer's
+	# MSAA leak on Android (godotengine/godot#124643).
+	var was_env := OS.get_environment("RIFTGATE_AA")
+	var was: Variant = Settings.display.get("aa_mode", "msaa4")
 	OS.unset_environment("RIFTGATE_AA")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS["aa_mode"]), "msaa4", "MSAA 4x by default")
+	var want := {"off": [SubViewport.MSAA_DISABLED, false], "fxaa": [SubViewport.MSAA_DISABLED, true],
+		"msaa2": [SubViewport.MSAA_2X, false], "msaa4": [SubViewport.MSAA_4X, false]}
+	assert_eq(want.keys().size(), Settings.AA_MODES.size(), "every mode is checked")
+	for mode in Settings.AA_MODES:
+		Settings.display["aa_mode"] = mode
+		assert_eq(Hud.msaa_3d(), int(want[mode][0]), "%s: its MSAA" % mode)
+		assert_eq(Hud.fxaa(), bool(want[mode][1]), "%s: the map's FXAA only in the FXAA mode" % mode)
+		assert_true(Settings.AA_LABELS.has(mode), "%s has a label" % mode)
+	Settings.display["aa_mode"] = "msaa16"
+	assert_eq(Hud.aa_mode(), "msaa4", "a saved mode the game no longer knows reads as the default")
+	Settings.display["aa_mode"] = "msaa4"
+	OS.set_environment("RIFTGATE_AA", "fxaa")
+	assert_true(Hud.fxaa() and Hud.msaa_3d() == SubViewport.MSAA_DISABLED, "RIFTGATE_AA=<mode> forces one for a run")
+	OS.unset_environment("RIFTGATE_AA")
+	if not was_env.is_empty():
+		OS.set_environment("RIFTGATE_AA", was_env)
+	Settings.display["aa_mode"] = was
 
 
-func test_msaa_runs_on_every_glass_unless_a_debug_build_turns_it_off() -> void:
-	# Godot 4.8 fixed the Compatibility renderer's MSAA leak on Android (godotengine/godot#124643),
-	# so a phone runs MSAA as the desk does; a debug build's MSAA toggle turns it off.
-	var was := OS.get_environment("RIFTGATE_MSAA")
-	OS.unset_environment("RIFTGATE_MSAA")
-	Settings.display["msaa"] = true
-	assert_eq(Hud.msaa_3d(), SubViewport.MSAA_4X, "MSAA 4x by default, a phone's too")
-	assert_false(Hud.fxaa(), "and no FXAA beside it")
-	if OS.is_debug_build():   # the tests' build always is; a release build runs MSAA whatever is saved
-		Settings.display["msaa"] = false
-		assert_eq(Hud.msaa_3d(), SubViewport.MSAA_DISABLED, "the MSAA toggle off turns it off (the phone's switch)")
-		assert_eq(Hud.fxaa(), Hud.smoothing(), "and the map's FXAA takes its place while the smoothing is on")
-		Settings.display["msaa"] = true
-	OS.set_environment("RIFTGATE_MSAA", "off")
-	assert_eq(Hud.msaa_3d(), SubViewport.MSAA_DISABLED, "RIFTGATE_MSAA=off for a run")
-	OS.unset_environment("RIFTGATE_MSAA")
-	if not was.is_empty():
-		OS.set_environment("RIFTGATE_MSAA", was)
+func test_the_settings_page_offers_every_aa_mode() -> void:
+	var menu := PauseMenu.new()
+	menu._show_page("settings")
+	var labels: Array = []
+	for b in menu._rows.find_children("*", "", true, false):
+		if b is HudButton:
+			labels.append(str((b as HudButton).text))
+	for mode in Settings.AA_MODES:
+		assert_true(labels.has(str(Settings.AA_LABELS[mode])), "the settings page offers %s" % Settings.AA_LABELS[mode])
+	menu.free()

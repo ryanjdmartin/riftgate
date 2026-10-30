@@ -28,9 +28,8 @@ const DISPLAY_DEFAULTS := {
 	"music": 1.0, "effects": 1.0, "voice": 1.0,   # Hold The Line at the full knob matches other games on the phone (Ryan, 8 October); the effects and the voice mastered up to sit over it
 	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
-	"aa": true,   # a debug build's comparison: off, the 3D draws without its smoothing (Hud.smoothing: the textures' mipmaps, the map's FXAA), to judge it on the phone
 	"traces": true,   # a debug build's comparison: off, the map draws none of its traces (the creases on the machines, the props and the gate), to judge the grain at zoom 1 on the phone
-	"msaa": true,   # a debug build's comparison: off, the 3D draws without MSAA (Hud.msaa_3d), the map's FXAA in its place, to compare, or if the Pixel's memory climbs with it
+	"aa_mode": "msaa4",   # AA_MODES: the 3D's anti-aliasing (Hud.aa_mode)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }
 const DISPLAY_RANGES := {
@@ -42,6 +41,11 @@ static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()
 ## "middle"): the log, dice and Reroll between the foes and the machines, or under the machines
 ## with the two sides facing each other above them (SkirmishScreen.controls reads it).
 const SKIRMISH_CONTROLS := ["middle", "bottom"]
+## The 3D's anti-aliasing (Ryan, 30 October: "Can we add an AA mode setting, not just for
+## debug?"): none, the battle map's FXAA (its compositor's own, so a skirmish draws as with none),
+## or MSAA at 2x or 4x (Hud.aa_mode). The machines' textures read their mipmaps in every mode.
+const AA_MODES := ["off", "fxaa", "msaa2", "msaa4"]
+const AA_LABELS := {"off": "OFF", "fxaa": "FXAA", "msaa2": "MSAA 2X", "msaa4": "MSAA 4X"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

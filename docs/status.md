@@ -148,8 +148,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   went back to its light before the 25 October dimming. His read of those is the to-do's. Then
   the project moved to Godot 4.8-beta2 for the MSAA fix (his call: "Let's update Godot so we can
   get the msaa fix"; 4.8 stable has not shipped, no 4.7 patch carries it): the suite and the
-  renders came out the same as on 4.7.2, MSAA is back on the phone behind a debug toggle, and the
-  import files are in 4.8's form. The desk's install and the Pixel's read are the to-do's.
+  renders came out the same as on 4.7.2, MSAA is back on the phone, and the import files are in
+  4.8's form. Then the anti-aliasing became the player's (his ask: "Can we add an AA mode setting,
+  not just for debug?"): SETTINGS → AA MODE, off, FXAA, MSAA 2X or MSAA 4X (the default), in
+  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk's install and
+  the Pixel's read are the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water

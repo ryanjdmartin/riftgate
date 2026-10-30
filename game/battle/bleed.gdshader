@@ -34,7 +34,7 @@ uniform float blur_max = 3.0;                // the blur's tap spacing at its ma
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
 uniform float edge_fade = 30.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
 uniform float edge_blur = 1.6;               // the side blur's maximum
-// FXAA where the 3D has no MSAA (the phone: Hud.fxaa): the scene and the machines read
+// FXAA in the FXAA mode (Hud.fxaa: the AA MODE setting, MSAA off): the scene and the machines read
 // again through linear samplers of the same textures, smoothing their edges in the sharp zone.
 uniform bool fxaa = false;
 uniform sampler2D scene_lin : filter_linear;

@@ -137,7 +137,8 @@ func _show_page(page: String) -> void:
 			_slider("ENEMY PACE", "enemy_pace")
 			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
-			_controls_row()
+			_choice_row("SKIRMISH CONTROLS", "skirmish_controls", Settings.SKIRMISH_CONTROLS)
+			_choice_row("AA MODE", "aa_mode", Settings.AA_MODES, Settings.AA_LABELS)   # the 3D's anti-aliasing (Hud.aa_mode)
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
 			_slider("VOICE", "voice")
@@ -145,8 +146,6 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
-				_toggle("MSAA", "msaa")   # the 3D's MSAA (Hud.msaa_3d), back on the phone with Godot 4.8: off to compare, or if the phone's memory climbs with it
-				_toggle("AA", "aa")   # the 3D's smoothing (Hud.smoothing): off draws it as before, to compare the edges on the phone
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
 				_button("COLOURS", func() -> void: _show_page("colours"))   # every named colour, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
@@ -354,23 +353,24 @@ func _toggle(caption: String, key: String) -> void:
 	_rows.add_child(row)
 
 
-## Where the skirmish's controls sit (Settings.SKIRMISH_CONTROLS): one button an option, the
-## current one filled, as the display's colours are. A fight on screen rebuilds behind the menu.
-func _controls_row() -> void:
+## A setting with a few named options (where the skirmish's controls sit, the AA mode): one
+## button an option, labelled from `labels` or the option upper-cased, the current one filled,
+## as the display's colours are. A screen on show rebuilds behind the menu.
+func _choice_row(caption: String, key: String, options: Array, labels: Dictionary = {}) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
-	row.add_child(_caption("SKIRMISH CONTROLS"))
-	for id in Settings.SKIRMISH_CONTROLS:
-		var b := HudButton.new(str(id).to_upper())
+	row.add_child(_caption(caption))
+	for id in options:
+		var b := HudButton.new(str(labels.get(id, str(id).to_upper())))
 		b.font_size = 14
-		b.filled = str(Settings.display.get("skirmish_controls", "middle")) == id
+		b.filled = str(Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])) == id
 		b.custom_minimum_size = Vector2(0, 40)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.pressed.connect(func() -> void:
-			if str(Settings.display.get("skirmish_controls", "middle")) == id:
+			if str(Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])) == id:
 				return
-			Settings.set_display("skirmish_controls", id)
-			display_changed.emit("skirmish_controls", id)
+			Settings.set_display(key, id)
+			display_changed.emit(key, id)
 			_show_page(_page))
 		row.add_child(b)
 	_rows.add_child(row)

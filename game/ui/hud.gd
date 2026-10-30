@@ -129,43 +129,41 @@ static func oversample(win: Window) -> void:
 	win.size_changed.connect(apply)
 
 
-## The 3D viewports' anti-aliasing: 4x on every glass. A phone had none on Godot 4.7: its
-## Compatibility renderer leaked native memory every frame a 3D viewport drew with MSAA on
-## Android (godotengine/godot#97967). Measured on the Pixel 9 (29 September, MSAA 2x with the
-## fine map), the native heap grew about 170 MB every twenty seconds until the GL driver
-## aborted out of memory at 1.8 GB, three and a half minutes in: a phone's GPU resolves MSAA
-## on the chip, so the renderer made no MSAA buffer, took the missing buffer for "not set up"
-## and set the target up again, a framebuffer every frame. Godot 4.8 fixes it
-## (godotengine/godot#124643), and the project runs it from 4.8-beta2 for that (Ryan, 30
-## October: "Let's update Godot so we can get the msaa fix"). A debug build's MSAA toggle
-## turns it off, to compare, or if the Pixel's memory climbs again; RIFTGATE_MSAA=on or off
-## forces it for a run. Returns a SubViewport.MSAA value, typed int (a class-scoped enum
-## type fails in a headless runner).
+## The 3D's anti-aliasing, the player's AA MODE in SETTINGS (Settings.AA_MODES; Ryan, 30
+## October: "Can we add an AA mode setting, not just for debug?"): none, the map's FXAA, or MSAA
+## at 2x or 4x, MSAA 4x by default. RIFTGATE_AA=<mode> forces one for a run, to compare.
+static func aa_mode() -> String:
+	var env := OS.get_environment("RIFTGATE_AA")
+	if Settings.AA_MODES.has(env):
+		return env
+	var mode := str(Settings.display.get("aa_mode", Settings.DISPLAY_DEFAULTS["aa_mode"]))
+	return mode if Settings.AA_MODES.has(mode) else str(Settings.DISPLAY_DEFAULTS["aa_mode"])
+
+
+## The 3D viewports' MSAA, from the AA mode. A phone had none on Godot 4.7: its Compatibility
+## renderer leaked native memory every frame a 3D viewport drew with MSAA on Android
+## (godotengine/godot#97967). Measured on the Pixel 9 (29 September, MSAA 2x with the fine
+## map), the native heap grew about 170 MB every twenty seconds until the GL driver aborted out
+## of memory at 1.8 GB, three and a half minutes in: a phone's GPU resolves MSAA on the chip,
+## so the renderer made no MSAA buffer, took the missing buffer for "not set up" and set the
+## target up again, a framebuffer every frame. Godot 4.8 fixes it (godotengine/godot#124643),
+## and the project runs it from 4.8-beta2 for that (Ryan, 30 October: "Let's update Godot so
+## we can get the msaa fix"). Returns a SubViewport.MSAA value, typed int (a class-scoped
+## enum type fails in a headless runner).
 static func msaa_3d() -> int:
-	match OS.get_environment("RIFTGATE_MSAA"):
-		"off":
-			return SubViewport.MSAA_DISABLED
-		"on":
+	match aa_mode():
+		"msaa4":
 			return SubViewport.MSAA_4X
-	if OS.is_debug_build() and not bool(Settings.display.get("msaa", true)):
-		return SubViewport.MSAA_DISABLED
-	return SubViewport.MSAA_4X
+		"msaa2":
+			return SubViewport.MSAA_2X
+	return SubViewport.MSAA_DISABLED
 
 
-## The smoothing the 3D gets where MSAA cannot run (Ryan, 30 October: "a lot of aliasing on
-## models and hex grid lines on the phone"): the machines' textures read their mipmaps, so a
-## machine drawn small stops sparkling, and where the viewports have no MSAA the map's
-## compositor runs FXAA of its own (bleed.gdshader), the phone's renderer refusing Godot's.
-## RIFTGATE_AA=off, or AA off in a debug build's settings, draws as before, to compare;
-## RIFTGATE_AA=fxaa runs the FXAA beside MSAA too (the desk judging the phone's look).
-static func smoothing() -> bool:
-	if OS.get_environment("RIFTGATE_AA") == "off":
-		return false
-	return bool(Settings.display.get("aa", true)) or not OS.is_debug_build()
-
-
+## Whether the map's compositor runs FXAA of its own (bleed.gdshader), the phone's renderer
+## refusing Godot's: the FXAA mode, MSAA off (Ryan, 30 October: "a lot of aliasing on models
+## and hex grid lines on the phone", before MSAA ran there).
 static func fxaa() -> bool:
-	return smoothing() and (msaa_3d() == SubViewport.MSAA_DISABLED or OS.get_environment("RIFTGATE_AA") == "fxaa")
+	return aa_mode() == "fxaa"
 
 
 ## Device pixels per design pixel a 3D render uses: the window's stretch, so the map and the

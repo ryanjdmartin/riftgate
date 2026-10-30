@@ -607,7 +607,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				# texture, nearest filtered through its mipmaps, flat facets, lit by the scene's sun, gloss by
 				# maker. The toon pass below is for untextured models (the structures).
 				var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
-				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS if Hud.smoothing() else BaseMaterial3D.TEXTURE_FILTER_NEAREST   # its mipmaps, so a machine drawn small never sparkles
+				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS   # its mipmaps, so a machine drawn small never sparkles
 				var finish: Array = FINISH.get(maker, FINISH.values()[0])
 				if float(finish[1]) >= 0.25:
 					mi.layers |= 1 << (SHEEN_LAYER - 1)   # the sheen light finds it

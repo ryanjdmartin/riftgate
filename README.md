@@ -352,12 +352,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
-# RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; on everywhere since Godot 4.8, a debug build's MSAA toggle
-# turns it off).
-# RIFTGATE_AA=off draws the 3D without its smoothing (the machines' textures nearest without their
-# mipmaps, no FXAA on the map), as a debug build's AA toggle does; RIFTGATE_AA=fxaa runs the map's
-# FXAA beside MSAA too. RIFTGATE_MSAA=off draws the look without MSAA: the map's FXAA in its place, as the
-# phone drew on Godot 4.7, whose renderer leaked with MSAA there (godotengine/godot#97967, fixed in 4.8).
+# RIFTGATE_AA=off|fxaa|msaa2|msaa4 forces the AA mode for a run (any run; the player's SETTINGS → AA MODE, MSAA 4X by
+# default). fxaa is the look a phone had on Godot 4.7: no MSAA, the map's compositor running FXAA of its own in its place,
+# the renderer leaking with MSAA there (godotengine/godot#97967, fixed in 4.8). The machines' textures read their mipmaps
+# in every mode.
 # RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
 # (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
@@ -549,7 +547,7 @@ inside a fight. The battle ends when the gate falls, every mech is wrecked, or t
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, enemy pace,
-glitch, scan bar, skirmish controls, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
+glitch, scan bar, skirmish controls, AA mode, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 
